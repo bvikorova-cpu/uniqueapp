@@ -4,7 +4,17 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { Gem, Wrench, Camera, Swords, Trophy, Medal, ScanFace, CalendarDays, ShieldCheck, Dna, Share2, Sun } from "lucide-react";
+import { Gem, Wrench, Camera, Swords, Trophy, Medal, ScanFace, CalendarDays, ShieldCheck, Dna, Share2, Sun, Activity, Bell, Users, Box, MessageSquare, FileDown, ShoppingBag, Image as ImageIcon, Video } from "lucide-react";
+import FutureFaceSkinScore from "@/components/future-face/FutureFaceSkinScore";
+import FutureFaceRoutineTracker from "@/components/future-face/FutureFaceRoutineTracker";
+import FutureFaceGallery from "@/components/future-face/FutureFaceGallery";
+import FutureFaceLiveAR from "@/components/future-face/FutureFaceLiveAR";
+import FutureFaceFamilyMode from "@/components/future-face/FutureFaceFamilyMode";
+import FutureFacePushReminder from "@/components/future-face/FutureFacePushReminder";
+import FutureFace3D from "@/components/future-face/FutureFace3D";
+import FutureFaceShop from "@/components/future-face/FutureFaceShop";
+import FutureFaceMonthlyReport from "@/components/future-face/FutureFaceMonthlyReport";
+import FutureFaceDermChat from "@/components/future-face/FutureFaceDermChat";
 import FutureFaceHero from "@/components/future-face/FutureFaceHero";
 import FutureFaceToolsGrid from "@/components/future-face/FutureFaceToolsGrid";
 import FutureFaceSelfieStreaks from "@/components/future-face/FutureFaceSelfieStreaks";
@@ -113,6 +123,33 @@ const FutureFace = () => {
           <TabsContent value="duels"><FutureFaceDuels /></TabsContent>
           <TabsContent value="leaderboard"><FutureFaceLeaderboard /></TabsContent>
           <TabsContent value="achievements"><FutureFaceAchievements /></TabsContent>
+        </Tabs>
+
+        {/* Advanced features (second tab strip) */}
+        <Tabs defaultValue="livear" className="w-full mt-8">
+          <h3 className="text-sm font-bold uppercase text-muted-foreground mb-3">🆕 Advanced features</h3>
+          <TabsList className="grid w-full grid-cols-3 sm:grid-cols-[repeat(10,minmax(0,1fr))] mb-6 h-auto">
+            <TabsTrigger value="livear" className="text-[10px] sm:text-xs"><Video className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">Live AR</span></TabsTrigger>
+            <TabsTrigger value="3d" className="text-[10px] sm:text-xs"><Box className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">3D</span></TabsTrigger>
+            <TabsTrigger value="dermchat" className="text-[10px] sm:text-xs"><MessageSquare className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">Chat</span></TabsTrigger>
+            <TabsTrigger value="skinscore" className="text-[10px] sm:text-xs"><Activity className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">Score</span></TabsTrigger>
+            <TabsTrigger value="routine" className="text-[10px] sm:text-xs"><Sun className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">Routine</span></TabsTrigger>
+            <TabsTrigger value="gallery" className="text-[10px] sm:text-xs"><ImageIcon className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">Gallery</span></TabsTrigger>
+            <TabsTrigger value="family" className="text-[10px] sm:text-xs"><Users className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">Family</span></TabsTrigger>
+            <TabsTrigger value="push" className="text-[10px] sm:text-xs"><Bell className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">Push</span></TabsTrigger>
+            <TabsTrigger value="report" className="text-[10px] sm:text-xs"><FileDown className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">PDF</span></TabsTrigger>
+            <TabsTrigger value="shop" className="text-[10px] sm:text-xs"><ShoppingBag className="h-3 w-3 sm:mr-1" /><span className="hidden sm:inline">Shop</span></TabsTrigger>
+          </TabsList>
+          <TabsContent value="livear"><FutureFaceLiveAR /></TabsContent>
+          <TabsContent value="3d"><FutureFace3D /></TabsContent>
+          <TabsContent value="dermchat"><FutureFaceDermChat /></TabsContent>
+          <TabsContent value="skinscore"><FutureFaceSkinScore /></TabsContent>
+          <TabsContent value="routine"><FutureFaceRoutineTracker /></TabsContent>
+          <TabsContent value="gallery"><FutureFaceGallery /></TabsContent>
+          <TabsContent value="family"><FutureFaceFamilyMode /></TabsContent>
+          <TabsContent value="push"><FutureFacePushReminder /></TabsContent>
+          <TabsContent value="report"><FutureFaceMonthlyReport /></TabsContent>
+          <TabsContent value="shop"><FutureFaceShop /></TabsContent>
         </Tabs>
       </div>
     </div>
