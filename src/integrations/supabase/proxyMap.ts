@@ -209,6 +209,14 @@ export function resolveProxy(
     };
   }
 
+  if (functionName === "contact-live-chat") {
+    return { target: "contact-ai-triage", body: { ...b, action: "live_chat" } };
+  }
+
+  if (functionName === "ai-auto-recharge") {
+    return { target: "create-checkout", body: { ...b, product: "ai_auto_recharge" } };
+  }
+
   const aiType = AI_PROXY_MAP[functionName];
   if (aiType) {
     return { target: "generate-gift-message", body: { ...b, type: (b as any).type ?? aiType } };
