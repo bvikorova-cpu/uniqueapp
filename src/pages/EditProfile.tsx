@@ -203,6 +203,17 @@ const EditProfile = () => {
         field_visibility: profile.field_visibility,
         username: profile.username || null,
         tone_of_voice: profile.tone_of_voice,
+        open_to_work: profile.open_to_work,
+        open_to_work_details: profile.open_to_work_details,
+        profile_music_url: profile.profile_music_url,
+        profile_music_title: profile.profile_music_title,
+        bio_score: profile.bio_score,
+        bio_score_feedback: profile.bio_score_feedback,
+        bio_score_updated_at: profile.bio_score != null ? new Date().toISOString() : null,
+        bio_variants: profile.bio_variants,
+        bio_translations: profile.bio_translations,
+        seo_title: profile.seo_title || null,
+        seo_description: profile.seo_description || null,
       } as any).eq("id", user.id);
       if (error) throw error;
       toast({ title: "Profile saved", description: "Your changes are live." });
