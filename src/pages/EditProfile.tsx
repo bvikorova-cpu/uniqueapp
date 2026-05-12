@@ -26,6 +26,11 @@ import { PersonalityTest } from "@/components/profile/edit/PersonalityTest";
 import { AnimatedAvatarStudio } from "@/components/profile/edit/AnimatedAvatarStudio";
 import { ProfileAnalytics } from "@/components/profile/edit/ProfileAnalytics";
 import { LiveProfilePreview } from "@/components/profile/edit/LiveProfilePreview";
+import { OpenToWorkEditor } from "@/components/profile/edit/OpenToWorkEditor";
+import { ProfileMusicEditor } from "@/components/profile/edit/ProfileMusicEditor";
+import { BioToolkit } from "@/components/profile/edit/BioToolkit";
+import { SeoPreview } from "@/components/profile/edit/SeoPreview";
+import type { OpenToWorkDetails } from "@/components/profile/OpenToWork";
 
 interface ProfileData {
   id: string;
@@ -54,6 +59,16 @@ interface ProfileData {
   tone_of_voice: string | null;
   is_verified: boolean | null;
   stripe_connect_charges_enabled: boolean | null;
+  open_to_work: boolean;
+  open_to_work_details: OpenToWorkDetails;
+  profile_music_url: string | null;
+  profile_music_title: string | null;
+  bio_score: number | null;
+  bio_score_feedback: string | null;
+  bio_variants: string[];
+  bio_translations: Record<string, string>;
+  seo_title: string;
+  seo_description: string;
 }
 
 const EditProfile = () => {
@@ -79,6 +94,9 @@ const EditProfile = () => {
     social_links: {}, skills: [], languages: [], accent_color: "#f59e0b", profile_theme: "default", field_visibility: {},
     username: "", animated_avatar_url: "", animated_avatar_audio_url: "", tone_of_voice: "",
     is_verified: false, stripe_connect_charges_enabled: false,
+    open_to_work: false, open_to_work_details: {}, profile_music_url: null, profile_music_title: null,
+    bio_score: null, bio_score_feedback: null, bio_variants: [], bio_translations: {},
+    seo_title: "", seo_description: "",
   });
   const [newInterest, setNewInterest] = useState("");
   const [newLanguage, setNewLanguage] = useState("");
@@ -128,6 +146,16 @@ const EditProfile = () => {
         tone_of_voice: p.tone_of_voice || "",
         is_verified: !!p.is_verified,
         stripe_connect_charges_enabled: !!p.stripe_connect_charges_enabled,
+        open_to_work: !!p.open_to_work,
+        open_to_work_details: (p.open_to_work_details as OpenToWorkDetails) || {},
+        profile_music_url: p.profile_music_url || null,
+        profile_music_title: p.profile_music_title || null,
+        bio_score: p.bio_score ?? null,
+        bio_score_feedback: p.bio_score_feedback || null,
+        bio_variants: Array.isArray(p.bio_variants) ? p.bio_variants : [],
+        bio_translations: (p.bio_translations as Record<string, string>) || {},
+        seo_title: p.seo_title || "",
+        seo_description: p.seo_description || "",
       });
 
       // verified state — read real email_confirmed_at from auth user
@@ -175,6 +203,17 @@ const EditProfile = () => {
         field_visibility: profile.field_visibility,
         username: profile.username || null,
         tone_of_voice: profile.tone_of_voice,
+        open_to_work: profile.open_to_work,
+        open_to_work_details: profile.open_to_work_details,
+        profile_music_url: profile.profile_music_url,
+        profile_music_title: profile.profile_music_title,
+        bio_score: profile.bio_score,
+        bio_score_feedback: profile.bio_score_feedback,
+        bio_score_updated_at: profile.bio_score != null ? new Date().toISOString() : null,
+        bio_variants: profile.bio_variants,
+        bio_translations: profile.bio_translations,
+        seo_title: profile.seo_title || null,
+        seo_description: profile.seo_description || null,
       } as any).eq("id", user.id);
       if (error) throw error;
       toast({ title: "Profile saved", description: "Your changes are live." });
@@ -418,6 +457,29 @@ const EditProfile = () => {
 
             <ProfileAnalytics userId={profile.id} />
 
+            <OpenToWorkEditor
+              enabled={profile.open_to_work}
+              details={profile.open_to_work_details}
+              onChange={(enabled, details) => setProfile({ ...profile, open_to_work: enabled, open_to_work_details: details })}
+            />
+
+            <ProfileMusicEditor
+              userId={profile.id}
+              url={profile.profile_music_url}
+              title={profile.profile_music_title}
+              onChange={(url, title) => setProfile({ ...profile, profile_music_url: url, profile_music_title: title })}
+            />
+
+            <SeoPreview
+              title={profile.seo_title}
+              description={profile.seo_description}
+              fallbackTitle={profile.headline ? `${profile.full_name || "Profile"} — ${profile.headline}` : (profile.full_name || "Profile")}
+              fallbackDescription={profile.bio || ""}
+              url={`${typeof window !== "undefined" ? window.location.origin : ""}/profile/${profile.id}`}
+              onTitleChange={(v) => setProfile({ ...profile, seo_title: v })}
+              onDescriptionChange={(v) => setProfile({ ...profile, seo_description: v })}
+            />
+
             <Card className="p-5 sm:p-6 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border-border/50">
               <Tabs defaultValue="identity" className="w-full">
                 <TabsList className="grid grid-cols-5 mb-6 h-auto">
@@ -516,6 +578,19 @@ const EditProfile = () => {
                     />
                     <p className="text-[10px] text-muted-foreground mt-1">{(profile.bio || "").length}/500</p>
                   </div>
+
+                  <BioToolkit
+                    bio={profile.bio || ""}
+                    score={profile.bio_score}
+                    feedback={profile.bio_score_feedback}
+                    variants={profile.bio_variants}
+                    translations={profile.bio_translations}
+                    onApplyBio={(b) => setProfile({ ...profile, bio: b })}
+                    onScoreUpdate={(s, f) => setProfile({ ...profile, bio_score: s, bio_score_feedback: f })}
+                    onVariantsUpdate={(v) => setProfile({ ...profile, bio_variants: v })}
+                    onTranslationsUpdate={(t) => setProfile({ ...profile, bio_translations: t })}
+                  />
+
 
                   <div>
                     <Label htmlFor="interests">Interests</Label>

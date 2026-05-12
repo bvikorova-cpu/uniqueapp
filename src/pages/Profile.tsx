@@ -28,6 +28,11 @@ import { StoryHighlights } from "@/components/profile/StoryHighlights";
 import { VoiceIntro } from "@/components/profile/VoiceIntro";
 import { Avatar3D } from "@/components/profile/Avatar3D";
 import { PublicGoals } from "@/components/profile/PublicGoals";
+import { ProfileJsonLd } from "@/components/profile/ProfileJsonLd";
+import { OpenToWorkBadge } from "@/components/profile/OpenToWork";
+import { ProfileMusicPlayer } from "@/components/profile/ProfileMusicPlayer";
+import { MutualConnections } from "@/components/profile/MutualConnections";
+import { VCardDownloadButton } from "@/components/profile/VCardDownloadButton";
 import { TipJar } from "@/components/profile/TipJar";
 import { ProfileQRCode } from "@/components/profile/ProfileQRCode";
 import { ThemePicker } from "@/components/profile/ThemePicker";
@@ -45,6 +50,14 @@ interface Profile {
   interests: string[] | null;
   occupation: string | null;
   company: string | null;
+  headline?: string | null;
+  username?: string | null;
+  social_links?: any;
+  open_to_work?: boolean | null;
+  open_to_work_details?: any;
+  profile_music_url?: string | null;
+  profile_music_title?: string | null;
+  bio_translations?: any;
 }
 
 interface Post {
@@ -433,6 +446,7 @@ const Profile = () => {
                 </Button>
               )}
               <ProfileQRCode userId={userId!} userName={profile.full_name || "user"} />
+              <VCardDownloadButton profile={profile} />
               {currentUserId === userId && <ThemePicker userId={userId!} />}
               {currentUserId !== userId && profile.full_name && (
                 <TipJar recipientId={userId!} recipientName={profile.full_name} currentUserId={currentUserId} />
@@ -440,6 +454,18 @@ const Profile = () => {
             </>
           }
         />
+
+        <ProfileJsonLd profile={profile} />
+
+        {currentUserId && currentUserId !== userId && (
+          <MutualConnections viewerId={currentUserId} profileUserId={userId!} />
+        )}
+
+        {profile.open_to_work && (
+          <OpenToWorkBadge details={profile.open_to_work_details} />
+        )}
+
+        <ProfileMusicPlayer url={profile.profile_music_url} title={profile.profile_music_title} />
 
         {/* Voice intro */}
         <VoiceIntro userId={userId!} isOwnProfile={currentUserId === userId} />
