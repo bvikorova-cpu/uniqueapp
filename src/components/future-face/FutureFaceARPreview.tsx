@@ -39,11 +39,10 @@ export default function FutureFaceARPreview() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast({ title: "Please sign in first", variant: "destructive" }); return; }
 
-      const { data, error } = await supabase.functions.invoke("future-face-ai", {
+      const res = await supabase.functions.invoke("future-face-ai", {
         body: { action: "ar_preview", prompt: `Effect: ${effect}. Description: ${description}`, age: parseInt(age) }
       });
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
+      const data = throwIfInvokeError(res);
       setResult(data.result || "No result returned.");
     } catch (err: any) {
       if (!handleEdgeError(err, { navigate, context: "Future Face" })) {
