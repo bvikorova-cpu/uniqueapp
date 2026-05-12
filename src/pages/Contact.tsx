@@ -65,6 +65,7 @@ const Contact = () => {
   const [triageRunning, setTriageRunning] = useState(false);
   const [triageResult, setTriageResult] = useState<{ suggested_faq_id: string; category: string; sentiment: string; summary: string } | null>(null);
   const [submittedTicket, setSubmittedTicket] = useState<string | null>(null);
+  const [heroStats, setHeroStats] = useState({ responseTime: "< 4h", todayCount: 0, satisfaction: 98 });
 
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
@@ -84,6 +85,16 @@ const Contact = () => {
       .select("id, category, question, keywords")
       .eq("is_active", true)
       .then(({ data }) => setFaqList((data as FAQ[]) ?? []));
+
+    // Real today-count from support_tickets created in last 24h
+    (async () => {
+      const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+      const { count } = await supabase
+        .from("support_tickets")
+        .select("id", { count: "exact", head: true })
+        .gte("created_at", since);
+      setHeroStats((s) => ({ ...s, todayCount: count ?? 0 }));
+    })();
   }, [form]);
 
   const messageValue = form.watch("message") ?? "";
@@ -203,7 +214,7 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container max-w-5xl mx-auto px-4 py-6 pt-20">
-        <ContactHero responseTime="< 4h" todayCount={47} satisfaction={98} />
+        <ContactHero responseTime={heroStats.responseTime} todayCount={heroStats.todayCount} satisfaction={heroStats.satisfaction} />
         <HeroRewardedAd sectionKey="page_contact" />
 
 

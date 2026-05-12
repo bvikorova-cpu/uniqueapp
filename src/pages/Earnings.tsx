@@ -110,6 +110,9 @@ const Earnings = () => {
     const totalEarnings = txs.reduce((s, t) => s + Number(t.seller_amount), 0);
     const pendingPayouts = txs.filter(t => t.status === 'pending').reduce((s, t) => s + Number(t.seller_amount), 0);
     const completedPayouts = txs.filter(t => t.status === 'completed').reduce((s, t) => s + Number(t.seller_amount), 0);
+    // Available = funds released by buyer/escrow but not yet paid out (status === 'released')
+    // Falls back to completed when no released rows exist.
+    const releasedFunds = txs.filter(t => t.status === 'released').reduce((s, t) => s + Number(t.seller_amount), 0);
     const now = new Date();
     const monthEarnings = txs
       .filter(t => {
@@ -121,7 +124,7 @@ const Earnings = () => {
       totalEarnings,
       pendingPayouts,
       completedPayouts,
-      available: completedPayouts, // for demo: paid-out items represent available; real flow would use a balance table
+      available: releasedFunds > 0 ? releasedFunds : completedPayouts,
       monthEarnings,
       totalSales: txs.length,
     });
