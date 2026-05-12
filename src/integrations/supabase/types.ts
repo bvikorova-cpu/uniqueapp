@@ -19159,6 +19159,36 @@ export type Database = {
         }
         Relationships: []
       }
+      future_face_images: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          result_url: string
+          source_url: string | null
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          result_url: string
+          source_url?: string | null
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          result_url?: string
+          source_url?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       future_face_progressions: {
         Row: {
           anti_aging_tips: string | null
@@ -19192,6 +19222,63 @@ export type Database = {
           unhealthy_image_url?: string | null
           user_id?: string
           years_forward?: number
+        }
+        Relationships: []
+      }
+      future_face_routine_log: {
+        Row: {
+          created_at: string
+          evening_done: boolean | null
+          hydration_glasses: number | null
+          id: string
+          morning_done: boolean | null
+          routine_date: string
+          sleep_hours: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          evening_done?: boolean | null
+          hydration_glasses?: number | null
+          id?: string
+          morning_done?: boolean | null
+          routine_date?: string
+          sleep_hours?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          evening_done?: boolean | null
+          hydration_glasses?: number | null
+          id?: string
+          morning_done?: boolean | null
+          routine_date?: string
+          sleep_hours?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      future_face_skin_scores: {
+        Row: {
+          id: string
+          notes: string | null
+          recorded_at: string
+          score: number
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          notes?: string | null
+          recorded_at?: string
+          score: number
+          user_id: string
+        }
+        Update: {
+          id?: string
+          notes?: string | null
+          recorded_at?: string
+          score?: number
+          user_id?: string
         }
         Relationships: []
       }
