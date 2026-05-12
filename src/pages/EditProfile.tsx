@@ -579,6 +579,20 @@ const EditProfile = () => {
                     <p className="text-[10px] text-muted-foreground mt-1">{(profile.bio || "").length}/500</p>
                   </div>
 
+                  <BioToolkit
+                    bio={profile.bio || ""}
+                    score={profile.bio_score}
+                    feedback={profile.bio_score_feedback}
+                    variants={profile.bio_variants}
+                    translations={profile.bio_translations}
+                    onApplyBio={(b) => setProfile({ ...profile, bio: b })}
+                    onScoreUpdate={(s, f) => setProfile({ ...profile, bio_score: s, bio_score_feedback: f })}
+                    onVariantsUpdate={(v) => setProfile({ ...profile, bio_variants: v })}
+                    onTranslationsUpdate={(t) => setProfile({ ...profile, bio_translations: t })}
+                  />
+
+                  <div style={{ display: "none" }}>
+
                   <div>
                     <Label htmlFor="interests">Interests</Label>
                     <div className="flex gap-2 mb-2">
