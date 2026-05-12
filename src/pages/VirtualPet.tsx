@@ -60,6 +60,8 @@ const VirtualPet = () => {
 
   const goBack = () => setActiveView("dashboard");
 
+  useEffect(() => { trackPetActivity('virtual'); }, []);
+
   const renderView = () => {
     switch (activeView) {
       case "pets": return <MyPets onSelectPet={setSelectedPetId} />;
