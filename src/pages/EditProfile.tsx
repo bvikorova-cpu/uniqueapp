@@ -26,6 +26,11 @@ import { PersonalityTest } from "@/components/profile/edit/PersonalityTest";
 import { AnimatedAvatarStudio } from "@/components/profile/edit/AnimatedAvatarStudio";
 import { ProfileAnalytics } from "@/components/profile/edit/ProfileAnalytics";
 import { LiveProfilePreview } from "@/components/profile/edit/LiveProfilePreview";
+import { OpenToWorkEditor } from "@/components/profile/edit/OpenToWorkEditor";
+import { ProfileMusicEditor } from "@/components/profile/edit/ProfileMusicEditor";
+import { BioToolkit } from "@/components/profile/edit/BioToolkit";
+import { SeoPreview } from "@/components/profile/edit/SeoPreview";
+import type { OpenToWorkDetails } from "@/components/profile/OpenToWork";
 
 interface ProfileData {
   id: string;
