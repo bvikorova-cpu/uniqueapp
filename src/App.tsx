@@ -149,6 +149,7 @@ import {
   PetTranslator,
   PetTranslatorPricing,
   PetsHub,
+  PetsAchievements,
   Psychology,
   OnlinePsychologist,
   Quiz,
@@ -605,6 +606,7 @@ const App = () => {
                        <Route path="/pet-translator" element={<PetTranslator />} />
                        <Route path="/pet-translator-pricing" element={<PetTranslatorPricing />} />
                        <Route path="/pets" element={<PetsHub />} />
+                       <Route path="/pets/achievements" element={<ProtectedRoute><PetsAchievements /></ProtectedRoute>} />
                         <Route path="/future-face" element={<FutureFace />} />
                         <Route path="/skill-swap" element={<SkillSwap />} />
                         <Route path="/skill-swap/dashboard" element={<ProtectedRoute><SkillSwapDashboard /></ProtectedRoute>} />
