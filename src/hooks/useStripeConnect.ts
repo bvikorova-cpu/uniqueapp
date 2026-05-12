@@ -50,5 +50,5 @@ export function useStripeConnect() {
     }
   };
 
-  return { startOnboarding, checkStatus, openDashboard, loading };
+  return { startOnboarding, checkStatus, liveStatus, openDashboard, loading };
 }
