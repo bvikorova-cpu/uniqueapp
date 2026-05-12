@@ -157,6 +157,17 @@ export const RealtimeActivityFeed = () => {
         playBleep("message");
         showNotif("✉️ Contact message", desc);
       })
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "support_tickets" }, (payload: any) => {
+        if (paused) return;
+        const desc = `${payload.new.name}: ${payload.new.subject || ""}`.slice(0, 60);
+        setEvents((prev) => [{
+          id: `st-${payload.new.id}`, type: "message" as const,
+          title: `Support ticket #${payload.new.ticket_number || ""}`, description: desc,
+          created_at: payload.new.created_at,
+        }, ...prev].slice(0, 12));
+        playBleep("message");
+        showNotif("🎫 Support ticket", desc);
+      })
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
