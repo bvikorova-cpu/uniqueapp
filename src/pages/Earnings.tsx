@@ -149,7 +149,7 @@ const Earnings = () => {
       toast({ title: "No payout method", description: "Add a payout method first.", variant: "destructive" });
       return;
     }
-    if (!stripeConnect.payoutsEnabled) {
+    if (!stripeConnect.enabled) {
       toast({
         title: "Stripe Connect not ready",
         description: stripeConnect.reason || "Complete Stripe Connect onboarding before requesting a payout.",
@@ -167,7 +167,8 @@ const Earnings = () => {
         title: "Payout requested",
         description: `€${(data.amount / 100).toFixed(2)} is on its way. Status: ${data.status}.`,
       });
-      await loadData?.();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) await loadTransactions(user.id);
     } catch (e: any) {
       toast({
         title: "Payout failed",
