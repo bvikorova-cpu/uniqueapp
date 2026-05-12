@@ -30,6 +30,7 @@ import PetTrainingCourses from '@/components/pet-translator/PetTrainingCourses';
 import PetSymptomChecker from '@/components/pet-translator/PetSymptomChecker';
 import PetWearableTeaser from '@/components/pet-translator/PetWearableTeaser';
 import PetLanguageSelector from '@/components/pet-translator/PetLanguageSelector';
+import PetActiveSwitcher from '@/components/pet-translator/PetActiveSwitcher';
 import { Card } from '@/components/ui/card';
 import { Crown, Sparkles, PawPrint, Heart, Stethoscope, GraduationCap, MessageSquareText, History, Radio, Video, Search, Users, Watch, BookOpen } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -126,7 +127,10 @@ const PetTranslator = () => {
           <Tabs defaultValue="tools" className="w-full">
             <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
               <PetDailyTip />
-              <PetLanguageSelector />
+              <div className="flex items-center gap-2">
+                <PetActiveSwitcher />
+                <PetLanguageSelector />
+              </div>
             </div>
             <TabsList className="w-full flex flex-wrap h-auto gap-1 bg-card/50 p-1 mb-6">
               {[
