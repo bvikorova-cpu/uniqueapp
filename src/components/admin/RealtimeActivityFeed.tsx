@@ -85,10 +85,11 @@ export const RealtimeActivityFeed = () => {
   useEffect(() => {
     // Initial load
     const loadInitial = async () => {
-      const [users, txs, msgs] = await Promise.all([
+      const [users, txs, msgs, tickets] = await Promise.all([
         supabase.from("profiles").select("id, full_name, email, created_at").order("created_at", { ascending: false }).limit(5),
         supabase.from("transactions").select("id, amount, item_type, created_at").order("created_at", { ascending: false }).limit(5),
         supabase.from("contact_messages").select("id, name, subject, created_at").order("created_at", { ascending: false }).limit(5),
+        supabase.from("support_tickets").select("id, name, subject, ticket_number, created_at").order("created_at", { ascending: false }).limit(5),
       ]);
 
       const items: Event[] = [];
@@ -107,6 +108,11 @@ export const RealtimeActivityFeed = () => {
         id: `m-${m.id}`, type: "message" as const,
         title: "Contact message", description: `${m.name}: ${m.subject || ""}`.slice(0, 60),
         created_at: m.created_at,
+      }));
+      tickets.data?.forEach((t: any) => items.push({
+        id: `st-${t.id}`, type: "message" as const,
+        title: `Support ticket #${t.ticket_number || ""}`, description: `${t.name}: ${t.subject || ""}`.slice(0, 60),
+        created_at: t.created_at,
       }));
 
       items.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
