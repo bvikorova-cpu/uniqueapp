@@ -23,6 +23,7 @@ import { RevenueCharts } from "@/components/admin/RevenueCharts";
 import { SystemHealthMonitor } from "@/components/admin/SystemHealthMonitor";
 import { CommandBar } from "@/components/admin/CommandBar";
 import { AuditLogPanel } from "@/components/admin/AuditLogPanel";
+import { ImpersonationPanel } from "@/components/admin/ImpersonationPanel";
 import { ActivityHeatmap } from "@/components/admin/ActivityHeatmap";
 import { AnomalyDetector } from "@/components/admin/AnomalyDetector";
 import { QuickActionsDock } from "@/components/admin/QuickActionsDock";
@@ -386,9 +387,10 @@ const Admin = () => {
           <TopUsersLeaderboard />
         </div>
 
-        {/* Audit Log */}
-        <div className="mb-8">
+        {/* Audit Log + Impersonation */}
+        <div className="grid lg:grid-cols-2 gap-4 mb-8">
           <AuditLogPanel />
+          <ImpersonationPanel />
         </div>
 
         <QuickActionsDock />

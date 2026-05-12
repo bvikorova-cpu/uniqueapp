@@ -22,6 +22,8 @@ import {
   PayoutMethodsManager,
   StripeConnectBanner,
 } from "@/components/earnings";
+import { PayoutSchedulePicker } from "@/components/earnings/PayoutSchedulePicker";
+import { TaxDocsButton } from "@/components/earnings/TaxDocsButton";
 
 interface Transaction {
   id: string;
@@ -257,6 +259,11 @@ const Earnings = () => {
       <div className="grid lg:grid-cols-2 gap-4 mb-6">
         <EarningsMilestones totalEarnings={stats.totalEarnings} />
         <EarningsTaxEstimator totalEarnings={stats.totalEarnings} />
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-4 mb-6">
+        <PayoutSchedulePicker />
+        <TaxDocsButton />
       </div>
 
       <Card className="border-amber-500/20">

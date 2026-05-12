@@ -36,6 +36,8 @@ import { VCardDownloadButton } from "@/components/profile/VCardDownloadButton";
 import { TipJar } from "@/components/profile/TipJar";
 import { ProfileQRCode } from "@/components/profile/ProfileQRCode";
 import { ThemePicker } from "@/components/profile/ThemePicker";
+import { Endorsements } from "@/components/profile/Endorsements";
+import { ProfileViewsCounter } from "@/components/profile/ProfileViewsCounter";
 
 interface Profile {
   id: string;
@@ -457,9 +459,15 @@ const Profile = () => {
 
         <ProfileJsonLd profile={profile} />
 
+        <div className="flex items-center justify-center mb-3">
+          <ProfileViewsCounter profileUserId={userId!} viewerId={currentUserId} />
+        </div>
+
         {currentUserId && currentUserId !== userId && (
           <MutualConnections viewerId={currentUserId} profileUserId={userId!} />
         )}
+
+        <Endorsements profileUserId={userId!} currentUserId={currentUserId} />
 
         {profile.open_to_work && (
           <OpenToWorkBadge details={profile.open_to_work_details} />

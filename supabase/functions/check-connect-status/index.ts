@@ -137,6 +137,35 @@ serve(async (req) => {
       });
     }
 
+    // ─── ACTION: update_payout_schedule ───
+    if (action === "update_payout_schedule") {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("stripe_connect_account_id")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (!profile?.stripe_connect_account_id) {
+        return json({ error: "No Stripe Connect account." }, 404);
+      }
+      const interval = String(body.interval || "daily");
+      if (!["manual", "daily", "weekly", "monthly"].includes(interval)) {
+        return json({ error: "Invalid interval" }, 400);
+      }
+      const schedule: any = { interval };
+      if (interval === "weekly" && body.weekly_anchor) schedule.weekly_anchor = body.weekly_anchor;
+      if (interval === "monthly" && body.monthly_anchor) schedule.monthly_anchor = Number(body.monthly_anchor);
+
+      const updated = await stripe.accounts.update(profile.stripe_connect_account_id, {
+        settings: { payouts: { schedule } },
+      });
+      const newSched = updated.settings?.payouts?.schedule ?? null;
+      await supabase.from("profiles").update({
+        stripe_connect_payout_schedule: newSched,
+        stripe_connect_synced_at: new Date().toISOString(),
+      }).eq("id", user.id);
+      return json({ ok: true, payout_schedule: newSched });
+    }
+
     // ─── ACTION: connect_login (Stripe Connect dashboard link) ───
     if (action === "connect_login") {
       const { data: profile } = await supabase
