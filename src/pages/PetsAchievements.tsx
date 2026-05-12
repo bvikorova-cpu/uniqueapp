@@ -5,7 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Trophy, Sparkles, Gamepad2, History as HistoryIcon, ArrowLeft, PawPrint, Filter } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Trophy, Sparkles, Gamepad2, History as HistoryIcon, ArrowLeft, PawPrint, Filter, Search, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import SEO from "@/components/SEO";
 import { formatDistanceToNow } from "date-fns";
@@ -164,6 +165,7 @@ function FilterableAchievements({ items }: { items: UA[] }) {
   const [category, setCategory] = useState<string>("all");
   const [bucket, setBucket] = useState<string>("any");
   const [sort, setSort] = useState<string>("recent");
+  const [query, setQuery] = useState<string>("");
 
   const categories = useMemo(() => {
     const set = new Set<string>();
@@ -181,19 +183,23 @@ function FilterableAchievements({ items }: { items: UA[] }) {
 
   const filtered = useMemo(() => {
     const [min, max] = buckets[bucket];
+    const q = query.trim().toLowerCase();
     let out = items.filter(i => {
       const cat = i.achievements?.category || "uncategorized";
       const pts = i.achievements?.points || 0;
+      const name = (i.achievements?.name || "").toLowerCase();
+      const icon = (i.achievements?.icon || "").toLowerCase();
       const catOk = category === "all" || cat === category;
       const ptsOk = pts >= min && pts <= max;
-      return catOk && ptsOk;
+      const qOk = !q || name.includes(q) || icon.includes(q);
+      return catOk && ptsOk && qOk;
     });
     if (sort === "recent") out = [...out].sort((a, b) => +new Date(b.unlocked_at) - +new Date(a.unlocked_at));
     if (sort === "points-desc") out = [...out].sort((a, b) => (b.achievements?.points || 0) - (a.achievements?.points || 0));
     if (sort === "points-asc") out = [...out].sort((a, b) => (a.achievements?.points || 0) - (b.achievements?.points || 0));
     if (sort === "name") out = [...out].sort((a, b) => (a.achievements?.name || "").localeCompare(b.achievements?.name || ""));
     return out;
-  }, [items, category, bucket, sort]);
+  }, [items, category, bucket, sort, query]);
 
   const totalPts = filtered.reduce((s, a) => s + (a.achievements?.points || 0), 0);
 
@@ -204,6 +210,25 @@ function FilterableAchievements({ items }: { items: UA[] }) {
           <Filter className="w-4 h-4 text-primary" />
           <span className="text-sm font-semibold">Filters</span>
           <Badge variant="outline" className="ml-auto text-[10px]">{filtered.length} · {totalPts} pts</Badge>
+        </div>
+        <div className="relative mb-2">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+          <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search by name or icon (e.g. 'Whisperer' or '🔥')"
+            className="pl-9 pr-9"
+          />
+          {query && (
+            <button
+              type="button"
+              onClick={() => setQuery("")}
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-muted"
+              aria-label="Clear search"
+            >
+              <X className="w-4 h-4 text-muted-foreground" />
+            </button>
+          )}
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
           <Select value={category} onValueChange={setCategory}>
@@ -233,8 +258,8 @@ function FilterableAchievements({ items }: { items: UA[] }) {
             </SelectContent>
           </Select>
         </div>
-        {(category !== "all" || bucket !== "any" || sort !== "recent") && (
-          <Button variant="ghost" size="sm" className="mt-2" onClick={() => { setCategory("all"); setBucket("any"); setSort("recent"); }}>
+        {(category !== "all" || bucket !== "any" || sort !== "recent" || query) && (
+          <Button variant="ghost" size="sm" className="mt-2" onClick={() => { setCategory("all"); setBucket("any"); setSort("recent"); setQuery(""); }}>
             Reset filters
           </Button>
         )}
