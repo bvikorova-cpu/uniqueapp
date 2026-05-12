@@ -63,6 +63,80 @@ serve(async (req) => {
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-09-30.clover" });
     const origin = req.headers.get("origin") || "https://uniqueapp.fun";
 
+    // ─── ACTION: live_status — fetch live Stripe account + balance + recent payouts ───
+    if (action === "live_status") {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("stripe_connect_account_id")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (!profile?.stripe_connect_account_id) {
+        return json({ connected: false });
+      }
+      const acctId = profile.stripe_connect_account_id as string;
+
+      const acct = await stripe.accounts.retrieve(acctId);
+      let balance: any = null;
+      let recentPayouts: any[] = [];
+      try {
+        balance = await stripe.balance.retrieve({ stripeAccount: acctId });
+      } catch (e) { console.warn("[live_status] balance failed", (e as Error).message); }
+      try {
+        const list = await stripe.payouts.list({ limit: 5 }, { stripeAccount: acctId });
+        recentPayouts = list.data.map((p) => ({
+          id: p.id, amount: p.amount, currency: p.currency,
+          status: p.status, arrival_date: p.arrival_date, created: p.created,
+        }));
+      } catch (e) { console.warn("[live_status] payouts failed", (e as Error).message); }
+
+      const reqs = (acct.requirements ?? {}) as Stripe.Account.Requirements;
+      const caps = (acct.capabilities ?? {}) as Record<string, string>;
+      const sched = (acct.settings?.payouts?.schedule ?? null) as any;
+
+      // Sync the cached snapshot in profiles so cheap reads stay fresh.
+      await supabase.from("profiles").update({
+        stripe_connect_charges_enabled: !!acct.charges_enabled,
+        stripe_connect_payouts_enabled: !!acct.payouts_enabled,
+        stripe_connect_onboarding_complete: !!acct.details_submitted,
+        stripe_connect_details_submitted: !!acct.details_submitted,
+        stripe_connect_disabled_reason: reqs.disabled_reason ?? null,
+        stripe_connect_currently_due: reqs.currently_due ?? [],
+        stripe_connect_past_due: reqs.past_due ?? [],
+        stripe_connect_eventually_due: reqs.eventually_due ?? [],
+        stripe_connect_default_currency: acct.default_currency ?? null,
+        stripe_connect_payout_schedule: sched,
+        stripe_connect_country: acct.country ?? null,
+        stripe_connect_capabilities: caps,
+        stripe_connect_account_type: acct.type ?? null,
+        stripe_connect_synced_at: new Date().toISOString(),
+      }).eq("id", user.id);
+
+      return json({
+        connected: true,
+        account_id: acctId,
+        account_type: acct.type,
+        country: acct.country,
+        default_currency: acct.default_currency,
+        charges_enabled: !!acct.charges_enabled,
+        payouts_enabled: !!acct.payouts_enabled,
+        details_submitted: !!acct.details_submitted,
+        disabled_reason: reqs.disabled_reason ?? null,
+        currently_due: reqs.currently_due ?? [],
+        past_due: reqs.past_due ?? [],
+        eventually_due: reqs.eventually_due ?? [],
+        capabilities: caps,
+        payout_schedule: sched,
+        balance: balance ? {
+          available: balance.available,
+          pending: balance.pending,
+          instant_available: (balance as any).instant_available ?? null,
+        } : null,
+        recent_payouts: recentPayouts,
+        synced_at: new Date().toISOString(),
+      });
+    }
+
     // ─── ACTION: connect_login (Stripe Connect dashboard link) ───
     if (action === "connect_login") {
       const { data: profile } = await supabase
