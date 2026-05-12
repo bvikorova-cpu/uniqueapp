@@ -18,6 +18,7 @@ import { ContactChannels } from "@/components/contact/ContactChannels";
 import { MyTickets } from "@/components/contact/MyTickets";
 import { VoiceRecorder } from "@/components/contact/VoiceRecorder";
 import { ScreenRecorder } from "@/components/contact/ScreenRecorder";
+import { LiveChatWidget } from "@/components/contact/LiveChatWidget";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const CATEGORIES = [
@@ -476,6 +477,7 @@ const Contact = () => {
           We typically respond within 4 hours. Premium subscribers get priority within 1 hour.
         </p>
       </div>
+      <LiveChatWidget />
     </div>
   );
 };
