@@ -85,6 +85,7 @@ const Earnings = () => {
     setStripeConnect({ enabled, reason });
 
     loadTransactions(user.id);
+  };
 
   const loadTransactions = async (userId: string) => {
     try {
