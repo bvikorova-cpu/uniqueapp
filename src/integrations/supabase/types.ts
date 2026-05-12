@@ -7270,6 +7270,36 @@ export type Database = {
         }
         Relationships: []
       }
+      cancellation_surveys: {
+        Row: {
+          accepted_offer: string | null
+          created_at: string
+          feedback: string | null
+          id: string
+          reason: string
+          tier: string | null
+          user_id: string
+        }
+        Insert: {
+          accepted_offer?: string | null
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          reason: string
+          tier?: string | null
+          user_id: string
+        }
+        Update: {
+          accepted_offer?: string | null
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          reason?: string
+          tier?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       castle_room_collectibles: {
         Row: {
           collectible_id: string
@@ -31776,6 +31806,33 @@ export type Database = {
         }
         Relationships: []
       }
+      plan_recommendations: {
+        Row: {
+          computed_at: string
+          id: string
+          monthly_savings_cents: number | null
+          rationale: string | null
+          recommended_tier: string
+          user_id: string
+        }
+        Insert: {
+          computed_at?: string
+          id?: string
+          monthly_savings_cents?: number | null
+          rationale?: string | null
+          recommended_tier: string
+          user_id: string
+        }
+        Update: {
+          computed_at?: string
+          id?: string
+          monthly_savings_cents?: number | null
+          rationale?: string | null
+          recommended_tier?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       plant_care_schedules: {
         Row: {
           care_type: string
@@ -41288,6 +41345,63 @@ export type Database = {
         }
         Relationships: []
       }
+      subscription_gifts: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          currency: string
+          expires_at: string
+          id: string
+          message: string | null
+          months: number
+          recipient_email: string
+          recipient_user_id: string | null
+          redeem_code: string
+          redeemed_at: string | null
+          sender_id: string
+          status: string
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string | null
+          tier: string
+        }
+        Insert: {
+          amount_cents: number
+          created_at?: string
+          currency?: string
+          expires_at?: string
+          id?: string
+          message?: string | null
+          months?: number
+          recipient_email: string
+          recipient_user_id?: string | null
+          redeem_code: string
+          redeemed_at?: string | null
+          sender_id: string
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          tier: string
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          currency?: string
+          expires_at?: string
+          id?: string
+          message?: string | null
+          months?: number
+          recipient_email?: string
+          recipient_user_id?: string | null
+          redeem_code?: string
+          redeemed_at?: string | null
+          sender_id?: string
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          tier?: string
+        }
+        Relationships: []
+      }
       subscription_pause_config: {
         Row: {
           id: number
@@ -41342,6 +41456,42 @@ export type Database = {
           stripe_subscription_id?: string
           user_email?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      subscription_seats: {
+        Row: {
+          accepted_at: string | null
+          id: string
+          invited_at: string
+          member_email: string
+          member_user_id: string | null
+          owner_id: string
+          removed_at: string | null
+          status: string
+          tier: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          id?: string
+          invited_at?: string
+          member_email: string
+          member_user_id?: string | null
+          owner_id: string
+          removed_at?: string | null
+          status?: string
+          tier: string
+        }
+        Update: {
+          accepted_at?: string | null
+          id?: string
+          invited_at?: string
+          member_email?: string
+          member_user_id?: string | null
+          owner_id?: string
+          removed_at?: string | null
+          status?: string
+          tier?: string
         }
         Relationships: []
       }

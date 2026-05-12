@@ -43,6 +43,12 @@ import { PerksCarousel } from "@/components/subscription/PerksCarousel";
 import { ReferralCard } from "@/components/subscription/ReferralCard";
 
 import { RoiDashboard } from "@/components/subscription/RoiDashboard";
+import { GiftSubscriptionDialog } from "@/components/subscription/GiftSubscriptionDialog";
+import { RedeemGiftDialog } from "@/components/subscription/RedeemGiftDialog";
+import { PlanRecommenderCard } from "@/components/subscription/PlanRecommenderCard";
+import { SeatManagement } from "@/components/subscription/SeatManagement";
+import { LoyaltyTierBadge } from "@/components/subscription/LoyaltyTierBadge";
+import { UsageMeterCard } from "@/components/subscription/UsageMeterCard";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const Subscription = () => {
@@ -325,6 +331,24 @@ const Subscription = () => {
         {/* (8) ROI dashboard for paying users */}
         {user && currentTier !== "basic" && (
           <RoiDashboard userId={user.id} currency={currency} tier={currentTier} />
+        )}
+
+        {/* Phase 3 — Subscription extensions */}
+        {user && (
+          <div className="mt-6 space-y-4 max-w-4xl mx-auto">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <LoyaltyTierBadge />
+              <div className="flex gap-2">
+                <RedeemGiftDialog />
+                <GiftSubscriptionDialog />
+              </div>
+            </div>
+            <PlanRecommenderCard />
+            <div className="grid md:grid-cols-2 gap-4">
+              <UsageMeterCard />
+              {currentTier !== "basic" && <SeatManagement tier={currentTier} />}
+            </div>
+          </div>
         )}
 
         {/* (1) Live activity */}
