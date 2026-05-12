@@ -158,12 +158,12 @@ const PetTranslatorPricing = () => {
               Get 1 Translation
             </Button>
           </Card>
-          <Card className="p-5 bg-gradient-to-r from-fuchsia-500/10 to-pink-500/10 border-fuchsia-500/20 text-center">
+          <Card className="p-5 bg-gradient-to-r from-fuchsia-500/10 to-pink-500/10 border-fuchsia-500/20 text-center opacity-70">
             <h3 className="text-lg font-bold mb-1">🎭 Premium Voice</h3>
             <p className="text-xs text-muted-foreground mb-2">Celebrity voice for your pet!</p>
             <p className="text-2xl font-black mb-3">€14.99</p>
-            <Button variant="secondary" className="w-full" onClick={() => createCheckout('price_1SQDRRGaXSfGtYFts87Q1N9y')}>
-              Get Premium Voice
+            <Button variant="secondary" className="w-full" disabled>
+              Coming Soon
             </Button>
           </Card>
         </div>
