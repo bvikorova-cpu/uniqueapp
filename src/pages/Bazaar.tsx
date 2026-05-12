@@ -180,9 +180,21 @@ const Bazaar = () => {
     }
   };
 
+  const [stripeConnectReady, setStripeConnectReady] = useState<boolean | null>(null);
+
   const checkCurrentUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     setCurrentUserId(user?.id || null);
+    if (user?.id) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('stripe_connect_account_id, stripe_connect_charges_enabled, stripe_connect_payouts_enabled')
+        .eq('id', user.id)
+        .maybeSingle();
+      setStripeConnectReady(
+        !!(profile?.stripe_connect_account_id && profile?.stripe_connect_charges_enabled && profile?.stripe_connect_payouts_enabled)
+      );
+    }
   };
 
   const loadItems = async () => {
