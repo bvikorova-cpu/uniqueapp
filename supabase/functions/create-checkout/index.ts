@@ -738,7 +738,7 @@ serve(async (req) => {
             currency: "eur",
             unit_amount: amount,
             product_data: { name: productName },
-            ...(mode === "subscription" ? { recurring: { interval: (productKey === "dating_yearly" ? "year" : "month") as "month" | "year" } } : {}),
+            ...(mode === "subscription" ? { recurring: { interval: ((body.interval as "month" | "year") || (productKey === "dating_yearly" ? "year" : "month")) as "month" | "year" } } : {}),
           },
           quantity: 1,
         }],
