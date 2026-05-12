@@ -127,7 +127,10 @@ const PetTranslator = () => {
           <Tabs defaultValue="tools" className="w-full">
             <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
               <PetDailyTip />
-              <PetLanguageSelector />
+              <div className="flex items-center gap-2">
+                <PetActiveSwitcher />
+                <PetLanguageSelector />
+              </div>
             </div>
             <TabsList className="w-full flex flex-wrap h-auto gap-1 bg-card/50 p-1 mb-6">
               {[
