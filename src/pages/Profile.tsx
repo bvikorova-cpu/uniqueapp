@@ -438,6 +438,7 @@ const Profile = () => {
                 </Button>
               )}
               <ProfileQRCode userId={userId!} userName={profile.full_name || "user"} />
+              <VCardDownloadButton profile={profile} />
               {currentUserId === userId && <ThemePicker userId={userId!} />}
               {currentUserId !== userId && profile.full_name && (
                 <TipJar recipientId={userId!} recipientName={profile.full_name} currentUserId={currentUserId} />
@@ -445,6 +446,18 @@ const Profile = () => {
             </>
           }
         />
+
+        <ProfileJsonLd profile={profile} />
+
+        {currentUserId && currentUserId !== userId && (
+          <MutualConnections viewerId={currentUserId} profileUserId={userId!} />
+        )}
+
+        {profile.open_to_work && (
+          <OpenToWorkBadge details={profile.open_to_work_details} />
+        )}
+
+        <ProfileMusicPlayer url={profile.profile_music_url} title={profile.profile_music_title} />
 
         {/* Voice intro */}
         <VoiceIntro userId={userId!} isOwnProfile={currentUserId === userId} />
