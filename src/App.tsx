@@ -51,6 +51,7 @@ const ProgressiveOnboarding = lazy(() => import("./components/onboarding/Progres
 const GlobalAnnouncementBanner = lazy(() => import("./components/GlobalAnnouncementBanner").then((module) => ({ default: module.GlobalAnnouncementBanner })));
 const ReferralCaptureMount = lazy(() => import("@/components/referral/ReferralCaptureMount").then((module) => ({ default: module.ReferralCaptureMount })));
 const IQReferralCaptureMount = lazy(() => import("@/components/iq/IQReferralCaptureMount"));
+const IQBrainLab = lazy(() => import("@/pages/IQBrainLab"));
 const LanguagePreferenceMount = lazy(() => import("@/components/LanguagePreferenceMount").then((module) => ({ default: module.LanguagePreferenceMount })));
 const DunningBanner = lazy(() => import("@/components/billing/DunningBanner").then((module) => ({ default: module.DunningBanner })));
 const SCABanner = lazy(() => import("@/components/billing/SCABanner").then((module) => ({ default: module.SCABanner })));
@@ -901,6 +902,8 @@ const App = () => {
                         <Route path="/shop" element={<Shop />} />
                         <Route path="/product/:handle" element={<ProductDetail />} />
                         <Route path="/iq-platform" element={<IQPlatform />} />
+                        <Route path="/iq-platform/lab" element={<IQBrainLab />} />
+                        <Route path="/iq/lab" element={<IQBrainLab />} />
                         <Route path="/iq-platform/profile/:userId" element={<IQTrophyProfile />} />
                         <Route path="/iq/u/:slug" element={<IQPublicProfile />} />
                         <Route path="/iq/leaderboard" element={<IQLeaderboard />} />
