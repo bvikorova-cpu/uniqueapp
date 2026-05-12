@@ -30,6 +30,7 @@ import { OpenToWorkEditor } from "@/components/profile/edit/OpenToWorkEditor";
 import { ProfileMusicEditor } from "@/components/profile/edit/ProfileMusicEditor";
 import { BioToolkit } from "@/components/profile/edit/BioToolkit";
 import { SeoPreview } from "@/components/profile/edit/SeoPreview";
+import { CustomDomainNotice } from "@/components/profile/edit/CustomDomainNotice";
 import type { OpenToWorkDetails } from "@/components/profile/OpenToWork";
 
 interface ProfileData {
