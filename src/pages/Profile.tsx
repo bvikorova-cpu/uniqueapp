@@ -36,6 +36,8 @@ import { VCardDownloadButton } from "@/components/profile/VCardDownloadButton";
 import { TipJar } from "@/components/profile/TipJar";
 import { ProfileQRCode } from "@/components/profile/ProfileQRCode";
 import { ThemePicker } from "@/components/profile/ThemePicker";
+import { Endorsements } from "@/components/profile/Endorsements";
+import { ProfileViewsCounter } from "@/components/profile/ProfileViewsCounter";
 
 interface Profile {
   id: string;
