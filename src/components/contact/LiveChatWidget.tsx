@@ -7,12 +7,15 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
+import { CSATWidget } from "./CSATWidget";
 
 interface Msg { role: "user" | "assistant"; content: string }
 
 const STORAGE_KEY = "unique:contact-livechat";
 
 export const LiveChatWidget = () => {
+  const [userId, setUserId] = useState<string | null>(null);
+  useEffect(() => { supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null)); }, []);
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>(() => {
     try {
