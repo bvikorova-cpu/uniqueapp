@@ -138,13 +138,28 @@ const Admin = () => {
 
       setTransactions(trans || []);
 
-      // Load contact messages
-      const { data: msgs } = await supabase
-        .from('contact_messages')
-        .select('*')
-        .order('created_at', { ascending: false });
+      // Load contact messages from BOTH tables (legacy contact_messages + new support_tickets)
+      const [legacyMsgs, ticketMsgs] = await Promise.all([
+        supabase.from('contact_messages').select('*').order('created_at', { ascending: false }),
+        supabase.from('support_tickets').select('*').order('created_at', { ascending: false }),
+      ]);
 
-      setMessages(msgs || []);
+      const merged = [
+        ...((legacyMsgs.data as any[]) || []).map((m) => ({ ...m, _source: 'contact_messages' as const })),
+        ...((ticketMsgs.data as any[]) || []).map((t: any) => ({
+          id: t.id,
+          name: t.name,
+          email: t.email,
+          subject: t.subject || `[${t.category || 'general'}] ticket #${t.ticket_number || ''}`,
+          message: t.message,
+          is_read: t.status === 'resolved' || t.status === 'closed',
+          created_at: t.created_at,
+          _source: 'support_tickets' as const,
+          _status: t.status,
+        })),
+      ].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+      setMessages(merged);
 
       // Load users for user management
       const { data: usersData } = await supabase
