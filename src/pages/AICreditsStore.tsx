@@ -16,6 +16,16 @@ import { AICreditsRecommendation } from "@/components/ai-credits/AICreditsRecomm
 import { AIUsageAnalytics } from "@/components/ai-credits/AIUsageAnalytics";
 import { AICommunityGalleryStrip } from "@/components/ai-credits/AICommunityGalleryStrip";
 import { AutoRechargeCard } from "@/components/ai-credits/AutoRechargeCard";
+import { CreditSubscriptionCard } from "@/components/ai-credits/CreditSubscriptionCard";
+import { RolloverPolicyBanner } from "@/components/ai-credits/RolloverPolicyBanner";
+import { BulkSliderCalculator } from "@/components/ai-credits/BulkSliderCalculator";
+import { SpendForecastCard } from "@/components/ai-credits/SpendForecastCard";
+import { UsageBreakdownChart } from "@/components/ai-credits/UsageBreakdownChart";
+import { GiftCreditsDialog } from "@/components/ai-credits/GiftCreditsDialog";
+import { ReferralCreditsCard } from "@/components/ai-credits/ReferralCreditsCard";
+import { PromoCodeInput } from "@/components/ai-credits/PromoCodeInput";
+import { AlternativePayMethods } from "@/components/ai-credits/AlternativePayMethods";
+import { ReceiptHistoryCard } from "@/components/ai-credits/ReceiptHistoryCard";
 import { SEO } from "@/components/SEO";
 
 const AICreditsStore = () => {
@@ -218,12 +228,44 @@ const AICreditsStore = () => {
           </div>
         </div>
 
+        {/* Roll-over policy */}
+        <RolloverPolicyBanner />
+
+        {/* Bulk slider */}
+        <BulkSliderCalculator />
+
+        {/* Monthly subscription packs */}
+        <CreditSubscriptionCard />
+
+        {/* Spend forecast */}
+        <SpendForecastCard />
+
+        {/* Promo code */}
+        <PromoCodeInput onApplied={refresh} />
+
+        {/* Alternative pay methods notice */}
+        <AlternativePayMethods />
+
+        {/* Gift + Referral row */}
+        <div className="max-w-5xl mx-auto mb-6 flex justify-end">
+          <GiftCreditsDialog />
+        </div>
+        <ReferralCreditsCard />
+
         {/* Auto-recharge */}
         <AutoRechargeCard currentBalance={credits?.credits_remaining ?? 0} />
 
         {/* Smart features section */}
         <div className="grid lg:grid-cols-2 gap-6 max-w-6xl mx-auto mb-8">
           <AIUsageAnalytics />
+          <UsageBreakdownChart />
+        </div>
+
+        {/* Receipt history */}
+        <ReceiptHistoryCard />
+
+        {/* Community gallery */}
+        <div className="max-w-6xl mx-auto mb-8">
           <AICommunityGalleryStrip />
         </div>
 
