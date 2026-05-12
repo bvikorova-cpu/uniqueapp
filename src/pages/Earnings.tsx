@@ -214,6 +214,8 @@ const Earnings = () => {
             el?.scrollIntoView({ behavior: 'smooth' });
           }}
           methodLabel="PayPal · Wise · Crypto · Stripe Connect"
+          stripePayoutsEnabled={stripeConnect.enabled}
+          payoutsBlockReason={stripeConnect.reason}
         />
         <EarningsGoalTracker monthEarnings={stats.monthEarnings} />
         <EarningsTipsBanner />
