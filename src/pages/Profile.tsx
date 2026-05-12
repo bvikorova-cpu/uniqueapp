@@ -457,9 +457,15 @@ const Profile = () => {
 
         <ProfileJsonLd profile={profile} />
 
+        <div className="flex items-center justify-center mb-3">
+          <ProfileViewsCounter profileUserId={userId!} viewerId={currentUserId} />
+        </div>
+
         {currentUserId && currentUserId !== userId && (
           <MutualConnections viewerId={currentUserId} profileUserId={userId!} />
         )}
+
+        <Endorsements profileUserId={userId!} currentUserId={currentUserId} />
 
         {profile.open_to_work && (
           <OpenToWorkBadge details={profile.open_to_work_details} />
