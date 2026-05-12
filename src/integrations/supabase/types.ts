@@ -402,6 +402,144 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_credit_gifts: {
+        Row: {
+          amount_cents: number
+          code: string
+          created_at: string
+          credits: number
+          expires_at: string
+          id: string
+          message: string | null
+          recipient_email: string | null
+          redeemed_at: string | null
+          redeemed_by: string | null
+          sender_id: string
+          status: string
+          stripe_session_id: string | null
+        }
+        Insert: {
+          amount_cents?: number
+          code: string
+          created_at?: string
+          credits: number
+          expires_at?: string
+          id?: string
+          message?: string | null
+          recipient_email?: string | null
+          redeemed_at?: string | null
+          redeemed_by?: string | null
+          sender_id: string
+          status?: string
+          stripe_session_id?: string | null
+        }
+        Update: {
+          amount_cents?: number
+          code?: string
+          created_at?: string
+          credits?: number
+          expires_at?: string
+          id?: string
+          message?: string | null
+          recipient_email?: string | null
+          redeemed_at?: string | null
+          redeemed_by?: string | null
+          sender_id?: string
+          status?: string
+          stripe_session_id?: string | null
+        }
+        Relationships: []
+      }
+      ai_credit_promo_codes: {
+        Row: {
+          active: boolean
+          bonus_credits: number
+          code: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          max_redemptions: number | null
+          percent_off: number
+          redemption_count: number
+        }
+        Insert: {
+          active?: boolean
+          bonus_credits?: number
+          code: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          max_redemptions?: number | null
+          percent_off?: number
+          redemption_count?: number
+        }
+        Update: {
+          active?: boolean
+          bonus_credits?: number
+          code?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          max_redemptions?: number | null
+          percent_off?: number
+          redemption_count?: number
+        }
+        Relationships: []
+      }
+      ai_credit_promo_redemptions: {
+        Row: {
+          bonus_credits: number
+          code: string
+          id: string
+          redeemed_at: string
+          user_id: string
+        }
+        Insert: {
+          bonus_credits?: number
+          code: string
+          id?: string
+          redeemed_at?: string
+          user_id: string
+        }
+        Update: {
+          bonus_credits?: number
+          code?: string
+          id?: string
+          redeemed_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      ai_credit_referrals: {
+        Row: {
+          bonus_credits: number
+          created_at: string
+          id: string
+          referee_id: string
+          referrer_id: string
+          rewarded_at: string | null
+          status: string
+        }
+        Insert: {
+          bonus_credits?: number
+          created_at?: string
+          id?: string
+          referee_id: string
+          referrer_id: string
+          rewarded_at?: string | null
+          status?: string
+        }
+        Update: {
+          bonus_credits?: number
+          created_at?: string
+          id?: string
+          referee_id?: string
+          referrer_id?: string
+          rewarded_at?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
       ai_credits: {
         Row: {
           created_at: string
