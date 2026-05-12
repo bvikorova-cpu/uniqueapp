@@ -9,6 +9,8 @@ import { Loader2, Gem, Eye, Activity, Star, Heart, Upload, Sparkles, Brain, Sala
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import ReactMarkdown from "react-markdown";
+import { useNavigate } from "react-router-dom";
+import { handleEdgeError, throwIfInvokeError } from "@/lib/handleEdgeError";
 
 const tools = [
   { id: "age_progression", name: "AI Age Progression", desc: "See your future self in 10-50 years", icon: Gem, credits: 5, color: "from-cyan-500 to-blue-500" },
@@ -28,6 +30,7 @@ export default function FutureFaceToolsGrid() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState("");
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleUse = async (toolId: string) => {
     if (!input.trim()) { toast({ title: "Please describe your request", variant: "destructive" }); return; }
@@ -35,16 +38,21 @@ export default function FutureFaceToolsGrid() {
       setLoading(true);
       setResult("");
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { toast({ title: "Please sign in first", variant: "destructive" }); return; }
+      if (!session) {
+        toast({ title: "Please sign in first", variant: "destructive" });
+        navigate("/auth");
+        return;
+      }
 
-      const { data, error } = await supabase.functions.invoke("future-face-ai", {
+      const res = await supabase.functions.invoke("future-face-ai", {
         body: { action: toolId, prompt: input, age: parseInt(age) }
       });
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
+      const data = throwIfInvokeError(res);
       setResult(data.result || "No result returned.");
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      if (!handleEdgeError(err, { navigate, context: "Future Face" })) {
+        toast({ title: "Error", description: err.message, variant: "destructive" });
+      }
     } finally {
       setLoading(false);
     }

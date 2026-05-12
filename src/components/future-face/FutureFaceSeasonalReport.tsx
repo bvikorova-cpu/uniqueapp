@@ -9,6 +9,8 @@ import { Loader2, Sun } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import ReactMarkdown from "react-markdown";
+import { useNavigate } from "react-router-dom";
+import { handleEdgeError, throwIfInvokeError } from "@/lib/handleEdgeError";
 
 const seasons = [
   { id: "spring", label: "🌸 Spring" },
@@ -24,6 +26,7 @@ export default function FutureFaceSeasonalReport() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState("");
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleAnalyze = async () => {
     if (!description.trim()) { toast({ title: "Please describe your skin", variant: "destructive" }); return; }
@@ -33,14 +36,15 @@ export default function FutureFaceSeasonalReport() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { toast({ title: "Please sign in first", variant: "destructive" }); return; }
 
-      const { data, error } = await supabase.functions.invoke("future-face-ai", {
+      const res = await supabase.functions.invoke("future-face-ai", {
         body: { action: "seasonal_report", prompt: `Season: ${season}. ${description}`, age: parseInt(age) }
       });
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
+      const data = throwIfInvokeError(res);
       setResult(data.result || "No result returned.");
     } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      if (!handleEdgeError(err, { navigate, context: "Future Face" })) {
+        toast({ title: "Error", description: err.message, variant: "destructive" });
+      }
     } finally {
       setLoading(false);
     }

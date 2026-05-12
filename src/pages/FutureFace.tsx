@@ -55,6 +55,12 @@ const FutureFace = () => {
 
         <HeroRewardedAd sectionKey="page_futureface" />
 
+        <div className="flex flex-wrap items-center justify-end gap-2 mb-3">
+          <Button size="sm" variant="outline" onClick={() => navigate('/ai-credits-store')}>
+            <Gem className="h-3.5 w-3.5 mr-1.5" /> Buy AI Credits
+          </Button>
+        </div>
+
         {/* 3-Column Engagement Row */}
         <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6">
           <div className="bg-card/60 backdrop-blur-md border border-cyan-500/20 rounded-xl p-3 sm:p-4 text-center">
