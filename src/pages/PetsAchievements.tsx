@@ -211,6 +211,25 @@ function FilterableAchievements({ items }: { items: UA[] }) {
           <span className="text-sm font-semibold">Filters</span>
           <Badge variant="outline" className="ml-auto text-[10px]">{filtered.length} · {totalPts} pts</Badge>
         </div>
+        <div className="relative mb-2">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+          <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search by name or icon (e.g. 'Whisperer' or '🔥')"
+            className="pl-9 pr-9"
+          />
+          {query && (
+            <button
+              type="button"
+              onClick={() => setQuery("")}
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-muted"
+              aria-label="Clear search"
+            >
+              <X className="w-4 h-4 text-muted-foreground" />
+            </button>
+          )}
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
           <Select value={category} onValueChange={setCategory}>
             <SelectTrigger><SelectValue placeholder="Category" /></SelectTrigger>
@@ -239,8 +258,8 @@ function FilterableAchievements({ items }: { items: UA[] }) {
             </SelectContent>
           </Select>
         </div>
-        {(category !== "all" || bucket !== "any" || sort !== "recent") && (
-          <Button variant="ghost" size="sm" className="mt-2" onClick={() => { setCategory("all"); setBucket("any"); setSort("recent"); }}>
+        {(category !== "all" || bucket !== "any" || sort !== "recent" || query) && (
+          <Button variant="ghost" size="sm" className="mt-2" onClick={() => { setCategory("all"); setBucket("any"); setSort("recent"); setQuery(""); }}>
             Reset filters
           </Button>
         )}
