@@ -146,6 +146,16 @@ const EditProfile = () => {
         tone_of_voice: p.tone_of_voice || "",
         is_verified: !!p.is_verified,
         stripe_connect_charges_enabled: !!p.stripe_connect_charges_enabled,
+        open_to_work: !!p.open_to_work,
+        open_to_work_details: (p.open_to_work_details as OpenToWorkDetails) || {},
+        profile_music_url: p.profile_music_url || null,
+        profile_music_title: p.profile_music_title || null,
+        bio_score: p.bio_score ?? null,
+        bio_score_feedback: p.bio_score_feedback || null,
+        bio_variants: Array.isArray(p.bio_variants) ? p.bio_variants : [],
+        bio_translations: (p.bio_translations as Record<string, string>) || {},
+        seo_title: p.seo_title || "",
+        seo_description: p.seo_description || "",
       });
 
       // verified state — read real email_confirmed_at from auth user
