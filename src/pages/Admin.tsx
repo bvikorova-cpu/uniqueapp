@@ -687,9 +687,10 @@ const Admin = () => {
                               <Button
                                 size="sm"
                                 variant="destructive"
-                                onClick={() => updateTransactionStatus(trans.id, 'refunded')}
+                                onClick={() => navigate('/admin/refunds')}
+                                title="Refunds are processed via Stripe in the Payments & Refunds dashboard"
                               >
-                                Refund
+                                Refund via Stripe
                               </Button>
                             </div>
                           )}
