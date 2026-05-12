@@ -1116,6 +1116,8 @@ serve(async (req) => {
     if (body.productName && body.amount) {
       const paymentType = requestMetadata.type || productKey || "custom_payment";
       const { successUrl, cancelUrl } = resolveUrls(origin, body.successUrl, body.cancelUrl, paymentType);
+      const isSub = body.mode === "subscription";
+      const interval = (body.interval as "day" | "week" | "month" | "year" | undefined) || "month";
 
       const session = await stripe.checkout.sessions.create({
         customer: customerId || undefined,
@@ -1125,10 +1127,11 @@ serve(async (req) => {
             currency: "eur",
             unit_amount: Number(body.amount),
             product_data: { name: String(body.productName) },
+            ...(isSub ? { recurring: { interval } } : {}),
           },
           quantity: 1,
         }],
-        mode: body.mode === "subscription" ? "subscription" : "payment",
+        mode: isSub ? "subscription" : "payment",
         success_url: successUrl,
         cancel_url: cancelUrl,
         metadata: { user_id: userId, ...requestMetadata },
