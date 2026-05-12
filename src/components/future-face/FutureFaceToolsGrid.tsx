@@ -9,6 +9,8 @@ import { Loader2, Gem, Eye, Activity, Star, Heart, Upload, Sparkles, Brain, Sala
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import ReactMarkdown from "react-markdown";
+import { useNavigate } from "react-router-dom";
+import { handleEdgeError, throwIfInvokeError } from "@/lib/handleEdgeError";
 
 const tools = [
   { id: "age_progression", name: "AI Age Progression", desc: "See your future self in 10-50 years", icon: Gem, credits: 5, color: "from-cyan-500 to-blue-500" },
