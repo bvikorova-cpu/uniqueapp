@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Gem, Users, Clock, Flame, Sparkles } from "lucide-react";
-import heroVideo from "@/assets/future-face-hero.mp4.asset.json";
+import heroVideo from "@/assets/future-face-hero-v2.mp4.asset.json";
 
 const stats = [
   { label: "Faces Generated", value: "2.4M+", icon: Sparkles },
