@@ -602,8 +602,9 @@ const App = () => {
                         <Route path="/astrology" element={<Astrology />} />
                         <Route path="/character-arena" element={<CharacterArena />} />
                         <Route path="/mystery-box" element={<MysteryBox />} />
-                        <Route path="/pet-translator" element={<PetTranslator />} />
-                        <Route path="/pet-translator-pricing" element={<PetTranslatorPricing />} />
+                       <Route path="/pet-translator" element={<PetTranslator />} />
+                       <Route path="/pet-translator-pricing" element={<PetTranslatorPricing />} />
+                       <Route path="/pets" element={<PetsHub />} />
                         <Route path="/future-face" element={<FutureFace />} />
                         <Route path="/skill-swap" element={<SkillSwap />} />
                         <Route path="/skill-swap/dashboard" element={<ProtectedRoute><SkillSwapDashboard /></ProtectedRoute>} />
