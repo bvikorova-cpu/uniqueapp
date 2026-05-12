@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Pause, Play, X, CreditCard, RefreshCw, ExternalLink } from "lucide-react";
+import { Loader2, Pause, Play, X, CreditCard, RefreshCw, ExternalLink, FileText, Download, ArrowUpRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   AlertDialog,
@@ -16,6 +16,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Helmet } from "react-helmet-async";
 
 interface Sub {
@@ -24,11 +29,34 @@ interface Sub {
   cancel_at_period_end: boolean;
   current_period_end: string | null;
   canceled_at: string | null;
+  price_id: string | null;
   product_id: string | null;
   product_name: string;
   amount: number;
   currency: string;
   interval: string;
+}
+
+interface Invoice {
+  id: string;
+  number: string | null;
+  status: string;
+  amount_paid: number;
+  amount_due: number;
+  currency: string;
+  created: string;
+  hosted_invoice_url: string | null;
+  invoice_pdf: string | null;
+  description: string | null;
+}
+
+interface Proration {
+  amount_due_now: number;
+  proration_total: number;
+  total: number;
+  currency: string;
+  period_end: string | null;
+  lines: { description: string; amount: number; proration: boolean }[];
 }
 
 const statusVariant: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
