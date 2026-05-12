@@ -49,6 +49,7 @@ const Earnings = () => {
   });
   const [loading, setLoading] = useState(true);
   const [hasPayoutMethod, setHasPayoutMethod] = useState(false);
+  const [stripeConnect, setStripeConnect] = useState<{ enabled: boolean; reason: string | null }>({ enabled: true, reason: null });
 
   useEffect(() => {
     checkUser();
