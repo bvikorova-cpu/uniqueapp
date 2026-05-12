@@ -134,6 +134,17 @@ serve(async (req) => {
       mode: "payment",
       success_url: successUrl,
       cancel_url: cancelUrl,
+      // Auto-split funds via Stripe Connect when seller is onboarded.
+      // Platform keeps `application_fee_amount` (commission), the rest is
+      // automatically transferred to the seller's connected account.
+      ...(sellerConnectId
+        ? {
+            payment_intent_data: {
+              application_fee_amount: Math.round(commissionAmount * 100),
+              transfer_data: { destination: sellerConnectId },
+            },
+          }
+        : {}),
       metadata: {
         type: "bazaar_order",
         product: "bazaar_order",
@@ -141,6 +152,7 @@ serve(async (req) => {
         item_id: item.id,
         buyer_id: user.id,
         seller_id: item.user_id,
+        auto_split: sellerConnectId ? "true" : "false",
       },
     });
 
@@ -150,7 +162,12 @@ serve(async (req) => {
       .update({ stripe_session_id: session.id })
       .eq("id", order.id);
 
-    return json({ url: session.url, session_id: session.id, order_id: order.id });
+    return json({
+      url: session.url,
+      session_id: session.id,
+      order_id: order.id,
+      auto_split: !!sellerConnectId,
+    });
   } catch (e) {
     console.error("[create-bazaar-order-checkout] error", e);
     return json({ error: e instanceof Error ? e.message : "Checkout failed" }, 500);
