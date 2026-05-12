@@ -61,6 +61,17 @@ const PetTranslator = () => {
       case "audio_recorder": return <PetAudioRecorder onBack={() => setActiveView(null)} />;
       case "health_certificate": return <PetHealthCertificate onBack={() => setActiveView(null)} />;
       case "smart_reminders": return <PetSmartReminders onBack={() => setActiveView(null)} />;
+      case "reverse": return <PetReverseTranslator onBack={() => setActiveView(null)} />;
+      case "history": return <PetTranslationHistory onBack={() => setActiveView(null)} />;
+      case "live": return <PetLiveListenMode onBack={() => setActiveView(null)} />;
+      case "video": return <PetVideoAnalysis onBack={() => setActiveView(null)} />;
+      case "vet": return <PetVetReferral onBack={() => setActiveView(null)} />;
+      case "breed": return <PetBreedIdentifier onBack={() => setActiveView(null)} />;
+      case "soundwall": return <PetSoundWall onBack={() => setActiveView(null)} />;
+      case "courses": return <PetTrainingCourses onBack={() => setActiveView(null)} />;
+      case "symptoms": return <PetSymptomChecker onBack={() => setActiveView(null)} />;
+      case "wearable": return <PetWearableTeaser onBack={() => setActiveView(null)} />;
+      case "quiz": return <PetOnboardingQuiz onDone={() => setActiveView(null)} />;
       default: return null;
     }
   };
