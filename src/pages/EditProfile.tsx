@@ -94,6 +94,9 @@ const EditProfile = () => {
     social_links: {}, skills: [], languages: [], accent_color: "#f59e0b", profile_theme: "default", field_visibility: {},
     username: "", animated_avatar_url: "", animated_avatar_audio_url: "", tone_of_voice: "",
     is_verified: false, stripe_connect_charges_enabled: false,
+    open_to_work: false, open_to_work_details: {}, profile_music_url: null, profile_music_title: null,
+    bio_score: null, bio_score_feedback: null, bio_variants: [], bio_translations: {},
+    seo_title: "", seo_description: "",
   });
   const [newInterest, setNewInterest] = useState("");
   const [newLanguage, setNewLanguage] = useState("");
