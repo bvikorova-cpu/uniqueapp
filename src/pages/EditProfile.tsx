@@ -591,7 +591,6 @@ const EditProfile = () => {
                     onTranslationsUpdate={(t) => setProfile({ ...profile, bio_translations: t })}
                   />
 
-                  <div style={{ display: "none" }}>
 
                   <div>
                     <Label htmlFor="interests">Interests</Label>
