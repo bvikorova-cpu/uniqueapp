@@ -218,6 +218,9 @@ const AICreditsStore = () => {
           </div>
         </div>
 
+        {/* Auto-recharge */}
+        <AutoRechargeCard currentBalance={credits?.credits_remaining ?? 0} />
+
         {/* Smart features section */}
         <div className="grid lg:grid-cols-2 gap-6 max-w-6xl mx-auto mb-8">
           <AIUsageAnalytics />
