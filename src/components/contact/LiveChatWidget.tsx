@@ -120,6 +120,12 @@ export const LiveChatWidget = () => {
             )}
           </div>
 
+          {messages.length >= 4 && userId && (
+            <div className="px-3 pb-2">
+              <CSATWidget userId={userId} channel="live_chat" />
+            </div>
+          )}
+
           <div className="p-3 border-t flex gap-2">
             <Input
               value={input}
