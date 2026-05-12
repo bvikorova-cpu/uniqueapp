@@ -44,6 +44,15 @@ export default function PetsHub() {
             <Link to="/virtual-pet"><Button variant="secondary" className="w-full">Open Virtual Pet</Button></Link>
           </Card>
         </div>
+
+        <div className="mt-8 text-center">
+          <Link to="/pets/achievements">
+            <Button variant="outline" size="lg">
+              <Trophy className="w-4 h-4 mr-2 text-amber-400" />
+              My Achievements & Activity
+            </Button>
+          </Link>
+        </div>
       </div>
     </div>
   );

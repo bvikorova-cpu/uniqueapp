@@ -184,6 +184,7 @@ export const SecretSanta = lazy(() => import("@/pages/SecretSanta"));
 export const PetTranslator = lazy(() => import("@/pages/PetTranslator"));
 export const PetTranslatorPricing = lazy(() => import("@/pages/PetTranslatorPricing"));
 export const PetsHub = lazy(() => import("@/pages/PetsHub"));
+export const PetsAchievements = lazy(() => import("@/pages/PetsAchievements"));
 export const PlantCare = lazy(() => import("@/pages/PlantCare"));
 export const Coffee = lazy(() => import("@/pages/Coffee"));
 export const CoffeeCheckins = lazy(() => import("@/pages/CoffeeCheckins"));
