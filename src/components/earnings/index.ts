@@ -9,3 +9,4 @@ export { EarningsLiveTicker } from "./EarningsLiveTicker";
 export { EarningsGoalTracker } from "./EarningsGoalTracker";
 export { EarningsTipsBanner } from "./EarningsTipsBanner";
 export { PayoutMethodsManager } from "./PayoutMethodsManager";
+export { StripeConnectBanner } from "./StripeConnectBanner";
