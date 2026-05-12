@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trophy, Sparkles, Gamepad2, History as HistoryIcon, ArrowLeft, PawPrint } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Trophy, Sparkles, Gamepad2, History as HistoryIcon, ArrowLeft, PawPrint, Filter } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import SEO from "@/components/SEO";
 import { formatDistanceToNow } from "date-fns";
@@ -97,14 +98,7 @@ export default function PetsAchievements() {
                 <p className="text-sm text-muted-foreground">No achievements unlocked yet. Try the AI Translator or raise a Virtual Pet to start earning!</p>
               </Card>
             ) : (
-              <>
-                {petAch.length > 0 && (
-                  <Section title="🐾 Pet Achievements" items={petAch} />
-                )}
-                {otherAch.length > 0 && (
-                  <Section title="✨ Other Achievements" items={otherAch} />
-                )}
-              </>
+              <FilterableAchievements items={achievements} />
             )}
           </TabsContent>
 
@@ -166,23 +160,108 @@ export default function PetsAchievements() {
   );
 }
 
-function Section({ title, items }: { title: string; items: UA[] }) {
+function FilterableAchievements({ items }: { items: UA[] }) {
+  const [category, setCategory] = useState<string>("all");
+  const [bucket, setBucket] = useState<string>("any");
+  const [sort, setSort] = useState<string>("recent");
+
+  const categories = useMemo(() => {
+    const set = new Set<string>();
+    items.forEach(i => { if (i.achievements?.category) set.add(i.achievements.category); });
+    return Array.from(set).sort();
+  }, [items]);
+
+  const buckets: Record<string, [number, number]> = {
+    any: [0, Infinity],
+    low: [0, 49],
+    mid: [50, 149],
+    high: [150, 499],
+    legend: [500, Infinity],
+  };
+
+  const filtered = useMemo(() => {
+    const [min, max] = buckets[bucket];
+    let out = items.filter(i => {
+      const cat = i.achievements?.category || "uncategorized";
+      const pts = i.achievements?.points || 0;
+      const catOk = category === "all" || cat === category;
+      const ptsOk = pts >= min && pts <= max;
+      return catOk && ptsOk;
+    });
+    if (sort === "recent") out = [...out].sort((a, b) => +new Date(b.unlocked_at) - +new Date(a.unlocked_at));
+    if (sort === "points-desc") out = [...out].sort((a, b) => (b.achievements?.points || 0) - (a.achievements?.points || 0));
+    if (sort === "points-asc") out = [...out].sort((a, b) => (a.achievements?.points || 0) - (b.achievements?.points || 0));
+    if (sort === "name") out = [...out].sort((a, b) => (a.achievements?.name || "").localeCompare(b.achievements?.name || ""));
+    return out;
+  }, [items, category, bucket, sort]);
+
+  const totalPts = filtered.reduce((s, a) => s + (a.achievements?.points || 0), 0);
+
   return (
-    <div className="space-y-3">
-      <h2 className="text-lg font-bold">{title}</h2>
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-        {items.map(a => (
-          <Card key={a.id} className="text-center p-4 border-amber-500/30 bg-gradient-to-br from-amber-500/10 to-transparent">
-            <div className="text-3xl mb-2">{a.achievements?.icon || "🏅"}</div>
-            <p className="text-xs font-bold leading-tight">{a.achievements?.name}</p>
-            {a.achievements?.description && (
-              <p className="text-[10px] text-muted-foreground mt-1 line-clamp-2">{a.achievements.description}</p>
-            )}
-            <Badge variant="outline" className="mt-2 text-[10px]">+{a.achievements?.points || 0} pts</Badge>
-            <p className="text-[9px] text-muted-foreground mt-1">{formatDistanceToNow(new Date(a.unlocked_at), { addSuffix: true })}</p>
-          </Card>
-        ))}
-      </div>
+    <div className="space-y-4">
+      <Card className="p-3 sm:p-4">
+        <div className="flex items-center gap-2 mb-3">
+          <Filter className="w-4 h-4 text-primary" />
+          <span className="text-sm font-semibold">Filters</span>
+          <Badge variant="outline" className="ml-auto text-[10px]">{filtered.length} · {totalPts} pts</Badge>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <Select value={category} onValueChange={setCategory}>
+            <SelectTrigger><SelectValue placeholder="Category" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All categories</SelectItem>
+              {categories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Select value={bucket} onValueChange={setBucket}>
+            <SelectTrigger><SelectValue placeholder="Points" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="any">Any points</SelectItem>
+              <SelectItem value="low">0 – 49 pts</SelectItem>
+              <SelectItem value="mid">50 – 149 pts</SelectItem>
+              <SelectItem value="high">150 – 499 pts</SelectItem>
+              <SelectItem value="legend">500+ pts</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={sort} onValueChange={setSort}>
+            <SelectTrigger><SelectValue placeholder="Sort" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="recent">Most recent</SelectItem>
+              <SelectItem value="points-desc">Points: high → low</SelectItem>
+              <SelectItem value="points-asc">Points: low → high</SelectItem>
+              <SelectItem value="name">Name (A–Z)</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        {(category !== "all" || bucket !== "any" || sort !== "recent") && (
+          <Button variant="ghost" size="sm" className="mt-2" onClick={() => { setCategory("all"); setBucket("any"); setSort("recent"); }}>
+            Reset filters
+          </Button>
+        )}
+      </Card>
+
+      {filtered.length === 0 ? (
+        <Card className="p-8 text-center">
+          <p className="text-sm text-muted-foreground">No achievements match these filters.</p>
+        </Card>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+          {filtered.map(a => (
+            <Card key={a.id} className="text-center p-4 border-amber-500/30 bg-gradient-to-br from-amber-500/10 to-transparent">
+              <div className="text-3xl mb-2">{a.achievements?.icon || "🏅"}</div>
+              <p className="text-xs font-bold leading-tight">{a.achievements?.name}</p>
+              {a.achievements?.category && (
+                <Badge variant="secondary" className="mt-1 text-[9px]">{a.achievements.category}</Badge>
+              )}
+              {a.achievements?.description && (
+                <p className="text-[10px] text-muted-foreground mt-1 line-clamp-2">{a.achievements.description}</p>
+              )}
+              <Badge variant="outline" className="mt-2 text-[10px]">+{a.achievements?.points || 0} pts</Badge>
+              <p className="text-[9px] text-muted-foreground mt-1">{formatDistanceToNow(new Date(a.unlocked_at), { addSuffix: true })}</p>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
