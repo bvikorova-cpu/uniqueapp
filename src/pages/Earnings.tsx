@@ -22,6 +22,8 @@ import {
   PayoutMethodsManager,
   StripeConnectBanner,
 } from "@/components/earnings";
+import { PayoutSchedulePicker } from "@/components/earnings/PayoutSchedulePicker";
+import { TaxDocsButton } from "@/components/earnings/TaxDocsButton";
 
 interface Transaction {
   id: string;
