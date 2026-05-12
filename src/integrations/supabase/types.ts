@@ -33482,9 +33482,20 @@ export type Database = {
           skills_wanted: string[] | null
           social_links: Json | null
           stripe_connect_account_id: string | null
+          stripe_connect_account_type: string | null
+          stripe_connect_capabilities: Json | null
           stripe_connect_charges_enabled: boolean | null
+          stripe_connect_country: string | null
+          stripe_connect_currently_due: Json | null
+          stripe_connect_default_currency: string | null
+          stripe_connect_details_submitted: boolean | null
+          stripe_connect_disabled_reason: string | null
+          stripe_connect_eventually_due: Json | null
           stripe_connect_onboarding_complete: boolean | null
+          stripe_connect_past_due: Json | null
+          stripe_connect_payout_schedule: Json | null
           stripe_connect_payouts_enabled: boolean | null
+          stripe_connect_synced_at: string | null
           theme_color: string | null
           tone_of_voice: string | null
           total_reviews: number | null
@@ -33530,9 +33541,20 @@ export type Database = {
           skills_wanted?: string[] | null
           social_links?: Json | null
           stripe_connect_account_id?: string | null
+          stripe_connect_account_type?: string | null
+          stripe_connect_capabilities?: Json | null
           stripe_connect_charges_enabled?: boolean | null
+          stripe_connect_country?: string | null
+          stripe_connect_currently_due?: Json | null
+          stripe_connect_default_currency?: string | null
+          stripe_connect_details_submitted?: boolean | null
+          stripe_connect_disabled_reason?: string | null
+          stripe_connect_eventually_due?: Json | null
           stripe_connect_onboarding_complete?: boolean | null
+          stripe_connect_past_due?: Json | null
+          stripe_connect_payout_schedule?: Json | null
           stripe_connect_payouts_enabled?: boolean | null
+          stripe_connect_synced_at?: string | null
           theme_color?: string | null
           tone_of_voice?: string | null
           total_reviews?: number | null
@@ -33578,9 +33600,20 @@ export type Database = {
           skills_wanted?: string[] | null
           social_links?: Json | null
           stripe_connect_account_id?: string | null
+          stripe_connect_account_type?: string | null
+          stripe_connect_capabilities?: Json | null
           stripe_connect_charges_enabled?: boolean | null
+          stripe_connect_country?: string | null
+          stripe_connect_currently_due?: Json | null
+          stripe_connect_default_currency?: string | null
+          stripe_connect_details_submitted?: boolean | null
+          stripe_connect_disabled_reason?: string | null
+          stripe_connect_eventually_due?: Json | null
           stripe_connect_onboarding_complete?: boolean | null
+          stripe_connect_past_due?: Json | null
+          stripe_connect_payout_schedule?: Json | null
           stripe_connect_payouts_enabled?: boolean | null
+          stripe_connect_synced_at?: string | null
           theme_color?: string | null
           tone_of_voice?: string | null
           total_reviews?: number | null
