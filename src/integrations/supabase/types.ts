@@ -402,6 +402,51 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_credits_auto_recharge: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          last_error: string | null
+          last_recharge_at: string | null
+          last_recharge_status: string | null
+          package_credits: number
+          package_price_eur: number
+          stripe_customer_id: string | null
+          stripe_payment_method_id: string | null
+          threshold: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          last_error?: string | null
+          last_recharge_at?: string | null
+          last_recharge_status?: string | null
+          package_credits?: number
+          package_price_eur?: number
+          stripe_customer_id?: string | null
+          stripe_payment_method_id?: string | null
+          threshold?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          last_error?: string | null
+          last_recharge_at?: string | null
+          last_recharge_status?: string | null
+          package_credits?: number
+          package_price_eur?: number
+          stripe_customer_id?: string | null
+          stripe_payment_method_id?: string | null
+          threshold?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       ai_dedications: {
         Row: {
           artist_name: string

@@ -15,6 +15,7 @@ import { AICreditsLowBalanceAlert } from "@/components/ai-credits/AICreditsLowBa
 import { AICreditsRecommendation } from "@/components/ai-credits/AICreditsRecommendation";
 import { AIUsageAnalytics } from "@/components/ai-credits/AIUsageAnalytics";
 import { AICommunityGalleryStrip } from "@/components/ai-credits/AICommunityGalleryStrip";
+import { AutoRechargeCard } from "@/components/ai-credits/AutoRechargeCard";
 import { SEO } from "@/components/SEO";
 
 const AICreditsStore = () => {
@@ -216,6 +217,9 @@ const AICreditsStore = () => {
             })}
           </div>
         </div>
+
+        {/* Auto-recharge */}
+        <AutoRechargeCard currentBalance={credits?.credits_remaining ?? 0} />
 
         {/* Smart features section */}
         <div className="grid lg:grid-cols-2 gap-6 max-w-6xl mx-auto mb-8">
