@@ -47,6 +47,7 @@ const PetTranslator = () => {
     supabase.functions.invoke('pet-translator-stats').then(({ data }) => {
       if (data?.total_translations !== undefined) setStats(data);
     });
+    trackPetActivity('translator');
   }, []);
 
   if (subLoading) {
