@@ -57,8 +57,8 @@ const PetTranslator = () => {
     <div className="min-h-screen bg-background pt-20 pb-12 px-4">
       <div className="max-w-7xl mx-auto">
         <PetTranslatorHero
-          totalTranslations={1247}
-          totalUsers={3892}
+          totalTranslations={stats.total_translations}
+          totalUsers={stats.total_users}
           streak={0}
           isSubscribed={subscription.subscribed}
         />
