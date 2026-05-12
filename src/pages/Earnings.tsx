@@ -133,7 +133,6 @@ const Earnings = () => {
       title: "Use your hub-specific dashboard",
       description: "Withdrawals are processed per vertical (Auctions, Musicians, Chefs, Influencers, Instructors). Open the matching earnings page to request a payout.",
     });
-    navigate('/admin/campaign-withdrawals');
   };
 
   const exportRows = transactions.map(t => ({
