@@ -335,6 +335,184 @@ serve(async (req) => {
     }
     const customerId = await getStripeCustomer(stripe, email);
 
+    // ─── AI CREDITS AUTO-RECHARGE ROUTER ───
+    // Consolidates the previous ai-auto-recharge edge function to avoid hitting
+    // the Supabase Edge Functions limit. Body: { product: "ai_auto_recharge", action }
+    if (body.product === "ai_auto_recharge") {
+      if (!userId || !email) throw new Error("Login required");
+      const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2.57.2");
+      const supa = createClient(
+        Deno.env.get("SUPABASE_URL") ?? "",
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+        { auth: { persistSession: false } },
+      );
+
+      const action = String(body.action || "get_settings");
+      const { data: row } = await supa
+        .from("ai_credits_auto_recharge")
+        .select("*")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+      const ensureCustomer = async () => {
+        if (row?.stripe_customer_id) {
+          try {
+            const existing = await stripe.customers.retrieve(row.stripe_customer_id);
+            if (!(existing as any).deleted) return existing;
+          } catch { /* create a replacement below */ }
+        }
+        if (customerId) return await stripe.customers.retrieve(customerId);
+        return await stripe.customers.create({ email, metadata: { user_id: userId } });
+      };
+
+      if (action === "get_settings") {
+        let paymentMethod: { brand?: string; last4?: string } | null = null;
+        if (row?.stripe_payment_method_id) {
+          try {
+            const pm = await stripe.paymentMethods.retrieve(row.stripe_payment_method_id);
+            if (pm.card) paymentMethod = { brand: pm.card.brand, last4: pm.card.last4 };
+          } catch (e) { log("AI_AUTO_RECHARGE_PM_ERROR", { message: e instanceof Error ? e.message : String(e) }); }
+        }
+        return successResponse({ settings: row, paymentMethod });
+      }
+
+      if (action === "save_setup_link") {
+        const customer = await ensureCustomer();
+        const session = await stripe.checkout.sessions.create({
+          mode: "setup",
+          customer: customer.id,
+          payment_method_types: ["card"],
+          success_url: `${origin}/ai-credits-store?autorecharge=setup_success&session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: `${origin}/ai-credits-store?autorecharge=setup_canceled`,
+        });
+
+        await supa.from("ai_credits_auto_recharge").upsert({
+          user_id: userId,
+          stripe_customer_id: customer.id,
+          enabled: row?.enabled ?? false,
+          threshold: row?.threshold ?? 10,
+          package_credits: row?.package_credits ?? 25,
+          package_price_eur: row?.package_price_eur ?? 10.00,
+        }, { onConflict: "user_id" });
+
+        return successResponse({ url: session.url });
+      }
+
+      if (action === "confirm_setup") {
+        const sessionId = String(body.session_id || "");
+        if (!sessionId) throw new Error("session_id required");
+        const session = await stripe.checkout.sessions.retrieve(sessionId, { expand: ["setup_intent"] });
+        const setupIntent = session.setup_intent as any;
+        const paymentMethodId = typeof setupIntent === "string" ? null : setupIntent?.payment_method;
+        if (!paymentMethodId) throw new Error("No payment method on session");
+        const customer = await ensureCustomer();
+        await stripe.paymentMethods.attach(paymentMethodId, { customer: customer.id }).catch(() => {});
+        await stripe.customers.update(customer.id, { invoice_settings: { default_payment_method: paymentMethodId } });
+
+        await supa.from("ai_credits_auto_recharge").upsert({
+          user_id: userId,
+          stripe_customer_id: customer.id,
+          stripe_payment_method_id: paymentMethodId,
+          enabled: true,
+          threshold: row?.threshold ?? 10,
+          package_credits: row?.package_credits ?? 25,
+          package_price_eur: row?.package_price_eur ?? 10.00,
+        }, { onConflict: "user_id" });
+
+        return successResponse({ ok: true });
+      }
+
+      if (action === "save_settings") {
+        const enabled = body.enabled === true;
+        const threshold = Math.max(1, Math.min(500, Number(body.threshold ?? 10)));
+        const packageCredits = Number(body.package_credits ?? 25);
+        const packagePriceEur = Number(body.package_price_eur ?? 10);
+        if (![10, 25, 60, 150].includes(packageCredits)) throw new Error("Invalid package");
+
+        await supa.from("ai_credits_auto_recharge").upsert({
+          user_id: userId,
+          enabled,
+          threshold,
+          package_credits: packageCredits,
+          package_price_eur: packagePriceEur,
+          stripe_customer_id: row?.stripe_customer_id ?? null,
+          stripe_payment_method_id: row?.stripe_payment_method_id ?? null,
+        }, { onConflict: "user_id" });
+
+        return successResponse({ ok: true });
+      }
+
+      if (action === "disable") {
+        await supa.from("ai_credits_auto_recharge").update({ enabled: false }).eq("user_id", userId);
+        return successResponse({ ok: true });
+      }
+
+      if (action === "charge") {
+        if (!row?.enabled) throw new Error("Auto-recharge not enabled");
+        if (!row.stripe_customer_id || !row.stripe_payment_method_id) throw new Error("No saved payment method");
+
+        const { data: creditsRow } = await supa
+          .from("ai_credits")
+          .select("credits_remaining,total_credits_purchased")
+          .eq("user_id", userId)
+          .maybeSingle();
+        const current = Number(creditsRow?.credits_remaining ?? 0);
+        if (current > Number(row.threshold)) return successResponse({ skipped: true, reason: "above_threshold", current });
+
+        try {
+          const intent = await stripe.paymentIntents.create({
+            amount: Math.round(Number(row.package_price_eur) * 100),
+            currency: "eur",
+            customer: row.stripe_customer_id,
+            payment_method: row.stripe_payment_method_id,
+            off_session: true,
+            confirm: true,
+            description: `AI Credits auto-recharge: ${row.package_credits} credits`,
+            metadata: { user_id: userId, credits: String(row.package_credits), kind: "ai_credits_auto_recharge" },
+          });
+
+          const totalPurchased = Number(creditsRow?.total_credits_purchased ?? 0) + Number(row.package_credits);
+          const newBalance = current + Number(row.package_credits);
+          if (creditsRow) {
+            await supa.from("ai_credits").update({
+              credits_remaining: newBalance,
+              total_credits_purchased: totalPurchased,
+            }).eq("user_id", userId);
+          } else {
+            await supa.from("ai_credits").insert({
+              user_id: userId,
+              credits_remaining: newBalance,
+              total_credits_purchased: totalPurchased,
+            });
+          }
+
+          await supa.from("ai_credits_auto_recharge").update({
+            last_recharge_at: new Date().toISOString(),
+            last_recharge_status: "succeeded",
+            last_error: null,
+          }).eq("user_id", userId);
+
+          return successResponse({ ok: true, charged: row.package_price_eur, credits_added: row.package_credits, intent_id: intent.id });
+        } catch (e) {
+          const message = e instanceof Error ? e.message : String(e);
+          await supa.from("ai_credits_auto_recharge").update({
+            last_recharge_at: new Date().toISOString(),
+            last_recharge_status: "failed",
+            last_error: message.slice(0, 500),
+          }).eq("user_id", userId);
+          if ((e as any)?.code === "authentication_required") {
+            return new Response(JSON.stringify({ error: "authentication_required", message: "Card needs re-authentication. Please update payment method." }), {
+              status: 402,
+              headers: { ...corsHeaders, "Content-Type": "application/json" },
+            });
+          }
+          throw e;
+        }
+      }
+
+      return errorResponse("Unknown auto-recharge action", 400);
+    }
+
     // ─── COUPON MARKETPLACE: subscription access (€1/mo) ───
     if (body.product === "coupon_marketplace") {
       const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2.57.2");
