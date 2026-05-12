@@ -148,6 +148,7 @@ import {
   Astrology,
   PetTranslator,
   PetTranslatorPricing,
+  PetsHub,
   Psychology,
   OnlinePsychologist,
   Quiz,
