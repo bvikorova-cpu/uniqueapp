@@ -52,7 +52,7 @@ interface Profile {
   company: string | null;
   headline?: string | null;
   username?: string | null;
-  social_links?: Record<string, string | undefined> | null;
+  social_links?: any;
   open_to_work?: boolean | null;
   open_to_work_details?: any;
   profile_music_url?: string | null;
