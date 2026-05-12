@@ -60,6 +60,7 @@ const Auth = lazy(() => import("./pages/Auth"));
 const Download = lazy(() => import("./pages/Download"));
 const VerifyReport = lazy(() => import("./pages/VerifyReport"));
 const UsernameRedirect = lazy(() => import("./pages/UsernameRedirect"));
+const ProfileRedirect = lazy(() => import("./pages/ProfileRedirect"));
 
 // Install global runtime patches as early as possible
 installGlobalErrorHandlers();
