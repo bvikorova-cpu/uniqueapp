@@ -33497,6 +33497,11 @@ export type Database = {
           avatar_3d_url: string | null
           avatar_url: string | null
           bio: string | null
+          bio_score: number | null
+          bio_score_feedback: string | null
+          bio_score_updated_at: string | null
+          bio_translations: Json
+          bio_variants: Json
           birth_date: string | null
           coins: number | null
           company: string | null
@@ -33515,11 +33520,17 @@ export type Database = {
           languages: string[] | null
           location: string | null
           occupation: string | null
+          open_to_work: boolean
+          open_to_work_details: Json
           personality_traits: Json | null
           phone: string | null
           preferred_language: string | null
+          profile_music_title: string | null
+          profile_music_url: string | null
           profile_theme: string | null
           rating_average: number | null
+          seo_description: string | null
+          seo_title: string | null
           signup_ip: string | null
           signup_user_agent: string | null
           skills: Json | null
@@ -33556,6 +33567,11 @@ export type Database = {
           avatar_3d_url?: string | null
           avatar_url?: string | null
           bio?: string | null
+          bio_score?: number | null
+          bio_score_feedback?: string | null
+          bio_score_updated_at?: string | null
+          bio_translations?: Json
+          bio_variants?: Json
           birth_date?: string | null
           coins?: number | null
           company?: string | null
@@ -33574,11 +33590,17 @@ export type Database = {
           languages?: string[] | null
           location?: string | null
           occupation?: string | null
+          open_to_work?: boolean
+          open_to_work_details?: Json
           personality_traits?: Json | null
           phone?: string | null
           preferred_language?: string | null
+          profile_music_title?: string | null
+          profile_music_url?: string | null
           profile_theme?: string | null
           rating_average?: number | null
+          seo_description?: string | null
+          seo_title?: string | null
           signup_ip?: string | null
           signup_user_agent?: string | null
           skills?: Json | null
@@ -33615,6 +33637,11 @@ export type Database = {
           avatar_3d_url?: string | null
           avatar_url?: string | null
           bio?: string | null
+          bio_score?: number | null
+          bio_score_feedback?: string | null
+          bio_score_updated_at?: string | null
+          bio_translations?: Json
+          bio_variants?: Json
           birth_date?: string | null
           coins?: number | null
           company?: string | null
@@ -33633,11 +33660,17 @@ export type Database = {
           languages?: string[] | null
           location?: string | null
           occupation?: string | null
+          open_to_work?: boolean
+          open_to_work_details?: Json
           personality_traits?: Json | null
           phone?: string | null
           preferred_language?: string | null
+          profile_music_title?: string | null
+          profile_music_url?: string | null
           profile_theme?: string | null
           rating_average?: number | null
+          seo_description?: string | null
+          seo_title?: string | null
           signup_ip?: string | null
           signup_user_agent?: string | null
           skills?: Json | null
