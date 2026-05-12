@@ -11,11 +11,69 @@ interface TriageRequest {
   faq?: Array<{ id: string; category: string; question: string; keywords?: string[] }>;
 }
 
+interface ChatMessage {
+  role: "user" | "assistant" | "system";
+  content: string;
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { subject, message, faq = [] }: TriageRequest = await req.json();
+    const body = await req.json().catch(() => ({}));
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY missing");
+
+    if (body.action === "live_chat" || Array.isArray(body.messages)) {
+      const messages = Array.isArray(body.messages) ? (body.messages as ChatMessage[]).slice(-20) : [];
+      const safeMessages = messages
+        .filter((m) => ["user", "assistant"].includes(m?.role) && typeof m?.content === "string")
+        .map((m) => ({ role: m.role, content: m.content.slice(0, 2000) }));
+
+      if (!safeMessages.length) {
+        return new Response(JSON.stringify({ error: "messages required" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const resp = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${OPENAI_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are the Unique support assistant — friendly, concise, multilingual, and policy-safe. Unique is a paid creator platform using EUR, AI tools cost credits, main platform is 16+, Kids Channel is 6–12. Help with account, subscriptions, AI credits, payouts, profile, and technical issues. For refunds, KYC disputes, legal, or sensitive account actions, direct the user to submit the contact ticket form. Never invent prices or policies. Keep replies under 4 short sentences when possible.",
+            },
+            ...safeMessages,
+          ],
+          temperature: 0.4,
+          max_tokens: 500,
+        }),
+      });
+
+      if (!resp.ok) {
+        const t = await resp.text();
+        console.error("OpenAI live chat error:", resp.status, t);
+        return new Response(JSON.stringify({ error: "AI service error", status: resp.status }), {
+          status: 502,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const data = await resp.json();
+      return new Response(JSON.stringify({ reply: data?.choices?.[0]?.message?.content ?? "" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const { subject, message, faq = [] }: TriageRequest = body;
 
     if (!subject || !message || subject.length > 300 || message.length > 5000) {
       return new Response(JSON.stringify({ error: "Invalid input" }), {
@@ -23,9 +81,6 @@ Deno.serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY missing");
 
     const faqList = faq.slice(0, 30).map((f) => `${f.id} | [${f.category}] ${f.question}`).join("\n");
 

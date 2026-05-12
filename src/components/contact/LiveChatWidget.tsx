@@ -37,8 +37,8 @@ export const LiveChatWidget = () => {
     setInput("");
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("contact-live-chat", {
-        body: { messages: next },
+      const { data, error } = await supabase.functions.invoke("contact-ai-triage", {
+        body: { action: "live_chat", messages: next },
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
