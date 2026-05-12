@@ -31,6 +31,8 @@ import PetSymptomChecker from '@/components/pet-translator/PetSymptomChecker';
 import PetWearableTeaser from '@/components/pet-translator/PetWearableTeaser';
 import PetLanguageSelector from '@/components/pet-translator/PetLanguageSelector';
 import PetActiveSwitcher from '@/components/pet-translator/PetActiveSwitcher';
+import PetCrossPromo from '@/components/pet-translator/PetCrossPromo';
+import { trackPetActivity } from '@/lib/petLover';
 import { Card } from '@/components/ui/card';
 import { Crown, Sparkles, PawPrint, Heart, Stethoscope, GraduationCap, MessageSquareText, History, Radio, Video, Search, Users, Watch, BookOpen } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
