@@ -55,6 +55,29 @@ const Admin = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Server-side user search when admin types in the search box (so we're not
+  // limited to the first 100 profiles). Debounced.
+  useEffect(() => {
+    if (!isAdmin) return;
+    const term = searchTerm.trim();
+    if (term.length < 2) return; // initial 100 already loaded
+    const handle = setTimeout(async () => {
+      const like = `%${term}%`;
+      const { data } = await supabase
+        .from('profiles')
+        .select('*')
+        .or(`full_name.ilike.${like},email.ilike.${like},username.ilike.${like}`)
+        .order('created_at', { ascending: false })
+        .limit(200);
+      if (data) setUsers((prev) => {
+        const map = new Map<string, any>();
+        [...prev, ...data].forEach((u: any) => map.set(u.id, u));
+        return Array.from(map.values());
+      });
+    }, 300);
+    return () => clearTimeout(handle);
+  }, [searchTerm, isAdmin]);
+
   useEffect(() => {
     checkAdminAccess();
   }, []);
@@ -687,9 +710,10 @@ const Admin = () => {
                               <Button
                                 size="sm"
                                 variant="destructive"
-                                onClick={() => updateTransactionStatus(trans.id, 'refunded')}
+                                onClick={() => navigate('/admin/refunds')}
+                                title="Refunds are processed via Stripe in the Payments & Refunds dashboard"
                               >
-                                Refund
+                                Refund via Stripe
                               </Button>
                             </div>
                           )}

@@ -60,6 +60,7 @@ const Auth = lazy(() => import("./pages/Auth"));
 const Download = lazy(() => import("./pages/Download"));
 const VerifyReport = lazy(() => import("./pages/VerifyReport"));
 const UsernameRedirect = lazy(() => import("./pages/UsernameRedirect"));
+const ProfileRedirect = lazy(() => import("./pages/ProfileRedirect"));
 
 // Install global runtime patches as early as possible
 installGlobalErrorHandlers();
@@ -564,6 +565,7 @@ const App = () => {
                         <Route path="/quiz/:quizId" element={<QuizTaker />} />
                         <Route path="/course/:courseName" element={<CourseDetail />} />
                         <Route path="/quiz" element={<Quiz />} />
+                        <Route path="/profile" element={<ProfileRedirect />} />
                         <Route path="/profile/:userId" element={<Profile />} />
                         <Route path="/u/:username" element={<UsernameRedirect />} />
                         <Route path="/edit-profile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />

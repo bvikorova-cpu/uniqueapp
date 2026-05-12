@@ -149,10 +149,33 @@ const Earnings = () => {
       toast({ title: "No payout method", description: "Add a payout method first.", variant: "destructive" });
       return;
     }
-    toast({
-      title: "Use your hub-specific dashboard",
-      description: "Withdrawals are processed per vertical (Auctions, Musicians, Chefs, Influencers, Instructors). Open the matching earnings page to request a payout.",
-    });
+    if (!stripeConnect.enabled) {
+      toast({
+        title: "Stripe Connect not ready",
+        description: stripeConnect.reason || "Complete Stripe Connect onboarding before requesting a payout.",
+        variant: "destructive",
+      });
+      return;
+    }
+    try {
+      const amount_cents = Math.floor(stats.available * 100);
+      const { data, error } = await supabase.functions.invoke("stripe-connect-payout", {
+        body: { amount_cents, currency: "eur" },
+      });
+      if (error) throw error;
+      toast({
+        title: "Payout requested",
+        description: `€${(data.amount / 100).toFixed(2)} is on its way. Status: ${data.status}.`,
+      });
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) await loadTransactions(user.id);
+    } catch (e: any) {
+      toast({
+        title: "Payout failed",
+        description: e?.message || "Unable to request payout. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const exportRows = transactions.map(t => ({

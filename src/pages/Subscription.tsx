@@ -317,9 +317,12 @@ const Subscription = () => {
         {/* (5) Urgency timer */}
         <UrgencyTimer />
 
-        {/* (4) Currency selector + (6) billing toggle */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-2">
+        {/* (4) Currency display (charges always in EUR via Stripe) */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mb-2">
           <CurrencySelector value={currency} onChange={setCurrency} />
+          <p className="text-xs text-muted-foreground">
+            Display only — all payments are processed in EUR (€).
+          </p>
         </div>
         <BillingToggle yearly={yearly} onChange={setYearly} />
 
