@@ -598,6 +598,27 @@ serve(async (req) => {
     // Body: { product: "pet" | "kids" | ..., amount?, productName?, mode?, metadata?, free? }
     // Accept `product_type` as an alias for `product` (used by quantum-social subs)
     if (!body.product && body.product_type) body.product = body.product_type;
+
+    // ─── PLATFORM SUBSCRIPTION (Subscription.tsx) — tier + billing pricing ───
+    if (body.product === "subscription" && body.tier) {
+      const billing = body.billing === "yearly" ? "yearly" : "monthly";
+      const TIERS: Record<string, { monthly: number; yearly: number; name: string }> = {
+        basic:    { monthly: 500,  yearly: 4800,  name: "Unique Basic" },
+        premium:  { monthly: 1500, yearly: 14400, name: "Unique Premium" },
+        business: { monthly: 5000, yearly: 48000, name: "Unique Business" },
+      };
+      const t = TIERS[String(body.tier)];
+      if (t) {
+        body.amount = billing === "yearly" ? t.yearly : t.monthly;
+        body.productName = `${t.name} (${billing})`;
+        body.mode = "subscription";
+        body.interval = billing === "yearly" ? "year" : "month";
+        body.metadata = { ...(body.metadata || {}), tier: String(body.tier), billing };
+        body.successUrl = body.successUrl || `${origin}/subscription?success=true&tier=${body.tier}&session_id={CHECKOUT_SESSION_ID}`;
+        body.cancelUrl = body.cancelUrl || `${origin}/subscription?canceled=true`;
+      }
+    }
+
     if (body.product && !body.priceId && !body.productKey && !body.credits) {
       // Free actions (e.g. create-character, create-universe) just return ok
       if (body.free === true) {
