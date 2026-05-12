@@ -92,7 +92,10 @@ const AICreditsStore = () => {
         },
       });
       if (error) throw error;
-      if (data?.url) window.open(data.url, '_blank');
+      if (data?.url) {
+        const w = window.open(data.url, '_blank', 'noopener,noreferrer');
+        if (!w) window.location.href = data.url;
+      }
     } catch (error: any) {
       toast({ title: "Payment Error", description: error?.message || "An error occurred", variant: "destructive" });
     } finally {

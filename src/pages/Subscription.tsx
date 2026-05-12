@@ -169,10 +169,24 @@ const Subscription = () => {
       const tier = urlParams.get("tier");
       if (success === "true" && tier) {
         toast({ title: "Payment processing", description: "Verifying subscription status..." });
-        const { data, error } = await supabase.functions.invoke("check-subscription");
-        if (!error && data?.tier) {
-          setCurrentTier(data.tier);
-          toast({ title: "Success!", description: `${tier.toUpperCase()} subscription has been activated` });
+        // Retry with backoff — Stripe webhook may lag a few seconds
+        const delays = [0, 1500, 3000, 6000];
+        let activated = false;
+        for (const d of delays) {
+          if (d) await new Promise((r) => setTimeout(r, d));
+          const { data, error } = await supabase.functions.invoke("check-subscription");
+          if (!error && data?.tier && data.tier === tier) {
+            setCurrentTier(data.tier);
+            toast({ title: "Success!", description: `${tier.toUpperCase()} subscription has been activated` });
+            activated = true;
+            break;
+          }
+        }
+        if (!activated) {
+          toast({
+            title: "Still processing",
+            description: "Subscription activation is taking longer than usual. Refresh in a minute.",
+          });
         }
         window.history.replaceState({}, "", "/subscription");
       }
@@ -278,7 +292,11 @@ const Subscription = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-col sm:flex-col gap-2">
-            <Button onClick={() => stripeUrl && window.open(stripeUrl, "_blank")} className="w-full gap-2">
+            <Button onClick={() => {
+              if (!stripeUrl) return;
+              const w = window.open(stripeUrl, "_blank", "noopener,noreferrer");
+              if (!w) window.location.href = stripeUrl;
+            }} className="w-full gap-2">
               <ExternalLink className="h-4 w-4" />
               Open Stripe Payment
             </Button>

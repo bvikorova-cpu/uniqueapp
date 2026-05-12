@@ -573,7 +573,7 @@ const Admin = () => {
                   User Management & Credit Control
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -619,7 +619,7 @@ const Admin = () => {
               <CardHeader>
                 <CardTitle>Subscriptions</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -663,7 +663,7 @@ const Admin = () => {
               <CardHeader>
                 <CardTitle>Transactions</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -731,7 +731,7 @@ const Admin = () => {
               <CardHeader>
                 <CardTitle>Contact Messages</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
