@@ -61,8 +61,8 @@ interface AchievementsShowcaseProps {
 const defaultAchievements: Achievement[] = [
   {
     id: "1",
-    name: "Prvé víťazstvo",
-    description: "Vyhrajte svoju prvú hru",
+    name: "First Victory",
+    description: "Win your first game",
     icon: "trophy",
     progress: 1,
     maxProgress: 1,
@@ -73,7 +73,7 @@ const defaultAchievements: Achievement[] = [
   },
   {
     id: "2",
-    name: "Séria výhier",
+    name: "Winning Streak",
     description: "Vyhrajte 5 hier za sebou",
     icon: "flame",
     progress: 3,
@@ -136,7 +136,7 @@ export const AchievementsShowcase = ({
               </div>
             </div>
             <Badge variant="outline" className="text-primary border-primary">
-              {unlockedCount}/{achievements.length} úspechov
+              {unlockedCount}/{achievements.length} achievements
             </Badge>
           </div>
           <div className="space-y-2">
@@ -154,7 +154,7 @@ export const AchievementsShowcase = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Trophy className="h-5 w-5 text-yellow-500" />
-            Úspechy
+            Achievements
           </CardTitle>
         </CardHeader>
         <CardContent>

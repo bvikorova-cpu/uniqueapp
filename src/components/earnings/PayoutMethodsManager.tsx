@@ -233,11 +233,11 @@ export const PayoutMethodsManager = ({ onChange }: Props) => {
                       try {
                         const { supabase } = await import("@/integrations/supabase/client");
                         const { data: { session } } = await supabase.auth.getSession();
-                        if (!session) { toast({ title: "Najprv sa prihlás", variant: "destructive" }); return; }
+                        if (!session) { toast({ title: "Log in first", variant: "destructive" }); return; }
                         const { data, error } = await supabase.functions.invoke("stripe-connect-onboarding", { body: {} });
                         if (error) throw error;
                         if (data?.url) window.open(data.url, "_blank");
-                        else toast({ title: "Onboarding spustený" });
+                        else toast({ title: "Onboarding started" });
                       } catch (e: any) {
                         toast({ title: "Chyba", description: e.message || "Stripe Connect zlyhal", variant: "destructive" });
                       }

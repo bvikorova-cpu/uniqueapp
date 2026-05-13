@@ -61,15 +61,15 @@ export const ViewersList = ({ storyId, viewsCount, open, onOpenChange }: Viewers
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
-            Videli {viewsCount} {viewsCount === 1 ? "osoba" : viewsCount < 5 ? "osoby" : "osôb"}
+            Seen by {viewsCount} {viewsCount === 1 ? "person" : viewsCount < 5 ? "people" : "people"}
           </DialogTitle>
         </DialogHeader>
 
         <ScrollArea className="max-h-[400px]">
           {isLoading ? (
-            <p className="text-center text-muted-foreground py-8">Načítavam...</p>
+            <p className="text-center text-muted-foreground py-8">Loading...</p>
           ) : viewers.length === 0 ? (
-            <p className="text-center text-muted-foreground py-8">Zatiaľ žiadne zobrazenia</p>
+            <p className="text-center text-muted-foreground py-8">No views yet</p>
           ) : (
             <div className="space-y-3">
               {viewers.map((view) => (
@@ -82,7 +82,7 @@ export const ViewersList = ({ storyId, viewsCount, open, onOpenChange }: Viewers
                   </Avatar>
                   <div className="flex-1 min-w-0">
                     <p className="font-medium truncate">
-                      {view.profiles?.full_name || "Neznámy používateľ"}
+                      {view.profiles?.full_name || "Unknown user"}
                     </p>
                     <p className="text-sm text-muted-foreground">
                       {formatDistanceToNow(new Date(view.viewed_at), {

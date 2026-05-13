@@ -9,47 +9,47 @@ const STORAGE_KEY_PREFIX = "megatalent_onboarding_done_";
 const steps = [
   {
     icon: Trophy,
-    title: "Vitaj v MegaTalent súťaži 🏆",
+    title: "Welcome to the MegaTalent Contest 🏆",
     description:
-      "Zúčastňuj sa mesačných súťaží naprieč 35+ kategóriami — od spevu cez tanec až po umenie. Najlepšie talenty získavajú peňažné ceny, viditeľnosť a TOP Premium odznak.",
+      "Participate in monthly contests across 35+ categories — from singing to dancing to art. The best talents win cash prizes, visibility, and a TOP Premium badge.",
     bullets: [
-      "Mesačné kolá s vyhlásením víťazov",
-      "Hlasujú reálni používatelia + AI Performance Score",
-      "Fair-play: jeden účet = jeden hlas denne",
+      "Monthly rounds with winners announcement",
+      "Real users vote + AI Performance Score",
+      "Fair-play: one account = one vote per day",
     ],
   },
   {
     icon: Upload,
-    title: "Ako nahrať fotku alebo video 📸",
+    title: "How to upload a photo or video 📸",
     description:
-      "V kategórii klikni na tlačidlo „Upload\" a vyber súbor zo zariadenia. Prijímame fotky (JPG, PNG, WEBP do 10 MB) a videá (MP4, MOV do 100 MB / max. 60 sekúnd).",
+      "In the category, click the 'Upload' button and select a file from your device. We accept photos (JPG, PNG, WEBP up to 10 MB) and videos (MP4, MOV up to 100 MB / max. 60 seconds).",
     bullets: [
-      "Vyber správnu kategóriu (zmeniť ju neskôr nejde)",
-      "Pridaj krátky popis a hashtagy — pomáha to algoritmu",
-      "Tvár musí byť tvoja — žiadne kradnuté zábery",
+      "Choose the correct category (you cannot change it later)",
+      "Add a short description and hashtags — this helps the algorithm",
+      "The face must be yours — no stolen footage",
     ],
   },
   {
     icon: Heart,
     title: "Hlasovanie a boost ❤️",
     description:
-      "Tvoji fanúšikovia hlasujú srdcom. Premium predplatitelia dostávajú 2× váhu hlasu, TOP Premium až 3× a denný vote-boost.",
+      "Your fans vote with their hearts. Premium subscribers get 2× vote weight, TOP Premium gets up to 3× and a daily vote-boost.",
     bullets: [
-      "Zdieľaj svoj príspevok cez Share — pozve to viac hlasov",
-      "Použi AI Talent Coach na zlepšenie performance",
+      "Share your post via Share — this invites more votes",
+      "Use AI Talent Coach to improve performance",
       "Sleduj Live Leaderboard pre real-time poradie",
     ],
   },
   {
     icon: Award,
-    title: "Pravidlá súťaže ⚖️",
+    title: "Contest rules ⚖️",
     description:
-      "Aby bola súťaž férová, dodržuj prosím tieto pravidlá. Porušenie znamená diskvalifikáciu bez nároku na vrátenie predplatného.",
+      "To make the contest fair, please follow these rules. Violation means disqualification without refund of subscription.",
     bullets: [
-      "Žiadny nahý obsah, násilie, nenávisť ani spam",
-      "Žiadne kupovanie hlasov ani fake účty",
-      "Obsah musí byť tvoja vlastná tvorba (alebo so súhlasom)",
-      "Vek 13+ (mladší len so súhlasom rodiča)",
+      "No nude content, violence, hate or spam",
+      "No buying votes or fake accounts",
+      "Content must be your own creation (or with consent)",
+      "Age 13+ (younger with parent's consent only)",
     ],
   },
 ];
@@ -119,19 +119,19 @@ export const MegaTalentOnboarding = () => {
         <div className="flex items-center justify-between gap-2">
           {step > 0 ? (
             <Button variant="ghost" size="sm" onClick={() => setStep(step - 1)}>
-              <ChevronLeft className="w-4 h-4 mr-1" /> Späť
+              <ChevronLeft className="w-4 h-4 mr-1" /> Back
             </Button>
           ) : (
             <Button variant="ghost" size="sm" onClick={finish}>
-              Preskočiť
+              Skip
             </Button>
           )}
           <Button
             size="sm"
             onClick={() => (isLast ? finish() : setStep(step + 1))}
           >
-            {isLast ? "Začať súťažiť 🚀" : (
-              <>Ďalej <ChevronRight className="w-4 h-4 ml-1" /></>
+            {isLast ? "Start competing 🚀" : (
+              <>Next <ChevronRight className="w-4 h-4 ml-1" /></>
             )}
           </Button>
         </div>

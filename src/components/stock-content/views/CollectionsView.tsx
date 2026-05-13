@@ -60,7 +60,7 @@ export function CollectionsView({ onBack }: CollectionsViewProps) {
                   try {
                     const { supabase } = await import("@/integrations/supabase/client");
                     const { data: { session } } = await supabase.auth.getSession();
-                    if (!session) { toast.error("Najprv sa prihlás"); return; }
+                    if (!session) { toast.error("Please log in first"); return; }
                     const { data, error } = await supabase.functions.invoke("create-checkout", {
                       body: { product_type: "stock_bundle", name: col.name, amount: col.price, bundle_id: col.id }
                     });

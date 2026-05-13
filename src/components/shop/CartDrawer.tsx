@@ -54,9 +54,9 @@ export const CartDrawer = () => {
       
       <SheetContent className="w-full sm:max-w-lg flex flex-col h-full">
         <SheetHeader className="flex-shrink-0">
-          <SheetTitle>Nákupný košík</SheetTitle>
+          <SheetTitle>Shopping Cart</SheetTitle>
           <SheetDescription>
-            {totalItems === 0 ? "Váš košík je prázdny" : `${totalItems} ${totalItems === 1 ? 'produkt' : totalItems < 5 ? 'produkty' : 'produktov'} v košíku`}
+            {totalItems === 0 ? "Your cart is empty" : `${totalItems} ${totalItems === 1 ? 'item' : 'items'} in cart`}
           </SheetDescription>
         </SheetHeader>
         
@@ -65,7 +65,7 @@ export const CartDrawer = () => {
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center">
                 <ShoppingCart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">Váš košík je prázdny</p>
+                <p className="text-muted-foreground">Your cart is empty</p>
               </div>
             </div>
           ) : (
@@ -146,12 +146,12 @@ export const CartDrawer = () => {
                   {isLoading ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Vytváram objednávku...
+                      Creating order...
                     </>
                   ) : (
                     <>
                       <ExternalLink className="w-4 h-4 mr-2" />
-                      Pokračovať k platbe
+                      Continue to payment
                     </>
                   )}
                 </Button>

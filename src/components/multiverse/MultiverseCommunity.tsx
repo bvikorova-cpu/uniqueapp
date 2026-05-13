@@ -45,10 +45,10 @@ const MultiverseCommunity = ({ onBack }: MultiverseCommunityProps) => {
               <div className="flex gap-2">
                 <Button size="sm" variant="outline" className="flex-1 text-xs h-7" onClick={() => {
                   const followed = JSON.parse(localStorage.getItem("multiverse_followed") || "[]");
-                  if (followed.includes(explorer.name)) { toast.info(`Už sleduješ ${explorer.name}`); return; }
+                  if (followed.includes(explorer.name)) { toast.info(`You are already following ${explorer.name}`); return; }
                   followed.push(explorer.name);
                   localStorage.setItem("multiverse_followed", JSON.stringify(followed));
-                  toast.success(`Sleduješ ${explorer.name}!`);
+                  toast.success(`You are following ${explorer.name}!`);
                 }}>
                   <Users className="w-3 h-3 mr-1" /> Follow
                 </Button>

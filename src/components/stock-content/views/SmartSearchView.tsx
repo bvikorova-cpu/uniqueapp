@@ -22,7 +22,7 @@ export function SmartSearchView({ onBack }: Props) {
     new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result as string); r.onerror = rej; r.readAsDataURL(file); });
 
   const onUpload = async (file: File) => {
-    if (file.size > 5 * 1024 * 1024) { toast({ title: "Obrázok je príliš veľký (max 5 MB)", variant: "destructive" }); return; }
+    if (file.size > 5 * 1024 * 1024) { toast({ title: "Image is too large (max 5 MB)", variant: "destructive" }); return; }
     const dataUrl = await fileToDataUrl(file);
     setPreviewUrl(dataUrl);
     await runSearch({ imageDataUrl: dataUrl });
@@ -37,7 +37,7 @@ export function SmartSearchView({ onBack }: Props) {
       if (data?.error) throw new Error(data.error);
       setKeywords(data.keywords || []);
       setResults(data.results || []);
-      if (!data.results?.length) toast({ title: "Žiadne podobné výsledky", description: "Skús iný obrázok alebo dopyt." });
+      if (!data.results?.length) toast({ title: "No similar results", description: "Try a different image or query." });
     } catch (e: any) {
       toast({ title: "Chyba", description: e.message, variant: "destructive" });
     } finally { setLoading(false); }
@@ -56,21 +56,21 @@ export function SmartSearchView({ onBack }: Props) {
       <Card className="p-6 bg-gradient-to-r from-violet-500/10 to-purple-500/10 border-violet-500/20">
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <h3 className="font-bold mb-2 flex items-center gap-2"><Upload className="w-4 h-4" /> Nahraj obrázok</h3>
+            <h3 className="font-bold mb-2 flex items-center gap-2"><Upload className="w-4 h-4" /> Upload image</h3>
             <input ref={fileInputRef} type="file" accept="image/*" hidden onChange={(e) => { const f = e.target.files?.[0]; if (f) onUpload(f); }} />
             <div className="border-2 border-dashed border-border rounded-lg p-4 text-center cursor-pointer hover:border-primary/40 transition" onClick={() => fileInputRef.current?.click()}>
               {previewUrl ? (
                 <img src={previewUrl} alt="Query" className="max-h-40 mx-auto rounded" />
               ) : (
-                <div className="py-6 text-muted-foreground"><ImageIcon className="w-10 h-10 mx-auto mb-2" />Klikni a vyber obrázok (max 5 MB)</div>
+                <div className="py-6 text-muted-foreground"><ImageIcon className="w-10 h-10 mx-auto mb-2" />Click and select image (max 5 MB)</div>
               )}
             </div>
           </div>
           <div>
-            <h3 className="font-bold mb-2 flex items-center gap-2"><Search className="w-4 h-4" /> Alebo opíš slovami</h3>
+            <h3 className="font-bold mb-2 flex items-center gap-2"><Search className="w-4 h-4" /> Or describe in words</h3>
             <Input placeholder="napr. 'sunset over mountains, warm tones'" value={textQuery} onChange={e => setTextQuery(e.target.value)} />
             <Button className="mt-2 w-full" disabled={loading || !textQuery.trim()} onClick={() => runSearch({ queryText: textQuery.trim() })}>
-              {loading ? <><Loader2 className="w-4 h-4 mr-1 animate-spin" />Hľadám...</> : <><Sparkles className="w-4 h-4 mr-1" />Nájsť podobné</>}
+              {loading ? <><Loader2 className="w-4 h-4 mr-1 animate-spin" />Searching...</> : <><Sparkles className="w-4 h-4 mr-1" />Find similar</>}
             </Button>
           </div>
         </div>
@@ -78,18 +78,18 @@ export function SmartSearchView({ onBack }: Props) {
 
       {keywords.length > 0 && (
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-sm text-muted-foreground">AI kľúčové slová:</span>
+          <span className="text-sm text-muted-foreground">AI keywords:</span>
           {keywords.map((k, i) => <Badge key={i} variant="outline">{k}</Badge>)}
         </div>
       )}
 
       {loading && (
-        <div className="text-center py-12 text-muted-foreground"><Loader2 className="w-8 h-8 animate-spin mx-auto mb-2" />AI analyzuje a hľadá podobné diela...</div>
+        <div className="text-center py-12 text-muted-foreground"><Loader2 className="w-8 h-8 animate-spin mx-auto mb-2" />AI analyzes and searches for similar works...</div>
       )}
 
       {!loading && results.length > 0 && (
         <>
-          <h3 className="font-bold">Podobné diela ({results.length})</h3>
+          <h3 className="font-bold">Similar works ({results.length})</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {results.map(item => (
               <Card key={item.id} className="overflow-hidden hover:shadow-lg transition-all hover:-translate-y-1">

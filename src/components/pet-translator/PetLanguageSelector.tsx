@@ -2,8 +2,8 @@ import { useState } from "react";
 
 export const TRANSLATION_LANGS = [
   { code: "en", label: "English" },
-  { code: "sk", label: "Slovenčina" },
-  { code: "cs", label: "Čeština" },
+  { code: "sk", label: "Slovak" },
+  { code: "cs", label: "Czech" },
   { code: "hu", label: "Magyar" },
   { code: "de", label: "Deutsch" },
   { code: "es", label: "Español" },

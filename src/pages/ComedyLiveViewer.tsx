@@ -182,7 +182,7 @@ export default function ComedyLiveViewer() {
                   const input = document.getElementById("comedy-chat-input") as HTMLInputElement | null;
                   const text = input?.value?.trim();
                   if (!text) return;
-                  toast.success("Správa odoslaná!");
+                  toast.success("Message sent!");
                   if (input) input.value = "";
                 }}>
                   <Send className="h-4 w-4" />

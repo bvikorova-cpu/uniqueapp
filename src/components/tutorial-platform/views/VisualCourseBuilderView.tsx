@@ -39,10 +39,10 @@ export function normalizeVideoUrl(input: string): { url: string | null; error?: 
   try {
     parsed = new URL(raw);
   } catch {
-    return { url: null, error: "Neplatná URL adresa" };
+    return { url: null, error: "Invalid URL address" };
   }
   if (parsed.protocol !== "https:" && parsed.protocol !== "http:") {
-    return { url: null, error: "URL musí používať http(s)" };
+    return { url: null, error: "URL must use http(s)" };
   }
 
   const host = parsed.hostname.replace(/^www\./, "").toLowerCase();
@@ -60,7 +60,7 @@ export function normalizeVideoUrl(input: string): { url: string | null; error?: 
       id = parsed.pathname.split("/shorts/")[1].split("/")[0];
     }
     if (!/^[A-Za-z0-9_-]{11}$/.test(id)) {
-      return { url: null, error: "Neplatné YouTube video ID" };
+      return { url: null, error: "Invalid YouTube video ID" };
     }
     return { url: `https://www.youtube.com/embed/${id}` };
   }
@@ -70,12 +70,12 @@ export function normalizeVideoUrl(input: string): { url: string | null; error?: 
     const segments = parsed.pathname.split("/").filter(Boolean);
     const idSeg = host === "player.vimeo.com" && segments[0] === "video" ? segments[1] : segments[0];
     if (!idSeg || !/^\d+$/.test(idSeg)) {
-      return { url: null, error: "Neplatné Vimeo video ID" };
+      return { url: null, error: "Invalid Vimeo video ID" };
     }
     return { url: `https://player.vimeo.com/video/${idSeg}` };
   }
 
-  return { url: null, error: "Podporované sú iba YouTube a Vimeo odkazy" };
+  return { url: null, error: "Only YouTube and Vimeo links are supported" };
 }
 
 export function VisualCourseBuilderView({ onBack }: Props) {
@@ -147,18 +147,18 @@ export function VisualCourseBuilderView({ onBack }: Props) {
 
   const saveCourse = async (publish: boolean) => {
     if (!title.trim() || !description.trim()) {
-      toast({ title: "Vyplň názov a popis", variant: "destructive" });
+      toast({ title: "Fill in the name and description", variant: "destructive" });
       return;
     }
     if (modules.length === 0) {
-      toast({ title: "Pridaj aspoň jeden modul", variant: "destructive" });
+      toast({ title: "Add at least one module", variant: "destructive" });
       return;
     }
     setSaving(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        toast({ title: "Musíš byť prihlásený", variant: "destructive" });
+        toast({ title: "You must be logged in", variant: "destructive" });
         setSaving(false);
         return;
       }
@@ -203,11 +203,11 @@ export function VisualCourseBuilderView({ onBack }: Props) {
       const { error: lessonsErr } = await supabase.from("course_lessons").insert(lessonRows);
       if (lessonsErr) throw lessonsErr;
 
-      toast({ title: publish ? "Kurz publikovaný 🎉" : "Kurz uložený ako koncept" });
+      toast({ title: publish ? "Course published 🎉" : "Course saved as draft" });
       navigate(`/tutorial-course/${course.id}`);
     } catch (e: any) {
       console.error(e);
-      toast({ title: "Chyba pri ukladaní", description: e.message, variant: "destructive" });
+      toast({ title: "Error saving", description: e.message, variant: "destructive" });
     } finally {
       setSaving(false);
     }
@@ -228,10 +228,10 @@ export function VisualCourseBuilderView({ onBack }: Props) {
         </div>
 
         <Card className="p-4 mb-4 space-y-3">
-          <Input placeholder="Názov kurzu *" value={title} onChange={e => setTitle(e.target.value)} />
+          <Input placeholder="Course name *" value={title} onChange={e => setTitle(e.target.value)} />
           <Textarea placeholder="Popis kurzu *" value={description} onChange={e => setDescription(e.target.value)} rows={3} />
           <div className="grid grid-cols-3 gap-2">
-            <Input placeholder="Kategória" value={category} onChange={e => setCategory(e.target.value)} />
+            <Input placeholder="Category" value={category} onChange={e => setCategory(e.target.value)} />
             <select value={difficulty} onChange={e => setDifficulty(e.target.value)} className="rounded-md border bg-background px-2 text-sm">
               <option value="beginner">Beginner</option>
               <option value="intermediate">Intermediate</option>
@@ -288,12 +288,12 @@ export function VisualCourseBuilderView({ onBack }: Props) {
                     <Input
                       value={mod.title}
                       onChange={(e) => updateModule(mod.id, { title: e.target.value })}
-                      placeholder="Názov modulu"
+                      placeholder="Module name"
                     />
                     <Textarea
                       value={mod.description || ""}
                       onChange={(e) => updateModule(mod.id, { description: e.target.value })}
-                      placeholder="Popis modulu (voliteľné)"
+                      placeholder="Module description (optional)"
                       rows={2}
                     />
                     <Input
@@ -309,7 +309,7 @@ export function VisualCourseBuilderView({ onBack }: Props) {
                         }
                         if (url && url !== v) updateModule(mod.id, { video_url: url });
                       }}
-                      placeholder="Video URL (YouTube/Vimeo, voliteľné)"
+                      placeholder="Video URL (YouTube/Vimeo, optional)"
                     />
                     {(() => {
                       const { url } = normalizeVideoUrl(mod.video_url || "");
@@ -318,7 +318,7 @@ export function VisualCourseBuilderView({ onBack }: Props) {
                         <div className="rounded-md overflow-hidden border bg-black aspect-video">
                           <iframe
                             src={url}
-                            title={`Náhľad: ${mod.title}`}
+                            title={`Preview: ${mod.title}`}
                             className="w-full h-full"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowFullScreen
@@ -353,7 +353,7 @@ export function VisualCourseBuilderView({ onBack }: Props) {
         <Card className="border-dashed border-2 border-emerald-500/30 mb-4">
           <CardContent className="py-4 px-4">
             <div className="flex gap-2">
-              <Input value={newTitle} onChange={e => setNewTitle(e.target.value)} placeholder="Nový modul..." className="flex-1 h-10" onKeyDown={e => e.key === "Enter" && addModule()} />
+              <Input value={newTitle} onChange={e => setNewTitle(e.target.value)} placeholder="New module..." className="flex-1 h-10" onKeyDown={e => e.key === "Enter" && addModule()} />
               <select value={newType} onChange={e => setNewType(e.target.value)} className="rounded-md border bg-background px-2 text-sm w-24">
                 <option value="video">Video</option>
                 <option value="document">Doc</option>
@@ -367,11 +367,11 @@ export function VisualCourseBuilderView({ onBack }: Props) {
         <div className="flex gap-2">
           <Button variant="outline" className="flex-1" onClick={() => saveCourse(false)} disabled={saving}>
             {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-            Uložiť koncept
+            Save draft
           </Button>
           <Button className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600" onClick={() => saveCourse(true)} disabled={saving}>
             {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-            Publikovať kurz
+            Publish course
           </Button>
         </div>
       </div>

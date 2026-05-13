@@ -44,14 +44,14 @@ export function TrendingCoursesView({ onBack }: Props) {
         </div>
         <div>
           <h2 className="text-2xl font-black">Trending Courses</h2>
-          <p className="text-sm text-muted-foreground">Najpopulárnejšie kurzy</p>
+          <p className="text-sm text-muted-foreground">Most popular courses</p>
         </div>
       </div>
 
       {loading ? (
         <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin" /></div>
       ) : courses.length === 0 ? (
-        <p className="text-center text-muted-foreground py-12">Zatiaľ žiadne publikované kurzy.</p>
+        <p className="text-center text-muted-foreground py-12">No courses published yet.</p>
       ) : (
         <div className="space-y-3">
           {courses.map((c, i) => {
@@ -68,7 +68,7 @@ export function TrendingCoursesView({ onBack }: Props) {
                     <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
                       <span className="flex items-center gap-1"><Users className="w-3 h-3" />{(c.total_enrollments || 0).toLocaleString()}</span>
                       <span className="flex items-center gap-1"><Star className="w-3 h-3 text-amber-500 fill-amber-500" />{(c.average_rating || 0).toFixed(1)}</span>
-                      <span className="flex items-center gap-1"><BookOpen className="w-3 h-3" />{c.total_lessons || 0} lekcií</span>
+                      <span className="flex items-center gap-1"><BookOpen className="w-3 h-3" />{c.total_lessons || 0} lessons</span>
                     </div>
                   </div>
                   <Badge className="bg-emerald-600 text-white font-bold shrink-0">€{Number(c.price).toFixed(2)}</Badge>

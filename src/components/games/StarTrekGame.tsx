@@ -5,16 +5,16 @@ import { ArrowLeft, Star, Trophy, Zap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const MISSIONS = [
-  { level: 1, name: "Prvý kontakt", enemies: 3, shields: 100 },
-  { level: 2, name: "Záchrana lode", enemies: 5, shields: 90 },
-  { level: 3, name: "Prieskum planéty", enemies: 7, shields: 80 },
-  { level: 4, name: "Diplomatická misia", enemies: 9, shields: 70 },
+  { level: 1, name: "First Contact", enemies: 3, shields: 100 },
+  { level: 2, name: "Ship Rescue", enemies: 5, shields: 90 },
+  { level: 3, name: "Planet Exploration", enemies: 7, shields: 80 },
+  { level: 4, name: "Diplomatic Mission", enemies: 9, shields: 70 },
   { level: 5, name: "Obrana stanice", enemies: 12, shields: 60 },
-  { level: 6, name: "Časový paradox", enemies: 15, shields: 50 },
-  { level: 7, name: "Borg útok", enemies: 18, shields: 40 },
-  { level: 8, name: "Warp anomália", enemies: 22, shields: 30 },
-  { level: 9, name: "Konečná bitka", enemies: 25, shields: 20 },
-  { level: 10, name: "Federácia víťazí", enemies: 30, shields: 10 },
+  { level: 6, name: "Temporal Paradox", enemies: 15, shields: 50 },
+  { level: 7, name: "Borg Attack", enemies: 18, shields: 40 },
+  { level: 8, name: "Warp Anomaly", enemies: 22, shields: 30 },
+  { level: 9, name: "Final Battle", enemies: 25, shields: 20 },
+  { level: 10, name: "Federation Triumphs", enemies: 30, shields: 10 },
 ];
 
 interface StarTrekGameProps {
@@ -49,8 +49,8 @@ export const StarTrekGame = ({ onBack }: StarTrekGameProps) => {
 
       if (newDestroyed >= mission.enemies) {
         toast({
-          title: "🚀 Misia úspešná!",
-          description: `${mission.name} dokončená!`,
+          title: "🚀 Mission successful!",
+          description: `${mission.name} completed!`,
         });
 
         setTimeout(() => {
@@ -58,8 +58,8 @@ export const StarTrekGame = ({ onBack }: StarTrekGameProps) => {
             nextLevel();
           } else {
             toast({
-              title: "🏆 Hrdina Federácie!",
-              description: "Dokončil si všetky misie!",
+              title: "🏆 Hero of the Federation!",
+              description: "You have completed all missions!",
             });
           }
         }, 1500);
@@ -71,8 +71,8 @@ export const StarTrekGame = ({ onBack }: StarTrekGameProps) => {
       
       if (newShields <= 0) {
         toast({
-          title: "💥 Loď zničená!",
-          description: "Skús to znova!",
+          title: "💥 Ship Destroyed!",
+          description: "Try again!",
           variant: "destructive",
         });
         setTimeout(resetLevel, 1500);
@@ -100,10 +100,10 @@ export const StarTrekGame = ({ onBack }: StarTrekGameProps) => {
         <div className="flex items-center justify-between mb-6">
           <Button onClick={onBack} variant="secondary">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Späť
+            Back
           </Button>
           <Button onClick={resetLevel} variant="secondary">
-            Reštart misie
+            Restart mission
           </Button>
         </div>
 
@@ -117,7 +117,7 @@ export const StarTrekGame = ({ onBack }: StarTrekGameProps) => {
               </div>
             </div>
             <div>
-              <div className="text-sm text-purple-300 mb-1">Štíty</div>
+              <div className="text-sm text-purple-300 mb-1">Shields</div>
               <div className="text-2xl font-bold text-cyan-400">{shields}%</div>
               <div className="w-full bg-slate-700 rounded-full h-2 mt-2">
                 <div 
@@ -127,7 +127,7 @@ export const StarTrekGame = ({ onBack }: StarTrekGameProps) => {
               </div>
             </div>
             <div>
-              <div className="text-sm text-purple-300 mb-1">Torpéda</div>
+              <div className="text-sm text-purple-300 mb-1">Torpedoes</div>
               <div className="text-2xl font-bold text-yellow-400 flex items-center justify-center gap-2">
                 <Zap className="h-5 w-5" />
                 {photonTorpedoes}
@@ -139,7 +139,7 @@ export const StarTrekGame = ({ onBack }: StarTrekGameProps) => {
             <div className="text-center mb-4">
               <h3 className="text-xl font-bold text-white mb-2">{mission.name}</h3>
               <p className="text-purple-300 text-sm">
-                Zničených nepriateľov: {enemiesDestroyed} / {mission.enemies}
+                Enemies destroyed: {enemiesDestroyed} / {mission.enemies}
               </p>
             </div>
 
@@ -162,7 +162,7 @@ export const StarTrekGame = ({ onBack }: StarTrekGameProps) => {
               disabled={shields <= 0}
             >
               <Zap className="h-6 w-6 mr-2" />
-              Vypáliť torpédo!
+              Fire torpedo!
             </Button>
           </div>
         </Card>

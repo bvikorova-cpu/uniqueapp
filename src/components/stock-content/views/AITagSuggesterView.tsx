@@ -47,7 +47,7 @@ export function AITagSuggesterView({ onBack }: Props) {
 
   const analyze = async () => {
     if (!imageDataUrl && !description.trim()) {
-      toast.error("Nahraj obrázok alebo zadaj popis");
+      toast.error("Upload an image or enter a description");
       return;
     }
     setLoading(true); setResult(null);
@@ -62,9 +62,9 @@ export function AITagSuggesterView({ onBack }: Props) {
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       setResult((data as any).result);
-      toast.success("Hotovo — AI navrhla metadáta");
+      toast.success("Done — AI suggested metadata");
     } catch (e: any) {
-      toast.error(e.message || "Nepodarilo sa analyzovať");
+      toast.error(e.message || "Failed to analyze");
     } finally {
       setLoading(false);
     }
@@ -82,13 +82,13 @@ export function AITagSuggesterView({ onBack }: Props) {
       result.best_use_cases?.length && `Use cases: ${result.best_use_cases.join(", ")}`,
     ].filter(Boolean).join("\n");
     navigator.clipboard.writeText(text);
-    toast.success("Skopírované do schránky");
+    toast.success("Copied to clipboard");
   };
 
   const copyTags = () => {
     if (!result?.tags?.length) return;
     navigator.clipboard.writeText(result.tags.join(", "));
-    toast.success("Tagy skopírované");
+    toast.success("Tags copied");
   };
 
   return (
@@ -105,9 +105,9 @@ export function AITagSuggesterView({ onBack }: Props) {
         <div className="flex items-center gap-3">
           <Sparkles className="w-10 h-10 text-cyan-500" />
           <div>
-            <h3 className="text-lg font-bold">Optimalizuj objaviteľnosť svojho obsahu</h3>
+            <h3 className="text-lg font-bold">Optimize your content's discoverability</h3>
             <p className="text-sm text-muted-foreground">
-              AI analyzuje obrázok alebo popis a navrhne titul, kategóriu, tagy a SEO kľúčové slová.
+              AI analyzes image or description and suggests title, category, tags, and SEO keywords.
             </p>
           </div>
         </div>
@@ -115,7 +115,7 @@ export function AITagSuggesterView({ onBack }: Props) {
 
       <Card className="p-4 space-y-4">
         <div>
-          <Label className="mb-2 block flex items-center gap-2"><ImageIcon className="w-4 h-4" /> Obrázok (voliteľné, max 5 MB)</Label>
+          <Label className="mb-2 block flex items-center gap-2"><ImageIcon className="w-4 h-4" /> Image (optional, max 5 MB)</Label>
           <div className="flex gap-3 items-start">
             <label className="flex-1">
               <Input type="file" accept="image/*" onChange={handleFile} />
@@ -127,7 +127,7 @@ export function AITagSuggesterView({ onBack }: Props) {
         </div>
 
         <div>
-          <Label className="mb-2 block">Popis obsahu (voliteľné)</Label>
+          <Label className="mb-2 block">Content description (optional)</Label>
           <Textarea
             placeholder="Napr. 'sunset over mountain lake with reflection, warm orange tones, peaceful mood'"
             value={description}
@@ -140,7 +140,7 @@ export function AITagSuggesterView({ onBack }: Props) {
           {loading ? (
             <><Sparkles className="w-4 h-4 mr-2 animate-spin" /> Analyzujem...</>
           ) : (
-            <><Sparkles className="w-4 h-4 mr-2" /> Vygenerovať tagy a metadáta</>
+            <><Sparkles className="w-4 h-4 mr-2" /> Generate tags and metadata</>
           )}
         </Button>
       </Card>
@@ -149,11 +149,11 @@ export function AITagSuggesterView({ onBack }: Props) {
         <Card className="p-6 space-y-4">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <h3 className="text-lg font-bold flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-cyan-500" /> AI návrhy
+              <Sparkles className="w-5 h-5 text-cyan-500" /> AI suggestions
             </h3>
             <div className="flex gap-2">
               <Button size="sm" variant="outline" onClick={copyTags}><Copy className="w-3 h-3 mr-1" /> Tagy</Button>
-              <Button size="sm" variant="outline" onClick={copyAll}><Copy className="w-3 h-3 mr-1" /> Všetko</Button>
+              <Button size="sm" variant="outline" onClick={copyAll}><Copy className="w-3 h-3 mr-1" /> All</Button>
             </div>
           </div>
 

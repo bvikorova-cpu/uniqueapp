@@ -18,8 +18,8 @@ interface StoryWizardFormProps {
 
 const LANGUAGES = [
   { value: 'english', label: '🇬🇧 English' },
-  { value: 'slovak', label: '🇸🇰 Slovenčina' },
-  { value: 'czech', label: '🇨🇿 Čeština' },
+  { value: 'slovak', label: '🇸🇰 Slovak' },
+  { value: 'czech', label: '🇨🇿 Czech' },
   { value: 'hungarian', label: '🇭🇺 Magyar' },
   { value: 'german', label: '🇩🇪 Deutsch' },
   { value: 'spanish', label: '🇪🇸 Español' },

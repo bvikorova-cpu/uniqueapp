@@ -122,10 +122,10 @@ export const KidsAcademyQuizArena = () => {
               </div>
               <Button size="sm" variant="outline" className="text-xs" onClick={() => {
                 const joined = JSON.parse(localStorage.getItem("kids_quiz_tournaments_joined") || "[]");
-                if (joined.includes(tournament.name)) { toast.info("Už si zapojený"); return; }
+                if (joined.includes(tournament.name)) { toast.info("You are already involved"); return; }
                 joined.push(tournament.name);
                 localStorage.setItem("kids_quiz_tournaments_joined", JSON.stringify(joined));
-                toast.success(`Zapojený do "${tournament.name}"!`);
+                toast.success(`Joined "${tournament.name}"!`);
               }}>
                 <Crown className="w-3 h-3 mr-1" />
                 Join

@@ -160,8 +160,8 @@ export const CandyCrush = ({ onBack }: CandyCrushProps) => {
 
     if (score >= levelData.target) {
       toast({
-        title: "🎉 Úroveň dokončená!",
-        description: `Získal si ${score} bodov!`,
+        title: "🎉 Level completed!",
+        description: `You scored ${score} points!`,
       });
 
       if (currentLevel < LEVELS.length - 1) {
@@ -171,13 +171,13 @@ export const CandyCrush = ({ onBack }: CandyCrushProps) => {
       } else {
         toast({
           title: "🏆 Gratulujeme!",
-          description: "Dokončil si všetky úrovne!",
+          description: "You have completed all levels!",
         });
       }
     } else if (moves === 0) {
       toast({
         title: "Koniec hry",
-        description: "Minuli sa ti ťahy. Skús znova!",
+        description: "You ran out of moves. Try again!",
         variant: "destructive",
       });
     }
@@ -191,7 +191,7 @@ export const CandyCrush = ({ onBack }: CandyCrushProps) => {
         <div className="flex items-center justify-between mb-6">
           <Button onClick={onBack} variant="secondary">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Späť
+            Back
           </Button>
           <Button onClick={initializeGrid} variant="secondary">
             <RotateCcw className="h-4 w-4 mr-2" />
@@ -202,18 +202,18 @@ export const CandyCrush = ({ onBack }: CandyCrushProps) => {
         <Card className="p-6 mb-6">
           <div className="grid grid-cols-3 gap-4 text-center">
             <div>
-              <div className="text-sm text-muted-foreground mb-1">Úroveň</div>
+              <div className="text-sm text-muted-foreground mb-1">Level</div>
               <div className="text-2xl font-bold flex items-center justify-center gap-2">
                 <Star className="h-5 w-5 text-yellow-500" />
                 {levelData.level}
               </div>
             </div>
             <div>
-              <div className="text-sm text-muted-foreground mb-1">Skóre</div>
+              <div className="text-sm text-muted-foreground mb-1">Score</div>
               <div className="text-2xl font-bold">{score} / {levelData.target}</div>
             </div>
             <div>
-              <div className="text-sm text-muted-foreground mb-1">Ťahy</div>
+              <div className="text-sm text-muted-foreground mb-1">Moves</div>
               <div className="text-2xl font-bold">{moves}</div>
             </div>
           </div>

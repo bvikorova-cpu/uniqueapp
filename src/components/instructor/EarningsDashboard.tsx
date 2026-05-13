@@ -201,37 +201,37 @@ export function EarningsDashboard() {
           {!connectStatus?.hasAccount ? (
             <div className="space-y-4">
               <p className="text-sm text-muted-foreground">
-                Pripojte svoj Stripe účet pre priame výplaty. Stripe spracuje vaše platby a pošle zisky priamo na váš bankový účet.
+                Connect your Stripe account for direct payouts. Stripe processes your payments and sends earnings directly to your bank account.
               </p>
               <Button onClick={startOnboarding} disabled={connectLoading}>
-                {connectLoading ? "Načítava sa..." : "Pripojiť Stripe účet"}
+                {connectLoading ? "Loading..." : "Connect Stripe account"}
               </Button>
             </div>
           ) : !connectStatus.onboardingComplete ? (
             <div className="space-y-4">
               <div className="flex items-center gap-2 text-yellow-600">
                 <AlertCircle className="h-4 w-4" />
-                <span className="text-sm font-medium">Onboarding nie je dokončený</span>
+                <span className="text-sm font-medium">Onboarding is not completed</span>
               </div>
               <p className="text-sm text-muted-foreground">
-                Dokončite nastavenie vášho Stripe účtu pre prijímanie platieb.
+                Complete your Stripe account setup to receive payments.
               </p>
               <Button onClick={startOnboarding} disabled={connectLoading}>
-                {connectLoading ? "Načítava sa..." : "Dokončiť nastavenie"}
+                {connectLoading ? "Loading..." : "Complete setup"}
               </Button>
             </div>
           ) : (
             <div className="space-y-4">
               <div className="flex items-center gap-2 text-green-600">
                 <CheckCircle className="h-4 w-4" />
-                <span className="text-sm font-medium">Účet je aktívny</span>
+                <span className="text-sm font-medium">Account is active</span>
               </div>
               <p className="text-sm text-muted-foreground">
-                Váš Stripe účet je pripojený a pripravený prijímať platby.
+                Your Stripe account is connected and ready to receive payments.
               </p>
               <Button variant="outline" onClick={openDashboard} disabled={connectLoading}>
                 <ExternalLink className="h-4 w-4 mr-2" />
-                Otvoriť Stripe Dashboard
+                Open Stripe Dashboard
               </Button>
             </div>
           )}

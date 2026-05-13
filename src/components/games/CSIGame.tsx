@@ -7,70 +7,70 @@ import { useToast } from "@/hooks/use-toast";
 const CASES = [
   { 
     level: 1, 
-    name: "Krádež v múzeu", 
+    name: "Museum Heist",
     clues: ["🔍", "👟", "🔑"], 
     scene: "🏛️",
     required: 3 
   },
   { 
     level: 2, 
-    name: "Zmiznutie podnikateľa", 
+    name: "Disappearance of the Entrepreneur",
     clues: ["📱", "💼", "🚗", "🔐"], 
     scene: "🏢",
     required: 4 
   },
   { 
     level: 3, 
-    name: "Tajomný požiar", 
+    name: "Mysterious Fire",
     clues: ["🔥", "⛽", "🧯", "👣", "📸"], 
     scene: "🏭",
     required: 5 
   },
   { 
     level: 4, 
-    name: "Únos celebrity", 
+    name: "Celebrity Kidnapping",
     clues: ["📧", "💰", "🎥", "🚙", "📍", "🧤"], 
     scene: "🎬",
     required: 6 
   },
   { 
     level: 5, 
-    name: "Vražda v penthouse", 
+    name: "Murder in the Penthouse",
     clues: ["🔪", "💉", "🍷", "📄", "👔", "🩸", "⌚"], 
     scene: "🏙️",
     required: 7 
   },
   { 
     level: 6, 
-    name: "Kybernetický útok", 
+    name: "Cyberattack",
     clues: ["💻", "🔌", "📡", "💾", "🔐", "📊", "🖥️", "🔑"], 
     scene: "🏦",
     required: 8 
   },
   { 
     level: 7, 
-    name: "Sériový lupič", 
+    name: "Serial Robber",
     clues: ["💎", "🎭", "🧰", "🔦", "📹", "🚨", "🧲", "🗝️", "📋"], 
     scene: "💍",
     required: 9 
   },
   { 
     level: 8, 
-    name: "Falšovanie dokumentov", 
+    name: "Forgery of Documents",
     clues: ["🖊️", "📜", "🔬", "💵", "🖨️", "📑", "🔍", "✒️", "🎨", "📏"], 
     scene: "⚖️",
     required: 10 
   },
   { 
     level: 9, 
-    name: "Organizovaný zločin", 
+    name: "Organized Crime",
     clues: ["💰", "📞", "🔫", "🚁", "💼", "🗂️", "📡", "🎰", "🚢", "🌐", "💳"], 
     scene: "🏴‍☠️",
     required: 11 
   },
   { 
     level: 10, 
-    name: "Záverečný prípad", 
+    name: "Final Case",
     clues: ["🕵️", "🔐", "💻", "📸", "🧬", "🔬", "📊", "🗝️", "💡", "🎯", "🏆", "⚡"], 
     scene: "🏛️",
     required: 12 
@@ -106,8 +106,8 @@ export const CSIGame = ({ onBack }: CSIGameProps) => {
   useEffect(() => {
     if (timeLeft <= 0) {
       toast({
-        title: "⏰ Čas vypršal!",
-        description: "Skús prípad znova!",
+        title: "⏰ Time expired!",
+        description: "Try the case again!",
         variant: "destructive",
       });
       setTimeout(resetLevel, 1500);
@@ -129,8 +129,8 @@ export const CSIGame = ({ onBack }: CSIGameProps) => {
 
     if (newFoundClues.length >= caseData.required) {
       toast({
-        title: "🎉 Prípad vyriešený!",
-        description: `${caseData.name} uzavretý!`,
+        title: "🎉 Case solved!",
+        description: `${caseData.name} closed!`,
       });
 
       setTimeout(() => {
@@ -138,8 +138,8 @@ export const CSIGame = ({ onBack }: CSIGameProps) => {
           nextLevel();
         } else {
           toast({
-            title: "🏆 Hlavný detektív!",
-            description: "Vyriešil si všetky prípady!",
+            title: "🏆 Chief Detective!",
+            description: "You have solved all cases!",
           });
         }
       }, 1500);
@@ -166,17 +166,17 @@ export const CSIGame = ({ onBack }: CSIGameProps) => {
         <div className="flex items-center justify-between mb-6">
           <Button onClick={onBack} variant="secondary">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Späť
+            Back
           </Button>
           <Button onClick={resetLevel} variant="secondary">
-            Nový pokus
+            New attempt
           </Button>
         </div>
 
         <Card className="p-6 mb-6 bg-slate-800/90 backdrop-blur border-blue-500/50">
           <div className="grid grid-cols-3 gap-4 text-center mb-4">
             <div>
-              <div className="text-sm text-blue-300 mb-1">Prípad</div>
+              <div className="text-sm text-blue-300 mb-1">Case</div>
               <div className="text-2xl font-bold text-white flex items-center justify-center gap-2">
                 <Star className="h-5 w-5 text-yellow-500" />
                 {caseData.level}
@@ -189,7 +189,7 @@ export const CSIGame = ({ onBack }: CSIGameProps) => {
               </div>
             </div>
             <div>
-              <div className="text-sm text-blue-300 mb-1">Čas</div>
+              <div className="text-sm text-blue-300 mb-1">Time</div>
               <div className={`text-2xl font-bold ${timeLeft < 20 ? 'text-red-400' : 'text-blue-400'}`}>
                 {timeLeft}s
               </div>
@@ -203,7 +203,7 @@ export const CSIGame = ({ onBack }: CSIGameProps) => {
                 {caseData.name}
               </h3>
               <p className="text-blue-300 text-sm">
-                Nájdi všetky stopy na mieste činu!
+                Find all clues at the crime scene!
               </p>
             </div>
 
@@ -233,7 +233,7 @@ export const CSIGame = ({ onBack }: CSIGameProps) => {
             <div className="bg-slate-900/50 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <CheckCircle className="h-5 w-5 text-green-400" />
-                <span className="text-white font-semibold">Nájdené stopy:</span>
+                <span className="text-white font-semibold">Clues found:</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {foundClues.map((clue, i) => (

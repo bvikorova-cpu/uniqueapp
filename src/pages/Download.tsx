@@ -12,36 +12,36 @@ interface DownloadFile {
 
 const files: DownloadFile[] = [
   {
-    name: "Brožúra SK (PDF)",
-    description: "Slovenská verzia brožúry UNIQUE",
+    name: "Brochure SK (PDF)",
+    description: "Slovak version of the UNIQUE brochure",
     url: "/downloads/brozura-SK.pdf",
     size: "4.7 MB",
     type: "pdf",
   },
   {
-    name: "Brožúra EN (PDF)",
+    name: "Brochure EN (PDF)"
     description: "English version of UNIQUE brochure",
     url: "/downloads/brozura-EN.pdf",
     size: "4.7 MB",
     type: "pdf",
   },
   {
-    name: "Brožúra HU (PDF)",
-    description: "Magyar UNIQUE brosúra",
+    name: "Brochure HU (PDF)"
+    description: "Magyar UNIQUE brosúra"
     url: "/downloads/brozura-HU.pdf",
     size: "4.7 MB",
     type: "pdf",
   },
   {
-    name: "Brožúra SK (ZIP)",
-    description: "Slovenská brožúra zabalená v ZIP",
+    name: "Brochure SK (ZIP)"
+    description: "Slovak brochure packed in ZIP"
     url: "/downloads/brozura-SK.zip",
     size: "4.0 MB",
     type: "zip",
   },
   {
-    name: "Všetky jazyky (ZIP)",
-    description: "SK + EN + HU brožúry v jednom ZIP archíve",
+    name: "All languages (ZIP)"
+    description: "SK + EN + HU brochures in one ZIP archive"
     url: "/downloads/brozury-vsetky-jazyky.zip",
     size: "12 MB",
     type: "zip",
@@ -55,10 +55,10 @@ export default function Download() {
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-10">
           <h1 className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            Stiahnuť súbory
+            Download files
           </h1>
           <p className="text-muted-foreground text-lg">
-            Klikni na „Stiahnuť" pre okamžité stiahnutie do zariadenia
+            Click on "Download" for immediate download to your device
           </p>
         </div>
 
@@ -89,7 +89,7 @@ export default function Download() {
                     rel="noopener noreferrer"
                   >
                     <DownloadIcon className="w-4 h-4 mr-2" />
-                    Stiahnuť
+                    Download
                   </a>
                 </Button>
               </Card>
@@ -98,8 +98,8 @@ export default function Download() {
         </div>
 
         <p className="text-center text-xs text-muted-foreground mt-8">
-          Tip: Ak sa súbor otvorí namiesto stiahnutia, podrž prst na tlačidle
-          a vyber „Stiahnuť odkaz".
+          Tip: If the file opens instead of downloading, long-press the button
+          and select "Download link".
         </p>
       </div>
     </div>
