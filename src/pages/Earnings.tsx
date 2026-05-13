@@ -57,6 +57,7 @@ const Earnings = () => {
     monthEarnings: 0,
     totalSales: 0,
   });
+  const [lastMonthEarnings, setLastMonthEarnings] = useState(0);
   const [loading, setLoading] = useState(true);
   const [hasPayoutMethod, setHasPayoutMethod] = useState(false);
   const [stripeConnect, setStripeConnect] = useState<{ enabled: boolean; reason: string | null }>({ enabled: true, reason: null });
