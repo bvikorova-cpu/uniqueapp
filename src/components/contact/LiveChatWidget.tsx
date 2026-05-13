@@ -116,8 +116,8 @@ export const LiveChatWidget = () => {
           <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3">
             {messages.length === 0 && (
               <div className="text-sm text-muted-foreground space-y-2">
-                <p>👋 Ahoj! Som AI asistent Unique. Spýtaj sa ma na čokoľvek — účet, kredity, predplatné, výplaty.</p>
-                <p className="text-xs">Ak potrebuješ človeka, pošli ticket cez formulár nižšie.</p>
+                <p>👋 Hi! I'm the Unique AI assistant. Ask me anything — account, credits, subscriptions, payouts.</p>
+                <p className="text-xs">If you need a human, please submit a ticket via the form below.</p>
               </div>
             )}
             {messages.map((m, i) => (
@@ -155,7 +155,7 @@ export const LiveChatWidget = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), send())}
-              placeholder="Napíš správu…"
+              placeholder="Type a message…"
               disabled={loading}
             />
             <Button onClick={send} disabled={loading || !input.trim()} size="icon" className="bg-gradient-to-br from-primary to-accent">
