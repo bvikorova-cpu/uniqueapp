@@ -16,6 +16,7 @@ import { SavedSearchesDialog } from "@/components/wall/SavedSearchesDialog";
 import { GroupChatDialog } from "@/components/wall/GroupChatDialog";
 import { ProfileCustomizationDialog } from "@/components/profile/ProfileCustomizationDialog";
 import { SmartFeedTabs, type FeedTab } from "@/components/wall/SmartFeedTabs";
+import { SpacesDialog } from "@/components/wall/SpacesDialog";
 import { useForYouRanking } from "@/hooks/useForYouRanking";
 import { useUserMutes } from "@/hooks/useUserMutes";
 import { useTranslation } from "react-i18next";
