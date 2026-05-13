@@ -624,6 +624,7 @@ const Feed = () => {
                     <CreatorWebhooksDialog />
                     <AccessibilityFieldsDialog />
                     <OfflineStatusIndicator />
+                    <PushNotificationToggle showLabel={false} />
                   </div>
 
                   {/* Notes / Status Bar (24h ephemeral) */}
