@@ -39,14 +39,14 @@ interface Lobby {
 
 const defaultLobbies: Lobby[] = [
   { id: "1", name: "Turnaj #1", game: "Brain Duel", players: 6, maxPlayers: 8, isPrivate: false, host: "Peter" },
-  { id: "2", name: "Friends", game: "Trivia", players: 4, maxPlayers: 4, isPrivate: true, host: "Mária" },
-  { id: "3", name: "New Players", game: "Brain Duel", players: 2, maxPlayers: 8, isPrivate: false, host: "Ján" },
+  { id: "2", name: "Friends", game: "Trivia", players: 4, maxPlayers: 4, isPrivate: true, host: "Maria" },
+  { id: "3", name: "New Players", game: "Brain Duel", players: 2, maxPlayers: 8, isPrivate: false, host: "Jan" },
 ];
 
 const defaultPlayers: Player[] = [
   { id: "1", name: "Peter K.", level: 42, isReady: true, isHost: true },
-  { id: "2", name: "Mária S.", level: 38, isReady: true, isHost: false },
-  { id: "3", name: "Ján H.", level: 25, isReady: false, isHost: false },
+  { id: "2", name: "Maria S.", level: 38, isReady: true, isHost: false },
+  { id: "3", name: "Jan H.", level: 25, isReady: false, isHost: false },
   { id: "4", name: "Vy", level: 15, isReady: false, isHost: false },
 ];
 
@@ -56,7 +56,7 @@ export const MultiplayerLobby = () => {
   const [players, setPlayers] = useState(defaultPlayers);
   const [chatMessages, setChatMessages] = useState<{ user: string; message: string }[]>([
     { user: "Peter K.", message: "Hi everyone!" },
-    { user: "Mária S.", message: "I'm ready 👍" },
+    { user: "Maria S.", message: "I'm ready 👍" },
   ]);
   const [newMessage, setNewMessage] = useState("");
 

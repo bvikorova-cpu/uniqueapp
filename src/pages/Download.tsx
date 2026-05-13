@@ -27,7 +27,7 @@ const files: DownloadFile[] = [
   },
   {
     name: "Brochure HU (PDF)"
-    description: "Magyar UNIQUE brosúra"
+    description: "Hungarian UNIQUE brochure"
     url: "/downloads/brozura-HU.pdf",
     size: "4.7 MB",
     type: "pdf",

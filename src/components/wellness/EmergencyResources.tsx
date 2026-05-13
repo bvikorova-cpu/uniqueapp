@@ -15,7 +15,7 @@ interface EmergencyResource {
 
 const defaultResources: EmergencyResource[] = [
   {
-    name: 'Nezábudka Trust Line (SK)',
+    name: 'Forget-Me-Not Trust Line (SK)',
     description: '24/7 anonymous psychological help in crisis situations',
     phone: '0800 800 566',
     available: '24/7',

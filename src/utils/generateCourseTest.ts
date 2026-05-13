@@ -15,7 +15,7 @@ export const generateCourseTest = (topics: Topic[]): TestQuestion[] => {
 
     // Extract key information from topic title and content
     const topicNumber = index + 1;
-    const topicTitle = topic.title.replace(/^Téma \d+:\s*/, '');
+    const topicTitle = topic.title.replace(/^Topic \d+:\s*/, '');
     
     // Generate questions based on topic content
     const contentLines = topic.content.split('\n').filter(line => line.trim());
@@ -31,8 +31,8 @@ export const generateCourseTest = (topics: Topic[]): TestQuestion[] => {
           question: `What is the main topic of the ${topicNumber}. part of the course?`,
           options: [
             topicTitle,
-            index > 0 ? topics[index - 1].title.replace(/^Téma \d+:\s*/, '') : 'Other topic',
-            index < topics.length - 1 ? topics[index + 1].title.replace(/^Téma \d+:\s*/, '') : 'Conclusion',
+            index > 0 ? topics[index - 1].title.replace(/^Topic \d+:\s*/, '') : 'Other topic',
+            index < topics.length - 1 ? topics[index + 1].title.replace(/^Topic \d+:\s*/, '') : 'Conclusion',
             'All topics'
           ],
           correct: 0
@@ -59,7 +59,7 @@ export const generateCourseTest = (topics: Topic[]): TestQuestion[] => {
     const topic = topics[randomIndex];
     
     questions.push({
-      question: `Which topic contains information about "${topic.title.replace(/^Téma \d+:\s*/, '')}"?`,
+      question: `Which topic contains information about "${topic.title.replace(/^Topic \d+:\s*/, '')}"?`,
       options: [
         `Topic ${randomIndex + 1}`,
         `Topic ${randomIndex > 0 ? randomIndex : randomIndex + 2}`,

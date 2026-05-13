@@ -79,25 +79,25 @@ export const generateRoomPanorama = async (
 export const mysteryDetectiveRooms: RoomData[] = [
   {
     id: 0,
-    name: "Detektívna kancelária",
-    description: "Vstúpil si do starej detektívnej kancelárie. Na stole leží nedokončený prípad...",
+    name: "Detective's Office",
+    description: "You've entered an old detective's office. An unfinished case lies on the desk...",
     panoramaUrl: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=2048",
     hotspots: [
       {
         id: "desk-drawer",
         position: angleToPosition(45, -15),
         type: "puzzle",
-        label: "Zamknutá zásuvka",
+        label: "Locked drawer",
         puzzle: {
           type: "code",
-          question: "Zásuvka je zamknutá 4-ciferným kódom. Na kalendári je zakrúžkovaný dátum: 15. december. Aký je kód?",
-          hint: "Dátum v číslach: deň a mesiac",
+          question: "The drawer is locked with a 4-digit code. A date is circled on the calendar: December 15. What is the code?",
+          hint: "Date in numbers: day and month",
           answer: "1512",
           reward: {
             id: "magnifier",
             name: "Lupa",
             icon: "🔍",
-            description: "Stará detektívna lupa. Možno odhalí skryté stopy."
+            description: "An old detective's magnifying glass. Perhaps it will reveal hidden clues."
           }
         }
       },
@@ -105,8 +105,8 @@ export const mysteryDetectiveRooms: RoomData[] = [
         id: "bookshelf",
         position: angleToPosition(-60, 10),
         type: "clue",
-        label: "Knižnica",
-        description: "Medzi knihami nájdeš poznámku: 'Heslo je meno prvého prezidenta USA'"
+        label: "Bookshelf",
+        description: "Among the books, you find a note: 'The password is the name of the first president of the USA'"
       },
       {
         id: "safe",
@@ -115,14 +115,14 @@ export const mysteryDetectiveRooms: RoomData[] = [
         label: "Trezor",
         puzzle: {
           type: "riddle",
-          question: "Zadaj heslo pre otvorenie trezoru. (Nápoveda: Pozri sa na knižnicu)",
+          question: "Enter the password to open the safe. (Hint: Look at the bookshelf)",
           hint: "George...",
           answer: "washington",
           reward: {
             id: "key-gold",
-            name: "Zlatý kľúč",
+            name: "Golden key",
             icon: "🔑",
-            description: "Ozdobný zlatý kľúč. Otvára hlavné dvere."
+            description: "An ornate golden key. It opens the main door."
           }
         }
       },
@@ -131,13 +131,13 @@ export const mysteryDetectiveRooms: RoomData[] = [
         position: angleToPosition(-120, 20),
         type: "clue",
         label: "Okno",
-        description: "Z okna vidíš tmavú uličku. Na skle je napísané 'ROMA' - ale zdá sa to byť zrkadlovo obrátené..."
+        description: "Through the window, you see a dark alley. 'ROMA' is written on the glass - but it appears to be mirrored..."
       },
       {
         id: "exit-door",
         position: angleToPosition(0, 0),
         type: "door",
-        label: "Východ do chodby",
+        label: "Exit to the hallway",
         requiredItem: "key-gold",
         nextRoom: 1
       }
@@ -145,25 +145,25 @@ export const mysteryDetectiveRooms: RoomData[] = [
   },
   {
     id: 1,
-    name: "Tajná chodba",
-    description: "Temná chodba s niekoľkými dverami. Jedna z nich vedie k úniku...",
+    name: "Secret Passage",
+    description: "A dark corridor with several doors. One of them leads to escape...",
     panoramaUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=2048",
     hotspots: [
       {
         id: "painting",
         position: angleToPosition(90, 15),
         type: "puzzle",
-        label: "Starý obraz",
+        label: "Old painting",
         puzzle: {
           type: "cipher",
-          question: "Pod obrazom je šifra: 'DPEFS'. Každé písmeno je posunuté o 1. Aké je skutočné slovo?",
-          hint: "A→Z, B→A, C→B... posuň každé písmeno späť",
+          question: "Under the painting is a cipher: 'DPEFS'. Each letter is shifted by 1. What is the real word?",
+          hint: "A→Z, B→A, C→B... shift each letter back",
           answer: "CODES",
           reward: {
             id: "paper-code",
-            name: "Papier s kódom",
+            name: "Paper with code",
             icon: "📜",
-            description: "Papier s číslami: 7-3-9"
+            description: "Paper with numbers: 7-3-9"
           }
         }
       },
@@ -174,26 +174,26 @@ export const mysteryDetectiveRooms: RoomData[] = [
         label: "Socha",
         item: {
           id: "gem-red",
-          name: "Červený drahokam",
+          name: "Red gemstone",
           icon: "💎",
-          description: "Trblietavý rubín. Zdá sa, že niekam patrí."
+          description: "A glittering ruby. It seems to belong somewhere."
         }
       },
       {
         id: "locked-cabinet",
         position: angleToPosition(135, 0),
         type: "lock",
-        label: "Zamknutá skrinka",
+        label: "Locked cabinet",
         puzzle: {
           type: "combination",
-          question: "Skrinka má kombinačný zámok. Potrebuješ 3 čísla. (Pozri sa na papier s kódom)",
-          hint: "Čísla z papiera, ktorý si našiel",
+          question: "The cabinet has a combination lock. You need 3 numbers. (Look at the paper with the code)",
+          hint: "Numbers from the paper you found",
           answer: "739",
           reward: {
             id: "key-silver",
-            name: "Strieborný kľúč",
+            name: "Silver key",
             icon: "🗝️",
-            description: "Strieborný kľúč s ozdobnou hlavou."
+            description: "A silver key with an ornate head."
           }
         }
       },
@@ -201,7 +201,7 @@ export const mysteryDetectiveRooms: RoomData[] = [
         id: "final-door",
         position: angleToPosition(0, 0),
         type: "door",
-        label: "Únikové dvere",
+        label: "Escape door",
         requiredItem: "key-silver",
         nextRoom: 2
       }
@@ -209,19 +209,19 @@ export const mysteryDetectiveRooms: RoomData[] = [
   },
   {
     id: 2,
-    name: "Miestnosť slobody",
-    description: "Posledná miestnosť! Stačí vyriešiť poslednú hádanku a unikneš!",
+    name: "Freedom Room",
+    description: "The last room! Just solve the final puzzle and you'll escape!",
     panoramaUrl: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=2048",
     hotspots: [
       {
         id: "final-puzzle",
         position: angleToPosition(0, 0),
         type: "puzzle",
-        label: "Posledná hádanka",
+        label: "Last puzzle",
         puzzle: {
           type: "riddle",
-          question: "Mám kľúče, ale žiadny zámok. Mám medzeru, ale žiadnu miestnosť. Môžeš vstúpiť, ale nemôžeš ísť von. Čo som?",
-          hint: "Používaš to každý deň na počítači...",
+          question: "I have keys, but no lock. I have space, but no room. You can enter, but you can't go out. What am I?",
+          hint: "You use it every day on your computer...",
           answer: "klavesnica"
         }
       },
@@ -231,13 +231,13 @@ export const mysteryDetectiveRooms: RoomData[] = [
         type: "lock",
         label: "Otvor pre drahokam",
         requiredItem: "gem-red",
-        description: "Dvere sa otvorili! Rubín aktivoval mechanizmus."
+        description: "The doors opened! The ruby activated the mechanism."
       },
       {
         id: "escape-door",
         position: angleToPosition(-30, 0),
         type: "door",
-        label: "ÚNIK!",
+        label: "ESCAPE!",
         nextRoom: 999 // Signals completion
       }
     ]
@@ -248,25 +248,25 @@ export const mysteryDetectiveRooms: RoomData[] = [
 export const horrorRooms: RoomData[] = [
   {
     id: 0,
-    name: "Opustená nemocnica",
-    description: "Prebúdzaš sa v starej opustenej nemocnici. Svetlá blikajú...",
+    name: "Abandoned Hospital",
+    description: "You wake up in an old abandoned hospital. Lights are flickering...",
     panoramaUrl: "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?w=2048",
     hotspots: [
       {
         id: "medical-chart",
         position: angleToPosition(30, 10),
         type: "puzzle",
-        label: "Lekárska karta",
+        label: "Medical chart",
         puzzle: {
           type: "code",
-          question: "Na karte je napísané: 'Pacient #666 - Izba 13'. Kombinácia je súčet týchto čísel.",
+          question: "The chart says: 'Patient #666 - Room 13'. The combination is the sum of these numbers.",
           hint: "666 + 13 = ?",
           answer: "679",
           reward: {
             id: "scalpel",
             name: "Skalpel",
             icon: "🔪",
-            description: "Ostrý chirurgický nástroj. Môže prerezať niečo..."
+            description: "A sharp surgical instrument. It might cut something..."
           }
         }
       },
@@ -274,26 +274,26 @@ export const horrorRooms: RoomData[] = [
         id: "body-bag",
         position: angleToPosition(-90, -20),
         type: "clue",
-        label: "Čierny vak",
-        description: "Na vaku je visačka: 'MORTE' - latinsky smrť. Posledné písmeno je E."
+        label: "Black bag",
+        description: "There's a tag on the bag: 'MORTE' - Latin for death. The last letter is E."
       },
       {
         id: "medicine-cabinet",
         position: angleToPosition(120, 5),
         type: "item",
-        label: "Lekárnička",
+        label: "First aid kit",
         item: {
           id: "syringe",
-          name: "Striekačka",
+          name: "Syringe",
           icon: "💉",
-          description: "Prázdna striekačka. Možno sa na niečo hodí."
+          description: "An empty syringe. It might be useful for something."
         }
       },
       {
         id: "exit",
         position: angleToPosition(180, 0),
         type: "door",
-        label: "Núdzový východ",
+        label: "Emergency exit",
         requiredItem: "scalpel",
         nextRoom: 1
       }
@@ -301,25 +301,25 @@ export const horrorRooms: RoomData[] = [
   },
   {
     id: 1,
-    name: "Temná chodba",
-    description: "Dlhá chodba plná tieňov. Počuješ kroky za sebou...",
+    name: "Dark Hallway",
+    description: "A long corridor full of shadows. You hear footsteps behind you...",
     panoramaUrl: "https://images.unsplash.com/photo-1505577058444-a3dab90d4253?w=2048",
     hotspots: [
       {
         id: "number-wall",
         position: angleToPosition(45, 0),
         type: "puzzle",
-        label: "Čísla na stene",
+        label: "Numbers on the wall",
         puzzle: {
           type: "sequence",
-          question: "Na stene sú čísla: 2, 4, 8, 16, ?. Aké je ďalšie číslo?",
-          hint: "Každé číslo je dvojnásobok predchádzajúceho",
+          question: "There are numbers on the wall: 2, 4, 8, 16, ?. What is the next number?"
+          hint: "Each number is double the previous one",
           answer: "32",
           reward: {
             id: "flashlight",
             name: "Baterka",
             icon: "🔦",
-            description: "Slabá baterka. Osvetlí tmavé miesta."
+            description: "Weak flashlight. It illuminates dark places."
           }
         }
       },
@@ -327,8 +327,8 @@ export const horrorRooms: RoomData[] = [
         id: "blood-writing",
         position: angleToPosition(-60, 15),
         type: "clue",
-        label: "Nápis krvou",
-        description: "Na stene je napísané: 'BEŽI' - ale posledné písmeno je rozmazané. Bolo to I alebo U?"
+        label: "Writing in blood",
+        description: "On the wall is written: 'BEŽI' - but the last letter is smudged. Was it I or U?"
       },
       {
         id: "corpse-hand",
@@ -337,14 +337,14 @@ export const horrorRooms: RoomData[] = [
         label: "Mŕtva ruka",
         puzzle: {
           type: "riddle",
-          question: "Mŕtva ruka drží papier: 'Som živý bez dychu, studený ale horúci strachy. Čo som?'",
-          hint: "Niečo mŕtve, čo sa hýbe...",
+          question: "A dead hand holds a paper: 'I am alive without breath, cold but hot with fears. What am I?'",
+          hint: "Something dead that moves...",
           answer: "zombie",
           reward: {
             id: "key-bloody",
-            name: "Zakrvavený kľúč",
+            name: "Bloody key",
             icon: "🗝️",
-            description: "Kľúč pokrytý zaschlou krvou."
+            description: "Key covered in dried blood."
           }
         }
       },
@@ -352,7 +352,7 @@ export const horrorRooms: RoomData[] = [
         id: "morgue-door",
         position: angleToPosition(0, 0),
         type: "door",
-        label: "Dvere do márnice",
+        label: "Door to the morgue",
         requiredItem: "key-bloody",
         nextRoom: 2
       }
@@ -360,19 +360,19 @@ export const horrorRooms: RoomData[] = [
   },
   {
     id: 2,
-    name: "Márnica",
-    description: "Posledná miestnosť. Chladné vzduchy a ticho. Jediný spôsob von...",
+    name: "Morgue",
+    description: "The last room. Cold air and silence. The only way out...",
     panoramaUrl: "https://images.unsplash.com/photo-1509248961725-aec71f4e848e?w=2048",
     hotspots: [
       {
         id: "autopsy-table",
         position: angleToPosition(30, -10),
         type: "puzzle",
-        label: "Pitevný stôl",
+        label: "Autopsy table",
         puzzle: {
           type: "cipher",
-          question: "Na stole je správa: 'GSRH RH GSV VCR'. Je to Atbash šifra (A=Z, B=Y...). Čo to znamená?",
-          hint: "THIS IS THE EX... preložené: TOTO JE VÝ...",
+          question: "There is a message on the table: 'GSRH RH GSV VCR'. It's an Atbash cipher (A=Z, B=Y...). What does it mean?",
+          hint: "THIS IS THE EX... translated: THIS IS THE EX...",
           answer: "exit"
         }
       },
@@ -380,17 +380,17 @@ export const horrorRooms: RoomData[] = [
         id: "freezer-drawer",
         position: angleToPosition(-45, 0),
         type: "lock",
-        label: "Mraziaca zásuvka",
+        label: "Freezer drawer",
         puzzle: {
           type: "code",
-          question: "Zásuvka má 4-miestny kód. Nápoveda: 'Rok keď vznikla Frankenšteinova príšera'",
+          question: "The drawer has a 4-digit code. Hint: 'The year Frankenstein's monster was created'",
           hint: "Mary Shelley, 18...",
           answer: "1818",
           reward: {
             id: "key-exit",
-            name: "Únikový kľúč",
+            name: "Escape key",
             icon: "🔑",
-            description: "Kľúč k slobode!"
+            description: "Key to freedom!"
           }
         }
       },
@@ -399,13 +399,13 @@ export const horrorRooms: RoomData[] = [
         position: angleToPosition(120, 20),
         type: "clue",
         label: "Duchov odkaz",
-        description: "Na zahmleným skle sa objavuje text: 'Frankenstein... 1818...'"
+        description: "Text appears on the foggy glass: 'Frankenstein... 1818...'"
       },
       {
         id: "final-escape",
         position: angleToPosition(180, 0),
         type: "door",
-        label: "Úniková brána",
+        label: "Escape gate",
         requiredItem: "key-exit",
         nextRoom: 999
       }
@@ -417,25 +417,25 @@ export const horrorRooms: RoomData[] = [
 export const scifiRooms: RoomData[] = [
   {
     id: 0,
-    name: "Vesmírna stanica",
-    description: "Kyslík sa míňa. Musíš nájsť spôsob ako opustiť stanicu.",
+    name: "Space Station",
+    description: "Oxygen is running out. You need to find a way to leave the station.",
     panoramaUrl: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=2048",
     hotspots: [
       {
         id: "console",
         position: angleToPosition(0, 0),
         type: "puzzle",
-        label: "Ovládací panel",
+        label: "Control panel",
         puzzle: {
           type: "code",
-          question: "Panel žiada prístupový kód. Nápoveda: 'Binárne: 101010'",
-          hint: "Preveď binárne číslo 101010 na decimálne",
+          question: "The panel asks for an access code. Hint: 'Binary: 101010'",
+          hint: "Convert binary number 101010 to decimal",
           answer: "42",
           reward: {
             id: "keycard-blue",
-            name: "Modrá karta",
+            name: "Blue card",
             icon: "💳",
-            description: "Elektronická karta s modrým svetlom."
+            description: "Electronic card with blue light."
           }
         }
       },
@@ -443,17 +443,17 @@ export const scifiRooms: RoomData[] = [
         id: "robot",
         position: angleToPosition(-60, -10),
         type: "clue",
-        label: "Pokazený robot",
-        description: "Robot opakuje: 'Pi... 3.14... Pi...' Možno je to nápoveda?"
+        label: "Broken robot",
+        description: "The robot repeats: 'Pi... 3.14... Pi...' Maybe it's a hint?"
       },
       {
         id: "airlock",
         position: angleToPosition(120, 5),
         type: "lock",
-        label: "Vzduchová komora",
+        label: "Air chamber",
         puzzle: {
           type: "code",
-          question: "Zadaj hodnotu Pi na 2 desatinné miesta (bez bodky)",
+          question: "Enter the value of Pi to 2 decimal places (without a dot)",
           hint: "3.14 → bez bodky",
           answer: "314"
         }
@@ -470,8 +470,8 @@ export const scifiRooms: RoomData[] = [
   },
   {
     id: 1,
-    name: "Laboratórium",
-    description: "Vedecké laboratórium plné experimentov. Niektoré vyzerajú nebezpečne...",
+    name: "Laboratory",
+    description: "Scientific laboratory full of experiments. Some look dangerous...",
     panoramaUrl: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=2048",
     hotspots: [
       {
@@ -481,14 +481,14 @@ export const scifiRooms: RoomData[] = [
         label: "DNA model",
         puzzle: {
           type: "riddle",
-          question: "Koľko chromozómov má človek?",
-          hint: "Je to párne číslo medzi 40 a 50...",
+          question: "How many chromosomes does a human have?",
+          hint: "It's an even number between 40 and 50...",
           answer: "46",
           reward: {
             id: "sample-tube",
             name: "Vzorka DNA",
             icon: "🧬",
-            description: "Sklená skúmavka s DNA vzorkou."
+            description: "Glass test tube with a DNA sample."
           }
         }
       },
@@ -496,24 +496,24 @@ export const scifiRooms: RoomData[] = [
         id: "periodic-table",
         position: angleToPosition(-30, 0),
         type: "clue",
-        label: "Periodická tabuľka",
-        description: "Niektoré prvky sú zvýraznené: Au (79), Ag (47), Cu (29). Súčet = 155"
+        label: "Periodic table",
+        description: "Some elements are highlighted: Au (79), Ag (47), Cu (29). Sum = 155"
       },
       {
         id: "chemical-safe",
         position: angleToPosition(90, -15),
         type: "lock",
-        label: "Chemický trezor",
+        label: "Chemical safe",
         puzzle: {
           type: "code",
-          question: "Zadaj súčet atómových čísel Au + Ag + Cu",
-          hint: "Pozri na periodickú tabuľku: 79 + 47 + 29",
+          question: "Enter the sum of atomic numbers Au + Ag + Cu",
+          hint: "Look at the periodic table: 79 + 47 + 29",
           answer: "155",
           reward: {
             id: "keycard-red",
-            name: "Červená karta",
+            name: "Red card",
             icon: "💳",
-            description: "Prístupová karta vysokej úrovne."
+            description: "High level access card."
           }
         }
       },
@@ -521,19 +521,19 @@ export const scifiRooms: RoomData[] = [
         id: "alien-specimen",
         position: angleToPosition(-90, 5),
         type: "item",
-        label: "Mimozemský exemplár",
+        label: "Alien specimen",
         item: {
           id: "alien-crystal",
-          name: "Mimozemský kryštál",
+          name: "Alien crystal",
           icon: "💎",
-          description: "Žiariaci kryštál z inej planéty."
+          description: "Glowing crystal from another planet."
         }
       },
       {
         id: "engine-room-door",
         position: angleToPosition(180, 0),
         type: "door",
-        label: "Strojovňa",
+        label: "Engine room",
         requiredItem: "keycard-red",
         nextRoom: 2
       }
@@ -541,19 +541,19 @@ export const scifiRooms: RoomData[] = [
   },
   {
     id: 2,
-    name: "Strojovňa",
-    description: "Srdce stanice. Úniková kapsula je blízko, ale potrebuješ aktivovať motor.",
+    name: "Engine Room",
+    description: "The heart of the station. The escape pod is close, but you need to activate the engine.",
     panoramaUrl: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=2048",
     hotspots: [
       {
         id: "engine-panel",
         position: angleToPosition(0, 0),
         type: "puzzle",
-        label: "Hlavný motor",
+        label: "Main engine"
         puzzle: {
           type: "sequence",
-          question: "Sekvencia štartu: 1, 1, 2, 3, 5, 8, ?. Aké je ďalšie číslo?",
-          hint: "Fibonacciho postupnosť - súčet predošlých dvoch",
+          question: "Start sequence: 1, 1, 2, 3, 5, 8, ?. What is the next number?",
+          hint: "Fibonacci sequence - sum of the previous two",
           answer: "13"
         }
       },
@@ -564,14 +564,14 @@ export const scifiRooms: RoomData[] = [
         label: "Warp jadro",
         puzzle: {
           type: "riddle",
-          question: "Rýchlosť svetla v km/s (zaokrúhlene na tisíce)",
-          hint: "Približne 300 000 km/s",
+          question: "Speed of light in km/s (rounded to thousands)",
+          hint: "Approximately 300,000 km/s",
           answer: "300000",
           reward: {
             id: "warp-key",
-            name: "Warp kľúč",
+            name: "Warp Key",
             icon: "⚡",
-            description: "Aktivačný kľúč pre únikovú kapsulu."
+            description: "Activation key for the escape pod."
           }
         }
       },
@@ -579,14 +579,14 @@ export const scifiRooms: RoomData[] = [
         id: "hologram",
         position: angleToPosition(-60, 5),
         type: "clue",
-        label: "Hologram kapitána",
-        description: "Kapitán hovorí: 'Svetlo cestuje rýchlosťou 299 792 km/s... zaokrúhli na tisíce.'"
+        label: "Captain's Hologram",
+        description: "The captain says: 'Light travels at 299,792 km/s... round to thousands.'"
       },
       {
         id: "escape-pod",
         position: angleToPosition(180, 0),
         type: "door",
-        label: "Úniková kapsula",
+        label: "Escape pod",
         requiredItem: "warp-key",
         nextRoom: 999
       }
@@ -598,8 +598,8 @@ export const scifiRooms: RoomData[] = [
 export const adventureRooms: RoomData[] = [
   {
     id: 0,
-    name: "Egyptská hrobka",
-    description: "Prepadol si sa do starovekej hrobky faraóna...",
+    name: "Egyptian Tomb",
+    description: "You have fallen into an ancient pharaoh's tomb...",
     panoramaUrl: "https://images.unsplash.com/photo-1539650116574-8efeb43e2750?w=2048",
     hotspots: [
       {
@@ -607,35 +607,35 @@ export const adventureRooms: RoomData[] = [
         position: angleToPosition(30, 20),
         type: "clue",
         label: "Hieroglyfy",
-        description: "Staré písmo hovorí: 'Slnko vychádza na VÝCHODE. Ra je boh slnka.'"
+        description: "Ancient writing says: 'The sun rises in the EAST. Ra is the sun god.'"
       },
       {
         id: "scarab",
         position: angleToPosition(-45, -15),
         type: "item",
-        label: "Zlatý skarabeus",
+        label: "Golden Scarab",
         item: {
           id: "scarab",
           name: "Skarabeus",
           icon: "🪲",
-          description: "Posvätný zlatý chrobák. Symbol večného života."
+          description: "Sacred golden beetle. Symbol of eternal life."
         }
       },
       {
         id: "sphinx-riddle",
         position: angleToPosition(90, 0),
         type: "puzzle",
-        label: "Hádanka sfingy",
+        label: "Riddle of the Sphinx",
         puzzle: {
           type: "riddle",
-          question: "Ráno chodím na štyroch, na obed na dvoch, večer na troch. Čo som?",
-          hint: "Zamysli sa nad ľudským životom...",
+          question: "In the morning I walk on four, at noon on two, in the evening on three. What am I?",
+          hint: "Think about human life...",
           answer: "clovek",
           reward: {
             id: "torch",
-            name: "Fakľa",
+            name: "Torch",
             icon: "🔥",
-            description: "Horiaca fakľa osvetľujúca cestu."
+            description: "Burning torch illuminating the path."
           }
         }
       },
@@ -651,25 +651,25 @@ export const adventureRooms: RoomData[] = [
   },
   {
     id: 1,
-    name: "Pokladnica faraóna",
-    description: "Zlato a drahokamy všade naokolo, ale pozor na pascu!",
+    name: "Pharaoh's Treasure Chamber",
+    description: "Gold and jewels all around, but beware of the trap!",
     panoramaUrl: "https://images.unsplash.com/photo-1553522991-71439aa62779?w=2048",
     hotspots: [
       {
         id: "golden-mask",
         position: angleToPosition(0, 5),
         type: "puzzle",
-        label: "Zlatá maska",
+        label: "Golden mask",
         puzzle: {
           type: "code",
-          question: "Maska Tutanchamóna. V ktorom roku bola objavená hrobka? (19XX)",
+          question: "Mask of Tutankhamun. In what year was the tomb discovered? (19XX)",
           hint: "Howard Carter ju objavil v roku 19..22",
           answer: "1922",
           reward: {
             id: "ankh",
             name: "Ankh",
             icon: "☥",
-            description: "Egyptský symbol života."
+            description: "Egyptian symbol of life."
           }
         }
       },
@@ -680,23 +680,23 @@ export const adventureRooms: RoomData[] = [
         label: "Truhlica pokladov",
         item: {
           id: "ruby",
-          name: "Rubín faraóna",
+          name: "Pharaoh's Ruby",
           icon: "💎",
-          description: "Obrovský červený drahokam."
+          description: "A huge red gemstone."
         }
       },
       {
         id: "trap-floor",
         position: angleToPosition(90, -20),
         type: "clue",
-        label: "Podlahová pasca",
-        description: "Na dlažbe je nápis: 'Len ten kto pozná rok objavu prejde'. Tutanchamón, 1922."
+        label: "Floor trap",
+        description: "The inscription on the floor reads: 'Only he who knows the year of discovery shall pass'. Tutankhamun, 1922."
       },
       {
         id: "pyramid-lock",
         position: angleToPosition(45, 10),
         type: "lock",
-        label: "Pyramídový zámok",
+        label: "Pyramid lock",
         requiredItem: "scarab",
         description: "Skarabeus aktivoval mechanizmus!"
       },
@@ -704,7 +704,7 @@ export const adventureRooms: RoomData[] = [
         id: "inner-chamber",
         position: angleToPosition(180, 0),
         type: "door",
-        label: "Vnútorná komora",
+        label: "Inner Chamber",
         requiredItem: "ankh",
         nextRoom: 2
       }
@@ -712,18 +712,18 @@ export const adventureRooms: RoomData[] = [
   },
   {
     id: 2,
-    name: "Sarkofágová sieň",
-    description: "Posledná miestnosť. Sarkofág faraóna a tajný východ...",
+    name: "Sarcophagus Hall",
+    description: "The last room. Pharaoh's sarcophagus and a secret exit...",
     panoramaUrl: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=2048",
     hotspots: [
       {
         id: "sarcophagus",
         position: angleToPosition(0, 0),
         type: "puzzle",
-        label: "Sarkofág",
+        label: "Sarcophagus",
         puzzle: {
           type: "cipher",
-          question: "Na sarkofágu je: 'RA + ANUBIS = ?'. Koľko bohov spolu? Napíš slovom.",
+          question: "On the sarcophagus is: 'RA + ANUBIS = ?'. How many gods together? Write in words.",
           hint: "1 + 1 = 2, slovom...",
           answer: "dva"
         }
@@ -735,14 +735,14 @@ export const adventureRooms: RoomData[] = [
         label: "Kanopy",
         puzzle: {
           type: "riddle",
-          question: "Koľko kanop sa používalo na uloženie orgánov? (srdce, pľúca, žalúdok, črevá - ktoré NIE?)",
-          hint: "Srdce zostávalo v tele, takže zvyšok...",
+          question: "How many canopic jars were used to store organs? (heart, lungs, stomach, intestines - which ONE not?)",
+          hint: "The heart remained in the body, so the rest...",
           answer: "4",
           reward: {
             id: "secret-map",
-            name: "Tajná mapa",
+            name: "Secret map",
             icon: "🗺️",
-            description: "Mapa ukazuje tajný východ!"
+            description: "The map shows a secret exit!"
           }
         }
       },
@@ -750,14 +750,14 @@ export const adventureRooms: RoomData[] = [
         id: "wall-painting",
         position: angleToPosition(60, 15),
         type: "clue",
-        label: "Nástenná maľba",
-        description: "Maľba zobrazuje 4 nádoby - kanopy. Srdce faraóna zostávalo v tele."
+        label: "Wall painting",
+        description: "The painting depicts 4 vessels - canopic jars. The pharaoh's heart remained in the body."
       },
       {
         id: "secret-exit",
         position: angleToPosition(180, 0),
         type: "door",
-        label: "Tajný východ",
+        label: "Secret exit",
         requiredItem: "secret-map",
         nextRoom: 999
       }
@@ -769,32 +769,32 @@ export const adventureRooms: RoomData[] = [
 export const fantasyRooms: RoomData[] = [
   {
     id: 0,
-    name: "Čarodejníkova veža",
-    description: "Si uväznený v magickej veži. Len správne kúzlo ťa oslobodí.",
+    name: "Wizard's Tower",
+    description: "You are trapped in a magic tower. Only the right spell will free you.",
     panoramaUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=2048",
     hotspots: [
       {
         id: "spellbook",
         position: angleToPosition(-30, 10),
         type: "clue",
-        label: "Kniha kúziel",
-        description: "Otvorená strana hovorí: 'Otváracie kúzlo má 9 písmen a začína na ALO-'"
+        label: "Book of Spells",
+        description: "The open page says: 'The opening spell has 9 letters and starts with ALO-'",
       },
       {
         id: "crystal-ball",
         position: angleToPosition(60, 0),
         type: "puzzle",
-        label: "Krištáľová guľa",
+        label: "Crystal ball",
         puzzle: {
           type: "riddle",
-          question: "Guľa žiari: 'Aké kúzlo z 9 písmen otvára dvere? Začína na ALO...'",
-          hint: "Známe kúzlo z Harryho Pottera na otváranie...",
+          question: "The ball glows: 'What 9-letter spell opens doors? Starts with ALO...'",
+          hint: "A famous spell from Harry Potter for opening...",
           answer: "alohomora",
           reward: {
             id: "wand",
-            name: "Čarovný prútik",
+            name: "Magic Wand",
             icon: "🪄",
-            description: "Prútik s jadrom z fénixovho pera."
+            description: "A wand with a phoenix feather core."
           }
         }
       },
@@ -802,19 +802,19 @@ export const fantasyRooms: RoomData[] = [
         id: "potion",
         position: angleToPosition(-90, -20),
         type: "item",
-        label: "Modrý elixír",
+        label: "Blue Elixir",
         item: {
           id: "potion-blue",
-          name: "Elixír múdrosti",
+          name: "Elixir of Wisdom",
           icon: "🧪",
-          description: "Modrá tekutina. Dáva nápovedy."
+          description: "Blue liquid. Gives hints."
         }
       },
       {
         id: "magic-door",
         position: angleToPosition(180, 0),
         type: "door",
-        label: "Tajná chodba",
+        label: "Secret passage",
         requiredItem: "wand",
         nextRoom: 1
       }
@@ -822,25 +822,25 @@ export const fantasyRooms: RoomData[] = [
   },
   {
     id: 1,
-    name: "Dračia jaskyňa",
-    description: "Jaskyňa plná dračích pokladov. Drak spí... zatiaľ.",
+    name: "Dragon's Lair",
+    description: "A cave full of dragon treasures. The dragon is sleeping... for now.",
     panoramaUrl: "https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=2048",
     hotspots: [
       {
         id: "dragon-eggs",
         position: angleToPosition(30, -15),
         type: "puzzle",
-        label: "Dračie vajcia",
+        label: "Dragon Eggs",
         puzzle: {
           type: "sequence",
-          question: "Na vajciach sú čísla: 3, 6, 12, 24, ?. Aké je ďalšie?",
-          hint: "Každé číslo je dvojnásobok predošlého",
+          question: "The eggs have numbers: 3, 6, 12, 24, ?. What is the next one?",
+          hint: "Each number is double the previous one"
           answer: "48",
           reward: {
             id: "dragon-scale",
-            name: "Dračia šupina",
+            name: "Dragon Scale",
             icon: "🐉",
-            description: "Nezničiteľná šupina z draka."
+            description: "Indestructible dragon scale."
           }
         }
       },
@@ -851,27 +851,27 @@ export const fantasyRooms: RoomData[] = [
         label: "Kopa zlata",
         item: {
           id: "golden-key",
-          name: "Zlatý kľúč",
+          name: "Golden Key",
           icon: "🔑",
-          description: "Veľký zlatý kľúč s dračou hlavou."
+          description: "A large golden key with a dragon's head."
         }
       },
       {
         id: "ancient-scroll",
         position: angleToPosition(90, 10),
         type: "clue",
-        label: "Starý zvitok",
-        description: "Zvitok hovorí: 'Drakar spí 100 rokov. Prebudí ho len... OHEŇ.'"
+        label: "Old Scroll",
+        description: "The scroll says: 'The Drakar sleeps for 100 years. Only... FIRE will awaken it.'"
       },
       {
         id: "riddle-stone",
         position: angleToPosition(-90, 5),
         type: "puzzle",
-        label: "Hádankový kameň",
+        label: "Riddle Stone",
         puzzle: {
           type: "riddle",
-          question: "Som horúci ale nie som slnko, ničím ale aj tvorím, draci ma dýchajú. Čo som?",
-          hint: "Draci dýchajú...",
+          question: "I am hot but not the sun, I destroy but also create, dragons breathe me. What am I?",
+          hint: "Dragons breathe..."
           answer: "ohen"
         }
       },
@@ -879,7 +879,7 @@ export const fantasyRooms: RoomData[] = [
         id: "enchanted-gate",
         position: angleToPosition(180, 0),
         type: "door",
-        label: "Čarovaná brána",
+        label: "Enchanted Gate",
         requiredItem: "dragon-scale",
         nextRoom: 2
       }
@@ -887,18 +887,18 @@ export const fantasyRooms: RoomData[] = [
   },
   {
     id: 2,
-    name: "Elfský les",
-    description: "Magický les plný svetlušiek. Portál domov je blízko...",
+    name: "Elven Forest",
+    description: "A magical forest full of fireflies. The portal home is near...",
     panoramaUrl: "https://images.unsplash.com/photo-1448375240586-882707db888b?w=2048",
     hotspots: [
       {
         id: "fairy-ring",
         position: angleToPosition(0, -10),
         type: "puzzle",
-        label: "Kruh svetlušiek",
+        label: "Circle of Fireflies",
         puzzle: {
           type: "cipher",
-          question: "Svetlušky blikajú: 'GSRH RH ZNTVW'. Atbash šifra (A=Z). Čo to znamená?",
+          question: "Fireflies blink: 'GSRH RH ZNTVW'. Atbash cipher (A=Z). What does it mean?",
           hint: "THIS IS M... = TOTO JE M...",
           answer: "magic"
         }
@@ -907,19 +907,19 @@ export const fantasyRooms: RoomData[] = [
         id: "wise-owl",
         position: angleToPosition(-60, 20),
         type: "clue",
-        label: "Múdra sova",
-        description: "Sova huhúka: 'Portál otvorí ten, kto pozná MAGIC-ké slovo... Atbash: ZNTVR'"
+        label: "Wise Owl",
+        description: "The owl hoots: 'The portal will be opened by one who knows the MAGICal word... Atbash: ZNTVR'"
       },
       {
         id: "moonflower",
         position: angleToPosition(60, -5),
         type: "item",
-        label: "Mesačný kvet",
+        label: "Moonflower",
         item: {
           id: "moonflower",
-          name: "Mesačný kvet",
+          name: "Moonflower",
           icon: "🌸",
-          description: "Kvet žiariaci mesačným svetlom."
+          description: "A flower glowing with moonlight."
         }
       },
       {
@@ -929,14 +929,14 @@ export const fantasyRooms: RoomData[] = [
         label: "Duch stromu",
         puzzle: {
           type: "riddle",
-          question: "Rastiem stovky rokov, dávam kyslík, mám korene hlboko. Čo som?",
-          hint: "Les je plný...",
+          question: "I grow for hundreds of years, give oxygen, have deep roots. What am I?",
+          hint: "The forest is full of..."
           answer: "strom",
           reward: {
             id: "portal-gem",
-            name: "Portálový klenot",
+            name: "Portal Gem",
             icon: "💫",
-            description: "Kameň aktivujúci portál."
+            description: "A stone activating the portal."
           }
         }
       },
@@ -944,7 +944,7 @@ export const fantasyRooms: RoomData[] = [
         id: "portal-home",
         position: angleToPosition(180, 0),
         type: "door",
-        label: "Portál domov",
+        label: "Portal Home"
         requiredItem: "portal-gem",
         nextRoom: 999
       }
