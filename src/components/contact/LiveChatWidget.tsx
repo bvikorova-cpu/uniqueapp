@@ -60,6 +60,15 @@ export const LiveChatWidget = () => {
 
   return (
     <>
+  const hide = () => {
+    try { localStorage.setItem(HIDDEN_KEY, "1"); } catch {}
+    setHidden(true);
+  };
+
+  if (hidden) return null;
+
+  return (
+    <>
       {!open && (
         <Button
           onClick={() => setOpen(true)}
