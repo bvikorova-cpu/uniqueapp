@@ -38,6 +38,9 @@ import { ModerationQueueDialog } from "@/components/wall/ModerationQueueDialog";
 import { CreatorSubscriptionDialog } from "@/components/wall/CreatorSubscriptionDialog";
 import { DailyLoginRewardDialog } from "@/components/wall/DailyLoginRewardDialog";
 import { CreatorFundDialog } from "@/components/wall/CreatorFundDialog";
+import { CreatorWebhooksDialog } from "@/components/wall/CreatorWebhooksDialog";
+import { AccessibilityFieldsDialog } from "@/components/wall/AccessibilityFieldsDialog";
+import { OfflineStatusIndicator } from "@/components/wall/OfflineStatusIndicator";
 import { FloatingReactions } from "@/components/wall/FloatingReactions";
 import { useQuery } from "@tanstack/react-query";
 import { useTrendingPosts } from "@/hooks/useTrends";
@@ -618,6 +621,9 @@ const Feed = () => {
                     <CreatorSubscriptionDialog />
                     <CreatorFundDialog />
                     <DailyLoginRewardDialog />
+                    <CreatorWebhooksDialog />
+                    <AccessibilityFieldsDialog />
+                    <OfflineStatusIndicator />
                   </div>
 
                   {/* Notes / Status Bar (24h ephemeral) */}
