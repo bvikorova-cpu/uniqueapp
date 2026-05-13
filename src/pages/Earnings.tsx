@@ -131,6 +131,14 @@ const Earnings = () => {
         return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
       })
       .reduce((s, t) => s + Number(t.seller_amount), 0);
+    const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const lm = txs
+      .filter(t => {
+        const d = new Date(t.created_at);
+        return d.getMonth() === lastMonthDate.getMonth() && d.getFullYear() === lastMonthDate.getFullYear();
+      })
+      .reduce((s, t) => s + Number(t.seller_amount), 0);
+    setLastMonthEarnings(lm);
     setStats({
       totalEarnings,
       pendingPayouts,
