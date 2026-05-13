@@ -1,114 +1,50 @@
 import { useState } from "react";
-import { Flag } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useReports } from "@/hooks/useReports";
+import { Flag } from "lucide-react";
+import { useModerationQueue } from "@/hooks/useModerationQueue";
 
-interface ReportDialogProps {
-  postId?: string;
-  userId?: string;
-  variant?: "ghost" | "destructive";
-}
-
-export const ReportDialog = ({ postId, userId, variant = "ghost" }: ReportDialogProps) => {
+export const ReportDialog = ({
+  contentType,
+  contentId,
+  communityId,
+  trigger,
+}: {
+  contentType: "post" | "comment" | "user" | "message";
+  contentId: string;
+  communityId?: string;
+  trigger?: React.ReactNode;
+}) => {
   const [open, setOpen] = useState(false);
-  const [reportType, setReportType] = useState("");
   const [reason, setReason] = useState("");
-  const { reportPost, reportUser, isReporting } = useReports();
+  const { submitReport } = useModerationQueue();
 
-  const handleSubmit = () => {
-    if (!reportType || !reason.trim()) return;
-
-    if (postId) {
-      reportPost(
-        { postId, reason: reportType, description: reason },
-        {
-          onSuccess: () => {
-            setOpen(false);
-            setReportType("");
-            setReason("");
-          },
-        }
-      );
-    } else if (userId) {
-      reportUser(
-        { userId, reportType, reason },
-        {
-          onSuccess: () => {
-            setOpen(false);
-            setReportType("");
-            setReason("");
-          },
-        }
-      );
-    }
+  const handle = () => {
+    submitReport({ content_type: contentType, content_id: contentId, community_id: communityId, reason });
+    setReason(""); setOpen(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={variant} size="sm">
-          <Flag className="w-4 h-4 mr-2" />
-          Report
-        </Button>
+        {trigger ?? (
+          <Button variant="ghost" size="sm">
+            <Flag className="h-4 w-4 mr-1" /> Report
+          </Button>
+        )}
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Report {postId ? "Post" : "User"}</DialogTitle>
+          <DialogTitle>Report content</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
-          <div>
-            <label className="text-sm font-medium mb-2 block">Report Type</label>
-            <Select value={reportType} onValueChange={setReportType}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a reason" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="spam">Spam</SelectItem>
-                <SelectItem value="harassment">Harassment</SelectItem>
-                <SelectItem value="hate_speech">Hate Speech</SelectItem>
-                <SelectItem value="violence">Violence</SelectItem>
-                <SelectItem value="inappropriate">Inappropriate Content</SelectItem>
-                <SelectItem value="misinformation">Misinformation</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <label className="text-sm font-medium mb-2 block">Additional Details</label>
-            <Textarea
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              placeholder="Please provide more details about this report..."
-              className="min-h-[100px]"
-            />
-          </div>
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setOpen(false)}>
-              Cancel
-            </Button>
-            <Button
-              onClick={handleSubmit}
-              disabled={isReporting || !reportType || !reason.trim()}
-            >
-              {isReporting ? "Submitting..." : "Submit Report"}
-            </Button>
-          </div>
-        </div>
+        <Textarea
+          placeholder="Why are you reporting this? (spam, harassment, hate, ...)"
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+          rows={4}
+        />
+        <Button onClick={handle} disabled={!reason.trim()}>Submit report</Button>
       </DialogContent>
     </Dialog>
   );
