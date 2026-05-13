@@ -155,7 +155,7 @@ export const LiveChatWidget = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), send())}
-              placeholder="Napíš správu…"
+              placeholder="Type a message…"
               disabled={loading}
             />
             <Button onClick={send} disabled={loading || !input.trim()} size="icon" className="bg-gradient-to-br from-primary to-accent">
