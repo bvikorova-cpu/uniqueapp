@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MessageCircle, Send, MoreHorizontal, ExternalLink, BellOff, Bell, User, Trash2, Flag, Phone, Video, Image, Smile, ThumbsUp, X, Loader2 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,6 +20,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useDirectMessages } from "@/hooks/useDirectMessages";
+import { useMessageReactions } from "@/hooks/useMessageReactions";
+import { MessageReactions } from "@/components/wall/MessageReactions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -42,10 +44,17 @@ export const DirectMessagesDialog = ({
   const [uploadingImage, setUploadingImage] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { messages, sendMessage } = useDirectMessages(userId);
+  const messageIds = messages.map((m) => m.id);
+  const { reactionsByMessage, toggle: toggleReaction } = useMessageReactions(messageIds);
+  const [currentUserId, setCurrentUserId] = useState<string | undefined>();
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const EMOJIS = ["😊", "😂", "❤️", "🔥", "👍", "🎉", "😍", "🤔", "🙌", "💯", "🚀", "✨", "😎", "👀", "🙏", "💪"];
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id));
+  }, []);
 
   const handleAttachImage = () => fileInputRef.current?.click();
 
@@ -254,14 +263,23 @@ export const DirectMessagesDialog = ({
                       <AvatarFallback className="text-xs">{userName?.[0]}</AvatarFallback>
                     </Avatar>
                   )}
-                  <div
-                    className={`max-w-[70%] rounded-2xl px-3 py-2 ${
-                      msg.sender_id === userId
-                        ? "bg-muted"
-                        : "bg-primary text-primary-foreground"
-                    }`}
-                  >
-                    <p className="text-sm">{msg.content}</p>
+                  <div className="flex flex-col max-w-[70%]">
+                    <div
+                      className={`rounded-2xl px-3 py-2 group relative ${
+                        msg.sender_id === userId
+                          ? "bg-muted"
+                          : "bg-primary text-primary-foreground"
+                      }`}
+                    >
+                      <p className="text-sm">{msg.content}</p>
+                    </div>
+                    <MessageReactions
+                      messageId={msg.id}
+                      reactions={reactionsByMessage[msg.id] || []}
+                      currentUserId={currentUserId}
+                      onToggle={(messageId, emoji) => toggleReaction({ messageId, emoji })}
+                      align={msg.sender_id === userId ? "start" : "end"}
+                    />
                   </div>
                 </div>
               ))

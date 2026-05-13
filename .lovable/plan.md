@@ -87,3 +87,10 @@ Po každej fáze sa zastavíme, ty otestuješ a povieš pokračuj.
 4. **Web Push VAPID keys** pre Fáza 7 — vygenerujem keď tam dôjdeme
 
 Po schválení začnem **Fázou 1 (Quick wins)** — 5 features, ~jeden veľký commit, hotovo za jednu reláciu.
+
+## ✅ Fáza 3 hotová
+- For You ranking via `rank-feed` edge function + SmartFeedTabs (For You / Following / Trending / Latest)
+- Message reactions on DM (`message_reactions` reused, hook + UI)
+- Group chats via extended `conversations` + new `conversation_messages` table
+- Quote-share post → DM via `SharePostToDM`
+- Profile customization: banner upload, pinned posts (max 3), featured links
