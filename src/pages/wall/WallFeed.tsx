@@ -42,6 +42,19 @@ export default function WallFeed({
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("all");
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
   const { t } = useTranslation();
+  const mutedKeywords = useMutedKeywords();
+
+  const visibleFeedItems = useMemo(() => {
+    if (mutedKeywords.length === 0) return filteredFeedItems;
+    return filteredFeedItems.filter((item) => {
+      const text =
+        item.type === "post"
+          ? (item.data as any).content ?? ""
+          : ((item.data as any).comment ?? "") + " " + ((item.data as any).original_post?.content ?? "");
+      const lower = text.toLowerCase();
+      return !mutedKeywords.some((kw) => lower.includes(kw));
+    });
+  }, [filteredFeedItems, mutedKeywords]);
 
   const handleResetFilters = () => {
     setSortBy("newest");
