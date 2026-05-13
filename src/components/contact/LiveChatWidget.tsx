@@ -94,6 +94,9 @@ export const LiveChatWidget = () => {
               {messages.length > 0 && (
                 <Button size="sm" variant="ghost" className="text-xs h-7" onClick={clear}>Clear</Button>
               )}
+              <Button size="icon" variant="ghost" className="h-7 w-7" onClick={hide} aria-label="Hide assistant" title="Hide on all pages">
+                <EyeOff className="h-4 w-4" />
+              </Button>
               <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => setOpen(false)} aria-label="Close">
                 <X className="h-4 w-4" />
               </Button>
