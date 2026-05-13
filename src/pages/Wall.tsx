@@ -615,6 +615,9 @@ const Feed = () => {
                     <GroupChatDialog />
                     <CommunitiesDialog />
                     <ModerationQueueDialog />
+                    <CreatorSubscriptionDialog />
+                    <CreatorFundDialog />
+                    <DailyLoginRewardDialog />
                   </div>
 
                   {/* Notes / Status Bar (24h ephemeral) */}
