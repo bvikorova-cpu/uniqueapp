@@ -327,7 +327,28 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                 <SelectItem value="private">Only me</SelectItem>
               </SelectContent>
             </Select>
+            <Button
+              type="button"
+              variant={isSensitive ? "default" : "outline"}
+              size="sm"
+              className="h-8"
+              onClick={() => setIsSensitive((v) => !v)}
+              title="Mark as sensitive — will be blurred for viewers"
+            >
+              ⚠️ {isSensitive ? "Sensitive" : "Mark sensitive"}
+            </Button>
           </div>
+
+          {isSensitive && (
+            <input
+              type="text"
+              placeholder="Reason (optional, e.g. 'graphic content')"
+              value={sensitiveReason}
+              onChange={(e) => setSensitiveReason(e.target.value)}
+              maxLength={120}
+              className="w-full text-xs px-3 py-2 rounded-md bg-amber-500/10 border border-amber-500/40 placeholder:text-amber-300/60"
+            />
+          )}
 
           <TooltipProvider>
             <div className="flex flex-nowrap overflow-x-auto scrollbar-hide touch-scroll gap-0.5 pb-2 w-full">
