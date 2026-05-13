@@ -56,6 +56,7 @@ const LanguagePreferenceMount = lazy(() => import("@/components/LanguagePreferen
 const DunningBanner = lazy(() => import("@/components/billing/DunningBanner").then((module) => ({ default: module.DunningBanner })));
 const SCABanner = lazy(() => import("@/components/billing/SCABanner").then((module) => ({ default: module.SCABanner })));
 const Index = lazy(() => import("./pages/Index"));
+const StatusPage = lazy(() => import("./pages/StatusPage"));
 const Auth = lazy(() => import("./pages/Auth"));
 const Download = lazy(() => import("./pages/Download"));
 const VerifyReport = lazy(() => import("./pages/VerifyReport"));
