@@ -1,136 +1,89 @@
-# IQ Platform — rozpis batchov 66 → 150
+## Stratégia
 
-Aktuálne hotovo: **65 batchov** (17 mini-tools + dashboard + puzzle pack 61-65).
-Cieľ: dotiahnuť IQ Platformu na **150 batchov** = kompletný kognitívny + sociálny + AI ekosystém.
+36 features = ~6-8 týždňov práce. Rozdelíme do 7 fáz po 4-6 features. Každá fáza:
+1. DB migrácia (tabuľky + RLS + indexy)
+2. Edge functions ak treba (AI, platby, real-time)
+3. UI komponenty + integrácia do Wall
+4. i18n preklady (12 jazykov)
+5. Quick smoke test
 
-Každý batch = 1 nový komponent / feature / hook (drobný, izolovaný, s `localStorage` alebo Supabase persistenciou).
-
----
-
-## 🎮 Blok A — Puzzle & Logic Pack (66-80) — 15 batchov
-
-66. **IQMinesweeper** — 6×6 mriežka, best time
-67. **IQLightsOut** — 4×4 toggle puzzle, min moves
-68. **IQMastermind** — 4-color code breaker, attempts
-69. **IQBlockSlide** — Klotski-style, min moves
-70. **IQNonogram5** — 5×5 picross, best time
-71. **IQKakuro4** — 4×4 sum puzzle
-72. **IQFlowConnect** — spoj farebné body
-73. **IQPipesRotate** — otoč potrubia, best time
-74. **IQMagicSquare** — 3×3 sum=15
-75. **IQKnightTour** — šachový jazdec puzzle
-76. **IQRiverCrossing** — vlk/koza/kapusta
-77. **IQNQueens4** — 4-queens puzzle
-78. **IQTangram** — 7-piece skladanie
-79. **IQMazeRunner** — generated maze, best time
-80. **IQPuzzleSummary** — agregácia 66-79 do dashboardu
-
-## 🧠 Blok B — Memory & Attention (81-95) — 15 batchov
-
-81. **IQAudioMemory** — zapamätaj tóny
-82. **IQColorRecall** — sekvencia farieb
-83. **IQFaceMemory** — match tváre
-84. **IQMapMemory** — zapamätaj polohu pinov
-85. **IQSpotDifference** — 2 obrázky, nájdi rozdiely
-86. **IQAttentionGrid** — nájdi cieľ medzi distraktormi
-87. **IQDualTask** — 2 úlohy súčasne
-88. **IQDivideAttention** — sleduj 2 streamy
-89. **IQVisualSearch** — Where's Waldo style
-90. **IQChangeBlind** — flicker paradigm
-91. **IQTrailMaking** — A1-B2-C3 spoj
-92. **IQDigitSymbol** — symbol → číslo
-93. **IQBackwardCount** — odpočítavaj v hlave
-94. **IQGoNoGo** — reaguj len na ciele
-95. **IQAttentionSummary** — agregácia 81-94
-
-## 🔢 Blok C — Math & Logic Advanced (96-110) — 15 batchov
-
-96. **IQFractions** — porovnaj zlomky
-97. **IQEquations** — vyrieš x
-98. **IQSequenceMath** — Fibonacci-style
-99. **IQPrimeSpot** — vyber prvočísla
-100. **IQGeometry** — uhly, plochy
-101. **IQProbability** — kockové úlohy
-102. **IQVennLogic** — 3-set Venn
-103. **IQSyllogism** — formálna logika
-104. **IQMatrixReasoning** — Raven-style 3×3
-105. **IQAnalogies** — A:B :: C:?
-106. **IQClassification** — odlišný prvok zo 6
-107. **IQCodeBreak** — Caesar/substitučná šifra
-108. **IQBinaryConvert** — dec ↔ bin
-109. **IQHexConvert** — dec ↔ hex
-110. **IQMathSummary** — agregácia 96-109
-
-## 👥 Blok D — Social & Multiplayer (111-125) — 15 batchov
-
-111. **IQDuelInvite** — pošli challenge linkom
-112. **IQDuelLobby** — realtime lobby (Supabase channel)
-113. **IQDuelMatch** — 1v1 quick test
-114. **IQDuelHistory** — moje súboje
-115. **IQClanCreate** — vytvor IQ klan
-116. **IQClanLeaderboard** — top členovia
-117. **IQClanWar** — klan vs klan týždenná súťaž
-118. **IQGlobalChat** — kanál pre IQ hráčov
-119. **IQReplaySharing** — zdieľaj graf testu
-120. **IQMentorMatch** — spoj high-IQ s learnerom
-121. **IQStudyGroup** — vytvor študijnú skupinu
-122. **IQEventCalendar** — globálne IQ eventy
-123. **IQTournamentBracket** — single-elim turnaj
-124. **IQSpectator** — sleduj live duel
-125. **IQSocialSummary** — agregácia 111-124
-
-## 🤖 Blok E — AI Coaching (126-140) — 15 batchov
-
-126. **IQAICoach** — Lovable AI dáva rady (3 kredity)
-127. **IQWeakAreaScan** — AI nájde slabiny (5 kreditov)
-128. **IQTrainingPlan** — 7-dňový plán (5 kreditov)
-129. **IQDailyChallenge** — AI generuje úlohu (3 kredity)
-130. **IQExplainSolution** — AI rozoberie chybu (3 kredity)
-131. **IQConceptExplain** — vysvetli koncept (3 kredity)
-132. **IQMotivationBot** — denná správa (3 kredity)
-133. **IQProgressNarrative** — AI zhrnie tvoj progres (5 kreditov)
-134. **IQPredictedScore** — AI predpoveď IQ (5 kreditov)
-135. **IQCareerMatch** — IQ profil → kariéry (5 kreditov)
-136. **IQLearningStyle** — detekcia štýlu (3 kredity)
-137. **IQVoiceCoach** — TTS coaching (5 kreditov)
-138. **IQDreamGoal** — nastav dlhodobý cieľ + AI tracking
-139. **IQAIChatTutor** — voľný chat o IQ témach (3 kredity/správa)
-140. **IQAISummary** — agregácia 126-139
-
-## 🏆 Blok F — Certifikáty, Pro & Finalizácia (141-150) — 10 batchov
-
-141. **IQCertificateGen** — PDF certifikát s IQ score
-142. **IQCertificateShare** — zdieľaj na LinkedIn
-143. **IQVerifyBadge** — verejne overiteľný badge (QR)
-144. **IQProTier** — paid premium nástroje (€9.99/mes)
-145. **IQAchievementShowcase** — odznaky na profile
-146. **IQYearlyReport** — výročný PDF report
-147. **IQDataExport** — CSV/JSON export všetkých dát
-148. **IQAccessibility** — high contrast + screen reader pass
-149. **IQOnboardingTour** — guided tour pre nových
-150. **IQGrandSummary** — master dashboard cez všetky 6 blokov + roadmap badge
+Po každej fáze sa zastavíme, ty otestuješ a povieš pokračuj.
 
 ---
 
-## 📊 Sumár
+## Fáza 1 — Quick wins (najmenej DB práce, najväčší efekt)
+**Týždeň 1**
+1. **Quote repost** — rozšíriť `reposts` tabuľku o `quote_text`, nový dialóg, render
+2. **Notes/Status** — nová tabuľka `user_notes` (24h expirácia), bar nad feedom
+3. **Carousel posts** — rozšíriť `posts.media_urls` na multi, swiper komponent
+4. **Mute words** — `user_muted_keywords`, filter vo feede
+5. **Sensitive content warnings** — `posts.is_sensitive` + blur overlay
 
-| Blok | Batche | Téma |
-|------|--------|------|
-| A | 66-80 | Puzzle & Logic (15) |
-| B | 81-95 | Memory & Attention (15) |
-| C | 96-110 | Math & Logic Advanced (15) |
-| D | 111-125 | Social & Multiplayer (15) |
-| E | 126-140 | AI Coaching (15) |
-| F | 141-150 | Pro & Finalizácia (10) |
-| **Spolu** | **85 nových** | **66 → 150** |
+## Fáza 2 — Privacy & Lists
+**Týždeň 2**
+6. **Close Friends list** — `user_close_friends`, audience selector pri poste
+7. **Mute users dočasne** — `user_mutes` s `expires_at`
+8. **Saved searches + topic following** — `saved_searches`, `followed_topics`
+9. **Bookmarks folders s notami** — rozšíriť `collections` o description, share token
+10. **Cross-posting toggle** (X/FB share intent — bez OAuth, len share URL)
 
-## ⚙️ Tempo
+## Fáza 3 — Algoritmický feed & Komunikácia
+**Týždeň 3**
+11. **For You feed** — edge function `rank-feed` s engagement score (likes×3 + comments×5 + recency decay)
+12. **DM reactions na správy** — `message_reactions` tabuľka
+13. **DM group chats** — rozšíriť `conversations` o `is_group`, `participants[]`
+14. **Quote-share DM** — share post do DM
+15. **Profile customization** — banner upload, pinned posts (3), featured links (Linktree)
 
-- Pokračujem **po 5 batchov** (rovnako ako doteraz) → **17 ďalších kôl** "pokračuj" do dosiahnutia 150
-- Bloky A-C = čisto frontend + localStorage (rýchle)
-- Blok D = Supabase realtime + nová tabuľka `iq_duels`, `iq_clans` (1 migrácia na začiatku bloku)
-- Blok E = Lovable AI Gateway (3-5 kreditov/call podľa pravidiel projektu)
-- Blok F = PDF generation + Stripe wiring pre Pro tier
+## Fáza 4 — Audio/Video & Live
+**Týždeň 4**
+16. **Spaces scheduling + recording** — rozšíriť `audio_rooms` o `scheduled_at`, `recording_url`
+17. **Spaces transkripcie** — edge function s OpenAI Whisper
+18. **Live chat počas streamu + tipy** — `live_stream_messages`, `live_tips` (Stripe)
+19. **Duet/Stitch videí** — `video_remixes` s parent_id
+20. **AR filtre** — basic CSS filtre + sticker overlay (bez AR engine)
 
-## ✅ Po schválení
-Pokračujem **batchmi 66-70** (Minesweeper, LightsOut, Mastermind, BlockSlide, Nonogram).
+## Fáza 5 — Communities & Moderation
+**Týždeň 5**
+21. **Communities (subreddity)** — `communities`, `community_rules`, `community_moderators`, karma
+22. **Moderation queue** — `moderation_queue`, admin dashboard
+23. **Community Notes** — `post_notes` s crowdsource voting
+24. **Report → AI triage pipeline** — edge function `triage-report` (rozšíriť existujúci)
+25. **Content warnings UI overlay**
+
+## Fáza 6 — Monetizácia & Commerce
+**Týždeň 6**
+26. **Paid subscriptions tier** — `creator_subscription_tiers`, Stripe recurring
+27. **Branded content tag** — `posts.branded_partner_id`, badge
+28. **Shoppable posts** — tag produkty na obrázku, `post_product_tags`
+29. **Creator fund visibility** — verejné metriky v profile
+30. **Daily login rewards** — `user_login_streaks`, denný credit bonus
+
+## Fáza 7 — Engagement & Pokročilé
+**Týždeň 7**
+31. **Levels & XP na avatare** — využiť existujúce XP, badge ring okolo avatara
+32. **Reaction GIFs** — Tenor API integrácia v komentároch
+33. **Push notifications s rich actions** — Web Push + service worker
+34. **Offline mód s queue** — IndexedDB queue, replay pri online
+35. **Accessibility** — alt-text povinný pri uploade, video captions field
+36. **API/Webhooks pre creators** — `creator_webhooks`, sign secret
+
+---
+
+## Technické poznámky
+
+- Všetky tabuľky budú mať RLS policies + indexy
+- AI features cez Lovable AI Gateway (gemini-2.5-flash default, 3-5 kreditov)
+- Stripe features cez existujúci `create-checkout` router
+- i18n cez existujúci scripts/i18n-fill.mjs po každej fáze
+- Žiadne breaking changes — všetko nové je opt-in
+- Každá fáza má samostatný PR-style commit set
+
+## Čo potrebujem od teba pred štartom
+
+1. **Potvrdenie že ideme fázu po fáze** (nie všetko naraz — to by bol chaos a nedokončené veci)
+2. **Priorita** — ísť poradí 1→7, alebo preskočiť niektorú fázu?
+3. **Tenor API key** pre Fáza 7 (reaction GIFs) — môžem požiadať keď tam dôjdeme
+4. **Web Push VAPID keys** pre Fáza 7 — vygenerujem keď tam dôjdeme
+
+Po schválení začnem **Fázou 1 (Quick wins)** — 5 features, ~jeden veľký commit, hotovo za jednu reláciu.
