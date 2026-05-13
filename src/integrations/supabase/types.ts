@@ -40399,6 +40399,45 @@ export type Database = {
         }
         Relationships: []
       }
+      status_incidents: {
+        Row: {
+          components: string[]
+          created_at: string
+          description: string | null
+          id: string
+          resolved_at: string | null
+          severity: string
+          started_at: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          components?: string[]
+          created_at?: string
+          description?: string | null
+          id?: string
+          resolved_at?: string | null
+          severity?: string
+          started_at?: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          components?: string[]
+          created_at?: string
+          description?: string | null
+          id?: string
+          resolved_at?: string | null
+          severity?: string
+          started_at?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       stock_content_downloads: {
         Row: {
           buyer_email: string | null
@@ -41860,6 +41899,51 @@ export type Database = {
           updated_at?: string
           user_id?: string | null
           voice_url?: string | null
+        }
+        Relationships: []
+      }
+      support_video_bookings: {
+        Row: {
+          created_at: string
+          duration_minutes: number
+          email: string
+          id: string
+          meeting_url: string | null
+          name: string
+          notes: string | null
+          scheduled_at: string
+          status: string
+          topic: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          duration_minutes?: number
+          email: string
+          id?: string
+          meeting_url?: string | null
+          name: string
+          notes?: string | null
+          scheduled_at: string
+          status?: string
+          topic: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          duration_minutes?: number
+          email?: string
+          id?: string
+          meeting_url?: string | null
+          name?: string
+          notes?: string | null
+          scheduled_at?: string
+          status?: string
+          topic?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
