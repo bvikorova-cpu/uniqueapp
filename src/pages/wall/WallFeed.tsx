@@ -125,7 +125,7 @@ export default function WallFeed({
               </div>
             ) : (
               <>
-                {filteredFeedItems.map((item, index) => (
+                {visibleFeedItems.map((item, index) => (
                   <div key={`${item.type}-${item.data.id}`}>
                     <div 
                       className="animate-fade-in"
