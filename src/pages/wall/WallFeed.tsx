@@ -9,6 +9,11 @@ import RewardedAdCard from "@/components/ads/RewardedAdCard";
 import { AD_PLACEMENTS } from "@/components/ads/AdPlacements";
 import { NotesBar } from "@/components/wall/NotesBar";
 import { MutedKeywordsDialog, useMutedKeywords } from "@/components/wall/MutedKeywordsDialog";
+import { MutedUsersDialog } from "@/components/wall/MutedUsersDialog";
+import { CloseFriendsDialog } from "@/components/wall/CloseFriendsDialog";
+import { FollowedTopicsDialog } from "@/components/wall/FollowedTopicsDialog";
+import { SavedSearchesDialog } from "@/components/wall/SavedSearchesDialog";
+import { useUserMutes } from "@/hooks/useUserMutes";
 import { useTranslation } from "react-i18next";
 import type { Post, Repost, FeedItem } from "@/types/database";
 
@@ -43,18 +48,24 @@ export default function WallFeed({
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
   const { t } = useTranslation();
   const mutedKeywords = useMutedKeywords();
+  const { mutedIds } = useUserMutes();
 
   const visibleFeedItems = useMemo(() => {
-    if (mutedKeywords.length === 0) return filteredFeedItems;
     return filteredFeedItems.filter((item) => {
-      const text =
-        item.type === "post"
-          ? (item.data as any).content ?? ""
-          : ((item.data as any).comment ?? "") + " " + ((item.data as any).original_post?.content ?? "");
-      const lower = text.toLowerCase();
-      return !mutedKeywords.some((kw) => lower.includes(kw));
+      const data: any = item.data;
+      const authorId = data.user_id || data.profiles?.id;
+      if (authorId && mutedIds.includes(authorId)) return false;
+      if (mutedKeywords.length > 0) {
+        const text =
+          item.type === "post"
+            ? data.content ?? ""
+            : (data.comment ?? "") + " " + (data.original_post?.content ?? "");
+        const lower = text.toLowerCase();
+        if (mutedKeywords.some((kw) => lower.includes(kw))) return false;
+      }
+      return true;
     });
-  }, [filteredFeedItems, mutedKeywords]);
+  }, [filteredFeedItems, mutedKeywords, mutedIds]);
 
   const handleResetFilters = () => {
     setSortBy("newest");
@@ -92,7 +103,11 @@ export default function WallFeed({
       <div className="max-w-4xl mx-auto px-4 py-6">
         <div className="space-y-6">
           {/* Achievements Badge + Mute settings */}
-          <div className="flex justify-end items-center gap-2">
+          <div className="flex justify-end items-center gap-2 flex-wrap">
+            <CloseFriendsDialog />
+            <FollowedTopicsDialog />
+            <SavedSearchesDialog />
+            <MutedUsersDialog />
             <MutedKeywordsDialog />
             <AchievementsBadge />
           </div>
