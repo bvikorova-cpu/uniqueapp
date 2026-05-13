@@ -480,7 +480,7 @@ const Contact = () => {
           We typically respond within 4 hours. Premium subscribers get priority within 1 hour.
         </p>
       </div>
-      <LiveChatWidget />
+      
     </div>
   );
 };
