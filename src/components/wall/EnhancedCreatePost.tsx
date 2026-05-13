@@ -152,6 +152,8 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           feeling: feeling || undefined,
           location: location || undefined,
           privacy,
+          is_sensitive: isSensitive,
+          sensitive_reason: isSensitive ? (sensitiveReason.trim() || null) : null,
         })
         .select()
         .single();
