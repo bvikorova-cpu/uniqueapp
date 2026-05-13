@@ -85,7 +85,7 @@ export const CourseNavigation = ({
           className="w-full gap-2 mt-auto bg-primary hover:bg-primary/90"
         >
           <ArrowLeft className="h-4 w-4" />
-          Späť na zoznam kurzov
+          Back to course list
         </Button>
       </CardContent>
     </Card>

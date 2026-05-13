@@ -226,10 +226,10 @@ const COUNTRY_HOTLINES: Record<string, { country: string; flag: string; numbers:
     { name: "Emergency", tel: "112" }, { name: "3020 Anti-bullying", tel: "3020" }, { name: "SOS Amitié", tel: "0972394050" },
   ]},
   SK: { country: "Slovakia", flag: "🇸🇰", numbers: [
-    { name: "Emergency", tel: "112" }, { name: "Linka detskej istoty", tel: "116111" }, { name: "IPčko", tel: "116123" },
+    { name: "Emergency", tel: "112" }, { name: "Children's Safety Line", tel: "116111" }, { name: "IPčko", tel: "116123" },
   ]},
   CZ: { country: "Czechia", flag: "🇨🇿", numbers: [
-    { name: "Emergency", tel: "112" }, { name: "Linka bezpečí", tel: "116111" }, { name: "Linka první psychické pomoci", tel: "116123" },
+    { name: "Emergency", tel: "112" }, { name: "Safety Line", tel: "116111" }, { name: "First Psychological Help Line", tel: "116123" },
   ]},
   PL: { country: "Poland", flag: "🇵🇱", numbers: [
     { name: "Emergency", tel: "112" }, { name: "Telefon Zaufania dla Dzieci", tel: "116111" },

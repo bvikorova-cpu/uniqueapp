@@ -51,10 +51,10 @@ export default function MegatalentSuccess() {
         if (!error && data?.subscribed === true) {
           setStatus("success");
           toast({
-            title: "MegaTalent aktivovaný 🎉",
+            title: "MegaTalent activated 🎉",
             description: isTop
-              ? "TOP Premium prístup pripravený — odomykám upload a hlasovanie."
-              : "Premium prístup pripravený — odomykám upload a hlasovanie.",
+              ? "TOP Premium access ready — unlocking upload and voting."
+              : "Premium access ready — unlocking upload and voting.",
           });
           // Brief pause so the user sees the success state before navigation.
           setTimeout(() => navigate("/megatalent", { replace: true }), 1800);
@@ -76,13 +76,13 @@ export default function MegatalentSuccess() {
             <div className="mx-auto w-16 h-16 rounded-full bg-primary/15 flex items-center justify-center">
               <Loader2 className="w-8 h-8 text-primary animate-spin" />
             </div>
-            <CardTitle className="text-2xl">Aktivujem tvoje predplatné…</CardTitle>
+            <CardTitle className="text-2xl">Activating your subscription…</CardTitle>
             <CardDescription className="text-base">
-              Platba prijatá. Overujem ju u Stripe a aktivujem prístup k uploadu
+              Payment received. Verifying it with Stripe and activating access to upload
               a hlasovaniu.
             </CardDescription>
             <p className="text-xs text-muted-foreground pt-1">
-              Pokus {attempt} / 8 — zvyčajne to trvá 2–4 sekundy.
+              Attempt {attempt} / 8 — usually takes 2–4 seconds.
             </p>
           </CardHeader>
         )}
@@ -102,24 +102,24 @@ export default function MegatalentSuccess() {
                   }`}
                 >
                   {isTop ? <Sparkles className="w-4 h-4" /> : <Star className="w-4 h-4" />}
-                  MegaTalent {isTop ? "TOP Premium" : "Premium"} aktívne
+                  MegaTalent {isTop ? "TOP Premium" : "Premium"} active
                 </span>
               </div>
-              <CardTitle className="text-2xl">Vitaj v súťaži! 🏆</CardTitle>
+              <CardTitle className="text-2xl">Welcome to the competition! 🏆</CardTitle>
               <CardDescription className="text-base">
-                Upload a hlasovanie sú odomknuté. Presmerúvam ťa do MegaTalentu…
+                Upload and voting are unlocked. Redirecting you to MegaTalent…
               </CardDescription>
             </CardHeader>
             <CardContent>
               <ul className="text-sm space-y-1.5 bg-muted/40 rounded-lg p-3">
-                <li>✅ Neobmedzené uploady fotiek a videí</li>
-                <li>✅ Hlasovanie a komentáre vo všetkých 35+ kategóriách</li>
-                <li>✅ Prístup ku všetkým AI Talent nástrojom</li>
-                <li>✅ Nárok na peňažné odmeny pre víťazov</li>
+                <li>✅ Unlimited photo and video uploads</li>
+                <li>✅ Voting and comments in all 35+ categories</li>
+                <li>✅ Access to all AI Talent tools</li>
+                <li>✅ Entitlement to cash prizes for winners</li>
                 {isTop && (
                   <>
-                    <li>⭐ <strong>2× váha tvojich hlasov</strong></li>
-                    <li>⭐ <strong>Denný vote-boost</strong> a TOP Premium odznak</li>
+                    <li>⭐ <strong>2× weight of your votes</strong></li>
+                    <li>⭐ <strong>Daily vote-boost</strong> and TOP Premium badge</li>
                   </>
                 )}
               </ul>
@@ -133,11 +133,11 @@ export default function MegatalentSuccess() {
               <div className="mx-auto w-16 h-16 rounded-full bg-destructive/15 flex items-center justify-center">
                 <XCircle className="w-8 h-8 text-destructive" />
               </div>
-              <CardTitle className="text-2xl">Aktivácia trvá dlhšie</CardTitle>
+              <CardTitle className="text-2xl">Activation is taking longer</CardTitle>
               <CardDescription className="text-base">
-                Platba bola prijatá, ale Stripe ju ešte spracováva. Otvor
-                MegaTalent — automaticky dokončíme aktiváciu, len čo bude
-                pripravená.
+                Payment has been accepted, but Stripe is still processing it. Open
+                MegaTalent — we will automatically complete the activation as soon as it is
+                ready.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
@@ -146,7 +146,7 @@ export default function MegatalentSuccess() {
                 className="w-full"
                 onClick={() => navigate("/megatalent", { replace: true })}
               >
-                Pokračovať do MegaTalentu
+                Continue to MegaTalent
               </Button>
               <Button
                 size="lg"
@@ -158,7 +158,7 @@ export default function MegatalentSuccess() {
                   setAttempt(0);
                 }}
               >
-                Skúsiť overenie znova
+                Try verification again
               </Button>
             </CardContent>
           </>

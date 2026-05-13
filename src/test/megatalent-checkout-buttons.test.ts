@@ -28,8 +28,8 @@ async function handleSubscribe(tierToBuy: "premium" | "top_premium") {
     const { data: { session } } = await getSession();
     if (!session) {
       toast({
-        title: "Prihlásenie potrebné",
-        description: "Pre zakúpenie predplatného sa najprv prihlás.",
+        title: "Login required",
+        description: "To purchase a subscription, please log in first.",
         variant: "destructive",
       });
       hrefSetter("/auth?redirect=/megatalent");
@@ -44,12 +44,12 @@ async function handleSubscribe(tierToBuy: "premium" | "top_premium") {
       open(data.url, "_blank");
       toast({ title: "Presmerovanie na Stripe…", description: "ok" });
     } else {
-      throw new Error("Checkout URL nebola vrátená");
+      throw new Error("Checkout URL was not returned");
     }
   } catch (err: any) {
     toast({
       title: "Chyba pri checkoute",
-      description: err?.message || "Nepodarilo sa spustiť platbu.",
+      description: err?.message || "Failed to initiate payment.",
       variant: "destructive",
     });
   }
@@ -64,18 +64,18 @@ describe("Megatalent subscribe buttons", () => {
     invoke.mockReset();
   });
 
-  it("neprihlásený → zobrazí toast a presmeruje na /auth", async () => {
+  it("logged out → displays toast and redirects to /auth", async () => {
     getSession.mockResolvedValue({ data: { session: null } });
     await handleSubscribe("premium");
     expect(toast).toHaveBeenCalledWith(expect.objectContaining({
-      title: "Prihlásenie potrebné",
+      title: "Login required",
       variant: "destructive",
     }));
     expect(hrefSetter).toHaveBeenCalledWith("/auth?redirect=/megatalent");
     expect(invoke).not.toHaveBeenCalled();
   });
 
-  it("prihlásený Premium → otvorí Stripe URL", async () => {
+  it("logged in Premium → opens Stripe URL", async () => {
     getSession.mockResolvedValue({ data: { session: { access_token: "tok" } } });
     invoke.mockResolvedValue({ data: { url: "https://stripe.test/p" }, error: null });
     await handleSubscribe("premium");
@@ -86,7 +86,7 @@ describe("Megatalent subscribe buttons", () => {
     expect(open).toHaveBeenCalledWith("https://stripe.test/p", "_blank");
   });
 
-  it("prihlásený TOP Premium → otvorí Stripe URL", async () => {
+  it("logged in TOP Premium → opens Stripe URL", async () => {
     getSession.mockResolvedValue({ data: { session: { access_token: "tok" } } });
     invoke.mockResolvedValue({ data: { url: "https://stripe.test/tp" }, error: null });
     await handleSubscribe("top_premium");
@@ -96,7 +96,7 @@ describe("Megatalent subscribe buttons", () => {
     expect(open).toHaveBeenCalledWith("https://stripe.test/tp", "_blank");
   });
 
-  it("edge function vráti error → destructive toast", async () => {
+  it("edge function returns error → destructive toast", async () => {
     getSession.mockResolvedValue({ data: { session: { access_token: "tok" } } });
     invoke.mockResolvedValue({ data: null, error: new Error("Stripe key missing") });
     await handleSubscribe("premium");
@@ -108,13 +108,13 @@ describe("Megatalent subscribe buttons", () => {
     expect(open).not.toHaveBeenCalled();
   });
 
-  it("chýbajúca URL v odpovedi → destructive toast", async () => {
+  it("missing URL in response → destructive toast", async () => {
     getSession.mockResolvedValue({ data: { session: { access_token: "tok" } } });
     invoke.mockResolvedValue({ data: {}, error: null });
     await handleSubscribe("top_premium");
     expect(toast).toHaveBeenCalledWith(expect.objectContaining({
       title: "Chyba pri checkoute",
-      description: "Checkout URL nebola vrátená",
+      description: "Checkout URL was not returned"
       variant: "destructive",
     }));
   });

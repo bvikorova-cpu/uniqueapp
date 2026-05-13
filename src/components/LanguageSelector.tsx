@@ -12,8 +12,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export const languages = [
-  { code: 'sk', name: 'Slovenčina', flag: '🇸🇰' },
-  { code: 'cs', name: 'Čeština', flag: '🇨🇿' },
+  { code: 'sk', name: 'Slovak', flag: '🇸🇰' },
+  { code: 'cs', name: 'Czech', flag: '🇨🇿' },
   { code: 'en', name: 'English', flag: '🇬🇧' },
   { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
   { code: 'es', name: 'Español', flag: '🇪🇸' },
@@ -27,7 +27,7 @@ export const languages = [
   { code: 'hr', name: 'Hrvatski', flag: '🇭🇷' },
   { code: 'sr', name: 'Српски', flag: '🇷🇸' },
   { code: 'bg', name: 'Български', flag: '🇧🇬' },
-  { code: 'sl', name: 'Slovenščina', flag: '🇸🇮' },
+  { code: 'sl', name: 'Slovenian', flag: '🇸🇮' },
   { code: 'nl', name: 'Nederlands', flag: '🇳🇱' },
   { code: 'pt', name: 'Português', flag: '🇵🇹' },
   { code: 'sv', name: 'Svenska', flag: '🇸🇪' },
@@ -59,9 +59,9 @@ export const languages = [
   { code: 'kk', name: 'Қазақша', flag: '🇰🇿' },
   { code: 'uz', name: 'Oʻzbekcha', flag: '🇺🇿' },
   { code: 'lt', name: 'Lietuvių', flag: '🇱🇹' },
-  { code: 'lv', name: 'Latviešu', flag: '🇱🇻' },
+  { code: 'lv', name: 'Latvian', flag: '🇱🇻' },
   { code: 'et', name: 'Eesti', flag: '🇪🇪' },
-  { code: 'is', name: 'Íslenska', flag: '🇮🇸' },
+  { code: 'is', name: 'Icelandic', flag: '🇮🇸' },
 ];
 
 export const LanguageSelector = () => {

@@ -131,7 +131,7 @@ export const usePremiumStore = () => {
         .eq('role', 'admin')
         .maybeSingle();
 
-      // Admin nemusí platiť
+      // Admin does not have to pay
       if (!adminRole) {
         // Deduct credits
         const success = await useCredit('custom_generation', `Purchased ${featureName}`);
@@ -176,7 +176,7 @@ export const usePremiumStore = () => {
         .eq('role', 'admin')
         .maybeSingle();
 
-      // Admin nemusí platiť
+      // Admin does not have to pay
       if (!adminRole) {
         // Deduct credits (using the actual cost multiple times)
         for (let i = 0; i < cost; i++) {
@@ -224,7 +224,7 @@ export const usePremiumStore = () => {
         .eq('role', 'admin')
         .maybeSingle();
 
-      // Admin nemusí platiť
+      // Admin does not have to pay
       if (!adminRole) {
         // Deduct credits
         for (let i = 0; i < cost; i++) {
@@ -272,7 +272,7 @@ export const usePremiumStore = () => {
         .eq('role', 'admin')
         .maybeSingle();
 
-      // Admin nemusí platiť
+      // Admin does not have to pay
       if (!adminRole) {
         // Deduct credits
         for (let i = 0; i < cost; i++) {

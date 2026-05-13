@@ -59,7 +59,7 @@ export function ShoppableTagsDialog({ postId, postOwnerId }: Props) {
         ) : (
           <div className="space-y-2 max-h-[300px] overflow-y-auto">
             {tags.length === 0 && (
-              <p className="text-sm text-muted-foreground text-center py-4">Žiadne produkty</p>
+              <p className="text-sm text-muted-foreground text-center py-4">No products</p>
             )}
             {tags.map((t) => (
               <div key={t.id} className="flex items-center gap-2 rounded-lg border border-border/50 p-2">
@@ -88,10 +88,10 @@ export function ShoppableTagsDialog({ postId, postOwnerId }: Props) {
         {isOwner && (
           <div className="space-y-2 border-t border-border/40 pt-3">
             <p className="text-sm font-semibold flex items-center gap-1">
-              <Plus className="h-4 w-4" /> Pridať produkt
+              <Plus className="h-4 w-4" /> Add product
             </p>
             <Input
-              placeholder="Názov produktu"
+              placeholder="Product name"
               value={form.product_name}
               onChange={(e) => setForm({ ...form, product_name: e.target.value })}
             />
@@ -101,20 +101,20 @@ export function ShoppableTagsDialog({ postId, postOwnerId }: Props) {
               onChange={(e) => setForm({ ...form, product_url: e.target.value })}
             />
             <Input
-              placeholder="Cena EUR (voliteľné)"
+              placeholder="Price EUR (optional)"
               type="number"
               step="0.01"
               value={form.price_eur}
               onChange={(e) => setForm({ ...form, price_eur: e.target.value })}
             />
             <Input
-              placeholder="Obrázok URL (voliteľné)"
+              placeholder="Image URL (optional)"
               value={form.image_url}
               onChange={(e) => setForm({ ...form, image_url: e.target.value })}
             />
             <Button onClick={submit} disabled={adding} className="w-full">
               {adding && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Pridať
+              Add
             </Button>
           </div>
         )}

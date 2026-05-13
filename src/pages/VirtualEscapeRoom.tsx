@@ -98,7 +98,7 @@ const VirtualEscapeRoom = () => {
                       try {
                         const { supabase } = await import("@/integrations/supabase/client");
                         const { data: { session } } = await supabase.auth.getSession();
-                        if (!session) { toast({ description: "Najprv sa prihlás" }); return; }
+                        if (!session) { toast({ description: "Please log in first" }); return; }
                         const eur = parseFloat(String(plan.price).replace(/[^0-9.]/g, "")) || 0;
                         const { data, error } = await supabase.functions.invoke("create-checkout", {
                           body: {

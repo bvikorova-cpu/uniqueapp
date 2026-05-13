@@ -1,15 +1,15 @@
-# 💰 Reklamy - Návod na aktiváciu
+# 💰 Ads - Activation Guide
 
-Tento adresár obsahuje pripravený kód pre integráciu Ezoic reklám.
+This directory contains pre-prepared code for Ezoic ads integration.
 
-## 🚀 Ako aktivovať reklamy (keď budeš hotová)
+## 🚀 How to activate ads (when you're ready)
 
 ### 1. Zaregistruj sa v Ezoic
 ```
-1. Choď na https://www.ezoic.com
-2. Vytvor účet a pridaj svoju aplikáciu
-3. Počkaj na schválenie (1-3 dni)
-4. Získaj Publisher ID a Placement IDs z Ezoic dashboardu
+1. Go to https://www.ezoic.com
+2. Create an account and add your application
+3. Wait for approval (1-3 days)
+4. Get Publisher ID and Placement IDs from the Ezoic dashboard
 ```
 
 ### 2. Pridaj Ezoic skript do `index.html`
@@ -22,19 +22,19 @@ Tento adresár obsahuje pripravený kód pre integráciu Ezoic reklám.
 </script>
 ```
 
-### 3. Aktualizuj konfiguráciu
+### 3. Update configuration
 ```typescript
 // V AdBanner.tsx
-const EZOIC_ENABLED = true; // Zmeň na true
+const EZOIC_ENABLED = true; // Change to true
 
 // V AdPlacements.tsx
-// Nahraď placeholder IDs skutočnými Ezoic placement IDs
+// Replace placeholder IDs with actual Ezoic placement IDs
 FOOTER_BANNER: "tvoje-skutocne-ezoic-id-101"
 ```
 
 ### 4. Pridaj reklamy do komponentov
 ```tsx
-// Príklad: Pridať reklamu do footer
+// Example: Add ad to footer
 import AdBanner from "@/components/ads/AdBanner";
 import { AD_PLACEMENTS } from "@/components/ads/AdPlacements";
 
@@ -44,57 +44,57 @@ import { AD_PLACEMENTS } from "@/components/ads/AdPlacements";
 />
 ```
 
-## 📍 Kde pridať reklamy (odporúčané pozície)
+## 📍 Where to add ads (recommended positions)
 
-### Globálne
-- **Footer**: Malý banner na konci každej stránky
+### Global
+- **Footer**: Small banner at the end of every page
 
 ### Escape Room
-- Po dokončení každej miestnosti
-- Po dokončení celej hry
+- After completing each room
+- After completing the entire game
 
 ### Coffee Buddy
-- V zozname kaviarní (každá 3. položka)
+- In the list of cafes (every 3rd item)
 - Na detaile kaviarne (sidebar)
 
 ### Character Arena
-- Po skončení bitky
-- V rebríčku (sidebar)
+- After the battle ends
+- In the leaderboard (sidebar)
 
-### Ostatné sekcie
-- Pozri `AdPlacements.tsx` pre všetky definované pozície
+### Other sections
+- See `AdPlacements.tsx` for all defined positions
 
-## 💰 Očakávané príjmy
+## 💰 Expected revenue
 
-Pri **5,000 aktívnych používateľov/mesiac**:
+With **5,000 active users/month**:
 - **Ezoic (bez Media.net)**: €300-400/mesiac
 - **Ezoic + Media.net**: €400-600/mesiac
-- **Po 2-3 mesiacoch optimalizácie**: Až o 50% viac
+- **After 2-3 months of optimization**: Up to 50% more
 
-## 📊 Kde sledovať štatistiky
+## 📊 Where to track statistics
 
-Po aktivácii:
-1. Prihlás sa do [Ezoic Dashboard](https://svc.ezoic.com)
-2. Vidíš:
-   - Denné/týždenné/mesačné príjmy
-   - Koľko zobrazení má každá reklama
-   - Ktoré pozície sú najziskovejšie
+After activation:
+1. Log in to [Ezoic Dashboard](https://svc.ezoic.com)
+2. You will see:
+   - Daily/weekly/monthly revenue
+   - How many impressions each ad gets
+   - Which positions are most profitable
    - CTR (click-through rate)
 
-## 🔧 Riešenie problémov
+## 🔧 Troubleshooting
 
-### Reklamy sa nezobrazujú
-1. Skontroluj, či je `EZOIC_ENABLED = true`
-2. Skontroluj console v prehliadači
-3. Overi, že Ezoic script je načítaný
-4. Počkaj 24 hodín po aktivácii (Ezoic potrebuje čas na setup)
+### Ads are not showing
+1. Check if `EZOIC_ENABLED = true`
+2. Check the console in the browser
+3. Verify that the Ezoic script is loaded
+4. Wait 24 hours after activation (Ezoic needs time to set up)
 
-### Nízke príjmy
-1. Počkaj 30-60 dní (Ezoic optimalizuje pozície)
+### Low revenue
+1. Wait 30-60 days (Ezoic optimizes positions)
 2. Pridaj viac placement positions
-3. Skontroluj, či máš dostatočný traffic
+3. Check if you have sufficient traffic
 
 ## 📞 Podpora
 
 - **Ezoic Support**: https://support.ezoic.com
-- **Tvoja aplikácia**: Všetko je pripravené, len aktivuj keď budeš hotová!
+- **Your application**: Everything is ready, just activate it when you're done!

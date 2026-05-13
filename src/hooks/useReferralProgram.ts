@@ -99,7 +99,7 @@ export const useReferralProgram = () => {
       console.error("Error fetching referral stats:", error);
       toast({
         title: "Chyba",
-        description: "Nepodarilo sa načítať referenčné údaje",
+        description: "Failed to load referral data",
         variant: "destructive",
       });
     } finally {

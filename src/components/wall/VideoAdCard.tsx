@@ -57,7 +57,7 @@ export function VideoAdCard({ adIndex }: VideoAdCardProps) {
       
       toast({
         title: "🎉 +1 XP!",
-        description: "Ďakujeme za pozretie reklamy!",
+        description: "Thanks for watching the ad!",
       });
     } catch (error) {
       console.error("Error awarding XP:", error);
@@ -80,7 +80,7 @@ export function VideoAdCard({ adIndex }: VideoAdCardProps) {
         <CardContent className="p-4 flex items-center justify-center gap-3">
           <CheckCircle className="h-5 w-5 text-green-500" />
           <span className="text-green-600 dark:text-green-400 font-medium">
-            Reklama dokončená • +1 XP získané!
+            Ad completed • +1 XP gained!
           </span>
         </CardContent>
       </Card>
@@ -95,7 +95,7 @@ export function VideoAdCard({ adIndex }: VideoAdCardProps) {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                <span className="text-sm font-medium">Prehrávanie reklamy...</span>
+                <span className="text-sm font-medium">Playing advertisement...</span>
               </div>
               <Button
                 variant="ghost"
@@ -120,10 +120,10 @@ export function VideoAdCard({ adIndex }: VideoAdCardProps) {
             <div className="space-y-2">
               <Progress value={progress} className="h-2" />
               <div className="flex justify-between text-xs text-muted-foreground">
-                <span>{Math.ceil((100 - progress) / (100 / 15))}s zostáva</span>
+                <span>{Math.ceil((100 - progress) / (100 / 15))}s remaining</span>
                 <span className="flex items-center gap-1">
                   <Gift className="h-3 w-3 text-primary" />
-                  +1 XP po dokončení
+                  +1 XP upon completion
                 </span>
               </div>
             </div>
@@ -135,9 +135,9 @@ export function VideoAdCard({ adIndex }: VideoAdCardProps) {
                 <Play className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <p className="font-medium text-sm">Získaj +1 XP</p>
+                <p className="font-medium text-sm">Earn +1 XP</p>
                 <p className="text-xs text-muted-foreground">
-                  Pozri si krátku reklamu (15s)
+                  Watch a short ad (15s)
                 </p>
               </div>
             </div>
@@ -147,7 +147,7 @@ export function VideoAdCard({ adIndex }: VideoAdCardProps) {
               className="gap-2"
             >
               <Play className="h-4 w-4" />
-              Pozerať
+              Watch
             </Button>
           </div>
         )}
