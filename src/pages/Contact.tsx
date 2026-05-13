@@ -228,6 +228,8 @@ const Contact = () => {
 
         <ContactChannels />
 
+        <VideoCallBooking />
+
         <Card className="border-2">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
