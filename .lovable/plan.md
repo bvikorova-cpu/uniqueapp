@@ -94,3 +94,11 @@ Po schválení začnem **Fázou 1 (Quick wins)** — 5 features, ~jeden veľký 
 - Group chats via extended `conversations` + new `conversation_messages` table
 - Quote-share post → DM via `SharePostToDM`
 - Profile customization: banner upload, pinned posts (max 3), featured links
+
+## ✅ Fáza 4 hotová
+- Audio Spaces: `audio_spaces` table + `SpacesDialog` (schedule / go live / list)
+- Spaces transkripcie: `transcribe-space` edge function (Lovable AI Gateway / Gemini audio input)
+- Live chat počas streamu: `live_stream_messages` + `useLiveStreamChat` realtime hook + `LiveStreamChat` component
+- Live tipy: `live_tips` + `tip-stream` edge function (Stripe Checkout) + `LiveTipDialog`
+- Duet/Stitch: `video_remixes` + `useVideoRemixes` + `DuetStitchMenu`
+- AR / CSS filtre: `ar_filters` table (seeded 6 presets) + `useArFilters` + `ArFilterPicker`
