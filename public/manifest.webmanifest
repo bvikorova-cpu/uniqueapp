@@ -1,7 +1,7 @@
 {
-  "name": "Unique - Sociálna sieť",
+  "name": "Unique - Social Network",
   "short_name": "Unique",
-  "description": "Tvoja jedinečná sociálna sieť. Zdieľaj, spájaj sa a objavuj nových priateľov.",
+  "description": "Your unique social network. Share, connect, and discover new friends.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -34,7 +34,7 @@
     }
   ],
   "categories": ["social", "lifestyle", "education"],
-  "lang": "sk",
+  "lang": "en",
   "dir": "ltr",
   "prefer_related_applications": false,
   "shortcuts": [
