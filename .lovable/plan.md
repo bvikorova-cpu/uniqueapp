@@ -111,3 +111,11 @@ Po schválení začnem **Fázou 1 (Quick wins)** — 5 features, ~jeden veľký 
 - Content warning UI overlay: `ContentWarningOverlay` (blur + reveal)
 - `is_community_moderator` security definer helper
 - Wired into Wall toolbar: CommunitiesDialog + ModerationQueueDialog
+
+## ✅ Fáza 6 hotová
+- Creator subscription tiers: existujúca `creator_subscription_tiers` + nová `creator_subscriptions` + `subscribe-to-creator` edge function (Stripe recurring) + `CreatorSubscriptionDialog`
+- Branded content tag: `posts.branded_partner_id/name/disclosure` + `BrandedContentBadge`
+- Shoppable posts: `post_product_tags` + `useShoppableTags` + `ShoppableTagsDialog`
+- Creator fund visibility: `creator_fund_visibility` + `useCreatorFund` + `CreatorFundDialog` (opt-in metriky)
+- Daily login rewards: `user_login_streaks` + `claim_daily_login_reward()` RPC + `useDailyLoginReward` + `DailyLoginRewardDialog` (streak +1/deň, bonus +1 každých 7 dní, max +10)
+- Wall toolbar rozšírený o Creator tiers, Creator Fund a Daily Reward
