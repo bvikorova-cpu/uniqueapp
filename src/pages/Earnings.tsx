@@ -262,8 +262,21 @@ const Earnings = () => {
           stripePayoutsEnabled={stripeConnect.enabled}
           payoutsBlockReason={stripeConnect.reason}
         />
-        <EarningsGoalTracker monthEarnings={stats.monthEarnings} />
-        <EarningsTipsBanner />
+        <WalletBalanceCard />
+        <EarningsComparisonCard thisMonth={stats.monthEarnings} lastMonth={lastMonthEarnings} />
+      </div>
+
+      <div className="grid lg:grid-cols-3 gap-4 mb-6">
+        <div className="space-y-3">
+          <InstantPayoutButton
+            amount={stats.available}
+            enabled={stripeConnect.enabled && hasPayoutMethod}
+            onPaid={() => checkUser()}
+          />
+          <EarningsGoalTracker monthEarnings={stats.monthEarnings} />
+        </div>
+        <AutoWithdrawSettings />
+        <PayoutFeeCalculator />
       </div>
 
       <div className="grid lg:grid-cols-3 gap-4 mb-6">
