@@ -12,8 +12,12 @@ import { CSATWidget } from "./CSATWidget";
 interface Msg { role: "user" | "assistant"; content: string }
 
 const STORAGE_KEY = "unique:contact-livechat";
+const HIDDEN_KEY = "unique:contact-livechat:hidden";
 
 export const LiveChatWidget = () => {
+  const [hidden, setHidden] = useState<boolean>(() => {
+    try { return localStorage.getItem(HIDDEN_KEY) === "1"; } catch { return false; }
+  });
   const [userId, setUserId] = useState<string | null>(null);
   useEffect(() => { supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null)); }, []);
   const [open, setOpen] = useState(false);
