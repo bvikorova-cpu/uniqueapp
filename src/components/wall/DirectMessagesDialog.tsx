@@ -44,6 +44,9 @@ export const DirectMessagesDialog = ({
   const [uploadingImage, setUploadingImage] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { messages, sendMessage } = useDirectMessages(userId);
+  const messageIds = messages.map((m) => m.id);
+  const { reactionsByMessage, toggle: toggleReaction } = useMessageReactions(messageIds);
+  const [currentUserId, setCurrentUserId] = useState<string | undefined>();
   const navigate = useNavigate();
   const { toast } = useToast();
 
