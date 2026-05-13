@@ -19,29 +19,29 @@ const files: DownloadFile[] = [
     type: "pdf",
   },
   {
-    name: "Brochure EN (PDF)"
+    name: "Brochure EN (PDF)",
     description: "English version of UNIQUE brochure",
     url: "/downloads/brozura-EN.pdf",
     size: "4.7 MB",
     type: "pdf",
   },
   {
-    name: "Brochure HU (PDF)"
-    description: "Hungarian UNIQUE brochure"
+    name: "Brochure HU (PDF)",
+    description: "Hungarian UNIQUE brochure",
     url: "/downloads/brozura-HU.pdf",
     size: "4.7 MB",
     type: "pdf",
   },
   {
-    name: "Brochure SK (ZIP)"
-    description: "Slovak brochure packed in ZIP"
+    name: "Brochure SK (ZIP)",
+    description: "Slovak brochure packed in ZIP",
     url: "/downloads/brozura-SK.zip",
     size: "4.0 MB",
     type: "zip",
   },
   {
-    name: "All languages (ZIP)"
-    description: "SK + EN + HU brochures in one ZIP archive"
+    name: "All languages (ZIP)",
+    description: "SK + EN + HU brochures in one ZIP archive",
     url: "/downloads/brozury-vsetky-jazyky.zip",
     size: "12 MB",
     type: "zip",

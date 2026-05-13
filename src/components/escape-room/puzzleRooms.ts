@@ -312,7 +312,7 @@ export const horrorRooms: RoomData[] = [
         label: "Numbers on the wall",
         puzzle: {
           type: "sequence",
-          question: "There are numbers on the wall: 2, 4, 8, 16, ?. What is the next number?"
+          question: "There are numbers on the wall: 2, 4, 8, 16, ?. What is the next number?",
           hint: "Each number is double the previous one",
           answer: "32",
           reward: {
@@ -549,7 +549,7 @@ export const scifiRooms: RoomData[] = [
         id: "engine-panel",
         position: angleToPosition(0, 0),
         type: "puzzle",
-        label: "Main engine"
+        label: "Main engine",
         puzzle: {
           type: "sequence",
           question: "Start sequence: 1, 1, 2, 3, 5, 8, ?. What is the next number?",
@@ -834,7 +834,7 @@ export const fantasyRooms: RoomData[] = [
         puzzle: {
           type: "sequence",
           question: "The eggs have numbers: 3, 6, 12, 24, ?. What is the next one?",
-          hint: "Each number is double the previous one"
+          hint: "Each number is double the previous one",
           answer: "48",
           reward: {
             id: "dragon-scale",
@@ -871,7 +871,7 @@ export const fantasyRooms: RoomData[] = [
         puzzle: {
           type: "riddle",
           question: "I am hot but not the sun, I destroy but also create, dragons breathe me. What am I?",
-          hint: "Dragons breathe..."
+          hint: "Dragons breathe...",
           answer: "ohen"
         }
       },
@@ -930,7 +930,7 @@ export const fantasyRooms: RoomData[] = [
         puzzle: {
           type: "riddle",
           question: "I grow for hundreds of years, give oxygen, have deep roots. What am I?",
-          hint: "The forest is full of..."
+          hint: "The forest is full of...",
           answer: "strom",
           reward: {
             id: "portal-gem",
@@ -944,7 +944,7 @@ export const fantasyRooms: RoomData[] = [
         id: "portal-home",
         position: angleToPosition(180, 0),
         type: "door",
-        label: "Portal Home"
+        label: "Portal Home",
         requiredItem: "portal-gem",
         nextRoom: 999
       }

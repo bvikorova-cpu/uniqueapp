@@ -347,7 +347,7 @@ export function PanoramaEscapeRoom({
       sounds.playEffect('error');
       toast({
         title: "Error generating",
-        description: "Try again later"
+        description: "Try again later",
         variant: "destructive",
       });
     } finally {
@@ -423,7 +423,7 @@ export function PanoramaEscapeRoom({
           sounds.playEffect('error');
           toast({
             title: "🔒 Locked",
-            description: "You need the correct item from your inventory"
+            description: "You need the correct item from your inventory",
             variant: "destructive",
           });
         } else {
@@ -457,7 +457,7 @@ export function PanoramaEscapeRoom({
           sounds.playEffect('error');
           toast({
             title: "🚪 Door is locked",
-            description: "You must solve all puzzles in this room first"
+            description: "You must solve all puzzles in this room first",
             variant: "destructive",
           });
         }
@@ -491,7 +491,7 @@ export function PanoramaEscapeRoom({
       sounds.playEffect('error');
       toast({
         title: "❌ Incorrect",
-        description: "Try again"
+        description: "Try again",
         variant: "destructive",
       });
     }
@@ -502,7 +502,7 @@ export function PanoramaEscapeRoom({
       setHintsUsed(prev => prev + 1);
       sounds.playEffect('hint');
       toast({
-        title: "💡 Hint"
+        title: "💡 Hint",
         description: activeHotspot.puzzle.hint,
       });
     }

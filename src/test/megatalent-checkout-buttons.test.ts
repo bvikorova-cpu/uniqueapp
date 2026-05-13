@@ -114,7 +114,7 @@ describe("Megatalent subscribe buttons", () => {
     await handleSubscribe("top_premium");
     expect(toast).toHaveBeenCalledWith(expect.objectContaining({
       title: "Chyba pri checkoute",
-      description: "Checkout URL was not returned"
+      description: "Checkout URL was not returned",
       variant: "destructive",
     }));
   });

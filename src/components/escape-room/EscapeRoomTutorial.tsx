@@ -23,25 +23,25 @@ const tutorialSteps: TutorialStep[] = [
   {
     icon: <MousePointer2 className="h-12 w-12" />,
     title: "Klikaj na objekty",
-    description: "Colored dots indicate interactive objects. Click on them to interact - you can find items, clues, or puzzles."
+    description: "Colored dots indicate interactive objects. Click on them to interact - you can find items, clues, or puzzles.",
     tip: "🔍 Orange = puzzles, Blue = items, Turquoise = clues"
   },
   {
     icon: <Package className="h-12 w-12" />,
     title: "Zbieraj predmety",
-    description: "Found items are stored in your inventory. Select an item from your inventory and click on the lock to use it."
+    description: "Found items are stored in your inventory. Select an item from your inventory and click on the lock to use it.",
     tip: "🎒 Every item has its purpose - read the description carefully!"
   },
   {
     icon: <Lightbulb className="h-12 w-12" />,
     title: "Solve puzzles",
-    description: "Puzzles can be ciphers, math problems, or logic riddles. If you're stuck, use a hint."
+    description: "Puzzles can be ciphers, math problems, or logic riddles. If you're stuck, use a hint.",
     tip: "🧩 Clues in the room often hint at the solution!"
   },
   {
     icon: <Clock className="h-12 w-12" />,
     title: "Time and score",
-    description: "The faster you escape and the fewer hints you use, the higher your score will be. Compete with others!"
+    description: "The faster you escape and the fewer hints you use, the higher your score will be. Compete with others!",
     tip: "🏆 The best score will be recorded on the leaderboard!"
   }
 ];

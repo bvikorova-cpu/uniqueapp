@@ -52,7 +52,7 @@ export function usePushNotifications() {
     if (!state.isSupported) {
       toast({
         title: "Unsupported",
-        description: "Your browser does not support push notifications."
+        description: "Your browser does not support push notifications.",
         variant: "destructive",
       });
       return false;
@@ -71,7 +71,7 @@ export function usePushNotifications() {
       } else if (permission === "denied") {
         toast({
           title: "Denied",
-          description: "Push notifications have been denied."
+          description: "Push notifications have been denied.",
           variant: "destructive",
         });
         return false;
@@ -82,7 +82,7 @@ export function usePushNotifications() {
       console.error("Error requesting notification permission:", error);
       toast({
         title: "Chyba",
-        description: "Failed to request notification permission."
+        description: "Failed to request notification permission.",
         variant: "destructive",
       });
       return false;
@@ -117,7 +117,7 @@ export function usePushNotifications() {
       console.error("Error subscribing to push:", error);
       toast({
         title: "Chyba",
-        description: "Failed to subscribe to push notifications."
+        description: "Failed to subscribe to push notifications.",
         variant: "destructive",
       });
       return false;
@@ -144,7 +144,7 @@ export function usePushNotifications() {
       console.error("Error unsubscribing from push:", error);
       toast({
         title: "Chyba",
-        description: "Failed to unsubscribe from push notifications."
+        description: "Failed to unsubscribe from push notifications.",
         variant: "destructive",
       });
       return false;
