@@ -6703,6 +6703,42 @@ export type Database = {
           },
         ]
       }
+      bulk_user_action_log: {
+        Row: {
+          action: string
+          created_at: string
+          failed_count: number
+          id: string
+          notes: string | null
+          params: Json
+          performed_by: string | null
+          succeeded_count: number
+          target_user_ids: string[]
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          failed_count?: number
+          id?: string
+          notes?: string | null
+          params?: Json
+          performed_by?: string | null
+          succeeded_count?: number
+          target_user_ids?: string[]
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          failed_count?: number
+          id?: string
+          notes?: string | null
+          params?: Json
+          performed_by?: string | null
+          succeeded_count?: number
+          target_user_ids?: string[]
+        }
+        Relationships: []
+      }
       business_orders: {
         Row: {
           business_id: string
@@ -16035,6 +16071,45 @@ export type Database = {
         }
         Relationships: []
       }
+      email_templates: {
+        Row: {
+          body_html: string
+          body_text: string | null
+          created_at: string
+          id: string
+          language: string
+          slug: string
+          subject: string
+          updated_at: string
+          updated_by: string | null
+          variables: Json
+        }
+        Insert: {
+          body_html: string
+          body_text?: string | null
+          created_at?: string
+          id?: string
+          language?: string
+          slug: string
+          subject: string
+          updated_at?: string
+          updated_by?: string | null
+          variables?: Json
+        }
+        Update: {
+          body_html?: string
+          body_text?: string | null
+          created_at?: string
+          id?: string
+          language?: string
+          slug?: string
+          subject?: string
+          updated_at?: string
+          updated_by?: string | null
+          variables?: Json
+        }
+        Relationships: []
+      }
       emotion_credits: {
         Row: {
           created_at: string
@@ -18253,6 +18328,42 @@ export type Database = {
           tier?: string
           updated_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      feature_flags: {
+        Row: {
+          created_at: string
+          description: string | null
+          enabled: boolean
+          id: string
+          key: string
+          rollout_percent: number
+          target_roles: string[]
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          enabled?: boolean
+          id?: string
+          key: string
+          rollout_percent?: number
+          target_roles?: string[]
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          enabled?: boolean
+          id?: string
+          key?: string
+          rollout_percent?: number
+          target_roles?: string[]
+          updated_at?: string
+          updated_by?: string | null
         }
         Relationships: []
       }
