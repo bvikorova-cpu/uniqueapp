@@ -109,6 +109,8 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
   const [voiceFile, setVoiceFile] = useState<File | null>(null);
   const [postVisibility, setPostVisibility] = useState<PostVisibility>("normal");
   const [pollData, setPollData] = useState<{ question: string; options: string[]; endsAt: Date } | null>(null);
+  const [isSensitive, setIsSensitive] = useState(false);
+  const [sensitiveReason, setSensitiveReason] = useState("");
   const { toast } = useToast();
   const { createHashtagsForPost } = useHashtags();
   const { createPoll } = usePolls();
