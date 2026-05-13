@@ -5,16 +5,16 @@ import { ArrowLeft, Star, Trophy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const LEVELS = [
-  { level: 1, name: "Prvá misia", pigs: 2, birds: 3, structures: 2 },
-  { level: 2, name: "Drevená pevnosť", pigs: 3, birds: 4, structures: 3 },
-  { level: 3, name: "Sklený hrad", pigs: 4, birds: 4, structures: 4 },
-  { level: 4, name: "Kamenná bašta", pigs: 5, birds: 5, structures: 5 },
-  { level: 5, name: "Zmiešaná stavba", pigs: 6, birds: 5, structures: 6 },
-  { level: 6, name: "Dvojitá veža", pigs: 7, birds: 6, structures: 7 },
-  { level: 7, name: "Labyrint", pigs: 8, birds: 6, structures: 8 },
-  { level: 8, name: "Vysoká pevnosť", pigs: 9, birds: 7, structures: 9 },
-  { level: 9, name: "Záverečný boj", pigs: 10, birds: 7, structures: 10 },
-  { level: 10, name: "Kráľovstvo prasiat", pigs: 12, birds: 8, structures: 12 },
+  { level: 1, name: "First Mission", pigs: 2, birds: 3, structures: 2 },
+  { level: 2, name: "Wooden Fortress", pigs: 3, birds: 4, structures: 3 },
+  { level: 3, name: "Glass Castle", pigs: 4, birds: 4, structures: 4 },
+  { level: 4, name: "Stone Bastion", pigs: 5, birds: 5, structures: 5 },
+  { level: 5, name: "Mixed Structure", pigs: 6, birds: 5, structures: 6 },
+  { level: 6, name: "Double Tower", pigs: 7, birds: 6, structures: 7 },
+  { level: 7, name: "Labyrinth", pigs: 8, birds: 6, structures: 8 },
+  { level: 8, name: "High Fortress", pigs: 9, birds: 7, structures: 9 },
+  { level: 9, name: "Final Battle", pigs: 10, birds: 7, structures: 10 },
+  { level: 10, name: "Kingdom of Pigs", pigs: 12, birds: 8, structures: 12 },
 ];
 
 interface AngryBirdsGameProps {
@@ -61,8 +61,8 @@ export const AngryBirdsGame = ({ onBack }: AngryBirdsGameProps) => {
 
         if (newPigs === 0) {
           toast({
-            title: "🎉 Úroveň dokončená!",
-            description: `${levelData.name} - všetky prasiatka porazené!`,
+            title: "🎉 Level completed!",
+            description: `${levelData.name} - all pigs defeated!`,
           });
 
           setTimeout(() => {
@@ -70,8 +70,8 @@ export const AngryBirdsGame = ({ onBack }: AngryBirdsGameProps) => {
               nextLevel();
             } else {
               toast({
-                title: "🏆 Víťaz!",
-                description: "Dokončil si všetky úrovne!",
+                title: "🏆 Winner!",
+                description: "You've completed all levels!",
               });
             }
           }, 1500);
@@ -104,28 +104,28 @@ export const AngryBirdsGame = ({ onBack }: AngryBirdsGameProps) => {
         <div className="flex items-center justify-between mb-6">
           <Button onClick={onBack} variant="secondary">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Späť
+            Back
           </Button>
           <Button onClick={resetLevel} variant="secondary">
-            Reštart
+            Restart
           </Button>
         </div>
 
         <Card className="p-6 mb-6 bg-white/95 backdrop-blur">
           <div className="grid grid-cols-3 gap-4 text-center mb-4">
             <div>
-              <div className="text-sm text-muted-foreground mb-1">Úroveň</div>
+              <div className="text-sm text-muted-foreground mb-1">Level</div>
               <div className="text-2xl font-bold flex items-center justify-center gap-2">
                 <Star className="h-5 w-5 text-yellow-500" />
                 {levelData.level}
               </div>
             </div>
             <div>
-              <div className="text-sm text-muted-foreground mb-1">Vtáky</div>
+              <div className="text-sm text-muted-foreground mb-1">Birds</div>
               <div className="text-2xl font-bold text-red-500">{birdsLeft}</div>
             </div>
             <div>
-              <div className="text-sm text-muted-foreground mb-1">Prasiatka</div>
+              <div className="text-sm text-muted-foreground mb-1">Pigs</div>
               <div className="text-2xl font-bold text-green-600">{pigsLeft}</div>
             </div>
           </div>
@@ -170,7 +170,7 @@ export const AngryBirdsGame = ({ onBack }: AngryBirdsGameProps) => {
             <div className="space-y-4 mb-4">
               <div>
                 <div className="flex justify-between mb-2">
-                  <label className="text-sm font-medium">Sila: {power}%</label>
+                  <label className="text-sm font-medium">Power: {power}%</label>
                 </div>
                 <input
                   type="range"
@@ -184,7 +184,7 @@ export const AngryBirdsGame = ({ onBack }: AngryBirdsGameProps) => {
 
               <div>
                 <div className="flex justify-between mb-2">
-                  <label className="text-sm font-medium">Uhol: {angle}°</label>
+                  <label className="text-sm font-medium">Angle: {angle}°</label>
                 </div>
                 <input
                   type="range"
@@ -202,7 +202,7 @@ export const AngryBirdsGame = ({ onBack }: AngryBirdsGameProps) => {
               className="w-full bg-red-600 hover:bg-red-700 text-white text-lg py-6"
               disabled={birdsLeft <= 0}
             >
-              🎯 Vypustiť vtáka!
+              🎯 Launch bird!
             </Button>
           </div>
         </Card>
