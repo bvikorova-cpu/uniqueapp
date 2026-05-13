@@ -58,8 +58,6 @@ export const LiveChatWidget = () => {
 
   const clear = () => { setMessages([]); localStorage.removeItem(STORAGE_KEY); };
 
-  return (
-    <>
   const hide = () => {
     try { localStorage.setItem(HIDDEN_KEY, "1"); } catch {}
     setHidden(true);
