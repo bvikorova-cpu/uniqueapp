@@ -296,6 +296,15 @@ const Earnings = () => {
         <TaxDocsButton />
       </div>
 
+      <div className="grid lg:grid-cols-2 gap-4 mb-6">
+        <TaxFormWidget />
+        <RefundsDisputesPanel />
+      </div>
+
+      <div className="mb-6">
+        <WithdrawalHistoryTable />
+      </div>
+
       <Card className="border-amber-500/20">
         <CardHeader>
           <CardTitle>Transaction History</CardTitle>
