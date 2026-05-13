@@ -128,6 +128,7 @@ export default function WallFeed({
           {/* Achievements Badge + Mute settings */}
           <div className="flex justify-end items-center gap-2 flex-wrap">
             <ProfileCustomizationDialog />
+            <SpacesDialog />
             <GroupChatDialog />
             <CloseFriendsDialog />
             <FollowedTopicsDialog />
