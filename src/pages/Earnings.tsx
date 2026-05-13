@@ -24,6 +24,14 @@ import {
 } from "@/components/earnings";
 import { PayoutSchedulePicker } from "@/components/earnings/PayoutSchedulePicker";
 import { TaxDocsButton } from "@/components/earnings/TaxDocsButton";
+import { WalletBalanceCard } from "@/components/earnings/WalletBalanceCard";
+import { InstantPayoutButton } from "@/components/earnings/InstantPayoutButton";
+import { AutoWithdrawSettings } from "@/components/earnings/AutoWithdrawSettings";
+import { EarningsComparisonCard } from "@/components/earnings/EarningsComparisonCard";
+import { PayoutFeeCalculator } from "@/components/earnings/PayoutFeeCalculator";
+import { RefundsDisputesPanel } from "@/components/earnings/RefundsDisputesPanel";
+import { WithdrawalHistoryTable } from "@/components/earnings/WithdrawalHistoryTable";
+import { TaxFormWidget } from "@/components/earnings/TaxFormWidget";
 
 interface Transaction {
   id: string;
@@ -49,6 +57,7 @@ const Earnings = () => {
     monthEarnings: 0,
     totalSales: 0,
   });
+  const [lastMonthEarnings, setLastMonthEarnings] = useState(0);
   const [loading, setLoading] = useState(true);
   const [hasPayoutMethod, setHasPayoutMethod] = useState(false);
   const [stripeConnect, setStripeConnect] = useState<{ enabled: boolean; reason: string | null }>({ enabled: true, reason: null });
@@ -122,6 +131,14 @@ const Earnings = () => {
         return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
       })
       .reduce((s, t) => s + Number(t.seller_amount), 0);
+    const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const lm = txs
+      .filter(t => {
+        const d = new Date(t.created_at);
+        return d.getMonth() === lastMonthDate.getMonth() && d.getFullYear() === lastMonthDate.getFullYear();
+      })
+      .reduce((s, t) => s + Number(t.seller_amount), 0);
+    setLastMonthEarnings(lm);
     setStats({
       totalEarnings,
       pendingPayouts,
@@ -245,8 +262,21 @@ const Earnings = () => {
           stripePayoutsEnabled={stripeConnect.enabled}
           payoutsBlockReason={stripeConnect.reason}
         />
-        <EarningsGoalTracker monthEarnings={stats.monthEarnings} />
-        <EarningsTipsBanner />
+        <WalletBalanceCard />
+        <EarningsComparisonCard thisMonth={stats.monthEarnings} lastMonth={lastMonthEarnings} />
+      </div>
+
+      <div className="grid lg:grid-cols-3 gap-4 mb-6">
+        <div className="space-y-3">
+          <InstantPayoutButton
+            amount={stats.available}
+            enabled={stripeConnect.enabled && hasPayoutMethod}
+            onPaid={() => checkUser()}
+          />
+          <EarningsGoalTracker monthEarnings={stats.monthEarnings} />
+        </div>
+        <AutoWithdrawSettings />
+        <PayoutFeeCalculator />
       </div>
 
       <div className="grid lg:grid-cols-3 gap-4 mb-6">
@@ -264,6 +294,15 @@ const Earnings = () => {
       <div className="grid lg:grid-cols-2 gap-4 mb-6">
         <PayoutSchedulePicker />
         <TaxDocsButton />
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-4 mb-6">
+        <TaxFormWidget />
+        <RefundsDisputesPanel />
+      </div>
+
+      <div className="mb-6">
+        <WithdrawalHistoryTable />
       </div>
 
       <Card className="border-amber-500/20">

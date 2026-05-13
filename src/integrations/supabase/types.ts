@@ -2743,6 +2743,39 @@ export type Database = {
         }
         Relationships: []
       }
+      auto_withdraw_settings: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          id: string
+          min_balance_eur: number
+          preferred_method: string
+          threshold_eur: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          min_balance_eur?: number
+          preferred_method?: string
+          threshold_eur?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          min_balance_eur?: number
+          preferred_method?: string
+          threshold_eur?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       badges: {
         Row: {
           created_at: string | null
@@ -42160,6 +42193,42 @@ export type Database = {
         }
         Relationships: []
       }
+      tax_forms: {
+        Row: {
+          country: string | null
+          form_type: string
+          full_name: string | null
+          id: string
+          submitted_at: string
+          tax_id: string | null
+          updated_at: string
+          user_id: string
+          vat_id: string | null
+        }
+        Insert: {
+          country?: string | null
+          form_type: string
+          full_name?: string | null
+          id?: string
+          submitted_at?: string
+          tax_id?: string | null
+          updated_at?: string
+          user_id: string
+          vat_id?: string | null
+        }
+        Update: {
+          country?: string | null
+          form_type?: string
+          full_name?: string | null
+          id?: string
+          submitted_at?: string
+          tax_id?: string | null
+          updated_at?: string
+          user_id?: string
+          vat_id?: string | null
+        }
+        Relationships: []
+      }
       teacher_collections: {
         Row: {
           created_at: string
@@ -45787,6 +45856,30 @@ export type Database = {
           longest_streak?: number
           streak_bonus_claimed_at?: string | null
           total_votes_cast?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wallet_balances: {
+        Row: {
+          balance: number
+          currency: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          currency?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          currency?: string
+          id?: string
           updated_at?: string
           user_id?: string
         }
