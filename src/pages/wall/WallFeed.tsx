@@ -167,7 +167,7 @@ export default function WallFeed({
                 )}
                 
                 {/* End of feed message */}
-                {!loading && !loadingMore && !hasMore && filteredFeedItems.length > 0 && (
+                {!loading && !loadingMore && !hasMore && visibleFeedItems.length > 0 && (
                   <div className="glass-post-card p-6 text-center text-muted-foreground text-sm">
                     {t('wall.feed.reachedEnd')}
                   </div>
