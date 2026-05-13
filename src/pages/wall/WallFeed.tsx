@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import PostCard from "@/components/feed/PostCard";
 import RepostCard from "@/components/feed/RepostCard";
 import { PostFilters, SortBy, TimeFilter, CategoryFilter } from "@/components/feed/PostFilters";
@@ -7,6 +7,8 @@ import { AchievementsBadge } from "@/components/wall/AchievementsBadge";
 import { SearchBar } from "@/components/wall/SearchBar";
 import RewardedAdCard from "@/components/ads/RewardedAdCard";
 import { AD_PLACEMENTS } from "@/components/ads/AdPlacements";
+import { NotesBar } from "@/components/wall/NotesBar";
+import { MutedKeywordsDialog, useMutedKeywords } from "@/components/wall/MutedKeywordsDialog";
 import { useTranslation } from "react-i18next";
 import type { Post, Repost, FeedItem } from "@/types/database";
 
@@ -40,6 +42,19 @@ export default function WallFeed({
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("all");
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
   const { t } = useTranslation();
+  const mutedKeywords = useMutedKeywords();
+
+  const visibleFeedItems = useMemo(() => {
+    if (mutedKeywords.length === 0) return filteredFeedItems;
+    return filteredFeedItems.filter((item) => {
+      const text =
+        item.type === "post"
+          ? (item.data as any).content ?? ""
+          : ((item.data as any).comment ?? "") + " " + ((item.data as any).original_post?.content ?? "");
+      const lower = text.toLowerCase();
+      return !mutedKeywords.some((kw) => lower.includes(kw));
+    });
+  }, [filteredFeedItems, mutedKeywords]);
 
   const handleResetFilters = () => {
     setSortBy("newest");
@@ -76,10 +91,14 @@ export default function WallFeed({
 
       <div className="max-w-4xl mx-auto px-4 py-6">
         <div className="space-y-6">
-          {/* Achievements Badge */}
-          <div className="flex justify-end">
+          {/* Achievements Badge + Mute settings */}
+          <div className="flex justify-end items-center gap-2">
+            <MutedKeywordsDialog />
             <AchievementsBadge />
           </div>
+
+          {/* Notes / 24h status bar */}
+          <NotesBar />
 
           {/* Search Bar */}
           <SearchBar />
@@ -100,13 +119,13 @@ export default function WallFeed({
               <div className="glass-post-card p-12 flex items-center justify-center">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
               </div>
-            ) : filteredFeedItems.length === 0 ? (
+            ) : visibleFeedItems.length === 0 ? (
               <div className="glass-post-card p-12 text-center text-muted-foreground">
                 {t('wall.feed.noPostsFound')}
               </div>
             ) : (
               <>
-                {filteredFeedItems.map((item, index) => (
+                {visibleFeedItems.map((item, index) => (
                   <div key={`${item.type}-${item.data.id}`}>
                     <div 
                       className="animate-fade-in"
@@ -148,7 +167,7 @@ export default function WallFeed({
                 )}
                 
                 {/* End of feed message */}
-                {!loading && !loadingMore && !hasMore && filteredFeedItems.length > 0 && (
+                {!loading && !loadingMore && !hasMore && visibleFeedItems.length > 0 && (
                   <div className="glass-post-card p-6 text-center text-muted-foreground text-sm">
                     {t('wall.feed.reachedEnd')}
                   </div>

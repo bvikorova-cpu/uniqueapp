@@ -64,6 +64,8 @@ export interface Post {
   visibility?: PostVisibility;
   is_pinned?: boolean;
   is_archived?: boolean;
+  is_sensitive?: boolean;
+  sensitive_reason?: string | null;
   
   // Relations - optional for database queries
   profiles?: ProfileBasic;

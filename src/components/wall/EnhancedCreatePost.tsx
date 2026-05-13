@@ -109,6 +109,8 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
   const [voiceFile, setVoiceFile] = useState<File | null>(null);
   const [postVisibility, setPostVisibility] = useState<PostVisibility>("normal");
   const [pollData, setPollData] = useState<{ question: string; options: string[]; endsAt: Date } | null>(null);
+  const [isSensitive, setIsSensitive] = useState(false);
+  const [sensitiveReason, setSensitiveReason] = useState("");
   const { toast } = useToast();
   const { createHashtagsForPost } = useHashtags();
   const { createPoll } = usePolls();
@@ -150,6 +152,8 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           feeling: feeling || undefined,
           location: location || undefined,
           privacy,
+          is_sensitive: isSensitive,
+          sensitive_reason: isSensitive ? (sensitiveReason.trim() || null) : null,
         })
         .select()
         .single();
@@ -323,7 +327,28 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                 <SelectItem value="private">Only me</SelectItem>
               </SelectContent>
             </Select>
+            <Button
+              type="button"
+              variant={isSensitive ? "default" : "outline"}
+              size="sm"
+              className="h-8"
+              onClick={() => setIsSensitive((v) => !v)}
+              title="Mark as sensitive — will be blurred for viewers"
+            >
+              ⚠️ {isSensitive ? "Sensitive" : "Mark sensitive"}
+            </Button>
           </div>
+
+          {isSensitive && (
+            <input
+              type="text"
+              placeholder="Reason (optional, e.g. 'graphic content')"
+              value={sensitiveReason}
+              onChange={(e) => setSensitiveReason(e.target.value)}
+              maxLength={120}
+              className="w-full text-xs px-3 py-2 rounded-md bg-amber-500/10 border border-amber-500/40 placeholder:text-amber-300/60"
+            />
+          )}
 
           <TooltipProvider>
             <div className="flex flex-nowrap overflow-x-auto scrollbar-hide touch-scroll gap-0.5 pb-2 w-full">

@@ -30,6 +30,8 @@ import { VerifiedFounderBadge, isVerifiedFounder } from "@/components/wall/Verif
 import { ProductCard } from "@/components/wall/ProductCard";
 import { EnhancedCommentInput } from "./EnhancedCommentInput";
 import { CommentItem } from "./CommentItem";
+import { SensitiveOverlay } from "./SensitiveOverlay";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Popover,
@@ -577,77 +579,90 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
       className={`glass-post-card overflow-hidden group hover:scale-[1.01] transition-all duration-500 border-l-4 ${getAccentColor()} cursor-pointer`}
       onClick={() => navigate(`/post/${post.id}`)}
     >
-      {/* Media First - Pinterest Style */}
+      {/* Media First - Pinterest Style (with sensitive blur + carousel for multi-image) */}
       {post.media && post.media.length > 0 && (
-        <div className="relative overflow-hidden">
-          {post.media.length === 1 ? (
-            <div className="relative overflow-hidden group/image cursor-pointer"
-                 onClick={(e) => {
-                   e.stopPropagation();
-                   if (post.media[0].file_type === "image") {
-                     setSelectedImage(post.media[0].file_url);
-                     setShowImageModal(true);
-                   }
-                 }}>
-              {post.media[0].file_type === "image" ? (
-                <>
-                  <img
-                    src={post.media[0].file_url}
-                    alt="Post media"
-                    className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-black/0 group-hover/image:bg-black/10 transition-all flex items-center justify-center opacity-0 group-hover/image:opacity-100">
-                    <Maximize2 className="h-8 w-8 text-white drop-shadow-lg" />
-                  </div>
-                </>
-              ) : (
-                <video
-                  src={post.media[0].file_url}
-                  controls
-                  className="w-full h-auto"
-                  onClick={(e) => e.stopPropagation()}
-                />
-              )}
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 gap-1">
-              {post.media.slice(0, 4).map((media, idx) => (
-                <div key={media.id} className="relative overflow-hidden aspect-square group/image cursor-pointer"
-                     onClick={(e) => {
-                       e.stopPropagation();
-                       if (media.file_type === "image") {
-                         setSelectedImage(media.file_url);
-                         setShowImageModal(true);
-                       }
-                     }}>
-                  {media.file_type === "image" ? (
-                    <>
-                      <img
-                        src={media.file_url}
-                        alt={`Post media ${idx + 1}`}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-black/0 group-hover/image:bg-black/10 transition-all flex items-center justify-center opacity-0 group-hover/image:opacity-100">
-                        <Maximize2 className="h-6 w-6 text-white drop-shadow-lg" />
-                      </div>
-                    </>
-                  ) : (
-                    <video
-                      src={media.file_url}
-                      className="w-full h-full object-cover"
-                      onClick={(e) => e.stopPropagation()}
+        <SensitiveOverlay isSensitive={post.is_sensitive} reason={post.sensitive_reason}>
+          <div className="relative overflow-hidden">
+            {post.media.length === 1 ? (
+              <div className="relative overflow-hidden group/image cursor-pointer"
+                   onClick={(e) => {
+                     e.stopPropagation();
+                     if (post.media![0].file_type === "image") {
+                       setSelectedImage(post.media![0].file_url);
+                       setShowImageModal(true);
+                     }
+                   }}>
+                {post.media[0].file_type === "image" ? (
+                  <>
+                    <img
+                      src={post.media[0].file_url}
+                      alt="Post media"
+                      className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
                     />
-                  )}
-                  {idx === 3 && post.media.length > 4 && (
-                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center pointer-events-none">
-                      <span className="text-white text-2xl font-bold">+{post.media.length - 4}</span>
+                    <div className="absolute inset-0 bg-black/0 group-hover/image:bg-black/10 transition-all flex items-center justify-center opacity-0 group-hover/image:opacity-100">
+                      <Maximize2 className="h-8 w-8 text-white drop-shadow-lg" />
                     </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+                  </>
+                ) : (
+                  <video
+                    src={post.media[0].file_url}
+                    controls
+                    className="w-full h-auto"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                )}
+              </div>
+            ) : (
+              <Carousel
+                className="w-full"
+                opts={{ loop: false, align: "start" }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <CarouselContent>
+                  {post.media.map((media, idx) => (
+                    <CarouselItem key={media.id} className="basis-full">
+                      <div
+                        className="relative overflow-hidden bg-black aspect-square cursor-pointer group/image"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (media.file_type === "image") {
+                            setSelectedImage(media.file_url);
+                            setShowImageModal(true);
+                          }
+                        }}
+                      >
+                        {media.file_type === "image" ? (
+                          <>
+                            <img
+                              src={media.file_url}
+                              alt={`Post media ${idx + 1}`}
+                              className="w-full h-full object-contain transition-transform duration-500 group-hover/image:scale-105"
+                            />
+                            <div className="absolute inset-0 bg-black/0 group-hover/image:bg-black/10 transition-all flex items-center justify-center opacity-0 group-hover/image:opacity-100">
+                              <Maximize2 className="h-6 w-6 text-white drop-shadow-lg" />
+                            </div>
+                          </>
+                        ) : (
+                          <video
+                            src={media.file_url}
+                            controls
+                            className="w-full h-full object-contain"
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                        )}
+                        <div className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full">
+                          {idx + 1}/{post.media!.length}
+                        </div>
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="left-2" onClick={(e) => e.stopPropagation()} />
+                <CarouselNext className="right-2" onClick={(e) => e.stopPropagation()} />
+              </Carousel>
+            )}
+          </div>
+        </SensitiveOverlay>
       )}
 
       <div className="p-6 space-y-4">

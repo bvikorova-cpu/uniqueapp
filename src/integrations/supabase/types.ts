@@ -33362,10 +33362,12 @@ export type Database = {
           edited_at: string | null
           feeling: string | null
           id: string
+          is_sensitive: boolean
           likes_count: number | null
           location: string | null
           privacy: string | null
           reposts_count: number
+          sensitive_reason: string | null
           shares_count: number | null
           updated_at: string
           user_id: string
@@ -33377,10 +33379,12 @@ export type Database = {
           edited_at?: string | null
           feeling?: string | null
           id?: string
+          is_sensitive?: boolean
           likes_count?: number | null
           location?: string | null
           privacy?: string | null
           reposts_count?: number
+          sensitive_reason?: string | null
           shares_count?: number | null
           updated_at?: string
           user_id: string
@@ -33392,10 +33396,12 @@ export type Database = {
           edited_at?: string | null
           feeling?: string | null
           id?: string
+          is_sensitive?: boolean
           likes_count?: number | null
           location?: string | null
           privacy?: string | null
           reposts_count?: number
+          sensitive_reason?: string | null
           shares_count?: number | null
           updated_at?: string
           user_id?: string
@@ -44463,6 +44469,27 @@ export type Database = {
           },
         ]
       }
+      user_muted_keywords: {
+        Row: {
+          created_at: string
+          id: string
+          keyword: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          keyword: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          keyword?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_mystery_boxes: {
         Row: {
           box_id: string | null
@@ -44497,6 +44524,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_notes: {
+        Row: {
+          content: string
+          created_at: string
+          emoji: string | null
+          expires_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          emoji?: string | null
+          expires_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          emoji?: string | null
+          expires_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_online_status: {
         Row: {
