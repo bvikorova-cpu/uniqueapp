@@ -30,6 +30,8 @@ import { VerifiedFounderBadge, isVerifiedFounder } from "@/components/wall/Verif
 import { ProductCard } from "@/components/wall/ProductCard";
 import { EnhancedCommentInput } from "./EnhancedCommentInput";
 import { CommentItem } from "./CommentItem";
+import { SensitiveOverlay } from "./SensitiveOverlay";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Popover,
