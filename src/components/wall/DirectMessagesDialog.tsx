@@ -20,6 +20,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useDirectMessages } from "@/hooks/useDirectMessages";
+import { useMessageReactions } from "@/hooks/useMessageReactions";
+import { MessageReactions } from "@/components/wall/MessageReactions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
