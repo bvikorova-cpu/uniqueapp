@@ -127,6 +127,8 @@ export default function WallFeed({
         <div className="space-y-6">
           {/* Achievements Badge + Mute settings */}
           <div className="flex justify-end items-center gap-2 flex-wrap">
+            <ProfileCustomizationDialog />
+            <GroupChatDialog />
             <CloseFriendsDialog />
             <FollowedTopicsDialog />
             <SavedSearchesDialog />
@@ -137,6 +139,9 @@ export default function WallFeed({
 
           {/* Notes / 24h status bar */}
           <NotesBar />
+
+          {/* Smart feed tabs */}
+          <SmartFeedTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
           {/* Search Bar */}
           <SearchBar />
