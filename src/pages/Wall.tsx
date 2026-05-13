@@ -610,6 +610,8 @@ const Feed = () => {
                     <SavedSearchesDialog />
                     <FollowedTopicsDialog />
                     <GroupChatDialog />
+                    <CommunitiesDialog />
+                    <ModerationQueueDialog />
                   </div>
 
                   {/* Notes / Status Bar (24h ephemeral) */}
