@@ -18502,6 +18502,27 @@ export type Database = {
         }
         Relationships: []
       }
+      followed_topics: {
+        Row: {
+          created_at: string
+          id: string
+          topic: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          topic: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          topic?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       follows: {
         Row: {
           created_at: string
@@ -33356,6 +33377,7 @@ export type Database = {
       }
       posts: {
         Row: {
+          audience: string | null
           comments_count: number | null
           content: string | null
           created_at: string
@@ -33373,6 +33395,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          audience?: string | null
           comments_count?: number | null
           content?: string | null
           created_at?: string
@@ -33390,6 +33413,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          audience?: string | null
           comments_count?: number | null
           content?: string | null
           created_at?: string
@@ -37538,6 +37562,8 @@ export type Database = {
           id: string
           is_private: boolean | null
           name: string
+          notes: string | null
+          share_token: string | null
           updated_at: string | null
           user_id: string
         }
@@ -37547,6 +37573,8 @@ export type Database = {
           id?: string
           is_private?: boolean | null
           name: string
+          notes?: string | null
+          share_token?: string | null
           updated_at?: string | null
           user_id: string
         }
@@ -37556,6 +37584,8 @@ export type Database = {
           id?: string
           is_private?: boolean | null
           name?: string
+          notes?: string | null
+          share_token?: string | null
           updated_at?: string | null
           user_id?: string
         }
@@ -37589,6 +37619,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      saved_searches: {
+        Row: {
+          created_at: string
+          id: string
+          label: string | null
+          query: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label?: string | null
+          query: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label?: string | null
+          query?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       saved_videos: {
         Row: {
@@ -44095,6 +44149,27 @@ export type Database = {
           },
         ]
       }
+      user_close_friends: {
+        Row: {
+          created_at: string
+          friend_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          friend_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          friend_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_coffee_achievements: {
         Row: {
           achievement_id: string
@@ -44486,6 +44561,30 @@ export type Database = {
           created_at?: string
           id?: string
           keyword?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_mutes: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          muted_user_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          muted_user_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          muted_user_id?: string
           user_id?: string
         }
         Relationships: []
