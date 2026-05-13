@@ -419,10 +419,10 @@ export default function SportsPredictor() {
                               {canViewPredictions && (
                                 <Button variant="outline" onClick={() => {
                                   const subs = JSON.parse(localStorage.getItem("sports_match_notify") || "[]");
-                                  if (subs.includes(match.id)) { toast({ description: "Notifikácie už sú zapnuté" }); return; }
+                                  if (subs.includes(match.id)) { toast({ description: "Notifications are already enabled" }); return; }
                                   subs.push(match.id);
                                   localStorage.setItem("sports_match_notify", JSON.stringify(subs));
-                                  toast({ description: "Pošleme ti upozornenie pred zápasom!" });
+                                  toast({ description: "We'll send you a notification before the match!" });
                                 }}>
                                   <Bell className="mr-2 h-4 w-4" />
                                   Notify

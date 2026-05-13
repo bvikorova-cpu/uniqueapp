@@ -68,7 +68,7 @@ export const NailArtDesigner = ({ onBack }: NailArtDesignerProps) => {
                   <SelectItem value="minimalist">✨ Minimalist</SelectItem>
                   <SelectItem value="glitter">💎 Glitter Glam</SelectItem>
                   <SelectItem value="marble">🪨 Marble</SelectItem>
-                  <SelectItem value="ombre">🌅 Ombré</SelectItem>
+                  <SelectItem value="ombre">🌅 Ombre</SelectItem>
                 </SelectContent>
               </Select>
             </div>

@@ -30,17 +30,17 @@ export const SoundEffectsView = ({ onBack }: { onBack: () => void }) => {
       });
       if (error || data?.error) { handleEdgeError(error || data, { context: 'SFX' }); return; }
       setAudio(`data:${data.mimeType};base64,${data.audioBase64}`);
-      toast.success(`SFX vygenerovaný (${data.credits_used} CR)`);
+      toast.success(`SFX generated (${data.credits_used} CR)`);
     } catch (e) { handleEdgeError(e, { context: 'SFX' }); }
     finally { setLoading(false); }
   };
 
   return (
     <div>
-      <Button variant="ghost" onClick={onBack} className="mb-4">← Späť</Button>
+      <Button variant="ghost" onClick={onBack} className="mb-4">← Back</Button>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-lime-500 to-emerald-600 flex items-center justify-center"><Volume2 className="w-6 h-6 text-white" /></div>
-        <div><h2 className="text-2xl font-black">Sound Effects Library</h2><p className="text-sm text-muted-foreground">AI-generované SFX (ElevenLabs)</p></div>
+        <div><h2 className="text-2xl font-black">Sound Effects Library</h2><p className="text-sm text-muted-foreground">AI-generated SFX (ElevenLabs)</p></div>
         <Badge className="ml-auto bg-gradient-to-r from-lime-500 to-emerald-600 text-white">5 CR</Badge>
       </div>
       <div className="grid lg:grid-cols-3 gap-6">
@@ -50,7 +50,7 @@ export const SoundEffectsView = ({ onBack }: { onBack: () => void }) => {
             <div><Label>Popis SFX *</Label><Input value={prompt} onChange={e => setPrompt(e.target.value)} placeholder="napr. epic cinematic whoosh" /></div>
             <div><Label>Trvanie (s, max 22)</Label><Input type="number" min={0.5} max={22} step={0.5} value={duration} onChange={e => setDuration(Number(e.target.value) || 5)} /></div>
             <Button onClick={generate} disabled={loading} className="w-full bg-gradient-to-r from-lime-500 to-emerald-600">
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Generovať SFX (5 CR)'}
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Generate SFX (5 CR)'}
             </Button>
             <div>
               <Label className="text-xs">Presety</Label>
@@ -66,7 +66,7 @@ export const SoundEffectsView = ({ onBack }: { onBack: () => void }) => {
             {!audio ? <p className="text-muted-foreground text-center py-12">Vygeneruj SFX</p> : (
               <div className="space-y-4">
                 <audio src={audio} controls className="w-full" autoPlay />
-                <Button variant="outline" onClick={() => { const a = document.createElement('a'); a.href = audio; a.download = `sfx-${Date.now()}.mp3`; a.click(); }} className="w-full"><Download className="mr-2 h-4 w-4" />Stiahnuť MP3</Button>
+                <Button variant="outline" onClick={() => { const a = document.createElement('a'); a.href = audio; a.download = `sfx-${Date.now()}.mp3`; a.click(); }} className="w-full"><Download className="mr-2 h-4 w-4" />Download MP3</Button>
               </div>
             )}
           </CardContent>

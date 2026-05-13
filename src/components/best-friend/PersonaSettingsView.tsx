@@ -115,8 +115,8 @@ export const PersonaSettingsView = () => {
           <Select value={persona.language} onValueChange={v => setPersona(p => ({...p, language: v}))}>
             <SelectTrigger><SelectValue/></SelectTrigger>
             <SelectContent>
-              <SelectItem value="en">English</SelectItem><SelectItem value="sk">Slovenčina</SelectItem>
-              <SelectItem value="cs">Čeština</SelectItem><SelectItem value="hu">Magyar</SelectItem>
+              <SelectItem value="en">English</SelectItem><SelectItem value="sk">Slovak</SelectItem>
+              <SelectItem value="cs">Czech</SelectItem><SelectItem value="hu">Hungarian</SelectItem>
               <SelectItem value="pl">Polski</SelectItem><SelectItem value="de">Deutsch</SelectItem>
               <SelectItem value="fr">Français</SelectItem><SelectItem value="es">Español</SelectItem>
               <SelectItem value="it">Italiano</SelectItem><SelectItem value="uk">Українська</SelectItem>

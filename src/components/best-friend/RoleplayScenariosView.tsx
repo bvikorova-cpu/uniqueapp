@@ -13,7 +13,7 @@ const SCENARIOS = [
   { id: "dating", label: "💕 First Date", desc: "Practice flirting & connection" },
   { id: "presentation", label: "🎤 Q&A After Presentation", desc: "Tough audience questions" },
   { id: "conflict", label: "⚖️ De-escalate Conflict", desc: "Practice staying calm" },
-  { id: "small_talk", label: "☕ Small Talk", desc: "Cafés, parties, networking" },
+  { id: "small_talk", label: "☕ Small Talk", desc: "Cafes, parties, networking" },
 ];
 
 const CHAT_URL = `https://jufrdzeonywluwutvyxz.supabase.co/functions/v1/best-friend-roleplay`;

@@ -21,10 +21,10 @@ export function DailyLoginRewardDialog() {
     if (res?.claimed) {
       toast({
         title: `+${res.bonus} kredit${(res.bonus ?? 1) > 1 ? "ov" : ""}`,
-        description: `Streak: ${res.streak} dní 🔥`,
+        description: `Streak: ${res.streak} days 🔥`,
       });
     } else if (res) {
-      toast({ title: "Už si dnes vyzdvihol", variant: "default" });
+      toast({ title: "You've already claimed today", variant: "default" });
     }
   };
 
@@ -39,7 +39,7 @@ export function DailyLoginRewardDialog() {
       <DialogContent className="max-w-sm">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Gift className="h-5 w-5" /> Denná odmena
+            <Gift className="h-5 w-5" /> Daily reward
           </DialogTitle>
         </DialogHeader>
         {loading ? (
@@ -48,7 +48,7 @@ export function DailyLoginRewardDialog() {
           <div className="space-y-4 text-center py-2">
             <div>
               <p className="text-4xl font-bold">{streak?.current_streak ?? 0} 🔥</p>
-              <p className="text-xs text-muted-foreground">aktuálny streak</p>
+              <p className="text-xs text-muted-foreground">current streak</p>
             </div>
             <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
               <div className="rounded-md border border-border/50 p-2">
@@ -62,10 +62,10 @@ export function DailyLoginRewardDialog() {
             </div>
             <Button onClick={onClaim} disabled={!canClaim || claiming} className="w-full">
               {claiming && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {canClaim ? "Vyzdvihnúť dnešnú odmenu" : "Vráť sa zajtra"}
+              {canClaim ? "Claim today's reward" : "Return tomorrow"}
             </Button>
             <p className="text-[10px] text-muted-foreground">
-              +1 kredit denne, každých 7 dní +1 bonus (max +10).
+              +1 credit daily, every 7 days +1 bonus (max +10).
             </p>
           </div>
         )}

@@ -28,7 +28,7 @@ export function CreatorFundDialog({ userId }: Props) {
       <DialogTrigger asChild>
         <Button size="sm" variant="outline" className="gap-2">
           <TrendingUp className="h-4 w-4" />
-          {isOwn ? "Creator Fund" : "Štatistiky"}
+          {isOwn ? "Creator Fund" : "Statistics"}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-sm">
@@ -46,7 +46,7 @@ export function CreatorFundDialog({ userId }: Props) {
               {(isOwn || data?.show_total_earned) && (
                 <div className="rounded-md border border-border/50 p-2">
                   <p className="text-base font-semibold">€{Number(data?.total_earned_eur ?? 0).toFixed(0)}</p>
-                  <span className="text-muted-foreground">Zarobené</span>
+                  <span className="text-muted-foreground">Earned</span>
                 </div>
               )}
               {(isOwn || data?.show_subscriber_count) && (
@@ -65,11 +65,11 @@ export function CreatorFundDialog({ userId }: Props) {
 
             {isOwn && (
               <div className="space-y-3 border-t border-border/40 pt-3">
-                <p className="text-xs text-muted-foreground">Verejne zobraziť:</p>
+                <p className="text-xs text-muted-foreground">Publicly display:</p>
                 {[
-                  { key: "show_total_earned", label: "Celkový zárobok" },
-                  { key: "show_subscriber_count", label: "Počet predplatiteľov" },
-                  { key: "show_tip_count", label: "Počet tipov" },
+                  { key: "show_total_earned", label: "Total earnings" },
+                  { key: "show_subscriber_count", label: "Number of subscribers" },
+                  { key: "show_tip_count", label: "Number of tips" },
                 ].map((opt) => (
                   <div key={opt.key} className="flex items-center justify-between">
                     <Label htmlFor={opt.key}>{opt.label}</Label>

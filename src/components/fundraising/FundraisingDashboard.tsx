@@ -45,29 +45,29 @@ interface FundraisingDashboardProps {
 }
 
 const defaultMilestones: Milestone[] = [
-  { id: "1", title: "Prvý cieľ", targetAmount: 1000, currentAmount: 1000, reached: true, reward: "Ďakovné video" },
+  { id: "1", title: "First goal", targetAmount: 1000, currentAmount: 1000, reached: true, reward: "Thank you video" },
   { id: "2", title: "Polovica cesty", targetAmount: 5000, currentAmount: 5000, reached: true, reward: "Live stream" },
-  { id: "3", title: "Takmer tam", targetAmount: 8000, currentAmount: 7500, reached: false, reward: "Exkluzívny obsah" },
-  { id: "4", title: "Cieľ!", targetAmount: 10000, currentAmount: 7500, reached: false, reward: "VIP prístup" },
+  { id: "3", title: "Almost there", targetAmount: 8000, currentAmount: 7500, reached: false, reward: "Exclusive content" },
+  { id: "4", title: "Goal!", targetAmount: 10000, currentAmount: 7500, reached: false, reward: "VIP access" },
 ];
 
 const defaultDonors: Donor[] = [
-  { id: "1", name: "Ján K.", amount: 500, message: "Držím palce!" },
-  { id: "2", name: "Mária S.", amount: 350, message: "Skvelá iniciatíva" },
-  { id: "3", name: "Anonymný darca", amount: 300, isAnonymous: true },
-  { id: "4", name: "Peter M.", amount: 250, message: "Rád pomáham" },
+  { id: "1", name: "Ján K.", amount: 500, message: "Good luck!" },
+  { id: "2", name: "Mária S.", amount: 350, message: "Great initiative" },
+  { id: "3", name: "Anonymous donor", amount: 300, isAnonymous: true },
+  { id: "4", name: "Peter M.", amount: 250, message: "Happy to help" },
   { id: "5", name: "Anna B.", amount: 200 },
 ];
 
 const defaultImpact = [
-  { label: "Ľudí podporených", value: "127" },
-  { label: "Projektov dokončených", value: "12" },
-  { label: "Komunít oslovených", value: "8" },
-  { label: "Dobrovoľníkov", value: "45" },
+  { label: "People supported", value: "127" },
+  { label: "Projects completed", value: "12" },
+  { label: "Communities reached", value: "8" },
+  { label: "Volunteers", value: "45" },
 ];
 
 export const FundraisingDashboard = ({
-  campaignTitle = "Pomôžme spolu",
+  campaignTitle = "Let's help together",
   goalAmount = 10000,
   raisedAmount = 7500,
   donorsCount = 156,
@@ -89,7 +89,7 @@ export const FundraisingDashboard = ({
               €{raisedAmount.toLocaleString()}
             </div>
             <p className="text-muted-foreground">
-              z €{goalAmount.toLocaleString()} cieľa
+              of €{goalAmount.toLocaleString()} goal
             </p>
           </div>
 
@@ -98,7 +98,7 @@ export const FundraisingDashboard = ({
           <div className="grid grid-cols-3 gap-4 text-center">
             <div>
               <p className="text-2xl font-bold">{Math.round(progressPercent)}%</p>
-              <p className="text-sm text-muted-foreground">Vyzbierané</p>
+              <p className="text-sm text-muted-foreground">Collected</p>
             </div>
             <div>
               <p className="text-2xl font-bold">{donorsCount}</p>
@@ -106,18 +106,18 @@ export const FundraisingDashboard = ({
             </div>
             <div>
               <p className="text-2xl font-bold">{daysLeft}</p>
-              <p className="text-sm text-muted-foreground">Dní zostáva</p>
+              <p className="text-sm text-muted-foreground">Days remaining</p>
             </div>
           </div>
 
           <Button className="w-full mt-6" size="lg" onClick={async () => {
-            const amountStr = window.prompt("Suma príspevku v €:", "10");
+            const amountStr = window.prompt("Contribution amount in €:", "10");
             if (!amountStr) return;
             const amount = parseFloat(amountStr);
-            if (isNaN(amount) || amount <= 0) { toast.error("Neplatná suma"); return; }
+            if (isNaN(amount) || amount <= 0) { toast.error("Invalid amount"); return; }
             try {
               const { data: { session } } = await supabase.auth.getSession();
-              if (!session) { toast.error("Najprv sa prihlás"); return; }
+              if (!session) { toast.error("Please log in first"); return; }
               const { data, error } = await supabase.functions.invoke("create-checkout", {
                 body: { product_type: "fundraising_donation", amount, name: "Fundraising Donation" }
               });
@@ -128,7 +128,7 @@ export const FundraisingDashboard = ({
             }
           }}>
             <Heart className="h-4 w-4 mr-2" />
-            Prispieť teraz
+            Contribute now
           </Button>
         </CardContent>
       </Card>
@@ -138,7 +138,7 @@ export const FundraisingDashboard = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Target className="h-5 w-5 text-primary" />
-            Míľniky
+            Milestones
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -249,10 +249,10 @@ export const FundraisingDashboard = ({
       {/* Share */}
       <Button variant="outline" className="w-full" onClick={async () => {
         const url = window.location.href;
-        const shareData = { title: "Fundraising Campaign", text: "Podpor túto kampaň!", url };
+        const shareData = { title: "Fundraising Campaign", text: "Support this campaign!", url };
         try {
           if (navigator.share) await navigator.share(shareData);
-          else { await navigator.clipboard.writeText(url); toast.success("Link skopírovaný!"); }
+          else { await navigator.clipboard.writeText(url); toast.success("Link copied!"); }
         } catch {}
       }}>
         <Share2 className="h-4 w-4 mr-2" />

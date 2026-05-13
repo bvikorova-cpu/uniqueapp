@@ -121,8 +121,8 @@ export const CharacterSocialFeed = () => {
                       <Heart className="h-4 w-4" /> {post.likes_count}
                     </Button>
                     <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-blue-400 gap-1.5 h-8" onClick={() => {
-                      const text = window.prompt("Tvoj komentár:");
-                      if (text && text.trim()) toast.success("Komentár pridaný!");
+                      const text = window.prompt("Your comment:");
+                      if (text && text.trim()) toast.success("Comment added!");
                     }}>
                       <MessageCircle className="h-4 w-4" /> {post.comments_count}
                     </Button>

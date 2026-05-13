@@ -44,7 +44,7 @@ export const VoiceCloneView = ({ onBack }: { onBack: () => void }) => {
           window.dispatchEvent(new Event('cloned-voices-updated'));
         }
       } catch {}
-      toast.success(`Hlas naklonovaný (${data.credits_used} CR) — automaticky dostupný v Final Composer`);
+      toast.success(`Voice cloned (${data.credits_used} CR) — automatically available in Final Composer`);
     } catch (e) { handleEdgeError(e, { context: 'Voice Clone' }); }
     finally { setLoading(false); }
   };
@@ -62,7 +62,7 @@ export const VoiceCloneView = ({ onBack }: { onBack: () => void }) => {
 
   return (
     <div>
-      <Button variant="ghost" onClick={onBack} className="mb-4">← Späť</Button>
+      <Button variant="ghost" onClick={onBack} className="mb-4">← Back</Button>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-500 to-purple-600 flex items-center justify-center"><Mic className="w-6 h-6 text-white" /></div>
         <div><h2 className="text-2xl font-black">Voice Cloning</h2><p className="text-sm text-muted-foreground">Naklonuj svoj hlas pre video ads</p></div>
@@ -77,23 +77,23 @@ export const VoiceCloneView = ({ onBack }: { onBack: () => void }) => {
             <div>
               <Label>Audio sample (1-3 min, MP3/WAV/M4A) *</Label>
               <input ref={inputRef} type="file" accept="audio/*" onChange={e => setFile(e.target.files?.[0] || null)} className="hidden" />
-              <Button variant="outline" onClick={() => inputRef.current?.click()} className="w-full mt-1"><Upload className="mr-2 h-4 w-4" />{file ? file.name : 'Vybrať súbor'}</Button>
+              <Button variant="outline" onClick={() => inputRef.current?.click()} className="w-full mt-1"><Upload className="mr-2 h-4 w-4" />{file ? file.name : 'Select a file'}</Button>
             </div>
             <Button onClick={clone} disabled={loading} className="w-full bg-gradient-to-r from-rose-500 to-purple-600">
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Naklonovať (10 CR)'}
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Clone (10 CR)'}
             </Button>
           </CardContent>
         </Card>
         <Card className="lg:col-span-2">
-          <CardHeader><CardTitle>Výsledok</CardTitle></CardHeader>
+          <CardHeader><CardTitle>Result</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             {!voiceId ? <p className="text-muted-foreground text-center py-12">Nahraj sample a naklonuj hlas</p> : (
               <>
                 <div className="p-3 bg-muted rounded-lg"><p className="text-sm">✅ Voice ID: <code className="font-mono">{voiceId}</code></p>
-                  <p className="text-xs text-muted-foreground mt-1">Použi tento ID v TTS Voiceover (vlož cez "vlastný voiceId").</p></div>
+                  <p className="text-xs text-muted-foreground mt-1">Use this ID in TTS Voiceover (insert via "custom voiceId").</p></div>
                 <div><Label>Test text</Label><Textarea rows={3} value={testText} onChange={e => setTestText(e.target.value)} /></div>
                 <Button onClick={test} disabled={testing} variant="outline" className="w-full">
-                  {testing ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Play className="mr-2 h-4 w-4" />Vyskúšať hlas (5 CR)</>}
+                  {testing ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Play className="mr-2 h-4 w-4" />Test voice (5 CR)</>}
                 </Button>
                 {testAudio && <audio src={testAudio} controls className="w-full" />}
               </>

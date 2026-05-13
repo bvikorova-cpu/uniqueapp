@@ -129,7 +129,7 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
     { question: "Who is the singer of Bad Guy and Ocean Eyes?", options: ["Ariana Grande", "Billie Eilish", "Dua Lipa", "Taylor Swift"], correct: 1 },
     { question: "Who played Iron Man in Marvel movies?", options: ["Chris Evans", "Chris Hemsworth", "Robert Downey Jr.", "Mark Ruffalo"], correct: 2 },
     { question: "Who is the most followed person on Instagram?", options: ["Kylie Jenner", "Cristiano Ronaldo", "Selena Gomez", "Dwayne Johnson"], correct: 1 },
-    { question: "Which Slovak hockey player played in NHL?", options: ["Zdeno Chára", "Marián Hossa", "Ján Lašák", "All of them"], correct: 3 },
+    { question: "Which Slovak hockey player played in the NHL?", options: ["Zdeno Chára", "Marián Hossa", "Ján Lašák", "All of them"], correct: 3 },
     { question: "Who won Eurovision 2023?", options: ["Sweden", "Finland", "Ukraine", "Spain"], correct: 0 },
   ],
   sport: [
@@ -158,7 +158,7 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
     { question: "What is the main ingredient in guacamole?", options: ["Tomato", "Avocado", "Pepper", "Cucumber"], correct: 1 },
     { question: "What is the main ingredient in hummus?", options: ["Beans", "Lentils", "Chickpeas", "Peas"], correct: 2 },
     { question: "What is tofu made from?", options: ["Milk", "Soybeans", "Rice", "Corn"], correct: 1 },
-    { question: "Which dish is typical for Slovakia?", options: ["Paella", "Bryndzové halušky", "Sushi", "Curry"], correct: 1 },
+    { question: "Which dish is typical for Slovakia?", options: ["Paella", "Bryndzové halušky", "Sushi", "Curry"], correct: 1 }
   ],
   travel: [
     { question: "What is the capital of France?", options: ["Lyon", "Marseille", "Paris", "Nice"], correct: 2 },

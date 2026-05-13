@@ -17,32 +17,32 @@ const tutorialSteps: TutorialStep[] = [
   {
     icon: <Eye className="h-12 w-12" />,
     title: "Rozhliadni sa",
-    description: "Ťahaj myšou alebo prstom po obrazovke pre 360° pohľad po miestnosti. Používaj koliesko myši alebo pinch gesto pre priblíženie.",
-    tip: "💡 Skús sa pozrieť do všetkých kútov - niektoré predmety sú skryté!"
+    description: "Drag with the mouse or finger across the screen for a 360° view of the room. Use the mouse wheel or pinch gesture to zoom in.",
+    tip: "💡 Try looking into all corners - some objects are hidden!"
   },
   {
     icon: <MousePointer2 className="h-12 w-12" />,
     title: "Klikaj na objekty",
-    description: "Farebné body označujú interaktívne objekty. Klikni na ne pre interakciu - môžeš nájsť predmety, stopy alebo hádanky.",
-    tip: "🔍 Oranžové = hádanky, Modré = predmety, Tyrkysové = stopy"
+    description: "Colored dots indicate interactive objects. Click on them to interact - you can find items, clues, or puzzles."
+    tip: "🔍 Orange = puzzles, Blue = items, Turquoise = clues"
   },
   {
     icon: <Package className="h-12 w-12" />,
     title: "Zbieraj predmety",
-    description: "Nájdené predmety sa uložia do inventára. Vyber predmet z inventára a klikni na zámok pre jeho použitie.",
-    tip: "🎒 Každý predmet má svoj účel - dobre si prečítaj popis!"
+    description: "Found items are stored in your inventory. Select an item from your inventory and click on the lock to use it."
+    tip: "🎒 Every item has its purpose - read the description carefully!"
   },
   {
     icon: <Lightbulb className="h-12 w-12" />,
-    title: "Rieš hádanky",
-    description: "Hádanky môžu byť šifry, matematické úlohy alebo logické rébusy. Ak si zaseknutý, použi nápovedu.",
-    tip: "🧩 Stopy v miestnosti ti často napovedajú riešenie!"
+    title: "Solve puzzles",
+    description: "Puzzles can be ciphers, math problems, or logic riddles. If you're stuck, use a hint."
+    tip: "🧩 Clues in the room often hint at the solution!"
   },
   {
     icon: <Clock className="h-12 w-12" />,
-    title: "Čas a skóre",
-    description: "Čím rýchlejšie unikneš a čím menej nápoved použiješ, tým vyššie bude tvoje skóre. Súťaž s ostatnými!",
-    tip: "🏆 Najlepšie skóre sa zapíše do rebríčka!"
+    title: "Time and score",
+    description: "The faster you escape and the fewer hints you use, the higher your score will be. Compete with others!"
+    tip: "🏆 The best score will be recorded on the leaderboard!"
   }
 ];
 
@@ -141,7 +141,7 @@ export function EscapeRoomTutorial({ onComplete, onSkip }: EscapeRoomTutorialPro
                   className="flex-1"
                 >
                   <ChevronLeft className="h-4 w-4 mr-1" />
-                  Späť
+                  Back
                 </Button>
               )}
               
@@ -152,11 +152,11 @@ export function EscapeRoomTutorial({ onComplete, onSkip }: EscapeRoomTutorialPro
                 {isLastStep ? (
                   <>
                     <Play className="h-4 w-4 mr-1" />
-                    Začať hru!
+                    Start game!
                   </>
                 ) : (
                   <>
-                    Ďalej
+                    Next
                     <ChevronRight className="h-4 w-4 ml-1" />
                   </>
                 )}
@@ -178,7 +178,7 @@ export function EscapeRoomTutorial({ onComplete, onSkip }: EscapeRoomTutorialPro
             onClick={onSkip}
             className="text-white/50 hover:text-white/80"
           >
-            Preskočiť tutoriál
+            Skip tutorial
           </Button>
         </motion.div>
 
@@ -190,7 +190,7 @@ export function EscapeRoomTutorial({ onComplete, onSkip }: EscapeRoomTutorialPro
           className="flex items-center justify-center gap-2 mt-4 text-white/40 text-sm"
         >
           <Volume2 className="h-4 w-4" />
-          <span>Pre lepší zážitok zapni zvuk</span>
+          <span>For a better experience, turn on sound</span>
         </motion.div>
       </div>
     </motion.div>

@@ -28,7 +28,7 @@ export function CreatorSubscriptionDialog({ creatorId }: Props) {
 
   const onCreate = async () => {
     if (!form.name || form.price <= 0) {
-      toast({ title: "Vyplň meno a cenu", variant: "destructive" });
+      toast({ title: "Fill in the name and price", variant: "destructive" });
       return;
     }
     setCreating(true);
@@ -44,7 +44,7 @@ export function CreatorSubscriptionDialog({ creatorId }: Props) {
       toast({ title: "Chyba", description: err.message, variant: "destructive" });
     } else {
       setForm({ name: "", description: "", price: 4.99, benefits: "" });
-      toast({ title: "Tier vytvorený" });
+      toast({ title: "Tier created" });
     }
   };
 
@@ -61,12 +61,12 @@ export function CreatorSubscriptionDialog({ creatorId }: Props) {
       <DialogTrigger asChild>
         <Button size="sm" variant="outline" className="gap-2">
           <Crown className="h-4 w-4" />
-          {isOwn ? "Moje tiery" : "Predplatné"}
+          {isOwn ? "My tiers" : "Subscription"}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>{isOwn ? "Creator predplatné tiery" : "Podpor tvorcu"}</DialogTitle>
+          <DialogTitle>{isOwn ? "Creator subscription tiers" : "Support the creator"}</DialogTitle>
         </DialogHeader>
 
         {loading ? (
@@ -77,7 +77,7 @@ export function CreatorSubscriptionDialog({ creatorId }: Props) {
           <div className="space-y-3 max-h-[300px] overflow-y-auto">
             {tiers.length === 0 && (
               <p className="text-sm text-muted-foreground text-center py-4">
-                {isOwn ? "Zatiaľ žiadne tiery — vytvor svoj prvý." : "Tvorca nemá aktívne tiery."}
+                {isOwn ? "No tiers yet — create your first one." : "Creator has no active tiers."}
               </p>
             )}
             {tiers.map((t) => (
@@ -112,10 +112,10 @@ export function CreatorSubscriptionDialog({ creatorId }: Props) {
         {isOwn && (
           <div className="space-y-2 border-t border-border/40 pt-3">
             <p className="text-sm font-semibold flex items-center gap-1">
-              <Plus className="h-4 w-4" /> Nový tier
+              <Plus className="h-4 w-4" /> New tier
             </p>
             <Input
-              placeholder="Názov (napr. Bronze, Silver)"
+              placeholder="Name (e.g. Bronze, Silver)"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
             />
@@ -140,7 +140,7 @@ export function CreatorSubscriptionDialog({ creatorId }: Props) {
             />
             <Button onClick={onCreate} disabled={creating} className="w-full">
               {creating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Vytvoriť tier
+              Create tier
             </Button>
           </div>
         )}

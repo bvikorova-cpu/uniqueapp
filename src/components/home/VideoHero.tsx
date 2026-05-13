@@ -16,8 +16,8 @@ export const VideoHero = ({
   videoSrc = "https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-city-traffic-at-night-11-large.mp4",
   posterSrc,
   title = "Objavte svoj talent",
-  subtitle = "Pripojte sa k tisíckam kreatívnych ľudí a zdieľajte svoju vášeň so svetom",
-  ctaText = "Začať teraz",
+  subtitle = "Join thousands of creative people and share your passion with the world",
+  ctaText = "Start now",
   ctaLink = "/auth",
 }: VideoHeroProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);

@@ -360,7 +360,7 @@ export default function BrandDashboard() {
                 <Card>
                   <CardContent className="py-10">
                     <p className="text-muted-foreground">
-                      Zatiaľ nemáš žiadne kampane. Klikni na „Pridať kampaň“.
+                      You don't have any campaigns yet. Click on "Add campaign".
                     </p>
                   </CardContent>
                 </Card>

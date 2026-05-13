@@ -194,7 +194,7 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
     ));
   };
 
-  // Panorama mode - hlavný herný režim
+  // Panorama mode - main game mode
   if (gameMode === "panorama") {
     return (
       <PanoramaEscapeRoom
@@ -203,7 +203,7 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
         onComplete={(score, time) => {
           toast({
             title: "🎉 Gratulujem!",
-            description: `Unikol si za ${Math.floor(time / 60)}:${(time % 60).toString().padStart(2, '0')} so skóre ${score}!`
+            description: `You escaped in ${Math.floor(time / 60)}:${(time % 60).toString().padStart(2, '0')} with a score of ${score}!`
           });
           setTimeout(onExit, 3000);
         }}
@@ -239,7 +239,7 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
             </Button>
             <Button variant="outline" onClick={() => setGameMode("panorama")}>
               <Map className="h-4 w-4 mr-2" />
-              Panoráma
+              Panorama
             </Button>
             <Button variant="outline" onClick={() => setGameMode("3d")}>
               <Boxes className="h-4 w-4 mr-2" />

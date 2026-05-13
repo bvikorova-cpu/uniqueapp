@@ -13,49 +13,49 @@ interface StoryNarrativeProps {
 // Story narratives for each theme
 const storyContent: Record<string, { intro: string; rooms: string[]; outro: string }> = {
   mystery: {
-    intro: "Rok 1947. Bol si najatý vyriešiť zmiznutie slávneho detektíva Jamesa Moriartyho. Jeho posledná správa hovorila o veľkom sprisahaní. Vkročil si do jeho kancelárie, kde všetko začalo...",
+    intro: "Year 1947. You've been hired to solve the disappearance of the famous detective James Moriarty. His last message spoke of a grand conspiracy. You stepped into his office, where it all began...",
     rooms: [
-      "Kancelária je presne tak, ako ju opustil. Káva na stole ešte teplá. Niečo tu nie je v poriadku...",
-      "Tajná chodba za knižnicou! Moriarty mal evidentne čo skrývať. Tiene na stenách ti pripomínajú, že nie si sám...",
-      "Konečne! Posledná miestnosť. Tu niekde musí byť odpoveď na všetky otázky. Ale pozor - pasca môže byť kdekoľvek."
+      "The office is exactly as he left it. The coffee on the table is still warm. Something isn't right here...",
+      "A secret passage behind the bookcase! Moriarty evidently had something to hide. Shadows on the walls remind you that you are not alone...",
+      "Finally! The last room. The answer to all questions must be hidden here. But beware - a trap could be anywhere."
     ],
-    outro: "Unikol si! A s tebou aj pravda o Moriartyho zmiznutí. Teraz je čas odhaliť ju svetu..."
+    outro: "You escaped! And with you, the truth about Moriarty's disappearance. Now it's time to reveal it to the world..."
   },
   horror: {
-    intro: "Prebúdzaš sa v opustenej nemocnici. Posledné, čo si pamätáš, je autonehoda. Ale niečo ti hovorí, že toto nie je obyčajná nemocnica...",
+    intro: "You wake up in an abandoned hospital. The last thing you remember is a car accident. But something tells you this is no ordinary hospital...",
     rooms: [
-      "Svetlá blikajú. Steny sú pokryté čímsi tmavým. Musíš sa dostať preč, kým 'oni' neprídu...",
-      "Chodba sa zdá nekonečná. Počuješ kroky za sebou. Alebo je to len tvoja predstavivosť?",
-      "Márnica. Miesto, kam sa dostávajú tí, čo neutiekli. Ty ale neutečieš... ak nenájdeš východ!"
+      "Lights flicker. The walls are covered with something dark. You need to get out before 'they' come...",
+      "The corridor seems endless. You hear footsteps behind you. Or is it just your imagination?",
+      "The morgue. A place where those who didn't escape end up. But you won't escape... unless you find a way out!"
     ],
-    outro: "Svetlo! Čerstvý vzduch! Si vonku. Ale nočné mory z tejto noci ťa budú prenasledovať navždy..."
+    outro: "Light! Fresh air! You're out. But the nightmares from this night will haunt you forever..."
   },
   "sci-fi": {
-    intro: "Rok 2347. Si člen posádky vesmírnej stanice Orion-7. Práve sa spustil alarm - systémy zlyhávajú a kyslík klesá. Máš 30 minút na únik...",
+    intro: "Year 2347. You are a member of the crew of the space station Orion-7. An alarm has just sounded - systems are failing and oxygen is dropping. You have 30 minutes to escape...",
     rooms: [
-      "Hlavná paluba je v chaose. Počítače hlásia kritické chyby. Musíš nájsť cestu k laboratóriu...",
-      "Laboratórium obsahuje všetko potrebné pre prežitie. Ale experimenty sa vymkli kontrole...",
-      "Strojovňa! Úniková kapsula je na dosah. Len aktivovať motory a si voľný!"
+      "The main deck is in chaos. Computers report critical errors. You must find your way to the laboratory...",
+      "The laboratory contains everything necessary for survival. But experiments have gotten out of control...",
+      "The engine room! The escape pod is within reach. Just activate the engines and you're free!"
     ],
-    outro: "Kapsula sa oddelila od stanice práve včas. Za tebou explózia. Pred tebou nekonečný vesmír a cesta domov..."
+    outro: "The capsule detached from the station just in time. Behind you, an explosion. Before you, the endless universe and the way home..."
   },
   adventure: {
-    intro: "1923, Egypt. Si archeológ na stope stratených pokladov faraóna Amenhotepa. Prepadol si sa do tajnej hrobky, o ktorej nikto nevedel...",
+    intro: "1923, Egypt. You are an archaeologist on the trail of the lost treasures of Pharaoh Amenhotep. You fell into a secret tomb that no one knew about...",
     rooms: [
-      "Starobylá hrobka plná prachu tisícročí. Hieroglyfy na stenách rozprávajú príbehy dávno mŕtvych...",
-      "Pokladnica! Zlato, drahokamy, artefakty nepredstaviteľnej hodnoty. Ale pozor na kliatbu faraónov...",
-      "Sarkofágová sieň. Tu odpočíva faraón. A tu je aj tajný východ, ak si dosť múdry na jeho nájdenie."
+      "An ancient tomb full of millennia of dust. Hieroglyphs on the walls tell stories of the long dead...",
+      "Treasury! Gold, jewels, artifacts of unimaginable value. But beware of the curse of the pharaohs...",
+      "Sarcophagus Hall. The pharaoh rests here. And here is also a secret exit, if you are clever enough to find it."
     ],
-    outro: "Denné svetlo po hodinách v tme! Prežil si kliatbu aj pasce. A príbeh, ktorý budeš rozprávať, bude legendárny..."
+    outro: "Daylight after hours in darkness! You survived the curse and the traps. And the story you will tell will be legendary..."
   },
   fantasy: {
-    intro: "Bol si uväznený v Čarodejníkovej veži - väzení pre tých, ktorí sa vzpierali temnej mágii. Ale tvoja mágia je silnejšia, než si myslia...",
+    intro: "You were imprisoned in the Wizard's Tower - a prison for those who defied dark magic. But your magic is stronger than they think...",
     rooms: [
-      "Veža je plná magických predmetov a kúziel. Ale ktoré ti pomôžu a ktoré ťa zradia?",
-      "Dračia jaskyňa pod vežou! Starý drak tu stráži poklady celé stáročia. Spí... zatiaľ.",
-      "Elfský les - sloboda na dosah! Portál domov je blízko, len nájsť správne kúzlo..."
+      "The tower is full of magical items and spells. But which will help you and which will betray you?",
+      "Dragon's Cave beneath the tower! An old dragon has guarded treasures here for centuries. He sleeps... for now.",
+      "Elf forest - freedom within reach! The portal home is close, just find the right spell..."
     ],
-    outro: "Portál ťa preniesol domov! Si voľný a silnejší než predtým. Čarodejníkova moc nad tebou je navždy zlomená."
+    outro: "The portal has taken you home! You are free and stronger than before. The Wizard's power over you is broken forever."
   }
 };
 
@@ -75,7 +75,7 @@ export function StoryNarrative({
   if (roomIndex === -1) {
     // Intro
     narrativeText = content.intro;
-    title = "Príbeh začína...";
+    title = "Story begins...";
   } else if (roomIndex >= content.rooms.length) {
     // Outro
     narrativeText = content.outro;
@@ -109,7 +109,7 @@ export function StoryNarrative({
                 className="inline-flex items-center gap-2 bg-primary/20 text-primary px-4 py-2 rounded-full mb-6"
               >
                 <MapPin className="h-4 w-4" />
-                <span className="text-sm font-medium">Miestnosť {roomIndex + 1}</span>
+                <span className="text-sm font-medium">Room {roomIndex + 1}</span>
               </motion.div>
             )}
 
@@ -155,7 +155,7 @@ export function StoryNarrative({
                 onClick={onContinue}
                 className="group"
               >
-                {roomIndex === -1 ? "Vstúpiť" : roomIndex >= content.rooms.length ? "Dokončiť" : "Pokračovať"}
+                {roomIndex === -1 ? "Enter" : roomIndex >= content.rooms.length ? "Finish" : "Continue"}
                 <ChevronRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </motion.div>

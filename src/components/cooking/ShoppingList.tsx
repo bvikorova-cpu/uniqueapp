@@ -126,7 +126,7 @@ export const ShoppingList = () => {
                 const text = `${recipe.name}\n\n` + (recipe.ingredients || []).map((i: any) => `• ${i.name || i}`).join("\n");
                 try {
                   if (navigator.share) await navigator.share({ title: recipe.name, text });
-                  else { await navigator.clipboard.writeText(text); toast.success("Skopírované do schránky!"); }
+                  else { await navigator.clipboard.writeText(text); toast.success("Copied to clipboard!"); }
                 } catch {}
               }}>
                 <Share2 className="h-4 w-4" />
@@ -140,7 +140,7 @@ export const ShoppingList = () => {
                 a.download = `${recipe.name}-shopping-list.txt`;
                 document.body.appendChild(a); a.click(); a.remove();
                 URL.revokeObjectURL(url);
-                toast.success("Stiahnuté");
+                toast.success("Downloaded");
               }}>
                 <Download className="h-4 w-4" />
               </Button>
