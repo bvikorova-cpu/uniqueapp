@@ -10631,6 +10631,150 @@ export type Database = {
           },
         ]
       }
+      communities: {
+        Row: {
+          banner_url: string | null
+          created_at: string
+          creator_id: string
+          description: string | null
+          icon_url: string | null
+          id: string
+          is_nsfw: boolean
+          is_private: boolean
+          member_count: number
+          name: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          banner_url?: string | null
+          created_at?: string
+          creator_id: string
+          description?: string | null
+          icon_url?: string | null
+          id?: string
+          is_nsfw?: boolean
+          is_private?: boolean
+          member_count?: number
+          name: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          banner_url?: string | null
+          created_at?: string
+          creator_id?: string
+          description?: string | null
+          icon_url?: string | null
+          id?: string
+          is_nsfw?: boolean
+          is_private?: boolean
+          member_count?: number
+          name?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      community_members: {
+        Row: {
+          community_id: string
+          id: string
+          joined_at: string
+          karma: number
+          user_id: string
+        }
+        Insert: {
+          community_id: string
+          id?: string
+          joined_at?: string
+          karma?: number
+          user_id: string
+        }
+        Update: {
+          community_id?: string
+          id?: string
+          joined_at?: string
+          karma?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_members_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_moderators: {
+        Row: {
+          added_by: string
+          community_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          added_by: string
+          community_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          added_by?: string
+          community_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_moderators_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_rules: {
+        Row: {
+          community_id: string
+          created_at: string
+          description: string | null
+          id: string
+          position: number
+          title: string
+        }
+        Insert: {
+          community_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          position?: number
+          title: string
+        }
+        Update: {
+          community_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          position?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_rules_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       companions_subscriptions: {
         Row: {
           created_at: string
@@ -29844,6 +29988,65 @@ export type Database = {
           },
         ]
       }
+      moderation_queue: {
+        Row: {
+          action_taken: string | null
+          ai_categories: string[] | null
+          ai_severity: string | null
+          ai_summary: string | null
+          community_id: string | null
+          content_id: string
+          content_type: string
+          created_at: string
+          id: string
+          reason: string | null
+          reporter_id: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+        }
+        Insert: {
+          action_taken?: string | null
+          ai_categories?: string[] | null
+          ai_severity?: string | null
+          ai_summary?: string | null
+          community_id?: string | null
+          content_id: string
+          content_type: string
+          created_at?: string
+          id?: string
+          reason?: string | null
+          reporter_id?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Update: {
+          action_taken?: string | null
+          ai_categories?: string[] | null
+          ai_severity?: string | null
+          ai_summary?: string | null
+          community_id?: string | null
+          content_id?: string
+          content_type?: string
+          created_at?: string
+          id?: string
+          reason?: string | null
+          reporter_id?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "moderation_queue_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mood_logs: {
         Row: {
           created_at: string
@@ -33182,6 +33385,71 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      post_note_votes: {
+        Row: {
+          created_at: string
+          id: string
+          is_helpful: boolean
+          note_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_helpful: boolean
+          note_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_helpful?: boolean
+          note_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_note_votes_note_id_fkey"
+            columns: ["note_id"]
+            isOneToOne: false
+            referencedRelation: "post_notes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      post_notes: {
+        Row: {
+          author_id: string
+          body: string
+          created_at: string
+          helpful_count: number
+          id: string
+          not_helpful_count: number
+          post_id: string
+          status: string
+        }
+        Insert: {
+          author_id: string
+          body: string
+          created_at?: string
+          helpful_count?: number
+          id?: string
+          not_helpful_count?: number
+          post_id: string
+          status?: string
+        }
+        Update: {
+          author_id?: string
+          body?: string
+          created_at?: string
+          helpful_count?: number
+          id?: string
+          not_helpful_count?: number
+          post_id?: string
+          status?: string
+        }
+        Relationships: []
       }
       post_polls: {
         Row: {
@@ -48903,6 +49171,10 @@ export type Database = {
       is_age_verified: { Args: { p_user_id: string }; Returns: boolean }
       is_campaign_owner: {
         Args: { _campaign_id: string; _campaign_type: string; _user_id: string }
+        Returns: boolean
+      }
+      is_community_moderator: {
+        Args: { _community_id: string; _user_id: string }
         Returns: boolean
       }
       is_conversation_participant: {
