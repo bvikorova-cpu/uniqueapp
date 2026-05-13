@@ -102,3 +102,12 @@ Po schválení začnem **Fázou 1 (Quick wins)** — 5 features, ~jeden veľký 
 - Live tipy: `live_tips` + `tip-stream` edge function (Stripe Checkout) + `LiveTipDialog`
 - Duet/Stitch: `video_remixes` + `useVideoRemixes` + `DuetStitchMenu`
 - AR / CSS filtre: `ar_filters` table (seeded 6 presets) + `useArFilters` + `ArFilterPicker`
+
+## ✅ Fáza 5 hotová
+- Communities (subreddit-style): `communities`, `community_rules`, `community_moderators`, `community_members` (with karma)
+- Moderation queue: `moderation_queue` + `ModerationQueueDialog` (mods see + approve/remove)
+- Community Notes: `post_notes` + `post_note_votes` (auto-approve at 5+ helpful, 2:1 ratio) + `PostNotes` component
+- Report → AI triage: `triage-report` edge function (Lovable AI Gateway / Gemini), updates queue with severity/categories/summary
+- Content warning UI overlay: `ContentWarningOverlay` (blur + reveal)
+- `is_community_moderator` security definer helper
+- Wired into Wall toolbar: CommunitiesDialog + ModerationQueueDialog
