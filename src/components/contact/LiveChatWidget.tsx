@@ -68,13 +68,23 @@ export const LiveChatWidget = () => {
   return (
     <>
       {!open && (
-        <Button
-          onClick={() => setOpen(true)}
-          className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full bg-gradient-to-br from-primary to-accent shadow-2xl shadow-primary/40 hover:scale-105 transition"
-          aria-label="Open live chat"
-        >
-          <MessageCircle className="h-6 w-6" />
-        </Button>
+        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-1">
+          <button
+            onClick={hide}
+            className="opacity-60 hover:opacity-100 bg-background/80 backdrop-blur border border-border rounded-full p-1 transition"
+            aria-label="Hide assistant"
+            title="Hide on all pages"
+          >
+            <X className="h-3 w-3" />
+          </button>
+          <Button
+            onClick={() => setOpen(true)}
+            className="h-14 w-14 rounded-full bg-gradient-to-br from-primary to-accent shadow-2xl shadow-primary/40 hover:scale-105 transition"
+            aria-label="Open live chat"
+          >
+            <MessageCircle className="h-6 w-6" />
+          </Button>
+        </div>
       )}
 
       {open && (
