@@ -2299,6 +2299,36 @@ export type Database = {
         }
         Relationships: []
       }
+      ar_filters: {
+        Row: {
+          category: string | null
+          created_at: string
+          css_filter: string | null
+          id: string
+          is_premium: boolean
+          name: string
+          sticker_url: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          css_filter?: string | null
+          id?: string
+          is_premium?: boolean
+          name: string
+          sticker_url?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          css_filter?: string | null
+          id?: string
+          is_premium?: boolean
+          name?: string
+          sticker_url?: string | null
+        }
+        Relationships: []
+      }
       ar_preview_sessions: {
         Row: {
           amount: number
@@ -2740,6 +2770,51 @@ export type Database = {
           status?: string
           stripe_payout_id?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      audio_spaces: {
+        Row: {
+          created_at: string
+          description: string | null
+          ended_at: string | null
+          host_id: string
+          id: string
+          recording_url: string | null
+          scheduled_at: string | null
+          started_at: string | null
+          status: string
+          title: string
+          transcript: string | null
+          transcript_status: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          ended_at?: string | null
+          host_id: string
+          id?: string
+          recording_url?: string | null
+          scheduled_at?: string | null
+          started_at?: string | null
+          status?: string
+          title: string
+          transcript?: string | null
+          transcript_status?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          ended_at?: string | null
+          host_id?: string
+          id?: string
+          recording_url?: string | null
+          scheduled_at?: string | null
+          started_at?: string | null
+          status?: string
+          title?: string
+          transcript?: string | null
+          transcript_status?: string
         }
         Relationships: []
       }
@@ -27657,6 +27732,30 @@ export type Database = {
           },
         ]
       }
+      live_stream_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          live_post_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          live_post_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          live_post_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       live_streams: {
         Row: {
           created_at: string | null
@@ -27712,6 +27811,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      live_tips: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          currency: string
+          id: string
+          live_post_id: string
+          message: string | null
+          status: string
+          streamer_id: string
+          stripe_session_id: string | null
+          tipper_id: string
+        }
+        Insert: {
+          amount_cents: number
+          created_at?: string
+          currency?: string
+          id?: string
+          live_post_id: string
+          message?: string | null
+          status?: string
+          streamer_id: string
+          stripe_session_id?: string | null
+          tipper_id: string
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          live_post_id?: string
+          message?: string | null
+          status?: string
+          streamer_id?: string
+          stripe_session_id?: string | null
+          tipper_id?: string
+        }
+        Relationships: []
       }
       live_viewers: {
         Row: {
@@ -45599,6 +45737,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      video_remixes: {
+        Row: {
+          created_at: string
+          id: string
+          parent_post_id: string
+          remix_post_id: string
+          remix_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          parent_post_id: string
+          remix_post_id: string
+          remix_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          parent_post_id?: string
+          remix_post_id?: string
+          remix_type?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       video_views: {
         Row: {

@@ -16,6 +16,7 @@ import { SavedSearchesDialog } from "@/components/wall/SavedSearchesDialog";
 import { GroupChatDialog } from "@/components/wall/GroupChatDialog";
 import { ProfileCustomizationDialog } from "@/components/profile/ProfileCustomizationDialog";
 import { SmartFeedTabs, type FeedTab } from "@/components/wall/SmartFeedTabs";
+import { SpacesDialog } from "@/components/wall/SpacesDialog";
 import { useForYouRanking } from "@/hooks/useForYouRanking";
 import { useUserMutes } from "@/hooks/useUserMutes";
 import { useTranslation } from "react-i18next";
@@ -128,6 +129,7 @@ export default function WallFeed({
           {/* Achievements Badge + Mute settings */}
           <div className="flex justify-end items-center gap-2 flex-wrap">
             <ProfileCustomizationDialog />
+            <SpacesDialog />
             <GroupChatDialog />
             <CloseFriendsDialog />
             <FollowedTopicsDialog />
