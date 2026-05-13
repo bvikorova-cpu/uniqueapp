@@ -52,6 +52,10 @@ export const DirectMessagesDialog = ({
 
   const EMOJIS = ["😊", "😂", "❤️", "🔥", "👍", "🎉", "😍", "🤔", "🙌", "💯", "🚀", "✨", "😎", "👀", "🙏", "💪"];
 
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id));
+  }, []);
+
   const handleAttachImage = () => fileInputRef.current?.click();
 
   const handleImageSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
