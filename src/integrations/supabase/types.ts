@@ -11252,6 +11252,41 @@ export type Database = {
         }
         Relationships: []
       }
+      conversation_messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          sender_id: string
+          shared_post_id: string | null
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          sender_id: string
+          shared_post_id?: string | null
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          sender_id?: string
+          shared_post_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       conversation_participants: {
         Row: {
           conversation_id: string
@@ -11286,18 +11321,30 @@ export type Database = {
       }
       conversations: {
         Row: {
+          avatar_url: string | null
           created_at: string
+          created_by: string | null
           id: string
+          is_group: boolean
+          name: string | null
           updated_at: string
         }
         Insert: {
+          avatar_url?: string | null
           created_at?: string
+          created_by?: string | null
           id?: string
+          is_group?: boolean
+          name?: string | null
           updated_at?: string
         }
         Update: {
+          avatar_url?: string | null
           created_at?: string
+          created_by?: string | null
           id?: string
+          is_group?: boolean
+          name?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -33774,6 +33821,36 @@ export type Database = {
         }
         Relationships: []
       }
+      profile_featured_links: {
+        Row: {
+          created_at: string
+          icon: string | null
+          id: string
+          position: number
+          title: string
+          url: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          icon?: string | null
+          id?: string
+          position?: number
+          title: string
+          url: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          icon?: string | null
+          id?: string
+          position?: number
+          title?: string
+          url?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profile_goals: {
         Row: {
           color: string | null
@@ -33845,6 +33922,30 @@ export type Database = {
           summary?: string | null
           traits?: Json | null
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profile_pinned_posts: {
+        Row: {
+          created_at: string
+          id: string
+          position: number
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          position?: number
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          position?: number
+          post_id?: string
           user_id?: string
         }
         Relationships: []
@@ -33952,6 +34053,7 @@ export type Database = {
           animated_avatar_url: string | null
           avatar_3d_url: string | null
           avatar_url: string | null
+          banner_url: string | null
           bio: string | null
           bio_score: number | null
           bio_score_feedback: string | null
@@ -34022,6 +34124,7 @@ export type Database = {
           animated_avatar_url?: string | null
           avatar_3d_url?: string | null
           avatar_url?: string | null
+          banner_url?: string | null
           bio?: string | null
           bio_score?: number | null
           bio_score_feedback?: string | null
@@ -34092,6 +34195,7 @@ export type Database = {
           animated_avatar_url?: string | null
           avatar_3d_url?: string | null
           avatar_url?: string | null
+          banner_url?: string | null
           bio?: string | null
           bio_score?: number | null
           bio_score_feedback?: string | null
