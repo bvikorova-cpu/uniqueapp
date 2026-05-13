@@ -1328,3 +1328,6 @@ verify_jwt = false
 
 [functions.tip-stream]
 verify_jwt = true
+
+[functions.triage-report]
+verify_jwt = true
