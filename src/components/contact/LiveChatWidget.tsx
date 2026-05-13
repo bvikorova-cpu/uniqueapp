@@ -63,7 +63,25 @@ export const LiveChatWidget = () => {
     setHidden(true);
   };
 
-  if (hidden) return null;
+  const show = () => {
+    try { localStorage.removeItem(HIDDEN_KEY); } catch {}
+    setHidden(false);
+    setOpen(true);
+  };
+
+  if (hidden) {
+    return (
+      <button
+        onClick={show}
+        className="fixed bottom-3 right-3 z-50 flex items-center gap-1 rounded-full border border-border bg-background/80 backdrop-blur px-2.5 py-1 text-[11px] text-muted-foreground hover:text-foreground hover:opacity-100 opacity-60 transition shadow"
+        aria-label="Show assistant"
+        title="Show AI assistant"
+      >
+        <Sparkles className="h-3 w-3 text-primary" />
+        Show chat
+      </button>
+    );
+  }
 
   return (
     <>
