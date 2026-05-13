@@ -24,7 +24,7 @@ export function useVipSubscription() {
         return;
       }
 
-      // Admin má vždy VIP prístup
+      // Admin always has VIP access
       if (isAdmin) {
         setStatus({
           is_vip: true,

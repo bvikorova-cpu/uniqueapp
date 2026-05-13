@@ -33,7 +33,7 @@ export const CaptionsView = ({ onBack }: { onBack: () => void }) => {
       });
       if (error || data?.error) { handleEdgeError(error || data, { context: 'Captions' }); return; }
       setResult(data.result);
-      toast.success(`${data.result.captions.length} captions vytvorených (${data.credits_used} CR)`);
+      toast.success(`${data.result.captions.length} captions created (${data.credits_used} CR)`);
     } catch (e) { handleEdgeError(e, { context: 'Captions' }); }
     finally { setLoading(false); }
   };
@@ -46,33 +46,33 @@ export const CaptionsView = ({ onBack }: { onBack: () => void }) => {
 
   return (
     <div>
-      <Button variant="ghost" onClick={onBack} className="mb-4">← Späť</Button>
+      <Button variant="ghost" onClick={onBack} className="mb-4">← Back</Button>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center"><Subtitles className="w-6 h-6 text-white" /></div>
-        <div><h2 className="text-2xl font-black">Auto Captions Generator</h2><p className="text-sm text-muted-foreground">Animované titulky v štýle CapCut + SRT export</p></div>
+        <div><h2 className="text-2xl font-black">Auto Captions Generator</h2><p className="text-sm text-muted-foreground">Animated captions in CapCut style + SRT export</p></div>
         <Badge className="ml-auto bg-gradient-to-r from-amber-500 to-orange-600 text-white">3 CR</Badge>
       </div>
       <div className="grid lg:grid-cols-3 gap-6">
         <Card>
           <CardHeader><CardTitle>Settings</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <div><Label>Script / Voiceover *</Label><Textarea rows={6} value={script} onChange={e => setScript(e.target.value)} placeholder="Vlož celý voiceover..." /></div>
-            <div><Label>Dĺžka (s)</Label><Input type="number" value={duration} onChange={e => setDuration(parseInt(e.target.value) || 30)} min={5} max={300} /></div>
-            <div><Label>Štýl</Label><Input value={style} onChange={e => setStyle(e.target.value)} placeholder="modern bold, minimal, neon..." /></div>
+            <div><Label>Script / Voiceover *</Label><Textarea rows={6} value={script} onChange={e => setScript(e.target.value)} placeholder="Paste the entire voiceover..." /></div>
+            <div><Label>Duration (s)</Label><Input type="number" value={duration} onChange={e => setDuration(parseInt(e.target.value) || 30)} min={5} max={300} /></div>
+            <div><Label>Style</Label><Input value={style} onChange={e => setStyle(e.target.value)} placeholder="modern bold, minimal, neon..." /></div>
             <div><Label>Jazyk</Label>
               <select className="w-full mt-1 p-2 rounded-md border bg-background" value={language} onChange={e => setLanguage(e.target.value)}>
                 {['Slovak','English','Czech','Hungarian','Polish','German','Spanish','French','Italian','Portuguese'].map(l => <option key={l} value={l}>{l}</option>)}
               </select>
             </div>
             <Button onClick={generate} disabled={loading} className="w-full bg-gradient-to-r from-amber-500 to-orange-600">
-              {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Generujem...</> : <>Generovať (3 CR)</>}
+              {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Generating...</> : <>Generate (3 CR)</>}
             </Button>
           </CardContent>
         </Card>
         <Card className="lg:col-span-2">
           <CardHeader><CardTitle className="flex justify-between items-center"><span>Captions</span>{result && <Button size="sm" variant="outline" onClick={downloadSrt}><Download className="w-4 h-4 mr-1" />SRT</Button>}</CardTitle></CardHeader>
           <CardContent className="max-h-[700px] overflow-y-auto">
-            {!result ? <p className="text-muted-foreground text-center py-12">Vlož script a vygeneruj titulky</p> : (
+            {!result ? <p className="text-muted-foreground text-center py-12">Enter the script and generate captions</p> : (
               <div className="space-y-3">
                 <div className="grid grid-cols-2 gap-2"><Badge variant="outline">Font: {result.recommendedFont}</Badge><Badge variant="outline">Trvanie: {result.totalDuration}s</Badge></div>
                 {result.captions.map((c, i) => (

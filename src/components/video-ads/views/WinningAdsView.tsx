@@ -35,16 +35,16 @@ export const WinningAdsView = ({ onBack }: { onBack: () => void }) => {
     try {
       const { data, error } = await supabase.functions.invoke('video-ad-tools', { body: { action: 'winning_ads_recommend', product, industry } });
       if (error || data?.error) { handleEdgeError(error || data, { context: 'Winning Ads' }); return; }
-      setReco(data.result); toast.success(`Odporúčania pripravené (${data.credits_used} CR)`);
+      setReco(data.result); toast.success(`Recommendations prepared (${data.credits_used} CR)`);
     } catch (e) { handleEdgeError(e, { context: 'Winning Ads' }); } finally { setLoadingReco(false); }
   };
 
   return (
     <div>
-      <Button variant="ghost" onClick={onBack} className="mb-4">← Späť</Button>
+      <Button variant="ghost" onClick={onBack} className="mb-4">← Back</Button>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-500 to-amber-600 flex items-center justify-center"><Trophy className="w-6 h-6 text-white" /></div>
-        <div><h2 className="text-2xl font-black">Winning Ads Library</h2><p className="text-sm text-muted-foreground">Učte sa od najlepších</p></div>
+        <div><h2 className="text-2xl font-black">Winning Ads Library</h2><p className="text-sm text-muted-foreground">Learn from the best</p></div>
         <Badge className="ml-auto bg-gradient-to-r from-yellow-500 to-amber-600 text-white">3 CR</Badge>
       </div>
       <div className="grid lg:grid-cols-3 gap-6">
@@ -54,9 +54,9 @@ export const WinningAdsView = ({ onBack }: { onBack: () => void }) => {
               {['saas','fitness','ecommerce','food','finance','beauty','education','automotive'].map(i => <option key={i} value={i}>{i}</option>)}
             </select>
           </div>
-          <div><Label>Tvoj produkt</Label><Input value={product} onChange={e => setProduct(e.target.value)} placeholder="napr. CRM pre malé firmy" /></div>
+          <div><Label>Your product</Label><Input value={product} onChange={e => setProduct(e.target.value)} placeholder="e.g. CRM for small businesses" /></div>
           <Button onClick={getReco} disabled={loadingReco} className="w-full bg-gradient-to-r from-yellow-500 to-amber-600">
-            {loadingReco ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Sparkles className="mr-2 h-4 w-4" />AI odporúčania (3 CR)</>}
+            {loadingReco ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Sparkles className="mr-2 h-4 w-4" />AI recommendations (3 CR)</>}
           </Button>
         </CardContent></Card>
         <div className="lg:col-span-2 space-y-4 max-h-[700px] overflow-y-auto">
@@ -65,9 +65,9 @@ export const WinningAdsView = ({ onBack }: { onBack: () => void }) => {
               <CardHeader><CardTitle className="flex items-center gap-2"><Sparkles className="w-5 h-5 text-yellow-500" />AI Strategy pre teba</CardTitle></CardHeader>
               <CardContent className="space-y-3">
                 <p className="text-sm">{reco.customStrategy}</p>
-                <div><h4 className="font-semibold mb-1">🎯 Vzory na adoptovať</h4><div className="flex flex-wrap gap-1">{reco.patternsToSteal.map((p, i) => <Badge key={i} variant="secondary">{p}</Badge>)}</div></div>
-                <div><h4 className="font-semibold mb-1">⚠️ Vyhnúť sa</h4><ul className="text-sm">{reco.avoidMistakes.map((m, i) => <li key={i}>• {m}</li>)}</ul></div>
-                <div><h4 className="font-semibold mb-1">🚀 Najbližšie kroky</h4><ol className="text-sm list-decimal pl-5">{reco.nextSteps.map((s, i) => <li key={i}>{s}</li>)}</ol></div>
+                <div><h4 className="font-semibold mb-1">🎯 Patterns to adopt</h4><div className="flex flex-wrap gap-1">{reco.patternsToSteal.map((p, i) => <Badge key={i} variant="secondary">{p}</Badge>)}</div></div>
+                <div><h4 className="font-semibold mb-1">⚠️ Avoid</h4><ul className="text-sm">{reco.avoidMistakes.map((m, i) => <li key={i}>• {m}</li>)}</ul></div>
+                <div><h4 className="font-semibold mb-1">🚀 Next steps</h4><ol className="text-sm list-decimal pl-5">{reco.nextSteps.map((s, i) => <li key={i}>{s}</li>)}</ol></div>
               </CardContent>
             </Card>
           )}
@@ -77,12 +77,12 @@ export const WinningAdsView = ({ onBack }: { onBack: () => void }) => {
               <div className="flex items-start justify-between"><div><h4 className="font-bold">{ad.brand_name} — {ad.ad_title}</h4><div className="flex gap-1 mt-1"><Badge variant="outline">{ad.platform}</Badge><Badge variant="outline">{ad.industry}</Badge></div></div></div>
               <p className="text-base font-semibold italic">"{ad.hook}"</p>
               {ad.full_script && <p className="text-sm text-muted-foreground">{ad.full_script}</p>}
-              {ad.why_it_works && <p className="text-sm"><strong>💡 Prečo funguje:</strong> {ad.why_it_works}</p>}
+              {ad.why_it_works && <p className="text-sm"><strong>💡 Why it works:</strong> {ad.why_it_works}</p>}
               {ad.performance_metrics && <div className="flex flex-wrap gap-1 text-xs">{Object.entries(ad.performance_metrics).map(([k, v]) => <Badge key={k} variant="secondary">{k}: {v}</Badge>)}</div>}
               {ad.tags && <div className="flex flex-wrap gap-1">{ad.tags.map((t, i) => <Badge key={i} variant="outline" className="text-xs">#{t}</Badge>)}</div>}
             </CardContent></Card>
           ))}
-          {!loadingLib && library.length === 0 && <p className="text-muted-foreground text-center py-8">Žiadne ads pre toto odvetvie</p>}
+          {!loadingLib && library.length === 0 && <p className="text-muted-foreground text-center py-8">No ads for this industry</p>}
         </div>
       </div>
     </div>

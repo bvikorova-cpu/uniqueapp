@@ -29,14 +29,14 @@ export const StockFootageView = ({ onBack }: { onBack: () => void }) => {
       });
       if (error || data?.error) { handleEdgeError(error || data, { context: 'Stock Footage' }); return; }
       setR(data.result);
-      toast.success(`${data.result.scenes.length} scén spárovaných (${data.credits_used} CR)`);
+      toast.success(`${data.result.scenes.length} scenes matched (${data.credits_used} CR)`);
     } catch (e) { handleEdgeError(e, { context: 'Stock Footage' }); }
     finally { setLoading(false); }
   };
 
   return (
     <div>
-      <Button variant="ghost" onClick={onBack} className="mb-4">← Späť</Button>
+      <Button variant="ghost" onClick={onBack} className="mb-4">← Back</Button>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center"><Library className="w-6 h-6 text-white" /></div>
         <div><h2 className="text-2xl font-black">Stock Footage Matcher</h2><p className="text-sm text-muted-foreground">Pexels / Pixabay / Unsplash auto-pair</p></div>
@@ -46,22 +46,22 @@ export const StockFootageView = ({ onBack }: { onBack: () => void }) => {
         <Card>
           <CardHeader><CardTitle>Settings</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <div><Label>Script / scény *</Label><Textarea rows={6} value={script} onChange={e => setScript(e.target.value)} /></div>
+            <div><Label>Script / scenes *</Label><Textarea rows={6} value={script} onChange={e => setScript(e.target.value)} /></div>
             <div><Label>Mood</Label><input className="w-full mt-1 p-2 rounded-md border bg-background" value={mood} onChange={e => setMood(e.target.value)} placeholder="energetic, calm, dramatic..." /></div>
             <Button onClick={go} disabled={loading} className="w-full bg-gradient-to-r from-emerald-500 to-teal-600">
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Nájsť footage (3 CR)'}
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Find footage (3 CR)'}
             </Button>
           </CardContent>
         </Card>
         <Card className="lg:col-span-2">
-          <CardHeader><CardTitle>Matched scény</CardTitle></CardHeader>
+          <CardHeader><CardTitle>Matched scenes</CardTitle></CardHeader>
           <CardContent className="max-h-[700px] overflow-y-auto space-y-3">
-            {!r ? <p className="text-muted-foreground text-center py-12">Vlož script na párovanie</p> : (
+            {!r ? <p className="text-muted-foreground text-center py-12">Insert script for matching</p> : (
               <>
                 <div className="flex flex-wrap gap-1">{r.generalKeywords.map((k, i) => <Badge key={i} variant="secondary">{k}</Badge>)}</div>
                 {r.scenes.map(s => (
                   <Card key={s.sceneNumber} className="bg-muted/30"><CardContent className="pt-3 space-y-2">
-                    <div className="font-bold">Scéna {s.sceneNumber} <Badge variant="outline" className="ml-2">{s.shotType}</Badge> <Badge variant="outline">{s.motionStyle}</Badge> <Badge variant="outline">{s.durationSeconds}s</Badge></div>
+                    <div className="font-bold">Scene {s.sceneNumber} <Badge variant="outline" className="ml-2">{s.shotType}</Badge> <Badge variant="outline">{s.motionStyle}</Badge> <Badge variant="outline">{s.durationSeconds}s</Badge></div>
                     <p className="text-sm">{s.description}</p>
                     <div className="flex flex-wrap gap-1">{s.keywords.map((k, i) => <Badge key={i} variant="secondary" className="text-xs">{k}</Badge>)}</div>
                     <div className="flex flex-wrap gap-2">
@@ -71,7 +71,7 @@ export const StockFootageView = ({ onBack }: { onBack: () => void }) => {
                     </div>
                   </CardContent></Card>
                 ))}
-                <div><h4 className="font-semibold mb-1">⚠️ Vyhnúť sa</h4><div className="flex flex-wrap gap-1">{r.avoidKeywords.map((k, i) => <Badge key={i} variant="destructive" className="text-xs">{k}</Badge>)}</div></div>
+                <div><h4 className="font-semibold mb-1">⚠️ Avoid</h4><div className="flex flex-wrap gap-1">{r.avoidKeywords.map((k, i) => <Badge key={i} variant="destructive" className="text-xs">{k}</Badge>)}</div></div>
                 <div><h4 className="font-semibold mb-1">💡 Pro tipy</h4><ul className="text-sm">{r.proTips.map((t, i) => <li key={i}>• {t}</li>)}</ul></div>
               </>
             )}

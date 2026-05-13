@@ -39,14 +39,14 @@ interface Lobby {
 
 const defaultLobbies: Lobby[] = [
   { id: "1", name: "Turnaj #1", game: "Brain Duel", players: 6, maxPlayers: 8, isPrivate: false, host: "Peter" },
-  { id: "2", name: "Priatelia", game: "Trivia", players: 4, maxPlayers: 4, isPrivate: true, host: "Mária" },
-  { id: "3", name: "Noví hráči", game: "Brain Duel", players: 2, maxPlayers: 8, isPrivate: false, host: "Ján" },
+  { id: "2", name: "Friends", game: "Trivia", players: 4, maxPlayers: 4, isPrivate: true, host: "Maria" },
+  { id: "3", name: "New Players", game: "Brain Duel", players: 2, maxPlayers: 8, isPrivate: false, host: "Jan" },
 ];
 
 const defaultPlayers: Player[] = [
   { id: "1", name: "Peter K.", level: 42, isReady: true, isHost: true },
-  { id: "2", name: "Mária S.", level: 38, isReady: true, isHost: false },
-  { id: "3", name: "Ján H.", level: 25, isReady: false, isHost: false },
+  { id: "2", name: "Maria S.", level: 38, isReady: true, isHost: false },
+  { id: "3", name: "Jan H.", level: 25, isReady: false, isHost: false },
   { id: "4", name: "Vy", level: 15, isReady: false, isHost: false },
 ];
 
@@ -55,8 +55,8 @@ export const MultiplayerLobby = () => {
   const [isReady, setIsReady] = useState(false);
   const [players, setPlayers] = useState(defaultPlayers);
   const [chatMessages, setChatMessages] = useState<{ user: string; message: string }[]>([
-    { user: "Peter K.", message: "Ahoj všetci!" },
-    { user: "Mária S.", message: "Pripravená som 👍" },
+    { user: "Peter K.", message: "Hi everyone!" },
+    { user: "Maria S.", message: "I'm ready 👍" },
   ]);
   const [newMessage, setNewMessage] = useState("");
 
@@ -78,7 +78,7 @@ export const MultiplayerLobby = () => {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <Button variant="ghost" onClick={() => setView("browse")}>
-            ← Späť
+            ← Back
           </Button>
           <Badge variant="outline">Brain Duel</Badge>
         </div>
@@ -90,7 +90,7 @@ export const MultiplayerLobby = () => {
                 <Gamepad2 className="h-5 w-5" />
                 Turnaj #1
               </span>
-              <Badge>{players.length}/8 hráčov</Badge>
+              <Badge>{players.length}/8 players</Badge>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -119,7 +119,7 @@ export const MultiplayerLobby = () => {
                       <p className="text-xs text-muted-foreground">Lv. {player.level}</p>
                     </div>
                     <Badge variant={player.isReady ? "default" : "secondary"} className="text-xs">
-                      {player.isReady ? "Pripravený" : "Čaká"}
+                      {player.isReady ? "Ready" : "Waiting"}
                     </Badge>
                   </div>
                 </motion.div>
@@ -132,7 +132,7 @@ export const MultiplayerLobby = () => {
                   className="p-3 rounded-lg border border-dashed border-muted-foreground/30 flex items-center justify-center text-muted-foreground"
                 >
                   <Plus className="h-4 w-4 mr-1" />
-                  Voľné miesto
+                  Empty slot
                 </div>
               ))}
             </div>
@@ -150,7 +150,7 @@ export const MultiplayerLobby = () => {
                 </div>
                 <div className="flex gap-2">
                   <Input
-                    placeholder="Napíšte správu..."
+                    placeholder="Write a message..."
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && sendMessage()}
@@ -169,7 +169,7 @@ export const MultiplayerLobby = () => {
                 className="flex-1"
                 onClick={handleReady}
               >
-                {isReady ? "✓ Pripravený" : "Pripraviť sa"}
+                {isReady ? "✓ Ready" : "Get ready"}
               </Button>
               <Button variant="outline" size="icon" onClick={() => toast.info("This action — coming soon")}>
                 <Settings className="h-4 w-4" />
@@ -177,9 +177,9 @@ export const MultiplayerLobby = () => {
             </div>
 
             {players.every(p => p.isReady) && (
-              <Button className="w-full" size="lg" onClick={() => toast.info("Začať hru — coming soon")}>
+              <Button className="w-full" size="lg" onClick={() => toast.info("Start game — coming soon")}>
                 <Play className="h-4 w-4 mr-2" />
-                Začať hru
+                Start game
               </Button>
             )}
           </CardContent>

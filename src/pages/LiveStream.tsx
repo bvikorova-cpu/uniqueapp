@@ -501,7 +501,7 @@ export default function LiveStream() {
                         <Video className="h-24 w-24 mx-auto opacity-50" />
                         {user?.id === stream.influencer_profiles?.user_id ? (
                           <>
-                            <p className="text-lg">Klikni na tlačidlo pre spustenie kamery</p>
+                            <p className="text-lg">Click the button to start the camera</p>
                             <Button 
                               onClick={startBroadcast} 
                               variant="default"
@@ -509,13 +509,13 @@ export default function LiveStream() {
                               disabled={isConnecting}
                               className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700"
                             >
-                              {isConnecting ? "Pripájam kameru..." : "📹 Spustiť kameru"}
+                              {isConnecting ? "Connecting camera..." : "📹 Start camera"}
                             </Button>
                           </>
                         ) : (
                           <>
                             <p className="text-lg">
-                              {isConnecting ? "Pripájam sa k streamu..." : "Stream sa pripravuje..."}
+                              {isConnecting ? "Connecting to stream..." : "Stream is preparing..."}
                             </p>
                           </>
                         )}
@@ -527,7 +527,7 @@ export default function LiveStream() {
                     <div className="absolute bottom-4 right-4">
                       <Button onClick={stopStreaming} variant="destructive" size="sm">
                         <VideoOff className="h-4 w-4 mr-2" />
-                        Zastaviť Stream
+                        Stop Stream
                       </Button>
                     </div>
                   )}
@@ -575,19 +575,19 @@ export default function LiveStream() {
                     <DialogTrigger asChild>
                       <Button variant="outline" size="sm">
                         <Gift className="h-4 w-4 mr-2" />
-                        Darčeky
+                        Gifts
                       </Button>
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>
-                        <DialogTitle>Pošli virtuálny darček</DialogTitle>
+                        <DialogTitle>Send a virtual gift</DialogTitle>
                         <DialogDescription>
-                          Podpor svojho obľúbeného influencera
+                          Support your favorite influencer
                         </DialogDescription>
                       </DialogHeader>
                       <div className="space-y-4 py-4">
                         <Input
-                          placeholder="Pridaj správu k darčeku (voliteľné)"
+                          placeholder="Add a message to the gift (optional)"
                           value={giftMessage}
                           onChange={(e) => setGiftMessage(e.target.value)}
                         />
@@ -626,7 +626,7 @@ export default function LiveStream() {
                       </Avatar>
                       <div className="flex-1">
                         <p className="text-sm font-medium">
-                          {msg.profiles?.full_name || "Používateľ"}
+                          {msg.profiles?.full_name || "User"}
                         </p>
                         <p className="text-sm text-muted-foreground">{msg.message}</p>
                       </div>
@@ -649,7 +649,7 @@ export default function LiveStream() {
                   <Input
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder={user ? "Napíš správu..." : "Prihlás sa pre chat"}
+                    placeholder={user ? "Write a message..." : "Log in to chat"}
                     disabled={!user}
                   />
                   <Button type="submit" disabled={!user || !message.trim()}>

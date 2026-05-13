@@ -491,7 +491,7 @@ All colors MUST be HSL.
      ============================================ */
   
   @media (max-width: 600px) {
-    /* 1. KRITICKÉ: Oprava vertikálneho scrollovania */
+    /* 1. CRITICAL: Fix vertical scrolling */
     html, body {
       overflow-x: hidden !important;
       overflow-y: auto !important;
@@ -500,13 +500,13 @@ All colors MUST be HSL.
       -webkit-overflow-scrolling: touch;
     }
     
-    /* 2. Oprava zobrazenia textu a sekcií */
+    /* 2. Fix text and section display */
     body {
       padding: 0;
       box-sizing: border-box;
     }
     
-    /* Oprava hlavného kontajnera */
+    /* Fix main container */
     #root {
       overflow-x: hidden;
       overflow-y: auto;
@@ -514,12 +514,12 @@ All colors MUST be HSL.
       max-width: 100vw;
     }
     
-    /* Flex kontajnery na mobile - vertikálne usporiadanie */
+    /* Flex containers on mobile - vertical arrangement */
     .flex-row-mobile-stack {
       flex-direction: column !important;
     }
     
-    /* Grid kontajnery - jedna kolóna na mobile */
+    /* Grid containers - one column on mobile */
     /* Removed overly aggressive grid override - let components handle their own responsive design */
 
     .container,
@@ -529,7 +529,7 @@ All colors MUST be HSL.
       box-sizing: border-box;
     }
 
-    /* Upraví veľkosť textu a nadpisov pre mobil */
+    /* Adjust text and heading sizes for mobile */
     h1 {
       font-size: 1.5rem; /* 24px */
       line-height: 2rem;
@@ -550,7 +550,7 @@ All colors MUST be HSL.
       line-height: 1.5rem;
     }
 
-    /* 3. Oprava roztrieštených kategórií - Horizontálne rolovanie */
+    /* 3. Fix scattered categories - Horizontal scrolling */
     .category-list {
       display: flex;
       overflow-x: auto;
@@ -572,13 +572,13 @@ All colors MUST be HSL.
       min-width: fit-content;
     }
 
-    /* 4. Optimalizácia tlačidiel a formulárov */
+    /* 4. Optimize buttons and forms */
     .primary-button,
     .button-primary {
       width: 100%;
       margin-bottom: 1rem;
       padding: 0.75rem;
-      min-height: 44px; /* Minimálna výška pre ľahké kliknutie */
+      min-height: 44px; /* Minimum height for easy clicking */
     }
 
     .button-group {
@@ -594,7 +594,7 @@ All colors MUST be HSL.
       min-height: 44px;
     }
 
-    /* Formulárové prvky - plná šírka na mobile */
+    /* Form elements - full width on mobile */
     input[type="text"],
     input[type="email"],
     input[type="password"],
@@ -605,10 +605,10 @@ All colors MUST be HSL.
     select {
       width: 100%;
       box-sizing: border-box;
-      font-size: 1rem; /* Predídeme zoom-in na iOS */
+      font-size: 1rem; /* Prevent zoom-in on iOS */
     }
 
-    /* 5. Oprava zobrazenia obrázkov */
+    /* 5. Fix image display */
     img {
       max-width: 100%;
       height: auto;
@@ -624,13 +624,13 @@ All colors MUST be HSL.
 
     /* Removed - let components handle their own responsive grid */
 
-    /* Tabs - vertikálne na mobile ak sú príliš široké */
+    /* Tabs - vertical on mobile if too wide */
     [role="tablist"] {
       flex-wrap: wrap;
       gap: 0.5rem;
     }
 
-    /* Brand Battle kategórie - horizontálne rolovanie */
+    /* Brand Battle categories - horizontal scrolling */
     .flex.flex-wrap.gap-2 {
       flex-wrap: nowrap;
       overflow-x: auto;
@@ -643,18 +643,18 @@ All colors MUST be HSL.
       display: none;
     }
 
-    /* Modals a Dialogs - celá šírka na mobile */
+    /* Modals and Dialogs - full width on mobile */
     [role="dialog"] {
       max-width: calc(100vw - 2rem);
       margin: 1rem;
     }
 
-    /* Tooltips - lepšie pozicovanie */
+    /* Tooltips - better positioning */
     [role="tooltip"] {
       max-width: calc(100vw - 2rem);
     }
 
-    /* Zmenšenie paddingu pre mobilné karty */
+    /* Reduce padding for mobile cards */
     .card-content,
     [class*="CardContent"] {
       padding: 1rem;
@@ -665,7 +665,7 @@ All colors MUST be HSL.
       padding: 1rem;
     }
 
-    /* Footer - stack vertikálne */
+    /* Footer - stack vertically */
     footer {
       padding: 1.5rem 1rem;
     }
@@ -686,7 +686,7 @@ All colors MUST be HSL.
       padding-right: 1.5rem;
     }
 
-    /* Grid systémy - dve kolóny na tablete */
+    /* Grid systems - two columns on tablet */
     .grid.md\\:grid-cols-3,
     .grid.lg\\:grid-cols-3 {
       grid-template-columns: repeat(2, 1fr) !important;

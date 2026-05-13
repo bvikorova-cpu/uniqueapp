@@ -45,7 +45,7 @@ export const TopicContent = ({
             </div>
           </div>
           <CardDescription>
-            Téma {topicIndex + 1} z {totalTopics}
+            Topic {topicIndex + 1} of {totalTopics}
           </CardDescription>
           <Progress value={progress} className="h-2 mt-2" />
         </CardHeader>
@@ -80,8 +80,8 @@ export const TopicContent = ({
               size="lg"
             >
               {topicIndex === totalTopics - 1
-                ? "Dokončiť tému a pokračovať na test"
-                : "Dokončiť tému a pokračovať ďalej"}
+                ? "Complete topic and proceed to the test"
+                : "Complete topic and continue"}
             </Button>
           )}
 
@@ -89,7 +89,7 @@ export const TopicContent = ({
             <div className="mt-8 p-4 bg-green-500/10 border border-green-500/20 rounded-lg flex items-center gap-3">
               <CheckCircle className="h-5 w-5 text-green-500" />
               <span className="text-sm font-medium text-green-700 dark:text-green-400">
-                Táto téma je dokončená
+                This topic is completed
               </span>
             </div>
           )}

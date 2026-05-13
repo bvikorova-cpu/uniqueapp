@@ -178,7 +178,7 @@ const VirtualInfluencerAgency = () => {
                 onClick={() => handleToolClick(tool.id)}
                 delay={i * 0.03}
                 locked={isDashboardLocked}
-                lockedReason={isDashboardLocked ? "Najprv vytvorte virtuálneho influencera, aby sa odomkol Dashboard s analytikou a zárobkami." : undefined}
+                lockedReason={isDashboardLocked ? "First, create a virtual influencer to unlock the Dashboard with analytics and earnings." : undefined}
               />
             );
           })}

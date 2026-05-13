@@ -35,7 +35,7 @@ export const AvatarTalkingHeadView = ({ onBack }: { onBack: () => void }) => {
       });
       if (error || data?.error) { handleEdgeError(error || data, { context: 'Avatar Plan' }); return; }
       setPlan(data.result);
-      toast.success(`Avatar plán pripravený (${data.credits_used} CR)`);
+      toast.success(`Avatar plan prepared (${data.credits_used} CR)`);
     } catch (e) { handleEdgeError(e, { context: 'Avatar Plan' }); }
     finally { setLoading(false); }
   };
@@ -49,7 +49,7 @@ export const AvatarTalkingHeadView = ({ onBack }: { onBack: () => void }) => {
       });
       if (error || data?.error) { handleEdgeError(error || data, { context: 'Avatar Portrait' }); return; }
       setPortrait(`data:image/png;base64,${data.frames[0].b64}`);
-      toast.success(`Portrét vytvorený (${data.credits_used} CR)`);
+      toast.success(`Portrait created (${data.credits_used} CR)`);
     } catch (e) { handleEdgeError(e, { context: 'Avatar Portrait' }); }
     finally { setImgLoading(false); }
   };
@@ -63,33 +63,33 @@ export const AvatarTalkingHeadView = ({ onBack }: { onBack: () => void }) => {
       });
       if (error || data?.error) { handleEdgeError(error || data, { context: 'Avatar Voice' }); return; }
       setAudio(`data:${data.mimeType};base64,${data.audioBase64}`);
-      toast.success(`Voiceover vytvorený (${data.credits_used} CR)`);
+      toast.success(`Voiceover created (${data.credits_used} CR)`);
     } catch (e) { handleEdgeError(e, { context: 'Avatar Voice' }); }
     finally { setVoiceLoading(false); }
   };
 
   return (
     <div>
-      <Button variant="ghost" onClick={onBack} className="mb-4">← Späť</Button>
+      <Button variant="ghost" onClick={onBack} className="mb-4">← Back</Button>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center"><UserCircle2 className="w-6 h-6 text-white" /></div>
-        <div><h2 className="text-2xl font-black">AI Avatar / Talking Head</h2><p className="text-sm text-muted-foreground">Synthesia/HeyGen-štýl digitálny prezenter</p></div>
+        <div><h2 className="text-2xl font-black">AI Avatar / Talking Head</h2><p className="text-sm text-muted-foreground">Synthesia/HeyGen-style digital presenter</p></div>
         <Badge className="ml-auto bg-gradient-to-r from-sky-500 to-indigo-600 text-white">3+5+5 CR</Badge>
       </div>
       <div className="grid lg:grid-cols-3 gap-6">
         <Card>
           <CardHeader><CardTitle>Settings</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <div><Label>Produkt / služba *</Label><Textarea rows={3} value={product} onChange={e => setProduct(e.target.value)} /></div>
-            <div><Label>Cieľová skupina</Label><Input value={audience} onChange={e => setAudience(e.target.value)} /></div>
-            <div><Label>Tón</Label><Input value={tone} onChange={e => setTone(e.target.value)} placeholder="professional, friendly, energetic..." /></div>
+            <div><Label>Product / service *</Label><Textarea rows={3} value={product} onChange={e => setProduct(e.target.value)} /></div>
+            <div><Label>Target audience</Label><Input value={audience} onChange={e => setAudience(e.target.value)} /></div>
+            <div><Label>Tone</Label><Input value={tone} onChange={e => setTone(e.target.value)} placeholder="professional, friendly, energetic..." /></div>
             <Button onClick={generatePlan} disabled={loading} className="w-full bg-gradient-to-r from-sky-500 to-indigo-600">
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : '1) Vygenerovať plán (3 CR)'}
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : '1) Generate plan (3 CR)'}
             </Button>
             {plan && (
               <>
                 <Button onClick={generatePortrait} disabled={imgLoading} variant="outline" className="w-full">
-                  {imgLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><ImageIcon className="mr-2 h-4 w-4" />2) Portrét avatara (5 CR)</>}
+                  {imgLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><ImageIcon className="mr-2 h-4 w-4" />2) Avatar portrait (5 CR)</>}
                 </Button>
                 <Button onClick={generateVoice} disabled={voiceLoading} variant="outline" className="w-full">
                   {voiceLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Play className="mr-2 h-4 w-4" />3) Voiceover (5 CR)</>}
@@ -101,7 +101,7 @@ export const AvatarTalkingHeadView = ({ onBack }: { onBack: () => void }) => {
         <Card className="lg:col-span-2">
           <CardHeader><CardTitle>Talking Head</CardTitle></CardHeader>
           <CardContent className="max-h-[700px] overflow-y-auto space-y-4">
-            {!plan ? <p className="text-muted-foreground text-center py-12">Vygeneruj plán</p> : (
+            {!plan ? <p className="text-muted-foreground text-center py-12">Generate plan</p> : (
               <>
                 {portrait && (
                   <div className="relative w-64 mx-auto rounded-xl overflow-hidden">

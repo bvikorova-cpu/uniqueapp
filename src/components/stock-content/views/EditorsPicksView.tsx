@@ -74,9 +74,9 @@ export function EditorsPicksView({ onBack }: Props) {
   useEffect(() => { load(); /* eslint-disable-next-line */ }, [isAdmin, showDrafts]);
 
   const addPick = async () => {
-    if (!newItemId.trim()) { toast.error("Vlož content item ID"); return; }
+    if (!newItemId.trim()) { toast.error("Enter content item ID"); return; }
     const { data: { session } } = await supabase.auth.getSession();
-    if (!session) { toast.error("Prihlás sa"); return; }
+    if (!session) { toast.error("Log in"); return; }
     const weekStart = new Date();
     weekStart.setDate(weekStart.getDate() - weekStart.getDay());
     const { error } = await supabase.from("stock_editors_picks").insert({
@@ -88,22 +88,22 @@ export function EditorsPicksView({ onBack }: Props) {
       status: newPublishOnline ? "online" : "draft",
     } as any);
     if (error) { toast.error(error.message); return; }
-    toast.success(newPublishOnline ? "Publikované online" : "Uložené ako draft");
+    toast.success(newPublishOnline ? "Published online" : "Saved as draft");
     setNewItemId(""); setNewNote(""); setNewPublishOnline(false); load();
   };
 
   const removePick = async (id: string) => {
-    if (!confirm("Naozaj odstrániť tento Editor's Pick?")) return;
+    if (!confirm("Really delete this Editor's Pick?")) return;
     const { error } = await supabase.from("stock_editors_picks").delete().eq("id", id);
     if (error) { toast.error(error.message); return; }
-    toast.success("Odstránené"); load();
+    toast.success("Deleted"); load();
   };
 
   const toggleStatus = async (p: Pick) => {
     const next = p.status === "online" ? "draft" : "online";
     const { error } = await supabase.from("stock_editors_picks").update({ status: next } as any).eq("id", p.id);
     if (error) { toast.error(error.message); return; }
-    toast.success(next === "online" ? "Publikované online" : "Stiahnuté do draftu");
+    toast.success(next === "online" ? "Published online" : "Downloaded to draft");
     load();
   };
 
@@ -122,7 +122,7 @@ export function EditorsPicksView({ onBack }: Props) {
       status: editStatus,
     } as any).eq("id", editing.id);
     if (error) { toast.error(error.message); return; }
-    toast.success("Uložené");
+    toast.success("Saved");
     setEditing(null); load();
   };
 
@@ -134,7 +134,7 @@ export function EditorsPicksView({ onBack }: Props) {
         {isAdmin && (
           <div className="flex items-center gap-2 ml-auto">
             <Switch id="show-drafts" checked={showDrafts} onCheckedChange={setShowDrafts} />
-            <Label htmlFor="show-drafts" className="text-sm">Zobraziť drafty</Label>
+            <Label htmlFor="show-drafts" className="text-sm">Show drafts</Label>
           </div>
         )}
       </div>
@@ -143,33 +143,33 @@ export function EditorsPicksView({ onBack }: Props) {
         <div className="flex items-center gap-3">
           <Sparkles className="w-10 h-10 text-yellow-500" />
           <div>
-            <h3 className="text-lg font-bold">Týždenný hand-picked výber</h3>
-            <p className="text-sm text-muted-foreground">Najlepšie kúsky vybrané našou redakciou. Aktualizované každý týždeň.</p>
+            <h3 className="text-lg font-bold">Weekly hand-picked selection</h3>
+            <p className="text-sm text-muted-foreground">The best pieces selected by our editorial team. Updated every week.</p>
           </div>
         </div>
       </Card>
 
       {isAdmin && (
         <Card className="p-4 space-y-3 border-primary/30">
-          <h3 className="font-bold flex items-center gap-2"><Plus className="w-4 h-4" /> Pridať do tohtotýždňového výberu (admin)</h3>
+          <h3 className="font-bold flex items-center gap-2"><Plus className="w-4 h-4" /> Add to this week's selection (admin)</h3>
           <Input placeholder="Content item ID (UUID)" value={newItemId} onChange={e => setNewItemId(e.target.value)} />
-          <Textarea placeholder="Editor note (voliteľné)" value={newNote} onChange={e => setNewNote(e.target.value)} rows={2} />
+          <Textarea placeholder="Editor note (optional)" value={newNote} onChange={e => setNewNote(e.target.value)} rows={2} />
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <Switch id="publish-online" checked={newPublishOnline} onCheckedChange={setNewPublishOnline} />
               <Label htmlFor="publish-online" className="text-sm">
-                {newPublishOnline ? "Publikovať online ihneď" : "Uložiť ako draft"}
+                {newPublishOnline ? "Publish online immediately" : "Save as draft"}
               </Label>
             </div>
-            <Button onClick={addPick}><Plus className="w-4 h-4 mr-1" /> Pridať</Button>
+            <Button onClick={addPick}><Plus className="w-4 h-4 mr-1" /> Add</Button>
           </div>
         </Card>
       )}
 
       {loading ? (
-        <div className="text-center py-12 text-muted-foreground">Načítavam...</div>
+        <div className="text-center py-12 text-muted-foreground">Loading...</div>
       ) : picks.length === 0 ? (
-        <div className="text-center py-12 text-muted-foreground">Tento týždeň zatiaľ žiadne picks.</div>
+        <div className="text-center py-12 text-muted-foreground">No picks yet this week.</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {picks.map(p => (
@@ -186,7 +186,7 @@ export function EditorsPicksView({ onBack }: Props) {
                 )}
                 {isAdmin && (
                   <div className="absolute top-2 right-2 flex gap-1">
-                    <Button size="icon" variant="secondary" className="h-7 w-7" title={p.status === "online" ? "Stiahnuť do draftu" : "Publikovať online"} onClick={() => toggleStatus(p)}>
+                    <Button size="icon" variant="secondary" className="h-7 w-7" title={p.status === "online" ? "Download to draft" : "Publish online"} onClick={() => toggleStatus(p)}>
                       {p.status === "online" ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
                     </Button>
                     <Button size="icon" variant="secondary" className="h-7 w-7" onClick={() => openEdit(p)}>
@@ -214,7 +214,7 @@ export function EditorsPicksView({ onBack }: Props) {
       <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Upraviť Editor's Pick</DialogTitle>
+            <DialogTitle>Edit Editor's Pick</DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
             <div>
@@ -222,17 +222,17 @@ export function EditorsPicksView({ onBack }: Props) {
               <Textarea value={editNote} onChange={e => setEditNote(e.target.value)} rows={3} />
             </div>
             <div>
-              <Label>Pozícia (poradie)</Label>
+              <Label>Position (order)</Label>
               <Input type="number" value={editPosition} onChange={e => setEditPosition(parseInt(e.target.value) || 0)} />
             </div>
             <div className="flex items-center gap-2">
               <Switch id="edit-status" checked={editStatus === "online"} onCheckedChange={(v) => setEditStatus(v ? "online" : "draft")} />
-              <Label htmlFor="edit-status">{editStatus === "online" ? "Online (publikované)" : "Draft (skryté)"}</Label>
+              <Label htmlFor="edit-status">{editStatus === "online" ? "Online (published)" : "Draft (hidden)"}</Label>
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setEditing(null)}>Zrušiť</Button>
-            <Button onClick={saveEdit}>Uložiť</Button>
+            <Button variant="outline" onClick={() => setEditing(null)}>Cancel</Button>
+            <Button onClick={saveEdit}>Save</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

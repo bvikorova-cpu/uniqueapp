@@ -260,10 +260,10 @@ export default function MasterChefDashboard() {
                   <p className="text-sm font-medium">Today 6:00 PM</p>
                   <Button size="sm" className="mt-2" onClick={() => {
                     const signed = JSON.parse(localStorage.getItem("masterchef_signups") || "[]");
-                    if (signed.includes("quickfire")) { toast({ description: "Už si zapísaný" }); return; }
+                    if (signed.includes("quickfire")) { toast({ description: "You are already signed up" }); return; }
                     signed.push("quickfire");
                     localStorage.setItem("masterchef_signups", JSON.stringify(signed));
-                    toast({ description: "Zapísaný na Quick Fire Challenge!" });
+                    toast({ description: "Signed up for Quick Fire Challenge!" });
                   }}>
                     Sign Up
                   </Button>

@@ -58,13 +58,13 @@ export function AIContentAssistant({ content, onInsertContent, onInsertHashtags 
 
   const callAI = async (type: AITool) => {
     if (!content.trim()) {
-      toast({ title: "Napíš najprv obsah", description: "AI potrebuje text na analýzu.", variant: "destructive" });
+      toast({ title: "First write content", description: "AI needs text to analyze.", variant: "destructive" });
       return;
     }
 
     const hasCredit = await useCredit("custom_generation", `Wall AI: ${type}`);
     if (!hasCredit) {
-      toast({ title: "Nedostatok kreditov", description: "Kúp si kredity pre AI funkcie.", variant: "destructive" });
+      toast({ title: "Insufficient credits", description: "Buy credits for AI features.", variant: "destructive" });
       return;
     }
 
@@ -83,7 +83,7 @@ export function AIContentAssistant({ content, onInsertContent, onInsertHashtags 
       else if (type === "caption") setCaptions(result.captions || []);
       else if (type === "sentiment") setSentiment(result);
     } catch (err: any) {
-      toast({ title: "Chyba AI", description: err.message || "Skús to znova.", variant: "destructive" });
+      toast({ title: "AI error", description: err.message || "Try again.", variant: "destructive" });
     } finally {
       setLoading(null);
     }
@@ -150,7 +150,7 @@ export function AIContentAssistant({ content, onInsertContent, onInsertHashtags 
         {!content.trim() && (
           <div className="flex items-center gap-2 p-3 rounded-lg bg-amber-500/10 text-sm">
             <AlertCircle className="w-4 h-4 text-amber-500 flex-shrink-0" />
-            <span>Najprv napíš text príspevku, potom použi AI nástroje.</span>
+            <span>First write the post text, then use AI tools.</span>
           </div>
         )}
 
@@ -186,7 +186,7 @@ export function AIContentAssistant({ content, onInsertContent, onInsertHashtags 
               className="space-y-2"
             >
               <div className="flex items-center justify-between">
-                <span className="text-sm font-semibold">Navrhované hashtagy</span>
+                <span className="text-sm font-semibold">Suggested hashtags</span>
                 <Button
                   size="sm"
                   variant="ghost"
@@ -195,10 +195,10 @@ export function AIContentAssistant({ content, onInsertContent, onInsertHashtags 
                     onInsertHashtags?.(hashtags);
                     const tagString = hashtags.map(t => `#${t}`).join(" ");
                     onInsertContent?.(tagString);
-                    toast({ title: "Hashtagy pridané!" });
+                    toast({ title: "Hashtags added!" });
                   }}
                 >
-                  Pridať všetky
+                  Add all
                 </Button>
               </div>
               <div className="flex flex-wrap gap-1.5">
@@ -209,7 +209,7 @@ export function AIContentAssistant({ content, onInsertContent, onInsertHashtags 
                     className="cursor-pointer hover:bg-primary/20 transition-colors"
                     onClick={() => {
                       onInsertContent?.(`#${tag} `);
-                      toast({ title: `#${tag} pridaný!` });
+                      toast({ title: `#${tag} added!` });
                     }}
                   >
                     #{tag}
@@ -227,7 +227,7 @@ export function AIContentAssistant({ content, onInsertContent, onInsertHashtags 
               exit={{ opacity: 0 }}
               className="space-y-2"
             >
-              <span className="text-sm font-semibold">Navrhované titulky</span>
+              <span className="text-sm font-semibold">Suggested captions</span>
               {captions.map((cap, i) => (
                 <Card key={i} className="p-3 space-y-2">
                   <div className="flex items-center justify-between">
@@ -247,11 +247,11 @@ export function AIContentAssistant({ content, onInsertContent, onInsertHashtags 
                         className="h-7 text-xs"
                         onClick={() => {
                           onInsertContent?.(cap.text);
-                          toast({ title: "Titulok vložený!" });
+                          toast({ title: "Caption inserted!" });
                           setOpen(false);
                         }}
                       >
-                        Použiť
+                        Use
                       </Button>
                     </div>
                   </div>
@@ -276,7 +276,7 @@ export function AIContentAssistant({ content, onInsertContent, onInsertHashtags 
                       {sentiment.sentiment}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      Skóre: {(sentiment.score * 100).toFixed(0)}%
+                      Score: {(sentiment.score * 100).toFixed(0)}%
                     </p>
                   </div>
                 </div>

@@ -10,7 +10,7 @@ export function SkipLink() {
         handleSkipLink("main-content");
       }}
     >
-      Preskočiť na hlavný obsah
+      Skip to main content
     </a>
   );
 }

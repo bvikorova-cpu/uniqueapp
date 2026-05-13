@@ -35,7 +35,7 @@ export function PushNotificationToggle({ className, showLabel = true }: PushNoti
       onClick={handleToggle}
       disabled={isLoading || permission === "denied"}
       className={cn("gap-2", className)}
-      aria-label={isSubscribed ? "Vypnúť notifikácie" : "Zapnúť notifikácie"}
+      aria-label={isSubscribed ? "Turn off notifications" : "Turn on notifications"}
     >
       {isLoading ? (
         <Loader2 className="h-4 w-4 animate-spin" />
@@ -47,10 +47,10 @@ export function PushNotificationToggle({ className, showLabel = true }: PushNoti
       {showLabel && (
         <span>
           {permission === "denied" 
-            ? "Notifikácie zakázané" 
+            ? "Notifications disabled" 
             : isSubscribed 
-              ? "Notifikácie zapnuté" 
-              : "Zapnúť notifikácie"
+              ? "Notifications enabled" 
+              : "Turn on notifications"
           }
         </span>
       )}

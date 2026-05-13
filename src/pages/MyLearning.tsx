@@ -312,7 +312,7 @@ export default function MyLearning() {
                       a.download = `certificate-${cert.id}.txt`;
                       document.body.appendChild(a); a.click(); a.remove();
                       URL.revokeObjectURL(url);
-                      toast({ description: "Certifikát stiahnutý" });
+                      toast({ description: "Certificate downloaded" });
                     }}>
                       <Download className="h-4 w-4" />
                       Download Certificate

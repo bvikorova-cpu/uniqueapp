@@ -10,29 +10,29 @@ interface NailState {
 }
 
 const COLORS = [
-  { name: "Ružová", value: "#FF69B4" },
-  { name: "Červená", value: "#DC143C" },
-  { name: "Fialová", value: "#9370DB" },
-  { name: "Modrá", value: "#4169E1" },
-  { name: "Tyrkysová", value: "#40E0D0" },
-  { name: "Zelená", value: "#32CD32" },
-  { name: "Žltá", value: "#FFD700" },
-  { name: "Oranžová", value: "#FF8C00" },
+  { name: "Pink", value: "#FF69B4" },
+  { name: "Red", value: "#DC143C" },
+  { name: "Purple", value: "#9370DB" },
+  { name: "Blue", value: "#4169E1" },
+  { name: "Turquoise", value: "#40E0D0" },
+  { name: "Green", value: "#32CD32" },
+  { name: "Yellow", value: "#FFD700" },
+  { name: "Orange", value: "#FF8C00" },
   { name: "Biela", value: "#FFFFFF" },
-  { name: "Čierna", value: "#000000" },
+  { name: "Black", value: "#000000" },
 ];
 
 const PATTERNS = [
-  { name: "Žiadny", value: "none" },
+  { name: "None", value: "none" },
   { name: "Bodky", value: "polka" },
   { name: "Pruhy", value: "stripes" },
-  { name: "Hviezdičky", value: "stars" },
+  { name: "Stars", value: "stars" },
   { name: "Kvietky", value: "flowers" },
   { name: "Gradient", value: "gradient" },
 ];
 
 const DECORATIONS = [
-  { name: "Žiadna", value: "none" },
+  { name: "None", value: "none" },
   { name: "Diamant", value: "💎" },
   { name: "Hviezda", value: "⭐" },
   { name: "Srdce", value: "❤️" },
@@ -122,10 +122,10 @@ export const NailSalonGame = () => {
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-pink-600 mb-2 flex items-center justify-center gap-2">
             <Sparkles className="w-8 h-8" />
-            Barbie Letný Nechtový Salón
+            Barbie Summer Nail Salon
             <Sparkles className="w-8 h-8" />
           </h1>
-          <p className="text-gray-600">Vytvor si krásne letné nechty!</p>
+          <p className="text-gray-600">Create beautiful summer nails!</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
@@ -136,7 +136,7 @@ export const NailSalonGame = () => {
               
               {/* Left Hand */}
               <div className="mb-8">
-                <p className="text-sm text-gray-500 mb-3 text-center">Ľavá ruka</p>
+                <p className="text-sm text-gray-500 mb-3 text-center">Left hand</p>
                 <div className="flex justify-center gap-2">
                   {nails.slice(0, 5).map((nail, index) => (
                     <div
@@ -173,7 +173,7 @@ export const NailSalonGame = () => {
 
               {/* Right Hand */}
               <div>
-                <p className="text-sm text-gray-500 mb-3 text-center">Pravá ruka</p>
+                <p className="text-sm text-gray-500 mb-3 text-center">Right hand</p>
                 <div className="flex justify-center gap-2">
                   {nails.slice(5, 10).map((nail, index) => (
                     <div
@@ -213,7 +213,7 @@ export const NailSalonGame = () => {
           {/* Controls */}
           <Card className="bg-white/80 backdrop-blur">
             <CardContent className="p-6 space-y-6">
-              <h2 className="text-xl font-semibold text-center">Nástroje</h2>
+              <h2 className="text-xl font-semibold text-center">Tools</h2>
 
               {/* Color Picker */}
               <div>
@@ -254,7 +254,7 @@ export const NailSalonGame = () => {
 
               {/* Decoration Picker */}
               <div>
-                <h3 className="font-semibold mb-3 text-sm">Dekorácia</h3>
+                <h3 className="font-semibold mb-3 text-sm">Decoration</h3>
                 <div className="grid grid-cols-3 gap-2">
                   {DECORATIONS.map((deco) => (
                     <Button
@@ -263,7 +263,7 @@ export const NailSalonGame = () => {
                       variant={selectedDecoration === deco.value ? "default" : "outline"}
                       className="text-xs h-auto py-2"
                     >
-                      {deco.name === "Žiadna" ? deco.name : `${deco.value} ${deco.name}`}
+                      {deco.name === "None" ? deco.name : `${deco.value} ${deco.name}`}
                     </Button>
                   ))}
                 </div>
@@ -272,14 +272,14 @@ export const NailSalonGame = () => {
               {/* Action Buttons */}
               <div className="space-y-2 pt-4 border-t">
                 <Button onClick={applyToNail} className="w-full" size="lg">
-                  Aplikovať na vybraný necht
+                  Apply to selected nail
                 </Button>
                 <Button onClick={applyToAll} variant="secondary" className="w-full">
-                  Aplikovať na všetky nechty
+                  Apply to all nails
                 </Button>
                 <Button onClick={resetNails} variant="outline" className="w-full">
                   <Trash2 className="w-4 h-4 mr-2" />
-                  Vyčistiť všetko
+                  Clear all
                 </Button>
               </div>
             </CardContent>

@@ -15,29 +15,29 @@ interface EmergencyResource {
 
 const defaultResources: EmergencyResource[] = [
   {
-    name: 'Linka dôvery Nezábudka (SK)',
-    description: '24/7 anonymná psychologická pomoc v krízových situáciách',
+    name: 'Forget-Me-Not Trust Line (SK)',
+    description: '24/7 anonymous psychological help in crisis situations',
     phone: '0800 800 566',
     available: '24/7',
     type: 'crisis',
   },
   {
-    name: 'IPčko – internetová poradňa pre mladých',
-    description: 'Online chat a e-mail poradenstvo od psychológov',
+    name: 'IPčko – internet counseling for young people',
+    description: 'Online chat and email counseling from psychologists',
     website: 'https://ipcko.sk',
     available: '7:00 – 24:00',
     type: 'support',
   },
   {
-    name: 'Tiesňová linka',
-    description: 'Pre okamžité ohrozenie života alebo zdravia',
+    name: 'Emergency line',
+    description: 'For immediate threat to life or health',
     phone: '112',
     available: '24/7',
     type: 'crisis',
   },
   {
-    name: 'Liga za duševné zdravie',
-    description: 'Adresár podporných skupín a odborníkov v SR',
+    name: 'League for Mental Health',
+    description: 'Directory of support groups and experts in Slovakia',
     website: 'https://dusevnezdravie.sk',
     available: 'Varies',
     type: 'local',

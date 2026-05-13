@@ -60,9 +60,9 @@ export default function ProductDetail() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <ShoppingBag className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-          <h2 className="text-2xl font-black mb-2">Produkt sa nenašiel</h2>
+          <h2 className="text-2xl font-black mb-2">Product not found</h2>
           <Link to="/shop">
-            <Button>Späť do obchodu</Button>
+            <Button>Back to store</Button>
           </Link>
         </div>
       </div>
@@ -79,7 +79,7 @@ export default function ProductDetail() {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link to="/shop" className="flex items-center gap-2 hover:text-primary transition-colors">
             <ArrowLeft className="h-5 w-5" />
-            <span className="font-semibold">Späť</span>
+            <span className="font-semibold">Back</span>
           </Link>
           <CartDrawer />
         </div>

@@ -5,7 +5,7 @@ export type GameCategory = "girls" | "action" | "puzzle" | "sports" | "adventure
 
 export interface GDGame {
   id: string;
-  gameId: string; // GameDistribution game ID (z katalógu)
+  gameId: string; // GameDistribution game ID (from catalog)
   title: string;
   description: string;
   category: GameCategory;

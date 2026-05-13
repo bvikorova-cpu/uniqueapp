@@ -31,8 +31,8 @@ const commentSchema = z.object({
   comment_text: z
     .string()
     .trim()
-    .min(1, { message: "Komentár nemôže byť prázdny" })
-    .max(500, { message: "Komentár môže mať maximálne 500 znakov" }),
+    .min(1, { message: "Comment cannot be empty" })
+    .max(500, { message: "Comment can have a maximum of 500 characters" }),
 });
 
 export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountChange }: Props) {
@@ -60,8 +60,8 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         toast({
-          title: "Prihlásenie potrebné",
-          description: "Pre zakúpenie predplatného sa najprv prihlás.",
+          title: "Login required",
+          description: "Please log in first to purchase a subscription.",
           variant: "destructive",
         });
         window.location.href = "/auth?redirect=/megatalent";
@@ -76,15 +76,15 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
         window.open(data.url, "_blank");
         toast({
           title: "Presmerovanie na Stripe…",
-          description: "Po dokončení platby sa vráť späť a obnov stránku.",
+          description: "After completing the payment, go back and refresh the page.",
         });
       } else {
-        throw new Error("Checkout URL nebola vrátená");
+        throw new Error("Checkout URL was not returned");
       }
     } catch (err: any) {
       toast({
         title: "Chyba pri checkoute",
-        description: err?.message || "Nepodarilo sa spustiť platbu.",
+        description: err?.message || "Failed to initiate payment.",
         variant: "destructive",
       });
     } finally {
@@ -136,7 +136,7 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
       onCountChange?.(id, count);
     } catch (err: any) {
       console.error("Error fetching comments:", err);
-      toast({ title: "Chyba", description: "Nepodarilo sa načítať komentáre", variant: "destructive" });
+      toast({ title: "Error", description: "Failed to load comments", variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -157,7 +157,7 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
       onCountChange?.(submissionId, count);
     } catch (err: any) {
       console.error("Error loading more comments:", err);
-      toast({ title: "Chyba", description: "Nepodarilo sa načítať ďalšie komentáre", variant: "destructive" });
+      toast({ title: "Error", description: "Failed to load more comments", variant: "destructive" });
     } finally {
       setLoadingMore(false);
     }
@@ -260,14 +260,14 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
     if (!submissionId) return;
     const parsed = commentSchema.safeParse({ comment_text: text });
     if (!parsed.success) {
-      toast({ title: "Neplatný komentár", description: parsed.error.errors[0].message, variant: "destructive" });
+      toast({ title: "Invalid comment", description: parsed.error.errors[0].message, variant: "destructive" });
       return;
     }
     try {
       setSubmitting(true);
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        toast({ title: "Prihlásenie potrebné", description: "Pre komentovanie sa prihlás", variant: "destructive" });
+        toast({ title: "Login required", description: "Please log in to comment", variant: "destructive" });
         return;
       }
       const { error } = await supabase.from("talent_comments").insert({
@@ -278,8 +278,8 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
       if (error) {
         if (error.message?.toLowerCase().includes("row-level security")) {
           toast({
-            title: "Vyžadované predplatné",
-            description: "Komentovať môžu len členovia s aktívnym Megatalent predplatným.",
+            title: "Subscription required",
+            description: "Only members with an active Megatalent subscription can comment.",
             variant: "destructive",
           });
         } else {
@@ -291,7 +291,7 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
       // Realtime INSERT will prepend; no refetch needed
     } catch (err: any) {
       console.error("Error posting comment:", err);
-      toast({ title: "Chyba", description: err?.message || "Nepodarilo sa pridať komentár", variant: "destructive" });
+      toast({ title: "Error", description: err?.message || "Failed to add comment", variant: "destructive" });
     } finally {
       setSubmitting(false);
     }
@@ -304,15 +304,15 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
       if (error) throw error;
       // Realtime DELETE will remove locally
     } catch (err: any) {
-      toast({ title: "Chyba", description: err?.message || "Nepodarilo sa odstrániť komentár", variant: "destructive" });
+      toast({ title: "Error", description: err?.message || "Failed to delete comment", variant: "destructive" });
     }
   };
 
   const startEdit = (c: TalentComment) => {
     if (!subLoading && !isSubscribed) {
       toast({
-        title: "Vyžadované Megatalent predplatné",
-        description: "Pre úpravu komentára potrebuješ aktívne Megatalent predplatné (od €10/mesiac).",
+        title: "Megatalent subscription required",
+        description: "To edit a comment, you need an active Megatalent subscription (from €10/month).",
         variant: "destructive",
       });
       return;
@@ -330,7 +330,7 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
     if (!editingId) return;
     const parsed = commentSchema.safeParse({ comment_text: editingText });
     if (!parsed.success) {
-      toast({ title: "Neplatný komentár", description: parsed.error.errors[0].message, variant: "destructive" });
+      toast({ title: "Invalid comment", description: parsed.error.errors[0].message, variant: "destructive" });
       return;
     }
 
@@ -339,16 +339,16 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       toast({
-        title: "Prihlásenie potrebné",
-        description: "Pre úpravu komentára sa najprv prihlás.",
+        title: "Login required",
+        description: "Please log in first to edit the comment.",
         variant: "destructive",
       });
       return;
     }
     if (target && target.user_id !== user.id) {
       toast({
-        title: "Nemáš oprávnenie",
-        description: "Upraviť môžeš iba vlastné komentáre.",
+        title: "You are not authorized",
+        description: "You can only edit your own comments.",
         variant: "destructive",
       });
       return;
@@ -369,15 +369,15 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
         if (msg.includes("row-level security") || code === "42501") {
           // Could be: not the owner, OR no active Megatalent subscription
           toast({
-            title: "Úprava zamietnutá",
+            title: "Edit denied",
             description:
-              "Komentár vieš upraviť len ako jeho autor a s aktívnym Megatalent predplatným. Skontroluj svoje predplatné a skús to znova.",
+              "You can only edit the comment as its author and with an active Megatalent subscription. Check your subscription and try again.",
             variant: "destructive",
           });
         } else if (msg.includes("jwt") || msg.includes("not authenticated")) {
           toast({
-            title: "Relácia vypršala",
-            description: "Prihlás sa znova a skús úpravu zopakovať.",
+            title: "Session expired",
+            description: "Please log in again and try to repeat the edit.",
             variant: "destructive",
           });
         } else {
@@ -390,9 +390,9 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
         // No row returned → RLS silently filtered it (no active subscription
         // or no longer the owner) or the comment was deleted in the meantime.
         toast({
-          title: "Úpravu sa nepodarilo uložiť",
+          title: "Failed to save edit",
           description:
-            "Pravdepodobne nemáš aktívne Megatalent predplatné, alebo bol komentár medzitým odstránený.",
+            "You probably don't have an active Megatalent subscription, or the comment has been removed in the meantime.",
           variant: "destructive",
         });
         return;
@@ -403,13 +403,13 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
           c.id === data.id ? { ...c, comment_text: data.comment_text, updated_at: data.updated_at } : c
         )
       );
-      toast({ title: "Komentár upravený" });
+      toast({ title: "Comment edited" });
       cancelEdit();
     } catch (err: any) {
       console.error("Error updating comment:", err);
       toast({
-        title: "Chyba pri ukladaní",
-        description: err?.message || "Nepodarilo sa upraviť komentár. Skús to prosím znova.",
+        title: "Error saving",
+        description: err?.message || "Failed to edit comment. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -423,14 +423,14 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
         <SheetHeader className="px-4 pt-4 pb-2 border-b border-border/30">
           <SheetTitle className="flex items-center gap-2 text-base">
             <MessageCircle className="h-4 w-4" />
-            Komentáre {totalCount > 0 && <span className="text-muted-foreground text-sm">({totalCount})</span>}
+            Comments {totalCount > 0 && <span className="text-muted-foreground text-sm">({totalCount})</span>}
           </SheetTitle>
           {!subLoading && (
             isSubscribed ? (
               <div className="flex items-center gap-2 text-[11px] text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 rounded-md px-2 py-1 mt-1">
                 <ShieldCheck className="h-3.5 w-3.5 flex-shrink-0" />
                 <span>
-                  Aktívne Megatalent predplatné{tier ? ` (${tier === "top_premium" ? "TOP Premium" : "Premium"})` : ""} — môžeš pridávať a upravovať komentáre.
+                  Active Megatalent subscription{tier ? ` (${tier === "top_premium" ? "TOP Premium" : "Premium"})` : ""} — you can add and edit comments.
                 </span>
               </div>
             ) : (
@@ -438,7 +438,7 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
                 <div className="flex items-center gap-2 text-[11px] text-amber-500">
                   <ShieldAlert className="h-3.5 w-3.5 flex-shrink-0" />
                   <span>
-                    Bez aktívneho Megatalent predplatného (od €10/mesiac) si komentáre len zobrazíš — pridávanie a úprava sú zamknuté.
+                    Without an active Megatalent subscription (from €10/month), you can only view comments — adding and editing are locked.
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -454,7 +454,7 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
                     ) : (
                       <Crown className="h-3.5 w-3.5 mr-1" />
                     )}
-                    Predplatiť Premium (€10/m)
+                    Subscribe to Premium (€10/m)
                   </Button>
                   <Button
                     size="sm"
@@ -483,7 +483,7 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
             </div>
           ) : comments.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground text-sm">
-              Zatiaľ žiadne komentáre. Buď prvý!
+              No comments yet. Be the first!
             </div>
           ) : (
             <>
@@ -507,7 +507,7 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2">
                           <p className="text-sm font-semibold truncate">
-                            {c.profiles?.full_name || "Používateľ"}
+                            {c.profiles?.full_name || "User"}
                           </p>
                           <span className="text-[10px] text-muted-foreground whitespace-nowrap">
                             {new Date(c.created_at).toLocaleDateString("sk-SK", {
@@ -517,7 +517,7 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
                               minute: "2-digit",
                             })}
                             {c.updated_at && new Date(c.updated_at).getTime() - new Date(c.created_at).getTime() > 2000 && (
-                              <span className="ml-1 italic">(upravené)</span>
+                              <span className="ml-1 italic">(edited)</span>
                             )}
                           </span>
                         </div>
@@ -541,7 +541,7 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
                                   onClick={cancelEdit}
                                   disabled={savingEdit}
                                 >
-                                  <X className="h-3 w-3 mr-1" /> Zrušiť
+                                  <X className="h-3 w-3 mr-1" /> Cancel
                                 </Button>
                                 <Button
                                   size="sm"
@@ -554,7 +554,7 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
                                   ) : (
                                     <Check className="h-3 w-3 mr-1" />
                                   )}
-                                  Uložiť
+                                  Save
                                 </Button>
                               </div>
                             </div>
@@ -570,7 +570,7 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
                             size="icon"
                             className="h-7 w-7 text-muted-foreground hover:text-foreground"
                             onClick={() => startEdit(c)}
-                            aria-label="Upraviť komentár"
+                            aria-label="Edit comment"
                           >
                             <Pencil className="h-3.5 w-3.5" />
                           </Button>
@@ -579,7 +579,7 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
                             size="icon"
                             className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10"
                             onClick={() => handleDelete(c.id)}
-                            aria-label="Odstrániť komentár"
+                            aria-label="Delete comment"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
                           </Button>
@@ -602,17 +602,17 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
                     {loadingMore ? (
                       <>
                         <Loader2 className="h-3.5 w-3.5 mr-2 animate-spin" />
-                        Načítavam...
+                        Loading...
                       </>
                     ) : (
-                      <>Načítať ďalšie ({totalCount - comments.length})</>
+                      <>Load more ({totalCount - comments.length})</>
                     )}
                   </Button>
                 </div>
               )}
               {!hasMore && comments.length >= PAGE_SIZE && (
                 <p className="text-center text-[11px] text-muted-foreground py-3">
-                  Všetky komentáre načítané
+                  All comments loaded
                 </p>
               )}
             </>
@@ -624,7 +624,7 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
             <Textarea
               value={text}
               onChange={(e) => setText(e.target.value.slice(0, 500))}
-              placeholder="Napíš komentár..."
+              placeholder="Write a comment..."
               className="min-h-[44px] max-h-32 resize-none text-sm"
               maxLength={500}
               disabled={submitting}
@@ -640,7 +640,7 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
               disabled={submitting || !text.trim()}
               size="icon"
               className="h-11 w-11 flex-shrink-0"
-              aria-label="Odoslať komentár"
+              aria-label="Send comment"
             >
               {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             </Button>

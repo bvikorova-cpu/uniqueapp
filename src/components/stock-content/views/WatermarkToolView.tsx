@@ -88,21 +88,21 @@ export function WatermarkToolView({ onBack }: Props) {
       a.click();
       URL.revokeObjectURL(url);
       setProcessing(false);
-      toast.success("Stiahnuté");
+      toast.success("Downloaded");
     }, "image/png");
   };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="sm" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-1" /> Späť</Button>
+        <Button variant="ghost" size="sm" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-1" /> Back</Button>
         <h2 className="text-2xl font-bold flex items-center gap-2"><ImageIcon className="w-6 h-6 text-cyan-500" /> Watermark Tool</h2>
       </div>
 
       {!imageUrl ? (
         <Card className="p-12 text-center border-dashed border-2">
           <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-          <p className="mb-4 text-muted-foreground">Nahraj obrázok na pridanie vodoznaku</p>
+          <p className="mb-4 text-muted-foreground">Upload an image to add a watermark</p>
           <Input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])} className="max-w-xs mx-auto" />
         </Card>
       ) : (
@@ -113,29 +113,29 @@ export function WatermarkToolView({ onBack }: Props) {
               <Input value={text} onChange={(e) => setText(e.target.value)} maxLength={40} />
             </div>
             <div>
-              <Label>Pozícia</Label>
+              <Label>Position</Label>
               <Select value={position} onValueChange={(v) => setPosition(v as Position)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="tile">Dlaždice (celá plocha)</SelectItem>
+                  <SelectItem value="tile">Tile (full area)</SelectItem>
                   <SelectItem value="center">Stred</SelectItem>
-                  <SelectItem value="top-left">Vľavo hore</SelectItem>
+                  <SelectItem value="top-left">Top left</SelectItem>
                   <SelectItem value="top-right">Vpravo hore</SelectItem>
-                  <SelectItem value="bottom-left">Vľavo dole</SelectItem>
+                  <SelectItem value="bottom-left">Bottom left</SelectItem>
                   <SelectItem value="bottom-right">Vpravo dole</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label>Priehľadnosť: {opacity[0]}%</Label>
+              <Label>Opacity: {opacity[0]}%</Label>
               <Slider value={opacity} onValueChange={setOpacity} min={5} max={100} step={5} />
             </div>
             <div>
-              <Label>Veľkosť: {size[0]}%</Label>
+              <Label>Size: {size[0]}%</Label>
               <Slider value={size} onValueChange={setSize} min={2} max={20} step={1} />
             </div>
             <div>
-              <Label>Rotácia: {rotation[0]}°</Label>
+              <Label>Rotation: {rotation[0]}°</Label>
               <Slider value={rotation} onValueChange={setRotation} min={-90} max={90} step={5} />
             </div>
             <div>
@@ -143,9 +143,9 @@ export function WatermarkToolView({ onBack }: Props) {
               <Input type="color" value={color} onChange={(e) => setColor(e.target.value)} className="h-10" />
             </div>
             <div className="flex gap-2 pt-2">
-              <Button variant="outline" onClick={() => { setImageUrl(""); setImageFile(null); }} className="flex-1">Zmeniť</Button>
+              <Button variant="outline" onClick={() => { setImageUrl(""); setImageFile(null); }} className="flex-1">Change</Button>
               <Button onClick={download} disabled={processing} className="flex-1 bg-gradient-to-r from-cyan-500 to-teal-600">
-                {processing ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Download className="w-4 h-4 mr-1" /> Stiahnuť</>}
+                {processing ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Download className="w-4 h-4 mr-1" /> Download</>}
               </Button>
             </div>
           </Card>

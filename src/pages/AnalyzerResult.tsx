@@ -107,7 +107,7 @@ export default function AnalyzerResult() {
             </Button>
             <Button variant="outline" size="icon" className="border-cyan-500/20" onClick={async () => {
               const r = await shareAnalysisCard(analysis.main_identification || "Analysis", window.location.href);
-              if (r === "copied") toast.success("Link skopírovaný!");
+              if (r === "copied") toast.success("Link copied!");
             }}><Share2 className="w-4 h-4" /></Button>
             <Button variant="outline" size="icon" className="border-cyan-500/20" title="Export PDF" onClick={() => {
               exportAnalysisPDF(
@@ -132,7 +132,7 @@ export default function AnalyzerResult() {
                 a.download = `${(analysis.main_identification || "analysis").replace(/\s+/g, "-")}.jpg`;
                 document.body.appendChild(a); a.click(); a.remove();
                 URL.revokeObjectURL(url);
-                toast.success("Stiahnuté");
+                toast.success("Downloaded");
               } catch { toast.error("Stiahnutie zlyhalo"); }
             }}><Download className="w-4 h-4" /></Button>
           </div>

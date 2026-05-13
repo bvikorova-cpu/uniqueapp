@@ -93,20 +93,20 @@ export function ContributorPortfoliosView({ onBack }: Props) {
         <h2 className="text-2xl font-bold flex items-center gap-2">
           <Users className="w-6 h-6 text-fuchsia-500" /> Contributor Portfolios
         </h2>
-        <Badge variant="secondary">{filtered.length} prispievateľov</Badge>
+        <Badge variant="secondary">{filtered.length} contributors</Badge>
       </div>
 
       <div className="relative max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        <Input className="pl-9" placeholder="Hľadaj prispievateľa..." value={q} onChange={e => setQ(e.target.value)} />
+        <Input className="pl-9" placeholder="Search contributor..." value={q} onChange={e => setQ(e.target.value)} />
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-muted-foreground">Načítavam...</div>
+        <div className="text-center py-12 text-muted-foreground">Loading...</div>
       ) : filtered.length === 0 ? (
         <Card className="p-12 text-center">
           <Camera className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
-          <p className="text-muted-foreground">Zatiaľ žiadni prispievatelia</p>
+          <p className="text-muted-foreground">No contributors yet</p>
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -130,8 +130,8 @@ export function ContributorPortfoliosView({ onBack }: Props) {
                 {c.bio && <p className="text-xs text-muted-foreground line-clamp-2 mt-1">{c.bio}</p>}
                 <div className="grid grid-cols-3 gap-2 mt-3 text-center">
                   <div><div className="font-bold text-sm">{c.total_items}</div><div className="text-[10px] text-muted-foreground">Diel</div></div>
-                  <div><div className="font-bold text-sm flex items-center justify-center gap-0.5"><Download className="w-3 h-3" />{c.total_downloads}</div><div className="text-[10px] text-muted-foreground">Stiahnutí</div></div>
-                  <div><div className="font-bold text-sm flex items-center justify-center gap-0.5"><Euro className="w-3 h-3" />{c.total_revenue.toFixed(0)}</div><div className="text-[10px] text-muted-foreground">Tržby</div></div>
+                  <div><div className="font-bold text-sm flex items-center justify-center gap-0.5"><Download className="w-3 h-3" />{c.total_downloads}</div><div className="text-[10px] text-muted-foreground">Downloads</div></div>
+                  <div><div className="font-bold text-sm flex items-center justify-center gap-0.5"><Euro className="w-3 h-3" />{c.total_revenue.toFixed(0)}</div><div className="text-[10px] text-muted-foreground">Revenue</div></div>
                 </div>
               </div>
             </Card>
@@ -158,11 +158,11 @@ export function ContributorPortfoliosView({ onBack }: Props) {
                 {selected.website && <a href={selected.website} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-primary hover:underline"><Globe className="w-3 h-3" />{selected.website}</a>}
               </div>
               <div className="grid grid-cols-3 gap-3">
-                <Card className="p-3 text-center"><div className="text-2xl font-black">{selected.total_items}</div><div className="text-xs text-muted-foreground">Publikované</div></Card>
+                <Card className="p-3 text-center"><div className="text-2xl font-black">{selected.total_items}</div><div className="text-xs text-muted-foreground">Published</div></Card>
                 <Card className="p-3 text-center"><div className="text-2xl font-black">{selected.total_downloads}</div><div className="text-xs text-muted-foreground">Stiahnutia</div></Card>
-                <Card className="p-3 text-center"><div className="text-2xl font-black">€{selected.total_revenue.toFixed(0)}</div><div className="text-xs text-muted-foreground">Tržby</div></Card>
+                <Card className="p-3 text-center"><div className="text-2xl font-black">€{selected.total_revenue.toFixed(0)}</div><div className="text-xs text-muted-foreground">Revenue</div></Card>
               </div>
-              <h3 className="font-bold mt-2">Portfólio ({portfolio.length})</h3>
+              <h3 className="font-bold mt-2">Portfolio ({portfolio.length})</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {portfolio.map((it) => (
                   <Card key={it.id} className="overflow-hidden">

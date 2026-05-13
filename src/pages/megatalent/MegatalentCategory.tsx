@@ -306,7 +306,7 @@ const MegatalentCategory = () => {
                           size="sm"
                           onClick={() => handleVote(submission.id, 'like')}
                           className={`gap-1.5 h-8 ${userVotes[submission.id] === 'like' ? "text-red-500" : ""}`}
-                          aria-label="Páči sa mi"
+                          aria-label="Like"
                           aria-pressed={userVotes[submission.id] === 'like'}
                         >
                           <Heart className={`w-4 h-4 ${userVotes[submission.id] === 'like' ? "fill-current" : ""}`} />
@@ -317,7 +317,7 @@ const MegatalentCategory = () => {
                           size="sm"
                           onClick={() => handleVote(submission.id, 'dislike')}
                           className={`gap-1.5 h-8 ${userVotes[submission.id] === 'dislike' ? "text-blue-500" : ""}`}
-                          aria-label="Nepáči sa mi"
+                          aria-label="Dislike"
                           aria-pressed={userVotes[submission.id] === 'dislike'}
                         >
                           <ThumbsDown className={`w-4 h-4 ${userVotes[submission.id] === 'dislike' ? "fill-current" : ""}`} />
@@ -330,7 +330,7 @@ const MegatalentCategory = () => {
                         size="sm"
                         className="gap-1.5 h-8"
                         onClick={() => setCommentsForId(submission.id)}
-                        aria-label="Otvoriť komentáre"
+                        aria-label="Open comments"
                       >
                         <MessageCircle className="w-4 h-4" />
                         <span className="text-xs">{commentCounts[submission.id] || 0}</span>

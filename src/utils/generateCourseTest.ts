@@ -15,7 +15,7 @@ export const generateCourseTest = (topics: Topic[]): TestQuestion[] => {
 
     // Extract key information from topic title and content
     const topicNumber = index + 1;
-    const topicTitle = topic.title.replace(/^Téma \d+:\s*/, '');
+    const topicTitle = topic.title.replace(/^Topic \d+:\s*/, '');
     
     // Generate questions based on topic content
     const contentLines = topic.content.split('\n').filter(line => line.trim());
@@ -28,12 +28,12 @@ export const generateCourseTest = (topics: Topic[]): TestQuestion[] => {
         const concept = keyConcept.replace(/\*\*/g, '').split(':')[0].trim();
         
         questions.push({
-          question: `Čo je hlavnou témou ${topicNumber}. časti kurzu?`,
+          question: `What is the main topic of the ${topicNumber}. part of the course?`,
           options: [
             topicTitle,
-            index > 0 ? topics[index - 1].title.replace(/^Téma \d+:\s*/, '') : 'Iná téma',
-            index < topics.length - 1 ? topics[index + 1].title.replace(/^Téma \d+:\s*/, '') : 'Záver',
-            'Všetky témy'
+            index > 0 ? topics[index - 1].title.replace(/^Topic \d+:\s*/, '') : 'Other topic',
+            index < topics.length - 1 ? topics[index + 1].title.replace(/^Topic \d+:\s*/, '') : 'Conclusion',
+            'All topics'
           ],
           correct: 0
         });
@@ -41,12 +41,12 @@ export const generateCourseTest = (topics: Topic[]): TestQuestion[] => {
     } else {
       // Generic question about topic
       questions.push({
-        question: `V ktorej téme sa hovorí o "${topicTitle}"?`,
+        question: `In which topic is "${topicTitle}" discussed?`,
         options: [
-          `Téma ${topicNumber}`,
-          `Téma ${topicNumber > 1 ? topicNumber - 1 : topicNumber + 1}`,
-          `Téma ${topicNumber < topics.length ? topicNumber + 1 : topicNumber - 1}`,
-          'Vo všetkých témach'
+          `Topic ${topicNumber}`,
+          `Topic ${topicNumber > 1 ? topicNumber - 1 : topicNumber + 1}`,
+          `Topic ${topicNumber < topics.length ? topicNumber + 1 : topicNumber - 1}`,
+          'In all topics'
         ],
         correct: 0
       });
@@ -59,12 +59,12 @@ export const generateCourseTest = (topics: Topic[]): TestQuestion[] => {
     const topic = topics[randomIndex];
     
     questions.push({
-      question: `Ktorá téma obsahuje informácie o "${topic.title.replace(/^Téma \d+:\s*/, '')}"?`,
+      question: `Which topic contains information about "${topic.title.replace(/^Topic \d+:\s*/, '')}"?`,
       options: [
-        `Téma ${randomIndex + 1}`,
-        `Téma ${randomIndex > 0 ? randomIndex : randomIndex + 2}`,
-        `Téma ${randomIndex < topics.length - 1 ? randomIndex + 2 : randomIndex - 1}`,
-        'Nenachádza sa v kurze'
+        `Topic ${randomIndex + 1}`,
+        `Topic ${randomIndex > 0 ? randomIndex : randomIndex + 2}`,
+        `Topic ${randomIndex < topics.length - 1 ? randomIndex + 2 : randomIndex - 1}`,
+        'Not found in the course'
       ],
       correct: 0
     });

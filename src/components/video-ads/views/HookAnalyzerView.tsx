@@ -30,27 +30,27 @@ export const HookAnalyzerView = ({ onBack }: { onBack: () => void }) => {
   };
   return (
     <div>
-      <Button variant="ghost" onClick={onBack} className="mb-4">← Späť</Button>
+      <Button variant="ghost" onClick={onBack} className="mb-4">← Back</Button>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-orange-600 flex items-center justify-center"><Flame className="w-6 h-6 text-white" /></div>
-        <div><h2 className="text-2xl font-black">Hook Analyzer (First 3s)</h2><p className="text-sm text-muted-foreground">Analyzuj a vylepši prvé 3 sekundy</p></div>
+        <div><h2 className="text-2xl font-black">Hook Analyzer (First 3s)</h2><p className="text-sm text-muted-foreground">Analyze and improve the first 3 seconds</p></div>
         <Badge className="ml-auto bg-gradient-to-r from-red-500 to-orange-600 text-white">3 CR</Badge>
       </div>
       <div className="grid lg:grid-cols-3 gap-6">
         <Card><CardHeader><CardTitle>Tvoj hook</CardTitle></CardHeader><CardContent className="space-y-4">
-          <div><Label>Hook (prvé 3s) *</Label><Input value={hook} onChange={e => setHook(e.target.value)} placeholder={`napr. "POV: It's 2am..."`} /></div>
-          <div><Label>Cieľová skupina</Label><Input value={audience} onChange={e => setAudience(e.target.value)} /></div>
-          <Button onClick={go} disabled={loading} className="w-full bg-gradient-to-r from-red-500 to-orange-600">{loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Analyzovať (3 CR)'}</Button>
+          <div><Label>Hook (first 3s) *</Label><Input value={hook} onChange={e => setHook(e.target.value)} placeholder={`e.g. "POV: It's 2am..."`} /></div>
+          <div><Label>Target audience</Label><Input value={audience} onChange={e => setAudience(e.target.value)} /></div>
+          <Button onClick={go} disabled={loading} className="w-full bg-gradient-to-r from-red-500 to-orange-600">{loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Analyze (3 CR)'}</Button>
         </CardContent></Card>
-        <Card className="lg:col-span-2"><CardHeader><CardTitle>Analýza</CardTitle></CardHeader><CardContent className="max-h-[700px] overflow-y-auto">
-          {!r ? <p className="text-muted-foreground text-center py-12">Vlož hook na analýzu</p> : (
+        <Card className="lg:col-span-2"><CardHeader><CardTitle>Analysis</CardTitle></CardHeader><CardContent className="max-h-[700px] overflow-y-auto">
+          {!r ? <p className="text-muted-foreground text-center py-12">Insert hook for analysis</p> : (
             <div className="space-y-4">
               <div className="text-center"><div className="text-6xl font-black bg-gradient-to-r from-red-500 to-orange-600 bg-clip-text text-transparent">{r.hookScore}</div><p className="text-sm text-muted-foreground">Hook Score / 100</p></div>
               <div className="grid grid-cols-4 gap-2">{[['Attention',r.attentionGrab],['Clarity',r.clarity],['Curiosity',r.curiosityGap],['Emotion',r.emotionalImpact]].map(([l,v]) => <Card key={l as string} className="bg-muted/30"><CardContent className="pt-3 text-center"><div className="text-2xl font-bold">{v}/10</div><p className="text-xs">{l}</p></CardContent></Card>)}</div>
               <div><h4 className="font-semibold mb-2">📱 Platform fit</h4><div className="grid grid-cols-4 gap-2 text-xs">{Object.entries(r.platformFit).map(([p, s]) => <Badge key={p} variant="outline">{p}: {s}</Badge>)}</div></div>
               <div><h4 className="font-semibold mb-1">✅ Strengths</h4><ul className="text-sm">{r.strengths.map((s, i) => <li key={i}>• {s}</li>)}</ul></div>
               <div><h4 className="font-semibold mb-1">⚠️ Weaknesses</h4><ul className="text-sm">{r.weaknesses.map((s, i) => <li key={i}>• {s}</li>)}</ul></div>
-              <div><h4 className="font-semibold mb-2">🚀 Lepšie hooks</h4>{r.improvedHooks.map((h, i) => <p key={i} className="text-sm pl-3 border-l-2 border-red-500 mb-1">{h}</p>)}</div>
+              <div><h4 className="font-semibold mb-2">🚀 Better hooks</h4>{r.improvedHooks.map((h, i) => <p key={i} className="text-sm pl-3 border-l-2 border-red-500 mb-1">{h}</p>)}</div>
               <Card className="bg-gradient-to-r from-red-500/10 to-orange-500/10"><CardContent className="pt-4"><p className="text-sm font-semibold mb-1">💡 Best Hook:</p><p className="text-base">"{r.bestHook}"</p></CardContent></Card>
               <p className="text-sm"><strong>Retention 3s:</strong> {r.retention3sEstimate}</p>
               <div className="flex flex-wrap gap-1">{r.patternsUsed.map((p, i) => <Badge key={i} variant="secondary">{p}</Badge>)}</div>

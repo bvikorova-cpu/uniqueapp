@@ -41,7 +41,7 @@ export const usePhotoCredits = () => {
     },
   });
 
-  // Admin má vždy neobmedzené kredity
+  // Admin always has unlimited credits
   const effectiveCredits = isAdmin && credits
     ? { ...credits, credits_remaining: 999999 } 
     : credits;

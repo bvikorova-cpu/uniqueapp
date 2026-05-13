@@ -115,7 +115,7 @@ export const useAICredits = () => {
       
       if (sessionError || !session) {
         console.error('Session error:', sessionError);
-        throw new Error('Prosím prihláste sa na nákup kreditov');
+        throw new Error('Please log in to purchase credits');
       }
 
       console.log('Calling edge function with session token...');
@@ -137,7 +137,7 @@ export const useAICredits = () => {
       }
 
       console.error('No URL in response:', data);
-      throw new Error('Nepodarilo sa získať platobný link');
+      throw new Error('Failed to retrieve payment link');
     } catch (error) {
       console.error('Purchase credits error:', error);
       throw error;

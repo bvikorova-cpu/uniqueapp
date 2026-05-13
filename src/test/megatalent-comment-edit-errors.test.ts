@@ -4,15 +4,15 @@
  * Mirrors the exact branching used in TalentCommentsSheet.saveEdit to
  * verify the user gets a clear, actionable toast for every failure mode:
  *
- *  1. Not signed in                    → "Prihlásenie potrebné"
- *  2. Not the comment owner            → "Nemáš oprávnenie"
+ *  1. Not signed in                    → "Login required"
+ *  2. Not the comment owner            → "You are not authorized"
  *  3. RLS denial (no subscription /
- *     not owner enforced server-side)  → "Úprava zamietnutá"
- *  4. Expired JWT                      → "Relácia vypršala"
+ *     not owner enforced server-side)  → "Edit denied"
+ *  4. Expired JWT                      → "Session expired"
  *  5. Comment deleted / RLS silent
- *     filter (no row returned)         → "Úpravu sa nepodarilo uložiť"
- *  6. Generic network/DB error         → "Chyba pri ukladaní"
- *  7. Happy path                       → "Komentár upravený"
+ *     filter (no row returned)         → "Failed to save edit"
+ *  6. Generic network/DB error         → "Error saving"
+ *  7. Happy path                       → "Comment updated"
  *
  * The function under test is reproduced here verbatim (sans React state) to
  * keep the unit pure and avoid mounting the whole Sheet.
@@ -85,16 +85,16 @@ async function saveEdit(args: {
   const trimmed = editingText.trim();
   if (!trimmed) {
     toast({
-      title: "Neplatný komentár",
-      description: "Komentár nemôže byť prázdny",
+      title: "Invalid comment",
+      description: "Comment cannot be empty",
       variant: "destructive",
     });
     return { ok: false };
   }
   if (trimmed.length > MAX_LEN) {
     toast({
-      title: "Neplatný komentár",
-      description: "Komentár môže mať maximálne 500 znakov",
+      title: "Invalid comment",
+      description: "Comment can be a maximum of 500 characters",
       variant: "destructive",
     });
     return { ok: false };
@@ -104,16 +104,16 @@ async function saveEdit(args: {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
     toast({
-      title: "Prihlásenie potrebné",
-      description: "Pre úpravu komentára sa najprv prihlás.",
+      title: "Login required",
+      description: "To edit a comment, please log in first.",
       variant: "destructive",
     });
     return { ok: false };
   }
   if (target && target.user_id !== user.id) {
     toast({
-      title: "Nemáš oprávnenie",
-      description: "Upraviť môžeš iba vlastné komentáre.",
+      title: "You are not authorized",
+      description: "You can only edit your own comments.",
       variant: "destructive",
     });
     return { ok: false };
@@ -132,15 +132,15 @@ async function saveEdit(args: {
       const code = error.code;
       if (msg.includes("row-level security") || code === "42501") {
         toast({
-          title: "Úprava zamietnutá",
+          title: "Edit denied",
           description:
-            "Komentár vieš upraviť len ako jeho autor a s aktívnym Megatalent predplatným. Skontroluj svoje predplatné a skús to znova.",
+            "You can only edit the comment as its author and with an active Megatalent subscription. Check your subscription and try again.",
           variant: "destructive",
         });
       } else if (msg.includes("jwt") || msg.includes("not authenticated")) {
         toast({
-          title: "Relácia vypršala",
-          description: "Prihlás sa znova a skús úpravu zopakovať.",
+          title: "Session expired",
+          description: "Log in again and try to repeat the edit.",
           variant: "destructive",
         });
       } else {
@@ -151,20 +151,20 @@ async function saveEdit(args: {
 
     if (!data) {
       toast({
-        title: "Úpravu sa nepodarilo uložiť",
+        title: "Failed to save edit",
         description:
-          "Pravdepodobne nemáš aktívne Megatalent predplatné, alebo bol komentár medzitým odstránený.",
+          "You probably don't have an active Megatalent subscription, or the comment was removed in the meantime.",
         variant: "destructive",
       });
       return { ok: false };
     }
 
-    toast({ title: "Komentár upravený" });
+    toast({ title: "Comment updated" });
     return { ok: true };
   } catch (err: any) {
     toast({
-      title: "Chyba pri ukladaní",
-      description: err?.message || "Nepodarilo sa upraviť komentár. Skús to prosím znova.",
+      title: "Error saving",
+      description: err?.message || "Failed to edit comment. Please try again.",
       variant: "destructive",
     });
     return { ok: false };
@@ -178,12 +178,12 @@ async function saveEdit(args: {
 const ownComment: LocalComment = {
   id: "c-1",
   user_id: "user-self",
-  comment_text: "Pôvodný text",
+  comment_text: "Original text",
 };
 const othersComment: LocalComment = {
   id: "c-2",
   user_id: "user-other",
-  comment_text: "Cudzí komentár",
+  comment_text: "Someone else's comment",
 };
 
 beforeEach(() => {
@@ -193,11 +193,11 @@ beforeEach(() => {
 });
 
 describe("Megatalent — saveEdit error messaging", () => {
-  it("shows 'Prihlásenie potrebné' when the user is signed out", async () => {
+  it("shows 'Login required' when the user is signed out", async () => {
     supabaseState.user = null;
     const res = await saveEdit({
       editingId: ownComment.id,
-      editingText: "Nový text",
+      editingText: "New text",
       comments: [ownComment],
       supabase: supabaseMock,
       toast: toastSpy,
@@ -205,16 +205,16 @@ describe("Megatalent — saveEdit error messaging", () => {
     expect(res.ok).toBe(false);
     expect(toastSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        title: "Prihlásenie potrebné",
+        title: "Login required",
         variant: "destructive",
       })
     );
   });
 
-  it("shows 'Nemáš oprávnenie' when editing someone else's comment", async () => {
+  it("shows 'You are not authorized' when editing someone else's comment", async () => {
     const res = await saveEdit({
       editingId: othersComment.id,
-      editingText: "Pokus o úpravu",
+      editingText: "Attempt to edit",
       comments: [othersComment],
       supabase: supabaseMock,
       toast: toastSpy,
@@ -222,14 +222,14 @@ describe("Megatalent — saveEdit error messaging", () => {
     expect(res.ok).toBe(false);
     expect(toastSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        title: "Nemáš oprávnenie",
-        description: expect.stringContaining("vlastné komentáre"),
+        title: "You are not authorized",
+        description: expect.stringContaining("own comments"),
         variant: "destructive",
       })
     );
   });
 
-  it("shows 'Úprava zamietnutá' on RLS denial (e.g. missing subscription)", async () => {
+  it("shows 'Edit denied' on RLS denial (e.g. missing subscription)", async () => {
     supabaseState.updateResult = {
       data: null,
       error: { message: "new row violates row-level security policy", code: "42501" },
@@ -244,14 +244,14 @@ describe("Megatalent — saveEdit error messaging", () => {
     expect(res.ok).toBe(false);
     expect(toastSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        title: "Úprava zamietnutá",
-        description: expect.stringContaining("Megatalent predplatným"),
+        title: "Edit denied",
+        description: expect.stringContaining("Megatalent subscription"),
         variant: "destructive",
       })
     );
   });
 
-  it("shows 'Relácia vypršala' on JWT auth error", async () => {
+  it("shows 'Session expired' on JWT auth error", async () => {
     supabaseState.updateResult = {
       data: null,
       error: { message: "JWT expired" },
@@ -266,13 +266,13 @@ describe("Megatalent — saveEdit error messaging", () => {
     expect(res.ok).toBe(false);
     expect(toastSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        title: "Relácia vypršala",
+        title: "Session expired",
         variant: "destructive",
       })
     );
   });
 
-  it("shows 'Úpravu sa nepodarilo uložiť' when no row is returned (deleted / RLS silent filter)", async () => {
+  it("shows 'Failed to save edit' when no row is returned (deleted / RLS silent filter)", async () => {
     supabaseState.updateResult = { data: null, error: null };
     const res = await saveEdit({
       editingId: ownComment.id,
@@ -284,14 +284,14 @@ describe("Megatalent — saveEdit error messaging", () => {
     expect(res.ok).toBe(false);
     expect(toastSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        title: "Úpravu sa nepodarilo uložiť",
-        description: expect.stringContaining("predplatné"),
+        title: "Failed to save edit",
+        description: expect.stringContaining("subscription"),
         variant: "destructive",
       })
     );
   });
 
-  it("shows generic 'Chyba pri ukladaní' on unknown DB error", async () => {
+  it("shows generic 'Error saving' on unknown DB error", async () => {
     supabaseState.updateResult = {
       data: null,
       error: { message: "connection reset by peer", code: "08006" },
@@ -306,7 +306,7 @@ describe("Megatalent — saveEdit error messaging", () => {
     expect(res.ok).toBe(false);
     expect(toastSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        title: "Chyba pri ukladaní",
+        title: "Error saving",
         description: expect.stringContaining("connection reset"),
         variant: "destructive",
       })
@@ -324,8 +324,8 @@ describe("Megatalent — saveEdit error messaging", () => {
     expect(res.ok).toBe(false);
     expect(toastSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        title: "Neplatný komentár",
-        description: expect.stringContaining("prázdny"),
+        title: "Invalid comment",
+        description: expect.stringContaining("empty"),
       })
     );
   });
@@ -341,31 +341,31 @@ describe("Megatalent — saveEdit error messaging", () => {
     expect(res.ok).toBe(false);
     expect(toastSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        title: "Neplatný komentár",
+        title: "Invalid comment",
         description: expect.stringContaining("500"),
       })
     );
   });
 
-  it("succeeds with 'Komentár upravený' on the happy path", async () => {
+  it("succeeds with 'Comment updated' on the happy path", async () => {
     supabaseState.updateResult = {
-      data: { id: ownComment.id, comment_text: "Nový text", updated_at: new Date().toISOString() },
+      data: { id: ownComment.id, comment_text: "New text", updated_at: new Date().toISOString() },
       error: null,
     };
     const res = await saveEdit({
       editingId: ownComment.id,
-      editingText: "Nový text",
+      editingText: "New text",
       comments: [ownComment],
       supabase: supabaseMock,
       toast: toastSpy,
     });
     expect(res.ok).toBe(true);
     expect(toastSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ title: "Komentár upravený" })
+      expect.objectContaining({ title: "Comment updated" })
     );
     // success toast must NOT use the destructive variant
     const successCall = toastSpy.mock.calls.find(
-      ([c]) => c.title === "Komentár upravený"
+      ([c]) => c.title === "Comment edited"
     );
     expect(successCall?.[0].variant).toBeUndefined();
   });

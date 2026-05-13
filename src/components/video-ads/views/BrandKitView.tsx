@@ -59,7 +59,7 @@ export const BrandKitView = ({ onBack }: { onBack: () => void }) => {
   const save = async () => {
     setSaving(true);
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { toast.error("Prihlás sa"); setSaving(false); return; }
+    if (!user) { toast.error("Log in"); setSaving(false); return; }
     const payload = {
       user_id: user.id,
       business_name: kit.business_name,
@@ -78,7 +78,7 @@ export const BrandKitView = ({ onBack }: { onBack: () => void }) => {
       ? await supabase.from('brand_kits').update(payload).eq('id', existingId)
       : await supabase.from('brand_kits').insert(payload);
     if (error) toast.error("Chyba: " + error.message);
-    else toast.success("Brand Kit uložený");
+    else toast.success("Brand Kit saved");
     setSaving(false);
   };
 
@@ -86,10 +86,10 @@ export const BrandKitView = ({ onBack }: { onBack: () => void }) => {
 
   return (
     <div>
-      <Button variant="ghost" onClick={onBack} className="mb-4">← Späť</Button>
+      <Button variant="ghost" onClick={onBack} className="mb-4">← Back</Button>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center"><Palette className="w-6 h-6 text-white" /></div>
-        <div><h2 className="text-2xl font-black">Brand Kit</h2><p className="text-sm text-muted-foreground">Tvoja brand identita pre všetky ads</p></div>
+        <div><h2 className="text-2xl font-black">Brand Kit</h2><p className="text-sm text-muted-foreground">Your brand identity for all ads</p></div>
         <Badge className="ml-auto">FREE</Badge>
       </div>
       <Card className="max-w-3xl"><CardHeader><CardTitle>Brand Settings</CardTitle></CardHeader><CardContent className="space-y-4">
@@ -111,7 +111,7 @@ export const BrandKitView = ({ onBack }: { onBack: () => void }) => {
           <div><Label>❌ DON'T</Label><Textarea rows={4} value={kit.dont_list} onChange={e => setKit({...kit, dont_list: e.target.value})} /></div>
         </div>
         <Button onClick={save} disabled={saving} className="w-full bg-gradient-to-r from-violet-500 to-purple-600">
-          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Save className="mr-2 h-4 w-4" />Uložiť Brand Kit</>}
+          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Save className="mr-2 h-4 w-4" />Save Brand Kit</>}
         </Button>
         <Card className="bg-muted/30"><CardContent className="pt-4">
           <div className="p-4 rounded-lg" style={{ background: `linear-gradient(135deg, ${kit.primary}, ${kit.secondary})` }}>

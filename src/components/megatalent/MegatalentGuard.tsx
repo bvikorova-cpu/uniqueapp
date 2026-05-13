@@ -187,16 +187,16 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
       if (success) {
         markPendingPayment(tier);
         toast({
-          title: "Platba prijatá ✅ — prihlás sa",
-          description: "Tvoja session vypršala. Po prihlásení automaticky aktivujeme prístup.",
+          title: "Payment received ✅ — log in",
+          description: "Your session has expired. After logging in, we will automatically activate your access.",
         });
         navigate("/auth?redirect=/megatalent", { replace: true });
         return;
       }
       if (hasPendingPayment()) {
         toast({
-          title: "Dokončenie aktivácie",
-          description: "Prihlás sa, aby sme aktivovali tvoje MegaTalent predplatné.",
+          title: "Activation completion",
+          description: "Log in to activate your MegaTalent subscription.",
         });
         navigate("/auth?redirect=/megatalent", { replace: true });
         return;
@@ -211,8 +211,8 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
           successHandledRef.current = true;
           clearPendingPayment();
           toast({
-            title: "Platba zrušená",
-            description: "Môžeš to skúsiť znova kedykoľvek.",
+            title: "Payment canceled",
+            description: "You can try again anytime.",
           });
           // URL params already stripped synchronously above.
         }
@@ -255,8 +255,8 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
             const alive = await ensureSessionAlive();
             if (!alive) {
               toast({
-                title: "Session vypršala",
-                description: "Prihlás sa znova — platba je uložená a aktivácia bude pokračovať.",
+                title: "Session expired",
+                description: "Log in again — payment is saved and activation will continue.",
                 variant: "destructive",
               });
               navigate("/auth?redirect=/megatalent", { replace: true });
@@ -307,8 +307,8 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
           setActivating(false);
           setSubscribed(false);
           toast({
-            title: "Aktivácia trvá dlhšie ako zvyčajne",
-            description: "Platba prijatá, Stripe ju ešte spracováva. Skús obnoviť prístup o chvíľu.",
+            title: "Activation is taking longer than usual",
+            description: "Payment received, Stripe is still processing it. Try to refresh access in a moment.",
             variant: "destructive",
           });
           return;
@@ -378,7 +378,7 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-12 w-12 animate-spin text-primary" />
-          <p className="text-muted-foreground">Kontrolujem prístup do MegaTalent...</p>
+          <p className="text-muted-foreground">Checking MegaTalent access...</p>
         </div>
       </div>
     );

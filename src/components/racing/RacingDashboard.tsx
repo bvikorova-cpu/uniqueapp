@@ -181,14 +181,14 @@ export const RacingDashboard = () => {
               </div>
             </div>
             <Badge variant={isLive ? "destructive" : "secondary"} className="animate-pulse">
-              {isLive ? "LIVE" : "Ukončené"}
+              {isLive ? "LIVE" : "Finished"}
             </Badge>
           </div>
 
           <div className="grid grid-cols-3 gap-4 text-center">
             <div className="p-3 bg-muted/50 rounded-lg"><Timer className="h-5 w-5 mx-auto mb-1" /><p className="text-lg font-bold">Kolo 45/58</p></div>
             <div className="p-3 bg-muted/50 rounded-lg"><Car className="h-5 w-5 mx-auto mb-1" /><p className="text-lg font-bold">20 jazdcov</p></div>
-            <div className="p-3 bg-muted/50 rounded-lg"><Users className="h-5 w-5 mx-auto mb-1" /><p className="text-lg font-bold">125k divákov</p></div>
+            <div className="p-3 bg-muted/50 rounded-lg"><Users className="h-5 w-5 mx-auto mb-1" /><p className="text-lg font-bold">125k viewers</p></div>
           </div>
         </CardContent>
       </Card>
@@ -196,8 +196,8 @@ export const RacingDashboard = () => {
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="leaderboard"><Trophy className="h-4 w-4 mr-2" />Poradie</TabsTrigger>
-          <TabsTrigger value="replays"><Play className="h-4 w-4 mr-2" />Záznamy</TabsTrigger>
-          <TabsTrigger value="teams"><Users className="h-4 w-4 mr-2" />Tímy</TabsTrigger>
+          <TabsTrigger value="replays"><Play className="h-4 w-4 mr-2" />Replays</TabsTrigger>
+          <TabsTrigger value="teams"><Users className="h-4 w-4 mr-2" />Teams</TabsTrigger>
         </TabsList>
 
         <TabsContent value="leaderboard">
@@ -226,7 +226,7 @@ export const RacingDashboard = () => {
 
         <TabsContent value="replays">
           <Card>
-            <CardHeader><CardTitle>Záznamy pretekov</CardTitle></CardHeader>
+            <CardHeader><CardTitle>Race replays</CardTitle></CardHeader>
             <CardContent className="space-y-3">
               {defaultReplays.map((replay, idx) => (
                 <div key={replay.id} onClick={() => selectReplay(idx)}
@@ -271,11 +271,11 @@ export const RacingDashboard = () => {
 
         <TabsContent value="teams">
           <Card>
-            <CardHeader><CardTitle>Fantasy tímy</CardTitle></CardHeader>
+            <CardHeader><CardTitle>Fantasy teams</CardTitle></CardHeader>
             <CardContent className="space-y-3">
               {myTeams.length === 0 ? (
                 <p className="text-center text-muted-foreground py-8">
-                  Vytvorte si vlastný fantasy tím a súťažte s priateľmi!
+                  Create your own fantasy team and compete with friends!
                 </p>
               ) : (
                 <div className="space-y-2">
@@ -290,7 +290,7 @@ export const RacingDashboard = () => {
                   ))}
                 </div>
               )}
-              <Button className="w-full" onClick={() => setTeamDialog(true)}>Vytvoriť tím</Button>
+              <Button className="w-full" onClick={() => setTeamDialog(true)}>Create team</Button>
             </CardContent>
           </Card>
         </TabsContent>
@@ -298,15 +298,15 @@ export const RacingDashboard = () => {
 
       <Dialog open={teamDialog} onOpenChange={setTeamDialog}>
         <DialogContent>
-          <DialogHeader><DialogTitle>Vytvoriť fantasy tím</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>Create fantasy team</DialogTitle></DialogHeader>
           <div className="space-y-3">
-            <Label>Názov tímu</Label>
+            <Label>Team name</Label>
             <Input value={teamName} onChange={(e) => setTeamName(e.target.value)} placeholder="Speed Demons" />
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setTeamDialog(false)}>Zrušiť</Button>
+            <Button variant="outline" onClick={() => setTeamDialog(false)}>Cancel</Button>
             <Button onClick={createTeam} disabled={creating}>
-              {creating ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Vytváram...</> : "Vytvoriť"}
+              {creating ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Creating...</> : "Create"}
             </Button>
           </DialogFooter>
         </DialogContent>

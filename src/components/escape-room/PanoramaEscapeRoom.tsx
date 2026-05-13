@@ -171,7 +171,7 @@ function HotspotMarker({
           >
             <span className="mr-2">{getIcon()}</span>
             {hotspot.label}
-            {hotspot.isHidden && <span className="ml-2 text-yellow-400">⭐ Skrytý!</span>}
+            {hotspot.isHidden && <span className="ml-2 text-yellow-400">⭐ Hidden!</span>}
           </motion.div>
         </Html>
       )}
@@ -238,26 +238,26 @@ export function PanoramaEscapeRoom({
           id: `hidden-${room.id}-1`,
           position: [Math.random() * 100 - 50, Math.random() * 30 - 15, -Math.random() * 100] as [number, number, number],
           type: "hidden" as const,
-          label: "Skrytý poklad",
+          label: "Hidden treasure",
           isHidden: true,
           item: {
             id: `secret-gem-${room.id}`,
-            name: "Tajný drahokam",
+            name: "Secret Gem",
             icon: "💎",
-            description: "Vzácny skrytý drahokam! +50 bonusových bodov."
+            description: "A rare hidden gem! +50 bonus points."
           }
         },
         {
           id: `hidden-${room.id}-2`,
           position: [Math.random() * 100 - 50, Math.random() * 20 - 10, Math.random() * 100 - 50] as [number, number, number],
           type: "hidden" as const,
-          label: "Tajná minca",
+          label: "Secret Coin",
           isHidden: true,
           item: {
             id: `secret-coin-${room.id}`,
-            name: "Zlatá minca",
+            name: "Gold Coin",
             icon: "🪙",
-            description: "Stará zlatá minca! +25 bonusových bodov."
+            description: "An old gold coin! +25 bonus points."
           }
         }
       ]
@@ -312,8 +312,8 @@ export function PanoramaEscapeRoom({
   const generateAIPanorama = async () => {
     setIsGeneratingPanorama(true);
     toast({
-      title: "🎨 Generujem AI panorámu...",
-      description: "Toto môže trvať niekoľko sekúnd",
+      title: "🎨 Generating AI panorama...",
+      description: "This may take a few seconds"
     });
 
     try {
@@ -338,16 +338,16 @@ export function PanoramaEscapeRoom({
         sounds.playEffect('success');
         
         toast({
-          title: "✨ Panoráma vygenerovaná!",
-          description: "Nová AI panoráma bola aplikovaná",
+          title: "✨ Panorama generated!",
+          description: "New AI panorama has been applied"
         });
       }
     } catch (err) {
       console.error('Failed to generate panorama:', err);
       sounds.playEffect('error');
       toast({
-        title: "Chyba pri generovaní",
-        description: "Skúste to znova neskôr",
+        title: "Error generating",
+        description: "Try again later",
         variant: "destructive",
       });
     } finally {
@@ -360,8 +360,8 @@ export function PanoramaEscapeRoom({
       setInventory(prev => [...prev, item]);
       sounds.playEffect('pickup');
       toast({
-        title: `📦 Nový predmet!`,
-        description: `${item.name} bol pridaný do inventára`,
+        title: `📦 New item!`,
+        description: `${item.name} has been added to inventory`
       });
     }
   }, [inventory, toast, sounds]);
@@ -377,8 +377,8 @@ export function PanoramaEscapeRoom({
     // Already solved
     if (solvedHotspots.has(hotspotKey) && hotspot.type !== "door") {
       toast({
-        title: "Už vyriešené",
-        description: "Tento objekt si už preskúmal",
+        title: "Already solved",
+        description: "You have already examined this object"
       });
       return;
     }
@@ -393,15 +393,15 @@ export function PanoramaEscapeRoom({
             setFoundHiddenItems(prev => prev + 1);
             sounds.playEffect('success');
             toast({
-              title: "🎉 Skrytý predmet nájdený!",
-              description: "+50 bonusových bodov!",
+              title: "🎉 Hidden item found!",
+              description: "+50 bonus points!"
             });
           }
         }
         break;
         
       case "clue":
-        setShowClue(hotspot.description || "Žiadna stopa...");
+        setShowClue(hotspot.description || "No clue...");
         break;
         
       case "puzzle":
@@ -416,14 +416,14 @@ export function PanoramaEscapeRoom({
           setSelectedItem(null);
           sounds.playEffect('unlock');
           toast({
-            title: "🔓 Odomknuté!",
-            description: hotspot.description || "Zámok sa otvoril!",
+            title: "🔓 Unlocked!",
+            description: hotspot.description || "The lock opened!"
           });
         } else if (hotspot.requiredItem) {
           sounds.playEffect('error');
           toast({
-            title: "🔒 Zamknuté",
-            description: "Potrebuješ správny predmet z inventára",
+            title: "🔒 Locked",
+            description: "You need the correct item from your inventory",
             variant: "destructive",
           });
         } else {
@@ -442,8 +442,8 @@ export function PanoramaEscapeRoom({
           if (hotspot.nextRoom !== undefined && hotspot.nextRoom < rooms.length) {
             enterRoom(hotspot.nextRoom);
             toast({
-              title: "🚪 Nová miestnosť!",
-              description: `Vstupuješ do: ${rooms[hotspot.nextRoom].name}`,
+              title: "🚪 New room!",
+              description: `Entering: ${rooms[hotspot.nextRoom].name}`
             });
           } else if (currentRoomIndex === rooms.length - 1 || hotspot.nextRoom === 999) {
             // Last room - complete!
@@ -456,8 +456,8 @@ export function PanoramaEscapeRoom({
         } else {
           sounds.playEffect('error');
           toast({
-            title: "🚪 Dvere sú zamknuté",
-            description: "Najprv musíš vyriešiť všetky hádanky v tejto miestnosti",
+            title: "🚪 Door is locked",
+            description: "You must solve all puzzles in this room first",
             variant: "destructive",
           });
         }
@@ -481,8 +481,8 @@ export function PanoramaEscapeRoom({
       }
       
       toast({
-        title: "✅ Správne!",
-        description: "Hádanka vyriešená!",
+        title: "✅ Correct!",
+        description: "Puzzle solved!"
       });
       
       setActiveHotspot(null);
@@ -490,8 +490,8 @@ export function PanoramaEscapeRoom({
     } else {
       sounds.playEffect('error');
       toast({
-        title: "❌ Nesprávne",
-        description: "Skús to znova",
+        title: "❌ Incorrect",
+        description: "Try again",
         variant: "destructive",
       });
     }
@@ -502,7 +502,7 @@ export function PanoramaEscapeRoom({
       setHintsUsed(prev => prev + 1);
       sounds.playEffect('hint');
       toast({
-        title: "💡 Nápoveda",
+        title: "💡 Hint",
         description: activeHotspot.puzzle.hint,
       });
     }
@@ -550,7 +550,7 @@ export function PanoramaEscapeRoom({
   }
 
   if (!currentRoom) {
-    return <div className="min-h-screen flex items-center justify-center">Načítava sa...</div>;
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
 
   return (
@@ -599,11 +599,11 @@ export function PanoramaEscapeRoom({
             <p className="text-xs text-gray-300 mb-2">{currentRoom.description}</p>
             <div className="flex gap-2 text-xs">
               <Badge variant="outline" className="border-white/30">
-                Miestnosť {currentRoomIndex + 1}/{rooms.length}
+                Room {currentRoomIndex + 1}/{rooms.length}
               </Badge>
               {foundHiddenItems > 0 && (
                 <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
-                  ✨ {foundHiddenItems} skrytých
+                  ✨ {foundHiddenItems} hidden
                 </Badge>
               )}
             </div>
@@ -645,7 +645,7 @@ export function PanoramaEscapeRoom({
             ) : (
               <Wand2 className="h-4 w-4 mr-1" />
             )}
-            AI Panoráma
+            AI Panorama
           </Button>
           
           <Button 
@@ -655,7 +655,7 @@ export function PanoramaEscapeRoom({
             className="w-full"
           >
             <ArrowLeft className="h-4 w-4 mr-1" />
-            Ukončiť
+            Exit
           </Button>
         </div>
       </motion.div>
@@ -697,7 +697,7 @@ export function PanoramaEscapeRoom({
                 className="text-white"
               >
                 <Package className="h-4 w-4 mr-1" />
-                Inventár ({inventory.length})
+                Inventory ({inventory.length})
               </Button>
               
               <AnimatePresence>
@@ -729,7 +729,7 @@ export function PanoramaEscapeRoom({
                       </motion.div>
                     ))}
                     {inventory.length === 0 && (
-                      <span className="text-gray-400 text-sm px-2">Prázdny</span>
+                      <span className="text-gray-400 text-sm px-2">Empty</span>
                     )}
                   </motion.div>
                 )}
@@ -746,7 +746,7 @@ export function PanoramaEscapeRoom({
                 >
                   <strong>{selectedItem.name}:</strong> {selectedItem.description}
                   <br />
-                  <span className="text-yellow-400">Klikni na objekt pre použitie</span>
+                  <span className="text-yellow-400">Click on an object to use</span>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -756,7 +756,7 @@ export function PanoramaEscapeRoom({
 
       {/* Controls hint */}
       <div className="absolute bottom-4 right-4 text-white/60 text-xs pointer-events-none">
-        🖱️ Ťahaj pre rozhliadanie • 🔍 Scroll pre zoom • Klikni na objekty
+        🖱️ Drag to look around • 🔍 Scroll to zoom • Click on objects
       </div>
 
       {/* Hidden items hint */}
@@ -766,7 +766,7 @@ export function PanoramaEscapeRoom({
         transition={{ delay: 2 }}
         className="absolute bottom-4 left-4 text-yellow-400/60 text-xs pointer-events-none"
       >
-        ✨ Hľadaj skryté predmety pre bonus body!
+        ✨ Look for hidden items for bonus points!
       </motion.div>
 
       {/* Puzzle Dialog */}
@@ -784,7 +784,7 @@ export function PanoramaEscapeRoom({
           
           <div className="space-y-4 pt-4">
             <Input
-              placeholder="Zadaj odpoveď..."
+              placeholder="Enter answer..."
               value={puzzleAnswer}
               onChange={(e) => setPuzzleAnswer(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && handlePuzzleSubmit()}
@@ -794,11 +794,11 @@ export function PanoramaEscapeRoom({
             <div className="flex gap-2">
               <Button onClick={handlePuzzleSubmit} className="flex-1">
                 <Check className="h-4 w-4 mr-1" />
-                Potvrdiť
+                Confirm
               </Button>
               <Button variant="outline" onClick={useHint}>
                 <Lightbulb className="h-4 w-4 mr-1" />
-                Nápoveda
+                Hint
               </Button>
             </div>
           </div>

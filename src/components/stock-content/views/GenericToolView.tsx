@@ -45,7 +45,7 @@ export function GenericToolView({ onBack, title, description, icon: Icon, iconCo
           try {
             const { supabase } = await import("@/integrations/supabase/client");
             const { data: { session } } = await supabase.auth.getSession();
-            if (!session) { toast.error("Najprv sa prihlás"); return; }
+            if (!session) { toast.error("Please log in first"); return; }
             const { data, error } = await supabase.functions.invoke("generate-gift-message", {
               body: { type: "stock_tool", prompt: `Run tool "${title}" — ${description}` }
             });

@@ -37,8 +37,8 @@ declare global {
 }
 
 // ---------------------------------------------------------------------------
-// Global crash overlay: ak React app spadne pri mounte alebo neskôr nezachytenou
-// chybou, namiesto bielej obrazovky sa zobrazí čitateľná hláška priamo v preview.
+// Global crash overlay: if the React app crashes during mount or later with an uncaught
+// error, instead of a white screen, a readable message will be displayed directly in the preview.
 // ---------------------------------------------------------------------------
 function showCrashOverlay(title: string, detail: string) {
   try {
@@ -48,10 +48,10 @@ function showCrashOverlay(title: string, detail: string) {
         <div style="max-width:880px;margin:0 auto;">
           <div style="display:inline-block;padding:4px 10px;border-radius:9999px;background:#7c3aed;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;">Preview crash</div>
           <h1 style="margin:14px 0 6px;font-size:22px;font-weight:700;">${title}</h1>
-          <p style="margin:0 0 16px;color:#c4b5fd;">Aplikácia spadla pri inicializácii. Detaily nižšie.</p>
+          <p style="margin:0 0 16px;color:#c4b5fd;">The application crashed during initialization. Details below.</p>
           <pre style="white-space:pre-wrap;background:#1e1b3a;border:1px solid #4c1d95;padding:14px;border-radius:10px;font-size:12.5px;line-height:1.5;color:#fde68a;">${detail.replace(/[<&>]/g, c => ({"<":"&lt;","&":"&amp;",">":"&gt;"}[c]!))}</pre>
           <button onclick="window.location.reload()" style="margin-top:16px;border:0;border-radius:10px;background:#9333ea;color:#fff;padding:10px 14px;font-weight:700;cursor:pointer;">Reload preview</button>
-          <p style="margin-top:14px;color:#a78bfa;font-size:13px;">Ak vidíš túto hlášku po refresh-i preview, pošli ju do chatu — viem ju opraviť.</p>
+          <p style="margin-top:14px;color:#a78bfa;font-size:13px;">If you see this message after refreshing the preview, send it to the chat — I can fix it.</p>
         </div>
       </div>`;
     if (root) root.innerHTML = html;
@@ -108,7 +108,7 @@ let reactRendered = false;
 const BootFallback = () => (
   <div className="min-h-screen flex flex-col items-center justify-center gap-3 bg-background text-foreground">
     <div className="h-10 w-10 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
-    <p className="text-sm font-semibold text-muted-foreground">Načítava sa Unique…</p>
+    <p className="text-sm font-semibold text-muted-foreground">Loading Unique…</p>
   </div>
 );
 

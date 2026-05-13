@@ -43,7 +43,7 @@ export const useRealTimeNotifications = () => {
             message: <Bell className="h-4 w-4 text-yellow-500" />,
           };
 
-          toast(newNotification.message || "Nová notifikácia", {
+          toast(newNotification.message || "New notification", {
             icon: icons[newNotification.type] || <Bell className="h-4 w-4" />,
           });
 

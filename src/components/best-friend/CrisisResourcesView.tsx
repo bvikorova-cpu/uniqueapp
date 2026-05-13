@@ -5,9 +5,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { AlertTriangle, Phone, Heart, Loader2 } from "lucide-react";
 
 const HOTLINES = [
-  { country: "🇸🇰 Slovensko", name: "Linka dôvery Nezábudka", phone: "0800 800 566", hours: "24/7" },
-  { country: "🇨🇿 Česko", name: "Linka bezpečí", phone: "116 111", hours: "24/7" },
-  { country: "🇭🇺 Magyarország", name: "Lelki Elsősegély", phone: "116 123", hours: "24/7" },
+  { country: "🇸🇰 Slovakia", name: "Forget-Me-Not Trust Line", phone: "0800 800 566", hours: "24/7" },
+  { country: "🇨🇿 Czech Republic", name: "Safety Line", phone: "116 111", hours: "24/7" },
+  { country: "🇭🇺 Hungary", name: "Mental Health First Aid", phone: "116 123", hours: "24/7" },
   { country: "🇵🇱 Polska", name: "Telefon Zaufania", phone: "116 123", hours: "14:00–22:00" },
   { country: "🇩🇪 Deutschland", name: "TelefonSeelsorge", phone: "0800 111 0 111", hours: "24/7" },
   { country: "🇬🇧 UK", name: "Samaritans", phone: "116 123", hours: "24/7" },

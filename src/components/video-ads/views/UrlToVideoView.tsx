@@ -35,7 +35,7 @@ export const UrlToVideoView = ({ onBack }: { onBack: () => void }) => {
       });
       if (error || data?.error) { handleEdgeError(error || data, { context: 'URL to Video' }); return; }
       setResult(data.result);
-      toast.success("Video ad pripravený! (" + data.credits_used + " CR)");
+      toast.success("Video ad prepared! (" + data.credits_used + " CR)");
     } catch (e) { handleEdgeError(e, { context: 'URL to Video' }); }
     finally { setLoading(false); }
   };
@@ -51,7 +51,7 @@ export const UrlToVideoView = ({ onBack }: { onBack: () => void }) => {
       if (error || data?.error) { handleEdgeError(error || data, { context: 'Video Frames' }); return; }
       const dataUrls = data.frames.map((f: { b64: string }) => `data:image/png;base64,${f.b64}`);
       setFrames(dataUrls);
-      toast.success(`${dataUrls.length} scén vygenerovaných (${data.credits_used} CR)`);
+      toast.success(`${dataUrls.length} scenes generated (${data.credits_used} CR)`);
       // Auto-play frame sequence
       let i = 0;
       const interval = setInterval(() => {
@@ -65,10 +65,10 @@ export const UrlToVideoView = ({ onBack }: { onBack: () => void }) => {
 
   return (
     <div>
-      <Button variant="ghost" onClick={onBack} className="mb-4">← Späť</Button>
+      <Button variant="ghost" onClick={onBack} className="mb-4">← Back</Button>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center"><Link2 className="w-6 h-6 text-white" /></div>
-        <div><h2 className="text-2xl font-black">URL to Video Ad</h2><p className="text-sm text-muted-foreground">Vlož link → kompletný video ad</p></div>
+        <div><h2 className="text-2xl font-black">URL to Video Ad</h2><p className="text-sm text-muted-foreground">Insert link → complete video ad</p></div>
         <Badge className="ml-auto bg-gradient-to-r from-cyan-500 to-blue-600 text-white">5 CR</Badge>
       </div>
       <div className="grid lg:grid-cols-3 gap-6">
@@ -82,19 +82,19 @@ export const UrlToVideoView = ({ onBack }: { onBack: () => void }) => {
               </select>
             </div>
             <Button onClick={generate} disabled={loading} className="w-full bg-gradient-to-r from-cyan-500 to-blue-600">
-              {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Analyzujem stránku...</> : <><Wand2 className="mr-2 h-4 w-4" />Vytvoriť (5 CR)</>}
+              {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Analyzing page...</> : <><Wand2 className="mr-2 h-4 w-4" />Create (5 CR)</>}
             </Button>
             {result && (
               <Button onClick={generateVideoFrames} disabled={genVideo} className="w-full bg-gradient-to-r from-purple-500 to-pink-600">
-                {genVideo ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Generujem frames...</> : <><Video className="mr-2 h-4 w-4" />Vygenerovať video frames (+5 CR)</>}
+                {genVideo ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Generating frames...</> : <><Video className="mr-2 h-4 w-4" />Generate video frames (+5 CR)</>}
               </Button>
             )}
           </CardContent>
         </Card>
         <Card className="lg:col-span-2">
-          <CardHeader><CardTitle>Výsledok</CardTitle></CardHeader>
+          <CardHeader><CardTitle>Result</CardTitle></CardHeader>
           <CardContent className="max-h-[700px] overflow-y-auto space-y-4">
-            {!result ? <p className="text-muted-foreground text-center py-12">Vlož URL pre vygenerovanie</p> : (
+            {!result ? <p className="text-muted-foreground text-center py-12">Insert URL to generate</p> : (
               <>
                 {frames.length > 0 && (
                   <div className="relative aspect-video bg-black rounded-lg overflow-hidden mb-4">
@@ -104,16 +104,16 @@ export const UrlToVideoView = ({ onBack }: { onBack: () => void }) => {
                     <div className="absolute bottom-2 left-2 right-2 flex gap-1">
                       {frames.map((_, i) => <div key={i} className={`h-1 flex-1 rounded ${i === activeFrame ? 'bg-white' : 'bg-white/30'}`} />)}
                     </div>
-                    <Badge className="absolute top-2 right-2 bg-black/60"><Play className="w-3 h-3 mr-1" />Scéna {activeFrame + 1}/{frames.length}</Badge>
+                    <Badge className="absolute top-2 right-2 bg-black/60"><Play className="w-3 h-3 mr-1" />Scene {activeFrame + 1}/{frames.length}</Badge>
                   </div>
                 )}
                 <div><h3 className="font-bold text-lg">{result.productName}</h3><p className="text-sm text-muted-foreground">{result.valueProposition}</p></div>
                 <div className="grid grid-cols-2 gap-2 text-xs"><Badge variant="outline">🎯 {result.targetAudience}</Badge><Badge variant="outline">📱 {result.suggestedPlatform}</Badge><Badge variant="outline">⏱ {result.suggestedDuration}s</Badge><Badge variant="outline">🎵 {result.musicSuggestion}</Badge></div>
                 <div><h4 className="font-semibold mb-1">📝 Script</h4><p className="text-sm whitespace-pre-wrap">{result.script}</p></div>
                 <div><h4 className="font-semibold mb-2">🪝 Alternative Hooks</h4>{result.hooks.map((h, i) => <p key={i} className="text-sm pl-3 border-l-2 border-cyan-500 mb-1">{h}</p>)}</div>
-                <div><h4 className="font-semibold mb-2">🎬 Scény</h4>{result.scenes.map((s, i) => (
+                <div><h4 className="font-semibold mb-2">🎬 Scenes</h4>{result.scenes.map((s, i) => (
                   <Card key={i} className="mb-2 bg-muted/30"><CardContent className="pt-3 text-sm space-y-1">
-                    <div className="font-medium">Scéna {i + 1} ({s.duration})</div>
+                    <div className="font-medium">Scene {i + 1} ({s.duration})</div>
                     <p>{s.description}</p>
                     <p className="text-muted-foreground">VO: "{s.voiceover}"</p>
                     {s.textOverlay && <Badge variant="secondary">Text: {s.textOverlay}</Badge>}

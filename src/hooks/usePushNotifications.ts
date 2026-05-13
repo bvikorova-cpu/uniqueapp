@@ -51,8 +51,8 @@ export function usePushNotifications() {
   const requestPermission = useCallback(async (): Promise<boolean> => {
     if (!state.isSupported) {
       toast({
-        title: "Nepodporované",
-        description: "Váš prehliadač nepodporuje push notifikácie.",
+        title: "Unsupported",
+        description: "Your browser does not support push notifications.",
         variant: "destructive",
       });
       return false;
@@ -64,14 +64,14 @@ export function usePushNotifications() {
 
       if (permission === "granted") {
         toast({
-          title: "Povolené",
-          description: "Push notifikácie boli povolené.",
+          title: "Enabled",
+          description: "Push notifications have been enabled."
         });
         return true;
       } else if (permission === "denied") {
         toast({
-          title: "Zamietnuté",
-          description: "Push notifikácie boli zamietnuté.",
+          title: "Denied",
+          description: "Push notifications have been denied.",
           variant: "destructive",
         });
         return false;
@@ -82,7 +82,7 @@ export function usePushNotifications() {
       console.error("Error requesting notification permission:", error);
       toast({
         title: "Chyba",
-        description: "Nepodarilo sa požiadať o povolenie notifikácií.",
+        description: "Failed to request notification permission.",
         variant: "destructive",
       });
       return false;
@@ -108,8 +108,8 @@ export function usePushNotifications() {
 
       setState(prev => ({ ...prev, isSubscribed: true }));
       toast({
-        title: "Prihlásené",
-        description: "Teraz budete dostávať push notifikácie.",
+        title: "Subscribed",
+        description: "You will now receive push notifications."
       });
       
       return true;
@@ -117,7 +117,7 @@ export function usePushNotifications() {
       console.error("Error subscribing to push:", error);
       toast({
         title: "Chyba",
-        description: "Nepodarilo sa prihlásiť na push notifikácie.",
+        description: "Failed to subscribe to push notifications.",
         variant: "destructive",
       });
       return false;
@@ -133,8 +133,8 @@ export function usePushNotifications() {
         await subscription.unsubscribe();
         setState(prev => ({ ...prev, isSubscribed: false }));
         toast({
-          title: "Odhlásené",
-          description: "Push notifikácie boli vypnuté.",
+          title: "Unsubscribed",
+          description: "Push notifications have been turned off."
         });
         return true;
       }
@@ -144,7 +144,7 @@ export function usePushNotifications() {
       console.error("Error unsubscribing from push:", error);
       toast({
         title: "Chyba",
-        description: "Nepodarilo sa odhlásiť z push notifikácií.",
+        description: "Failed to unsubscribe from push notifications.",
         variant: "destructive",
       });
       return false;

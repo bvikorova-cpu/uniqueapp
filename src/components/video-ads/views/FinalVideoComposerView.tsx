@@ -146,7 +146,7 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
       for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
       setVoAudio(bytes);
       setVoUrl(URL.createObjectURL(new Blob([bytes], { type: data.mimeType })));
-      toast.success(`Voiceover hotový (${data.credits_used} CR)`);
+      toast.success(`Voiceover finished (${data.credits_used} CR)`);
     } catch (e) { handleEdgeError(e, { context: 'TTS' }); }
     finally { setVoLoading(false); }
   };
@@ -170,7 +170,7 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
   const DEFAULT_SFX_VOL = 0.6;
   const resetVoVolume = () => {
     setVoVolume(DEFAULT_VO_VOL);
-    toast.success("Hlasitosť VO obnovená na 100%");
+    toast.success("VO volume restored to 100%");
   };
   const resetSfxVolume = (id: string) => {
     setSfxList(l => l.map(s => s.id === id ? { ...s, volume: DEFAULT_SFX_VOL } : s));
@@ -179,7 +179,7 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
   const resetAllSfxVolumes = () => {
     setSfxList(l => l.map(s => ({ ...s, volume: DEFAULT_SFX_VOL })));
     try { localStorage.setItem(SFX_DEFAULT_VOL_KEY, String(DEFAULT_SFX_VOL)); } catch {}
-    toast.success("Hlasitosti SFX obnovené na 60%");
+    toast.success("SFX volumes restored to 60%");
   };
 
   const generateSfx = async (id: string) => {
@@ -196,12 +196,12 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
       for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
       const previewUrl = URL.createObjectURL(new Blob([bytes], { type: data.mimeType }));
       updateSfx(id, { audio: bytes, previewUrl, loading: false });
-      toast.success(`SFX hotový (${data.credits_used} CR)`);
+      toast.success(`SFX finished (${data.credits_used} CR)`);
     } catch (e) { handleEdgeError(e, { context: 'SFX' }); updateSfx(id, { loading: false }); }
   };
 
   const render = async () => {
-    if (scenes.length === 0) { toast.error("Pridaj aspoň 1 obrázok scény"); return; }
+    if (scenes.length === 0) { toast.error("Add at least 1 scene image"); return; }
     setRendering(true); setProgress(0); setOutputUrl(null);
     try {
       const ff = await loadFfmpeg();
@@ -271,7 +271,7 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
       const out = await ff.readFile("final.mp4");
       const blob = new Blob([(out as Uint8Array).buffer as ArrayBuffer], { type: "video/mp4" });
       setOutputUrl(URL.createObjectURL(blob));
-      toast.success("Finálne video hotové!");
+      toast.success("Final video finished!");
     } catch (e: any) {
       console.error(e); toast.error("Render zlyhal: " + (e?.message || e));
     } finally { setRendering(false); }
@@ -279,39 +279,39 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
 
   return (
     <div>
-      <Button variant="ghost" onClick={onBack} className="mb-4">← Späť</Button>
+      <Button variant="ghost" onClick={onBack} className="mb-4">← Back</Button>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-fuchsia-500 to-purple-600 flex items-center justify-center"><Film className="w-6 h-6 text-white" /></div>
-        <div><h2 className="text-2xl font-black">Final Video Composer</h2><p className="text-sm text-muted-foreground">Spoj obrázky scén + cloned voice + SFX → MP4 (9:16)</p></div>
+        <div><h2 className="text-2xl font-black">Final Video Composer</h2><p className="text-sm text-muted-foreground">Combine scene images + cloned voice + SFX → MP4 (9:16)</p></div>
         <Badge className="ml-auto bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white">Render in browser</Badge>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* SCENES */}
         <Card>
-          <CardHeader><CardTitle className="text-base">1. Scény (obrázky)</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-base">1. Scenes (images)</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             <input ref={fileInputRef} type="file" accept="image/*" multiple onChange={e => addImages(e.target.files)} className="hidden" />
-            <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="w-full"><Upload className="mr-2 h-4 w-4" />Pridať obrázky</Button>
-            <div><Label className="text-xs">Trvanie scény (s)</Label><Input type="number" min={1} max={15} value={perScene} onChange={e => setPerScene(Number(e.target.value) || 3)} /></div>
+            <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="w-full"><Upload className="mr-2 h-4 w-4" />Add images</Button>
+            <div><Label className="text-xs">Scene duration (s)</Label><Input type="number" min={1} max={15} value={perScene} onChange={e => setPerScene(Number(e.target.value) || 3)} /></div>
             {scenes.length > 0 && (
               <div className="grid grid-cols-3 gap-2 max-h-64 overflow-y-auto">
                 {scenes.map((s, i) => (
                   <div key={s.id} className="relative group">
-                    <img src={s.preview} className="w-full h-20 object-cover rounded" alt={`Scéna ${i + 1}`} />
+                    <img src={s.preview} className="w-full h-20 object-cover rounded" alt={`Scene ${i + 1}`} />
                     <div className="absolute top-1 left-1 bg-black/70 text-white text-xs px-1 rounded">#{i + 1}</div>
                     <button onClick={() => removeScene(s.id)} className="absolute top-1 right-1 bg-red-500 text-white rounded p-1 opacity-0 group-hover:opacity-100"><Trash2 className="h-3 w-3" /></button>
                   </div>
                 ))}
               </div>
             )}
-            <p className="text-xs text-muted-foreground">{scenes.length} scén • {scenes.length * perScene}s total</p>
+            <p className="text-xs text-muted-foreground">{scenes.length} scenes • {scenes.length * perScene}s total</p>
           </CardContent>
         </Card>
 
         {/* VOICE */}
         <Card>
-          <CardHeader><CardTitle className="text-base">2. Voiceover (vlastný hlas)</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-base">2. Voiceover (custom voice)</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             <Textarea rows={4} maxLength={5000} placeholder="Text na nahovorenie..." value={voText} onChange={e => setVoText(e.target.value)} />
             <div>
@@ -324,25 +324,25 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
               <div>
                 <Label className="text-xs flex items-center justify-between">
                   <span>🎤 Tvoje cloned voices ({clonedVoices.length})</span>
-                  <button type="button" onClick={() => setCustomVoiceId("")} className="text-xs text-muted-foreground hover:text-foreground underline">Vyčistiť</button>
+                  <button type="button" onClick={() => setCustomVoiceId("")} className="text-xs text-muted-foreground hover:text-foreground underline">Clear</button>
                 </Label>
                 <select className="w-full p-2 rounded-md border bg-background text-sm" value={customVoiceId} onChange={e => setCustomVoiceId(e.target.value)}>
-                  <option value="">— použiť hlas vyššie —</option>
+                  <option value="">— use voice above —</option>
                   {clonedVoices.map(v => <option key={v.voiceId} value={v.voiceId}>{v.name}</option>)}
                 </select>
               </div>
             )}
             <div>
-              <Label className="text-xs">Vlastný cloned voiceId (manuálne)</Label>
+              <Label className="text-xs">Custom cloned voiceId (manual)</Label>
               <Input className="font-mono text-xs" placeholder="z Voice Cloning karty" value={customVoiceId} onChange={e => setCustomVoiceId(e.target.value)} />
             </div>
             <Button onClick={generateVoice} disabled={voLoading} className="w-full bg-gradient-to-r from-pink-500 to-rose-600">
-              {voLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Wand2 className="mr-2 h-4 w-4" />Generovať VO (5 CR)</>}
+              {voLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Wand2 className="mr-2 h-4 w-4" />Generate VO (5 CR)</>}
             </Button>
             {voUrl && <audio src={voUrl} controls className="w-full" />}
             <div>
               <Label className="text-xs flex items-center justify-between">
-                <span>🔊 Hlasitosť voiceoveru</span>
+                <span>🔊 Voiceover Volume</span>
                 <span className="flex items-center gap-2">
                   <span className="font-mono">{Math.round(voVolume * 100)}%</span>
                   <AlertDialog>
@@ -351,19 +351,19 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Resetovať hlasitosť voiceoveru?</AlertDialogTitle>
-                        <AlertDialogDescription>Hlasitosť VO sa nastaví späť na predvolených 100%.</AlertDialogDescription>
+                        <AlertDialogTitle>Reset voiceover volume?</AlertDialogTitle>
+                        <AlertDialogDescription>VO volume will be reset to the default 100%.</AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel>Zrušiť</AlertDialogCancel>
-                        <AlertDialogAction onClick={resetVoVolume}>Resetovať</AlertDialogAction>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={resetVoVolume}>Reset</AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
                 </span>
               </Label>
               <input type="range" min={0} max={2} step={0.05} value={voVolume} onChange={e => setVoVolume(Number(e.target.value))} className="w-full accent-pink-500" />
-              <p className="text-[10px] text-muted-foreground">0% = ticho, 100% = originál, 200% = zosilnené</p>
+              <p className="text-[10px] text-muted-foreground">0% = silent, 100% = original, 200% = amplified</p>
             </div>
           </CardContent>
         </Card>
@@ -371,7 +371,7 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
         {/* SFX */}
         <Card className="lg:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-base">3. Zvukové efekty</CardTitle>
+            <CardTitle className="text-base">3. Sound Effects</CardTitle>
             <div className="flex gap-2">
               {sfxList.length > 0 && (
                 <AlertDialog>
@@ -380,21 +380,21 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Resetovať všetky SFX hlasitosti?</AlertDialogTitle>
-                      <AlertDialogDescription>Hlasitosť každého z {sfxList.length} efektov sa nastaví na predvolených 60%.</AlertDialogDescription>
+                      <AlertDialogTitle>Reset all SFX volumes?</AlertDialogTitle>
+                      <AlertDialogDescription>The volume of each of the {sfxList.length} effects will be set to the default 60%.</AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Zrušiť</AlertDialogCancel>
-                      <AlertDialogAction onClick={resetAllSfxVolumes}>Resetovať</AlertDialogAction>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={resetAllSfxVolumes}>Reset</AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
               )}
-              <Button size="sm" variant="outline" onClick={addSfx}><Plus className="h-4 w-4 mr-1" />Pridať SFX</Button>
+              <Button size="sm" variant="outline" onClick={addSfx}><Plus className="h-4 w-4 mr-1" />Add SFX</Button>
             </div>
           </CardHeader>
           <CardContent className="space-y-2">
-            {sfxList.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">Žiadne SFX. Pridaj efekt (whoosh, applause, ding...)</p>}
+            {sfxList.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">No SFX. Add an effect (whoosh, applause, ding...)</p>}
             {sfxList.map(s => (
               <div key={s.id} className="p-3 bg-muted/30 rounded space-y-2">
                 <div className="grid grid-cols-12 gap-2 items-center">
@@ -417,22 +417,22 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
 
         {/* RENDER */}
         <Card className="lg:col-span-2 border-fuchsia-500/30">
-          <CardHeader><CardTitle className="text-base">4. Render finálneho videa</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-base">4. Render final video</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             <Button onClick={render} disabled={rendering || loadingFfmpeg || scenes.length === 0} className="w-full bg-gradient-to-r from-fuchsia-500 to-purple-600">
-              {loadingFfmpeg ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Načítam ffmpeg.wasm...</> :
+              {loadingFfmpeg ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Loading ffmpeg.wasm...</> :
                 rendering ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Renderujem... {progress}%</> :
-                <><Film className="mr-2 h-4 w-4" />Vyrenderovať MP4</>}
+                <><Film className="mr-2 h-4 w-4" />Render MP4</>}
             </Button>
             {outputUrl && (
               <div className="space-y-3">
                 <video src={outputUrl} controls className="w-full max-w-sm mx-auto rounded-lg" />
                 <Button variant="outline" onClick={() => { const a = document.createElement('a'); a.href = outputUrl; a.download = `video-ad-${Date.now()}.mp4`; a.click(); }} className="w-full">
-                  <Download className="mr-2 h-4 w-4" />Stiahnuť MP4
+                  <Download className="mr-2 h-4 w-4" />Download MP4
                 </Button>
               </div>
             )}
-            <p className="text-xs text-muted-foreground">Tip: Najprv naklonuj hlas v "Voice Cloning", skopíruj voiceId, vlož sem do "Vlastný cloned voiceId" a vygeneruj voiceover svojím hlasom.</p>
+            <p className="text-xs text-muted-foreground">Tip: First clone a voice in "Voice Cloning", copy the voiceId, paste it here into "Custom cloned voiceId", and generate a voiceover with your own voice.</p>
           </CardContent>
         </Card>
       </div>

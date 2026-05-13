@@ -14,16 +14,16 @@ const BLOCKS = {
 };
 
 const LEVELS = [
-  { level: 1, name: "Prvý domček", target: 5, gridSize: 6 },
-  { level: 2, name: "Záhrada", target: 8, gridSize: 7 },
-  { level: 3, name: "Veža", target: 12, gridSize: 8 },
+  { level: 1, name: "First House", target: 5, gridSize: 6 },
+  { level: 2, name: "Garden", target: 8, gridSize: 7 },
+  { level: 3, name: "Tower", target: 12, gridSize: 8 },
   { level: 4, name: "Most", target: 15, gridSize: 8 },
   { level: 5, name: "Hrad", target: 20, gridSize: 9 },
   { level: 6, name: "Mesto", target: 25, gridSize: 10 },
   { level: 7, name: "Ostrov", target: 30, gridSize: 10 },
-  { level: 8, name: "Pevnosť", target: 35, gridSize: 11 },
-  { level: 9, name: "Palác", target: 40, gridSize: 12 },
-  { level: 10, name: "Ríša", target: 50, gridSize: 12 },
+  { level: 8, name: "Fortress", target: 35, gridSize: 11 },
+  { level: 9, name: "Palace", target: 40, gridSize: 12 },
+  { level: 10, name: "Empire", target: 50, gridSize: 12 },
 ];
 
 interface MinecraftGameProps {
@@ -52,7 +52,7 @@ export const MinecraftGame = ({ onBack }: MinecraftGameProps) => {
 
       if (blocksPlaced + 1 >= levelData.target) {
         toast({
-          title: "🎉 Úroveň dokončená!",
+          title: "🎉 Level Completed!",
           description: `Postavil si ${levelData.name}!`,
         });
 
@@ -61,8 +61,8 @@ export const MinecraftGame = ({ onBack }: MinecraftGameProps) => {
             nextLevel();
           } else {
             toast({
-              title: "🏆 Majster staviteľ!",
-              description: "Dokončil si všetky úrovne!",
+              title: "🏆 Master Builder!",
+              description: "You have completed all levels!",
             });
           }
         }, 1500);
@@ -100,24 +100,24 @@ export const MinecraftGame = ({ onBack }: MinecraftGameProps) => {
         <div className="flex items-center justify-between mb-6">
           <Button onClick={onBack} variant="secondary">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Späť
+            Back
           </Button>
           <Button onClick={resetLevel} variant="secondary">
-            Vymazať
+            Clear
           </Button>
         </div>
 
         <Card className="p-6 mb-6 bg-white/95 backdrop-blur">
           <div className="grid grid-cols-3 gap-4 text-center mb-4">
             <div>
-              <div className="text-sm text-muted-foreground mb-1">Úroveň</div>
+              <div className="text-sm text-muted-foreground mb-1">Level</div>
               <div className="text-2xl font-bold flex items-center justify-center gap-2">
                 <Star className="h-5 w-5 text-yellow-500" />
                 {levelData.level}
               </div>
             </div>
             <div>
-              <div className="text-sm text-muted-foreground mb-1">Úloha</div>
+              <div className="text-sm text-muted-foreground mb-1">Task</div>
               <div className="text-lg font-bold">{levelData.name}</div>
             </div>
             <div>
@@ -130,7 +130,7 @@ export const MinecraftGame = ({ onBack }: MinecraftGameProps) => {
 
           <div className="border-t pt-4">
             <p className="text-sm text-muted-foreground mb-3 text-center">
-              Vyber blok a klikni na mriežku pre stavbu
+              Pick a block and click on the grid to build
             </p>
             <div className="flex justify-center gap-2 mb-6">
               {Object.entries(BLOCKS)

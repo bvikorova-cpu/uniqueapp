@@ -95,7 +95,7 @@ const RepostCard = ({ repost, onDelete }: RepostCardProps) => {
               >
                 {repost.profiles?.full_name || "User"}
               </p>
-              <span className="text-muted-foreground text-sm">zdieľal</span>
+              <span className="text-muted-foreground text-sm">shared</span>
             </div>
             <p className="text-sm text-muted-foreground">
               {formatDistanceToNow(new Date(repost.created_at), {

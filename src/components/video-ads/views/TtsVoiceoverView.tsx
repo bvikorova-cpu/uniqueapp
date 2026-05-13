@@ -37,7 +37,7 @@ export const TtsVoiceoverView = ({ onBack }: { onBack: () => void }) => {
       if (error || data?.error) { handleEdgeError(error || data, { context: 'TTS Voiceover' }); return; }
       const url = `data:${data.mimeType};base64,${data.audioBase64}`;
       setAudioUrl(url);
-      toast.success(`Hlas vygenerovaný (${data.credits_used} CR)`);
+      toast.success(`Voice generated (${data.credits_used} CR)`);
     } catch (e) { handleEdgeError(e, { context: 'TTS Voiceover' }); }
     finally { setLoading(false); }
   };
@@ -49,38 +49,38 @@ export const TtsVoiceoverView = ({ onBack }: { onBack: () => void }) => {
 
   return (
     <div>
-      <Button variant="ghost" onClick={onBack} className="mb-4">← Späť</Button>
+      <Button variant="ghost" onClick={onBack} className="mb-4">← Back</Button>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center"><Mic2 className="w-6 h-6 text-white" /></div>
-        <div><h2 className="text-2xl font-black">AI Voiceover (Real Voice)</h2><p className="text-sm text-muted-foreground">ElevenLabs - profesionálny hlas pre tvoje ad</p></div>
+        <div><h2 className="text-2xl font-black">AI Voiceover (Real Voice)</h2><p className="text-sm text-muted-foreground">ElevenLabs - professional voice for your ad</p></div>
         <Badge className="ml-auto bg-gradient-to-r from-pink-500 to-rose-600 text-white">5 CR</Badge>
       </div>
       <div className="grid lg:grid-cols-3 gap-6">
         <Card>
           <CardHeader><CardTitle>Settings</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <div><Label>Text na nahovorenie *</Label><Textarea rows={6} maxLength={5000} placeholder="Vlož script alebo voiceover text..." value={text} onChange={e => setText(e.target.value)} /><p className="text-xs text-muted-foreground mt-1">{text.length}/5000</p></div>
+            <div><Label>Text to narrate *</Label><Textarea rows={6} maxLength={5000} placeholder="Insert script or voiceover text..." value={text} onChange={e => setText(e.target.value)} /><p className="text-xs text-muted-foreground mt-1">{text.length}/5000</p></div>
             <div><Label>Hlas</Label>
               <select className="w-full mt-1 p-2 rounded-md border bg-background" value={voiceId} onChange={e => setVoiceId(e.target.value)}>
                 {VOICES.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}
               </select>
             </div>
-            <div><Label>Vlastný voiceId (cloned voice — voliteľné)</Label>
+            <div><Label>Custom voiceId (cloned voice — optional)</Label>
               <input className="w-full mt-1 p-2 rounded-md border bg-background text-sm font-mono" placeholder="napr. z Voice Cloning" value={customVoiceId} onChange={e => setCustomVoiceId(e.target.value)} />
-              <p className="text-xs text-muted-foreground mt-1">Ak vyplníš, prepíše voľbu vyššie.</p>
+              <p className="text-xs text-muted-foreground mt-1">If filled, it will override the choice above.</p>
             </div>
             <Button onClick={generate} disabled={loading} className="w-full bg-gradient-to-r from-pink-500 to-rose-600">
-              {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Generujem...</> : <><Play className="mr-2 h-4 w-4" />Generovať hlas (5 CR)</>}
+              {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Generating...</> : <><Play className="mr-2 h-4 w-4" />Generate voice (5 CR)</>}
             </Button>
           </CardContent>
         </Card>
         <Card className="lg:col-span-2">
-          <CardHeader><CardTitle>Audio výstup</CardTitle></CardHeader>
+          <CardHeader><CardTitle>Audio output</CardTitle></CardHeader>
           <CardContent>
-            {!audioUrl ? <p className="text-muted-foreground text-center py-12">Vygeneruj hlas pre výstup</p> : (
+            {!audioUrl ? <p className="text-muted-foreground text-center py-12">Generate voice for output</p> : (
               <div className="space-y-4">
                 <audio src={audioUrl} controls className="w-full" />
-                <Button onClick={download} variant="outline" className="w-full"><Download className="mr-2 h-4 w-4" />Stiahnuť MP3</Button>
+                <Button onClick={download} variant="outline" className="w-full"><Download className="mr-2 h-4 w-4" />Download MP3</Button>
               </div>
             )}
           </CardContent>

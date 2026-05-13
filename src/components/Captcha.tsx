@@ -64,7 +64,7 @@ export const Captcha = ({ onVerify }: CaptchaProps) => {
     return (
       <div className="flex items-center gap-2 p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
         <CheckCircle className="h-5 w-5 text-green-500" />
-        <span className="text-sm text-green-500 font-medium">Overené</span>
+        <span className="text-sm text-green-500 font-medium">Verified</span>
       </div>
     );
   }
@@ -72,7 +72,7 @@ export const Captcha = ({ onVerify }: CaptchaProps) => {
   return (
     <div className="p-4 border border-border rounded-lg bg-card space-y-3">
       <div className="flex items-center justify-between">
-        <span className="text-sm text-muted-foreground">Dokážte, že nie ste robot</span>
+        <span className="text-sm text-muted-foreground">Prove you are not a robot</span>
         <Button
           type="button"
           variant="ghost"
@@ -103,12 +103,12 @@ export const Captcha = ({ onVerify }: CaptchaProps) => {
           disabled={!userAnswer}
           size="sm"
         >
-          Overiť
+          Verify
         </Button>
       </div>
       
       {error && (
-        <p className="text-sm text-destructive">Nesprávna odpoveď, skúste znova</p>
+        <p className="text-sm text-destructive">Incorrect answer, try again</p>
       )}
     </div>
   );

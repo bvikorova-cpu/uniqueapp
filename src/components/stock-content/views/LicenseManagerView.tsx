@@ -90,12 +90,12 @@ export function LicenseManagerView({ onBack }: { onBack: () => void }) {
 
   const handleAdd = async () => {
     if (!contentId.trim()) {
-      toast.error("Content item ID je povinné");
+      toast.error("Content item ID is required");
       return;
     }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      toast.error("Najprv sa prihlás");
+      toast.error("Please login first");
       return;
     }
     const { error } = await supabase.from("stock_licenses").insert({
@@ -112,7 +112,7 @@ export function LicenseManagerView({ onBack }: { onBack: () => void }) {
       toast.error(error.message);
       return;
     }
-    toast.success("Licencia pridaná");
+    toast.success("License added");
     resetForm();
     setAddOpen(false);
     load();
@@ -132,13 +132,13 @@ export function LicenseManagerView({ onBack }: { onBack: () => void }) {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Naozaj odstrániť túto licenciu?")) return;
+    if (!confirm("Are you sure you want to delete this license?")) return;
     const { error } = await supabase.from("stock_licenses").delete().eq("id", id);
     if (error) {
       toast.error(error.message);
       return;
     }
-    toast.success("Licencia odstránená");
+    toast.success("License deleted");
     load();
   };
 
@@ -158,7 +158,7 @@ export function LicenseManagerView({ onBack }: { onBack: () => void }) {
       toast.error(error.message);
       return;
     }
-    toast.success("Uložené");
+    toast.success("Saved");
     setEditing(null);
     load();
   };
@@ -168,7 +168,7 @@ export function LicenseManagerView({ onBack }: { onBack: () => void }) {
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="sm" onClick={onBack}>
-            <ArrowLeft className="w-4 h-4 mr-1" /> Späť
+            <ArrowLeft className="w-4 h-4 mr-1" /> Back
           </Button>
           <h2 className="text-2xl font-bold flex items-center gap-2">
             <FileCheck className="w-6 h-6 text-orange-500" /> License Manager
@@ -177,10 +177,10 @@ export function LicenseManagerView({ onBack }: { onBack: () => void }) {
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={load}>
-            <RotateCw className="w-4 h-4 mr-1" /> Obnoviť
+            <RotateCw className="w-4 h-4 mr-1" /> Refresh
           </Button>
           <Button size="sm" onClick={() => setAddOpen(true)}>
-            <Plus className="w-4 h-4 mr-1" /> Pridať licenciu
+            <Plus className="w-4 h-4 mr-1" /> Add license
           </Button>
         </div>
       </div>
@@ -192,17 +192,17 @@ export function LicenseManagerView({ onBack }: { onBack: () => void }) {
             <p className="text-xs text-muted-foreground">{LICENSE_DESCRIPTIONS[t]}</p>
             <div className="text-2xl font-bold mt-2">
               {licenses.filter((l) => l.license_type === t && l.status === "active").length}
-              <span className="text-sm font-normal text-muted-foreground ml-1">aktívnych</span>
+              <span className="text-sm font-normal text-muted-foreground ml-1">active</span>
             </div>
           </Card>
         ))}
       </div>
 
       {loading ? (
-        <Card className="p-8 text-center text-muted-foreground">Načítavam...</Card>
+        <Card className="p-8 text-center text-muted-foreground">Loading...</Card>
       ) : licenses.length === 0 ? (
         <Card className="p-8 text-center text-muted-foreground">
-          Žiadne licencie. Pridaj prvú kliknutím na "Pridať licenciu".
+          No licenses. Add the first one by clicking "Add license".
         </Card>
       ) : (
         <div className="space-y-2">
@@ -223,8 +223,8 @@ export function LicenseManagerView({ onBack }: { onBack: () => void }) {
                     Item: <code className="font-mono">{l.content_item_id.slice(0, 8)}…</code>
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    Platnosť: {new Date(l.valid_from).toLocaleDateString()}
-                    {l.valid_until ? ` → ${new Date(l.valid_until).toLocaleDateString()}` : " → bez expirácie"}
+                    Valid from: {new Date(l.valid_from).toLocaleDateString()}
+                    {l.valid_until ? ` → ${new Date(l.valid_until).toLocaleDateString()}` : " → no expiration"}
                   </div>
                   {l.notes && (
                     <p className="text-xs italic mt-1 text-muted-foreground">"{l.notes}"</p>
@@ -234,7 +234,7 @@ export function LicenseManagerView({ onBack }: { onBack: () => void }) {
                   {isAdmin && (
                     <>
                       <Button size="sm" variant="outline" onClick={() => setEditing(l)}>
-                        Upraviť
+                        Edit
                       </Button>
                       {l.status === "active" ? (
                         <Button
@@ -250,7 +250,7 @@ export function LicenseManagerView({ onBack }: { onBack: () => void }) {
                           variant="outline"
                           onClick={() => handleStatusChange(l.id, "active")}
                         >
-                          Aktivovať
+                          Activate
                         </Button>
                       )}
                       <Button
@@ -273,7 +273,7 @@ export function LicenseManagerView({ onBack }: { onBack: () => void }) {
       <Dialog open={addOpen} onOpenChange={setAddOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Pridať licenciu</DialogTitle>
+            <DialogTitle>Add license</DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
             <div>
@@ -298,18 +298,18 @@ export function LicenseManagerView({ onBack }: { onBack: () => void }) {
                 <Input type="number" step="0.01" value={pricePaid} onChange={(e) => setPricePaid(e.target.value)} />
               </div>
               <div>
-                <Label>Platná do (voliteľné)</Label>
+                <Label>Valid until (optional)</Label>
                 <Input type="date" value={validUntil} onChange={(e) => setValidUntil(e.target.value)} />
               </div>
             </div>
             <div>
-              <Label>Poznámky</Label>
+              <Label>Notes</Label>
               <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setAddOpen(false)}>Zrušiť</Button>
-            <Button onClick={handleAdd}>Pridať</Button>
+            <Button variant="outline" onClick={() => setAddOpen(false)}>Cancel</Button>
+            <Button onClick={handleAdd}>Add</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -318,7 +318,7 @@ export function LicenseManagerView({ onBack }: { onBack: () => void }) {
       <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Upraviť licenciu</DialogTitle>
+            <DialogTitle>Edit license</DialogTitle>
           </DialogHeader>
           {editing && (
             <div className="space-y-3">
@@ -360,7 +360,7 @@ export function LicenseManagerView({ onBack }: { onBack: () => void }) {
                 />
               </div>
               <div>
-                <Label>Platná do</Label>
+                <Label>Valid until</Label>
                 <Input
                   type="date"
                   value={editing.valid_until ? editing.valid_until.slice(0, 10) : ""}
@@ -368,7 +368,7 @@ export function LicenseManagerView({ onBack }: { onBack: () => void }) {
                 />
               </div>
               <div>
-                <Label>Poznámky</Label>
+                <Label>Notes</Label>
                 <Textarea
                   value={editing.notes || ""}
                   onChange={(e) => setEditing({ ...editing, notes: e.target.value })}
@@ -378,8 +378,8 @@ export function LicenseManagerView({ onBack }: { onBack: () => void }) {
             </div>
           )}
           <DialogFooter>
-            <Button variant="outline" onClick={() => setEditing(null)}>Zrušiť</Button>
-            <Button onClick={handleEditSave}>Uložiť</Button>
+            <Button variant="outline" onClick={() => setEditing(null)}>Cancel</Button>
+            <Button onClick={handleEditSave}>Save</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -71,8 +71,8 @@ const VideoCall = ({ conversationId, userId, otherUserId, otherUserName }: Video
         if (payload.to === userId) {
           cleanupCall();
           toast({
-            title: "Hovor ukončený",
-            description: `${otherUserName} ukončil hovor`,
+            title: "Call ended",
+            description: `${otherUserName} ended the call`,
           });
         }
       })
@@ -141,7 +141,7 @@ const VideoCall = ({ conversationId, userId, otherUserId, otherUserName }: Video
       console.error("Error starting call:", error);
       toast({
         title: "Chyba",
-        description: "Nepodarilo sa spustiť hovor. Skontrolujte prístup ku kamere a mikrofónu.",
+        description: "Failed to start the call. Check camera and microphone access.",
         variant: "destructive",
       });
     }
@@ -208,7 +208,7 @@ const VideoCall = ({ conversationId, userId, otherUserId, otherUserName }: Video
       console.error("Error handling offer:", error);
       toast({
         title: "Chyba",
-        description: "Nepodarilo sa pripojiť k hovoru",
+        description: "Failed to connect to the call",
         variant: "destructive",
       });
     }
@@ -302,16 +302,16 @@ const VideoCall = ({ conversationId, userId, otherUserId, otherUserName }: Video
         <Card className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="bg-background p-8 rounded-lg shadow-xl text-center">
             <Phone className="h-16 w-16 mx-auto mb-4 text-primary animate-pulse" />
-            <h2 className="text-2xl font-bold mb-2">Prichádzajúci hovor</h2>
-            <p className="text-muted-foreground mb-6">{otherUserName} vás volá</p>
+            <h2 className="text-2xl font-bold mb-2">Incoming call</h2>
+            <p className="text-muted-foreground mb-6">{otherUserName} is calling you</p>
             <div className="flex gap-4">
               <Button onClick={answerCall} className="flex-1">
                 <Phone className="h-4 w-4 mr-2" />
-                Prijať
+                Accept
               </Button>
               <Button onClick={declineCall} variant="destructive" className="flex-1">
                 <PhoneOff className="h-4 w-4 mr-2" />
-                Odmietnuť
+                Reject
               </Button>
             </div>
           </div>
@@ -340,7 +340,7 @@ const VideoCall = ({ conversationId, userId, otherUserId, otherUserName }: Video
               <div className="absolute inset-0 flex items-center justify-center bg-black/50">
                 <div className="text-center">
                   <Phone className="h-16 w-16 mx-auto mb-4 text-white animate-pulse" />
-                  <p className="text-white text-xl">Volá sa...</p>
+                  <p className="text-white text-xl">Calling...</p>
                 </div>
               </div>
             )}

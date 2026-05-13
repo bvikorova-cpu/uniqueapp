@@ -235,7 +235,7 @@ export default function SearchResults() {
                   <section>
                     <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
                       <Users className="h-5 w-5" />
-                      Ľudia
+                      People
                     </h3>
                     <div className="space-y-2">
                       {results.users.slice(0, activeFilter === "people" ? undefined : 5).map((user) => (
@@ -313,7 +313,7 @@ export default function SearchResults() {
                   <section>
                     <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
                       <FileText className="h-5 w-5" />
-                      Príspevky
+                      Posts
                     </h3>
                     <div className="space-y-4">
                       {results.posts.map((post) => (
