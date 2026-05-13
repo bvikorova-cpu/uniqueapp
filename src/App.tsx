@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { lazyWithRetry as lazy } from "@/utils/lazyWithRetry";
 const CouponSeasonalHub = lazy(() => import("@/pages/CouponSeasonalHub"));
+const LiveChatWidget = lazy(() => import("@/components/contact/LiveChatWidget").then(m => ({ default: m.LiveChatWidget })));
 
 // Redirect /kitchenstars/<sub-path> -> /masterchef/<sub-path> for brand aliases
 const KitchenStarsRedirect = () => {
@@ -961,6 +962,9 @@ const App = () => {
                   </main>
                   <Suspense fallback={null}>
                     <Footer />
+                  </Suspense>
+                  <Suspense fallback={null}>
+                    <LiveChatWidget />
                   </Suspense>
                 </div>
               </TooltipProvider>

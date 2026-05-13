@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { MessageCircle, Send, X, Loader2, Sparkles } from "lucide-react";
+import { MessageCircle, Send, X, Loader2, Sparkles, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -12,8 +12,12 @@ import { CSATWidget } from "./CSATWidget";
 interface Msg { role: "user" | "assistant"; content: string }
 
 const STORAGE_KEY = "unique:contact-livechat";
+const HIDDEN_KEY = "unique:contact-livechat:hidden";
 
 export const LiveChatWidget = () => {
+  const [hidden, setHidden] = useState<boolean>(() => {
+    try { return localStorage.getItem(HIDDEN_KEY) === "1"; } catch { return false; }
+  });
   const [userId, setUserId] = useState<string | null>(null);
   useEffect(() => { supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null)); }, []);
   const [open, setOpen] = useState(false);
@@ -54,16 +58,33 @@ export const LiveChatWidget = () => {
 
   const clear = () => { setMessages([]); localStorage.removeItem(STORAGE_KEY); };
 
+  const hide = () => {
+    try { localStorage.setItem(HIDDEN_KEY, "1"); } catch {}
+    setHidden(true);
+  };
+
+  if (hidden) return null;
+
   return (
     <>
       {!open && (
-        <Button
-          onClick={() => setOpen(true)}
-          className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full bg-gradient-to-br from-primary to-accent shadow-2xl shadow-primary/40 hover:scale-105 transition"
-          aria-label="Open live chat"
-        >
-          <MessageCircle className="h-6 w-6" />
-        </Button>
+        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-1">
+          <button
+            onClick={hide}
+            className="opacity-60 hover:opacity-100 bg-background/80 backdrop-blur border border-border rounded-full p-1 transition"
+            aria-label="Hide assistant"
+            title="Hide on all pages"
+          >
+            <X className="h-3 w-3" />
+          </button>
+          <Button
+            onClick={() => setOpen(true)}
+            className="h-14 w-14 rounded-full bg-gradient-to-br from-primary to-accent shadow-2xl shadow-primary/40 hover:scale-105 transition"
+            aria-label="Open live chat"
+          >
+            <MessageCircle className="h-6 w-6" />
+          </Button>
+        </div>
       )}
 
       {open && (
@@ -83,6 +104,9 @@ export const LiveChatWidget = () => {
               {messages.length > 0 && (
                 <Button size="sm" variant="ghost" className="text-xs h-7" onClick={clear}>Clear</Button>
               )}
+              <Button size="icon" variant="ghost" className="h-7 w-7" onClick={hide} aria-label="Hide assistant" title="Hide on all pages">
+                <EyeOff className="h-4 w-4" />
+              </Button>
               <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => setOpen(false)} aria-label="Close">
                 <X className="h-4 w-4" />
               </Button>
