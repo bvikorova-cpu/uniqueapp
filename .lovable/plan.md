@@ -119,3 +119,13 @@ Po schválení začnem **Fázou 1 (Quick wins)** — 5 features, ~jeden veľký 
 - Creator fund visibility: `creator_fund_visibility` + `useCreatorFund` + `CreatorFundDialog` (opt-in metriky)
 - Daily login rewards: `user_login_streaks` + `claim_daily_login_reward()` RPC + `useDailyLoginReward` + `DailyLoginRewardDialog` (streak +1/deň, bonus +1 každých 7 dní, max +10)
 - Wall toolbar rozšírený o Creator tiers, Creator Fund a Daily Reward
+
+## ✅ Fáza 7 čiastočne hotová (4/6)
+- **#31 Levels & XP avatar ring**: `useUserLevel` hook (cez `user_points`) + `AvatarLevelRing` komponent (SVG progress ring + level badge)
+- **#34 Offline mód s queue**: `useOfflineQueue` (IndexedDB) + `registerOfflineReplayer` API + `OfflineStatusIndicator` (online/offline + pending count); auto-replay na `online` evente
+- **#35 Accessibility**: `posts.alt_text` + `posts.captions_url` stĺpce + `AccessibilityFieldsDialog` (alt-text pre obrázky, .vtt URL pre videá)
+- **#36 API/Webhooks pre creators**: `creator_webhooks` + `webhook_deliveries` tabuľky + `dispatch-webhook` edge function (HMAC-SHA256 signing) + `CreatorWebhooksDialog` (CRUD + secret copy + event toggles)
+
+### Pending (potrebujú API kľúče):
+- **#32 Reaction GIFs (Tenor)** — vyžaduje `TENOR_API_KEY`
+- **#33 Web Push notifications (rich actions)** — vyžaduje VAPID keypair (`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`)
