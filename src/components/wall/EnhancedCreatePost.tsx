@@ -99,7 +99,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
   const [uploading, setUploading] = useState(false);
   const [feeling, setFeeling] = useState<string | null>(null);
   const [location, setLocation] = useState("");
-  const [privacy, setPrivacy] = useState<"public" | "friends" | "private">("public");
+  const [privacy, setPrivacy] = useState<"public" | "friends" | "close_friends" | "private">("public");
   const [taggedFriends, setTaggedFriends] = useState<string[]>([]);
   const [showTemplates, setShowTemplates] = useState(false);
   const [showSchedule, setShowSchedule] = useState(false);
@@ -151,7 +151,8 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           content: content.trim(),
           feeling: feeling || undefined,
           location: location || undefined,
-          privacy,
+          privacy: privacy === "close_friends" ? "friends" : privacy,
+          audience: privacy,
           is_sensitive: isSensitive,
           sensitive_reason: isSensitive ? (sensitiveReason.trim() || null) : null,
         })
@@ -314,19 +315,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
               <Sparkles className="w-4 h-4 animate-pulse" />
               Add to post
             </span>
-            <Select value={privacy} onValueChange={(v: any) => setPrivacy(v)}>
-              <SelectTrigger className="w-[140px] h-8">
-                <div className="flex items-center gap-2">
-                  {privacyIcons[privacy]}
-                  <SelectValue />
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="public">Public</SelectItem>
-                <SelectItem value="friends">Friends</SelectItem>
-                <SelectItem value="private">Only me</SelectItem>
-              </SelectContent>
-            </Select>
+            <AudienceSelector value={privacy} onChange={setPrivacy} />
             <Button
               type="button"
               variant={isSensitive ? "default" : "outline"}
