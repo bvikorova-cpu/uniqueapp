@@ -18,7 +18,7 @@ import { ContactChannels } from "@/components/contact/ContactChannels";
 import { MyTickets } from "@/components/contact/MyTickets";
 import { VoiceRecorder } from "@/components/contact/VoiceRecorder";
 import { ScreenRecorder } from "@/components/contact/ScreenRecorder";
-import { LiveChatWidget } from "@/components/contact/LiveChatWidget";
+
 import { VideoCallBooking } from "@/components/contact/VideoCallBooking";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
