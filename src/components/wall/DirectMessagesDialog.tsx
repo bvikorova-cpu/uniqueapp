@@ -263,14 +263,23 @@ export const DirectMessagesDialog = ({
                       <AvatarFallback className="text-xs">{userName?.[0]}</AvatarFallback>
                     </Avatar>
                   )}
-                  <div
-                    className={`max-w-[70%] rounded-2xl px-3 py-2 ${
-                      msg.sender_id === userId
-                        ? "bg-muted"
-                        : "bg-primary text-primary-foreground"
-                    }`}
-                  >
-                    <p className="text-sm">{msg.content}</p>
+                  <div className="flex flex-col max-w-[70%]">
+                    <div
+                      className={`rounded-2xl px-3 py-2 group relative ${
+                        msg.sender_id === userId
+                          ? "bg-muted"
+                          : "bg-primary text-primary-foreground"
+                      }`}
+                    >
+                      <p className="text-sm">{msg.content}</p>
+                    </div>
+                    <MessageReactions
+                      messageId={msg.id}
+                      reactions={reactionsByMessage[msg.id] || []}
+                      currentUserId={currentUserId}
+                      onToggle={(messageId, emoji) => toggleReaction({ messageId, emoji })}
+                      align={msg.sender_id === userId ? "start" : "end"}
+                    />
                   </div>
                 </div>
               ))
