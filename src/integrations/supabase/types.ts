@@ -14289,6 +14289,42 @@ export type Database = {
           },
         ]
       }
+      creator_webhooks: {
+        Row: {
+          created_at: string
+          description: string | null
+          events: string[]
+          id: string
+          is_active: boolean
+          secret: string
+          updated_at: string
+          url: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          events?: string[]
+          id?: string
+          is_active?: boolean
+          secret?: string
+          updated_at?: string
+          url: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          events?: string[]
+          id?: string
+          is_active?: boolean
+          secret?: string
+          updated_at?: string
+          url?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       credit_payments: {
         Row: {
           amount: number
@@ -33946,10 +33982,12 @@ export type Database = {
       }
       posts: {
         Row: {
+          alt_text: string | null
           audience: string | null
           branded_disclosure: string | null
           branded_partner_id: string | null
           branded_partner_name: string | null
+          captions_url: string | null
           comments_count: number | null
           content: string | null
           created_at: string
@@ -33967,10 +34005,12 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          alt_text?: string | null
           audience?: string | null
           branded_disclosure?: string | null
           branded_partner_id?: string | null
           branded_partner_name?: string | null
+          captions_url?: string | null
           comments_count?: number | null
           content?: string | null
           created_at?: string
@@ -33988,10 +34028,12 @@ export type Database = {
           user_id: string
         }
         Update: {
+          alt_text?: string | null
           audience?: string | null
           branded_disclosure?: string | null
           branded_partner_id?: string | null
           branded_partner_name?: string | null
+          captions_url?: string | null
           comments_count?: number | null
           content?: string | null
           created_at?: string
@@ -46972,6 +47014,50 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      webhook_deliveries: {
+        Row: {
+          attempt_count: number
+          created_at: string
+          delivered_at: string | null
+          event_type: string
+          id: string
+          payload: Json
+          response_body: string | null
+          status_code: number | null
+          webhook_id: string
+        }
+        Insert: {
+          attempt_count?: number
+          created_at?: string
+          delivered_at?: string | null
+          event_type: string
+          id?: string
+          payload: Json
+          response_body?: string | null
+          status_code?: number | null
+          webhook_id: string
+        }
+        Update: {
+          attempt_count?: number
+          created_at?: string
+          delivered_at?: string | null
+          event_type?: string
+          id?: string
+          payload?: Json
+          response_body?: string | null
+          status_code?: number | null
+          webhook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "webhook_deliveries_webhook_id_fkey"
+            columns: ["webhook_id"]
+            isOneToOne: false
+            referencedRelation: "creator_webhooks"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       weekly_xp_winners: {
         Row: {
