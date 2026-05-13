@@ -13545,6 +13545,39 @@ export type Database = {
           },
         ]
       }
+      creator_fund_visibility: {
+        Row: {
+          show_subscriber_count: boolean | null
+          show_tip_count: boolean | null
+          show_total_earned: boolean | null
+          subscriber_count: number | null
+          tip_count: number | null
+          total_earned_eur: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          show_subscriber_count?: boolean | null
+          show_tip_count?: boolean | null
+          show_total_earned?: boolean | null
+          subscriber_count?: number | null
+          tip_count?: number | null
+          total_earned_eur?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          show_subscriber_count?: boolean | null
+          show_tip_count?: boolean | null
+          show_total_earned?: boolean | null
+          subscriber_count?: number | null
+          tip_count?: number | null
+          total_earned_eur?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       creator_gift_transactions: {
         Row: {
           amount: number
@@ -14211,6 +14244,47 @@ export type Database = {
             columns: ["creator_id"]
             isOneToOne: false
             referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creator_subscriptions: {
+        Row: {
+          created_at: string | null
+          creator_id: string
+          current_period_end: string | null
+          id: string
+          status: string
+          stripe_subscription_id: string | null
+          subscriber_id: string
+          tier_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          creator_id: string
+          current_period_end?: string | null
+          id?: string
+          status?: string
+          stripe_subscription_id?: string | null
+          subscriber_id: string
+          tier_id: string
+        }
+        Update: {
+          created_at?: string | null
+          creator_id?: string
+          current_period_end?: string | null
+          id?: string
+          status?: string
+          stripe_subscription_id?: string | null
+          subscriber_id?: string
+          tier_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_subscriptions_tier_id_fkey"
+            columns: ["tier_id"]
+            isOneToOne: false
+            referencedRelation: "creator_subscription_tiers"
             referencedColumns: ["id"]
           },
         ]
@@ -33492,6 +33566,48 @@ export type Database = {
           },
         ]
       }
+      post_product_tags: {
+        Row: {
+          created_at: string | null
+          created_by: string
+          currency: string | null
+          id: string
+          image_url: string | null
+          position_x: number | null
+          position_y: number | null
+          post_id: string
+          price_eur: number | null
+          product_name: string
+          product_url: string
+        }
+        Insert: {
+          created_at?: string | null
+          created_by: string
+          currency?: string | null
+          id?: string
+          image_url?: string | null
+          position_x?: number | null
+          position_y?: number | null
+          post_id: string
+          price_eur?: number | null
+          product_name: string
+          product_url: string
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string
+          currency?: string | null
+          id?: string
+          image_url?: string | null
+          position_x?: number | null
+          position_y?: number | null
+          post_id?: string
+          price_eur?: number | null
+          product_name?: string
+          product_url?: string
+        }
+        Relationships: []
+      }
       post_reactions: {
         Row: {
           created_at: string
@@ -33831,6 +33947,9 @@ export type Database = {
       posts: {
         Row: {
           audience: string | null
+          branded_disclosure: string | null
+          branded_partner_id: string | null
+          branded_partner_name: string | null
           comments_count: number | null
           content: string | null
           created_at: string
@@ -33849,6 +33968,9 @@ export type Database = {
         }
         Insert: {
           audience?: string | null
+          branded_disclosure?: string | null
+          branded_partner_id?: string | null
+          branded_partner_name?: string | null
           comments_count?: number | null
           content?: string | null
           created_at?: string
@@ -33867,6 +33989,9 @@ export type Database = {
         }
         Update: {
           audience?: string | null
+          branded_disclosure?: string | null
+          branded_partner_id?: string | null
+          branded_partner_name?: string | null
           comments_count?: number | null
           content?: string | null
           created_at?: string
@@ -44951,6 +45076,36 @@ export type Database = {
         }
         Relationships: []
       }
+      user_login_streaks: {
+        Row: {
+          created_at: string | null
+          current_streak: number
+          last_claim_date: string | null
+          longest_streak: number
+          total_claims: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          current_streak?: number
+          last_claim_date?: string | null
+          longest_streak?: number
+          total_claims?: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          current_streak?: number
+          last_claim_date?: string | null
+          longest_streak?: number
+          total_claims?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_media_gallery: {
         Row: {
           album_name: string | null
@@ -48501,6 +48656,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      claim_daily_login_reward: { Args: never; Returns: Json }
       claim_iq_battle_pass_tier: { Args: { _tier: number }; Returns: Json }
       claim_iq_daily_streak: { Args: never; Returns: Json }
       claim_iq_streak_reward: { Args: { _day: number }; Returns: Json }

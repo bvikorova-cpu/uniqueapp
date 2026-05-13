@@ -35,6 +35,9 @@ import { FollowedTopicsDialog } from "@/components/wall/FollowedTopicsDialog";
 import { GroupChatDialog } from "@/components/wall/GroupChatDialog";
 import { CommunitiesDialog } from "@/components/wall/CommunitiesDialog";
 import { ModerationQueueDialog } from "@/components/wall/ModerationQueueDialog";
+import { CreatorSubscriptionDialog } from "@/components/wall/CreatorSubscriptionDialog";
+import { DailyLoginRewardDialog } from "@/components/wall/DailyLoginRewardDialog";
+import { CreatorFundDialog } from "@/components/wall/CreatorFundDialog";
 import { FloatingReactions } from "@/components/wall/FloatingReactions";
 import { useQuery } from "@tanstack/react-query";
 import { useTrendingPosts } from "@/hooks/useTrends";
@@ -612,6 +615,9 @@ const Feed = () => {
                     <GroupChatDialog />
                     <CommunitiesDialog />
                     <ModerationQueueDialog />
+                    <CreatorSubscriptionDialog />
+                    <CreatorFundDialog />
+                    <DailyLoginRewardDialog />
                   </div>
 
                   {/* Notes / Status Bar (24h ephemeral) */}

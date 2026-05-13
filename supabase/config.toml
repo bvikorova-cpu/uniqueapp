@@ -1331,3 +1331,6 @@ verify_jwt = true
 
 [functions.triage-report]
 verify_jwt = true
+
+[functions.subscribe-to-creator]
+verify_jwt = true
