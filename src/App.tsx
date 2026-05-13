@@ -963,6 +963,9 @@ const App = () => {
                   <Suspense fallback={null}>
                     <Footer />
                   </Suspense>
+                  <Suspense fallback={null}>
+                    <LiveChatWidget />
+                  </Suspense>
                 </div>
               </TooltipProvider>
               </CurrencyProvider>
