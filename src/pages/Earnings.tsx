@@ -24,6 +24,14 @@ import {
 } from "@/components/earnings";
 import { PayoutSchedulePicker } from "@/components/earnings/PayoutSchedulePicker";
 import { TaxDocsButton } from "@/components/earnings/TaxDocsButton";
+import { WalletBalanceCard } from "@/components/earnings/WalletBalanceCard";
+import { InstantPayoutButton } from "@/components/earnings/InstantPayoutButton";
+import { AutoWithdrawSettings } from "@/components/earnings/AutoWithdrawSettings";
+import { EarningsComparisonCard } from "@/components/earnings/EarningsComparisonCard";
+import { PayoutFeeCalculator } from "@/components/earnings/PayoutFeeCalculator";
+import { RefundsDisputesPanel } from "@/components/earnings/RefundsDisputesPanel";
+import { WithdrawalHistoryTable } from "@/components/earnings/WithdrawalHistoryTable";
+import { TaxFormWidget } from "@/components/earnings/TaxFormWidget";
 
 interface Transaction {
   id: string;
