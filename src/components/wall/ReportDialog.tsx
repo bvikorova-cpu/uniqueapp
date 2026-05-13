@@ -5,23 +5,33 @@ import { Textarea } from "@/components/ui/textarea";
 import { Flag } from "lucide-react";
 import { useModerationQueue } from "@/hooks/useModerationQueue";
 
+interface ReportDialogProps {
+  contentType?: "post" | "comment" | "user" | "message";
+  contentId?: string;
+  postId?: string;
+  communityId?: string;
+  trigger?: React.ReactNode;
+  variant?: "ghost" | "outline" | "default";
+}
+
 export const ReportDialog = ({
   contentType,
   contentId,
+  postId,
   communityId,
   trigger,
-}: {
-  contentType: "post" | "comment" | "user" | "message";
-  contentId: string;
-  communityId?: string;
-  trigger?: React.ReactNode;
-}) => {
+  variant = "ghost",
+}: ReportDialogProps) => {
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState("");
   const { submitReport } = useModerationQueue();
 
+  const finalType = contentType ?? (postId ? "post" : "post");
+  const finalId = contentId ?? postId ?? "";
+
   const handle = () => {
-    submitReport({ content_type: contentType, content_id: contentId, community_id: communityId, reason });
+    if (!finalId) return;
+    submitReport({ content_type: finalType, content_id: finalId, community_id: communityId, reason });
     setReason(""); setOpen(false);
   };
 
@@ -29,7 +39,7 @@ export const ReportDialog = ({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {trigger ?? (
-          <Button variant="ghost" size="sm">
+          <Button variant={variant} size="sm">
             <Flag className="h-4 w-4 mr-1" /> Report
           </Button>
         )}
