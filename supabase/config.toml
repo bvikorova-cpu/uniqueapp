@@ -1322,3 +1322,9 @@ verify_jwt = false
 
 [functions.rank-feed]
 verify_jwt = true
+
+[functions.transcribe-space]
+verify_jwt = false
+
+[functions.tip-stream]
+verify_jwt = true
