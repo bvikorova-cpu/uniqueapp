@@ -7,19 +7,12 @@ const SUPPORTED = ['en', 'sk', 'cs', 'de', 'es', 'fr', 'it', 'hu', 'ru', 'ja', '
 const localeModules = import.meta.glob<Record<string, unknown>>('./locales/*/translation.json');
 
 function detectInitialLanguage(): string {
-  // 1. user previously chose a language
+  // English is the default for everyone. Users can still switch via the language selector,
+  // and that choice is persisted in localStorage.
   try {
     const stored = localStorage.getItem('preferred_language');
     if (stored && SUPPORTED.includes(stored)) return stored;
   } catch {}
-  // 2. browser language
-  if (typeof navigator !== 'undefined') {
-    const browserLangs = navigator.languages || [navigator.language];
-    for (const raw of browserLangs) {
-      const code = raw.toLowerCase().split('-')[0];
-      if (SUPPORTED.includes(code)) return code;
-    }
-  }
   return 'en';
 }
 
