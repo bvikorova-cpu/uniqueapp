@@ -33,6 +33,8 @@ import { CloseFriendsDialog } from "@/components/wall/CloseFriendsDialog";
 import { SavedSearchesDialog } from "@/components/wall/SavedSearchesDialog";
 import { FollowedTopicsDialog } from "@/components/wall/FollowedTopicsDialog";
 import { GroupChatDialog } from "@/components/wall/GroupChatDialog";
+import { CommunitiesDialog } from "@/components/wall/CommunitiesDialog";
+import { ModerationQueueDialog } from "@/components/wall/ModerationQueueDialog";
 import { FloatingReactions } from "@/components/wall/FloatingReactions";
 import { useQuery } from "@tanstack/react-query";
 import { useTrendingPosts } from "@/hooks/useTrends";
