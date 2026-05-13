@@ -25,6 +25,14 @@ import { WallTopNav } from "@/components/wall/WallTopNav";
 import { WallBackground } from "@/components/wall/WallBackground";
 import { StoriesBar } from "@/components/wall/StoriesBar";
 import { SmartFeedTabs, type FeedTab } from "@/components/wall/SmartFeedTabs";
+import { NotesBar } from "@/components/wall/NotesBar";
+import { SpacesDialog } from "@/components/wall/SpacesDialog";
+import { MutedUsersDialog } from "@/components/wall/MutedUsersDialog";
+import { MutedKeywordsDialog } from "@/components/wall/MutedKeywordsDialog";
+import { CloseFriendsDialog } from "@/components/wall/CloseFriendsDialog";
+import { SavedSearchesDialog } from "@/components/wall/SavedSearchesDialog";
+import { FollowedTopicsDialog } from "@/components/wall/FollowedTopicsDialog";
+import { GroupChatDialog } from "@/components/wall/GroupChatDialog";
 import { FloatingReactions } from "@/components/wall/FloatingReactions";
 import { useQuery } from "@tanstack/react-query";
 import { useTrendingPosts } from "@/hooks/useTrends";
@@ -591,6 +599,20 @@ const Feed = () => {
 
               {activeView === "feed" && (
                 <>
+                  {/* New Phase 1-4 Tools Toolbar */}
+                  <div className="glass-card rounded-2xl p-2 backdrop-blur-xl border border-white/10 flex flex-wrap gap-2">
+                    <SpacesDialog />
+                    <MutedUsersDialog />
+                    <MutedKeywordsDialog />
+                    <CloseFriendsDialog />
+                    <SavedSearchesDialog />
+                    <FollowedTopicsDialog />
+                    <GroupChatDialog />
+                  </div>
+
+                  {/* Notes / Status Bar (24h ephemeral) */}
+                  <NotesBar />
+
                   {/* Stories Bar */}
                   <div className="glass-card rounded-2xl p-3 backdrop-blur-xl border border-white/10">
                     <StoriesBar />
