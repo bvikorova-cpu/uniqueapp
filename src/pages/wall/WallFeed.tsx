@@ -91,10 +91,14 @@ export default function WallFeed({
 
       <div className="max-w-4xl mx-auto px-4 py-6">
         <div className="space-y-6">
-          {/* Achievements Badge */}
-          <div className="flex justify-end">
+          {/* Achievements Badge + Mute settings */}
+          <div className="flex justify-end items-center gap-2">
+            <MutedKeywordsDialog />
             <AchievementsBadge />
           </div>
+
+          {/* Notes / 24h status bar */}
+          <NotesBar />
 
           {/* Search Bar */}
           <SearchBar />
@@ -115,7 +119,7 @@ export default function WallFeed({
               <div className="glass-post-card p-12 flex items-center justify-center">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
               </div>
-            ) : filteredFeedItems.length === 0 ? (
+            ) : visibleFeedItems.length === 0 ? (
               <div className="glass-post-card p-12 text-center text-muted-foreground">
                 {t('wall.feed.noPostsFound')}
               </div>
