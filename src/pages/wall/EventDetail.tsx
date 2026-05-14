@@ -489,6 +489,15 @@ export default function EventDetail() {
         </Card>
       </div>
 
+      {/* RSVP + Tickets */}
+      <div className="max-w-2xl mx-auto px-4 pt-4">
+        <Card className="p-4 space-y-4">
+          <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">Your RSVP</h3>
+          <RsvpControls eventId={event.id} capacity={(event as any).capacity || undefined} />
+          <UserTicketsBlock eventId={event.id} userId={user?.id} eventTitle={event.title} />
+        </Card>
+      </div>
+
       {/* Main Content */}
       <div className="max-w-2xl mx-auto px-4 py-4">
         <Tabs defaultValue="discussion" className="w-full">
