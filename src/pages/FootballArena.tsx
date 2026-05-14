@@ -22,6 +22,7 @@ import { MatchAnalysis } from "@/components/football/MatchAnalysis";
 import { CoinShop } from "@/components/football/CoinShop";
 import { PenaltyShootout3D } from "@/components/football/PenaltyShootout3D";
 import { EmbeddedGame } from "@/components/arena/EmbeddedGame";
+import { Stadium3D } from "@/components/arena/Stadium3D";
 import { supabase } from "@/integrations/supabase/client";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
@@ -110,6 +111,11 @@ const FootballArena = () => {
       <div className="container mx-auto px-4 pt-20 pb-8 space-y-8">
         <FootballArenaHero stats={stats} onNavigate={(v) => setActiveView(v as ViewType)} />
         <HeroRewardedAd sectionKey="page_footballarena" />
+
+        {/* 3D Stadium Showcase */}
+        <div className="rounded-2xl overflow-hidden border border-border/40 bg-card/50 backdrop-blur-sm h-[320px]">
+          <Stadium3D sport="football" className="w-full h-full" />
+        </div>
 
         <FootballEngagement />
         <div>

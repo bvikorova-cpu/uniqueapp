@@ -30,9 +30,10 @@ import { HorseEquipmentSystem } from "@/components/horse-racing/HorseEquipmentSy
 import { DailyTrainingQuests } from "@/components/horse-racing/DailyTrainingQuests";
 import { BloodlineGenealogy } from "@/components/horse-racing/BloodlineGenealogy";
 import { WeatherRacingBonuses } from "@/components/horse-racing/WeatherRacingBonuses";
+import { HorseMarketplace } from "@/components/horse-racing/HorseMarketplace";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
-type ActiveView = "dashboard" | "stable" | "racing" | "training" | "breeding" | "shop" | "leaderboard" | "auction" | "championships" | "equipment" | "quests" | "bloodline" | "weather";
+type ActiveView = "dashboard" | "stable" | "racing" | "training" | "breeding" | "shop" | "leaderboard" | "auction" | "championships" | "equipment" | "quests" | "bloodline" | "weather" | "marketplace";
 
 const tools = [
   { id: "stable" as const, icon: Swords, label: "My Stable", desc: "Manage your horses", gradient: "from-amber-500 to-orange-600" },
@@ -47,6 +48,7 @@ const tools = [
   { id: "shop" as const, icon: ShoppingCart, label: "Racing Shop", desc: "Items & cosmetics", gradient: "from-orange-500 to-red-600" },
   { id: "leaderboard" as const, icon: Trophy, label: "Rankings", desc: "Top champions", gradient: "from-amber-500 to-yellow-600" },
   { id: "auction" as const, icon: Gavel, label: "Auction House", desc: "Buy & sell horses", gradient: "from-rose-500 to-red-600" },
+  { id: "marketplace" as const, icon: ShoppingCart, label: "Marketplace", desc: "Fixed-price horse listings", gradient: "from-purple-500 to-pink-600" },
 ];
 
 export default function HorseRacing() {
@@ -236,6 +238,7 @@ export default function HorseRacing() {
     quests: <DailyTrainingQuests />,
     bloodline: <BloodlineGenealogy />,
     weather: <WeatherRacingBonuses />,
+    marketplace: <HorseMarketplace />,
   };
 
   return (
