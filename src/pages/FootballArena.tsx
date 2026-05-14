@@ -112,6 +112,11 @@ const FootballArena = () => {
         <FootballArenaHero stats={stats} onNavigate={(v) => setActiveView(v as ViewType)} />
         <HeroRewardedAd sectionKey="page_footballarena" />
 
+        {/* 3D Stadium Showcase */}
+        <div className="rounded-2xl overflow-hidden border border-border/40 bg-card/50 backdrop-blur-sm h-[320px]">
+          <Stadium3D sport="football" className="w-full h-full" />
+        </div>
+
         <FootballEngagement />
         <div>
           <h2 className="text-xl font-bold mb-4">Football Arena Tools</h2>
