@@ -13,6 +13,7 @@ import VideoCall from "@/components/messenger/VideoCall";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { OnlineIndicator } from "@/components/messenger/OnlineIndicator";
 import { SelfDestructingMessage } from "@/components/messenger/SelfDestructingMessage";
+import { EncryptionBadge } from "@/components/messaging/EncryptionBadge";
 import { GroupChatDialog } from "@/components/messenger/GroupChatDialog";
 import { MessengerAIFeatures } from "@/components/messenger/MessengerAIFeatures";
 import { MessengerHero } from "@/components/messenger/MessengerHero";
@@ -1209,7 +1210,11 @@ const Messenger = () => {
                   </div>
                 )}
 
-                <div className={`flex items-center gap-2 pt-4 ${replyingTo ? "" : "border-t"}`}>
+                <div className="flex justify-end pt-2">
+                  <EncryptionBadge />
+                </div>
+
+                <div className={`flex items-center gap-2 pt-2 ${replyingTo ? "" : "border-t"}`}>
                   {/* Hidden file input */}
                   <input
                     type="file"

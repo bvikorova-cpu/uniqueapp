@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useStories } from "@/hooks/useStories";
 import { motion, AnimatePresence } from "framer-motion";
+import { StoryAnalyticsPanel } from "@/components/story/StoryAnalyticsPanel";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const StoriesBar = () => {
   const [open, setOpen] = useState(false);
@@ -14,6 +16,8 @@ export const StoriesBar = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [caption, setCaption] = useState("");
   const { stories, createStory, viewStory } = useStories();
+  const { user } = useAuth();
+  const isOwnStory = viewingStory && user?.id === viewingStory.user_id;
 
   const handleCreateStory = () => {
     if (!selectedFile) return;
@@ -214,6 +218,15 @@ export const StoriesBar = () => {
             {viewingStory.caption && (
               <div className="absolute bottom-12 left-4 right-4 text-white text-center text-lg font-medium drop-shadow-lg">
                 {viewingStory.caption}
+              </div>
+            )}
+
+            {isOwnStory && (
+              <div
+                className="absolute bottom-4 left-4 right-4 max-w-md mx-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <StoryAnalyticsPanel storyId={viewingStory.id} />
               </div>
             )}
           </motion.div>
