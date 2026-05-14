@@ -87,6 +87,8 @@ import {
   GroupDetail,
   PageDetail,
   EventDetail,
+  WallSaved,
+  WallVideos,
   Messenger,
   Stories,
   PostDetail,
