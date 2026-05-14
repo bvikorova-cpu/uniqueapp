@@ -742,7 +742,7 @@ const Feed = () => {
         </Sheet>
         
         {/* Main Layout Container - starts below fixed nav */}
-        <div className="flex flex-col lg:flex-row pt-[112px]">
+        <div className="flex flex-col lg:flex-row pt-[148px] sm:pt-[120px] lg:pt-[112px]">
           {/* Left Sidebar - Hidden on mobile, sticky within container */}
           <div className="hidden lg:block">
             <WallSidebar onPostCreated={fetchPosts} />
