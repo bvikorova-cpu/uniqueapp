@@ -15,6 +15,7 @@ import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
 import { supabase } from "@/integrations/supabase/client";
 
 import { ParentalHero } from "@/components/kids/parental/ParentalHero";
+import { ParentalDashboard } from "@/components/kids/ParentalDashboard";
 import { ChildProfileCards } from "@/components/kids/parental/ChildProfileCards";
 import { AnimatedStats } from "@/components/kids/parental/AnimatedStats";
 import { EnhancedCharts } from "@/components/kids/parental/EnhancedCharts";
