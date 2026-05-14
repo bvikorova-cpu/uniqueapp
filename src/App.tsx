@@ -516,7 +516,8 @@ const App = () => {
                        <Route path="/wall/events/:eventId" element={<EventDetail />} />
                        <Route path="/wall/saved" element={<WallSaved />} />
                         <Route path="/wall/trending" element={<Wall />} />
-                        <Route path="/wall/info" element={<Wall />} />
+                       <Route path="/wall/info" element={<Wall />} />
+                       <Route path="/wall/memories" element={<Wall />} />
                         <Route path="/wall/more" element={<Navigate to="/wall" replace />} />
                         <Route path="/post/:id" element={<PostDetail />} />
                         <Route path="/messenger" element={<Messenger />} />
