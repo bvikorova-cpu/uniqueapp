@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useStories } from "@/hooks/useStories";
 import { motion, AnimatePresence } from "framer-motion";
+import { StoryAnalyticsPanel } from "@/components/story/StoryAnalyticsPanel";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const StoriesBar = () => {
   const [open, setOpen] = useState(false);
