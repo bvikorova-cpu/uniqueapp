@@ -238,6 +238,7 @@ export const BecomeCreator = lazy(() => import("@/pages/BecomeCreator"));
 export const BrandDashboard = lazy(() => import("@/pages/BrandDashboard"));
 export const VirtualInfluencerAgency = lazy(() => import("@/pages/VirtualInfluencerAgency"));
 export const InfluencerEarnings = lazy(() => import("@/pages/InfluencerEarnings"));
+export const CreatorStudio = lazy(() => import("@/pages/CreatorStudio"));
 
 // Membership & Subscriptions
 export const Subscription = lazy(() => import("@/pages/Subscription"));

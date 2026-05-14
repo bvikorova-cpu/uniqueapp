@@ -264,6 +264,7 @@ import {
   Referral,
   Earnings,
   InfluencerEarnings,
+  CreatorStudio,
   VirtualInfluencerAgency,
   MembershipCommunity,
   CreatorDashboard,
@@ -844,6 +845,7 @@ const App = () => {
                         <Route path="/masterchef/ai-coach" element={<ProtectedRoute><MasterChefAICoach /></ProtectedRoute>} />
                         <Route path="/masterchef/recipe-feed" element={<ProtectedRoute><MasterChefRecipeFeed /></ProtectedRoute>} />
                         <Route path="/influencer/earnings" element={<ProtectedRoute><InfluencerEarnings /></ProtectedRoute>} />
+                        <Route path="/creator-studio" element={<ProtectedRoute><CreatorStudio /></ProtectedRoute>} />
                         <Route path="/time-reversal-subscription" element={<Navigate to="/time-reversal" replace />} />
                         <Route path="/time-reversal" element={<TimeReversalSocial />} />
                         <Route path="/time-reversal/dashboard" element={<ProtectedRoute><TimeReversalDashboard /></ProtectedRoute>} />
