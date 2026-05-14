@@ -48,6 +48,7 @@ const tools = [
   { id: "shop" as const, icon: ShoppingCart, label: "Racing Shop", desc: "Items & cosmetics", gradient: "from-orange-500 to-red-600" },
   { id: "leaderboard" as const, icon: Trophy, label: "Rankings", desc: "Top champions", gradient: "from-amber-500 to-yellow-600" },
   { id: "auction" as const, icon: Gavel, label: "Auction House", desc: "Buy & sell horses", gradient: "from-rose-500 to-red-600" },
+  { id: "marketplace" as const, icon: ShoppingCart, label: "Marketplace", desc: "Fixed-price horse listings", gradient: "from-purple-500 to-pink-600" },
 ];
 
 export default function HorseRacing() {
