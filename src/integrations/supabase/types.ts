@@ -30788,6 +30788,72 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_digest_log: {
+        Row: {
+          frequency: string
+          id: string
+          notification_count: number
+          sent_at: string
+          user_id: string
+        }
+        Insert: {
+          frequency: string
+          id?: string
+          notification_count?: number
+          sent_at?: string
+          user_id: string
+        }
+        Update: {
+          frequency?: string
+          id?: string
+          notification_count?: number
+          sent_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notification_preferences: {
+        Row: {
+          category: string
+          created_at: string
+          digest_frequency: string
+          email: boolean
+          id: string
+          in_app: boolean
+          push: boolean
+          quiet_hours_end: number | null
+          quiet_hours_start: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          digest_frequency?: string
+          email?: boolean
+          id?: string
+          in_app?: boolean
+          push?: boolean
+          quiet_hours_end?: number | null
+          quiet_hours_start?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          digest_frequency?: string
+          email?: boolean
+          id?: string
+          in_app?: boolean
+          push?: boolean
+          quiet_hours_end?: number | null
+          quiet_hours_start?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           actor_id: string | null
@@ -35939,6 +36005,42 @@ export type Database = {
           status?: string | null
           stripe_session_id?: string | null
           title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      push_subscriptions: {
+        Row: {
+          auth: string | null
+          created_at: string
+          endpoint: string
+          id: string
+          last_used_at: string
+          p256dh: string | null
+          platform: string | null
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          auth?: string | null
+          created_at?: string
+          endpoint: string
+          id?: string
+          last_used_at?: string
+          p256dh?: string | null
+          platform?: string | null
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          auth?: string | null
+          created_at?: string
+          endpoint?: string
+          id?: string
+          last_used_at?: string
+          p256dh?: string | null
+          platform?: string | null
+          user_agent?: string | null
           user_id?: string
         }
         Relationships: []
