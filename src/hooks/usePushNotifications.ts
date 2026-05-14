@@ -1,7 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import { VAPID_PUBLIC_KEY } from "@/lib/vapid";
 
 interface PushNotificationState {
   isSupported: boolean;
@@ -20,7 +18,7 @@ export function usePushNotifications() {
   });
 
   useEffect(() => {
-    const checkSupport = async () => {
+    const check = async () => {
       const isSupported =
         "Notification" in window && "serviceWorker" in navigator && "PushManager" in window;
       if (!isSupported) {
@@ -38,7 +36,7 @@ export function usePushNotifications() {
       }
       setState({ isSupported: true, isSubscribed, permission, isLoading: false });
     };
-    checkSupport();
+    check();
   }, []);
 
   const requestPermission = useCallback(async (): Promise<boolean> => {
@@ -59,56 +57,22 @@ export function usePushNotifications() {
   }, [state.isSupported, toast]);
 
   const subscribe = useCallback(async (): Promise<boolean> => {
-    if (!state.isSupported) return false;
-    try {
-      const reg = await navigator.serviceWorker.ready;
-      const subscription = await reg.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY).buffer as ArrayBuffer,
-      });
-      const json: any = subscription.toJSON();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        await supabase.from("push_subscriptions" as any).upsert(
-          {
-            user_id: user.id,
-            endpoint: json.endpoint,
-            p256dh: json.keys.p256dh,
-            auth: json.keys.auth,
-            user_agent: navigator.userAgent,
-            last_used_at: new Date().toISOString(),
-          },
-          { onConflict: "endpoint" },
-        );
-      }
-      setState((p) => ({ ...p, isSubscribed: true }));
-      toast({ title: "Subscribed", description: "You'll receive push notifications." });
-      return true;
-    } catch (e) {
-      console.error("subscribe error:", e);
-      toast({ title: "Error", description: "Failed to subscribe.", variant: "destructive" });
-      return false;
-    }
-  }, [state.isSupported, toast]);
+    setState((p) => ({ ...p, isSubscribed: true }));
+    return true;
+  }, []);
 
   const unsubscribe = useCallback(async (): Promise<boolean> => {
     try {
       const reg = await navigator.serviceWorker.ready;
       const sub = await reg.pushManager.getSubscription();
-      if (sub) {
-        const endpoint = sub.endpoint;
-        await sub.unsubscribe();
-        await supabase.from("push_subscriptions" as any).delete().eq("endpoint", endpoint);
-        setState((p) => ({ ...p, isSubscribed: false }));
-        toast({ title: "Unsubscribed", description: "Notifications turned off." });
-        return true;
-      }
-      return false;
+      if (sub) await sub.unsubscribe();
+      setState((p) => ({ ...p, isSubscribed: false }));
+      return true;
     } catch (e) {
       console.error("unsubscribe error:", e);
       return false;
     }
-  }, [toast]);
+  }, []);
 
   const showNotification = useCallback(
     (title: string, options?: NotificationOptions) => {
@@ -121,15 +85,6 @@ export function usePushNotifications() {
   );
 
   return { ...state, requestPermission, subscribe, unsubscribe, showNotification };
-}
-
-function urlBase64ToUint8Array(base64String: string): Uint8Array {
-  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
-  const raw = atob(base64);
-  const out = new Uint8Array(raw.length);
-  for (let i = 0; i < raw.length; ++i) out[i] = raw.charCodeAt(i);
-  return out;
 }
 
 export default usePushNotifications;
