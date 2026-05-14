@@ -5,6 +5,9 @@ import { CrisisHero } from '@/components/fundraising/crisis/CrisisHero';
 import { CrisisStepsWizard } from '@/components/fundraising/crisis/CrisisStepsWizard';
 import { CrisisFilters } from '@/components/fundraising/crisis/CrisisFilters';
 import { CrisisCampaignCard } from '@/components/fundraising/crisis/CrisisCampaignCard';
+import { CrisisImpactTicker } from '@/components/fundraising/crisis/CrisisImpactTicker';
+import { CrisisZoneOverview } from '@/components/fundraising/crisis/CrisisZoneOverview';
+import { ResolvedEmergencies } from '@/components/fundraising/crisis/ResolvedEmergencies';
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface CrisisCampaign {
