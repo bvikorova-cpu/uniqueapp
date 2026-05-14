@@ -137,6 +137,7 @@ export default function Settings() {
 
           {/* Account Settings */}
           <TabsContent value="account" className="space-y-4">
+            <PointsDisplay />
             <Card className="p-6 space-y-6">
               <div>
                 <h3 className="text-lg font-semibold mb-4">Account Information</h3>
