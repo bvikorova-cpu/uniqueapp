@@ -479,12 +479,17 @@ export default function PageDetail() {
       {/* Main Content */}
       <div className="max-w-2xl mx-auto px-4 py-4">
         <Tabs defaultValue="posts" className="w-full">
-          <TabsList className="w-full grid grid-cols-4 mb-4">
+          <TabsList className="w-full grid grid-cols-5 mb-4">
             <TabsTrigger value="posts" className="text-xs">Posts</TabsTrigger>
+            <TabsTrigger value="reviews" className="text-xs">Reviews</TabsTrigger>
             <TabsTrigger value="followers" className="text-xs">Followers</TabsTrigger>
             <TabsTrigger value="media" className="text-xs">Media</TabsTrigger>
             <TabsTrigger value="about" className="text-xs">About</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="reviews" className="mt-4">
+            <PageReviews pageId={pageId!} />
+          </TabsContent>
 
           {/* Posts Tab */}
           <TabsContent value="posts" className="space-y-6">
