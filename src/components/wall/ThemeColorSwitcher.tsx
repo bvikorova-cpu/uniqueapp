@@ -1,6 +1,8 @@
-import { useState, useEffect } from "react";
-import { Paintbrush } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Paintbrush, Check, X, Eye } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 interface ColorTheme {
   name: string;
