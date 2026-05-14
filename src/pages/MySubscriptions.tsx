@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Pause, Play, X, CreditCard, RefreshCw, ExternalLink, FileText, Download, ArrowUpRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import PauseLimitCard from "@/components/billing/PauseLimitCard";
 import {
   AlertDialog,
   AlertDialogAction,
