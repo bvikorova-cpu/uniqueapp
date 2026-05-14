@@ -60,6 +60,15 @@ export function CampaignDetailEnhancements({
 
   return (
     <div className="space-y-6">
+      {match && (
+        <MatchDonationBadge
+          sponsorName={match.sponsor_name}
+          sponsorLogoUrl={match.sponsor_logo_url}
+          matchRatio={match.match_ratio}
+          matchCap={match.match_cap}
+          matchedSoFar={match.matched_so_far}
+        />
+      )}
       {/* Milestone progress badges + celebration overlay */}
       <Card className="p-4 bg-gradient-to-br from-primary/5 via-accent/5 to-secondary/5 border-primary/20">
         <div className="flex items-center gap-2 mb-2">
