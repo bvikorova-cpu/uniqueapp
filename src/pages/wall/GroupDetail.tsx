@@ -1029,8 +1029,10 @@ export default function GroupDetail() {
           </TabsContent>
 
           {/* Admin Tab */}
-          {isAdmin && (
-            <TabsContent value="admin">
+          {isStaff && (
+            <TabsContent value="admin" className="space-y-4">
+              <GroupRulesEditor groupId={groupId!} isStaff={isStaff} />
+              {isAdmin && <GroupInsightsPanel groupId={groupId!} />}
               <Card className="p-6">
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                   <Settings className="h-5 w-5" />
