@@ -238,6 +238,16 @@ export default function Settings() {
                   </div>
                 </div>
               </div>
+
+              <div className="pt-4 border-t space-y-4">
+                <h3 className="text-lg font-semibold">Push Notifications</h3>
+                <PushNotificationToggle />
+              </div>
+
+              <div className="pt-4 border-t">
+                <h3 className="text-lg font-semibold mb-4">Per-Category Preferences</h3>
+                <NotificationSettings />
+              </div>
             </Card>
           </TabsContent>
 
