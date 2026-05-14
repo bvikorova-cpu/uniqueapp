@@ -8,6 +8,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useKidsStoryCredits, KIDS_STORY_CREDIT_COST } from "@/hooks/useKidsStoryCredits";
 import { CreditBanner } from "@/components/kids/CreditBanner";
 import { StoryLibrary } from "@/components/kids-story/StoryLibrary";
+import { StoryLimitBanner } from "@/components/kids-story/StoryLimitBanner";
+import { StorySubscriptionManagement } from "@/components/kids-story/StorySubscriptionManagement";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ParentalGate } from "@/components/kids/ParentalGate";
 import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
