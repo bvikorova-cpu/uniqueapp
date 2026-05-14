@@ -594,7 +594,10 @@ const Profile = () => {
             <BrainDuelStats userId={userId!} />
           </TabsContent>
 
-          <TabsContent value="friends" className="mt-4">
+          <TabsContent value="friends" className="mt-4 space-y-3">
+            <p className="text-xs text-muted-foreground">
+              Friends are mutual connections (both accepted). Followers can be viewed from the count above.
+            </p>
             {friends.length === 0 ? (
               <Card className="p-8 text-center text-muted-foreground">
                 No friends yet
@@ -622,6 +625,11 @@ const Profile = () => {
                 ))}
               </div>
             )}
+          </TabsContent>
+
+          <TabsContent value="life" className="mt-4 space-y-4">
+            <LifeEventsTimeline userId={userId!} isOwnProfile={currentUserId === userId} />
+            <FamilySection userId={userId!} currentUserId={currentUserId} isOwnProfile={currentUserId === userId} />
           </TabsContent>
 
           {currentUserId === userId && (
