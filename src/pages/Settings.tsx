@@ -25,6 +25,7 @@ import { toast as sonnerToast } from "sonner";
 import { useTheme } from "next-themes";
 import { PushNotificationToggle } from "@/components/PushNotificationToggle";
 import { NotificationSettings } from "@/components/settings/NotificationSettings";
+import { PointsDisplay } from "@/components/gamification/PointsDisplay";
 
 export default function Settings() {
   const navigate = useNavigate();
