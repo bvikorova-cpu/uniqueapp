@@ -511,10 +511,10 @@ const App = () => {
                         <Route path="/wall/groups/:groupId" element={<GroupDetail />} />
                         <Route path="/wall/pages" element={<ProtectedRoute><Pages /></ProtectedRoute>} />
                         <Route path="/wall/pages/:pageId" element={<PageDetail />} />
-                        <Route path="/wall/videos" element={<Wall />} />
-                        <Route path="/wall/events" element={<Wall />} />
-                        <Route path="/wall/events/:eventId" element={<EventDetail />} />
-                        <Route path="/wall/saved" element={<Wall />} />
+                       <Route path="/wall/videos" element={<WallVideos />} />
+                       <Route path="/wall/events" element={<Wall />} />
+                       <Route path="/wall/events/:eventId" element={<EventDetail />} />
+                       <Route path="/wall/saved" element={<WallSaved />} />
                         <Route path="/wall/trending" element={<Wall />} />
                         <Route path="/wall/info" element={<Wall />} />
                         <Route path="/wall/more" element={<Navigate to="/wall" replace />} />
