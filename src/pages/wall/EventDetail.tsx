@@ -449,6 +449,23 @@ export default function EventDetail() {
             )}
           </div>
 
+          {/* Add to Calendar */}
+          {event && (
+            <div className="flex justify-center mt-3">
+              <AddToCalendarButtons
+                event={{
+                  uid: event.id,
+                  title: event.title,
+                  description: event.description || undefined,
+                  location: event.location || undefined,
+                  startsAt: new Date(event.start_time),
+                  endsAt: new Date(event.end_time || event.start_time),
+                  url: typeof window !== "undefined" ? window.location.href : undefined,
+                }}
+              />
+            </div>
+          )}
+
           {/* Quick Stats */}
           <div className="flex justify-center gap-8 mt-4 pt-4 border-t">
             <div className="text-center">
