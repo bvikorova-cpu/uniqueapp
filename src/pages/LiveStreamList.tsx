@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Video, Users, Play, Radio } from "lucide-react";
 import { toast } from "sonner";
 import { GoLiveButton } from "@/components/influencer/GoLiveButton";
+import { RecordingArchive } from "@/components/live/RecordingArchive";
 
 interface LiveStream {
   id: string;
