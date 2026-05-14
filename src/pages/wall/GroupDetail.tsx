@@ -54,6 +54,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { WallPostActions } from "@/components/wall/WallPostActions";
+import { GroupRulesEditor } from "@/components/groups/GroupRulesEditor";
+import { GroupInsightsPanel } from "@/components/groups/GroupInsightsPanel";
 
 export default function GroupDetail() {
   const { groupId } = useParams();
