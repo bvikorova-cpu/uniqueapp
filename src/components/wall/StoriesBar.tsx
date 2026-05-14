@@ -220,6 +220,15 @@ export const StoriesBar = () => {
                 {viewingStory.caption}
               </div>
             )}
+
+            {isOwnStory && (
+              <div
+                className="absolute bottom-4 left-4 right-4 max-w-md mx-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <StoryAnalyticsPanel storyId={viewingStory.id} />
+              </div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
