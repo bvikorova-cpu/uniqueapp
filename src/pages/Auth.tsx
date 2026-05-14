@@ -518,8 +518,10 @@ const Auth = () => {
                       </Label>
                     </div>
                   </div>
-                  
-                  <Button type="submit" className="w-full" disabled={loading || !privacyConsent || !termsConsent || !birthDate}>
+
+                  <Captcha onVerify={setCaptchaVerified} />
+
+                  <Button type="submit" className="w-full" disabled={loading || !privacyConsent || !termsConsent || !birthDate || !captchaVerified}>
                     {loading ? t('auth.registering') : t('auth.sign_up')}
                   </Button>
                 </form>
