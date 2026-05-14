@@ -183,77 +183,177 @@ const themes: ColorTheme[] = [
   },
 ];
 
-export function ThemeColorSwitcher() {
-  const [activeTheme, setActiveTheme] = useState<string>(() => {
-    return localStorage.getItem("app-color-theme") || "Purple & Pink";
-  });
+const STORAGE_KEY = "app-color-theme";
+const DEFAULT_THEME = "Purple & Pink";
 
-  useEffect(() => {
-    const saved = localStorage.getItem("app-color-theme");
-    if (saved) {
-      const theme = themes.find((t) => t.name === saved);
-      if (theme) applyTheme(theme);
+const applyThemeVars = (theme: ColorTheme) => {
+  const root = document.documentElement;
+  root.style.setProperty("--primary", theme.primary);
+  root.style.setProperty("--ring", theme.ring);
+  root.style.setProperty("--accent", theme.accent);
+  root.style.setProperty("--sidebar-primary", theme.primary);
+  root.style.setProperty("--sidebar-ring", theme.ring);
+
+  const isDark = root.classList.contains("dark");
+  if (isDark) {
+    const parts = theme.primary.split(" ");
+    if (parts.length === 3) {
+      const lightness = parseFloat(parts[2]);
+      root.style.setProperty(
+        "--primary",
+        `${parts[0]} ${parts[1]} ${Math.min(lightness + 7, 80)}%`
+      );
     }
+  }
+};
+
+export function ThemeColorSwitcher() {
+  const [savedTheme, setSavedTheme] = useState<string>(
+    () => localStorage.getItem(STORAGE_KEY) || DEFAULT_THEME
+  );
+  const [previewTheme, setPreviewTheme] = useState<string | null>(null);
+
+  // Apply persisted theme on first mount
+  useEffect(() => {
+    const t = themes.find((t) => t.name === savedTheme);
+    if (t) applyThemeVars(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const applyTheme = (theme: ColorTheme) => {
-    const root = document.documentElement;
-    root.style.setProperty("--primary", theme.primary);
-    root.style.setProperty("--ring", theme.ring);
-    root.style.setProperty("--accent", theme.accent);
-    root.style.setProperty("--sidebar-primary", theme.primary);
-    root.style.setProperty("--sidebar-ring", theme.ring);
+  const previewOnly = useCallback((theme: ColorTheme) => {
+    applyThemeVars(theme);
+    setPreviewTheme(theme.name);
+  }, []);
 
-    // Also adjust dark mode primary lightness
-    const isDark = root.classList.contains("dark");
-    if (isDark) {
-      // Bump lightness slightly for dark mode
-      const parts = theme.primary.split(" ");
-      if (parts.length === 3) {
-        const lightness = parseFloat(parts[2]);
-        root.style.setProperty("--primary", `${parts[0]} ${parts[1]} ${Math.min(lightness + 7, 80)}%`);
-      }
-    }
-
-    localStorage.setItem("app-color-theme", theme.name);
-    setActiveTheme(theme.name);
+  const savePreview = () => {
+    if (!previewTheme) return;
+    localStorage.setItem(STORAGE_KEY, previewTheme);
+    setSavedTheme(previewTheme);
+    setPreviewTheme(null);
+    toast.success(`Theme "${previewTheme}" saved`);
   };
+
+  const cancelPreview = () => {
+    const t = themes.find((t) => t.name === savedTheme);
+    if (t) applyThemeVars(t);
+    setPreviewTheme(null);
+  };
+
+  const activeName = previewTheme ?? savedTheme;
+  const activeTheme = themes.find((t) => t.name === activeName);
+  const isPreviewing = previewTheme !== null && previewTheme !== savedTheme;
 
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider px-1">
         <Paintbrush className="h-3.5 w-3.5" />
         Theme Colors
+        {isPreviewing && (
+          <span className="ml-auto flex items-center gap-1 text-[10px] font-bold text-primary normal-case tracking-normal animate-pulse">
+            <Eye className="h-3 w-3" /> Live preview
+          </span>
+        )}
       </div>
+
       <div className="grid grid-cols-4 gap-1.5 w-full">
-        {themes.map((theme) => (
-          <button
-            key={theme.name}
-            onClick={() => applyTheme(theme)}
-            className={cn(
-              "relative flex flex-col items-center gap-1 p-1 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 min-w-0",
-              activeTheme === theme.name
-                ? "ring-2 ring-primary bg-primary/10"
-                : "hover:bg-muted/50"
-            )}
-            title={theme.name}
-          >
-            <div className="flex gap-0.5">
+        {themes.map((theme) => {
+          const isActive = activeName === theme.name;
+          const isSaved = savedTheme === theme.name;
+          return (
+            <button
+              key={theme.name}
+              onClick={() => previewOnly(theme)}
+              className={cn(
+                "relative flex flex-col items-center gap-1 p-1 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 min-w-0",
+                isActive
+                  ? "ring-2 ring-primary bg-primary/10"
+                  : "hover:bg-muted/50"
+              )}
+              title={theme.name}
+            >
+              {isSaved && !isActive && (
+                <Check className="absolute top-0.5 right-0.5 h-2.5 w-2.5 text-emerald-500" />
+              )}
+              <div className="flex gap-0.5">
+                <div
+                  className="h-4 w-4 rounded-full shadow-sm border border-border/30"
+                  style={{ background: theme.preview[0] }}
+                />
+                <div
+                  className="h-4 w-4 rounded-full shadow-sm border border-border/30"
+                  style={{ background: theme.preview[1] }}
+                />
+              </div>
+              <span className="text-[8px] text-muted-foreground leading-tight text-center truncate w-full">
+                {theme.name}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {activeTheme && (
+        <div
+          className={cn(
+            "rounded-xl border p-2 transition-colors",
+            isPreviewing
+              ? "border-primary/60 bg-primary/5"
+              : "border-border/50 bg-muted/30"
+          )}
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <div className="flex gap-1">
               <div
-                className="h-4 w-4 rounded-full shadow-sm border border-border/30"
-                style={{ background: theme.preview[0] }}
+                className="h-6 w-6 rounded-full ring-2 ring-background shadow"
+                style={{ background: activeTheme.preview[0] }}
               />
               <div
-                className="h-4 w-4 rounded-full shadow-sm border border-border/30"
-                style={{ background: theme.preview[1] }}
+                className="h-6 w-6 rounded-full -ml-2 ring-2 ring-background shadow"
+                style={{ background: activeTheme.preview[1] }}
               />
             </div>
-            <span className="text-[8px] text-muted-foreground leading-tight text-center truncate w-full">
-              {theme.name}
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-semibold truncate">{activeTheme.name}</p>
+              <p className="text-[10px] text-muted-foreground">
+                {isPreviewing ? "Preview — not saved" : "Current theme"}
+              </p>
+            </div>
+          </div>
+
+          {/* Live preview chips */}
+          <div className="flex items-center gap-1.5 mb-2">
+            <span className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-primary text-primary-foreground">
+              Primary
             </span>
-          </button>
-        ))}
-      </div>
+            <span className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-accent text-accent-foreground">
+              Accent
+            </span>
+            <span className="px-2 py-0.5 rounded-md text-[10px] font-semibold border border-primary text-primary">
+              Outline
+            </span>
+          </div>
+
+          {isPreviewing && (
+            <div className="flex gap-1.5">
+              <Button
+                size="sm"
+                className="h-7 flex-1 text-xs"
+                onClick={savePreview}
+              >
+                <Check className="h-3.5 w-3.5 mr-1" /> Save
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="h-7 flex-1 text-xs"
+                onClick={cancelPreview}
+              >
+                <X className="h-3.5 w-3.5 mr-1" /> Cancel
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
