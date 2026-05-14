@@ -37,7 +37,8 @@ import {
   Heart,
   Bot,
   Globe,
-  Atom
+  Atom,
+  BarChart3
 } from "lucide-react";
 import { useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -187,6 +188,14 @@ export function WallSidebar({ onPostCreated }: WallSidebarProps) {
         <div className="space-y-2">
           <PrivacySettingsDialog />
           <MediaGalleryDialog />
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-2.5 h-auto py-2.5 hover:bg-primary/10 rounded-lg"
+            onClick={() => navigate("/creator-studio")}
+          >
+            <BarChart3 className="h-4 w-4 text-primary" />
+            <span className="text-sm font-medium">Creator Studio</span>
+          </Button>
         </div>
 
         <div className="h-px bg-border" />
