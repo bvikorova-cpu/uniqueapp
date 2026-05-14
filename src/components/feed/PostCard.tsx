@@ -753,28 +753,22 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
         </div>
 
         {/* Content */}
-        {post.content && (
-          (post as any).background_style && (!post.media || post.media.length === 0) ? (
-            (() => {
-              const bg = require("@/lib/postBackgrounds").getPostBackground((post as any).background_style);
-              return bg ? (
-                <div className={`rounded-xl p-8 mb-4 min-h-[220px] flex items-center justify-center ${bg.className}`}>
-                  <p className={`whitespace-pre-wrap break-words ${bg.textClassName}`}>
-                    {post.content}
-                  </p>
-                </div>
-              ) : (
-                <p className="text-base text-foreground mb-4 leading-relaxed whitespace-pre-wrap line-clamp-6">
-                  {post.content}
-                </p>
-              );
-            })()
+        {post.content && (() => {
+          const bg = (post as any).background_style && (!post.media || post.media.length === 0)
+            ? getPostBackground((post as any).background_style)
+            : null;
+          return bg ? (
+            <div className={`rounded-xl p-8 mb-4 min-h-[220px] flex items-center justify-center ${bg.className}`}>
+              <p className={`whitespace-pre-wrap break-words ${bg.textClassName}`}>
+                {post.content}
+              </p>
+            </div>
           ) : (
             <p className="text-base text-foreground mb-4 leading-relaxed whitespace-pre-wrap line-clamp-6">
               {post.content}
             </p>
-          )
-        )}
+          );
+        })()}
 
 
         {/* Interaction Buttons */}
