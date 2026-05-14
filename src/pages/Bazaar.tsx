@@ -36,6 +36,8 @@ import { PromoteListingDialog } from "@/components/bazaar/PromoteListingDialog";
 import { VerifiedSellerBadge } from "@/components/bazaar/VerifiedSellerBadge";
 import { ReportListingDialog } from "@/components/bazaar/ReportListingDialog";
 import { RequestVerificationCard } from "@/components/bazaar/RequestVerificationCard";
+import { PriceAlertDialog } from "@/components/marketplace/PriceAlertDialog";
+import { SellerReviewsPanel } from "@/components/marketplace/SellerReviewsPanel";
 import { Flag } from "lucide-react";
 
 interface BazaarItem {
