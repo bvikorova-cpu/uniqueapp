@@ -564,6 +564,11 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
             <div className="flex items-center gap-1">
               <EphemeralPostToggle visibility={postVisibility} onVisibilityChange={setPostVisibility} />
               <CollaborativePostEditor />
+              <BackgroundStylePicker
+                value={backgroundStyle}
+                onChange={setBackgroundStyle}
+                disabled={files.length > 0}
+              />
             </div>
             <DraftsManager onSelectDraft={(draft: any) => setContent(draft.content || "")} />
           </div>
