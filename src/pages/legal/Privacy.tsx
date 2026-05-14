@@ -1,3 +1,4 @@
+import { LegalAssistant } from "@/components/legal/LegalAssistant";
 import { Lock, Cookie, Eye, Database } from "lucide-react";
 import { LegalHero } from "@/components/legal/LegalHero";
 import { LegalSidebar, LegalSection as Section } from "@/components/legal/LegalSidebar";
