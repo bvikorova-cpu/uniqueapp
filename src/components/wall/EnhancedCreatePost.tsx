@@ -222,6 +222,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
       setLocation("");
       setPrivacy("public");
       setPollData(null);
+      setBackgroundStyle(null);
       onPostCreated();
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
