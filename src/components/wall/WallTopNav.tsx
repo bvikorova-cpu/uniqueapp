@@ -80,8 +80,41 @@ export function WallTopNav({ currentPath }: WallTopNavProps) {
               </Button>
             ))}
 
+            {/* Dating dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={cn(
+                    "flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-all hover:bg-primary/10",
+                    isDatingActive && "bg-primary/10 text-primary font-semibold"
+                  )}
+                >
+                  <Heart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  <span className="text-[10px] sm:text-xs whitespace-nowrap">Dating</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-52 bg-card border shadow-lg z-50">
+                {datingItems.map((item) => (
+                  <DropdownMenuItem
+                    key={item.path}
+                    onClick={() => navigate(item.path)}
+                    className={cn(
+                      "flex items-center gap-2 cursor-pointer",
+                      currentPath === item.path && "bg-primary/10 text-primary font-semibold"
+                    )}
+                  >
+                    <item.icon className="h-4 w-4" />
+                    <span>{item.label}</span>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             {/* More dropdown */}
             <DropdownMenu>
+
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
