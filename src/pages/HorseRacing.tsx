@@ -238,6 +238,7 @@ export default function HorseRacing() {
     quests: <DailyTrainingQuests />,
     bloodline: <BloodlineGenealogy />,
     weather: <WeatherRacingBonuses />,
+    marketplace: <HorseMarketplace />,
   };
 
   return (
