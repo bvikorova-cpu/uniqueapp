@@ -125,13 +125,13 @@ export function ThemeColorSwitcher() {
         <Paintbrush className="h-3.5 w-3.5" />
         Theme Colors
       </div>
-      <div className="grid grid-cols-5 gap-2">
+      <div className="grid grid-cols-4 gap-1.5 w-full">
         {themes.map((theme) => (
           <button
             key={theme.name}
             onClick={() => applyTheme(theme)}
             className={cn(
-              "relative flex flex-col items-center gap-1 p-1.5 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95",
+              "relative flex flex-col items-center gap-1 p-1 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 min-w-0",
               activeTheme === theme.name
                 ? "ring-2 ring-primary bg-primary/10"
                 : "hover:bg-muted/50"
@@ -140,11 +140,11 @@ export function ThemeColorSwitcher() {
           >
             <div className="flex gap-0.5">
               <div
-                className="h-5 w-5 rounded-full shadow-sm border border-border/30"
+                className="h-4 w-4 rounded-full shadow-sm border border-border/30"
                 style={{ background: theme.preview[0] }}
               />
               <div
-                className="h-5 w-5 rounded-full shadow-sm border border-border/30"
+                className="h-4 w-4 rounded-full shadow-sm border border-border/30"
                 style={{ background: theme.preview[1] }}
               />
             </div>
