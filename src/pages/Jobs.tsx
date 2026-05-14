@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Briefcase, MapPin, DollarSign, Clock, Search, Plus, Building2, Globe, Wrench, Flame, Trophy, Medal, Zap } from "lucide-react";
 import JobsCinematicHero from "@/components/jobs/JobsCinematicHero";
+import { JobsHeroSection } from "@/components/jobs/JobsHeroSection";
 import { QuickFilterChips } from "@/components/jobs/QuickFilterChips";
 import { JobsSidebar } from "@/components/jobs/JobsSidebar";
 import { JobCardRedesigned } from "@/components/jobs/JobCardRedesigned";
@@ -254,6 +255,11 @@ const Jobs = () => {
         />
         <HeroRewardedAd sectionKey="page_jobs" />
 
+        <JobsHeroSection
+          totalJobs={jobs.length}
+          totalCompanies={new Set(jobs.map(j => j.company_name)).size}
+          totalApplications={jobs.reduce((sum, j) => sum + j.applications_count, 0)}
+        />
 
 
         {/* Tab Navigation */}

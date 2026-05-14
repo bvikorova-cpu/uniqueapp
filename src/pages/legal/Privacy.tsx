@@ -1,3 +1,4 @@
+import { LegalAssistant } from "@/components/legal/LegalAssistant";
 import { Lock, Cookie, Eye, Database } from "lucide-react";
 import { LegalHero } from "@/components/legal/LegalHero";
 import { LegalSidebar, LegalSection as Section } from "@/components/legal/LegalSidebar";
@@ -123,6 +124,7 @@ export default function Privacy() {
           </main>
         </div>
       </div>
+      <LegalAssistant documentType="Privacy & Cookie Policy" documentText="Privacy & Cookie Policy - see content above on this page." />
     </div>
   );
 }

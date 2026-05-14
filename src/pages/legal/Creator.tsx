@@ -1,3 +1,4 @@
+import { LegalAssistant } from "@/components/legal/LegalAssistant";
 import { FileText, Crown, Coins, ShieldCheck } from "lucide-react";
 import { LegalHero } from "@/components/legal/LegalHero";
 import { LegalSidebar, LegalSection as Section } from "@/components/legal/LegalSidebar";
@@ -91,6 +92,7 @@ export default function Creator() {
           </main>
         </div>
       </div>
+      <LegalAssistant documentType="Creator Agreement" documentText="Creator Agreement - see content above on this page." />
     </div>
   );
 }

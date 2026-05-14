@@ -1,3 +1,4 @@
+import { LegalAssistant } from "@/components/legal/LegalAssistant";
 import { Users, AlertTriangle, Copyright, Flag } from "lucide-react";
 import { LegalHero } from "@/components/legal/LegalHero";
 import { LegalSidebar, LegalSection as Section } from "@/components/legal/LegalSidebar";
@@ -116,6 +117,7 @@ export default function Community() {
           </main>
         </div>
       </div>
+      <LegalAssistant documentType="Community Guidelines & DMCA" documentText="Community Guidelines & DMCA - see content above on this page." />
     </div>
   );
 }
