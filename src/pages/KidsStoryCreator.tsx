@@ -186,7 +186,8 @@ const KidsStoryCreator = () => {
           <HeroRewardedAd sectionKey="page_kidsstorycreator" />
 
           {user && !creditsLoading && (
-            <div className="mb-6">
+            <div className="mb-6 space-y-4">
+              <StoryLimitBanner storiesCreatedThisMonth={0} isPremium={balance > 0} />
               <CreditBanner
                 label="Story"
                 creditsRemaining={balance}
@@ -194,6 +195,7 @@ const KidsStoryCreator = () => {
                 onBuyCredits={handleBuyCredits}
                 unitName="story"
               />
+              <StorySubscriptionManagement subscribed={balance > 0} onManageSubscription={() => navigate('/kids-story-pricing')} />
             </div>
           )}
 
