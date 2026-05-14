@@ -1209,7 +1209,11 @@ const Messenger = () => {
                   </div>
                 )}
 
-                <div className={`flex items-center gap-2 pt-4 ${replyingTo ? "" : "border-t"}`}>
+                <div className="flex justify-end pt-2">
+                  <EncryptionBadge />
+                </div>
+
+                <div className={`flex items-center gap-2 pt-2 ${replyingTo ? "" : "border-t"}`}>
                   {/* Hidden file input */}
                   <input
                     type="file"
