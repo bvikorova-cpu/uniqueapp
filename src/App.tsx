@@ -471,6 +471,7 @@ const App = () => {
               <LanguagePreferenceMount />
               <DunningBanner />
               <SCABanner />
+              <RealTimeNotificationsMount />
             </Suspense>
             <AnimationProvider>
               <CurrencyProvider>
