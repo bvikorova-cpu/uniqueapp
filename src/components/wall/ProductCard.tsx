@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ShoppingCart, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { WishlistButton } from "@/components/marketplace/WishlistButton";
 
 interface ProductCardProps {
   productId: string;
