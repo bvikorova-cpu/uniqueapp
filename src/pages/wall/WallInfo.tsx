@@ -4,7 +4,7 @@ import {
   Info, Heart, MessageCircle, Share2, Repeat2, Bookmark, Image, Video, Smile, MapPin,
   Clock, Hash, AtSign, Users, Bell, Lock, Sparkles, TrendingUp, Calendar, Flag, Eye,
   ThumbsUp, Star, Zap, Camera, FileImage, MessageSquare, UserPlus, Search, Filter,
-  Radio, Mic, BarChart3, Crown, Gift, Shield, Globe, Palette,
+  Radio, Mic, BarChart3, Crown, Gift, Shield, Globe, Palette, ShoppingBag, EyeOff,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
