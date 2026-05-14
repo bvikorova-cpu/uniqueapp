@@ -20532,6 +20532,44 @@ export type Database = {
         }
         Relationships: []
       }
+      group_insights_daily: {
+        Row: {
+          active_members: number
+          comments_count: number
+          created_at: string
+          day: string
+          group_id: string
+          new_members: number
+          posts_count: number
+        }
+        Insert: {
+          active_members?: number
+          comments_count?: number
+          created_at?: string
+          day: string
+          group_id: string
+          new_members?: number
+          posts_count?: number
+        }
+        Update: {
+          active_members?: number
+          comments_count?: number
+          created_at?: string
+          day?: string
+          group_id?: string
+          new_members?: number
+          posts_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_insights_daily_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       group_members: {
         Row: {
           group_id: string
@@ -20609,6 +20647,47 @@ export type Database = {
             columns: ["reply_to_id"]
             isOneToOne: false
             referencedRelation: "group_messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_rules: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          group_id: string
+          id: string
+          position: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          group_id: string
+          id?: string
+          position?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          group_id?: string
+          id?: string
+          position?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_rules_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
             referencedColumns: ["id"]
           },
         ]
@@ -48773,6 +48852,7 @@ export type Database = {
           user_id: string
         }[]
       }
+      aggregate_group_insights: { Args: { _day?: string }; Returns: number }
       are_friends: { Args: { a: string; b: string }; Returns: boolean }
       assign_user_role: {
         Args: {
@@ -49552,6 +49632,10 @@ export type Database = {
       }
       is_group_member: {
         Args: { p_group_id: string; p_user_id: string }
+        Returns: boolean
+      }
+      is_group_staff: {
+        Args: { _group_id: string; _user_id: string }
         Returns: boolean
       }
       is_iq_pro: { Args: { _user_id: string }; Returns: boolean }
