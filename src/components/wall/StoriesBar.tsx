@@ -16,6 +16,8 @@ export const StoriesBar = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [caption, setCaption] = useState("");
   const { stories, createStory, viewStory } = useStories();
+  const { user } = useAuth();
+  const isOwnStory = viewingStory && user?.id === viewingStory.user_id;
 
   const handleCreateStory = () => {
     if (!selectedFile) return;
