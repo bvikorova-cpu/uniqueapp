@@ -8,6 +8,7 @@ import { Gift, Calendar, TrendingUp } from "lucide-react";
 import { TrendingSidebar } from "./TrendingSidebar";
 import { FriendsHubWidget } from "./FriendsHubWidget";
 import { MemoriesWidget } from "./MemoriesWidget";
+import { BirthdaysWidget } from "./BirthdaysWidget";
 import { ActivityFeedCard } from "./ActivityFeedCard";
 import { TrendingHashtags } from "./TrendingHashtags";
 import { DailyXPVideoReward } from "@/components/gamification/DailyXPVideoReward";
