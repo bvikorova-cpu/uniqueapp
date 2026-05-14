@@ -292,6 +292,10 @@ const MyAuctions = () => {
           </TabsContent>
         </Tabs>
       )}
+
+      <div className="mt-8">
+        <AuctionWithdrawalRequest />
+      </div>
     </div>
   );
 };
