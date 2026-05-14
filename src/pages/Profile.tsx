@@ -38,6 +38,8 @@ import { ProfileQRCode } from "@/components/profile/ProfileQRCode";
 import { ThemePicker } from "@/components/profile/ThemePicker";
 import { Endorsements } from "@/components/profile/Endorsements";
 import { ProfileViewsCounter } from "@/components/profile/ProfileViewsCounter";
+import { LifeEventsTimeline } from "@/components/profile/LifeEventsTimeline";
+import { FamilySection } from "@/components/profile/FamilySection";
 
 interface Profile {
   id: string;
@@ -516,7 +518,7 @@ const Profile = () => {
 
         {/* Tabs Section - Central Hub */}
         <Tabs defaultValue={defaultTab} className="w-full">
-          <TabsList className={`grid w-full ${currentUserId === userId ? "grid-cols-3 md:grid-cols-9" : "grid-cols-4 md:grid-cols-8"} h-auto gap-1`}>
+          <TabsList className={`grid w-full ${currentUserId === userId ? "grid-cols-3 md:grid-cols-10" : "grid-cols-4 md:grid-cols-9"} h-auto gap-1`}>
             <TabsTrigger value="posts">Posts</TabsTrigger>
             <TabsTrigger value="listings">
               <Package className="h-4 w-4 mr-1 hidden sm:inline" />
@@ -537,6 +539,10 @@ const Profile = () => {
               Duel
             </TabsTrigger>
             <TabsTrigger value="friends">Friends</TabsTrigger>
+            <TabsTrigger value="life">
+              <Sparkles className="h-4 w-4 mr-1 hidden sm:inline" />
+              Life
+            </TabsTrigger>
             {currentUserId === userId && (
               <TabsTrigger value="invite">
                 <Gift className="h-4 w-4 mr-1 hidden sm:inline" />
@@ -588,7 +594,10 @@ const Profile = () => {
             <BrainDuelStats userId={userId!} />
           </TabsContent>
 
-          <TabsContent value="friends" className="mt-4">
+          <TabsContent value="friends" className="mt-4 space-y-3">
+            <p className="text-xs text-muted-foreground">
+              Friends are mutual connections (both accepted). Followers can be viewed from the count above.
+            </p>
             {friends.length === 0 ? (
               <Card className="p-8 text-center text-muted-foreground">
                 No friends yet
@@ -616,6 +625,11 @@ const Profile = () => {
                 ))}
               </div>
             )}
+          </TabsContent>
+
+          <TabsContent value="life" className="mt-4 space-y-4">
+            <LifeEventsTimeline userId={userId!} isOwnProfile={currentUserId === userId} />
+            <FamilySection userId={userId!} currentUserId={currentUserId} isOwnProfile={currentUserId === userId} />
           </TabsContent>
 
           {currentUserId === userId && (
