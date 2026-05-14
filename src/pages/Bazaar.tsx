@@ -809,6 +809,14 @@ const Bazaar = () => {
                       </Button>
                     )}
                   </div>
+                  {currentUserId !== selectedItem.user_id && selectedItem.listing_type === 'sell' && (
+                    <div className="flex flex-wrap gap-2 pt-2 border-t">
+                      <PriceAlertDialog productId={selectedItem.id} currentPriceCents={Math.round(Number(selectedItem.price) * 100)} />
+                    </div>
+                  )}
+                  <div className="pt-2 border-t">
+                    <SellerReviewsPanel sellerId={selectedItem.user_id} />
+                  </div>
                 </div>
               </div>
             )}
