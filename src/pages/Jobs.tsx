@@ -255,6 +255,11 @@ const Jobs = () => {
         />
         <HeroRewardedAd sectionKey="page_jobs" />
 
+        <JobsHeroSection
+          totalJobs={jobs.length}
+          totalCompanies={new Set(jobs.map(j => j.company_name)).size}
+          totalApplications={jobs.reduce((sum, j) => sum + j.applications_count, 0)}
+        />
 
 
         {/* Tab Navigation */}
