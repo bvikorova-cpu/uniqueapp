@@ -34817,6 +34817,60 @@ export type Database = {
         }
         Relationships: []
       }
+      product_price_alerts: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          product_id: string
+          target_price_cents: number
+          triggered_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          product_id: string
+          target_price_cents: number
+          triggered_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          product_id?: string
+          target_price_cents?: number
+          triggered_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      product_wishlists: {
+        Row: {
+          created_at: string
+          id: string
+          note: string | null
+          product_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          product_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          product_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profile_featured_links: {
         Row: {
           created_at: string
@@ -39372,6 +39426,36 @@ export type Database = {
           total_findings?: number
           trigger_source?: string
           triggered_by?: string | null
+        }
+        Relationships: []
+      }
+      seller_reviews: {
+        Row: {
+          buyer_id: string
+          comment: string | null
+          created_at: string
+          id: string
+          rating: number
+          seller_id: string
+          updated_at: string
+        }
+        Insert: {
+          buyer_id: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating: number
+          seller_id: string
+          updated_at?: string
+        }
+        Update: {
+          buyer_id?: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating?: number
+          seller_id?: string
+          updated_at?: string
         }
         Relationships: []
       }
