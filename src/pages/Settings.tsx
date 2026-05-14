@@ -23,6 +23,8 @@ import { ProfilePageHero } from "@/components/profile/ProfilePageHero";
 import { GDPRPanel } from "@/components/gdpr/GDPRPanel";
 import { toast as sonnerToast } from "sonner";
 import { useTheme } from "next-themes";
+import { PushNotificationToggle } from "@/components/PushNotificationToggle";
+import { NotificationSettings } from "@/components/settings/NotificationSettings";
 
 export default function Settings() {
   const navigate = useNavigate();
