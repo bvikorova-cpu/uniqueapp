@@ -15,6 +15,7 @@ import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
 import { supabase } from "@/integrations/supabase/client";
 
 import { ParentalHero } from "@/components/kids/parental/ParentalHero";
+import { ParentalDashboard } from "@/components/kids/ParentalDashboard";
 import { ChildProfileCards } from "@/components/kids/parental/ChildProfileCards";
 import { AnimatedStats } from "@/components/kids/parental/AnimatedStats";
 import { EnhancedCharts } from "@/components/kids/parental/EnhancedCharts";
@@ -204,6 +205,8 @@ export default function KidsParentalDashboard() {
         <HeroRewardedAd sectionKey="page_kidsparentaldashboard" />
 
         <ChildProfileCards />
+
+        <ParentalDashboard />
 
         <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
           <CardContent className="flex items-center gap-4 py-4">

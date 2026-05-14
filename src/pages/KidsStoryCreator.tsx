@@ -8,6 +8,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useKidsStoryCredits, KIDS_STORY_CREDIT_COST } from "@/hooks/useKidsStoryCredits";
 import { CreditBanner } from "@/components/kids/CreditBanner";
 import { StoryLibrary } from "@/components/kids-story/StoryLibrary";
+import { StoryLimitBanner } from "@/components/kids-story/StoryLimitBanner";
+import { StorySubscriptionManagement } from "@/components/kids-story/StorySubscriptionManagement";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ParentalGate } from "@/components/kids/ParentalGate";
 import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
@@ -184,7 +186,8 @@ const KidsStoryCreator = () => {
           <HeroRewardedAd sectionKey="page_kidsstorycreator" />
 
           {user && !creditsLoading && (
-            <div className="mb-6">
+            <div className="mb-6 space-y-4">
+              <StoryLimitBanner storiesCreatedThisMonth={0} isPremium={balance > 0} />
               <CreditBanner
                 label="Story"
                 creditsRemaining={balance}
@@ -192,6 +195,7 @@ const KidsStoryCreator = () => {
                 onBuyCredits={handleBuyCredits}
                 unitName="story"
               />
+              <StorySubscriptionManagement subscribed={balance > 0} onManageSubscription={() => navigate('/kids-story-pricing')} />
             </div>
           )}
 
