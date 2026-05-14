@@ -206,6 +206,8 @@ export default function KidsParentalDashboard() {
 
         <ChildProfileCards />
 
+        <ParentalDashboard />
+
         <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
           <CardContent className="flex items-center gap-4 py-4">
             <div className="bg-blue-100 rounded-full p-3"><Mail className="w-6 h-6 text-blue-600" /></div>
