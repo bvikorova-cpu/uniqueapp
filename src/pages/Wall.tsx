@@ -645,7 +645,6 @@ const Feed = () => {
                     <AchievementsBadge />
                   </div>
 
-                  <GlobalSearch />
                   <SearchBar />
                   <SmartSuggestionsCard />
 
