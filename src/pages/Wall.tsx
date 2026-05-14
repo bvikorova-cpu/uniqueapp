@@ -21,6 +21,8 @@ import { MobileWallMenu } from "@/components/wall/MobileWallMenu";
 import { EnhancedCreatePost } from "@/components/wall/EnhancedCreatePost";
 import { AchievementsBadge } from "@/components/wall/AchievementsBadge";
 import { SearchBar } from "@/components/wall/SearchBar";
+import { GlobalSearch } from "@/components/wall/GlobalSearch";
+import { SmartSuggestionsCard } from "@/components/wall/SmartSuggestionsCard";
 import { WallTopNav } from "@/components/wall/WallTopNav";
 import { WallBackground } from "@/components/wall/WallBackground";
 import { StoriesBar } from "@/components/wall/StoriesBar";
@@ -640,7 +642,9 @@ const Feed = () => {
                     <AchievementsBadge />
                   </div>
 
+                  <GlobalSearch />
                   <SearchBar />
+                  <SmartSuggestionsCard />
 
                   <div className="space-y-3 sm:space-y-4">
                     {loading ? (
