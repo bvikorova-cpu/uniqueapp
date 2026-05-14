@@ -1,74 +1,53 @@
-import { useState, useRef, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { useCallback, useRef, useState } from "react";
 
-export function useVoiceRecorder(userId: string | null) {
-  const { toast } = useToast();
+export const useVoiceRecorder = () => {
   const [isRecording, setIsRecording] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
   const [duration, setDuration] = useState(0);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
-  const streamRef = useRef<MediaStream | null>(null);
-  const startedAtRef = useRef<number>(0);
-  const tickRef = useRef<number | null>(null);
+  const timerRef = useRef<number | null>(null);
+  const resolveRef = useRef<((blob: Blob | null) => void) | null>(null);
 
   const start = useCallback(async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      streamRef.current = stream;
-      const mr = new MediaRecorder(stream);
-      chunksRef.current = [];
-      mr.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data); };
-      mr.start();
-      mediaRecorderRef.current = mr;
-      startedAtRef.current = Date.now();
-      setIsRecording(true);
-      setDuration(0);
-      tickRef.current = window.setInterval(() => {
-        setDuration(Math.floor((Date.now() - startedAtRef.current) / 1000));
-      }, 250);
-    } catch (e: any) {
-      toast({ title: "Mic error", description: e?.message ?? "Cannot access microphone", variant: "destructive" });
-    }
-  }, [toast]);
+    if (isRecording) return;
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const mr = new MediaRecorder(stream, { mimeType: "audio/webm" });
+    chunksRef.current = [];
+    mr.ondataavailable = (e) => e.data.size && chunksRef.current.push(e.data);
+    mr.onstop = () => {
+      stream.getTracks().forEach((t) => t.stop());
+      const blob = new Blob(chunksRef.current, { type: "audio/webm" });
+      resolveRef.current?.(blob);
+      resolveRef.current = null;
+    };
+    recorderRef.current = mr;
+    mr.start();
+    setIsRecording(true);
+    setDuration(0);
+    timerRef.current = window.setInterval(() => setDuration((d) => d + 1), 1000);
+  }, [isRecording]);
+
+  const stop = useCallback((): Promise<Blob | null> => {
+    return new Promise((resolve) => {
+      if (!recorderRef.current || !isRecording) return resolve(null);
+      resolveRef.current = resolve;
+      recorderRef.current.stop();
+      if (timerRef.current) window.clearInterval(timerRef.current);
+      timerRef.current = null;
+      setIsRecording(false);
+    });
+  }, [isRecording]);
 
   const cancel = useCallback(() => {
-    if (tickRef.current) window.clearInterval(tickRef.current);
-    mediaRecorderRef.current?.stop();
-    streamRef.current?.getTracks().forEach(t => t.stop());
-    chunksRef.current = [];
-    setIsRecording(false);
-    setDuration(0);
-  }, []);
+    if (recorderRef.current && isRecording) {
+      resolveRef.current = null;
+      recorderRef.current.stop();
+      if (timerRef.current) window.clearInterval(timerRef.current);
+      timerRef.current = null;
+      setIsRecording(false);
+      setDuration(0);
+    }
+  }, [isRecording]);
 
-  const stopAndUpload = useCallback(async (): Promise<string | null> => {
-    if (!userId || !mediaRecorderRef.current) return null;
-    return new Promise((resolve) => {
-      const mr = mediaRecorderRef.current!;
-      mr.onstop = async () => {
-        if (tickRef.current) window.clearInterval(tickRef.current);
-        streamRef.current?.getTracks().forEach(t => t.stop());
-        setIsRecording(false);
-        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
-        chunksRef.current = [];
-        if (blob.size < 500) { setDuration(0); resolve(null); return; }
-        setIsUploading(true);
-        const path = `${userId}/${Date.now()}.webm`;
-        const { error } = await supabase.storage.from("anonymous-date-voice").upload(path, blob, { contentType: "audio/webm" });
-        setIsUploading(false);
-        setDuration(0);
-        if (error) {
-          toast({ title: "Upload failed", description: error.message, variant: "destructive" });
-          resolve(null);
-          return;
-        }
-        const { data } = supabase.storage.from("anonymous-date-voice").getPublicUrl(path);
-        resolve(data.publicUrl);
-      };
-      mr.stop();
-    });
-  }, [userId, toast]);
-
-  return { isRecording, isUploading, duration, start, stopAndUpload, cancel };
-}
+  return { isRecording, duration, start, stop, cancel };
+};
