@@ -14,6 +14,10 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
     storage: localStorage,
     persistSession: true,
     autoRefreshToken: true,
+    // Disable navigator.locks-based locking which causes spurious
+    // "Lock broken by another request with the 'steal' option" AbortErrors
+    // when many parallel queries fetch the session at once on mobile.
+    lock: async (_name: string, _acquireTimeout: number, fn: () => Promise<any>) => fn(),
   }
 });
 
