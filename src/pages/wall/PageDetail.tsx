@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { CoverImageUpload } from "@/components/shared/CoverImageUpload";
 import type { Page, PageFollower } from "@/types/database";
+import { PageReviews } from "@/components/pages/PageReviews";
 import { 
   ArrowLeft, 
   Settings, 
