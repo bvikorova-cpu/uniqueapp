@@ -92,6 +92,9 @@ export default function CrisisRelief() {
         <CrisisHero />
         <HeroRewardedAd sectionKey="page_crisisrelief" />
 
+        <CrisisImpactTicker />
+        <CrisisZoneOverview />
+
         <CrisisStepsWizard />
 
         <div id="campaigns" className="mt-8 space-y-6">
