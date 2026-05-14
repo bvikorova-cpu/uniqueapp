@@ -115,9 +115,12 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
   const [pollData, setPollData] = useState<{ question: string; options: string[]; endsAt: Date } | null>(null);
   const [isSensitive, setIsSensitive] = useState(false);
   const [sensitiveReason, setSensitiveReason] = useState("");
+  const [backgroundStyle, setBackgroundStyle] = useState<string | null>(null);
   const { toast } = useToast();
   const { createHashtagsForPost } = useHashtags();
   const { createPoll } = usePolls();
+  const activeBackground = getPostBackground(backgroundStyle);
+  const useBackground = !!activeBackground && files.length === 0;
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
