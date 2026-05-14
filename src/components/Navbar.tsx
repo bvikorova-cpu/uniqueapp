@@ -332,6 +332,11 @@ const Navbar = () => {
                 {/* Global Currency Switcher */}
                 <GlobalCurrencySwitcher />
 
+                {/* AI Credits */}
+                <div className="hidden sm:block">
+                  <AICreditsBalanceWidget compact />
+                </div>
+
                 {/* Wall Notifications */}
                 <NotificationBell />
 
