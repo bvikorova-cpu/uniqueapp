@@ -27964,6 +27964,36 @@ export type Database = {
         }
         Relationships: []
       }
+      live_chat_bans: {
+        Row: {
+          banned_by: string
+          banned_user_id: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          reason: string | null
+          stream_id: string
+        }
+        Insert: {
+          banned_by: string
+          banned_user_id: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          reason?: string | null
+          stream_id: string
+        }
+        Update: {
+          banned_by?: string
+          banned_user_id?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          reason?: string | null
+          stream_id?: string
+        }
+        Relationships: []
+      }
       live_concert_streams: {
         Row: {
           created_at: string | null
@@ -28155,6 +28185,48 @@ export type Database = {
           },
         ]
       }
+      live_recordings: {
+        Row: {
+          created_at: string
+          description: string | null
+          duration_seconds: number
+          id: string
+          is_public: boolean
+          owner_id: string
+          playback_url: string
+          stream_id: string
+          thumbnail_url: string | null
+          title: string
+          views_count: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          duration_seconds?: number
+          id?: string
+          is_public?: boolean
+          owner_id: string
+          playback_url: string
+          stream_id: string
+          thumbnail_url?: string | null
+          title: string
+          views_count?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          duration_seconds?: number
+          id?: string
+          is_public?: boolean
+          owner_id?: string
+          playback_url?: string
+          stream_id?: string
+          thumbnail_url?: string | null
+          title?: string
+          views_count?: number
+        }
+        Relationships: []
+      }
       live_stream_messages: {
         Row: {
           content: string
@@ -28234,6 +28306,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      live_super_chats: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          duration_seconds: number
+          highlight_color: string
+          id: string
+          message: string | null
+          sender_id: string
+          stream_id: string
+        }
+        Insert: {
+          amount_cents: number
+          created_at?: string
+          duration_seconds?: number
+          highlight_color?: string
+          id?: string
+          message?: string | null
+          sender_id: string
+          stream_id: string
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          duration_seconds?: number
+          highlight_color?: string
+          id?: string
+          message?: string | null
+          sender_id?: string
+          stream_id?: string
+        }
+        Relationships: []
       }
       live_tips: {
         Row: {
