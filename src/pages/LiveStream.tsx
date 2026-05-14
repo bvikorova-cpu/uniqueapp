@@ -19,6 +19,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useOneOffPaymentVerify } from "@/hooks/useOneOffPaymentVerify";
+import { SuperChatDialog } from "@/components/live/SuperChatDialog";
+import { SuperChatFeed } from "@/components/live/SuperChatFeed";
 
 interface Message {
   id: string;
