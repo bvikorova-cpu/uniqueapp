@@ -38,7 +38,7 @@ export default function WallVideos() {
   const totalVideos = standaloneVideos.length + videoPosts.length;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 pt-6 pb-8 space-y-6">
+    <div className="max-w-4xl mx-auto px-4 pt-12 sm:pt-6 pb-8 space-y-6">
       {/* Hero Banner */}
       <motion.div 
         initial={{ opacity: 0, y: -20 }} 
