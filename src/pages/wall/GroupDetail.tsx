@@ -558,7 +558,7 @@ export default function GroupDetail() {
             <TabsTrigger value="members" className="text-xs">Members</TabsTrigger>
             <TabsTrigger value="media" className="text-xs">Media</TabsTrigger>
             <TabsTrigger value="about" className="text-xs">About</TabsTrigger>
-            {isAdmin && <TabsTrigger value="admin" className="text-xs">Admin</TabsTrigger>}
+            {isStaff && <TabsTrigger value="admin" className="text-xs">Admin</TabsTrigger>}
           </TabsList>
 
           {/* Posts Tab */}
