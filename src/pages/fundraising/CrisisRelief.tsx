@@ -110,6 +110,8 @@ export default function CrisisRelief() {
             )}
           </div>
         </div>
+
+        <ResolvedEmergencies />
       </div>
     </div>
   );
