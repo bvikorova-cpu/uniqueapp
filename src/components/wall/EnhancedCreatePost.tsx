@@ -162,6 +162,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           audience: privacy,
           is_sensitive: isSensitive,
           sensitive_reason: isSensitive ? (sensitiveReason.trim() || null) : null,
+          background_style: useBackground ? backgroundStyle : null,
         })
         .select()
         .single();
