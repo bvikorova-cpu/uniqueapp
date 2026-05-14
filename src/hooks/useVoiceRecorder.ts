@@ -1,7 +1,14 @@
 import { useCallback, useRef, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
-export const useVoiceRecorder = () => {
+/**
+ * Voice recorder hook.
+ * - useVoiceRecorder() → returns blob via stop()
+ * - useVoiceRecorder(userId) → also exposes stopAndUpload() to upload to "media" bucket and return public URL
+ */
+export const useVoiceRecorder = (userId?: string | null) => {
   const [isRecording, setIsRecording] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [duration, setDuration] = useState(0);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -49,5 +56,22 @@ export const useVoiceRecorder = () => {
     }
   }, [isRecording]);
 
-  return { isRecording, duration, start, stop, cancel };
+  const stopAndUpload = useCallback(async (): Promise<string | null> => {
+    const blob = await stop();
+    if (!blob || !userId) return null;
+    setIsUploading(true);
+    try {
+      const path = `${userId}/voice/${Date.now()}.webm`;
+      const { error } = await supabase.storage
+        .from("media")
+        .upload(path, blob, { contentType: "audio/webm" });
+      if (error) throw error;
+      const { data: { publicUrl } } = supabase.storage.from("media").getPublicUrl(path);
+      return publicUrl;
+    } finally {
+      setIsUploading(false);
+    }
+  }, [stop, userId]);
+
+  return { isRecording, isUploading, duration, start, stop, stopAndUpload, cancel };
 };
