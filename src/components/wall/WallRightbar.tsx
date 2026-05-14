@@ -103,6 +103,9 @@ export function WallRightbar() {
       {/* On This Day Memories */}
       <MemoriesWidget />
 
+      {/* Upcoming Birthdays */}
+      <BirthdaysWidget />
+
       {/* Friend Requests + People You May Know */}
       <FriendsHubWidget />
 
