@@ -54,6 +54,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { WallPostActions } from "@/components/wall/WallPostActions";
+import { GroupRulesEditor } from "@/components/groups/GroupRulesEditor";
+import { GroupInsightsPanel } from "@/components/groups/GroupInsightsPanel";
 
 export default function GroupDetail() {
   const { groupId } = useParams();
@@ -343,6 +345,21 @@ export default function GroupDetail() {
     },
   });
 
+  const setRoleMutation = useMutation({
+    mutationFn: async ({ userId, role }: { userId: string; role: "admin" | "moderator" | "member" }) => {
+      const { error } = await supabase
+        .from("group_members")
+        .update({ role })
+        .eq("group_id", groupId)
+        .eq("user_id", userId);
+      if (error) throw error;
+    },
+    onSuccess: (_d, vars) => {
+      queryClient.invalidateQueries({ queryKey: ["group-members"] });
+      toast({ title: `Role set to ${vars.role}` });
+    },
+  });
+
   // Loading state
   if (isLoadingGroup) {
     return (
@@ -366,6 +383,7 @@ export default function GroupDetail() {
   }
 
   const isAdmin = membership?.role === "admin";
+  const isStaff = isAdmin || membership?.role === "moderator";
   const isMember = !!membership;
   const memberCount = members.length;
   const adminCount = members.filter((m: any) => m.role === "admin").length;
@@ -540,7 +558,7 @@ export default function GroupDetail() {
             <TabsTrigger value="members" className="text-xs">Members</TabsTrigger>
             <TabsTrigger value="media" className="text-xs">Media</TabsTrigger>
             <TabsTrigger value="about" className="text-xs">About</TabsTrigger>
-            {isAdmin && <TabsTrigger value="admin" className="text-xs">Admin</TabsTrigger>}
+            {isStaff && <TabsTrigger value="admin" className="text-xs">Admin</TabsTrigger>}
           </TabsList>
 
           {/* Posts Tab */}
@@ -929,10 +947,19 @@ export default function GroupDetail() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => makeAdminMutation.mutate(member.user_id)}>
+                            <DropdownMenuItem onClick={() => setRoleMutation.mutate({ userId: member.user_id, role: "admin" })}>
                               <Shield className="h-4 w-4 mr-2" />
                               Make Admin
                             </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setRoleMutation.mutate({ userId: member.user_id, role: "moderator" })}>
+                              <Shield className="h-4 w-4 mr-2 opacity-60" />
+                              Make Moderator
+                            </DropdownMenuItem>
+                            {member.role !== "member" && (
+                              <DropdownMenuItem onClick={() => setRoleMutation.mutate({ userId: member.user_id, role: "member" })}>
+                                Demote to Member
+                              </DropdownMenuItem>
+                            )}
                             <DropdownMenuItem 
                               className="text-destructive"
                               onClick={() => removeMemberMutation.mutate(member.user_id)}
@@ -1008,11 +1035,16 @@ export default function GroupDetail() {
                 </div>
               </div>
             </Card>
+            <div className="mt-4">
+              <GroupRulesEditor groupId={groupId!} isStaff={false} />
+            </div>
           </TabsContent>
 
           {/* Admin Tab */}
-          {isAdmin && (
-            <TabsContent value="admin">
+          {isStaff && (
+            <TabsContent value="admin" className="space-y-4">
+              <GroupRulesEditor groupId={groupId!} isStaff={isStaff} />
+              {isAdmin && <GroupInsightsPanel groupId={groupId!} />}
               <Card className="p-6">
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                   <Settings className="h-5 w-5" />
