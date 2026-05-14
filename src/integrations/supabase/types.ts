@@ -18070,6 +18070,39 @@ export type Database = {
         }
         Relationships: []
       }
+      family_relationships: {
+        Row: {
+          created_at: string
+          id: string
+          kind: Database["public"]["Enums"]["family_relation_kind"]
+          related_user_id: string
+          requested_by: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind: Database["public"]["Enums"]["family_relation_kind"]
+          related_user_id: string
+          requested_by: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["family_relation_kind"]
+          related_user_id?: string
+          requested_by?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       fashion_battle_entries: {
         Row: {
           ai_feedback: string | null
@@ -27759,6 +27792,51 @@ export type Database = {
           segments?: Json
           transcript?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      life_events: {
+        Row: {
+          cover_image_url: string | null
+          created_at: string
+          description: string | null
+          event_date: string | null
+          id: string
+          kind: Database["public"]["Enums"]["life_event_kind"]
+          location: string | null
+          post_id: string | null
+          title: string
+          updated_at: string
+          user_id: string
+          visibility: string
+        }
+        Insert: {
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          event_date?: string | null
+          id?: string
+          kind: Database["public"]["Enums"]["life_event_kind"]
+          location?: string | null
+          post_id?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+          visibility?: string
+        }
+        Update: {
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          event_date?: string | null
+          id?: string
+          kind?: Database["public"]["Enums"]["life_event_kind"]
+          location?: string | null
+          post_id?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+          visibility?: string
         }
         Relationships: []
       }
@@ -48692,6 +48770,7 @@ export type Database = {
           user_id: string
         }[]
       }
+      are_friends: { Args: { a: string; b: string }; Returns: boolean }
       assign_user_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -49625,6 +49704,13 @@ export type Database = {
         Args: { _match_id: string; _score: number }
         Returns: Json
       }
+      suggest_friends: {
+        Args: { _limit?: number; _user_id: string }
+        Returns: {
+          mutual_count: number
+          suggested_id: string
+        }[]
+      }
       update_battle_stats: {
         Args: { loser_id: string; winner_id: string }
         Returns: undefined
@@ -49669,6 +49755,17 @@ export type Database = {
         | "profile"
         | "image"
         | "video"
+      family_relation_kind:
+        | "spouse"
+        | "partner"
+        | "parent"
+        | "child"
+        | "sibling"
+        | "grandparent"
+        | "grandchild"
+        | "cousin"
+        | "in_law"
+        | "other"
       item_rarity: "common" | "rare" | "epic" | "legendary"
       job_category:
         | "it_software"
@@ -49684,6 +49781,21 @@ export type Database = {
         | "transportation"
         | "other"
       job_type: "full_time" | "part_time" | "contract" | "internship" | "remote"
+      life_event_kind:
+        | "new_job"
+        | "promotion"
+        | "retired"
+        | "started_school"
+        | "graduated"
+        | "moved"
+        | "bought_home"
+        | "engagement"
+        | "marriage"
+        | "baby"
+        | "new_pet"
+        | "travel"
+        | "milestone"
+        | "other"
       megatalent_tier: "premium" | "top_premium"
       mentor_area: "career" | "fitness" | "mindset" | "relationships"
       moderation_action:
@@ -50003,6 +50115,18 @@ export const Constants = {
         "image",
         "video",
       ],
+      family_relation_kind: [
+        "spouse",
+        "partner",
+        "parent",
+        "child",
+        "sibling",
+        "grandparent",
+        "grandchild",
+        "cousin",
+        "in_law",
+        "other",
+      ],
       item_rarity: ["common", "rare", "epic", "legendary"],
       job_category: [
         "it_software",
@@ -50019,6 +50143,22 @@ export const Constants = {
         "other",
       ],
       job_type: ["full_time", "part_time", "contract", "internship", "remote"],
+      life_event_kind: [
+        "new_job",
+        "promotion",
+        "retired",
+        "started_school",
+        "graduated",
+        "moved",
+        "bought_home",
+        "engagement",
+        "marriage",
+        "baby",
+        "new_pet",
+        "travel",
+        "milestone",
+        "other",
+      ],
       megatalent_tier: ["premium", "top_premium"],
       mentor_area: ["career", "fitness", "mindset", "relationships"],
       moderation_action: [
