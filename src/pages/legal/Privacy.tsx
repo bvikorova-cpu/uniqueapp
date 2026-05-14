@@ -124,6 +124,7 @@ export default function Privacy() {
           </main>
         </div>
       </div>
+      <LegalAssistant documentType="Privacy & Cookie Policy" documentText="Privacy & Cookie Policy - see content above on this page." />
     </div>
   );
 }

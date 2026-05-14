@@ -94,6 +94,7 @@ export default function Refund() {
           </main>
         </div>
       </div>
+      <LegalAssistant documentType="Refund & Payment Policy" documentText="Refund & Payment Policy - see content above on this page." />
     </div>
   );
 }

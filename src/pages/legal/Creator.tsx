@@ -92,6 +92,7 @@ export default function Creator() {
           </main>
         </div>
       </div>
+      <LegalAssistant documentType="Creator Agreement" documentText="Creator Agreement - see content above on this page." />
     </div>
   );
 }

@@ -117,6 +117,7 @@ export default function Community() {
           </main>
         </div>
       </div>
+      <LegalAssistant documentType="Community Guidelines & DMCA" documentText="Community Guidelines & DMCA - see content above on this page." />
     </div>
   );
 }
