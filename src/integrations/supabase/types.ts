@@ -30987,6 +30987,44 @@ export type Database = {
           },
         ]
       }
+      page_reviews: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          page_id: string
+          rating: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          page_id: string
+          rating: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          page_id?: string
+          rating?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "page_reviews_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pages: {
         Row: {
           avatar_url: string | null
@@ -34157,6 +34195,7 @@ export type Database = {
           location: string | null
           privacy: string | null
           reposts_count: number
+          scheduled_at: string | null
           sensitive_reason: string | null
           shares_count: number | null
           updated_at: string
@@ -34181,6 +34220,7 @@ export type Database = {
           location?: string | null
           privacy?: string | null
           reposts_count?: number
+          scheduled_at?: string | null
           sensitive_reason?: string | null
           shares_count?: number | null
           updated_at?: string
@@ -34205,6 +34245,7 @@ export type Database = {
           location?: string | null
           privacy?: string | null
           reposts_count?: number
+          scheduled_at?: string | null
           sensitive_reason?: string | null
           shares_count?: number | null
           updated_at?: string
@@ -49363,6 +49404,7 @@ export type Database = {
           location: string | null
           privacy: string | null
           reposts_count: number
+          scheduled_at: string | null
           sensitive_reason: string | null
           shares_count: number | null
           updated_at: string
