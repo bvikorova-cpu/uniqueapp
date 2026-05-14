@@ -1,9 +1,12 @@
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Sparkles, Heart, TrendingUp, Users } from "lucide-react";
 import { MilestoneCelebration } from "./MilestoneCelebration";
 import { DonorBadge, getTierFromAmount } from "./DonorBadge";
 import { LiveDonationFeed } from "./LiveDonationFeed";
+import { MatchDonationBadge } from "./MatchDonationBadge";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Donation {
   id: string;
@@ -19,6 +22,7 @@ interface Props {
   targetAmount: number;
   supportersCount: number;
   campaignType: string;
+  campaignId?: string;
   topDonations?: Donation[];
 }
 
@@ -26,18 +30,45 @@ interface Props {
  * Premium enhancements bundle for any fundraising detail page.
  * - Milestone celebration with confetti
  * - Top donors with tier badges
+ * - Sponsor matching badge (if active)
  */
 export function CampaignDetailEnhancements({
   currentAmount,
   targetAmount,
   supportersCount,
+  campaignType,
+  campaignId,
   topDonations = [],
 }: Props) {
   const pct = Math.min((currentAmount / targetAmount) * 100, 100);
   const topThree = [...topDonations].sort((a, b) => Number(b.amount) - Number(a.amount)).slice(0, 3);
+  const [match, setMatch] = useState<any>(null);
+
+  useEffect(() => {
+    if (!campaignId) return;
+    (async () => {
+      const { data } = await supabase
+        .from("donation_matches")
+        .select("*")
+        .eq("campaign_id", campaignId)
+        .eq("campaign_type", campaignType)
+        .eq("active", true)
+        .maybeSingle();
+      setMatch(data);
+    })();
+  }, [campaignId, campaignType]);
 
   return (
     <div className="space-y-6">
+      {match && (
+        <MatchDonationBadge
+          sponsorName={match.sponsor_name}
+          sponsorLogoUrl={match.sponsor_logo_url}
+          matchRatio={match.match_ratio}
+          matchCap={match.match_cap}
+          matchedSoFar={match.matched_so_far}
+        />
+      )}
       {/* Milestone progress badges + celebration overlay */}
       <Card className="p-4 bg-gradient-to-br from-primary/5 via-accent/5 to-secondary/5 border-primary/20">
         <div className="flex items-center gap-2 mb-2">
