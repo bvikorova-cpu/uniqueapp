@@ -13,6 +13,7 @@ import VideoCall from "@/components/messenger/VideoCall";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { OnlineIndicator } from "@/components/messenger/OnlineIndicator";
 import { SelfDestructingMessage } from "@/components/messenger/SelfDestructingMessage";
+import { EncryptionBadge } from "@/components/messaging/EncryptionBadge";
 import { GroupChatDialog } from "@/components/messenger/GroupChatDialog";
 import { MessengerAIFeatures } from "@/components/messenger/MessengerAIFeatures";
 import { MessengerHero } from "@/components/messenger/MessengerHero";
