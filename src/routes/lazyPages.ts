@@ -24,6 +24,8 @@ export const Pages = lazy(() => import("@/pages/Pages"));
 export const GroupDetail = lazy(() => import("@/pages/wall/GroupDetail"));
 export const PageDetail = lazy(() => import("@/pages/wall/PageDetail"));
 export const EventDetail = lazy(() => import("@/pages/wall/EventDetail"));
+export const WallSaved = lazy(() => import("@/pages/wall/WallSaved"));
+export const WallVideos = lazy(() => import("@/pages/wall/WallVideos"));
 
 // Megatalent
 export const Megatalent = lazy(() => import("@/pages/Megatalent"));
