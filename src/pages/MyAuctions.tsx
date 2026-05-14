@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { AuctionWithdrawalRequest } from "@/components/auction/AuctionWithdrawalRequest";
 import { formatDistanceToNow } from "date-fns";
 
 interface AuctionItem {
