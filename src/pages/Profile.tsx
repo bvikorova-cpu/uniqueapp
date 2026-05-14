@@ -38,6 +38,8 @@ import { ProfileQRCode } from "@/components/profile/ProfileQRCode";
 import { ThemePicker } from "@/components/profile/ThemePicker";
 import { Endorsements } from "@/components/profile/Endorsements";
 import { ProfileViewsCounter } from "@/components/profile/ProfileViewsCounter";
+import { LifeEventsTimeline } from "@/components/profile/LifeEventsTimeline";
+import { FamilySection } from "@/components/profile/FamilySection";
 
 interface Profile {
   id: string;
