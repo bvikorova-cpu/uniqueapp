@@ -4,7 +4,7 @@ import {
   Info, Heart, MessageCircle, Share2, Repeat2, Bookmark, Image, Video, Smile, MapPin,
   Clock, Hash, AtSign, Users, Bell, Lock, Sparkles, TrendingUp, Calendar, Flag, Eye,
   ThumbsUp, Star, Zap, Camera, FileImage, MessageSquare, UserPlus, Search, Filter,
-  Radio, Mic, BarChart3, Crown, Gift, Shield, Globe, Palette,
+  Radio, Mic, BarChart3, Crown, Gift, Shield, Globe, Palette, ShoppingBag, EyeOff,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -182,6 +182,45 @@ export default function WallInfo() {
         { name: "Real-time Updates", description: "Live updates via Supabase for posts, messages, and notifications.", icon: <Zap className="h-4 w-4" /> },
         { name: "Infinite Scroll", description: "Seamless content loading as you scroll through your feed.", icon: <Filter className="h-4 w-4" /> },
         { name: "Media Gallery", description: "Browse all uploaded photos and videos in gallery format.", icon: <Image className="h-4 w-4" /> },
+      ],
+    },
+    {
+      title: "Marketplace (Bazaar)",
+      icon: <ShoppingBag className="h-5 w-5" />,
+      features: [
+        { name: "Buy & Sell", description: "Browse, list and buy items in the integrated Bazaar marketplace — accessible directly from the Wall.", icon: <ShoppingBag className="h-4 w-4" /> },
+        { name: "Categories & Search", description: "Filter listings by category, price and condition with full-text search.", icon: <Search className="h-4 w-4" /> },
+        { name: "EUR Payments", description: "Secure checkout in EUR (€) via Stripe with buyer protection.", icon: <Zap className="h-4 w-4" /> },
+        { name: "Seller Profiles", description: "View seller ratings, reviews and other listings before buying.", icon: <Star className="h-4 w-4" /> },
+      ],
+    },
+    {
+      title: "Dating",
+      icon: <Heart className="h-5 w-5" />,
+      features: [
+        { name: "Dating Hub", description: "Discover potential matches based on interests, location and shared activities.", icon: <Heart className="h-4 w-4" /> },
+        { name: "Smart Matching", description: "Curated suggestions powered by your profile and engagement signals.", icon: <Sparkles className="h-4 w-4" /> },
+        { name: "Private Chat", description: "Message matches in a safe, moderated chat space.", icon: <MessageCircle className="h-4 w-4" /> },
+        { name: "Photo Verification", description: "Verified photo badges to keep the community authentic.", icon: <Shield className="h-4 w-4" /> },
+      ],
+    },
+    {
+      title: "Anonymous Dating",
+      icon: <EyeOff className="h-5 w-5" />,
+      features: [
+        { name: "Hidden Identity", description: "Connect anonymously — your face and name stay hidden until you both agree to reveal.", icon: <EyeOff className="h-4 w-4" /> },
+        { name: "Personality First", description: "Match by vibe, interests and conversation rather than appearance.", icon: <Heart className="h-4 w-4" /> },
+        { name: "Mutual Reveal", description: "Photos unlock only when both sides opt in.", icon: <Eye className="h-4 w-4" /> },
+        { name: "Safe & Moderated", description: "Built-in moderation, blocking and reporting to keep the space safe.", icon: <Shield className="h-4 w-4" /> },
+      ],
+    },
+    {
+      title: "Memories",
+      icon: <Sparkles className="h-5 w-5" />,
+      features: [
+        { name: "On This Day", description: "Relive your past posts from previous years on the same date.", icon: <Calendar className="h-4 w-4" /> },
+        { name: "Year Highlights", description: "Beautiful tiles like '2 years ago' or '1 year ago' with original media.", icon: <Sparkles className="h-4 w-4" /> },
+        { name: "Re-share", description: "Re-share old memories to your current feed with one tap.", icon: <Share2 className="h-4 w-4" /> },
       ],
     },
   ];
