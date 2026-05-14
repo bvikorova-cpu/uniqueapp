@@ -1026,6 +1026,9 @@ export default function GroupDetail() {
                 </div>
               </div>
             </Card>
+            <div className="mt-4">
+              <GroupRulesEditor groupId={groupId!} isStaff={false} />
+            </div>
           </TabsContent>
 
           {/* Admin Tab */}
