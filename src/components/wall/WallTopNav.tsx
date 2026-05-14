@@ -13,6 +13,10 @@ import {
   TrendingUp,
   Info,
   MoreHorizontal,
+  ShoppingBag,
+  Heart,
+  Sparkles,
+  EyeOff,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
