@@ -91,25 +91,28 @@ export const ProductCard = ({
           </p>
         </div>
 
-        {/* Buy Button */}
-        <Button 
-          onClick={handleBuyNow}
-          size={compact ? "sm" : "default"}
-          className={cn(
-            "gap-2",
-            price === 0 
-              ? "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
-              : "bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90",
-            "shadow-md hover:shadow-lg transition-all",
-            compact ? "px-3" : "px-4"
-          )}
-        >
-          <ShoppingCart className={cn(compact ? "h-3.5 w-3.5" : "h-4 w-4")} />
-          <span className={compact ? "text-xs" : "text-sm"}>
-            {price === 0 ? "Get" : "Buy"}
-          </span>
-          <ExternalLink className={cn(compact ? "h-3 w-3" : "h-3.5 w-3.5", "opacity-50")} />
-        </Button>
+        {/* Actions */}
+        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+          <WishlistButton productId={productId} size={compact ? "sm" : "icon"} />
+          <Button 
+            onClick={handleBuyNow}
+            size={compact ? "sm" : "default"}
+            className={cn(
+              "gap-2",
+              price === 0 
+                ? "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
+                : "bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90",
+              "shadow-md hover:shadow-lg transition-all",
+              compact ? "px-3" : "px-4"
+            )}
+          >
+            <ShoppingCart className={cn(compact ? "h-3.5 w-3.5" : "h-4 w-4")} />
+            <span className={compact ? "text-xs" : "text-sm"}>
+              {price === 0 ? "Get" : "Buy"}
+            </span>
+            <ExternalLink className={cn(compact ? "h-3 w-3" : "h-3.5 w-3.5", "opacity-50")} />
+          </Button>
+        </div>
       </div>
     </div>
   );
