@@ -552,6 +552,8 @@ const Feed = () => {
         return <WallTrending />;
       case '/wall/info':
         return <WallInfo />;
+      case '/wall/memories':
+        return <WallMemories />;
       default:
         // Default Feed content
         const WALL_TABS = [
