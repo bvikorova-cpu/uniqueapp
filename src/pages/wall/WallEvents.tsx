@@ -14,6 +14,7 @@ import { format } from "date-fns";
 import { CoverImageUpload } from "@/components/shared/CoverImageUpload";
 import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
+import { SuggestedEvents } from "@/components/events/SuggestedEvents";
 
 export default function WallEvents() {
   const { toast } = useToast();
