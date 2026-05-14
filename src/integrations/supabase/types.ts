@@ -15797,30 +15797,53 @@ export type Database = {
       }
       direct_messages: {
         Row: {
+          audio_duration: number | null
+          audio_url: string | null
           content: string
           created_at: string
+          edited_at: string | null
           id: string
           is_read: boolean
+          message_type: string
           receiver_id: string
+          reply_to_id: string | null
           sender_id: string
         }
         Insert: {
+          audio_duration?: number | null
+          audio_url?: string | null
           content: string
           created_at?: string
+          edited_at?: string | null
           id?: string
           is_read?: boolean
+          message_type?: string
           receiver_id: string
+          reply_to_id?: string | null
           sender_id: string
         }
         Update: {
+          audio_duration?: number | null
+          audio_url?: string | null
           content?: string
           created_at?: string
+          edited_at?: string | null
           id?: string
           is_read?: boolean
+          message_type?: string
           receiver_id?: string
+          reply_to_id?: string | null
           sender_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "direct_messages_reply_to_id_fkey"
+            columns: ["reply_to_id"]
+            isOneToOne: false
+            referencedRelation: "direct_messages"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       discussion_replies: {
         Row: {
