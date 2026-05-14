@@ -199,6 +199,15 @@ export default function LiveStreamList() {
           </div>
         )}
 
+        {/* Past Recordings */}
+        <div className="mt-16 space-y-4">
+          <div className="flex items-center gap-3">
+            <Play className="w-6 h-6 text-primary" />
+            <h2 className="text-2xl font-bold">Past Recordings</h2>
+          </div>
+          <RecordingArchive />
+        </div>
+
         {/* Info Section */}
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card className="text-center border-2">
