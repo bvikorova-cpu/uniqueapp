@@ -571,7 +571,9 @@ export default function LiveStream() {
               <CardHeader className="border-b">
                 <CardTitle className="flex items-center justify-between">
                   <span>Live Chat</span>
-                  <Dialog>
+                  <div className="flex items-center gap-2">
+                    {streamId && <SuperChatDialog streamId={streamId} />}
+                    <Dialog>
                     <DialogTrigger asChild>
                       <Button variant="outline" size="sm">
                         <Gift className="h-4 w-4 mr-2" />
@@ -611,7 +613,13 @@ export default function LiveStream() {
                       </div>
                     </DialogContent>
                   </Dialog>
+                  </div>
                 </CardTitle>
+                {streamId && (
+                  <div className="pt-2">
+                    <SuperChatFeed streamId={streamId} />
+                  </div>
+                )}
               </CardHeader>
 
               <ScrollArea className="flex-1 p-4">
