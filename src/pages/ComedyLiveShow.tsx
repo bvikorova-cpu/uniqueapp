@@ -53,6 +53,8 @@ export default function ComedyLiveShow() {
           
           <ComedyLiveStreamPlayer showId={show.id} streamKey={show.stream_key || ""} />
         </Card>
+
+        <TipAnimation performerName={show.comedian?.stage_name || "Comedian"} />
       </div>
     </div>
   );
