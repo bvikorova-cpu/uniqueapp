@@ -947,10 +947,19 @@ export default function GroupDetail() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => makeAdminMutation.mutate(member.user_id)}>
+                            <DropdownMenuItem onClick={() => setRoleMutation.mutate({ userId: member.user_id, role: "admin" })}>
                               <Shield className="h-4 w-4 mr-2" />
                               Make Admin
                             </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setRoleMutation.mutate({ userId: member.user_id, role: "moderator" })}>
+                              <Shield className="h-4 w-4 mr-2 opacity-60" />
+                              Make Moderator
+                            </DropdownMenuItem>
+                            {member.role !== "member" && (
+                              <DropdownMenuItem onClick={() => setRoleMutation.mutate({ userId: member.user_id, role: "member" })}>
+                                Demote to Member
+                              </DropdownMenuItem>
+                            )}
                             <DropdownMenuItem 
                               className="text-destructive"
                               onClick={() => removeMemberMutation.mutate(member.user_id)}
