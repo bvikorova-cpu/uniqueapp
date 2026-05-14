@@ -55,6 +55,7 @@ import WallEvents from "./wall/WallEvents";
 import WallSaved from "./wall/WallSaved";
 import WallTrending from "./wall/WallTrending";
 import WallInfo from "./wall/WallInfo";
+import WallMemories from "./wall/WallMemories";
 import WallCinematicHero from "@/components/wall/WallCinematicHero";
 import WallAIToolsGrid from "@/components/wall/WallAIToolsGrid";
 import WallPostingStreaks from "@/components/wall/WallPostingStreaks";
@@ -551,6 +552,8 @@ const Feed = () => {
         return <WallTrending />;
       case '/wall/info':
         return <WallInfo />;
+      case '/wall/memories':
+        return <WallMemories />;
       default:
         // Default Feed content
         const WALL_TABS = [
