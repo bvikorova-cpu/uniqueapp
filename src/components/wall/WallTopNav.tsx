@@ -37,19 +37,27 @@ export function WallTopNav({ currentPath }: WallTopNavProps) {
     { icon: Home, label: "Feed", path: "/wall" },
     { icon: MessageCircle, label: "Messages", path: "/wall/messages" },
     { icon: Users2, label: "Friends", path: "/wall/friends" },
+    { icon: Video, label: "Videos", path: "/wall/videos" },
+    { icon: ShoppingBag, label: "Marketplace", path: "/bazaar" },
+    { icon: Sparkles, label: "Memories", path: "/wall/memories" },
+  ];
+
+  const datingItems = [
+    { icon: Heart, label: "Dating", path: "/dating" },
+    { icon: EyeOff, label: "Anonymous Dating", path: "/anonymous-date" },
   ];
 
   const moreNavItems = [
     { icon: Users, label: "Groups", path: "/wall/groups" },
     { icon: FileText, label: "Pages", path: "/wall/pages" },
     { icon: Calendar, label: "Events", path: "/wall/events" },
-    { icon: Video, label: "Videos", path: "/wall/videos" },
     { icon: Bookmark, label: "Saved", path: "/wall/saved" },
     { icon: TrendingUp, label: "Trending", path: "/wall/trending" },
     { icon: Info, label: "Info", path: "/wall/info" },
   ];
 
   const isMoreActive = moreNavItems.some(item => currentPath === item.path);
+  const isDatingActive = datingItems.some(item => currentPath === item.path);
 
   return (
     <div className="fixed top-16 left-0 right-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50 shadow-[0_1px_12px_hsl(var(--primary)/0.04)]">
