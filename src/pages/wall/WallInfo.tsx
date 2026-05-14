@@ -225,6 +225,8 @@ export default function WallInfo() {
     },
   ];
 
+  const totalFeatures = featureSections.reduce((a, s) => a + s.features.length, 0);
+
   return (
     <div className="max-w-4xl mx-auto px-2 sm:px-4 py-6 space-y-6">
       {/* Hero Banner */}
