@@ -30,9 +30,10 @@ import { HorseEquipmentSystem } from "@/components/horse-racing/HorseEquipmentSy
 import { DailyTrainingQuests } from "@/components/horse-racing/DailyTrainingQuests";
 import { BloodlineGenealogy } from "@/components/horse-racing/BloodlineGenealogy";
 import { WeatherRacingBonuses } from "@/components/horse-racing/WeatherRacingBonuses";
+import { HorseMarketplace } from "@/components/horse-racing/HorseMarketplace";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
-type ActiveView = "dashboard" | "stable" | "racing" | "training" | "breeding" | "shop" | "leaderboard" | "auction" | "championships" | "equipment" | "quests" | "bloodline" | "weather";
+type ActiveView = "dashboard" | "stable" | "racing" | "training" | "breeding" | "shop" | "leaderboard" | "auction" | "championships" | "equipment" | "quests" | "bloodline" | "weather" | "marketplace";
 
 const tools = [
   { id: "stable" as const, icon: Swords, label: "My Stable", desc: "Manage your horses", gradient: "from-amber-500 to-orange-600" },
