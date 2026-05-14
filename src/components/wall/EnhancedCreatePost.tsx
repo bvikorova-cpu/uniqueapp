@@ -311,22 +311,24 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
         )}
 
         <div className="border-2 border-violet-600/50 rounded-xl p-4 bg-violet-50 dark:bg-violet-950/30 transition-all hover:shadow-[0_0_25px_rgba(139,92,246,0.4)] hover:border-violet-600 animate-in slide-in-from-bottom-2">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-sm font-semibold text-violet-700 dark:text-violet-300 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 animate-pulse" />
-              Add to post
+          <div className="flex items-center justify-between gap-2 mb-4 flex-wrap">
+            <span className="text-sm font-semibold text-violet-700 dark:text-violet-300 flex items-center gap-2 min-w-0">
+              <Sparkles className="w-4 h-4 animate-pulse shrink-0" />
+              <span className="truncate">Add to post</span>
             </span>
-            <AudienceSelector value={privacy} onChange={setPrivacy} />
-            <Button
-              type="button"
-              variant={isSensitive ? "default" : "outline"}
-              size="sm"
-              className="h-8"
-              onClick={() => setIsSensitive((v) => !v)}
-              title="Mark as sensitive — will be blurred for viewers"
-            >
-              ⚠️ {isSensitive ? "Sensitive" : "Mark sensitive"}
-            </Button>
+            <div className="flex items-center gap-2 flex-wrap min-w-0">
+              <AudienceSelector value={privacy} onChange={setPrivacy} />
+              <Button
+                type="button"
+                variant={isSensitive ? "default" : "outline"}
+                size="sm"
+                className="h-8 px-2 text-xs whitespace-nowrap"
+                onClick={() => setIsSensitive((v) => !v)}
+                title="Mark as sensitive — will be blurred for viewers"
+              >
+                ⚠️ Sensitive
+              </Button>
+            </div>
           </div>
 
           {isSensitive && (
