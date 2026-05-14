@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { CoverImageUpload } from "@/components/shared/CoverImageUpload";
+import { AddToCalendarButtons } from "@/components/events/AddToCalendarButtons";
 import type { Event, EventAttendee } from "@/types/database";
 import { 
   ArrowLeft, 
