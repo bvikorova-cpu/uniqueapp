@@ -17541,6 +17541,72 @@ export type Database = {
         }
         Relationships: []
       }
+      event_rsvps: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          status: string
+          updated_at: string
+          user_id: string
+          waitlist_position: number | null
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          status: string
+          updated_at?: string
+          user_id: string
+          waitlist_position?: number | null
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+          waitlist_position?: number | null
+        }
+        Relationships: []
+      }
+      event_tickets: {
+        Row: {
+          checked_in_at: string | null
+          checked_in_by: string | null
+          created_at: string
+          event_id: string
+          holder_id: string
+          id: string
+          organizer_id: string
+          qr_token: string
+          seat_label: string | null
+        }
+        Insert: {
+          checked_in_at?: string | null
+          checked_in_by?: string | null
+          created_at?: string
+          event_id: string
+          holder_id: string
+          id?: string
+          organizer_id: string
+          qr_token?: string
+          seat_label?: string | null
+        }
+        Update: {
+          checked_in_at?: string | null
+          checked_in_by?: string | null
+          created_at?: string
+          event_id?: string
+          holder_id?: string
+          id?: string
+          organizer_id?: string
+          qr_token?: string
+          seat_label?: string | null
+        }
+        Relationships: []
+      }
       events: {
         Row: {
           cover_image: string | null
