@@ -34062,6 +34062,7 @@ export type Database = {
         Row: {
           alt_text: string | null
           audience: string | null
+          background_style: string | null
           branded_disclosure: string | null
           branded_partner_id: string | null
           branded_partner_name: string | null
@@ -34085,6 +34086,7 @@ export type Database = {
         Insert: {
           alt_text?: string | null
           audience?: string | null
+          background_style?: string | null
           branded_disclosure?: string | null
           branded_partner_id?: string | null
           branded_partner_name?: string | null
@@ -34108,6 +34110,7 @@ export type Database = {
         Update: {
           alt_text?: string | null
           audience?: string | null
+          background_style?: string | null
           branded_disclosure?: string | null
           branded_partner_id?: string | null
           branded_partner_name?: string | null
@@ -49259,6 +49262,39 @@ export type Database = {
       }
       get_or_create_iq_referral_code: { Args: never; Returns: string }
       get_or_pick_daily_deal: { Args: never; Returns: string }
+      get_post_memories: {
+        Args: { _limit?: number; _user_id: string }
+        Returns: {
+          alt_text: string | null
+          audience: string | null
+          background_style: string | null
+          branded_disclosure: string | null
+          branded_partner_id: string | null
+          branded_partner_name: string | null
+          captions_url: string | null
+          comments_count: number | null
+          content: string | null
+          created_at: string
+          edited_at: string | null
+          feeling: string | null
+          id: string
+          is_sensitive: boolean
+          likes_count: number | null
+          location: string | null
+          privacy: string | null
+          reposts_count: number
+          sensitive_reason: string | null
+          shares_count: number | null
+          updated_at: string
+          user_id: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "posts"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       get_psychology_stats: {
         Args: never
         Returns: {

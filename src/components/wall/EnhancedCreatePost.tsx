@@ -44,6 +44,9 @@ import {
 import { PostTemplatesDialog } from "./PostTemplatesDialog";
 import { SchedulePostDialog } from "./SchedulePostDialog";
 import { CreatePollDialog } from "./CreatePollDialog";
+import { BackgroundStylePicker } from "./BackgroundStylePicker";
+import { getPostBackground } from "@/lib/postBackgrounds";
+import { cn } from "@/lib/utils";
 import { HashtagInput } from "./HashtagInput";
 import { TagFriendsDialog } from "./TagFriendsDialog";
 import { VoiceRecorder } from "./VoiceRecorder";
@@ -112,9 +115,12 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
   const [pollData, setPollData] = useState<{ question: string; options: string[]; endsAt: Date } | null>(null);
   const [isSensitive, setIsSensitive] = useState(false);
   const [sensitiveReason, setSensitiveReason] = useState("");
+  const [backgroundStyle, setBackgroundStyle] = useState<string | null>(null);
   const { toast } = useToast();
   const { createHashtagsForPost } = useHashtags();
   const { createPoll } = usePolls();
+  const activeBackground = getPostBackground(backgroundStyle);
+  const useBackground = !!activeBackground && files.length === 0;
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -156,6 +162,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           audience: privacy,
           is_sensitive: isSensitive,
           sensitive_reason: isSensitive ? (sensitiveReason.trim() || null) : null,
+          background_style: useBackground ? backgroundStyle : null,
         })
         .select()
         .single();
@@ -215,6 +222,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
       setLocation("");
       setPrivacy("public");
       setPollData(null);
+      setBackgroundStyle(null);
       onPostCreated();
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
@@ -240,12 +248,31 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
             </AvatarFallback>
           </Avatar>
           <div className="flex-1">
-            <Textarea
-              placeholder={`What's on your mind, ${userProfile?.full_name?.split(" ")[0] || ""}?`}
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              className="min-h-[100px] resize-none border-2 border-violet-600/50 bg-violet-50 dark:bg-violet-950/30 focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:border-violet-600 rounded-xl transition-all hover:shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:border-violet-600"
-            />
+            {useBackground ? (
+              <div
+                className={cn(
+                  "min-h-[180px] rounded-xl p-6 flex items-center justify-center",
+                  activeBackground!.className
+                )}
+              >
+                <Textarea
+                  placeholder={`What's on your mind?`}
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  className={cn(
+                    "min-h-[120px] resize-none border-0 bg-transparent shadow-none focus-visible:ring-0 placeholder:text-white/60",
+                    activeBackground!.textClassName
+                  )}
+                />
+              </div>
+            ) : (
+              <Textarea
+                placeholder={`What's on your mind, ${userProfile?.full_name?.split(" ")[0] || ""}?`}
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                className="min-h-[100px] resize-none border-2 border-violet-600/50 bg-violet-50 dark:bg-violet-950/30 focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:border-violet-600 rounded-xl transition-all hover:shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:border-violet-600"
+              />
+            )}
             <HashtagInput text={content} />
           </div>
         </div>
@@ -537,6 +564,11 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
             <div className="flex items-center gap-1">
               <EphemeralPostToggle visibility={postVisibility} onVisibilityChange={setPostVisibility} />
               <CollaborativePostEditor />
+              <BackgroundStylePicker
+                value={backgroundStyle}
+                onChange={setBackgroundStyle}
+                disabled={files.length > 0}
+              />
             </div>
             <DraftsManager onSelectDraft={(draft: any) => setContent(draft.content || "")} />
           </div>
