@@ -518,7 +518,7 @@ const Profile = () => {
 
         {/* Tabs Section - Central Hub */}
         <Tabs defaultValue={defaultTab} className="w-full">
-          <TabsList className={`grid w-full ${currentUserId === userId ? "grid-cols-3 md:grid-cols-9" : "grid-cols-4 md:grid-cols-8"} h-auto gap-1`}>
+          <TabsList className={`grid w-full ${currentUserId === userId ? "grid-cols-3 md:grid-cols-10" : "grid-cols-4 md:grid-cols-9"} h-auto gap-1`}>
             <TabsTrigger value="posts">Posts</TabsTrigger>
             <TabsTrigger value="listings">
               <Package className="h-4 w-4 mr-1 hidden sm:inline" />
@@ -539,6 +539,10 @@ const Profile = () => {
               Duel
             </TabsTrigger>
             <TabsTrigger value="friends">Friends</TabsTrigger>
+            <TabsTrigger value="life">
+              <Sparkles className="h-4 w-4 mr-1 hidden sm:inline" />
+              Life
+            </TabsTrigger>
             {currentUserId === userId && (
               <TabsTrigger value="invite">
                 <Gift className="h-4 w-4 mr-1 hidden sm:inline" />
