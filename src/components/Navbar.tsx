@@ -12,6 +12,7 @@ import {
 import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award, Moon, Sun, Shirt, PawPrint, Gift, Zap, Home, Leaf, ImageIcon, BookOpen, Calculator, FlaskConical, Palette, Calendar, DollarSign, Image, Gem, Building2, Coffee, Bot, Globe, Lock, Mic2, Car, Clock, Dna, Scale, Shield, AlertTriangle, TrendingUp, Ghost, PenTool, Ticket } from "lucide-react";
 import { useTheme } from "next-themes";
 import NotificationBell from "@/components/notifications/NotificationBell";
+import { AICreditsBalanceWidget } from "@/components/ai-credits/AICreditsBalanceWidget";
 import { GlobalCurrencySwitcher } from "@/components/GlobalCurrencySwitcher";
 import megatalentLogo from "@/assets/megatalent-logo.png";
 import uniqueLogo from "@/assets/unique-logo.png";
@@ -331,6 +332,11 @@ const Navbar = () => {
                 
                 {/* Global Currency Switcher */}
                 <GlobalCurrencySwitcher />
+
+                {/* AI Credits */}
+                <div className="hidden sm:block">
+                  <AICreditsBalanceWidget compact />
+                </div>
 
                 {/* Wall Notifications */}
                 <NotificationBell />

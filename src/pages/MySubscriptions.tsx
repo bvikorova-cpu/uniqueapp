@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Pause, Play, X, CreditCard, RefreshCw, ExternalLink, FileText, Download, ArrowUpRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import PauseLimitCard from "@/components/billing/PauseLimitCard";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -200,6 +201,10 @@ export default function MySubscriptions() {
             <ExternalLink className="h-3 w-3 ml-1.5" />
           </Button>
         </div>
+      </div>
+
+      <div className="mb-6">
+        <PauseLimitCard />
       </div>
 
       {loading ? (
