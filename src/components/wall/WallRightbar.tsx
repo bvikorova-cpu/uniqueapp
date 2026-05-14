@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { Gift, Calendar, TrendingUp } from "lucide-react";
 import { TrendingSidebar } from "./TrendingSidebar";
 import { FriendsHubWidget } from "./FriendsHubWidget";
+import { MemoriesWidget } from "./MemoriesWidget";
 import { ActivityFeedCard } from "./ActivityFeedCard";
 import { TrendingHashtags } from "./TrendingHashtags";
 import { DailyXPVideoReward } from "@/components/gamification/DailyXPVideoReward";
