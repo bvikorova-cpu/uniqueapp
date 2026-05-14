@@ -383,6 +383,7 @@ export default function GroupDetail() {
   }
 
   const isAdmin = membership?.role === "admin";
+  const isStaff = isAdmin || membership?.role === "moderator";
   const isMember = !!membership;
   const memberCount = members.length;
   const adminCount = members.filter((m: any) => m.role === "admin").length;
