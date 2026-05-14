@@ -179,6 +179,9 @@ export default function WallEvents() {
         </div>
       </motion.div>
 
+      {/* AI Suggested Events */}
+      <SuggestedEvents />
+
       {/* My Events */}
       {myEvents.length > 0 && (
         <section>
