@@ -42275,6 +42275,42 @@ export type Database = {
         }
         Relationships: []
       }
+      story_analytics: {
+        Row: {
+          avg_view_duration_ms: number
+          reactions_count: number
+          replies_count: number
+          shares_count: number
+          story_id: string
+          unique_viewers: number
+          updated_at: string
+          user_id: string
+          views_count: number
+        }
+        Insert: {
+          avg_view_duration_ms?: number
+          reactions_count?: number
+          replies_count?: number
+          shares_count?: number
+          story_id: string
+          unique_viewers?: number
+          updated_at?: string
+          user_id: string
+          views_count?: number
+        }
+        Update: {
+          avg_view_duration_ms?: number
+          reactions_count?: number
+          replies_count?: number
+          shares_count?: number
+          story_id?: string
+          unique_viewers?: number
+          updated_at?: string
+          user_id?: string
+          views_count?: number
+        }
+        Relationships: []
+      }
       story_highlight_posts: {
         Row: {
           added_at: string | null
@@ -42451,6 +42487,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      story_replies: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          read_at: string | null
+          recipient_id: string
+          sender_id: string
+          story_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          recipient_id: string
+          sender_id: string
+          story_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          recipient_id?: string
+          sender_id?: string
+          story_id?: string
+        }
+        Relationships: []
       }
       story_views: {
         Row: {
