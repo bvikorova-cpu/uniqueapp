@@ -22,6 +22,7 @@ import { MatchAnalysis } from "@/components/football/MatchAnalysis";
 import { CoinShop } from "@/components/football/CoinShop";
 import { PenaltyShootout3D } from "@/components/football/PenaltyShootout3D";
 import { EmbeddedGame } from "@/components/arena/EmbeddedGame";
+import { Stadium3D } from "@/components/arena/Stadium3D";
 import { supabase } from "@/integrations/supabase/client";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
