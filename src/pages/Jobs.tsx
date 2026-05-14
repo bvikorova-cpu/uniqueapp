@@ -10,7 +10,11 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Briefcase, MapPin, DollarSign, Clock, Search, Plus, Building2, Globe, Wrench, Flame, Trophy, Medal, Zap } from "lucide-react";
+import { Briefcase, MapPin, DollarSign, Clock, Search, Plus, Building2, Globe, Wrench, Flame, Trophy, Medal, Zap, Bookmark, ListChecks, Bell } from "lucide-react";
+import { ResumeManagerDialog } from "@/components/jobs/ResumeManagerDialog";
+import { SaveJobButton } from "@/components/jobs/SaveJobButton";
+import { MatchScoreBadge } from "@/components/jobs/MatchScoreBadge";
+import { CoverLetterDialog } from "@/components/jobs/CoverLetterDialog";
 import JobsCinematicHero from "@/components/jobs/JobsCinematicHero";
 import { JobsHeroSection } from "@/components/jobs/JobsHeroSection";
 import { QuickFilterChips } from "@/components/jobs/QuickFilterChips";
@@ -313,6 +317,16 @@ const Jobs = () => {
                   <JobPreferencesDialog userId={user.id} />
                   <JobAIAssistant />
                   <AIJobOptimizer />
+                  <ResumeManagerDialog />
+                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/saved')}>
+                    <Bookmark className="h-3.5 w-3.5 mr-1" /> Saved
+                  </Button>
+                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/applications')}>
+                    <ListChecks className="h-3.5 w-3.5 mr-1" /> Tracker
+                  </Button>
+                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/alerts')}>
+                    <Bell className="h-3.5 w-3.5 mr-1" /> Alerts
+                  </Button>
                 </>
               )}
               {user && isEmployer && (
@@ -494,7 +508,14 @@ const Jobs = () => {
                   </div>
                 </div>
               </div>
-              {selectedJob && user && <OneClickApplyDialog jobId={selectedJob.id} jobTitle={selectedJob.title} companyName={selectedJob.company_name} />}
+              {selectedJob && user && (
+                <div className="flex flex-wrap gap-2 items-center">
+                  <MatchScoreBadge jobId={selectedJob.id} />
+                  <SaveJobButton jobId={selectedJob.id} />
+                  <CoverLetterDialog jobId={selectedJob.id} jobTitle={selectedJob.title} jobDescription={selectedJob.description} companyName={selectedJob.company_name} />
+                  <OneClickApplyDialog jobId={selectedJob.id} jobTitle={selectedJob.title} companyName={selectedJob.company_name} />
+                </div>
+              )}
               {!user && (
                 <Button className="w-full py-6 text-lg" onClick={() => { toast({ title: "Sign In Required" }); window.location.href = "/auth"; }}>
                   <Search className="h-5 w-5 mr-2" /> Sign In to Apply
