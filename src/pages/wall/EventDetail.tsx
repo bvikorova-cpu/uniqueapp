@@ -12,6 +12,9 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { CoverImageUpload } from "@/components/shared/CoverImageUpload";
 import { AddToCalendarButtons } from "@/components/events/AddToCalendarButtons";
+import { RsvpControls } from "@/components/events/RsvpControls";
+import { TicketQRCard } from "@/components/events/TicketQRCard";
+import { useEventTickets } from "@/hooks/useEventTickets";
 import type { Event, EventAttendee } from "@/types/database";
 import { 
   ArrowLeft, 
