@@ -68,6 +68,15 @@ const Auth = () => {
       return;
     }
 
+    if (!captchaVerified) {
+      toast({
+        variant: "destructive",
+        title: "Captcha required",
+        description: "Please complete the captcha to prove you're not a robot.",
+      });
+      return;
+    }
+
     if (!birthDate) {
       toast({
         variant: "destructive",
