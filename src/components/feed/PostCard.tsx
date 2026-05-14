@@ -57,6 +57,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
 import type { Post } from "@/types/database";
+import { getPostBackground } from "@/lib/postBackgrounds";
 
 interface PostCardProps {
   post: Post;
