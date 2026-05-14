@@ -345,6 +345,21 @@ export default function GroupDetail() {
     },
   });
 
+  const setRoleMutation = useMutation({
+    mutationFn: async ({ userId, role }: { userId: string; role: "admin" | "moderator" | "member" }) => {
+      const { error } = await supabase
+        .from("group_members")
+        .update({ role })
+        .eq("group_id", groupId)
+        .eq("user_id", userId);
+      if (error) throw error;
+    },
+    onSuccess: (_d, vars) => {
+      queryClient.invalidateQueries({ queryKey: ["group-members"] });
+      toast({ title: `Role set to ${vars.role}` });
+    },
+  });
+
   // Loading state
   if (isLoadingGroup) {
     return (
