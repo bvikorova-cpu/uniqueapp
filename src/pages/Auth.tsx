@@ -17,6 +17,7 @@ import { Age16Badge } from "@/components/Age16Badge";
 import { format, differenceInYears } from "date-fns";
 import { cn } from "@/lib/utils";
 import { AuthReferralBanner } from "@/components/referral/AuthReferralBanner";
+import { Captcha } from "@/components/Captcha";
 
 const MIN_AGE = 16;
 
@@ -42,6 +43,7 @@ const Auth = () => {
   const [termsConsent, setTermsConsent] = useState(false);
   const [birthDate, setBirthDate] = useState<Date | undefined>(undefined);
   const [showAgeBlock, setShowAgeBlock] = useState(false);
+  const [captchaVerified, setCaptchaVerified] = useState(false);
 
   // Check if user is already logged in
   useEffect(() => {
@@ -62,6 +64,15 @@ const Auth = () => {
         variant: "destructive",
         title: "Consent Required",
         description: "Please agree to the Privacy Policy and Terms of Use to continue.",
+      });
+      return;
+    }
+
+    if (!captchaVerified) {
+      toast({
+        variant: "destructive",
+        title: "Captcha required",
+        description: "Please complete the captcha to prove you're not a robot.",
       });
       return;
     }
@@ -507,8 +518,10 @@ const Auth = () => {
                       </Label>
                     </div>
                   </div>
-                  
-                  <Button type="submit" className="w-full" disabled={loading || !privacyConsent || !termsConsent || !birthDate}>
+
+                  <Captcha onVerify={setCaptchaVerified} />
+
+                  <Button type="submit" className="w-full" disabled={loading || !privacyConsent || !termsConsent || !birthDate || !captchaVerified}>
                     {loading ? t('auth.registering') : t('auth.sign_up')}
                   </Button>
                 </form>
