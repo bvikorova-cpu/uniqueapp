@@ -897,3 +897,16 @@ export default function EventDetail() {
     </div>
   );
 }
+
+const UserTicketsBlock = ({ eventId, userId, eventTitle }: { eventId: string; userId?: string; eventTitle: string }) => {
+  const { tickets } = useEventTickets(eventId, userId);
+  if (!userId || tickets.length === 0) return null;
+  return (
+    <div className="space-y-3 pt-2 border-t">
+      <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">Your Tickets</h4>
+      {tickets.map((t) => (
+        <TicketQRCard key={t.id} ticket={t} eventTitle={eventTitle} />
+      ))}
+    </div>
+  );
+};
