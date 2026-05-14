@@ -11510,22 +11510,34 @@ export type Database = {
         Row: {
           conversation_id: string
           id: string
+          is_archived: boolean
+          is_pinned: boolean
           joined_at: string
           last_read_at: string | null
+          muted_until: string | null
+          pinned_at: string | null
           user_id: string
         }
         Insert: {
           conversation_id: string
           id?: string
+          is_archived?: boolean
+          is_pinned?: boolean
           joined_at?: string
           last_read_at?: string | null
+          muted_until?: string | null
+          pinned_at?: string | null
           user_id: string
         }
         Update: {
           conversation_id?: string
           id?: string
+          is_archived?: boolean
+          is_pinned?: boolean
           joined_at?: string
           last_read_at?: string | null
+          muted_until?: string | null
+          pinned_at?: string | null
           user_id?: string
         }
         Relationships: [
@@ -30070,6 +30082,45 @@ export type Database = {
         }
         Relationships: []
       }
+      message_pins: {
+        Row: {
+          conversation_id: string
+          created_at: string
+          id: string
+          message_id: string
+          pinned_by: string
+        }
+        Insert: {
+          conversation_id: string
+          created_at?: string
+          id?: string
+          message_id: string
+          pinned_by: string
+        }
+        Update: {
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          message_id?: string
+          pinned_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_pins_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "message_pins_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       message_reactions: {
         Row: {
           created_at: string
@@ -41447,6 +41498,48 @@ export type Database = {
           win_rate?: number | null
         }
         Relationships: []
+      }
+      starred_messages: {
+        Row: {
+          conversation_id: string
+          created_at: string
+          id: string
+          message_id: string
+          note: string | null
+          user_id: string
+        }
+        Insert: {
+          conversation_id: string
+          created_at?: string
+          id?: string
+          message_id: string
+          note?: string | null
+          user_id: string
+        }
+        Update: {
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          message_id?: string
+          note?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "starred_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "starred_messages_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       status_incidents: {
         Row: {
