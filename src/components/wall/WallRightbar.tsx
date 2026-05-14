@@ -99,6 +99,9 @@ export function WallRightbar() {
       {/* Daily XP Video Reward */}
       {user && <DailyXPVideoReward userId={user.id} />}
 
+      {/* On This Day Memories */}
+      <MemoriesWidget />
+
       {/* Friend Requests + People You May Know */}
       <FriendsHubWidget />
 
