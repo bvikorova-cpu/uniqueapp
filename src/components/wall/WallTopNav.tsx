@@ -37,17 +37,14 @@ export function WallTopNav({ currentPath }: WallTopNavProps) {
     { icon: Home, label: "Feed", path: "/wall" },
     { icon: MessageCircle, label: "Messages", path: "/wall/messages" },
     { icon: Users2, label: "Friends", path: "/wall/friends" },
-    { icon: Video, label: "Videos", path: "/wall/videos" },
-    { icon: ShoppingBag, label: "Marketplace", path: "/bazaar" },
-    { icon: Sparkles, label: "Memories", path: "/wall/memories" },
-  ];
-
-  const datingItems = [
-    { icon: Heart, label: "Dating", path: "/dating" },
-    { icon: EyeOff, label: "Anonymous Dating", path: "/anonymous-date" },
   ];
 
   const moreNavItems = [
+    { icon: Video, label: "Videos", path: "/wall/videos" },
+    { icon: ShoppingBag, label: "Marketplace", path: "/bazaar" },
+    { icon: Sparkles, label: "Memories", path: "/wall/memories" },
+    { icon: Heart, label: "Dating", path: "/dating" },
+    { icon: EyeOff, label: "Anonymous Dating", path: "/anonymous-date" },
     { icon: Users, label: "Groups", path: "/wall/groups" },
     { icon: FileText, label: "Pages", path: "/wall/pages" },
     { icon: Calendar, label: "Events", path: "/wall/events" },
@@ -57,7 +54,6 @@ export function WallTopNav({ currentPath }: WallTopNavProps) {
   ];
 
   const isMoreActive = moreNavItems.some(item => currentPath === item.path);
-  const isDatingActive = datingItems.some(item => currentPath === item.path);
 
   return (
     <div className="fixed top-16 left-0 right-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50 shadow-[0_1px_12px_hsl(var(--primary)/0.04)]">
@@ -80,38 +76,6 @@ export function WallTopNav({ currentPath }: WallTopNavProps) {
                 <span className="text-[10px] sm:text-xs whitespace-nowrap">{item.label}</span>
               </Button>
             ))}
-
-            {/* Dating dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={cn(
-                    "flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-all hover:bg-primary/10",
-                    isDatingActive && "bg-primary/10 text-primary font-semibold"
-                  )}
-                >
-                  <Heart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                  <span className="text-[10px] sm:text-xs whitespace-nowrap">Dating</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-52 bg-card border shadow-lg z-50">
-                {datingItems.map((item) => (
-                  <DropdownMenuItem
-                    key={item.path}
-                    onClick={() => navigate(item.path)}
-                    className={cn(
-                      "flex items-center gap-2 cursor-pointer",
-                      currentPath === item.path && "bg-primary/10 text-primary font-semibold"
-                    )}
-                  >
-                    <item.icon className="h-4 w-4" />
-                    <span>{item.label}</span>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
 
             {/* More dropdown */}
             <DropdownMenu>
