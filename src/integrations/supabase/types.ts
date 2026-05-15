@@ -31209,6 +31209,54 @@ export type Database = {
         }
         Relationships: []
       }
+      megatalent_live_streams: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          ended_at: string | null
+          host_user_id: string
+          id: string
+          scheduled_at: string | null
+          started_at: string | null
+          status: string
+          stream_key: string
+          title: string
+          updated_at: string
+          viewer_count: number
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          ended_at?: string | null
+          host_user_id: string
+          id?: string
+          scheduled_at?: string | null
+          started_at?: string | null
+          status?: string
+          stream_key?: string
+          title: string
+          updated_at?: string
+          viewer_count?: number
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          ended_at?: string | null
+          host_user_id?: string
+          id?: string
+          scheduled_at?: string | null
+          started_at?: string | null
+          status?: string
+          stream_key?: string
+          title?: string
+          updated_at?: string
+          viewer_count?: number
+        }
+        Relationships: []
+      }
       megatalent_referral_codes: {
         Row: {
           code: string
@@ -31429,6 +31477,38 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      megatalent_watch_party_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          stream_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          stream_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          stream_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "megatalent_watch_party_messages_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
+            referencedRelation: "megatalent_live_streams"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       megatalent_winners: {
         Row: {
