@@ -339,6 +339,13 @@ const Jobs = () => {
                     <HelpCircle className="h-3.5 w-3.5 mr-1" /> Interviews
                   </Button>
                   <CandidateSearchProfileDialog />
+                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/for-you')}>
+                    <Sparkles className="h-3.5 w-3.5 mr-1" /> For You
+                  </Button>
+                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/map')}>
+                    <MapIcon className="h-3.5 w-3.5 mr-1" /> Map
+                  </Button>
+                  <JobsPushButton />
                 </>
               )}
               {user && isEmployer && (
