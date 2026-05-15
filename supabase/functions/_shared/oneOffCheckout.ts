@@ -150,6 +150,14 @@ export const PRODUCTS: Record<string, ProductDef> = {
     successPath: "/course",
     cancelPath: "/course",
   },
+
+  // === Rewards: cosmetic items (avatar frames, themes, borders, name colors) ===
+  cosmetic_purchase: {
+    currency: "eur",
+    name: "Cosmetic Item",
+    successPath: "/rewards",
+    cancelPath: "/rewards",
+  },
 };
 
 export function getStripe(): Stripe {
