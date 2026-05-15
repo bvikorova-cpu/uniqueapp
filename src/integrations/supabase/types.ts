@@ -31023,6 +31023,124 @@ export type Database = {
         }
         Relationships: []
       }
+      megatalent_bracket_matches: {
+        Row: {
+          bracket_id: string
+          created_at: string
+          id: string
+          match_index: number
+          round: number
+          status: string
+          submission_a_id: string | null
+          submission_b_id: string | null
+          votes_a: number
+          votes_b: number
+          winner_submission_id: string | null
+        }
+        Insert: {
+          bracket_id: string
+          created_at?: string
+          id?: string
+          match_index: number
+          round: number
+          status?: string
+          submission_a_id?: string | null
+          submission_b_id?: string | null
+          votes_a?: number
+          votes_b?: number
+          winner_submission_id?: string | null
+        }
+        Update: {
+          bracket_id?: string
+          created_at?: string
+          id?: string
+          match_index?: number
+          round?: number
+          status?: string
+          submission_a_id?: string | null
+          submission_b_id?: string | null
+          votes_a?: number
+          votes_b?: number
+          winner_submission_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "megatalent_bracket_matches_bracket_id_fkey"
+            columns: ["bracket_id"]
+            isOneToOne: false
+            referencedRelation: "megatalent_brackets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      megatalent_bracket_votes: {
+        Row: {
+          created_at: string
+          id: string
+          match_id: string
+          user_id: string
+          voted_for: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          match_id: string
+          user_id: string
+          voted_for: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          match_id?: string
+          user_id?: string
+          voted_for?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "megatalent_bracket_votes_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "megatalent_bracket_matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      megatalent_brackets: {
+        Row: {
+          category: string
+          created_at: string
+          current_round: number
+          id: string
+          rounds_total: number
+          status: string
+          updated_at: string
+          week_start: string
+          winner_submission_id: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          current_round?: number
+          id?: string
+          rounds_total?: number
+          status?: string
+          updated_at?: string
+          week_start: string
+          winner_submission_id?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          current_round?: number
+          id?: string
+          rounds_total?: number
+          status?: string
+          updated_at?: string
+          week_start?: string
+          winner_submission_id?: string | null
+        }
+        Relationships: []
+      }
       megatalent_challenge_completions: {
         Row: {
           bonus_votes_awarded: number
@@ -52229,6 +52347,10 @@ export type Database = {
           user_id: string
         }[]
       }
+      advance_megatalent_bracket: {
+        Args: { _bracket_id: string }
+        Returns: Json
+      }
       aggregate_group_insights: { Args: { _day?: string }; Returns: number }
       are_friends: { Args: { a: string; b: string }; Returns: boolean }
       assign_user_role: {
@@ -52461,6 +52583,10 @@ export type Database = {
       gdpr_purge_user_data: { Args: { _user_id: string }; Returns: Json }
       generate_certificate_number: { Args: never; Returns: string }
       generate_daily_homework_challenge: { Args: never; Returns: undefined }
+      generate_megatalent_bracket: {
+        Args: { _category: string }
+        Returns: string
+      }
       generate_megatalent_daily_challenge: { Args: never; Returns: string }
       generate_referral_code: { Args: never; Returns: string }
       generate_story_share_code: { Args: never; Returns: string }
@@ -52690,6 +52816,7 @@ export type Database = {
           weekly_xp: number
         }[]
       }
+      get_megatalent_bracket: { Args: { _category: string }; Returns: Json }
       get_megatalent_challenge_progress: {
         Args: { _user_id: string }
         Returns: Json
