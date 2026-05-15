@@ -20895,6 +20895,93 @@ export type Database = {
           },
         ]
       }
+      friend_quest_invites: {
+        Row: {
+          created_at: string
+          from_user: string
+          id: string
+          quest_type: string
+          responded_at: string | null
+          status: string
+          to_user: string
+        }
+        Insert: {
+          created_at?: string
+          from_user: string
+          id?: string
+          quest_type: string
+          responded_at?: string | null
+          status?: string
+          to_user: string
+        }
+        Update: {
+          created_at?: string
+          from_user?: string
+          id?: string
+          quest_type?: string
+          responded_at?: string | null
+          status?: string
+          to_user?: string
+        }
+        Relationships: []
+      }
+      friend_quests: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          description: string | null
+          ends_at: string
+          id: string
+          progress_a: number
+          progress_b: number
+          quest_type: string
+          reward_xp: number
+          starts_at: string
+          status: string
+          target_value: number
+          title: string
+          updated_at: string
+          user_a: string
+          user_b: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          description?: string | null
+          ends_at: string
+          id?: string
+          progress_a?: number
+          progress_b?: number
+          quest_type: string
+          reward_xp?: number
+          starts_at?: string
+          status?: string
+          target_value?: number
+          title: string
+          updated_at?: string
+          user_a: string
+          user_b: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          description?: string | null
+          ends_at?: string
+          id?: string
+          progress_a?: number
+          progress_b?: number
+          quest_type?: string
+          reward_xp?: number
+          starts_at?: string
+          status?: string
+          target_value?: number
+          title?: string
+          updated_at?: string
+          user_a?: string
+          user_b?: string
+        }
+        Relationships: []
+      }
       friendships: {
         Row: {
           created_at: string
@@ -21617,6 +21704,124 @@ export type Database = {
           name?: string
           posts_count?: number | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      guild_members: {
+        Row: {
+          contributed_xp: number
+          guild_id: string
+          id: string
+          joined_at: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          contributed_xp?: number
+          guild_id: string
+          id?: string
+          joined_at?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          contributed_xp?: number
+          guild_id?: string
+          id?: string
+          joined_at?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guild_members_guild_id_fkey"
+            columns: ["guild_id"]
+            isOneToOne: false
+            referencedRelation: "guilds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      guild_xp_contributions: {
+        Row: {
+          created_at: string
+          guild_id: string
+          id: string
+          source: string | null
+          user_id: string
+          xp_amount: number
+        }
+        Insert: {
+          created_at?: string
+          guild_id: string
+          id?: string
+          source?: string | null
+          user_id: string
+          xp_amount: number
+        }
+        Update: {
+          created_at?: string
+          guild_id?: string
+          id?: string
+          source?: string | null
+          user_id?: string
+          xp_amount?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guild_xp_contributions_guild_id_fkey"
+            columns: ["guild_id"]
+            isOneToOne: false
+            referencedRelation: "guilds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      guilds: {
+        Row: {
+          banner_color: string | null
+          created_at: string
+          created_by: string
+          description: string | null
+          emblem: string | null
+          id: string
+          is_open: boolean
+          level: number
+          max_members: number
+          member_count: number
+          name: string
+          total_xp: number
+          updated_at: string
+        }
+        Insert: {
+          banner_color?: string | null
+          created_at?: string
+          created_by: string
+          description?: string | null
+          emblem?: string | null
+          id?: string
+          is_open?: boolean
+          level?: number
+          max_members?: number
+          member_count?: number
+          name: string
+          total_xp?: number
+          updated_at?: string
+        }
+        Update: {
+          banner_color?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          emblem?: string | null
+          id?: string
+          is_open?: boolean
+          level?: number
+          max_members?: number
+          member_count?: number
+          name?: string
+          total_xp?: number
+          updated_at?: string
         }
         Relationships: []
       }
@@ -38544,6 +38749,86 @@ export type Database = {
         }
         Relationships: []
       }
+      quest_nodes: {
+        Row: {
+          description: string | null
+          icon: string | null
+          id: string
+          is_boss: boolean
+          node_index: number
+          path_id: string
+          required_xp: number
+          reward_label: string | null
+          reward_type: string
+          reward_value: number
+          title: string
+        }
+        Insert: {
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_boss?: boolean
+          node_index: number
+          path_id: string
+          required_xp?: number
+          reward_label?: string | null
+          reward_type?: string
+          reward_value?: number
+          title: string
+        }
+        Update: {
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_boss?: boolean
+          node_index?: number
+          path_id?: string
+          required_xp?: number
+          reward_label?: string | null
+          reward_type?: string
+          reward_value?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quest_nodes_path_id_fkey"
+            columns: ["path_id"]
+            isOneToOne: false
+            referencedRelation: "quest_paths"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quest_paths: {
+        Row: {
+          created_at: string
+          ends_at: string
+          id: string
+          is_active: boolean
+          name: string
+          season_number: number
+          starts_at: string
+        }
+        Insert: {
+          created_at?: string
+          ends_at: string
+          id?: string
+          is_active?: boolean
+          name: string
+          season_number: number
+          starts_at?: string
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          season_number?: number
+          starts_at?: string
+        }
+        Relationships: []
+      }
       quiz_attempts: {
         Row: {
           answers: Json
@@ -39687,6 +39972,54 @@ export type Database = {
           input?: Json
           result?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      rewards_cosmetic_items: {
+        Row: {
+          asset_url: string | null
+          available_until: string | null
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          is_premium: boolean
+          name: string
+          preview_url: string | null
+          price_eur: number | null
+          price_xp: number | null
+          rarity: string
+          slug: string
+        }
+        Insert: {
+          asset_url?: string | null
+          available_until?: string | null
+          category: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_premium?: boolean
+          name: string
+          preview_url?: string | null
+          price_eur?: number | null
+          price_xp?: number | null
+          rarity?: string
+          slug: string
+        }
+        Update: {
+          asset_url?: string | null
+          available_until?: string | null
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_premium?: boolean
+          name?: string
+          preview_url?: string | null
+          price_eur?: number | null
+          price_xp?: number | null
+          rarity?: string
+          slug?: string
         }
         Relationships: []
       }
@@ -48396,6 +48729,41 @@ export type Database = {
           },
         ]
       }
+      user_quest_path_progress: {
+        Row: {
+          completed_nodes: number[]
+          current_node: number
+          id: string
+          path_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_nodes?: number[]
+          current_node?: number
+          id?: string
+          path_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_nodes?: number[]
+          current_node?: number
+          id?: string
+          path_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_quest_path_progress_path_id_fkey"
+            columns: ["path_id"]
+            isOneToOne: false
+            referencedRelation: "quest_paths"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_quest_progress: {
         Row: {
           avatar_url: string | null
@@ -48557,6 +48925,38 @@ export type Database = {
           status?: string | null
         }
         Relationships: []
+      }
+      user_rewards_cosmetics: {
+        Row: {
+          acquired_at: string
+          id: string
+          is_equipped: boolean
+          item_id: string
+          user_id: string
+        }
+        Insert: {
+          acquired_at?: string
+          id?: string
+          is_equipped?: boolean
+          item_id: string
+          user_id: string
+        }
+        Update: {
+          acquired_at?: string
+          id?: string
+          is_equipped?: boolean
+          item_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_rewards_cosmetics_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "rewards_cosmetic_items"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -48756,6 +49156,48 @@ export type Database = {
           related_content_id?: string | null
           user_id?: string
           warning_level?: number | null
+        }
+        Relationships: []
+      }
+      user_year_wrapped: {
+        Row: {
+          badges_earned: number
+          generated_at: string
+          highlights: Json
+          id: string
+          is_public: boolean
+          share_slug: string | null
+          streak_max: number
+          top_modules: Json
+          total_xp: number
+          user_id: string
+          year: number
+        }
+        Insert: {
+          badges_earned?: number
+          generated_at?: string
+          highlights?: Json
+          id?: string
+          is_public?: boolean
+          share_slug?: string | null
+          streak_max?: number
+          top_modules?: Json
+          total_xp?: number
+          user_id: string
+          year: number
+        }
+        Update: {
+          badges_earned?: number
+          generated_at?: string
+          highlights?: Json
+          id?: string
+          is_public?: boolean
+          share_slug?: string | null
+          streak_max?: number
+          top_modules?: Json
+          total_xp?: number
+          user_id?: string
+          year?: number
         }
         Relationships: []
       }
@@ -50474,6 +50916,48 @@ export type Database = {
           starts_at?: string
           status?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      xp_charity_donations: {
+        Row: {
+          campaign_id: string | null
+          campaign_name: string | null
+          conversion_rate: number
+          created_at: string
+          eur_value: number
+          id: string
+          notes: string | null
+          processed_at: string | null
+          status: string
+          user_id: string
+          xp_amount: number
+        }
+        Insert: {
+          campaign_id?: string | null
+          campaign_name?: string | null
+          conversion_rate?: number
+          created_at?: string
+          eur_value: number
+          id?: string
+          notes?: string | null
+          processed_at?: string | null
+          status?: string
+          user_id: string
+          xp_amount: number
+        }
+        Update: {
+          campaign_id?: string | null
+          campaign_name?: string | null
+          conversion_rate?: number
+          created_at?: string
+          eur_value?: number
+          id?: string
+          notes?: string | null
+          processed_at?: string | null
+          status?: string
+          user_id?: string
+          xp_amount?: number
         }
         Relationships: []
       }
@@ -52364,6 +52848,14 @@ export type Database = {
       }
       is_group_staff: {
         Args: { _group_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_guild_member: {
+        Args: { _guild: string; _user: string }
+        Returns: boolean
+      }
+      is_guild_officer: {
+        Args: { _guild: string; _user: string }
         Returns: boolean
       }
       is_iq_pro: { Args: { _user_id: string }; Returns: boolean }
