@@ -386,6 +386,15 @@ const Jobs = () => {
                   <Button onClick={() => navigate('/jobs/diversity/reports')} size="sm" variant="outline" className="text-xs">
                     📊 Diversity
                   </Button>
+                  <Button onClick={() => navigate('/jobs/ai-jd-writer')} size="sm" variant="outline" className="text-xs">
+                    ✨ AI JD Writer
+                  </Button>
+                  <Button onClick={() => navigate('/jobs/onboarding')} size="sm" variant="outline" className="text-xs">
+                    📋 Onboarding
+                  </Button>
+                  <Button onClick={() => navigate('/jobs/background-checks')} size="sm" variant="outline" className="text-xs">
+                    🛡️ BG Checks
+                  </Button>
                 </>
               )}
               {user && !isEmployer && (
