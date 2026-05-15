@@ -11,6 +11,7 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { TalentCommentsSheet } from "@/components/megatalent/TalentCommentsSheet";
 import MegatalentTipJar from "@/components/megatalent/MegatalentTipJar";
+import MegatalentDailyChallenge from "@/components/megatalent/MegatalentDailyChallenge";
 
 const categoryConfig: Record<string, { title: string; icon: string; categories: string[] }> = {
   art: { title: "Art & Creativity", icon: "🎨", categories: ["drawing", "painting", "digital_art", "sculpture", "photography", "handmade", "makeup_art", "tattoo"] },
@@ -220,6 +221,11 @@ const MegatalentCategory = () => {
             </motion.div>
           </div>
         </motion.div>
+
+        {/* Daily Challenge */}
+        <div className="mb-6">
+          <MegatalentDailyChallenge />
+        </div>
 
         {/* Content */}
         {loading ? (
