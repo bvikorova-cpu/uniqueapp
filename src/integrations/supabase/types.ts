@@ -25766,18 +25766,26 @@ export type Database = {
           benefits: string | null
           category: Database["public"]["Enums"]["job_category"]
           company_name: string
+          company_size: string | null
           contact_email: string
           country: string
           created_at: string | null
           description: string
           duration_days: number
           employer_id: string
+          equity_offered: boolean | null
           expires_at: string | null
+          four_day_week: boolean | null
+          funding_stage: string | null
           id: string
+          industry: string | null
           is_active: boolean | null
           is_featured: boolean
+          is_remote: boolean | null
           job_type: Database["public"]["Enums"]["job_type"]
+          latitude: number | null
           location: string
+          longitude: number | null
           paid_status: string
           published_at: string | null
           requirements: string | null
@@ -25793,18 +25801,26 @@ export type Database = {
           benefits?: string | null
           category: Database["public"]["Enums"]["job_category"]
           company_name: string
+          company_size?: string | null
           contact_email: string
           country: string
           created_at?: string | null
           description: string
           duration_days?: number
           employer_id: string
+          equity_offered?: boolean | null
           expires_at?: string | null
+          four_day_week?: boolean | null
+          funding_stage?: string | null
           id?: string
+          industry?: string | null
           is_active?: boolean | null
           is_featured?: boolean
+          is_remote?: boolean | null
           job_type: Database["public"]["Enums"]["job_type"]
+          latitude?: number | null
           location: string
+          longitude?: number | null
           paid_status?: string
           published_at?: string | null
           requirements?: string | null
@@ -25820,18 +25836,26 @@ export type Database = {
           benefits?: string | null
           category?: Database["public"]["Enums"]["job_category"]
           company_name?: string
+          company_size?: string | null
           contact_email?: string
           country?: string
           created_at?: string | null
           description?: string
           duration_days?: number
           employer_id?: string
+          equity_offered?: boolean | null
           expires_at?: string | null
+          four_day_week?: boolean | null
+          funding_stage?: string | null
           id?: string
+          industry?: string | null
           is_active?: boolean | null
           is_featured?: boolean
+          is_remote?: boolean | null
           job_type?: Database["public"]["Enums"]["job_type"]
+          latitude?: number | null
           location?: string
+          longitude?: number | null
           paid_status?: string
           published_at?: string | null
           requirements?: string | null
@@ -32538,6 +32562,48 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      personalized_job_feed_cache: {
+        Row: {
+          generated_at: string
+          id: string
+          job_id: string
+          reason: string | null
+          score: number
+          user_id: string
+        }
+        Insert: {
+          generated_at?: string
+          id?: string
+          job_id: string
+          reason?: string | null
+          score?: number
+          user_id: string
+        }
+        Update: {
+          generated_at?: string
+          id?: string
+          job_id?: string
+          reason?: string | null
+          score?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "personalized_job_feed_cache_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "job_listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "personalized_job_feed_cache_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "job_listings_public"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       pet_accessories: {
         Row: {
