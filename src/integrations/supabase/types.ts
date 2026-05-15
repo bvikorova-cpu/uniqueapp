@@ -31154,6 +31154,60 @@ export type Database = {
         }
         Relationships: []
       }
+      megatalent_tips: {
+        Row: {
+          amount_cents: number
+          category_slug: string | null
+          completed_at: string | null
+          created_at: string
+          creator_amount_cents: number
+          creator_id: string
+          id: string
+          message: string | null
+          paid_at: string | null
+          payout_status: string
+          platform_fee_cents: number
+          status: string
+          stripe_session_id: string | null
+          stripe_transfer_id: string | null
+          tipper_id: string | null
+        }
+        Insert: {
+          amount_cents: number
+          category_slug?: string | null
+          completed_at?: string | null
+          created_at?: string
+          creator_amount_cents?: number
+          creator_id: string
+          id?: string
+          message?: string | null
+          paid_at?: string | null
+          payout_status?: string
+          platform_fee_cents?: number
+          status?: string
+          stripe_session_id?: string | null
+          stripe_transfer_id?: string | null
+          tipper_id?: string | null
+        }
+        Update: {
+          amount_cents?: number
+          category_slug?: string | null
+          completed_at?: string | null
+          created_at?: string
+          creator_amount_cents?: number
+          creator_id?: string
+          id?: string
+          message?: string | null
+          paid_at?: string | null
+          payout_status?: string
+          platform_fee_cents?: number
+          status?: string
+          stripe_session_id?: string | null
+          stripe_transfer_id?: string | null
+          tipper_id?: string | null
+        }
+        Relationships: []
+      }
       megatalent_winners: {
         Row: {
           category: Database["public"]["Enums"]["talent_category"]
@@ -52565,6 +52619,14 @@ export type Database = {
           view_count: number
           week_start: string
           weekly_xp: number
+        }[]
+      }
+      get_megatalent_tip_stats: {
+        Args: { _creator_id: string }
+        Returns: {
+          last_tip_at: string
+          total_amount_cents: number
+          total_tips: number
         }[]
       }
       get_my_clones: {
