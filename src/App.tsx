@@ -426,6 +426,7 @@ const ReferralLeaderboard = lazy(() => import("@/pages/ReferralLeaderboard"));
 const AdminSubscriptionAnalytics = lazy(() => import("@/pages/admin/AdminSubscriptionAnalytics"));
 const AdminCohortRetention = lazy(() => import("@/pages/admin/AdminCohortRetention"));
 const AdminOpsTools = lazy(() => import("@/pages/admin/AdminOpsTools"));
+const AdminRewardsSeed = lazy(() => import("@/pages/admin/AdminRewardsSeed"));
 const AdminEngagement = lazy(() => import("@/pages/admin/AdminEngagement"));
 const AdminVitals = lazy(() => import("@/pages/admin/AdminVitals"));
 const AdminDunning = lazy(() => import("@/pages/admin/AdminDunning"));
