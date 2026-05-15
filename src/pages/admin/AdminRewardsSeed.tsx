@@ -311,10 +311,11 @@ export default function AdminRewardsSeed() {
 
         <AdminGlassCard className="p-4 sm:p-6">
           <Tabs defaultValue="bp" className="w-full">
-            <TabsList className="grid grid-cols-3 max-w-xl">
+            <TabsList className="grid grid-cols-4 max-w-2xl">
               <TabsTrigger value="bp">Battle Pass</TabsTrigger>
               <TabsTrigger value="cal">Calendar</TabsTrigger>
               <TabsTrigger value="lg">League</TabsTrigger>
+              <TabsTrigger value="qp">Quest Path</TabsTrigger>
             </TabsList>
 
             <TabsContent value="bp" className="mt-6 space-y-4">
