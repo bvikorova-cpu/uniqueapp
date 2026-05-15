@@ -377,6 +377,9 @@ const Jobs = () => {
                   <Button onClick={() => navigate('/jobs/rejection-templates')} size="sm" variant="outline" className="text-xs">
                     <HelpCircle className="h-3.5 w-3.5 mr-1" /> Templates
                   </Button>
+                  <Button onClick={() => navigate('/jobs/diversity/reports')} size="sm" variant="outline" className="text-xs">
+                    📊 Diversity
+                  </Button>
                 </>
               )}
               {user && !isEmployer && (
