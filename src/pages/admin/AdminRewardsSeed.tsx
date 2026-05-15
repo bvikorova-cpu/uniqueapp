@@ -368,6 +368,22 @@ export default function AdminRewardsSeed() {
                 {lgResult && <p className="text-sm mt-3 text-muted-foreground">{lgResult}</p>}
               </div>
             </TabsContent>
+
+            <TabsContent value="qp" className="mt-6 space-y-4">
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Quest Path — Path of the Legend</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Vytvorí 90-dňovú aktívnu cestu s 20 uzlami vrátane 4 boss misií
+                  (Trial of Consistency, Influence, Mastery, Path of the Legend).
+                  Predchádzajúce aktívne cesty sa deaktivujú.
+                </p>
+                <Button onClick={runQp} disabled={qpStatus === "running"} className="gap-2">
+                  <StatusIcon s={qpStatus} />
+                  {qpStatus === "done" ? "Spustiť znova" : "Naplniť Quest Path"}
+                </Button>
+                {qpResult && <p className="text-sm mt-3 text-muted-foreground">{qpResult}</p>}
+              </div>
+            </TabsContent>
           </Tabs>
         </AdminGlassCard>
       </AdminPageShell>
