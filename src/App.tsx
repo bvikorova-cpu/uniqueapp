@@ -816,6 +816,7 @@ const App = () => {
                         <Route path="/admin/subscription-analytics" element={<ProtectedRoute requireAdmin={true}><AdminSubscriptionAnalytics /></ProtectedRoute>} />
                         <Route path="/admin/cohort-retention" element={<ProtectedRoute requireAdmin={true}><AdminCohortRetention /></ProtectedRoute>} />
                         <Route path="/admin/ops-tools" element={<ProtectedRoute requireAdmin={true}><AdminOpsTools /></ProtectedRoute>} />
+                        <Route path="/admin/rewards-seed" element={<ProtectedRoute requireAdmin={true}><AdminRewardsSeed /></ProtectedRoute>} />
                         <Route path="/admin/engagement" element={<ProtectedRoute requireAdmin={true}><AdminEngagement /></ProtectedRoute>} />
                         <Route path="/admin/vitals" element={<ProtectedRoute requireAdmin={true}><AdminVitals /></ProtectedRoute>} />
                         <Route path="/admin/dunning" element={<ProtectedRoute requireAdmin={true}><AdminDunning /></ProtectedRoute>} />
