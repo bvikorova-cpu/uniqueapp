@@ -592,6 +592,10 @@ const App = () => {
                         <Route path="/jobs/references" element={<ProtectedRoute><References /></ProtectedRoute>} />
                         <Route path="/jobs/background-checks" element={<ProtectedRoute><BackgroundChecks /></ProtectedRoute>} />
                         <Route path="/jobs/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
+                        <Route path="/jobs/templates" element={<ProtectedRoute><JobPostingTemplates /></ProtectedRoute>} />
+                        <Route path="/jobs/bulk-hiring" element={<ProtectedRoute><BulkHiring /></ProtectedRoute>} />
+                        <Route path="/jobs/headhunters" element={<HeadhunterMarketplace />} />
+                        <Route path="/jobs/ai-ranking/:jobId" element={<ProtectedRoute><AICandidateRanking /></ProtectedRoute>} />
                         <Route path="/jobs/ats/:jobId" element={<ProtectedRoute><EmployerATS /></ProtectedRoute>} />
                         <Route path="/jobs/analytics/:jobId" element={<ProtectedRoute><JobAnalytics /></ProtectedRoute>} />
                         <Route path="/employer-dashboard" element={<ProtectedRoute><EmployerDashboard /></ProtectedRoute>} />
