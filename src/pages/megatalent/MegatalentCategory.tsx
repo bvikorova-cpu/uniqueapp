@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { TalentCommentsSheet } from "@/components/megatalent/TalentCommentsSheet";
 import MegatalentTipJar from "@/components/megatalent/MegatalentTipJar";
 import MegatalentDailyChallenge from "@/components/megatalent/MegatalentDailyChallenge";
+import MegatalentBracket from "@/components/megatalent/MegatalentBracket";
 
 const categoryConfig: Record<string, { title: string; icon: string; categories: string[] }> = {
   art: { title: "Art & Creativity", icon: "🎨", categories: ["drawing", "painting", "digital_art", "sculpture", "photography", "handmade", "makeup_art", "tattoo"] },
