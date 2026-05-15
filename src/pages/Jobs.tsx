@@ -357,6 +357,12 @@ const Jobs = () => {
                   <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/referrals')}>
                     🤝 Referrals
                   </Button>
+                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/video-resumes')}>
+                    🎬 Video Resume
+                  </Button>
+                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/diversity/self-id')}>
+                    💗 Self-ID
+                  </Button>
                   <JobsPushButton />
                 </>
               )}
