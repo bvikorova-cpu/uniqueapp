@@ -25,14 +25,22 @@ import RewardsShowcase from "@/components/rewards/RewardsShowcase";
 import RewardsXPBetting from "@/components/rewards/RewardsXPBetting";
 import RewardsMysteryBadges from "@/components/rewards/RewardsMysteryBadges";
 import RewardsMarketplace from "@/components/rewards/RewardsMarketplace";
+import RewardsLeagues from "@/components/rewards/RewardsLeagues";
+import RewardsBattlePass from "@/components/rewards/RewardsBattlePass";
+import RewardsStreakFreeze from "@/components/rewards/RewardsStreakFreeze";
+import RewardsLoginCalendar from "@/components/rewards/RewardsLoginCalendar";
 import { WeeklyXPLeaderboard } from "@/components/gamification/WeeklyXPLeaderboard";
 import { LastWeekWinners } from "@/components/gamification/LastWeekWinners";
-import { Crown, Home, Wand2, Trophy, Layers, Disc3, Target, Award, Medal, Flame, Gift, Eye, Sword, HelpCircle, ShoppingBag } from "lucide-react";
+import { Crown, Home, Wand2, Trophy, Layers, Disc3, Target, Award, Medal, Flame, Gift, Eye, Sword, HelpCircle, ShoppingBag, Shield, Snowflake, CalendarDays } from "lucide-react";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { useRewardsStats } from "@/hooks/useRewardsStats";
 const TABS = [
   { id: "overview", icon: Home, label: "Overview" },
+  { id: "leagues", icon: Shield, label: "Leagues" },
+  { id: "battlepass", icon: Crown, label: "Battle Pass" },
+  { id: "calendar", icon: CalendarDays, label: "Calendar" },
+  { id: "freeze", icon: Snowflake, label: "Streak Freeze" },
   { id: "ai-tools", icon: Wand2, label: "AI Tools" },
   { id: "tiers", icon: Layers, label: "Tiers" },
   { id: "spin", icon: Disc3, label: "Lucky Spin" },
@@ -158,6 +166,10 @@ export default function Rewards() {
         {activeView === "betting" && <RewardsXPBetting />}
         {activeView === "mystery" && <RewardsMysteryBadges />}
         {activeView === "marketplace" && <RewardsMarketplace />}
+        {activeView === "leagues" && <RewardsLeagues />}
+        {activeView === "battlepass" && <RewardsBattlePass />}
+        {activeView === "calendar" && <RewardsLoginCalendar />}
+        {activeView === "freeze" && <RewardsStreakFreeze />}
       </div>
     </div>
   );
