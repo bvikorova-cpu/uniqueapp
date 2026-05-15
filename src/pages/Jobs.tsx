@@ -363,6 +363,12 @@ const Jobs = () => {
                   <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/diversity/self-id')}>
                     💗 Self-ID
                   </Button>
+                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/references')}>
+                    👥 References
+                  </Button>
+                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/background-checks')}>
+                    🛡️ BG Checks
+                  </Button>
                   <JobsPushButton />
                 </>
               )}
