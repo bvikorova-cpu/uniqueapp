@@ -3,13 +3,14 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, MessageCircle, ArrowLeft, Play, Trophy, Loader2, ThumbsDown } from "lucide-react";
+import { Heart, MessageCircle, ArrowLeft, Play, Trophy, Loader2, ThumbsDown, Gift } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { TalentCommentsSheet } from "@/components/megatalent/TalentCommentsSheet";
+import MegatalentTipJar from "@/components/megatalent/MegatalentTipJar";
 
 const categoryConfig: Record<string, { title: string; icon: string; categories: string[] }> = {
   art: { title: "Art & Creativity", icon: "🎨", categories: ["drawing", "painting", "digital_art", "sculpture", "photography", "handmade", "makeup_art", "tattoo"] },
@@ -34,6 +35,7 @@ const MegatalentCategory = () => {
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
   const [expandedMedia, setExpandedMedia] = useState<{ url: string; type: 'image' | 'video' } | null>(null);
   const [commentsForId, setCommentsForId] = useState<string | null>(null);
+  const [tipTarget, setTipTarget] = useState<{ id: string; name?: string } | null>(null);
 
   const config = category ? categoryConfig[category] : null;
 
@@ -325,16 +327,27 @@ const MegatalentCategory = () => {
                         </Button>
                       </div>
 
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="gap-1.5 h-8"
-                        onClick={() => setCommentsForId(submission.id)}
-                        aria-label="Open comments"
-                      >
-                        <MessageCircle className="w-4 h-4" />
-                        <span className="text-xs">{commentCounts[submission.id] || 0}</span>
-                      </Button>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="gap-1.5 h-8 text-pink-500 hover:text-pink-600"
+                          onClick={() => setTipTarget({ id: submission.user_id, name: submission.profiles?.full_name })}
+                          aria-label="Send tip"
+                        >
+                          <Gift className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="gap-1.5 h-8"
+                          onClick={() => setCommentsForId(submission.id)}
+                          aria-label="Open comments"
+                        >
+                          <MessageCircle className="w-4 h-4" />
+                          <span className="text-xs">{commentCounts[submission.id] || 0}</span>
+                        </Button>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -360,6 +373,18 @@ const MegatalentCategory = () => {
         onOpenChange={(o) => !o && setCommentsForId(null)}
         onCountChange={(id, count) => setCommentCounts((prev) => ({ ...prev, [id]: count }))}
       />
+
+      <Dialog open={!!tipTarget} onOpenChange={(o) => !o && setTipTarget(null)}>
+        <DialogContent className="max-w-md">
+          {tipTarget && (
+            <MegatalentTipJar
+              creatorId={tipTarget.id}
+              creatorName={tipTarget.name}
+              categorySlug={category}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
