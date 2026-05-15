@@ -137,6 +137,71 @@ async function seedCalendar(monthsAhead: number) {
   return { totalRows };
 }
 
+// ============ QUEST PATH SEED ============
+const QUEST_NODES: Array<{ title: string; description: string; reward_type: string; reward_value: number; reward_label: string; icon: string; is_boss?: boolean }> = [
+  { title: "Awakening", description: "Complete your first daily login", reward_type: "xp", reward_value: 100, reward_label: "100 XP", icon: "🌅" },
+  { title: "First Steps", description: "Make your first post", reward_type: "xp", reward_value: 150, reward_label: "150 XP", icon: "👣" },
+  { title: "Social Butterfly", description: "Add 3 friends", reward_type: "credits", reward_value: 5, reward_label: "5 Credits", icon: "🦋" },
+  { title: "Explorer", description: "Visit 5 different hubs", reward_type: "xp", reward_value: 250, reward_label: "250 XP", icon: "🧭" },
+  { title: "Boss: Trial of Consistency", description: "Maintain a 7-day login streak", reward_type: "credits", reward_value: 25, reward_label: "25 Credits + Badge", icon: "🔥", is_boss: true },
+  { title: "Creator Spark", description: "Upload your first media", reward_type: "xp", reward_value: 300, reward_label: "300 XP", icon: "✨" },
+  { title: "Engager", description: "Leave 10 comments", reward_type: "xp", reward_value: 350, reward_label: "350 XP", icon: "💬" },
+  { title: "Tastemaker", description: "Receive 25 likes", reward_type: "credits", reward_value: 10, reward_label: "10 Credits", icon: "❤️" },
+  { title: "Quest Hunter", description: "Complete 5 daily quests", reward_type: "xp", reward_value: 400, reward_label: "400 XP", icon: "🎯" },
+  { title: "Boss: Trial of Influence", description: "Reach 100 followers", reward_type: "cosmetic", reward_value: 1, reward_label: "Avatar Frame + 50 Credits", icon: "👹", is_boss: true },
+  { title: "Marketplace Initiate", description: "Make your first marketplace transaction", reward_type: "xp", reward_value: 500, reward_label: "500 XP", icon: "🛒" },
+  { title: "Guild Member", description: "Join or create a guild", reward_type: "credits", reward_value: 15, reward_label: "15 Credits", icon: "🛡️" },
+  { title: "Champion", description: "Reach Silver league", reward_type: "xp", reward_value: 600, reward_label: "600 XP", icon: "🥈" },
+  { title: "Helper", description: "Refer a friend who joins", reward_type: "credits", reward_value: 20, reward_label: "20 Credits", icon: "🤝" },
+  { title: "Boss: Trial of Mastery", description: "Win a tournament or challenge", reward_type: "cosmetic", reward_value: 1, reward_label: "Legendary Theme + 100 Credits", icon: "🐉", is_boss: true },
+  { title: "Veteran", description: "Maintain a 30-day streak", reward_type: "xp", reward_value: 800, reward_label: "800 XP", icon: "🎖️" },
+  { title: "Philanthropist", description: "Donate XP to a charity campaign", reward_type: "credits", reward_value: 30, reward_label: "30 Credits", icon: "💝" },
+  { title: "Trendsetter", description: "Get a post with 100+ reactions", reward_type: "xp", reward_value: 1000, reward_label: "1000 XP", icon: "📈" },
+  { title: "Pro Player", description: "Reach Gold league", reward_type: "credits", reward_value: 50, reward_label: "50 Credits", icon: "🥇" },
+  { title: "Final Boss: Path of the Legend", description: "Complete all previous nodes", reward_type: "cosmetic", reward_value: 1, reward_label: "Mythic Crown + 200 Credits + Badge", icon: "👑", is_boss: true },
+];
+
+async function seedQuestPath() {
+  const seasonNumber = Math.floor(Date.now() / 1000);
+  const startsAt = new Date();
+  const endsAt = new Date();
+  endsAt.setDate(endsAt.getDate() + 90);
+
+  // deactivate previous active paths
+  await supabase.from("quest_paths").update({ is_active: false }).eq("is_active", true);
+
+  const { data: path, error: pErr } = await supabase
+    .from("quest_paths")
+    .insert({
+      name: "Path of the Legend — Season 1",
+      season_number: seasonNumber,
+      starts_at: startsAt.toISOString(),
+      ends_at: endsAt.toISOString(),
+      is_active: true,
+    })
+    .select()
+    .single();
+  if (pErr) throw pErr;
+
+  const rows = QUEST_NODES.map((n, i) => ({
+    path_id: path.id,
+    node_index: i,
+    title: n.title,
+    description: n.description,
+    icon: n.icon,
+    required_xp: i * 100,
+    reward_type: n.reward_type,
+    reward_value: n.reward_value,
+    reward_label: n.reward_label,
+    is_boss: n.is_boss || false,
+  }));
+
+  const { error: nErr } = await supabase.from("quest_nodes").insert(rows);
+  if (nErr) throw nErr;
+
+  return { pathId: path.id, nodeCount: rows.length, bossCount: rows.filter((r) => r.is_boss).length };
+}
+
 // ============ LEAGUE SEED ============
 async function seedLeague() {
   const startsAt = new Date();
@@ -167,6 +232,22 @@ export default function AdminRewardsSeed() {
   const [calResult, setCalResult] = useState<string>("");
   const [lgStatus, setLgStatus] = useState<Status>("idle");
   const [lgResult, setLgResult] = useState<string>("");
+  const [qpStatus, setQpStatus] = useState<Status>("idle");
+  const [qpResult, setQpResult] = useState<string>("");
+
+  const runQp = async () => {
+    setQpStatus("running");
+    try {
+      const r = await seedQuestPath();
+      setQpResult(`Vytvorená cesta s ${r.nodeCount} uzlami (${r.bossCount} boss misií).`);
+      setQpStatus("done");
+      toast.success("Quest Path naplnený");
+    } catch (e: any) {
+      setQpResult(e.message || "Chyba");
+      setQpStatus("error");
+      toast.error("Quest Path zlyhal: " + e.message);
+    }
+  };
 
   const runBp = async () => {
     setBpStatus("running");
@@ -230,10 +311,11 @@ export default function AdminRewardsSeed() {
 
         <AdminGlassCard className="p-4 sm:p-6">
           <Tabs defaultValue="bp" className="w-full">
-            <TabsList className="grid grid-cols-3 max-w-xl">
+            <TabsList className="grid grid-cols-4 max-w-2xl">
               <TabsTrigger value="bp">Battle Pass</TabsTrigger>
               <TabsTrigger value="cal">Calendar</TabsTrigger>
               <TabsTrigger value="lg">League</TabsTrigger>
+              <TabsTrigger value="qp">Quest Path</TabsTrigger>
             </TabsList>
 
             <TabsContent value="bp" className="mt-6 space-y-4">
@@ -284,6 +366,22 @@ export default function AdminRewardsSeed() {
                   Štart novej ligy
                 </Button>
                 {lgResult && <p className="text-sm mt-3 text-muted-foreground">{lgResult}</p>}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="qp" className="mt-6 space-y-4">
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Quest Path — Path of the Legend</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Vytvorí 90-dňovú aktívnu cestu s 20 uzlami vrátane 4 boss misií
+                  (Trial of Consistency, Influence, Mastery, Path of the Legend).
+                  Predchádzajúce aktívne cesty sa deaktivujú.
+                </p>
+                <Button onClick={runQp} disabled={qpStatus === "running"} className="gap-2">
+                  <StatusIcon s={qpStatus} />
+                  {qpStatus === "done" ? "Spustiť znova" : "Naplniť Quest Path"}
+                </Button>
+                {qpResult && <p className="text-sm mt-3 text-muted-foreground">{qpResult}</p>}
               </div>
             </TabsContent>
           </Tabs>
