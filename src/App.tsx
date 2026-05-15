@@ -426,6 +426,7 @@ const ReferralLeaderboard = lazy(() => import("@/pages/ReferralLeaderboard"));
 const AdminSubscriptionAnalytics = lazy(() => import("@/pages/admin/AdminSubscriptionAnalytics"));
 const AdminCohortRetention = lazy(() => import("@/pages/admin/AdminCohortRetention"));
 const AdminOpsTools = lazy(() => import("@/pages/admin/AdminOpsTools"));
+const AdminRewardsSeed = lazy(() => import("@/pages/admin/AdminRewardsSeed"));
 const AdminEngagement = lazy(() => import("@/pages/admin/AdminEngagement"));
 const AdminVitals = lazy(() => import("@/pages/admin/AdminVitals"));
 const AdminDunning = lazy(() => import("@/pages/admin/AdminDunning"));
@@ -815,6 +816,7 @@ const App = () => {
                         <Route path="/admin/subscription-analytics" element={<ProtectedRoute requireAdmin={true}><AdminSubscriptionAnalytics /></ProtectedRoute>} />
                         <Route path="/admin/cohort-retention" element={<ProtectedRoute requireAdmin={true}><AdminCohortRetention /></ProtectedRoute>} />
                         <Route path="/admin/ops-tools" element={<ProtectedRoute requireAdmin={true}><AdminOpsTools /></ProtectedRoute>} />
+                        <Route path="/admin/rewards-seed" element={<ProtectedRoute requireAdmin={true}><AdminRewardsSeed /></ProtectedRoute>} />
                         <Route path="/admin/engagement" element={<ProtectedRoute requireAdmin={true}><AdminEngagement /></ProtectedRoute>} />
                         <Route path="/admin/vitals" element={<ProtectedRoute requireAdmin={true}><AdminVitals /></ProtectedRoute>} />
                         <Route path="/admin/dunning" element={<ProtectedRoute requireAdmin={true}><AdminDunning /></ProtectedRoute>} />
