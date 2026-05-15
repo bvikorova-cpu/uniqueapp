@@ -68,21 +68,12 @@ export default function RewardsLoginCalendar() {
     if (day !== todayDay) { toast.error("Only today's reward can be claimed"); return; }
     if (claims.has(day)) { toast.info("Already claimed"); return; }
 
-    const { error } = await supabase.from("user_calendar_claims").insert({
-      user_id: user.id, month_key: mKey, day_number: day,
-      reward_type: tpl.reward_type, reward_value: tpl.reward_value,
+    const { data, error } = await supabase.rpc("claim_calendar_day", {
+      _month_key: mKey, _day_number: day,
     });
     if (error) { toast.error(error.message); return; }
-
-    if (tpl.reward_type === "xp") {
-      const { data: pts } = await supabase.from("user_points").select("total_points").eq("user_id", user.id).maybeSingle();
-      const newXP = (pts?.total_points ?? 0) + tpl.reward_value;
-      if (pts) {
-        await supabase.from("user_points").update({ total_points: newXP }).eq("user_id", user.id);
-      } else {
-        await supabase.from("user_points").insert({ user_id: user.id, total_points: tpl.reward_value, level: 1 });
-      }
-    }
+    const res = data as any;
+    if (!res?.ok) { toast.error(res?.error ?? "Claim failed"); return; }
     toast.success(`Claimed ${tpl.reward_label}! 🎁`);
     refresh();
   };

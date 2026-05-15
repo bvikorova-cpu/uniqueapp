@@ -44,8 +44,14 @@ export default function RewardsCosmetics() {
 
   const acquire = async (item: any) => {
     if (!user) return;
-    const { error } = await supabase.from("user_rewards_cosmetics").insert({ user_id: user.id, item_id: item.id });
+    if (item.price_eur && Number(item.price_eur) > 0) {
+      toast.info("EUR purchases use Stripe checkout (coming soon)");
+      return;
+    }
+    const { data, error } = await supabase.rpc("acquire_cosmetic_item", { _item_id: item.id });
     if (error) return toast.error(error.message);
+    const res = data as any;
+    if (!res?.ok) return toast.error(res?.error ?? "Acquire failed");
     toast.success(`Acquired ${item.name}!`);
     load();
   };
