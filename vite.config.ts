@@ -37,6 +37,7 @@ export default defineConfig(() => ({
   plugins: [
     react(),
     tsconfigPaths(),
+    i18nCheckPlugin(),
     ANALYZE &&
       visualizer({
         filename: "dist/bundle-stats.html",
