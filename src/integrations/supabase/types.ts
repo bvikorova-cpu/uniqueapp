@@ -52120,6 +52120,10 @@ export type Database = {
       claim_iq_daily_streak: { Args: never; Returns: Json }
       claim_iq_streak_reward: { Args: { _day: number }; Returns: Json }
       claim_mission_reward: { Args: { _mission_id: string }; Returns: Json }
+      claim_quest_node: {
+        Args: { _node_index: number; _path_id: string }
+        Returns: Json
+      }
       cleanup_expired_cache: { Args: never; Returns: number }
       cleanup_old_jobs: { Args: never; Returns: number }
       cleanup_rate_limits: { Args: never; Returns: undefined }
