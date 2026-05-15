@@ -277,6 +277,10 @@ export const VideoResumes = lazy(() => import("@/pages/jobs/VideoResumes"));
 export const DiversitySelfId = lazy(() => import("@/pages/jobs/DiversitySelfId"));
 export const DiversityReports = lazy(() => import("@/pages/jobs/DiversityReports"));
 export const JobBoost = lazy(() => import("@/pages/jobs/JobBoost"));
+export const AIJobDescriptionWriter = lazy(() => import("@/pages/jobs/AIJobDescriptionWriter"));
+export const References = lazy(() => import("@/pages/jobs/References"));
+export const BackgroundChecks = lazy(() => import("@/pages/jobs/BackgroundChecks"));
+export const Onboarding = lazy(() => import("@/pages/jobs/Onboarding"));
 export const EmployerDashboard = lazy(() => import("@/pages/EmployerDashboard"));
 export const EmployerVerification = lazy(() => import("@/pages/EmployerVerification"));
 
