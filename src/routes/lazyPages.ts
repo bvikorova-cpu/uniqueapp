@@ -281,6 +281,10 @@ export const AIJobDescriptionWriter = lazy(() => import("@/pages/jobs/AIJobDescr
 export const References = lazy(() => import("@/pages/jobs/References"));
 export const BackgroundChecks = lazy(() => import("@/pages/jobs/BackgroundChecks"));
 export const Onboarding = lazy(() => import("@/pages/jobs/Onboarding"));
+export const JobPostingTemplates = lazy(() => import("@/pages/jobs/JobPostingTemplates"));
+export const BulkHiring = lazy(() => import("@/pages/jobs/BulkHiring"));
+export const HeadhunterMarketplace = lazy(() => import("@/pages/jobs/HeadhunterMarketplace"));
+export const AICandidateRanking = lazy(() => import("@/pages/jobs/AICandidateRanking"));
 export const EmployerDashboard = lazy(() => import("@/pages/EmployerDashboard"));
 export const EmployerVerification = lazy(() => import("@/pages/EmployerVerification"));
 

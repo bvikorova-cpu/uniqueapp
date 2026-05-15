@@ -395,6 +395,15 @@ const Jobs = () => {
                   <Button onClick={() => navigate('/jobs/background-checks')} size="sm" variant="outline" className="text-xs">
                     🛡️ BG Checks
                   </Button>
+                  <Button onClick={() => navigate('/jobs/templates')} size="sm" variant="outline" className="text-xs">
+                    📄 Templates
+                  </Button>
+                  <Button onClick={() => navigate('/jobs/bulk-hiring')} size="sm" variant="outline" className="text-xs">
+                    👥 Bulk Hiring
+                  </Button>
+                  <Button onClick={() => navigate('/jobs/headhunters')} size="sm" variant="outline" className="text-xs">
+                    🎯 Headhunters
+                  </Button>
                 </>
               )}
               {user && !isEmployer && (

@@ -327,6 +327,48 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_candidate_rankings: {
+        Row: {
+          application_id: string | null
+          candidate_id: string
+          concerns: string[] | null
+          created_at: string
+          employer_id: string
+          id: string
+          job_id: string
+          rank_position: number | null
+          reasoning: string | null
+          score: number
+          strengths: string[] | null
+        }
+        Insert: {
+          application_id?: string | null
+          candidate_id: string
+          concerns?: string[] | null
+          created_at?: string
+          employer_id: string
+          id?: string
+          job_id: string
+          rank_position?: number | null
+          reasoning?: string | null
+          score?: number
+          strengths?: string[] | null
+        }
+        Update: {
+          application_id?: string | null
+          candidate_id?: string
+          concerns?: string[] | null
+          created_at?: string
+          employer_id?: string
+          id?: string
+          job_id?: string
+          rank_position?: number | null
+          reasoning?: string | null
+          score?: number
+          strengths?: string[] | null
+        }
+        Relationships: []
+      }
       ai_characters: {
         Row: {
           avatar_url: string | null
@@ -6919,6 +6961,83 @@ export type Database = {
             columns: ["parent2_id"]
             isOneToOne: false
             referencedRelation: "horses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bulk_hiring_campaigns: {
+        Row: {
+          created_at: string
+          deadline: string | null
+          description: string | null
+          employer_id: string
+          hired_count: number
+          id: string
+          name: string
+          role_title: string
+          status: string
+          target_hires: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          deadline?: string | null
+          description?: string | null
+          employer_id: string
+          hired_count?: number
+          id?: string
+          name: string
+          role_title: string
+          status?: string
+          target_hires?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          deadline?: string | null
+          description?: string | null
+          employer_id?: string
+          hired_count?: number
+          id?: string
+          name?: string
+          role_title?: string
+          status?: string
+          target_hires?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      bulk_hiring_candidates: {
+        Row: {
+          added_at: string
+          campaign_id: string
+          candidate_id: string
+          id: string
+          notes: string | null
+          stage: string
+        }
+        Insert: {
+          added_at?: string
+          campaign_id: string
+          candidate_id: string
+          id?: string
+          notes?: string | null
+          stage?: string
+        }
+        Update: {
+          added_at?: string
+          campaign_id?: string
+          candidate_id?: string
+          id?: string
+          notes?: string | null
+          stage?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bulk_hiring_candidates_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "bulk_hiring_campaigns"
             referencedColumns: ["id"]
           },
         ]
@@ -22063,6 +22182,93 @@ export type Database = {
         }
         Relationships: []
       }
+      headhunter_engagements: {
+        Row: {
+          agreed_amount_eur: number | null
+          created_at: string
+          employer_id: string
+          fee_percent: number
+          headhunter_id: string
+          id: string
+          job_id: string | null
+          notes: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          agreed_amount_eur?: number | null
+          created_at?: string
+          employer_id: string
+          fee_percent: number
+          headhunter_id: string
+          id?: string
+          job_id?: string | null
+          notes?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          agreed_amount_eur?: number | null
+          created_at?: string
+          employer_id?: string
+          fee_percent?: number
+          headhunter_id?: string
+          id?: string
+          job_id?: string | null
+          notes?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      headhunter_profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          display_name: string
+          fee_percent: number
+          hourly_rate_eur: number | null
+          id: string
+          is_active: boolean
+          placements_count: number
+          rating: number | null
+          specialties: string[] | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name: string
+          fee_percent?: number
+          hourly_rate_eur?: number | null
+          id?: string
+          is_active?: boolean
+          placements_count?: number
+          rating?: number | null
+          specialties?: string[] | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string
+          fee_percent?: number
+          hourly_rate_eur?: number | null
+          id?: string
+          is_active?: boolean
+          placements_count?: number
+          rating?: number | null
+          specialties?: string[] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       healthcare_collections: {
         Row: {
           age_group: string | null
@@ -26164,6 +26370,54 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      job_posting_templates: {
+        Row: {
+          benefits: string | null
+          category: string | null
+          created_at: string
+          description: string
+          employer_id: string
+          id: string
+          is_public: boolean
+          name: string
+          requirements: string | null
+          tags: string[] | null
+          title: string
+          updated_at: string
+          use_count: number
+        }
+        Insert: {
+          benefits?: string | null
+          category?: string | null
+          created_at?: string
+          description: string
+          employer_id: string
+          id?: string
+          is_public?: boolean
+          name: string
+          requirements?: string | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          use_count?: number
+        }
+        Update: {
+          benefits?: string | null
+          category?: string | null
+          created_at?: string
+          description?: string
+          employer_id?: string
+          id?: string
+          is_public?: boolean
+          name?: string
+          requirements?: string | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          use_count?: number
+        }
+        Relationships: []
       }
       job_queue: {
         Row: {
