@@ -10,9 +10,10 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Briefcase, MapPin, DollarSign, Clock, Search, Plus, Building2, Globe, Wrench, Flame, Trophy, Medal, Zap, Bookmark, ListChecks, Bell, HelpCircle, Users } from "lucide-react";
+import { Briefcase, MapPin, DollarSign, Clock, Search, Plus, Building2, Globe, Wrench, Flame, Trophy, Medal, Zap, Bookmark, ListChecks, Bell, HelpCircle, Users, Sparkles, Map as MapIcon } from "lucide-react";
 import { ResumeManagerDialog } from "@/components/jobs/ResumeManagerDialog";
 import CandidateSearchProfileDialog from "@/components/jobs/CandidateSearchProfileDialog";
+import { JobsPushButton } from "@/components/jobs/JobsPushButton";
 import { SaveJobButton } from "@/components/jobs/SaveJobButton";
 import { MatchScoreBadge } from "@/components/jobs/MatchScoreBadge";
 import { CoverLetterDialog } from "@/components/jobs/CoverLetterDialog";
@@ -338,6 +339,13 @@ const Jobs = () => {
                     <HelpCircle className="h-3.5 w-3.5 mr-1" /> Interviews
                   </Button>
                   <CandidateSearchProfileDialog />
+                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/for-you')}>
+                    <Sparkles className="h-3.5 w-3.5 mr-1" /> For You
+                  </Button>
+                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/map')}>
+                    <MapIcon className="h-3.5 w-3.5 mr-1" /> Map
+                  </Button>
+                  <JobsPushButton />
                 </>
               )}
               {user && isEmployer && (

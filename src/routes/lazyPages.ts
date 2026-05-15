@@ -266,6 +266,8 @@ export const EmployerATS = lazy(() => import("@/pages/jobs/EmployerATS"));
 export const CandidateSearch = lazy(() => import("@/pages/jobs/CandidateSearch"));
 export const JobAnalytics = lazy(() => import("@/pages/jobs/JobAnalytics"));
 export const RejectionTemplates = lazy(() => import("@/pages/jobs/RejectionTemplates"));
+export const PersonalizedFeed = lazy(() => import("@/pages/jobs/PersonalizedFeed"));
+export const JobsMap = lazy(() => import("@/pages/jobs/JobsMap"));
 export const EmployerDashboard = lazy(() => import("@/pages/EmployerDashboard"));
 export const EmployerVerification = lazy(() => import("@/pages/EmployerVerification"));
 

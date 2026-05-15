@@ -267,6 +267,8 @@ import {
   CandidateSearch,
   JobAnalytics,
   RejectionTemplates,
+  PersonalizedFeed,
+  JobsMap,
   EmployerDashboard,
   EmployerVerification,
   BrandBuilder,
@@ -562,6 +564,8 @@ const App = () => {
                         <Route path="/jobs/interviews" element={<InterviewQuestions />} />
                         <Route path="/jobs/candidate-search" element={<ProtectedRoute><CandidateSearch /></ProtectedRoute>} />
                         <Route path="/jobs/rejection-templates" element={<ProtectedRoute><RejectionTemplates /></ProtectedRoute>} />
+                        <Route path="/jobs/for-you" element={<ProtectedRoute><PersonalizedFeed /></ProtectedRoute>} />
+                        <Route path="/jobs/map" element={<JobsMap />} />
                         <Route path="/jobs/ats/:jobId" element={<ProtectedRoute><EmployerATS /></ProtectedRoute>} />
                         <Route path="/jobs/analytics/:jobId" element={<ProtectedRoute><JobAnalytics /></ProtectedRoute>} />
                         <Route path="/employer-dashboard" element={<ProtectedRoute><EmployerDashboard /></ProtectedRoute>} />
