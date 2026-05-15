@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { ArrowLeft, BarChart3, Eye, MousePointerClick, Send, Bookmark, Share2, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -41,7 +42,7 @@ export default function JobAnalytics() {
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
         className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-500/15 via-primary/10 to-violet-500/5 border border-indigo-500/20 p-6">
         <div className="flex items-center gap-4">
-          <Button onClick={() => navigate("/employer-dashboard")} />
+          <Button variant="ghost" size="icon" onClick={() => navigate("/employer-dashboard")}><ArrowLeft className="h-4 w-4" /></Button>
           <div className="p-4 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 shadow-xl"><BarChart3 className="h-7 w-7 text-white" /></div>
           <div>
             <h1 className="text-2xl sm:text-3xl font-black">{job?.title || "Job"} Analytics</h1>
@@ -68,6 +69,3 @@ export default function JobAnalytics() {
     </div>
   );
 }
-
-// Local Button to avoid extra import; actually re-use shadcn
-import { Button } from "@/components/ui/button";
