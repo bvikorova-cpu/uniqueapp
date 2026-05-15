@@ -86,7 +86,6 @@ serve(async (req) => {
         user_id: user.id,
         item_id: itemId,
         is_equipped: false,
-        acquired_via: "stripe",
       });
       if (insErr) {
         console.error("insert ownership failed", insErr);
