@@ -7751,6 +7751,48 @@ export type Database = {
         }
         Relationships: []
       }
+      career_path_nodes: {
+        Row: {
+          completed: boolean | null
+          completed_at: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          order_index: number
+          resources: Json | null
+          role_title: string
+          skills_required: string[] | null
+          target_date: string | null
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          order_index?: number
+          resources?: Json | null
+          role_title: string
+          skills_required?: string[] | null
+          target_date?: string | null
+          user_id: string
+        }
+        Update: {
+          completed?: boolean | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          order_index?: number
+          resources?: Json | null
+          role_title?: string
+          skills_required?: string[] | null
+          target_date?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       castle_room_collectibles: {
         Row: {
           collectible_id: string
@@ -25967,6 +26009,54 @@ export type Database = {
         }
         Relationships: []
       }
+      job_referrals: {
+        Row: {
+          bonus_amount: number | null
+          bonus_paid: boolean | null
+          created_at: string
+          hired_at: string | null
+          id: string
+          job_id: string
+          message: string | null
+          referred_email: string | null
+          referred_name: string | null
+          referred_user_id: string | null
+          referrer_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          bonus_amount?: number | null
+          bonus_paid?: boolean | null
+          created_at?: string
+          hired_at?: string | null
+          id?: string
+          job_id: string
+          message?: string | null
+          referred_email?: string | null
+          referred_name?: string | null
+          referred_user_id?: string | null
+          referrer_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          bonus_amount?: number | null
+          bonus_paid?: boolean | null
+          created_at?: string
+          hired_at?: string | null
+          id?: string
+          job_id?: string
+          message?: string | null
+          referred_email?: string | null
+          referred_name?: string | null
+          referred_user_id?: string | null
+          referrer_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       job_response_templates: {
         Row: {
           body: string
@@ -31015,6 +31105,45 @@ export type Database = {
           id?: string
           total_credits_purchased?: number
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mock_interview_sessions: {
+        Row: {
+          created_at: string
+          difficulty: string | null
+          duration_seconds: number | null
+          feedback: string | null
+          id: string
+          interview_type: string
+          role: string
+          score: number | null
+          transcript: Json | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          difficulty?: string | null
+          duration_seconds?: number | null
+          feedback?: string | null
+          id?: string
+          interview_type?: string
+          role: string
+          score?: number | null
+          transcript?: Json | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          difficulty?: string | null
+          duration_seconds?: number | null
+          feedback?: string | null
+          id?: string
+          interview_type?: string
+          role?: string
+          score?: number | null
+          transcript?: Json | null
           user_id?: string
         }
         Relationships: []
@@ -41629,6 +41758,89 @@ export type Database = {
           preferred_brands?: string[] | null
           price_range?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      skill_assessment_attempts: {
+        Row: {
+          answers: Json | null
+          assessment_id: string
+          created_at: string
+          duration_seconds: number | null
+          id: string
+          passed: boolean | null
+          score: number
+          user_id: string
+        }
+        Insert: {
+          answers?: Json | null
+          assessment_id: string
+          created_at?: string
+          duration_seconds?: number | null
+          id?: string
+          passed?: boolean | null
+          score?: number
+          user_id: string
+        }
+        Update: {
+          answers?: Json | null
+          assessment_id?: string
+          created_at?: string
+          duration_seconds?: number | null
+          id?: string
+          passed?: boolean | null
+          score?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "skill_assessment_attempts_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "skill_assessments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      skill_assessments: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          difficulty: string | null
+          id: string
+          is_public: boolean | null
+          passing_score: number
+          questions: Json
+          skill: string
+          time_limit_minutes: number | null
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          difficulty?: string | null
+          id?: string
+          is_public?: boolean | null
+          passing_score?: number
+          questions?: Json
+          skill: string
+          time_limit_minutes?: number | null
+          title: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          difficulty?: string | null
+          id?: string
+          is_public?: boolean | null
+          passing_score?: number
+          questions?: Json
+          skill?: string
+          time_limit_minutes?: number | null
+          title?: string
         }
         Relationships: []
       }
