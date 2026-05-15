@@ -267,6 +267,8 @@ import {
   CandidateSearch,
   JobAnalytics,
   RejectionTemplates,
+  PersonalizedFeed,
+  JobsMap,
   EmployerDashboard,
   EmployerVerification,
   BrandBuilder,
