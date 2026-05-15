@@ -29,9 +29,15 @@ import RewardsLeagues from "@/components/rewards/RewardsLeagues";
 import RewardsBattlePass from "@/components/rewards/RewardsBattlePass";
 import RewardsStreakFreeze from "@/components/rewards/RewardsStreakFreeze";
 import RewardsLoginCalendar from "@/components/rewards/RewardsLoginCalendar";
+import RewardsFriendQuests from "@/components/rewards/RewardsFriendQuests";
+import RewardsGuilds from "@/components/rewards/RewardsGuilds";
+import RewardsQuestPath from "@/components/rewards/RewardsQuestPath";
+import RewardsCosmetics from "@/components/rewards/RewardsCosmetics";
+import RewardsYearWrapped from "@/components/rewards/RewardsYearWrapped";
+import RewardsDonateXP from "@/components/rewards/RewardsDonateXP";
 import { WeeklyXPLeaderboard } from "@/components/gamification/WeeklyXPLeaderboard";
 import { LastWeekWinners } from "@/components/gamification/LastWeekWinners";
-import { Crown, Home, Wand2, Trophy, Layers, Disc3, Target, Award, Medal, Flame, Gift, Eye, Sword, HelpCircle, ShoppingBag, Shield, Snowflake, CalendarDays } from "lucide-react";
+import { Crown, Home, Wand2, Trophy, Layers, Disc3, Target, Award, Medal, Flame, Gift, Eye, Sword, HelpCircle, ShoppingBag, Shield, Snowflake, CalendarDays, Users, Castle, Map, Sparkles as SparklesIcon, PartyPopper, Heart } from "lucide-react";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { useRewardsStats } from "@/hooks/useRewardsStats";
