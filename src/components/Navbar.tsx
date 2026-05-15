@@ -434,6 +434,11 @@ const Navbar = () => {
             </Link>
           )}
 
+          {/* Mobile: Language selector */}
+          <div className="lg:hidden mr-1">
+            <LanguageSelector />
+          </div>
+
           {/* Mobile Menu Button */}
           <Button
             variant="ghost"
