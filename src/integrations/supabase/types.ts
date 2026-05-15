@@ -31394,6 +31394,42 @@ export type Database = {
         }
         Relationships: []
       }
+      megatalent_vip_viewers: {
+        Row: {
+          created_at: string
+          current_period_end: string | null
+          id: string
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          tier: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          tier?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          tier?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       megatalent_winners: {
         Row: {
           category: Database["public"]["Enums"]["talent_category"]
@@ -53181,6 +53217,7 @@ export type Database = {
         Args: { _syndicate_id: string; _user_id: string }
         Returns: boolean
       }
+      is_megatalent_vip: { Args: { _user_id: string }; Returns: boolean }
       is_shadowbanned: { Args: { p_user_id: string }; Returns: boolean }
       is_verified_coupon_seller: {
         Args: { p_user_id: string }
