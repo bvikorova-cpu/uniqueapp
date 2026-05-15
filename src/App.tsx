@@ -274,6 +274,10 @@ import {
   AssessmentTake,
   CareerPath,
   MockInterview,
+  VideoResumes,
+  DiversitySelfId,
+  DiversityReports,
+  JobBoost,
   EmployerDashboard,
   EmployerVerification,
   BrandBuilder,
@@ -576,6 +580,10 @@ const App = () => {
                         <Route path="/jobs/assessments/:id" element={<ProtectedRoute><AssessmentTake /></ProtectedRoute>} />
                         <Route path="/jobs/career-path" element={<ProtectedRoute><CareerPath /></ProtectedRoute>} />
                         <Route path="/jobs/mock-interview" element={<ProtectedRoute><MockInterview /></ProtectedRoute>} />
+                        <Route path="/jobs/video-resumes" element={<ProtectedRoute><VideoResumes /></ProtectedRoute>} />
+                        <Route path="/jobs/diversity/self-id" element={<ProtectedRoute><DiversitySelfId /></ProtectedRoute>} />
+                        <Route path="/jobs/diversity/reports/:jobId?" element={<ProtectedRoute><DiversityReports /></ProtectedRoute>} />
+                        <Route path="/jobs/boost/:jobId" element={<ProtectedRoute><JobBoost /></ProtectedRoute>} />
                         <Route path="/jobs/ats/:jobId" element={<ProtectedRoute><EmployerATS /></ProtectedRoute>} />
                         <Route path="/jobs/analytics/:jobId" element={<ProtectedRoute><JobAnalytics /></ProtectedRoute>} />
                         <Route path="/employer-dashboard" element={<ProtectedRoute><EmployerDashboard /></ProtectedRoute>} />

@@ -16294,6 +16294,81 @@ export type Database = {
           },
         ]
       }
+      diversity_reports: {
+        Row: {
+          age_breakdown: Json | null
+          created_at: string
+          employer_id: string
+          ethnicity_breakdown: Json | null
+          gender_breakdown: Json | null
+          hired_breakdown: Json | null
+          id: string
+          job_id: string | null
+          report_period: string
+          total_applicants: number
+        }
+        Insert: {
+          age_breakdown?: Json | null
+          created_at?: string
+          employer_id: string
+          ethnicity_breakdown?: Json | null
+          gender_breakdown?: Json | null
+          hired_breakdown?: Json | null
+          id?: string
+          job_id?: string | null
+          report_period: string
+          total_applicants?: number
+        }
+        Update: {
+          age_breakdown?: Json | null
+          created_at?: string
+          employer_id?: string
+          ethnicity_breakdown?: Json | null
+          gender_breakdown?: Json | null
+          hired_breakdown?: Json | null
+          id?: string
+          job_id?: string | null
+          report_period?: string
+          total_applicants?: number
+        }
+        Relationships: []
+      }
+      diversity_self_id: {
+        Row: {
+          age_range: string | null
+          created_at: string
+          disability_status: string | null
+          ethnicity: string | null
+          gender: string | null
+          id: string
+          updated_at: string
+          user_id: string
+          veteran_status: string | null
+        }
+        Insert: {
+          age_range?: string | null
+          created_at?: string
+          disability_status?: string | null
+          ethnicity?: string | null
+          gender?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+          veteran_status?: string | null
+        }
+        Update: {
+          age_range?: string | null
+          created_at?: string
+          disability_status?: string | null
+          ethnicity?: string | null
+          gender?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+          veteran_status?: string | null
+        }
+        Relationships: []
+      }
       dna_analyses: {
         Row: {
           analysis_data: Json | null
@@ -25748,6 +25823,48 @@ export type Database = {
           },
         ]
       }
+      job_boost_purchases: {
+        Row: {
+          amount_eur: number
+          boost_tier: string
+          created_at: string
+          duration_days: number
+          employer_id: string
+          expires_at: string | null
+          id: string
+          job_id: string
+          starts_at: string | null
+          status: string
+          stripe_session_id: string | null
+        }
+        Insert: {
+          amount_eur: number
+          boost_tier: string
+          created_at?: string
+          duration_days: number
+          employer_id: string
+          expires_at?: string | null
+          id?: string
+          job_id: string
+          starts_at?: string | null
+          status?: string
+          stripe_session_id?: string | null
+        }
+        Update: {
+          amount_eur?: number
+          boost_tier?: string
+          created_at?: string
+          duration_days?: number
+          employer_id?: string
+          expires_at?: string | null
+          id?: string
+          job_id?: string
+          starts_at?: string | null
+          status?: string
+          stripe_session_id?: string | null
+        }
+        Relationships: []
+      }
       job_listing_payments: {
         Row: {
           amount: number
@@ -25806,6 +25923,9 @@ export type Database = {
         Row: {
           applications_count: number | null
           benefits: string | null
+          bonus_structure: string | null
+          boost_tier: string | null
+          boost_until: string | null
           category: Database["public"]["Enums"]["job_category"]
           company_name: string
           company_size: string | null
@@ -25816,7 +25936,9 @@ export type Database = {
           duration_days: number
           employer_id: string
           equity_offered: boolean | null
+          equity_range: string | null
           expires_at: string | null
+          featured_until: string | null
           four_day_week: boolean | null
           funding_stage: string | null
           id: string
@@ -25829,11 +25951,13 @@ export type Database = {
           location: string
           longitude: number | null
           paid_status: string
+          pay_range_disclosed: boolean | null
           published_at: string | null
           requirements: string | null
           salary_currency: string | null
           salary_max: number | null
           salary_min: number | null
+          salary_transparency_score: number | null
           title: string
           updated_at: string | null
           views_count: number | null
@@ -25841,6 +25965,9 @@ export type Database = {
         Insert: {
           applications_count?: number | null
           benefits?: string | null
+          bonus_structure?: string | null
+          boost_tier?: string | null
+          boost_until?: string | null
           category: Database["public"]["Enums"]["job_category"]
           company_name: string
           company_size?: string | null
@@ -25851,7 +25978,9 @@ export type Database = {
           duration_days?: number
           employer_id: string
           equity_offered?: boolean | null
+          equity_range?: string | null
           expires_at?: string | null
+          featured_until?: string | null
           four_day_week?: boolean | null
           funding_stage?: string | null
           id?: string
@@ -25864,11 +25993,13 @@ export type Database = {
           location: string
           longitude?: number | null
           paid_status?: string
+          pay_range_disclosed?: boolean | null
           published_at?: string | null
           requirements?: string | null
           salary_currency?: string | null
           salary_max?: number | null
           salary_min?: number | null
+          salary_transparency_score?: number | null
           title: string
           updated_at?: string | null
           views_count?: number | null
@@ -25876,6 +26007,9 @@ export type Database = {
         Update: {
           applications_count?: number | null
           benefits?: string | null
+          bonus_structure?: string | null
+          boost_tier?: string | null
+          boost_until?: string | null
           category?: Database["public"]["Enums"]["job_category"]
           company_name?: string
           company_size?: string | null
@@ -25886,7 +26020,9 @@ export type Database = {
           duration_days?: number
           employer_id?: string
           equity_offered?: boolean | null
+          equity_range?: string | null
           expires_at?: string | null
+          featured_until?: string | null
           four_day_week?: boolean | null
           funding_stage?: string | null
           id?: string
@@ -25899,11 +26035,13 @@ export type Database = {
           location?: string
           longitude?: number | null
           paid_status?: string
+          pay_range_disclosed?: boolean | null
           published_at?: string | null
           requirements?: string | null
           salary_currency?: string | null
           salary_max?: number | null
           salary_min?: number | null
+          salary_transparency_score?: number | null
           title?: string
           updated_at?: string | null
           views_count?: number | null
@@ -47962,6 +48100,42 @@ export type Database = {
           remix_post_id?: string
           remix_type?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      video_resumes: {
+        Row: {
+          created_at: string
+          duration_seconds: number | null
+          id: string
+          is_public: boolean
+          thumbnail_url: string | null
+          title: string | null
+          updated_at: string
+          user_id: string
+          video_url: string
+        }
+        Insert: {
+          created_at?: string
+          duration_seconds?: number | null
+          id?: string
+          is_public?: boolean
+          thumbnail_url?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id: string
+          video_url: string
+        }
+        Update: {
+          created_at?: string
+          duration_seconds?: number | null
+          id?: string
+          is_public?: boolean
+          thumbnail_url?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+          video_url?: string
         }
         Relationships: []
       }
