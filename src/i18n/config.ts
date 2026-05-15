@@ -25,6 +25,11 @@ i18n
     lng: 'en',
     fallbackLng: 'en',
     initImmediate: false,
+    saveMissing: true,
+    missingKeyHandler: (lngs, ns, key) => {
+      // Surface untranslated keys in the browser console for QA.
+      console.warn(`[i18n] Missing key "${key}" for language(s): ${Array.isArray(lngs) ? lngs.join(', ') : lngs}`);
+    },
     interpolation: {
       escapeValue: false,
     },
