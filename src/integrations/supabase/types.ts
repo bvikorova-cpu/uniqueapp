@@ -31023,6 +31023,74 @@ export type Database = {
         }
         Relationships: []
       }
+      megatalent_challenge_completions: {
+        Row: {
+          bonus_votes_awarded: number
+          challenge_id: string
+          completed_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          bonus_votes_awarded?: number
+          challenge_id: string
+          completed_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          bonus_votes_awarded?: number
+          challenge_id?: string
+          completed_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "megatalent_challenge_completions_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "megatalent_daily_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      megatalent_daily_challenges: {
+        Row: {
+          bonus_votes: number
+          challenge_date: string
+          challenge_type: string
+          created_at: string
+          description: string
+          icon: string
+          id: string
+          requirement_value: number
+          title: string
+        }
+        Insert: {
+          bonus_votes?: number
+          challenge_date: string
+          challenge_type: string
+          created_at?: string
+          description: string
+          icon?: string
+          id?: string
+          requirement_value?: number
+          title: string
+        }
+        Update: {
+          bonus_votes?: number
+          challenge_date?: string
+          challenge_type?: string
+          created_at?: string
+          description?: string
+          icon?: string
+          id?: string
+          requirement_value?: number
+          title?: string
+        }
+        Relationships: []
+      }
       megatalent_referral_codes: {
         Row: {
           code: string
@@ -52393,6 +52461,7 @@ export type Database = {
       gdpr_purge_user_data: { Args: { _user_id: string }; Returns: Json }
       generate_certificate_number: { Args: never; Returns: string }
       generate_daily_homework_challenge: { Args: never; Returns: undefined }
+      generate_megatalent_daily_challenge: { Args: never; Returns: string }
       generate_referral_code: { Args: never; Returns: string }
       generate_story_share_code: { Args: never; Returns: string }
       get_affiliate_reward_eur: { Args: { _user_id: string }; Returns: number }
@@ -52620,6 +52689,10 @@ export type Database = {
           week_start: string
           weekly_xp: number
         }[]
+      }
+      get_megatalent_challenge_progress: {
+        Args: { _user_id: string }
+        Returns: Json
       }
       get_megatalent_tip_stats: {
         Args: { _creator_id: string }
