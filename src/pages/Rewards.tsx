@@ -182,6 +182,12 @@ export default function Rewards() {
         {activeView === "battlepass" && <RewardsBattlePass />}
         {activeView === "calendar" && <RewardsLoginCalendar />}
         {activeView === "freeze" && <RewardsStreakFreeze />}
+        {activeView === "friend-quests" && <RewardsFriendQuests />}
+        {activeView === "guilds" && <RewardsGuilds />}
+        {activeView === "quest-path" && <RewardsQuestPath />}
+        {activeView === "cosmetics" && <RewardsCosmetics />}
+        {activeView === "wrapped" && <RewardsYearWrapped />}
+        {activeView === "donate-xp" && <RewardsDonateXP />}
       </div>
     </div>
   );
