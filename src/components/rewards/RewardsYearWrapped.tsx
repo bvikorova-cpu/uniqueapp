@@ -30,13 +30,13 @@ export default function RewardsYearWrapped() {
     if (!user) return;
     setGenerating(true);
     // pull XP/badges/streak summary
-    const { data: xp } = await supabase
-      .from("xp_audit_log" as any)
-      .select("xp_change")
+    const { data: pts } = await supabase
+      .from("user_points")
+      .select("total_points, login_streak")
       .eq("user_id", user.id)
-      .gte("created_at", `${year}-01-01`)
-      .lte("created_at", `${year}-12-31`);
-    const totalXp = (xp || []).reduce((s: number, r: any) => s + (r.xp_change || 0), 0);
+      .maybeSingle();
+    const totalXp = pts?.total_points || 0;
+    const streakMax = pts?.login_streak || 0;
 
     const { count: badges } = await supabase
       .from("user_badges" as any)
@@ -47,7 +47,7 @@ export default function RewardsYearWrapped() {
 
     const { error } = await supabase.from("user_year_wrapped").upsert({
       user_id: user.id, year, total_xp: totalXp, badges_earned: badges || 0,
-      streak_max: 0,
+      streak_max: streakMax,
       top_modules: [{ name: "Rewards", xp: totalXp }],
       highlights: { generated_at: new Date().toISOString() },
       share_slug: slug,

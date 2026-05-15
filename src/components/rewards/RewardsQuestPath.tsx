@@ -41,18 +41,14 @@ export default function RewardsQuestPath() {
 
   const claim = async (nodeIndex: number) => {
     if (!user || !path) return;
-    const completed = (progress?.completed_nodes || []) as number[];
-    if (completed.includes(nodeIndex)) return;
-    const newCompleted = [...completed, nodeIndex].sort((a, b) => a - b);
-    const { error } = await supabase
-      .from("user_quest_path_progress")
-      .upsert({
-        user_id: user.id, path_id: path.id,
-        current_node: Math.max(...newCompleted) + 1,
-        completed_nodes: newCompleted,
-      }, { onConflict: "user_id,path_id" });
+    const { data, error } = await supabase.rpc("claim_quest_node" as any, {
+      _path_id: path.id,
+      _node_index: nodeIndex,
+    });
     if (error) return toast.error(error.message);
-    toast.success("Node claimed!");
+    const res = data as any;
+    if (!res?.ok) return toast.error(res?.error || "Failed to claim");
+    toast.success(res.xp_awarded > 0 ? `+${res.xp_awarded} XP claimed!` : "Node claimed!");
     load();
   };
 

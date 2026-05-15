@@ -5,10 +5,44 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Lock, Target } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function AchievementProgressCards({ userId }: { userId: string }) {
   const { data: allBadges = [] } = useAllBadges();
   const { data: userBadges = [] } = useUserBadges(userId);
+  const { data: stats } = useQuery({
+    queryKey: ["badge-progress-stats", userId],
+    enabled: !!userId,
+    queryFn: async () => {
+      const { data: pts } = await supabase
+        .from("user_points")
+        .select("total_points, login_streak, level")
+        .eq("user_id", userId)
+        .maybeSingle();
+      const { count: badgeCount } = await supabase
+        .from("user_badges" as any)
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", userId);
+      return {
+        total_xp: pts?.total_points || 0,
+        login_streak: pts?.login_streak || 0,
+        level: pts?.level || 1,
+        badges_earned: badgeCount || 0,
+      };
+    },
+  });
+
+  const computeProgress = (b: any): number => {
+    if (!stats || !b.requirement_value) return 0;
+    const type = String(b.requirement_type || "").toLowerCase();
+    let current = 0;
+    if (type.includes("xp") || type.includes("point")) current = stats.total_xp;
+    else if (type.includes("streak") || type.includes("login")) current = stats.login_streak;
+    else if (type.includes("level")) current = stats.level;
+    else if (type.includes("badge")) current = stats.badges_earned;
+    return Math.min(100, Math.round((current / b.requirement_value) * 100));
+  };
 
   const earnedIds = new Set(userBadges.map((ub: any) => ub.badge_id));
 
@@ -31,8 +65,7 @@ export default function AchievementProgressCards({ userId }: { userId: string })
       <CardContent>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {lockedBadges.map((badge: any, i: number) => {
-            // Simulate progress (0% since we don't have real tracking per badge type)
-            const fakeProgress = 0;
+            const progressPct = computeProgress(badge);
 
             return (
               <motion.div
@@ -61,7 +94,7 @@ export default function AchievementProgressCards({ userId }: { userId: string })
                     </TooltipTrigger>
                     <TooltipContent>{badge.description}</TooltipContent>
                   </Tooltip>
-                  <Progress value={fakeProgress} className="h-1 mt-1.5" />
+                  <Progress value={progressPct} className="h-1 mt-1.5" />
                 </div>
               </motion.div>
             );
