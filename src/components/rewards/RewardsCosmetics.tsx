@@ -44,10 +44,50 @@ export default function RewardsCosmetics() {
 
   useEffect(() => { load(); }, [user?.id]);
 
+  // After Stripe redirects back: verify session and grant ownership.
+  useEffect(() => {
+    if (!user) return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("cosmetic") !== "success") return;
+    const sessionId = params.get("session_id");
+    const itemId = params.get("item");
+    if (!sessionId || !itemId) return;
+    (async () => {
+      const { data, error } = await supabase.functions.invoke("verify-cosmetic-purchase", {
+        body: { sessionId, itemId },
+      });
+      if (error || !(data as any)?.ok) {
+        toast.error((data as any)?.error ?? error?.message ?? t("rewards.cosmetics.acquireFailed"));
+      } else {
+        toast.success(t("rewards.cosmetics.acquired", { name: "" }));
+        load();
+      }
+      // Clean URL.
+      const url = new URL(window.location.href);
+      ["cosmetic", "session_id", "item"].forEach(k => url.searchParams.delete(k));
+      window.history.replaceState({}, "", url.toString());
+    })();
+  }, [user?.id]);
+
   const acquire = async (item: any) => {
     if (!user) return;
     if (item.price_eur && Number(item.price_eur) > 0) {
-      toast.info(t("rewards.cosmetics.eurSoon"));
+      // EUR cosmetic → Stripe checkout via universal one-off router.
+      const successPath = `/rewards?cosmetic=success&item=${encodeURIComponent(item.id)}`;
+      const { data, error } = await supabase.functions.invoke("create-one-off-payment", {
+        body: {
+          productKey: "cosmetic_purchase",
+          amount: Math.round(Number(item.price_eur) * 100),
+          name: item.name,
+          description: `${item.category} • ${item.rarity}`,
+          metadata: { itemId: item.id },
+          successPath,
+        },
+      });
+      if (error || !(data as any)?.url) {
+        return toast.error(error?.message ?? "Checkout failed");
+      }
+      window.location.href = (data as any).url;
       return;
     }
     const { data, error } = await supabase.rpc("acquire_cosmetic_item", { _item_id: item.id });
