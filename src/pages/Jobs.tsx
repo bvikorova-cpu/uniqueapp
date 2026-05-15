@@ -345,6 +345,18 @@ const Jobs = () => {
                   <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/map')}>
                     <MapIcon className="h-3.5 w-3.5 mr-1" /> Map
                   </Button>
+                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/mock-interview')}>
+                    🎤 Mock Interview
+                  </Button>
+                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/assessments')}>
+                    🏆 Assessments
+                  </Button>
+                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/career-path')}>
+                    🗺️ Career Path
+                  </Button>
+                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/referrals')}>
+                    🤝 Referrals
+                  </Button>
                   <JobsPushButton />
                 </>
               )}
