@@ -257,6 +257,11 @@ export const JobPostSuccess = lazy(() => import("@/pages/JobPostSuccess"));
 export const SavedJobs = lazy(() => import("@/pages/jobs/SavedJobs"));
 export const ApplicationTracker = lazy(() => import("@/pages/jobs/ApplicationTracker"));
 export const JobAlerts = lazy(() => import("@/pages/jobs/JobAlerts"));
+export const Companies = lazy(() => import("@/pages/jobs/Companies"));
+export const CompanyProfile = lazy(() => import("@/pages/jobs/CompanyProfile"));
+export const CompanyNew = lazy(() => import("@/pages/jobs/CompanyNew"));
+export const SalaryInsights = lazy(() => import("@/pages/jobs/SalaryInsights"));
+export const InterviewQuestions = lazy(() => import("@/pages/jobs/InterviewQuestions"));
 export const EmployerDashboard = lazy(() => import("@/pages/EmployerDashboard"));
 export const EmployerVerification = lazy(() => import("@/pages/EmployerVerification"));
 

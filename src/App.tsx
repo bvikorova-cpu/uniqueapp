@@ -258,6 +258,11 @@ import {
   SavedJobs,
   ApplicationTracker,
   JobAlerts,
+  Companies,
+  CompanyProfile,
+  CompanyNew,
+  SalaryInsights,
+  InterviewQuestions,
   EmployerDashboard,
   EmployerVerification,
   BrandBuilder,
@@ -546,6 +551,11 @@ const App = () => {
                         <Route path="/jobs/saved" element={<ProtectedRoute><SavedJobs /></ProtectedRoute>} />
                         <Route path="/jobs/applications" element={<ProtectedRoute><ApplicationTracker /></ProtectedRoute>} />
                         <Route path="/jobs/alerts" element={<ProtectedRoute><JobAlerts /></ProtectedRoute>} />
+                        <Route path="/jobs/companies" element={<Companies />} />
+                        <Route path="/jobs/companies/new" element={<ProtectedRoute><CompanyNew /></ProtectedRoute>} />
+                        <Route path="/jobs/companies/:slug" element={<CompanyProfile />} />
+                        <Route path="/jobs/salaries" element={<SalaryInsights />} />
+                        <Route path="/jobs/interviews" element={<InterviewQuestions />} />
                         <Route path="/employer-dashboard" element={<ProtectedRoute><EmployerDashboard /></ProtectedRoute>} />
                         <Route path="/employer-verification" element={<ProtectedRoute><EmployerVerification /></ProtectedRoute>} />
                         <Route path="/admin/verifications" element={<ProtectedRoute requireAdmin={true}><AdminVerifications /></ProtectedRoute>} />
