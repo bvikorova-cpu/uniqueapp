@@ -11513,6 +11513,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "concert_gifts_concert_id_fkey"
+            columns: ["concert_id"]
+            isOneToOne: false
+            referencedRelation: "live_concert_streams_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "concert_gifts_gift_id_fkey"
             columns: ["gift_id"]
             isOneToOne: false
@@ -11617,6 +11624,13 @@ export type Database = {
             referencedRelation: "live_concert_streams"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "concert_song_requests_concert_id_fkey"
+            columns: ["concert_id"]
+            isOneToOne: false
+            referencedRelation: "live_concert_streams_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       concert_ticket_purchases: {
@@ -11668,6 +11682,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "concert_ticket_purchases_concert_id_fkey"
+            columns: ["concert_id"]
+            isOneToOne: false
+            referencedRelation: "live_concert_streams_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "concert_ticket_purchases_ticket_type_id_fkey"
             columns: ["ticket_type_id"]
             isOneToOne: false
@@ -11713,6 +11734,13 @@ export type Database = {
             columns: ["concert_id"]
             isOneToOne: false
             referencedRelation: "live_concert_streams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "concert_ticket_types_concert_id_fkey"
+            columns: ["concert_id"]
+            isOneToOne: false
+            referencedRelation: "live_concert_streams_public"
             referencedColumns: ["id"]
           },
         ]
@@ -44465,6 +44493,13 @@ export type Database = {
             foreignKeyName: "stream_gifts_stream_id_fkey"
             columns: ["stream_id"]
             isOneToOne: false
+            referencedRelation: "live_streams_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stream_gifts_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
             referencedRelation: "public_live_streams"
             referencedColumns: ["id"]
           },
@@ -44504,6 +44539,13 @@ export type Database = {
             foreignKeyName: "stream_messages_stream_id_fkey"
             columns: ["stream_id"]
             isOneToOne: false
+            referencedRelation: "live_streams_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stream_messages_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
             referencedRelation: "public_live_streams"
             referencedColumns: ["id"]
           },
@@ -44537,6 +44579,13 @@ export type Database = {
             columns: ["stream_id"]
             isOneToOne: false
             referencedRelation: "live_streams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stream_viewers_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
+            referencedRelation: "live_streams_public"
             referencedColumns: ["id"]
           },
           {
@@ -46623,6 +46672,13 @@ export type Database = {
             columns: ["stream_id"]
             isOneToOne: false
             referencedRelation: "live_streams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
+            referencedRelation: "live_streams_public"
             referencedColumns: ["id"]
           },
           {
@@ -50563,6 +50619,112 @@ export type Database = {
           views_count?: number | null
         }
         Relationships: []
+      }
+      live_concert_streams_public: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          ended_at: string | null
+          id: string | null
+          musician_id: string | null
+          scheduled_at: string | null
+          started_at: string | null
+          status: string | null
+          title: string | null
+          total_revenue: number | null
+          updated_at: string | null
+          viewer_count: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          ended_at?: string | null
+          id?: string | null
+          musician_id?: string | null
+          scheduled_at?: string | null
+          started_at?: string | null
+          status?: string | null
+          title?: string | null
+          total_revenue?: number | null
+          updated_at?: string | null
+          viewer_count?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          ended_at?: string | null
+          id?: string | null
+          musician_id?: string | null
+          scheduled_at?: string | null
+          started_at?: string | null
+          status?: string | null
+          title?: string | null
+          total_revenue?: number | null
+          updated_at?: string | null
+          viewer_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_concert_streams_musician_id_fkey"
+            columns: ["musician_id"]
+            isOneToOne: false
+            referencedRelation: "musician_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      live_streams_public: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          ended_at: string | null
+          id: string | null
+          influencer_id: string | null
+          is_live: boolean | null
+          started_at: string | null
+          stream_url: string | null
+          thumbnail_url: string | null
+          title: string | null
+          updated_at: string | null
+          viewer_count: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          ended_at?: string | null
+          id?: string | null
+          influencer_id?: string | null
+          is_live?: boolean | null
+          started_at?: string | null
+          stream_url?: string | null
+          thumbnail_url?: string | null
+          title?: string | null
+          updated_at?: string | null
+          viewer_count?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          ended_at?: string | null
+          id?: string | null
+          influencer_id?: string | null
+          is_live?: boolean | null
+          started_at?: string | null
+          stream_url?: string | null
+          thumbnail_url?: string | null
+          title?: string | null
+          updated_at?: string | null
+          viewer_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_streams_influencer_id_fkey"
+            columns: ["influencer_id"]
+            isOneToOne: false
+            referencedRelation: "influencer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       public_businesses: {
         Row: {
