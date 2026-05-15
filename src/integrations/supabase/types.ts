@@ -39894,6 +39894,39 @@ export type Database = {
         }
         Relationships: []
       }
+      reward_audit_log: {
+        Row: {
+          created_at: string
+          id: string
+          metadata: Json | null
+          reference_id: string | null
+          reward_type: string
+          reward_value: number
+          source: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          reference_id?: string | null
+          reward_type: string
+          reward_value?: number
+          source: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          reference_id?: string | null
+          reward_type?: string
+          reward_value?: number
+          source?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       rewarded_ad_fraud_flags: {
         Row: {
           created_at: string
@@ -51966,6 +51999,16 @@ export type Database = {
       }
     }
     Functions: {
+      _grant_xp_and_log: {
+        Args: {
+          _meta: Json
+          _ref: string
+          _source: string
+          _user_id: string
+          _xp: number
+        }
+        Returns: undefined
+      }
       _increment_mission_progress: {
         Args: { _delta?: number; _metric: string; _user_id: string }
         Returns: undefined
@@ -51996,6 +52039,7 @@ export type Database = {
           duel_id: string
         }[]
       }
+      acquire_cosmetic_item: { Args: { _item_id: string }; Returns: Json }
       activate_user_theme: {
         Args: { p_theme_id: string; p_user_id: string }
         Returns: undefined
@@ -52114,6 +52158,14 @@ export type Database = {
           p_window_seconds: number
         }
         Returns: boolean
+      }
+      claim_battle_pass_reward: {
+        Args: { _season_id: string; _tier: number; _track: string }
+        Returns: Json
+      }
+      claim_calendar_day: {
+        Args: { _day_number: number; _month_key: string }
+        Returns: Json
       }
       claim_daily_login_reward: { Args: never; Returns: Json }
       claim_iq_battle_pass_tier: { Args: { _tier: number }; Returns: Json }
