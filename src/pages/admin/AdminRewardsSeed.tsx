@@ -232,6 +232,22 @@ export default function AdminRewardsSeed() {
   const [calResult, setCalResult] = useState<string>("");
   const [lgStatus, setLgStatus] = useState<Status>("idle");
   const [lgResult, setLgResult] = useState<string>("");
+  const [qpStatus, setQpStatus] = useState<Status>("idle");
+  const [qpResult, setQpResult] = useState<string>("");
+
+  const runQp = async () => {
+    setQpStatus("running");
+    try {
+      const r = await seedQuestPath();
+      setQpResult(`Vytvorená cesta s ${r.nodeCount} uzlami (${r.bossCount} boss misií).`);
+      setQpStatus("done");
+      toast.success("Quest Path naplnený");
+    } catch (e: any) {
+      setQpResult(e.message || "Chyba");
+      setQpStatus("error");
+      toast.error("Quest Path zlyhal: " + e.message);
+    }
+  };
 
   const runBp = async () => {
     setBpStatus("running");
