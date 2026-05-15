@@ -337,12 +337,21 @@ const Jobs = () => {
                   <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/interviews')}>
                     <HelpCircle className="h-3.5 w-3.5 mr-1" /> Interviews
                   </Button>
+                  <CandidateSearchProfileDialog />
                 </>
               )}
               {user && isEmployer && (
-                <Button onClick={() => navigate('/employer-dashboard')} size="sm" className="text-xs">
-                  <Building2 className="h-3.5 w-3.5 mr-1" /> Dashboard
-                </Button>
+                <>
+                  <Button onClick={() => navigate('/employer-dashboard')} size="sm" className="text-xs">
+                    <Building2 className="h-3.5 w-3.5 mr-1" /> Dashboard
+                  </Button>
+                  <Button onClick={() => navigate('/jobs/candidate-search')} size="sm" variant="outline" className="text-xs">
+                    <Users className="h-3.5 w-3.5 mr-1" /> Find candidates
+                  </Button>
+                  <Button onClick={() => navigate('/jobs/rejection-templates')} size="sm" variant="outline" className="text-xs">
+                    <HelpCircle className="h-3.5 w-3.5 mr-1" /> Templates
+                  </Button>
+                </>
               )}
               {user && !isEmployer && (
                 <Button onClick={() => registerEmployerMutation.mutate()} disabled={registerEmployerMutation.isPending} size="sm" className="text-xs">
