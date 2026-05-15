@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -66,19 +68,44 @@ export const languages = [
 
 export const LanguageSelector = () => {
   const { i18n } = useTranslation();
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
-  
+
   const currentLanguage = languages.find(lang => lang.code === i18n.language) || languages[0];
+
+  // Load preferred language from profile when the user logs in.
+  useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("preferred_language")
+        .eq("id", user.id)
+        .maybeSingle();
+      const pref = data?.preferred_language;
+      if (!cancelled && pref && pref !== i18n.language && languages.some(l => l.code === pref)) {
+        i18n.changeLanguage(pref);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [user?.id]);
 
   const filteredLanguages = languages.filter(lang =>
     lang.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     lang.code.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleLanguageChange = (language: typeof languages[0]) => {
+  const handleLanguageChange = async (language: typeof languages[0]) => {
     i18n.changeLanguage(language.code);
     setSearchTerm("");
-    console.log("Language changed to:", language.code);
+    try { localStorage.setItem("preferred_language", language.code); } catch {}
+    if (user) {
+      await supabase
+        .from("profiles")
+        .update({ preferred_language: language.code })
+        .eq("id", user.id);
+    }
   };
 
   return (
