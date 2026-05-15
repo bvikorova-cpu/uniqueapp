@@ -3590,6 +3590,89 @@ export type Database = {
           },
         ]
       }
+      battle_pass_rewards: {
+        Row: {
+          id: string
+          reward_icon: string | null
+          reward_label: string
+          reward_type: string
+          reward_value: number
+          season_id: string
+          tier: number
+          track: string
+        }
+        Insert: {
+          id?: string
+          reward_icon?: string | null
+          reward_label: string
+          reward_type: string
+          reward_value?: number
+          season_id: string
+          tier: number
+          track: string
+        }
+        Update: {
+          id?: string
+          reward_icon?: string | null
+          reward_label?: string
+          reward_type?: string
+          reward_value?: number
+          season_id?: string
+          tier?: number
+          track?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "battle_pass_rewards_season_id_fkey"
+            columns: ["season_id"]
+            isOneToOne: false
+            referencedRelation: "battle_pass_seasons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      battle_pass_seasons: {
+        Row: {
+          created_at: string
+          ends_at: string
+          id: string
+          is_active: boolean
+          name: string
+          premium_price_eur: number
+          premium_price_xp: number | null
+          season_number: number
+          starts_at: string
+          total_tiers: number
+          xp_per_tier: number
+        }
+        Insert: {
+          created_at?: string
+          ends_at: string
+          id?: string
+          is_active?: boolean
+          name: string
+          premium_price_eur?: number
+          premium_price_xp?: number | null
+          season_number: number
+          starts_at?: string
+          total_tiers?: number
+          xp_per_tier?: number
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          premium_price_eur?: number
+          premium_price_xp?: number | null
+          season_number?: number
+          starts_at?: string
+          total_tiers?: number
+          xp_per_tier?: number
+        }
+        Relationships: []
+      }
       battle_votes: {
         Row: {
           battle_id: string
@@ -27919,6 +28002,33 @@ export type Database = {
         }
         Relationships: []
       }
+      league_seasons: {
+        Row: {
+          created_at: string
+          ends_at: string
+          id: string
+          is_active: boolean
+          season_number: number
+          starts_at: string
+        }
+        Insert: {
+          created_at?: string
+          ends_at: string
+          id?: string
+          is_active?: boolean
+          season_number: number
+          starts_at?: string
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string
+          id?: string
+          is_active?: boolean
+          season_number?: number
+          starts_at?: string
+        }
+        Relationships: []
+      }
       learning_certificates: {
         Row: {
           certificate_number: string | null
@@ -29653,6 +29763,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      login_calendar_templates: {
+        Row: {
+          created_at: string
+          day_number: number
+          id: string
+          is_milestone: boolean
+          month_key: string
+          reward_icon: string | null
+          reward_label: string
+          reward_type: string
+          reward_value: number
+        }
+        Insert: {
+          created_at?: string
+          day_number: number
+          id?: string
+          is_milestone?: boolean
+          month_key: string
+          reward_icon?: string | null
+          reward_label: string
+          reward_type: string
+          reward_value?: number
+        }
+        Update: {
+          created_at?: string
+          day_number?: number
+          id?: string
+          is_milestone?: boolean
+          month_key?: string
+          reward_icon?: string | null
+          reward_label?: string
+          reward_type?: string
+          reward_value?: number
+        }
+        Relationships: []
       }
       lottery_dream_decoder: {
         Row: {
@@ -44437,6 +44583,39 @@ export type Database = {
           },
         ]
       }
+      streak_freeze_history: {
+        Row: {
+          action: string
+          cost_eur: number | null
+          cost_xp: number | null
+          created_at: string
+          id: string
+          notes: string | null
+          quantity: number
+          user_id: string
+        }
+        Insert: {
+          action: string
+          cost_eur?: number | null
+          cost_xp?: number | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          quantity?: number
+          user_id: string
+        }
+        Update: {
+          action?: string
+          cost_eur?: number | null
+          cost_xp?: number | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          quantity?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       stream_gifts: {
         Row: {
           amount: number
@@ -47004,6 +47183,85 @@ export type Database = {
           },
         ]
       }
+      user_battle_pass: {
+        Row: {
+          created_at: string
+          current_tier: number
+          current_xp: number
+          has_premium: boolean
+          id: string
+          premium_purchased_at: string | null
+          season_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_tier?: number
+          current_xp?: number
+          has_premium?: boolean
+          id?: string
+          premium_purchased_at?: string | null
+          season_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_tier?: number
+          current_xp?: number
+          has_premium?: boolean
+          id?: string
+          premium_purchased_at?: string | null
+          season_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_battle_pass_season_id_fkey"
+            columns: ["season_id"]
+            isOneToOne: false
+            referencedRelation: "battle_pass_seasons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_battle_pass_claims: {
+        Row: {
+          claimed_at: string
+          id: string
+          season_id: string
+          tier: number
+          track: string
+          user_id: string
+        }
+        Insert: {
+          claimed_at?: string
+          id?: string
+          season_id: string
+          tier: number
+          track: string
+          user_id: string
+        }
+        Update: {
+          claimed_at?: string
+          id?: string
+          season_id?: string
+          tier?: number
+          track?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_battle_pass_claims_season_id_fkey"
+            columns: ["season_id"]
+            isOneToOne: false
+            referencedRelation: "battle_pass_seasons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_brand_boosters: {
         Row: {
           booster_type: string
@@ -47068,6 +47326,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_calendar_claims: {
+        Row: {
+          claimed_at: string
+          day_number: number
+          id: string
+          month_key: string
+          reward_type: string
+          reward_value: number
+          user_id: string
+        }
+        Insert: {
+          claimed_at?: string
+          day_number: number
+          id?: string
+          month_key: string
+          reward_type: string
+          reward_value: number
+          user_id: string
+        }
+        Update: {
+          claimed_at?: string
+          day_number?: number
+          id?: string
+          month_key?: string
+          reward_type?: string
+          reward_value?: number
+          user_id?: string
+        }
+        Relationships: []
       }
       user_castle_certificates: {
         Row: {
@@ -47497,6 +47785,50 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      user_league_standings: {
+        Row: {
+          created_at: string
+          group_number: number
+          id: string
+          rank: number | null
+          season_id: string
+          tier: Database["public"]["Enums"]["league_tier"]
+          updated_at: string
+          user_id: string
+          weekly_xp: number
+        }
+        Insert: {
+          created_at?: string
+          group_number?: number
+          id?: string
+          rank?: number | null
+          season_id: string
+          tier?: Database["public"]["Enums"]["league_tier"]
+          updated_at?: string
+          user_id: string
+          weekly_xp?: number
+        }
+        Update: {
+          created_at?: string
+          group_number?: number
+          id?: string
+          rank?: number | null
+          season_id?: string
+          tier?: Database["public"]["Enums"]["league_tier"]
+          updated_at?: string
+          user_id?: string
+          weekly_xp?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_league_standings_season_id_fkey"
+            columns: ["season_id"]
+            isOneToOne: false
+            referencedRelation: "league_seasons"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_login_streaks: {
         Row: {
@@ -48277,6 +48609,39 @@ export type Database = {
           media_url?: string
           user_id?: string
           views_count?: number | null
+        }
+        Relationships: []
+      }
+      user_streak_freezes: {
+        Row: {
+          available_count: number
+          created_at: string
+          id: string
+          last_used_at: string | null
+          total_purchased: number
+          total_used: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          available_count?: number
+          created_at?: string
+          id?: string
+          last_used_at?: string | null
+          total_purchased?: number
+          total_used?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          available_count?: number
+          created_at?: string
+          id?: string
+          last_used_at?: string | null
+          total_purchased?: number
+          total_used?: number
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -52264,6 +52629,7 @@ export type Database = {
         | "transportation"
         | "other"
       job_type: "full_time" | "part_time" | "contract" | "internship" | "remote"
+      league_tier: "bronze" | "silver" | "gold" | "platinum" | "diamond"
       life_event_kind:
         | "new_job"
         | "promotion"
@@ -52626,6 +52992,7 @@ export const Constants = {
         "other",
       ],
       job_type: ["full_time", "part_time", "contract", "internship", "remote"],
+      league_tier: ["bronze", "silver", "gold", "platinum", "diamond"],
       life_event_kind: [
         "new_job",
         "promotion",
