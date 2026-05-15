@@ -82,9 +82,12 @@ export default function RewardsBattlePass() {
       toast.error("Reach this tier first");
       return;
     }
-    const { error } = await supabase.from("user_battle_pass_claims")
-      .insert({ user_id: user.id, season_id: season.id, tier, track });
+    const { data, error } = await supabase.rpc("claim_battle_pass_reward", {
+      _season_id: season.id, _tier: tier, _track: track,
+    });
     if (error) { toast.error(error.message); return; }
+    const res = data as any;
+    if (!res?.ok) { toast.error(res?.error ?? "Claim failed"); return; }
     toast.success("Reward claimed! 🎉");
     refresh();
   };
