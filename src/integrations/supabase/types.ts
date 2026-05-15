@@ -788,6 +788,33 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_job_description_drafts: {
+        Row: {
+          created_at: string
+          id: string
+          prompt: string | null
+          result: string
+          title: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          prompt?: string | null
+          result: string
+          title?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          prompt?: string | null
+          result?: string
+          title?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       ai_prompt_history: {
         Row: {
           category: string | null
@@ -2918,6 +2945,54 @@ export type Database = {
           threshold_eur?: number
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      background_check_requests: {
+        Row: {
+          candidate_id: string
+          check_types: string[]
+          consent_at: string | null
+          consent_given: boolean
+          created_at: string
+          employer_id: string
+          id: string
+          job_id: string | null
+          result_summary: string | null
+          status: string
+          updated_at: string
+          vendor: string | null
+          vendor_ref: string | null
+        }
+        Insert: {
+          candidate_id: string
+          check_types?: string[]
+          consent_at?: string | null
+          consent_given?: boolean
+          created_at?: string
+          employer_id: string
+          id?: string
+          job_id?: string | null
+          result_summary?: string | null
+          status?: string
+          updated_at?: string
+          vendor?: string | null
+          vendor_ref?: string | null
+        }
+        Update: {
+          candidate_id?: string
+          check_types?: string[]
+          consent_at?: string | null
+          consent_given?: boolean
+          created_at?: string
+          employer_id?: string
+          id?: string
+          job_id?: string | null
+          result_summary?: string | null
+          status?: string
+          updated_at?: string
+          vendor?: string | null
+          vendor_ref?: string | null
         }
         Relationships: []
       }
@@ -32069,6 +32144,83 @@ export type Database = {
         }
         Relationships: []
       }
+      onboarding_runs: {
+        Row: {
+          created_at: string
+          employer_id: string
+          hire_id: string
+          id: string
+          job_id: string | null
+          start_date: string | null
+          status: string
+          task_state: Json
+          template_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          employer_id: string
+          hire_id: string
+          id?: string
+          job_id?: string | null
+          start_date?: string | null
+          status?: string
+          task_state?: Json
+          template_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          employer_id?: string
+          hire_id?: string
+          id?: string
+          job_id?: string | null
+          start_date?: string | null
+          status?: string
+          task_state?: Json
+          template_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "onboarding_runs_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "onboarding_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      onboarding_templates: {
+        Row: {
+          created_at: string
+          description: string | null
+          employer_id: string
+          id: string
+          name: string
+          tasks: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          employer_id: string
+          id?: string
+          name: string
+          tasks?: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          employer_id?: string
+          id?: string
+          name?: string
+          tasks?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       outfit_recommendations: {
         Row: {
           ai_description: string
@@ -38557,6 +38709,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      reference_checks: {
+        Row: {
+          candidate_id: string
+          company: string | null
+          contacted: boolean
+          contacted_at: string | null
+          created_at: string
+          feedback: string | null
+          id: string
+          rating: number | null
+          ref_email: string
+          ref_name: string
+          ref_phone: string | null
+          relationship: string | null
+        }
+        Insert: {
+          candidate_id: string
+          company?: string | null
+          contacted?: boolean
+          contacted_at?: string | null
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          rating?: number | null
+          ref_email: string
+          ref_name: string
+          ref_phone?: string | null
+          relationship?: string | null
+        }
+        Update: {
+          candidate_id?: string
+          company?: string | null
+          contacted?: boolean
+          contacted_at?: string | null
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          rating?: number | null
+          ref_email?: string
+          ref_name?: string
+          ref_phone?: string | null
+          relationship?: string | null
+        }
+        Relationships: []
       }
       referral_attributions: {
         Row: {

@@ -278,6 +278,10 @@ import {
   DiversitySelfId,
   DiversityReports,
   JobBoost,
+  AIJobDescriptionWriter,
+  References,
+  BackgroundChecks,
+  Onboarding,
   EmployerDashboard,
   EmployerVerification,
   BrandBuilder,
@@ -584,6 +588,10 @@ const App = () => {
                         <Route path="/jobs/diversity/self-id" element={<ProtectedRoute><DiversitySelfId /></ProtectedRoute>} />
                         <Route path="/jobs/diversity/reports/:jobId?" element={<ProtectedRoute><DiversityReports /></ProtectedRoute>} />
                         <Route path="/jobs/boost/:jobId" element={<ProtectedRoute><JobBoost /></ProtectedRoute>} />
+                        <Route path="/jobs/ai-jd-writer" element={<ProtectedRoute><AIJobDescriptionWriter /></ProtectedRoute>} />
+                        <Route path="/jobs/references" element={<ProtectedRoute><References /></ProtectedRoute>} />
+                        <Route path="/jobs/background-checks" element={<ProtectedRoute><BackgroundChecks /></ProtectedRoute>} />
+                        <Route path="/jobs/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
                         <Route path="/jobs/ats/:jobId" element={<ProtectedRoute><EmployerATS /></ProtectedRoute>} />
                         <Route path="/jobs/analytics/:jobId" element={<ProtectedRoute><JobAnalytics /></ProtectedRoute>} />
                         <Route path="/employer-dashboard" element={<ProtectedRoute><EmployerDashboard /></ProtectedRoute>} />

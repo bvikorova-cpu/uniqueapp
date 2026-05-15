@@ -363,6 +363,12 @@ const Jobs = () => {
                   <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/diversity/self-id')}>
                     💗 Self-ID
                   </Button>
+                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/references')}>
+                    👥 References
+                  </Button>
+                  <Button size="sm" variant="outline" className="text-xs" onClick={() => navigate('/jobs/background-checks')}>
+                    🛡️ BG Checks
+                  </Button>
                   <JobsPushButton />
                 </>
               )}
@@ -379,6 +385,15 @@ const Jobs = () => {
                   </Button>
                   <Button onClick={() => navigate('/jobs/diversity/reports')} size="sm" variant="outline" className="text-xs">
                     📊 Diversity
+                  </Button>
+                  <Button onClick={() => navigate('/jobs/ai-jd-writer')} size="sm" variant="outline" className="text-xs">
+                    ✨ AI JD Writer
+                  </Button>
+                  <Button onClick={() => navigate('/jobs/onboarding')} size="sm" variant="outline" className="text-xs">
+                    📋 Onboarding
+                  </Button>
+                  <Button onClick={() => navigate('/jobs/background-checks')} size="sm" variant="outline" className="text-xs">
+                    🛡️ BG Checks
                   </Button>
                 </>
               )}
