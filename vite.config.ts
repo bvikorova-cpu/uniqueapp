@@ -2,8 +2,32 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { visualizer } from "rollup-plugin-visualizer";
+import { execSync } from "node:child_process";
 
 const ANALYZE = process.env.ANALYZE === "true";
+
+// Vite plugin: runs i18n key check on build start (and once at dev startup).
+// Logs missing keys to console; fails the build if any locale is incomplete.
+function i18nCheckPlugin() {
+  let ran = false;
+  const run = (failOnError: boolean) => {
+    if (ran) return;
+    ran = true;
+    try {
+      const out = execSync("node scripts/i18n-check.mjs", { stdio: "pipe" }).toString();
+      console.log("\n[i18n-check]\n" + out);
+    } catch (e: any) {
+      const out = (e.stdout?.toString() ?? "") + (e.stderr?.toString() ?? "");
+      console.error("\n[i18n-check] Missing translation keys detected:\n" + out);
+      if (failOnError) throw new Error("i18n-check failed: missing translation keys");
+    }
+  };
+  return {
+    name: "i18n-check",
+    buildStart() { run(true); },
+    configureServer() { run(false); },
+  };
+}
 
 export default defineConfig(() => ({
   server: {
