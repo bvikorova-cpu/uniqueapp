@@ -3,37 +3,62 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { ListChecks, Sparkles } from "lucide-react";
+import { ListChecks, Sparkles, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const QUESTS = [
-  { id: "q1", label: "Vote on 3 submissions", reward: 5 },
-  { id: "q2", label: "Leave 1 comment", reward: 3 },
-  { id: "q3", label: "Share a submission", reward: 4 },
-  { id: "q4", label: "Vote in a battle match", reward: 6 },
-  { id: "q5", label: "Watch a story", reward: 2 },
+  { id: "vote_3", label: "Vote on 3 submissions", reward: 5 },
+  { id: "comment_1", label: "Leave 1 comment", reward: 3 },
+  { id: "share_1", label: "Share a submission", reward: 4 },
+  { id: "battle_vote", label: "Vote in a battle match", reward: 6 },
+  { id: "story_watch", label: "Watch a story", reward: 2 },
 ];
 
-const todayKey = () => `mt_quests_${new Date().toISOString().slice(0, 10)}`;
-
-const MegatalentDailyQuests = () => {
-  const [done, setDone] = useState<Record<string, boolean>>({});
+const MegatalentDailyQuests = ({ userId }: { userId: string | null }) => {
+  const [done, setDone] = useState<Record<string, number>>({});
+  const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState<string | null>(null);
 
   useEffect(() => {
-    try { setDone(JSON.parse(localStorage.getItem(todayKey()) || "{}")); } catch {}
-  }, []);
+    const load = async () => {
+      if (!userId) { setDone({}); setLoading(false); return; }
+      const today = new Date().toISOString().slice(0, 10);
+      const { data } = await supabase
+        .from("daily_quest_completions")
+        .select("quest_id, xp_awarded")
+        .eq("user_id", userId)
+        .eq("quest_date", today);
+      const map: Record<string, number> = {};
+      (data || []).forEach((r: any) => { map[r.quest_id] = r.xp_awarded; });
+      setDone(map);
+      setLoading(false);
+    };
+    load();
+  }, [userId]);
 
-  const toggle = (id: string, reward: number) => {
-    setDone(prev => {
-      const next = { ...prev, [id]: !prev[id] };
-      localStorage.setItem(todayKey(), JSON.stringify(next));
-      if (next[id] && !prev[id]) toast.success(`+${reward} XP earned`);
-      return next;
+  const complete = async (q: typeof QUESTS[number]) => {
+    if (!userId) { toast.error("Login required"); return; }
+    if (done[q.id]) return;
+    setBusy(q.id);
+    const { error } = await supabase.from("daily_quest_completions").insert({
+      user_id: userId, quest_id: q.id, xp_awarded: q.reward,
     });
+    setBusy(null);
+    if (error) {
+      if (error.code === "23505") {
+        setDone(prev => ({ ...prev, [q.id]: q.reward }));
+      } else {
+        toast.error("Failed", { description: error.message });
+      }
+      return;
+    }
+    setDone(prev => ({ ...prev, [q.id]: q.reward }));
+    toast.success(`+${q.reward} XP earned`);
   };
 
   const total = QUESTS.reduce((s, q) => s + q.reward, 0);
-  const earned = QUESTS.reduce((s, q) => s + (done[q.id] ? q.reward : 0), 0);
+  const earned = QUESTS.reduce((s, q) => s + (done[q.id] || 0), 0);
   const pct = Math.round((earned / total) * 100);
 
   return (
@@ -49,15 +74,22 @@ const MegatalentDailyQuests = () => {
         <div className="h-2 rounded-full bg-muted overflow-hidden mb-4">
           <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} className="h-full bg-gradient-to-r from-primary to-accent" />
         </div>
-        <div className="space-y-2">
-          {QUESTS.map(q => (
-            <label key={q.id} className="flex items-center gap-3 rounded-lg border border-border/40 bg-background/40 p-2 cursor-pointer hover:border-primary/40 transition">
-              <Checkbox checked={!!done[q.id]} onCheckedChange={() => toggle(q.id, q.reward)} />
-              <span className={`flex-1 text-sm ${done[q.id] ? "line-through text-muted-foreground" : ""}`}>{q.label}</span>
-              <Badge variant="outline" className="text-xs">+{q.reward}</Badge>
-            </label>
-          ))}
-        </div>
+        {loading ? (
+          <div className="text-sm text-muted-foreground flex items-center gap-2"><Loader2 className="h-4 w-4 animate-spin" /> Loading…</div>
+        ) : (
+          <div className="space-y-2">
+            {QUESTS.map(q => {
+              const isDone = !!done[q.id];
+              return (
+                <label key={q.id} className="flex items-center gap-3 rounded-lg border border-border/40 bg-background/40 p-2 cursor-pointer hover:border-primary/40 transition">
+                  <Checkbox checked={isDone} disabled={isDone || busy === q.id || !userId} onCheckedChange={() => complete(q)} />
+                  <span className={`flex-1 text-sm ${isDone ? "line-through text-muted-foreground" : ""}`}>{q.label}</span>
+                  <Badge variant="outline" className="text-xs">+{q.reward}</Badge>
+                </label>
+              );
+            })}
+          </div>
+        )}
       </CardContent>
     </Card>
   );
