@@ -14,7 +14,7 @@ import { format } from "date-fns";
 
 type JudgeApp = { id: string; user_id: string; motivation: string; status: string; created_at: string; review_notes: string | null };
 type Report = { id: string; reporter_id: string; target_type: string; target_id: string; reason: string; details: string | null; status: string; created_at: string; resolution_notes: string | null };
-type Comment = { id: string; submission_id: string; user_id: string; body: string; created_at: string; hidden: boolean; hidden_reason: string | null };
+type Comment = { id: string; submission_id: string; user_id: string; comment_text: string; created_at: string; hidden: boolean; hidden_reason: string | null };
 
 const AdminMegatalentModeration = () => {
   const [tab, setTab] = useState("judges");
@@ -213,7 +213,7 @@ const AdminMegatalentModeration = () => {
                       </div>
                       <span className="text-xs text-muted-foreground">{format(new Date(c.created_at), "PP p")}</span>
                     </div>
-                    <p className="text-sm whitespace-pre-wrap break-words">{c.body}</p>
+                    <p className="text-sm whitespace-pre-wrap break-words">{c.comment_text}</p>
                     {c.hidden_reason && <p className="text-xs text-muted-foreground">Reason: {c.hidden_reason}</p>}
                     <div className="flex gap-2 pt-1">
                       {c.hidden ? (
