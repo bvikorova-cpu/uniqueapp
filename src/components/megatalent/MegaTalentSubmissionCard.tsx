@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Heart, MessageCircle, Share2, Trash2, Trophy, Flame } from "lucide-react";
 import { TopPremiumBadge } from "@/components/megatalent/TopPremiumBadge";
 import { VoteBoostTooltip } from "@/components/megatalent/VoteBoostTooltip";
+import MegatalentReactions from "@/components/megatalent/MegatalentReactions";
+import MegatalentPinButton from "@/components/megatalent/MegatalentPinButton";
 
 interface SubmissionCardProps {
   submission: any;
@@ -118,6 +120,12 @@ export default function MegaTalentSubmissionCard({
           {submission.description && (
             <p className="text-sm text-muted-foreground line-clamp-3">{submission.description}</p>
           )}
+
+          {/* Reactions + Pin */}
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <MegatalentReactions submissionId={submission.id} />
+            <MegatalentPinButton submissionId={submission.id} isOwner={isOwner} />
+          </div>
 
           {/* Engagement bar */}
           <div className="flex items-center justify-between pt-1 border-t border-border/20">
