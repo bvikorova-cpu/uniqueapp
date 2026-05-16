@@ -29,6 +29,12 @@ import MegatalentDailyLoginBonus from "@/components/megatalent/MegatalentDailyLo
 import MegatalentFriendInvites from "@/components/megatalent/MegatalentFriendInvites";
 import MegatalentVotingPowerBanner from "@/components/megatalent/MegatalentVotingPowerBanner";
 import MegatalentBoostButton from "@/components/megatalent/MegatalentBoostButton";
+import MegatalentMentorshipBooking from "@/components/megatalent/MegatalentMentorshipBooking";
+import MegatalentTalentMarketplace from "@/components/megatalent/MegatalentTalentMarketplace";
+import MegatalentBattleRoyale from "@/components/megatalent/MegatalentBattleRoyale";
+import MegatalentStories from "@/components/megatalent/MegatalentStories";
+import MegatalentPushOptIn from "@/components/megatalent/MegatalentPushOptIn";
+import MegatalentTalentPortfolio from "@/components/megatalent/MegatalentTalentPortfolio";
 import { Badge as UiBadge } from "@/components/ui/badge";
 import { Rocket } from "lucide-react";
 
@@ -352,6 +358,36 @@ const MegatalentCategory = () => {
         {/* Sponsor Showcase */}
         <div className="mb-6">
           <MegatalentSponsorShowcase category={category} />
+        </div>
+
+        {/* Push Opt-In */}
+        <div className="mb-6">
+          <MegatalentPushOptIn />
+        </div>
+
+        {/* Stories */}
+        <div className="mb-6">
+          <MegatalentStories />
+        </div>
+
+        {/* Battle Royale */}
+        <div className="mb-6">
+          <MegatalentBattleRoyale category={category} />
+        </div>
+
+        {/* Mentorship */}
+        <div className="mb-6">
+          <MegatalentMentorshipBooking category={category} />
+        </div>
+
+        {/* Marketplace */}
+        <div className="mb-6">
+          <MegatalentTalentMarketplace category={category} />
+        </div>
+
+        {/* Featured Portfolios */}
+        <div className="mb-6">
+          <MegatalentTalentPortfolio category={category} categories={config?.categories} />
         </div>
 
         {/* Content */}
