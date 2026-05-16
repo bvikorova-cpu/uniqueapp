@@ -31,6 +31,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 import MegaTalentHero from "@/components/megatalent/MegaTalentHero";
+import MegatalentClipOfDay from "@/components/megatalent/MegatalentClipOfDay";
+import MegatalentTalentShop from "@/components/megatalent/MegatalentTalentShop";
+import MegatalentReferralProgram from "@/components/megatalent/MegatalentReferralProgram";
 import NextVotingCountdown from "@/components/megatalent/NextVotingCountdown";
 import MegaTalentCategoryGrid from "@/components/megatalent/MegaTalentCategoryGrid";
 import ContestStatsSidebar from "@/components/megatalent/ContestStatsSidebar";
