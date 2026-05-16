@@ -35,6 +35,12 @@ import MegatalentBattleRoyale from "@/components/megatalent/MegatalentBattleRoya
 import MegatalentStories from "@/components/megatalent/MegatalentStories";
 import MegatalentPushOptIn from "@/components/megatalent/MegatalentPushOptIn";
 import MegatalentTalentPortfolio from "@/components/megatalent/MegatalentTalentPortfolio";
+import MegatalentTrophyCase from "@/components/megatalent/MegatalentTrophyCase";
+import MegatalentLiveChat from "@/components/megatalent/MegatalentLiveChat";
+import MegatalentDailyQuests from "@/components/megatalent/MegatalentDailyQuests";
+import MegatalentPredictions from "@/components/megatalent/MegatalentPredictions";
+import MegatalentFanClub from "@/components/megatalent/MegatalentFanClub";
+import MegatalentSeasonPass from "@/components/megatalent/MegatalentSeasonPass";
 import { Badge as UiBadge } from "@/components/ui/badge";
 import { Rocket } from "lucide-react";
 
@@ -388,6 +394,38 @@ const MegatalentCategory = () => {
         {/* Featured Portfolios */}
         <div className="mb-6">
           <MegatalentTalentPortfolio category={category} categories={config?.categories} />
+        </div>
+
+        {/* Season Pass */}
+        <div className="mb-6">
+          <MegatalentSeasonPass />
+        </div>
+
+        {/* Daily Quests */}
+        <div className="mb-6">
+          <MegatalentDailyQuests />
+        </div>
+
+        {/* Predictions */}
+        <div className="mb-6">
+          <MegatalentPredictions category={category} categories={config?.categories} />
+        </div>
+
+        {/* Fan Clubs */}
+        <div className="mb-6">
+          <MegatalentFanClub category={category} categories={config?.categories} />
+        </div>
+
+        {/* Trophy Case */}
+        {currentUserId && (
+          <div className="mb-6">
+            <MegatalentTrophyCase userId={currentUserId} />
+          </div>
+        )}
+
+        {/* Live Chat */}
+        <div className="mb-6">
+          <MegatalentLiveChat category={category} />
         </div>
 
         {/* Content */}
