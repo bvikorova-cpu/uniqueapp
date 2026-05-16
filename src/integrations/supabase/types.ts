@@ -17421,6 +17421,545 @@ export type Database = {
         }
         Relationships: []
       }
+      education_achievements: {
+        Row: {
+          category: string
+          code: string
+          created_at: string
+          criteria: Json
+          description: string
+          icon: string
+          id: string
+          title: string
+          xp_reward: number
+        }
+        Insert: {
+          category?: string
+          code: string
+          created_at?: string
+          criteria?: Json
+          description: string
+          icon?: string
+          id?: string
+          title: string
+          xp_reward?: number
+        }
+        Update: {
+          category?: string
+          code?: string
+          created_at?: string
+          criteria?: Json
+          description?: string
+          icon?: string
+          id?: string
+          title?: string
+          xp_reward?: number
+        }
+        Relationships: []
+      }
+      education_certificates: {
+        Row: {
+          certificate_code: string
+          course_id: string | null
+          course_title: string
+          id: string
+          issued_at: string
+          pdf_url: string | null
+          recipient_name: string | null
+          score: number
+          user_id: string
+        }
+        Insert: {
+          certificate_code?: string
+          course_id?: string | null
+          course_title: string
+          id?: string
+          issued_at?: string
+          pdf_url?: string | null
+          recipient_name?: string | null
+          score?: number
+          user_id: string
+        }
+        Update: {
+          certificate_code?: string
+          course_id?: string | null
+          course_title?: string
+          id?: string
+          issued_at?: string
+          pdf_url?: string | null
+          recipient_name?: string | null
+          score?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      education_daily_challenges: {
+        Row: {
+          challenge_date: string
+          created_at: string
+          id: string
+          payload: Json
+          type: string
+          xp_reward: number
+        }
+        Insert: {
+          challenge_date: string
+          created_at?: string
+          id?: string
+          payload?: Json
+          type?: string
+          xp_reward?: number
+        }
+        Update: {
+          challenge_date?: string
+          created_at?: string
+          id?: string
+          payload?: Json
+          type?: string
+          xp_reward?: number
+        }
+        Relationships: []
+      }
+      education_daily_completions: {
+        Row: {
+          challenge_id: string
+          completed_at: string
+          id: string
+          score: number
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          completed_at?: string
+          id?: string
+          score?: number
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          completed_at?: string
+          id?: string
+          score?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "education_daily_completions_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "education_daily_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      education_flashcard_decks: {
+        Row: {
+          card_count: number
+          created_at: string
+          description: string | null
+          id: string
+          is_public: boolean
+          subject: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          card_count?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean
+          subject?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          card_count?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean
+          subject?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      education_flashcards: {
+        Row: {
+          back: string
+          created_at: string
+          deck_id: string
+          front: string
+          hint: string | null
+          id: string
+          image_url: string | null
+          order_index: number
+          updated_at: string
+        }
+        Insert: {
+          back: string
+          created_at?: string
+          deck_id: string
+          front: string
+          hint?: string | null
+          id?: string
+          image_url?: string | null
+          order_index?: number
+          updated_at?: string
+        }
+        Update: {
+          back?: string
+          created_at?: string
+          deck_id?: string
+          front?: string
+          hint?: string | null
+          id?: string
+          image_url?: string | null
+          order_index?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "education_flashcards_deck_id_fkey"
+            columns: ["deck_id"]
+            isOneToOne: false
+            referencedRelation: "education_flashcard_decks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      education_math_solves: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          image_url: string | null
+          problem_text: string | null
+          solution_steps: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          image_url?: string | null
+          problem_text?: string | null
+          solution_steps?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          image_url?: string | null
+          problem_text?: string | null
+          solution_steps?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      education_notes: {
+        Row: {
+          content_md: string
+          created_at: string
+          id: string
+          is_public: boolean
+          subject: string | null
+          tags: string[]
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content_md?: string
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          subject?: string | null
+          tags?: string[]
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content_md?: string
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          subject?: string | null
+          tags?: string[]
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      education_skill_tree_nodes: {
+        Row: {
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          order_index: number
+          parent_id: string | null
+          required_xp: number
+          subject: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          order_index?: number
+          parent_id?: string | null
+          required_xp?: number
+          subject: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          order_index?: number
+          parent_id?: string | null
+          required_xp?: number
+          subject?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "education_skill_tree_nodes_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "education_skill_tree_nodes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      education_srs_state: {
+        Row: {
+          card_id: string
+          created_at: string
+          due_at: string
+          ease: number
+          id: string
+          interval_days: number
+          last_reviewed_at: string | null
+          repetitions: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          card_id: string
+          created_at?: string
+          due_at?: string
+          ease?: number
+          id?: string
+          interval_days?: number
+          last_reviewed_at?: string | null
+          repetitions?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          card_id?: string
+          created_at?: string
+          due_at?: string
+          ease?: number
+          id?: string
+          interval_days?: number
+          last_reviewed_at?: string | null
+          repetitions?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "education_srs_state_card_id_fkey"
+            columns: ["card_id"]
+            isOneToOne: false
+            referencedRelation: "education_flashcards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      education_study_group_members: {
+        Row: {
+          group_id: string
+          id: string
+          joined_at: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          group_id: string
+          id?: string
+          joined_at?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          group_id?: string
+          id?: string
+          joined_at?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "education_study_group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "education_study_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      education_study_groups: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          invite_code: string
+          is_private: boolean
+          name: string
+          owner_id: string
+          subject: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          invite_code?: string
+          is_private?: boolean
+          name: string
+          owner_id: string
+          subject?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          invite_code?: string
+          is_private?: boolean
+          name?: string
+          owner_id?: string
+          subject?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      education_user_achievements: {
+        Row: {
+          achievement_id: string
+          id: string
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          achievement_id: string
+          id?: string
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          achievement_id?: string
+          id?: string
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "education_user_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "education_achievements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      education_user_skill_progress: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          mastery_score: number
+          node_id: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          mastery_score?: number
+          node_id: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          mastery_score?: number
+          node_id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "education_user_skill_progress_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: false
+            referencedRelation: "education_skill_tree_nodes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      education_weekly_leagues: {
+        Row: {
+          created_at: string
+          id: string
+          league_tier: string
+          rank: number | null
+          updated_at: string
+          user_id: string
+          week_start: string
+          xp_this_week: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          league_tier?: string
+          rank?: number | null
+          updated_at?: string
+          user_id: string
+          week_start: string
+          xp_this_week?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          league_tier?: string
+          rank?: number | null
+          updated_at?: string
+          user_id?: string
+          week_start?: string
+          xp_this_week?: number
+        }
+        Relationships: []
+      }
       educational_certificates: {
         Row: {
           average_quiz_score: number
@@ -53435,6 +53974,10 @@ export type Database = {
       deduct_emotion_credits: { Args: { amount: number }; Returns: boolean }
       deduct_secret_santa_credits: {
         Args: { p_amount: number; p_user_id: string }
+        Returns: boolean
+      }
+      edu_is_study_group_member: {
+        Args: { _group_id: string; _user_id: string }
         Returns: boolean
       }
       erf: { Args: { x: number }; Returns: number }
