@@ -116,10 +116,17 @@ const MegatalentCategory = () => {
         });
         setCommentCounts(counts);
 
-        setSubmissions(submissionsData.map(submission => ({
+        const enriched = submissionsData.map(submission => ({
           ...submission,
           profiles: profilesData?.find(p => p.id === submission.user_id)
-        })));
+        }));
+        enriched.sort((a: any, b: any) => {
+          const ab = boostedIds.has(a.id) ? 1 : 0;
+          const bb = boostedIds.has(b.id) ? 1 : 0;
+          if (ab !== bb) return bb - ab;
+          return (b.votes_count || 0) - (a.votes_count || 0);
+        });
+        setSubmissions(enriched);
       } else {
         setSubmissions([]);
       }
@@ -357,8 +364,15 @@ const MegatalentCategory = () => {
                           {submission.profiles?.full_name?.[0] || "U"}
                         </div>
                       )}
-                      <div className="min-w-0">
-                        <h3 className="font-semibold text-sm line-clamp-1">{submission.title}</h3>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5">
+                          <h3 className="font-semibold text-sm line-clamp-1">{submission.title}</h3>
+                          {boostedIds.has(submission.id) && (
+                            <UiBadge className="bg-amber-500/20 text-amber-500 border-amber-500/40 text-[9px] gap-0.5 px-1.5">
+                              <Rocket className="h-2.5 w-2.5" /> BOOSTED
+                            </UiBadge>
+                          )}
+                        </div>
                         <p className="text-xs text-muted-foreground">{submission.profiles?.full_name || 'Anonymous'}</p>
                       </div>
                     </div>
