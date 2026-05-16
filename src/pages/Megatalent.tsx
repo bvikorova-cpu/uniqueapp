@@ -612,6 +612,7 @@ const Megatalent = () => {
           </div>
 
           <MegatalentReferralProgram userId={currentUserId} />
+          <BattleRoyalePayouts userId={currentUserId} />
         </section>
 
         <MegaTalentGuide />
