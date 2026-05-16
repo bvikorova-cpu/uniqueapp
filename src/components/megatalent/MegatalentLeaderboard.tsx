@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   category: string;
+  categories?: string[];
 }
 
 type Period = "weekly" | "monthly" | "all_time";
@@ -19,7 +20,7 @@ const PRIZE_POOL: Record<Period, { total: number; splits: number[] }> = {
   all_time: { total: 0, splits: [] },
 };
 
-export default function MegatalentLeaderboard({ category }: Props) {
+export default function MegatalentLeaderboard({ category, categories }: Props) {
   const [period, setPeriod] = useState<Period>("weekly");
   const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -37,10 +38,12 @@ export default function MegatalentLeaderboard({ category }: Props) {
           sinceIso = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
         }
 
+        const cats = categories && categories.length > 0 ? categories : [category];
         let q = supabase
-          .from("megatalent_submissions")
-          .select("id, title, media_url, media_type, votes_count, user_id, created_at, profiles(full_name)")
-          .eq("category", category)
+          .from("talent_submissions")
+          .select("id, title, media_url, media_type, votes_count, user_id, created_at")
+          .in("category", cats as any)
+          .eq("is_active", true)
           .order("votes_count", { ascending: false })
           .limit(100);
 
@@ -48,7 +51,21 @@ export default function MegatalentLeaderboard({ category }: Props) {
 
         const { data, error } = await q;
         if (error) throw error;
-        if (!cancelled) setRows((data as any[]) || []);
+
+        const subs = (data as any[]) || [];
+        const userIds = [...new Set(subs.map((s) => s.user_id))];
+        let profiles: Record<string, any> = {};
+        if (userIds.length > 0) {
+          const { data: pData } = await supabase
+            .from("profiles")
+            .select("id, full_name, avatar_url")
+            .in("id", userIds);
+          (pData || []).forEach((p: any) => {
+            profiles[p.id] = p;
+          });
+        }
+        const enriched = subs.map((s) => ({ ...s, profiles: profiles[s.user_id] }));
+        if (!cancelled) setRows(enriched);
       } catch (e) {
         console.error("leaderboard load", e);
         if (!cancelled) setRows([]);
@@ -60,7 +77,7 @@ export default function MegatalentLeaderboard({ category }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [category, period]);
+  }, [category, categories, period]);
 
   const pool = PRIZE_POOL[period];
 

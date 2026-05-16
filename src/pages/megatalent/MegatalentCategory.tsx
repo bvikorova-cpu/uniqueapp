@@ -298,7 +298,7 @@ const MegatalentCategory = () => {
         {/* Talent Leaderboard */}
         {category && (
           <div className="mb-6">
-            <MegatalentLeaderboard category={category} />
+            <MegatalentLeaderboard category={category} categories={config?.categories} />
           </div>
         )}
 
