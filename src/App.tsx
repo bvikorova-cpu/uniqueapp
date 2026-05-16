@@ -295,6 +295,7 @@ import {
   EmployerVerification,
   BrandBuilder,
   BrandBattle,
+  BrandArenaHub,
   BrandDashboard,
   SponsorRegistration,
   SponsorDashboard,
