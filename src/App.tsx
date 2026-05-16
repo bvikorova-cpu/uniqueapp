@@ -419,6 +419,20 @@ import {
 } from "@/routes/lazyPages";
 
 const AdminRefunds = lazy(() => import("@/pages/admin/AdminRefunds"));
+// Education vertical
+const EducationHub = lazy(() => import("@/pages/education/EducationHub"));
+const FlashcardDecks = lazy(() => import("@/pages/education/FlashcardDecks"));
+const FlashcardDeckDetail = lazy(() => import("@/pages/education/FlashcardDeckDetail"));
+const DailyChallenge = lazy(() => import("@/pages/education/DailyChallenge"));
+const EduAchievements = lazy(() => import("@/pages/education/Achievements"));
+const EduLeague = lazy(() => import("@/pages/education/League"));
+const EduMathSolver = lazy(() => import("@/pages/education/MathSolver"));
+const EduAITutor = lazy(() => import("@/pages/education/AITutor"));
+const EduNotes = lazy(() => import("@/pages/education/Notes"));
+const EduStudyGroups = lazy(() => import("@/pages/education/StudyGroups"));
+const EduCertificates = lazy(() => import("@/pages/education/Certificates"));
+const EduCertVerify = lazy(() => import("@/pages/education/CertificateVerify"));
+const EduSkillTree = lazy(() => import("@/pages/education/SkillTree"));
 const AdminDisputes = lazy(() => import("@/pages/admin/AdminDisputes"));
 const AdminReconciliation = lazy(() => import("@/pages/admin/AdminReconciliation"));
 const AdminReferralFraud = lazy(() => import("@/pages/admin/AdminReferralFraud"));
@@ -535,6 +549,20 @@ const App = () => {
                         {/* All routes render inside this Suspense boundary */}
                         <Routes>
                         <Route path="/" element={<Index />} />
+                        <Route path="/education" element={<EducationHub />} />
+                        <Route path="/education/flashcards" element={<ProtectedRoute><FlashcardDecks /></ProtectedRoute>} />
+                        <Route path="/education/flashcards/:deckId" element={<ProtectedRoute><FlashcardDeckDetail /></ProtectedRoute>} />
+                        <Route path="/education/daily" element={<ProtectedRoute><DailyChallenge /></ProtectedRoute>} />
+                        <Route path="/education/achievements" element={<ProtectedRoute><EduAchievements /></ProtectedRoute>} />
+                        <Route path="/education/league" element={<EduLeague />} />
+                        <Route path="/education/math-solver" element={<ProtectedRoute><EduMathSolver /></ProtectedRoute>} />
+                        <Route path="/education/tutor" element={<ProtectedRoute><EduAITutor /></ProtectedRoute>} />
+                        <Route path="/education/notes" element={<ProtectedRoute><EduNotes /></ProtectedRoute>} />
+                        <Route path="/education/study-groups" element={<ProtectedRoute><EduStudyGroups /></ProtectedRoute>} />
+                        <Route path="/education/certificates" element={<ProtectedRoute><EduCertificates /></ProtectedRoute>} />
+                        <Route path="/education/skill-tree" element={<EduSkillTree />} />
+                        <Route path="/education/skill-tree/:subject" element={<EduSkillTree />} />
+                        <Route path="/cert/:code" element={<EduCertVerify />} />
                         <Route path="/index" element={<Navigate to="/" replace />} />
                         <Route path="/download" element={<Download />} />
                         <Route path="/downloads" element={<Navigate to="/download" replace />} />
