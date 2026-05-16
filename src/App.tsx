@@ -433,6 +433,10 @@ const EduStudyGroups = lazy(() => import("@/pages/education/StudyGroups"));
 const EduCertificates = lazy(() => import("@/pages/education/Certificates"));
 const EduCertVerify = lazy(() => import("@/pages/education/CertificateVerify"));
 const EduSkillTree = lazy(() => import("@/pages/education/SkillTree"));
+const MentorHub = lazy(() => import("@/pages/mentor/MentorHub"));
+const MentorPremium = lazy(() => import("@/pages/mentor/MentorPremium"));
+const MentorFeature = lazy(() => import("@/pages/mentor/MentorFeature"));
+const Mentor360Public = lazy(() => import("@/pages/mentor/Mentor360Public"));
 const AdminDisputes = lazy(() => import("@/pages/admin/AdminDisputes"));
 const AdminReconciliation = lazy(() => import("@/pages/admin/AdminReconciliation"));
 const AdminReferralFraud = lazy(() => import("@/pages/admin/AdminReferralFraud"));
@@ -705,6 +709,10 @@ const App = () => {
                         <Route path="/premium-store" element={<PremiumStore />} />
                         <Route path="/premium" element={<Premium />} />
                         <Route path="/ai-mentor" element={<AIMentor />} />
+                        <Route path="/ai-mentor/hub" element={<ProtectedRoute><MentorHub /></ProtectedRoute>} />
+                        <Route path="/ai-mentor/premium" element={<ProtectedRoute><MentorPremium /></ProtectedRoute>} />
+                        <Route path="/ai-mentor/tools/:feature" element={<ProtectedRoute><MentorFeature /></ProtectedRoute>} />
+                        <Route path="/mentor-360/:token" element={<Mentor360Public />} />
                         <Route path="/ai-mentor/:area" element={<AIMentorChat />} />
                         <Route path="/content-studio" element={<ContentStudio />} />
                         <Route path="/companions" element={<AICompanions />} />

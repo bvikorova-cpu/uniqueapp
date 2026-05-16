@@ -4,7 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Briefcase, Dumbbell, Brain, Heart } from "lucide-react";
+import { Crown, Sparkles } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import { MentorHero } from "@/components/mentor/MentorHero";
 import { MentorCard } from "@/components/mentor/MentorCard";
 import { TestimonialsCarousel } from "@/components/mentor/TestimonialsCarousel";
@@ -162,6 +164,23 @@ const AIMentor = () => {
         <MentorHero />
 
         <HeroRewardedAd sectionKey="page_aimentor" />
+
+        <div className="mb-8 overflow-hidden rounded-2xl border border-primary/20 bg-card/70 p-4 backdrop-blur-xl">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-3">
+              <div className="rounded-full bg-primary/10 p-2 text-primary">
+                <Sparkles className="h-5 w-5" />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold">Personal Mentor Premium Tools</h2>
+                <p className="text-sm text-muted-foreground">Memory, skills, role-play, 360° feedback, yearly plan and all new coaching features.</p>
+              </div>
+            </div>
+            <Button onClick={() => navigate("/ai-mentor/hub")} className="shrink-0">
+              <Crown className="mr-2 h-4 w-4" /> Open Hub
+            </Button>
+          </div>
+        </div>
 
         {/* Engagement widgets row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
