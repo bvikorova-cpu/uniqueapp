@@ -31,6 +31,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 import MegaTalentHero from "@/components/megatalent/MegaTalentHero";
+import MegatalentClipOfDay from "@/components/megatalent/MegatalentClipOfDay";
+import MegatalentTalentShop from "@/components/megatalent/MegatalentTalentShop";
+import MegatalentReferralProgram from "@/components/megatalent/MegatalentReferralProgram";
 import NextVotingCountdown from "@/components/megatalent/NextVotingCountdown";
 import MegaTalentCategoryGrid from "@/components/megatalent/MegaTalentCategoryGrid";
 import ContestStatsSidebar from "@/components/megatalent/ContestStatsSidebar";
@@ -585,6 +588,30 @@ const Megatalent = () => {
 
         {/* Category Grid */}
         <MegaTalentCategoryGrid />
+
+        {/* Top features showcase — Clip of the Day, Talent Shop, Referrals */}
+        <section className="my-8 space-y-6">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-600 bg-clip-text text-transparent">
+                Top features
+              </h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                Earn XP, win recognition, and invite friends — all from one place.
+              </p>
+            </div>
+            <Button variant="ghost" size="sm" onClick={() => navigate(`/megatalent/${selectedCategory}`)} className="gap-1">
+              See category <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <MegatalentClipOfDay category={selectedCategory} />
+            <MegatalentTalentShop userId={currentUserId} />
+          </div>
+
+          <MegatalentReferralProgram userId={currentUserId} />
+        </section>
 
         <MegaTalentGuide />
 
