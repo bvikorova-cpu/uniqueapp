@@ -3,9 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Swords, Trophy, Loader2, Crown, ChevronRight } from "lucide-react";
+import { Swords, Trophy, Loader2, Crown, ChevronRight, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
 
 type Tournament = {
   id: string;
@@ -206,6 +207,11 @@ const MegatalentBattleRoyale = ({ category, categories }: { category?: string; c
             <Badge variant={tournament.status === "active" ? "destructive" : "secondary"} className={tournament.status === "active" ? "ml-auto animate-pulse" : "ml-auto"}>
               {tournament.status === "active" ? `ROUND ${tournament.current_round} · LIVE` : tournament.status.toUpperCase()}
             </Badge>
+          )}
+          {cat && (
+            <Link to={`/megatalent/battle-results/${cat}`} className="text-xs text-primary inline-flex items-center gap-1 hover:underline">
+              Results <ExternalLink className="h-3 w-3" />
+            </Link>
           )}
         </div>
 
