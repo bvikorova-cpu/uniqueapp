@@ -169,6 +169,12 @@ export default function ColoringPages() {
       <main className="container mx-auto px-4 py-16 max-w-7xl">
         <ColoringHero totalPages={totalPages} credits={creditsDisplay} />
 
+        <div className="my-4 flex justify-center">
+          <Button size="lg" onClick={() => navigate("/coloring-pages/hub")} className="gap-2">
+            <Sparkles className="w-5 h-5" /> Otvoriť Coloring Hub (18 nových funkcií)
+          </Button>
+        </div>
+
         <HeroRewardedAd sectionKey="page_coloringpages" />
 
         {/* Credit balance banner — paid-only model */}
