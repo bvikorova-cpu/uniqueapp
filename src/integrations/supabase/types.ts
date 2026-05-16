@@ -3785,6 +3785,51 @@ export type Database = {
           },
         ]
       }
+      battle_royale_predictions: {
+        Row: {
+          awarded: boolean
+          created_at: string
+          id: string
+          predicted_participant_id: string
+          round: number
+          tournament_id: string
+          user_id: string
+        }
+        Insert: {
+          awarded?: boolean
+          created_at?: string
+          id?: string
+          predicted_participant_id: string
+          round: number
+          tournament_id: string
+          user_id: string
+        }
+        Update: {
+          awarded?: boolean
+          created_at?: string
+          id?: string
+          predicted_participant_id?: string
+          round?: number
+          tournament_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "battle_royale_predictions_predicted_participant_id_fkey"
+            columns: ["predicted_participant_id"]
+            isOneToOne: false
+            referencedRelation: "battle_royale_participants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "battle_royale_predictions_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "battle_royale_tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       battle_royale_tournaments: {
         Row: {
           category: string
@@ -15940,6 +15985,33 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_quest_completions: {
+        Row: {
+          created_at: string
+          id: string
+          quest_date: string
+          quest_id: string
+          user_id: string
+          xp_awarded: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          quest_date?: string
+          quest_id: string
+          user_id: string
+          xp_awarded?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          quest_date?: string
+          quest_id?: string
+          user_id?: string
+          xp_awarded?: number
+        }
+        Relationships: []
+      }
       daily_rewards: {
         Row: {
           claimed_at: string | null
@@ -19182,6 +19254,27 @@ export type Database = {
           status?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      fan_club_memberships: {
+        Row: {
+          created_at: string
+          fan_user_id: string
+          id: string
+          talent_user_id: string
+        }
+        Insert: {
+          created_at?: string
+          fan_user_id: string
+          id?: string
+          talent_user_id: string
+        }
+        Update: {
+          created_at?: string
+          fan_user_id?: string
+          id?: string
+          talent_user_id?: string
         }
         Relationships: []
       }
@@ -46516,6 +46609,33 @@ export type Database = {
         }
         Relationships: []
       }
+      talent_chat_messages: {
+        Row: {
+          body: string
+          category: string
+          created_at: string
+          display_name: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          category?: string
+          created_at?: string
+          display_name: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          category?: string
+          created_at?: string
+          display_name?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       talent_comments: {
         Row: {
           comment_text: string
@@ -49810,6 +49930,24 @@ export type Database = {
         }
         Relationships: []
       }
+      user_xp: {
+        Row: {
+          total_xp: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          total_xp?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          total_xp?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_year_wrapped: {
         Row: {
           badges_earned: number
@@ -51612,6 +51750,33 @@ export type Database = {
         }
         Relationships: []
       }
+      xp_events: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          ref_id: string | null
+          source: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          ref_id?: string | null
+          source: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          ref_id?: string | null
+          source?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       xp_gifts: {
         Row: {
           amount: number
@@ -51961,6 +52126,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      fan_club_top_talents: {
+        Row: {
+          member_count: number | null
+          talent_user_id: string | null
+        }
+        Relationships: []
       }
       iq_questions_public: {
         Row: {
@@ -52749,6 +52921,15 @@ export type Database = {
       award_points_and_log: {
         Args: { p_activity_type: string; p_points: number; p_user_id: string }
         Returns: undefined
+      }
+      award_xp: {
+        Args: {
+          _amount: number
+          _ref_id?: string
+          _source: string
+          _user_id: string
+        }
+        Returns: number
       }
       bazaar_promote_listing: {
         Args: { p_item_id: string; p_plan: string }
