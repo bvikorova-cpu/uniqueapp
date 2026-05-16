@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Heart, MessageCircle, Share2, Trash2, Trophy, Flame } from "lucide-react";
 import { TopPremiumBadge } from "@/components/megatalent/TopPremiumBadge";
 import { VoteBoostTooltip } from "@/components/megatalent/VoteBoostTooltip";
+import MegatalentReactions from "@/components/megatalent/MegatalentReactions";
+import MegatalentPinButton from "@/components/megatalent/MegatalentPinButton";
 
 interface SubmissionCardProps {
   submission: any;
