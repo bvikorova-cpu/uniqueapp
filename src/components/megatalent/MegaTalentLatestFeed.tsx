@@ -78,7 +78,7 @@ export default function MegaTalentLatestFeed({ categoryGroups }: Props) {
         const to = from + PAGE_SIZE - 1;
         let q = supabase
           .from("talent_submissions")
-          .select("id, user_id, title, description, media_url, media_type, category, votes_count, dislikes_count, created_at, profiles:user_id(full_name, avatar_url)")
+          .select("id, user_id, title, description, media_url, media_type, category, votes_count, dislikes_count, created_at")
           .eq("is_active", true)
           .order("created_at", { ascending: false })
           .range(from, to);
@@ -91,7 +91,22 @@ export default function MegaTalentLatestFeed({ categoryGroups }: Props) {
         }
         const { data, error } = await q;
         if (error) throw error;
-        const rows = (data as any as Submission[]) ?? [];
+        let rows = ((data as any[]) ?? []) as Submission[];
+
+        // Fetch profiles separately (no FK relationship in schema cache)
+        if (rows.length > 0) {
+          const uids = [...new Set(rows.map((r) => r.user_id).filter(Boolean))];
+          if (uids.length > 0) {
+            const { data: profs } = await supabase
+              .from("profiles")
+              .select("id, full_name, avatar_url")
+              .in("id", uids);
+            const pmap: Record<string, any> = {};
+            (profs || []).forEach((p: any) => { pmap[p.id] = p; });
+            rows = rows.map((r) => ({ ...r, profiles: pmap[r.user_id] })) as any;
+          }
+        }
+
         setHasMore(rows.length === PAGE_SIZE);
         setItems((prev) => (replace ? rows : [...prev, ...rows]));
 
