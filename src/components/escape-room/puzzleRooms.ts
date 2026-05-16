@@ -616,7 +616,7 @@ export const adventureRooms: RoomData[] = [
         label: "Golden Scarab",
         item: {
           id: "scarab",
-          name: "Skarabeus",
+          name: "Scarab",
           icon: "🪲",
           description: "Sacred golden beetle. Symbol of eternal life."
         }
