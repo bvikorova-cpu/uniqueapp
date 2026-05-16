@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { MessageSquare, Send, Loader2, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import ReportButton from "@/components/megatalent/ReportButton";
 
 type Sub = { id: string; title: string; user_id: string };
 type Comment = { id: string; submission_id: string; user_id: string; body: string; created_at: string };
@@ -138,6 +139,7 @@ const MegatalentComments = ({ category, categories, userId }: Props) => {
                       <span className="font-semibold truncate">{p?.full_name || "User"}</span>
                       <span className="text-muted-foreground ml-auto text-[10px]">{new Date(c.created_at).toLocaleString()}</span>
                       {mine && <button onClick={() => remove(c.id)} className="text-muted-foreground hover:text-destructive"><Trash2 className="h-3 w-3" /></button>}
+                      {!mine && userId && <ReportButton targetType="comment" targetId={c.id} reporterId={userId} size="icon" className="h-5 w-5" />}
                     </div>
                     <p className="whitespace-pre-wrap break-words">{c.body}</p>
                   </div>

@@ -47,6 +47,7 @@ import MegatalentClipOfDay from "@/components/megatalent/MegatalentClipOfDay";
 import MegatalentTalentShop from "@/components/megatalent/MegatalentTalentShop";
 import MegatalentReferralProgram from "@/components/megatalent/MegatalentReferralProgram";
 import MegatalentJudgePanel from "@/components/megatalent/MegatalentJudgePanel";
+import JudgeApplication from "@/components/megatalent/JudgeApplication";
 import MegatalentRivalries from "@/components/megatalent/MegatalentRivalries";
 import { Badge as UiBadge } from "@/components/ui/badge";
 import { Rocket } from "lucide-react";
@@ -438,6 +439,7 @@ const MegatalentCategory = () => {
         {/* Features #34-40 */}
         <div className="mb-6"><MegatalentClipOfDay category={category} /></div>
         <div className="mb-6"><MegatalentJudgePanel category={category} categories={config?.categories} userId={currentUserId} /></div>
+        <div className="mb-6"><JudgeApplication userId={currentUserId} /></div>
         <div className="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
           <MegatalentEndorsements category={category} categories={config?.categories} userId={currentUserId} />
           <MegatalentComments category={category} categories={config?.categories} userId={currentUserId} />

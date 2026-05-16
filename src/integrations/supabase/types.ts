@@ -27201,6 +27201,39 @@ export type Database = {
         }
         Relationships: []
       }
+      judge_applications: {
+        Row: {
+          created_at: string
+          id: string
+          motivation: string
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          motivation: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          motivation?: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       karmic_debts: {
         Row: {
           balance_score: number | null
@@ -46670,6 +46703,10 @@ export type Database = {
         Row: {
           comment_text: string
           created_at: string
+          hidden: boolean
+          hidden_at: string | null
+          hidden_by: string | null
+          hidden_reason: string | null
           id: string
           submission_id: string
           updated_at: string
@@ -46678,6 +46715,10 @@ export type Database = {
         Insert: {
           comment_text: string
           created_at?: string
+          hidden?: boolean
+          hidden_at?: string | null
+          hidden_by?: string | null
+          hidden_reason?: string | null
           id?: string
           submission_id: string
           updated_at?: string
@@ -46686,6 +46727,10 @@ export type Database = {
         Update: {
           comment_text?: string
           created_at?: string
+          hidden?: boolean
+          hidden_at?: string | null
+          hidden_by?: string | null
+          hidden_reason?: string | null
           id?: string
           submission_id?: string
           updated_at?: string
@@ -46782,6 +46827,48 @@ export type Database = {
           referred_id?: string | null
           referrer_id?: string
           rewarded?: boolean
+        }
+        Relationships: []
+      }
+      talent_reports: {
+        Row: {
+          created_at: string
+          details: string | null
+          id: string
+          reason: string
+          reporter_id: string
+          resolution_notes: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          status: string
+          target_id: string
+          target_type: string
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason: string
+          reporter_id: string
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          target_id: string
+          target_type: string
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason?: string
+          reporter_id?: string
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          target_id?: string
+          target_type?: string
         }
         Relationships: []
       }
@@ -53085,6 +53172,10 @@ export type Database = {
         Returns: Json
       }
       aggregate_group_insights: { Args: { _day?: string }; Returns: number }
+      approve_judge_application: {
+        Args: { _app_id: string; _notes?: string }
+        Returns: undefined
+      }
       are_friends: { Args: { a: string; b: string }; Returns: boolean }
       assign_user_role: {
         Args: {
@@ -53948,6 +54039,10 @@ export type Database = {
         Returns: boolean
       }
       mark_iq_notifications_read: { Args: { _ids?: string[] }; Returns: number }
+      moderate_comment: {
+        Args: { _comment_id: string; _hide: boolean; _reason?: string }
+        Returns: undefined
+      }
       open_mystery_box: { Args: { p_user_box_id: string }; Returns: Json }
       payout_requires_review: {
         Args: {
@@ -54101,8 +54196,16 @@ export type Database = {
         }
       }
       redeem_shop_item: { Args: { _item_code: string }; Returns: Json }
+      reject_judge_application: {
+        Args: { _app_id: string; _notes?: string }
+        Returns: undefined
+      }
       reset_best_friend_monthly_messages: { Args: never; Returns: undefined }
       reset_psychology_monthly_messages: { Args: never; Returns: undefined }
+      resolve_report: {
+        Args: { _notes?: string; _report_id: string; _status: string }
+        Returns: undefined
+      }
       rotate_mystery_events: { Args: never; Returns: undefined }
       rotate_seasonal_missions: { Args: never; Returns: Json }
       send_secret_santa_gift: {
