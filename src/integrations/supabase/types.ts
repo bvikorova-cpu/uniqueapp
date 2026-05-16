@@ -32782,6 +32782,68 @@ export type Database = {
           },
         ]
       }
+      mentor_360_requests: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          questions: Json
+          status: string
+          token: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          questions?: Json
+          status?: string
+          token?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          questions?: Json
+          status?: string
+          token?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mentor_360_responses: {
+        Row: {
+          id: string
+          relationship: string | null
+          request_id: string
+          responses: Json
+          submitted_at: string
+        }
+        Insert: {
+          id?: string
+          relationship?: string | null
+          request_id: string
+          responses: Json
+          submitted_at?: string
+        }
+        Update: {
+          id?: string
+          relationship?: string | null
+          request_id?: string
+          responses?: Json
+          submitted_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mentor_360_responses_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "mentor_360_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mentor_action_plans: {
         Row: {
           created_at: string
@@ -32818,6 +32880,74 @@ export type Database = {
         }
         Relationships: []
       }
+      mentor_cbt_programs: {
+        Row: {
+          area: string
+          days: Json
+          description: string
+          duration_days: number
+          id: string
+          slug: string
+          title: string
+        }
+        Insert: {
+          area: string
+          days?: Json
+          description: string
+          duration_days?: number
+          id?: string
+          slug: string
+          title: string
+        }
+        Update: {
+          area?: string
+          days?: Json
+          description?: string
+          duration_days?: number
+          id?: string
+          slug?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      mentor_cbt_progress: {
+        Row: {
+          completed_at: string | null
+          completed_days: Json
+          current_day: number
+          id: string
+          program_id: string
+          started_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          completed_days?: Json
+          current_day?: number
+          id?: string
+          program_id: string
+          started_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          completed_days?: Json
+          current_day?: number
+          id?: string
+          program_id?: string
+          started_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mentor_cbt_progress_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "mentor_cbt_programs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mentor_checkins: {
         Row: {
           achievements: string[] | null
@@ -32850,6 +32980,102 @@ export type Database = {
           mentor_area?: Database["public"]["Enums"]["mentor_area"]
           mood_score?: number | null
           notes?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mentor_coach_personalities: {
+        Row: {
+          color: string | null
+          description: string
+          icon: string | null
+          id: string
+          name: string
+          slug: string
+          system_prompt: string
+        }
+        Insert: {
+          color?: string | null
+          description: string
+          icon?: string | null
+          id?: string
+          name: string
+          slug: string
+          system_prompt: string
+        }
+        Update: {
+          color?: string | null
+          description?: string
+          icon?: string | null
+          id?: string
+          name?: string
+          slug?: string
+          system_prompt?: string
+        }
+        Relationships: []
+      }
+      mentor_conversation_memory: {
+        Row: {
+          area: string
+          created_at: string
+          fact_key: string
+          fact_value: string
+          id: string
+          importance: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          area: string
+          created_at?: string
+          fact_key: string
+          fact_value: string
+          id?: string
+          importance?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          area?: string
+          created_at?: string
+          fact_key?: string
+          fact_value?: string
+          id?: string
+          importance?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mentor_daily_nudges: {
+        Row: {
+          action_url: string | null
+          area: string
+          created_at: string
+          id: string
+          message: string
+          read: boolean
+          sent_for_date: string
+          user_id: string
+        }
+        Insert: {
+          action_url?: string | null
+          area: string
+          created_at?: string
+          id?: string
+          message: string
+          read?: boolean
+          sent_for_date?: string
+          user_id: string
+        }
+        Update: {
+          action_url?: string | null
+          area?: string
+          created_at?: string
+          id?: string
+          message?: string
+          read?: boolean
+          sent_for_date?: string
           user_id?: string
         }
         Relationships: []
@@ -32893,6 +33119,89 @@ export type Database = {
         }
         Relationships: []
       }
+      mentor_habit_logs: {
+        Row: {
+          completed: boolean
+          created_at: string
+          habit_id: string
+          id: string
+          log_date: string
+          note: string | null
+          used_freeze: boolean
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          created_at?: string
+          habit_id: string
+          id?: string
+          log_date?: string
+          note?: string | null
+          used_freeze?: boolean
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          created_at?: string
+          habit_id?: string
+          id?: string
+          log_date?: string
+          note?: string | null
+          used_freeze?: boolean
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mentor_habit_logs_habit_id_fkey"
+            columns: ["habit_id"]
+            isOneToOne: false
+            referencedRelation: "mentor_habits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mentor_habits: {
+        Row: {
+          archived: boolean
+          area: string
+          best_streak: number
+          created_at: string
+          current_streak: number
+          freeze_tokens: number
+          frequency: string
+          id: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          archived?: boolean
+          area: string
+          best_streak?: number
+          created_at?: string
+          current_streak?: number
+          freeze_tokens?: number
+          frequency?: string
+          id?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          archived?: boolean
+          area?: string
+          best_streak?: number
+          created_at?: string
+          current_streak?: number
+          freeze_tokens?: number
+          frequency?: string
+          id?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       mentor_moods: {
         Row: {
           created_at: string
@@ -32922,6 +33231,72 @@ export type Database = {
           mood_score?: number
           notes?: string | null
           stress_score?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mentor_personality_assessments: {
+        Row: {
+          completed_at: string
+          id: string
+          insights: string | null
+          result: Json
+          type: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string
+          id?: string
+          insights?: string | null
+          result: Json
+          type: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string
+          id?: string
+          insights?: string | null
+          result?: Json
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mentor_premium_subs: {
+        Row: {
+          created_at: string
+          current_period_end: string | null
+          email: string
+          id: string
+          plan: string
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_period_end?: string | null
+          email: string
+          id?: string
+          plan?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_period_end?: string | null
+          email?: string
+          id?: string
+          plan?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -32959,6 +33334,140 @@ export type Database = {
         }
         Relationships: []
       }
+      mentor_reflection_prompts: {
+        Row: {
+          area: string
+          follow_up: string | null
+          id: string
+          mood: string | null
+          prompt: string
+        }
+        Insert: {
+          area: string
+          follow_up?: string | null
+          id?: string
+          mood?: string | null
+          prompt: string
+        }
+        Update: {
+          area?: string
+          follow_up?: string | null
+          id?: string
+          mood?: string | null
+          prompt?: string
+        }
+        Relationships: []
+      }
+      mentor_roleplay_scenarios: {
+        Row: {
+          area: string
+          description: string
+          difficulty: string
+          display_order: number
+          evaluation_criteria: Json
+          id: string
+          system_prompt: string
+          title: string
+        }
+        Insert: {
+          area: string
+          description: string
+          difficulty?: string
+          display_order?: number
+          evaluation_criteria?: Json
+          id?: string
+          system_prompt: string
+          title: string
+        }
+        Update: {
+          area?: string
+          description?: string
+          difficulty?: string
+          display_order?: number
+          evaluation_criteria?: Json
+          id?: string
+          system_prompt?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      mentor_roleplay_sessions: {
+        Row: {
+          completed: boolean
+          created_at: string
+          feedback: string | null
+          id: string
+          scenario_id: string
+          score: number | null
+          transcript: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          scenario_id: string
+          score?: number | null
+          transcript?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          scenario_id?: string
+          score?: number | null
+          transcript?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mentor_roleplay_sessions_scenario_id_fkey"
+            columns: ["scenario_id"]
+            isOneToOne: false
+            referencedRelation: "mentor_roleplay_scenarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mentor_session_summaries: {
+        Row: {
+          area: string
+          commitments: Json
+          created_at: string
+          id: string
+          key_insights: Json
+          next_steps: Json
+          summary: string
+          user_id: string
+        }
+        Insert: {
+          area: string
+          commitments?: Json
+          created_at?: string
+          id?: string
+          key_insights?: Json
+          next_steps?: Json
+          summary: string
+          user_id: string
+        }
+        Update: {
+          area?: string
+          commitments?: Json
+          created_at?: string
+          id?: string
+          key_insights?: Json
+          next_steps?: Json
+          summary?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       mentor_sessions: {
         Row: {
           created_at: string
@@ -32985,6 +33494,122 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      mentor_skills: {
+        Row: {
+          area: string
+          description: string
+          display_order: number
+          icon: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          area: string
+          description: string
+          display_order?: number
+          icon?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          area?: string
+          description?: string
+          display_order?: number
+          icon?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      mentor_smart_goals: {
+        Row: {
+          area: string
+          created_at: string
+          deadline: string | null
+          description: string | null
+          id: string
+          progress: number
+          smart_achievable: string | null
+          smart_measurable: string | null
+          smart_relevant: string | null
+          smart_specific: string | null
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          area: string
+          created_at?: string
+          deadline?: string | null
+          description?: string | null
+          id?: string
+          progress?: number
+          smart_achievable?: string | null
+          smart_measurable?: string | null
+          smart_relevant?: string | null
+          smart_specific?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          area?: string
+          created_at?: string
+          deadline?: string | null
+          description?: string | null
+          id?: string
+          progress?: number
+          smart_achievable?: string | null
+          smart_measurable?: string | null
+          smart_relevant?: string | null
+          smart_specific?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mentor_smart_milestones: {
+        Row: {
+          completed: boolean
+          created_at: string
+          display_order: number
+          due_date: string | null
+          goal_id: string
+          id: string
+          title: string
+        }
+        Insert: {
+          completed?: boolean
+          created_at?: string
+          display_order?: number
+          due_date?: string | null
+          goal_id: string
+          id?: string
+          title: string
+        }
+        Update: {
+          completed?: boolean
+          created_at?: string
+          display_order?: number
+          due_date?: string | null
+          goal_id?: string
+          id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mentor_smart_milestones_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "mentor_smart_goals"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       mentor_subscriptions: {
         Row: {
@@ -33015,6 +33640,80 @@ export type Database = {
           started_at?: string
           status?: string
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mentor_user_skill_progress: {
+        Row: {
+          created_at: string
+          history: Json
+          id: string
+          last_practiced_at: string | null
+          practice_count: number
+          score: number
+          skill_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          history?: Json
+          id?: string
+          last_practiced_at?: string | null
+          practice_count?: number
+          score?: number
+          skill_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          history?: Json
+          id?: string
+          last_practiced_at?: string | null
+          practice_count?: number
+          score?: number
+          skill_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mentor_user_skill_progress_skill_id_fkey"
+            columns: ["skill_id"]
+            isOneToOne: false
+            referencedRelation: "mentor_skills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mentor_voice_journals: {
+        Row: {
+          ai_insights: string | null
+          created_at: string
+          detected_emotion: string | null
+          duration_sec: number | null
+          id: string
+          transcript: string
+          user_id: string
+        }
+        Insert: {
+          ai_insights?: string | null
+          created_at?: string
+          detected_emotion?: string | null
+          duration_sec?: number | null
+          id?: string
+          transcript: string
+          user_id: string
+        }
+        Update: {
+          ai_insights?: string | null
+          created_at?: string
+          detected_emotion?: string | null
+          duration_sec?: number | null
+          id?: string
+          transcript?: string
           user_id?: string
         }
         Relationships: []
