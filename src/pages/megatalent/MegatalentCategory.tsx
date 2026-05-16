@@ -314,8 +314,9 @@ const MegatalentCategory = () => {
 
         {/* Achievements */}
         {currentUserId && (
-          <div className="mb-6">
+          <div className="mb-6 space-y-6">
             <MegatalentAchievements userId={currentUserId} />
+            <MegatalentVotingStreak userId={currentUserId} />
           </div>
         )}
 
