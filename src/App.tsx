@@ -797,6 +797,8 @@ const App = () => {
                         <Route path="/writing/:contentId" element={<GenericLearning />} />
                         <Route path="/creative-forge" element={<ProtectedRoute><CreativeForge /></ProtectedRoute>} />
                         <Route path="/coloring-pages" element={<ColoringPages />} />
+                        <Route path="/coloring-pages/hub" element={<ColoringHub />} />
+                        <Route path="/coloring-pages/hub/:slug" element={<ColoringHub />} />
                         <Route path="/schools" element={<Navigate to="/coloring-pages" replace />} />
                         <Route path="/healthcare" element={<Navigate to="/coloring-pages" replace />} />
                         <Route path="/corporate-events" element={<Navigate to="/coloring-pages" replace />} />
