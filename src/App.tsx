@@ -96,6 +96,7 @@ import {
   Megatalent,
   MegatalentCategory,
   MegatalentSuccess,
+  MegatalentBattleResults,
   Subscription,
   
   PremiumStore,
@@ -555,6 +556,9 @@ const App = () => {
                         <Route path="/messenger" element={<Messenger />} />
                         <Route path="/megatalent" element={<MegatalentGuard><Megatalent /></MegatalentGuard>} />
                         <Route path="/megatalent/success" element={<MegatalentSuccess />} />
+                        <Route path="/megatalent/battle-results" element={<MegatalentBattleResults />} />
+                        <Route path="/megatalent/battle-results/id/:tournamentId" element={<MegatalentBattleResults />} />
+                        <Route path="/megatalent/battle-results/:category" element={<MegatalentBattleResults />} />
                         <Route path="/megatalent/:category" element={<MegatalentGuard><MegatalentCategory /></MegatalentGuard>} />
                         <Route path="/megaforum" element={<Megaforum />} />
                         <Route path="/psychologist" element={<Psychology />} />
