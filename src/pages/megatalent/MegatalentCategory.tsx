@@ -15,6 +15,7 @@ import MegatalentDailyChallenge from "@/components/megatalent/MegatalentDailyCha
 import MegatalentBracket from "@/components/megatalent/MegatalentBracket";
 import MegatalentVipBanner from "@/components/megatalent/MegatalentVipBanner";
 import MegatalentWatchParty from "@/components/megatalent/MegatalentWatchParty";
+import MegatalentAICoach from "@/components/megatalent/MegatalentAICoach";
 
 const categoryConfig: Record<string, { title: string; icon: string; categories: string[] }> = {
   art: { title: "Art & Creativity", icon: "🎨", categories: ["drawing", "painting", "digital_art", "sculpture", "photography", "handmade", "makeup_art", "tattoo"] },
@@ -246,6 +247,13 @@ const MegatalentCategory = () => {
         {category && (
           <div className="mb-6">
             <MegatalentWatchParty category={category} />
+          </div>
+        )}
+
+        {/* AI Talent Coach */}
+        {category && (
+          <div className="mb-6">
+            <MegatalentAICoach category={category} />
           </div>
         )}
 
