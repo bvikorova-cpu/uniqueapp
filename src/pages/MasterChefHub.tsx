@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import UnifiedXPLeaderboard from "@/components/shared/UnifiedXPLeaderboard";
 const TIERS = {
   amateur: {
     name: "Amateur", price: "€19.99", priceId: "price_1SPiaUGaXSfGtYFtpV3Q8jjN",
