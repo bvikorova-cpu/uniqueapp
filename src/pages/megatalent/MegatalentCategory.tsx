@@ -20,6 +20,7 @@ import MegatalentLeaderboard from "@/components/megatalent/MegatalentLeaderboard
 import MegatalentAchievements from "@/components/megatalent/MegatalentAchievements";
 import MegatalentRisingStars from "@/components/megatalent/MegatalentRisingStars";
 import MegatalentTalentDuel from "@/components/megatalent/MegatalentTalentDuel";
+import MegatalentSpotlight from "@/components/megatalent/MegatalentSpotlight";
 import MegatalentBoostButton from "@/components/megatalent/MegatalentBoostButton";
 import { Badge as UiBadge } from "@/components/ui/badge";
 import { Rocket } from "lucide-react";
@@ -270,6 +271,11 @@ const MegatalentCategory = () => {
         {/* VIP Viewer Pass */}
         <div className="mb-4">
           <MegatalentVipBanner />
+
+          {/* Spotlight of the Week */}
+          <div className="mt-6">
+            <MegatalentSpotlight category={category} categories={config?.categories} />
+          </div>
         </div>
 
         {/* Daily Challenge */}
