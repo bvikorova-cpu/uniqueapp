@@ -23,6 +23,7 @@ import MegatalentTalentDuel from "@/components/megatalent/MegatalentTalentDuel";
 import MegatalentSpotlight from "@/components/megatalent/MegatalentSpotlight";
 import MegatalentVotingStreak from "@/components/megatalent/MegatalentVotingStreak";
 import MegatalentSponsorShowcase from "@/components/megatalent/MegatalentSponsorShowcase";
+import MegatalentCertificate from "@/components/megatalent/MegatalentCertificate";
 import MegatalentBoostButton from "@/components/megatalent/MegatalentBoostButton";
 import { Badge as UiBadge } from "@/components/ui/badge";
 import { Rocket } from "lucide-react";
@@ -318,6 +319,7 @@ const MegatalentCategory = () => {
           <div className="mb-6 space-y-6">
             <MegatalentAchievements userId={currentUserId} />
             <MegatalentVotingStreak userId={currentUserId} />
+            <MegatalentCertificate userId={currentUserId} category={category} />
           </div>
         )}
 
