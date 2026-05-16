@@ -372,7 +372,7 @@ const MegatalentCategory = () => {
 
         {/* Battle Royale */}
         <div className="mb-6">
-          <MegatalentBattleRoyale category={category} />
+          <MegatalentBattleRoyale category={category} categories={config?.categories} />
         </div>
 
         {/* Mentorship */}
