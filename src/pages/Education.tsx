@@ -162,6 +162,36 @@ const Education = () => {
           <LearningPathProgress currentXP={eduStats?.currentXP ?? 0} />
         </div>
 
+        {/* Premium AI Learning Tools */}
+        <div className="mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <Sparkles className="w-5 h-5 text-primary" />
+            <h2 className="text-xl md:text-2xl font-black">Premium AI Learning Tools</h2>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+            {[
+              { to: "/education/daily", icon: Flame, title: "Daily Challenge", desc: "5 questions · 50 XP" },
+              { to: "/education/flashcards", icon: Layers, title: "Flashcards", desc: "AI + spaced repetition" },
+              { to: "/education/skill-tree", icon: GraduationCap, title: "Skill Tree", desc: "Unlock topics" },
+              { to: "/education/league", icon: Trophy, title: "Weekly League", desc: "Bronze → Diamond" },
+              { to: "/education/achievements", icon: Award, title: "Achievements", desc: "Unlock badges" },
+              { to: "/education/math-solver", icon: Calculator, title: "Math Solver", desc: "Photo → steps" },
+              { to: "/education/tutor", icon: Brain, title: "AI Tutor", desc: "Personal chat tutor" },
+              { to: "/education/notes", icon: FileText, title: "Notes", desc: "Markdown + AI" },
+              { to: "/education/study-groups", icon: Users, title: "Study Groups", desc: "Learn together" },
+              { to: "/education/certificates", icon: Sparkles, title: "Certificates", desc: "Earn after passing" },
+            ].map((f) => (
+              <Link key={f.to} to={f.to}>
+                <div className="h-full p-4 rounded-xl border border-border/50 bg-card/80 backdrop-blur-xl hover:border-primary/40 hover:shadow-lg transition-all group cursor-pointer">
+                  <f.icon className="w-6 h-6 mb-2 text-primary group-hover:scale-110 transition-transform" />
+                  <h3 className="font-bold text-sm mb-1">{f.title}</h3>
+                  <p className="text-xs text-muted-foreground">{f.desc}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Main content */}
           <div className="lg:col-span-3">
