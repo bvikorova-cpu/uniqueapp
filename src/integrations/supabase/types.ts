@@ -33264,6 +33264,7 @@ export type Database = {
       }
       mentor_premium_subs: {
         Row: {
+          area: string
           created_at: string
           current_period_end: string | null
           email: string
@@ -33276,6 +33277,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          area?: string
           created_at?: string
           current_period_end?: string | null
           email: string
@@ -33288,6 +33290,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          area?: string
           created_at?: string
           current_period_end?: string | null
           email?: string
