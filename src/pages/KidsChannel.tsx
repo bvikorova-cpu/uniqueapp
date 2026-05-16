@@ -16,7 +16,7 @@ import { motion } from "framer-motion";
 
 // New components
 import { KidsHero } from "@/components/kids/KidsHero";
-import { MascotGuide } from "@/components/kids/MascotGuide";
+
 import { WhatsNewSpotlight } from "@/components/kids/WhatsNewSpotlight";
 import { DailyStars } from "@/components/kids/DailyStars";
 import { AdventureMap } from "@/components/kids/AdventureMap";
@@ -348,7 +348,7 @@ const KidsChannel = () => {
             gradient="from-green-100/95 to-emerald-100/95"
             badges={[
               { text: "Voice Interactive", color: "bg-green-500 text-white" },
-              { text: "Parent Check", color: "border-purple-300 text-purple-600", icon: Shield },
+              { text: "Parent Check", color: "bg-purple-600 text-white", icon: Shield },
             ]}
             onClick={() => handleFeatureNavigation('/kids-stories/voice-chat', 'Character Chat', true)}
             delay={0}
@@ -496,9 +496,6 @@ const KidsChannel = () => {
         }}
         featureName={pendingFeatureName}
       />
-
-      {/* Mascot Guide */}
-      <MascotGuide />
 
       {/* Smart Sleep Timer */}
       <SmartSleepTimer />
