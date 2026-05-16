@@ -439,6 +439,7 @@ const MegatalentCategory = () => {
         {/* Features #34-40 */}
         <div className="mb-6"><MegatalentClipOfDay category={category} /></div>
         <div className="mb-6"><MegatalentJudgePanel category={category} categories={config?.categories} userId={currentUserId} /></div>
+        <div className="mb-6"><JudgeApplication userId={currentUserId} /></div>
         <div className="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
           <MegatalentEndorsements category={category} categories={config?.categories} userId={currentUserId} />
           <MegatalentComments category={category} categories={config?.categories} userId={currentUserId} />
