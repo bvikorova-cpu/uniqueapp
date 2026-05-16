@@ -1,5 +1,6 @@
 // Personal Mentor universal router — handles all 18 features
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import Stripe from "https://esm.sh/stripe@18.5.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -10,6 +11,16 @@ const corsHeaders = {
 const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+
+const MENTOR_PRICES: Record<string, string> = {
+  monthly: "price_1TXnOuGaXSfGtYFtNzPlq3GN",
+  yearly: "price_1TXnOvGaXSfGtYFtxGWrODSu",
+};
+
+const MENTOR_PRICE_TO_PLAN: Record<string, string> = {
+  price_1TXnOuGaXSfGtYFtNzPlq3GN: "monthly",
+  price_1TXnOvGaXSfGtYFtxGWrODSu: "yearly",
+};
 
 function json(b: unknown, s = 200) {
   return new Response(JSON.stringify(b), { status: s, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -64,10 +75,59 @@ Deno.serve(async (req) => {
     });
     const { data: u } = await userClient.auth.getUser();
     const user = u?.user;
+    if (!user && action === "premium.check") return json({ subscribed: false });
     if (!user) return json({ error: "unauthorized" }, 401);
     const userId = user.id;
 
     switch (action) {
+      case "premium.checkout": {
+        const plan = body.plan === "yearly" ? "yearly" : "monthly";
+        const priceId = MENTOR_PRICES[plan];
+        if (!user.email) return json({ error: "email required" }, 400);
+        const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
+        if (!stripeKey) return json({ error: "Stripe is not configured" }, 500);
+        const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
+        const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+        const customerId = customers.data[0]?.id;
+        const origin = req.headers.get("origin") || "https://uniqueapp.fun";
+        const session = await stripe.checkout.sessions.create({
+          customer: customerId,
+          customer_email: customerId ? undefined : user.email,
+          line_items: [{ price: priceId, quantity: 1 }],
+          mode: "subscription",
+          success_url: `${origin}/ai-mentor/premium?status=success`,
+          cancel_url: `${origin}/ai-mentor/premium?status=cancel`,
+          metadata: { user_id: userId, plan },
+        });
+        return json({ url: session.url });
+      }
+      case "premium.check": {
+        if (!user.email) return json({ subscribed: false });
+        const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
+        if (!stripeKey) return json({ subscribed: false, error: "Stripe is not configured" }, 200);
+        const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
+        const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+        if (!customers.data.length) {
+          await admin.from("mentor_premium_subs").upsert({ user_id: userId, email: user.email, status: "inactive", plan: "monthly" }, { onConflict: "user_id" });
+          return json({ subscribed: false });
+        }
+        const customerId = customers.data[0].id;
+        const subs = await stripe.subscriptions.list({ customer: customerId, status: "active", limit: 5 });
+        const mentorSub = subs.data.find((s) => s.items.data.some((i) => MENTOR_PRICE_TO_PLAN[i.price.id]));
+        if (!mentorSub) {
+          await admin.from("mentor_premium_subs").upsert({ user_id: userId, email: user.email, stripe_customer_id: customerId, status: "inactive", plan: "monthly" }, { onConflict: "user_id" });
+          return json({ subscribed: false });
+        }
+        const item = mentorSub.items.data.find((i) => MENTOR_PRICE_TO_PLAN[i.price.id])!;
+        const plan = MENTOR_PRICE_TO_PLAN[item.price.id];
+        const periodEnd = new Date((mentorSub as any).current_period_end * 1000).toISOString();
+        await admin.from("mentor_premium_subs").upsert({
+          user_id: userId, email: user.email, stripe_customer_id: customerId, stripe_subscription_id: mentorSub.id,
+          status: "active", plan, current_period_end: periodEnd,
+        }, { onConflict: "user_id" });
+        return json({ subscribed: true, plan, current_period_end: periodEnd });
+      }
+
       // ───── 1. MEMORY ─────
       case "memory.upsert": {
         const { area, fact_key, fact_value, importance } = body;
