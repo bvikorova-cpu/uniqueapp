@@ -317,6 +317,11 @@ const MegatalentCategory = () => {
           <MegatalentRisingStars category={category} categories={config?.categories} />
         </div>
 
+        {/* Talent Duel */}
+        <div className="mb-6">
+          <MegatalentTalentDuel category={category} categories={config?.categories} />
+        </div>
+
         {/* Content */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
