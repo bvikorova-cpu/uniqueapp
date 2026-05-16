@@ -438,6 +438,7 @@ const AdminAffiliateTiers = lazy(() => import("@/pages/admin/AdminAffiliateTiers
 const AdminPauseOverview = lazy(() => import("@/pages/admin/AdminPauseOverview"));
 const AdminErrorLogs = lazy(() => import("@/pages/admin/AdminErrorLogs"));
 const AdminSecurityScan = lazy(() => import("@/pages/admin/AdminSecurityScan"));
+const AdminMegatalentModeration = lazy(() => import("@/pages/admin/AdminMegatalentModeration"));
 const CreatorVerification = lazy(() => import("@/pages/CreatorVerification"));
 const WinBackOffer = lazy(() => import("@/pages/WinBackOffer"));
 const CreatorPayouts = lazy(() => import("@/pages/CreatorPayouts"));
