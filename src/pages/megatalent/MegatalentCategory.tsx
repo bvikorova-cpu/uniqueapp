@@ -16,6 +16,9 @@ import MegatalentBracket from "@/components/megatalent/MegatalentBracket";
 import MegatalentVipBanner from "@/components/megatalent/MegatalentVipBanner";
 import MegatalentWatchParty from "@/components/megatalent/MegatalentWatchParty";
 import MegatalentAICoach from "@/components/megatalent/MegatalentAICoach";
+import MegatalentBoostButton from "@/components/megatalent/MegatalentBoostButton";
+import { Badge as UiBadge } from "@/components/ui/badge";
+import { Rocket } from "lucide-react";
 
 const categoryConfig: Record<string, { title: string; icon: string; categories: string[] }> = {
   art: { title: "Art & Creativity", icon: "🎨", categories: ["drawing", "painting", "digital_art", "sculpture", "photography", "handmade", "makeup_art", "tattoo"] },
@@ -41,6 +44,8 @@ const MegatalentCategory = () => {
   const [expandedMedia, setExpandedMedia] = useState<{ url: string; type: 'image' | 'video' } | null>(null);
   const [commentsForId, setCommentsForId] = useState<string | null>(null);
   const [tipTarget, setTipTarget] = useState<{ id: string; name?: string } | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [boostedIds, setBoostedIds] = useState<Set<string>>(new Set());
 
   const config = category ? categoryConfig[category] : null;
 
@@ -49,9 +54,34 @@ const MegatalentCategory = () => {
       navigate("/megatalent");
       return;
     }
+    supabase.auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id ?? null));
     fetchSubmissions();
     fetchUserVotes();
+    fetchActiveBoosts();
+    // Verify boost return
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("boost") === "success" && params.get("session_id")) {
+      supabase.functions
+        .invoke("verify-megatalent-boost", { body: { session_id: params.get("session_id") } })
+        .then(() => {
+          toast({ title: "🚀 Boost active!", description: "Your submission is spotlighted for 24h." });
+          fetchActiveBoosts();
+          fetchSubmissions();
+          window.history.replaceState({}, "", window.location.pathname);
+        });
+    }
   }, [category]);
+
+  const fetchActiveBoosts = async () => {
+    if (!config) return;
+    const { data } = await supabase
+      .from("megatalent_boosts")
+      .select("submission_id")
+      .eq("status", "active")
+      .gt("expires_at", new Date().toISOString())
+      .in("category", config.categories as any);
+    setBoostedIds(new Set((data ?? []).map((b: any) => b.submission_id)));
+  };
 
   const fetchSubmissions = async () => {
     if (!config) return;
@@ -86,10 +116,17 @@ const MegatalentCategory = () => {
         });
         setCommentCounts(counts);
 
-        setSubmissions(submissionsData.map(submission => ({
+        const enriched = submissionsData.map(submission => ({
           ...submission,
           profiles: profilesData?.find(p => p.id === submission.user_id)
-        })));
+        }));
+        enriched.sort((a: any, b: any) => {
+          const ab = boostedIds.has(a.id) ? 1 : 0;
+          const bb = boostedIds.has(b.id) ? 1 : 0;
+          if (ab !== bb) return bb - ab;
+          return (b.votes_count || 0) - (a.votes_count || 0);
+        });
+        setSubmissions(enriched);
       } else {
         setSubmissions([]);
       }
@@ -327,8 +364,15 @@ const MegatalentCategory = () => {
                           {submission.profiles?.full_name?.[0] || "U"}
                         </div>
                       )}
-                      <div className="min-w-0">
-                        <h3 className="font-semibold text-sm line-clamp-1">{submission.title}</h3>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5">
+                          <h3 className="font-semibold text-sm line-clamp-1">{submission.title}</h3>
+                          {boostedIds.has(submission.id) && (
+                            <UiBadge className="bg-amber-500/20 text-amber-500 border-amber-500/40 text-[9px] gap-0.5 px-1.5">
+                              <Rocket className="h-2.5 w-2.5" /> BOOSTED
+                            </UiBadge>
+                          )}
+                        </div>
                         <p className="text-xs text-muted-foreground">{submission.profiles?.full_name || 'Anonymous'}</p>
                       </div>
                     </div>
@@ -364,6 +408,9 @@ const MegatalentCategory = () => {
                       </div>
 
                       <div className="flex items-center gap-1">
+                        {currentUserId === submission.user_id && !boostedIds.has(submission.id) && category && (
+                          <MegatalentBoostButton submissionId={submission.id} category={category} />
+                        )}
                         <Button
                           variant="ghost"
                           size="sm"

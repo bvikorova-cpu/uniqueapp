@@ -31023,6 +31023,42 @@ export type Database = {
         }
         Relationships: []
       }
+      megatalent_boosts: {
+        Row: {
+          amount_cents: number
+          category: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          status: string
+          stripe_session_id: string | null
+          submission_id: string
+          user_id: string
+        }
+        Insert: {
+          amount_cents?: number
+          category: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          status?: string
+          stripe_session_id?: string | null
+          submission_id: string
+          user_id: string
+        }
+        Update: {
+          amount_cents?: number
+          category?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          status?: string
+          stripe_session_id?: string | null
+          submission_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       megatalent_bracket_matches: {
         Row: {
           bracket_id: string
