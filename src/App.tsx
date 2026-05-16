@@ -573,6 +573,7 @@ const App = () => {
                         <Route path="/coupons/season/:slug" element={<CouponSeasonalHub />} />
                         <Route path="/coupons/:brand" element={<CouponBrandPage />} />
                         <Route path="/admin/coupon-disputes" element={<AdminCouponDisputes />} />
+                        <Route path="/admin/megatalent-moderation" element={<AdminMegatalentModeration />} />
                         <Route path="/referral" element={<Referral />} />
                         <Route path="/games" element={<Games />} />
                         <Route path="/jobs" element={<Jobs />} />
