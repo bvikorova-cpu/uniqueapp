@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { MessageSquare, Send, Loader2, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import ReportButton from "@/components/megatalent/ReportButton";
 
 type Sub = { id: string; title: string; user_id: string };
 type Comment = { id: string; submission_id: string; user_id: string; body: string; created_at: string };
