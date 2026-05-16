@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { BookOpen, Brain, Camera, Mic, FileText } from "lucide-react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { BookOpen, Brain, Camera, Mic, FileText, Layers, Flame, Trophy, Award, Calculator, GraduationCap, Users, Sparkles } from "lucide-react";
 import PhotoMathSolver from "@/components/education/PhotoMathSolver";
 import VoiceTutor from "@/components/education/VoiceTutor";
 import PdfQuizGenerator from "@/components/education/PdfQuizGenerator";
