@@ -190,6 +190,10 @@ export default function MasterChefHub() {
           </div>
         </div>
 
+        <div className="max-w-4xl mx-auto">
+          <UnifiedXPLeaderboard hub="kitchenstars" />
+        </div>
+
         {/* Navigation */}
         <div className="flex justify-center gap-3 flex-wrap">
           <Button variant="outline" onClick={() => navigate("/masterchef/dashboard")}>Dashboard</Button>
