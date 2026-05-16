@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import {
   ArrowLeft, Swords, Trophy, ListOrdered, Users, Layers, EyeOff, Timer,
   Share2, TrendingUp, UserPlus, UsersRound, Code2, Sparkles, Map as MapIcon,
-  PieChart, LineChart, MessageCircle, Building2, Brain, Crystal,
+  PieChart, LineChart, MessageCircle, Building2, Brain, Gem,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -45,7 +45,7 @@ const FEATURES: Feature[] = [
   { id: "reasons", title: "Vote Reason Tags", desc: "Tell us why you voted", icon: MessageCircle },
   { id: "profiles", title: "Public Brand Profiles", desc: "/brand/{slug} stats pages", icon: Building2 },
   { id: "ai.brandAnalyzer", title: "AI Brand Analyzer", desc: "Full SWOT + sentiment", icon: Brain, credits: 5, ai: true },
-  { id: "ai.battlePredictor", title: "AI Battle Predictor", desc: "Who will win?", icon: Crystal, credits: 3, ai: true },
+  { id: "ai.battlePredictor", title: "AI Battle Predictor", desc: "Who will win?", icon: Gem, credits: 3, ai: true },
 ];
 
 export default function BrandArenaHub() {
