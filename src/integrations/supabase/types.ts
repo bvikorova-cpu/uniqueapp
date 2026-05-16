@@ -6346,6 +6346,39 @@ export type Database = {
           },
         ]
       }
+      brand_arena_records: {
+        Row: {
+          created_at: string
+          id: string
+          is_public: boolean
+          kind: string
+          parent_id: string | null
+          payload: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          kind: string
+          parent_id?: string | null
+          payload?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          kind?: string
+          parent_id?: string | null
+          payload?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       brand_battle_credits: {
         Row: {
           created_at: string

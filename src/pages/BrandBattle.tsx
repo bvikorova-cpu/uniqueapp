@@ -242,6 +242,12 @@ export default function BrandBattle() {
           liveNow={Math.max(1, Math.floor((campaignStats?.totalSponsors ?? 0) / 2))}
         />
 
+        <div className="my-4 flex justify-center">
+          <Button size="lg" onClick={() => navigate("/brand-battle/hub")} className="gap-2">
+            <Sparkles className="w-5 h-5" /> Open Brand Arena Hub (20 new features)
+          </Button>
+        </div>
+
         {/* Live brand stock ticker */}
         <div className="mb-8">
           <BrandStockTicker />
