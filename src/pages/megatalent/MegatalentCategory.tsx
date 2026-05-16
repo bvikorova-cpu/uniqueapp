@@ -398,22 +398,22 @@ const MegatalentCategory = () => {
 
         {/* Season Pass */}
         <div className="mb-6">
-          <MegatalentSeasonPass />
+          <MegatalentSeasonPass userId={currentUserId} />
         </div>
 
         {/* Daily Quests */}
         <div className="mb-6">
-          <MegatalentDailyQuests />
+          <MegatalentDailyQuests userId={currentUserId} />
         </div>
 
         {/* Predictions */}
         <div className="mb-6">
-          <MegatalentPredictions category={category} categories={config?.categories} />
+          <MegatalentPredictions category={category} userId={currentUserId} />
         </div>
 
         {/* Fan Clubs */}
         <div className="mb-6">
-          <MegatalentFanClub category={category} categories={config?.categories} />
+          <MegatalentFanClub userId={currentUserId} />
         </div>
 
         {/* Trophy Case */}
@@ -425,7 +425,7 @@ const MegatalentCategory = () => {
 
         {/* Live Chat */}
         <div className="mb-6">
-          <MegatalentLiveChat category={category} />
+          <MegatalentLiveChat category={category} userId={currentUserId} />
         </div>
 
         {/* Content */}

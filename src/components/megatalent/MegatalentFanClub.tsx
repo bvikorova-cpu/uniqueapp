@@ -3,47 +3,88 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Users, Heart } from "lucide-react";
+import { Users, Heart, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-const MegatalentFanClub = ({ category, categories }: { category?: string; categories?: string[] }) => {
-  const [items, setItems] = useState<any[]>([]);
-  const [joined, setJoined] = useState<Record<string, boolean>>({});
+type Row = { talent_user_id: string; member_count: number; name: string; avatar: string | null };
 
-  useEffect(() => {
-    try { setJoined(JSON.parse(localStorage.getItem("mt_fanclubs") || "{}")); } catch {}
-    const load = async () => {
-      if (!categories?.length) return;
-      const { data: subs } = await supabase
-        .from("talent_submissions")
-        .select("user_id, title, votes_count")
-        .in("category", categories as any)
-        .eq("is_active", true)
-        .order("votes_count", { ascending: false })
-        .limit(20);
-      if (!subs?.length) return;
-      const userIds = [...new Set(subs.map((s: any) => s.user_id))].slice(0, 6);
-      const { data: profs } = await supabase
-        .from("profiles").select("id, full_name, avatar_url").in("id", userIds);
-      const merged = (profs || []).map((p: any) => {
-        const fan = 1200 + Math.floor(Math.random() * 5000);
-        return { id: p.id, name: p.full_name || "Talent", avatar: p.avatar_url, fans: fan };
-      });
-      setItems(merged);
-    };
-    load();
-  }, [category]);
+const MegatalentFanClub = ({ userId }: { userId: string | null }) => {
+  const [items, setItems] = useState<Row[]>([]);
+  const [joined, setJoined] = useState<Set<string>>(new Set());
+  const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState<string | null>(null);
 
-  const toggle = (id: string, name: string) => {
-    setJoined(prev => {
-      const next = { ...prev, [id]: !prev[id] };
-      localStorage.setItem("mt_fanclubs", JSON.stringify(next));
-      toast.success(next[id] ? `Joined ${name}'s fan club ❤️` : `Left ${name}'s fan club`);
-      return next;
-    });
+  const load = async () => {
+    setLoading(true);
+    // Top talents — derived from memberships, then enrich with profile.
+    // Also include top talent_submissions creators with 0 fans so the list isn't empty when DB is fresh.
+    const [{ data: top }, { data: topSubs }] = await Promise.all([
+      supabase.from("fan_club_top_talents").select("*").order("member_count", { ascending: false }).limit(12),
+      supabase.from("talent_submissions").select("user_id").eq("is_active", true).order("votes_count", { ascending: false }).limit(12),
+    ]);
+
+    const counts: Record<string, number> = {};
+    (top || []).forEach((r: any) => { counts[r.talent_user_id] = r.member_count; });
+
+    const uniqueIds = new Set<string>();
+    (top || []).forEach((r: any) => uniqueIds.add(r.talent_user_id));
+    (topSubs || []).forEach((s: any) => uniqueIds.add(s.user_id));
+    const idList = [...uniqueIds].slice(0, 12);
+    if (!idList.length) { setItems([]); setLoading(false); return; }
+
+    const { data: profs } = await supabase.from("profiles").select("id,full_name,avatar_url").in("id", idList);
+    const profMap: Record<string, any> = {};
+    (profs || []).forEach((p: any) => { profMap[p.id] = p; });
+
+    const rows: Row[] = idList.map(id => ({
+      talent_user_id: id,
+      member_count: counts[id] || 0,
+      name: profMap[id]?.full_name || "Talent",
+      avatar: profMap[id]?.avatar_url || null,
+    })).sort((a, b) => b.member_count - a.member_count);
+
+    setItems(rows);
+
+    if (userId) {
+      const { data: mine } = await supabase
+        .from("fan_club_memberships").select("talent_user_id").eq("fan_user_id", userId);
+      setJoined(new Set((mine || []).map((m: any) => m.talent_user_id)));
+    }
+    setLoading(false);
   };
 
+  useEffect(() => { load(); }, [userId]);
+
+  const toggle = async (talentId: string, name: string) => {
+    if (!userId) { toast.error("Login required"); return; }
+    if (talentId === userId) { toast.error("You can't join your own fan club"); return; }
+    setBusy(talentId);
+    const isJoined = joined.has(talentId);
+    if (isJoined) {
+      const { error } = await supabase.from("fan_club_memberships")
+        .delete().eq("fan_user_id", userId).eq("talent_user_id", talentId);
+      setBusy(null);
+      if (error) { toast.error(error.message); return; }
+      setJoined(prev => { const n = new Set(prev); n.delete(talentId); return n; });
+      setItems(prev => prev.map(r => r.talent_user_id === talentId ? { ...r, member_count: Math.max(0, r.member_count - 1) } : r));
+      toast.success(`Left ${name}'s fan club`);
+    } else {
+      const { error } = await supabase.from("fan_club_memberships")
+        .insert({ fan_user_id: userId, talent_user_id: talentId });
+      setBusy(null);
+      if (error) { toast.error(error.message); return; }
+      setJoined(prev => new Set(prev).add(talentId));
+      setItems(prev => prev.map(r => r.talent_user_id === talentId ? { ...r, member_count: r.member_count + 1 } : r));
+      toast.success(`Joined ${name}'s fan club ❤️`);
+    }
+  };
+
+  if (loading) return (
+    <Card><CardContent className="p-5 flex items-center gap-2 text-sm text-muted-foreground">
+      <Loader2 className="h-4 w-4 animate-spin" /> Loading fan clubs…
+    </CardContent></Card>
+  );
   if (!items.length) return null;
 
   return (
@@ -51,24 +92,24 @@ const MegatalentFanClub = ({ category, categories }: { category?: string; catego
       <CardContent className="p-5">
         <div className="flex items-center gap-2 mb-3">
           <Users className="h-5 w-5 text-pink-500" />
-          <h3 className="text-lg font-bold">Fan Clubs</h3>
-          <Badge variant="secondary" className="ml-auto">{Object.values(joined).filter(Boolean).length} joined</Badge>
+          <h3 className="text-lg font-bold">Top Fan Clubs</h3>
+          <Badge variant="secondary" className="ml-auto">{joined.size} joined</Badge>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
           {items.map((t, i) => {
-            const isJoined = !!joined[t.id];
+            const isJoined = joined.has(t.talent_user_id);
             return (
-              <motion.div key={t.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
+              <motion.div key={t.talent_user_id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
                 className="rounded-xl border border-border/40 bg-background/40 p-3 flex items-center gap-3">
                 <div className="h-10 w-10 rounded-full bg-primary/15 overflow-hidden flex items-center justify-center text-lg">
                   {t.avatar ? <img src={t.avatar} alt={t.name} className="w-full h-full object-cover" /> : "🎭"}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-semibold truncate">{t.name}</div>
-                  <div className="text-[11px] text-muted-foreground flex items-center gap-1"><Heart className="h-3 w-3" /> {t.fans.toLocaleString()} fans</div>
+                  <div className="text-[11px] text-muted-foreground flex items-center gap-1"><Heart className="h-3 w-3" /> {t.member_count.toLocaleString()} fans</div>
                 </div>
-                <Button size="sm" variant={isJoined ? "secondary" : "default"} onClick={() => toggle(t.id, t.name)}>
-                  {isJoined ? "Joined" : "Join"}
+                <Button size="sm" variant={isJoined ? "secondary" : "default"} disabled={busy === t.talent_user_id || !userId} onClick={() => toggle(t.talent_user_id, t.name)}>
+                  {busy === t.talent_user_id ? <Loader2 className="h-3 w-3 animate-spin" /> : isJoined ? "Joined" : "Join"}
                 </Button>
               </motion.div>
             );

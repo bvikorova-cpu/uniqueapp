@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Crown, Lock, Sparkles, Star } from "lucide-react";
+import { useUserXp } from "@/hooks/useUserXp";
 
 const TIERS = [
   { lvl: 1, xp: 0, reward: "Welcome badge", icon: "🎁" },
@@ -14,23 +14,8 @@ const TIERS = [
   { lvl: 7, xp: 1200, reward: "Champion-only chat access", icon: "👑" },
 ];
 
-const MegatalentSeasonPass = () => {
-  const [xp, setXp] = useState(0);
-
-  useEffect(() => {
-    try {
-      const total = Object.keys(localStorage).reduce((s, k) => {
-        if (k.startsWith("mt_quests_")) {
-          try {
-            const v = JSON.parse(localStorage.getItem(k) || "{}");
-            return s + Object.values(v).filter(Boolean).length * 4;
-          } catch { return s; }
-        }
-        return s;
-      }, 0);
-      setXp(Math.min(1500, total + 80));
-    } catch {}
-  }, []);
+const MegatalentSeasonPass = ({ userId }: { userId: string | null }) => {
+  const { xp } = useUserXp(userId);
 
   const currentTier = [...TIERS].reverse().find(t => xp >= t.xp) || TIERS[0];
   const nextTier = TIERS.find(t => t.xp > xp);
