@@ -17,6 +17,7 @@ import MegatalentVipBanner from "@/components/megatalent/MegatalentVipBanner";
 import MegatalentWatchParty from "@/components/megatalent/MegatalentWatchParty";
 import MegatalentAICoach from "@/components/megatalent/MegatalentAICoach";
 import MegatalentLeaderboard from "@/components/megatalent/MegatalentLeaderboard";
+import MegatalentAchievements from "@/components/megatalent/MegatalentAchievements";
 import MegatalentBoostButton from "@/components/megatalent/MegatalentBoostButton";
 import { Badge as UiBadge } from "@/components/ui/badge";
 import { Rocket } from "lucide-react";
@@ -299,6 +300,13 @@ const MegatalentCategory = () => {
         {category && (
           <div className="mb-6">
             <MegatalentLeaderboard category={category} categories={config?.categories} />
+          </div>
+        )}
+
+        {/* Achievements */}
+        {currentUserId && (
+          <div className="mb-6">
+            <MegatalentAchievements userId={currentUserId} />
           </div>
         )}
 
