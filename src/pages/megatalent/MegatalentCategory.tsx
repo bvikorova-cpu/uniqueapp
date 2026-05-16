@@ -24,6 +24,10 @@ import MegatalentSpotlight from "@/components/megatalent/MegatalentSpotlight";
 import MegatalentVotingStreak from "@/components/megatalent/MegatalentVotingStreak";
 import MegatalentSponsorShowcase from "@/components/megatalent/MegatalentSponsorShowcase";
 import MegatalentCertificate from "@/components/megatalent/MegatalentCertificate";
+import MegatalentHighlightReel from "@/components/megatalent/MegatalentHighlightReel";
+import MegatalentDailyLoginBonus from "@/components/megatalent/MegatalentDailyLoginBonus";
+import MegatalentFriendInvites from "@/components/megatalent/MegatalentFriendInvites";
+import MegatalentVotingPowerBanner from "@/components/megatalent/MegatalentVotingPowerBanner";
 import MegatalentBoostButton from "@/components/megatalent/MegatalentBoostButton";
 import { Badge as UiBadge } from "@/components/ui/badge";
 import { Rocket } from "lucide-react";
@@ -314,14 +318,26 @@ const MegatalentCategory = () => {
           </div>
         )}
 
-        {/* Achievements */}
+        {/* Voting Power Banner */}
+        <div className="mb-6">
+          <MegatalentVotingPowerBanner />
+        </div>
+
+        {/* Achievements + Streaks + Login Bonus + Invites */}
         {currentUserId && (
           <div className="mb-6 space-y-6">
+            <MegatalentDailyLoginBonus userId={currentUserId} />
             <MegatalentAchievements userId={currentUserId} />
             <MegatalentVotingStreak userId={currentUserId} />
             <MegatalentCertificate userId={currentUserId} category={category} />
+            <MegatalentFriendInvites userId={currentUserId} />
           </div>
         )}
+
+        {/* Highlight Reel */}
+        <div className="mb-6">
+          <MegatalentHighlightReel category={category} categories={config?.categories} />
+        </div>
 
         {/* Rising Stars */}
         <div className="mb-6">
