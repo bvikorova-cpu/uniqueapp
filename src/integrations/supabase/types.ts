@@ -31023,6 +31023,39 @@ export type Database = {
         }
         Relationships: []
       }
+      megatalent_achievements: {
+        Row: {
+          code: string
+          description: string | null
+          icon: string | null
+          id: string
+          tier: string
+          title: string
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          code: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          tier?: string
+          title: string
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          code?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          tier?: string
+          title?: string
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       megatalent_boosts: {
         Row: {
           amount_cents: number
