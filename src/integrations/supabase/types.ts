@@ -3673,6 +3673,199 @@ export type Database = {
         }
         Relationships: []
       }
+      battle_royale_matches: {
+        Row: {
+          created_at: string
+          ends_at: string | null
+          id: string
+          participant_a_id: string | null
+          participant_b_id: string | null
+          round: number
+          slot: number
+          status: Database["public"]["Enums"]["br_match_status"]
+          tournament_id: string
+          votes_a: number
+          votes_b: number
+          winner_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          participant_a_id?: string | null
+          participant_b_id?: string | null
+          round: number
+          slot: number
+          status?: Database["public"]["Enums"]["br_match_status"]
+          tournament_id: string
+          votes_a?: number
+          votes_b?: number
+          winner_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          participant_a_id?: string | null
+          participant_b_id?: string | null
+          round?: number
+          slot?: number
+          status?: Database["public"]["Enums"]["br_match_status"]
+          tournament_id?: string
+          votes_a?: number
+          votes_b?: number
+          winner_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "battle_royale_matches_participant_a_id_fkey"
+            columns: ["participant_a_id"]
+            isOneToOne: false
+            referencedRelation: "battle_royale_participants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "battle_royale_matches_participant_b_id_fkey"
+            columns: ["participant_b_id"]
+            isOneToOne: false
+            referencedRelation: "battle_royale_participants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "battle_royale_matches_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "battle_royale_tournaments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "battle_royale_matches_winner_id_fkey"
+            columns: ["winner_id"]
+            isOneToOne: false
+            referencedRelation: "battle_royale_participants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      battle_royale_participants: {
+        Row: {
+          created_at: string
+          eliminated_round: number | null
+          id: string
+          seed: number | null
+          submission_id: string
+          tournament_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          eliminated_round?: number | null
+          id?: string
+          seed?: number | null
+          submission_id: string
+          tournament_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          eliminated_round?: number | null
+          id?: string
+          seed?: number | null
+          submission_id?: string
+          tournament_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "battle_royale_participants_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "battle_royale_tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      battle_royale_tournaments: {
+        Row: {
+          category: string
+          champion_participant_id: string | null
+          created_at: string
+          current_round: number
+          ends_at: string | null
+          id: string
+          max_participants: number
+          signup_ends_at: string | null
+          starts_at: string | null
+          status: Database["public"]["Enums"]["br_status"]
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          champion_participant_id?: string | null
+          created_at?: string
+          current_round?: number
+          ends_at?: string | null
+          id?: string
+          max_participants?: number
+          signup_ends_at?: string | null
+          starts_at?: string | null
+          status?: Database["public"]["Enums"]["br_status"]
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          champion_participant_id?: string | null
+          created_at?: string
+          current_round?: number
+          ends_at?: string | null
+          id?: string
+          max_participants?: number
+          signup_ends_at?: string | null
+          starts_at?: string | null
+          status?: Database["public"]["Enums"]["br_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      battle_royale_votes: {
+        Row: {
+          created_at: string
+          id: string
+          match_id: string
+          user_id: string
+          voted_for_participant_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          match_id: string
+          user_id: string
+          voted_for_participant_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          match_id?: string
+          user_id?: string
+          voted_for_participant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "battle_royale_votes_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "battle_royale_matches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "battle_royale_votes_voted_for_participant_id_fkey"
+            columns: ["voted_for_participant_id"]
+            isOneToOne: false
+            referencedRelation: "battle_royale_participants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       battle_votes: {
         Row: {
           battle_id: string
@@ -52532,6 +52725,10 @@ export type Database = {
           user_id: string
         }[]
       }
+      advance_battle_royale: {
+        Args: { _round_hours?: number; _tournament_id: string }
+        Returns: undefined
+      }
       advance_megatalent_bracket: {
         Args: { _bracket_id: string }
         Returns: Json
@@ -53516,6 +53713,10 @@ export type Database = {
       spend_comedy_coins: { Args: { _amount: number }; Returns: number }
       spend_glamour_coins: { Args: { _amount: number }; Returns: number }
       spin_lucky_wheel: { Args: never; Returns: Json }
+      start_battle_royale: {
+        Args: { _category: string; _max?: number; _round_hours?: number }
+        Returns: string
+      }
       start_iq_test: {
         Args: { _category: string }
         Returns: {
@@ -53576,6 +53777,8 @@ export type Database = {
         | "shield"
       affiliate_tier: "bronze" | "silver" | "gold" | "diamond"
       app_role: "admin" | "moderator" | "user" | "employer"
+      br_match_status: "pending" | "open" | "closed"
+      br_status: "signup" | "active" | "completed"
       clothing_category:
         | "tops"
         | "bottoms"
@@ -53934,6 +54137,8 @@ export const Constants = {
       ],
       affiliate_tier: ["bronze", "silver", "gold", "diamond"],
       app_role: ["admin", "moderator", "user", "employer"],
+      br_match_status: ["pending", "open", "closed"],
+      br_status: ["signup", "active", "completed"],
       clothing_category: [
         "tops",
         "bottoms",
