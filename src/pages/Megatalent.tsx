@@ -34,6 +34,7 @@ import MegaTalentHero from "@/components/megatalent/MegaTalentHero";
 import MegatalentClipOfDay from "@/components/megatalent/MegatalentClipOfDay";
 import MegatalentTalentShop from "@/components/megatalent/MegatalentTalentShop";
 import MegatalentReferralProgram from "@/components/megatalent/MegatalentReferralProgram";
+import BattleRoyalePayouts from "@/components/megatalent/BattleRoyalePayouts";
 import NextVotingCountdown from "@/components/megatalent/NextVotingCountdown";
 import MegaTalentCategoryGrid from "@/components/megatalent/MegaTalentCategoryGrid";
 import ContestStatsSidebar from "@/components/megatalent/ContestStatsSidebar";
