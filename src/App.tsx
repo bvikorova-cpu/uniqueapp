@@ -439,6 +439,7 @@ const AdminPauseOverview = lazy(() => import("@/pages/admin/AdminPauseOverview")
 const AdminErrorLogs = lazy(() => import("@/pages/admin/AdminErrorLogs"));
 const AdminSecurityScan = lazy(() => import("@/pages/admin/AdminSecurityScan"));
 const AdminMegatalentModeration = lazy(() => import("@/pages/admin/AdminMegatalentModeration"));
+const AdminBattleRoyalePayouts = lazy(() => import("@/pages/admin/AdminBattleRoyalePayouts"));
 const CreatorVerification = lazy(() => import("@/pages/CreatorVerification"));
 const WinBackOffer = lazy(() => import("@/pages/WinBackOffer"));
 const CreatorPayouts = lazy(() => import("@/pages/CreatorPayouts"));
@@ -574,6 +575,7 @@ const App = () => {
                         <Route path="/coupons/:brand" element={<CouponBrandPage />} />
                         <Route path="/admin/coupon-disputes" element={<AdminCouponDisputes />} />
                         <Route path="/admin/megatalent-moderation" element={<AdminMegatalentModeration />} />
+                        <Route path="/admin/battle-royale-payouts" element={<AdminBattleRoyalePayouts />} />
                         <Route path="/referral" element={<Referral />} />
                         <Route path="/games" element={<Games />} />
                         <Route path="/jobs" element={<Jobs />} />
