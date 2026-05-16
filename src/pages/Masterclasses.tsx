@@ -230,6 +230,10 @@ const Masterclasses = () => {
           ))}
         </div>
 
+        <div className="mt-12 max-w-4xl mx-auto">
+          <UnifiedXPLeaderboard hub="proclass" />
+        </div>
+
         <div className="mt-12">
           <Card className="p-8 bg-gradient-to-r from-primary/10 to-primary/5 text-center">
             <h3 className="text-2xl font-black mb-4">Want to host your own ProClass?</h3>
