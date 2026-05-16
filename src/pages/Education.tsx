@@ -1,7 +1,10 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { BookOpen, Brain } from "lucide-react";
+import { BookOpen, Brain, Camera, Mic, FileText } from "lucide-react";
+import PhotoMathSolver from "@/components/education/PhotoMathSolver";
+import VoiceTutor from "@/components/education/VoiceTutor";
+import PdfQuizGenerator from "@/components/education/PdfQuizGenerator";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import 'katex/dist/katex.min.css';
@@ -163,14 +166,27 @@ const Education = () => {
           {/* Main content */}
           <div className="lg:col-span-3">
             <Tabs defaultValue="tutoring" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-6 bg-card/80 backdrop-blur-sm border">
+              <TabsList className="grid w-full grid-cols-5 mb-6 bg-card/80 backdrop-blur-sm border">
                 <TabsTrigger value="tutoring" className="gap-1.5 text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                  <Brain className="h-4 w-4" /> Tutoring
+                  <Brain className="h-4 w-4" /> <span className="hidden sm:inline">Tutoring</span>
+                </TabsTrigger>
+                <TabsTrigger value="voice" className="gap-1.5 text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                  <Mic className="h-4 w-4" /> <span className="hidden sm:inline">Voice</span>
+                </TabsTrigger>
+                <TabsTrigger value="photo" className="gap-1.5 text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                  <Camera className="h-4 w-4" /> <span className="hidden sm:inline">Photo Math</span>
+                </TabsTrigger>
+                <TabsTrigger value="pdf" className="gap-1.5 text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                  <FileText className="h-4 w-4" /> <span className="hidden sm:inline">PDF Quiz</span>
                 </TabsTrigger>
                 <TabsTrigger value="quiz" className="gap-1.5 text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                  <BookOpen className="h-4 w-4" /> Quizzes
+                  <BookOpen className="h-4 w-4" /> <span className="hidden sm:inline">Quizzes</span>
                 </TabsTrigger>
               </TabsList>
+
+              <TabsContent value="voice"><VoiceTutor /></TabsContent>
+              <TabsContent value="photo"><PhotoMathSolver /></TabsContent>
+              <TabsContent value="pdf"><PdfQuizGenerator /></TabsContent>
 
               <TabsContent value="tutoring">
                 <div className="space-y-4">
