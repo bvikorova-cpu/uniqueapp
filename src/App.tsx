@@ -419,6 +419,20 @@ import {
 } from "@/routes/lazyPages";
 
 const AdminRefunds = lazy(() => import("@/pages/admin/AdminRefunds"));
+// Education vertical
+const EducationHub = lazy(() => import("@/pages/education/EducationHub"));
+const FlashcardDecks = lazy(() => import("@/pages/education/FlashcardDecks"));
+const FlashcardDeckDetail = lazy(() => import("@/pages/education/FlashcardDeckDetail"));
+const DailyChallenge = lazy(() => import("@/pages/education/DailyChallenge"));
+const EduAchievements = lazy(() => import("@/pages/education/Achievements"));
+const EduLeague = lazy(() => import("@/pages/education/League"));
+const EduMathSolver = lazy(() => import("@/pages/education/MathSolver"));
+const EduAITutor = lazy(() => import("@/pages/education/AITutor"));
+const EduNotes = lazy(() => import("@/pages/education/Notes"));
+const EduStudyGroups = lazy(() => import("@/pages/education/StudyGroups"));
+const EduCertificates = lazy(() => import("@/pages/education/Certificates"));
+const EduCertVerify = lazy(() => import("@/pages/education/CertificateVerify"));
+const EduSkillTree = lazy(() => import("@/pages/education/SkillTree"));
 const AdminDisputes = lazy(() => import("@/pages/admin/AdminDisputes"));
 const AdminReconciliation = lazy(() => import("@/pages/admin/AdminReconciliation"));
 const AdminReferralFraud = lazy(() => import("@/pages/admin/AdminReferralFraud"));
