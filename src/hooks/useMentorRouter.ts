@@ -13,7 +13,7 @@ export const useMentorPremium = () =>
   useQuery({
     queryKey: ["mentor-premium"],
     queryFn: async () => {
-      const { data } = await supabase.functions.invoke("check-mentor-premium", { body: {} });
+      const { data } = await supabase.functions.invoke("mentor-router", { body: { action: "premium.check" } });
       return data as { subscribed: boolean; plan?: string; current_period_end?: string };
     },
     refetchInterval: 60_000,
@@ -22,7 +22,7 @@ export const useMentorPremium = () =>
 export const useMentorCheckout = () =>
   useMutation({
     mutationFn: async (plan: "monthly" | "yearly") => {
-      const { data, error } = await supabase.functions.invoke("mentor-premium-checkout", { body: { plan } });
+      const { data, error } = await supabase.functions.invoke("mentor-router", { body: { action: "premium.checkout", plan } });
       if (error) throw error;
       if (data?.url) window.open(data.url, "_blank");
       return data;
