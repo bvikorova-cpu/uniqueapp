@@ -24506,6 +24506,30 @@ export type Database = {
         }
         Relationships: []
       }
+      hub_xp: {
+        Row: {
+          hub: string
+          id: string
+          updated_at: string
+          user_id: string
+          xp: number
+        }
+        Insert: {
+          hub: string
+          id?: string
+          updated_at?: string
+          user_id: string
+          xp?: number
+        }
+        Update: {
+          hub?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+          xp?: number
+        }
+        Relationships: []
+      }
       influencer_balances: {
         Row: {
           available_balance: number | null
@@ -53188,6 +53212,13 @@ export type Database = {
         Returns: undefined
       }
       auto_release_coupon_escrow: { Args: never; Returns: number }
+      award_hub_xp: {
+        Args: { _amount: number; _hub: string }
+        Returns: {
+          hub_total: number
+          unified_total: number
+        }[]
+      }
       award_iq_badge: { Args: { _code: string }; Returns: boolean }
       award_iq_badges: { Args: never; Returns: string[] }
       award_iq_season_xp: { Args: { amount: number }; Returns: Json }
@@ -53690,6 +53721,13 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      get_my_hub_xp: {
+        Args: never
+        Returns: {
+          hub: string
+          xp: number
+        }[]
+      }
       get_my_weekly_xp_rank: {
         Args: never
         Returns: {
@@ -53848,6 +53886,18 @@ export type Database = {
           question: string
           reward_credits: number
           was_correct: boolean
+        }[]
+      }
+      get_unified_xp_leaderboard: {
+        Args: { _limit?: number }
+        Returns: {
+          avatar_url: string
+          full_name: string
+          kitchenstars_xp: number
+          megatalent_xp: number
+          proclass_xp: number
+          total_xp: number
+          user_id: string
         }[]
       }
       get_user_mission_progress: {
