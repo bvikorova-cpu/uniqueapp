@@ -10430,6 +10430,71 @@ export type Database = {
         }
         Relationships: []
       }
+      coloring_artworks: {
+        Row: {
+          brush_data: Json | null
+          contest_id: string | null
+          created_at: string
+          id: string
+          image_url: string
+          is_public: boolean | null
+          license: string | null
+          likes_count: number | null
+          palette: Json | null
+          remix_of: string | null
+          source_template_url: string | null
+          thumb_url: string | null
+          time_lapse: Json | null
+          title: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          brush_data?: Json | null
+          contest_id?: string | null
+          created_at?: string
+          id?: string
+          image_url: string
+          is_public?: boolean | null
+          license?: string | null
+          likes_count?: number | null
+          palette?: Json | null
+          remix_of?: string | null
+          source_template_url?: string | null
+          thumb_url?: string | null
+          time_lapse?: Json | null
+          title?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          brush_data?: Json | null
+          contest_id?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string
+          is_public?: boolean | null
+          license?: string | null
+          likes_count?: number | null
+          palette?: Json | null
+          remix_of?: string | null
+          source_template_url?: string | null
+          thumb_url?: string | null
+          time_lapse?: Json | null
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coloring_artworks_remix_of_fkey"
+            columns: ["remix_of"]
+            isOneToOne: false
+            referencedRelation: "coloring_artworks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coloring_challenge_submissions: {
         Row: {
           challenge_id: string
@@ -10467,6 +10532,118 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      coloring_collabs: {
+        Row: {
+          artwork_id: string | null
+          created_at: string
+          host_id: string
+          id: string
+          invite_token: string
+          is_active: boolean | null
+          participants: Json | null
+          strokes: Json | null
+        }
+        Insert: {
+          artwork_id?: string | null
+          created_at?: string
+          host_id: string
+          id?: string
+          invite_token?: string
+          is_active?: boolean | null
+          participants?: Json | null
+          strokes?: Json | null
+        }
+        Update: {
+          artwork_id?: string | null
+          created_at?: string
+          host_id?: string
+          id?: string
+          invite_token?: string
+          is_active?: boolean | null
+          participants?: Json | null
+          strokes?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coloring_collabs_artwork_id_fkey"
+            columns: ["artwork_id"]
+            isOneToOne: false
+            referencedRelation: "coloring_artworks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coloring_collection_items: {
+        Row: {
+          collection_id: string
+          created_at: string
+          id: string
+          license: string | null
+          template_url: string
+          title: string | null
+        }
+        Insert: {
+          collection_id: string
+          created_at?: string
+          id?: string
+          license?: string | null
+          template_url: string
+          title?: string | null
+        }
+        Update: {
+          collection_id?: string
+          created_at?: string
+          id?: string
+          license?: string | null
+          template_url?: string
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coloring_collection_items_collection_id_fkey"
+            columns: ["collection_id"]
+            isOneToOne: false
+            referencedRelation: "coloring_collections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coloring_collections: {
+        Row: {
+          cover_url: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_premium: boolean | null
+          name: string
+          price_credits: number | null
+          season: string | null
+          theme: string | null
+        }
+        Insert: {
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_premium?: boolean | null
+          name: string
+          price_credits?: number | null
+          season?: string | null
+          theme?: string | null
+        }
+        Update: {
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_premium?: boolean | null
+          name?: string
+          price_credits?: number | null
+          season?: string | null
+          theme?: string | null
+        }
+        Relationships: []
       }
       coloring_color_suggestions: {
         Row: {
@@ -10537,6 +10714,42 @@ export type Database = {
           title?: string | null
           tool_used?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      coloring_contests: {
+        Row: {
+          created_at: string
+          description: string | null
+          ends_at: string
+          id: string
+          is_active: boolean | null
+          prize: string | null
+          starts_at: string
+          theme: string
+          winner_artwork_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          ends_at: string
+          id?: string
+          is_active?: boolean | null
+          prize?: string | null
+          starts_at?: string
+          theme: string
+          winner_artwork_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          ends_at?: string
+          id?: string
+          is_active?: boolean | null
+          prize?: string | null
+          starts_at?: string
+          theme?: string
+          winner_artwork_id?: string | null
         }
         Relationships: []
       }
@@ -10612,6 +10825,24 @@ export type Database = {
         }
         Relationships: []
       }
+      coloring_follows: {
+        Row: {
+          created_at: string
+          followee_id: string
+          follower_id: string
+        }
+        Insert: {
+          created_at?: string
+          followee_id: string
+          follower_id: string
+        }
+        Update: {
+          created_at?: string
+          followee_id?: string
+          follower_id?: string
+        }
+        Relationships: []
+      }
       coloring_gallery_likes: {
         Row: {
           created_at: string
@@ -10637,6 +10868,32 @@ export type Database = {
             columns: ["gallery_item_id"]
             isOneToOne: false
             referencedRelation: "coloring_community_gallery"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coloring_likes: {
+        Row: {
+          artwork_id: string
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          artwork_id: string
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          artwork_id?: string
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coloring_likes_artwork_id_fkey"
+            columns: ["artwork_id"]
+            isOneToOne: false
+            referencedRelation: "coloring_artworks"
             referencedColumns: ["id"]
           },
         ]
@@ -10680,6 +10937,80 @@ export type Database = {
           status?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      coloring_pod_orders: {
+        Row: {
+          amount_eur: number | null
+          artwork_id: string | null
+          created_at: string
+          id: string
+          product_type: string
+          status: string
+          stripe_session_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount_eur?: number | null
+          artwork_id?: string | null
+          created_at?: string
+          id?: string
+          product_type: string
+          status?: string
+          stripe_session_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount_eur?: number | null
+          artwork_id?: string | null
+          created_at?: string
+          id?: string
+          product_type?: string
+          status?: string
+          stripe_session_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coloring_pod_orders_artwork_id_fkey"
+            columns: ["artwork_id"]
+            isOneToOne: false
+            referencedRelation: "coloring_artworks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coloring_streaks: {
+        Row: {
+          badges: Json | null
+          current_streak: number | null
+          last_painted_on: string | null
+          level: number | null
+          longest_streak: number | null
+          updated_at: string
+          user_id: string
+          xp: number | null
+        }
+        Insert: {
+          badges?: Json | null
+          current_streak?: number | null
+          last_painted_on?: string | null
+          level?: number | null
+          longest_streak?: number | null
+          updated_at?: string
+          user_id: string
+          xp?: number | null
+        }
+        Update: {
+          badges?: Json | null
+          current_streak?: number | null
+          last_painted_on?: string | null
+          level?: number | null
+          longest_streak?: number | null
+          updated_at?: string
+          user_id?: string
+          xp?: number | null
         }
         Relationships: []
       }
