@@ -497,9 +497,6 @@ const KidsChannel = () => {
         featureName={pendingFeatureName}
       />
 
-      {/* Mascot Guide */}
-      <MascotGuide />
-
       {/* Smart Sleep Timer */}
       <SmartSleepTimer />
     </div>
