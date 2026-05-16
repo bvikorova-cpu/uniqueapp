@@ -616,7 +616,7 @@ export const adventureRooms: RoomData[] = [
         label: "Golden Scarab",
         item: {
           id: "scarab",
-          name: "Skarabeus",
+          name: "Scarab",
           icon: "🪲",
           description: "Sacred golden beetle. Symbol of eternal life."
         }
@@ -698,7 +698,7 @@ export const adventureRooms: RoomData[] = [
         type: "lock",
         label: "Pyramid lock",
         requiredItem: "scarab",
-        description: "Skarabeus aktivoval mechanizmus!"
+        description: "The scarab activated the mechanism!"
       },
       {
         id: "inner-chamber",

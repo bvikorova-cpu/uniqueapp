@@ -79,7 +79,7 @@ export default function MegatalentSuccess() {
             <CardTitle className="text-2xl">Activating your subscription…</CardTitle>
             <CardDescription className="text-base">
               Payment received. Verifying it with Stripe and activating access to upload
-              a hlasovaniu.
+              and voting.
             </CardDescription>
             <p className="text-xs text-muted-foreground pt-1">
               Attempt {attempt} / 8 — usually takes 2–4 seconds.

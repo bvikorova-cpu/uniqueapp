@@ -142,7 +142,7 @@ export function AIContentAssistant({ content, onInsertContent, onInsertHashtags 
             AI Content Asistent
             <Badge variant="secondary" className="ml-auto text-xs">
               <Coins className="w-3 h-3 mr-1" />
-              {credits.credits_remaining} kreditov
+              {credits.credits_remaining} credits
             </Badge>
           </DialogTitle>
         </DialogHeader>
@@ -170,7 +170,7 @@ export function AIContentAssistant({ content, onInsertContent, onInsertHashtags 
                 <tool.icon className={`h-5 w-5 ${tool.color}`} />
               )}
               <span className="text-xs font-medium">{tool.label}</span>
-              <span className="text-[10px] text-muted-foreground">{tool.cost} kredit</span>
+              <span className="text-[10px] text-muted-foreground">{tool.cost} credit{tool.cost === 1 ? "" : "s"}</span>
             </Button>
           ))}
         </div>

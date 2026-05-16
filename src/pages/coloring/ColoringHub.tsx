@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
@@ -20,30 +20,30 @@ type Feature = {
 };
 
 const FEATURES: Feature[] = [
-  { slug: "color-by-number", title: "Color by Number", desc: "AI rozdelí outline na očíslované zóny", icon: Grid3x3, paid: true, cost: 5 },
-  { slug: "paint-bucket", title: "Tap-to-fill", desc: "Vyplň uzavretú zónu jedným klikom", icon: Palette },
-  { slug: "brushes", title: "Štetce & textúry", desc: "Akvarel, pastel, sprej, glitter, neón", icon: Brush },
-  { slug: "mandala", title: "Mandala / symetria", desc: "Radiálne zrkadlenie 2×–16×", icon: Sparkles },
-  { slug: "layers", title: "Vrstvy & história", desc: "Undo, redo, branching až 50+ krokov", icon: Layers },
-  { slug: "smart-palettes", title: "Smart palety", desc: "Pantone, Monet, sezónne (AI návrh)", icon: Palette, paid: true, cost: 3 },
-  { slug: "zoom-stylus", title: "Zoom & Stylus", desc: "Tlakovo citlivé pero, hladký zoom", icon: ZoomIn },
-  { slug: "streaks", title: "Streaks & badges", desc: "Denná séria, XP, levely, odznaky", icon: Flame },
-  { slug: "contests", title: "Týždenné súťaže", desc: "Téma, hlasovanie, víťaz s odmenou", icon: Trophy },
-  { slug: "timelapse", title: "Time-lapse", desc: "Záznam každého ťahu, prehrávanie", icon: Video },
-  { slug: "follow-feed", title: "Sledovanie umelcov", desc: "Feed obľúbených tvorcov", icon: Users },
-  { slug: "remix", title: "Remix", desc: "Vziať cudzí outline a vyfarbiť po svojom", icon: Repeat },
-  { slug: "collab", title: "Collab plátno", desc: "Spoločné maľovanie cez pozvánku", icon: Users },
-  { slug: "collections", title: "Tematické kolekcie", desc: "Sezónne balíčky s príbehom", icon: ImageIcon },
-  { slug: "licensed", title: "Licencované balíčky", desc: "Disney, Marvel, Anime (premium)", icon: Lock, paid: true, cost: 50 },
-  { slug: "ai-examples", title: "AI inšpirácie", desc: "Návrhy farebných kombinácií", icon: Wand2, paid: true, cost: 3 },
-  { slug: "mindfulness", title: "Mindfulness", desc: "Meditačný soundtrack počas maľby", icon: Music },
-  { slug: "print-on-demand", title: "Print-on-demand", desc: "Tlač diela na plagát, tričko, mug", icon: ShoppingBag, paid: true },
+  { slug: "color-by-number", title: "Color by Number", desc: "AI splits outline into numbered zones", icon: Grid3x3, paid: true, cost: 5 },
+  { slug: "paint-bucket", title: "Tap-to-fill", desc: "Fill a closed zone with one tap", icon: Palette },
+  { slug: "brushes", title: "Brushes & textures", desc: "Watercolor, pastel, spray, glitter, neon", icon: Brush },
+  { slug: "mandala", title: "Mandala / symmetry", desc: "Radial mirroring 2×–16×", icon: Sparkles },
+  { slug: "layers", title: "Layers & history", desc: "Undo, redo, branching up to 50+ steps", icon: Layers },
+  { slug: "smart-palettes", title: "Smart palettes", desc: "Pantone, Monet, seasonal (AI-suggested)", icon: Palette, paid: true, cost: 3 },
+  { slug: "zoom-stylus", title: "Zoom & Stylus", desc: "Pressure-sensitive pen, smooth zoom", icon: ZoomIn },
+  { slug: "streaks", title: "Streaks & badges", desc: "Daily streak, XP, levels, badges", icon: Flame },
+  { slug: "contests", title: "Weekly contests", desc: "Theme, voting, winner with reward", icon: Trophy },
+  { slug: "timelapse", title: "Time-lapse", desc: "Record every stroke, playback", icon: Video },
+  { slug: "follow-feed", title: "Follow artists", desc: "Feed of your favorite creators", icon: Users },
+  { slug: "remix", title: "Remix", desc: "Take someone else's outline and color it your way", icon: Repeat },
+  { slug: "collab", title: "Collab canvas", desc: "Paint together via invite", icon: Users },
+  { slug: "collections", title: "Themed collections", desc: "Seasonal packs with a story", icon: ImageIcon },
+  { slug: "licensed", title: "Licensed packs", desc: "Disney, Marvel, Anime (premium)", icon: Lock, paid: true, cost: 50 },
+  { slug: "ai-examples", title: "AI inspiration", desc: "Color combination suggestions", icon: Wand2, paid: true, cost: 3 },
+  { slug: "mindfulness", title: "Mindfulness", desc: "Meditation soundtrack while you paint", icon: Music },
+  { slug: "print-on-demand", title: "Print-on-demand", desc: "Print your artwork on poster, t-shirt, mug", icon: ShoppingBag, paid: true },
 ];
 
 export default function ColoringHub() {
   const navigate = useNavigate();
   const { slug } = useParams();
-  const { balance, costPerUse, purchase, refresh } = useColoringCredits();
+  const { balance, purchase, refresh } = useColoringCredits();
 
   if (slug) return <FeaturePanel slug={slug} onBack={() => navigate("/coloring-pages/hub")} balance={balance} refreshCredits={refresh} />;
 
@@ -54,18 +54,18 @@ export default function ColoringHub() {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
           <div>
             <Button variant="ghost" size="sm" onClick={() => navigate("/coloring-pages")} className="mb-2 -ml-2">
-              <ArrowLeft className="w-4 h-4 mr-1" /> Späť na Coloring Pages
+              <ArrowLeft className="w-4 h-4 mr-1" /> Back to Coloring Pages
             </Button>
             <h1 className="text-3xl sm:text-4xl font-bold">Coloring Hub</h1>
-            <p className="text-muted-foreground mt-1">18 pokročilých funkcií. AI nástroje sú spoplatnené kreditmi.</p>
+            <p className="text-muted-foreground mt-1">18 advanced features. AI tools are billed in credits.</p>
           </div>
           <Card className="px-4 py-3">
-            <div className="text-xs text-muted-foreground">Kredity</div>
+            <div className="text-xs text-muted-foreground">Credits</div>
             <div className="text-2xl font-bold">{balance}</div>
             <Button size="sm" variant="outline" className="mt-1" onClick={async () => {
               const url = await purchase(100);
               if (url) window.open(url, "_blank");
-            }}>Dobiť 100</Button>
+            }}>Top up 100</Button>
           </Card>
         </div>
 
@@ -76,7 +76,7 @@ export default function ColoringHub() {
                 <CardHeader>
                   <div className="flex items-start justify-between gap-2">
                     <div className="p-2 rounded-lg bg-primary/10"><f.icon className="w-5 h-5 text-primary" /></div>
-                    {f.paid && <Badge variant="secondary">{f.cost ? `${f.cost} kreditov` : "Platené"}</Badge>}
+                    {f.paid && <Badge variant="secondary">{f.cost ? `${f.cost} credits` : "Paid"}</Badge>}
                   </div>
                   <CardTitle className="text-base mt-2">{f.title}</CardTitle>
                   <CardDescription className="text-xs">{f.desc}</CardDescription>
@@ -94,14 +94,14 @@ export default function ColoringHub() {
 
 function FeaturePanel({ slug, onBack, balance, refreshCredits }: { slug: string; onBack: () => void; balance: number; refreshCredits: () => void }) {
   const feature = FEATURES.find((f) => f.slug === slug);
-  if (!feature) return <div className="p-10">Funkcia nenájdená. <Button onClick={onBack}>Späť</Button></div>;
+  if (!feature) return <div className="p-10">Feature not found. <Button onClick={onBack}>Back</Button></div>;
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       <main className="container mx-auto px-4 py-8 max-w-5xl">
         <Button variant="ghost" size="sm" onClick={onBack} className="mb-3 -ml-2">
-          <ArrowLeft className="w-4 h-4 mr-1" /> Späť na hub
+          <ArrowLeft className="w-4 h-4 mr-1" /> Back to hub
         </Button>
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -110,7 +110,7 @@ function FeaturePanel({ slug, onBack, balance, refreshCredits }: { slug: string;
             </h1>
             <p className="text-sm text-muted-foreground">{feature.desc}</p>
           </div>
-          {feature.paid && <Badge variant="secondary">{feature.cost ? `${feature.cost} kreditov / použitie` : "Platené"}</Badge>}
+          {feature.paid && <Badge variant="secondary">{feature.cost ? `${feature.cost} credits / use` : "Paid"}</Badge>}
         </div>
 
         <Panel slug={slug} balance={balance} refreshCredits={refreshCredits} />
@@ -128,16 +128,16 @@ function useAction<T = any>() {
       refreshCredits?.();
       return res;
     } catch (e: any) {
-      if (e.message === "insufficient_credits") toast.error("Nedostatok kreditov. Dobi si ich, prosím.");
-      else if (e.message === "unauthorized") toast.error("Musíš sa prihlásiť.");
-      else toast.error(e.message ?? "Chyba");
+      if (e.message === "insufficient_credits") toast.error("Not enough credits. Please top up.");
+      else if (e.message === "unauthorized") toast.error("You need to sign in.");
+      else toast.error(e.message ?? "Error");
       return null;
     } finally { setLoading(false); }
   };
   return { run, loading };
 }
 
-function Panel({ slug, balance, refreshCredits }: { slug: string; balance: number; refreshCredits: () => void }) {
+function Panel({ slug, refreshCredits }: { slug: string; balance: number; refreshCredits: () => void }) {
   switch (slug) {
     case "color-by-number": return <ColorByNumberPanel refreshCredits={refreshCredits} />;
     case "smart-palettes": return <PalettePanel refreshCredits={refreshCredits} />;
@@ -154,7 +154,7 @@ function Panel({ slug, balance, refreshCredits }: { slug: string; balance: numbe
     case "timelapse": return <TimelapsePanel />;
     case "paint-bucket": case "brushes": case "mandala": case "layers": case "zoom-stylus":
       return <CanvasInfoPanel slug={slug} />;
-    default: return <div>Nedostupné</div>;
+    default: return <div>Unavailable</div>;
   }
 }
 
@@ -165,13 +165,13 @@ function ColorByNumberPanel({ refreshCredits }: { refreshCredits: () => void }) 
   const [zones, setZones] = useState<any[]>([]);
   return (
     <Card>
-      <CardHeader><CardTitle>Vygeneruj očíslovaný plán farieb</CardTitle><CardDescription>AI rozdelí outline na 8–16 farebných zón.</CardDescription></CardHeader>
+      <CardHeader><CardTitle>Generate a numbered color plan</CardTitle><CardDescription>AI splits the outline into 8–16 color zones.</CardDescription></CardHeader>
       <CardContent className="space-y-3">
-        <Input placeholder="Napr. Mandala s motýľmi" value={title} onChange={(e) => setTitle(e.target.value)} />
+        <Input placeholder="e.g. Mandala with butterflies" value={title} onChange={(e) => setTitle(e.target.value)} />
         <Button disabled={loading} onClick={async () => {
           const r = await run("ai.colorByNumber", { title }, refreshCredits);
           if (r?.zones) setZones(r.zones);
-        }}>{loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4 mr-1" />} Vygenerovať (5 kreditov)</Button>
+        }}>{loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4 mr-1" />} Generate (5 credits)</Button>
         {zones.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3">
             {zones.map((z: any, i: number) => (
@@ -194,7 +194,7 @@ function PalettePanel({ refreshCredits }: { refreshCredits: () => void }) {
   const presets = ["Pantone Spring", "Monet Garden", "Pixar Sunset", "Cyberpunk Neon", "Cozy Autumn"];
   return (
     <Card>
-      <CardHeader><CardTitle>Smart palety</CardTitle><CardDescription>AI navrhne 6-farebnú paletu (3 kredity).</CardDescription></CardHeader>
+      <CardHeader><CardTitle>Smart palettes</CardTitle><CardDescription>AI suggests a 6-color palette (3 credits).</CardDescription></CardHeader>
       <CardContent className="space-y-3">
         <div className="flex flex-wrap gap-2">
           {presets.map((p) => (
@@ -224,13 +224,13 @@ function ExamplesPanel({ refreshCredits }: { refreshCredits: () => void }) {
   const [examples, setExamples] = useState<any[]>([]);
   return (
     <Card>
-      <CardHeader><CardTitle>AI inšpirácie</CardTitle><CardDescription>4 hotové farebné kombinácie (3 kredity).</CardDescription></CardHeader>
+      <CardHeader><CardTitle>AI inspiration</CardTitle><CardDescription>4 ready-made color combinations (3 credits).</CardDescription></CardHeader>
       <CardContent className="space-y-3">
-        <Input placeholder="Napr. záhrada v lete" value={theme} onChange={(e) => setTheme(e.target.value)} />
+        <Input placeholder="e.g. garden in summer" value={theme} onChange={(e) => setTheme(e.target.value)} />
         <Button disabled={loading} onClick={async () => {
           const r = await run("ai.example", { theme }, refreshCredits);
           if (r?.examples) setExamples(r.examples);
-        }}>{loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4 mr-1" />} Generovať</Button>
+        }}>{loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4 mr-1" />} Generate</Button>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
           {examples.map((ex: any, i: number) => (
             <div key={i} className="p-3 rounded border">
@@ -250,11 +250,11 @@ function StreakPanel() {
   useEffect(() => { coloringCall("streak.get").then((r: any) => setStreak(r?.streak)).catch(() => {}); }, []);
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-      <Card><CardHeader><CardTitle className="text-3xl">🔥 {streak?.current_streak ?? 0}</CardTitle><CardDescription>Aktuálna séria (dní)</CardDescription></CardHeader></Card>
-      <Card><CardHeader><CardTitle className="text-3xl">🏆 {streak?.longest_streak ?? 0}</CardTitle><CardDescription>Najdlhšia séria</CardDescription></CardHeader></Card>
+      <Card><CardHeader><CardTitle className="text-3xl">🔥 {streak?.current_streak ?? 0}</CardTitle><CardDescription>Current streak (days)</CardDescription></CardHeader></Card>
+      <Card><CardHeader><CardTitle className="text-3xl">🏆 {streak?.longest_streak ?? 0}</CardTitle><CardDescription>Longest streak</CardDescription></CardHeader></Card>
       <Card><CardHeader><CardTitle className="text-3xl">⚡ {streak?.xp ?? 0} XP</CardTitle><CardDescription>Level {streak?.level ?? 1}</CardDescription></CardHeader></Card>
       {streak?.badges?.length > 0 && (
-        <Card className="sm:col-span-3"><CardHeader><CardTitle>Odznaky</CardTitle></CardHeader><CardContent className="flex gap-2 flex-wrap">{streak.badges.map((b: string) => <Badge key={b}>{b}</Badge>)}</CardContent></Card>
+        <Card className="sm:col-span-3"><CardHeader><CardTitle>Badges</CardTitle></CardHeader><CardContent className="flex gap-2 flex-wrap">{streak.badges.map((b: string) => <Badge key={b}>{b}</Badge>)}</CardContent></Card>
       )}
     </div>
   );
@@ -277,17 +277,17 @@ function ContestsPanel() {
               <CardDescription>{c.description}</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-xs text-muted-foreground mb-2">Odmena: {c.prize}</div>
-              <Button size="sm" onClick={() => setActive(c)}>Otvoriť</Button>
+              <div className="text-xs text-muted-foreground mb-2">Reward: {c.prize}</div>
+              <Button size="sm" onClick={() => setActive(c)}>Open</Button>
             </CardContent>
           </Card>
         ))}
       </div>
       {active && (
         <Card>
-          <CardHeader><CardTitle>Súťažné príspevky</CardTitle></CardHeader>
+          <CardHeader><CardTitle>Contest entries</CardTitle></CardHeader>
           <CardContent>
-            {entries.length === 0 && <div className="text-sm text-muted-foreground">Zatiaľ žiadne príspevky.</div>}
+            {entries.length === 0 && <div className="text-sm text-muted-foreground">No entries yet.</div>}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {entries.map((e) => (
                 <div key={e.id} className="border rounded overflow-hidden">
@@ -296,7 +296,7 @@ function ContestsPanel() {
                     <div className="text-xs">{e.likes_count ?? 0} ❤</div>
                     <Button size="sm" variant="ghost" onClick={async () => {
                       await coloringCall("contest.vote", { artwork_id: e.id });
-                      toast.success("Hlas odoslaný");
+                      toast.success("Vote submitted");
                     }}><Heart className="w-3 h-3" /></Button>
                   </div>
                 </div>
@@ -320,23 +320,23 @@ function FollowFeedPanel() {
   return (
     <div>
       <div className="flex gap-2 mb-3">
-        <Button size="sm" variant={tab === "public" ? "default" : "outline"} onClick={() => setTab("public")}>Verejné</Button>
-        <Button size="sm" variant={tab === "following" ? "default" : "outline"} onClick={() => setTab("following")}>Sledovaní</Button>
+        <Button size="sm" variant={tab === "public" ? "default" : "outline"} onClick={() => setTab("public")}>Public</Button>
+        <Button size="sm" variant={tab === "following" ? "default" : "outline"} onClick={() => setTab("following")}>Following</Button>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {artworks.map((a) => (
           <div key={a.id} className="border rounded overflow-hidden">
             <img src={a.image_url} alt={a.title ?? "art"} className="w-full aspect-square object-cover" />
             <div className="p-2 flex items-center justify-between">
-              <div className="text-xs truncate">{a.title ?? "Bez názvu"}</div>
+              <div className="text-xs truncate">{a.title ?? "Untitled"}</div>
               <Button size="sm" variant="ghost" onClick={async () => {
                 const r: any = await coloringCall("follow.toggle", { followee_id: a.user_id });
-                toast.success(r?.following ? "Sledujeme" : "Odsledované");
+                toast.success(r?.following ? "Following" : "Unfollowed");
               }}>+follow</Button>
             </div>
           </div>
         ))}
-        {artworks.length === 0 && <div className="text-sm text-muted-foreground col-span-3">Zatiaľ nič.</div>}
+        {artworks.length === 0 && <div className="text-sm text-muted-foreground col-span-3">Nothing yet.</div>}
       </div>
     </div>
   );
@@ -348,7 +348,7 @@ function RemixPanel() {
   useEffect(() => { coloringCall("feed.public").then((r: any) => setArtworks(r?.artworks ?? [])); }, []);
   return (
     <div>
-      <p className="text-sm text-muted-foreground mb-3">Vyber dielo z verejnej galérie a vytvor svoj remix.</p>
+      <p className="text-sm text-muted-foreground mb-3">Pick an artwork from the public gallery and create your remix.</p>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {artworks.map((a) => (
           <div key={a.id} className="border rounded overflow-hidden">
@@ -356,8 +356,8 @@ function RemixPanel() {
             <div className="p-2">
               <Button size="sm" className="w-full" onClick={async () => {
                 const r: any = await coloringCall("remix.start", { artwork_id: a.id });
-                toast.success("Remix pripravený — otvor Coloring Pages na editáciu", { description: r?.title });
-              }}>Remixovať</Button>
+                toast.success("Remix ready — open Coloring Pages to edit", { description: r?.title });
+              }}>Remix</Button>
             </div>
           </div>
         ))}
@@ -371,20 +371,20 @@ function CollabPanel() {
   const [collab, setCollab] = useState<any>(null);
   return (
     <Card>
-      <CardHeader><CardTitle>Spoločné plátno</CardTitle><CardDescription>Pozvi kohokoľvek cez link.</CardDescription></CardHeader>
+      <CardHeader><CardTitle>Shared canvas</CardTitle><CardDescription>Invite anyone via link.</CardDescription></CardHeader>
       <CardContent className="space-y-3">
         <Button onClick={async () => {
           const r: any = await coloringCall("collab.create", {});
           setCollab(r?.collab);
-        }}>Vytvoriť reláciu</Button>
+        }}>Create session</Button>
         {collab && (
           <div className="p-3 border rounded">
-            <div className="text-sm">Odošli pozvánku:</div>
+            <div className="text-sm">Share invite:</div>
             <code className="text-xs break-all">{window.location.origin}/coloring-pages/collab/{collab.invite_token}</code>
             <Button size="sm" className="mt-2" variant="outline" onClick={() => {
               navigator.clipboard.writeText(`${window.location.origin}/coloring-pages/collab/${collab.invite_token}`);
-              toast.success("Skopírované");
-            }}>Kopírovať link</Button>
+              toast.success("Copied");
+            }}>Copy link</Button>
           </div>
         )}
       </CardContent>
@@ -416,14 +416,14 @@ function CollectionsPanel({ mode, refreshCredits }: { mode: "all" | "premium"; r
                 const action = c.is_premium ? "collection.unlock" : "collections.items";
                 const r: any = await coloringCall(action, { collection_id: c.id });
                 setItems((prev) => ({ ...prev, [c.id]: r?.items ?? [] }));
-                if (c.is_premium) { refreshCredits?.(); toast.success("Odomknuté"); }
-              }}>{c.is_premium ? `Odomknúť (${c.price_credits} kreditov)` : "Otvoriť"}</Button>
+                if (c.is_premium) { refreshCredits?.(); toast.success("Unlocked"); }
+              }}>{c.is_premium ? `Unlock (${c.price_credits} credits)` : "Open"}</Button>
             </div>
           </CardHeader>
           {items[c.id] && (
             <CardContent>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {items[c.id].length === 0 && <div className="text-xs text-muted-foreground col-span-4">Pripravujeme outliny.</div>}
+                {items[c.id].length === 0 && <div className="text-xs text-muted-foreground col-span-4">Outlines coming soon.</div>}
                 {items[c.id].map((it: any) => (
                   <div key={it.id} className="border rounded p-2 text-xs">{it.title ?? "Outline"}</div>
                 ))}
@@ -444,7 +444,7 @@ function MindfulnessPanel() {
   useEffect(() => { coloringCall("mindfulness.tracks").then((r: any) => setTracks(r?.tracks ?? [])); }, []);
   return (
     <Card>
-      <CardHeader><CardTitle>Meditačné zvuky</CardTitle><CardDescription>Pusti si pozadie počas maľovania.</CardDescription></CardHeader>
+      <CardHeader><CardTitle>Meditation sounds</CardTitle><CardDescription>Play in the background while you color.</CardDescription></CardHeader>
       <CardContent className="space-y-2">
         {tracks.map((t) => (
           <div key={t.id} className="flex items-center justify-between p-2 rounded border">
@@ -452,9 +452,9 @@ function MindfulnessPanel() {
             <Button size="sm" variant={playing === t.id ? "default" : "outline"} onClick={() => {
               if (audioRef.current) audioRef.current.pause();
               if (playing === t.id) { setPlaying(null); return; }
-              const a = new Audio(t.url); a.loop = true; a.volume = 0.5; a.play().catch(() => toast.error("Nedá sa prehrať"));
+              const a = new Audio(t.url); a.loop = true; a.volume = 0.5; a.play().catch(() => toast.error("Cannot play"));
               audioRef.current = a; setPlaying(t.id);
-            }}>{playing === t.id ? "Stop" : "Prehrať"}</Button>
+            }}>{playing === t.id ? "Stop" : "Play"}</Button>
           </div>
         ))}
       </CardContent>
@@ -468,15 +468,15 @@ function PodPanel() {
   const [type, setType] = useState("poster_A3");
   useEffect(() => { coloringCall("pod.orders").then((r: any) => setOrders(r?.orders ?? [])); }, []);
   const types = [
-    { id: "poster_A3", label: "Plagát A3", price: 1900 },
-    { id: "tshirt", label: "Tričko", price: 2900 },
+    { id: "poster_A3", label: "Poster A3", price: 1900 },
+    { id: "tshirt", label: "T-shirt", price: 2900 },
     { id: "mug", label: "Mug", price: 1500 },
-    { id: "canvas", label: "Plátno 40×40", price: 4900 },
+    { id: "canvas", label: "Canvas 40×40", price: 4900 },
   ];
   return (
     <div className="space-y-4">
       <Card>
-        <CardHeader><CardTitle>Objednať tlač</CardTitle><CardDescription>Vyber produkt — platba cez Stripe.</CardDescription></CardHeader>
+        <CardHeader><CardTitle>Order print</CardTitle><CardDescription>Pick a product — payment via Stripe.</CardDescription></CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
             {types.map((t) => (
@@ -490,13 +490,13 @@ function PodPanel() {
             const sel = types.find((t) => t.id === type)!;
             const r: any = await coloringCall("pod.checkout", { product_type: sel.id, amount_eur: sel.price });
             if (r?.checkout_url) window.open(r.checkout_url, "_blank");
-            else if (r?.warning) toast.message(r.warning); else toast.success("Objednávka vytvorená");
-          }}>Pokračovať na platbu</Button>
+            else if (r?.warning) toast.message(r.warning); else toast.success("Order created");
+          }}>Continue to payment</Button>
         </CardContent>
       </Card>
       {orders.length > 0 && (
         <Card>
-          <CardHeader><CardTitle>Moje objednávky</CardTitle></CardHeader>
+          <CardHeader><CardTitle>My orders</CardTitle></CardHeader>
           <CardContent>
             <div className="space-y-2">
               {orders.map((o) => (
@@ -520,21 +520,21 @@ function TimelapsePanel() {
   useEffect(() => { coloringCall("artwork.list").then((r: any) => setArtworks(r?.artworks ?? [])); }, []);
   return (
     <div className="space-y-3">
-      <p className="text-sm text-muted-foreground">Vyber dielo — prehráme uložený záznam ťahov.</p>
+      <p className="text-sm text-muted-foreground">Pick an artwork — we'll play back the saved stroke recording.</p>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {artworks.map((a) => (
           <button key={a.id} onClick={async () => {
             const r: any = await coloringCall("timelapse.get", { artwork_id: a.id });
             setFrames(r?.frames ?? []);
-            toast.success(`Načítaných ${r?.frames?.length ?? 0} snímok`);
+            toast.success(`Loaded ${r?.frames?.length ?? 0} frames`);
           }} className="border rounded overflow-hidden text-left">
             <img src={a.image_url} alt="" className="w-full aspect-square object-cover" />
-            <div className="p-2 text-xs">{a.title ?? "Bez názvu"}</div>
+            <div className="p-2 text-xs">{a.title ?? "Untitled"}</div>
           </button>
         ))}
-        {artworks.length === 0 && <div className="text-sm text-muted-foreground col-span-3">Zatiaľ žiadne diela.</div>}
+        {artworks.length === 0 && <div className="text-sm text-muted-foreground col-span-3">No artworks yet.</div>}
       </div>
-      {frames.length > 0 && <div className="text-xs">Snímky pripravené na prehratie ({frames.length}).</div>}
+      {frames.length > 0 && <div className="text-xs">Frames ready to play ({frames.length}).</div>}
     </div>
   );
 }
@@ -543,18 +543,18 @@ function TimelapsePanel() {
 function CanvasInfoPanel({ slug }: { slug: string }) {
   const navigate = useNavigate();
   const tips: Record<string, string> = {
-    "paint-bucket": "Otvor plátno v Coloring Pages → klikni na uzavretú zónu pre okamžité vyplnenie.",
-    "brushes": "V plátne sú dostupné akvarel, pastel, sprej, glitter, neón. Tlak detegujeme zo stylusu.",
-    "mandala": "Aktivuj symetria/mandala režim v plátne — všetko sa zrkadlí 2× až 16×.",
-    "layers": "Plátno udržiava históriu 50+ ťahov; undo/redo + branching.",
-    "zoom-stylus": "Pinch-zoom a tlakovo citlivé pero (Apple Pencil / S Pen) — automaticky.",
+    "paint-bucket": "Open the canvas in Coloring Pages → tap a closed zone for instant fill.",
+    "brushes": "Watercolor, pastel, spray, glitter and neon are available on the canvas. Pressure is detected from your stylus.",
+    "mandala": "Activate symmetry/mandala mode on the canvas — everything mirrors 2× to 16×.",
+    "layers": "The canvas keeps a 50+ stroke history; undo/redo + branching.",
+    "zoom-stylus": "Pinch-zoom and pressure-sensitive pens (Apple Pencil / S Pen) — automatic.",
   };
   return (
     <Card>
-      <CardHeader><CardTitle>Použitie</CardTitle></CardHeader>
+      <CardHeader><CardTitle>How to use</CardTitle></CardHeader>
       <CardContent className="space-y-3">
         <p className="text-sm">{tips[slug]}</p>
-        <Button onClick={() => navigate("/coloring-pages")}>Otvoriť plátno</Button>
+        <Button onClick={() => navigate("/coloring-pages")}>Open canvas</Button>
       </CardContent>
     </Card>
   );

@@ -43,7 +43,7 @@ serve(async (req) => {
       }),
     });
 
-    if (aiRes.status === 429) return new Response(JSON.stringify({ error: "Rate limit. Skús neskôr." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    if (aiRes.status === 429) return new Response(JSON.stringify({ error: "Rate limit. Try again later." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     if (!aiRes.ok) {
       const t = await aiRes.text();
       return new Response(JSON.stringify({ error: `OpenAI error: ${t}` }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });

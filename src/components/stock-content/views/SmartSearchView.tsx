@@ -50,7 +50,7 @@ export function SmartSearchView({ onBack }: Props) {
         <h2 className="text-2xl font-bold flex items-center gap-2">
           <Sparkles className="w-6 h-6 text-violet-500" /> Smart Search · Reverse Image
         </h2>
-        <Badge variant="secondary">AI · 4 kreditov</Badge>
+        <Badge variant="secondary">AI · 4 credits</Badge>
       </div>
 
       <Card className="p-6 bg-gradient-to-r from-violet-500/10 to-purple-500/10 border-violet-500/20">

@@ -1,8 +1,8 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 /**
- * Spoločný helper pre autentifikáciu v edge funkciách
- * Používa SERVICE_ROLE_KEY pre admin operácie a validuje user tokeny
+ * Shared helper for authentication in edge functions.
+ * Uses SERVICE_ROLE_KEY for admin operations and validates user tokens.
  */
 
 export interface AuthResult {
@@ -14,22 +14,22 @@ export interface AuthResult {
 }
 
 export async function authenticateUser(req: Request): Promise<AuthResult> {
-  // Vytvor Supabase klienta s SERVICE_ROLE_KEY
+  // Create a Supabase client with SERVICE_ROLE_KEY
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
   ) as any;
 
-  // Ziskaj authorization header
+  // Get the authorization header
   const authHeader = req.headers.get("Authorization");
   if (!authHeader) {
     throw new Error("Missing authorization header");
   }
 
-  // Parsuj token
+  // Parse the token
   const token = authHeader.replace("Bearer ", "");
-  
-  // Validuj token a ziskaj usera
+
+  // Validate the token and get the user
   const { data: { user }, error: userError } = await supabase.auth.getUser(token);
   
   if (userError || !user) {
@@ -41,8 +41,8 @@ export async function authenticateUser(req: Request): Promise<AuthResult> {
 }
 
 /**
- * Helper pre edge funkcie, ktoré nepotrebujú autentifikáciu
- * Vytvára Supabase klienta len s ANON_KEY
+ * Helper for edge functions that do not require authentication.
+ * Creates a Supabase client with only the ANON_KEY.
  */
 export function createPublicClient() {
   return createClient(

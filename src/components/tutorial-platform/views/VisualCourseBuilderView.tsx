@@ -223,7 +223,7 @@ export function VisualCourseBuilderView({ onBack }: Props) {
           </div>
           <div>
             <h2 className="text-2xl font-black">Visual Course Builder</h2>
-            <p className="text-sm text-muted-foreground">Vytvor a publikuj svoj kurz</p>
+            <p className="text-sm text-muted-foreground">Create and publish your course</p>
           </div>
         </div>
 

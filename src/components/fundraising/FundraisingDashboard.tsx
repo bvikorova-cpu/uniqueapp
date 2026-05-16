@@ -46,7 +46,7 @@ interface FundraisingDashboardProps {
 
 const defaultMilestones: Milestone[] = [
   { id: "1", title: "First goal", targetAmount: 1000, currentAmount: 1000, reached: true, reward: "Thank you video" },
-  { id: "2", title: "Polovica cesty", targetAmount: 5000, currentAmount: 5000, reached: true, reward: "Live stream" },
+  { id: "2", title: "Halfway there", targetAmount: 5000, currentAmount: 5000, reached: true, reward: "Live stream" },
   { id: "3", title: "Almost there", targetAmount: 8000, currentAmount: 7500, reached: false, reward: "Exclusive content" },
   { id: "4", title: "Goal!", targetAmount: 10000, currentAmount: 7500, reached: false, reward: "VIP access" },
 ];

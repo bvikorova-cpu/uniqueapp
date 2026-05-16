@@ -85,8 +85,8 @@ serve(async (req) => {
     await supabase.from("notifications").insert({
       user_id: user.id,
       type: "battle_royale_payout_requested",
-      title: "Žiadosť o výplatu Battle Royale prijatá",
-      message: `Tvoja výhra €${(amount_cents / 100).toFixed(2)} čaká na schválenie administrátorom.`,
+      title: "Battle Royale payout request received",
+      message: `Your €${(amount_cents / 100).toFixed(2)} prize is awaiting admin approval.`,
       related_id: row.id,
     });
 

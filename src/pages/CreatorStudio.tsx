@@ -12,7 +12,7 @@ const CreatorStudio = () => {
     <>
       <Helmet>
         <title>Creator Studio — Analytics Dashboard | Unique</title>
-        <meta name="description" content="Tvoj creator dashboard: views, engagement, top posts, najlepšie hodiny na publikovanie." />
+        <meta name="description" content="Your creator dashboard: views, engagement, top posts, best hours to publish." />
       </Helmet>
       <main className="container max-w-6xl mx-auto px-4 py-8">
         <CreatorStudioDashboard />

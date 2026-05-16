@@ -159,7 +159,7 @@ export function ContributorPortfoliosView({ onBack }: Props) {
               </div>
               <div className="grid grid-cols-3 gap-3">
                 <Card className="p-3 text-center"><div className="text-2xl font-black">{selected.total_items}</div><div className="text-xs text-muted-foreground">Published</div></Card>
-                <Card className="p-3 text-center"><div className="text-2xl font-black">{selected.total_downloads}</div><div className="text-xs text-muted-foreground">Stiahnutia</div></Card>
+                <Card className="p-3 text-center"><div className="text-2xl font-black">{selected.total_downloads}</div><div className="text-xs text-muted-foreground">Downloads</div></Card>
                 <Card className="p-3 text-center"><div className="text-2xl font-black">€{selected.total_revenue.toFixed(0)}</div><div className="text-xs text-muted-foreground">Revenue</div></Card>
               </div>
               <h3 className="font-bold mt-2">Portfolio ({portfolio.length})</h3>

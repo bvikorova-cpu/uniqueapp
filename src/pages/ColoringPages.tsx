@@ -171,7 +171,7 @@ export default function ColoringPages() {
 
         <div className="my-4 flex justify-center">
           <Button size="lg" onClick={() => navigate("/coloring-pages/hub")} className="gap-2">
-            <Sparkles className="w-5 h-5" /> Otvoriť Coloring Hub (18 nových funkcií)
+            <Sparkles className="w-5 h-5" /> Open Coloring Hub (18 new features)
           </Button>
         </div>
 

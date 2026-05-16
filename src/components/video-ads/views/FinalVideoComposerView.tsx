@@ -323,7 +323,7 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
             {clonedVoices.length > 0 && (
               <div>
                 <Label className="text-xs flex items-center justify-between">
-                  <span>🎤 Tvoje cloned voices ({clonedVoices.length})</span>
+                  <span>🎤 Your cloned voices ({clonedVoices.length})</span>
                   <button type="button" onClick={() => setCustomVoiceId("")} className="text-xs text-muted-foreground hover:text-foreground underline">Clear</button>
                 </Label>
                 <select className="w-full p-2 rounded-md border bg-background text-sm" value={customVoiceId} onChange={e => setCustomVoiceId(e.target.value)}>

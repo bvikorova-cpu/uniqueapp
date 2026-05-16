@@ -152,8 +152,8 @@ serve(async (req) => {
       await supabase.from("notifications").insert({
         user_id: user.id,
         type: "campaign_payout_pending_review",
-        title: "Žiadosť o výplatu odoslaná na schválenie",
-        message: `Tvoja žiadosť o výplatu €${(amount_cents / 100).toFixed(2)} čaká na schválenie administrátorom.${reviewReason ? ` Dôvod kontroly: ${reviewReason}` : ""}`,
+        title: "Payout request submitted for approval",
+        message: `Your payout request of €${(amount_cents / 100).toFixed(2)} is awaiting admin approval.${reviewReason ? ` Review reason: ${reviewReason}` : ""}`,
         related_id: payoutRow.id,
       });
       return json({

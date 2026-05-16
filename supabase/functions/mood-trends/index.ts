@@ -52,19 +52,19 @@ serve(async (req) => {
     
     const trendsData = {
       trend: moodCount > 10 ? "improving" : "stable",
-      summary: `Za posledných ${days} dní ste zaznamenali ${moodCount} záznamov nálady a ${journalCount} denníkových záznamov. Vaša nálada sa zdá byť stabilná s občasnými výkyvmi.`,
+      summary: `In the last ${days} days you logged ${moodCount} mood entries and ${journalCount} journal entries. Your mood appears stable with occasional swings.`,
       patterns: [
-        "Pravidelné zapisovanie pomáha lepšie pochopiť vaše emócie",
-        "Sledujte, ako rôzne aktivity ovplyvňujú vašu náladu",
-        "Všímajte si vzorce v čase dňa a týždňa"
+        "Regular journaling helps you understand your emotions better",
+        "Notice how different activities affect your mood",
+        "Watch for patterns by time of day and day of week"
       ],
       recommendations: [
-        "Pokračujte v pravidelnom sledovaní svojej nálady",
-        "Venujte čas aktivitám, ktoré vám prinášajú radosť",
-        "Udržiavajte zdravý spánkový režim",
-        "Spojte sa s priateľmi a rodinou"
+        "Keep tracking your mood regularly",
+        "Make time for activities that bring you joy",
+        "Maintain a healthy sleep routine",
+        "Stay connected with friends and family"
       ],
-      warnings: moodCount < 5 ? ["Málo dát pre presnejšiu analýzu. Pokračujte v pravidelnom zapisovaní."] : []
+      warnings: moodCount < 5 ? ["Not enough data for a more accurate analysis. Keep logging regularly."] : []
     };
 
     return new Response(

@@ -104,7 +104,7 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ 
       success: true,
-      message: "Predplatné bude zrušené na konci aktuálneho obdobia",
+      message: "Subscription will be canceled at the end of the current period",
       cancelAt: new Date(canceledSubscription.current_period_end * 1000).toISOString()
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

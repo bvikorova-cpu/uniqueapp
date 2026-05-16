@@ -239,13 +239,13 @@ export default function AdminRewardsSeed() {
     setQpStatus("running");
     try {
       const r = await seedQuestPath();
-      setQpResult(`Vytvorená cesta s ${r.nodeCount} uzlami (${r.bossCount} boss misií).`);
+      setQpResult(`Created path with ${r.nodeCount} nodes (${r.bossCount} boss missions).`);
       setQpStatus("done");
-      toast.success("Quest Path naplnený");
+      toast.success("Quest Path seeded");
     } catch (e: any) {
-      setQpResult(e.message || "Chyba");
+      setQpResult(e.message || "Error");
       setQpStatus("error");
-      toast.error("Quest Path zlyhal: " + e.message);
+      toast.error("Quest Path failed: " + e.message);
     }
   };
 
@@ -253,13 +253,13 @@ export default function AdminRewardsSeed() {
     setBpStatus("running");
     try {
       const r = await seedBattlePass();
-      setBpResult(`Vytvorených ${r.rewardCount} odmien (50 tierov × 2 tracky).`);
+      setBpResult(`Created ${r.rewardCount} rewards (50 tiers × 2 tracks).`);
       setBpStatus("done");
-      toast.success("Battle Pass naplnený");
+      toast.success("Battle Pass seeded");
     } catch (e: any) {
-      setBpResult(e.message || "Chyba");
+      setBpResult(e.message || "Error");
       setBpStatus("error");
-      toast.error("Battle Pass zlyhal: " + e.message);
+      toast.error("Battle Pass failed: " + e.message);
     }
   };
 
@@ -267,13 +267,13 @@ export default function AdminRewardsSeed() {
     setCalStatus("running");
     try {
       const r = await seedCalendar(months);
-      setCalResult(`Vytvorených ${r.totalRows} dní cez ${months} mesiacov.`);
+      setCalResult(`Created ${r.totalRows} days across ${months} months.`);
       setCalStatus("done");
-      toast.success("Kalendár naplnený");
+      toast.success("Calendar seeded");
     } catch (e: any) {
-      setCalResult(e.message || "Chyba");
+      setCalResult(e.message || "Error");
       setCalStatus("error");
-      toast.error("Kalendár zlyhal: " + e.message);
+      toast.error("Calendar failed: " + e.message);
     }
   };
 
@@ -281,13 +281,13 @@ export default function AdminRewardsSeed() {
     setLgStatus("running");
     try {
       const r = await seedLeague();
-      setLgResult(`Nová liga: ${r.seasonId.slice(0, 8)}…`);
+      setLgResult(`New league: ${r.seasonId.slice(0, 8)}…`);
       setLgStatus("done");
-      toast.success("Liga vytvorená");
+      toast.success("League created");
     } catch (e: any) {
-      setLgResult(e.message || "Chyba");
+      setLgResult(e.message || "Error");
       setLgStatus("error");
-      toast.error("Liga zlyhala: " + e.message);
+      toast.error("League failed: " + e.message);
     }
   };
 
@@ -303,7 +303,7 @@ export default function AdminRewardsSeed() {
       <AdminPageShell>
         <AdminPageHeader
           title="Rewards Seed"
-          subtitle="Naplň Battle Pass, Daily Login Calendar a Leagues testovacími dátami."
+          subtitle="Seed Battle Pass, Daily Login Calendar and Leagues with test data."
           icon={Sparkles}
           badge="Admin"
           breadcrumbs={[{ label: "Rewards Seed" }]}
@@ -322,12 +322,12 @@ export default function AdminRewardsSeed() {
               <div>
                 <h3 className="text-lg font-semibold mb-2">Battle Pass — Season 1 Genesis</h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Vytvorí 60-dňovú sezónu s 50 tiermi × 2 tracky (free + premium) = 100 odmien.
-                  Mix XP, kreditov, badge a kosmetiky. Premium = 9.99 € alebo 5000 XP.
+                  Creates a 60-day season with 50 tiers × 2 tracks (free + premium) = 100 rewards.
+                  Mix of XP, credits, badges and cosmetics. Premium = €9.99 or 5000 XP.
                 </p>
                 <Button onClick={runBp} disabled={bpStatus === "running"} className="gap-2">
                   <StatusIcon s={bpStatus} />
-                  {bpStatus === "done" ? "Spustiť znova" : "Naplniť Battle Pass"}
+                  {bpStatus === "done" ? "Run again" : "Seed Battle Pass"}
                 </Button>
                 {bpResult && <p className="text-sm mt-3 text-muted-foreground">{bpResult}</p>}
               </div>
@@ -337,18 +337,18 @@ export default function AdminRewardsSeed() {
               <div>
                 <h3 className="text-lg font-semibold mb-2">Daily Login Calendar</h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Naplní šablóny pre aktuálny + ďalšie mesiace. Dni 7/14/21 = milestone (kredity),
-                  deň 30 = premium reward, ostatné = stúpajúce XP.
+                  Seeds templates for the current + next months. Days 7/14/21 = milestone (credits),
+                  day 30 = premium reward, others = increasing XP.
                 </p>
                 <div className="flex gap-2 flex-wrap">
                   <Button onClick={() => runCal(1)} disabled={calStatus === "running"} variant="outline" className="gap-2">
-                    <StatusIcon s={calStatus} /> Tento mesiac
+                    <StatusIcon s={calStatus} /> This month
                   </Button>
                   <Button onClick={() => runCal(3)} disabled={calStatus === "running"} className="gap-2">
-                    <StatusIcon s={calStatus} /> 3 mesiace
+                    <StatusIcon s={calStatus} /> 3 months
                   </Button>
                   <Button onClick={() => runCal(12)} disabled={calStatus === "running"} variant="secondary" className="gap-2">
-                    <StatusIcon s={calStatus} /> Celý rok
+                    <StatusIcon s={calStatus} /> Full year
                   </Button>
                 </div>
                 {calResult && <p className="text-sm mt-3 text-muted-foreground">{calResult}</p>}
@@ -359,11 +359,11 @@ export default function AdminRewardsSeed() {
               <div>
                 <h3 className="text-lg font-semibold mb-2">League Season</h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Vytvorí novú 7-dňovú aktívnu ligu a deaktivuje predchádzajúce.
+                  Creates a new 7-day active league and deactivates previous ones.
                 </p>
                 <Button onClick={runLg} disabled={lgStatus === "running"} className="gap-2">
                   <StatusIcon s={lgStatus} />
-                  Štart novej ligy
+                  Start new league
                 </Button>
                 {lgResult && <p className="text-sm mt-3 text-muted-foreground">{lgResult}</p>}
               </div>
@@ -373,13 +373,13 @@ export default function AdminRewardsSeed() {
               <div>
                 <h3 className="text-lg font-semibold mb-2">Quest Path — Path of the Legend</h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Vytvorí 90-dňovú aktívnu cestu s 20 uzlami vrátane 4 boss misií
+                  Creates a 90-day active path with 20 nodes including 4 boss missions
                   (Trial of Consistency, Influence, Mastery, Path of the Legend).
-                  Predchádzajúce aktívne cesty sa deaktivujú.
+                  Previously active paths are deactivated.
                 </p>
                 <Button onClick={runQp} disabled={qpStatus === "running"} className="gap-2">
                   <StatusIcon s={qpStatus} />
-                  {qpStatus === "done" ? "Spustiť znova" : "Naplniť Quest Path"}
+                  {qpStatus === "done" ? "Run again" : "Seed Quest Path"}
                 </Button>
                 {qpResult && <p className="text-sm mt-3 text-muted-foreground">{qpResult}</p>}
               </div>

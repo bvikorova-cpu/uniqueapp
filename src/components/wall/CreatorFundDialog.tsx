@@ -35,7 +35,7 @@ export function CreatorFundDialog({ userId }: Props) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             {isOwn ? <Settings className="h-4 w-4" /> : <TrendingUp className="h-4 w-4" />}
-            {isOwn ? "Creator Fund nastavenia" : "Creator metriky"}
+            {isOwn ? "Creator Fund settings" : "Creator metrics"}
           </DialogTitle>
         </DialogHeader>
         {loading ? (
