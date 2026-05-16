@@ -129,6 +129,9 @@ import {
   TeenCareerCounselor,
   TeenCareerPricing,
   KidsChannel,
+  KidsHub,
+  KidsFeature,
+  KidsShareView,
   KidsShowDetail,
   ChooseAdventure,
   KidsVoiceChat,
@@ -814,6 +817,9 @@ const App = () => {
                         <Route path="/analyzer/collections" element={<AnalyzerCollections />} />
                         <Route path="/video-ad-generator" element={<VideoAdGenerator />} />
                         <Route path="/kids-channel" element={<KidsChannel />} />
+                        <Route path="/kids-channel/hub" element={<KidsHub />} />
+                        <Route path="/kids-channel/hub/:slug" element={<KidsFeature />} />
+                        <Route path="/kids-channel/share/:token" element={<KidsShareView />} />
                         <Route path="/kids-channel/:showId" element={<KidsShowDetail />} />
                         <Route path="/choose-adventure" element={<ChooseAdventure />} />
                         <Route path="/kids-voice-chat" element={<KidsVoiceChat />} />
