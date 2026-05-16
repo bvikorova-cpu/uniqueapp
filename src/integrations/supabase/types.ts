@@ -27845,6 +27845,149 @@ export type Database = {
         }
         Relationships: []
       }
+      kids_activity_log: {
+        Row: {
+          child_id: string
+          created_at: string
+          duration_seconds: number
+          id: string
+          score: number | null
+          topic: string
+        }
+        Insert: {
+          child_id: string
+          created_at?: string
+          duration_seconds?: number
+          id?: string
+          score?: number | null
+          topic: string
+        }
+        Update: {
+          child_id?: string
+          created_at?: string
+          duration_seconds?: number
+          id?: string
+          score?: number | null
+          topic?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kids_activity_log_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "kids_child_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kids_age_bands: {
+        Row: {
+          allow_ai_chat: boolean
+          allow_videos: boolean
+          band: string
+          child_id: string
+          updated_at: string
+        }
+        Insert: {
+          allow_ai_chat?: boolean
+          allow_videos?: boolean
+          band?: string
+          child_id: string
+          updated_at?: string
+        }
+        Update: {
+          allow_ai_chat?: boolean
+          allow_videos?: boolean
+          band?: string
+          child_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kids_age_bands_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: true
+            referencedRelation: "kids_child_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kids_assignment_submissions: {
+        Row: {
+          assignment_id: string
+          attachment_url: string | null
+          id: string
+          note: string | null
+          submitted_at: string
+        }
+        Insert: {
+          assignment_id: string
+          attachment_url?: string | null
+          id?: string
+          note?: string | null
+          submitted_at?: string
+        }
+        Update: {
+          assignment_id?: string
+          attachment_url?: string | null
+          id?: string
+          note?: string | null
+          submitted_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kids_assignment_submissions_assignment_id_fkey"
+            columns: ["assignment_id"]
+            isOneToOne: false
+            referencedRelation: "kids_assignments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kids_assignments: {
+        Row: {
+          child_id: string
+          created_at: string
+          description: string | null
+          due_date: string | null
+          id: string
+          parent_id: string
+          reward_coins: number
+          status: string
+          title: string
+        }
+        Insert: {
+          child_id: string
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          parent_id: string
+          reward_coins?: number
+          status?: string
+          title: string
+        }
+        Update: {
+          child_id?: string
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          parent_id?: string
+          reward_coins?: number
+          status?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kids_assignments_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "kids_child_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       kids_bedtime_progress: {
         Row: {
           id: string
@@ -27868,6 +28011,112 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      kids_child_profiles: {
+        Row: {
+          age: number
+          avatar: string | null
+          created_at: string
+          id: string
+          name: string
+          parent_id: string
+          pet: string | null
+          preferences: Json
+          updated_at: string
+        }
+        Insert: {
+          age: number
+          avatar?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          parent_id: string
+          pet?: string | null
+          preferences?: Json
+          updated_at?: string
+        }
+        Update: {
+          age?: number
+          avatar?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          parent_id?: string
+          pet?: string | null
+          preferences?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      kids_curriculum_progress: {
+        Row: {
+          child_id: string
+          id: string
+          level: number
+          subject: string
+          updated_at: string
+          xp: number
+        }
+        Insert: {
+          child_id: string
+          id?: string
+          level?: number
+          subject: string
+          updated_at?: string
+          xp?: number
+        }
+        Update: {
+          child_id?: string
+          id?: string
+          level?: number
+          subject?: string
+          updated_at?: string
+          xp?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kids_curriculum_progress_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "kids_child_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kids_difficulty_state: {
+        Row: {
+          child_id: string
+          difficulty: number
+          id: string
+          streak: number
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          child_id: string
+          difficulty?: number
+          id?: string
+          streak?: number
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          child_id?: string
+          difficulty?: number
+          id?: string
+          streak?: number
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kids_difficulty_state_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "kids_child_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       kids_drawing_credits: {
         Row: {
@@ -27995,6 +28244,41 @@ export type Database = {
         }
         Relationships: []
       }
+      kids_economy: {
+        Row: {
+          child_id: string
+          coins: number
+          last_active_date: string | null
+          streak_days: number
+          updated_at: string
+          xp: number
+        }
+        Insert: {
+          child_id: string
+          coins?: number
+          last_active_date?: string | null
+          streak_days?: number
+          updated_at?: string
+          xp?: number
+        }
+        Update: {
+          child_id?: string
+          coins?: number
+          last_active_date?: string | null
+          streak_days?: number
+          updated_at?: string
+          xp?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kids_economy_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: true
+            referencedRelation: "kids_child_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       kids_episodes: {
         Row: {
           created_at: string
@@ -28047,6 +28331,50 @@ export type Database = {
             columns: ["show_id"]
             isOneToOne: false
             referencedRelation: "kids_shows"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kids_family_shares: {
+        Row: {
+          child_id: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          kind: string
+          parent_id: string
+          payload: Json
+          share_token: string
+          title: string
+        }
+        Insert: {
+          child_id: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          kind: string
+          parent_id: string
+          payload?: Json
+          share_token?: string
+          title: string
+        }
+        Update: {
+          child_id?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          kind?: string
+          parent_id?: string
+          payload?: Json
+          share_token?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kids_family_shares_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "kids_child_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -28396,6 +28724,79 @@ export type Database = {
           },
         ]
       }
+      kids_learning_path_steps: {
+        Row: {
+          completed: boolean
+          completed_at: string | null
+          id: string
+          kind: string
+          path_id: string
+          payload: Json
+          position: number
+          title: string
+        }
+        Insert: {
+          completed?: boolean
+          completed_at?: string | null
+          id?: string
+          kind: string
+          path_id: string
+          payload?: Json
+          position: number
+          title: string
+        }
+        Update: {
+          completed?: boolean
+          completed_at?: string | null
+          id?: string
+          kind?: string
+          path_id?: string
+          payload?: Json
+          position?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kids_learning_path_steps_path_id_fkey"
+            columns: ["path_id"]
+            isOneToOne: false
+            referencedRelation: "kids_learning_paths"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kids_learning_paths: {
+        Row: {
+          child_id: string
+          created_at: string
+          day_date: string
+          id: string
+          theme: string
+        }
+        Insert: {
+          child_id: string
+          created_at?: string
+          day_date?: string
+          id?: string
+          theme?: string
+        }
+        Update: {
+          child_id?: string
+          created_at?: string
+          day_date?: string
+          id?: string
+          theme?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kids_learning_paths_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "kids_child_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       kids_math_progress: {
         Row: {
           accuracy_percentage: number | null
@@ -28431,6 +28832,73 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      kids_minigame_scores: {
+        Row: {
+          child_id: string
+          created_at: string
+          game: string
+          id: string
+          max_score: number
+          score: number
+        }
+        Insert: {
+          child_id: string
+          created_at?: string
+          game: string
+          id?: string
+          max_score?: number
+          score?: number
+        }
+        Update: {
+          child_id?: string
+          created_at?: string
+          game?: string
+          id?: string
+          max_score?: number
+          score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kids_minigame_scores_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "kids_child_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kids_narration_prefs: {
+        Row: {
+          auto_read: boolean
+          child_id: string
+          speed: number
+          updated_at: string
+          voice: string
+        }
+        Insert: {
+          auto_read?: boolean
+          child_id: string
+          speed?: number
+          updated_at?: string
+          voice?: string
+        }
+        Update: {
+          auto_read?: boolean
+          child_id?: string
+          speed?: number
+          updated_at?: string
+          voice?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kids_narration_prefs_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: true
+            referencedRelation: "kids_child_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       kids_parental_gate_log: {
         Row: {
@@ -28482,6 +28950,44 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      kids_pending_outputs: {
+        Row: {
+          child_id: string
+          content: string
+          created_at: string
+          id: string
+          kind: string
+          reviewed_at: string | null
+          status: string
+        }
+        Insert: {
+          child_id: string
+          content: string
+          created_at?: string
+          id?: string
+          kind: string
+          reviewed_at?: string | null
+          status?: string
+        }
+        Update: {
+          child_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          reviewed_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kids_pending_outputs_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "kids_child_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       kids_reading_credits: {
         Row: {
@@ -28590,6 +29096,106 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      kids_recommendations: {
+        Row: {
+          child_id: string
+          created_at: string
+          id: string
+          reason: string | null
+          target_route: string | null
+          title: string
+        }
+        Insert: {
+          child_id: string
+          created_at?: string
+          id?: string
+          reason?: string | null
+          target_route?: string | null
+          title: string
+        }
+        Update: {
+          child_id?: string
+          created_at?: string
+          id?: string
+          reason?: string | null
+          target_route?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kids_recommendations_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "kids_child_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kids_safety_flags: {
+        Row: {
+          block_external_links: boolean
+          block_scary: boolean
+          block_unknown_topics: boolean
+          block_violence: boolean
+          custom_blocklist: string[]
+          parent_id: string
+          updated_at: string
+        }
+        Insert: {
+          block_external_links?: boolean
+          block_scary?: boolean
+          block_unknown_topics?: boolean
+          block_violence?: boolean
+          custom_blocklist?: string[]
+          parent_id: string
+          updated_at?: string
+        }
+        Update: {
+          block_external_links?: boolean
+          block_scary?: boolean
+          block_unknown_topics?: boolean
+          block_violence?: boolean
+          custom_blocklist?: string[]
+          parent_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      kids_saved_content: {
+        Row: {
+          child_id: string
+          id: string
+          kind: string
+          payload: Json
+          saved_at: string
+          title: string
+        }
+        Insert: {
+          child_id: string
+          id?: string
+          kind: string
+          payload?: Json
+          saved_at?: string
+          title: string
+        }
+        Update: {
+          child_id?: string
+          id?: string
+          kind?: string
+          payload?: Json
+          saved_at?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kids_saved_content_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "kids_child_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       kids_science_certificates: {
         Row: {
@@ -28745,6 +29351,41 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      kids_screen_time_rules: {
+        Row: {
+          bedtime_end: string
+          bedtime_start: string
+          child_id: string
+          daily_minutes: number
+          hard_lock: boolean
+          updated_at: string
+        }
+        Insert: {
+          bedtime_end?: string
+          bedtime_start?: string
+          child_id: string
+          daily_minutes?: number
+          hard_lock?: boolean
+          updated_at?: string
+        }
+        Update: {
+          bedtime_end?: string
+          bedtime_start?: string
+          child_id?: string
+          daily_minutes?: number
+          hard_lock?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kids_screen_time_rules_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: true
+            referencedRelation: "kids_child_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       kids_shows: {
         Row: {

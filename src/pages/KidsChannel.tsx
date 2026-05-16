@@ -326,6 +326,18 @@ const KidsChannel = () => {
         {/* What's New */}
         <WhatsNewSpotlight />
 
+        {/* New Kids Hub — 18 family tools */}
+        <div className="max-w-7xl mx-auto mb-6">
+          <Button
+            size="lg"
+            onClick={() => navigate('/kids-channel/hub')}
+            className="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white font-bold py-6 text-lg shadow-2xl hover:scale-[1.01] transition"
+          >
+            <Sparkles className="w-6 h-6 mr-2" />
+            Open Kids Hub — 18 new family tools (profiles, learning paths, parental controls, mini-games)
+          </Button>
+        </div>
+
         {/* Interactive Features Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto mb-8">
           <FeatureCard
