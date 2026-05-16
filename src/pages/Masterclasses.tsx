@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLearningContent } from "@/hooks/useLearningContent";
 import { Video, Calendar, Users, Star, Clock } from "lucide-react";
 import { toast } from "sonner";
+import UnifiedXPLeaderboard from "@/components/shared/UnifiedXPLeaderboard";
 
 const Masterclasses = () => {
   const { toast } = useToast();
@@ -227,6 +228,10 @@ const Masterclasses = () => {
               </div>
             </Card>
           ))}
+        </div>
+
+        <div className="mt-12 max-w-4xl mx-auto">
+          <UnifiedXPLeaderboard hub="proclass" />
         </div>
 
         <div className="mt-12">
