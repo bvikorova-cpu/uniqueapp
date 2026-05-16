@@ -9,21 +9,25 @@ export async function mentorCall<T = any>(action: string, payload: Record<string
   return data as T;
 }
 
-export const useMentorPremium = () =>
+export type MentorArea = "career" | "fitness" | "mindset" | "relationships";
+export type MentorAreaSub = { subscribed: boolean; plan?: "monthly" | "yearly"; current_period_end?: string; subscription_id?: string };
+
+export const useMentorPremium = (area?: MentorArea) =>
   useQuery({
-    queryKey: ["mentor-premium"],
+    queryKey: ["mentor-premium", area ?? "all"],
     queryFn: async () => {
-      const { data } = await supabase.functions.invoke("mentor-router", { body: { action: "premium.check" } });
-      return data as { subscribed: boolean; plan?: string; current_period_end?: string };
+      const { data } = await supabase.functions.invoke("mentor-router", { body: { action: "premium.check", area } });
+      return data as { subscribed: boolean; plan?: "monthly" | "yearly"; current_period_end?: string; areas: Record<string, MentorAreaSub> };
     },
     refetchInterval: 60_000,
   });
 
 export const useMentorCheckout = () =>
   useMutation({
-    mutationFn: async (plan: "monthly" | "yearly") => {
-      const { data, error } = await supabase.functions.invoke("mentor-router", { body: { action: "premium.checkout", plan } });
+    mutationFn: async (vars: { plan: "monthly" | "yearly"; area: MentorArea }) => {
+      const { data, error } = await supabase.functions.invoke("mentor-router", { body: { action: "premium.checkout", plan: vars.plan, area: vars.area } });
       if (error) throw error;
+      if (data?.error) throw new Error(data.error);
       if (data?.url) window.open(data.url, "_blank");
       return data;
     },
