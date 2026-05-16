@@ -408,6 +408,9 @@ const MegatalentCategory = () => {
                       </div>
 
                       <div className="flex items-center gap-1">
+                        {currentUserId === submission.user_id && !boostedIds.has(submission.id) && category && (
+                          <MegatalentBoostButton submissionId={submission.id} category={category} />
+                        )}
                         <Button
                           variant="ghost"
                           size="sm"
