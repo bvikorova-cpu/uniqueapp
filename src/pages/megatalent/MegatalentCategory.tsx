@@ -435,6 +435,20 @@ const MegatalentCategory = () => {
           <MegatalentLiveChat category={category} userId={currentUserId} />
         </div>
 
+        {/* Features #34-40 */}
+        <div className="mb-6"><MegatalentClipOfDay category={category} /></div>
+        <div className="mb-6"><MegatalentJudgePanel category={category} categories={config?.categories} userId={currentUserId} /></div>
+        <div className="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <MegatalentEndorsements category={category} categories={config?.categories} userId={currentUserId} />
+          <MegatalentComments category={category} categories={config?.categories} userId={currentUserId} />
+        </div>
+        <div className="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <MegatalentTalentShop userId={currentUserId} />
+          <MegatalentReferralProgram userId={currentUserId} />
+        </div>
+        <div className="mb-6"><MegatalentRivalries category={category} categories={config?.categories} /></div>
+
+
         {/* Content */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
