@@ -126,6 +126,7 @@ import {
   KidsReadingPricing,
   KidsAcademy,
   ColoringPages,
+  ColoringHub,
   TeenCareerCounselor,
   TeenCareerPricing,
   KidsChannel,
