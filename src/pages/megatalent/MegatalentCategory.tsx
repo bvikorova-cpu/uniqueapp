@@ -41,6 +41,13 @@ import MegatalentDailyQuests from "@/components/megatalent/MegatalentDailyQuests
 import MegatalentPredictions from "@/components/megatalent/MegatalentPredictions";
 import MegatalentFanClub from "@/components/megatalent/MegatalentFanClub";
 import MegatalentSeasonPass from "@/components/megatalent/MegatalentSeasonPass";
+import MegatalentEndorsements from "@/components/megatalent/MegatalentEndorsements";
+import MegatalentComments from "@/components/megatalent/MegatalentComments";
+import MegatalentClipOfDay from "@/components/megatalent/MegatalentClipOfDay";
+import MegatalentTalentShop from "@/components/megatalent/MegatalentTalentShop";
+import MegatalentReferralProgram from "@/components/megatalent/MegatalentReferralProgram";
+import MegatalentJudgePanel from "@/components/megatalent/MegatalentJudgePanel";
+import MegatalentRivalries from "@/components/megatalent/MegatalentRivalries";
 import { Badge as UiBadge } from "@/components/ui/badge";
 import { Rocket } from "lucide-react";
 
@@ -427,6 +434,20 @@ const MegatalentCategory = () => {
         <div className="mb-6">
           <MegatalentLiveChat category={category} userId={currentUserId} />
         </div>
+
+        {/* Features #34-40 */}
+        <div className="mb-6"><MegatalentClipOfDay category={category} /></div>
+        <div className="mb-6"><MegatalentJudgePanel category={category} categories={config?.categories} userId={currentUserId} /></div>
+        <div className="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <MegatalentEndorsements category={category} categories={config?.categories} userId={currentUserId} />
+          <MegatalentComments category={category} categories={config?.categories} userId={currentUserId} />
+        </div>
+        <div className="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <MegatalentTalentShop userId={currentUserId} />
+          <MegatalentReferralProgram userId={currentUserId} />
+        </div>
+        <div className="mb-6"><MegatalentRivalries category={category} categories={config?.categories} /></div>
+
 
         {/* Content */}
         {loading ? (
