@@ -36,7 +36,7 @@ Deno.serve(async (req) => {
         },
         quantity: 1,
       }],
-      success_url: `${origin}/megatalent/${category}?boost=success`,
+      success_url: `${origin}/megatalent/${category}?boost=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/megatalent/${category}?boost=cancel`,
       metadata: { user_id: user.id, submission_id, category, kind: "megatalent_boost" },
     });
