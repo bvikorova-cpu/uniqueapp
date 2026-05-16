@@ -3839,6 +3839,7 @@ export type Database = {
           ends_at: string | null
           id: string
           max_participants: number
+          prize_amount_cents: number
           signup_ends_at: string | null
           starts_at: string | null
           status: Database["public"]["Enums"]["br_status"]
@@ -3852,6 +3853,7 @@ export type Database = {
           ends_at?: string | null
           id?: string
           max_participants?: number
+          prize_amount_cents?: number
           signup_ends_at?: string | null
           starts_at?: string | null
           status?: Database["public"]["Enums"]["br_status"]
@@ -3865,6 +3867,7 @@ export type Database = {
           ends_at?: string | null
           id?: string
           max_participants?: number
+          prize_amount_cents?: number
           signup_ends_at?: string | null
           starts_at?: string | null
           status?: Database["public"]["Enums"]["br_status"]
@@ -53435,6 +53438,10 @@ export type Database = {
         }[]
       }
       get_auth_uid: { Args: never; Returns: string }
+      get_battle_royale_available_payout: {
+        Args: { _tournament_id: string }
+        Returns: number
+      }
       get_campaign_available_balance: {
         Args: { _campaign_id: string; _campaign_type: string }
         Returns: {
@@ -53969,6 +53976,10 @@ export type Database = {
       }
       iq_tier_from_score: { Args: { _iq: number }; Returns: string }
       is_age_verified: { Args: { p_user_id: string }; Returns: boolean }
+      is_battle_royale_winner: {
+        Args: { _tournament_id: string; _user_id: string }
+        Returns: boolean
+      }
       is_campaign_owner: {
         Args: { _campaign_id: string; _campaign_type: string; _user_id: string }
         Returns: boolean
