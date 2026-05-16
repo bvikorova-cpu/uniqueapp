@@ -35,6 +35,7 @@ import MegatalentClipOfDay from "@/components/megatalent/MegatalentClipOfDay";
 import MegatalentTalentShop from "@/components/megatalent/MegatalentTalentShop";
 import MegatalentReferralProgram from "@/components/megatalent/MegatalentReferralProgram";
 import BattleRoyalePayouts from "@/components/megatalent/BattleRoyalePayouts";
+import MegatalentNotificationBell from "@/components/megatalent/MegatalentNotificationBell";
 import UnifiedXPLeaderboard from "@/components/shared/UnifiedXPLeaderboard";
 import NextVotingCountdown from "@/components/megatalent/NextVotingCountdown";
 import MegaTalentCategoryGrid from "@/components/megatalent/MegaTalentCategoryGrid";
@@ -536,6 +537,10 @@ const Megatalent = () => {
       <div className="container mx-auto px-4 max-w-6xl">
         {/* Countdown to next voting round + €10,000 prize draw */}
         <NextVotingCountdown />
+
+        <div className="flex justify-end mb-2">
+          <MegatalentNotificationBell />
+        </div>
 
         {/* Cinematic Video Hero */}
         <MegaTalentHero totalVotes={totalVotes} isSubscribed={isSubscribed} subscriptionTier={subscriptionTier} />
