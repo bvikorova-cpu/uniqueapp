@@ -13,7 +13,7 @@ type Purchase = { item_id: string; created_at: string };
 interface Props { userId: string | null; }
 
 const MegatalentTalentShop = ({ userId }: Props) => {
-  const { totalXp } = useUserXp(userId);
+  const { xp: totalXp } = useUserXp(userId);
   const [items, setItems] = useState<Item[]>([]);
   const [purchases, setPurchases] = useState<Purchase[]>([]);
   const [loading, setLoading] = useState(true);
