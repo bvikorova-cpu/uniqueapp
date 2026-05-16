@@ -319,6 +319,7 @@ const MegatalentCategory = () => {
           <div className="mb-6 space-y-6">
             <MegatalentAchievements userId={currentUserId} />
             <MegatalentVotingStreak userId={currentUserId} />
+            <MegatalentCertificate userId={currentUserId} category={category} />
           </div>
         )}
 
