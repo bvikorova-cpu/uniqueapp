@@ -46636,6 +46636,36 @@ export type Database = {
         }
         Relationships: []
       }
+      talent_clip_of_day: {
+        Row: {
+          awarded_user_id: string | null
+          category: string
+          created_at: string
+          for_date: string
+          id: string
+          submission_id: string
+          votes_count: number
+        }
+        Insert: {
+          awarded_user_id?: string | null
+          category: string
+          created_at?: string
+          for_date: string
+          id?: string
+          submission_id: string
+          votes_count?: number
+        }
+        Update: {
+          awarded_user_id?: string | null
+          category?: string
+          created_at?: string
+          for_date?: string
+          id?: string
+          submission_id?: string
+          votes_count?: number
+        }
+        Relationships: []
+      }
       talent_comments: {
         Row: {
           comment_text: string
@@ -46667,6 +46697,155 @@ export type Database = {
             columns: ["submission_id"]
             isOneToOne: false
             referencedRelation: "talent_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      talent_endorsements: {
+        Row: {
+          category: string | null
+          created_at: string
+          endorser_id: string
+          id: string
+          skill: string
+          talent_user_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          endorser_id: string
+          id?: string
+          skill: string
+          talent_user_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          endorser_id?: string
+          id?: string
+          skill?: string
+          talent_user_id?: string
+        }
+        Relationships: []
+      }
+      talent_judge_picks: {
+        Row: {
+          category: string | null
+          created_at: string
+          id: string
+          judge_id: string
+          note: string | null
+          submission_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          judge_id: string
+          note?: string | null
+          submission_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          judge_id?: string
+          note?: string | null
+          submission_id?: string
+        }
+        Relationships: []
+      }
+      talent_referrals: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          redeemed_at: string | null
+          referred_id: string | null
+          referrer_id: string
+          rewarded: boolean
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          redeemed_at?: string | null
+          referred_id?: string | null
+          referrer_id: string
+          rewarded?: boolean
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          redeemed_at?: string | null
+          referred_id?: string | null
+          referrer_id?: string
+          rewarded?: boolean
+        }
+        Relationships: []
+      }
+      talent_shop_items: {
+        Row: {
+          active: boolean
+          cost_xp: number
+          created_at: string
+          description: string | null
+          id: string
+          item_type: string
+          name: string
+          payload: Json
+        }
+        Insert: {
+          active?: boolean
+          cost_xp: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          item_type: string
+          name: string
+          payload?: Json
+        }
+        Update: {
+          active?: boolean
+          cost_xp?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          item_type?: string
+          name?: string
+          payload?: Json
+        }
+        Relationships: []
+      }
+      talent_shop_purchases: {
+        Row: {
+          cost_xp: number
+          created_at: string
+          id: string
+          item_id: string
+          user_id: string
+        }
+        Insert: {
+          cost_xp: number
+          created_at?: string
+          id?: string
+          item_id: string
+          user_id: string
+        }
+        Update: {
+          cost_xp?: number
+          created_at?: string
+          id?: string
+          item_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "talent_shop_purchases_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "talent_shop_items"
             referencedColumns: ["id"]
           },
         ]
@@ -53781,6 +53960,24 @@ export type Database = {
           reason: string
         }[]
       }
+      pick_clip_of_day: {
+        Args: { _category: string; _for_date?: string }
+        Returns: {
+          awarded_user_id: string | null
+          category: string
+          created_at: string
+          for_date: string
+          id: string
+          submission_id: string
+          votes_count: number
+        }
+        SetofOptions: {
+          from: "*"
+          to: "talent_clip_of_day"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       place_auction_bid: {
         Args: { p_amount: number; p_auction_id: string }
         Returns: Json
@@ -53863,12 +54060,46 @@ export type Database = {
         Returns: undefined
       }
       purchase_mystery_box: { Args: { p_box_id: string }; Returns: string }
+      purchase_shop_item: {
+        Args: { _item_id: string }
+        Returns: {
+          cost_xp: number
+          created_at: string
+          id: string
+          item_id: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "talent_shop_purchases"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       recompute_affiliate_tier: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["affiliate_tier"]
       }
       redeem_iq_promo_code: { Args: { _code: string }; Returns: Json }
       redeem_iq_referral_code: { Args: { _code: string }; Returns: Json }
+      redeem_referral: {
+        Args: { _code: string }
+        Returns: {
+          code: string
+          created_at: string
+          id: string
+          redeemed_at: string | null
+          referred_id: string | null
+          referrer_id: string
+          rewarded: boolean
+        }
+        SetofOptions: {
+          from: "*"
+          to: "talent_referrals"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       redeem_shop_item: { Args: { _item_code: string }; Returns: Json }
       reset_best_friend_monthly_messages: { Args: never; Returns: undefined }
       reset_psychology_monthly_messages: { Args: never; Returns: undefined }
