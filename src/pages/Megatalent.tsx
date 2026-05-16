@@ -538,6 +538,10 @@ const Megatalent = () => {
         {/* Countdown to next voting round + €10,000 prize draw */}
         <NextVotingCountdown />
 
+        <div className="flex justify-end mb-2">
+          <MegatalentNotificationBell />
+        </div>
+
         {/* Cinematic Video Hero */}
         <MegaTalentHero totalVotes={totalVotes} isSubscribed={isSubscribed} subscriptionTier={subscriptionTier} />
 
