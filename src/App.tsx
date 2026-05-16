@@ -709,6 +709,10 @@ const App = () => {
                         <Route path="/premium-store" element={<PremiumStore />} />
                         <Route path="/premium" element={<Premium />} />
                         <Route path="/ai-mentor" element={<AIMentor />} />
+                        <Route path="/ai-mentor/hub" element={<ProtectedRoute><MentorHub /></ProtectedRoute>} />
+                        <Route path="/ai-mentor/premium" element={<ProtectedRoute><MentorPremium /></ProtectedRoute>} />
+                        <Route path="/ai-mentor/tools/:feature" element={<ProtectedRoute><MentorFeature /></ProtectedRoute>} />
+                        <Route path="/mentor-360/:token" element={<Mentor360Public />} />
                         <Route path="/ai-mentor/:area" element={<AIMentorChat />} />
                         <Route path="/content-studio" element={<ContentStudio />} />
                         <Route path="/companions" element={<AICompanions />} />
