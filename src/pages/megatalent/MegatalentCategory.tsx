@@ -35,6 +35,12 @@ import MegatalentBattleRoyale from "@/components/megatalent/MegatalentBattleRoya
 import MegatalentStories from "@/components/megatalent/MegatalentStories";
 import MegatalentPushOptIn from "@/components/megatalent/MegatalentPushOptIn";
 import MegatalentTalentPortfolio from "@/components/megatalent/MegatalentTalentPortfolio";
+import MegatalentTrophyCase from "@/components/megatalent/MegatalentTrophyCase";
+import MegatalentLiveChat from "@/components/megatalent/MegatalentLiveChat";
+import MegatalentDailyQuests from "@/components/megatalent/MegatalentDailyQuests";
+import MegatalentPredictions from "@/components/megatalent/MegatalentPredictions";
+import MegatalentFanClub from "@/components/megatalent/MegatalentFanClub";
+import MegatalentSeasonPass from "@/components/megatalent/MegatalentSeasonPass";
 import { Badge as UiBadge } from "@/components/ui/badge";
 import { Rocket } from "lucide-react";
 
