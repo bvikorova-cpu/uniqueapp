@@ -49,8 +49,8 @@ const PhotoMathSolver = () => {
     try {
       await useCredit();
       credited = true;
-      const { data, error } = await supabase.functions.invoke("photo-math-solve", {
-        body: { imageDataUrl: imageUrl, question },
+      const { data, error } = await supabase.functions.invoke("education-ai", {
+        body: { action: "photo_math", imageDataUrl: imageUrl, question },
       });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
