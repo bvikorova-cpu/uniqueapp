@@ -20,7 +20,7 @@ export function DailyLoginRewardDialog() {
     const res = await claim();
     if (res?.claimed) {
       toast({
-        title: `+${res.bonus} kredit${(res.bonus ?? 1) > 1 ? "ov" : ""}`,
+        title: `+${res.bonus} credit${(res.bonus ?? 1) === 1 ? "" : "s"}`,
         description: `Streak: ${res.streak} days 🔥`,
       });
     } else if (res) {

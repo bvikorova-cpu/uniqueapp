@@ -112,10 +112,10 @@ async function syncMegatalentSubscription(
       await supabase.from("notifications").insert({
         user_id: userId,
         type: "megatalent_premium_unlocked",
-        title: tier === "top_premium" ? "Top Premium aktivovaný 🚀" : "Premium aktivovaný ⭐",
+        title: tier === "top_premium" ? "Top Premium activated 🚀" : "Premium activated ⭐",
         message: tier === "top_premium"
-          ? "Tvoje Megatalent Top Premium funkcie sú odomknuté: 100 000 bonusových hlasov + 50% boost."
-          : "Tvoje Megatalent Premium funkcie sú odomknuté.",
+          ? "Your Megatalent Top Premium features are unlocked: 100,000 bonus votes + 50% boost."
+          : "Your Megatalent Premium features are unlocked.",
         is_read: false,
       });
     } catch (e) {
@@ -950,7 +950,7 @@ serve(async (req) => {
               user_id: attr.referrer_id,
               type: "referral_bonus",
               title: `+${rewardEur} € referral bonus`,
-              message: `Tvoj pozvaný používateľ zaplatil predplatné — pripísali sme ti ${rewardEur} € bonus.`,
+              message: `Your invited user paid for a subscription — we credited you a €${rewardEur} bonus.`,
               is_read: false,
             });
           } catch (notifErr) {

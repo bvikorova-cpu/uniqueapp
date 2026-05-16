@@ -37,7 +37,7 @@ export const HookAnalyzerView = ({ onBack }: { onBack: () => void }) => {
         <Badge className="ml-auto bg-gradient-to-r from-red-500 to-orange-600 text-white">3 CR</Badge>
       </div>
       <div className="grid lg:grid-cols-3 gap-6">
-        <Card><CardHeader><CardTitle>Tvoj hook</CardTitle></CardHeader><CardContent className="space-y-4">
+        <Card><CardHeader><CardTitle>Your hook</CardTitle></CardHeader><CardContent className="space-y-4">
           <div><Label>Hook (first 3s) *</Label><Input value={hook} onChange={e => setHook(e.target.value)} placeholder={`e.g. "POV: It's 2am..."`} /></div>
           <div><Label>Target audience</Label><Input value={audience} onChange={e => setAudience(e.target.value)} /></div>
           <Button onClick={go} disabled={loading} className="w-full bg-gradient-to-r from-red-500 to-orange-600">{loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Analyze (3 CR)'}</Button>

@@ -125,7 +125,7 @@ export default function MegatalentLeaderboard({ category, categories }: Props) {
               </div>
             ) : rows.length === 0 ? (
               <p className="text-center text-xs text-muted-foreground py-6">
-                Žiadne príspevky v tomto období
+                No entries in this period
               </p>
             ) : (
               <div className="space-y-1.5 max-h-[420px] overflow-y-auto pr-1">

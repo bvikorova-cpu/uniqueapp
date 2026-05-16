@@ -103,7 +103,7 @@ export const MegatalentWatchParty = ({ category }: Props) => {
     if (!input.trim() || !activeStream) return;
     const { data: u } = await supabase.auth.getUser();
     if (!u.user) {
-      toast({ title: "Prihlás sa pre chat", variant: "destructive" });
+      toast({ title: "Sign in to chat", variant: "destructive" });
       return;
     }
     const text = input.trim();
@@ -113,14 +113,14 @@ export const MegatalentWatchParty = ({ category }: Props) => {
       user_id: u.user.id,
       content: text,
     });
-    if (error) toast({ title: "Chyba", description: error.message, variant: "destructive" });
+    if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
   };
 
   const createStream = async () => {
     if (!title.trim()) return;
     const { data: u } = await supabase.auth.getUser();
     if (!u.user) {
-      toast({ title: "Prihlás sa pre vytvorenie streamu", variant: "destructive" });
+      toast({ title: "Sign in to create a stream", variant: "destructive" });
       return;
     }
     const { data, error } = await (supabase as any)
@@ -135,13 +135,13 @@ export const MegatalentWatchParty = ({ category }: Props) => {
       .select()
       .single();
     if (error) {
-      toast({ title: "Chyba", description: error.message, variant: "destructive" });
+      toast({ title: "Error", description: error.message, variant: "destructive" });
       return;
     }
     setTitle("");
     setCreating(false);
     setActiveStream(data as Stream);
-    toast({ title: "🎥 Stream je live!" });
+    toast({ title: "🎥 Stream is live!" });
   };
 
   const endStream = async () => {
@@ -151,7 +151,7 @@ export const MegatalentWatchParty = ({ category }: Props) => {
       .update({ status: "ended", ended_at: new Date().toISOString() })
       .eq("id", activeStream.id);
     setActiveStream(null);
-    toast({ title: "Stream ukončený" });
+    toast({ title: "Stream ended" });
   };
 
   if (loading) return null;
@@ -175,17 +175,17 @@ export const MegatalentWatchParty = ({ category }: Props) => {
         {creating && !activeStream && (
           <div className="space-y-2 p-3 rounded-lg bg-card/50 border border-border/50">
             <Input
-              placeholder="Názov streamu…"
+              placeholder="Stream title…"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               maxLength={100}
             />
             <div className="flex gap-2">
               <Button size="sm" onClick={createStream} className="flex-1">
-                <Radio className="h-3.5 w-3.5 mr-1" /> Spustiť
+                <Radio className="h-3.5 w-3.5 mr-1" /> Start
               </Button>
               <Button size="sm" variant="ghost" onClick={() => setCreating(false)}>
-                Zrušiť
+                Cancel
               </Button>
             </div>
           </div>
@@ -201,20 +201,20 @@ export const MegatalentWatchParty = ({ category }: Props) => {
                 <span className="font-semibold text-sm truncate">{activeStream.title}</span>
               </div>
               <Button size="sm" variant="ghost" onClick={() => setActiveStream(null)}>
-                ← Späť
+                ← Back
               </Button>
             </div>
             <div className="aspect-video bg-black rounded-lg flex items-center justify-center">
               <div className="text-center text-white/70 px-4">
                 <Tv className="h-10 w-10 mx-auto mb-2 opacity-50" />
-                <p className="text-xs">Watch party prebieha</p>
+                <p className="text-xs">Watch party in progress</p>
               </div>
             </div>
             <div className="border border-border/50 rounded-lg bg-card/40">
               <div className="h-48 overflow-y-auto p-2 space-y-1">
                 {messages.length === 0 ? (
                   <p className="text-xs text-muted-foreground text-center py-6">
-                    Buď prvý kto napíše do chatu 💬
+                    Be the first to write in the chat 💬
                   </p>
                 ) : (
                   messages.map((m) => (
@@ -233,7 +233,7 @@ export const MegatalentWatchParty = ({ category }: Props) => {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && send()}
-                  placeholder="Napíš správu…"
+                  placeholder="Write a message…"
                   className="h-8 text-xs"
                   maxLength={500}
                 />
@@ -243,12 +243,12 @@ export const MegatalentWatchParty = ({ category }: Props) => {
               </div>
             </div>
             <Button size="sm" variant="destructive" className="w-full" onClick={endStream}>
-              Ukončiť stream
+              End stream
             </Button>
           </div>
         ) : streams.length === 0 ? (
           <p className="text-xs text-muted-foreground text-center py-3">
-            Žiadne aktívne streamy. Buď prvý!
+            No active streams. Be the first!
           </p>
         ) : (
           <div className="space-y-2">

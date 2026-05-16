@@ -16,8 +16,8 @@ export const MegatalentVipBanner = () => {
     const vip = params.get("vip");
     if (vip === "success") {
       toast({
-        title: "👑 VIP Pass aktivovaný!",
-        description: "Užívaj si exkluzívne výhody.",
+        title: "👑 VIP Pass activated!",
+        description: "Enjoy your exclusive perks.",
       });
       refresh();
       params.delete("vip");
@@ -44,7 +44,7 @@ export const MegatalentVipBanner = () => {
               </Badge>
             </div>
             <p className="text-xs text-muted-foreground">
-              Bez reklám • Skoré hlasovanie • Exkluzívny obsah
+              Ad-free • Early voting • Exclusive content
             </p>
           </div>
         </CardContent>
@@ -65,7 +65,7 @@ export const MegatalentVipBanner = () => {
               </Badge>
             </h3>
             <p className="text-xs text-muted-foreground">
-              Pre fanúšikov ktorí chcú viac z Megatalent
+              For fans who want more from Megatalent
             </p>
           </div>
         </div>
@@ -73,11 +73,11 @@ export const MegatalentVipBanner = () => {
         <div className="grid grid-cols-2 gap-2 text-xs">
           <div className="flex items-center gap-1.5">
             <EyeOff className="h-3.5 w-3.5 text-primary" />
-            <span>Bez reklám</span>
+            <span>Ad-free</span>
           </div>
           <div className="flex items-center gap-1.5">
             <Zap className="h-3.5 w-3.5 text-primary" />
-            <span>Skoré hlasovanie</span>
+            <span>Early voting</span>
           </div>
           <div className="flex items-center gap-1.5">
             <Sparkles className="h-3.5 w-3.5 text-primary" />
@@ -85,7 +85,7 @@ export const MegatalentVipBanner = () => {
           </div>
           <div className="flex items-center gap-1.5">
             <Star className="h-3.5 w-3.5 text-primary" />
-            <span>VIP odznak</span>
+            <span>VIP badge</span>
           </div>
         </div>
 
@@ -95,7 +95,7 @@ export const MegatalentVipBanner = () => {
           size="sm"
         >
           <Crown className="h-4 w-4 mr-2" />
-          Stať sa VIP divákom
+          Become a VIP viewer
         </Button>
       </CardContent>
     </Card>

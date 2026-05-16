@@ -133,7 +133,7 @@ export default function AnalyzerResult() {
                 document.body.appendChild(a); a.click(); a.remove();
                 URL.revokeObjectURL(url);
                 toast.success("Downloaded");
-              } catch { toast.error("Stiahnutie zlyhalo"); }
+              } catch { toast.error("Download failed"); }
             }}><Download className="w-4 h-4" /></Button>
           </div>
         </div>
