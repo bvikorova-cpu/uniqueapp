@@ -92,13 +92,11 @@ export const useAddCard = () => {
         .select()
         .single();
       if (error) throw error;
-      // bump count
-      await supabase.rpc("increment", { x: 1 }).then(() => {}).catch(() => {});
-      const { data: cnt } = await supabase
+      const { count } = await supabase
         .from("education_flashcards")
         .select("id", { count: "exact", head: true })
         .eq("deck_id", card.deck_id);
-      await supabase.from("education_flashcard_decks").update({ card_count: (cnt as any)?.length ?? 0 }).eq("id", card.deck_id);
+      await supabase.from("education_flashcard_decks").update({ card_count: count ?? 0 }).eq("id", card.deck_id);
       return data as Flashcard;
     },
     onSuccess: (_, vars) => {
