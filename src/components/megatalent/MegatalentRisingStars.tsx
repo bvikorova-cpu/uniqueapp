@@ -41,7 +41,7 @@ export default function MegatalentRisingStars({ category, categories }: Props) {
           .gte("created_at", sevenDaysAgo)
           .order("votes_count", { ascending: false })
           .limit(5);
-        if (cats) q = q.in("category", cats);
+        if (cats) q = q.in("category", cats as any);
 
         const { data, error } = await q;
         if (error) throw error;
