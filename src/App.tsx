@@ -807,6 +807,7 @@ const App = () => {
                         <Route path="/healthcare-dashboard" element={<HealthcareProviderDashboard />} />
                         <Route path="/healthcare-library" element={<HealthcareContentLibrary />} />
                         <Route path="/brand-battle" element={<BrandBattle />} />
+                        <Route path="/brand-battle/hub" element={<BrandArenaHub />} />
                         <Route path="/sponsor-registration" element={<SponsorRegistration />} />
                         <Route path="/sponsor-dashboard" element={<ProtectedRoute><SponsorDashboard /></ProtectedRoute>} />
                         <Route path="/brain-duel" element={<ProtectedRoute><BrainDuel /></ProtectedRoute>} />
