@@ -53957,7 +53957,7 @@ export type Database = {
         | "amulet"
         | "shield"
       affiliate_tier: "bronze" | "silver" | "gold" | "diamond"
-      app_role: "admin" | "moderator" | "user" | "employer"
+      app_role: "admin" | "moderator" | "user" | "employer" | "judge"
       br_match_status: "pending" | "open" | "closed"
       br_status: "signup" | "active" | "completed"
       clothing_category:
@@ -54317,7 +54317,7 @@ export const Constants = {
         "shield",
       ],
       affiliate_tier: ["bronze", "silver", "gold", "diamond"],
-      app_role: ["admin", "moderator", "user", "employer"],
+      app_role: ["admin", "moderator", "user", "employer", "judge"],
       br_match_status: ["pending", "open", "closed"],
       br_status: ["signup", "active", "completed"],
       clothing_category: [
