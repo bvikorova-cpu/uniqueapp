@@ -53219,6 +53219,10 @@ export type Database = {
           unified_total: number
         }[]
       }
+      award_hub_xp_for_user: {
+        Args: { _amount: number; _hub: string; _user_id: string }
+        Returns: undefined
+      }
       award_iq_badge: { Args: { _code: string }; Returns: boolean }
       award_iq_badges: { Args: never; Returns: string[] }
       award_iq_season_xp: { Args: { amount: number }; Returns: Json }
