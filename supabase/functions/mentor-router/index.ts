@@ -82,6 +82,7 @@ Deno.serve(async (req) => {
     switch (action) {
       case "premium.checkout": {
         const plan = body.plan === "yearly" ? "yearly" : "monthly";
+        const area = ["career", "fitness", "mindset", "relationships"].includes(body.area) ? body.area : "career";
         const priceId = MENTOR_PRICES[plan];
         if (!user.email) return json({ error: "email required" }, 400);
         const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
@@ -89,43 +90,57 @@ Deno.serve(async (req) => {
         const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
         const customers = await stripe.customers.list({ email: user.email, limit: 1 });
         const customerId = customers.data[0]?.id;
+
+        // Block duplicate subscription for the same area
+        if (customerId) {
+          const existing = await stripe.subscriptions.list({ customer: customerId, status: "active", limit: 50 });
+          const dupe = existing.data.find((s) => (s.metadata?.mentor_area === area) && MENTOR_PRICE_TO_PLAN[s.items.data[0]?.price.id]);
+          if (dupe) return json({ error: `You already have an active ${area} coach subscription.` }, 409);
+        }
+
         const origin = req.headers.get("origin") || "https://uniqueapp.fun";
         const session = await stripe.checkout.sessions.create({
           customer: customerId,
           customer_email: customerId ? undefined : user.email,
           line_items: [{ price: priceId, quantity: 1 }],
           mode: "subscription",
-          success_url: `${origin}/ai-mentor/premium?status=success`,
+          success_url: `${origin}/ai-mentor/premium?status=success&area=${area}`,
           cancel_url: `${origin}/ai-mentor/premium?status=cancel`,
-          metadata: { user_id: userId, plan },
+          metadata: { user_id: userId, plan, mentor_area: area },
+          subscription_data: { metadata: { user_id: userId, plan, mentor_area: area } },
         });
         return json({ url: session.url });
       }
       case "premium.check": {
-        if (!user.email) return json({ subscribed: false });
+        // Returns map of per-area subscriptions, plus aggregate `subscribed` if any area is active
+        const requestedArea = body.area as string | undefined;
+        if (!user.email) return json({ subscribed: false, areas: {} });
         const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
-        if (!stripeKey) return json({ subscribed: false, error: "Stripe is not configured" }, 200);
+        if (!stripeKey) return json({ subscribed: false, areas: {}, error: "Stripe is not configured" }, 200);
         const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
         const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-        if (!customers.data.length) {
-          await admin.from("mentor_premium_subs").upsert({ user_id: userId, email: user.email, status: "inactive", plan: "monthly" }, { onConflict: "user_id" });
-          return json({ subscribed: false });
-        }
+        if (!customers.data.length) return json({ subscribed: false, areas: {} });
         const customerId = customers.data[0].id;
-        const subs = await stripe.subscriptions.list({ customer: customerId, status: "active", limit: 5 });
-        const mentorSub = subs.data.find((s) => s.items.data.some((i) => MENTOR_PRICE_TO_PLAN[i.price.id]));
-        if (!mentorSub) {
-          await admin.from("mentor_premium_subs").upsert({ user_id: userId, email: user.email, stripe_customer_id: customerId, status: "inactive", plan: "monthly" }, { onConflict: "user_id" });
-          return json({ subscribed: false });
+        const subs = await stripe.subscriptions.list({ customer: customerId, status: "active", limit: 50 });
+        const areas: Record<string, { subscribed: boolean; plan: string; current_period_end: string; subscription_id: string }> = {};
+        for (const s of subs.data) {
+          const item = s.items.data.find((i) => MENTOR_PRICE_TO_PLAN[i.price.id]);
+          if (!item) continue;
+          const a = (s.metadata?.mentor_area as string) || "career";
+          const plan = MENTOR_PRICE_TO_PLAN[item.price.id];
+          const periodEnd = new Date((s as any).current_period_end * 1000).toISOString();
+          areas[a] = { subscribed: true, plan, current_period_end: periodEnd, subscription_id: s.id };
+          await admin.from("mentor_premium_subs").upsert({
+            user_id: userId, email: user.email, area: a,
+            stripe_customer_id: customerId, stripe_subscription_id: s.id,
+            status: "active", plan, current_period_end: periodEnd,
+          }, { onConflict: "user_id,area" });
         }
-        const item = mentorSub.items.data.find((i) => MENTOR_PRICE_TO_PLAN[i.price.id])!;
-        const plan = MENTOR_PRICE_TO_PLAN[item.price.id];
-        const periodEnd = new Date((mentorSub as any).current_period_end * 1000).toISOString();
-        await admin.from("mentor_premium_subs").upsert({
-          user_id: userId, email: user.email, stripe_customer_id: customerId, stripe_subscription_id: mentorSub.id,
-          status: "active", plan, current_period_end: periodEnd,
-        }, { onConflict: "user_id" });
-        return json({ subscribed: true, plan, current_period_end: periodEnd });
+        if (requestedArea) {
+          const a = areas[requestedArea];
+          return json({ subscribed: !!a, ...(a ?? {}), areas });
+        }
+        return json({ subscribed: Object.keys(areas).length > 0, areas });
       }
 
       // ───── 1. MEMORY ─────
