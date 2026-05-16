@@ -41,7 +41,9 @@ export default function MentorHub() {
             <p className="text-muted-foreground">All 18 AI coaching tools in one place.</p>
           </div>
           {sub?.subscribed ? (
-            <span className="text-xs font-bold bg-primary/15 text-primary px-3 py-1 rounded-full">✓ Premium · {sub.plan}</span>
+            <span className="text-xs font-bold bg-primary/15 text-primary px-3 py-1 rounded-full">
+              ✓ {Object.keys(sub.areas ?? {}).length} coach{Object.keys(sub.areas ?? {}).length === 1 ? "" : "es"} active
+            </span>
           ) : (
             <Button asChild><Link to="/ai-mentor/premium"><Crown className="w-4 h-4 mr-1" /> Get Premium</Link></Button>
           )}
