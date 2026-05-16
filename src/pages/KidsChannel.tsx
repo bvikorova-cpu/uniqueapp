@@ -16,7 +16,7 @@ import { motion } from "framer-motion";
 
 // New components
 import { KidsHero } from "@/components/kids/KidsHero";
-import { MascotGuide } from "@/components/kids/MascotGuide";
+
 import { WhatsNewSpotlight } from "@/components/kids/WhatsNewSpotlight";
 import { DailyStars } from "@/components/kids/DailyStars";
 import { AdventureMap } from "@/components/kids/AdventureMap";
