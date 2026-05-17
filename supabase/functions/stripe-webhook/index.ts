@@ -846,6 +846,17 @@ serve(async (req) => {
         } else {
           log("dunning recorded", { sub: subId, kind, attempt: inv.attempt_count });
         }
+
+        // ── Campaign donation: flag monthly donation as past_due ──
+        try {
+          const { error: cdErr } = await supabase
+            .from("campaign_donations")
+            .update({ subscription_status: "past_due" })
+            .eq("stripe_subscription_id", subId);
+          if (cdErr) log("donation past_due update failed", { err: cdErr.message });
+        } catch (e) {
+          log("donation past_due handler error", { err: (e as Error).message });
+        }
         break;
       }
 
