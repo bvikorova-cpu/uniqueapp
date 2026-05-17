@@ -382,6 +382,7 @@ import {
   CreateMedicalCampaign,
   DonationReceipt,
   FundraisingDashboard,
+  DonorDashboard,
   CampaignDashboard,
   DreamMaker,
   CreateDreamCampaign,
