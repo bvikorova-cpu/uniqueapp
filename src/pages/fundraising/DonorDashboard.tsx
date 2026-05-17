@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Heart, Receipt, Repeat, TrendingUp, ArrowLeft, Download, Calendar, Sparkles, Undo2, Loader2 } from "lucide-react";
+import { Heart, Receipt, Repeat, TrendingUp, ArrowLeft, Download, Calendar, Sparkles, Undo2, Loader2, Bell, AlertTriangle, CheckCircle2, XCircle, CreditCard } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "@/hooks/use-toast";
 import {
@@ -25,6 +25,20 @@ interface Donation {
   is_anonymous: boolean;
   message: string | null;
   status: string;
+  created_at: string;
+  subscription_status?: string | null;
+  past_due_since?: string | null;
+  dunning_notifications_sent?: number | null;
+  cancelled_at?: string | null;
+}
+
+interface DunningNotification {
+  id: string;
+  type: string;
+  title: string;
+  message: string;
+  related_id: string | null;
+  is_read: boolean;
   created_at: string;
 }
 
@@ -46,8 +60,10 @@ const typeRoutes: Record<string, string> = {
 export default function DonorDashboard() {
   const navigate = useNavigate();
   const [donations, setDonations] = useState<Donation[]>([]);
+  const [dunningNotifs, setDunningNotifs] = useState<DunningNotification[]>([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
+  const [openingPortal, setOpeningPortal] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -57,19 +73,85 @@ export default function DonorDashboard() {
         return;
       }
       setUserId(session.user.id);
-      const { data, error } = await supabase
-        .from("campaign_donations")
-        .select("*")
-        .eq("donor_id", session.user.id)
-        .order("created_at", { ascending: false });
-      if (error) {
-        toast({ title: "Error loading donations", description: error.message, variant: "destructive" });
+      const [donRes, notifRes] = await Promise.all([
+        supabase
+          .from("campaign_donations")
+          .select("*")
+          .eq("donor_id", session.user.id)
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("notifications")
+          .select("id, type, title, message, related_id, is_read, created_at")
+          .eq("user_id", session.user.id)
+          .in("type", ["donation_payment_failed", "donation_cancelled_dunning"])
+          .order("created_at", { ascending: false })
+          .limit(50),
+      ]);
+      if (donRes.error) {
+        toast({ title: "Error loading donations", description: donRes.error.message, variant: "destructive" });
       } else {
-        setDonations((data as Donation[]) || []);
+        setDonations((donRes.data as Donation[]) || []);
+      }
+      if (!notifRes.error) {
+        setDunningNotifs((notifRes.data as DunningNotification[]) || []);
       }
       setLoading(false);
     })();
   }, [navigate]);
+
+  const unreadAlerts = useMemo(() => dunningNotifs.filter(n => !n.is_read).length, [dunningNotifs]);
+
+  // Map campaign_id -> latest monthly donation (to derive current resolution status)
+  const donationByCampaign = useMemo(() => {
+    const m = new Map<string, Donation>();
+    donations.filter(d => d.is_monthly).forEach(d => {
+      if (!m.has(d.campaign_id)) m.set(d.campaign_id, d);
+    });
+    return m;
+  }, [donations]);
+
+  const resolutionFor = (n: DunningNotification): { label: string; tone: "warn" | "ok" | "bad" | "neutral"; icon: any } => {
+    if (n.type === "donation_cancelled_dunning") {
+      return { label: "Subscription cancelled", tone: "bad", icon: XCircle };
+    }
+    const d = n.related_id ? donationByCampaign.get(n.related_id) : null;
+    const sub = d?.subscription_status;
+    if (sub === "active") return { label: "Resolved — payment recovered", tone: "ok", icon: CheckCircle2 };
+    if (sub === "cancelled") return { label: "Subscription cancelled", tone: "bad", icon: XCircle };
+    if (sub === "past_due") return { label: "Action needed — payment failed", tone: "warn", icon: AlertTriangle };
+    return { label: "Unresolved", tone: "neutral", icon: AlertTriangle };
+  };
+
+  const markAlertRead = async (id: string) => {
+    setDunningNotifs(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
+    await supabase.from("notifications").update({ is_read: true }).eq("id", id);
+  };
+
+  const markAllAlertsRead = async () => {
+    if (!userId || unreadAlerts === 0) return;
+    setDunningNotifs(prev => prev.map(n => ({ ...n, is_read: true })));
+    await supabase
+      .from("notifications")
+      .update({ is_read: true })
+      .eq("user_id", userId)
+      .in("type", ["donation_payment_failed", "donation_cancelled_dunning"])
+      .eq("is_read", false);
+  };
+
+  const openBillingPortal = async () => {
+    setOpeningPortal(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("update-payment-method");
+      if (error || !(data as any)?.url) throw new Error(error?.message || "Couldn't open portal");
+      const u = (data as any).url;
+      const w = window.open(u, "_blank", "noopener,noreferrer");
+      if (!w) window.location.href = u;
+    } catch (e: any) {
+      toast({ title: "Couldn't open billing portal", description: e.message, variant: "destructive" });
+    } finally {
+      setOpeningPortal(false);
+    }
+  };
 
   const stats = useMemo(() => {
     const paid = donations.filter(d => d.status === "paid" || d.status === "completed");
@@ -210,9 +292,17 @@ export default function DonorDashboard() {
         )}
 
         <Tabs defaultValue="all">
-          <TabsList className="grid w-full grid-cols-3 max-w-md">
+          <TabsList className="grid w-full grid-cols-4 max-w-xl">
             <TabsTrigger value="all">All ({donations.length})</TabsTrigger>
             <TabsTrigger value="monthly">Monthly ({monthlyDonations.length})</TabsTrigger>
+            <TabsTrigger value="alerts" className="relative">
+              <Bell className="h-3.5 w-3.5 mr-1" /> Alerts
+              {unreadAlerts > 0 && (
+                <Badge className="ml-1 h-4 min-w-4 px-1 text-[10px] bg-destructive text-destructive-foreground">
+                  {unreadAlerts}
+                </Badge>
+              )}
+            </TabsTrigger>
             <TabsTrigger value="receipts">Receipts</TabsTrigger>
           </TabsList>
 
@@ -324,6 +414,97 @@ export default function DonorDashboard() {
                 ))}
               </>
             )}
+          </TabsContent>
+
+          <TabsContent value="alerts" className="space-y-3 mt-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <Bell className="h-4 w-4" /> Payment alerts
+                  </CardTitle>
+                  <CardDescription>Dunning notifications for your monthly donations</CardDescription>
+                </div>
+                <div className="flex items-center gap-2">
+                  {unreadAlerts > 0 && (
+                    <Button variant="ghost" size="sm" onClick={markAllAlertsRead}>
+                      Mark all read
+                    </Button>
+                  )}
+                  <Button variant="outline" size="sm" onClick={openBillingPortal} disabled={openingPortal}>
+                    {openingPortal ? <Loader2 className="h-4 w-4 animate-spin mr-1.5" /> : <CreditCard className="h-4 w-4 mr-1.5" />}
+                    Update card
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {dunningNotifs.length === 0 ? (
+                  <div className="py-10 text-center text-muted-foreground">
+                    <CheckCircle2 className="h-10 w-10 mx-auto mb-2 text-green-500 opacity-70" />
+                    <p className="text-sm">No payment alerts. All your donations are in good standing.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {dunningNotifs.map(n => {
+                      const r = resolutionFor(n);
+                      const Icon = r.icon;
+                      const toneCls =
+                        r.tone === "ok" ? "border-green-500/30 bg-green-500/5" :
+                        r.tone === "bad" ? "border-destructive/30 bg-destructive/5" :
+                        r.tone === "warn" ? "border-orange-500/30 bg-orange-500/5" :
+                        "border-border";
+                      const iconCls =
+                        r.tone === "ok" ? "text-green-500" :
+                        r.tone === "bad" ? "text-destructive" :
+                        r.tone === "warn" ? "text-orange-500" :
+                        "text-muted-foreground";
+                      const camp = n.related_id ? donationByCampaign.get(n.related_id) : null;
+                      return (
+                        <div
+                          key={n.id}
+                          onClick={() => !n.is_read && markAlertRead(n.id)}
+                          className={`p-3 rounded-lg border transition-colors cursor-pointer hover:bg-accent/30 ${toneCls} ${!n.is_read ? "ring-1 ring-primary/30" : ""}`}
+                        >
+                          <div className="flex items-start gap-3">
+                            <Icon className={`h-5 w-5 mt-0.5 flex-shrink-0 ${iconCls}`} />
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 flex-wrap mb-1">
+                                <p className="font-medium text-sm">{n.title}</p>
+                                {!n.is_read && <Badge variant="default" className="h-4 px-1.5 text-[10px]">New</Badge>}
+                                <Badge variant="outline" className={`text-[10px] ${iconCls}`}>{r.label}</Badge>
+                              </div>
+                              <p className="text-xs text-muted-foreground">{n.message}</p>
+                              <div className="flex items-center gap-3 mt-2 text-[11px] text-muted-foreground">
+                                <span className="flex items-center gap-1">
+                                  <Calendar className="h-3 w-3" />
+                                  {new Date(n.created_at).toLocaleString()}
+                                </span>
+                                {camp && (
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); navigate(`/fundraising/${typeRoutes[camp.campaign_type]}/${camp.campaign_id}`); }}
+                                    className="underline hover:text-foreground"
+                                  >
+                                    View campaign
+                                  </button>
+                                )}
+                                {r.tone === "warn" && (
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); openBillingPortal(); }}
+                                    className="underline hover:text-foreground"
+                                  >
+                                    Update payment method
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="receipts" className="space-y-3 mt-4">
