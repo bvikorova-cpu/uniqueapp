@@ -16,6 +16,8 @@ import { ExperimentTemplates } from "@/components/kids-science/ExperimentTemplat
 import { LabNotebookResult } from "@/components/kids-science/LabNotebookResult";
 import { ScienceComprehensionQuiz } from "@/components/kids-science/ScienceComprehensionQuiz";
 import { ExperimentTracker } from "@/components/kids-science/ExperimentTracker";
+import { SafetyCheckCard } from "@/components/kids-science/SafetyCheckCard";
+import { AskTheScientist } from "@/components/kids-science/AskTheScientist";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 
@@ -242,7 +244,24 @@ const KidsScienceLab = () => {
                 canAnalyze={credits.canRun}
               />
 
+              {/* AI Safety Check (credit-gated) */}
+              {category && hypothesis.trim() && observations.trim() && !result && (
+                <SafetyCheckCard
+                  category={category}
+                  hypothesis={hypothesis}
+                  observations={observations}
+                  onCreditsChanged={() => credits.refresh()}
+                />
+              )}
+
               {result && <LabNotebookResult result={result} category={category} />}
+
+              {result && (
+                <AskTheScientist
+                  context={`Category: ${category}. Hypothesis: ${hypothesis}. Observations: ${observations}. Conclusion: ${result.conclusion}`}
+                  onCreditsChanged={() => credits.refresh()}
+                />
+              )}
 
               {showQuiz && result && result.quiz.length === 5 && (
                 <ScienceComprehensionQuiz
