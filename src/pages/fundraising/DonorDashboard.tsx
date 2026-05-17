@@ -60,8 +60,10 @@ const typeRoutes: Record<string, string> = {
 export default function DonorDashboard() {
   const navigate = useNavigate();
   const [donations, setDonations] = useState<Donation[]>([]);
+  const [dunningNotifs, setDunningNotifs] = useState<DunningNotification[]>([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
+  const [openingPortal, setOpeningPortal] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -71,19 +73,85 @@ export default function DonorDashboard() {
         return;
       }
       setUserId(session.user.id);
-      const { data, error } = await supabase
-        .from("campaign_donations")
-        .select("*")
-        .eq("donor_id", session.user.id)
-        .order("created_at", { ascending: false });
-      if (error) {
-        toast({ title: "Error loading donations", description: error.message, variant: "destructive" });
+      const [donRes, notifRes] = await Promise.all([
+        supabase
+          .from("campaign_donations")
+          .select("*")
+          .eq("donor_id", session.user.id)
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("notifications")
+          .select("id, type, title, message, related_id, is_read, created_at")
+          .eq("user_id", session.user.id)
+          .in("type", ["donation_payment_failed", "donation_cancelled_dunning"])
+          .order("created_at", { ascending: false })
+          .limit(50),
+      ]);
+      if (donRes.error) {
+        toast({ title: "Error loading donations", description: donRes.error.message, variant: "destructive" });
       } else {
-        setDonations((data as Donation[]) || []);
+        setDonations((donRes.data as Donation[]) || []);
+      }
+      if (!notifRes.error) {
+        setDunningNotifs((notifRes.data as DunningNotification[]) || []);
       }
       setLoading(false);
     })();
   }, [navigate]);
+
+  const unreadAlerts = useMemo(() => dunningNotifs.filter(n => !n.is_read).length, [dunningNotifs]);
+
+  // Map campaign_id -> latest monthly donation (to derive current resolution status)
+  const donationByCampaign = useMemo(() => {
+    const m = new Map<string, Donation>();
+    donations.filter(d => d.is_monthly).forEach(d => {
+      if (!m.has(d.campaign_id)) m.set(d.campaign_id, d);
+    });
+    return m;
+  }, [donations]);
+
+  const resolutionFor = (n: DunningNotification): { label: string; tone: "warn" | "ok" | "bad" | "neutral"; icon: any } => {
+    if (n.type === "donation_cancelled_dunning") {
+      return { label: "Subscription cancelled", tone: "bad", icon: XCircle };
+    }
+    const d = n.related_id ? donationByCampaign.get(n.related_id) : null;
+    const sub = d?.subscription_status;
+    if (sub === "active") return { label: "Resolved — payment recovered", tone: "ok", icon: CheckCircle2 };
+    if (sub === "cancelled") return { label: "Subscription cancelled", tone: "bad", icon: XCircle };
+    if (sub === "past_due") return { label: "Action needed — payment failed", tone: "warn", icon: AlertTriangle };
+    return { label: "Unresolved", tone: "neutral", icon: AlertTriangle };
+  };
+
+  const markAlertRead = async (id: string) => {
+    setDunningNotifs(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
+    await supabase.from("notifications").update({ is_read: true }).eq("id", id);
+  };
+
+  const markAllAlertsRead = async () => {
+    if (!userId || unreadAlerts === 0) return;
+    setDunningNotifs(prev => prev.map(n => ({ ...n, is_read: true })));
+    await supabase
+      .from("notifications")
+      .update({ is_read: true })
+      .eq("user_id", userId)
+      .in("type", ["donation_payment_failed", "donation_cancelled_dunning"])
+      .eq("is_read", false);
+  };
+
+  const openBillingPortal = async () => {
+    setOpeningPortal(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("update-payment-method");
+      if (error || !(data as any)?.url) throw new Error(error?.message || "Couldn't open portal");
+      const u = (data as any).url;
+      const w = window.open(u, "_blank", "noopener,noreferrer");
+      if (!w) window.location.href = u;
+    } catch (e: any) {
+      toast({ title: "Couldn't open billing portal", description: e.message, variant: "destructive" });
+    } finally {
+      setOpeningPortal(false);
+    }
+  };
 
   const stats = useMemo(() => {
     const paid = donations.filter(d => d.status === "paid" || d.status === "completed");
