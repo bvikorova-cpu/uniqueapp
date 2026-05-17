@@ -28350,6 +28350,159 @@ export type Database = {
         }
         Relationships: []
       }
+      kids_academy_activity_log: {
+        Row: {
+          action: string
+          child_id: string
+          created_at: string
+          id: string
+          meta: Json | null
+          parent_id: string
+          section: string
+          xp_earned: number
+        }
+        Insert: {
+          action: string
+          child_id: string
+          created_at?: string
+          id?: string
+          meta?: Json | null
+          parent_id: string
+          section: string
+          xp_earned?: number
+        }
+        Update: {
+          action?: string
+          child_id?: string
+          created_at?: string
+          id?: string
+          meta?: Json | null
+          parent_id?: string
+          section?: string
+          xp_earned?: number
+        }
+        Relationships: []
+      }
+      kids_academy_credits: {
+        Row: {
+          created_at: string
+          credits_remaining: number
+          id: string
+          total_credits_purchased: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      kids_academy_daily_plan: {
+        Row: {
+          child_id: string
+          completed_items: Json
+          created_at: string
+          id: string
+          parent_id: string
+          plan_date: string
+          plan_json: Json
+        }
+        Insert: {
+          child_id: string
+          completed_items?: Json
+          created_at?: string
+          id?: string
+          parent_id: string
+          plan_date: string
+          plan_json: Json
+        }
+        Update: {
+          child_id?: string
+          completed_items?: Json
+          created_at?: string
+          id?: string
+          parent_id?: string
+          plan_date?: string
+          plan_json?: Json
+        }
+        Relationships: []
+      }
+      kids_academy_parent_digest: {
+        Row: {
+          created_at: string
+          id: string
+          parent_id: string
+          summary_json: Json
+          week_start: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          parent_id: string
+          summary_json: Json
+          week_start: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          parent_id?: string
+          summary_json?: Json
+          week_start?: string
+        }
+        Relationships: []
+      }
+      kids_academy_xp: {
+        Row: {
+          child_id: string
+          created_at: string
+          current_streak: number
+          id: string
+          last_activity_date: string | null
+          level: number
+          longest_streak: number
+          parent_id: string
+          total_xp: number
+          updated_at: string
+        }
+        Insert: {
+          child_id: string
+          created_at?: string
+          current_streak?: number
+          id?: string
+          last_activity_date?: string | null
+          level?: number
+          longest_streak?: number
+          parent_id: string
+          total_xp?: number
+          updated_at?: string
+        }
+        Update: {
+          child_id?: string
+          created_at?: string
+          current_streak?: number
+          id?: string
+          last_activity_date?: string | null
+          level?: number
+          longest_streak?: number
+          parent_id?: string
+          total_xp?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       kids_activity_log: {
         Row: {
           child_id: string
