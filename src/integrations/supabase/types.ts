@@ -8037,6 +8037,7 @@ export type Database = {
           amount: number
           campaign_id: string
           campaign_type: string
+          cancelled_at: string | null
           created_at: string | null
           donor_email: string | null
           donor_id: string | null
@@ -8046,14 +8047,20 @@ export type Database = {
           is_monthly: boolean | null
           message: string | null
           net_amount: number
+          next_billing_at: string | null
+          paused_at: string | null
           platform_fee: number
           status: string | null
+          stripe_customer_id: string | null
           stripe_payment_id: string | null
+          stripe_subscription_id: string | null
+          subscription_status: string | null
         }
         Insert: {
           amount: number
           campaign_id: string
           campaign_type: string
+          cancelled_at?: string | null
           created_at?: string | null
           donor_email?: string | null
           donor_id?: string | null
@@ -8063,14 +8070,20 @@ export type Database = {
           is_monthly?: boolean | null
           message?: string | null
           net_amount: number
+          next_billing_at?: string | null
+          paused_at?: string | null
           platform_fee: number
           status?: string | null
+          stripe_customer_id?: string | null
           stripe_payment_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_status?: string | null
         }
         Update: {
           amount?: number
           campaign_id?: string
           campaign_type?: string
+          cancelled_at?: string | null
           created_at?: string | null
           donor_email?: string | null
           donor_id?: string | null
@@ -8080,9 +8093,14 @@ export type Database = {
           is_monthly?: boolean | null
           message?: string | null
           net_amount?: number
+          next_billing_at?: string | null
+          paused_at?: string | null
           platform_fee?: number
           status?: string | null
+          stripe_customer_id?: string | null
           stripe_payment_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_status?: string | null
         }
         Relationships: []
       }
