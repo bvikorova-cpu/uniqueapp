@@ -86,6 +86,10 @@ export default function CreativeForge() {
   const [styleOpen, setStyleOpen] = useState(false);
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [roomsOpen, setRoomsOpen] = useState(false);
+  const [brandVoiceOpen, setBrandVoiceOpen] = useState(false);
+  const [storyBibleOpen, setStoryBibleOpen] = useState(false);
+  const [aiStudioOpen, setAiStudioOpen] = useState(false);
+  const [activeBrandVoice, setActiveBrandVoice] = useState<BrandVoice | null>(null);
 
   const [title, setTitle] = useState("");
   const [genre, setGenre] = useState("");
