@@ -203,15 +203,18 @@ const KidsDrawingBuddy = () => {
 
           {/* Main Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid grid-cols-4 w-full">
+            <TabsList className="grid grid-cols-5 w-full">
               <TabsTrigger value="tutorial" className="text-xs sm:text-sm">
                 <Paintbrush className="w-3.5 h-3.5 mr-1" /> Tutorial
+              </TabsTrigger>
+              <TabsTrigger value="polish" className="text-xs sm:text-sm">
+                <Wand2 className="w-3.5 h-3.5 mr-1" /> Polish
               </TabsTrigger>
               <TabsTrigger value="freestyle" className="text-xs sm:text-sm">
                 <Palette className="w-3.5 h-3.5 mr-1" /> Freestyle
               </TabsTrigger>
               <TabsTrigger value="templates" className="text-xs sm:text-sm">
-                <Zap className="w-3.5 h-3.5 mr-1" /> Quick Draw
+                <Zap className="w-3.5 h-3.5 mr-1" /> Quick
               </TabsTrigger>
               <TabsTrigger value="achievements" className="text-xs sm:text-sm">
                 <Trophy className="w-3.5 h-3.5 mr-1" /> Awards
