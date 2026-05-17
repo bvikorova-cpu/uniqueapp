@@ -296,18 +296,14 @@ export default function MedicalDetail() {
           <div className="lg:col-span-2 space-y-6">
             <Card>
               <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <CardTitle className="text-3xl mb-2">{campaign.title}</CardTitle>
-                    <p className="text-muted-foreground">{campaign.description}</p>
-                  </div>
-                  {campaign.verified && (
-                    <Badge variant="default" className="ml-4">
-                      <CheckCircle className="h-3 w-3 mr-1" />
-                      Verified
-                    </Badge>
-                  )}
-                </div>
+                <CardTitle className="text-3xl mb-2">{campaign.title}</CardTitle>
+                <p className="text-muted-foreground mb-3">{campaign.description}</p>
+                <MedicalTrustBadges
+                  verified={campaign.verified}
+                  directToHospital={campaign.direct_to_hospital}
+                  refundGuarantee={campaign.refund_guarantee}
+                  medicalDocumentsCount={campaign.medical_documents?.length ?? 0}
+                />
               </CardHeader>
               <CardContent className="space-y-6">
                 {campaign.image_url && (
@@ -322,6 +318,13 @@ export default function MedicalDetail() {
                   <h3 className="text-xl font-semibold mb-2">Story</h3>
                   <p className="text-muted-foreground whitespace-pre-wrap">{campaign.story}</p>
                 </div>
+
+                <InsuranceGapCalculator
+                  treatmentTotalCost={campaign.treatment_total_cost}
+                  insuranceCoverage={campaign.insurance_coverage}
+                  targetAmount={campaign.target_amount}
+                  currentAmount={campaign.current_amount}
+                />
 
                 <Separator />
 
