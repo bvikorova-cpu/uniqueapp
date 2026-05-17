@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Heart, Receipt, Repeat, TrendingUp, ArrowLeft, Download, Calendar, Sparkles, Undo2, Loader2 } from "lucide-react";
+import { Heart, Receipt, Repeat, TrendingUp, ArrowLeft, Download, Calendar, Sparkles, Undo2, Loader2, Bell, AlertTriangle, CheckCircle2, XCircle, CreditCard } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "@/hooks/use-toast";
 import {
