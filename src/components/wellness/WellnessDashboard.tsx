@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { 
   Phone, AlertTriangle, Heart, Brain, Shield, Sparkles, TrendingUp
 } from "lucide-react";
+import { WellnessParityPack } from "./WellnessParityPack";
 
 interface EmergencyContact {
   name: string;
@@ -38,6 +39,8 @@ export const WellnessDashboard = () => {
 
   return (
     <div className="space-y-6">
+      <WellnessParityPack />
+
       {/* Emergency Button */}
       <Card className="relative overflow-hidden border-red-500/30 backdrop-blur-xl bg-card/80">
         <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent" />
