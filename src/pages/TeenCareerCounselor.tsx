@@ -5,7 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Briefcase, Heart, TrendingUp, Lightbulb, Sparkles, ArrowRight, ArrowLeft, ArrowLeftRight, ClipboardList } from "lucide-react";
+import { Briefcase, Heart, TrendingUp, Lightbulb, Sparkles, ArrowRight, ArrowLeft, ArrowLeftRight, ClipboardList, Clock, Target, MessageCircle } from "lucide-react";
+import { DayInLifeSimulator } from "@/components/teen-career/DayInLifeSimulator";
+import { SkillGapAnalyzer } from "@/components/teen-career/SkillGapAnalyzer";
+import { AskCareerMentor } from "@/components/teen-career/AskCareerMentor";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import jsPDF from "jspdf";
@@ -250,16 +253,13 @@ export default function TeenCareerCounselor() {
 
         {/* Main content tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
-          <TabsList className="grid grid-cols-3 mb-4">
-            <TabsTrigger value="guidance" className="text-xs gap-1">
-              <ClipboardList className="h-3 w-3" /> Guidance
-            </TabsTrigger>
-            <TabsTrigger value="compare" className="text-xs gap-1">
-              <ArrowLeftRight className="h-3 w-3" /> Compare
-            </TabsTrigger>
-            <TabsTrigger value="howto" className="text-xs gap-1">
-              <Lightbulb className="h-3 w-3" /> How It Works
-            </TabsTrigger>
+          <TabsList className="grid grid-cols-3 sm:grid-cols-6 gap-1 h-auto mb-4">
+            <TabsTrigger value="guidance" className="text-xs gap-1"><ClipboardList className="h-3 w-3" /> Guidance</TabsTrigger>
+            <TabsTrigger value="dayinlife" className="text-xs gap-1"><Clock className="h-3 w-3" /> Day in Life</TabsTrigger>
+            <TabsTrigger value="skillgap" className="text-xs gap-1"><Target className="h-3 w-3" /> Skill Gap</TabsTrigger>
+            <TabsTrigger value="mentor" className="text-xs gap-1"><MessageCircle className="h-3 w-3" /> Mentor</TabsTrigger>
+            <TabsTrigger value="compare" className="text-xs gap-1"><ArrowLeftRight className="h-3 w-3" /> Compare</TabsTrigger>
+            <TabsTrigger value="howto" className="text-xs gap-1"><Lightbulb className="h-3 w-3" /> How</TabsTrigger>
           </TabsList>
 
           <TabsContent value="guidance">
@@ -405,6 +405,18 @@ export default function TeenCareerCounselor() {
                 </motion.div>
               )}
             </AnimatePresence>
+          </TabsContent>
+
+          <TabsContent value="dayinlife">
+            <DayInLifeSimulator onCredits={refreshCredits} />
+          </TabsContent>
+
+          <TabsContent value="skillgap">
+            <SkillGapAnalyzer onCredits={refreshCredits} />
+          </TabsContent>
+
+          <TabsContent value="mentor">
+            <AskCareerMentor onCredits={refreshCredits} context={interests ? `Interests: ${interests}. Strengths: ${strengths}.` : undefined} />
           </TabsContent>
 
           <TabsContent value="compare">
