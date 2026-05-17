@@ -1334,3 +1334,6 @@ verify_jwt = true
 
 [functions.subscribe-to-creator]
 verify_jwt = true
+
+[functions.get-donation-receipt]
+verify_jwt = false

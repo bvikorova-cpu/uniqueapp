@@ -21,6 +21,7 @@ import { InsuranceGapCalculator } from '@/components/fundraising/medical/Insuran
 import { MedicalShareKit } from '@/components/fundraising/medical/MedicalShareKit';
 import { MedicalTrustBadges } from '@/components/fundraising/medical/MedicalTrustBadges';
 import { RecurringDonationCard } from '@/components/fundraising/medical/RecurringDonationCard';
+import { MedicalDocumentsViewer } from '@/components/fundraising/medical/MedicalDocumentsViewer';
 
 interface MedicalCampaign {
   id: string;
@@ -144,7 +145,16 @@ export default function MedicalDetail() {
         const eur = ((data?.amount_cents ?? 0) / 100).toFixed(2);
         toast({
           title: 'Thank you!',
-          description: `Your contribution of €${eur} was successfully processed.`,
+          description: `Your contribution of €${eur} was successfully processed. A tax receipt is available.`,
+          action: (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => navigate(`/fundraising/receipt?session_id=${sessionId}`)}
+            >
+              View Receipt
+            </Button>
+          ) as any,
         });
         // Refresh campaign data
         fetchCampaign();
@@ -324,6 +334,12 @@ export default function MedicalDetail() {
                   insuranceCoverage={campaign.insurance_coverage}
                   targetAmount={campaign.target_amount}
                   currentAmount={campaign.current_amount}
+                />
+
+                <MedicalDocumentsViewer
+                  documents={campaign.medical_documents}
+                  verified={campaign.verified}
+                  hospital={campaign.hospital}
                 />
 
                 <Separator />
@@ -548,7 +564,7 @@ export default function MedicalDetail() {
                 </Button>
 
                 <p className="text-xs text-muted-foreground text-center">
-                  Your donation includes a platform service fee of 6% to ensure security, verification, and technical maintenance. Secure payment via Stripe.
+                  Your donation includes a platform service fee of 6% to ensure security, verification, and technical maintenance. Secure payment via Stripe. A tax-deductible receipt will be issued automatically.
                 </p>
               </CardContent>
             </Card>

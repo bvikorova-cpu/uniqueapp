@@ -380,6 +380,7 @@ import {
   MedicalFundraising,
   MedicalDetail,
   CreateMedicalCampaign,
+  DonationReceipt,
   FundraisingDashboard,
   CampaignDashboard,
   DreamMaker,
@@ -1053,7 +1054,9 @@ const App = () => {
                         <Route path="/fundraising/:campaignType/:campaignId/dashboard" element={<ProtectedRoute><CampaignDashboard /></ProtectedRoute>} />
                         <Route path="/fundraising/medical" element={<MedicalFundraising />} />
                         <Route path="/fundraising/medical/create" element={<CreateMedicalCampaign />} />
-                        <Route path="/fundraising/medical/:id" element={<MedicalDetail />} />
+                       <Route path="/fundraising/medical/:id" element={<MedicalDetail />} />
+                       <Route path="/fundraising/receipt/:donationId" element={<DonationReceipt />} />
+                       <Route path="/fundraising/receipt" element={<DonationReceipt />} />
                         <Route path="/fundraising/dream" element={<DreamMaker />} />
                         <Route path="/fundraising/dream/create" element={<CreateDreamCampaign />} />
                         <Route path="/fundraising/dream/:id" element={<DreamDetail />} />
