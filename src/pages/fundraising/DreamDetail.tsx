@@ -88,7 +88,7 @@ export default function DreamDetail() {
         .single();
 
       if (error) throw error;
-      setCampaign(data);
+      setCampaign(data as unknown as DreamCampaign);
     } catch (error) {
       console.error('Error fetching campaign:', error);
       toast({
