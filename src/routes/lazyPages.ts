@@ -357,6 +357,8 @@ export const CreateMedicalCampaign = lazy(() => import("@/pages/fundraising/Crea
 export const DonationReceipt = lazy(() => import("@/pages/fundraising/DonationReceipt"));
 export const FundraisingDashboard = lazy(() => import("@/pages/fundraising/FundraisingDashboard"));
 export const DonorDashboard = lazy(() => import("@/pages/fundraising/DonorDashboard"));
+export const RecurringDonationsHub = lazy(() => import("@/pages/fundraising/RecurringDonationsHub"));
+export const EmbedCampaignWidget = lazy(() => import("@/pages/fundraising/EmbedCampaignWidget"));
 export const CampaignDashboard = lazy(() => import("@/pages/fundraising/CampaignDashboard"));
 export const DreamMaker = lazy(() => import("@/pages/fundraising/DreamMaker"));
 export const CreateDreamCampaign = lazy(() => import("@/pages/fundraising/CreateDreamCampaign"));
