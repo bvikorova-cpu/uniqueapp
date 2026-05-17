@@ -11,8 +11,9 @@ const COSTS = {
   decoder: 10, evidence: 15, coach: 8, riskscan: 12,
   weekly_insight: 5, roleplay_score: 6, wall_filter: 2,
   cbt: 6, mh_assess: 6, walking: 6,
+  toxicity: 6, platreport: 6, restorative: 6, pulse: 6, affirmation: 6, bystander: 6,
 } as const;
-const SAFETY_ACTIONS = new Set(["decoder", "evidence", "coach", "riskscan", "weekly_insight", "roleplay_score", "wall_filter"]);
+const SAFETY_ACTIONS = new Set(["decoder","evidence","coach","riskscan","weekly_insight","roleplay_score","wall_filter","toxicity","platreport","restorative","pulse","affirmation","bystander"]);
 
 function parseJSON(s: string): any {
   try {
