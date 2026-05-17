@@ -103,6 +103,9 @@ export default function DonorDashboard() {
         <Button variant="outline" size="sm" onClick={() => navigate("/fundraising")} className="mb-6">
           <ArrowLeft className="mr-2 h-4 w-4" /> Back to Fundraising
         </Button>
+        <Button variant="secondary" size="sm" onClick={() => navigate("/fundraising/recurring")} className="mb-6 ml-2">
+          <Repeat className="mr-2 h-4 w-4" /> Manage monthly donations
+        </Button>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}

@@ -383,6 +383,8 @@ import {
   DonationReceipt,
   FundraisingDashboard,
   DonorDashboard,
+  RecurringDonationsHub,
+  EmbedCampaignWidget,
   CampaignDashboard,
   DreamMaker,
   CreateDreamCampaign,
@@ -1055,6 +1057,8 @@ const App = () => {
                         <Route path="/fundraising" element={<FundraisingHub />} />
                         <Route path="/fundraising/dashboard" element={<ProtectedRoute><FundraisingDashboard /></ProtectedRoute>} />
                         <Route path="/fundraising/my-donations" element={<ProtectedRoute><DonorDashboard /></ProtectedRoute>} />
+                        <Route path="/fundraising/recurring" element={<ProtectedRoute><RecurringDonationsHub /></ProtectedRoute>} />
+                        <Route path="/embed/campaign/:campaignType/:campaignId" element={<EmbedCampaignWidget />} />
                         <Route path="/fundraising/:campaignType/:campaignId/dashboard" element={<ProtectedRoute><CampaignDashboard /></ProtectedRoute>} />
                         <Route path="/fundraising/medical" element={<MedicalFundraising />} />
                         <Route path="/fundraising/medical/create" element={<CreateMedicalCampaign />} />
