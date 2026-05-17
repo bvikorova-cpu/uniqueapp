@@ -208,19 +208,26 @@ export default function AnonymousDate() {
 
   const handleToolSelect = (toolId: string) => {
     if (toolId === "find") {
-      if (credits < 5) {
-        toast({
-          title: "Not enough credits",
-          description: "Finding a new match costs 5 credits. Visit the Credit Store to top up.",
-          variant: "destructive",
-        });
-        setActiveView("credits");
-        return;
-      }
-      findMatch();
+      setActiveView("find");
       return;
     }
     setActiveView(toolId as ViewType);
+  };
+
+  const handleFindMatch = async (filters: Parameters<typeof findMatch>[0]) => {
+    if (credits < 5) {
+      toast({
+        title: "Not enough credits",
+        description: "Finding a new match costs 5 credits. Visit the Credit Store to top up.",
+        variant: "destructive",
+      });
+      setActiveView("credits");
+      return;
+    }
+    const result = await findMatch(filters);
+    if (result?.match) {
+      setActiveView("matches");
+    }
   };
 
   if (showAdultWarning) {
