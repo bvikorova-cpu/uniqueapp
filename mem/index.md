@@ -24,3 +24,4 @@
 - [Module-Specific Logic](mem://features/module-specific-logic) — Escrow rules, recipe formats, legacy feature preservation.
 - [Credit Checkout Router](mem://features/credit-checkout-router) — Universal create-checkout logic.
 - [Admin Stripe Payout](mem://features/admin-stripe-payout) — Automated withdrawal wiring.
+- [Kids & Teen AI Credit Matrix](mem://features/kids-teen-ai-credit-matrix) — Credit tables, costs, and edge functions for all Kids & Teen AI modules.
