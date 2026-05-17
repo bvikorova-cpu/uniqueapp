@@ -15,8 +15,17 @@ type Feature =
   | "date_ideas"       // 5 cr
   | "love_letter"      // 15 cr
   | "daily_question"   // 5 cr
-  | "conversation_coach"; // 10 cr
+  | "conversation_coach" // 10 cr
+  | "vibe_decoder"
+  | "chemistry_report"
+  | "red_flag_scan"
+  | "reveal_readiness"
+  | "first_meet_plan"
+  | "attachment_profile"
+  | "chat_translator"
+  | "breakup_recovery";
 
+const PARITY_COST = 6;
 const COSTS: Record<Feature, number> = {
   icebreakers: 3,
   compatibility: 5,
@@ -27,6 +36,25 @@ const COSTS: Record<Feature, number> = {
   love_letter: 15,
   daily_question: 5,
   conversation_coach: 10,
+  vibe_decoder: PARITY_COST,
+  chemistry_report: PARITY_COST,
+  red_flag_scan: PARITY_COST,
+  reveal_readiness: PARITY_COST,
+  first_meet_plan: PARITY_COST,
+  attachment_profile: PARITY_COST,
+  chat_translator: PARITY_COST,
+  breakup_recovery: PARITY_COST,
+};
+
+const PARITY_TABLES: Record<string, string> = {
+  vibe_decoder: "anon_date_vibe_decoder",
+  chemistry_report: "anon_date_chemistry_reports",
+  red_flag_scan: "anon_date_red_flag_scans",
+  reveal_readiness: "anon_date_reveal_readiness",
+  first_meet_plan: "anon_date_first_meet_plans",
+  attachment_profile: "anon_date_attachment_profiles",
+  chat_translator: "anon_date_chat_translator",
+  breakup_recovery: "anon_date_breakup_recovery",
 };
 
 const SYSTEM_PROMPTS: Record<Feature, string> = {
