@@ -24,6 +24,7 @@ import SafetySupportWall from "@/components/safety/SafetySupportWall";
 import SafetyBadges from "@/components/safety/SafetyBadges";
 import { SafetyHero } from "@/components/safety/SafetyHero";
 import { SafetyAIShield } from "@/components/safety/SafetyAIShield";
+import { SafetyParityPack } from "@/components/safety/SafetyParityPack";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface Message {
