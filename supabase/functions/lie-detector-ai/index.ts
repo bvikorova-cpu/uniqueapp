@@ -524,6 +524,229 @@ async function actionVerifyReport(supabase: any, user: any, body: any) {
   });
 }
 
+// ============ PARITY PACK (6 credits each AI) ============
+const PARITY_COST = 6;
+
+async function actionChatImport(supabase: any, user: any, body: any) {
+  const { raw_text, source_app } = body;
+  if (!raw_text || typeof raw_text !== "string" || raw_text.length < 30) return json({ error: "raw_text required (min 30 chars)" }, 400);
+  const cc = await checkCredits(supabase, user.id, PARITY_COST); if (cc.err) return cc.err;
+  const truncated = String(raw_text).slice(0, 12000);
+  const msgCount = (truncated.match(/\n/g) || []).length + 1;
+  const ai = await callOpenAI([
+    { role: "system", content: "You are a forensic linguist analyzing exported chat history (WhatsApp/iMessage/Telegram). Detect deception patterns across the whole conversation." },
+    { role: "user", content: `App: ${source_app || "whatsapp"}\nTranscript:\n"""${truncated}"""\n\nReturn JSON: { overall_score:number, deception_clusters:[{lines:string, reason:string, severity:"low"|"medium"|"high"}], suspicious_participants:string[], red_flag_phrases:string[], summary:string, recommended_actions:string[] }` },
+  ]);
+  if (ai.err) return ai.err;
+  const r = ai.result;
+  await supabase.from("lie_chat_imports").insert({
+    user_id: user.id, source_app: source_app || "whatsapp", raw_text: truncated,
+    message_count: msgCount, analysis: r, overall_score: r.overall_score, credits_used: PARITY_COST,
+  });
+  await deductCredits(supabase, user.id, cc.cr, PARITY_COST);
+  await awardXp(supabase, user.id, 5);
+  return json({ ...r, credits_charged: PARITY_COST });
+}
+
+async function actionEmailScan(supabase: any, user: any, body: any) {
+  const { subject, sender, body: emailBody } = body;
+  if (!emailBody || typeof emailBody !== "string" || emailBody.length < 20) return json({ error: "body required" }, 400);
+  const cc = await checkCredits(supabase, user.id, PARITY_COST); if (cc.err) return cc.err;
+  const ai = await callOpenAI([
+    { role: "system", content: "You are a phishing/social-engineering and deception analyst for email messages." },
+    { role: "user", content: `From: ${sender || "unknown"}\nSubject: ${subject || "n/a"}\nBody:\n"""${String(emailBody).slice(0,6000)}"""\n\nReturn JSON: { truthfulness_score:number, phishing_risk:"low"|"medium"|"high", urgency_pressure_tactics:string[], deception_markers:string[], grammar_anomalies:string[], suspicious_links_or_asks:string[], recommended_response:string, summary:string }` },
+  ]);
+  if (ai.err) return ai.err;
+  const r = ai.result;
+  await supabase.from("lie_email_scans").insert({
+    user_id: user.id, subject, sender, body: String(emailBody).slice(0,6000),
+    analysis: r, truthfulness_score: r.truthfulness_score, credits_used: PARITY_COST,
+  });
+  await deductCredits(supabase, user.id, cc.cr, PARITY_COST);
+  return json({ ...r, credits_charged: PARITY_COST });
+}
+
+async function actionSentimentTimeline(supabase: any, user: any, body: any) {
+  const { messages, title } = body;
+  if (!Array.isArray(messages) || messages.length < 3) return json({ error: "messages (min 3) required" }, 400);
+  const cc = await checkCredits(supabase, user.id, PARITY_COST); if (cc.err) return cc.err;
+  const ai = await callOpenAI([
+    { role: "system", content: "Plot emotional arc of a conversation. For each message rate sentiment (-100..100), trust (0..100), tension (0..100)." },
+    { role: "user", content: `Messages:\n${messages.map((m: string, i: number) => `[${i}] ${String(m).slice(0,300)}`).join("\n")}\n\nReturn JSON: { points:[{idx:number, sentiment:number, trust:number, tension:number, label:string}], turning_points:[{idx:number, reason:string}], summary:string }` },
+  ]);
+  if (ai.err) return ai.err;
+  const r = ai.result;
+  await supabase.from("lie_sentiment_timelines_v2").insert({
+    user_id: user.id, title: title || "Sentiment Timeline",
+    points: r.points || [], summary: r.summary, credits_used: PARITY_COST,
+  });
+  await deductCredits(supabase, user.id, cc.cr, PARITY_COST);
+  return json({ ...r, credits_charged: PARITY_COST });
+}
+
+async function actionWatchlist(supabase: any, user: any, body: any) {
+  const op = body.sub_action || body.op || "list";
+  if (op === "list") {
+    const { data } = await supabase.from("lie_watchlist_triggers").select("*").eq("user_id", user.id).order("created_at", { ascending: false });
+    return json({ items: data || [] });
+  }
+  if (op === "create") {
+    const { label, keywords, notify } = body;
+    if (!label || !Array.isArray(keywords) || !keywords.length) return json({ error: "label & keywords required" }, 400);
+    const { data } = await supabase.from("lie_watchlist_triggers").insert({
+      user_id: user.id, label, keywords: keywords.map((k: string) => String(k).toLowerCase()).slice(0, 50), notify: notify !== false,
+    }).select().single();
+    return json({ item: data });
+  }
+  if (op === "delete") {
+    const { id } = body;
+    if (!id) return json({ error: "id required" }, 400);
+    await supabase.from("lie_watchlist_triggers").delete().eq("id", id).eq("user_id", user.id);
+    return json({ ok: true });
+  }
+  if (op === "scan") {
+    const { text } = body;
+    if (!text) return json({ error: "text required" }, 400);
+    const { data: triggers } = await supabase.from("lie_watchlist_triggers").select("*").eq("user_id", user.id);
+    const lower = String(text).toLowerCase();
+    const hits: any[] = [];
+    for (const t of triggers || []) {
+      for (const kw of (t.keywords || [])) {
+        if (lower.includes(String(kw).toLowerCase())) {
+          hits.push({ trigger_id: t.id, label: t.label, keyword: kw });
+        }
+      }
+    }
+    return json({ hits, total: hits.length });
+  }
+  return json({ error: "invalid op" }, 400);
+}
+
+async function actionRedFlagLookup(supabase: any, user: any, body: any) {
+  const { phrase } = body;
+  if (!phrase || typeof phrase !== "string") return json({ error: "phrase required" }, 400);
+  const cc = await checkCredits(supabase, user.id, PARITY_COST); if (cc.err) return cc.err;
+  const ai = await callOpenAI([
+    { role: "system", content: "You explain manipulative or evasive phrases used in deceptive conversations. Be educational, neutral, evidence-based." },
+    { role: "user", content: `Phrase: "${String(phrase).slice(0,300)}"\n\nReturn JSON: { category:string, manipulation_type:string, why_red_flag:string, typical_intent:string, healthier_alternatives:string[], severity:"low"|"medium"|"high" }` },
+  ]);
+  if (ai.err) return ai.err;
+  const r = ai.result;
+  await supabase.from("lie_red_flag_lookups").insert({
+    user_id: user.id, phrase: String(phrase).slice(0,300), analysis: r, credits_used: PARITY_COST,
+  });
+  await deductCredits(supabase, user.id, cc.cr, PARITY_COST);
+  return json({ ...r, credits_charged: PARITY_COST });
+}
+
+async function actionTruthChat(supabase: any, user: any, body: any) {
+  const { session_id, message, context } = body;
+  if (!message || typeof message !== "string") return json({ error: "message required" }, 400);
+  const cc = await checkCredits(supabase, user.id, PARITY_COST); if (cc.err) return cc.err;
+
+  let session: any = null;
+  if (session_id) {
+    const { data } = await supabase.from("lie_truth_chat_sessions").select("*").eq("id", session_id).eq("user_id", user.id).maybeSingle();
+    session = data;
+  }
+  const history = (session?.messages || []) as any[];
+  const aiMessages = [
+    { role: "system", content: "You are Detective Vox, a forensic AI consultant. Help the user investigate suspicious conversations, statements, or behaviors. Be sharp, evidence-based, and never claim absolute certainty. Use markdown formatting." },
+    ...(context ? [{ role: "system", content: `Context from user:\n${String(context).slice(0,3000)}` }] : []),
+    ...history.map((m: any) => ({ role: m.role, content: m.content })),
+    { role: "user", content: String(message).slice(0, 4000) },
+  ];
+  const ai = await callOpenAI(aiMessages, false);
+  if (ai.err) return ai.err;
+  const reply = ai.result as string;
+
+  const newMessages = [
+    ...history,
+    { role: "user", content: String(message).slice(0, 4000), at: new Date().toISOString() },
+    { role: "assistant", content: reply, at: new Date().toISOString() },
+  ];
+
+  let saved: any;
+  if (session) {
+    const { data } = await supabase.from("lie_truth_chat_sessions")
+      .update({ messages: newMessages, last_message_at: new Date().toISOString(), credits_used: (session.credits_used || 0) + PARITY_COST })
+      .eq("id", session.id).select().single();
+    saved = data;
+  } else {
+    const { data } = await supabase.from("lie_truth_chat_sessions").insert({
+      user_id: user.id, title: String(message).slice(0, 60), messages: newMessages, credits_used: PARITY_COST,
+    }).select().single();
+    saved = data;
+  }
+  await deductCredits(supabase, user.id, cc.cr, PARITY_COST);
+  return json({ session: saved, reply, credits_charged: PARITY_COST });
+}
+
+async function actionTrustScore(supabase: any, user: any, body: any) {
+  const op = body.sub_action || body.op || "list";
+  if (op === "list") {
+    const { data } = await supabase.from("lie_trust_scores").select("*").eq("user_id", user.id).order("updated_at", { ascending: false });
+    return json({ items: data || [] });
+  }
+  if (op === "delete") {
+    const { id } = body;
+    if (!id) return json({ error: "id required" }, 400);
+    await supabase.from("lie_trust_scores").delete().eq("id", id).eq("user_id", user.id);
+    return json({ ok: true });
+  }
+  if (op === "score") {
+    const { contact_name, sample_text } = body;
+    if (!contact_name || !sample_text) return json({ error: "contact_name and sample_text required" }, 400);
+    const cc = await checkCredits(supabase, user.id, PARITY_COST); if (cc.err) return cc.err;
+    const { data: existing } = await supabase.from("lie_trust_scores").select("*").eq("user_id", user.id).eq("contact_name", contact_name).maybeSingle();
+    const ai = await callOpenAI([
+      { role: "system", content: "Rate trustworthiness of a single message sample 0-100. Consider consistency, manipulation, evasion." },
+      { role: "user", content: `Contact: ${contact_name}\nSample:\n"""${String(sample_text).slice(0,3000)}"""\n\nReturn JSON: { score:number, confidence:"low"|"medium"|"high", evidence:[{quote:string, note:string}], summary:string }` },
+    ]);
+    if (ai.err) return ai.err;
+    const r = ai.result;
+    const prevSamples = existing?.sample_count || 0;
+    const prevScore = existing?.score ?? 50;
+    const newCount = prevSamples + 1;
+    const blended = Math.round((prevScore * prevSamples + r.score) / newCount);
+    const evidence = [...(existing?.evidence || []), { at: new Date().toISOString(), score: r.score, summary: r.summary, items: r.evidence || [] }].slice(-10);
+
+    let saved: any;
+    if (existing) {
+      const { data } = await supabase.from("lie_trust_scores").update({
+        score: blended, sample_count: newCount, evidence, updated_at: new Date().toISOString(),
+      }).eq("id", existing.id).select().single();
+      saved = data;
+    } else {
+      const { data } = await supabase.from("lie_trust_scores").insert({
+        user_id: user.id, contact_name, score: r.score, sample_count: 1, evidence,
+      }).select().single();
+      saved = data;
+    }
+    await deductCredits(supabase, user.id, cc.cr, PARITY_COST);
+    return json({ item: saved, latest_analysis: r, credits_charged: PARITY_COST });
+  }
+  return json({ error: "invalid op" }, 400);
+}
+
+async function actionTacticClassify(supabase: any, user: any, body: any) {
+  const { text } = body;
+  if (!text || typeof text !== "string" || text.length < 10) return json({ error: "text required" }, 400);
+  const cc = await checkCredits(supabase, user.id, PARITY_COST); if (cc.err) return cc.err;
+  const ai = await callOpenAI([
+    { role: "system", content: "Classify manipulation tactics in a message. Detect: gaslighting, DARVO, love-bombing, guilt-tripping, silent treatment, projection, deflection, blame-shifting, minimization, future-faking." },
+    { role: "user", content: `Text:\n"""${String(text).slice(0,4000)}"""\n\nReturn JSON: { tactics:[{name:string, confidence:number, evidence:string, definition:string}], primary_tactic:string, severity:"low"|"medium"|"high", educational_note:string, summary:string }` },
+  ]);
+  if (ai.err) return ai.err;
+  const r = ai.result;
+  await supabase.from("lie_tactic_classifications").insert({
+    user_id: user.id, text: String(text).slice(0,4000),
+    tactics: r.tactics || [], summary: r.summary, credits_used: PARITY_COST,
+  });
+  await deductCredits(supabase, user.id, cc.cr, PARITY_COST);
+  return json({ ...r, credits_charged: PARITY_COST });
+}
+
 // ============ ROUTER ============
 const HANDLERS: Record<string, (s: any, u: any, b: any) => Promise<Response>> = {
   "polygraph": actionPolygraph,
@@ -544,6 +767,15 @@ const HANDLERS: Record<string, (s: any, u: any, b: any) => Promise<Response>> = 
   "multi-person": actionMultiPerson,
   "daily-challenge": actionDailyChallenge,
   "verify-report": actionVerifyReport,
+  // Parity Pack
+  "chat-import": actionChatImport,
+  "email-scan": actionEmailScan,
+  "sentiment-timeline": actionSentimentTimeline,
+  "watchlist": actionWatchlist,
+  "red-flag": actionRedFlagLookup,
+  "truth-chat": actionTruthChat,
+  "trust-score": actionTrustScore,
+  "tactic-classify": actionTacticClassify,
 };
 
 Deno.serve(async (req) => {
