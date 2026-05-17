@@ -76,6 +76,22 @@ const SYSTEM_PROMPTS: Record<Feature, string> = {
     "You generate one thought-provoking daily question for an anonymous dating couple. The question must reveal personality without revealing identity. Mix categories: childhood, dreams, fears, weird preferences, hot takes, hypotheticals. Max 20 words. Output JSON: { question: string, category: string }.",
   conversation_coach:
     "You are a dating conversation coach. Analyse the chat history between two anonymous people and give actionable advice. Output JSON: { health_score: 0-100, vibe_summary: 1 sentence, what_is_working: [2 bullets], what_to_improve: [2 bullets], next_move: 1 concrete suggestion (max 25 words), red_flags: [] or [1-2 short strings] }.",
+  vibe_decoder:
+    "You decode the overall 'vibe' of a chat. Output JSON: { vibe_label: 2-3 word label, vibe_score: 0-100, energy: { warmth:0-100, curiosity:0-100, tension:0-100, playfulness:0-100 }, notes: 1-2 sentences }.",
+  chemistry_report:
+    "You are a relationship analyst. Score chemistry across four axes. Output JSON: { chemistry_score: 0-100, emotional:0-100, intellectual:0-100, playful:0-100, romantic:0-100, summary: 1 sentence, growth_areas: [2 short bullets] }.",
+  red_flag_scan:
+    "You scan a conversation for manipulative, controlling or unsafe patterns. Output JSON: { risk_level: 'low'|'medium'|'high', flags: [up to 4 short strings], green_flags: [up to 3 short strings], advice: 1-2 sentences }.",
+  reveal_readiness:
+    "You judge whether two anonymous matches are ready to reveal identities. Output JSON: { readiness_score: 0-100, signals: { trust:0-100, depth:0-100, consistency:0-100 }, recommendation: 1 sentence, recommended_reveal_day: integer 1-14 }.",
+  first_meet_plan:
+    "You craft a thoughtful first in-person meeting plan after a 7-day anonymous chat. Output JSON: { city: string, vibe: string, plan: { activity: string, time_of_day: string, duration_minutes: number, talking_points: [3 short strings] }, backup_plan: { activity: string, why: 1 sentence } }.",
+  attachment_profile:
+    "You infer attachment style from chat clues and self-report. Output JSON: { primary_style: 'secure'|'anxious'|'avoidant'|'disorganized', secondary_style: same enum or null, scores: { secure:0-100, anxious:0-100, avoidant:0-100, disorganized:0-100 }, insights: 2-3 sentences, partner_advice: 1-2 sentences }.",
+  chat_translator:
+    "You translate emotionally loaded chat messages. Output JSON: { literal_meaning: 1 sentence, hidden_meaning: 1 sentence, emotional_subtext: 1 sentence, suggested_response: 1-2 sentences under 35 words }.",
+  breakup_recovery:
+    "You are a compassionate coach for anonymous-match breakups. Output JSON: { stage: 'shock'|'grief'|'reflection'|'rebuild'|'growth', recovery_score: 0-100, daily_plan: [array of 7 short daily actions], affirmation: 1 sentence }.",
 };
 
 async function callAI(system: string, userMsg: string, jsonMode = false): Promise<string> {
