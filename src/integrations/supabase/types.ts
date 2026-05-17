@@ -23640,6 +23640,72 @@ export type Database = {
         }
         Relationships: []
       }
+      handwriting_career_matches: {
+        Row: {
+          avoid_careers: Json | null
+          created_at: string
+          credits_used: number | null
+          id: string
+          image_url: string
+          reasoning: string | null
+          top_careers: Json
+          user_id: string
+        }
+        Insert: {
+          avoid_careers?: Json | null
+          created_at?: string
+          credits_used?: number | null
+          id?: string
+          image_url: string
+          reasoning?: string | null
+          top_careers?: Json
+          user_id: string
+        }
+        Update: {
+          avoid_careers?: Json | null
+          created_at?: string
+          credits_used?: number | null
+          id?: string
+          image_url?: string
+          reasoning?: string | null
+          top_careers?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      handwriting_coach_sessions: {
+        Row: {
+          ai_plan: string | null
+          before_image_url: string
+          created_at: string
+          credits_used: number | null
+          exercises: Json | null
+          goal: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          ai_plan?: string | null
+          before_image_url: string
+          created_at?: string
+          credits_used?: number | null
+          exercises?: Json | null
+          goal?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          ai_plan?: string | null
+          before_image_url?: string
+          created_at?: string
+          credits_used?: number | null
+          exercises?: Json | null
+          goal?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       handwriting_compatibility_matches: {
         Row: {
           challenges: string[] | null
@@ -23708,6 +23774,42 @@ export type Database = {
           id?: string
           total_credits_purchased?: number
           updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      handwriting_cultural_matches: {
+        Row: {
+          ai_summary: string | null
+          created_at: string
+          credits_used: number | null
+          era_estimate: string | null
+          id: string
+          image_url: string
+          matched_styles: Json | null
+          primary_style: string | null
+          user_id: string
+        }
+        Insert: {
+          ai_summary?: string | null
+          created_at?: string
+          credits_used?: number | null
+          era_estimate?: string | null
+          id?: string
+          image_url: string
+          matched_styles?: Json | null
+          primary_style?: string | null
+          user_id: string
+        }
+        Update: {
+          ai_summary?: string | null
+          created_at?: string
+          credits_used?: number | null
+          era_estimate?: string | null
+          id?: string
+          image_url?: string
+          matched_styles?: Json | null
+          primary_style?: string | null
           user_id?: string
         }
         Relationships: []
@@ -23798,6 +23900,51 @@ export type Database = {
           match_score?: number | null
           matched_figure?: string
           shared_traits?: string[] | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      handwriting_forensic_profiles: {
+        Row: {
+          behavioral_markers: Json | null
+          confidence: number | null
+          created_at: string
+          credits_used: number | null
+          disclaimer: string | null
+          estimated_age_range: string | null
+          estimated_gender_tendency: string | null
+          estimated_handedness: string | null
+          id: string
+          image_url: string
+          personality_summary: string | null
+          user_id: string
+        }
+        Insert: {
+          behavioral_markers?: Json | null
+          confidence?: number | null
+          created_at?: string
+          credits_used?: number | null
+          disclaimer?: string | null
+          estimated_age_range?: string | null
+          estimated_gender_tendency?: string | null
+          estimated_handedness?: string | null
+          id?: string
+          image_url: string
+          personality_summary?: string | null
+          user_id: string
+        }
+        Update: {
+          behavioral_markers?: Json | null
+          confidence?: number | null
+          created_at?: string
+          credits_used?: number | null
+          disclaimer?: string | null
+          estimated_age_range?: string | null
+          estimated_gender_tendency?: string | null
+          estimated_handedness?: string | null
+          id?: string
+          image_url?: string
+          personality_summary?: string | null
           user_id?: string
         }
         Relationships: []
@@ -23971,6 +24118,78 @@ export type Database = {
           },
         ]
       }
+      handwriting_health_screens: {
+        Row: {
+          ai_summary: string | null
+          created_at: string
+          credits_used: number | null
+          disclaimer: string | null
+          fatigue_score: number | null
+          flags: Json | null
+          id: string
+          image_url: string
+          micrographia_score: number | null
+          tremor_score: number | null
+          user_id: string
+        }
+        Insert: {
+          ai_summary?: string | null
+          created_at?: string
+          credits_used?: number | null
+          disclaimer?: string | null
+          fatigue_score?: number | null
+          flags?: Json | null
+          id?: string
+          image_url: string
+          micrographia_score?: number | null
+          tremor_score?: number | null
+          user_id: string
+        }
+        Update: {
+          ai_summary?: string | null
+          created_at?: string
+          credits_used?: number | null
+          disclaimer?: string | null
+          fatigue_score?: number | null
+          flags?: Json | null
+          id?: string
+          image_url?: string
+          micrographia_score?: number | null
+          tremor_score?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      handwriting_letter_decoder: {
+        Row: {
+          ai_summary: string | null
+          created_at: string
+          credits_used: number | null
+          id: string
+          image_url: string
+          letters: Json
+          user_id: string
+        }
+        Insert: {
+          ai_summary?: string | null
+          created_at?: string
+          credits_used?: number | null
+          id?: string
+          image_url: string
+          letters?: Json
+          user_id: string
+        }
+        Update: {
+          ai_summary?: string | null
+          created_at?: string
+          credits_used?: number | null
+          id?: string
+          image_url?: string
+          letters?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
       handwriting_live_ink_recordings: {
         Row: {
           ai_reading: Json | null
@@ -24003,6 +24222,48 @@ export type Database = {
           pressure_avg?: number | null
           speed_avg?: number | null
           strokes?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      handwriting_mental_screens: {
+        Row: {
+          ai_summary: string | null
+          anxiety_score: number | null
+          burnout_score: number | null
+          created_at: string
+          credits_used: number | null
+          depression_score: number | null
+          id: string
+          image_url: string
+          recommendations: Json | null
+          resilience_score: number | null
+          user_id: string
+        }
+        Insert: {
+          ai_summary?: string | null
+          anxiety_score?: number | null
+          burnout_score?: number | null
+          created_at?: string
+          credits_used?: number | null
+          depression_score?: number | null
+          id?: string
+          image_url: string
+          recommendations?: Json | null
+          resilience_score?: number | null
+          user_id: string
+        }
+        Update: {
+          ai_summary?: string | null
+          anxiety_score?: number | null
+          burnout_score?: number | null
+          created_at?: string
+          credits_used?: number | null
+          depression_score?: number | null
+          id?: string
+          image_url?: string
+          recommendations?: Json | null
+          resilience_score?: number | null
           user_id?: string
         }
         Relationships: []
@@ -24186,6 +24447,45 @@ export type Database = {
           sample_url?: string
           trait_vector?: Json
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      handwriting_zone_analyses: {
+        Row: {
+          ai_summary: string | null
+          created_at: string
+          credits_used: number | null
+          dominant_zone: string | null
+          id: string
+          image_url: string
+          lower_zone: Json | null
+          middle_zone: Json | null
+          upper_zone: Json | null
+          user_id: string
+        }
+        Insert: {
+          ai_summary?: string | null
+          created_at?: string
+          credits_used?: number | null
+          dominant_zone?: string | null
+          id?: string
+          image_url: string
+          lower_zone?: Json | null
+          middle_zone?: Json | null
+          upper_zone?: Json | null
+          user_id: string
+        }
+        Update: {
+          ai_summary?: string | null
+          created_at?: string
+          credits_used?: number | null
+          dominant_zone?: string | null
+          id?: string
+          image_url?: string
+          lower_zone?: Json | null
+          middle_zone?: Json | null
+          upper_zone?: Json | null
           user_id?: string
         }
         Relationships: []
