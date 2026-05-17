@@ -449,6 +449,27 @@ export default function CreativeForge() {
         />
 
         {/* Premium AI Tools Row */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
+          <button onClick={() => setAiStudioOpen(true)} className="group p-4 rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 to-accent/10 backdrop-blur-xl hover:border-primary/60 hover:shadow-[0_0_30px_hsl(var(--primary)/0.3)] transition-all text-left">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary to-accent shadow-lg group-hover:scale-110 transition-transform"><SparkleIcon className="h-5 w-5 text-white" /></div>
+              <div><h4 className="font-bold">AI Studio</h4><p className="text-xs text-muted-foreground">Brainstorm · SEO · Translate · Score · Originality</p></div>
+            </div>
+          </button>
+          <button onClick={() => setBrandVoiceOpen(true)} className="group p-4 rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 to-accent/10 backdrop-blur-xl hover:border-primary/60 transition-all text-left">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-gradient-to-br from-accent to-primary shadow-lg group-hover:scale-110 transition-transform"><Palette className="h-5 w-5 text-white" /></div>
+              <div><h4 className="font-bold">Brand Voices</h4><p className="text-xs text-muted-foreground">Save & reuse tone profiles</p></div>
+            </div>
+          </button>
+          <button onClick={() => setStoryBibleOpen(true)} className="group p-4 rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 to-accent/10 backdrop-blur-xl hover:border-primary/60 transition-all text-left">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary to-primary/60 shadow-lg group-hover:scale-110 transition-transform"><BookMarked className="h-5 w-5 text-white" /></div>
+              <div><h4 className="font-bold">Story Bible</h4><p className="text-xs text-muted-foreground">Characters · places · plot · lore</p></div>
+            </div>
+          </button>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
           <button onClick={() => setStyleOpen(true)} className="group p-4 rounded-2xl border border-amber-700/30 bg-gradient-to-br from-[hsl(30,15%,9%)]/80 to-[hsl(0,20%,8%)]/80 backdrop-blur-xl hover:border-amber-500/50 hover:shadow-[0_0_30px_rgba(251,191,36,0.2)] transition-all text-left">
             <div className="flex items-center gap-3">
