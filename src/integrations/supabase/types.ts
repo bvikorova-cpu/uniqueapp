@@ -24207,10 +24207,19 @@ export type Database = {
           created_at: string | null
           current_amount: number | null
           description: string
+          employer_contact_email: string | null
+          employer_org_name: string | null
+          employer_verification_status: string
+          employer_verified_at: string | null
+          employer_verifier_name: string | null
           ends_at: string | null
           hero_type: string
           id: string
           image_url: string | null
+          nominated_by_email: string | null
+          nominated_by_name: string | null
+          nomination_story: string | null
+          nominee_consent_status: string
           organization_name: string | null
           rejection_reason: string | null
           sponsors: Json | null
@@ -24229,10 +24238,19 @@ export type Database = {
           created_at?: string | null
           current_amount?: number | null
           description: string
+          employer_contact_email?: string | null
+          employer_org_name?: string | null
+          employer_verification_status?: string
+          employer_verified_at?: string | null
+          employer_verifier_name?: string | null
           ends_at?: string | null
           hero_type: string
           id?: string
           image_url?: string | null
+          nominated_by_email?: string | null
+          nominated_by_name?: string | null
+          nomination_story?: string | null
+          nominee_consent_status?: string
           organization_name?: string | null
           rejection_reason?: string | null
           sponsors?: Json | null
@@ -24251,10 +24269,19 @@ export type Database = {
           created_at?: string | null
           current_amount?: number | null
           description?: string
+          employer_contact_email?: string | null
+          employer_org_name?: string | null
+          employer_verification_status?: string
+          employer_verified_at?: string | null
+          employer_verifier_name?: string | null
           ends_at?: string | null
           hero_type?: string
           id?: string
           image_url?: string | null
+          nominated_by_email?: string | null
+          nominated_by_name?: string | null
+          nomination_story?: string | null
+          nominee_consent_status?: string
           organization_name?: string | null
           rejection_reason?: string | null
           sponsors?: Json | null
@@ -24270,6 +24297,44 @@ export type Database = {
           video_url?: string | null
         }
         Relationships: []
+      }
+      hero_thank_you_messages: {
+        Row: {
+          author_name: string
+          author_user_id: string | null
+          campaign_id: string
+          created_at: string
+          id: string
+          is_approved: boolean
+          message: string
+        }
+        Insert: {
+          author_name: string
+          author_user_id?: string | null
+          campaign_id: string
+          created_at?: string
+          id?: string
+          is_approved?: boolean
+          message: string
+        }
+        Update: {
+          author_name?: string
+          author_user_id?: string | null
+          campaign_id?: string
+          created_at?: string
+          id?: string
+          is_approved?: boolean
+          message?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hero_thank_you_messages_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "hero_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       historical_matches: {
         Row: {
