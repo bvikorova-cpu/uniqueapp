@@ -16,6 +16,9 @@ import { formatDistanceToNow } from 'date-fns';
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
 import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPanel';
 import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGuard';
+import { CrisisUpdatesTimeline } from '@/components/fundraising/crisis/CrisisUpdatesTimeline';
+import { CrisisPartnersList } from '@/components/fundraising/crisis/CrisisPartnersList';
+import { CrisisDistributionMap } from '@/components/fundraising/crisis/CrisisDistributionMap';
 
 interface CrisisCampaign {
   id: string;
@@ -250,6 +253,10 @@ export default function CrisisDetail() {
                 <p className="whitespace-pre-wrap text-muted-foreground">{campaign.story}</p>
               </CardContent>
             </Card>
+
+            <CrisisUpdatesTimeline campaignId={campaign.id} ownerUserId={campaign.user_id} />
+            <CrisisDistributionMap campaignId={campaign.id} ownerUserId={campaign.user_id} />
+            <CrisisPartnersList campaignId={campaign.id} ownerUserId={campaign.user_id} />
 
             {campaign.video_url && (
               <Card>
