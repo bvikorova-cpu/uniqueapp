@@ -395,6 +395,14 @@ export default function MedicalDetail() {
               campaignType="medical"
               topDonations={donations.map(d => ({ id: d.id, amount: d.amount, donor_name: d.donor_name, is_anonymous: d.is_anonymous, created_at: d.created_at }))}
             />
+            <MedicalShareKit
+              campaignTitle={campaign.title}
+              patientName={campaign.patient_name}
+              diagnosis={campaign.diagnosis}
+              targetAmount={campaign.target_amount}
+              currentAmount={campaign.current_amount}
+              campaignUrl={typeof window !== 'undefined' ? window.location.href : ''}
+            />
             <CampaignPayoutPanel
               campaignType="medical"
               campaignId={campaign.id}
@@ -485,19 +493,11 @@ export default function MedicalDetail() {
                   )}
                 </div>
 
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="monthly"
-                    checked={isMonthly}
-                    onCheckedChange={(checked) => setIsMonthly(checked as boolean)}
-                  />
-                  <label
-                    htmlFor="monthly"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    Monthly donation
-                  </label>
-                </div>
+                <RecurringDonationCard
+                  isMonthly={isMonthly}
+                  onChange={setIsMonthly}
+                  amount={amount === 'custom' ? parseFloat(customAmount) || 0 : parseFloat(amount) || 0}
+                />
 
                 <Separator />
 
