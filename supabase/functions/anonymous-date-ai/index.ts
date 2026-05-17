@@ -179,7 +179,10 @@ Deno.serve(async (req) => {
 
     // Build user message from payload
     const userMsg = JSON.stringify(payload ?? {});
-    const jsonMode = ["icebreakers", "compatibility", "reply_coach", "date_ideas", "daily_question", "conversation_coach"].includes(feature);
+    const jsonMode = [
+      "icebreakers","compatibility","reply_coach","date_ideas","daily_question","conversation_coach",
+      "vibe_decoder","chemistry_report","red_flag_scan","reveal_readiness","first_meet_plan","attachment_profile","chat_translator","breakup_recovery",
+    ].includes(feature);
 
     let aiText: string;
     try {
