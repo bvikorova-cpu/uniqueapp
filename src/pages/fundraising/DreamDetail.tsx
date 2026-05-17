@@ -252,6 +252,30 @@ export default function DreamDetail() {
           </div>
 
           <div className="space-y-6">
+            <AllOrNothingBadge
+              fundingMode={campaign.funding_mode || 'keep_it_all'}
+              currentAmount={campaign.current_amount}
+              targetAmount={campaign.target_amount}
+              endsAt={campaign.ends_at}
+            />
+            <DreamSocialProof
+              backersCount={campaign.backers_count ?? 0}
+              supportersCount={campaign.supporters_count ?? 0}
+            />
+            {campaign.stretch_goals && campaign.stretch_goals.length > 0 && (
+              <StretchGoals
+                baseTarget={campaign.target_amount}
+                currentAmount={campaign.current_amount}
+                goals={campaign.stretch_goals}
+              />
+            )}
+            {campaign.reward_tiers && campaign.reward_tiers.length > 0 && (
+              <RewardTiers
+                tiers={campaign.reward_tiers}
+                selectedTierId={selectedTier?.id}
+                onSelect={handleSelectTier}
+              />
+            )}
             <CampaignDetailEnhancements
               currentAmount={campaign.current_amount}
               targetAmount={campaign.target_amount}
