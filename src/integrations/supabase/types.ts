@@ -15831,6 +15831,10 @@ export type Database = {
       }
       crisis_campaigns: {
         Row: {
+          approval_notes: string | null
+          approval_status: string
+          approved_at: string | null
+          approved_by: string | null
           created_at: string | null
           crisis_type: string
           current_amount: number | null
@@ -15853,6 +15857,10 @@ export type Database = {
           video_url: string | null
         }
         Insert: {
+          approval_notes?: string | null
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
           created_at?: string | null
           crisis_type: string
           current_amount?: number | null
@@ -15875,6 +15883,10 @@ export type Database = {
           video_url?: string | null
         }
         Update: {
+          approval_notes?: string | null
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
           created_at?: string | null
           crisis_type?: string
           current_amount?: number | null
@@ -17852,6 +17864,10 @@ export type Database = {
       }
       dream_campaigns: {
         Row: {
+          approval_notes: string | null
+          approval_status: string
+          approved_at: string | null
+          approved_by: string | null
           backers_count: number
           created_at: string | null
           current_amount: number | null
@@ -17878,6 +17894,10 @@ export type Database = {
           video_url: string | null
         }
         Insert: {
+          approval_notes?: string | null
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
           backers_count?: number
           created_at?: string | null
           current_amount?: number | null
@@ -17904,6 +17924,10 @@ export type Database = {
           video_url?: string | null
         }
         Update: {
+          approval_notes?: string | null
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
           backers_count?: number
           created_at?: string | null
           current_amount?: number | null
@@ -24339,6 +24363,10 @@ export type Database = {
       }
       hero_campaigns: {
         Row: {
+          approval_notes: string | null
+          approval_status: string
+          approved_at: string | null
+          approved_by: string | null
           created_at: string | null
           current_amount: number | null
           description: string
@@ -24370,6 +24398,10 @@ export type Database = {
           video_url: string | null
         }
         Insert: {
+          approval_notes?: string | null
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
           created_at?: string | null
           current_amount?: number | null
           description: string
@@ -24401,6 +24433,10 @@ export type Database = {
           video_url?: string | null
         }
         Update: {
+          approval_notes?: string | null
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
           created_at?: string | null
           current_amount?: number | null
           description?: string
@@ -33363,6 +33399,10 @@ export type Database = {
       }
       medical_campaigns: {
         Row: {
+          approval_notes: string | null
+          approval_status: string
+          approved_at: string | null
+          approved_by: string | null
           created_at: string | null
           current_amount: number | null
           description: string
@@ -33394,6 +33434,10 @@ export type Database = {
           video_url: string | null
         }
         Insert: {
+          approval_notes?: string | null
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
           created_at?: string | null
           current_amount?: number | null
           description: string
@@ -33425,6 +33469,10 @@ export type Database = {
           video_url?: string | null
         }
         Update: {
+          approval_notes?: string | null
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
           created_at?: string | null
           current_amount?: number | null
           description?: string
@@ -37649,6 +37697,10 @@ export type Database = {
           adopted_at: string | null
           adopter_name: string | null
           adoption_status: string
+          approval_notes: string | null
+          approval_status: string
+          approved_at: string | null
+          approved_by: string | null
           created_at: string | null
           current_amount: number | null
           description: string
@@ -37680,6 +37732,10 @@ export type Database = {
           adopted_at?: string | null
           adopter_name?: string | null
           adoption_status?: string
+          approval_notes?: string | null
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
           created_at?: string | null
           current_amount?: number | null
           description: string
@@ -37711,6 +37767,10 @@ export type Database = {
           adopted_at?: string | null
           adopter_name?: string | null
           adoption_status?: string
+          approval_notes?: string | null
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
           created_at?: string | null
           current_amount?: number | null
           description?: string
@@ -48880,6 +48940,10 @@ export type Database = {
       }
       student_campaigns: {
         Row: {
+          approval_notes: string | null
+          approval_status: string
+          approved_at: string | null
+          approved_by: string | null
           created_at: string | null
           current_amount: number | null
           current_gpa: number | null
@@ -48911,6 +48975,10 @@ export type Database = {
           verifier_name: string | null
         }
         Insert: {
+          approval_notes?: string | null
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
           created_at?: string | null
           current_amount?: number | null
           current_gpa?: number | null
@@ -48942,6 +49010,10 @@ export type Database = {
           verifier_name?: string | null
         }
         Update: {
+          approval_notes?: string | null
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
           created_at?: string | null
           current_amount?: number | null
           current_gpa?: number | null
@@ -49559,6 +49631,10 @@ export type Database = {
       talent_campaigns: {
         Row: {
           achievements: string[] | null
+          approval_notes: string | null
+          approval_status: string
+          approved_at: string | null
+          approved_by: string | null
           created_at: string | null
           current_amount: number | null
           description: string
@@ -49584,6 +49660,10 @@ export type Database = {
         }
         Insert: {
           achievements?: string[] | null
+          approval_notes?: string | null
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
           created_at?: string | null
           current_amount?: number | null
           description: string
@@ -49609,6 +49689,10 @@ export type Database = {
         }
         Update: {
           achievements?: string[] | null
+          approval_notes?: string | null
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
           created_at?: string | null
           current_amount?: number | null
           description?: string
