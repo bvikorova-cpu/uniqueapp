@@ -48882,13 +48882,20 @@ export type Database = {
         Row: {
           created_at: string | null
           current_amount: number | null
+          current_gpa: number | null
           description: string
           ends_at: string | null
+          enrollment_doc_url: string | null
+          enrollment_verified: boolean
+          expected_graduation: string | null
           field_of_study: string | null
           id: string
           image_url: string | null
+          institution_verified: boolean
+          open_to_scholarship_match: boolean
           pay_it_forward: boolean | null
           rejection_reason: string | null
+          scholarship_tags: string[]
           school_name: string | null
           status: string | null
           story: string
@@ -48899,18 +48906,27 @@ export type Database = {
           updated_at: string | null
           user_id: string
           verified: boolean | null
+          verified_at: string | null
           verified_by: string | null
+          verifier_name: string | null
         }
         Insert: {
           created_at?: string | null
           current_amount?: number | null
+          current_gpa?: number | null
           description: string
           ends_at?: string | null
+          enrollment_doc_url?: string | null
+          enrollment_verified?: boolean
+          expected_graduation?: string | null
           field_of_study?: string | null
           id?: string
           image_url?: string | null
+          institution_verified?: boolean
+          open_to_scholarship_match?: boolean
           pay_it_forward?: boolean | null
           rejection_reason?: string | null
+          scholarship_tags?: string[]
           school_name?: string | null
           status?: string | null
           story: string
@@ -48921,18 +48937,27 @@ export type Database = {
           updated_at?: string | null
           user_id: string
           verified?: boolean | null
+          verified_at?: string | null
           verified_by?: string | null
+          verifier_name?: string | null
         }
         Update: {
           created_at?: string | null
           current_amount?: number | null
+          current_gpa?: number | null
           description?: string
           ends_at?: string | null
+          enrollment_doc_url?: string | null
+          enrollment_verified?: boolean
+          expected_graduation?: string | null
           field_of_study?: string | null
           id?: string
           image_url?: string | null
+          institution_verified?: boolean
+          open_to_scholarship_match?: boolean
           pay_it_forward?: boolean | null
           rejection_reason?: string | null
+          scholarship_tags?: string[]
           school_name?: string | null
           status?: string | null
           story?: string
@@ -48943,9 +48968,55 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
           verified?: boolean | null
+          verified_at?: string | null
           verified_by?: string | null
+          verifier_name?: string | null
         }
         Relationships: []
+      }
+      student_progress_reports: {
+        Row: {
+          achievements: string | null
+          author_user_id: string
+          campaign_id: string
+          courses_completed: number | null
+          created_at: string
+          gpa: number | null
+          id: string
+          semester: string
+          transcript_url: string | null
+        }
+        Insert: {
+          achievements?: string | null
+          author_user_id: string
+          campaign_id: string
+          courses_completed?: number | null
+          created_at?: string
+          gpa?: number | null
+          id?: string
+          semester: string
+          transcript_url?: string | null
+        }
+        Update: {
+          achievements?: string | null
+          author_user_id?: string
+          campaign_id?: string
+          courses_completed?: number | null
+          created_at?: string
+          gpa?: number | null
+          id?: string
+          semester?: string
+          transcript_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_progress_reports_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "student_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       styling_sessions: {
         Row: {
