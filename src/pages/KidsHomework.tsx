@@ -96,8 +96,8 @@ const KidsHomework = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!question.trim() || !subject || !difficulty) {
-      toast.error("Please fill in all fields");
+    if ((!question.trim() && !photo) || !subject || !difficulty) {
+      toast.error("Pick subject, difficulty, and add a question or photo");
       return;
     }
     if (!user) {
@@ -111,11 +111,11 @@ const KidsHomework = () => {
     }
 
     setLoading(true);
-    setLastQuestion(question);
+    setLastQuestion(question || "📷 Photo problem");
     setResult(null);
     try {
       const { data, error } = await supabase.functions.invoke("kids-homework-helper", {
-        body: { subject, question, difficulty },
+        body: { subject, question, difficulty, imageBase64: photo },
       });
 
       if (error) throw error;
