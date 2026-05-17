@@ -1,15 +1,18 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Download, Volume2, VolumeX, BookOpen, Loader2, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download, Volume2, VolumeX, BookOpen, Loader2, Plus, Sparkles, Wand2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useKidsStoryCredits } from "@/hooks/useKidsStoryCredits";
 
 interface StorybookDisplayProps {
   story: {
     title: string;
     story: string;
     illustration?: string;
+    characters?: string;
+    illustrationStyle?: string;
   };
   onSave: () => void;
   onContinue?: () => void;
@@ -17,11 +20,17 @@ interface StorybookDisplayProps {
   continuingStory?: boolean;
 }
 
+const ILLUSTRATE_COST = 2;
+
 export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, continuingStory }: StorybookDisplayProps) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [isReading, setIsReading] = useState(false);
   const [readingPage, setReadingPage] = useState<number | null>(null);
+  const [pageIllustrations, setPageIllustrations] = useState<Record<number, string>>({});
+  const [illustratingPage, setIllustratingPage] = useState<number | null>(null);
+  const [illustratingAll, setIllustratingAll] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const { refresh: refreshCredits, balance: storyCredits } = useKidsStoryCredits();
 
   // Split story into pages (~150 words each)
   const words = (story.story || "").trim().split(/\s+/).filter(Boolean);
