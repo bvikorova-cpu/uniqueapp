@@ -15,6 +15,9 @@ import { useDonationReturn } from "@/hooks/useDonationReturn";
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
 import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPanel';
 import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGuard';
+import { PetAdoptionStatus } from '@/components/fundraising/pet/PetAdoptionStatus';
+import { PetVetPartnerCard } from '@/components/fundraising/pet/PetVetPartnerCard';
+import { PetProgressGallery } from '@/components/fundraising/pet/PetProgressGallery';
 
 interface PetCampaign {
   id: string;
@@ -232,6 +235,14 @@ export default function PetDetail() {
               </CardHeader>
             </Card>
 
+            <PetAdoptionStatus
+              status={(campaign as any).adoption_status || 'in_treatment'}
+              petName={campaign.pet_name}
+              adopterName={(campaign as any).adopter_name}
+              adoptedAt={(campaign as any).adopted_at}
+              intakeDate={(campaign as any).intake_date}
+            />
+
             <Card>
               <CardHeader>
                 <CardTitle>{campaign.pet_name}'s Story</CardTitle>
@@ -240,6 +251,12 @@ export default function PetDetail() {
                 <p className="whitespace-pre-wrap text-muted-foreground">{campaign.story}</p>
               </CardContent>
             </Card>
+
+            <PetProgressGallery
+              campaignId={campaign.id}
+              ownerUserId={campaign.user_id}
+              petName={campaign.pet_name}
+            />
 
             {campaign.video_url && (
               <Card>
@@ -260,6 +277,12 @@ export default function PetDetail() {
           </div>
 
           <div className="space-y-6">
+            <PetVetPartnerCard
+              clinicName={(campaign as any).vet_clinic_name}
+              contact={(campaign as any).vet_contact}
+              licenseNumber={(campaign as any).vet_license_number}
+              verified={(campaign as any).vet_verified}
+            />
             <CampaignDetailEnhancements
               currentAmount={campaign.current_amount}
               targetAmount={campaign.target_amount}
