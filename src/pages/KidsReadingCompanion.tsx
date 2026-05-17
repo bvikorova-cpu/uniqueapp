@@ -18,6 +18,8 @@ import { TextDifficultyScanner } from "@/components/kids-reading/TextDifficultyS
 import { InteractiveResults } from "@/components/kids-reading/InteractiveResults";
 import { VocabularyFlashcardGame } from "@/components/kids-reading/VocabularyFlashcardGame";
 import { MultiQuestionQuiz } from "@/components/kids-reading/MultiQuestionQuiz";
+import { ReadAloudPlayer } from "@/components/kids-reading/ReadAloudPlayer";
+import { WordDefinitionPopover } from "@/components/kids-reading/WordDefinitionPopover";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const PARENTAL_GATE_KEY = "parental_gate_verified_kids_reading_companion";
@@ -31,6 +33,7 @@ const KidsReadingCompanion = () => {
   const [readingLevel, setReadingLevel] = useState("intermediate");
   const [activeView, setActiveView] = useState<"input" | "results" | "flashcards" | "quiz">("input");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [defineWord, setDefineWord] = useState<string | null>(null);
   const { balance, canUse, isLoading: creditsLoading, purchase, refresh: refreshCredits, costPerUse } = useKidsReadingCredits();
 
   const handleBuyCredits = async () => {
@@ -223,6 +226,13 @@ const KidsReadingCompanion = () => {
 
                       <TextDifficultyScanner text={bookText} />
 
+                      {bookText.trim().length > 20 && (
+                        <ReadAloudPlayer
+                          text={bookText}
+                          onWordClick={(w) => setDefineWord(w)}
+                        />
+                      )}
+
                       <div className="grid grid-cols-2 gap-2">
                         <Button
                           onClick={analyzeText}
@@ -359,6 +369,13 @@ const KidsReadingCompanion = () => {
           </Tabs>
         </div>
       </main>
+      <WordDefinitionPopover
+        word={defineWord}
+        context={bookText.slice(0, 800)}
+        level={readingLevel}
+        onClose={() => setDefineWord(null)}
+        onCreditsUsed={refreshCredits}
+      />
     </div>
   );
 };
