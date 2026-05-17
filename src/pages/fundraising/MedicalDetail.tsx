@@ -145,7 +145,16 @@ export default function MedicalDetail() {
         const eur = ((data?.amount_cents ?? 0) / 100).toFixed(2);
         toast({
           title: 'Thank you!',
-          description: `Your contribution of €${eur} was successfully processed.`,
+          description: `Your contribution of €${eur} was successfully processed. A tax receipt is available.`,
+          action: (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => navigate(`/fundraising/receipt?session_id=${sessionId}`)}
+            >
+              View Receipt
+            </Button>
+          ) as any,
         });
         // Refresh campaign data
         fetchCampaign();
