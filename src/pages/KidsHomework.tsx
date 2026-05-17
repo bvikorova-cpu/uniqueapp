@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { BookOpen, Sparkles, Trophy, Send } from "lucide-react";
+import { BookOpen, Sparkles, Trophy, Send, Camera, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
@@ -49,6 +49,16 @@ const KidsHomework = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [lastQuestion, setLastQuestion] = useState("");
+  const [photo, setPhoto] = useState<string | null>(null);
+
+  const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    if (f.size > 8 * 1024 * 1024) { toast.error("Photo must be under 8MB"); return; }
+    const reader = new FileReader();
+    reader.onload = () => setPhoto(reader.result as string);
+    reader.readAsDataURL(f);
+  };
 
   const { isVerified, checkVerification } = useParentalGate();
   const [showParentalGate, setShowParentalGate] = useState(false);
@@ -86,8 +96,8 @@ const KidsHomework = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!question.trim() || !subject || !difficulty) {
-      toast.error("Please fill in all fields");
+    if ((!question.trim() && !photo) || !subject || !difficulty) {
+      toast.error("Pick subject, difficulty, and add a question or photo");
       return;
     }
     if (!user) {
@@ -101,17 +111,18 @@ const KidsHomework = () => {
     }
 
     setLoading(true);
-    setLastQuestion(question);
+    setLastQuestion(question || "📷 Photo problem");
     setResult(null);
     try {
       const { data, error } = await supabase.functions.invoke("kids-homework-helper", {
-        body: { subject, question, difficulty },
+        body: { subject, question, difficulty, imageBase64: photo },
       });
 
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
 
       setResult(data);
+      setPhoto(null);
       refreshCredits();
 
       const today = new Date().toISOString().split("T")[0];
@@ -194,13 +205,41 @@ const KidsHomework = () => {
                     <Textarea
                       value={question}
                       onChange={(e) => setQuestion(e.target.value)}
-                      placeholder="Type your homework question here... Be as detailed as possible! 📝"
+                      placeholder="Type your homework question, or snap a photo below 📝"
                       className="min-h-[100px] border-2"
                     />
+
+                    {/* Photo upload */}
+                    <div className="flex items-center gap-2">
+                      <label className="flex-1">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          capture="environment"
+                          onChange={handlePhotoSelect}
+                          className="hidden"
+                        />
+                        <div className="flex items-center justify-center gap-2 h-11 rounded-md border-2 border-dashed border-primary/40 bg-primary/5 text-sm cursor-pointer hover:bg-primary/10 transition">
+                          <Camera className="w-4 h-4 text-primary" />
+                          <span className="font-medium">{photo ? "Replace photo" : "📷 Snap a photo of the problem"}</span>
+                        </div>
+                      </label>
+                      {photo && (
+                        <Button type="button" variant="ghost" size="icon" onClick={() => setPhoto(null)}>
+                          <X className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
+                    {photo && (
+                      <div className="rounded-lg overflow-hidden border-2 border-primary/20">
+                        <img src={photo} alt="Homework preview" className="w-full max-h-64 object-contain bg-muted" />
+                      </div>
+                    )}
+
                     <Button
                       type="submit"
                       className="w-full h-11"
-                      disabled={loading || !canAsk || !subject || !difficulty}
+                      disabled={loading || !canAsk || !subject || !difficulty || (!question.trim() && !photo)}
                     >
                       {loading ? (
                         <>
