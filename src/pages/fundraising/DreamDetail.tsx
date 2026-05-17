@@ -15,6 +15,10 @@ import { useDonationReturn } from "@/hooks/useDonationReturn";
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
 import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPanel';
 import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGuard';
+import { RewardTiers, type RewardTier } from '@/components/fundraising/dream/RewardTiers';
+import { StretchGoals, type StretchGoal } from '@/components/fundraising/dream/StretchGoals';
+import { AllOrNothingBadge } from '@/components/fundraising/dream/AllOrNothingBadge';
+import { DreamSocialProof } from '@/components/fundraising/dream/DreamSocialProof';
 
 interface DreamCampaign {
   id: string;
@@ -28,6 +32,11 @@ interface DreamCampaign {
   video_url: string;
   supporters_count: number;
   milestones: any;
+  reward_tiers?: RewardTier[];
+  stretch_goals?: StretchGoal[];
+  funding_mode?: string;
+  backers_count?: number;
+  ends_at?: string | null;
   status: string;
   user_id: string;
   created_at: string;
@@ -47,6 +56,7 @@ export default function DreamDetail() {
   const [campaign, setCampaign] = useState<DreamCampaign | null>(null);
   const [loading, setLoading] = useState(true);
   const [donating, setDonating] = useState(false);
+  const [selectedTier, setSelectedTier] = useState<RewardTier | null>(null);
   const [donationData, setDonationData] = useState({
     amount: '',
     isMonthly: false,
@@ -55,6 +65,12 @@ export default function DreamDetail() {
     donorEmail: '',
     donorName: '',
   });
+
+  const handleSelectTier = (tier: RewardTier) => {
+    setSelectedTier(tier);
+    setDonationData((prev) => ({ ...prev, amount: String(tier.amount) }));
+    document.getElementById('donation-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
   useDonationReturn(() => fetchCampaign());
 
   useEffect(() => {
