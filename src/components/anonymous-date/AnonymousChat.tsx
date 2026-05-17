@@ -193,6 +193,15 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
             <button onClick={() => setShowSettings(s => !s)} className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white" title="Settings">
               <Settings2 className="h-3.5 w-3.5" />
             </button>
+            <ChatSafetyMenu
+              blockedByMe={safety.blockedByMe}
+              submitting={safety.submitting}
+              onReport={({ reason, details }) =>
+                safety.report({ reason, details, matchId: match.id })
+              }
+              onBlock={safety.block}
+              onUnblock={safety.unblock}
+            />
           </div>
         </div>
 
