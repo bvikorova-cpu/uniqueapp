@@ -561,6 +561,24 @@ serve(async (req) => {
           })
           .eq("stripe_payment_intent_id", piId);
         if (error) log("refund sync failed", { error: error.message });
+
+        // ── Campaign donation refund: decrement campaign total, mark donation refunded ──
+        try {
+          const { data: drRes, error: drErr } = await supabase.rpc(
+            "refund_campaign_donation",
+            {
+              _stripe_payment_id: piId,
+              _stripe_refund_id: lastRefund?.id ?? null,
+              _refund_amount: refundAmount > 0 ? refundAmount / 100 : null,
+            },
+          );
+          if (drErr) log("donation refund rpc failed", { err: drErr.message });
+          else if ((drRes as any)?.status === "refunded") {
+            log("donation refunded via webhook", drRes);
+          }
+        } catch (e) {
+          log("donation refund handler error", { err: (e as Error).message });
+        }
         break;
       }
 
@@ -727,6 +745,21 @@ serve(async (req) => {
         // ── Megatalent: deactivate subscription row immediately ─────────────
         await syncMegatalentSubscription(supabase, stripe, sub);
 
+        // ── Campaign donation: mark monthly donation subscription cancelled ──
+        try {
+          const nowIso = new Date().toISOString();
+          const { error: cdErr } = await supabase
+            .from("campaign_donations")
+            .update({
+              subscription_status: "cancelled",
+              cancelled_at: nowIso,
+            })
+            .eq("stripe_subscription_id", sub.id);
+          if (cdErr) log("donation cancel update failed", { err: cdErr.message });
+        } catch (e) {
+          log("donation cancel handler error", { err: (e as Error).message });
+        }
+
         const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id;
         if (!customerId) break;
         let email: string | null = null;
@@ -813,6 +846,17 @@ serve(async (req) => {
         } else {
           log("dunning recorded", { sub: subId, kind, attempt: inv.attempt_count });
         }
+
+        // ── Campaign donation: flag monthly donation as past_due ──
+        try {
+          const { error: cdErr } = await supabase
+            .from("campaign_donations")
+            .update({ subscription_status: "past_due" })
+            .eq("stripe_subscription_id", subId);
+          if (cdErr) log("donation past_due update failed", { err: cdErr.message });
+        } catch (e) {
+          log("donation past_due handler error", { err: (e as Error).message });
+        }
         break;
       }
 
@@ -836,6 +880,59 @@ serve(async (req) => {
           .in("kind", ["failed", "requires_action"]);
         if (rErr) log("dunning recover failed", { err: rErr.message });
 
+        // ─── CAMPAIGN DONATION: record monthly renewal + bump campaign total ──
+        try {
+          const { data: parent } = await supabase
+            .from("campaign_donations")
+            .select("id, campaign_id, campaign_type, donor_id, donor_email, donor_name, amount, is_anonymous, message")
+            .eq("stripe_subscription_id", subId)
+            .eq("is_monthly", true)
+            .order("created_at", { ascending: true })
+            .limit(1)
+            .maybeSingle();
+
+          if (parent) {
+            const paidCents = (inv as any).amount_paid ?? 0;
+            const piId = typeof (inv as any).payment_intent === "string"
+              ? (inv as any).payment_intent
+              : (inv as any).payment_intent?.id ?? null;
+            const renewalPaymentId = piId || inv.id;
+            const nextBilling = (inv as any).lines?.data?.[0]?.period?.end
+              ? new Date(((inv as any).lines.data[0].period.end as number) * 1000).toISOString()
+              : null;
+
+            if (paidCents > 0 && renewalPaymentId) {
+              const { data: rpcRes, error: rpcErr } = await supabase.rpc(
+                "process_campaign_donation",
+                {
+                  _campaign_id: parent.campaign_id,
+                  _campaign_type: parent.campaign_type,
+                  _donor_id: parent.donor_id,
+                  _donor_email: parent.donor_email,
+                  _donor_name: parent.donor_name,
+                  _amount: paidCents / 100,
+                  _is_monthly: true,
+                  _is_anonymous: parent.is_anonymous ?? false,
+                  _message: parent.message,
+                  _stripe_payment_id: renewalPaymentId,
+                },
+              );
+              if (rpcErr) log("donation renewal RPC failed", { err: rpcErr.message });
+              else log("donation renewal recorded", rpcRes);
+            }
+
+            // Re-activate parent donation row + update next billing
+            await supabase
+              .from("campaign_donations")
+              .update({
+                subscription_status: "active",
+                next_billing_at: nextBilling,
+              })
+              .eq("stripe_subscription_id", subId);
+          }
+        } catch (e) {
+          log("donation renewal handler error", { err: (e as Error).message });
+        }
         // ─── RECURRING REFERRAL REWARD ─────────────────────────────────
         // Credit referrer on EVERY successful subscription invoice (initial
         // + every renewal). Idempotent via unique source_invoice_id.
