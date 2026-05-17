@@ -18,6 +18,8 @@ import { TextDifficultyScanner } from "@/components/kids-reading/TextDifficultyS
 import { InteractiveResults } from "@/components/kids-reading/InteractiveResults";
 import { VocabularyFlashcardGame } from "@/components/kids-reading/VocabularyFlashcardGame";
 import { MultiQuestionQuiz } from "@/components/kids-reading/MultiQuestionQuiz";
+import { ReadAloudPlayer } from "@/components/kids-reading/ReadAloudPlayer";
+import { WordDefinitionPopover } from "@/components/kids-reading/WordDefinitionPopover";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const PARENTAL_GATE_KEY = "parental_gate_verified_kids_reading_companion";
