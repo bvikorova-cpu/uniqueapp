@@ -23,6 +23,7 @@ import { VoiceDiaryCard } from "@/components/handwriting/VoiceDiaryCard";
 import { LiveInkCard } from "@/components/handwriting/LiveInkCard";
 import { TimeCapsuleCard } from "@/components/handwriting/TimeCapsuleCard";
 import { PublicGalleryCard } from "@/components/handwriting/PublicGalleryCard";
+import HandwritingParityPack from "@/components/handwriting/HandwritingParityPack";
 import { useHandwritingCredits } from "@/hooks/useHandwritingCredits";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -240,6 +241,12 @@ const Handwriting = () => {
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.59 }}
               >
                 <PublicGalleryCard />
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.595 }}
+              >
+                <HandwritingParityPack />
               </motion.div>
 
               {/* Engagement Workshop */}

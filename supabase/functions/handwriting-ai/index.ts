@@ -859,6 +859,169 @@ Deno.serve(async (req) => {
       return json({ report, summary, watermark, source_data: analysis });
     }
 
+    // ============================================================
+    // PARITY PACK — 8 specialized tools, 6 credits each
+    // ============================================================
+    const PARITY_COST = 6;
+    const visionAsk = async (sys: string, userText: string, imageUrl: string) => {
+      const content = await callAI({
+        model: "gpt-4o",
+        messages: [
+          { role: "system", content: sys },
+          { role: "user", content: [
+            { type: "text", text: userText },
+            { type: "image_url", image_url: { url: imageUrl } },
+          ] },
+        ],
+        response_format: { type: "json_object" },
+      });
+      return JSON.parse(content);
+    };
+
+    if (action === "zone-analysis") {
+      const { imageUrl } = body;
+      if (!imageUrl) return json({ error: "imageUrl required" }, 400);
+      await chargeCredits(supabase, user.id, PARITY_COST);
+      const parsed = await visionAsk(
+        "You are a graphologist specializing in zonal analysis (upper=intellect/spirit, middle=daily ego, lower=physical/drives). Return strict JSON: { upper_zone: { size, slant, traits: string[] }, middle_zone: { size, pressure, traits: string[] }, lower_zone: { size, loops, traits: string[] }, dominant_zone: 'upper'|'middle'|'lower', ai_summary: string }.",
+        "Perform a zonal breakdown of this handwriting.",
+        imageUrl,
+      );
+      const { data: row } = await supabase.from("handwriting_zone_analyses").insert({
+        user_id: user.id, image_url: imageUrl,
+        upper_zone: parsed.upper_zone, middle_zone: parsed.middle_zone, lower_zone: parsed.lower_zone,
+        dominant_zone: parsed.dominant_zone, ai_summary: parsed.ai_summary, credits_used: PARITY_COST,
+      }).select().single();
+      return json({ result: row });
+    }
+
+    if (action === "letter-decoder") {
+      const { imageUrl } = body;
+      if (!imageUrl) return json({ error: "imageUrl required" }, 400);
+      await chargeCredits(supabase, user.id, PARITY_COST);
+      const parsed = await visionAsk(
+        "You are a letter-by-letter graphology decoder. Identify 6-10 distinctive letters in the sample and decode each. Return strict JSON: { letters: [{ letter, observation, meaning }], ai_summary: string }.",
+        "Decode individual letters in this sample.",
+        imageUrl,
+      );
+      const { data: row } = await supabase.from("handwriting_letter_decoder").insert({
+        user_id: user.id, image_url: imageUrl,
+        letters: parsed.letters ?? [], ai_summary: parsed.ai_summary, credits_used: PARITY_COST,
+      }).select().single();
+      return json({ result: row });
+    }
+
+    if (action === "career-match") {
+      const { imageUrl } = body;
+      if (!imageUrl) return json({ error: "imageUrl required" }, 400);
+      await chargeCredits(supabase, user.id, PARITY_COST);
+      const parsed = await visionAsk(
+        "You are a graphology career advisor. Suggest careers that fit this handwriting. Return strict JSON: { top_careers: [{ role, fit_score, reason }], avoid_careers: [{ role, reason }], reasoning: string }.",
+        "Match careers to this handwriting.",
+        imageUrl,
+      );
+      const { data: row } = await supabase.from("handwriting_career_matches").insert({
+        user_id: user.id, image_url: imageUrl,
+        top_careers: parsed.top_careers ?? [], avoid_careers: parsed.avoid_careers ?? [],
+        reasoning: parsed.reasoning, credits_used: PARITY_COST,
+      }).select().single();
+      return json({ result: row });
+    }
+
+    if (action === "health-screen") {
+      const { imageUrl } = body;
+      if (!imageUrl) return json({ error: "imageUrl required" }, 400);
+      await chargeCredits(supabase, user.id, PARITY_COST);
+      const parsed = await visionAsk(
+        "You are a graphology wellness screener (educational only, NOT medical). Estimate tremor, micrographia (shrinking), and fatigue indicators 0-100. Return strict JSON: { tremor_score, micrographia_score, fatigue_score, flags: string[], disclaimer: string, ai_summary: string }.",
+        "Screen this handwriting for physical wellness signals.",
+        imageUrl,
+      );
+      const { data: row } = await supabase.from("handwriting_health_screens").insert({
+        user_id: user.id, image_url: imageUrl,
+        tremor_score: parsed.tremor_score, micrographia_score: parsed.micrographia_score,
+        fatigue_score: parsed.fatigue_score, flags: parsed.flags ?? [],
+        disclaimer: parsed.disclaimer ?? "Educational tool, not a medical diagnosis.",
+        ai_summary: parsed.ai_summary, credits_used: PARITY_COST,
+      }).select().single();
+      return json({ result: row });
+    }
+
+    if (action === "mental-screen") {
+      const { imageUrl } = body;
+      if (!imageUrl) return json({ error: "imageUrl required" }, 400);
+      await chargeCredits(supabase, user.id, PARITY_COST);
+      const parsed = await visionAsk(
+        "You are a graphology mental-wellness screener (educational only, NOT clinical). Rate anxiety, depression, burnout and resilience 0-100. Return strict JSON: { anxiety_score, depression_score, burnout_score, resilience_score, recommendations: string[], ai_summary: string }.",
+        "Screen this handwriting for emotional resilience signals.",
+        imageUrl,
+      );
+      const { data: row } = await supabase.from("handwriting_mental_screens").insert({
+        user_id: user.id, image_url: imageUrl,
+        anxiety_score: parsed.anxiety_score, depression_score: parsed.depression_score,
+        burnout_score: parsed.burnout_score, resilience_score: parsed.resilience_score,
+        recommendations: parsed.recommendations ?? [], ai_summary: parsed.ai_summary,
+        credits_used: PARITY_COST,
+      }).select().single();
+      return json({ result: row });
+    }
+
+    if (action === "coach-plan") {
+      const { imageUrl, goal } = body;
+      if (!imageUrl) return json({ error: "imageUrl required" }, 400);
+      await chargeCredits(supabase, user.id, PARITY_COST);
+      const parsed = await visionAsk(
+        "You are a handwriting improvement coach. Given a sample and a goal, design a 7-day practice plan. Return strict JSON: { exercises: [{ day, title, instruction, duration_min }], ai_plan: string }.",
+        `Goal: ${goal ?? "general improvement"}. Build a 7-day plan.`,
+        imageUrl,
+      );
+      const { data: row } = await supabase.from("handwriting_coach_sessions").insert({
+        user_id: user.id, before_image_url: imageUrl, goal: goal ?? null,
+        exercises: parsed.exercises ?? [], ai_plan: parsed.ai_plan, credits_used: PARITY_COST,
+      }).select().single();
+      return json({ result: row });
+    }
+
+    if (action === "forensic-profile") {
+      const { imageUrl } = body;
+      if (!imageUrl) return json({ error: "imageUrl required" }, 400);
+      await chargeCredits(supabase, user.id, PARITY_COST);
+      const parsed = await visionAsk(
+        "You are a forensic profiler estimating writer attributes from handwriting alone. Be careful and probabilistic — never assert identity. Return strict JSON: { estimated_age_range, estimated_handedness, estimated_gender_tendency, personality_summary, behavioral_markers: string[], confidence: 0-100, disclaimer: string }.",
+        "Build a forensic profile of the unknown writer.",
+        imageUrl,
+      );
+      const { data: row } = await supabase.from("handwriting_forensic_profiles").insert({
+        user_id: user.id, image_url: imageUrl,
+        estimated_age_range: parsed.estimated_age_range,
+        estimated_handedness: parsed.estimated_handedness,
+        estimated_gender_tendency: parsed.estimated_gender_tendency,
+        personality_summary: parsed.personality_summary,
+        behavioral_markers: parsed.behavioral_markers ?? [],
+        confidence: parsed.confidence,
+        disclaimer: parsed.disclaimer ?? "Probabilistic estimate, not identification.",
+        credits_used: PARITY_COST,
+      }).select().single();
+      return json({ result: row });
+    }
+
+    if (action === "cultural-match") {
+      const { imageUrl } = body;
+      if (!imageUrl) return json({ error: "imageUrl required" }, 400);
+      await chargeCredits(supabase, user.id, PARITY_COST);
+      const parsed = await visionAsk(
+        "You are a paleography / cultural-handwriting expert. Match this script to historical/national handwriting traditions (e.g. Palmer, Spencerian, D'Nealian, Italic, Sütterlin, French cursive, Cyrillic schoolbook, Japanese romaji). Return strict JSON: { matched_styles: [{ style, similarity }], primary_style, era_estimate, ai_summary }.",
+        "Identify cultural/era influences in this handwriting.",
+        imageUrl,
+      );
+      const { data: row } = await supabase.from("handwriting_cultural_matches").insert({
+        user_id: user.id, image_url: imageUrl,
+        matched_styles: parsed.matched_styles ?? [], primary_style: parsed.primary_style,
+        era_estimate: parsed.era_estimate, ai_summary: parsed.ai_summary, credits_used: PARITY_COST,
+      }).select().single();
+      return json({ result: row });
+    }
+
     return json({ error: `Unknown action: ${action}` }, 400);
   } catch (e: any) {
     const msg = e?.message ?? String(e);
