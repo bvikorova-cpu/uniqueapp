@@ -254,6 +254,39 @@ export default function DonorDashboard() {
                           <Download className="h-4 w-4" />
                         </Button>
                       )}
+                      {isRefundable(d) && (
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="ghost" size="icon" title="Request refund" disabled={refundingId === d.id}>
+                              {refundingId === d.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Undo2 className="h-4 w-4" />}
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Request a refund?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                You can request a refund within {REFUND_WINDOW_DAYS} days of your donation.
+                                Refunds typically appear in 5–10 business days. The campaign owner will be notified.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <Textarea
+                              placeholder="Optional: tell us why (helps us improve)"
+                              value={refundReason}
+                              onChange={e => setRefundReason(e.target.value)}
+                              maxLength={500}
+                            />
+                            <AlertDialogFooter>
+                              <AlertDialogCancel onClick={() => setRefundReason("")}>Cancel</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => requestRefund(d.id)}>
+                                Confirm refund
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      )}
+                      {d.status === "refunded" && (
+                        <Badge variant="outline" className="text-xs">Refunded</Badge>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
