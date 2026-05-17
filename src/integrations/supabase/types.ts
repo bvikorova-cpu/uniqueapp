@@ -1800,6 +1800,282 @@ export type Database = {
           },
         ]
       }
+      anon_date_attachment_profiles: {
+        Row: {
+          created_at: string
+          id: string
+          insights: string | null
+          partner_advice: string | null
+          primary_style: string
+          scores: Json | null
+          secondary_style: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          insights?: string | null
+          partner_advice?: string | null
+          primary_style: string
+          scores?: Json | null
+          secondary_style?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          insights?: string | null
+          partner_advice?: string | null
+          primary_style?: string
+          scores?: Json | null
+          secondary_style?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      anon_date_breakup_recovery: {
+        Row: {
+          affirmation: string | null
+          created_at: string
+          daily_plan: Json | null
+          id: string
+          match_id: string | null
+          recovery_score: number
+          stage: string | null
+          user_id: string
+        }
+        Insert: {
+          affirmation?: string | null
+          created_at?: string
+          daily_plan?: Json | null
+          id?: string
+          match_id?: string | null
+          recovery_score?: number
+          stage?: string | null
+          user_id: string
+        }
+        Update: {
+          affirmation?: string | null
+          created_at?: string
+          daily_plan?: Json | null
+          id?: string
+          match_id?: string | null
+          recovery_score?: number
+          stage?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      anon_date_chat_translator: {
+        Row: {
+          created_at: string
+          emotional_subtext: string | null
+          hidden_meaning: string | null
+          id: string
+          literal_meaning: string | null
+          match_id: string | null
+          original_message: string
+          suggested_response: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          emotional_subtext?: string | null
+          hidden_meaning?: string | null
+          id?: string
+          literal_meaning?: string | null
+          match_id?: string | null
+          original_message: string
+          suggested_response?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          emotional_subtext?: string | null
+          hidden_meaning?: string | null
+          id?: string
+          literal_meaning?: string | null
+          match_id?: string | null
+          original_message?: string
+          suggested_response?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      anon_date_chemistry_reports: {
+        Row: {
+          chemistry_score: number
+          created_at: string
+          emotional: number | null
+          growth_areas: Json | null
+          id: string
+          intellectual: number | null
+          match_id: string | null
+          playful: number | null
+          romantic: number | null
+          summary: string | null
+          user_id: string
+        }
+        Insert: {
+          chemistry_score?: number
+          created_at?: string
+          emotional?: number | null
+          growth_areas?: Json | null
+          id?: string
+          intellectual?: number | null
+          match_id?: string | null
+          playful?: number | null
+          romantic?: number | null
+          summary?: string | null
+          user_id: string
+        }
+        Update: {
+          chemistry_score?: number
+          created_at?: string
+          emotional?: number | null
+          growth_areas?: Json | null
+          id?: string
+          intellectual?: number | null
+          match_id?: string | null
+          playful?: number | null
+          romantic?: number | null
+          summary?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      anon_date_first_meet_plans: {
+        Row: {
+          backup_plan: Json | null
+          city: string | null
+          created_at: string
+          id: string
+          match_id: string | null
+          plan: Json | null
+          user_id: string
+          vibe: string | null
+        }
+        Insert: {
+          backup_plan?: Json | null
+          city?: string | null
+          created_at?: string
+          id?: string
+          match_id?: string | null
+          plan?: Json | null
+          user_id: string
+          vibe?: string | null
+        }
+        Update: {
+          backup_plan?: Json | null
+          city?: string | null
+          created_at?: string
+          id?: string
+          match_id?: string | null
+          plan?: Json | null
+          user_id?: string
+          vibe?: string | null
+        }
+        Relationships: []
+      }
+      anon_date_red_flag_scans: {
+        Row: {
+          advice: string | null
+          created_at: string
+          flags: Json | null
+          green_flags: Json | null
+          id: string
+          match_id: string | null
+          risk_level: string
+          user_id: string
+        }
+        Insert: {
+          advice?: string | null
+          created_at?: string
+          flags?: Json | null
+          green_flags?: Json | null
+          id?: string
+          match_id?: string | null
+          risk_level?: string
+          user_id: string
+        }
+        Update: {
+          advice?: string | null
+          created_at?: string
+          flags?: Json | null
+          green_flags?: Json | null
+          id?: string
+          match_id?: string | null
+          risk_level?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      anon_date_reveal_readiness: {
+        Row: {
+          created_at: string
+          id: string
+          match_id: string | null
+          readiness_score: number
+          recommendation: string | null
+          recommended_reveal_day: number | null
+          signals: Json | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          match_id?: string | null
+          readiness_score?: number
+          recommendation?: string | null
+          recommended_reveal_day?: number | null
+          signals?: Json | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          match_id?: string | null
+          readiness_score?: number
+          recommendation?: string | null
+          recommended_reveal_day?: number | null
+          signals?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      anon_date_vibe_decoder: {
+        Row: {
+          created_at: string
+          energy: Json | null
+          id: string
+          match_id: string | null
+          notes: string | null
+          user_id: string
+          vibe_label: string
+          vibe_score: number
+        }
+        Insert: {
+          created_at?: string
+          energy?: Json | null
+          id?: string
+          match_id?: string | null
+          notes?: string | null
+          user_id: string
+          vibe_label: string
+          vibe_score?: number
+        }
+        Update: {
+          created_at?: string
+          energy?: Json | null
+          id?: string
+          match_id?: string | null
+          notes?: string | null
+          user_id?: string
+          vibe_label?: string
+          vibe_score?: number
+        }
+        Relationships: []
+      }
       anonymous_date_ai_usage: {
         Row: {
           created_at: string

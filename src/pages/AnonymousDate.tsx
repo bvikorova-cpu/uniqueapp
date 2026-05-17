@@ -26,6 +26,7 @@ import { AnonymousDatePersonalityCompass } from "@/components/anonymous-date/Ano
 import { AnonymousDateConversationStarter } from "@/components/anonymous-date/AnonymousDateConversationStarter";
 import { AnonymousDateIdeasShowcase } from "@/components/anonymous-date/AnonymousDateIdeasShowcase";
 import { AnonymousDateAIToolbox } from "@/components/anonymous-date/AnonymousDateAIToolbox";
+import { AnonymousDateParityPack } from "@/components/anonymous-date/AnonymousDateParityPack";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
@@ -481,6 +482,9 @@ export default function AnonymousDate() {
                   </Card>
                 </div>
               </div>
+
+              {/* Parity Pack — 8 new AI tools */}
+              <AnonymousDateParityPack />
 
               {/* Tips & Future Features */}
               <AnonymousDateIdeasShowcase />
