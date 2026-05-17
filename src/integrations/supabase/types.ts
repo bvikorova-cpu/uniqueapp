@@ -45780,6 +45780,69 @@ export type Database = {
         }
         Relationships: []
       }
+      shadow_auto_clips: {
+        Row: {
+          created_at: string
+          creator_id: string
+          duration_seconds: number | null
+          emoji: string | null
+          highlight_text: string
+          id: string
+          shares: number
+          source_id: string | null
+          source_type: string
+          title: string
+          views: number
+        }
+        Insert: {
+          created_at?: string
+          creator_id: string
+          duration_seconds?: number | null
+          emoji?: string | null
+          highlight_text: string
+          id?: string
+          shares?: number
+          source_id?: string | null
+          source_type: string
+          title: string
+          views?: number
+        }
+        Update: {
+          created_at?: string
+          creator_id?: string
+          duration_seconds?: number | null
+          emoji?: string | null
+          highlight_text?: string
+          id?: string
+          shares?: number
+          source_id?: string | null
+          source_type?: string
+          title?: string
+          views?: number
+        }
+        Relationships: []
+      }
+      shadow_banned_words: {
+        Row: {
+          created_at: string
+          creator_id: string
+          id: string
+          word: string
+        }
+        Insert: {
+          created_at?: string
+          creator_id: string
+          id?: string
+          word: string
+        }
+        Update: {
+          created_at?: string
+          creator_id?: string
+          id?: string
+          word?: string
+        }
+        Relationships: []
+      }
       shadow_bans: {
         Row: {
           banned_at: string | null
@@ -46199,6 +46262,149 @@ export type Database = {
         }
         Relationships: []
       }
+      shadow_duet_battles: {
+        Row: {
+          created_at: string
+          creator_a: string
+          creator_b: string | null
+          ends_at: string | null
+          id: string
+          starts_at: string | null
+          status: string
+          theme: string
+          votes_a: number
+          votes_b: number
+          winner_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          creator_a: string
+          creator_b?: string | null
+          ends_at?: string | null
+          id?: string
+          starts_at?: string | null
+          status?: string
+          theme: string
+          votes_a?: number
+          votes_b?: number
+          winner_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          creator_a?: string
+          creator_b?: string | null
+          ends_at?: string | null
+          id?: string
+          starts_at?: string | null
+          status?: string
+          theme?: string
+          votes_a?: number
+          votes_b?: number
+          winner_id?: string | null
+        }
+        Relationships: []
+      }
+      shadow_duet_votes: {
+        Row: {
+          created_at: string
+          duet_id: string
+          id: string
+          vote_for: string
+          voter_id: string
+        }
+        Insert: {
+          created_at?: string
+          duet_id: string
+          id?: string
+          vote_for: string
+          voter_id: string
+        }
+        Update: {
+          created_at?: string
+          duet_id?: string
+          id?: string
+          vote_for?: string
+          voter_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shadow_duet_votes_duet_id_fkey"
+            columns: ["duet_id"]
+            isOneToOne: false
+            referencedRelation: "shadow_duet_battles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shadow_gift_catalog: {
+        Row: {
+          animation: string | null
+          code: string
+          created_at: string
+          credit_cost: number
+          emoji: string
+          id: string
+          is_active: boolean
+          name: string
+          tier: string
+        }
+        Insert: {
+          animation?: string | null
+          code: string
+          created_at?: string
+          credit_cost: number
+          emoji: string
+          id?: string
+          is_active?: boolean
+          name: string
+          tier: string
+        }
+        Update: {
+          animation?: string | null
+          code?: string
+          created_at?: string
+          credit_cost?: number
+          emoji?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          tier?: string
+        }
+        Relationships: []
+      }
+      shadow_gift_sends: {
+        Row: {
+          context_id: string | null
+          context_type: string | null
+          created_at: string
+          credits_spent: number
+          gift_code: string
+          id: string
+          recipient_id: string
+          sender_id: string
+        }
+        Insert: {
+          context_id?: string | null
+          context_type?: string | null
+          created_at?: string
+          credits_spent: number
+          gift_code: string
+          id?: string
+          recipient_id: string
+          sender_id: string
+        }
+        Update: {
+          context_id?: string | null
+          context_type?: string | null
+          created_at?: string
+          credits_spent?: number
+          gift_code?: string
+          id?: string
+          recipient_id?: string
+          sender_id?: string
+        }
+        Relationships: []
+      }
       shadow_gifts: {
         Row: {
           battle_id: string
@@ -46600,6 +46806,125 @@ export type Database = {
         }
         Relationships: []
       }
+      shadow_stream_goals: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          creator_id: string
+          current_credits: number
+          id: string
+          is_active: boolean
+          reward_description: string | null
+          target_credits: number
+          title: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          creator_id: string
+          current_credits?: number
+          id?: string
+          is_active?: boolean
+          reward_description?: string | null
+          target_credits: number
+          title: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          creator_id?: string
+          current_credits?: number
+          id?: string
+          is_active?: boolean
+          reward_description?: string | null
+          target_credits?: number
+          title?: string
+        }
+        Relationships: []
+      }
+      shadow_stream_mods: {
+        Row: {
+          created_at: string
+          creator_id: string
+          id: string
+          mod_user_id: string
+        }
+        Insert: {
+          created_at?: string
+          creator_id: string
+          id?: string
+          mod_user_id: string
+        }
+        Update: {
+          created_at?: string
+          creator_id?: string
+          id?: string
+          mod_user_id?: string
+        }
+        Relationships: []
+      }
+      shadow_stream_reminders: {
+        Row: {
+          created_at: string
+          id: string
+          schedule_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          schedule_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          schedule_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shadow_stream_reminders_schedule_id_fkey"
+            columns: ["schedule_id"]
+            isOneToOne: false
+            referencedRelation: "shadow_stream_schedule"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shadow_stream_schedule: {
+        Row: {
+          cover_emoji: string | null
+          created_at: string
+          creator_id: string
+          description: string | null
+          id: string
+          scheduled_for: string
+          status: string
+          title: string
+        }
+        Insert: {
+          cover_emoji?: string | null
+          created_at?: string
+          creator_id: string
+          description?: string | null
+          id?: string
+          scheduled_for: string
+          status?: string
+          title: string
+        }
+        Update: {
+          cover_emoji?: string | null
+          created_at?: string
+          creator_id?: string
+          description?: string | null
+          id?: string
+          scheduled_for?: string
+          status?: string
+          title?: string
+        }
+        Relationships: []
+      }
       shadow_subscriptions: {
         Row: {
           created_at: string | null
@@ -46630,6 +46955,80 @@ export type Database = {
           stripe_subscription_id?: string | null
           updated_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      shadow_tournament_entries: {
+        Row: {
+          id: string
+          joined_at: string
+          status: string
+          tournament_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string
+          status?: string
+          tournament_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string
+          status?: string
+          tournament_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shadow_tournament_entries_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "shadow_tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shadow_tournaments: {
+        Row: {
+          bracket: Json | null
+          created_at: string
+          ends_at: string | null
+          entry_credits: number
+          id: string
+          max_participants: number
+          prize_pool_credits: number
+          starts_at: string
+          status: string
+          title: string
+          winner_id: string | null
+        }
+        Insert: {
+          bracket?: Json | null
+          created_at?: string
+          ends_at?: string | null
+          entry_credits?: number
+          id?: string
+          max_participants?: number
+          prize_pool_credits?: number
+          starts_at: string
+          status?: string
+          title: string
+          winner_id?: string | null
+        }
+        Update: {
+          bracket?: Json | null
+          created_at?: string
+          ends_at?: string | null
+          entry_credits?: number
+          id?: string
+          max_participants?: number
+          prize_pool_credits?: number
+          starts_at?: string
+          status?: string
+          title?: string
+          winner_id?: string | null
         }
         Relationships: []
       }
