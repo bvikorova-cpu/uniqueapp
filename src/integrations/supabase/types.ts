@@ -33099,19 +33099,25 @@ export type Database = {
           current_amount: number | null
           description: string
           diagnosis: string
+          direct_to_hospital: boolean | null
           ends_at: string | null
           hospital: string | null
+          hospital_iban: string | null
+          hospital_stripe_account: string | null
           id: string
           image_url: string | null
+          insurance_coverage: number | null
           medical_documents: string[] | null
           monthly_donors_count: number | null
           one_time_donors_count: number | null
           patient_name: string
+          refund_guarantee: boolean | null
           rejection_reason: string | null
           status: string | null
           story: string
           target_amount: number
           title: string
+          treatment_total_cost: number | null
           updated_at: string | null
           user_id: string
           verified: boolean | null
@@ -33124,19 +33130,25 @@ export type Database = {
           current_amount?: number | null
           description: string
           diagnosis: string
+          direct_to_hospital?: boolean | null
           ends_at?: string | null
           hospital?: string | null
+          hospital_iban?: string | null
+          hospital_stripe_account?: string | null
           id?: string
           image_url?: string | null
+          insurance_coverage?: number | null
           medical_documents?: string[] | null
           monthly_donors_count?: number | null
           one_time_donors_count?: number | null
           patient_name: string
+          refund_guarantee?: boolean | null
           rejection_reason?: string | null
           status?: string | null
           story: string
           target_amount: number
           title: string
+          treatment_total_cost?: number | null
           updated_at?: string | null
           user_id: string
           verified?: boolean | null
@@ -33149,19 +33161,25 @@ export type Database = {
           current_amount?: number | null
           description?: string
           diagnosis?: string
+          direct_to_hospital?: boolean | null
           ends_at?: string | null
           hospital?: string | null
+          hospital_iban?: string | null
+          hospital_stripe_account?: string | null
           id?: string
           image_url?: string | null
+          insurance_coverage?: number | null
           medical_documents?: string[] | null
           monthly_donors_count?: number | null
           one_time_donors_count?: number | null
           patient_name?: string
+          refund_guarantee?: boolean | null
           rejection_reason?: string | null
           status?: string | null
           story?: string
           target_amount?: number
           title?: string
+          treatment_total_cost?: number | null
           updated_at?: string | null
           user_id?: string
           verified?: boolean | null

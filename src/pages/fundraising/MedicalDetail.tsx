@@ -17,6 +17,10 @@ import { sk } from 'date-fns/locale';
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
 import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPanel';
 import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGuard';
+import { InsuranceGapCalculator } from '@/components/fundraising/medical/InsuranceGapCalculator';
+import { MedicalShareKit } from '@/components/fundraising/medical/MedicalShareKit';
+import { MedicalTrustBadges } from '@/components/fundraising/medical/MedicalTrustBadges';
+import { RecurringDonationCard } from '@/components/fundraising/medical/RecurringDonationCard';
 
 interface MedicalCampaign {
   id: string;
@@ -36,6 +40,14 @@ interface MedicalCampaign {
   created_at: string;
   ends_at: string;
   user_id: string;
+  // Enhanced fields (Sekcia 1 upgrade)
+  treatment_total_cost?: number | null;
+  insurance_coverage?: number | null;
+  hospital_iban?: string | null;
+  hospital_stripe_account?: string | null;
+  direct_to_hospital?: boolean | null;
+  refund_guarantee?: boolean | null;
+  medical_documents?: string[] | null;
 }
 
 interface Donation {
@@ -284,18 +296,14 @@ export default function MedicalDetail() {
           <div className="lg:col-span-2 space-y-6">
             <Card>
               <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <CardTitle className="text-3xl mb-2">{campaign.title}</CardTitle>
-                    <p className="text-muted-foreground">{campaign.description}</p>
-                  </div>
-                  {campaign.verified && (
-                    <Badge variant="default" className="ml-4">
-                      <CheckCircle className="h-3 w-3 mr-1" />
-                      Verified
-                    </Badge>
-                  )}
-                </div>
+                <CardTitle className="text-3xl mb-2">{campaign.title}</CardTitle>
+                <p className="text-muted-foreground mb-3">{campaign.description}</p>
+                <MedicalTrustBadges
+                  verified={campaign.verified}
+                  directToHospital={campaign.direct_to_hospital}
+                  refundGuarantee={campaign.refund_guarantee}
+                  medicalDocumentsCount={campaign.medical_documents?.length ?? 0}
+                />
               </CardHeader>
               <CardContent className="space-y-6">
                 {campaign.image_url && (
@@ -310,6 +318,13 @@ export default function MedicalDetail() {
                   <h3 className="text-xl font-semibold mb-2">Story</h3>
                   <p className="text-muted-foreground whitespace-pre-wrap">{campaign.story}</p>
                 </div>
+
+                <InsuranceGapCalculator
+                  treatmentTotalCost={campaign.treatment_total_cost}
+                  insuranceCoverage={campaign.insurance_coverage}
+                  targetAmount={campaign.target_amount}
+                  currentAmount={campaign.current_amount}
+                />
 
                 <Separator />
 
@@ -379,6 +394,14 @@ export default function MedicalDetail() {
               supportersCount={(campaign.monthly_donors_count ?? 0) + (campaign.one_time_donors_count ?? 0)}
               campaignType="medical"
               topDonations={donations.map(d => ({ id: d.id, amount: d.amount, donor_name: d.donor_name, is_anonymous: d.is_anonymous, created_at: d.created_at }))}
+            />
+            <MedicalShareKit
+              campaignTitle={campaign.title}
+              patientName={campaign.patient_name}
+              diagnosis={campaign.diagnosis}
+              targetAmount={campaign.target_amount}
+              currentAmount={campaign.current_amount}
+              campaignUrl={typeof window !== 'undefined' ? window.location.href : ''}
             />
             <CampaignPayoutPanel
               campaignType="medical"
@@ -470,19 +493,11 @@ export default function MedicalDetail() {
                   )}
                 </div>
 
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="monthly"
-                    checked={isMonthly}
-                    onCheckedChange={(checked) => setIsMonthly(checked as boolean)}
-                  />
-                  <label
-                    htmlFor="monthly"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    Monthly donation
-                  </label>
-                </div>
+                <RecurringDonationCard
+                  isMonthly={isMonthly}
+                  onChange={setIsMonthly}
+                  amount={amount === 'custom' ? parseFloat(customAmount) || 0 : parseFloat(amount) || 0}
+                />
 
                 <Separator />
 
