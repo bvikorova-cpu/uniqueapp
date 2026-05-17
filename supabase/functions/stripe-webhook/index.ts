@@ -847,13 +847,48 @@ serve(async (req) => {
           log("dunning recorded", { sub: subId, kind, attempt: inv.attempt_count });
         }
 
-        // ── Campaign donation: flag monthly donation as past_due ──
+        // ── Campaign donation: flag monthly donation as past_due + in-app notify ──
         try {
-          const { error: cdErr } = await supabase
+          const { data: dons, error: cdErr } = await supabase
             .from("campaign_donations")
-            .update({ subscription_status: "past_due" })
-            .eq("stripe_subscription_id", subId);
+            .update({
+              subscription_status: "past_due",
+              past_due_since: new Date().toISOString(),
+            })
+            .eq("stripe_subscription_id", subId)
+            .is("past_due_since", null)
+            .select("id, donor_id, campaign_id, campaign_type, amount, currency");
           if (cdErr) log("donation past_due update failed", { err: cdErr.message });
+
+          // Fallback fetch if no rows updated (already past_due) — still notify on first webhook
+          let targets = dons ?? [];
+          if (!targets.length) {
+            const { data: existing } = await supabase
+              .from("campaign_donations")
+              .select("id, donor_id, campaign_id, campaign_type, amount, dunning_notifications_sent")
+              .eq("stripe_subscription_id", subId)
+              .limit(5);
+            targets = (existing ?? []).filter((d: any) => (d.dunning_notifications_sent ?? 0) === 0);
+          }
+
+          for (const d of targets as any[]) {
+            if (!d.donor_id) continue;
+            await supabase.from("notifications").insert({
+              user_id: d.donor_id,
+              type: "donation_payment_failed",
+              title: "Monthly donation payment failed",
+              message: `We couldn't charge your card for your recurring donation. Please update your payment method to keep supporting this campaign.`,
+              related_id: d.campaign_id,
+              action_url: `/fundraising/donor`,
+            });
+            await supabase
+              .from("campaign_donations")
+              .update({
+                dunning_notifications_sent: 1,
+                last_dunning_at: new Date().toISOString(),
+              })
+              .eq("id", d.id);
+          }
         } catch (e) {
           log("donation past_due handler error", { err: (e as Error).message });
         }
