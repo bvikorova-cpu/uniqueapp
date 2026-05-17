@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ChevronRight, ChevronLeft, Sparkles, Coins, Paintbrush, Palette, Zap, Trophy } from "lucide-react";
+import { ChevronRight, ChevronLeft, Sparkles, Coins, Paintbrush, Palette, Zap, Trophy, Wand2 } from "lucide-react";
+import { SketchEnhancer } from "@/components/kids-drawing/SketchEnhancer";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
@@ -202,15 +203,18 @@ const KidsDrawingBuddy = () => {
 
           {/* Main Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid grid-cols-4 w-full">
+            <TabsList className="grid grid-cols-5 w-full">
               <TabsTrigger value="tutorial" className="text-xs sm:text-sm">
                 <Paintbrush className="w-3.5 h-3.5 mr-1" /> Tutorial
+              </TabsTrigger>
+              <TabsTrigger value="polish" className="text-xs sm:text-sm">
+                <Wand2 className="w-3.5 h-3.5 mr-1" /> Polish
               </TabsTrigger>
               <TabsTrigger value="freestyle" className="text-xs sm:text-sm">
                 <Palette className="w-3.5 h-3.5 mr-1" /> Freestyle
               </TabsTrigger>
               <TabsTrigger value="templates" className="text-xs sm:text-sm">
-                <Zap className="w-3.5 h-3.5 mr-1" /> Quick Draw
+                <Zap className="w-3.5 h-3.5 mr-1" /> Quick
               </TabsTrigger>
               <TabsTrigger value="achievements" className="text-xs sm:text-sm">
                 <Trophy className="w-3.5 h-3.5 mr-1" /> Awards
@@ -316,6 +320,24 @@ const KidsDrawingBuddy = () => {
                     </CardContent>
                   </Card>
                 </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="polish" className="space-y-4">
+              {!isAuthenticated ? (
+                <Card>
+                  <CardContent className="py-8 text-center space-y-3">
+                    <Wand2 className="w-10 h-10 mx-auto text-primary" />
+                    <p className="text-sm text-muted-foreground">Sign in to polish your sketches with AI.</p>
+                    <Button onClick={() => navigate("/auth")}>Sign In</Button>
+                  </CardContent>
+                </Card>
+              ) : (
+                <SketchEnhancer
+                  balance={balance}
+                  onCreditsChanged={refresh}
+                  onBuyCredits={() => navigate("/kids-drawing-pricing")}
+                />
               )}
             </TabsContent>
 
