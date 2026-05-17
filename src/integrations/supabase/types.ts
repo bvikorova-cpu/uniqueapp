@@ -15898,6 +15898,141 @@ export type Database = {
         }
         Relationships: []
       }
+      crisis_distribution_points: {
+        Row: {
+          added_by_user_id: string
+          address: string | null
+          campaign_id: string
+          created_at: string
+          id: string
+          items_distributed: number
+          latitude: number | null
+          longitude: number | null
+          name: string
+          status: string
+        }
+        Insert: {
+          added_by_user_id: string
+          address?: string | null
+          campaign_id: string
+          created_at?: string
+          id?: string
+          items_distributed?: number
+          latitude?: number | null
+          longitude?: number | null
+          name: string
+          status?: string
+        }
+        Update: {
+          added_by_user_id?: string
+          address?: string | null
+          campaign_id?: string
+          created_at?: string
+          id?: string
+          items_distributed?: number
+          latitude?: number | null
+          longitude?: number | null
+          name?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crisis_distribution_points_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "crisis_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crisis_partner_orgs: {
+        Row: {
+          added_by_user_id: string
+          campaign_id: string
+          created_at: string
+          id: string
+          logo_url: string | null
+          name: string
+          role: string | null
+          verified: boolean
+          website_url: string | null
+        }
+        Insert: {
+          added_by_user_id: string
+          campaign_id: string
+          created_at?: string
+          id?: string
+          logo_url?: string | null
+          name: string
+          role?: string | null
+          verified?: boolean
+          website_url?: string | null
+        }
+        Update: {
+          added_by_user_id?: string
+          campaign_id?: string
+          created_at?: string
+          id?: string
+          logo_url?: string | null
+          name?: string
+          role?: string | null
+          verified?: boolean
+          website_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crisis_partner_orgs_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "crisis_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crisis_updates: {
+        Row: {
+          author_user_id: string
+          body: string
+          campaign_id: string
+          created_at: string
+          id: string
+          image_url: string | null
+          is_pinned: boolean
+          title: string
+          update_type: string
+        }
+        Insert: {
+          author_user_id: string
+          body: string
+          campaign_id: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_pinned?: boolean
+          title: string
+          update_type?: string
+        }
+        Update: {
+          author_user_id?: string
+          body?: string
+          campaign_id?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_pinned?: boolean
+          title?: string
+          update_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crisis_updates_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "crisis_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cross_reality_reveals: {
         Row: {
           id: string
