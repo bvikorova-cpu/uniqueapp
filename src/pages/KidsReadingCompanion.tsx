@@ -33,6 +33,7 @@ const KidsReadingCompanion = () => {
   const [readingLevel, setReadingLevel] = useState("intermediate");
   const [activeView, setActiveView] = useState<"input" | "results" | "flashcards" | "quiz">("input");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [defineWord, setDefineWord] = useState<string | null>(null);
   const { balance, canUse, isLoading: creditsLoading, purchase, refresh: refreshCredits, costPerUse } = useKidsReadingCredits();
 
   const handleBuyCredits = async () => {
