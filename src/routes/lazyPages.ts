@@ -117,6 +117,7 @@ export const KidsAcademy = lazy(() => import("@/pages/KidsAcademy"));
 export const ColoringPages = lazy(() => import("@/pages/ColoringPages"));
 export const ColoringHub = lazy(() => import("@/pages/coloring/ColoringHub"));
 export const BrandArenaHub = lazy(() => import("@/pages/brand-arena/BrandArenaHub"));
+export const BrainDuelHub = lazy(() => import("@/pages/brain-duel/BrainDuelHub"));
 export const TeenCareerCounselor = lazy(() => import("@/pages/TeenCareerCounselor"));
 export const TeenCareerPricing = lazy(() => import("@/pages/TeenCareerPricing"));
 export const KidsChannel = lazy(() => import("@/pages/KidsChannel"));
