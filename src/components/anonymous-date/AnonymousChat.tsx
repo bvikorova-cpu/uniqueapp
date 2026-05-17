@@ -61,6 +61,8 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
   const [matchState, setMatchState] = useState(match);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  const safety = useChatSafety(currentUserId, partnerId);
+
   // Live match updates (reveal request, status)
   useEffect(() => {
     const ch = supabase.channel(`match-state:${match.id}`)
