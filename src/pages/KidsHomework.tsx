@@ -204,13 +204,41 @@ const KidsHomework = () => {
                     <Textarea
                       value={question}
                       onChange={(e) => setQuestion(e.target.value)}
-                      placeholder="Type your homework question here... Be as detailed as possible! 📝"
+                      placeholder="Type your homework question, or snap a photo below 📝"
                       className="min-h-[100px] border-2"
                     />
+
+                    {/* Photo upload */}
+                    <div className="flex items-center gap-2">
+                      <label className="flex-1">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          capture="environment"
+                          onChange={handlePhotoSelect}
+                          className="hidden"
+                        />
+                        <div className="flex items-center justify-center gap-2 h-11 rounded-md border-2 border-dashed border-primary/40 bg-primary/5 text-sm cursor-pointer hover:bg-primary/10 transition">
+                          <Camera className="w-4 h-4 text-primary" />
+                          <span className="font-medium">{photo ? "Replace photo" : "📷 Snap a photo of the problem"}</span>
+                        </div>
+                      </label>
+                      {photo && (
+                        <Button type="button" variant="ghost" size="icon" onClick={() => setPhoto(null)}>
+                          <X className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
+                    {photo && (
+                      <div className="rounded-lg overflow-hidden border-2 border-primary/20">
+                        <img src={photo} alt="Homework preview" className="w-full max-h-64 object-contain bg-muted" />
+                      </div>
+                    )}
+
                     <Button
                       type="submit"
                       className="w-full h-11"
-                      disabled={loading || !canAsk || !subject || !difficulty}
+                      disabled={loading || !canAsk || !subject || !difficulty || (!question.trim() && !photo)}
                     >
                       {loading ? (
                         <>
