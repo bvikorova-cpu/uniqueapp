@@ -193,7 +193,7 @@ function RedFlagTool() {
     <Card className="bg-card/60 backdrop-blur-sm border-border/50">
       <Header icon={BookOpen} title="Red Flag Dictionary" color="from-red-500 to-pink-500" />
       <CardContent className="space-y-3">
-        <Input placeholder='e.g. "You\'re overreacting"' value={phrase} onChange={(e) => setPhrase(e.target.value)} />
+        <Input placeholder={`e.g. "You're overreacting"`} value={phrase} onChange={(e) => setPhrase(e.target.value)} />
         <Button disabled={run.isPending || !phrase} onClick={() => run.mutate(phrase)} className="w-full">
           {run.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}Look Up ({COST} cr)
         </Button>
