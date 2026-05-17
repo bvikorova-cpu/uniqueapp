@@ -73,6 +73,7 @@ const KidsAcademy = () => {
               <TabsContent value="today">
                 <KidsAcademyDailyPlan />
               </TabsContent>
+              <TabsContent value="explore">
                 <AdventureWorldMap />
               </TabsContent>
               <TabsContent value="progress">
