@@ -292,9 +292,17 @@ export default function DonorDashboard() {
         )}
 
         <Tabs defaultValue="all">
-          <TabsList className="grid w-full grid-cols-3 max-w-md">
+          <TabsList className="grid w-full grid-cols-4 max-w-xl">
             <TabsTrigger value="all">All ({donations.length})</TabsTrigger>
             <TabsTrigger value="monthly">Monthly ({monthlyDonations.length})</TabsTrigger>
+            <TabsTrigger value="alerts" className="relative">
+              <Bell className="h-3.5 w-3.5 mr-1" /> Alerts
+              {unreadAlerts > 0 && (
+                <Badge className="ml-1 h-4 min-w-4 px-1 text-[10px] bg-destructive text-destructive-foreground">
+                  {unreadAlerts}
+                </Badge>
+              )}
+            </TabsTrigger>
             <TabsTrigger value="receipts">Receipts</TabsTrigger>
           </TabsList>
 
