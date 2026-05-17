@@ -10,6 +10,7 @@ const COSTS = {
   dream: 10, meditation: 15, mood: 8, sleep: 20,
   decoder: 10, evidence: 15, coach: 8, riskscan: 12,
   weekly_insight: 5, roleplay_score: 6, wall_filter: 2,
+  cbt: 6, mh_assess: 6, walking: 6,
 } as const;
 const SAFETY_ACTIONS = new Set(["decoder", "evidence", "coach", "riskscan", "weekly_insight", "roleplay_score", "wall_filter"]);
 
