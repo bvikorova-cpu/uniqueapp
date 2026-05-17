@@ -96,6 +96,35 @@ export default function DonorDashboard() {
     navigate(`/fundraising/receipt/${donationId}`);
   };
 
+  const [refundingId, setRefundingId] = useState<string | null>(null);
+  const [refundReason, setRefundReason] = useState("");
+
+  const isRefundable = (d: Donation) => {
+    if (d.is_monthly) return false;
+    if (!["paid", "completed"].includes(d.status)) return false;
+    const ageDays = (Date.now() - new Date(d.created_at).getTime()) / 86400000;
+    return ageDays <= REFUND_WINDOW_DAYS;
+  };
+
+  const requestRefund = async (donationId: string) => {
+    setRefundingId(donationId);
+    try {
+      const { data, error } = await supabase.functions.invoke("request-donation-refund", {
+        body: { donationId, reason: refundReason },
+      });
+      if (error || (data as any)?.error) {
+        throw new Error((data as any)?.error || error?.message || "Refund failed");
+      }
+      toast({ title: "Refund issued", description: "Funds will appear in 5–10 business days." });
+      setDonations(prev => prev.map(d => d.id === donationId ? { ...d, status: "refunded" } : d));
+      setRefundReason("");
+    } catch (e: any) {
+      toast({ title: "Refund failed", description: e.message, variant: "destructive" });
+    } finally {
+      setRefundingId(null);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
