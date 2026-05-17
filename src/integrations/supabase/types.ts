@@ -37605,6 +37605,42 @@ export type Database = {
         }
         Relationships: []
       }
+      past_life_animal_elementals: {
+        Row: {
+          birth_date: string | null
+          created_at: string
+          credits_used: number
+          form: string | null
+          gift_today: string | null
+          habitat: string | null
+          id: string
+          story: string | null
+          user_id: string
+        }
+        Insert: {
+          birth_date?: string | null
+          created_at?: string
+          credits_used?: number
+          form?: string | null
+          gift_today?: string | null
+          habitat?: string | null
+          id?: string
+          story?: string | null
+          user_id: string
+        }
+        Update: {
+          birth_date?: string | null
+          created_at?: string
+          credits_used?: number
+          form?: string | null
+          gift_today?: string | null
+          habitat?: string | null
+          id?: string
+          story?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       past_life_credits: {
         Row: {
           created_at: string | null
@@ -37628,6 +37664,138 @@ export type Database = {
           id?: string
           total_credits_purchased?: number
           updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      past_life_death_reflections: {
+        Row: {
+          birth_date: string | null
+          cause: string | null
+          created_at: string
+          credits_used: number
+          emotional_imprint: string | null
+          healing_message: string | null
+          id: string
+          unfinished_business: string | null
+          user_id: string
+        }
+        Insert: {
+          birth_date?: string | null
+          cause?: string | null
+          created_at?: string
+          credits_used?: number
+          emotional_imprint?: string | null
+          healing_message?: string | null
+          id?: string
+          unfinished_business?: string | null
+          user_id: string
+        }
+        Update: {
+          birth_date?: string | null
+          cause?: string | null
+          created_at?: string
+          credits_used?: number
+          emotional_imprint?: string | null
+          healing_message?: string | null
+          id?: string
+          unfinished_business?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      past_life_famous_matches: {
+        Row: {
+          birth_date: string | null
+          created_at: string
+          credits_used: number
+          figure_era: string | null
+          figure_name: string | null
+          id: string
+          reasoning: string | null
+          resonance_score: number | null
+          user_id: string
+        }
+        Insert: {
+          birth_date?: string | null
+          created_at?: string
+          credits_used?: number
+          figure_era?: string | null
+          figure_name?: string | null
+          id?: string
+          reasoning?: string | null
+          resonance_score?: number | null
+          user_id: string
+        }
+        Update: {
+          birth_date?: string | null
+          created_at?: string
+          credits_used?: number
+          figure_era?: string | null
+          figure_name?: string | null
+          id?: string
+          reasoning?: string | null
+          resonance_score?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      past_life_karmic_debts: {
+        Row: {
+          birth_date: string | null
+          created_at: string
+          credits_used: number
+          debts: Json
+          id: string
+          resolution_plan: string | null
+          user_id: string
+        }
+        Insert: {
+          birth_date?: string | null
+          created_at?: string
+          credits_used?: number
+          debts?: Json
+          id?: string
+          resolution_plan?: string | null
+          user_id: string
+        }
+        Update: {
+          birth_date?: string | null
+          created_at?: string
+          credits_used?: number
+          debts?: Json
+          id?: string
+          resolution_plan?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      past_life_lesson_workbooks: {
+        Row: {
+          affirmation: string | null
+          created_at: string
+          credits_used: number
+          focus_area: string | null
+          id: string
+          plan: Json
+          user_id: string
+        }
+        Insert: {
+          affirmation?: string | null
+          created_at?: string
+          credits_used?: number
+          focus_area?: string | null
+          id?: string
+          plan?: Json
+          user_id: string
+        }
+        Update: {
+          affirmation?: string | null
+          created_at?: string
+          credits_used?: number
+          focus_area?: string | null
+          id?: string
+          plan?: Json
           user_id?: string
         }
         Relationships: []
@@ -37731,6 +37899,102 @@ export type Database = {
           session_date?: string | null
           user_id?: string
           verification_score?: number | null
+        }
+        Relationships: []
+      }
+      past_life_reincarnation_timelines: {
+        Row: {
+          birth_date: string | null
+          created_at: string
+          credits_used: number
+          id: string
+          overall_arc: string | null
+          timeline: Json
+          user_id: string
+        }
+        Insert: {
+          birth_date?: string | null
+          created_at?: string
+          credits_used?: number
+          id?: string
+          overall_arc?: string | null
+          timeline?: Json
+          user_id: string
+        }
+        Update: {
+          birth_date?: string | null
+          created_at?: string
+          credits_used?: number
+          id?: string
+          overall_arc?: string | null
+          timeline?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      past_life_soul_origins: {
+        Row: {
+          birth_date: string | null
+          created_at: string
+          credits_used: number
+          id: string
+          narrative: string | null
+          origin_dimension: string | null
+          origin_era: string | null
+          soul_archetype: string | null
+          user_id: string
+        }
+        Insert: {
+          birth_date?: string | null
+          created_at?: string
+          credits_used?: number
+          id?: string
+          narrative?: string | null
+          origin_dimension?: string | null
+          origin_era?: string | null
+          soul_archetype?: string | null
+          user_id: string
+        }
+        Update: {
+          birth_date?: string | null
+          created_at?: string
+          credits_used?: number
+          id?: string
+          narrative?: string | null
+          origin_dimension?: string | null
+          origin_era?: string | null
+          soul_archetype?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      past_life_soul_tribes: {
+        Row: {
+          birth_date: string | null
+          created_at: string
+          credits_used: number
+          id: string
+          members: Json
+          tribe_mission: string | null
+          user_id: string
+        }
+        Insert: {
+          birth_date?: string | null
+          created_at?: string
+          credits_used?: number
+          id?: string
+          members?: Json
+          tribe_mission?: string | null
+          user_id: string
+        }
+        Update: {
+          birth_date?: string | null
+          created_at?: string
+          credits_used?: number
+          id?: string
+          members?: Json
+          tribe_mission?: string | null
+          user_id?: string
         }
         Relationships: []
       }
