@@ -20,6 +20,7 @@ import { PastLifeEraWheel } from "@/components/past-life/PastLifeEraWheel";
 import { PastLifeDailyVision } from "@/components/past-life/PastLifeDailyVision";
 import { PastLifeIdeasShowcase } from "@/components/past-life/PastLifeIdeasShowcase";
 import { PastLifeEraQuiz } from "@/components/past-life/PastLifeEraQuiz";
+import { PastLifeParityPack } from "@/components/past-life/PastLifeParityPack";
 import { usePastLifeCredits } from "@/hooks/usePastLifeCredits";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
@@ -180,6 +181,9 @@ const PastLife = () => {
                       </div>
                     ))}
                   </div>
+
+                  {/* Expansion Pack */}
+                  <PastLifeParityPack />
 
                   {/* Tips & Future Features */}
                   <PastLifeIdeasShowcase />
