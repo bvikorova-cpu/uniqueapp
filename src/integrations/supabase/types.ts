@@ -44212,6 +44212,36 @@ export type Database = {
         }
         Relationships: []
       }
+      safety_bystander_scores: {
+        Row: {
+          choice: string
+          created_at: string
+          feedback: string | null
+          id: string
+          scenario_key: string
+          score: number | null
+          user_id: string
+        }
+        Insert: {
+          choice: string
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          scenario_key: string
+          score?: number | null
+          user_id: string
+        }
+        Update: {
+          choice?: string
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          scenario_key?: string
+          score?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       safety_course_progress: {
         Row: {
           completed: boolean | null
@@ -44280,6 +44310,36 @@ export type Database = {
           safety_recommendations?: Json | null
           scan_input?: string
           threat_patterns?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      safety_daily_affirmations: {
+        Row: {
+          affirmation: string
+          created_at: string
+          credits_used: number | null
+          for_date: string
+          id: string
+          theme: string | null
+          user_id: string
+        }
+        Insert: {
+          affirmation: string
+          created_at?: string
+          credits_used?: number | null
+          for_date?: string
+          id?: string
+          theme?: string | null
+          user_id: string
+        }
+        Update: {
+          affirmation?: string
+          created_at?: string
+          credits_used?: number | null
+          for_date?: string
+          id?: string
+          theme?: string | null
           user_id?: string
         }
         Relationships: []
@@ -44434,6 +44494,42 @@ export type Database = {
         }
         Relationships: []
       }
+      safety_platform_reports: {
+        Row: {
+          created_at: string
+          credits_used: number | null
+          evidence_urls: Json | null
+          generated_letter: string | null
+          id: string
+          incident_summary: string
+          platform: string
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number | null
+          evidence_urls?: Json | null
+          generated_letter?: string | null
+          id?: string
+          incident_summary: string
+          platform: string
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number | null
+          evidence_urls?: Json | null
+          generated_letter?: string | null
+          id?: string
+          incident_summary?: string
+          platform?: string
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       safety_response_coach_sessions: {
         Row: {
           assertiveness_score: number | null
@@ -44479,6 +44575,39 @@ export type Database = {
         }
         Relationships: []
       }
+      safety_restorative_letters: {
+        Row: {
+          context: string
+          created_at: string
+          credits_used: number | null
+          generated_letter: string | null
+          id: string
+          recipient_type: string
+          tone: string | null
+          user_id: string
+        }
+        Insert: {
+          context: string
+          created_at?: string
+          credits_used?: number | null
+          generated_letter?: string | null
+          id?: string
+          recipient_type: string
+          tone?: string | null
+          user_id: string
+        }
+        Update: {
+          context?: string
+          created_at?: string
+          credits_used?: number | null
+          generated_letter?: string | null
+          id?: string
+          recipient_type?: string
+          tone?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       safety_roleplay_sessions: {
         Row: {
           ai_feedback: string | null
@@ -44517,6 +44646,30 @@ export type Database = {
           steps_completed?: number
           total_score?: number
           transcript?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      safety_safe_word: {
+        Row: {
+          alert_message: string | null
+          code_phrase: string
+          created_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          alert_message?: string | null
+          code_phrase: string
+          created_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          alert_message?: string | null
+          code_phrase?: string
+          created_at?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -44631,6 +44784,75 @@ export type Database = {
         }
         Relationships: []
       }
+      safety_toxicity_scans: {
+        Row: {
+          ai_analysis: string | null
+          categories: Json | null
+          created_at: string
+          credits_used: number | null
+          id: string
+          input_text: string
+          recommended_actions: Json | null
+          toxicity_score: number | null
+          user_id: string
+        }
+        Insert: {
+          ai_analysis?: string | null
+          categories?: Json | null
+          created_at?: string
+          credits_used?: number | null
+          id?: string
+          input_text: string
+          recommended_actions?: Json | null
+          toxicity_score?: number | null
+          user_id: string
+        }
+        Update: {
+          ai_analysis?: string | null
+          categories?: Json | null
+          created_at?: string
+          credits_used?: number | null
+          id?: string
+          input_text?: string
+          recommended_actions?: Json | null
+          toxicity_score?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      safety_trusted_allies: {
+        Row: {
+          ally_email: string | null
+          ally_name: string
+          ally_phone: string | null
+          created_at: string
+          id: string
+          relationship: string | null
+          sort_order: number | null
+          user_id: string
+        }
+        Insert: {
+          ally_email?: string | null
+          ally_name: string
+          ally_phone?: string | null
+          created_at?: string
+          id?: string
+          relationship?: string | null
+          sort_order?: number | null
+          user_id: string
+        }
+        Update: {
+          ally_email?: string | null
+          ally_name?: string
+          ally_phone?: string | null
+          created_at?: string
+          id?: string
+          relationship?: string | null
+          sort_order?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       safety_wall_reactions: {
         Row: {
           created_at: string
@@ -44651,6 +44873,42 @@ export type Database = {
           id?: string
           message_id?: string
           reaction_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      safety_wellbeing_pulse: {
+        Row: {
+          ai_advice: string | null
+          ai_risk_level: string | null
+          anxiety_score: number
+          created_at: string
+          credits_used: number | null
+          id: string
+          mood_score: number
+          safety_score: number
+          user_id: string
+        }
+        Insert: {
+          ai_advice?: string | null
+          ai_risk_level?: string | null
+          anxiety_score: number
+          created_at?: string
+          credits_used?: number | null
+          id?: string
+          mood_score: number
+          safety_score: number
+          user_id: string
+        }
+        Update: {
+          ai_advice?: string | null
+          ai_risk_level?: string | null
+          anxiety_score?: number
+          created_at?: string
+          credits_used?: number | null
+          id?: string
+          mood_score?: number
+          safety_score?: number
           user_id?: string
         }
         Relationships: []

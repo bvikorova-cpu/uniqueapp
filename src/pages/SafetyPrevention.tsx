@@ -24,6 +24,7 @@ import SafetySupportWall from "@/components/safety/SafetySupportWall";
 import SafetyBadges from "@/components/safety/SafetyBadges";
 import { SafetyHero } from "@/components/safety/SafetyHero";
 import { SafetyAIShield } from "@/components/safety/SafetyAIShield";
+import { SafetyParityPack } from "@/components/safety/SafetyParityPack";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface Message {
@@ -105,6 +106,9 @@ const SafetyPrevention = () => {
 
         {/* AI Shield - new premium AI tools */}
         <SafetyAIShield />
+
+        {/* Parity pack — 8 new tools matching Bark/ReThink/StopBullying.gov */}
+        <SafetyParityPack />
 
         {/* Compact Disclaimer */}
         <Alert className="mb-6 border-amber-500/40 bg-amber-500/5">
