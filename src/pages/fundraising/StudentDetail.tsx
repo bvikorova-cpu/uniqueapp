@@ -15,6 +15,9 @@ import { useDonationReturn } from "@/hooks/useDonationReturn";
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
 import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPanel';
 import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGuard';
+import { AcademicVerificationCard } from '@/components/fundraising/student/AcademicVerificationCard';
+import { ScholarshipMatchCard } from '@/components/fundraising/student/ScholarshipMatchCard';
+import { StudentProgressReports } from '@/components/fundraising/student/StudentProgressReports';
 
 interface StudentCampaign {
   id: string;
@@ -238,9 +241,27 @@ export default function StudentDetail() {
                 <p className="whitespace-pre-wrap text-muted-foreground">{campaign.story}</p>
               </CardContent>
             </Card>
+
+            <StudentProgressReports campaignId={campaign.id} ownerUserId={campaign.user_id} />
           </div>
 
           <div className="space-y-6">
+            <AcademicVerificationCard
+              institutionVerified={(campaign as any).institution_verified}
+              enrollmentVerified={(campaign as any).enrollment_verified}
+              enrollmentDocUrl={(campaign as any).enrollment_doc_url}
+              verifierName={(campaign as any).verifier_name}
+              verifiedAt={(campaign as any).verified_at}
+              currentGpa={(campaign as any).current_gpa}
+              expectedGraduation={(campaign as any).expected_graduation}
+              schoolName={campaign.school_name}
+            />
+            <ScholarshipMatchCard
+              openToMatch={(campaign as any).open_to_scholarship_match}
+              tags={(campaign as any).scholarship_tags || []}
+              fieldOfStudy={campaign.field_of_study}
+              campaignTitle={campaign.title}
+            />
             <CampaignDetailEnhancements
               currentAmount={campaign.current_amount}
               targetAmount={campaign.target_amount}
