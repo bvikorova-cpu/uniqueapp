@@ -956,12 +956,15 @@ serve(async (req) => {
               else log("donation renewal recorded", rpcRes);
             }
 
-            // Re-activate parent donation row + update next billing
+            // Re-activate parent donation row + clear dunning state
             await supabase
               .from("campaign_donations")
               .update({
                 subscription_status: "active",
                 next_billing_at: nextBilling,
+                past_due_since: null,
+                dunning_notifications_sent: 0,
+                last_dunning_at: null,
               })
               .eq("stripe_subscription_id", subId);
           }
