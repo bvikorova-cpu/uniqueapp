@@ -1,10 +1,13 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Lightbulb, Star, Brain } from "lucide-react";
+import { Sparkles, Lightbulb, Star, Brain, CheckCircle2, AlertTriangle, ListOrdered } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 interface ChatResponseProps {
   result: {
     explanation: string;
+    steps?: Array<{ title: string; detail: string }>;
+    finalAnswer?: string;
+    commonMistakes?: string[];
     funFacts?: string[];
     wasFiltered?: boolean;
   } | null;
