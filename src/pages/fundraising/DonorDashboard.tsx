@@ -26,6 +26,20 @@ interface Donation {
   message: string | null;
   status: string;
   created_at: string;
+  subscription_status?: string | null;
+  past_due_since?: string | null;
+  dunning_notifications_sent?: number | null;
+  cancelled_at?: string | null;
+}
+
+interface DunningNotification {
+  id: string;
+  type: string;
+  title: string;
+  message: string;
+  related_id: string | null;
+  is_read: boolean;
+  created_at: string;
 }
 
 const typeLabels: Record<string, string> = {
