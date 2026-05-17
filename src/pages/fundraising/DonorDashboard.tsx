@@ -5,9 +5,16 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Heart, Receipt, Repeat, TrendingUp, ArrowLeft, Download, Calendar, Sparkles } from "lucide-react";
+import { Heart, Receipt, Repeat, TrendingUp, ArrowLeft, Download, Calendar, Sparkles, Undo2, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "@/hooks/use-toast";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Textarea } from "@/components/ui/textarea";
+
+const REFUND_WINDOW_DAYS = 14;
 
 interface Donation {
   id: string;
@@ -87,6 +94,35 @@ export default function DonorDashboard() {
 
   const downloadReceipt = (donationId: string) => {
     navigate(`/fundraising/receipt/${donationId}`);
+  };
+
+  const [refundingId, setRefundingId] = useState<string | null>(null);
+  const [refundReason, setRefundReason] = useState("");
+
+  const isRefundable = (d: Donation) => {
+    if (d.is_monthly) return false;
+    if (!["paid", "completed"].includes(d.status)) return false;
+    const ageDays = (Date.now() - new Date(d.created_at).getTime()) / 86400000;
+    return ageDays <= REFUND_WINDOW_DAYS;
+  };
+
+  const requestRefund = async (donationId: string) => {
+    setRefundingId(donationId);
+    try {
+      const { data, error } = await supabase.functions.invoke("request-donation-refund", {
+        body: { donationId, reason: refundReason },
+      });
+      if (error || (data as any)?.error) {
+        throw new Error((data as any)?.error || error?.message || "Refund failed");
+      }
+      toast({ title: "Refund issued", description: "Funds will appear in 5–10 business days." });
+      setDonations(prev => prev.map(d => d.id === donationId ? { ...d, status: "refunded" } : d));
+      setRefundReason("");
+    } catch (e: any) {
+      toast({ title: "Refund failed", description: e.message, variant: "destructive" });
+    } finally {
+      setRefundingId(null);
+    }
   };
 
   if (loading) {
@@ -217,6 +253,39 @@ export default function DonorDashboard() {
                         <Button variant="ghost" size="icon" onClick={() => downloadReceipt(d.id)} title="Receipt">
                           <Download className="h-4 w-4" />
                         </Button>
+                      )}
+                      {isRefundable(d) && (
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="ghost" size="icon" title="Request refund" disabled={refundingId === d.id}>
+                              {refundingId === d.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Undo2 className="h-4 w-4" />}
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Request a refund?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                You can request a refund within {REFUND_WINDOW_DAYS} days of your donation.
+                                Refunds typically appear in 5–10 business days. The campaign owner will be notified.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <Textarea
+                              placeholder="Optional: tell us why (helps us improve)"
+                              value={refundReason}
+                              onChange={e => setRefundReason(e.target.value)}
+                              maxLength={500}
+                            />
+                            <AlertDialogFooter>
+                              <AlertDialogCancel onClick={() => setRefundReason("")}>Cancel</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => requestRefund(d.id)}>
+                                Confirm refund
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      )}
+                      {d.status === "refunded" && (
+                        <Badge variant="outline" className="text-xs">Refunded</Badge>
                       )}
                     </div>
                   </CardContent>
