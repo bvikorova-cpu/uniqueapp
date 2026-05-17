@@ -15,6 +15,10 @@ import { useDonationReturn } from "@/hooks/useDonationReturn";
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
 import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPanel';
 import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGuard';
+import { RewardTiers, type RewardTier } from '@/components/fundraising/dream/RewardTiers';
+import { StretchGoals, type StretchGoal } from '@/components/fundraising/dream/StretchGoals';
+import { AllOrNothingBadge } from '@/components/fundraising/dream/AllOrNothingBadge';
+import { DreamSocialProof } from '@/components/fundraising/dream/DreamSocialProof';
 
 interface DreamCampaign {
   id: string;
@@ -28,6 +32,11 @@ interface DreamCampaign {
   video_url: string;
   supporters_count: number;
   milestones: any;
+  reward_tiers?: RewardTier[];
+  stretch_goals?: StretchGoal[];
+  funding_mode?: string;
+  backers_count?: number;
+  ends_at?: string | null;
   status: string;
   user_id: string;
   created_at: string;
@@ -47,6 +56,7 @@ export default function DreamDetail() {
   const [campaign, setCampaign] = useState<DreamCampaign | null>(null);
   const [loading, setLoading] = useState(true);
   const [donating, setDonating] = useState(false);
+  const [selectedTier, setSelectedTier] = useState<RewardTier | null>(null);
   const [donationData, setDonationData] = useState({
     amount: '',
     isMonthly: false,
@@ -55,6 +65,12 @@ export default function DreamDetail() {
     donorEmail: '',
     donorName: '',
   });
+
+  const handleSelectTier = (tier: RewardTier) => {
+    setSelectedTier(tier);
+    setDonationData((prev) => ({ ...prev, amount: String(tier.amount) }));
+    document.getElementById('donation-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
   useDonationReturn(() => fetchCampaign());
 
   useEffect(() => {
@@ -72,7 +88,7 @@ export default function DreamDetail() {
         .single();
 
       if (error) throw error;
-      setCampaign(data);
+      setCampaign(data as unknown as DreamCampaign);
     } catch (error) {
       console.error('Error fetching campaign:', error);
       toast({
@@ -236,6 +252,30 @@ export default function DreamDetail() {
           </div>
 
           <div className="space-y-6">
+            <AllOrNothingBadge
+              fundingMode={campaign.funding_mode || 'keep_it_all'}
+              currentAmount={campaign.current_amount}
+              targetAmount={campaign.target_amount}
+              endsAt={campaign.ends_at}
+            />
+            <DreamSocialProof
+              backersCount={campaign.backers_count ?? 0}
+              supportersCount={campaign.supporters_count ?? 0}
+            />
+            {campaign.stretch_goals && campaign.stretch_goals.length > 0 && (
+              <StretchGoals
+                baseTarget={campaign.target_amount}
+                currentAmount={campaign.current_amount}
+                goals={campaign.stretch_goals}
+              />
+            )}
+            {campaign.reward_tiers && campaign.reward_tiers.length > 0 && (
+              <RewardTiers
+                tiers={campaign.reward_tiers}
+                selectedTierId={selectedTier?.id}
+                onSelect={handleSelectTier}
+              />
+            )}
             <CampaignDetailEnhancements
               currentAmount={campaign.current_amount}
               targetAmount={campaign.target_amount}
@@ -273,7 +313,7 @@ export default function DreamDetail() {
             </Card>
 
             {campaign.status === 'active' && (
-              <Card>
+              <Card id="donation-form">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Heart className="h-5 w-5 text-primary" />
@@ -282,6 +322,17 @@ export default function DreamDetail() {
                   <CardDescription>Help make this dream come true</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  {selectedTier && (
+                    <div className="rounded-lg border-2 border-primary/40 bg-primary/5 p-3">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-xs text-muted-foreground">Selected reward</p>
+                          <p className="font-bold text-sm">{selectedTier.label}</p>
+                        </div>
+                        <span className="text-sm font-black text-primary">€{selectedTier.amount}+</span>
+                      </div>
+                    </div>
+                  )}
                   <div>
                     <Label htmlFor="amount">Donation Amount (€) *</Label>
                     <Input
