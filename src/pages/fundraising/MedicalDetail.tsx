@@ -17,6 +17,10 @@ import { sk } from 'date-fns/locale';
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
 import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPanel';
 import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGuard';
+import { InsuranceGapCalculator } from '@/components/fundraising/medical/InsuranceGapCalculator';
+import { MedicalShareKit } from '@/components/fundraising/medical/MedicalShareKit';
+import { MedicalTrustBadges } from '@/components/fundraising/medical/MedicalTrustBadges';
+import { RecurringDonationCard } from '@/components/fundraising/medical/RecurringDonationCard';
 
 interface MedicalCampaign {
   id: string;
@@ -36,6 +40,14 @@ interface MedicalCampaign {
   created_at: string;
   ends_at: string;
   user_id: string;
+  // Enhanced fields (Sekcia 1 upgrade)
+  treatment_total_cost?: number | null;
+  insurance_coverage?: number | null;
+  hospital_iban?: string | null;
+  hospital_stripe_account?: string | null;
+  direct_to_hospital?: boolean | null;
+  refund_guarantee?: boolean | null;
+  medical_documents?: string[] | null;
 }
 
 interface Donation {
