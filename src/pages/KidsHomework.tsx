@@ -49,6 +49,16 @@ const KidsHomework = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [lastQuestion, setLastQuestion] = useState("");
+  const [photo, setPhoto] = useState<string | null>(null);
+
+  const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    if (f.size > 8 * 1024 * 1024) { toast.error("Photo must be under 8MB"); return; }
+    const reader = new FileReader();
+    reader.onload = () => setPhoto(reader.result as string);
+    reader.readAsDataURL(f);
+  };
 
   const { isVerified, checkVerification } = useParentalGate();
   const [showParentalGate, setShowParentalGate] = useState(false);
