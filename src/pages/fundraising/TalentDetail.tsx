@@ -15,6 +15,9 @@ import { useDonationReturn } from "@/hooks/useDonationReturn";
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
 import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPanel';
 import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGuard';
+import { SponsorTiers } from '@/components/fundraising/talent/SponsorTiers';
+import { MilestoneProofs } from '@/components/fundraising/talent/MilestoneProofs';
+import { PortfolioShowcase } from '@/components/fundraising/talent/PortfolioShowcase';
 
 interface TalentCampaign {
   id: string;
@@ -52,6 +55,10 @@ export default function TalentDetail() {
   const [campaign, setCampaign] = useState<TalentCampaign | null>(null);
   const [loading, setLoading] = useState(true);
   const [donating, setDonating] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id ?? null));
+  }, []);
   const [donationData, setDonationData] = useState({
     amount: '',
     isMonthly: false,
@@ -187,13 +194,11 @@ export default function TalentDetail() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
-            {campaign.images && campaign.images.length > 0 && (
-              <div className="grid grid-cols-2 gap-2 rounded-lg overflow-hidden">
-                {campaign.images.map((img, idx) => (
-                  <img key={idx} src={img} alt={`Portfolio ${idx + 1}`} className="w-full h-64 object-cover" />
-                ))}
-              </div>
-            )}
+            <PortfolioShowcase
+              images={campaign.images || []}
+              videoUrl={campaign.video_url}
+              portfolioUrl={campaign.portfolio_url}
+            />
 
             {campaign.status === 'pending' && (
               <Card className="border-yellow-500">
@@ -282,22 +287,8 @@ export default function TalentDetail() {
               </CardContent>
             </Card>
 
-            {campaign.video_url && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Performance Video</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="aspect-video">
-                    <iframe
-                      src={campaign.video_url.replace('watch?v=', 'embed/')}
-                      className="w-full h-full rounded"
-                      allowFullScreen
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+            <MilestoneProofs campaignId={campaign.id} isOwner={currentUserId === campaign.user_id} />
+            <SponsorTiers campaignId={campaign.id} isOwner={currentUserId === campaign.user_id} />
           </div>
 
           <div className="space-y-6">
