@@ -226,6 +226,13 @@ const KidsReadingCompanion = () => {
 
                       <TextDifficultyScanner text={bookText} />
 
+                      {bookText.trim().length > 20 && (
+                        <ReadAloudPlayer
+                          text={bookText}
+                          onWordClick={(w) => setDefineWord(w)}
+                        />
+                      )}
+
                       <div className="grid grid-cols-2 gap-2">
                         <Button
                           onClick={analyzeText}
