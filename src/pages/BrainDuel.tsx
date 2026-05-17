@@ -141,6 +141,15 @@ const BrainDuel = () => {
         {/* ===== NEON HERO ===== */}
         <BrainDuelHero onlineCount={onlineCount} userId={userId} />
 
+        <div className="max-w-4xl mx-auto mb-6 flex justify-center">
+          <button
+            onClick={() => navigate("/brain-duel/hub")}
+            className="px-6 py-3 rounded-lg bg-gradient-to-r from-primary to-accent text-primary-foreground font-bold shadow-lg hover:opacity-90 transition"
+          >
+            ✨ Open Brain Duel Hub — 12 new features
+          </button>
+        </div>
+
         <HeroRewardedAd sectionKey="page_brainduel" />
 
         {/* ===== SEASONAL THEME BANNER ===== */}
