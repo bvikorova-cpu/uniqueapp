@@ -96,6 +96,17 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
     const text = input.trim();
     if (!text) return;
 
+    if (safety.isBlocked) {
+      toast({
+        title: "Chat blocked",
+        description: safety.blockedByMe
+          ? "You blocked this user. Unblock them to continue."
+          : "This conversation is no longer available.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     // Safe word check
     if (safeWord && text.toLowerCase().includes(safeWord)) {
       setInput("");
