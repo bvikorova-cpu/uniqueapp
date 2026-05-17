@@ -243,6 +243,9 @@ export default function CreativeForge() {
             </Button>
             {activeView === "create" && (
               <div className="flex flex-wrap gap-2 ml-auto">
+                <Button variant="outline" size="sm" onClick={() => setAiStudioOpen(true)} className="gap-1 border-primary/40 text-primary hover:bg-primary/10"><SparkleIcon className="h-3.5 w-3.5" /> AI Studio</Button>
+                <Button variant="outline" size="sm" onClick={() => setBrandVoiceOpen(true)} className="gap-1"><Palette className="h-3.5 w-3.5" /> {activeBrandVoice ? `Voice: ${activeBrandVoice.name}` : "Brand Voice"}</Button>
+                <Button variant="outline" size="sm" onClick={() => setStoryBibleOpen(true)} className="gap-1"><BookMarked className="h-3.5 w-3.5" /> Story Bible</Button>
                 <Button variant="outline" size="sm" onClick={() => setCowriterOpen(true)} className="gap-1 border-amber-700/40 text-amber-200 hover:bg-amber-900/20 hover:text-amber-100"><Sparkles className="h-3.5 w-3.5" /> {t("forge.tools.cowriter")}</Button>
                 <Button variant="outline" size="sm" onClick={() => setStyleOpen(true)} className="gap-1 border-amber-700/40 text-amber-200 hover:bg-amber-900/20 hover:text-amber-100"><Wand2 className="h-3.5 w-3.5" /> {t("forge.tools.style_transfer")}</Button>
                 <Button variant="outline" size="sm" onClick={() => setVoiceOpen(true)} className="gap-1 border-amber-700/40 text-amber-200 hover:bg-amber-900/20 hover:text-amber-100"><Mic className="h-3.5 w-3.5" /> {t("forge.tools.voice")}</Button>
