@@ -37568,6 +37568,50 @@ export type Database = {
         }
         Relationships: []
       }
+      pet_progress_updates: {
+        Row: {
+          author_user_id: string
+          body: string | null
+          campaign_id: string
+          created_at: string
+          day_since_rescue: number | null
+          id: string
+          image_url: string | null
+          milestone_type: string
+          title: string
+        }
+        Insert: {
+          author_user_id: string
+          body?: string | null
+          campaign_id: string
+          created_at?: string
+          day_since_rescue?: number | null
+          id?: string
+          image_url?: string | null
+          milestone_type?: string
+          title: string
+        }
+        Update: {
+          author_user_id?: string
+          body?: string | null
+          campaign_id?: string
+          created_at?: string
+          day_since_rescue?: number | null
+          id?: string
+          image_url?: string | null
+          milestone_type?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pet_progress_updates_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "pet_rescue_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pet_quiz_responses: {
         Row: {
           answers: Json
@@ -37602,11 +37646,15 @@ export type Database = {
       }
       pet_rescue_campaigns: {
         Row: {
+          adopted_at: string | null
+          adopter_name: string | null
+          adoption_status: string
           created_at: string | null
           current_amount: number | null
           description: string
           id: string
           images: string[] | null
+          intake_date: string | null
           medical_condition: string | null
           pet_name: string
           pet_type: string
@@ -37622,14 +37670,22 @@ export type Database = {
           user_id: string
           verified: boolean | null
           verified_by: string | null
+          vet_clinic_name: string | null
+          vet_contact: string | null
+          vet_license_number: string | null
+          vet_verified: boolean
           video_url: string | null
         }
         Insert: {
+          adopted_at?: string | null
+          adopter_name?: string | null
+          adoption_status?: string
           created_at?: string | null
           current_amount?: number | null
           description: string
           id?: string
           images?: string[] | null
+          intake_date?: string | null
           medical_condition?: string | null
           pet_name: string
           pet_type: string
@@ -37645,14 +37701,22 @@ export type Database = {
           user_id: string
           verified?: boolean | null
           verified_by?: string | null
+          vet_clinic_name?: string | null
+          vet_contact?: string | null
+          vet_license_number?: string | null
+          vet_verified?: boolean
           video_url?: string | null
         }
         Update: {
+          adopted_at?: string | null
+          adopter_name?: string | null
+          adoption_status?: string
           created_at?: string | null
           current_amount?: number | null
           description?: string
           id?: string
           images?: string[] | null
+          intake_date?: string | null
           medical_condition?: string | null
           pet_name?: string
           pet_type?: string
@@ -37668,6 +37732,10 @@ export type Database = {
           user_id?: string
           verified?: boolean | null
           verified_by?: string | null
+          vet_clinic_name?: string | null
+          vet_contact?: string | null
+          vet_license_number?: string | null
+          vet_verified?: boolean
           video_url?: string | null
         }
         Relationships: []
