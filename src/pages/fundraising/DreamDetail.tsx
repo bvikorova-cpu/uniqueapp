@@ -288,6 +288,15 @@ export default function DreamDetail() {
               campaignId={campaign.id}
               ownerUserId={campaign.user_id}
             />
+            <CampaignShareWidget
+              campaignType="dream"
+              campaignId={campaign.id}
+              title={campaign.title}
+              description={campaign.description}
+              goalAmount={campaign.target_amount}
+              raisedAmount={campaign.current_amount}
+              imageUrl={campaign.image_url}
+            />
             <Card>
               <CardHeader>
                 <CardTitle>Campaign Progress</CardTitle>

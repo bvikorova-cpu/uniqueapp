@@ -425,6 +425,15 @@ export default function MedicalDetail() {
               campaignId={campaign.id}
               ownerUserId={campaign.user_id}
             />
+            <CampaignShareWidget
+              campaignType="medical"
+              campaignId={campaign.id}
+              title={campaign.title}
+              description={campaign.description}
+              goalAmount={campaign.target_amount}
+              raisedAmount={campaign.current_amount}
+              imageUrl={campaign.image_url}
+            />
             {/* Donation Stats */}
             <Card>
               <CardContent className="pt-6 space-y-4">

@@ -295,6 +295,15 @@ export default function PetDetail() {
               campaignId={campaign.id}
               ownerUserId={campaign.user_id}
             />
+            <CampaignShareWidget
+              campaignType="pet"
+              campaignId={campaign.id}
+              title={campaign.title}
+              description={campaign.description}
+              goalAmount={campaign.target_amount}
+              raisedAmount={campaign.current_amount}
+              imageUrl={campaign.images?.[0]}
+            />
             <Card>
               <CardHeader>
                 <CardTitle>Campaign Progress</CardTitle>
