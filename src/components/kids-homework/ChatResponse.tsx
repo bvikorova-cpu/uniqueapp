@@ -103,6 +103,71 @@ export const ChatResponse = ({ result, isLoading, question, subject }: ChatRespo
                     </div>
                   </motion.div>
 
+                  {/* Step-by-step */}
+                  {result.steps && result.steps.length > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.25 }}
+                      className="bg-card/80 backdrop-blur-sm border border-primary/20 rounded-2xl px-4 py-3"
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <ListOrdered className="w-4 h-4 text-primary" />
+                        <span className="text-xs font-semibold text-foreground">Step by Step</span>
+                      </div>
+                      <ol className="space-y-2">
+                        {result.steps.map((s, i) => (
+                          <motion.li
+                            key={i}
+                            initial={{ opacity: 0, x: -8 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.3 + i * 0.08 }}
+                            className="text-xs text-muted-foreground bg-card/50 p-2.5 rounded-lg"
+                          >
+                            <div className="font-semibold text-foreground mb-0.5">{i + 1}. {s.title}</div>
+                            <div className="prose prose-sm max-w-none text-xs"><ReactMarkdown>{s.detail}</ReactMarkdown></div>
+                          </motion.li>
+                        ))}
+                      </ol>
+                    </motion.div>
+                  )}
+
+                  {/* Final answer */}
+                  {result.finalAnswer && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.35 }}
+                      className="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl px-4 py-3"
+                    >
+                      <div className="flex items-center gap-2 mb-1">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                        <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">Final Answer</span>
+                      </div>
+                      <p className="text-sm text-foreground font-medium">{result.finalAnswer}</p>
+                    </motion.div>
+                  )}
+
+                  {/* Common mistakes */}
+                  {result.commonMistakes && result.commonMistakes.length > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.4 }}
+                      className="bg-orange-500/10 border border-orange-500/20 rounded-2xl px-4 py-3"
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <AlertTriangle className="w-4 h-4 text-orange-500" />
+                        <span className="text-xs font-semibold text-orange-700 dark:text-orange-400">Watch Out</span>
+                      </div>
+                      <ul className="space-y-1">
+                        {result.commonMistakes.map((m, i) => (
+                          <li key={i} className="text-xs text-muted-foreground">• {m}</li>
+                        ))}
+                      </ul>
+                    </motion.div>
+                  )}
+
                   {/* Fun facts */}
                   {result.funFacts && result.funFacts.length > 0 && (
                     <motion.div
