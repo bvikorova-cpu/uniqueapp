@@ -18,6 +18,7 @@ import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPane
 import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGuard';
 import { CrisisUpdatesTimeline } from '@/components/fundraising/crisis/CrisisUpdatesTimeline';
 import { CrisisPartnersList } from '@/components/fundraising/crisis/CrisisPartnersList';
+import { CampaignShareWidget } from '@/components/fundraising/CampaignShareWidget';
 import { CrisisDistributionMap } from '@/components/fundraising/crisis/CrisisDistributionMap';
 
 interface CrisisCampaign {

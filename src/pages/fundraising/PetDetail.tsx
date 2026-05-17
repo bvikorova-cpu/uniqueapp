@@ -18,6 +18,7 @@ import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGu
 import { PetAdoptionStatus } from '@/components/fundraising/pet/PetAdoptionStatus';
 import { PetVetPartnerCard } from '@/components/fundraising/pet/PetVetPartnerCard';
 import { PetProgressGallery } from '@/components/fundraising/pet/PetProgressGallery';
+import { CampaignShareWidget } from '@/components/fundraising/CampaignShareWidget';
 
 interface PetCampaign {
   id: string;

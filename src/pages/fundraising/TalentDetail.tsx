@@ -18,6 +18,7 @@ import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGu
 import { SponsorTiers } from '@/components/fundraising/talent/SponsorTiers';
 import { MilestoneProofs } from '@/components/fundraising/talent/MilestoneProofs';
 import { PortfolioShowcase } from '@/components/fundraising/talent/PortfolioShowcase';
+import { CampaignShareWidget } from '@/components/fundraising/CampaignShareWidget';
 
 interface TalentCampaign {
   id: string;

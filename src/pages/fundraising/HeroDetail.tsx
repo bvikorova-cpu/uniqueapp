@@ -18,6 +18,7 @@ import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGu
 import { HeroNominationCard } from '@/components/fundraising/hero/HeroNominationCard';
 import { EmployerVerificationBadge } from '@/components/fundraising/hero/EmployerVerificationBadge';
 import { ThankYouWall } from '@/components/fundraising/hero/ThankYouWall';
+import { CampaignShareWidget } from '@/components/fundraising/CampaignShareWidget';
 
 interface HeroCampaign {
   id: string;
