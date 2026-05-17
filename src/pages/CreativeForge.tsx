@@ -217,6 +217,16 @@ export default function CreativeForge() {
         onApply={(text) => { setGeneratedContent(text); setActiveView("create"); }}
       />
       <ForgeRooms open={roomsOpen} onClose={() => setRoomsOpen(false)} />
+      <ForgeBrandVoice open={brandVoiceOpen} onClose={() => setBrandVoiceOpen(false)} onSelect={(v) => { setActiveBrandVoice(v); toast({ title: "Brand voice active", description: v.name }); }} />
+      <ForgeStoryBible open={storyBibleOpen} onClose={() => setStoryBibleOpen(false)} />
+      <ForgeAIStudio
+        open={aiStudioOpen}
+        onClose={() => setAiStudioOpen(false)}
+        currentText={generatedContent || ""}
+        onReplace={(t) => { setPreviousContent(generatedContent); setGeneratedContent(t); }}
+        onAppend={(t) => setGeneratedContent((prev) => (prev ? prev + "\n\n" + t : t))}
+        brandVoice={activeBrandVoice ? { name: activeBrandVoice.name, tone: activeBrandVoice.tone, audience: activeBrandVoice.audience, do_use: activeBrandVoice.do_use, dont_use: activeBrandVoice.dont_use, sample: activeBrandVoice.sample_text } : null}
+      />
     </>
   );
 
