@@ -422,6 +422,61 @@ serve(async (req) => {
       }).eq("id", row.id);
 
       result = { id: row.id, title, story_text: story, audio_url: audioUrl };
+    } else if (action === "cbt") {
+      const { situation, negative_thought, emotion, intensity_before } = body;
+      if (!situation || !negative_thought) throw new Error("Situation + negative_thought required");
+      const aiData = await callAI(OPENAI_API_KEY, {
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: `You are a CBT therapist. Output ONLY JSON: {"distortions":["catastrophizing","mind-reading",...],"reframe":"<gentle reframe>","balanced_thought":"<balanced thought>","action_step":"<one small action>"}` },
+          { role: "user", content: `Situation: ${situation}\nThought: ${negative_thought}\nEmotion: ${emotion || "n/a"}` },
+        ],
+      });
+      const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
+      const { data: saved } = await supabase.from("wellness_cbt_reframes").insert({
+        user_id: user.id, situation, negative_thought, emotion, intensity_before,
+        distortions: parsed.distortions || [], reframe: parsed.reframe,
+        balanced_thought: parsed.balanced_thought, action_step: parsed.action_step, credits_used: COST,
+      }).select().single();
+      result = saved;
+    } else if (action === "mh_assess") {
+      const { assessment_type, answers, total_score } = body;
+      if (!assessment_type || !Array.isArray(answers)) throw new Error("assessment_type + answers[] required");
+      const aiData = await callAI(OPENAI_API_KEY, {
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: `Mental health screening interpreter (${assessment_type}). Be supportive, never diagnostic. Output ONLY JSON: {"severity":"minimal|mild|moderate|moderately-severe|severe","insight":"<2-3 supportive sentences>","actions":[{"title":"...","why":"..."}]}` },
+          { role: "user", content: `Score: ${total_score}\nAnswers: ${JSON.stringify(answers)}` },
+        ],
+      });
+      const parsed = parseJSON(aiData.choices?.[0]?.message?.content || "") || {};
+      const { data: saved } = await supabase.from("wellness_mh_assessments").insert({
+        user_id: user.id, assessment_type, answers, total_score,
+        severity: parsed.severity, ai_insight: parsed.insight,
+        recommended_actions: parsed.actions || [], credits_used: COST,
+      }).select().single();
+      result = saved;
+    } else if (action === "walking") {
+      const { intention, environment, duration_minutes = 10, voice_id = "EXAVITQu4vr4xnSDxMaL" } = body;
+      if (!intention) throw new Error("Intention required");
+      const { data: row } = await supabase.from("wellness_walking_meditations").insert({
+        user_id: user.id, intention, environment, duration_minutes, voice_id,
+        status: "processing", credits_used: COST,
+      }).select().single();
+      const aiData = await callAI(OPENAI_API_KEY, {
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: `You write guided walking meditation scripts. ~${duration_minutes} minutes. Second person. Calm cues for steps, breath, senses. Use "..." for pauses.` },
+          { role: "user", content: `Intention: ${intention}\nEnvironment: ${environment || "anywhere"}` },
+        ],
+      });
+      const script = aiData.choices?.[0]?.message?.content || "";
+      const audioUrl = await ttsUpload(supabase, ELEVENLABS_API_KEY, voice_id, script, `${user.id}/walk-${row.id}.mp3`,
+        { stability: 0.75, similarity_boost: 0.7, style: 0.25, use_speaker_boost: true, speed: 0.9 });
+      await supabase.from("wellness_walking_meditations").update({
+        script, audio_url: audioUrl, status: "completed",
+      }).eq("id", row.id);
+      result = { id: row.id, script, audio_url: audioUrl };
     }
 
     // Deduct credits from correct table
