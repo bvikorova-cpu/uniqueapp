@@ -122,6 +122,7 @@ const KidsHomework = () => {
       if (data?.error) throw new Error(data.error);
 
       setResult(data);
+      setPhoto(null);
       refreshCredits();
 
       const today = new Date().toISOString().split("T")[0];
