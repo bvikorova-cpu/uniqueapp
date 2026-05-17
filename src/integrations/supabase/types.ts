@@ -5594,6 +5594,39 @@ export type Database = {
         }
         Relationships: []
       }
+      brain_duel_elo: {
+        Row: {
+          draws: number
+          losses: number
+          peak_rating: number
+          rating: number
+          tier: string
+          updated_at: string
+          user_id: string
+          wins: number
+        }
+        Insert: {
+          draws?: number
+          losses?: number
+          peak_rating?: number
+          rating?: number
+          tier?: string
+          updated_at?: string
+          user_id: string
+          wins?: number
+        }
+        Update: {
+          draws?: number
+          losses?: number
+          peak_rating?: number
+          rating?: number
+          tier?: string
+          updated_at?: string
+          user_id?: string
+          wins?: number
+        }
+        Relationships: []
+      }
       brain_duel_friend_achievements: {
         Row: {
           achieved_at: string | null
@@ -6062,6 +6095,39 @@ export type Database = {
         }
         Relationships: []
       }
+      brain_duel_records: {
+        Row: {
+          created_at: string
+          id: string
+          is_public: boolean
+          kind: string
+          parent_id: string | null
+          payload: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          kind: string
+          parent_id?: string | null
+          payload?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          kind?: string
+          parent_id?: string | null
+          payload?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       brain_duel_referral_codes: {
         Row: {
           code: string
@@ -6231,6 +6297,81 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      brain_duel_srs_cards: {
+        Row: {
+          answer: string
+          created_at: string
+          ease: number
+          id: string
+          interval_days: number
+          last_review_at: string | null
+          next_review_at: string
+          question: string
+          review_count: number
+          stage: string
+          topic: string | null
+          user_id: string
+        }
+        Insert: {
+          answer: string
+          created_at?: string
+          ease?: number
+          id?: string
+          interval_days?: number
+          last_review_at?: string | null
+          next_review_at?: string
+          question: string
+          review_count?: number
+          stage?: string
+          topic?: string | null
+          user_id: string
+        }
+        Update: {
+          answer?: string
+          created_at?: string
+          ease?: number
+          id?: string
+          interval_days?: number
+          last_review_at?: string | null
+          next_review_at?: string
+          question?: string
+          review_count?: number
+          stage?: string
+          topic?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      brain_duel_topics: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          member_count: number
+          name: string
+          slug: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          member_count?: number
+          name: string
+          slug: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          member_count?: number
+          name?: string
+          slug?: string
+        }
+        Relationships: []
       }
       brain_duel_user_packs: {
         Row: {
