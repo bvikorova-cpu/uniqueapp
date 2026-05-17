@@ -416,6 +416,97 @@ export default function DonorDashboard() {
             )}
           </TabsContent>
 
+          <TabsContent value="alerts" className="space-y-3 mt-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <Bell className="h-4 w-4" /> Payment alerts
+                  </CardTitle>
+                  <CardDescription>Dunning notifications for your monthly donations</CardDescription>
+                </div>
+                <div className="flex items-center gap-2">
+                  {unreadAlerts > 0 && (
+                    <Button variant="ghost" size="sm" onClick={markAllAlertsRead}>
+                      Mark all read
+                    </Button>
+                  )}
+                  <Button variant="outline" size="sm" onClick={openBillingPortal} disabled={openingPortal}>
+                    {openingPortal ? <Loader2 className="h-4 w-4 animate-spin mr-1.5" /> : <CreditCard className="h-4 w-4 mr-1.5" />}
+                    Update card
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {dunningNotifs.length === 0 ? (
+                  <div className="py-10 text-center text-muted-foreground">
+                    <CheckCircle2 className="h-10 w-10 mx-auto mb-2 text-green-500 opacity-70" />
+                    <p className="text-sm">No payment alerts. All your donations are in good standing.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {dunningNotifs.map(n => {
+                      const r = resolutionFor(n);
+                      const Icon = r.icon;
+                      const toneCls =
+                        r.tone === "ok" ? "border-green-500/30 bg-green-500/5" :
+                        r.tone === "bad" ? "border-destructive/30 bg-destructive/5" :
+                        r.tone === "warn" ? "border-orange-500/30 bg-orange-500/5" :
+                        "border-border";
+                      const iconCls =
+                        r.tone === "ok" ? "text-green-500" :
+                        r.tone === "bad" ? "text-destructive" :
+                        r.tone === "warn" ? "text-orange-500" :
+                        "text-muted-foreground";
+                      const camp = n.related_id ? donationByCampaign.get(n.related_id) : null;
+                      return (
+                        <div
+                          key={n.id}
+                          onClick={() => !n.is_read && markAlertRead(n.id)}
+                          className={`p-3 rounded-lg border transition-colors cursor-pointer hover:bg-accent/30 ${toneCls} ${!n.is_read ? "ring-1 ring-primary/30" : ""}`}
+                        >
+                          <div className="flex items-start gap-3">
+                            <Icon className={`h-5 w-5 mt-0.5 flex-shrink-0 ${iconCls}`} />
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 flex-wrap mb-1">
+                                <p className="font-medium text-sm">{n.title}</p>
+                                {!n.is_read && <Badge variant="default" className="h-4 px-1.5 text-[10px]">New</Badge>}
+                                <Badge variant="outline" className={`text-[10px] ${iconCls}`}>{r.label}</Badge>
+                              </div>
+                              <p className="text-xs text-muted-foreground">{n.message}</p>
+                              <div className="flex items-center gap-3 mt-2 text-[11px] text-muted-foreground">
+                                <span className="flex items-center gap-1">
+                                  <Calendar className="h-3 w-3" />
+                                  {new Date(n.created_at).toLocaleString()}
+                                </span>
+                                {camp && (
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); navigate(`/fundraising/${typeRoutes[camp.campaign_type]}/${camp.campaign_id}`); }}
+                                    className="underline hover:text-foreground"
+                                  >
+                                    View campaign
+                                  </button>
+                                )}
+                                {r.tone === "warn" && (
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); openBillingPortal(); }}
+                                    className="underline hover:text-foreground"
+                                  >
+                                    Update payment method
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           <TabsContent value="receipts" className="space-y-3 mt-4">
             <Card>
               <CardHeader>
