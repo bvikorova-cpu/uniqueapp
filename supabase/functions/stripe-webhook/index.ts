@@ -879,7 +879,7 @@ serve(async (req) => {
               title: "Monthly donation payment failed",
               message: `We couldn't charge your card for your recurring donation. Please update your payment method to keep supporting this campaign.`,
               related_id: d.campaign_id,
-              action_url: `/fundraising/donor`,
+              
             });
             await supabase
               .from("campaign_donations")
