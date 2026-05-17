@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { 
   Phone, AlertTriangle, Heart, Brain, Shield, Sparkles, TrendingUp
 } from "lucide-react";
+import { WellnessParityPack } from "./WellnessParityPack";
 
 interface EmergencyContact {
   name: string;
