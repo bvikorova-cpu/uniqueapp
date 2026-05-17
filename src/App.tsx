@@ -380,6 +380,7 @@ import {
   MedicalFundraising,
   MedicalDetail,
   CreateMedicalCampaign,
+  DonationReceipt,
   FundraisingDashboard,
   CampaignDashboard,
   DreamMaker,
