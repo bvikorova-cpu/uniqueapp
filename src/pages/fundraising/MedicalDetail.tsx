@@ -564,7 +564,7 @@ export default function MedicalDetail() {
                 </Button>
 
                 <p className="text-xs text-muted-foreground text-center">
-                  Your donation includes a platform service fee of 6% to ensure security, verification, and technical maintenance. Secure payment via Stripe.
+                  Your donation includes a platform service fee of 6% to ensure security, verification, and technical maintenance. Secure payment via Stripe. A tax-deductible receipt will be issued automatically.
                 </p>
               </CardContent>
             </Card>
