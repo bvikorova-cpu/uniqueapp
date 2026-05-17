@@ -19,6 +19,7 @@ import { RewardTiers, type RewardTier } from '@/components/fundraising/dream/Rew
 import { StretchGoals, type StretchGoal } from '@/components/fundraising/dream/StretchGoals';
 import { AllOrNothingBadge } from '@/components/fundraising/dream/AllOrNothingBadge';
 import { DreamSocialProof } from '@/components/fundraising/dream/DreamSocialProof';
+import { CampaignShareWidget } from '@/components/fundraising/CampaignShareWidget';
 
 interface DreamCampaign {
   id: string;
@@ -286,6 +287,15 @@ export default function DreamDetail() {
               campaignType="dream"
               campaignId={campaign.id}
               ownerUserId={campaign.user_id}
+            />
+            <CampaignShareWidget
+              campaignType="dream"
+              campaignId={campaign.id}
+              title={campaign.title}
+              description={campaign.description}
+              goalAmount={campaign.target_amount}
+              raisedAmount={campaign.current_amount}
+              imageUrl={campaign.image_url}
             />
             <Card>
               <CardHeader>

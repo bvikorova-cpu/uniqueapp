@@ -18,6 +18,7 @@ import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGu
 import { SponsorTiers } from '@/components/fundraising/talent/SponsorTiers';
 import { MilestoneProofs } from '@/components/fundraising/talent/MilestoneProofs';
 import { PortfolioShowcase } from '@/components/fundraising/talent/PortfolioShowcase';
+import { CampaignShareWidget } from '@/components/fundraising/CampaignShareWidget';
 
 interface TalentCampaign {
   id: string;
@@ -302,6 +303,15 @@ export default function TalentDetail() {
               campaignType="talent"
               campaignId={campaign.id}
               ownerUserId={campaign.user_id}
+            />
+            <CampaignShareWidget
+              campaignType="talent"
+              campaignId={campaign.id}
+              title={campaign.title}
+              description={campaign.description}
+              goalAmount={campaign.target_amount}
+              raisedAmount={campaign.current_amount}
+              imageUrl={campaign.images?.[0]}
             />
             <Card>
               <CardHeader>

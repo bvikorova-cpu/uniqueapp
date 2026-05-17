@@ -18,6 +18,7 @@ import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGu
 import { AcademicVerificationCard } from '@/components/fundraising/student/AcademicVerificationCard';
 import { ScholarshipMatchCard } from '@/components/fundraising/student/ScholarshipMatchCard';
 import { StudentProgressReports } from '@/components/fundraising/student/StudentProgressReports';
+import { CampaignShareWidget } from '@/components/fundraising/CampaignShareWidget';
 
 interface StudentCampaign {
   id: string;
@@ -272,6 +273,15 @@ export default function StudentDetail() {
               campaignType="student"
               campaignId={campaign.id}
               ownerUserId={campaign.user_id}
+            />
+            <CampaignShareWidget
+              campaignType="student"
+              campaignId={campaign.id}
+              title={campaign.title}
+              description={campaign.description}
+              goalAmount={campaign.target_amount}
+              raisedAmount={campaign.current_amount}
+              imageUrl={campaign.image_url}
             />
             <Card>
               <CardHeader>

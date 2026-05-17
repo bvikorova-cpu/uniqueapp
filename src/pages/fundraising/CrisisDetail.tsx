@@ -18,6 +18,7 @@ import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPane
 import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGuard';
 import { CrisisUpdatesTimeline } from '@/components/fundraising/crisis/CrisisUpdatesTimeline';
 import { CrisisPartnersList } from '@/components/fundraising/crisis/CrisisPartnersList';
+import { CampaignShareWidget } from '@/components/fundraising/CampaignShareWidget';
 import { CrisisDistributionMap } from '@/components/fundraising/crisis/CrisisDistributionMap';
 
 interface CrisisCampaign {
@@ -287,6 +288,15 @@ export default function CrisisDetail() {
               campaignType="crisis"
               campaignId={campaign.id}
               ownerUserId={campaign.user_id}
+            />
+            <CampaignShareWidget
+              campaignType="crisis"
+              campaignId={campaign.id}
+              title={campaign.title}
+              description={campaign.description}
+              goalAmount={campaign.target_amount}
+              raisedAmount={campaign.current_amount}
+              imageUrl={campaign.images?.[0]}
             />
             <Card>
               <CardHeader>

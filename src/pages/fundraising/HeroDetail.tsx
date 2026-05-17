@@ -18,6 +18,7 @@ import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGu
 import { HeroNominationCard } from '@/components/fundraising/hero/HeroNominationCard';
 import { EmployerVerificationBadge } from '@/components/fundraising/hero/EmployerVerificationBadge';
 import { ThankYouWall } from '@/components/fundraising/hero/ThankYouWall';
+import { CampaignShareWidget } from '@/components/fundraising/CampaignShareWidget';
 
 interface HeroCampaign {
   id: string;
@@ -281,6 +282,15 @@ export default function HeroDetail() {
               campaignType="hero"
               campaignId={campaign.id}
               ownerUserId={campaign.user_id}
+            />
+            <CampaignShareWidget
+              campaignType="hero"
+              campaignId={campaign.id}
+              title={campaign.title}
+              description={campaign.description}
+              goalAmount={campaign.target_amount}
+              raisedAmount={campaign.current_amount}
+              imageUrl={campaign.image_url}
             />
             <Card>
               <CardHeader>

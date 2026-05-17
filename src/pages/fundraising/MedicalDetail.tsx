@@ -19,6 +19,7 @@ import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPane
 import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGuard';
 import { InsuranceGapCalculator } from '@/components/fundraising/medical/InsuranceGapCalculator';
 import { MedicalShareKit } from '@/components/fundraising/medical/MedicalShareKit';
+import { CampaignShareWidget } from '@/components/fundraising/CampaignShareWidget';
 import { MedicalTrustBadges } from '@/components/fundraising/medical/MedicalTrustBadges';
 import { RecurringDonationCard } from '@/components/fundraising/medical/RecurringDonationCard';
 import { MedicalDocumentsViewer } from '@/components/fundraising/medical/MedicalDocumentsViewer';
@@ -423,6 +424,15 @@ export default function MedicalDetail() {
               campaignType="medical"
               campaignId={campaign.id}
               ownerUserId={campaign.user_id}
+            />
+            <CampaignShareWidget
+              campaignType="medical"
+              campaignId={campaign.id}
+              title={campaign.title}
+              description={campaign.description}
+              goalAmount={campaign.target_amount}
+              raisedAmount={campaign.current_amount}
+              imageUrl={campaign.image_url}
             />
             {/* Donation Stats */}
             <Card>
