@@ -745,6 +745,21 @@ serve(async (req) => {
         // ── Megatalent: deactivate subscription row immediately ─────────────
         await syncMegatalentSubscription(supabase, stripe, sub);
 
+        // ── Campaign donation: mark monthly donation subscription cancelled ──
+        try {
+          const nowIso = new Date().toISOString();
+          const { error: cdErr } = await supabase
+            .from("campaign_donations")
+            .update({
+              subscription_status: "cancelled",
+              cancelled_at: nowIso,
+            })
+            .eq("stripe_subscription_id", sub.id);
+          if (cdErr) log("donation cancel update failed", { err: cdErr.message });
+        } catch (e) {
+          log("donation cancel handler error", { err: (e as Error).message });
+        }
+
         const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id;
         if (!customerId) break;
         let email: string | null = null;
