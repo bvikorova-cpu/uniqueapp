@@ -313,7 +313,7 @@ export default function DreamDetail() {
             </Card>
 
             {campaign.status === 'active' && (
-              <Card>
+              <Card id="donation-form">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Heart className="h-5 w-5 text-primary" />
@@ -322,6 +322,17 @@ export default function DreamDetail() {
                   <CardDescription>Help make this dream come true</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  {selectedTier && (
+                    <div className="rounded-lg border-2 border-primary/40 bg-primary/5 p-3">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-xs text-muted-foreground">Selected reward</p>
+                          <p className="font-bold text-sm">{selectedTier.label}</p>
+                        </div>
+                        <span className="text-sm font-black text-primary">€{selectedTier.amount}+</span>
+                      </div>
+                    </div>
+                  )}
                   <div>
                     <Label htmlFor="amount">Donation Amount (€) *</Label>
                     <Input
