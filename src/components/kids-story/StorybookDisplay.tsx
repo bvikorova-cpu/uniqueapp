@@ -321,7 +321,21 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
               </Button>
             </div>
           </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={illustrateAllPages}
+            disabled={illustratingAll || illustratingPage !== null}
+            className="gap-2"
+          >
+            {illustratingAll ? (
+              <><Loader2 className="w-4 h-4 animate-spin" /> Illustrating all…</>
+            ) : (
+              <><Wand2 className="w-4 h-4" /> Illustrate all pages</>
+            )}
+          </Button>
         </div>
+
 
         {/* Action bar */}
         <div className="bg-card/50 backdrop-blur-sm px-6 py-4 border-t border-border/50 flex flex-wrap gap-3 justify-center">
