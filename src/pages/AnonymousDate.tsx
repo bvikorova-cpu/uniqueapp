@@ -27,6 +27,7 @@ import { AnonymousDateConversationStarter } from "@/components/anonymous-date/An
 import { AnonymousDateIdeasShowcase } from "@/components/anonymous-date/AnonymousDateIdeasShowcase";
 import { AnonymousDateAIToolbox } from "@/components/anonymous-date/AnonymousDateAIToolbox";
 import { AnonymousDateParityPack } from "@/components/anonymous-date/AnonymousDateParityPack";
+import { CompatibilityMatchFinder } from "@/components/anonymous-date/CompatibilityMatchFinder";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
@@ -207,19 +208,26 @@ export default function AnonymousDate() {
 
   const handleToolSelect = (toolId: string) => {
     if (toolId === "find") {
-      if (credits < 5) {
-        toast({
-          title: "Not enough credits",
-          description: "Finding a new match costs 5 credits. Visit the Credit Store to top up.",
-          variant: "destructive",
-        });
-        setActiveView("credits");
-        return;
-      }
-      findMatch();
+      setActiveView("find");
       return;
     }
     setActiveView(toolId as ViewType);
+  };
+
+  const handleFindMatch = async (filters: Parameters<typeof findMatch>[0]) => {
+    if (credits < 5) {
+      toast({
+        title: "Not enough credits",
+        description: "Finding a new match costs 5 credits. Visit the Credit Store to top up.",
+        variant: "destructive",
+      });
+      setActiveView("credits");
+      return;
+    }
+    const result = await findMatch(filters);
+    if (result?.match) {
+      setActiveView("matches");
+    }
   };
 
   if (showAdultWarning) {
@@ -443,8 +451,8 @@ export default function AnonymousDate() {
                     </h3>
                     <div className="space-y-2">
                       <Button
-                        onClick={() => findMatch()}
-                        disabled={loading || credits < 5}
+                        onClick={() => setActiveView("find")}
+                        disabled={loading}
                         className="w-full justify-start gap-2"
                         size="sm"
                       >
@@ -531,6 +539,13 @@ export default function AnonymousDate() {
                   </div>
                 );
               })()}
+              {activeView === "find" && (
+                <CompatibilityMatchFinder
+                  credits={credits}
+                  loading={loading}
+                  onFindMatch={handleFindMatch}
+                />
+              )}
               {activeView === "credits" && (
                 <CreditPackages onPurchase={purchaseCredits} currentCredits={credits} />
               )}
