@@ -21,6 +21,7 @@ import { InsuranceGapCalculator } from '@/components/fundraising/medical/Insuran
 import { MedicalShareKit } from '@/components/fundraising/medical/MedicalShareKit';
 import { MedicalTrustBadges } from '@/components/fundraising/medical/MedicalTrustBadges';
 import { RecurringDonationCard } from '@/components/fundraising/medical/RecurringDonationCard';
+import { MedicalDocumentsViewer } from '@/components/fundraising/medical/MedicalDocumentsViewer';
 
 interface MedicalCampaign {
   id: string;
