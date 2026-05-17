@@ -336,6 +336,12 @@ export default function MedicalDetail() {
                   currentAmount={campaign.current_amount}
                 />
 
+                <MedicalDocumentsViewer
+                  documents={campaign.medical_documents}
+                  verified={campaign.verified}
+                  hospital={campaign.hospital}
+                />
+
                 <Separator />
 
                 <div className="grid grid-cols-2 gap-4">
