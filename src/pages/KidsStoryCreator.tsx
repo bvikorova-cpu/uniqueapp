@@ -97,7 +97,7 @@ const KidsStoryCreator = () => {
         throw error;
       }
 
-      setStory(result);
+      setStory({ ...result, characters: data.characters, illustrationStyle: data.illustrationStyle, category: data.category });
       refreshCredits();
       toast.success("Your story is ready! 📖");
     } catch (error: any) {

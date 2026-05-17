@@ -1,15 +1,18 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Download, Volume2, VolumeX, BookOpen, Loader2, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download, Volume2, VolumeX, BookOpen, Loader2, Plus, Sparkles, Wand2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useKidsStoryCredits } from "@/hooks/useKidsStoryCredits";
 
 interface StorybookDisplayProps {
   story: {
     title: string;
     story: string;
     illustration?: string;
+    characters?: string;
+    illustrationStyle?: string;
   };
   onSave: () => void;
   onContinue?: () => void;
@@ -17,11 +20,17 @@ interface StorybookDisplayProps {
   continuingStory?: boolean;
 }
 
+const ILLUSTRATE_COST = 2;
+
 export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, continuingStory }: StorybookDisplayProps) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [isReading, setIsReading] = useState(false);
   const [readingPage, setReadingPage] = useState<number | null>(null);
+  const [pageIllustrations, setPageIllustrations] = useState<Record<number, string>>({});
+  const [illustratingPage, setIllustratingPage] = useState<number | null>(null);
+  const [illustratingAll, setIllustratingAll] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const { refresh: refreshCredits, balance: storyCredits } = useKidsStoryCredits();
 
   // Split story into pages (~150 words each)
   const words = (story.story || "").trim().split(/\s+/).filter(Boolean);
@@ -135,6 +144,67 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
     };
   }, []);
 
+  const illustratePage = async (pageIndex: number): Promise<boolean> => {
+    if (illustratingPage !== null) return false;
+    if (storyCredits < ILLUSTRATE_COST) {
+      toast.error(`You need ${ILLUSTRATE_COST} story credits to illustrate a page.`);
+      return false;
+    }
+    setIllustratingPage(pageIndex);
+    try {
+      const { data, error } = await supabase.functions.invoke("kids-story-illustrate", {
+        body: {
+          pageText: pages[pageIndex],
+          storyTitle: story.title,
+          style: story.illustrationStyle || "storybook",
+          characters: story.characters || "",
+        },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      const url = (data as any)?.illustration;
+      if (!url) throw new Error("No illustration returned");
+      setPageIllustrations((prev) => ({ ...prev, [pageIndex]: url }));
+      refreshCredits();
+      return true;
+    } catch (err: any) {
+      console.error("Illustrate error:", err);
+      const msg = err?.message || "Failed to illustrate page";
+      if (msg.toLowerCase().includes("insufficient")) {
+        toast.error("Not enough story credits — buy more to keep illustrating.");
+      } else {
+        toast.error(msg);
+      }
+      return false;
+    } finally {
+      setIllustratingPage(null);
+    }
+  };
+
+  const illustrateAllPages = async () => {
+    const missing = pages
+      .map((_, i) => i)
+      .filter((i) => !pageIllustrations[i] && !(i === 0 && story.illustration));
+    if (missing.length === 0) { toast.info("All pages already illustrated."); return; }
+    const need = missing.length * ILLUSTRATE_COST;
+    if (storyCredits < need) {
+      toast.error(`Need ${need} credits to illustrate all ${missing.length} pages.`);
+      return;
+    }
+    setIllustratingAll(true);
+    let done = 0;
+    for (const i of missing) {
+      const ok = await illustratePage(i);
+      if (!ok) break;
+      done++;
+    }
+    setIllustratingAll(false);
+    if (done > 0) toast.success(`Illustrated ${done} page${done > 1 ? "s" : ""}! 🎨`);
+  };
+
+  const currentIllustration = pageIllustrations[currentPage] || (currentPage === 0 ? story.illustration : undefined);
+
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -162,20 +232,41 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
         {/* Content area */}
         <div className="md:grid md:grid-cols-2 min-h-[400px]">
           {/* Illustration side */}
-          <div className="flex items-center justify-center p-6 bg-gradient-to-br from-white/50 to-amber-50/50 dark:from-white/5 dark:to-amber-900/10">
-            {story.illustration ? (
+          <div className="flex flex-col items-center justify-center p-6 gap-3 bg-gradient-to-br from-white/50 to-amber-50/50 dark:from-white/5 dark:to-amber-900/10">
+            {currentIllustration ? (
               <motion.img
-                key={currentPage}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                src={story.illustration}
-                alt="Story illustration"
+                key={`${currentPage}-${currentIllustration.slice(-20)}`}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                src={currentIllustration}
+                alt={`Illustration for page ${currentPage + 1}`}
                 className="rounded-xl shadow-lg max-h-80 w-auto object-contain"
               />
+            ) : illustratingPage === currentPage ? (
+              <div className="flex flex-col items-center gap-2 text-amber-700 dark:text-amber-300">
+                <Loader2 className="w-10 h-10 animate-spin" />
+                <span className="text-xs">Painting your scene…</span>
+              </div>
             ) : (
               <div className="text-8xl animate-pulse">📖</div>
             )}
+            <Button
+              size="sm"
+              variant={currentIllustration ? "outline" : "default"}
+              onClick={() => illustratePage(currentPage)}
+              disabled={illustratingPage !== null || illustratingAll}
+              className="gap-2"
+            >
+              {illustratingPage === currentPage ? (
+                <><Loader2 className="w-4 h-4 animate-spin" /> Illustrating…</>
+              ) : currentIllustration ? (
+                <><Wand2 className="w-4 h-4" /> Re-illustrate ({ILLUSTRATE_COST}c)</>
+              ) : (
+                <><Sparkles className="w-4 h-4" /> Illustrate this page ({ILLUSTRATE_COST}c)</>
+              )}
+            </Button>
           </div>
+
 
           {/* Text side */}
           <div className="p-6 flex flex-col justify-between">
@@ -244,6 +335,20 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
             {isReading ? "Stop Reading" : "Read Aloud"}
           </Button>
 
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={illustrateAllPages}
+            disabled={illustratingAll || illustratingPage !== null}
+            className="gap-2"
+          >
+            {illustratingAll ? (
+              <><Loader2 className="w-4 h-4 animate-spin" /> Illustrating all…</>
+            ) : (
+              <><Wand2 className="w-4 h-4" /> Illustrate all ({pages.length * ILLUSTRATE_COST}c)</>
+            )}
+          </Button>
+
           <Button variant="outline" size="sm" onClick={onSave} className="gap-2">
             <Download className="w-4 h-4" />
             Save Story
@@ -264,6 +369,7 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
             </Button>
           )}
         </div>
+
       </div>
     </motion.div>
   );
