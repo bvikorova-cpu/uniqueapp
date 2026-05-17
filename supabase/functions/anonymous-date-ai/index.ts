@@ -223,6 +223,41 @@ Deno.serve(async (req) => {
       output_data: typeof output === "string" ? { text: output } : output,
     });
 
+    // Optionally persist parity outputs in their dedicated tables
+    const parityTable = PARITY_TABLES[feature];
+    if (parityTable && typeof output === "object" && output) {
+      const base: any = { user_id: user.id, match_id: matchId ?? null };
+      const row: any = { ...base };
+      const o: any = output;
+      switch (feature) {
+        case "vibe_decoder":
+          Object.assign(row, { vibe_label: o.vibe_label ?? "Unknown", vibe_score: o.vibe_score ?? 0, energy: o.energy ?? {}, notes: o.notes ?? null });
+          break;
+        case "chemistry_report":
+          Object.assign(row, { chemistry_score: o.chemistry_score ?? 0, emotional: o.emotional ?? null, intellectual: o.intellectual ?? null, playful: o.playful ?? null, romantic: o.romantic ?? null, summary: o.summary ?? null, growth_areas: o.growth_areas ?? [] });
+          break;
+        case "red_flag_scan":
+          Object.assign(row, { risk_level: o.risk_level ?? "low", flags: o.flags ?? [], green_flags: o.green_flags ?? [], advice: o.advice ?? null });
+          break;
+        case "reveal_readiness":
+          Object.assign(row, { readiness_score: o.readiness_score ?? 0, signals: o.signals ?? {}, recommendation: o.recommendation ?? null, recommended_reveal_day: o.recommended_reveal_day ?? null });
+          break;
+        case "first_meet_plan":
+          Object.assign(row, { city: payload?.city ?? o.city ?? null, vibe: o.vibe ?? null, plan: o.plan ?? {}, backup_plan: o.backup_plan ?? {} });
+          break;
+        case "attachment_profile":
+          Object.assign(row, { primary_style: o.primary_style ?? "secure", secondary_style: o.secondary_style ?? null, scores: o.scores ?? {}, insights: o.insights ?? null, partner_advice: o.partner_advice ?? null });
+          break;
+        case "chat_translator":
+          Object.assign(row, { original_message: payload?.message ?? "", literal_meaning: o.literal_meaning ?? null, hidden_meaning: o.hidden_meaning ?? null, emotional_subtext: o.emotional_subtext ?? null, suggested_response: o.suggested_response ?? null });
+          break;
+        case "breakup_recovery":
+          Object.assign(row, { stage: o.stage ?? null, recovery_score: o.recovery_score ?? 0, daily_plan: o.daily_plan ?? [], affirmation: o.affirmation ?? null });
+          break;
+      }
+      await admin.from(parityTable).insert(row);
+    }
+
     return new Response(JSON.stringify({
       success: true,
       feature,
