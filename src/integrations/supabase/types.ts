@@ -49792,6 +49792,42 @@ export type Database = {
         }
         Relationships: []
       }
+      talent_milestone_proofs: {
+        Row: {
+          achieved_on: string | null
+          campaign_id: string
+          created_at: string
+          description: string | null
+          external_url: string | null
+          id: string
+          media_url: string | null
+          proof_type: string
+          title: string
+        }
+        Insert: {
+          achieved_on?: string | null
+          campaign_id: string
+          created_at?: string
+          description?: string | null
+          external_url?: string | null
+          id?: string
+          media_url?: string | null
+          proof_type?: string
+          title: string
+        }
+        Update: {
+          achieved_on?: string | null
+          campaign_id?: string
+          created_at?: string
+          description?: string | null
+          external_url?: string | null
+          id?: string
+          media_url?: string | null
+          proof_type?: string
+          title?: string
+        }
+        Relationships: []
+      }
       talent_referrals: {
         Row: {
           code: string
@@ -49928,6 +49964,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      talent_sponsor_tiers: {
+        Row: {
+          benefits: string[]
+          campaign_id: string
+          created_at: string
+          id: string
+          min_amount: number
+          perk_icon: string | null
+          sort_order: number
+          tier_name: string
+        }
+        Insert: {
+          benefits?: string[]
+          campaign_id: string
+          created_at?: string
+          id?: string
+          min_amount: number
+          perk_icon?: string | null
+          sort_order?: number
+          tier_name: string
+        }
+        Update: {
+          benefits?: string[]
+          campaign_id?: string
+          created_at?: string
+          id?: string
+          min_amount?: number
+          perk_icon?: string | null
+          sort_order?: number
+          tier_name?: string
+        }
+        Relationships: []
       }
       talent_submissions: {
         Row: {
