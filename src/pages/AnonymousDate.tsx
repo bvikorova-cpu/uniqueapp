@@ -451,8 +451,8 @@ export default function AnonymousDate() {
                     </h3>
                     <div className="space-y-2">
                       <Button
-                        onClick={() => findMatch()}
-                        disabled={loading || credits < 5}
+                        onClick={() => setActiveView("find")}
+                        disabled={loading}
                         className="w-full justify-start gap-2"
                         size="sm"
                       >
