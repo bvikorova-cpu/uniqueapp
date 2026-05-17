@@ -8042,12 +8042,15 @@ export type Database = {
           donor_email: string | null
           donor_id: string | null
           donor_name: string | null
+          dunning_notifications_sent: number
           id: string
           is_anonymous: boolean | null
           is_monthly: boolean | null
+          last_dunning_at: string | null
           message: string | null
           net_amount: number
           next_billing_at: string | null
+          past_due_since: string | null
           paused_at: string | null
           platform_fee: number
           refund_amount: number | null
@@ -8068,12 +8071,15 @@ export type Database = {
           donor_email?: string | null
           donor_id?: string | null
           donor_name?: string | null
+          dunning_notifications_sent?: number
           id?: string
           is_anonymous?: boolean | null
           is_monthly?: boolean | null
+          last_dunning_at?: string | null
           message?: string | null
           net_amount: number
           next_billing_at?: string | null
+          past_due_since?: string | null
           paused_at?: string | null
           platform_fee: number
           refund_amount?: number | null
@@ -8094,12 +8100,15 @@ export type Database = {
           donor_email?: string | null
           donor_id?: string | null
           donor_name?: string | null
+          dunning_notifications_sent?: number
           id?: string
           is_anonymous?: boolean | null
           is_monthly?: boolean | null
+          last_dunning_at?: string | null
           message?: string | null
           net_amount?: number
           next_billing_at?: string | null
+          past_due_since?: string | null
           paused_at?: string | null
           platform_fee?: number
           refund_amount?: number | null
