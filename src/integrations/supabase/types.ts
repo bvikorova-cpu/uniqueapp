@@ -8050,9 +8050,12 @@ export type Database = {
           next_billing_at: string | null
           paused_at: string | null
           platform_fee: number
+          refund_amount: number | null
+          refunded_at: string | null
           status: string | null
           stripe_customer_id: string | null
           stripe_payment_id: string | null
+          stripe_refund_id: string | null
           stripe_subscription_id: string | null
           subscription_status: string | null
         }
@@ -8073,9 +8076,12 @@ export type Database = {
           next_billing_at?: string | null
           paused_at?: string | null
           platform_fee: number
+          refund_amount?: number | null
+          refunded_at?: string | null
           status?: string | null
           stripe_customer_id?: string | null
           stripe_payment_id?: string | null
+          stripe_refund_id?: string | null
           stripe_subscription_id?: string | null
           subscription_status?: string | null
         }
@@ -8096,9 +8102,12 @@ export type Database = {
           next_billing_at?: string | null
           paused_at?: string | null
           platform_fee?: number
+          refund_amount?: number | null
+          refunded_at?: string | null
           status?: string | null
           stripe_customer_id?: string | null
           stripe_payment_id?: string | null
+          stripe_refund_id?: string | null
           stripe_subscription_id?: string | null
           subscription_status?: string | null
         }
@@ -57401,6 +57410,14 @@ export type Database = {
         }
       }
       redeem_shop_item: { Args: { _item_code: string }; Returns: Json }
+      refund_campaign_donation: {
+        Args: {
+          _refund_amount: number
+          _stripe_payment_id: string
+          _stripe_refund_id: string
+        }
+        Returns: Json
+      }
       reject_judge_application: {
         Args: { _app_id: string; _notes?: string }
         Returns: undefined
