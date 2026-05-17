@@ -51,9 +51,9 @@ Deno.serve(async (req) => {
         // charge credits
         const { data: credits } = await supabase.from("shadow_arena_credits")
           .select("*").eq("user_id", user.id).single();
-        const balance = credits?.credits ?? credits?.balance ?? 0;
+        const balance = credits?.credits_remaining ?? 0;
         if (balance < gift.credit_cost) return json({ error: "insufficient_credits", required: gift.credit_cost, balance }, 402);
-        const field = "credits" in (credits || {}) ? "credits" : "balance";
+        const field = "credits_remaining";
         await supabase.from("shadow_arena_credits").update({ [field]: balance - gift.credit_cost }).eq("user_id", user.id);
         await supabase.from("shadow_gift_sends").insert({
           sender_id: user.id, recipient_id, gift_code,
@@ -97,9 +97,9 @@ Deno.serve(async (req) => {
         if ((count || 0) >= t.max_participants) return json({ error: "full" }, 400);
         if (t.entry_credits > 0) {
           const { data: cr } = await supabase.from("shadow_arena_credits").select("*").eq("user_id", user.id).single();
-          const bal = cr?.credits ?? cr?.balance ?? 0;
+          const bal = cr?.credits_remaining ?? 0;
           if (bal < t.entry_credits) return json({ error: "insufficient_credits" }, 402);
-          const field = "credits" in (cr || {}) ? "credits" : "balance";
+          const field = "credits_remaining";
           await supabase.from("shadow_arena_credits").update({ [field]: bal - t.entry_credits }).eq("user_id", user.id);
           await supabase.from("shadow_tournaments").update({ prize_pool_credits: t.prize_pool_credits + t.entry_credits }).eq("id", tournament_id);
         }
