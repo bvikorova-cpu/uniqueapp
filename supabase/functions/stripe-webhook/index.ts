@@ -561,6 +561,24 @@ serve(async (req) => {
           })
           .eq("stripe_payment_intent_id", piId);
         if (error) log("refund sync failed", { error: error.message });
+
+        // ── Campaign donation refund: decrement campaign total, mark donation refunded ──
+        try {
+          const { data: drRes, error: drErr } = await supabase.rpc(
+            "refund_campaign_donation",
+            {
+              _stripe_payment_id: piId,
+              _stripe_refund_id: lastRefund?.id ?? null,
+              _refund_amount: refundAmount > 0 ? refundAmount / 100 : null,
+            },
+          );
+          if (drErr) log("donation refund rpc failed", { err: drErr.message });
+          else if ((drRes as any)?.status === "refunded") {
+            log("donation refunded via webhook", drRes);
+          }
+        } catch (e) {
+          log("donation refund handler error", { err: (e as Error).message });
+        }
         break;
       }
 
