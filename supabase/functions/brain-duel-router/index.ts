@@ -29,13 +29,19 @@ const tierFor = (r: number) => [...TIERS].reverse().find(t => r >= t.min)!.name;
 
 async function spendBrainDuelCredits(admin: any, userId: string, amount: number) {
   if (amount <= 0) return;
-  // Reuse the brain_duel_credits table that already exists for this feature
   const { data: row } = await admin
     .from("brain_duel_credits")
     .select("*")
     .eq("user_id", userId)
     .maybeSingle();
-  const bal = row?.credits_balance ?? 0;
+  if (!row) {
+    // Auto-create with 0 -> insufficient
+    await admin.from("brain_duel_credits").insert({ user_id: userId, credits: 0 });
+    const e: any = new Error("Insufficient credits");
+    e.status = 402;
+    throw e;
+  }
+  const bal = row.credits ?? 0;
   if (bal < amount) {
     const e: any = new Error("Insufficient credits");
     e.status = 402;
@@ -43,10 +49,7 @@ async function spendBrainDuelCredits(admin: any, userId: string, amount: number)
   }
   await admin
     .from("brain_duel_credits")
-    .update({
-      credits_balance: bal - amount,
-      total_credits_spent: (row.total_credits_spent ?? 0) + amount,
-    })
+    .update({ credits: bal - amount })
     .eq("user_id", userId);
 }
 
