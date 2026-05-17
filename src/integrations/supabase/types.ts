@@ -55124,6 +55124,87 @@ export type Database = {
         }
         Relationships: []
       }
+      wellness_cbt_reframes: {
+        Row: {
+          action_step: string | null
+          balanced_thought: string | null
+          created_at: string
+          credits_used: number | null
+          distortions: Json | null
+          emotion: string | null
+          id: string
+          intensity_after: number | null
+          intensity_before: number | null
+          negative_thought: string
+          reframe: string | null
+          situation: string
+          user_id: string
+        }
+        Insert: {
+          action_step?: string | null
+          balanced_thought?: string | null
+          created_at?: string
+          credits_used?: number | null
+          distortions?: Json | null
+          emotion?: string | null
+          id?: string
+          intensity_after?: number | null
+          intensity_before?: number | null
+          negative_thought: string
+          reframe?: string | null
+          situation: string
+          user_id: string
+        }
+        Update: {
+          action_step?: string | null
+          balanced_thought?: string | null
+          created_at?: string
+          credits_used?: number | null
+          distortions?: Json | null
+          emotion?: string | null
+          id?: string
+          intensity_after?: number | null
+          intensity_before?: number | null
+          negative_thought?: string
+          reframe?: string | null
+          situation?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wellness_courses_progress: {
+        Row: {
+          completed_days: number[] | null
+          course_slug: string
+          current_day: number
+          id: string
+          started_at: string
+          total_days: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_days?: number[] | null
+          course_slug: string
+          current_day?: number
+          id?: string
+          started_at?: string
+          total_days: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_days?: number[] | null
+          course_slug?: string
+          current_day?: number
+          id?: string
+          started_at?: string
+          total_days?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       wellness_dream_interpretations: {
         Row: {
           created_at: string
@@ -55160,6 +55241,80 @@ export type Database = {
           status?: string
           symbols?: Json | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      wellness_group_attendees: {
+        Row: {
+          created_at: string
+          id: string
+          reminded: boolean
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          reminded?: boolean
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          reminded?: boolean
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wellness_group_attendees_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "wellness_group_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wellness_group_sessions: {
+        Row: {
+          attendee_count: number
+          category: string | null
+          created_at: string
+          description: string | null
+          duration_minutes: number
+          host_id: string
+          id: string
+          max_attendees: number | null
+          starts_at: string
+          status: string
+          title: string
+        }
+        Insert: {
+          attendee_count?: number
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number
+          host_id: string
+          id?: string
+          max_attendees?: number | null
+          starts_at: string
+          status?: string
+          title: string
+        }
+        Update: {
+          attendee_count?: number
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number
+          host_id?: string
+          id?: string
+          max_attendees?: number | null
+          starts_at?: string
+          status?: string
+          title?: string
         }
         Relationships: []
       }
@@ -55222,6 +55377,45 @@ export type Database = {
           id?: string
           notes?: string | null
           session_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wellness_mh_assessments: {
+        Row: {
+          ai_insight: string | null
+          answers: Json
+          assessment_type: string
+          created_at: string
+          credits_used: number | null
+          id: string
+          recommended_actions: Json | null
+          severity: string | null
+          total_score: number
+          user_id: string
+        }
+        Insert: {
+          ai_insight?: string | null
+          answers: Json
+          assessment_type: string
+          created_at?: string
+          credits_used?: number | null
+          id?: string
+          recommended_actions?: Json | null
+          severity?: string | null
+          total_score: number
+          user_id: string
+        }
+        Update: {
+          ai_insight?: string | null
+          answers?: Json
+          assessment_type?: string
+          created_at?: string
+          credits_used?: number | null
+          id?: string
+          recommended_actions?: Json | null
+          severity?: string | null
+          total_score?: number
           user_id?: string
         }
         Relationships: []
@@ -55313,6 +55507,96 @@ export type Database = {
         }
         Relationships: []
       }
+      wellness_pomodoro_sessions: {
+        Row: {
+          ambience: string | null
+          break_minutes: number
+          completed: boolean
+          completed_at: string | null
+          duration_minutes: number
+          id: string
+          started_at: string
+          task: string | null
+          user_id: string
+        }
+        Insert: {
+          ambience?: string | null
+          break_minutes?: number
+          completed?: boolean
+          completed_at?: string | null
+          duration_minutes?: number
+          id?: string
+          started_at?: string
+          task?: string | null
+          user_id: string
+        }
+        Update: {
+          ambience?: string | null
+          break_minutes?: number
+          completed?: boolean
+          completed_at?: string | null
+          duration_minutes?: number
+          id?: string
+          started_at?: string
+          task?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wellness_soundscape_presets: {
+        Row: {
+          created_at: string
+          id: string
+          layers: Json
+          name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          layers?: Json
+          name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          layers?: Json
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wellness_stress_checkins: {
+        Row: {
+          created_at: string
+          energy_level: number | null
+          id: string
+          note: string | null
+          stress_level: number
+          tags: string[] | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          energy_level?: number | null
+          id?: string
+          note?: string | null
+          stress_level: number
+          tags?: string[] | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          energy_level?: number | null
+          id?: string
+          note?: string | null
+          stress_level?: number
+          tags?: string[] | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       wellness_usage_stats: {
         Row: {
           activity_count: number
@@ -55343,6 +55627,81 @@ export type Database = {
           total_duration_seconds?: number
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      wellness_wake_alarms: {
+        Row: {
+          created_at: string
+          days_of_week: number[] | null
+          enabled: boolean
+          id: string
+          label: string | null
+          soundscape: string | null
+          time_of_day: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          days_of_week?: number[] | null
+          enabled?: boolean
+          id?: string
+          label?: string | null
+          soundscape?: string | null
+          time_of_day: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          days_of_week?: number[] | null
+          enabled?: boolean
+          id?: string
+          label?: string | null
+          soundscape?: string | null
+          time_of_day?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wellness_walking_meditations: {
+        Row: {
+          audio_url: string | null
+          created_at: string
+          credits_used: number | null
+          duration_minutes: number | null
+          environment: string | null
+          id: string
+          intention: string
+          script: string | null
+          status: string | null
+          user_id: string
+          voice_id: string | null
+        }
+        Insert: {
+          audio_url?: string | null
+          created_at?: string
+          credits_used?: number | null
+          duration_minutes?: number | null
+          environment?: string | null
+          id?: string
+          intention: string
+          script?: string | null
+          status?: string | null
+          user_id: string
+          voice_id?: string | null
+        }
+        Update: {
+          audio_url?: string | null
+          created_at?: string
+          credits_used?: number | null
+          duration_minutes?: number | null
+          environment?: string | null
+          id?: string
+          intention?: string
+          script?: string | null
+          status?: string | null
+          user_id?: string
+          voice_id?: string | null
         }
         Relationships: []
       }
