@@ -145,6 +145,12 @@ const CREDIT_PACKS: Record<string, { prices: Record<number, string>; successPath
     successPath: "/kids-story-creator?payment=success&session_id={CHECKOUT_SESSION_ID}",
     cancelPath: "/kids-story-creator?payment=canceled",
   },
+  // Kids Academy Hub credits — daily plans, recommendations, parent digest
+  kids_academy: {
+    prices: {},
+    successPath: "/kids-academy?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/kids-academy?payment=canceled",
+  },
   // Teen Career Counselor credits — dynamic price_data (€0.50/credit) — AI guidance sessions (5 credits/session)
   teen_career: {
     prices: {},
