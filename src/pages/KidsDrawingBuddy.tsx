@@ -323,6 +323,24 @@ const KidsDrawingBuddy = () => {
               )}
             </TabsContent>
 
+            <TabsContent value="polish" className="space-y-4">
+              {!isAuthenticated ? (
+                <Card>
+                  <CardContent className="py-8 text-center space-y-3">
+                    <Wand2 className="w-10 h-10 mx-auto text-primary" />
+                    <p className="text-sm text-muted-foreground">Sign in to polish your sketches with AI.</p>
+                    <Button onClick={() => navigate("/auth")}>Sign In</Button>
+                  </CardContent>
+                </Card>
+              ) : (
+                <SketchEnhancer
+                  balance={balance}
+                  onCreditsChanged={refresh}
+                  onBuyCredits={() => navigate("/kids-drawing-pricing")}
+                />
+              )}
+            </TabsContent>
+
             <TabsContent value="freestyle" className="space-y-4">
               <Card>
                 <CardHeader>
