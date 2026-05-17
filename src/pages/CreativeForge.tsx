@@ -319,7 +319,17 @@ export default function CreativeForge() {
                             <ScrollArea className="h-[300px] border rounded-xl p-4 bg-muted/20"><pre className="whitespace-pre-wrap font-mono text-sm leading-relaxed">{generatedContent}</pre></ScrollArea>
                             <div className="flex gap-2">
                               <Button variant="outline" size="sm" onClick={() => copyToClipboard(generatedContent)} className="flex-1"><Copy className="mr-1.5 h-3.5 w-3.5" /> {t("forge.output.copy")}</Button>
-                              <Button variant="outline" size="sm" onClick={() => downloadContent(generatedContent, `${selectedCategory}-${title}`)} className="flex-1"><Download className="mr-1.5 h-3.5 w-3.5" /> {t("forge.output.download")}</Button>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="outline" size="sm" className="flex-1"><FileDown className="mr-1.5 h-3.5 w-3.5" /> Export</Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                  <DropdownMenuItem onClick={() => exportAs("txt", `${selectedCategory}-${title}`, generatedContent)}>Plain text (.txt)</DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => exportAs("md", `${selectedCategory}-${title}`, generatedContent)}>Markdown (.md)</DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => exportAs("doc", `${selectedCategory}-${title}`, generatedContent)}>Word (.doc)</DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => exportAs("pdf", `${selectedCategory}-${title}`, generatedContent)}>PDF (print)</DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
                               <Button variant="outline" size="sm" onClick={() => shareContent(generatedContent, title)} className="flex-1"><Star className="mr-1.5 h-3.5 w-3.5" /> {t("forge.output.share")}</Button>
                             </div>
                             <div className="pt-2 border-t">
