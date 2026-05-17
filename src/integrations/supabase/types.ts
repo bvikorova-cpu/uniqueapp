@@ -14626,6 +14626,87 @@ export type Database = {
         }
         Relationships: []
       }
+      creative_forge_brand_voices: {
+        Row: {
+          audience: string | null
+          created_at: string
+          description: string | null
+          do_use: string | null
+          dont_use: string | null
+          id: string
+          is_default: boolean
+          name: string
+          sample_text: string | null
+          tone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          audience?: string | null
+          created_at?: string
+          description?: string | null
+          do_use?: string | null
+          dont_use?: string | null
+          id?: string
+          is_default?: boolean
+          name: string
+          sample_text?: string | null
+          tone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          audience?: string | null
+          created_at?: string
+          description?: string | null
+          do_use?: string | null
+          dont_use?: string | null
+          id?: string
+          is_default?: boolean
+          name?: string
+          sample_text?: string | null
+          tone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      creative_forge_content_scores: {
+        Row: {
+          breakdown: Json
+          created_at: string
+          id: string
+          overall_score: number | null
+          project_id: string | null
+          score_type: string
+          source_excerpt: string | null
+          suggestions: string[]
+          user_id: string
+        }
+        Insert: {
+          breakdown?: Json
+          created_at?: string
+          id?: string
+          overall_score?: number | null
+          project_id?: string | null
+          score_type: string
+          source_excerpt?: string | null
+          suggestions?: string[]
+          user_id: string
+        }
+        Update: {
+          breakdown?: Json
+          created_at?: string
+          id?: string
+          overall_score?: number | null
+          project_id?: string | null
+          score_type?: string
+          source_excerpt?: string | null
+          suggestions?: string[]
+          user_id?: string
+        }
+        Relationships: []
+      }
       creative_forge_cowriter_sessions: {
         Row: {
           category: string
@@ -14834,6 +14915,45 @@ export type Database = {
           name?: string
           owner_id?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      creative_forge_story_bible: {
+        Row: {
+          created_at: string
+          details: Json
+          entry_type: string
+          id: string
+          name: string
+          project_id: string | null
+          summary: string | null
+          tags: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          details?: Json
+          entry_type: string
+          id?: string
+          name: string
+          project_id?: string | null
+          summary?: string | null
+          tags?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          details?: Json
+          entry_type?: string
+          id?: string
+          name?: string
+          project_id?: string | null
+          summary?: string | null
+          tags?: string[]
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }

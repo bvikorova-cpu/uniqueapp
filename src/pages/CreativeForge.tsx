@@ -31,8 +31,13 @@ import { ForgeStyleTransfer } from "@/components/creative-forge/ForgeStyleTransf
 import { ForgeVoiceToScript } from "@/components/creative-forge/ForgeVoiceToScript";
 import { ForgeRooms } from "@/components/creative-forge/ForgeRooms";
 import { ForgeIdeasShowcase } from "@/components/creative-forge/ForgeIdeasShowcase";
+import { ForgeBrandVoice, type BrandVoice } from "@/components/creative-forge/ForgeBrandVoice";
+import { ForgeStoryBible } from "@/components/creative-forge/ForgeStoryBible";
+import { ForgeAIStudio } from "@/components/creative-forge/ForgeAIStudio";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
-import { Wand2, Mic, Users } from "lucide-react";
+import { Wand2, Mic, Users, Palette, BookMarked, Sparkles as SparkleIcon, FileDown } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { exportAs } from "@/lib/forgeExport";
 import { motion, AnimatePresence } from "framer-motion";
 
 const STYLE_REFERENCES: Record<string, string[]> = {
@@ -81,6 +86,10 @@ export default function CreativeForge() {
   const [styleOpen, setStyleOpen] = useState(false);
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [roomsOpen, setRoomsOpen] = useState(false);
+  const [brandVoiceOpen, setBrandVoiceOpen] = useState(false);
+  const [storyBibleOpen, setStoryBibleOpen] = useState(false);
+  const [aiStudioOpen, setAiStudioOpen] = useState(false);
+  const [activeBrandVoice, setActiveBrandVoice] = useState<BrandVoice | null>(null);
 
   const [title, setTitle] = useState("");
   const [genre, setGenre] = useState("");
@@ -208,6 +217,16 @@ export default function CreativeForge() {
         onApply={(text) => { setGeneratedContent(text); setActiveView("create"); }}
       />
       <ForgeRooms open={roomsOpen} onClose={() => setRoomsOpen(false)} />
+      <ForgeBrandVoice open={brandVoiceOpen} onClose={() => setBrandVoiceOpen(false)} onSelect={(v) => { setActiveBrandVoice(v); toast({ title: "Brand voice active", description: v.name }); }} />
+      <ForgeStoryBible open={storyBibleOpen} onClose={() => setStoryBibleOpen(false)} />
+      <ForgeAIStudio
+        open={aiStudioOpen}
+        onClose={() => setAiStudioOpen(false)}
+        currentText={generatedContent || ""}
+        onReplace={(t) => { setPreviousContent(generatedContent); setGeneratedContent(t); }}
+        onAppend={(t) => setGeneratedContent((prev) => (prev ? prev + "\n\n" + t : t))}
+        brandVoice={activeBrandVoice ? { name: activeBrandVoice.name, tone: activeBrandVoice.tone, audience: activeBrandVoice.audience, do_use: activeBrandVoice.do_use, dont_use: activeBrandVoice.dont_use, sample: activeBrandVoice.sample_text } : null}
+      />
     </>
   );
 
@@ -224,6 +243,9 @@ export default function CreativeForge() {
             </Button>
             {activeView === "create" && (
               <div className="flex flex-wrap gap-2 ml-auto">
+                <Button variant="outline" size="sm" onClick={() => setAiStudioOpen(true)} className="gap-1 border-primary/40 text-primary hover:bg-primary/10"><SparkleIcon className="h-3.5 w-3.5" /> AI Studio</Button>
+                <Button variant="outline" size="sm" onClick={() => setBrandVoiceOpen(true)} className="gap-1"><Palette className="h-3.5 w-3.5" /> {activeBrandVoice ? `Voice: ${activeBrandVoice.name}` : "Brand Voice"}</Button>
+                <Button variant="outline" size="sm" onClick={() => setStoryBibleOpen(true)} className="gap-1"><BookMarked className="h-3.5 w-3.5" /> Story Bible</Button>
                 <Button variant="outline" size="sm" onClick={() => setCowriterOpen(true)} className="gap-1 border-amber-700/40 text-amber-200 hover:bg-amber-900/20 hover:text-amber-100"><Sparkles className="h-3.5 w-3.5" /> {t("forge.tools.cowriter")}</Button>
                 <Button variant="outline" size="sm" onClick={() => setStyleOpen(true)} className="gap-1 border-amber-700/40 text-amber-200 hover:bg-amber-900/20 hover:text-amber-100"><Wand2 className="h-3.5 w-3.5" /> {t("forge.tools.style_transfer")}</Button>
                 <Button variant="outline" size="sm" onClick={() => setVoiceOpen(true)} className="gap-1 border-amber-700/40 text-amber-200 hover:bg-amber-900/20 hover:text-amber-100"><Mic className="h-3.5 w-3.5" /> {t("forge.tools.voice")}</Button>
@@ -297,7 +319,17 @@ export default function CreativeForge() {
                             <ScrollArea className="h-[300px] border rounded-xl p-4 bg-muted/20"><pre className="whitespace-pre-wrap font-mono text-sm leading-relaxed">{generatedContent}</pre></ScrollArea>
                             <div className="flex gap-2">
                               <Button variant="outline" size="sm" onClick={() => copyToClipboard(generatedContent)} className="flex-1"><Copy className="mr-1.5 h-3.5 w-3.5" /> {t("forge.output.copy")}</Button>
-                              <Button variant="outline" size="sm" onClick={() => downloadContent(generatedContent, `${selectedCategory}-${title}`)} className="flex-1"><Download className="mr-1.5 h-3.5 w-3.5" /> {t("forge.output.download")}</Button>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="outline" size="sm" className="flex-1"><FileDown className="mr-1.5 h-3.5 w-3.5" /> Export</Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                  <DropdownMenuItem onClick={() => exportAs("txt", `${selectedCategory}-${title}`, generatedContent)}>Plain text (.txt)</DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => exportAs("md", `${selectedCategory}-${title}`, generatedContent)}>Markdown (.md)</DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => exportAs("doc", `${selectedCategory}-${title}`, generatedContent)}>Word (.doc)</DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => exportAs("pdf", `${selectedCategory}-${title}`, generatedContent)}>PDF (print)</DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
                               <Button variant="outline" size="sm" onClick={() => shareContent(generatedContent, title)} className="flex-1"><Star className="mr-1.5 h-3.5 w-3.5" /> {t("forge.output.share")}</Button>
                             </div>
                             <div className="pt-2 border-t">
@@ -417,6 +449,27 @@ export default function CreativeForge() {
         />
 
         {/* Premium AI Tools Row */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
+          <button onClick={() => setAiStudioOpen(true)} className="group p-4 rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 to-accent/10 backdrop-blur-xl hover:border-primary/60 hover:shadow-[0_0_30px_hsl(var(--primary)/0.3)] transition-all text-left">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary to-accent shadow-lg group-hover:scale-110 transition-transform"><SparkleIcon className="h-5 w-5 text-white" /></div>
+              <div><h4 className="font-bold">AI Studio</h4><p className="text-xs text-muted-foreground">Brainstorm · SEO · Translate · Score · Originality</p></div>
+            </div>
+          </button>
+          <button onClick={() => setBrandVoiceOpen(true)} className="group p-4 rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 to-accent/10 backdrop-blur-xl hover:border-primary/60 transition-all text-left">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-gradient-to-br from-accent to-primary shadow-lg group-hover:scale-110 transition-transform"><Palette className="h-5 w-5 text-white" /></div>
+              <div><h4 className="font-bold">Brand Voices</h4><p className="text-xs text-muted-foreground">Save & reuse tone profiles</p></div>
+            </div>
+          </button>
+          <button onClick={() => setStoryBibleOpen(true)} className="group p-4 rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 to-accent/10 backdrop-blur-xl hover:border-primary/60 transition-all text-left">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary to-primary/60 shadow-lg group-hover:scale-110 transition-transform"><BookMarked className="h-5 w-5 text-white" /></div>
+              <div><h4 className="font-bold">Story Bible</h4><p className="text-xs text-muted-foreground">Characters · places · plot · lore</p></div>
+            </div>
+          </button>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
           <button onClick={() => setStyleOpen(true)} className="group p-4 rounded-2xl border border-amber-700/30 bg-gradient-to-br from-[hsl(30,15%,9%)]/80 to-[hsl(0,20%,8%)]/80 backdrop-blur-xl hover:border-amber-500/50 hover:shadow-[0_0_30px_rgba(251,191,36,0.2)] transition-all text-left">
             <div className="flex items-center gap-3">
