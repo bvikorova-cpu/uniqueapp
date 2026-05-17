@@ -17659,19 +17659,79 @@ export type Database = {
         }
         Relationships: []
       }
+      dream_campaign_backers: {
+        Row: {
+          amount: number
+          campaign_id: string
+          created_at: string
+          donor_email: string | null
+          donor_name: string | null
+          fulfillment_status: string
+          id: string
+          is_anonymous: boolean
+          message: string | null
+          reward_tier_id: string | null
+          reward_tier_label: string | null
+          shipping_address: Json | null
+          user_id: string | null
+        }
+        Insert: {
+          amount: number
+          campaign_id: string
+          created_at?: string
+          donor_email?: string | null
+          donor_name?: string | null
+          fulfillment_status?: string
+          id?: string
+          is_anonymous?: boolean
+          message?: string | null
+          reward_tier_id?: string | null
+          reward_tier_label?: string | null
+          shipping_address?: Json | null
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number
+          campaign_id?: string
+          created_at?: string
+          donor_email?: string | null
+          donor_name?: string | null
+          fulfillment_status?: string
+          id?: string
+          is_anonymous?: boolean
+          message?: string | null
+          reward_tier_id?: string | null
+          reward_tier_label?: string | null
+          shipping_address?: Json | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dream_campaign_backers_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "dream_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       dream_campaigns: {
         Row: {
+          backers_count: number
           created_at: string | null
           current_amount: number | null
           description: string
           dream_type: string
           ends_at: string | null
+          funding_mode: string
           id: string
           image_url: string | null
           milestones: Json | null
           rejection_reason: string | null
+          reward_tiers: Json
           status: string | null
           story: string
+          stretch_goals: Json
           supporters_count: number | null
           target_amount: number
           title: string
@@ -17683,17 +17743,21 @@ export type Database = {
           video_url: string | null
         }
         Insert: {
+          backers_count?: number
           created_at?: string | null
           current_amount?: number | null
           description: string
           dream_type: string
           ends_at?: string | null
+          funding_mode?: string
           id?: string
           image_url?: string | null
           milestones?: Json | null
           rejection_reason?: string | null
+          reward_tiers?: Json
           status?: string | null
           story: string
+          stretch_goals?: Json
           supporters_count?: number | null
           target_amount: number
           title: string
@@ -17705,17 +17769,21 @@ export type Database = {
           video_url?: string | null
         }
         Update: {
+          backers_count?: number
           created_at?: string | null
           current_amount?: number | null
           description?: string
           dream_type?: string
           ends_at?: string | null
+          funding_mode?: string
           id?: string
           image_url?: string | null
           milestones?: Json | null
           rejection_reason?: string | null
+          reward_tiers?: Json
           status?: string | null
           story?: string
+          stretch_goals?: Json
           supporters_count?: number | null
           target_amount?: number
           title?: string
