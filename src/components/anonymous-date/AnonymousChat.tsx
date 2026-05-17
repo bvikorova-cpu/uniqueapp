@@ -142,6 +142,33 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
     );
   }
 
+  if (safety.isBlocked) {
+    return (
+      <Card className="p-8 text-center bg-gradient-to-br from-destructive/15 to-card border-destructive/40 space-y-3">
+        <ShieldX className="h-12 w-12 mx-auto text-destructive" />
+        <h3 className="text-lg font-black">
+          {safety.blockedByMe ? "You blocked this user" : "Conversation unavailable"}
+        </h3>
+        <p className="text-sm text-muted-foreground max-w-md mx-auto">
+          {safety.blockedByMe
+            ? "Messaging is disabled. You can unblock them to resume the conversation, or keep them blocked permanently."
+            : "This conversation is no longer available. The other user has restricted contact."}
+        </p>
+        {safety.blockedByMe && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => safety.unblock()}
+            disabled={safety.submitting}
+            className="mx-auto"
+          >
+            Unblock user
+          </Button>
+        )}
+      </Card>
+    );
+  }
+
   return (
     <div className="space-y-3">
       <Card className={`flex flex-col h-[calc(100vh-16rem)] max-h-[640px] overflow-hidden bg-gradient-to-br ${themeGradient(theme)} backdrop-blur-xl border-primary/20 shadow-2xl`}>
