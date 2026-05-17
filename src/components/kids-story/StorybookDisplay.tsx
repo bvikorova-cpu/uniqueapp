@@ -144,6 +144,67 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
     };
   }, []);
 
+  const illustratePage = async (pageIndex: number): Promise<boolean> => {
+    if (illustratingPage !== null) return false;
+    if (storyCredits < ILLUSTRATE_COST) {
+      toast.error(`You need ${ILLUSTRATE_COST} story credits to illustrate a page.`);
+      return false;
+    }
+    setIllustratingPage(pageIndex);
+    try {
+      const { data, error } = await supabase.functions.invoke("kids-story-illustrate", {
+        body: {
+          pageText: pages[pageIndex],
+          storyTitle: story.title,
+          style: story.illustrationStyle || "storybook",
+          characters: story.characters || "",
+        },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      const url = (data as any)?.illustration;
+      if (!url) throw new Error("No illustration returned");
+      setPageIllustrations((prev) => ({ ...prev, [pageIndex]: url }));
+      refreshCredits();
+      return true;
+    } catch (err: any) {
+      console.error("Illustrate error:", err);
+      const msg = err?.message || "Failed to illustrate page";
+      if (msg.toLowerCase().includes("insufficient")) {
+        toast.error("Not enough story credits — buy more to keep illustrating.");
+      } else {
+        toast.error(msg);
+      }
+      return false;
+    } finally {
+      setIllustratingPage(null);
+    }
+  };
+
+  const illustrateAllPages = async () => {
+    const missing = pages
+      .map((_, i) => i)
+      .filter((i) => !pageIllustrations[i] && !(i === 0 && story.illustration));
+    if (missing.length === 0) { toast.info("All pages already illustrated."); return; }
+    const need = missing.length * ILLUSTRATE_COST;
+    if (storyCredits < need) {
+      toast.error(`Need ${need} credits to illustrate all ${missing.length} pages.`);
+      return;
+    }
+    setIllustratingAll(true);
+    let done = 0;
+    for (const i of missing) {
+      const ok = await illustratePage(i);
+      if (!ok) break;
+      done++;
+    }
+    setIllustratingAll(false);
+    if (done > 0) toast.success(`Illustrated ${done} page${done > 1 ? "s" : ""}! 🎨`);
+  };
+
+  const currentIllustration = pageIllustrations[currentPage] || (currentPage === 0 ? story.illustration : undefined);
+
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
