@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { brainDuelCall } from "@/hooks/useBrainDuelRouter";
 import { useBrainDuelCredits } from "@/hooks/useBrainDuelCredits";
+import { useQueryClient } from "@tanstack/react-query";
 import { handleEdgeError } from "@/lib/handleEdgeError";
 
 type Feature = {
@@ -42,7 +43,9 @@ const FEATURES: Feature[] = [
 
 export default function BrainDuelHub() {
   const navigate = useNavigate();
-  const { credits, refetch } = useBrainDuelCredits();
+  const { credits } = useBrainDuelCredits();
+  const qc = useQueryClient();
+  const refetch = () => qc.invalidateQueries({ queryKey: ["brain-duel-credits"] });
   const [active, setActive] = useState<Feature | null>(null);
   const [input, setInput] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
