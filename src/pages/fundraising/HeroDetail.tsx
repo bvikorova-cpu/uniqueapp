@@ -15,6 +15,9 @@ import { useDonationReturn } from "@/hooks/useDonationReturn";
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
 import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPanel';
 import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGuard';
+import { HeroNominationCard } from '@/components/fundraising/hero/HeroNominationCard';
+import { EmployerVerificationBadge } from '@/components/fundraising/hero/EmployerVerificationBadge';
+import { ThankYouWall } from '@/components/fundraising/hero/ThankYouWall';
 
 interface HeroCampaign {
   id: string;
@@ -226,6 +229,12 @@ export default function HeroDetail() {
               </CardHeader>
             </Card>
 
+            <HeroNominationCard
+              nominatorName={(campaign as any).nominated_by_name}
+              consentStatus={(campaign as any).nominee_consent_status}
+              nominationStory={(campaign as any).nomination_story}
+            />
+
             <Card>
               <CardHeader>
                 <CardTitle>The Story</CardTitle>
@@ -234,6 +243,8 @@ export default function HeroDetail() {
                 <p className="whitespace-pre-wrap text-muted-foreground">{campaign.story}</p>
               </CardContent>
             </Card>
+
+            <ThankYouWall campaignId={campaign.id} />
 
             {campaign.video_url && (
               <Card>
@@ -254,6 +265,12 @@ export default function HeroDetail() {
           </div>
 
           <div className="space-y-6">
+            <EmployerVerificationBadge
+              status={(campaign as any).employer_verification_status}
+              orgName={(campaign as any).employer_org_name || campaign.organization_name}
+              verifierName={(campaign as any).employer_verifier_name}
+              verifiedAt={(campaign as any).employer_verified_at}
+            />
             <CampaignDetailEnhancements
               currentAmount={campaign.current_amount}
               targetAmount={campaign.target_amount}
