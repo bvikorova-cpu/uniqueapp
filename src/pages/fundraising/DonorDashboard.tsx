@@ -5,9 +5,16 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Heart, Receipt, Repeat, TrendingUp, ArrowLeft, Download, Calendar, Sparkles } from "lucide-react";
+import { Heart, Receipt, Repeat, TrendingUp, ArrowLeft, Download, Calendar, Sparkles, Undo2, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "@/hooks/use-toast";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Textarea } from "@/components/ui/textarea";
+
+const REFUND_WINDOW_DAYS = 14;
 
 interface Donation {
   id: string;
