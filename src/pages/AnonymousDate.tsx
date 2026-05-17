@@ -539,6 +539,13 @@ export default function AnonymousDate() {
                   </div>
                 );
               })()}
+              {activeView === "find" && (
+                <CompatibilityMatchFinder
+                  credits={credits}
+                  loading={loading}
+                  onFindMatch={handleFindMatch}
+                />
+              )}
               {activeView === "credits" && (
                 <CreditPackages onPurchase={purchaseCredits} currentCredits={credits} />
               )}
