@@ -880,6 +880,59 @@ serve(async (req) => {
           .in("kind", ["failed", "requires_action"]);
         if (rErr) log("dunning recover failed", { err: rErr.message });
 
+        // ─── CAMPAIGN DONATION: record monthly renewal + bump campaign total ──
+        try {
+          const { data: parent } = await supabase
+            .from("campaign_donations")
+            .select("id, campaign_id, campaign_type, donor_id, donor_email, donor_name, amount, is_anonymous, message")
+            .eq("stripe_subscription_id", subId)
+            .eq("is_monthly", true)
+            .order("created_at", { ascending: true })
+            .limit(1)
+            .maybeSingle();
+
+          if (parent) {
+            const paidCents = (inv as any).amount_paid ?? 0;
+            const piId = typeof (inv as any).payment_intent === "string"
+              ? (inv as any).payment_intent
+              : (inv as any).payment_intent?.id ?? null;
+            const renewalPaymentId = piId || inv.id;
+            const nextBilling = (inv as any).lines?.data?.[0]?.period?.end
+              ? new Date(((inv as any).lines.data[0].period.end as number) * 1000).toISOString()
+              : null;
+
+            if (paidCents > 0 && renewalPaymentId) {
+              const { data: rpcRes, error: rpcErr } = await supabase.rpc(
+                "process_campaign_donation",
+                {
+                  _campaign_id: parent.campaign_id,
+                  _campaign_type: parent.campaign_type,
+                  _donor_id: parent.donor_id,
+                  _donor_email: parent.donor_email,
+                  _donor_name: parent.donor_name,
+                  _amount: paidCents / 100,
+                  _is_monthly: true,
+                  _is_anonymous: parent.is_anonymous ?? false,
+                  _message: parent.message,
+                  _stripe_payment_id: renewalPaymentId,
+                },
+              );
+              if (rpcErr) log("donation renewal RPC failed", { err: rpcErr.message });
+              else log("donation renewal recorded", rpcRes);
+            }
+
+            // Re-activate parent donation row + update next billing
+            await supabase
+              .from("campaign_donations")
+              .update({
+                subscription_status: "active",
+                next_billing_at: nextBilling,
+              })
+              .eq("stripe_subscription_id", subId);
+          }
+        } catch (e) {
+          log("donation renewal handler error", { err: (e as Error).message });
+        }
         // ─── RECURRING REFERRAL REWARD ─────────────────────────────────
         // Credit referrer on EVERY successful subscription invoice (initial
         // + every renewal). Idempotent via unique source_invoice_id.
