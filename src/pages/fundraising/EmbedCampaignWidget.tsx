@@ -43,7 +43,7 @@ export default function EmbedCampaignWidget() {
         .select("*")
         .eq("id", campaignId)
         .maybeSingle();
-      setCampaign(data as CampaignLite | null);
+      setCampaign((data as unknown as CampaignLite) || null);
       setLoading(false);
     })();
   }, [campaignType, campaignId]);
