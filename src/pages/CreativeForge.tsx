@@ -31,8 +31,13 @@ import { ForgeStyleTransfer } from "@/components/creative-forge/ForgeStyleTransf
 import { ForgeVoiceToScript } from "@/components/creative-forge/ForgeVoiceToScript";
 import { ForgeRooms } from "@/components/creative-forge/ForgeRooms";
 import { ForgeIdeasShowcase } from "@/components/creative-forge/ForgeIdeasShowcase";
+import { ForgeBrandVoice, type BrandVoice } from "@/components/creative-forge/ForgeBrandVoice";
+import { ForgeStoryBible } from "@/components/creative-forge/ForgeStoryBible";
+import { ForgeAIStudio } from "@/components/creative-forge/ForgeAIStudio";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
-import { Wand2, Mic, Users } from "lucide-react";
+import { Wand2, Mic, Users, Palette, BookMarked, Sparkles as SparkleIcon, FileDown } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { exportAs } from "@/lib/forgeExport";
 import { motion, AnimatePresence } from "framer-motion";
 
 const STYLE_REFERENCES: Record<string, string[]> = {
