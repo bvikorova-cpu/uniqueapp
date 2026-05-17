@@ -33,6 +33,7 @@ import { MonitoringJobsCard } from "@/components/lie-detector/MonitoringJobsCard
 import { CaseFilesCard } from "@/components/lie-detector/CaseFilesCard";
 import { DetectiveRankCard } from "@/components/lie-detector/DetectiveRankCard";
 import { SocialCardGenerator } from "@/components/lie-detector/SocialCardGenerator";
+import { LieDetectorParityPack } from "@/components/lie-detector/LieDetectorParityPack";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -174,6 +175,9 @@ const LieDetector = () => {
                   <BulkUploadCard />
                 </div>
               </div>
+
+              {/* Parity Pack — Conversational Forensics (8 new AI tools) */}
+              <LieDetectorParityPack />
 
               {/* Daily Challenge + Leaderboard */}
               <DailySpotTheLieCard />

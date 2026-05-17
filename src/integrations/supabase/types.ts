@@ -31362,6 +31362,42 @@ export type Database = {
           },
         ]
       }
+      lie_chat_imports: {
+        Row: {
+          analysis: Json
+          created_at: string
+          credits_used: number
+          id: string
+          message_count: number
+          overall_score: number | null
+          raw_text: string
+          source_app: string
+          user_id: string
+        }
+        Insert: {
+          analysis?: Json
+          created_at?: string
+          credits_used?: number
+          id?: string
+          message_count?: number
+          overall_score?: number | null
+          raw_text: string
+          source_app?: string
+          user_id: string
+        }
+        Update: {
+          analysis?: Json
+          created_at?: string
+          credits_used?: number
+          id?: string
+          message_count?: number
+          overall_score?: number | null
+          raw_text?: string
+          source_app?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       lie_coach_sessions: {
         Row: {
           analysis: Json
@@ -31830,6 +31866,42 @@ export type Database = {
         }
         Relationships: []
       }
+      lie_email_scans: {
+        Row: {
+          analysis: Json
+          body: string
+          created_at: string
+          credits_used: number
+          id: string
+          sender: string | null
+          subject: string | null
+          truthfulness_score: number | null
+          user_id: string
+        }
+        Insert: {
+          analysis?: Json
+          body: string
+          created_at?: string
+          credits_used?: number
+          id?: string
+          sender?: string | null
+          subject?: string | null
+          truthfulness_score?: number | null
+          user_id: string
+        }
+        Update: {
+          analysis?: Json
+          body?: string
+          created_at?: string
+          credits_used?: number
+          id?: string
+          sender?: string | null
+          subject?: string | null
+          truthfulness_score?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       lie_leaderboard: {
         Row: {
           best_streak: number
@@ -31944,6 +32016,33 @@ export type Database = {
         }
         Relationships: []
       }
+      lie_red_flag_lookups: {
+        Row: {
+          analysis: Json
+          created_at: string
+          credits_used: number
+          id: string
+          phrase: string
+          user_id: string
+        }
+        Insert: {
+          analysis?: Json
+          created_at?: string
+          credits_used?: number
+          id?: string
+          phrase: string
+          user_id: string
+        }
+        Update: {
+          analysis?: Json
+          created_at?: string
+          credits_used?: number
+          id?: string
+          phrase?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       lie_relationship_maps: {
         Row: {
           analysis: Json
@@ -32016,6 +32115,36 @@ export type Database = {
         }
         Relationships: []
       }
+      lie_sentiment_timelines_v2: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          points: Json
+          summary: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          points?: Json
+          summary?: string | null
+          title?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          points?: Json
+          summary?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       lie_social_cards: {
         Row: {
           blurred_quote: string | null
@@ -32055,6 +32184,99 @@ export type Database = {
         }
         Relationships: []
       }
+      lie_tactic_classifications: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          summary: string | null
+          tactics: Json
+          text: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          summary?: string | null
+          tactics?: Json
+          text: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          summary?: string | null
+          tactics?: Json
+          text?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      lie_trust_scores: {
+        Row: {
+          contact_name: string
+          created_at: string
+          evidence: Json
+          id: string
+          sample_count: number
+          score: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          contact_name: string
+          created_at?: string
+          evidence?: Json
+          id?: string
+          sample_count?: number
+          score?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          contact_name?: string
+          created_at?: string
+          evidence?: Json
+          id?: string
+          sample_count?: number
+          score?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      lie_truth_chat_sessions: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          last_message_at: string
+          messages: Json
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          last_message_at?: string
+          messages?: Json
+          title?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          last_message_at?: string
+          messages?: Json
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       lie_voice_heatmaps: {
         Row: {
           audio_duration_sec: number | null
@@ -32084,6 +32306,33 @@ export type Database = {
           overall_score?: number | null
           segments?: Json
           transcript?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      lie_watchlist_triggers: {
+        Row: {
+          created_at: string
+          id: string
+          keywords: string[]
+          label: string
+          notify: boolean
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          keywords?: string[]
+          label: string
+          notify?: boolean
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          keywords?: string[]
+          label?: string
+          notify?: boolean
           user_id?: string
         }
         Relationships: []
