@@ -369,6 +369,13 @@ const KidsReadingCompanion = () => {
           </Tabs>
         </div>
       </main>
+      <WordDefinitionPopover
+        word={defineWord}
+        context={bookText.slice(0, 800)}
+        level={readingLevel}
+        onClose={() => setDefineWord(null)}
+        onCreditsUsed={refreshCredits}
+      />
     </div>
   );
 };
