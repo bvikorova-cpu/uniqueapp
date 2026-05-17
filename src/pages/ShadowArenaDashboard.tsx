@@ -18,6 +18,14 @@ import { VoiceCloneCard } from '@/components/shadow-arena/VoiceCloneCard';
 import { CursedAchievementsCard } from '@/components/shadow-arena/CursedAchievementsCard';
 import { HorrorReelsCard } from '@/components/shadow-arena/HorrorReelsCard';
 import { PushNotificationsCard } from '@/components/shadow-arena/PushNotificationsCard';
+import { VirtualGiftsCard } from '@/components/shadow-arena/VirtualGiftsCard';
+import { DuetBattlesCard } from '@/components/shadow-arena/DuetBattlesCard';
+import { StreamGoalsCard } from '@/components/shadow-arena/StreamGoalsCard';
+import { TopGiftersCard } from '@/components/shadow-arena/TopGiftersCard';
+import { TournamentsCard } from '@/components/shadow-arena/TournamentsCard';
+import { StreamScheduleCard } from '@/components/shadow-arena/StreamScheduleCard';
+import { AutoClipsCard } from '@/components/shadow-arena/AutoClipsCard';
+import { ChatModerationCard } from '@/components/shadow-arena/ChatModerationCard';
 import { Plus, Swords, BookOpen, Trophy } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -133,6 +141,16 @@ export default function ShadowArenaDashboard() {
 
         <ArenaPrizePool totalPool={totalActivePrizePool} />
         <ArenaLeaderboard />
+
+        {/* TikTok-LIVE parity pack */}
+        <DuetBattlesCard />
+        <VirtualGiftsCard />
+        <StreamGoalsCard />
+        <TopGiftersCard />
+        <TournamentsCard />
+        <StreamScheduleCard />
+        <AutoClipsCard />
+        <ChatModerationCard />
 
         {/* New 8 advanced features */}
         <PushNotificationsCard />
