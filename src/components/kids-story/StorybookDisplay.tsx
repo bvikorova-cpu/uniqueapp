@@ -232,20 +232,41 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
         {/* Content area */}
         <div className="md:grid md:grid-cols-2 min-h-[400px]">
           {/* Illustration side */}
-          <div className="flex items-center justify-center p-6 bg-gradient-to-br from-white/50 to-amber-50/50 dark:from-white/5 dark:to-amber-900/10">
-            {story.illustration ? (
+          <div className="flex flex-col items-center justify-center p-6 gap-3 bg-gradient-to-br from-white/50 to-amber-50/50 dark:from-white/5 dark:to-amber-900/10">
+            {currentIllustration ? (
               <motion.img
-                key={currentPage}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                src={story.illustration}
-                alt="Story illustration"
+                key={`${currentPage}-${currentIllustration.slice(-20)}`}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                src={currentIllustration}
+                alt={`Illustration for page ${currentPage + 1}`}
                 className="rounded-xl shadow-lg max-h-80 w-auto object-contain"
               />
+            ) : illustratingPage === currentPage ? (
+              <div className="flex flex-col items-center gap-2 text-amber-700 dark:text-amber-300">
+                <Loader2 className="w-10 h-10 animate-spin" />
+                <span className="text-xs">Painting your scene…</span>
+              </div>
             ) : (
               <div className="text-8xl animate-pulse">📖</div>
             )}
+            <Button
+              size="sm"
+              variant={currentIllustration ? "outline" : "default"}
+              onClick={() => illustratePage(currentPage)}
+              disabled={illustratingPage !== null || illustratingAll}
+              className="gap-2"
+            >
+              {illustratingPage === currentPage ? (
+                <><Loader2 className="w-4 h-4 animate-spin" /> Illustrating…</>
+              ) : currentIllustration ? (
+                <><Wand2 className="w-4 h-4" /> Re-illustrate ({ILLUSTRATE_COST}c)</>
+              ) : (
+                <><Sparkles className="w-4 h-4" /> Illustrate this page ({ILLUSTRATE_COST}c)</>
+              )}
+            </Button>
           </div>
+
 
           {/* Text side */}
           <div className="p-6 flex flex-col justify-between">
