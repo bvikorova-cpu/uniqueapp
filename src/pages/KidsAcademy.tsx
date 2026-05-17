@@ -8,6 +8,7 @@ import { KidsAcademyStreak } from "@/components/kids/academy/KidsAcademyStreak";
 import { KidsAcademyQuizArena } from "@/components/kids/academy/KidsAcademyQuizArena";
 import { KidsAcademyShop } from "@/components/kids/academy/KidsAcademyShop";
 import { KidsAcademyParentPanel } from "@/components/kids/academy/KidsAcademyParentPanel";
+import { KidsAcademyDailyPlan } from "@/components/kids/academy/KidsAcademyDailyPlan";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Coins, Sparkles } from "lucide-react";
@@ -57,18 +58,21 @@ const KidsAcademy = () => {
             </CardContent>
           </Card>
 
-          <Tabs defaultValue="explore" className="w-full">
-            <TabsList className="grid grid-cols-3 sm:grid-cols-6 gap-1 h-auto bg-muted p-1.5">
+          <Tabs defaultValue="today" className="w-full">
+            <TabsList className="grid grid-cols-3 sm:grid-cols-7 gap-1 h-auto bg-muted p-1.5">
+              <TabsTrigger value="today" className="text-xs">✨ Today</TabsTrigger>
               <TabsTrigger value="explore" className="text-xs">🗺️ Explore</TabsTrigger>
               <TabsTrigger value="progress" className="text-xs">⭐ Progress</TabsTrigger>
               <TabsTrigger value="streaks" className="text-xs">🔥 Streaks</TabsTrigger>
-              <TabsTrigger value="quiz" className="text-xs">⚔️ Quiz Arena</TabsTrigger>
+              <TabsTrigger value="quiz" className="text-xs">⚔️ Quiz</TabsTrigger>
               <TabsTrigger value="shop" className="text-xs">🛒 Shop</TabsTrigger>
               <TabsTrigger value="parents" className="text-xs">👨‍👩‍👧 Parents</TabsTrigger>
             </TabsList>
 
             <div className="mt-6">
-              <TabsContent value="explore">
+              <TabsContent value="today">
+                <KidsAcademyDailyPlan />
+              </TabsContent>
                 <AdventureWorldMap />
               </TabsContent>
               <TabsContent value="progress">
