@@ -85,6 +85,8 @@ export default function PropertyMarketplace() {
   const [selectedProperty, setSelectedProperty] = useState<any>(null);
   const [showDetailDialog, setShowDetailDialog] = useState(false);
   const [leadBoostDialogOpen, setLeadBoostDialogOpen] = useState(false);
+  const [conversationsOpen, setConversationsOpen] = useState(false);
+  const { totalUnread } = usePropertyUnread();
   const [activeView, setActiveView] = useState<ViewType>("hub");
   const [searchFilters, setSearchFilters] = useState({
     priceMin: "", priceMax: "", location: "", area: "", rooms: "", propertyType: "any", listingType: "any", availability: "active"
