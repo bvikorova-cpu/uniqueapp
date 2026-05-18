@@ -22,17 +22,27 @@ export function useFreeTierCredits() {
       return;
     }
     setLoading(true);
-    // ensure_free_tier_credits seeds row & tops up monthly
-    const { data: ensured, error } = await (supabase as any).rpc("ensure_free_tier_credits");
-    if (!error && ensured) {
-      setData(Array.isArray(ensured) ? ensured[0] : ensured);
-    } else {
-      const { data: row } = await (supabase as any)
-        .from("free_tier_credits")
-        .select("*")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      if (row) setData(row as FreeTierCredits);
+    try {
+      // ensure_free_tier_credits seeds row & tops up monthly
+      const rpc = (supabase as any).rpc;
+      const fromFn = (supabase as any).from;
+      if (typeof rpc !== "function" || typeof fromFn !== "function") {
+        setLoading(false);
+        return;
+      }
+      const { data: ensured, error } = await rpc.call(supabase, "ensure_free_tier_credits");
+      if (!error && ensured) {
+        setData(Array.isArray(ensured) ? ensured[0] : ensured);
+      } else {
+        const { data: row } = await (supabase as any)
+          .from("free_tier_credits")
+          .select("*")
+          .eq("user_id", user.id)
+          .maybeSingle();
+        if (row) setData(row as FreeTierCredits);
+      }
+    } catch (e) {
+      // swallow — non-critical for app boot
     }
     setLoading(false);
   }, [user]);

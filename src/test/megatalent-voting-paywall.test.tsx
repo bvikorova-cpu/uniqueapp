@@ -183,11 +183,17 @@ describe("MegaTalentSubmissionCard UI invokes gated handlers", () => {
     );
   }
 
+  // Finds the Like button reliably (anchored by the unique Heart-count span class).
+  function findLikeButton(container: HTMLElement): HTMLButtonElement {
+    const span = container.querySelector("span.text-xs.font-bold");
+    const btn = span?.closest("button") as HTMLButtonElement | null;
+    if (!btn) throw new Error("Like button not found");
+    return btn;
+  }
+
   it("Like button calls the (gated) onVote handler with submission id", () => {
-    renderCard();
-    // Like button is the one rendering the vote count
-    const likeBtn = screen.getByText("12").closest("button")!;
-    fireEvent.click(likeBtn);
+    const { container } = renderCard();
+    fireEvent.click(findLikeButton(container));
     expect(onVote).toHaveBeenCalledTimes(1);
     expect(onVote).toHaveBeenCalledWith("sub-1");
   });
@@ -215,7 +221,7 @@ describe("MegaTalentSubmissionCard UI invokes gated handlers", () => {
       dbInsert(id);
     };
 
-    render(
+    const { container } = render(
       <MegaTalentSubmissionCard
         submission={baseSubmission}
         categoryLabel="Drawing"
@@ -232,7 +238,7 @@ describe("MegaTalentSubmissionCard UI invokes gated handlers", () => {
       />,
     );
 
-    fireEvent.click(screen.getByText("12").closest("button")!);
+    fireEvent.click(findLikeButton(container));
     expect(dbInsert).not.toHaveBeenCalled();
     expect(showToast).toHaveBeenCalledWith({
       title: "Megatalent Premium required",
@@ -256,7 +262,7 @@ describe("MegaTalentSubmissionCard UI invokes gated handlers", () => {
       dbInsert(id);
     };
 
-    render(
+    const { container } = render(
       <MegaTalentSubmissionCard
         submission={baseSubmission}
         categoryLabel="Drawing"
@@ -273,7 +279,7 @@ describe("MegaTalentSubmissionCard UI invokes gated handlers", () => {
       />,
     );
 
-    fireEvent.click(screen.getByText("12").closest("button")!);
+    fireEvent.click(findLikeButton(container));
     expect(showToast).not.toHaveBeenCalled();
     expect(dbInsert).toHaveBeenCalledWith("sub-1");
   });
