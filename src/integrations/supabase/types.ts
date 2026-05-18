@@ -42930,6 +42930,47 @@ export type Database = {
           },
         ]
       }
+      property_messages: {
+        Row: {
+          buyer_id: string
+          content: string
+          created_at: string
+          id: string
+          property_id: string
+          read_at: string | null
+          seller_id: string
+          sender_id: string
+        }
+        Insert: {
+          buyer_id: string
+          content: string
+          created_at?: string
+          id?: string
+          property_id: string
+          read_at?: string | null
+          seller_id: string
+          sender_id: string
+        }
+        Update: {
+          buyer_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          property_id?: string
+          read_at?: string | null
+          seller_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_messages_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       property_parity_buyer_personas: {
         Row: {
           created_at: string
