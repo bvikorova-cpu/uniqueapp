@@ -28,6 +28,7 @@ import { AnonymousDateIdeasShowcase } from "@/components/anonymous-date/Anonymou
 import { AnonymousDateAIToolbox } from "@/components/anonymous-date/AnonymousDateAIToolbox";
 import { AnonymousDateParityPack } from "@/components/anonymous-date/AnonymousDateParityPack";
 import { CompatibilityMatchFinder } from "@/components/anonymous-date/CompatibilityMatchFinder";
+import { MatchResults, type MatchCandidate } from "@/components/anonymous-date/MatchResults";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
