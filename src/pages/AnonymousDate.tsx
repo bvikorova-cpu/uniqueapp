@@ -31,7 +31,15 @@ import { CompatibilityMatchFinder } from "@/components/anonymous-date/Compatibil
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
-type ViewType = "hub" | "matches" | "find" | "credits" | "profile";
+type ViewType = "hub" | "matches" | "find" | "find-results" | "credits" | "profile";
+
+type MatchFilters = {
+  location?: string;
+  preferred_gender?: string;
+  relationship_goal?: string;
+  languages?: string[];
+  min_shared_interests?: number;
+};
 
 const DATING_TOOLS = [
   {
