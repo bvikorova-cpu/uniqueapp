@@ -21,6 +21,7 @@ import { AncestralVoiceSynth } from "@/components/dna/AncestralVoiceSynth";
 import { GeneticHealthInsights } from "@/components/dna/GeneticHealthInsights";
 import { FamilyTreeBuilder } from "@/components/dna/FamilyTreeBuilder";
 import { DNACommunityForum } from "@/components/dna/DNACommunityForum";
+import DnaParityPack from "@/components/dna/DnaParityPack";
 import dnaHeroPoster from "@/assets/dna-hero-poster.jpg";
 // @ts-ignore
 import dnaHeroVideoAsset from "/public/videos/dna-hero.mp4.asset.json";
@@ -297,6 +298,9 @@ const DNAMemoryNetwork = () => {
             ))}
           </div>
         </div>
+
+        {/* AI Parity Pack */}
+        <DnaParityPack />
 
         {/* Pricing Section */}
         <div>
