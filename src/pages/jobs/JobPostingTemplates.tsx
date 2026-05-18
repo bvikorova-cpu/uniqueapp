@@ -49,7 +49,7 @@ export default function JobPostingTemplates() {
     load();
   };
 
-  const useTemplate = async (t: any) => {
+  const applyTemplate = async (t: any) => {
     await (supabase as any).from("job_posting_templates").update({ use_count: (t.use_count || 0) + 1 }).eq("id", t.id);
     sessionStorage.setItem("jobTemplate", JSON.stringify(t));
     navigate("/jobs/post");
@@ -97,7 +97,7 @@ export default function JobPostingTemplates() {
                   <p className="text-xs whitespace-pre-wrap mt-2 line-clamp-3">{t.description}</p>
                 </div>
                 <div className="flex flex-col gap-1">
-                  <Button size="sm" variant="outline" onClick={() => useTemplate(t)}><Copy className="h-3 w-3 mr-1" /> Use</Button>
+                  <Button size="sm" variant="outline" onClick={() => applyTemplate(t)}><Copy className="h-3 w-3 mr-1" /> Use</Button>
                   <Button size="sm" variant="ghost" onClick={() => remove(t.id)}><Trash2 className="h-4 w-4" /></Button>
                 </div>
               </div>
