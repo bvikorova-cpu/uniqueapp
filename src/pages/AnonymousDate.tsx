@@ -102,6 +102,10 @@ export default function AnonymousDate() {
   const [subscriptionEnd, setSubscriptionEnd] = useState<string | null>(null);
   const [selectedMatchId, setSelectedMatchId] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [candidates, setCandidates] = useState<MatchCandidate[]>([]);
+  const [previewLoading, setPreviewLoading] = useState(false);
+  const [matchingUserId, setMatchingUserId] = useState<string | null>(null);
+  const [lastFilters, setLastFilters] = useState<MatchFilters>({});
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id ?? null));
@@ -115,6 +119,7 @@ export default function AnonymousDate() {
     fetchActiveMatches,
     purchaseCredits,
     findMatch,
+    previewMatches,
   } = useAnonymousDate();
 
   useEffect(() => {
