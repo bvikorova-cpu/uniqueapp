@@ -1089,6 +1089,7 @@ const App = () => {
                         <Route path="/property-marketplace" element={<PropertyMarketplace />} />
                         <Route path="/property-submission" element={<PropertySubmission />} />
                         <Route path="/my-properties" element={<ProtectedRoute><MyProperties /></ProtectedRoute>} />
+                        <Route path="/property-favorites" element={<ProtectedRoute><PropertyFavorites /></ProtectedRoute>} />
                         <Route path="/home-decor" element={<HomeDecorMarketplace />} />
                         
                         <Route path="/glamour-world" element={<GlamourWorld />} />
