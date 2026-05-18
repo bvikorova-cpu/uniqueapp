@@ -16832,6 +16832,222 @@ export type Database = {
         }
         Relationships: []
       }
+      crystal_parity_affirmation_packs: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      crystal_parity_aura_color_coaches: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      crystal_parity_birth_chart_crystals: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      crystal_parity_credits: {
+        Row: {
+          action: string
+          created_at: string
+          credits_spent: number
+          id: string
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          credits_spent: number
+          id?: string
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          credits_spent?: number
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      crystal_parity_dream_decoders: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      crystal_parity_grid_layouts: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      crystal_parity_intention_setters: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      crystal_parity_ritual_designers: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      crystal_parity_space_clearings: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
       crystal_purchases: {
         Row: {
           created_at: string
