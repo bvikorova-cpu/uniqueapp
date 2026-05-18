@@ -31,6 +31,7 @@ import { LotteryDreamDecoder } from "@/components/lottery/LotteryDreamDecoder";
 import { LotteryNumerology } from "@/components/lottery/LotteryNumerology";
 import { LotteryHeatmapLab } from "@/components/lottery/LotteryHeatmapLab";
 import { LotterySyndicate } from "@/components/lottery/LotterySyndicate";
+import { LotteryParityPack } from "@/components/lottery/LotteryParityPack";
 import { Moon, Hash, Activity, Users } from "lucide-react";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
@@ -458,6 +459,11 @@ export default function LotteryAI() {
           <LotteryStreak />
           <LotteryProgress />
           <LotteryAchievements />
+        </div>
+
+        {/* Lottery Parity Pack - 8 advanced AI tools */}
+        <div className="mb-8">
+          <LotteryParityPack />
         </div>
 
         {/* Main 4-column grid like Education */}
