@@ -309,6 +309,8 @@ const Megatalent = () => {
     }
     setSubmitting(true);
     try {
+      const paid = await spend("megatalent_upload", { description: `upload:${selectedCategory}` });
+      if (!paid) { setSubmitting(false); return; }
       const { error } = await supabase.from('talent_submissions').insert({ user_id: user.id, title: title.trim(), description: description.trim(), category: selectedCategory as any, media_url: uploadedFile.url, media_type: uploadedFile.type });
       if (error) throw error;
       toast({ title: "Published!", description: "Your submission is now live" });
