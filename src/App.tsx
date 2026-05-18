@@ -53,6 +53,7 @@ const ProgressiveOnboarding = lazy(() => import("./components/onboarding/Progres
 const GlobalAnnouncementBanner = lazy(() => import("./components/GlobalAnnouncementBanner").then((module) => ({ default: module.GlobalAnnouncementBanner })));
 const ReferralCaptureMount = lazy(() => import("@/components/referral/ReferralCaptureMount").then((module) => ({ default: module.ReferralCaptureMount })));
 const IQReferralCaptureMount = lazy(() => import("@/components/iq/IQReferralCaptureMount"));
+const WelcomeOnboarding = lazy(() => import("@/components/onboarding/WelcomeOnboarding"));
 const IQBrainLab = lazy(() => import("@/pages/IQBrainLab"));
 const LanguagePreferenceMount = lazy(() => import("@/components/LanguagePreferenceMount").then((module) => ({ default: module.LanguagePreferenceMount })));
 const DunningBanner = lazy(() => import("@/components/billing/DunningBanner").then((module) => ({ default: module.DunningBanner })));
@@ -540,6 +541,7 @@ const App = () => {
               <DunningBanner />
               <SCABanner />
               <RealTimeNotificationsMount />
+              <WelcomeOnboarding />
             </Suspense>
             <AnimationProvider>
               <CurrencyProvider>

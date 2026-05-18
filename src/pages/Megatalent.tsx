@@ -24,6 +24,7 @@ import MegatalentTalentShop from "@/components/megatalent/MegatalentTalentShop";
 import MegatalentReferralProgram from "@/components/megatalent/MegatalentReferralProgram";
 import BattleRoyalePayouts from "@/components/megatalent/BattleRoyalePayouts";
 import MegatalentNotificationBell from "@/components/megatalent/MegatalentNotificationBell";
+import { LiveSocialProof } from "@/components/social/LiveSocialProof";
 import UnifiedXPLeaderboard from "@/components/shared/UnifiedXPLeaderboard";
 import NextVotingCountdown from "@/components/megatalent/NextVotingCountdown";
 import MegaTalentCategoryGrid from "@/components/megatalent/MegaTalentCategoryGrid";
@@ -350,6 +351,18 @@ const Megatalent = () => {
           </div>
 
           <MegaTalentHero totalVotes={totalVotes} isSubscribed={isSubscribed} subscriptionTier={subscriptionTier} />
+
+          <div className="flex justify-center -mt-2">
+            <LiveSocialProof
+              channelKey="hub:megatalent"
+              recentActions={[
+                "Someone just voted ⭐",
+                "New talent uploaded a clip 🎤",
+                "A creator earned €5 in prizes 💰",
+                "100+ votes cast in the last hour 🔥",
+              ]}
+            />
+          </div>
 
           <HeroRewardedAd sectionKey="page_megatalent" />
 
