@@ -461,6 +461,11 @@ export default function LotteryAI() {
           <LotteryAchievements />
         </div>
 
+        {/* Lottery Parity Pack - 8 advanced AI tools */}
+        <div className="mb-8">
+          <LotteryParityPack />
+        </div>
+
         {/* Main 4-column grid like Education */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Main content - 3 cols */}
