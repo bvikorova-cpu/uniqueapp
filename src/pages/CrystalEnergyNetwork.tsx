@@ -9,6 +9,7 @@ import { CrystalEngagementRow } from "@/components/crystal/CrystalEngagementRow"
 import { CrystalToolCards } from "@/components/crystal/CrystalToolCards";
 import { CrystalToolView } from "@/components/crystal/CrystalToolView";
 import { CrystalAbout } from "@/components/crystal/CrystalAbout";
+import CrystalParityPack from "@/components/crystal/CrystalParityPack";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 export default function CrystalEnergyNetwork() {
@@ -47,6 +48,9 @@ export default function CrystalEnergyNetwork() {
 
         {/* Engagement Row */}
         <CrystalEngagementRow />
+
+        {/* AI Parity Pack */}
+        <CrystalParityPack />
 
         {/* Tool Cards or Tool View */}
         {selectedTool ? (
