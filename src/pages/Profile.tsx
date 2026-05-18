@@ -460,6 +460,13 @@ const Profile = () => {
           }
         />
 
+        {/* Free Tier Credits — visible on own profile */}
+        {currentUserId === userId && (
+          <div className="mb-4">
+            <FreeTierBalanceWidget />
+          </div>
+        )}
+
         <ProfileJsonLd profile={profile} />
 
         <div className="flex items-center justify-center mb-3">
