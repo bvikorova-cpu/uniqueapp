@@ -27,6 +27,7 @@ import { PropertyComparison } from "@/components/property/PropertyComparison";
 import { PropertyChatbot } from "@/components/property/PropertyChatbot";
 import { PropertyDocManager } from "@/components/property/PropertyDocManager";
 import { PropertyNegotiation } from "@/components/property/PropertyNegotiation";
+import { PropertyParityPack } from "@/components/property/PropertyParityPack";
 import { usePropertyExpiration } from "@/hooks/usePropertyExpiration";
 import { motion } from "framer-motion";
 
@@ -230,6 +231,11 @@ export default function PropertyMarketplace() {
           <PropertyStreak />
           <PropertyProgress />
           <PropertyAchievements />
+        </div>
+
+        {/* Parity Pack — 8 advanced AI tools */}
+        <div className="mb-8">
+          <PropertyParityPack />
         </div>
 
         {/* Feature Cards */}
