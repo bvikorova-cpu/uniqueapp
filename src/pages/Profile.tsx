@@ -11,6 +11,7 @@ import { Loader2, ArrowLeft, Briefcase, Video, Bookmark, Trophy, GraduationCap, 
 import { FreeTierBalanceWidget } from "@/components/credits/FreeTierBalanceWidget";
 import { FreeTierHistory } from "@/components/credits/FreeTierHistory";
 import { StreakMultiplierCard } from "@/components/gamification/StreakMultiplierCard";
+import { VictoryCardGenerator } from "@/components/social/VictoryCardGenerator";
 import { InviteFriendPanel } from "@/components/referral/InviteFriendPanel";
 import { BrainDuelStats } from "@/components/profile/BrainDuelStats";
 import { useToast } from "@/hooks/use-toast";
@@ -468,6 +469,7 @@ const Profile = () => {
             <FreeTierBalanceWidget />
             <StreakMultiplierCard />
             <FreeTierHistory />
+            <VictoryCardGenerator username={profile?.username ?? null} avatarUrl={profile?.avatar_url ?? null} />
           </div>
         )}
 
