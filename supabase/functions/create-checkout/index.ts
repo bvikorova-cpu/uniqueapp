@@ -915,19 +915,30 @@ serve(async (req) => {
       const mode = (body.mode || def?.mode || "payment") as "payment" | "subscription";
       const { successUrl, cancelUrl } = resolveUrls(origin, body.successUrl, body.cancelUrl, productKey);
 
+      // Modules whose subscription must resolve to a specific Stripe Product
+      // (so check-subscription can match it via TIER_PRODUCTS).
+      const FIXED_SUBSCRIPTION_PRICE: Record<string, string> = {
+        crystal: "price_1TYP0KGaXSfGtYFtR5N4q75M", // prod_UXTyxI4d06YsU6, €10/mo
+      };
+      const fixedPrice = FIXED_SUBSCRIPTION_PRICE[productKey];
+
       const isSubscription = mode === "subscription";
       const session = await stripe.checkout.sessions.create({
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
-        line_items: [{
-          price_data: {
-            currency: "eur",
-            unit_amount: amount,
-            product_data: { name: productName },
-            ...(isSubscription ? { recurring: { interval: ((body.interval as "month" | "year") || (productKey === "dating_yearly" ? "year" : "month")) as "month" | "year" } } : {}),
-          },
-          quantity: 1,
-        }],
+        line_items: [
+          fixedPrice
+            ? { price: fixedPrice, quantity: 1 }
+            : {
+                price_data: {
+                  currency: "eur",
+                  unit_amount: amount,
+                  product_data: { name: productName },
+                  ...(isSubscription ? { recurring: { interval: ((body.interval as "month" | "year") || (productKey === "dating_yearly" ? "year" : "month")) as "month" | "year" } } : {}),
+                },
+                quantity: 1,
+              },
+        ],
         mode,
         success_url: successUrl,
         cancel_url: cancelUrl,
