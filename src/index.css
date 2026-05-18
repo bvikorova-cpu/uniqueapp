@@ -443,6 +443,13 @@ All colors MUST be HSL.
     @apply bg-background text-foreground min-h-screen;
   }
 
+  /* Reserve space for mobile bottom nav so content isn't covered. */
+  @media (max-width: 767px) {
+    main#main-content {
+      padding-bottom: calc(64px + env(safe-area-inset-bottom));
+    }
+  }
+
   /* Glassmorphism Effect */
   .glassmorphism {
     background: var(--glass-bg);

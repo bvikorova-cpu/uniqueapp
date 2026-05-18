@@ -13,6 +13,7 @@ import { FreeTierHistory } from "@/components/credits/FreeTierHistory";
 import { StreakMultiplierCard } from "@/components/gamification/StreakMultiplierCard";
 import { VictoryCardGenerator } from "@/components/social/VictoryCardGenerator";
 import { ProfileMilestones } from "@/components/profile/ProfileMilestones";
+import CreatorAnalyticsWidget from "@/components/analytics/CreatorAnalyticsWidget";
 import { InviteFriendPanel } from "@/components/referral/InviteFriendPanel";
 import { BrainDuelStats } from "@/components/profile/BrainDuelStats";
 import { useToast } from "@/hooks/use-toast";
@@ -472,6 +473,7 @@ const Profile = () => {
             {currentUserId === userId && <StreakMultiplierCard />}
             {currentUserId === userId && <FreeTierHistory />}
             {currentUserId === userId && <VictoryCardGenerator username={profile?.username ?? null} avatarUrl={profile?.avatar_url ?? null} />}
+            {currentUserId === userId && <CreatorAnalyticsWidget userId={userId} />}
           </div>
         )}
 

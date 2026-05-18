@@ -66,6 +66,9 @@ const VerifyReport = lazy(() => import("./pages/VerifyReport"));
 const UsernameRedirect = lazy(() => import("./pages/UsernameRedirect"));
 const ProfileRedirect = lazy(() => import("./pages/ProfileRedirect"));
 const PropertyFavorites = lazy(() => import("./pages/PropertyFavorites"));
+const Roadmap = lazy(() => import("./pages/Roadmap"));
+const MobileBottomNav = lazy(() => import("@/components/mobile/MobileBottomNav"));
+const ComebackBonusModal = lazy(() => import("@/components/retention/ComebackBonusModal"));
 
 // Install global runtime patches as early as possible
 installGlobalErrorHandlers();
@@ -542,6 +545,7 @@ const App = () => {
               <SCABanner />
               <RealTimeNotificationsMount />
               <WelcomeOnboarding />
+              <ComebackBonusModal />
             </Suspense>
             <AnimationProvider>
               <CurrencyProvider>
@@ -1097,6 +1101,7 @@ const App = () => {
                         
                         <Route path="/glamour-world" element={<GlamourWorld />} />
                         <Route path="/__e2e/anonymous-date-matches" element={<E2EAnonymousDateMatches />} />
+                        <Route path="/roadmap" element={<Roadmap />} />
                         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                         <Route path="*" element={<NotFound />} />
                       </Routes>
@@ -1108,6 +1113,9 @@ const App = () => {
                   </Suspense>
                   <Suspense fallback={null}>
                     <LiveChatWidget />
+                  </Suspense>
+                  <Suspense fallback={null}>
+                    <MobileBottomNav />
                   </Suspense>
                 </div>
               </TooltipProvider>
