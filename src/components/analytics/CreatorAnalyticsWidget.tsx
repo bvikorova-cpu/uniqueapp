@@ -26,7 +26,7 @@ export const CreatorAnalyticsWidget = ({ userId }: Props) => {
       const [posts, comments, views] = await Promise.all([
         supabase.from("posts").select("id, likes_count, created_at", { count: "exact", head: false })
           .eq("user_id", userId).order("created_at", { ascending: false }).limit(200),
-        supabase.from("comments").select("id, created_at", { count: "exact", head: true })
+        supabase.from("post_comments").select("id, created_at", { count: "exact", head: true })
           .eq("user_id", userId),
         supabase.from("profile_views").select("id, created_at", { count: "exact", head: true })
           .eq("profile_id", userId),
