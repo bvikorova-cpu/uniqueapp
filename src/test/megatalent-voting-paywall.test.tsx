@@ -221,7 +221,7 @@ describe("MegaTalentSubmissionCard UI invokes gated handlers", () => {
       dbInsert(id);
     };
 
-    render(
+    const { container } = render(
       <MegaTalentSubmissionCard
         submission={baseSubmission}
         categoryLabel="Drawing"
@@ -238,7 +238,7 @@ describe("MegaTalentSubmissionCard UI invokes gated handlers", () => {
       />,
     );
 
-    fireEvent.click(screen.getAllByText("12")[1].closest("button")!);
+    fireEvent.click(findLikeButton(container));
     expect(dbInsert).not.toHaveBeenCalled();
     expect(showToast).toHaveBeenCalledWith({
       title: "Megatalent Premium required",
