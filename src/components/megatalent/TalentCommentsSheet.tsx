@@ -8,6 +8,7 @@ import { Loader2, Send, Trash2, MessageCircle, Pencil, Check, X, ShieldCheck, Sh
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useMegaTalentTier } from "@/hooks/useMegaTalentTier";
+import { useSpendCredits } from "@/hooks/useSpendCredits";
 
 interface TalentComment {
   id: string;
