@@ -459,6 +459,12 @@ const Navbar = () => {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="lg:hidden py-3 space-y-1 max-h-[calc(100vh-5rem)] overflow-y-auto">
+            {/* Free tier balance — visible to logged-in users */}
+            {user && (
+              <div className="px-2 pb-2 flex justify-start">
+                <FreeTierBalanceWidget compact />
+              </div>
+            )}
             {/* Main Navigation Items */}
             {mainNavItems.map((item) => {
               const Icon = item.icon;
