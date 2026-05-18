@@ -186,7 +186,7 @@ describe("MegaTalentSubmissionCard UI invokes gated handlers", () => {
   it("Like button calls the (gated) onVote handler with submission id", () => {
     renderCard();
     // Like button is the one rendering the vote count
-    const likeBtn = screen.getByText("12").closest("button")!;
+    const likeBtn = screen.getAllByText("12")[0].closest("button")!;
     fireEvent.click(likeBtn);
     expect(onVote).toHaveBeenCalledTimes(1);
     expect(onVote).toHaveBeenCalledWith("sub-1");
