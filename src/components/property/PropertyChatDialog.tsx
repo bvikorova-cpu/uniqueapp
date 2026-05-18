@@ -23,9 +23,11 @@ interface Props {
   propertyId: string;
   propertyTitle: string;
   sellerId: string;
+  /** Explicit buyer id — required when the current user is the seller viewing a thread */
+  buyerIdOverride?: string;
 }
 
-export function PropertyChatDialog({ open, onOpenChange, propertyId, propertyTitle, sellerId }: Props) {
+export function PropertyChatDialog({ open, onOpenChange, propertyId, propertyTitle, sellerId, buyerIdOverride }: Props) {
   const { user } = useAuth();
   const [messages, setMessages] = useState<Msg[]>([]);
   const [content, setContent] = useState("");
@@ -33,7 +35,8 @@ export function PropertyChatDialog({ open, onOpenChange, propertyId, propertyTit
   const [sending, setSending] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const buyerId = user?.id && user.id !== sellerId ? user.id : null;
+  const buyerId = buyerIdOverride ?? (user?.id && user.id !== sellerId ? user.id : null);
+  const canSend = !!user && !!buyerId;
 
   const markRead = async () => {
     if (!user) return;
