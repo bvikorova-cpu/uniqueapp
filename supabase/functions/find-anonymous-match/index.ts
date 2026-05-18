@@ -36,7 +36,7 @@ serve(async (req) => {
       });
     }
 
-    // Optional filters from client
+    // Optional filters from client + mode (preview | match)
     let filters: {
       location?: string;
       preferred_gender?: string;
@@ -44,10 +44,14 @@ serve(async (req) => {
       languages?: string[];
       min_shared_interests?: number;
     } = {};
+    let mode: "preview" | "match" = "match";
+    let targetUserId: string | undefined;
     if (req.method === "POST") {
       try {
         const body = await req.json();
         filters = body?.filters ?? {};
+        if (body?.mode === "preview") mode = "preview";
+        if (typeof body?.targetUserId === "string") targetUserId = body.targetUserId;
       } catch {
         // no body
       }
