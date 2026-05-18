@@ -23319,6 +23319,33 @@ export type Database = {
           },
         ]
       }
+      free_tier_credits: {
+        Row: {
+          balance: number
+          granted_at: string
+          month_key: string
+          updated_at: string
+          user_id: string
+          welcome_shown: boolean
+        }
+        Insert: {
+          balance?: number
+          granted_at?: string
+          month_key?: string
+          updated_at?: string
+          user_id: string
+          welcome_shown?: boolean
+        }
+        Update: {
+          balance?: number
+          granted_at?: string
+          month_key?: string
+          updated_at?: string
+          user_id?: string
+          welcome_shown?: boolean
+        }
+        Relationships: []
+      }
       friend_quest_invites: {
         Row: {
           created_at: string
@@ -60426,6 +60453,23 @@ export type Database = {
       edu_is_study_group_member: {
         Args: { _group_id: string; _user_id: string }
         Returns: boolean
+      }
+      ensure_free_tier_credits: {
+        Args: never
+        Returns: {
+          balance: number
+          granted_at: string
+          month_key: string
+          updated_at: string
+          user_id: string
+          welcome_shown: boolean
+        }
+        SetofOptions: {
+          from: "*"
+          to: "free_tier_credits"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       erf: { Args: { x: number }; Returns: number }
       evaluate_xp_bets: { Args: never; Returns: number }

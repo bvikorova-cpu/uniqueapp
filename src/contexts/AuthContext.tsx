@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
+import { WelcomeCreditsDialog } from '@/components/credits/WelcomeCreditsDialog';
 
 
 interface AuthContextType {
@@ -83,6 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthContext.Provider value={{ user, session, signUp, signIn, signOut, loading }}>
       {children}
+      {user && <WelcomeCreditsDialog />}
     </AuthContext.Provider>
   );
 }
