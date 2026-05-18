@@ -62,6 +62,7 @@ const TIER_PRODUCTS: Record<string, string[]> = {
   astrology:     ["prod_UO5XctMmRHmIpM"],
   coloring:      ["prod_UO5XctMmRHmIpM"],
   wellness:      ["prod_UO5XctMmRHmIpM"],
+  crystal:       ["prod_UXTyxI4d06YsU6"],
 };
 
 serve(async (req) => {
