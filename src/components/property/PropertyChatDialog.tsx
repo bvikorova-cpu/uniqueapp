@@ -35,32 +35,47 @@ export function PropertyChatDialog({ open, onOpenChange, propertyId, propertyTit
 
   const buyerId = user?.id && user.id !== sellerId ? user.id : null;
 
+  const markRead = async () => {
+    if (!user) return;
+    await supabase
+      .from("property_messages")
+      .update({ read_at: new Date().toISOString() })
+      .eq("property_id", propertyId)
+      .eq("buyer_id", buyerId ?? user.id)
+      .eq("seller_id", sellerId)
+      .neq("sender_id", user.id)
+      .is("read_at", null);
+  };
+
   useEffect(() => {
-    if (!open || !user || !buyerId) return;
+    if (!open || !user) return;
+    const effectiveBuyer = buyerId ?? user.id;
     let cancelled = false;
     setLoading(true);
     supabase
       .from("property_messages")
       .select("*")
       .eq("property_id", propertyId)
-      .eq("buyer_id", buyerId)
+      .eq("buyer_id", effectiveBuyer)
       .eq("seller_id", sellerId)
       .order("created_at", { ascending: true })
       .then(({ data }) => {
         if (cancelled) return;
         setMessages((data || []) as Msg[]);
         setLoading(false);
+        markRead();
       });
 
     const channel = supabase
-      .channel(`pmsg-${propertyId}-${buyerId}`)
+      .channel(`pmsg-${propertyId}-${effectiveBuyer}`)
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "property_messages", filter: `property_id=eq.${propertyId}` },
         (payload) => {
           const m = payload.new as Msg;
-          if (m.buyer_id === buyerId && m.seller_id === sellerId) {
+          if (m.buyer_id === effectiveBuyer && m.seller_id === sellerId) {
             setMessages((prev) => (prev.some((x) => x.id === m.id) ? prev : [...prev, m]));
+            if (m.sender_id !== user.id) markRead();
           }
         },
       )
@@ -70,6 +85,7 @@ export function PropertyChatDialog({ open, onOpenChange, propertyId, propertyTit
       cancelled = true;
       supabase.removeChannel(channel);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, user, buyerId, propertyId, sellerId]);
 
   useEffect(() => {
