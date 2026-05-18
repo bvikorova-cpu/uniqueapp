@@ -13,6 +13,7 @@ import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle,
 import { useTheme } from "next-themes";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import { AICreditsBalanceWidget } from "@/components/ai-credits/AICreditsBalanceWidget";
+import { FreeTierBalanceWidget } from "@/components/credits/FreeTierBalanceWidget";
 import { GlobalCurrencySwitcher } from "@/components/GlobalCurrencySwitcher";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import megatalentLogo from "@/assets/megatalent-logo.png";
@@ -338,6 +339,11 @@ const Navbar = () => {
                 {/* AI Credits */}
                 <div className="hidden sm:block">
                   <AICreditsBalanceWidget compact />
+                </div>
+
+                {/* Free Tier Credits */}
+                <div className="hidden sm:block">
+                  <FreeTierBalanceWidget compact />
                 </div>
 
                 {/* Wall Notifications */}
