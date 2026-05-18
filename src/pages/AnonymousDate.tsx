@@ -28,10 +28,19 @@ import { AnonymousDateIdeasShowcase } from "@/components/anonymous-date/Anonymou
 import { AnonymousDateAIToolbox } from "@/components/anonymous-date/AnonymousDateAIToolbox";
 import { AnonymousDateParityPack } from "@/components/anonymous-date/AnonymousDateParityPack";
 import { CompatibilityMatchFinder } from "@/components/anonymous-date/CompatibilityMatchFinder";
+import { MatchResults, type MatchCandidate } from "@/components/anonymous-date/MatchResults";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
-type ViewType = "hub" | "matches" | "find" | "credits" | "profile";
+type ViewType = "hub" | "matches" | "find" | "find-results" | "credits" | "profile";
+
+type MatchFilters = {
+  location?: string;
+  preferred_gender?: string;
+  relationship_goal?: string;
+  languages?: string[];
+  min_shared_interests?: number;
+};
 
 const DATING_TOOLS = [
   {
@@ -93,6 +102,10 @@ export default function AnonymousDate() {
   const [subscriptionEnd, setSubscriptionEnd] = useState<string | null>(null);
   const [selectedMatchId, setSelectedMatchId] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [candidates, setCandidates] = useState<MatchCandidate[]>([]);
+  const [previewLoading, setPreviewLoading] = useState(false);
+  const [matchingUserId, setMatchingUserId] = useState<string | null>(null);
+  const [lastFilters, setLastFilters] = useState<MatchFilters>({});
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id ?? null));
@@ -106,6 +119,7 @@ export default function AnonymousDate() {
     fetchActiveMatches,
     purchaseCredits,
     findMatch,
+    previewMatches,
   } = useAnonymousDate();
 
   useEffect(() => {
@@ -214,19 +228,44 @@ export default function AnonymousDate() {
     setActiveView(toolId as ViewType);
   };
 
-  const handleFindMatch = async (filters: Parameters<typeof findMatch>[0]) => {
+  const loadCandidates = async (filters: MatchFilters) => {
+    setPreviewLoading(true);
+    try {
+      const list = await previewMatches(filters);
+      setCandidates(list);
+    } finally {
+      setPreviewLoading(false);
+    }
+  };
+
+  const handleFindMatch = async (filters: MatchFilters) => {
+    setLastFilters(filters);
+    setActiveView("find-results");
+    await loadCandidates(filters);
+  };
+
+  const handleSelectCandidate = async (userId: string) => {
     if (credits < 5) {
       toast({
         title: "Not enough credits",
-        description: "Finding a new match costs 5 credits. Visit the Credit Store to top up.",
+        description: "Locking in a match costs 5 credits. Visit the Credit Store to top up.",
         variant: "destructive",
       });
       setActiveView("credits");
       return;
     }
-    const result = await findMatch(filters);
-    if (result?.match) {
-      setActiveView("matches");
+    setMatchingUserId(userId);
+    try {
+      const result = await findMatch(lastFilters, userId);
+      if (result?.match) {
+        setSelectedMatchId(result.match.id);
+        setActiveView("matches");
+      } else {
+        // Candidate became unavailable — refresh the list
+        await loadCandidates(lastFilters);
+      }
+    } finally {
+      setMatchingUserId(null);
     }
   };
 
@@ -542,8 +581,21 @@ export default function AnonymousDate() {
               {activeView === "find" && (
                 <CompatibilityMatchFinder
                   credits={credits}
-                  loading={loading}
+                  loading={previewLoading || loading}
                   onFindMatch={handleFindMatch}
+                />
+              )}
+              {activeView === "find-results" && (
+                <MatchResults
+                  candidates={candidates}
+                  loading={previewLoading}
+                  matching={!!matchingUserId}
+                  matchingUserId={matchingUserId}
+                  credits={credits}
+                  cost={5}
+                  onBack={() => setActiveView("find")}
+                  onRefresh={() => loadCandidates(lastFilters)}
+                  onSelect={handleSelectCandidate}
                 />
               )}
               {activeView === "credits" && (

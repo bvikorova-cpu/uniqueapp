@@ -127,7 +127,7 @@ export function useAnonymousDate() {
     }
   };
 
-  const findMatch = async (filters?: {
+  const previewMatches = async (filters?: {
     location?: string;
     preferred_gender?: string;
     relationship_goal?: string;
@@ -135,9 +135,36 @@ export function useAnonymousDate() {
     min_shared_interests?: number;
   }) => {
     try {
+      const { data, error } = await supabase.functions.invoke("find-anonymous-match", {
+        body: { mode: "preview", filters: filters ?? {} },
+      });
+      if (error) throw error;
+      return data?.candidates ?? [];
+    } catch (error: any) {
+      console.error("Error previewing matches:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to load candidates",
+        variant: "destructive",
+      });
+      return [];
+    }
+  };
+
+  const findMatch = async (
+    filters?: {
+      location?: string;
+      preferred_gender?: string;
+      relationship_goal?: string;
+      languages?: string[];
+      min_shared_interests?: number;
+    },
+    targetUserId?: string,
+  ) => {
+    try {
       setLoading(true);
       const { data, error } = await supabase.functions.invoke("find-anonymous-match", {
-        body: { filters: filters ?? {} },
+        body: { mode: "match", filters: filters ?? {}, targetUserId },
       });
 
       if (error) throw error;
@@ -176,5 +203,6 @@ export function useAnonymousDate() {
     fetchActiveMatches,
     purchaseCredits,
     findMatch,
+    previewMatches,
   };
 }
