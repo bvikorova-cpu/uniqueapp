@@ -23,7 +23,10 @@ export function useFreeTierCredits() {
     }
     setLoading(true);
     // ensure_free_tier_credits seeds row & tops up monthly
-    const { data: ensured, error } = await (supabase as any).rpc("ensure_free_tier_credits");
+    const rpc = (supabase as any).rpc;
+    const { data: ensured, error } = typeof rpc === "function"
+      ? await rpc.call(supabase, "ensure_free_tier_credits")
+      : { data: null, error: new Error("rpc unavailable") };
     if (!error && ensured) {
       setData(Array.isArray(ensured) ? ensured[0] : ensured);
     } else {
