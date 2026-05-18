@@ -2,10 +2,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { MapPin, Maximize2, BedDouble, Eye, Heart, Calendar, Video, Phone, Mail, Share2 } from "lucide-react";
-import { useState } from "react";
+import { MapPin, Maximize2, BedDouble, Eye, Heart, Calendar, Video, Phone, Mail, Share2, MessageCircle } from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ContactSellerDialog } from "./ContactSellerDialog";
+import { PropertyChatDialog } from "./PropertyChatDialog";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface PropertyDetailDialogProps {
   property: any;
@@ -14,9 +17,22 @@ interface PropertyDetailDialogProps {
 }
 
 export function PropertyDetailDialog({ property, open, onOpenChange }: PropertyDetailDialogProps) {
+  const { user } = useAuth();
   const [isFavorite, setIsFavorite] = useState(false);
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
   const [inquiryType, setInquiryType] = useState<"contact" | "viewing">("contact");
+
+  useEffect(() => {
+    if (!user || !property?.id) { setIsFavorite(false); return; }
+    supabase
+      .from("property_favorites")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("property_id", property.id)
+      .maybeSingle()
+      .then(({ data }) => setIsFavorite(!!data));
+  }, [user, property?.id]);
 
   const handleContact = (type: "contact" | "viewing" = "contact") => {
     setInquiryType(type);
@@ -36,9 +52,17 @@ export function PropertyDetailDialog({ property, open, onOpenChange }: PropertyD
     }
   };
 
-  const handleToggleFavorite = () => {
-    setIsFavorite(!isFavorite);
-    toast.success(isFavorite ? "Removed from favorites" : "Added to favorites");
+  const handleToggleFavorite = async () => {
+    if (!user) { toast.error("Please sign in to save properties"); return; }
+    if (isFavorite) {
+      await supabase.from("property_favorites").delete().eq("user_id", user.id).eq("property_id", property.id);
+      setIsFavorite(false);
+      toast.success("Removed from favorites");
+    } else {
+      await supabase.from("property_favorites").insert({ user_id: user.id, property_id: property.id });
+      setIsFavorite(true);
+      toast.success("Added to favorites");
+    }
   };
 
   if (!property) return null;
@@ -214,12 +238,16 @@ export function PropertyDetailDialog({ property, open, onOpenChange }: PropertyD
         </div>
 
         {/* Contact Buttons */}
-        <div className="flex gap-3 pt-4 border-t">
-          <Button onClick={() => handleContact("contact")} className="flex-1" size="lg">
+        <div className="flex flex-wrap gap-3 pt-4 border-t">
+          <Button onClick={() => setChatOpen(true)} className="flex-1 min-w-[180px]" size="lg" disabled={!!user && user.id === property.user_id}>
+            <MessageCircle className="h-4 w-4 mr-2" />
+            Message Seller
+          </Button>
+          <Button onClick={() => handleContact("contact")} variant="outline" className="flex-1 min-w-[180px]" size="lg">
             <Mail className="h-4 w-4 mr-2" />
             Contact Owner
           </Button>
-          <Button onClick={() => handleContact("viewing")} variant="outline" className="flex-1" size="lg">
+          <Button onClick={() => handleContact("viewing")} variant="outline" className="flex-1 min-w-[180px]" size="lg">
             <Phone className="h-4 w-4 mr-2" />
             Request Viewing
           </Button>
@@ -231,6 +259,13 @@ export function PropertyDetailDialog({ property, open, onOpenChange }: PropertyD
           propertyId={property.id}
           propertyTitle={property.title}
           inquiryType={inquiryType}
+        />
+        <PropertyChatDialog
+          open={chatOpen}
+          onOpenChange={setChatOpen}
+          propertyId={property.id}
+          propertyTitle={property.title}
+          sellerId={property.user_id}
         />
       </DialogContent>
     </Dialog>
