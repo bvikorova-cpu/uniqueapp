@@ -85,14 +85,13 @@ export default function PropertyMarketplace() {
   const [leadBoostDialogOpen, setLeadBoostDialogOpen] = useState(false);
   const [activeView, setActiveView] = useState<ViewType>("hub");
   const [searchFilters, setSearchFilters] = useState({
-    priceMin: "", priceMax: "", location: "", area: "", rooms: ""
+    priceMin: "", priceMax: "", location: "", area: "", rooms: "", propertyType: "any", listingType: "any", availability: "active"
   });
 
   usePropertyExpiration();
 
   useEffect(() => {
     checkAuth();
-    fetchProperties();
     const payment = searchParams.get('payment');
     if (payment === 'success') {
       toast({ title: "Payment Successful!", description: "Your listing has been activated." });
@@ -101,21 +100,32 @@ export default function PropertyMarketplace() {
     }
   }, [searchParams]);
 
+  // Debounced real-time filter search
+  useEffect(() => {
+    const t = setTimeout(() => { runSearch(); }, 300);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchFilters]);
+
   const checkAuth = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     setIsAuthenticated(!!session);
   };
 
-  const fetchProperties = async () => {
+  const runSearch = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('properties')
-        .select(`*, property_images(image_url, is_primary)`)
-        .eq('status', 'active')
-        .order('is_featured', { ascending: false })
-        .order('created_at', { ascending: false })
-        .limit(50);
+      let query = supabase.from('properties').select(`*, property_images(image_url, is_primary)`);
+      const f = searchFilters;
+      query = f.availability === 'any' ? query : query.eq('status', f.availability);
+      if (f.location) query = query.or(`city.ilike.%${f.location}%,location.ilike.%${f.location}%,address.ilike.%${f.location}%`);
+      if (f.priceMin) query = query.gte('price', parseFloat(f.priceMin));
+      if (f.priceMax) query = query.lte('price', parseFloat(f.priceMax));
+      if (f.area) query = query.gte('area_sqm', parseInt(f.area));
+      if (f.rooms) query = query.gte('rooms', parseInt(f.rooms));
+      if (f.propertyType && f.propertyType !== 'any') query = query.eq('property_type', f.propertyType);
+      if (f.listingType && f.listingType !== 'any') query = query.eq('listing_type', f.listingType);
+      const { data, error } = await query.order('is_featured', { ascending: false }).order('created_at', { ascending: false }).limit(60);
       if (error) throw error;
       setProperties(data || []);
     } catch (error) {
