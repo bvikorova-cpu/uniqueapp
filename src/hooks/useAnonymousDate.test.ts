@@ -100,6 +100,14 @@ function buildFromMock(opts: {
       };
     }
 
+    if (table === "blocked_users") {
+      return {
+        select: () => ({
+          eq: () => Promise.resolve({ data: [], error: null }),
+        }),
+      };
+    }
+
     if (table === "anonymous_dating_profiles") {
       return {
         select: () => ({
