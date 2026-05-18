@@ -48693,6 +48693,33 @@ export type Database = {
           },
         ]
       }
+      skill_swap_certification_paths: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          input: Json | null
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json | null
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json | null
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
       skill_swap_conversations: {
         Row: {
           completed_at: string | null
@@ -48734,6 +48761,114 @@ export type Database = {
           },
         ]
       }
+      skill_swap_credits: {
+        Row: {
+          created_at: string
+          credits_remaining: number
+          id: string
+          total_credits_purchased: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      skill_swap_cultural_tips: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          input: Json | null
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json | null
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json | null
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      skill_swap_gap_analyses: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          input: Json | null
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json | null
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json | null
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      skill_swap_learning_roadmaps: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          input: Json | null
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json | null
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json | null
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
       skill_swap_messages: {
         Row: {
           created_at: string | null
@@ -48772,6 +48907,33 @@ export type Database = {
           },
         ]
       }
+      skill_swap_negotiation_helpers: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          input: Json | null
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json | null
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json | null
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
       skill_swap_notifications: {
         Row: {
           actor_id: string | null
@@ -48804,6 +48966,33 @@ export type Database = {
           related_id?: string | null
           title?: string
           type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      skill_swap_portfolio_pitches: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          input: Json | null
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json | null
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json | null
+          result?: Json
           user_id?: string
         }
         Relationships: []
@@ -48848,6 +49037,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      skill_swap_swap_matchers: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          input: Json | null
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json | null
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json | null
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      skill_swap_teaching_scripts: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          input: Json | null
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json | null
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json | null
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
       }
       social_gifts_ai_messages: {
         Row: {
