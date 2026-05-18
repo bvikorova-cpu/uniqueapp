@@ -581,8 +581,21 @@ export default function AnonymousDate() {
               {activeView === "find" && (
                 <CompatibilityMatchFinder
                   credits={credits}
-                  loading={loading}
+                  loading={previewLoading || loading}
                   onFindMatch={handleFindMatch}
+                />
+              )}
+              {activeView === "find-results" && (
+                <MatchResults
+                  candidates={candidates}
+                  loading={previewLoading}
+                  matching={!!matchingUserId}
+                  matchingUserId={matchingUserId}
+                  credits={credits}
+                  cost={5}
+                  onBack={() => setActiveView("find")}
+                  onRefresh={() => loadCandidates(lastFilters)}
+                  onSelect={handleSelectCandidate}
                 />
               )}
               {activeView === "credits" && (
