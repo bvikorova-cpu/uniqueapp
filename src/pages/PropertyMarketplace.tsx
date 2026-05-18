@@ -28,6 +28,8 @@ import { PropertyChatbot } from "@/components/property/PropertyChatbot";
 import { PropertyDocManager } from "@/components/property/PropertyDocManager";
 import { PropertyNegotiation } from "@/components/property/PropertyNegotiation";
 import { PropertyParityPack } from "@/components/property/PropertyParityPack";
+import { PropertyConversationsDialog } from "@/components/property/PropertyConversationsDialog";
+import { usePropertyUnread } from "@/hooks/usePropertyUnread";
 import { usePropertyExpiration } from "@/hooks/usePropertyExpiration";
 import { motion } from "framer-motion";
 
