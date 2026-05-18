@@ -33621,6 +33621,249 @@ export type Database = {
         }
         Relationships: []
       }
+      lottery_parity_budget_coaches: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      lottery_parity_claim_checklists: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      lottery_parity_credits: {
+        Row: {
+          created_at: string
+          credits_remaining: number
+          id: string
+          total_purchased: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          total_purchased?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          total_purchased?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      lottery_parity_lucky_charms: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      lottery_parity_pattern_detectors: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      lottery_parity_syndicate_strategies: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      lottery_parity_tax_planners: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      lottery_parity_wheel_builders: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      lottery_parity_winner_mindsets: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
       lottery_syndicate_members: {
         Row: {
           id: string
