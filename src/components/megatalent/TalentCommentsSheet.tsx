@@ -39,6 +39,7 @@ const commentSchema = z.object({
 export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountChange }: Props) {
   const { toast } = useToast();
   const { isSubscribed, tier, loading: subLoading, refetch: refetchTier } = useMegaTalentTier();
+  const { spend } = useSpendCredits();
   const [comments, setComments] = useState<TalentComment[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [page, setPage] = useState(0);
