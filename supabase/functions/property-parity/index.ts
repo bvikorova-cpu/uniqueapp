@@ -42,7 +42,6 @@ serve(async (req) => {
     const cfg = ACTIONS[action];
     if (!cfg) return new Response(JSON.stringify({ error: "Invalid action" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-    // Check credits
     const { data: credits } = await supabaseAdmin
       .from("property_parity_credits")
       .select("balance")
@@ -53,19 +52,20 @@ serve(async (req) => {
       return new Response(JSON.stringify({ requiresPayment: true, cost: PARITY_COST, balance }), { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    // Call AI
-    const aiKey = Deno.env.get("LOVABLE_API_KEY");
-    if (!aiKey) throw new Error("Missing LOVABLE_API_KEY");
-    const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    // ---- OpenAI ----
+    const openaiKey = Deno.env.get("OPENAI_API_KEY");
+    if (!openaiKey) throw new Error("Missing OPENAI_API_KEY");
+    const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
-      headers: { Authorization: `Bearer ${aiKey}`, "Content-Type": "application/json" },
+      headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: cfg.system + " Reply ONLY with valid JSON." },
           { role: "user", content: JSON.stringify(payload ?? {}) },
         ],
         response_format: { type: "json_object" },
+        temperature: 0.7,
       }),
     });
     if (!aiRes.ok) {
@@ -77,7 +77,6 @@ serve(async (req) => {
     let result: any = {};
     try { result = JSON.parse(content); } catch { result = { raw: content }; }
 
-    // Persist + deduct
     await supabaseAdmin.from(cfg.table).insert({ user_id: user.id, input: payload ?? {}, result });
     await supabaseAdmin
       .from("property_parity_credits")

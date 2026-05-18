@@ -85,14 +85,13 @@ export default function PropertyMarketplace() {
   const [leadBoostDialogOpen, setLeadBoostDialogOpen] = useState(false);
   const [activeView, setActiveView] = useState<ViewType>("hub");
   const [searchFilters, setSearchFilters] = useState({
-    priceMin: "", priceMax: "", location: "", area: "", rooms: ""
+    priceMin: "", priceMax: "", location: "", area: "", rooms: "", propertyType: "any", listingType: "any", availability: "active"
   });
 
   usePropertyExpiration();
 
   useEffect(() => {
     checkAuth();
-    fetchProperties();
     const payment = searchParams.get('payment');
     if (payment === 'success') {
       toast({ title: "Payment Successful!", description: "Your listing has been activated." });
@@ -101,21 +100,32 @@ export default function PropertyMarketplace() {
     }
   }, [searchParams]);
 
+  // Debounced real-time filter search
+  useEffect(() => {
+    const t = setTimeout(() => { runSearch(); }, 300);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchFilters]);
+
   const checkAuth = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     setIsAuthenticated(!!session);
   };
 
-  const fetchProperties = async () => {
+  const runSearch = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('properties')
-        .select(`*, property_images(image_url, is_primary)`)
-        .eq('status', 'active')
-        .order('is_featured', { ascending: false })
-        .order('created_at', { ascending: false })
-        .limit(50);
+      let query = supabase.from('properties').select(`*, property_images(image_url, is_primary)`);
+      const f = searchFilters;
+      query = f.availability === 'any' ? query : query.eq('status', f.availability);
+      if (f.location) query = query.or(`city.ilike.%${f.location}%,location.ilike.%${f.location}%,address.ilike.%${f.location}%`);
+      if (f.priceMin) query = query.gte('price', parseFloat(f.priceMin));
+      if (f.priceMax) query = query.lte('price', parseFloat(f.priceMax));
+      if (f.area) query = query.gte('area_sqm', parseInt(f.area));
+      if (f.rooms) query = query.gte('rooms', parseInt(f.rooms));
+      if (f.propertyType && f.propertyType !== 'any') query = query.eq('property_type', f.propertyType);
+      if (f.listingType && f.listingType !== 'any') query = query.eq('listing_type', f.listingType);
+      const { data, error } = await query.order('is_featured', { ascending: false }).order('created_at', { ascending: false }).limit(60);
       if (error) throw error;
       setProperties(data || []);
     } catch (error) {
@@ -136,24 +146,7 @@ export default function PropertyMarketplace() {
     setShowDetailDialog(true);
   };
 
-  const handleSearch = async () => {
-    try {
-      setLoading(true);
-      let query = supabase.from('properties').select(`*, property_images(image_url, is_primary)`).eq('status', 'active');
-      if (searchFilters.location) query = query.or(`city.ilike.%${searchFilters.location}%,location.ilike.%${searchFilters.location}%`);
-      if (searchFilters.priceMin) query = query.gte('price', parseFloat(searchFilters.priceMin));
-      if (searchFilters.priceMax) query = query.lte('price', parseFloat(searchFilters.priceMax));
-      if (searchFilters.area) query = query.gte('area_sqm', parseInt(searchFilters.area));
-      if (searchFilters.rooms) query = query.gte('rooms', parseInt(searchFilters.rooms));
-      const { data, error } = await query.order('is_featured', { ascending: false }).order('created_at', { ascending: false });
-      if (error) throw error;
-      setProperties(data || []);
-    } catch (error) {
-      console.error('Error searching:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const handleSearch = runSearch;
 
   const handleCreateListing = () => {
     if (!isAuthenticated) {
@@ -265,9 +258,12 @@ export default function PropertyMarketplace() {
         </div>
 
         {/* Add Listing CTA */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-wrap gap-3 justify-center mb-8">
           <Button size="lg" onClick={handleCreateListing} className="bg-gradient-to-r from-sky-500 to-blue-600 hover:opacity-90 text-white">
             <Plus className="mr-2 h-5 w-5" /> Add Listing
+          </Button>
+          <Button size="lg" variant="outline" onClick={() => navigate("/property-favorites")}>
+            ❤ My Favorites
           </Button>
         </motion.div>
 
@@ -315,11 +311,11 @@ export default function PropertyMarketplace() {
           </CardContent>
         </Card>
 
-        {/* Advanced Search */}
+        {/* Advanced Search — real-time filters */}
         <Card className="mb-8 backdrop-blur-xl bg-card/80 border-border/50">
           <CardHeader>
             <CardTitle className="font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Find Your Perfect Property</CardTitle>
-            <CardDescription>Use advanced filters to search properties</CardDescription>
+            <CardDescription>Filters update results live as you type or select.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -327,38 +323,79 @@ export default function PropertyMarketplace() {
                 <label className="text-sm font-medium">Location</label>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder="City, district..." className="pl-9" value={searchFilters.location} onChange={(e) => setSearchFilters({...searchFilters, location: e.target.value})} />
+                  <Input placeholder="City, district, address…" className="pl-9" value={searchFilters.location} onChange={(e) => setSearchFilters({...searchFilters, location: e.target.value})} />
                 </div>
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">Price Range</label>
+                <label className="text-sm font-medium">Price Range (€)</label>
                 <div className="flex gap-2">
-                  <Input placeholder="Min €" type="number" value={searchFilters.priceMin} onChange={(e) => setSearchFilters({...searchFilters, priceMin: e.target.value})} />
-                  <Input placeholder="Max €" type="number" value={searchFilters.priceMax} onChange={(e) => setSearchFilters({...searchFilters, priceMax: e.target.value})} />
+                  <Input placeholder="Min" type="number" value={searchFilters.priceMin} onChange={(e) => setSearchFilters({...searchFilters, priceMin: e.target.value})} />
+                  <Input placeholder="Max" type="number" value={searchFilters.priceMax} onChange={(e) => setSearchFilters({...searchFilters, priceMax: e.target.value})} />
                 </div>
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">Area (m²)</label>
+                <label className="text-sm font-medium">Min Area (m²)</label>
                 <div className="relative">
                   <Maximize2 className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder="Min area..." type="number" className="pl-9" value={searchFilters.area} onChange={(e) => setSearchFilters({...searchFilters, area: e.target.value})} />
+                  <Input placeholder="Min area…" type="number" className="pl-9" value={searchFilters.area} onChange={(e) => setSearchFilters({...searchFilters, area: e.target.value})} />
                 </div>
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">Rooms</label>
-                <Select value={searchFilters.rooms} onValueChange={(value) => setSearchFilters({...searchFilters, rooms: value})}>
-                  <SelectTrigger><SelectValue placeholder="Number of rooms" /></SelectTrigger>
+                <label className="text-sm font-medium">Property Type</label>
+                <Select value={searchFilters.propertyType} onValueChange={(v) => setSearchFilters({...searchFilters, propertyType: v})}>
+                  <SelectTrigger><SelectValue placeholder="Any type" /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">1 room</SelectItem>
-                    <SelectItem value="2">2 rooms</SelectItem>
-                    <SelectItem value="3">3 rooms</SelectItem>
-                    <SelectItem value="4">4+ rooms</SelectItem>
+                    <SelectItem value="any">Any type</SelectItem>
+                    <SelectItem value="apartment">Apartment</SelectItem>
+                    <SelectItem value="house">House</SelectItem>
+                    <SelectItem value="villa">Villa</SelectItem>
+                    <SelectItem value="studio">Studio</SelectItem>
+                    <SelectItem value="commercial">Commercial</SelectItem>
+                    <SelectItem value="land">Land</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-2 lg:col-span-2">
-                <label className="text-sm font-medium invisible">Search</label>
-                <Button className="w-full bg-gradient-to-r from-sky-500 to-blue-600" onClick={handleSearch}>Search Properties</Button>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Listing Type</label>
+                <Select value={searchFilters.listingType} onValueChange={(v) => setSearchFilters({...searchFilters, listingType: v})}>
+                  <SelectTrigger><SelectValue placeholder="Any" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="any">Sale & Rent</SelectItem>
+                    <SelectItem value="sale">For Sale</SelectItem>
+                    <SelectItem value="rent">For Rent</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Availability</label>
+                <Select value={searchFilters.availability} onValueChange={(v) => setSearchFilters({...searchFilters, availability: v})}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Available now</SelectItem>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="sold">Sold / Rented</SelectItem>
+                    <SelectItem value="any">All</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Rooms (min)</label>
+                <Select value={searchFilters.rooms} onValueChange={(v) => setSearchFilters({...searchFilters, rooms: v === "any" ? "" : v})}>
+                  <SelectTrigger><SelectValue placeholder="Any" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="any">Any</SelectItem>
+                    <SelectItem value="1">1+</SelectItem>
+                    <SelectItem value="2">2+</SelectItem>
+                    <SelectItem value="3">3+</SelectItem>
+                    <SelectItem value="4">4+</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2 md:col-span-2">
+                <label className="text-sm font-medium invisible">Reset</label>
+                <Button variant="outline" className="w-full" onClick={() => setSearchFilters({ priceMin: "", priceMax: "", location: "", area: "", rooms: "", propertyType: "any", listingType: "any", availability: "active" })}>
+                  Reset filters
+                </Button>
               </div>
             </div>
           </CardContent>

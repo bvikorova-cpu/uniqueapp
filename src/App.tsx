@@ -64,6 +64,7 @@ const Download = lazy(() => import("./pages/Download"));
 const VerifyReport = lazy(() => import("./pages/VerifyReport"));
 const UsernameRedirect = lazy(() => import("./pages/UsernameRedirect"));
 const ProfileRedirect = lazy(() => import("./pages/ProfileRedirect"));
+const PropertyFavorites = lazy(() => import("./pages/PropertyFavorites"));
 
 // Install global runtime patches as early as possible
 installGlobalErrorHandlers();
@@ -1089,6 +1090,7 @@ const App = () => {
                         <Route path="/property-marketplace" element={<PropertyMarketplace />} />
                         <Route path="/property-submission" element={<PropertySubmission />} />
                         <Route path="/my-properties" element={<ProtectedRoute><MyProperties /></ProtectedRoute>} />
+                        <Route path="/property-favorites" element={<ProtectedRoute><PropertyFavorites /></ProtectedRoute>} />
                         <Route path="/home-decor" element={<HomeDecorMarketplace />} />
                         
                         <Route path="/glamour-world" element={<GlamourWorld />} />
