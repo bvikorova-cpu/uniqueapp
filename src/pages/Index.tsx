@@ -14,6 +14,7 @@ import { SEO } from "@/components/SEO";
 import { Age16Badge } from "@/components/Age16Badge";
 import { HowItWorksTrust } from "@/components/trust/HowItWorksTrust";
 import { FoundingMembersBanner } from "@/components/founding/FoundingMembersBanner";
+import { InviteFriendsCallout } from "@/components/referral/InviteFriendsCallout";
 import {
   Car, Baby, GraduationCap, Briefcase, Heart, Sparkles, Trophy, Users,
   Video, Mic, ShoppingBag, Brain, TrendingUp, Ghost, Building2, Crown,
