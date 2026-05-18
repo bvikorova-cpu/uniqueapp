@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, ArrowLeft, Briefcase, Video, Bookmark, Trophy, GraduationCap, Brain, Package, Sparkles, ArrowRightLeft, Users, UserPlus, UserCheck, Gift } from "lucide-react";
+import { FreeTierBalanceWidget } from "@/components/credits/FreeTierBalanceWidget";
 import { InviteFriendPanel } from "@/components/referral/InviteFriendPanel";
 import { BrainDuelStats } from "@/components/profile/BrainDuelStats";
 import { useToast } from "@/hooks/use-toast";
