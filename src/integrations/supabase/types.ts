@@ -35365,6 +35365,222 @@ export type Database = {
           },
         ]
       }
+      membership_parity_credits: {
+        Row: {
+          action: string
+          created_at: string
+          credits_spent: number
+          id: string
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          credits_spent?: number
+          id?: string
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          credits_spent?: number
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      membership_parity_fan_personas: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      membership_parity_growth_funnels: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      membership_parity_livestream_briefs: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      membership_parity_perk_ideas: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      membership_parity_post_planners: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      membership_parity_retention_boosters: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      membership_parity_tier_designers: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      membership_parity_welcome_dms: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
       memories: {
         Row: {
           category: string

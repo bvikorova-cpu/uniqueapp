@@ -11,6 +11,7 @@ import { MembershipToolView } from "@/components/membership/MembershipToolView";
 
 import { MembershipAbout } from "@/components/membership/MembershipAbout";
 import { MembershipFeaturedCreators } from "@/components/membership/MembershipFeaturedCreators";
+import { MembershipParityPack } from "@/components/membership/MembershipParityPack";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface Creator {
@@ -105,6 +106,10 @@ export default function MembershipCommunity() {
 
         {/* Engagement Row */}
         <MembershipEngagementRow />
+
+        {/* Parity Pack - 8 AI tools for creators */}
+        {!selectedTool && <MembershipParityPack />}
+
 
         {/* Tool Cards or Tool View */}
         {selectedTool ? (
