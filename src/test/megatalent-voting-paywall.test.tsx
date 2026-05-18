@@ -232,7 +232,7 @@ describe("MegaTalentSubmissionCard UI invokes gated handlers", () => {
       />,
     );
 
-    fireEvent.click(screen.getByText("12").closest("button")!);
+    fireEvent.click(screen.getAllByText("12")[0].closest("button")!);
     expect(dbInsert).not.toHaveBeenCalled();
     expect(showToast).toHaveBeenCalledWith({
       title: "Megatalent Premium required",
@@ -273,7 +273,7 @@ describe("MegaTalentSubmissionCard UI invokes gated handlers", () => {
       />,
     );
 
-    fireEvent.click(screen.getByText("12").closest("button")!);
+    fireEvent.click(screen.getAllByText("12")[0].closest("button")!);
     expect(showToast).not.toHaveBeenCalled();
     expect(dbInsert).toHaveBeenCalledWith("sub-1");
   });
