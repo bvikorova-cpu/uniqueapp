@@ -13,6 +13,7 @@ import heroHdVideo from "@/assets/unique-hero-hd.mp4.asset.json";
 import { SEO } from "@/components/SEO";
 import { Age16Badge } from "@/components/Age16Badge";
 import { HowItWorksTrust } from "@/components/trust/HowItWorksTrust";
+import { FoundingMembersBanner } from "@/components/founding/FoundingMembersBanner";
 import {
   Car, Baby, GraduationCap, Briefcase, Heart, Sparkles, Trophy, Users,
   Video, Mic, ShoppingBag, Brain, TrendingUp, Ghost, Building2, Crown,
@@ -348,6 +349,8 @@ const Index = () => {
 
       <div className="max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-10 space-y-10 sm:space-y-14">
 
+        {/* ── Founding Members programme (first 100) ───── */}
+        <FoundingMembersBanner />
 
         {/* ── Stats ────────────────────────────────────── */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-2 sm:-mt-16 relative z-20">
