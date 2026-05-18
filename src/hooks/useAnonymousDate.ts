@@ -203,5 +203,6 @@ export function useAnonymousDate() {
     fetchActiveMatches,
     purchaseCredits,
     findMatch,
+    previewMatches,
   };
 }
