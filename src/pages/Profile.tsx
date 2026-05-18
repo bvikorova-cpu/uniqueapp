@@ -12,6 +12,7 @@ import { FreeTierBalanceWidget } from "@/components/credits/FreeTierBalanceWidge
 import { FreeTierHistory } from "@/components/credits/FreeTierHistory";
 import { StreakMultiplierCard } from "@/components/gamification/StreakMultiplierCard";
 import { VictoryCardGenerator } from "@/components/social/VictoryCardGenerator";
+import { ProfileMilestones } from "@/components/profile/ProfileMilestones";
 import { InviteFriendPanel } from "@/components/referral/InviteFriendPanel";
 import { BrainDuelStats } from "@/components/profile/BrainDuelStats";
 import { useToast } from "@/hooks/use-toast";
@@ -464,12 +465,13 @@ const Profile = () => {
         />
 
         {/* Free Tier Credits — visible on own profile */}
-        {currentUserId === userId && (
+        {userId && (
           <div className="mb-4 grid md:grid-cols-2 gap-4">
-            <FreeTierBalanceWidget />
-            <StreakMultiplierCard />
-            <FreeTierHistory />
-            <VictoryCardGenerator username={profile?.username ?? null} avatarUrl={profile?.avatar_url ?? null} />
+            <ProfileMilestones userId={userId} />
+            {currentUserId === userId && <FreeTierBalanceWidget />}
+            {currentUserId === userId && <StreakMultiplierCard />}
+            {currentUserId === userId && <FreeTierHistory />}
+            {currentUserId === userId && <VictoryCardGenerator username={profile?.username ?? null} avatarUrl={profile?.avatar_url ?? null} />}
           </div>
         )}
 
