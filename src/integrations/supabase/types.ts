@@ -23319,6 +23319,30 @@ export type Database = {
           },
         ]
       }
+      founding_members: {
+        Row: {
+          bonus_credits_granted: number
+          claimed_at: string
+          id: string
+          member_number: number
+          user_id: string
+        }
+        Insert: {
+          bonus_credits_granted?: number
+          claimed_at?: string
+          id?: string
+          member_number: number
+          user_id: string
+        }
+        Update: {
+          bonus_credits_granted?: number
+          claimed_at?: string
+          id?: string
+          member_number?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       free_tier_credit_ledger: {
         Row: {
           balance_after: number
@@ -60350,6 +60374,14 @@ export type Database = {
         Returns: Json
       }
       claim_daily_login_reward: { Args: never; Returns: Json }
+      claim_founding_member: {
+        Args: never
+        Returns: {
+          already_claimed: boolean
+          full_cohort: boolean
+          member_number: number
+        }[]
+      }
       claim_iq_battle_pass_tier: { Args: { _tier: number }; Returns: Json }
       claim_iq_daily_streak: { Args: never; Returns: Json }
       claim_iq_streak_reward: { Args: { _day: number }; Returns: Json }
@@ -60556,6 +60588,7 @@ export type Database = {
       }
       finalize_iq_tournaments: { Args: never; Returns: number }
       find_skill_matches: { Args: { p_user_id: string }; Returns: undefined }
+      founding_members_remaining: { Args: never; Returns: number }
       gdpr_purge_user_data: { Args: { _user_id: string }; Returns: Json }
       generate_certificate_number: { Args: never; Returns: string }
       generate_daily_homework_challenge: { Args: never; Returns: undefined }
