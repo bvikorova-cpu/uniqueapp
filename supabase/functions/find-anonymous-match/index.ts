@@ -57,14 +57,14 @@ serve(async (req) => {
       }
     }
 
-    // Check credits
+    // Credit check is only required when actually creating a match
     const { data: creditsData } = await supabaseClient
       .from("anonymous_dating_credits")
       .select("*")
       .eq("user_id", user.id)
       .single();
 
-    if (!creditsData || creditsData.credits_remaining < MATCH_COST) {
+    if (mode === "match" && (!creditsData || creditsData.credits_remaining < MATCH_COST)) {
       return new Response(
         JSON.stringify({ error: "Insufficient credits", required: MATCH_COST }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
@@ -95,6 +95,18 @@ serve(async (req) => {
       [m.user1_id, m.user2_id].filter(id => id !== user.id)
     ) || [];
 
+    // Excluded via blocks (both directions)
+    const [{ data: myBlocks }, { data: theirBlocks }] = await Promise.all([
+      supabaseClient.from("blocked_users").select("blocked_user_id").eq("user_id", user.id),
+      supabaseClient.from("blocked_users").select("user_id").eq("blocked_user_id", user.id),
+    ]);
+    const blockedIds = new Set<string>([
+      ...(myBlocks ?? []).map((b: any) => b.blocked_user_id),
+      ...(theirBlocks ?? []).map((b: any) => b.user_id),
+    ]);
+
+    const excludedIds = Array.from(new Set([...matchedUserIds, ...blockedIds]));
+
     // Build query with filters
     let query = supabaseClient
       .from("anonymous_dating_profiles")
@@ -102,8 +114,8 @@ serve(async (req) => {
       .eq("is_active", true)
       .neq("user_id", user.id);
 
-    if (matchedUserIds.length > 0) {
-      query = query.not("user_id", "in", `(${matchedUserIds.join(",")})`);
+    if (excludedIds.length > 0) {
+      query = query.not("user_id", "in", `(${excludedIds.join(",")})`);
     }
 
     const wantedLocation = filters.location || userProfile.location;
@@ -120,7 +132,7 @@ serve(async (req) => {
       query = query.overlaps("languages", wantedLanguages);
     }
 
-    let { data: potentialMatches } = await query.limit(20);
+    let { data: potentialMatches } = await query.limit(40);
 
     // Fallback: relax filters if nothing matches
     if (!potentialMatches || potentialMatches.length === 0) {
@@ -129,10 +141,10 @@ serve(async (req) => {
         .select("*")
         .eq("is_active", true)
         .neq("user_id", user.id);
-      if (matchedUserIds.length > 0) {
-        fb = fb.not("user_id", "in", `(${matchedUserIds.join(",")})`);
+      if (excludedIds.length > 0) {
+        fb = fb.not("user_id", "in", `(${excludedIds.join(",")})`);
       }
-      const r = await fb.limit(20);
+      const r = await fb.limit(40);
       potentialMatches = r.data ?? [];
     }
 
@@ -143,19 +155,77 @@ serve(async (req) => {
       );
     }
 
-    // Rank by shared interests
-    const ranked = potentialMatches
-      .map((p: any) => ({
+    // Multi-axis compatibility scoring (0-100)
+    const myInterests: string[] = userProfile.interests ?? [];
+    const myLanguages: string[] = userProfile.languages ?? [];
+    const myTraits: string[] = userProfile.personality_traits ?? [];
+
+    const scored = potentialMatches.map((p: any) => {
+      const sharedInterests = (p.interests || []).filter((i: string) => myInterests.includes(i));
+      const sharedLanguages = (p.languages || []).filter((l: string) => myLanguages.includes(l));
+      const sharedTraits = (p.personality_traits || []).filter((t: string) => myTraits.includes(t));
+
+      const interestScore = Math.min(sharedInterests.length, 6) * 8;       // up to 48
+      const languageScore = Math.min(sharedLanguages.length, 3) * 6;       // up to 18
+      const traitScore = Math.min(sharedTraits.length, 4) * 5;             // up to 20
+      const goalScore = p.relationship_goal && p.relationship_goal === userProfile.relationship_goal ? 8 : 0;
+      const locationScore = p.location && userProfile.location &&
+        p.location.toLowerCase().includes(userProfile.location.toLowerCase()) ? 6 : 0;
+
+      const compatibility = Math.min(100, interestScore + languageScore + traitScore + goalScore + locationScore);
+
+      return {
         profile: p,
-        score: (p.interests || []).filter((i: string) => userProfile.interests?.includes(i)).length,
-      }))
-      .sort((a, b) => b.score - a.score);
+        compatibility,
+        breakdown: {
+          shared_interests: sharedInterests,
+          shared_languages: sharedLanguages,
+          shared_traits: sharedTraits,
+          same_goal: !!goalScore,
+          same_location: !!locationScore,
+        },
+      };
+    }).sort((a, b) => b.compatibility - a.compatibility);
 
     const minShared = filters.min_shared_interests ?? 0;
-    const acceptable = ranked.filter(r => r.score >= minShared);
-    const pool = acceptable.length > 0 ? acceptable : ranked;
-    const top = pool.slice(0, Math.min(3, pool.length));
-    const matchedProfile = top[Math.floor(Math.random() * top.length)].profile;
+    const acceptable = scored.filter(r => r.breakdown.shared_interests.length >= minShared);
+    const pool = acceptable.length > 0 ? acceptable : scored;
+
+    // PREVIEW MODE — return top 5 candidates without creating a match or spending credits
+    if (mode === "preview") {
+      const candidates = pool.slice(0, 5).map(r => ({
+        user_id: r.profile.user_id,
+        anonymous_name: r.profile.anonymous_name,
+        age_range: r.profile.age_range,
+        location: r.profile.location ?? null,
+        interests: r.profile.interests ?? [],
+        personality_traits: r.profile.personality_traits ?? [],
+        compatibility: r.compatibility,
+        breakdown: r.breakdown,
+      }));
+      return new Response(
+        JSON.stringify({ candidates, cost: MATCH_COST }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
+      );
+    }
+
+    // MATCH MODE — pick a specific candidate (targetUserId) or randomize top 3
+    let chosen = pool[0];
+    if (targetUserId) {
+      const found = pool.find(r => r.profile.user_id === targetUserId);
+      if (!found) {
+        return new Response(
+          JSON.stringify({ error: "Selected candidate is no longer available." }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 409 }
+        );
+      }
+      chosen = found;
+    } else {
+      const top = pool.slice(0, Math.min(3, pool.length));
+      chosen = top[Math.floor(Math.random() * top.length)];
+    }
+
+    const matchedProfile = chosen.profile;
 
     // Create match
     const { data: newMatch, error: matchError } = await supabaseClient
@@ -165,10 +235,9 @@ serve(async (req) => {
         user2_id: matchedProfile.user_id,
         status: "active",
         match_interests: {
-          common: userProfile.interests?.filter((i: string) => 
-            matchedProfile.interests?.includes(i)
-          ) || []
-        }
+          common: chosen.breakdown.shared_interests,
+          compatibility: chosen.compatibility,
+        },
       })
       .select()
       .single();
@@ -178,20 +247,21 @@ serve(async (req) => {
     // Deduct credits
     await supabaseClient
       .from("anonymous_dating_credits")
-      .update({ 
-        credits_remaining: creditsData.credits_remaining - MATCH_COST 
+      .update({
+        credits_remaining: (creditsData?.credits_remaining ?? 0) - MATCH_COST,
       })
       .eq("user_id", user.id);
 
     return new Response(
-      JSON.stringify({ 
+      JSON.stringify({
         match: newMatch,
         partner: {
           anonymous_name: matchedProfile.anonymous_name,
           age_range: matchedProfile.age_range,
           interests: matchedProfile.interests,
-          personality_traits: matchedProfile.personality_traits
-        }
+          personality_traits: matchedProfile.personality_traits,
+          compatibility: chosen.compatibility,
+        },
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
