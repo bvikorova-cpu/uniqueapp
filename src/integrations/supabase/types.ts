@@ -42714,6 +42714,222 @@ export type Database = {
           },
         ]
       }
+      property_parity_buyer_personas: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      property_parity_credits: {
+        Row: {
+          balance: number
+          created_at: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      property_parity_legal_checklists: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      property_parity_listing_optimizers: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      property_parity_negotiation_coaches: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      property_parity_neighborhood_pitches: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      property_parity_pricing_strategies: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      property_parity_rental_yields: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      property_parity_staging_briefs: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
       property_transactions: {
         Row: {
           amount: number
