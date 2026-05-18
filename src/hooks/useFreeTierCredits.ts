@@ -50,5 +50,26 @@ export function useFreeTierCredits() {
     setData((d) => (d ? { ...d, welcome_shown: true } : d));
   }, [user]);
 
-  return { data, loading, refresh, markWelcomeShown };
+  /**
+   * Atomically deduct credits. Returns true on success, false if insufficient.
+   * Throws on unexpected errors (network/RLS).
+   */
+  const consume = useCallback(
+    async (amount: number, reason: string): Promise<boolean> => {
+      if (!user) return false;
+      const { data: row, error } = await (supabase as any).rpc(
+        "consume_free_tier_credits",
+        { p_amount: amount, p_reason: reason }
+      );
+      if (error) {
+        if (error.message?.includes("INSUFFICIENT_CREDITS")) return false;
+        throw error;
+      }
+      if (row) setData(Array.isArray(row) ? row[0] : row);
+      return true;
+    },
+    [user]
+  );
+
+  return { data, loading, refresh, markWelcomeShown, consume };
 }

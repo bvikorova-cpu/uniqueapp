@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, ArrowLeft, Briefcase, Video, Bookmark, Trophy, GraduationCap, Brain, Package, Sparkles, ArrowRightLeft, Users, UserPlus, UserCheck, Gift } from "lucide-react";
 import { FreeTierBalanceWidget } from "@/components/credits/FreeTierBalanceWidget";
+import { FreeTierHistory } from "@/components/credits/FreeTierHistory";
 import { InviteFriendPanel } from "@/components/referral/InviteFriendPanel";
 import { BrainDuelStats } from "@/components/profile/BrainDuelStats";
 import { useToast } from "@/hooks/use-toast";
@@ -462,8 +463,9 @@ const Profile = () => {
 
         {/* Free Tier Credits — visible on own profile */}
         {currentUserId === userId && (
-          <div className="mb-4">
+          <div className="mb-4 grid md:grid-cols-2 gap-4">
             <FreeTierBalanceWidget />
+            <FreeTierHistory />
           </div>
         )}
 
