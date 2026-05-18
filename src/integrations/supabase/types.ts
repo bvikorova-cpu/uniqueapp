@@ -23319,6 +23319,33 @@ export type Database = {
           },
         ]
       }
+      free_tier_credit_ledger: {
+        Row: {
+          balance_after: number
+          created_at: string
+          delta: number
+          id: string
+          reason: string
+          user_id: string
+        }
+        Insert: {
+          balance_after: number
+          created_at?: string
+          delta: number
+          id?: string
+          reason: string
+          user_id: string
+        }
+        Update: {
+          balance_after?: number
+          created_at?: string
+          delta?: number
+          id?: string
+          reason?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       free_tier_credits: {
         Row: {
           balance: number
@@ -23343,6 +23370,33 @@ export type Database = {
           updated_at?: string
           user_id?: string
           welcome_shown?: boolean
+        }
+        Relationships: []
+      }
+      free_tier_settings: {
+        Row: {
+          enabled: boolean
+          id: number
+          monthly_amount: number
+          timezone: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          enabled?: boolean
+          id?: number
+          monthly_amount?: number
+          timezone?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          enabled?: boolean
+          id?: number
+          monthly_amount?: number
+          timezone?: string
+          updated_at?: string
+          updated_by?: string | null
         }
         Relationships: []
       }
@@ -60321,6 +60375,23 @@ export type Database = {
       }
       compute_donor_badge_tier: { Args: { _total: number }; Returns: string }
       compute_xp_streak: { Args: { p_user_id: string }; Returns: number }
+      consume_free_tier_credits: {
+        Args: { p_amount: number; p_reason: string }
+        Returns: {
+          balance: number
+          granted_at: string
+          month_key: string
+          updated_at: string
+          user_id: string
+          welcome_shown: boolean
+        }
+        SetofOptions: {
+          from: "*"
+          to: "free_tier_credits"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       coupon_battle_pair: {
         Args: { p_category?: string }
         Returns: {
