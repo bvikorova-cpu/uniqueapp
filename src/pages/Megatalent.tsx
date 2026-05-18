@@ -49,6 +49,7 @@ type ActiveView = string | null;
 
 const Megatalent = () => {
   const navigate = useNavigate();
+  const { spend } = useSpendCredits();
 
   const [activeView, setActiveView] = useState<ActiveView>(null);
   const [isSubscribed, setIsSubscribed] = useState(false);
