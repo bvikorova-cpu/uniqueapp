@@ -28,6 +28,7 @@ import { PastLifeAudioStories } from "@/components/reincarnation/PastLifeAudioSt
 import { SoulArtGenerator } from "@/components/reincarnation/SoulArtGenerator";
 import { KarmicAnalytics } from "@/components/reincarnation/KarmicAnalytics";
 import { SoulGroupFinder } from "@/components/reincarnation/SoulGroupFinder";
+import ReincarnationParityPack from "@/components/reincarnation/ReincarnationParityPack";
 import heroPoster from "@/assets/reincarnation-hero-poster.jpg";
 // @ts-ignore
 import heroVideoAsset from "/public/videos/reincarnation-hero.mp4.asset.json";
@@ -247,6 +248,9 @@ const ReincarnationSocial = () => {
       </section>
 
       <div className="container mx-auto px-4 max-w-5xl space-y-8 py-8">
+        {/* AI Parity Pack */}
+        <ReincarnationParityPack />
+
         {/* 3-Column Engagement Row */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {/* Streak */}

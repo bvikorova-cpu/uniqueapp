@@ -45750,6 +45750,222 @@ export type Database = {
         }
         Relationships: []
       }
+      reincarnation_parity_credits: {
+        Row: {
+          action: string
+          created_at: string
+          credits_spent: number
+          id: string
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          credits_spent?: number
+          id?: string
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          credits_spent?: number
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reincarnation_parity_dharma_paths: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reincarnation_parity_karmic_threads: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reincarnation_parity_past_life_letters: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reincarnation_parity_rebirth_blueprints: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reincarnation_parity_soul_contracts: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reincarnation_parity_soul_origins: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reincarnation_parity_timelines: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reincarnation_parity_twin_flame_reports: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
       reincarnation_plans: {
         Row: {
           created_at: string | null
