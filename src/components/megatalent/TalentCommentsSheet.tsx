@@ -272,6 +272,8 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
         toast({ title: "Login required", description: "Please log in to comment", variant: "destructive" });
         return;
       }
+      const paid = await spend("megatalent_comment", { description: "talent_comment" });
+      if (!paid) { setSubmitting(false); return; }
       const { error } = await supabase.from("talent_comments").insert({
         submission_id: submissionId,
         user_id: user.id,
