@@ -9,6 +9,7 @@ import { Heart, ThumbsDown, MessageCircle, Loader2, Filter, X, Clock, Search } f
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { TalentCommentsSheet } from "@/components/megatalent/TalentCommentsSheet";
+import { useSpendCredits } from "@/hooks/useSpendCredits";
 
 type CategoryOption = { value: string; label: string };
 type CategoryGroup = { group: string; categories: CategoryOption[] };
