@@ -341,6 +341,11 @@ const Navbar = () => {
                   <AICreditsBalanceWidget compact />
                 </div>
 
+                {/* Free Tier Credits */}
+                <div className="hidden sm:block">
+                  <FreeTierBalanceWidget compact />
+                </div>
+
                 {/* Wall Notifications */}
                 <NotificationBell />
 
