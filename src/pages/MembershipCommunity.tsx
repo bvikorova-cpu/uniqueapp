@@ -107,6 +107,10 @@ export default function MembershipCommunity() {
         {/* Engagement Row */}
         <MembershipEngagementRow />
 
+        {/* Parity Pack - 8 AI tools for creators */}
+        {!selectedTool && <MembershipParityPack />}
+
+
         {/* Tool Cards or Tool View */}
         {selectedTool ? (
           <MembershipToolView toolName={selectedTool} onBack={() => setSelectedTool(null)} />
