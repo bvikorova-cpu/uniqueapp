@@ -38,6 +38,7 @@ const PAGE_SIZE = 20;
 
 export default function MegaTalentLatestFeed({ categoryGroups }: Props) {
   const { toast } = useToast();
+  const { spend } = useSpendCredits();
   const allCategories = useMemo(
     () => categoryGroups.flatMap((g) => g.categories),
     [categoryGroups]
