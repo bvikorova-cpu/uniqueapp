@@ -269,7 +269,22 @@ export default function PropertyMarketplace() {
           <Button size="lg" variant="outline" onClick={() => navigate("/property-favorites")}>
             ❤ My Favorites
           </Button>
+          <Button
+            size="lg"
+            variant="outline"
+            onClick={() => setConversationsOpen(true)}
+            className="relative"
+          >
+            <MessageSquare className="mr-2 h-5 w-5" /> Messages
+            {totalUnread > 0 && (
+              <span className="absolute -top-2 -right-2 min-w-[20px] h-5 px-1.5 rounded-full bg-red-500 text-white text-[11px] font-bold flex items-center justify-center shadow-md">
+                {totalUnread > 9 ? "9+" : totalUnread}
+              </span>
+            )}
+          </Button>
         </motion.div>
+
+        <PropertyConversationsDialog open={conversationsOpen} onOpenChange={setConversationsOpen} />
 
         {/* About Section */}
         <Card className="mb-8 backdrop-blur-xl bg-card/80 border-border/50">
