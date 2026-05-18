@@ -168,8 +168,13 @@ export default function MegaTalentLatestFeed({ categoryGroups }: Props) {
       return;
     }
     if (busyVote) return;
-    setBusyVote(submissionId);
     const previous = myVotes[submissionId];
+    // Only spend credits when casting (or switching) a vote — not when toggling the same off
+    if (previous !== voteType) {
+      const ok = await spend("megatalent_vote", { description: `vote:${voteType}` });
+      if (!ok) return;
+    }
+    setBusyVote(submissionId);
     try {
       // optimistic update of counts
       setItems((prev) => prev.map((it) => {
