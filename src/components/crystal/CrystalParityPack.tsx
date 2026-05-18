@@ -5,8 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sparkles, Loader2 } from "lucide-react";
+import { Sparkles, Loader2, Lock, Check } from "lucide-react";
 import { useCrystalParity, CRYSTAL_PARITY_COST, type CrystalParityAction } from "@/hooks/useCrystalParity";
+import { useCrystalSubscription } from "@/hooks/useCrystalSubscription";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const TOOLS: { id: CrystalParityAction; label: string; description: string; fields: { key: string; label: string; placeholder?: string; type?: "text" | "textarea" }[] }[] = [
   { id: "birth-chart-crystals", label: "Birth Chart Crystals", description: "Crystals aligned with your astrological chart.", fields: [
