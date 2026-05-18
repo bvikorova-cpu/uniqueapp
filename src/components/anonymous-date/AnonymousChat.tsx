@@ -4,7 +4,9 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Send, Check, CheckCheck, Settings2, Download, AlertOctagon } from "lucide-react";
+import { Send, Check, CheckCheck, Settings2, Download, AlertOctagon, ShieldX } from "lucide-react";
+import { ChatSafetyMenu } from "./ChatSafetyMenu";
+import { useChatSafety } from "@/hooks/useChatSafety";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAnonymousChat } from "@/hooks/useAnonymousChat";
@@ -59,6 +61,8 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
   const [matchState, setMatchState] = useState(match);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  const safety = useChatSafety(currentUserId, partnerId);
+
   // Live match updates (reveal request, status)
   useEffect(() => {
     const ch = supabase.channel(`match-state:${match.id}`)
@@ -91,6 +95,17 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
     e.preventDefault();
     const text = input.trim();
     if (!text) return;
+
+    if (safety.isBlocked) {
+      toast({
+        title: "Chat blocked",
+        description: safety.blockedByMe
+          ? "You blocked this user. Unblock them to continue."
+          : "This conversation is no longer available.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     // Safe word check
     if (safeWord && text.toLowerCase().includes(safeWord)) {
@@ -127,6 +142,33 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
     );
   }
 
+  if (safety.isBlocked) {
+    return (
+      <Card className="p-8 text-center bg-gradient-to-br from-destructive/15 to-card border-destructive/40 space-y-3">
+        <ShieldX className="h-12 w-12 mx-auto text-destructive" />
+        <h3 className="text-lg font-black">
+          {safety.blockedByMe ? "You blocked this user" : "Conversation unavailable"}
+        </h3>
+        <p className="text-sm text-muted-foreground max-w-md mx-auto">
+          {safety.blockedByMe
+            ? "Messaging is disabled. You can unblock them to resume the conversation, or keep them blocked permanently."
+            : "This conversation is no longer available. The other user has restricted contact."}
+        </p>
+        {safety.blockedByMe && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => safety.unblock()}
+            disabled={safety.submitting}
+            className="mx-auto"
+          >
+            Unblock user
+          </Button>
+        )}
+      </Card>
+    );
+  }
+
   return (
     <div className="space-y-3">
       <Card className={`flex flex-col h-[calc(100vh-16rem)] max-h-[640px] overflow-hidden bg-gradient-to-br ${themeGradient(theme)} backdrop-blur-xl border-primary/20 shadow-2xl`}>
@@ -151,6 +193,15 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
             <button onClick={() => setShowSettings(s => !s)} className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white" title="Settings">
               <Settings2 className="h-3.5 w-3.5" />
             </button>
+            <ChatSafetyMenu
+              blockedByMe={safety.blockedByMe}
+              submitting={safety.submitting}
+              onReport={({ reason, details }) =>
+                safety.report({ reason, details, matchId: match.id })
+              }
+              onBlock={safety.block}
+              onUnblock={safety.unblock}
+            />
           </div>
         </div>
 

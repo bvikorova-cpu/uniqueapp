@@ -61,11 +61,21 @@ export function useAnonymousDate() {
 
       if (error) throw error;
 
-      // Enrich each match with both user profiles so the UI can render names/interests.
-      const matches = data || [];
+      // Hide matches where I blocked the partner.
+      const { data: myBlocks } = await supabase
+        .from("blocked_users")
+        .select("blocked_user_id")
+        .eq("user_id", user.id);
+      const blockedIds = new Set((myBlocks ?? []).map((b: any) => b.blocked_user_id));
+
+      const visibleMatches = (data || []).filter((m: any) => {
+        const partnerId = m.user1_id === user.id ? m.user2_id : m.user1_id;
+        return !blockedIds.has(partnerId);
+      });
+
       const partnerIds = Array.from(
         new Set(
-          matches.flatMap((m: any) =>
+          visibleMatches.flatMap((m: any) =>
             [m.user1_id, m.user2_id].filter((id) => id && id !== user.id)
           )
         )
@@ -80,7 +90,7 @@ export function useAnonymousDate() {
         profilesById = Object.fromEntries((profiles ?? []).map((p: any) => [p.user_id, p]));
       }
 
-      const enriched = matches.map((m: any) => {
+      const enriched = visibleMatches.map((m: any) => {
         const partnerId = m.user1_id === user.id ? m.user2_id : m.user1_id;
         return {
           ...m,
