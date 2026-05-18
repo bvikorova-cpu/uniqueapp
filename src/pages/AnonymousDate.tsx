@@ -228,19 +228,44 @@ export default function AnonymousDate() {
     setActiveView(toolId as ViewType);
   };
 
-  const handleFindMatch = async (filters: Parameters<typeof findMatch>[0]) => {
+  const loadCandidates = async (filters: MatchFilters) => {
+    setPreviewLoading(true);
+    try {
+      const list = await previewMatches(filters);
+      setCandidates(list);
+    } finally {
+      setPreviewLoading(false);
+    }
+  };
+
+  const handleFindMatch = async (filters: MatchFilters) => {
+    setLastFilters(filters);
+    setActiveView("find-results");
+    await loadCandidates(filters);
+  };
+
+  const handleSelectCandidate = async (userId: string) => {
     if (credits < 5) {
       toast({
         title: "Not enough credits",
-        description: "Finding a new match costs 5 credits. Visit the Credit Store to top up.",
+        description: "Locking in a match costs 5 credits. Visit the Credit Store to top up.",
         variant: "destructive",
       });
       setActiveView("credits");
       return;
     }
-    const result = await findMatch(filters);
-    if (result?.match) {
-      setActiveView("matches");
+    setMatchingUserId(userId);
+    try {
+      const result = await findMatch(lastFilters, userId);
+      if (result?.match) {
+        setSelectedMatchId(result.match.id);
+        setActiveView("matches");
+      } else {
+        // Candidate became unavailable — refresh the list
+        await loadCandidates(lastFilters);
+      }
+    } finally {
+      setMatchingUserId(null);
     }
   };
 
