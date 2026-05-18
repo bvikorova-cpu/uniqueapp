@@ -146,24 +146,7 @@ export default function PropertyMarketplace() {
     setShowDetailDialog(true);
   };
 
-  const handleSearch = async () => {
-    try {
-      setLoading(true);
-      let query = supabase.from('properties').select(`*, property_images(image_url, is_primary)`).eq('status', 'active');
-      if (searchFilters.location) query = query.or(`city.ilike.%${searchFilters.location}%,location.ilike.%${searchFilters.location}%`);
-      if (searchFilters.priceMin) query = query.gte('price', parseFloat(searchFilters.priceMin));
-      if (searchFilters.priceMax) query = query.lte('price', parseFloat(searchFilters.priceMax));
-      if (searchFilters.area) query = query.gte('area_sqm', parseInt(searchFilters.area));
-      if (searchFilters.rooms) query = query.gte('rooms', parseInt(searchFilters.rooms));
-      const { data, error } = await query.order('is_featured', { ascending: false }).order('created_at', { ascending: false });
-      if (error) throw error;
-      setProperties(data || []);
-    } catch (error) {
-      console.error('Error searching:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const handleSearch = runSearch;
 
   const handleCreateListing = () => {
     if (!isAuthenticated) {
