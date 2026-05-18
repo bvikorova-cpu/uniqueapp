@@ -9,6 +9,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Upload, Video, Camera, ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { useSpendCredits } from "@/hooks/useSpendCredits";
 import { supabase } from "@/integrations/supabase/client";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ReferralProgram } from "@/components/megatalent/ReferralProgram";
@@ -48,6 +49,7 @@ type ActiveView = string | null;
 
 const Megatalent = () => {
   const navigate = useNavigate();
+  const { spend } = useSpendCredits();
 
   const [activeView, setActiveView] = useState<ActiveView>(null);
   const [isSubscribed, setIsSubscribed] = useState(false);
@@ -307,6 +309,8 @@ const Megatalent = () => {
     }
     setSubmitting(true);
     try {
+      const paid = await spend("megatalent_upload", { description: `upload:${selectedCategory}` });
+      if (!paid) { setSubmitting(false); return; }
       const { error } = await supabase.from('talent_submissions').insert({ user_id: user.id, title: title.trim(), description: description.trim(), category: selectedCategory as any, media_url: uploadedFile.url, media_type: uploadedFile.type });
       if (error) throw error;
       toast({ title: "Published!", description: "Your submission is now live" });

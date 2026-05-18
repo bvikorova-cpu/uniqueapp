@@ -7,6 +7,7 @@ import { MessageSquare, Send, Loader2, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import ReportButton from "@/components/megatalent/ReportButton";
+import { useSpendCredits } from "@/hooks/useSpendCredits";
 
 type Sub = { id: string; title: string; user_id: string };
 type Comment = { id: string; submission_id: string; user_id: string; body: string; created_at: string };
@@ -84,6 +85,7 @@ const MegatalentComments = ({ category, categories, userId }: Props) => {
     // eslint-disable-next-line
   }, [selectedId]);
 
+  const { spend } = useSpendCredits();
   const post = async () => {
     if (!userId) { toast.error("Sign in to comment"); return; }
     const text = body.trim();
@@ -91,6 +93,8 @@ const MegatalentComments = ({ category, categories, userId }: Props) => {
     if (text.length > MAX) { toast.error(`Max ${MAX} characters`); return; }
     setPosting(true);
     try {
+      const paid = await spend("megatalent_comment", { description: "talent_comment" });
+      if (!paid) return;
       const { error } = await (supabase as any).from("talent_comments").insert({ submission_id: selectedId, user_id: userId, body: text });
       if (error) throw error;
       setBody("");

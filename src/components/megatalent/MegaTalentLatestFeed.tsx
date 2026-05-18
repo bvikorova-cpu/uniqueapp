@@ -9,6 +9,7 @@ import { Heart, ThumbsDown, MessageCircle, Loader2, Filter, X, Clock, Search } f
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { TalentCommentsSheet } from "@/components/megatalent/TalentCommentsSheet";
+import { useSpendCredits } from "@/hooks/useSpendCredits";
 
 type CategoryOption = { value: string; label: string };
 type CategoryGroup = { group: string; categories: CategoryOption[] };
@@ -37,6 +38,7 @@ const PAGE_SIZE = 20;
 
 export default function MegaTalentLatestFeed({ categoryGroups }: Props) {
   const { toast } = useToast();
+  const { spend } = useSpendCredits();
   const allCategories = useMemo(
     () => categoryGroups.flatMap((g) => g.categories),
     [categoryGroups]
@@ -166,8 +168,13 @@ export default function MegaTalentLatestFeed({ categoryGroups }: Props) {
       return;
     }
     if (busyVote) return;
-    setBusyVote(submissionId);
     const previous = myVotes[submissionId];
+    // Only spend credits when casting (or switching) a vote — not when toggling the same off
+    if (previous !== voteType) {
+      const ok = await spend("megatalent_vote", { description: `vote:${voteType}` });
+      if (!ok) return;
+    }
+    setBusyVote(submissionId);
     try {
       // optimistic update of counts
       setItems((prev) => prev.map((it) => {

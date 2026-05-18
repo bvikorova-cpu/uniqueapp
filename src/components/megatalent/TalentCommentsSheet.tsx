@@ -8,6 +8,7 @@ import { Loader2, Send, Trash2, MessageCircle, Pencil, Check, X, ShieldCheck, Sh
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useMegaTalentTier } from "@/hooks/useMegaTalentTier";
+import { useSpendCredits } from "@/hooks/useSpendCredits";
 
 interface TalentComment {
   id: string;
@@ -38,6 +39,7 @@ const commentSchema = z.object({
 export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountChange }: Props) {
   const { toast } = useToast();
   const { isSubscribed, tier, loading: subLoading, refetch: refetchTier } = useMegaTalentTier();
+  const { spend } = useSpendCredits();
   const [comments, setComments] = useState<TalentComment[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [page, setPage] = useState(0);
@@ -270,6 +272,8 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
         toast({ title: "Login required", description: "Please log in to comment", variant: "destructive" });
         return;
       }
+      const paid = await spend("megatalent_comment", { description: "talent_comment" });
+      if (!paid) { setSubmitting(false); return; }
       const { error } = await supabase.from("talent_comments").insert({
         submission_id: submissionId,
         user_id: user.id,
