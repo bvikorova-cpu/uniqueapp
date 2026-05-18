@@ -621,6 +621,8 @@ const Index = () => {
         </section>
 
         {/* ── Trust + How it works + FAQ ───────────────── */}
+        <InviteFriendsCallout />
+
         <HowItWorksTrust />
 
         {/* ── Footer CTA ───────────────────────────────── */}
