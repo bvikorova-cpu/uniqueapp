@@ -14,6 +14,7 @@ import { SkillSwapHero } from "@/components/skill-swap/SkillSwapHero";
 import { SkillSwapStreak } from "@/components/skill-swap/SkillSwapStreak";
 import { SkillSwapProgress } from "@/components/skill-swap/SkillSwapProgress";
 import { SkillSwapAchievements } from "@/components/skill-swap/SkillSwapAchievements";
+import { SkillSwapParityPack } from "@/components/skill-swap/SkillSwapParityPack";
 import { SkillSwapToolCard } from "@/components/skill-swap/SkillSwapToolCard";
 import { SkillSwapTestimonials } from "@/components/skill-swap/SkillSwapTestimonials";
 import { SkillMap } from "@/components/skill-swap/SkillMap";
