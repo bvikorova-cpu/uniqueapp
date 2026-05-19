@@ -69,36 +69,46 @@ const Friends = () => {
         const ids = (links || []).map((l: any) =>
           l.user_id === currentUserId ? l.friend_id : l.user_id,
         );
+        if (ids.length === 0) setFriends([]);
+        else {
+          const { data: profiles } = await supabase
+            .from("profiles")
+            .select("id, full_name, avatar_url, username")
+            .in("id", ids);
 
-        if (ids.length === 0) {
-          setFriends([]);
-          return;
+          const map = new Map<string, any>();
+          (profiles || []).forEach((p: any) => map.set(p.id, p));
+
+          setFriends((links || [])
+            .map((l: any) => {
+              const otherId = l.user_id === currentUserId ? l.friend_id : l.user_id;
+              const p = map.get(otherId);
+              return p ? { id: p.id, full_name: p.full_name, avatar_url: p.avatar_url, username: p.username, friendshipId: l.id } : null;
+            })
+            .filter(Boolean) as Friend[]);
         }
 
-        const { data: profiles } = await supabase
-          .from("profiles")
-          .select("id, full_name, avatar_url, username")
-          .in("id", ids);
+        const { data: pending, error: pendingError } = await supabase
+          .from("friendships")
+          .select("id, user_id, friend_id, created_at")
+          .eq("friend_id", currentUserId)
+          .eq("status", "pending");
+        if (pendingError) throw pendingError;
 
-        const map = new Map<string, any>();
-        (profiles || []).forEach((p: any) => map.set(p.id, p));
-
-        const merged: Friend[] = (links || [])
-          .map((l: any) => {
-            const otherId = l.user_id === currentUserId ? l.friend_id : l.user_id;
-            const p = map.get(otherId);
-            if (!p) return null;
-            return {
-              id: p.id,
-              full_name: p.full_name,
-              avatar_url: p.avatar_url,
-              username: p.username,
-              friendshipId: l.id,
-            };
-          })
-          .filter(Boolean) as Friend[];
-
-        setFriends(merged);
+        const requesterIds = (pending || []).map((r: any) => r.user_id);
+        if (requesterIds.length === 0) setRequests([]);
+        else {
+          const { data: requesterProfiles } = await supabase
+            .from("profiles")
+            .select("id, full_name, avatar_url, username")
+            .in("id", requesterIds);
+          const requestMap = new Map<string, any>();
+          (requesterProfiles || []).forEach((p: any) => requestMap.set(p.id, p));
+          setRequests((pending || []).map((r: any) => {
+            const p = requestMap.get(r.user_id);
+            return p ? { id: p.id, full_name: p.full_name, avatar_url: p.avatar_url, username: p.username, friendshipId: r.id, created_at: r.created_at } : null;
+          }).filter(Boolean) as FriendRequest[]);
+        }
       } catch (e: any) {
         toast({ title: "Failed to load friends", description: e.message, variant: "destructive" });
       } finally {
