@@ -401,6 +401,25 @@ const NotificationBell = () => {
                               locale: enUS,
                             })}
                           </p>
+                          {notification.type === "friend_request" && (
+                            <div className="flex gap-2 mt-2">
+                              <Button
+                                size="sm"
+                                className="h-7 px-3"
+                                onClick={(e) => handleFriendRequest(e, notification, "accept")}
+                              >
+                                <Check className="h-3 w-3 mr-1" /> Accept
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="h-7 px-3"
+                                onClick={(e) => handleFriendRequest(e, notification, "decline")}
+                              >
+                                <X className="h-3 w-3 mr-1" /> Decline
+                              </Button>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
