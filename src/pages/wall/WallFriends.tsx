@@ -41,6 +41,9 @@ export default function WallFriends() {
   const [showAllRequests, setShowAllRequests] = useState(false);
   const [showAllSuggestions, setShowAllSuggestions] = useState(false);
   const [friendSearch, setFriendSearch] = useState("");
+  const [globalSearch, setGlobalSearch] = useState("");
+  const [globalResults, setGlobalResults] = useState<Profile[]>([]);
+  const [searchingGlobal, setSearchingGlobal] = useState(false);
 
   const { data: user } = useQuery({
     queryKey: ["current-user"],
@@ -49,6 +52,25 @@ export default function WallFriends() {
       return user;
     },
   });
+
+  // Global search across all profiles (debounced)
+  useState(() => null);
+  // Inline effect via useQuery would re-run; we use a simple async on change instead.
+  const runGlobalSearch = async (q: string) => {
+    setGlobalSearch(q);
+    if (!q.trim() || q.trim().length < 2) { setGlobalResults([]); return; }
+    setSearchingGlobal(true);
+    try {
+      const { data } = await supabase
+        .from("profiles")
+        .select("id, full_name, avatar_url, username")
+        .or(`full_name.ilike.%${q}%,username.ilike.%${q}%`)
+        .limit(15);
+      setGlobalResults((data || []) as any);
+    } finally {
+      setSearchingGlobal(false);
+    }
+  };
 
   const { data: friends = [], refetch: refetchFriends } = useQuery({
     queryKey: ["friends", user?.id],
