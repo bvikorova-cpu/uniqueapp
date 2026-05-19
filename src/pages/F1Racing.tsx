@@ -400,33 +400,55 @@ const F1Racing = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-[400px] rounded-lg overflow-hidden bg-gray-900">
+              <div className="h-[400px] rounded-lg overflow-hidden bg-gray-900 relative">
                 <Canvas>
                   <Suspense fallback={null}>
-                    <RaceScene cars={cars} />
+                    <RaceScene cars={cars} playerZ={cars[0].z} isRacing={isRacing} />
                   </Suspense>
                 </Canvas>
+                {/* HUD overlay */}
+                {isRacing && (
+                  <div className="absolute top-3 left-3 flex flex-col gap-2 pointer-events-none">
+                    <Badge className="bg-black/70 text-cyan-300 border border-cyan-500/40 font-mono text-base">
+                      <Gauge className="w-4 h-4 mr-1" />{speed} km/h
+                    </Badge>
+                    <Badge className="bg-black/70 text-amber-300 border border-amber-500/40 font-mono">
+                      LAP {lap}/{TOTAL_LAPS}
+                    </Badge>
+                    <Badge className="bg-black/70 text-white border border-red-500/50 font-mono text-lg">
+                      P{position}/{cars.length}
+                    </Badge>
+                  </div>
+                )}
               </div>
 
               {isRacing && (
                 <div className="mt-4 space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-white text-lg">Race Progress</span>
-                    <Badge className="bg-red-600 text-white text-lg">
-                      Position: {position}/4
-                    </Badge>
+                    <span className="text-white text-sm">Race Progress</span>
+                    <span className="text-cyan-300 font-mono text-sm">{Math.round(raceProgress)}%</span>
                   </div>
-                  <Progress value={raceProgress} className="h-4" />
+                  <Progress value={raceProgress} className="h-3" />
+                  <Button
+                    onClick={handleBoost}
+                    disabled={boostCharges <= 0 || boostRef.current > 0}
+                    className="w-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white font-black uppercase tracking-widest py-6 text-lg disabled:opacity-50"
+                  >
+                    <Flame className="w-5 h-5 mr-2" />
+                    BOOST ({boostCharges} left)
+                  </Button>
                 </div>
               )}
 
-              <Button
-                onClick={startRace}
-                disabled={isRacing || credits < 10}
-                className="w-full mt-4 bg-red-600 hover:bg-red-700 text-white py-6 text-xl"
-              >
-                {isRacing ? "Racing..." : "Start Race (10 Credits)"}
-              </Button>
+              {!isRacing && (
+                <Button
+                  onClick={startRace}
+                  disabled={credits < 10}
+                  className="w-full mt-4 bg-red-600 hover:bg-red-700 text-white py-6 text-xl"
+                >
+                  Start Race (10 Credits)
+                </Button>
+              )}
             </CardContent>
           </Card>
 
