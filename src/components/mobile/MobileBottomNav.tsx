@@ -1,14 +1,22 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Crown, Trophy, MessageSquare, User } from "lucide-react";
+import { Home, Crown, Trophy, MessageSquare, User, LogIn } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 
-const ITEMS = [
+const ITEMS_AUTH = [
   { path: "/", label: "Home", icon: Home },
   { path: "/megatalent", label: "Talent", icon: Crown },
   { path: "/wall", label: "Wall", icon: MessageSquare },
   { path: "/rewards", label: "Rewards", icon: Trophy },
   { path: "/profile", label: "Me", icon: User },
+];
+
+const ITEMS_GUEST = [
+  { path: "/", label: "Home", icon: Home },
+  { path: "/megatalent", label: "Talent", icon: Crown },
+  { path: "/auth", label: "Sign in", icon: LogIn },
+  { path: "/wall", label: "Wall", icon: MessageSquare },
+  { path: "/rewards", label: "Rewards", icon: Trophy },
 ];
 
 /** Persistent mobile bottom tab bar. Hidden ≥md. Safe-area aware. */
@@ -25,20 +33,25 @@ export const MobileBottomNav = () => {
       aria-label="Primary mobile navigation"
     >
       <ul className="grid grid-cols-5">
-        {ITEMS.map(({ path, label, icon: Icon }) => {
+        {(user ? ITEMS_AUTH : ITEMS_GUEST).map(({ path, label, icon: Icon }) => {
           const active = path === "/" ? pathname === "/" : pathname.startsWith(path);
           const target = path === "/profile" && !user ? "/auth" : path;
+          const isSignIn = !user && path === "/auth";
           return (
             <li key={path}>
               <Link
                 to={target}
                 className={cn(
                   "flex flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-medium transition-colors",
-                  active ? "text-primary" : "text-muted-foreground hover:text-foreground",
+                  isSignIn
+                    ? "text-primary-foreground bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/30 mx-1 my-1 rounded-xl"
+                    : active
+                    ? "text-primary"
+                    : "text-muted-foreground hover:text-foreground",
                 )}
                 aria-current={active ? "page" : undefined}
               >
-                <Icon className={cn("h-5 w-5", active && "drop-shadow-[0_0_6px_hsl(var(--primary)/0.6)]")} />
+                <Icon className={cn("h-5 w-5", active && !isSignIn && "drop-shadow-[0_0_6px_hsl(var(--primary)/0.6)]")} />
                 <span>{label}</span>
               </Link>
             </li>
