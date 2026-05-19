@@ -37,16 +37,14 @@ self.addEventListener("activate", (event) => {
       } catch {
         /* noop */
       }
-      try {
-        await self.clients.claim();
-      } catch {
-        /* noop */
-      }
-      try {
-        await self.registration.unregister();
-      } catch {
-        /* noop */
-      }
+      await self.clients.claim();
+      const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+      await Promise.all(clients.map((client) => {
+        const url = new URL(client.url);
+        url.searchParams.set("sw-cleanup", Date.now().toString());
+        return client.navigate(url.toString()).catch(() => undefined);
+      }));
+      await self.registration.unregister();
     })(),
   );
 });
