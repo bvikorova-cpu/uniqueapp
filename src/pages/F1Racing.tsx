@@ -130,13 +130,22 @@ const F1Racing = () => {
   const [raceProgress, setRaceProgress] = useState(0);
   const backgroundImage = f1Background;
   const [position, setPosition] = useState(1);
+  const [speed, setSpeed] = useState(0);
+  const [boostCharges, setBoostCharges] = useState(3);
+  const [lap, setLap] = useState(1);
+  const FINISH_Z = -85;
+  const TOTAL_LAPS = 2;
 
-  const cars = [
-    { position: [0, 0, 0] as [number, number, number], color: "#e10600" }, // Red Bull
-    { position: [-3, 0, -2] as [number, number, number], color: "#dc0000" }, // Ferrari
-    { position: [3, 0, -4] as [number, number, number], color: "#00d2be" }, // Mercedes
-    { position: [-3, 0, -6] as [number, number, number], color: "#ff8700" }, // McLaren
+  const initialCars = [
+    { x: 0,  z: 0,  color: "#e10600", baseSpeed: 0.32, name: "You" },
+    { x: -3, z: -2, color: "#dc0000", baseSpeed: 0.30, name: "Ferrari" },
+    { x: 3,  z: -4, color: "#00d2be", baseSpeed: 0.31, name: "Mercedes" },
+    { x: -3, z: -6, color: "#ff8700", baseSpeed: 0.29, name: "McLaren" },
   ];
+  const [cars, setCars] = useState(initialCars);
+  const boostRef = useRef(0); // remaining boost frames for player
+  const lapRef = useRef(1);
+  const finishedRef = useRef(false);
 
   useEffect(() => {
     checkSubscription();
@@ -157,7 +166,6 @@ const F1Racing = () => {
       setTier(data.tier);
 
       if (data.subscribed) {
-        // Get user credits
         const { data: creditsData } = await supabase
           .from('f1_user_credits')
           .select('credits')
@@ -175,32 +183,94 @@ const F1Racing = () => {
     }
   };
 
+  const handleBoost = () => {
+    if (!isRacing || boostCharges <= 0 || boostRef.current > 0) return;
+    boostRef.current = 25; // ~1.25s of boost at 50ms tick
+    setBoostCharges(c => c - 1);
+  };
+
   const startRace = () => {
     if (credits < 10) {
       toast.error("Not enough credits! You need 10 credits to race.");
       return;
     }
 
+    setCars(initialCars);
     setIsRacing(true);
     setRaceProgress(0);
-    setPosition(Math.floor(Math.random() * 4) + 1);
+    setSpeed(0);
+    setBoostCharges(3);
+    setLap(1);
+    setPosition(1);
+    lapRef.current = 1;
+    finishedRef.current = false;
+    boostRef.current = 0;
 
+    const startedAt = Date.now();
     const interval = setInterval(() => {
-      setRaceProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          finishRace();
-          return 100;
+      setCars(prev => {
+        // Advance each car
+        const next = prev.map((c, idx) => {
+          const isPlayer = idx === 0;
+          const jitter = (Math.random() - 0.5) * 0.06;
+          const boost = isPlayer && boostRef.current > 0 ? 0.35 : 0;
+          // Subtle AI rubber-banding so the race feels close
+          const playerZ = prev[0].z;
+          const rubber = !isPlayer ? (playerZ - c.z) * 0.002 : 0;
+          let dz = -(c.baseSpeed + jitter + boost + rubber);
+          // Gentle lane drift
+          const dx = Math.sin((Date.now() / 600) + idx) * 0.015;
+          return { ...c, z: c.z + dz, x: Math.max(-6, Math.min(6, c.x + dx)) };
+        });
+        if (boostRef.current > 0) boostRef.current -= 1;
+
+        // Player progress
+        const player = next[0];
+        const distanceThisLap = Math.min(1, Math.abs(player.z) / Math.abs(FINISH_Z));
+
+        // Lap rollover
+        if (player.z <= FINISH_Z && lapRef.current < TOTAL_LAPS) {
+          lapRef.current += 1;
+          setLap(lapRef.current);
+          toast.success(`Lap ${lapRef.current}!`);
+          // Reset Z of all cars but keep ordering by offset
+          const minZ = Math.min(...next.map(c => c.z));
+          return next.map(c => ({ ...c, z: c.z - minZ }));
         }
-        return prev + 2;
+
+        // Compute position
+        const sorted = [...next].map((c, i) => ({ z: c.z, i })).sort((a, b) => a.z - b.z);
+        const pos = sorted.findIndex(s => s.i === 0) + 1;
+        setPosition(pos);
+
+        const totalProgress = ((lapRef.current - 1) / TOTAL_LAPS) * 100 + (distanceThisLap / TOTAL_LAPS) * 100;
+        setRaceProgress(Math.min(100, totalProgress));
+
+        // Live speed (km/h-ish display)
+        const playerSpeed = (initialCars[0].baseSpeed + (boostRef.current > 0 ? 0.35 : 0)) * 600;
+        setSpeed(Math.round(playerSpeed));
+
+        // Finish check: player completes final lap
+        if (lapRef.current >= TOTAL_LAPS && player.z <= FINISH_Z && !finishedRef.current) {
+          finishedRef.current = true;
+          clearInterval(interval);
+          // Final position by who crossed first (player just did): position = 1 IF player ahead
+          const finalSorted = [...next].map((c, i) => ({ z: c.z, i })).sort((a, b) => a.z - b.z);
+          const finalPos = finalSorted.findIndex(s => s.i === 0) + 1;
+          setPosition(finalPos);
+          setTimeout(() => finishRace(finalPos, Date.now() - startedAt), 200);
+        }
+        return next;
       });
-    }, 100);
+    }, 50);
   };
 
-  const finishRace = () => {
+  const finishRace = (finalPos: number, durationMs: number) => {
     setIsRacing(false);
-    const points = position === 1 ? 25 : position === 2 ? 18 : position === 3 ? 15 : 12;
-    toast.success(`Race finished! Position ${position}. You earned ${points} points! 🏆`);
+    setSpeed(0);
+    const points = finalPos === 1 ? 25 : finalPos === 2 ? 18 : finalPos === 3 ? 15 : 12;
+    const seconds = (durationMs / 1000).toFixed(1);
+    toast.success(`🏁 Finished P${finalPos} in ${seconds}s — +${points} points!`);
   };
 
   if (loading) {
