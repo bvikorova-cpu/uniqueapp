@@ -64,14 +64,15 @@ export function CreatorLeaderboardView({ onBack }: CreatorLeaderboardViewProps) 
         .limit(10);
 
       const ids = (data || []).map((r: any) => r.creator_id);
+      const sb: any = supabase;
       const profsRes: any = ids.length
-        ? await supabase.from("profiles").select("id, full_name").in("id", ids)
+        ? await sb.from("profiles").select("id, full_name").in("id", ids)
         : { data: [] };
       const itemsRes: any = ids.length
-        ? await supabase.from("stock_content_items").select("creator_id").in("creator_id", ids)
+        ? await sb.from("stock_content_items").select("creator_id").in("creator_id", ids)
         : { data: [] };
       const dlRes: any = ids.length
-        ? await supabase.from("stock_content_downloads").select("creator_id").in("creator_id", ids)
+        ? await sb.from("stock_content_downloads").select("creator_id").in("creator_id", ids)
         : { data: [] };
       const profs = profsRes.data || [];
       const items = itemsRes.data || [];
