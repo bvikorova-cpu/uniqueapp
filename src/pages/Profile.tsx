@@ -46,6 +46,7 @@ import { Endorsements } from "@/components/profile/Endorsements";
 import { ProfileViewsCounter } from "@/components/profile/ProfileViewsCounter";
 import { LifeEventsTimeline } from "@/components/profile/LifeEventsTimeline";
 import { FamilySection } from "@/components/profile/FamilySection";
+import { XpBreakdown } from "@/components/profile/XpBreakdown";
 
 interface Profile {
   id: string;
@@ -474,6 +475,16 @@ const Profile = () => {
           }
         />
 
+        {/* XP breakdown — visible on every profile so the source of XP is clear */}
+        <XpBreakdown
+          xp={stats.xp}
+          level={stats.level}
+          posts={stats.postsCount}
+          likes={stats.likesGiven}
+          comments={stats.commentsGiven}
+          friends={stats.friendsCount}
+        />
+
         {/* Free Tier Credits — visible on own profile */}
         {userId && (
           <div className="mb-4 grid md:grid-cols-2 gap-4">
@@ -553,38 +564,40 @@ const Profile = () => {
 
         {/* Tabs Section - Central Hub */}
         <Tabs defaultValue={defaultTab} className="w-full">
-          <TabsList className={`grid w-full ${currentUserId === userId ? "grid-cols-3 md:grid-cols-10" : "grid-cols-4 md:grid-cols-9"} h-auto gap-1`}>
-            <TabsTrigger value="posts">Posts</TabsTrigger>
-            <TabsTrigger value="listings">
-              <Package className="h-4 w-4 mr-1 hidden sm:inline" />
-              Listings
-            </TabsTrigger>
-            <TabsTrigger value="skills">
-              <Sparkles className="h-4 w-4 mr-1 hidden sm:inline" />
-              Skills
-            </TabsTrigger>
-            <TabsTrigger value="jobs">
-              <Briefcase className="h-4 w-4 mr-1 hidden sm:inline" />
-              Jobs
-            </TabsTrigger>
-            <TabsTrigger value="contests">Contests</TabsTrigger>
-            <TabsTrigger value="education">Courses</TabsTrigger>
-            <TabsTrigger value="brain-duel">
-              <Brain className="h-4 w-4 mr-1 hidden sm:inline" />
-              Duel
-            </TabsTrigger>
-            <TabsTrigger value="friends">Friends</TabsTrigger>
-            <TabsTrigger value="life">
-              <Sparkles className="h-4 w-4 mr-1 hidden sm:inline" />
-              Life
-            </TabsTrigger>
-            {currentUserId === userId && (
-              <TabsTrigger value="invite">
-                <Gift className="h-4 w-4 mr-1 hidden sm:inline" />
-                Invite
+          <div className="-mx-1 overflow-x-auto scrollbar-hide">
+            <TabsList className="inline-flex w-max min-w-full gap-1 h-auto p-1">
+              <TabsTrigger value="posts">Posts</TabsTrigger>
+              <TabsTrigger value="listings">
+                <Package className="h-4 w-4 mr-1 hidden sm:inline" />
+                Listings
               </TabsTrigger>
-            )}
-          </TabsList>
+              <TabsTrigger value="skills">
+                <Sparkles className="h-4 w-4 mr-1 hidden sm:inline" />
+                Skills
+              </TabsTrigger>
+              <TabsTrigger value="jobs">
+                <Briefcase className="h-4 w-4 mr-1 hidden sm:inline" />
+                Jobs
+              </TabsTrigger>
+              <TabsTrigger value="contests">Contests</TabsTrigger>
+              <TabsTrigger value="education">Courses</TabsTrigger>
+              <TabsTrigger value="brain-duel">
+                <Brain className="h-4 w-4 mr-1 hidden sm:inline" />
+                Duel
+              </TabsTrigger>
+              <TabsTrigger value="friends">Friends</TabsTrigger>
+              <TabsTrigger value="life">
+                <Sparkles className="h-4 w-4 mr-1 hidden sm:inline" />
+                Life
+              </TabsTrigger>
+              {currentUserId === userId && (
+                <TabsTrigger value="invite">
+                  <Gift className="h-4 w-4 mr-1 hidden sm:inline" />
+                  Invite
+                </TabsTrigger>
+              )}
+            </TabsList>
+          </div>
           
           <TabsContent value="posts" className="space-y-4 mt-4">
             {posts.length === 0 ? (
@@ -630,30 +643,40 @@ const Profile = () => {
           </TabsContent>
 
           <TabsContent value="friends" className="mt-4 space-y-3">
-            <p className="text-xs text-muted-foreground">
-              Friends are mutual connections (both accepted). Followers can be viewed from the count above.
-            </p>
+            <div className="flex items-center justify-between gap-2 flex-wrap">
+              <p className="text-xs text-muted-foreground flex-1 min-w-0">
+                Friends are mutual connections (both accepted).
+              </p>
+              {currentUserId === userId && (
+                <Button size="sm" variant="outline" onClick={() => navigate("/friends")}>
+                  Manage all
+                </Button>
+              )}
+            </div>
             {friends.length === 0 ? (
               <Card className="p-8 text-center text-muted-foreground">
                 No friends yet
               </Card>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {friends.map((friend) => (
-                  <Card 
-                    key={friend.id} 
-                    className="p-4 cursor-pointer hover:bg-accent transition-colors"
+                  <Card
+                    key={friend.id}
+                    className="p-3 cursor-pointer hover:bg-accent transition-colors"
                     onClick={() => navigate(`/profile/${friend.id}`)}
                   >
-                    <div className="flex items-center gap-3">
-                      <Avatar>
+                    <div className="flex items-center gap-3 min-w-0">
+                      <Avatar className="h-10 w-10 shrink-0">
                         <AvatarImage src={friend.avatar_url || undefined} />
                         <AvatarFallback>
                           {friend.full_name?.[0]?.toUpperCase() || "U"}
                         </AvatarFallback>
                       </Avatar>
-                      <div>
-                        <div className="font-semibold">{friend.full_name || "No name"}</div>
+                      <div className="min-w-0 flex-1">
+                        <div className="font-semibold truncate">{friend.full_name || "No name"}</div>
+                        {friend.username && (
+                          <div className="text-xs text-muted-foreground truncate">@{friend.username}</div>
+                        )}
                       </div>
                     </div>
                   </Card>

@@ -59,6 +59,7 @@ const LanguagePreferenceMount = lazy(() => import("@/components/LanguagePreferen
 const DunningBanner = lazy(() => import("@/components/billing/DunningBanner").then((module) => ({ default: module.DunningBanner })));
 const SCABanner = lazy(() => import("@/components/billing/SCABanner").then((module) => ({ default: module.SCABanner })));
 const Index = lazy(() => import("./pages/Index"));
+const Friends = lazy(() => import("./pages/Friends"));
 const StatusPage = lazy(() => import("./pages/StatusPage"));
 const Auth = lazy(() => import("./pages/Auth"));
 const Download = lazy(() => import("./pages/Download"));
@@ -592,6 +593,7 @@ const App = () => {
                         <Route path="/search" element={<SearchResults />} />
                         <Route path="/wall/messages" element={<Wall />} />
                         <Route path="/wall/friends" element={<Wall />} />
+                        <Route path="/friends" element={<ProtectedRoute><Friends /></ProtectedRoute>} />
                         <Route path="/wall/groups" element={<ProtectedRoute><Groups /></ProtectedRoute>} />
                         <Route path="/wall/groups/:groupId" element={<GroupDetail />} />
                         <Route path="/wall/pages" element={<ProtectedRoute><Pages /></ProtectedRoute>} />

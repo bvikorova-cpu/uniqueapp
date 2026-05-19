@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Sparkles, Save, User as UserIcon, BookText, Wrench, Link2, Shield, X, Eye, EyeOff } from "lucide-react";
+import { normalizeImageForUpload } from "@/utils/imageUploadPrep";
 
 import { EditProfileHero } from "@/components/profile/edit/EditProfileHero";
 import { ProfileCompleteness, computeCompleteness, CompletenessCheck } from "@/components/profile/edit/ProfileCompleteness";
@@ -226,14 +227,17 @@ const EditProfile = () => {
     }
   };
 
-  const uploadToBucket = async (file: File, bucket: string) => {
+  const uploadToBucket = async (rawFile: File, bucket: string) => {
     if (!user) return null;
+    // Convert HEIC/odd-MIME images to a clean JPEG so the storage backend never
+    // rejects them with a "database invalid or incompatible" type of error.
+    const file = await normalizeImageForUpload(rawFile);
     const rawExt = (file.name.split(".").pop() || "").toLowerCase().replace(/[^a-z0-9]/g, "");
     const ext = rawExt || (file.type.split("/")[1] || "jpg");
     const fileName = `${user.id}/${Date.now()}.${ext}`;
     const { error: uploadError } = await supabase.storage.from(bucket).upload(fileName, file, {
       upsert: true,
-      contentType: file.type || undefined,
+      contentType: file.type || "image/jpeg",
     });
     if (uploadError) {
       console.error("[upload]", bucket, fileName, file.type, file.size, uploadError);

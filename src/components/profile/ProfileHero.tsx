@@ -191,13 +191,13 @@ export const ProfileHero = ({
           ))}
         </motion.div>
 
-        {/* Level / Rank (only own profile) */}
-        {isOwnProfile && (stats.level || stats.rank) && (
+        {/* Level / Rank — always visible so the level is clear on every profile */}
+        {(stats.level !== undefined || (stats.rank !== undefined && stats.rank > 0)) && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.7 }}
-            className="flex items-center justify-center gap-3 mt-4 text-xs text-amber-100/85"
+            className="flex items-center justify-center gap-3 mt-4 text-xs text-amber-100/85 flex-wrap"
           >
             {stats.level !== undefined && (
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-500/20 border border-violet-400/40">
