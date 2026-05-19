@@ -24,6 +24,7 @@ interface Notification {
   comment_id?: string | null;
   repost_id?: string | null;
   related_id?: string | null;
+  action_url?: string | null;
   actor_id?: string;
   title?: string | null;
   message?: string | null;
@@ -157,6 +158,8 @@ const NotificationBell = () => {
         return `${actorName} shared your post`;
       case "follow":
         return `${actorName} started following you`;
+      case "friend_request":
+        return notification.message || `${actorName} sent you a friend request`;
       case "job_match":
         return "New job listing matches your preferences";
       case "job_application":
@@ -193,6 +196,8 @@ const NotificationBell = () => {
         return "🔄";
       case "follow":
         return "👤";
+      case "friend_request":
+        return "🤝";
       case "job_match":
         return "💼";
       case "job_application":
@@ -276,6 +281,8 @@ const NotificationBell = () => {
       navigate(`/rewards`);
     } else if (notification.type === "follow" && notification.actor_id) {
       navigate(`/profile/${notification.actor_id}`);
+    } else if (notification.type === "friend_request") {
+      navigate(notification.action_url || `/friends?tab=requests`);
     } else if (notification.post_id) {
       navigate(`/post/${notification.post_id}`);
     } else if (notification.related_id) {

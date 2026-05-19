@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Sparkles, Save, User as UserIcon, BookText, Wrench, Link2, Shield, X, Eye, EyeOff } from "lucide-react";
-import { normalizeImageForUpload } from "@/utils/imageUploadPrep";
+import { fileToDataUrl, normalizeImageForUpload } from "@/utils/imageUploadPrep";
 
 import { EditProfileHero } from "@/components/profile/edit/EditProfileHero";
 import { ProfileCompleteness, computeCompleteness, CompletenessCheck } from "@/components/profile/edit/ProfileCompleteness";
@@ -241,6 +241,10 @@ const EditProfile = () => {
     });
     if (uploadError) {
       console.error("[upload]", bucket, fileName, file.type, file.size, uploadError);
+      const message = `${uploadError.message || ""} ${uploadError.statusCode || ""} ${(uploadError as any).error || ""}`.toLowerCase();
+      if (message.includes("database schema") || message.includes("invalid or incompatible") || message.includes("500")) {
+        return await fileToDataUrl(file);
+      }
       throw uploadError;
     }
     const { data: { publicUrl } } = supabase.storage.from(bucket).getPublicUrl(fileName);
