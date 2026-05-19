@@ -36,17 +36,22 @@ export const MobileBottomNav = () => {
         {(user ? ITEMS_AUTH : ITEMS_GUEST).map(({ path, label, icon: Icon }) => {
           const active = path === "/" ? pathname === "/" : pathname.startsWith(path);
           const target = path === "/profile" && !user ? "/auth" : path;
+          const isSignIn = !user && path === "/auth";
           return (
             <li key={path}>
               <Link
                 to={target}
                 className={cn(
                   "flex flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-medium transition-colors",
-                  active ? "text-primary" : "text-muted-foreground hover:text-foreground",
+                  isSignIn
+                    ? "text-primary-foreground bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/30 mx-1 my-1 rounded-xl"
+                    : active
+                    ? "text-primary"
+                    : "text-muted-foreground hover:text-foreground",
                 )}
                 aria-current={active ? "page" : undefined}
               >
-                <Icon className={cn("h-5 w-5", active && "drop-shadow-[0_0_6px_hsl(var(--primary)/0.6)]")} />
+                <Icon className={cn("h-5 w-5", active && !isSignIn && "drop-shadow-[0_0_6px_hsl(var(--primary)/0.6)]")} />
                 <span>{label}</span>
               </Link>
             </li>
