@@ -64,17 +64,18 @@ export function CreatorLeaderboardView({ onBack }: CreatorLeaderboardViewProps) 
         .limit(10);
 
       const ids = (data || []).map((r: any) => r.creator_id);
-      const [{ data: profs }, { data: items }, { data: downloads }] = await Promise.all([
-        ids.length
-          ? supabase.from("profiles").select("id, full_name").in("id", ids)
-          : Promise.resolve({ data: [] as any[] }),
-        ids.length
-          ? supabase.from("stock_content_items").select("creator_id").in("creator_id", ids)
-          : Promise.resolve({ data: [] as any[] }),
-        ids.length
-          ? supabase.from("stock_content_downloads").select("creator_id").in("creator_id", ids)
-          : Promise.resolve({ data: [] as any[] }),
-      ]);
+      const profsRes: any = ids.length
+        ? await supabase.from("profiles").select("id, full_name").in("id", ids)
+        : { data: [] };
+      const itemsRes: any = ids.length
+        ? await supabase.from("stock_content_items").select("creator_id").in("creator_id", ids)
+        : { data: [] };
+      const dlRes: any = ids.length
+        ? await supabase.from("stock_content_downloads").select("creator_id").in("creator_id", ids)
+        : { data: [] };
+      const profs = profsRes.data || [];
+      const items = itemsRes.data || [];
+      const downloads = dlRes.data || [];
       const pmap = new Map((profs || []).map((p: any) => [p.id, p.full_name]));
       const assetCount = new Map<string, number>();
       (items || []).forEach((it: any) => assetCount.set(it.creator_id, (assetCount.get(it.creator_id) || 0) + 1));
