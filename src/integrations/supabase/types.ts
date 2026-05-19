@@ -61491,6 +61491,15 @@ export type Database = {
       }
       rotate_mystery_events: { Args: never; Returns: undefined }
       rotate_seasonal_missions: { Args: never; Returns: Json }
+      search_users: {
+        Args: { search_query: string }
+        Returns: {
+          avatar_url: string
+          full_name: string
+          id: string
+          username: string
+        }[]
+      }
       send_secret_santa_gift: {
         Args: {
           p_animation_type?: string
