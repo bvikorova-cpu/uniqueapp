@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
+import { getNotificationRoute } from "@/utils/notificationRoutes";
 
 interface Notification {
   id: string;
@@ -138,11 +139,7 @@ const Notifications = () => {
 
   const navigateFromNotif = async (n: Notification) => {
     if (!n.is_read) await toggleRead({ ...n, is_read: false });
-    if (n.action_url) return navigate(n.action_url);
-    if (n.type === "friend_request") return navigate("/friends?tab=requests");
-    if (n.post_id) return navigate(`/post/${n.post_id}`);
-    if (n.type === "follow" && n.actor_id) return navigate(`/profile/${n.actor_id}`);
-    navigate("/wall");
+    navigate(getNotificationRoute(n));
   };
 
   if (!user) {
