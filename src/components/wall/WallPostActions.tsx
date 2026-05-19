@@ -189,9 +189,7 @@ export function WallPostActions({
       >();
       if (userIds.length > 0) {
         const { data: profs } = await supabase
-          .from("profiles")
-          .select("id, full_name, avatar_url")
-          .in("id", userIds);
+          .rpc("get_profiles_basic", { _ids: userIds });
         profilesMap = new Map(
           (profs ?? []).map((p) => [
             p.id,
