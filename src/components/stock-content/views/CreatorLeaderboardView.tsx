@@ -72,7 +72,7 @@ export function CreatorLeaderboardView({ onBack }: CreatorLeaderboardViewProps) 
         ? await sb.from("stock_content_items").select("creator_id").in("creator_id", ids)
         : { data: [] };
       const dlRes: any = ids.length
-        ? await sb.from("stock_content_downloads").select("creator_id").in("creator_id", ids)
+        ? await sb.from("stock_content_sales").select("creator_id").in("creator_id", ids)
         : { data: [] };
       const profs = profsRes.data || [];
       const items = itemsRes.data || [];
