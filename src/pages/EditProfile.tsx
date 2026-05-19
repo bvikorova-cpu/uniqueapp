@@ -237,26 +237,41 @@ const EditProfile = () => {
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files?.[0]) return;
+    if (!e.target.files?.[0] || !user) return;
     setUploadingImage(true);
     try {
       const url = await uploadToBucket(e.target.files[0], "avatars");
-      if (url) setProfile({ ...profile, avatar_url: url });
-      toast({ title: "Photo uploaded" });
+      if (url) {
+        setProfile({ ...profile, avatar_url: url });
+        // Persist immediately so users don't lose the photo if they forget to click Save.
+        const { error } = await supabase
+          .from("profiles")
+          .update({ avatar_url: url })
+          .eq("id", user.id);
+        if (error) throw error;
+        toast({ title: "Photo uploaded", description: "Your profile photo is saved." });
+      }
     } catch (error: any) {
       toast({ title: "Upload error", description: error.message, variant: "destructive" });
     } finally { setUploadingImage(false); }
   };
 
   const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files?.[0]) return;
+    if (!e.target.files?.[0] || !user) return;
     setUploadingCover(true);
     try {
       let url: string | null = null;
       try { url = await uploadToBucket(e.target.files[0], "covers"); }
       catch { url = await uploadToBucket(e.target.files[0], "avatars"); }
-      if (url) setProfile({ ...profile, cover_url: url });
-      toast({ title: "Cover uploaded" });
+      if (url) {
+        setProfile({ ...profile, cover_url: url });
+        const { error } = await supabase
+          .from("profiles")
+          .update({ cover_url: url })
+          .eq("id", user.id);
+        if (error) throw error;
+        toast({ title: "Cover uploaded", description: "Your cover is saved." });
+      }
     } catch (error: any) {
       toast({ title: "Upload error", description: error.message, variant: "destructive" });
     } finally { setUploadingCover(false); }
