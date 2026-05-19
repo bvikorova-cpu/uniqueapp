@@ -446,21 +446,16 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
 
       if (error) throw error;
 
-      // Fetch profiles separately
-      const commentsWithProfiles = await Promise.all(
-        (commentsData || []).map(async (comment) => {
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("id, full_name, avatar_url")
-            .eq("id", comment.user_id)
-            .single();
-          
-          return {
-            ...comment,
-            profiles: profile || { id: comment.user_id, full_name: null, avatar_url: null }
-          };
-        })
-      );
+      // Fetch profiles in one batch via RPC (so non-friend authors are visible)
+      const commentUserIds = Array.from(new Set((commentsData || []).map((c: any) => c.user_id)));
+      const { data: profilesBatch } = commentUserIds.length
+        ? await supabase.rpc("get_profiles_basic", { _ids: commentUserIds })
+        : { data: [] as any[] };
+      const profMap = new Map((profilesBatch || []).map((p: any) => [p.id, p]));
+      const commentsWithProfiles = (commentsData || []).map((comment: any) => ({
+        ...comment,
+        profiles: profMap.get(comment.user_id) || { id: comment.user_id, full_name: null, avatar_url: null },
+      }));
 
       setComments(commentsWithProfiles);
     } catch (error: any) {
