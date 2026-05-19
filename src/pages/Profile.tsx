@@ -229,13 +229,22 @@ const Profile = () => {
           .select("*", { count: 'exact', head: true })
           .eq("user_id", userId);
 
+        // Real XP & level from user_points (publicly readable)
+        const { data: pointsData } = await supabase
+          .from("user_points")
+          .select("total_points, level")
+          .eq("user_id", userId)
+          .maybeSingle();
+
         setStats({
           postsCount: postsData?.length || 0,
           likesGiven: likesCount || 0,
           commentsGiven: commentsCount || 0,
           friendsCount: friendsData?.length || 0,
           submissionsCount: submissionsCount || 0,
-          completedCoursesCount: completedCoursesCount || 0
+          completedCoursesCount: completedCoursesCount || 0,
+          xp: pointsData?.total_points ?? 0,
+          level: pointsData?.level ?? 1,
         });
 
       } catch (error: any) {
