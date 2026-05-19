@@ -608,6 +608,8 @@ const Feed = () => {
 
               {activeView === "feed" && (
                 <>
+                  {/* Find people search */}
+                  <UserSearch />
                   {/* New Phase 1-4 Tools Toolbar */}
                   <div className="glass-card rounded-2xl p-2 backdrop-blur-xl border border-white/10 flex flex-wrap gap-2">
                     <SpacesDialog />
