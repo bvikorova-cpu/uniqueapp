@@ -27,7 +27,6 @@ import { PushNotificationToggle } from "@/components/PushNotificationToggle";
 import { NotificationSettings } from "@/components/settings/NotificationSettings";
 import { PointsDisplay } from "@/components/gamification/PointsDisplay";
 import { WatchAdButton } from "@/components/ads/WatchAdButton";
-import { LanguageSelector } from "@/components/LanguageSelector";
 import { useTranslation } from "react-i18next";
 
 export default function Settings() {
