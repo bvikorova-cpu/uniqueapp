@@ -81,40 +81,38 @@ export default defineConfig(() => ({
           if (id.includes("react-markdown") || id.includes("remark-") || id.includes("rehype-") || id.includes("katex")) {
             return "markdown";
           }
-          // Animation
-          if (id.includes("framer-motion")) {
-            return "motion";
-          }
-          // Icons (lucide)
-          if (id.includes("lucide-react")) {
-            return "icons";
-          }
-          // Forms
-          if (id.includes("react-hook-form") || id.includes("@hookform") || id.includes("node_modules/zod")) {
+          // Forms: keep React-bound form libraries in vendor; zod is safe to split.
+          if (id.includes("node_modules/zod")) {
             return "forms";
           }
           // Supabase
           if (id.includes("@supabase")) {
             return "supabase";
           }
-          // Query
-          if (id.includes("@tanstack/react-query")) {
-            return "query";
-          }
-          // Radix UI
-          if (id.includes("@radix-ui")) {
-            return "ui";
-          }
-          // i18n
-          if (id.includes("i18next") || id.includes("react-i18next")) {
+          // i18n core only. Keep react-i18next in the main vendor graph because
+          // splitting React-bound libraries caused production-only React namespace
+          // crashes on the published domain (`createContext`/hooks undefined).
+          if (id.includes("node_modules/i18next")) {
             return "i18n";
           }
           // Date utils
           if (id.includes("date-fns")) {
             return "date";
           }
-          // React core
-          if (id.includes("node_modules/react/") || id.includes("node_modules/react-dom/") || id.includes("react-router")) {
+          // React core and React-bound packages stay together to avoid namespace
+          // interop crashes in production chunks.
+          if (
+            id.includes("node_modules/react/") ||
+            id.includes("node_modules/react-dom/") ||
+            id.includes("react-router") ||
+            id.includes("react-i18next") ||
+            id.includes("framer-motion") ||
+            id.includes("lucide-react") ||
+            id.includes("react-hook-form") ||
+            id.includes("@hookform") ||
+            id.includes("@radix-ui") ||
+            id.includes("@tanstack/react-query")
+          ) {
             return "vendor";
           }
         },
