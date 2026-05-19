@@ -1,11 +1,11 @@
-import { useState, useEffect, Suspense } from "react";
-import { Canvas } from "@react-three/fiber";
+import { useState, useEffect, Suspense, useRef } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera, Environment } from "@react-three/drei";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Trophy, Zap, Users, Star, Loader2 } from "lucide-react";
+import { ArrowLeft, Trophy, Zap, Users, Star, Loader2, Flame, Gauge } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
