@@ -622,7 +622,7 @@ const Profile = () => {
           </TabsContent>
 
           <TabsContent value="education" className="mt-4">
-            <CourseHistory />
+            <CourseHistory userId={userId} />
           </TabsContent>
 
           <TabsContent value="brain-duel" className="mt-4">
