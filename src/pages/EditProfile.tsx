@@ -228,10 +228,17 @@ const EditProfile = () => {
 
   const uploadToBucket = async (file: File, bucket: string) => {
     if (!user) return null;
-    const fileExt = file.name.split(".").pop();
-    const fileName = `${user.id}/${Date.now()}.${fileExt}`;
-    const { error: uploadError } = await supabase.storage.from(bucket).upload(fileName, file, { upsert: true });
-    if (uploadError) throw uploadError;
+    const rawExt = (file.name.split(".").pop() || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+    const ext = rawExt || (file.type.split("/")[1] || "jpg");
+    const fileName = `${user.id}/${Date.now()}.${ext}`;
+    const { error: uploadError } = await supabase.storage.from(bucket).upload(fileName, file, {
+      upsert: true,
+      contentType: file.type || undefined,
+    });
+    if (uploadError) {
+      console.error("[upload]", bucket, fileName, file.type, file.size, uploadError);
+      throw uploadError;
+    }
     const { data: { publicUrl } } = supabase.storage.from(bucket).getPublicUrl(fileName);
     return publicUrl;
   };
@@ -252,7 +259,12 @@ const EditProfile = () => {
         toast({ title: "Photo uploaded", description: "Your profile photo is saved." });
       }
     } catch (error: any) {
-      toast({ title: "Upload error", description: error.message, variant: "destructive" });
+      console.error("[avatar upload]", error);
+      toast({
+        title: "Upload error",
+        description: `${error?.message || error} (${error?.statusCode || error?.error || "no-code"})`,
+        variant: "destructive",
+      });
     } finally { setUploadingImage(false); }
   };
 
@@ -262,7 +274,10 @@ const EditProfile = () => {
     try {
       let url: string | null = null;
       try { url = await uploadToBucket(e.target.files[0], "covers"); }
-      catch { url = await uploadToBucket(e.target.files[0], "avatars"); }
+      catch (err) {
+        console.warn("[cover upload] covers bucket failed, retrying avatars", err);
+        url = await uploadToBucket(e.target.files[0], "avatars");
+      }
       if (url) {
         setProfile({ ...profile, cover_url: url });
         const { error } = await supabase
@@ -273,7 +288,12 @@ const EditProfile = () => {
         toast({ title: "Cover uploaded", description: "Your cover is saved." });
       }
     } catch (error: any) {
-      toast({ title: "Upload error", description: error.message, variant: "destructive" });
+      console.error("[cover upload]", error);
+      toast({
+        title: "Upload error",
+        description: `${error?.message || error} (${error?.statusCode || error?.error || "no-code"})`,
+        variant: "destructive",
+      });
     } finally { setUploadingCover(false); }
   };
 

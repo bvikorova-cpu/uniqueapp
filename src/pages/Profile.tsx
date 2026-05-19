@@ -112,7 +112,9 @@ const Profile = () => {
     commentsGiven: 0,
     friendsCount: 0,
     submissionsCount: 0,
-    completedCoursesCount: 0
+    completedCoursesCount: 0,
+    xp: 0,
+    level: 1,
   });
 
   useEffect(() => {
@@ -227,13 +229,22 @@ const Profile = () => {
           .select("*", { count: 'exact', head: true })
           .eq("user_id", userId);
 
+        // Real XP & level from user_points (publicly readable)
+        const { data: pointsData } = await supabase
+          .from("user_points")
+          .select("total_points, level")
+          .eq("user_id", userId)
+          .maybeSingle();
+
         setStats({
           postsCount: postsData?.length || 0,
           likesGiven: likesCount || 0,
           commentsGiven: commentsCount || 0,
           friendsCount: friendsData?.length || 0,
           submissionsCount: submissionsCount || 0,
-          completedCoursesCount: completedCoursesCount || 0
+          completedCoursesCount: completedCoursesCount || 0,
+          xp: pointsData?.total_points ?? 0,
+          level: pointsData?.level ?? 1,
         });
 
       } catch (error: any) {
@@ -426,13 +437,13 @@ const Profile = () => {
             posts: stats.postsCount,
             followers: followCounts?.followers || 0,
             following: followCounts?.following || 0,
-            xp: stats.likesGiven * 5 + stats.commentsGiven * 10 + stats.postsCount * 25,
-            level: Math.floor((stats.postsCount + stats.commentsGiven / 5) / 5) + 1,
+            xp: stats.xp,
+            level: stats.level,
           }}
           friendsAction={
             <>
               {friendshipStatus === 'none' && (
-                <Button variant="outline" size="sm" onClick={handleAddFriend} className="bg-card/80 backdrop-blur-md border-amber-400/30">
+                <Button onClick={handleAddFriend} className="bg-gradient-to-r from-amber-500 to-pink-500 text-white border-0 shadow-lg w-full sm:w-auto">
                   <UserPlus className="h-4 w-4 mr-2" />
                   Add Friend
                 </Button>
@@ -444,19 +455,17 @@ const Profile = () => {
                 </Button>
               )}
               {friendshipStatus === 'pending_received' && (
-                <Button variant="outline" size="sm" onClick={handleAcceptFriend} className="bg-card/80 backdrop-blur-md border-amber-400/30">
+                <Button onClick={handleAcceptFriend} className="bg-gradient-to-r from-emerald-500 to-amber-500 text-white border-0 shadow-lg w-full sm:w-auto">
                   <UserCheck className="h-4 w-4 mr-2" />
-                  Accept
+                  Accept Friend
                 </Button>
               )}
               {friendshipStatus === 'accepted' && (
-                <Button variant="outline" size="sm" onClick={handleRemoveFriend} className="bg-card/80 backdrop-blur-md border-amber-400/30">
+                <Button variant="outline" size="sm" onClick={handleRemoveFriend} className="bg-card/80 backdrop-blur-md border-emerald-400/40">
                   <Users className="h-4 w-4 mr-2" />
                   Friends
                 </Button>
               )}
-              <ProfileQRCode userId={userId!} userName={profile.full_name || "user"} />
-              <VCardDownloadButton profile={profile} />
               {currentUserId === userId && <ThemePicker userId={userId!} />}
               {currentUserId !== userId && profile.full_name && (
                 <TipJar recipientId={userId!} recipientName={profile.full_name} currentUserId={currentUserId} />
@@ -474,6 +483,14 @@ const Profile = () => {
             {currentUserId === userId && <FreeTierHistory />}
             {currentUserId === userId && <VictoryCardGenerator username={profile?.username ?? null} avatarUrl={profile?.avatar_url ?? null} />}
             {currentUserId === userId && <CreatorAnalyticsWidget userId={userId} />}
+          </div>
+        )}
+
+        {/* Secondary share actions — shown below hero on mobile for clarity */}
+        {currentUserId !== userId && (
+          <div className="flex flex-wrap justify-center gap-2 mb-4">
+            <ProfileQRCode userId={userId!} userName={profile.full_name || "user"} />
+            <VCardDownloadButton profile={profile} />
           </div>
         )}
 
