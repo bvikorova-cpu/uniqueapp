@@ -278,7 +278,6 @@ const Auth = () => {
               </div>
               <CardDescription>{t('auth.please_login')}</CardDescription>
             </div>
-            <LanguageSelector />
           </div>
         </CardHeader>
         <CardContent>
