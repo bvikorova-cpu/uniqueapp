@@ -258,6 +258,42 @@ const NotificationBell = () => {
     }
   };
 
+  const handleFriendRequest = async (
+    e: React.MouseEvent,
+    notification: Notification,
+    action: "accept" | "decline"
+  ) => {
+    e.stopPropagation();
+    if (!user || !notification.actor_id) return;
+    try {
+      if (action === "accept") {
+        const { error } = await supabase
+          .from("friendships")
+          .update({ status: "accepted" })
+          .or(
+            `and(user_id.eq.${notification.actor_id},friend_id.eq.${user.id}),and(user_id.eq.${user.id},friend_id.eq.${notification.actor_id})`
+          )
+          .eq("status", "pending");
+        if (error) throw error;
+        toast({ title: "Friend request accepted" });
+      } else {
+        const { error } = await supabase
+          .from("friendships")
+          .delete()
+          .or(
+            `and(user_id.eq.${notification.actor_id},friend_id.eq.${user.id}),and(user_id.eq.${user.id},friend_id.eq.${notification.actor_id})`
+          )
+          .eq("status", "pending");
+        if (error) throw error;
+        toast({ title: "Friend request declined" });
+      }
+      await markAsRead(notification.id);
+      setNotifications((prev) => prev.filter((n) => n.id !== notification.id));
+    } catch (err: any) {
+      toast({ title: "Action failed", description: err.message, variant: "destructive" });
+    }
+  };
+
   const handleNotificationClick = async (notification: Notification) => {
     await markAsRead(notification.id);
 
