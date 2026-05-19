@@ -89,14 +89,6 @@ export default defineConfig(() => ({
           if (id.includes("@supabase")) {
             return "supabase";
           }
-          // Query
-          if (id.includes("@tanstack/react-query")) {
-            return "query";
-          }
-          // Radix UI
-          if (id.includes("@radix-ui")) {
-            return "ui";
-          }
           // i18n core only. Keep react-i18next in the main vendor graph because
           // splitting React-bound libraries caused production-only React namespace
           // crashes on the published domain (`createContext`/hooks undefined).
