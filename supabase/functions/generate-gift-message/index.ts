@@ -270,6 +270,7 @@ serve(async (req) => {
       caption:             "You are a social-media copywriter. Write a punchy caption with 1-2 emojis.",
       story_idea:          "You are a storyteller. Suggest 3 short story concepts with a hook for each.",
       voice_script:        "You are a voice-over scriptwriter. Write a natural, conversational script.",
+      voice_transform:     "PLACEHOLDER_VOICE_TRANSFORM", // dynamically replaced based on style below
       // ─── Generic fallback for unknown types ───
       generic_ai:          "You are a helpful AI assistant. Provide a clear, useful response to the user's request.",
     };
@@ -396,6 +397,16 @@ serve(async (req) => {
           relationships: "You are a relationships & communication coach. Help with communication skills, conflict resolution, emotional intelligence, healthy boundaries, and connection building. Be warm, non-judgmental, and concrete. Use markdown formatting.",
         };
         systemPrompt = MENTOR_PROMPTS[area] || MENTOR_PROMPTS.career;
+      } else if (type === "voice_transform") {
+        const styleDesc: Record<string, string> = {
+          warm: "warm, friendly, slightly casual, with a small touch of emotion or emoji",
+          professional: "polished, precise, courteous, business-appropriate",
+          energetic: "high-energy, enthusiastic, exclamation-heavy, motivational",
+          calm: "calm, measured, soothing, contemplative",
+          authoritative: "direct, confident, decisive, leadership-tone",
+        };
+        const desc = styleDesc[style] || styleDesc.warm;
+        systemPrompt = `Rewrite the user's text in a ${desc} voice. Keep meaning. Output only the rewritten text, no preamble.`;
       }
       userPrompt = customPrompt || `Generate the ${type} as requested.`;
     } else if (type === "travel_planner") {

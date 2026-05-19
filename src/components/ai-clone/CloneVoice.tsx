@@ -30,12 +30,12 @@ export function CloneVoice() {
     }
     setIsGenerating(true);
     try {
-      const { data, error } = await supabase.functions.invoke("clone-voice-transform", {
-        body: { text: text.trim(), style: voiceStyle },
+      const { data, error } = await supabase.functions.invoke("generate-gift-message", {
+        body: { type: "voice_transform", prompt: text.trim(), style: voiceStyle },
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
-      setGeneratedText(data.transformed);
+      setGeneratedText(data.transformed || data.message || data.text || data.result);
       toast({ title: "Voice Style Applied!" });
     } catch (e: any) {
       toast({ title: "Error", description: e.message || "Failed to transform", variant: "destructive" });
