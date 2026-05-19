@@ -84,22 +84,37 @@ function Track() {
   );
 }
 
+// Camera that follows the player car along Z axis
+function ChaseCamera({ targetZ }: { targetZ: number }) {
+  const { camera } = useThree();
+  useFrame(() => {
+    const desiredZ = targetZ + 14;
+    camera.position.x += (0 - camera.position.x) * 0.05;
+    camera.position.y += (8 - camera.position.y) * 0.05;
+    camera.position.z += (desiredZ - camera.position.z) * 0.08;
+    camera.lookAt(0, 0, targetZ - 5);
+  });
+  return null;
+}
+
 // 3D Scene Component
-function RaceScene({ cars }: { cars: Array<{ position: [number, number, number]; color: string }> }) {
+function RaceScene({ cars, playerZ, isRacing }: { cars: Array<{ x: number; z: number; color: string }>; playerZ: number; isRacing: boolean }) {
   return (
     <>
-      <PerspectiveCamera makeDefault position={[0, 15, 20]} />
-      <OrbitControls enablePan={false} maxPolarAngle={Math.PI / 2} minDistance={10} maxDistance={50} />
-      
+      <PerspectiveCamera makeDefault position={[0, 15, 20]} fov={55} />
+      {isRacing ? <ChaseCamera targetZ={playerZ} /> : (
+        <OrbitControls enablePan={false} maxPolarAngle={Math.PI / 2} minDistance={10} maxDistance={50} />
+      )}
+
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
       <pointLight position={[0, 10, 0]} intensity={0.5} />
-      
+
       <Track />
       {cars.map((car, i) => (
-        <F1Car key={i} position={car.position} color={car.color} />
+        <F1Car key={i} position={[car.x, 0, car.z]} color={car.color} />
       ))}
-      
+
       <Environment preset="sunset" />
     </>
   );
