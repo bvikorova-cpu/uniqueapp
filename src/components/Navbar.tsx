@@ -15,7 +15,7 @@ import NotificationBell from "@/components/notifications/NotificationBell";
 import { AICreditsBalanceWidget } from "@/components/ai-credits/AICreditsBalanceWidget";
 import { FreeTierBalanceWidget } from "@/components/credits/FreeTierBalanceWidget";
 import { GlobalCurrencySwitcher } from "@/components/GlobalCurrencySwitcher";
-import { LanguageSelector } from "@/components/LanguageSelector";
+
 import megatalentLogo from "@/assets/megatalent-logo.png";
 import uniqueLogo from "@/assets/unique-logo.png";
 import { Age16Badge } from "@/components/Age16Badge";
