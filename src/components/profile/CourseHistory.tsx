@@ -21,34 +21,47 @@ interface CourseProgress {
   last_accessed_at: string;
 }
 
-export const CourseHistory = () => {
+interface CourseHistoryProps {
+  userId?: string;
+}
+
+export const CourseHistory = ({ userId }: CourseHistoryProps = {}) => {
   const { data: completedCourses, isLoading: loadingCompleted } = useQuery({
-    queryKey: ["completed-courses"],
+    queryKey: ["completed-courses", userId],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      let targetId = userId;
+      if (!targetId) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error("Not authenticated");
+        targetId = user.id;
+      }
 
       const { data, error } = await supabase
         .from("completed_courses")
         .select("*")
-        .eq("user_id", user.id)
+        .eq("user_id", targetId)
         .order("completion_date", { ascending: false });
 
       if (error) throw error;
       return data as CompletedCourse[];
     },
+    enabled: !!userId || userId === undefined,
   });
 
   const { data: inProgressCourses, isLoading: loadingProgress } = useQuery({
-    queryKey: ["in-progress-courses"],
+    queryKey: ["in-progress-courses", userId],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      let targetId = userId;
+      if (!targetId) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error("Not authenticated");
+        targetId = user.id;
+      }
 
       const { data, error } = await supabase
         .from("course_progress")
         .select("*")
-        .eq("user_id", user.id)
+        .eq("user_id", targetId)
         .order("last_accessed_at", { ascending: false });
 
       if (error) throw error;
