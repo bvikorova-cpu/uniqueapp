@@ -261,6 +261,57 @@ export default function WallFriends() {
         </div>
       </motion.div>
 
+      {/* Global Find People search */}
+      <section>
+        <div className="flex items-center gap-2 mb-3">
+          <Search className="w-5 h-5 text-primary" />
+          <h2 className="text-lg font-black">Find People</h2>
+        </div>
+        <div className="relative mb-3">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            value={globalSearch}
+            onChange={(e) => runGlobalSearch(e.target.value)}
+            placeholder="Search by name or username..."
+            className="pl-10 bg-muted/30 border-border/50"
+          />
+          {searchingGlobal && (
+            <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
+          )}
+        </div>
+        {globalResults.length > 0 && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            {globalResults.map((p, i) => {
+              const isFriend = friends.some(f => f.id === p.id);
+              const isSelf = user?.id === p.id;
+              return (
+                <Card key={p.id} className="overflow-hidden border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/50 transition-all">
+                  <div className={`h-12 bg-gradient-to-br ${gradients[i % gradients.length]}`} />
+                  <div className="px-2.5 pb-3 -mt-5 relative">
+                    <Avatar className="h-10 w-10 border-[2px] border-card shadow-md cursor-pointer" onClick={() => navigate(`/profile/${p.id}`)}>
+                      <AvatarImage src={p.avatar_url || undefined} className="object-cover" />
+                      <AvatarFallback className="bg-gradient-to-br from-primary/30 to-accent/30 text-sm font-bold">{p.full_name?.[0] || "?"}</AvatarFallback>
+                    </Avatar>
+                    <h3 className="font-bold text-xs truncate mt-1.5">{p.full_name || "Unknown"}</h3>
+                    {!isSelf && !isFriend && (
+                      <Button size="sm" className="w-full mt-2 text-[10px] h-7 gap-1 bg-gradient-to-r from-primary to-accent text-white"
+                        onClick={() => sendRequestMutation.mutate(p.id)} disabled={sendRequestMutation.isPending}>
+                        <UserPlus className="h-3 w-3" /> Add
+                      </Button>
+                    )}
+                    {isFriend && <p className="text-[10px] text-primary mt-2 text-center">✓ Friends</p>}
+                    {isSelf && <p className="text-[10px] text-muted-foreground mt-2 text-center">You</p>}
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+        )}
+        {globalSearch.trim().length >= 2 && !searchingGlobal && globalResults.length === 0 && (
+          <p className="text-sm text-muted-foreground text-center py-4">No people found</p>
+        )}
+      </section>
+
       {/* Friend Requests */}
       <section>
         <div className="flex items-center justify-between mb-4">
