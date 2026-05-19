@@ -194,11 +194,9 @@ const Feed = () => {
         originalPostIds.add(repost.original_post_id);
       });
 
-      // Batch fetch all profiles
+      // Batch fetch all profiles (via RPC so non-friends/non-self are visible)
       const { data: profilesData } = await supabase
-        .from("profiles")
-        .select("id, full_name, avatar_url")
-        .in("id", Array.from(userIds));
+        .rpc("get_profiles_basic", { _ids: Array.from(userIds) });
 
       const profilesMap = new Map(
         (profilesData || []).map(p => [p.id, p])
