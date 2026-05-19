@@ -38279,12 +38279,14 @@ export type Database = {
       }
       notifications: {
         Row: {
+          action_url: string | null
           actor_id: string | null
           comment_id: string | null
           created_at: string
           id: string
           is_read: boolean | null
           message: string
+          metadata: Json | null
           post_id: string | null
           related_id: string | null
           repost_id: string | null
@@ -38293,12 +38295,14 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          action_url?: string | null
           actor_id?: string | null
           comment_id?: string | null
           created_at?: string
           id?: string
           is_read?: boolean | null
           message: string
+          metadata?: Json | null
           post_id?: string | null
           related_id?: string | null
           repost_id?: string | null
@@ -38307,12 +38311,14 @@ export type Database = {
           user_id: string
         }
         Update: {
+          action_url?: string | null
           actor_id?: string | null
           comment_id?: string | null
           created_at?: string
           id?: string
           is_read?: boolean | null
           message?: string
+          metadata?: Json | null
           post_id?: string | null
           related_id?: string | null
           repost_id?: string | null
