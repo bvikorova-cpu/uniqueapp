@@ -320,7 +320,7 @@ const Navbar = () => {
           </div>
 
           <div className="hidden lg:flex items-center space-x-2">
-            <LanguageSelector />
+
             {user ? (
               <>
                 {/* Dark Mode Toggle */}
