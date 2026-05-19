@@ -26,6 +26,7 @@ import { useTheme } from "next-themes";
 import { PushNotificationToggle } from "@/components/PushNotificationToggle";
 import { NotificationSettings } from "@/components/settings/NotificationSettings";
 import { PointsDisplay } from "@/components/gamification/PointsDisplay";
+import { WatchAdButton } from "@/components/ads/WatchAdButton";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useTranslation } from "react-i18next";
 
@@ -141,6 +142,13 @@ export default function Settings() {
           {/* Account Settings */}
           <TabsContent value="account" className="space-y-4">
             <PointsDisplay />
+            <Card className="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <h3 className="font-semibold">Earn XP for free</h3>
+                <p className="text-sm text-muted-foreground">Watch a short rewarded video to gain +25 XP. One ad every 60 seconds.</p>
+              </div>
+              <WatchAdButton />
+            </Card>
             <Card className="p-6 space-y-6">
               <div>
                 <h3 className="text-lg font-semibold mb-4">Account Information</h3>
