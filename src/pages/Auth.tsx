@@ -12,7 +12,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
 import { Eye, EyeOff, CalendarIcon, ShieldAlert, Baby } from "lucide-react";
-import { LanguageSelector } from "@/components/LanguageSelector";
 import { Age16Badge } from "@/components/Age16Badge";
 import { format, differenceInYears } from "date-fns";
 import { cn } from "@/lib/utils";
