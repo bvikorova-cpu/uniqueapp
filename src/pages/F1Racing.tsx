@@ -1,11 +1,11 @@
-import { useState, useEffect, Suspense } from "react";
-import { Canvas } from "@react-three/fiber";
+import { useState, useEffect, Suspense, useRef } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera, Environment } from "@react-three/drei";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Trophy, Zap, Users, Star, Loader2 } from "lucide-react";
+import { ArrowLeft, Trophy, Zap, Users, Star, Loader2, Flame, Gauge } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -84,22 +84,37 @@ function Track() {
   );
 }
 
+// Camera that follows the player car along Z axis
+function ChaseCamera({ targetZ }: { targetZ: number }) {
+  const { camera } = useThree();
+  useFrame(() => {
+    const desiredZ = targetZ + 14;
+    camera.position.x += (0 - camera.position.x) * 0.05;
+    camera.position.y += (8 - camera.position.y) * 0.05;
+    camera.position.z += (desiredZ - camera.position.z) * 0.08;
+    camera.lookAt(0, 0, targetZ - 5);
+  });
+  return null;
+}
+
 // 3D Scene Component
-function RaceScene({ cars }: { cars: Array<{ position: [number, number, number]; color: string }> }) {
+function RaceScene({ cars, playerZ, isRacing }: { cars: Array<{ x: number; z: number; color: string }>; playerZ: number; isRacing: boolean }) {
   return (
     <>
-      <PerspectiveCamera makeDefault position={[0, 15, 20]} />
-      <OrbitControls enablePan={false} maxPolarAngle={Math.PI / 2} minDistance={10} maxDistance={50} />
-      
+      <PerspectiveCamera makeDefault position={[0, 15, 20]} fov={55} />
+      {isRacing ? <ChaseCamera targetZ={playerZ} /> : (
+        <OrbitControls enablePan={false} maxPolarAngle={Math.PI / 2} minDistance={10} maxDistance={50} />
+      )}
+
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
       <pointLight position={[0, 10, 0]} intensity={0.5} />
-      
+
       <Track />
       {cars.map((car, i) => (
-        <F1Car key={i} position={car.position} color={car.color} />
+        <F1Car key={i} position={[car.x, 0, car.z]} color={car.color} />
       ))}
-      
+
       <Environment preset="sunset" />
     </>
   );
@@ -115,13 +130,22 @@ const F1Racing = () => {
   const [raceProgress, setRaceProgress] = useState(0);
   const backgroundImage = f1Background;
   const [position, setPosition] = useState(1);
+  const [speed, setSpeed] = useState(0);
+  const [boostCharges, setBoostCharges] = useState(3);
+  const [lap, setLap] = useState(1);
+  const FINISH_Z = -85;
+  const TOTAL_LAPS = 2;
 
-  const cars = [
-    { position: [0, 0, 0] as [number, number, number], color: "#e10600" }, // Red Bull
-    { position: [-3, 0, -2] as [number, number, number], color: "#dc0000" }, // Ferrari
-    { position: [3, 0, -4] as [number, number, number], color: "#00d2be" }, // Mercedes
-    { position: [-3, 0, -6] as [number, number, number], color: "#ff8700" }, // McLaren
+  const initialCars = [
+    { x: 0,  z: 0,  color: "#e10600", baseSpeed: 0.32, name: "You" },
+    { x: -3, z: -2, color: "#dc0000", baseSpeed: 0.30, name: "Ferrari" },
+    { x: 3,  z: -4, color: "#00d2be", baseSpeed: 0.31, name: "Mercedes" },
+    { x: -3, z: -6, color: "#ff8700", baseSpeed: 0.29, name: "McLaren" },
   ];
+  const [cars, setCars] = useState(initialCars);
+  const boostRef = useRef(0); // remaining boost frames for player
+  const lapRef = useRef(1);
+  const finishedRef = useRef(false);
 
   useEffect(() => {
     checkSubscription();
@@ -142,7 +166,6 @@ const F1Racing = () => {
       setTier(data.tier);
 
       if (data.subscribed) {
-        // Get user credits
         const { data: creditsData } = await supabase
           .from('f1_user_credits')
           .select('credits')
@@ -160,32 +183,94 @@ const F1Racing = () => {
     }
   };
 
+  const handleBoost = () => {
+    if (!isRacing || boostCharges <= 0 || boostRef.current > 0) return;
+    boostRef.current = 25; // ~1.25s of boost at 50ms tick
+    setBoostCharges(c => c - 1);
+  };
+
   const startRace = () => {
     if (credits < 10) {
       toast.error("Not enough credits! You need 10 credits to race.");
       return;
     }
 
+    setCars(initialCars);
     setIsRacing(true);
     setRaceProgress(0);
-    setPosition(Math.floor(Math.random() * 4) + 1);
+    setSpeed(0);
+    setBoostCharges(3);
+    setLap(1);
+    setPosition(1);
+    lapRef.current = 1;
+    finishedRef.current = false;
+    boostRef.current = 0;
 
+    const startedAt = Date.now();
     const interval = setInterval(() => {
-      setRaceProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          finishRace();
-          return 100;
+      setCars(prev => {
+        // Advance each car
+        const next = prev.map((c, idx) => {
+          const isPlayer = idx === 0;
+          const jitter = (Math.random() - 0.5) * 0.06;
+          const boost = isPlayer && boostRef.current > 0 ? 0.35 : 0;
+          // Subtle AI rubber-banding so the race feels close
+          const playerZ = prev[0].z;
+          const rubber = !isPlayer ? (playerZ - c.z) * 0.002 : 0;
+          let dz = -(c.baseSpeed + jitter + boost + rubber);
+          // Gentle lane drift
+          const dx = Math.sin((Date.now() / 600) + idx) * 0.015;
+          return { ...c, z: c.z + dz, x: Math.max(-6, Math.min(6, c.x + dx)) };
+        });
+        if (boostRef.current > 0) boostRef.current -= 1;
+
+        // Player progress
+        const player = next[0];
+        const distanceThisLap = Math.min(1, Math.abs(player.z) / Math.abs(FINISH_Z));
+
+        // Lap rollover
+        if (player.z <= FINISH_Z && lapRef.current < TOTAL_LAPS) {
+          lapRef.current += 1;
+          setLap(lapRef.current);
+          toast.success(`Lap ${lapRef.current}!`);
+          // Reset Z of all cars but keep ordering by offset
+          const minZ = Math.min(...next.map(c => c.z));
+          return next.map(c => ({ ...c, z: c.z - minZ }));
         }
-        return prev + 2;
+
+        // Compute position
+        const sorted = [...next].map((c, i) => ({ z: c.z, i })).sort((a, b) => a.z - b.z);
+        const pos = sorted.findIndex(s => s.i === 0) + 1;
+        setPosition(pos);
+
+        const totalProgress = ((lapRef.current - 1) / TOTAL_LAPS) * 100 + (distanceThisLap / TOTAL_LAPS) * 100;
+        setRaceProgress(Math.min(100, totalProgress));
+
+        // Live speed (km/h-ish display)
+        const playerSpeed = (initialCars[0].baseSpeed + (boostRef.current > 0 ? 0.35 : 0)) * 600;
+        setSpeed(Math.round(playerSpeed));
+
+        // Finish check: player completes final lap
+        if (lapRef.current >= TOTAL_LAPS && player.z <= FINISH_Z && !finishedRef.current) {
+          finishedRef.current = true;
+          clearInterval(interval);
+          // Final position by who crossed first (player just did): position = 1 IF player ahead
+          const finalSorted = [...next].map((c, i) => ({ z: c.z, i })).sort((a, b) => a.z - b.z);
+          const finalPos = finalSorted.findIndex(s => s.i === 0) + 1;
+          setPosition(finalPos);
+          setTimeout(() => finishRace(finalPos, Date.now() - startedAt), 200);
+        }
+        return next;
       });
-    }, 100);
+    }, 50);
   };
 
-  const finishRace = () => {
+  const finishRace = (finalPos: number, durationMs: number) => {
     setIsRacing(false);
-    const points = position === 1 ? 25 : position === 2 ? 18 : position === 3 ? 15 : 12;
-    toast.success(`Race finished! Position ${position}. You earned ${points} points! 🏆`);
+    setSpeed(0);
+    const points = finalPos === 1 ? 25 : finalPos === 2 ? 18 : finalPos === 3 ? 15 : 12;
+    const seconds = (durationMs / 1000).toFixed(1);
+    toast.success(`🏁 Finished P${finalPos} in ${seconds}s — +${points} points!`);
   };
 
   if (loading) {
@@ -315,33 +400,55 @@ const F1Racing = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-[400px] rounded-lg overflow-hidden bg-gray-900">
+              <div className="h-[400px] rounded-lg overflow-hidden bg-gray-900 relative">
                 <Canvas>
                   <Suspense fallback={null}>
-                    <RaceScene cars={cars} />
+                    <RaceScene cars={cars} playerZ={cars[0].z} isRacing={isRacing} />
                   </Suspense>
                 </Canvas>
+                {/* HUD overlay */}
+                {isRacing && (
+                  <div className="absolute top-3 left-3 flex flex-col gap-2 pointer-events-none">
+                    <Badge className="bg-black/70 text-cyan-300 border border-cyan-500/40 font-mono text-base">
+                      <Gauge className="w-4 h-4 mr-1" />{speed} km/h
+                    </Badge>
+                    <Badge className="bg-black/70 text-amber-300 border border-amber-500/40 font-mono">
+                      LAP {lap}/{TOTAL_LAPS}
+                    </Badge>
+                    <Badge className="bg-black/70 text-white border border-red-500/50 font-mono text-lg">
+                      P{position}/{cars.length}
+                    </Badge>
+                  </div>
+                )}
               </div>
 
               {isRacing && (
                 <div className="mt-4 space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-white text-lg">Race Progress</span>
-                    <Badge className="bg-red-600 text-white text-lg">
-                      Position: {position}/4
-                    </Badge>
+                    <span className="text-white text-sm">Race Progress</span>
+                    <span className="text-cyan-300 font-mono text-sm">{Math.round(raceProgress)}%</span>
                   </div>
-                  <Progress value={raceProgress} className="h-4" />
+                  <Progress value={raceProgress} className="h-3" />
+                  <Button
+                    onClick={handleBoost}
+                    disabled={boostCharges <= 0 || boostRef.current > 0}
+                    className="w-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white font-black uppercase tracking-widest py-6 text-lg disabled:opacity-50"
+                  >
+                    <Flame className="w-5 h-5 mr-2" />
+                    BOOST ({boostCharges} left)
+                  </Button>
                 </div>
               )}
 
-              <Button
-                onClick={startRace}
-                disabled={isRacing || credits < 10}
-                className="w-full mt-4 bg-red-600 hover:bg-red-700 text-white py-6 text-xl"
-              >
-                {isRacing ? "Racing..." : "Start Race (10 Credits)"}
-              </Button>
+              {!isRacing && (
+                <Button
+                  onClick={startRace}
+                  disabled={credits < 10}
+                  className="w-full mt-4 bg-red-600 hover:bg-red-700 text-white py-6 text-xl"
+                >
+                  Start Race (10 Credits)
+                </Button>
+              )}
             </CardContent>
           </Card>
 
