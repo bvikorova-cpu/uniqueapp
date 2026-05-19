@@ -71,8 +71,10 @@ export default defineConfig(() => ({
           if (id.includes("node_modules/fabric")) {
             return "fabric";
           }
-          // Charts — only for analytics/admin pages
-          if (id.includes("recharts") || id.includes("d3-")) {
+          // Keep Recharts in the main vendor graph. Splitting it into a
+          // separate manual chunk caused a production-only React interop crash
+          // on the published domain (`React.useState` was undefined).
+          if (id.includes("d3-")) {
             return "charts";
           }
           // Markdown + math rendering
