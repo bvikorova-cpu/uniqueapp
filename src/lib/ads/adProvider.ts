@@ -66,9 +66,12 @@ async function showAdSenseRewarded(): Promise<boolean> {
 
 async function showAdMobRewarded(): Promise<boolean> {
   try {
-    // Dynamic import so web bundle stays clean
+    // Dynamic import so web bundle stays clean. Package is optional and only
+    // installed when the user adds Capacitor + AdMob; resolve via variable so
+    // TypeScript doesn't try to type-check the missing module.
+    const modName = "@capacitor-community/admob";
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const mod: any = await import(/* @vite-ignore */ "@capacitor-community/admob").catch(() => null);
+    const mod: any = await import(/* @vite-ignore */ modName).catch(() => null);
     if (!mod?.AdMob) {
       await new Promise((r) => setTimeout(r, 3000));
       return true;
