@@ -297,38 +297,7 @@ const NotificationBell = () => {
 
   const handleNotificationClick = async (notification: Notification) => {
     await markAsRead(notification.id);
-
-    // Navigate based on notification type
-    if (notification.type === "job_match" && notification.post_id) {
-      navigate(`/jobs`);
-    } else if (notification.type === "job_application") {
-      navigate(`/employer-dashboard`);
-    } else if (notification.type === "verification_request") {
-      navigate(`/admin/verifications`);
-    } else if (notification.type === "masterchef_payout") {
-      navigate(`/admin/masterchef-payouts`);
-    } else if (
-      notification.type === "masterchef_withdrawal" ||
-      notification.type === "musician_withdrawal" ||
-      notification.type === "instructor_withdrawal" ||
-      notification.type === "campaign_withdrawal"
-    ) {
-      navigate(notification.type === "campaign_withdrawal" ? `/admin/campaign-withdrawals` : `/admin/withdrawals`);
-    } else if (notification.type === "weekly_xp_winner" || notification.type === "weekly_xp_leaderboard") {
-      navigate(`/rewards`);
-    } else if (notification.type === "follow" && notification.actor_id) {
-      navigate(`/profile/${notification.actor_id}`);
-    } else if (notification.type === "friend_request") {
-      navigate(notification.action_url || `/friends?tab=requests`);
-    } else if (notification.post_id) {
-      navigate(`/post/${notification.post_id}`);
-    } else if (notification.related_id) {
-      // Generic fallback — try wall as a sensible default for content interactions
-      navigate(`/wall`);
-    } else {
-      // Final fallback — open notifications center so click always does *something*
-      navigate(`/wall`);
-    }
+    navigate(getNotificationRoute(notification));
   };
 
   if (!user) return null;
