@@ -60988,6 +60988,15 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      get_profiles_basic: {
+        Args: { _ids: string[] }
+        Returns: {
+          avatar_url: string
+          full_name: string
+          id: string
+          username: string
+        }[]
+      }
       get_psychology_stats: {
         Args: never
         Returns: {
