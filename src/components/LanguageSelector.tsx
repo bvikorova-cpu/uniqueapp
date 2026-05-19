@@ -13,58 +13,25 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-export const languages = [
-  { code: 'sk', name: 'Slovak', flag: '🇸🇰' },
-  { code: 'cs', name: 'Czech', flag: '🇨🇿' },
+import { loadLocale, SUPPORTED_LANGUAGES } from "@/i18n/config";
+
+const ALL_LANGUAGES = [
   { code: 'en', name: 'English', flag: '🇬🇧' },
+  { code: 'sk', name: 'Slovenčina', flag: '🇸🇰' },
+  { code: 'cs', name: 'Čeština', flag: '🇨🇿' },
   { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
   { code: 'es', name: 'Español', flag: '🇪🇸' },
   { code: 'fr', name: 'Français', flag: '🇫🇷' },
   { code: 'it', name: 'Italiano', flag: '🇮🇹' },
-  { code: 'pl', name: 'Polski', flag: '🇵🇱' },
-  { code: 'ru', name: 'Русский', flag: '🇷🇺' },
-  { code: 'uk', name: 'Українська', flag: '🇺🇦' },
   { code: 'hu', name: 'Magyar', flag: '🇭🇺' },
-  { code: 'ro', name: 'Română', flag: '🇷🇴' },
-  { code: 'hr', name: 'Hrvatski', flag: '🇭🇷' },
-  { code: 'sr', name: 'Српски', flag: '🇷🇸' },
-  { code: 'bg', name: 'Български', flag: '🇧🇬' },
-  { code: 'sl', name: 'Slovenian', flag: '🇸🇮' },
-  { code: 'nl', name: 'Nederlands', flag: '🇳🇱' },
-  { code: 'pt', name: 'Português', flag: '🇵🇹' },
-  { code: 'sv', name: 'Svenska', flag: '🇸🇪' },
-  { code: 'no', name: 'Norsk', flag: '🇳🇴' },
-  { code: 'da', name: 'Dansk', flag: '🇩🇰' },
-  { code: 'fi', name: 'Suomi', flag: '🇫🇮' },
-  { code: 'el', name: 'Ελληνικά', flag: '🇬🇷' },
-  { code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
-  { code: 'ar', name: 'العربية', flag: '🇸🇦' },
-  { code: 'he', name: 'עברית', flag: '🇮🇱' },
-  { code: 'zh', name: '中文', flag: '🇨🇳' },
+  { code: 'ru', name: 'Русский', flag: '🇷🇺' },
   { code: 'ja', name: '日本語', flag: '🇯🇵' },
   { code: 'ko', name: '한국어', flag: '🇰🇷' },
-  { code: 'hi', name: 'हिन्दी', flag: '🇮🇳' },
-  { code: 'th', name: 'ไทย', flag: '🇹🇭' },
-  { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳' },
-  { code: 'id', name: 'Bahasa Indonesia', flag: '🇮🇩' },
-  { code: 'ms', name: 'Bahasa Melayu', flag: '🇲🇾' },
-  { code: 'tl', name: 'Tagalog', flag: '🇵🇭' },
-  { code: 'fa', name: 'فارسی', flag: '🇮🇷' },
-  { code: 'ur', name: 'اردو', flag: '🇵🇰' },
-  { code: 'bn', name: 'বাংলা', flag: '🇧🇩' },
-  { code: 'sw', name: 'Kiswahili', flag: '🇰🇪' },
-  { code: 'af', name: 'Afrikaans', flag: '🇿🇦' },
-  { code: 'am', name: 'አማርኛ', flag: '🇪🇹' },
-  { code: 'az', name: 'Azərbaycan', flag: '🇦🇿' },
-  { code: 'ka', name: 'ქართული', flag: '🇬🇪' },
-  { code: 'hy', name: 'Հայերեն', flag: '🇦🇲' },
-  { code: 'kk', name: 'Қазақша', flag: '🇰🇿' },
-  { code: 'uz', name: 'Oʻzbekcha', flag: '🇺🇿' },
-  { code: 'lt', name: 'Lietuvių', flag: '🇱🇹' },
-  { code: 'lv', name: 'Latvian', flag: '🇱🇻' },
-  { code: 'et', name: 'Eesti', flag: '🇪🇪' },
-  { code: 'is', name: 'Icelandic', flag: '🇮🇸' },
+  { code: 'zh', name: '中文', flag: '🇨🇳' },
 ];
+
+// Only show languages that we actually ship translation bundles for.
+export const languages = ALL_LANGUAGES.filter(l => SUPPORTED_LANGUAGES.includes(l.code));
 
 export const LanguageSelector = () => {
   const { i18n } = useTranslation();
@@ -97,9 +64,10 @@ export const LanguageSelector = () => {
   );
 
   const handleLanguageChange = async (language: typeof languages[0]) => {
-    i18n.changeLanguage(language.code);
     setSearchTerm("");
     try { localStorage.setItem("preferred_language", language.code); } catch {}
+    await loadLocale(language.code);
+    await i18n.changeLanguage(language.code);
     if (user) {
       await supabase
         .from("profiles")
