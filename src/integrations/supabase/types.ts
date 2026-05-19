@@ -177,6 +177,69 @@ export type Database = {
         }
         Relationships: []
       }
+      ad_reward_log: {
+        Row: {
+          ad_unit_id: string | null
+          client_token: string
+          id: string
+          provider: string
+          user_id: string
+          verified_at: string
+          xp_granted: number
+        }
+        Insert: {
+          ad_unit_id?: string | null
+          client_token: string
+          id?: string
+          provider: string
+          user_id: string
+          verified_at?: string
+          xp_granted?: number
+        }
+        Update: {
+          ad_unit_id?: string | null
+          client_token?: string
+          id?: string
+          provider?: string
+          user_id?: string
+          verified_at?: string
+          xp_granted?: number
+        }
+        Relationships: []
+      }
+      ad_sessions: {
+        Row: {
+          ad_unit_id: string | null
+          client_token: string
+          consumed_at: string | null
+          created_at: string
+          expires_at: string
+          id: string
+          provider: string
+          user_id: string
+        }
+        Insert: {
+          ad_unit_id?: string | null
+          client_token: string
+          consumed_at?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          provider: string
+          user_id: string
+        }
+        Update: {
+          ad_unit_id?: string | null
+          client_token?: string
+          consumed_at?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          provider?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       admin_audit_log: {
         Row: {
           action: string
