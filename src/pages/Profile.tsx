@@ -112,7 +112,9 @@ const Profile = () => {
     commentsGiven: 0,
     friendsCount: 0,
     submissionsCount: 0,
-    completedCoursesCount: 0
+    completedCoursesCount: 0,
+    xp: 0,
+    level: 1,
   });
 
   useEffect(() => {
