@@ -46,6 +46,7 @@ import { Endorsements } from "@/components/profile/Endorsements";
 import { ProfileViewsCounter } from "@/components/profile/ProfileViewsCounter";
 import { LifeEventsTimeline } from "@/components/profile/LifeEventsTimeline";
 import { FamilySection } from "@/components/profile/FamilySection";
+import { XpBreakdown } from "@/components/profile/XpBreakdown";
 
 interface Profile {
   id: string;
@@ -472,6 +473,16 @@ const Profile = () => {
               )}
             </>
           }
+        />
+
+        {/* XP breakdown — visible on every profile so the source of XP is clear */}
+        <XpBreakdown
+          xp={stats.xp}
+          level={stats.level}
+          posts={stats.postsCount}
+          likes={stats.likesGiven}
+          comments={stats.commentsGiven}
+          friends={stats.friendsCount}
         />
 
         {/* Free Tier Credits — visible on own profile */}
