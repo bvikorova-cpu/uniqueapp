@@ -33,7 +33,7 @@ export const MobileBottomNav = () => {
       aria-label="Primary mobile navigation"
     >
       <ul className="grid grid-cols-5">
-        {ITEMS.map(({ path, label, icon: Icon }) => {
+        {(user ? ITEMS_AUTH : ITEMS_GUEST).map(({ path, label, icon: Icon }) => {
           const active = path === "/" ? pathname === "/" : pathname.startsWith(path);
           const target = path === "/profile" && !user ? "/auth" : path;
           return (
