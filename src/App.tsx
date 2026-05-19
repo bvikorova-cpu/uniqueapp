@@ -60,6 +60,7 @@ const DunningBanner = lazy(() => import("@/components/billing/DunningBanner").th
 const SCABanner = lazy(() => import("@/components/billing/SCABanner").then((module) => ({ default: module.SCABanner })));
 const Index = lazy(() => import("./pages/Index"));
 const Friends = lazy(() => import("./pages/Friends"));
+const NotificationsPage = lazy(() => import("./pages/Notifications"));
 const StatusPage = lazy(() => import("./pages/StatusPage"));
 const Auth = lazy(() => import("./pages/Auth"));
 const Download = lazy(() => import("./pages/Download"));
