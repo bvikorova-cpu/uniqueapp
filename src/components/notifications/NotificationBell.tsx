@@ -14,6 +14,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
 import { useAuth } from "@/contexts/AuthContext";
+import { getNotificationRoute } from "@/utils/notificationRoutes";
 
 interface Notification {
   id: string;
