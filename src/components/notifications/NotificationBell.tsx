@@ -432,6 +432,16 @@ const NotificationBell = () => {
             </div>
           )}
         </ScrollArea>
+        <div className="border-t p-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full"
+            onClick={() => navigate("/notifications")}
+          >
+            View all notifications
+          </Button>
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );
