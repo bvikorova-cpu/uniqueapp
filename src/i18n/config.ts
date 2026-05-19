@@ -38,13 +38,19 @@ i18n
     },
   });
 
-async function loadLocale(lng: string) {
+export async function loadLocale(lng: string) {
+  if (!lng) return;
   if (lng === 'en' || i18n.hasResourceBundle(lng, 'translation')) return;
   const loader = localeModules[`./locales/${lng}/translation.json`];
   if (!loader) return;
   const mod = await loader();
-  i18n.addResourceBundle(lng, 'translation', mod.default ?? mod, true, true);
+  i18n.addResourceBundle(lng, 'translation', (mod as any).default ?? mod, true, true);
 }
+
+// Lazy-load translation bundles whenever the language changes at runtime.
+i18n.on('languageChanged', (lng) => {
+  loadLocale(lng).catch(() => {});
+});
 
 const initialLanguage = detectInitialLanguage();
 if (initialLanguage !== 'en') {
@@ -52,6 +58,8 @@ if (initialLanguage !== 'en') {
     .then(() => i18n.changeLanguage(initialLanguage))
     .catch(() => i18n.changeLanguage('en'));
 }
+
+export const SUPPORTED_LANGUAGES = SUPPORTED;
 
 // persist language changes to localStorage
 i18n.on('languageChanged', (lng) => {
