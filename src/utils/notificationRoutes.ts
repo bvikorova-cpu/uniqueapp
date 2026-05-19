@@ -54,9 +54,9 @@ export function getNotificationRoute(n: NotifLike): string {
     direct_message: "/wall/messages",
 
     // Brand collaborations
-    brand_collab_invite: "/brand-collaborations-hub",
-    brand_collab_accepted: "/brand-collaborations-hub",
-    brand_collab_payout: "/brand-collaborations-hub",
+    brand_collab_invite: "/brand-dashboard",
+    brand_collab_accepted: "/brand-dashboard",
+    brand_collab_payout: "/brand-dashboard",
 
     // Fundraising
     fundraising_donation: "/fundraising",
