@@ -188,14 +188,14 @@ export default function WallFeed({
                         />
                       )}
                     </div>
-                    {/* Rewarded ad after every 15th post */}
-                    {(index + 1) % 15 === 0 && (
+                    {/* Rewarded ad after every 20th post */}
+                    {(index + 1) % 20 === 0 && (
                       <div 
                         className="animate-fade-in mt-5"
                         style={{ animationDelay: `${index * 0.05}s` }}
                       >
                         <RewardedAdCard 
-                          sectionKey={`wall_feed_${Math.floor((index + 1) / 15)}`}
+                          sectionKey={`wall_feed_${Math.floor((index + 1) / 20)}`}
                           adSlot={AD_PLACEMENTS.FOOTER_BANNER}
                         />
                       </div>
