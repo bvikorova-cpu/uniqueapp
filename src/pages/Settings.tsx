@@ -26,11 +26,14 @@ import { useTheme } from "next-themes";
 import { PushNotificationToggle } from "@/components/PushNotificationToggle";
 import { NotificationSettings } from "@/components/settings/NotificationSettings";
 import { PointsDisplay } from "@/components/gamification/PointsDisplay";
+import { LanguageSelector } from "@/components/LanguageSelector";
+import { useTranslation } from "react-i18next";
 
 export default function Settings() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { theme, setTheme } = useTheme();
+  const { i18n } = useTranslation();
   const [saving, setSaving] = useState(false);
   const [changingPassword, setChangingPassword] = useState(false);
 
@@ -174,6 +177,22 @@ export default function Settings() {
                 <Button variant="outline" onClick={handleChangePassword} disabled={changingPassword}>
                   {changingPassword ? "Sending..." : "Change Password"}
                 </Button>
+              </div>
+
+              <div className="pt-4 border-t">
+                <div className="flex items-center gap-2 mb-2">
+                  <Globe className="h-5 w-5 text-primary" />
+                  <h3 className="text-lg font-semibold">Language</h3>
+                </div>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Choose your preferred language for the app and email notifications. We'll send password resets, magic links and other emails in this language.
+                </p>
+                <div className="flex items-center gap-3">
+                  <LanguageSelector />
+                  <span className="text-sm text-muted-foreground">
+                    Current: <span className="font-medium text-foreground">{i18n.language?.toUpperCase() || 'EN'}</span>
+                  </span>
+                </div>
               </div>
             </Card>
           </TabsContent>
