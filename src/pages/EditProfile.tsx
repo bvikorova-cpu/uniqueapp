@@ -241,7 +241,7 @@ const EditProfile = () => {
     });
     if (uploadError) {
       console.error("[upload]", bucket, fileName, file.type, file.size, uploadError);
-      const message = `${uploadError.message || ""} ${uploadError.statusCode || ""} ${uploadError.error || ""}`.toLowerCase();
+      const message = `${uploadError.message || ""} ${uploadError.statusCode || ""} ${(uploadError as any).error || ""}`.toLowerCase();
       if (message.includes("database schema") || message.includes("invalid or incompatible") || message.includes("500")) {
         return await fileToDataUrl(file);
       }
