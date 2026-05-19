@@ -1,14 +1,22 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Crown, Trophy, MessageSquare, User } from "lucide-react";
+import { Home, Crown, Trophy, MessageSquare, User, LogIn } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 
-const ITEMS = [
+const ITEMS_AUTH = [
   { path: "/", label: "Home", icon: Home },
   { path: "/megatalent", label: "Talent", icon: Crown },
   { path: "/wall", label: "Wall", icon: MessageSquare },
   { path: "/rewards", label: "Rewards", icon: Trophy },
   { path: "/profile", label: "Me", icon: User },
+];
+
+const ITEMS_GUEST = [
+  { path: "/", label: "Home", icon: Home },
+  { path: "/megatalent", label: "Talent", icon: Crown },
+  { path: "/auth", label: "Sign in", icon: LogIn },
+  { path: "/wall", label: "Wall", icon: MessageSquare },
+  { path: "/rewards", label: "Rewards", icon: Trophy },
 ];
 
 /** Persistent mobile bottom tab bar. Hidden ≥md. Safe-area aware. */
