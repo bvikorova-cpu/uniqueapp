@@ -76,7 +76,7 @@ export function CreatorLeaderboardView({ onBack }: CreatorLeaderboardViewProps) 
       const profs = profsRes.data || [];
       const items = itemsRes.data || [];
       const downloads = dlRes.data || [];
-      const pmap = new Map((profs || []).map((p: any) => [p.id, p.full_name]));
+      const pmap = new Map<string, string>((profs || []).map((p: any) => [String(p.id), String(p.full_name || "")]));
       const assetCount = new Map<string, number>();
       (items || []).forEach((it: any) => assetCount.set(it.creator_id, (assetCount.get(it.creator_id) || 0) + 1));
       const dlCount = new Map<string, number>();
