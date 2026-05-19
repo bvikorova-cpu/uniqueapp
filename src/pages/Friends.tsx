@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -17,7 +17,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Loader2, Search, UserMinus, ArrowLeft, Users } from "lucide-react";
+import { Check, Loader2, Search, UserMinus, ArrowLeft, Users, X } from "lucide-react";
 
 interface Friend {
   id: string;
@@ -27,14 +27,22 @@ interface Friend {
   friendshipId: string;
 }
 
+interface FriendRequest extends Friend {
+  created_at: string;
+}
+
 const Friends = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { toast } = useToast();
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [friends, setFriends] = useState<Friend[]>([]);
+  const [requests, setRequests] = useState<FriendRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [removingId, setRemovingId] = useState<string | null>(null);
+  const [requestActionId, setRequestActionId] = useState<string | null>(null);
+  const activeTab = searchParams.get("tab") === "requests" ? "requests" : "friends";
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
