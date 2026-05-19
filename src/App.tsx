@@ -55,7 +55,6 @@ const ReferralCaptureMount = lazy(() => import("@/components/referral/ReferralCa
 const IQReferralCaptureMount = lazy(() => import("@/components/iq/IQReferralCaptureMount"));
 const WelcomeOnboarding = lazy(() => import("@/components/onboarding/WelcomeOnboarding"));
 const IQBrainLab = lazy(() => import("@/pages/IQBrainLab"));
-const LanguagePreferenceMount = lazy(() => import("@/components/LanguagePreferenceMount").then((module) => ({ default: module.LanguagePreferenceMount })));
 const DunningBanner = lazy(() => import("@/components/billing/DunningBanner").then((module) => ({ default: module.DunningBanner })));
 const SCABanner = lazy(() => import("@/components/billing/SCABanner").then((module) => ({ default: module.SCABanner })));
 const Index = lazy(() => import("./pages/Index"));
@@ -542,7 +541,6 @@ const App = () => {
             <Suspense fallback={null}>
               <ReferralCaptureMount />
               <IQReferralCaptureMount />
-              <LanguagePreferenceMount />
               <DunningBanner />
               <SCABanner />
               <RealTimeNotificationsMount />
