@@ -26,6 +26,7 @@ import { ReferralCreditsCard } from "@/components/ai-credits/ReferralCreditsCard
 import { PromoCodeInput } from "@/components/ai-credits/PromoCodeInput";
 import { AlternativePayMethods } from "@/components/ai-credits/AlternativePayMethods";
 import { ReceiptHistoryCard } from "@/components/ai-credits/ReceiptHistoryCard";
+import { WatchAdButton } from "@/components/ads/WatchAdButton";
 import { SEO } from "@/components/SEO";
 
 const AICreditsStore = () => {
@@ -160,6 +161,13 @@ const AICreditsStore = () => {
 
         {/* Low balance alert (renders only if low) */}
         <AICreditsLowBalanceAlert credits={credits?.credits_remaining ?? 0} />
+
+        {/* Earn free XP by watching an ad */}
+        <div className="flex items-center justify-center gap-3 rounded-xl border border-border/40 bg-card/40 p-4 backdrop-blur">
+          <span className="text-sm text-muted-foreground">Earn free XP — no purchase needed:</span>
+          <WatchAdButton size="sm" />
+        </div>
+
 
         {/* Flash sale */}
         <AICreditsFlashSale onClaim={handleFlashSale} />
