@@ -439,9 +439,10 @@ const Navbar = () => {
           {/* Mobile login moved to bottom navigation for better reachability */}
           {!user && <div className="lg:hidden ml-auto" />}
 
-          {/* Mobile: Notification bell (replaces language selector) */}
+          {/* Mobile: Language + Notification bell */}
           {user && (
-            <div className="lg:hidden mr-1">
+            <div className="lg:hidden mr-1 flex items-center gap-1">
+              <LanguageSelector />
               <NotificationBell />
             </div>
           )}
