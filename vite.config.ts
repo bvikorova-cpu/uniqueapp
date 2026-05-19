@@ -59,8 +59,9 @@ export default defineConfig(() => ({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          // Heavy 3D libs — split into their own chunk so non-3D pages don't pay
-          if (id.includes("node_modules/three") || id.includes("@react-three") || id.includes("node_modules/three-stdlib")) {
+          // Heavy 3D core only. Keep @react-three packages with React vendor;
+          // splitting them into this chunk caused production hook crashes.
+          if (id.includes("node_modules/three/") || id.includes("node_modules/three-stdlib")) {
             return "three";
           }
           // PDF/canvas heavy libs — only load when generating certificates/exports
@@ -110,6 +111,7 @@ export default defineConfig(() => ({
             id.includes("lucide-react") ||
             id.includes("react-hook-form") ||
             id.includes("@hookform") ||
+            id.includes("@react-three") ||
             id.includes("@radix-ui") ||
             id.includes("@tanstack/react-query")
           ) {
