@@ -64,9 +64,10 @@ export const LanguageSelector = () => {
   );
 
   const handleLanguageChange = async (language: typeof languages[0]) => {
-    i18n.changeLanguage(language.code);
     setSearchTerm("");
     try { localStorage.setItem("preferred_language", language.code); } catch {}
+    await loadLocale(language.code);
+    await i18n.changeLanguage(language.code);
     if (user) {
       await supabase
         .from("profiles")
