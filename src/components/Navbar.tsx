@@ -346,6 +346,11 @@ const Navbar = () => {
                   <FreeTierBalanceWidget compact />
                 </div>
 
+                {/* Language selector (desktop) */}
+                <div className="hidden sm:block">
+                  <LanguageSelector />
+                </div>
+
                 {/* Wall Notifications */}
                 <NotificationBell />
 
