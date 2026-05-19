@@ -1,61 +1,80 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, MessageSquare, Star, ThumbsUp, ThumbsDown, Loader2, Sparkles, TrendingUp, AlertCircle } from "lucide-react";
+import { ArrowLeft, MessageSquare, Star, Loader2, Sparkles, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useTutorialAICredits } from "@/hooks/useTutorialAICredits";
-import { toast } from "sonner";
-
-const CREDITS_COST = 4;
+import { formatDistanceToNow } from "date-fns";
 
 interface Props { onBack: () => void; }
 
-const mockReviews = [
-  { id: 1, course: "Web Dev Bootcamp", author: "John D.", rating: 5, text: "Absolutely fantastic course! The projects were real-world and the instructor explained everything clearly.", sentiment: "positive", date: "Apr 2, 2026", helpful: 42 },
-  { id: 2, course: "ML Fundamentals", author: "Sarah K.", rating: 4, text: "Great content but could use more practical examples in the later modules.", sentiment: "positive", date: "Apr 1, 2026", helpful: 28 },
-  { id: 3, course: "Digital Marketing", author: "Mike R.", rating: 3, text: "Decent overview but felt outdated in some areas. The SEO section needs updating.", sentiment: "neutral", date: "Mar 28, 2026", helpful: 15 },
-  { id: 4, course: "Python Advanced", author: "Emily T.", rating: 5, text: "Best Python course I've taken. The decorator and metaclass sections were mind-blowing.", sentiment: "positive", date: "Mar 25, 2026", helpful: 56 },
-  { id: 5, course: "UX Design", author: "Alex W.", rating: 2, text: "Too theoretical, not enough hands-on projects. Expected more Figma tutorials.", sentiment: "negative", date: "Mar 22, 2026", helpful: 8 },
-];
+interface Review {
+  id: string;
+  course_id: string;
+  user_id: string;
+  rating: number;
+  comment: string | null;
+  created_at: string;
+  course_title?: string;
+  author?: string;
+}
 
 export function CourseReviewSystemView({ onBack }: Props) {
   const { toast } = useToast();
-  const { credits, isDeducting, checkAndDeduct } = useTutorialAICredits();
   const [analyzing, setAnalyzing] = useState(false);
   const [sentimentReport, setSentimentReport] = useState<string | null>(null);
   const [newReview, setNewReview] = useState(false);
   const [reviewText, setReviewText] = useState("");
   const [rating, setRating] = useState(5);
-  const [reviews, setReviews] = useState(mockReviews);
-  const [voted, setVoted] = useState<Record<number, "up" | "down">>({});
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [enrolledCourseId, setEnrolledCourseId] = useState<string | null>(null);
 
-  const handleVote = (id: number, dir: "up" | "down") => {
-    if (voted[id]) {
-      toast({ description: "Already voted on this review" });
-      return;
+  const load = async () => {
+    setLoading(true);
+    const { data } = await supabase
+      .from("course_reviews")
+      .select("id,course_id,user_id,rating,comment,created_at")
+      .order("created_at", { ascending: false })
+      .limit(50);
+    const rows = (data ?? []) as Review[];
+    if (rows.length) {
+      const courseIds = [...new Set(rows.map(r => r.course_id))];
+      const userIds = [...new Set(rows.map(r => r.user_id))];
+      const [{ data: courses }, { data: profs }] = await Promise.all([
+        supabase.from("courses").select("id,title").in("id", courseIds),
+        supabase.from("profiles").select("id,username,full_name").in("id", userIds),
+      ]);
+      const cMap = new Map((courses ?? []).map((c: any) => [c.id, c.title]));
+      const pMap = new Map((profs ?? []).map((p: any) => [p.id, p.username || p.full_name || "Student"]));
+      rows.forEach(r => { r.course_title = cMap.get(r.course_id) || "Course"; r.author = pMap.get(r.user_id) || "Student"; });
     }
-    setVoted({ ...voted, [id]: dir });
-    setReviews(reviews.map(r => r.id === id
-      ? { ...r, helpful: dir === "up" ? r.helpful + 1 : Math.max(0, r.helpful - 1) }
-      : r
-    ));
-    toast({ description: dir === "up" ? "Marked helpful" : "Marked not helpful" });
+    setReviews(rows);
+    setLoading(false);
   };
 
+  useEffect(() => {
+    load();
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data } = await supabase.from("course_enrollments").select("course_id").eq("user_id", user.id).limit(1).maybeSingle();
+      if (data?.course_id) setEnrolledCourseId(data.course_id);
+    })();
+  }, []);
+
   const analyzeSentiment = async () => {
+    if (reviews.length === 0) { toast({ title: "No reviews to analyze yet", variant: "destructive" }); return; }
     setAnalyzing(true);
     try {
-      const allReviews = mockReviews.map(r => `${r.rating}/5 - ${r.text}`).join("\n");
-      const { data, error } = await supabase.functions.invoke('stock-content-ai', {
-        body: { action: 'analyze-reviews', reviews: allReviews }
-      });
+      const allReviews = reviews.map(r => `${r.rating}/5 - ${r.comment ?? ""}`).join("\n");
+      const { data, error } = await supabase.functions.invoke("stock-content-ai", { body: { action: "analyze-reviews", reviews: allReviews } });
       if (error) throw error;
       setSentimentReport(data.result);
-      toast({ title: "Analysis Complete!", description: "4 credits used" });
+      toast({ title: "Analysis complete", description: "4 credits used" });
     } catch (err: any) {
       toast({ title: "Error", description: err.message || "Failed", variant: "destructive" });
     } finally {
@@ -63,17 +82,18 @@ export function CourseReviewSystemView({ onBack }: Props) {
     }
   };
 
-  const getSentimentColor = (s: string) => {
-    if (s === "positive") return "bg-emerald-500/10 text-emerald-600";
-    if (s === "negative") return "bg-red-500/10 text-red-600";
-    return "bg-amber-500/10 text-amber-600";
-  };
-
-  const submitReview = () => {
-    if (!reviewText.trim()) { toast({ title: "Empty Review", variant: "destructive" }); return; }
-    toast({ title: "Review Submitted!", description: "Thank you for your feedback" });
-    setNewReview(false);
-    setReviewText("");
+  const submitReview = async () => {
+    if (!reviewText.trim()) { toast({ title: "Empty review", variant: "destructive" }); return; }
+    if (!enrolledCourseId) { toast({ title: "Enroll in a course first", variant: "destructive" }); return; }
+    setSubmitting(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setSubmitting(false); return; }
+    const { error } = await supabase.from("course_reviews").insert({ course_id: enrolledCourseId, user_id: user.id, rating, comment: reviewText.trim() });
+    setSubmitting(false);
+    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+    toast({ title: "Review submitted" });
+    setNewReview(false); setReviewText(""); setRating(5);
+    load();
   };
 
   return (
@@ -86,17 +106,19 @@ export function CourseReviewSystemView({ onBack }: Props) {
           </div>
           <div>
             <h2 className="text-2xl font-black">Course Reviews</h2>
-            <p className="text-sm text-muted-foreground">{mockReviews.length} reviews with AI sentiment analysis</p>
+            <p className="text-sm text-muted-foreground">{reviews.length} reviews with AI sentiment analysis</p>
           </div>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={analyzeSentiment} disabled={analyzing}>
+          <Button variant="outline" onClick={analyzeSentiment} disabled={analyzing || reviews.length === 0}>
             {analyzing ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
             AI Analysis (4 CR)
           </Button>
-          <Button onClick={() => setNewReview(!newReview)} className="bg-gradient-to-r from-amber-500 to-yellow-600">
-            <Star className="w-4 h-4 mr-2" />Write Review
-          </Button>
+          {enrolledCourseId && (
+            <Button onClick={() => setNewReview(!newReview)} className="bg-gradient-to-r from-amber-500 to-yellow-600">
+              <Star className="w-4 h-4 mr-2" />Write Review
+            </Button>
+          )}
         </div>
       </div>
 
@@ -127,38 +149,42 @@ export function CourseReviewSystemView({ onBack }: Props) {
             </div>
             <Textarea value={reviewText} onChange={e => setReviewText(e.target.value)} placeholder="Share your experience..." rows={4} />
             <div className="flex gap-2">
-              <Button onClick={submitReview} className="bg-gradient-to-r from-amber-500 to-yellow-600">Submit Review</Button>
+              <Button onClick={submitReview} disabled={submitting} className="bg-gradient-to-r from-amber-500 to-yellow-600">
+                {submitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}Submit Review
+              </Button>
               <Button variant="outline" onClick={() => setNewReview(false)}>Cancel</Button>
             </div>
           </CardContent>
         </Card>
       )}
 
-      <div className="space-y-3">
-        {reviews.map(review => (
-          <Card key={review.id} className="p-4 hover:shadow-lg transition-all">
-            <div className="flex items-start justify-between mb-2">
-              <div>
-                <div className="flex items-center gap-2">
-                  <h3 className="font-bold">{review.course}</h3>
-                  <Badge className={getSentimentColor(review.sentiment)}>{review.sentiment}</Badge>
+      {loading ? (
+        <div className="flex items-center justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-muted-foreground" /></div>
+      ) : reviews.length === 0 ? (
+        <Card className="p-8 text-center text-muted-foreground">No reviews yet.</Card>
+      ) : (
+        <div className="space-y-3">
+          {reviews.map(review => (
+            <Card key={review.id} className="p-4 hover:shadow-lg transition-all">
+              <div className="flex items-start justify-between mb-2">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-bold">{review.course_title}</h3>
+                    <Badge variant="outline">{review.rating}/5</Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground">by {review.author} • {formatDistanceToNow(new Date(review.created_at), { addSuffix: true })}</p>
                 </div>
-                <p className="text-xs text-muted-foreground">by {review.author} • {review.date}</p>
+                <div className="flex items-center gap-0.5">
+                  {[1,2,3,4,5].map(s => (
+                    <Star key={s} className={`w-3.5 h-3.5 ${s <= review.rating ? "text-amber-500 fill-amber-500" : "text-muted-foreground/30"}`} />
+                  ))}
+                </div>
               </div>
-              <div className="flex items-center gap-0.5">
-                {[1,2,3,4,5].map(s => (
-                  <Star key={s} className={`w-3.5 h-3.5 ${s <= review.rating ? "text-amber-500 fill-amber-500" : "text-muted-foreground/30"}`} />
-                ))}
-              </div>
-            </div>
-            <p className="text-sm mb-3">{review.text}</p>
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" size="sm" className={`h-7 text-xs ${voted[review.id] === "up" ? "text-emerald-600" : ""}`} onClick={() => handleVote(review.id, "up")}><ThumbsUp className="w-3 h-3 mr-1" />Helpful ({review.helpful})</Button>
-              <Button variant="ghost" size="sm" className={`h-7 text-xs ${voted[review.id] === "down" ? "text-rose-600" : ""}`} onClick={() => handleVote(review.id, "down")}><ThumbsDown className="w-3 h-3 mr-1" /></Button>
-            </div>
-          </Card>
-        ))}
-      </div>
+              {review.comment && <p className="text-sm">{review.comment}</p>}
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

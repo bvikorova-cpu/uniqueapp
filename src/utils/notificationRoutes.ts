@@ -49,23 +49,33 @@ export function getNotificationRoute(n: NotifLike): string {
     achievement: "/education/achievements",
 
     // Messaging
-    message: "/messages",
-    new_message: "/messages",
+    message: "/wall/messages",
+    new_message: "/wall/messages",
+    direct_message: "/wall/messages",
 
     // Brand collaborations
-    brand_collab_invite: "/brand-collaborations",
-    brand_collab_accepted: "/brand-collaborations",
-    brand_collab_payout: "/brand-collaborations",
+    brand_collab_invite: "/brand-dashboard",
+    brand_collab_accepted: "/brand-dashboard",
+    brand_collab_payout: "/brand-dashboard",
 
     // Fundraising
     fundraising_donation: "/fundraising",
     campaign_donation: "/fundraising",
 
     // Groups / Pages / Events
-    group_invite: "/groups",
-    page_follow: "/pages",
-    event_invite: "/events",
-    event_reminder: "/events",
+    group_invite: "/wall/groups",
+    group_post: "/wall/groups",
+    page_follow: "/wall/pages",
+    page_post: "/wall/pages",
+    event_invite: "/wall/events",
+    event_reminder: "/wall/events",
+
+    // Stories / posts / wall
+    story_view: "/wall",
+    story_reaction: "/wall",
+    post_like: "/wall",
+    post_comment: "/wall",
+    post_share: "/wall",
 
     // Course/education
     course_enrollment: "/education",
