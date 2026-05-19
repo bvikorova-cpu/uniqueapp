@@ -141,6 +141,25 @@ const Friends = () => {
     }
   };
 
+  const handleFriendRequest = async (request: FriendRequest, action: "accept" | "decline") => {
+    setRequestActionId(request.friendshipId);
+    try {
+      const result = action === "accept"
+        ? await supabase.from("friendships").update({ status: "accepted" }).eq("id", request.friendshipId)
+        : await supabase.from("friendships").delete().eq("id", request.friendshipId);
+      if (result.error) throw result.error;
+
+      await supabase.from("notifications").update({ is_read: true }).eq("related_id", request.friendshipId).eq("type", "friend_request");
+      setRequests((prev) => prev.filter((r) => r.friendshipId !== request.friendshipId));
+      if (action === "accept") setFriends((prev) => [...prev, request]);
+      toast({ title: action === "accept" ? "Friend request accepted" : "Friend request declined" });
+    } catch (e: any) {
+      toast({ title: "Request failed", description: e.message, variant: "destructive" });
+    } finally {
+      setRequestActionId(null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background py-6">
       <div className="container mx-auto px-3 sm:px-4 max-w-2xl">
