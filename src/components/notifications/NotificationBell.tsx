@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Bell } from "lucide-react";
+import { Bell, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -258,6 +258,42 @@ const NotificationBell = () => {
     }
   };
 
+  const handleFriendRequest = async (
+    e: React.MouseEvent,
+    notification: Notification,
+    action: "accept" | "decline"
+  ) => {
+    e.stopPropagation();
+    if (!user || !notification.actor_id) return;
+    try {
+      if (action === "accept") {
+        const { error } = await supabase
+          .from("friendships")
+          .update({ status: "accepted" })
+          .or(
+            `and(user_id.eq.${notification.actor_id},friend_id.eq.${user.id}),and(user_id.eq.${user.id},friend_id.eq.${notification.actor_id})`
+          )
+          .eq("status", "pending");
+        if (error) throw error;
+        toast({ title: "Friend request accepted" });
+      } else {
+        const { error } = await supabase
+          .from("friendships")
+          .delete()
+          .or(
+            `and(user_id.eq.${notification.actor_id},friend_id.eq.${user.id}),and(user_id.eq.${user.id},friend_id.eq.${notification.actor_id})`
+          )
+          .eq("status", "pending");
+        if (error) throw error;
+        toast({ title: "Friend request declined" });
+      }
+      await markAsRead(notification.id);
+      setNotifications((prev) => prev.filter((n) => n.id !== notification.id));
+    } catch (err: any) {
+      toast({ title: "Action failed", description: err.message, variant: "destructive" });
+    }
+  };
+
   const handleNotificationClick = async (notification: Notification) => {
     await markAsRead(notification.id);
 
@@ -365,6 +401,25 @@ const NotificationBell = () => {
                               locale: enUS,
                             })}
                           </p>
+                          {notification.type === "friend_request" && (
+                            <div className="flex gap-2 mt-2">
+                              <Button
+                                size="sm"
+                                className="h-7 px-3"
+                                onClick={(e) => handleFriendRequest(e, notification, "accept")}
+                              >
+                                <Check className="h-3 w-3 mr-1" /> Accept
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="h-7 px-3"
+                                onClick={(e) => handleFriendRequest(e, notification, "decline")}
+                              >
+                                <X className="h-3 w-3 mr-1" /> Decline
+                              </Button>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
