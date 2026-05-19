@@ -33,9 +33,9 @@ const UserSearch = () => {
     (async () => {
       setSearching(true);
       try {
-        const { data, error } = await supabase.rpc("search_users", { search_query: q });
+        const { data, error } = await (supabase as any).rpc("search_users", { search_query: q });
         if (error) throw error;
-        if (!cancelled) setSearchResults((data as Profile[]) || []);
+        if (!cancelled) setSearchResults(((data as unknown) as Profile[]) || []);
       } catch (error: any) {
         if (!cancelled) {
           toast({ title: "Search error", description: error.message, variant: "destructive" });
