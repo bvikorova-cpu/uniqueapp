@@ -125,16 +125,33 @@ export function VictoryCardGenerator({
       if (!blob) return;
       const file = new File([blob], "unique-win.png", { type: "image/png" });
       const text = `${title} ${amount} on Unique! Join me: ${shareUrl}`;
-      if (navigator.canShare?.({ files: [file] })) {
-        await navigator.share({ files: [file], text, title: "Unique Win" });
-      } else if (navigator.share) {
-        await navigator.share({ text, url: shareUrl, title });
-      } else {
-        await navigator.clipboard.writeText(`${text}`);
-        toast.success("Copied to clipboard!");
+
+      // Web Share API is blocked in iframes (e.g. Lovable preview) — detect & fallback
+      const inIframe = typeof window !== "undefined" && window.self !== window.top;
+
+      try {
+        if (!inIframe && navigator.canShare?.({ files: [file] })) {
+          await navigator.share({ files: [file], text, title: "Unique Win" });
+          return;
+        }
+        if (!inIframe && navigator.share) {
+          await navigator.share({ text, url: shareUrl, title });
+          return;
+        }
+      } catch (e: any) {
+        if (e?.name === "AbortError") return; // user cancelled
+        // otherwise fall through to clipboard fallback
       }
-    } catch (e: any) {
-      if (e?.name !== "AbortError") toast.error("Couldn't share — try Download instead.");
+
+      // Fallback: copy text+link to clipboard
+      try {
+        await navigator.clipboard.writeText(text);
+        toast.success("Link copied — paste it on social media!", {
+          description: inIframe ? "Native share works on the live app (uniqueapp.fun)." : undefined,
+        });
+      } catch {
+        toast.error("Couldn't share — try Save to download the image.");
+      }
     } finally { setGenerating(false); }
   };
 
