@@ -99,9 +99,16 @@ const VideoCall = ({ conversationId, userId, otherUserId, otherUserName }: Video
     }
   };
 
+  const isInIframe = (() => {
+    try { return window.self !== window.top; } catch { return true; }
+  })();
+
   const explainMediaError = (err: any): string => {
     const name = err?.name || "";
     if (name === "NotAllowedError" || name === "SecurityError") {
+      if (isInIframe) {
+        return "Video call cannot run inside the Lovable preview (camera/mic are blocked in this iframe). Open the app in a new tab — https://uniqueapp.fun/messenger — and allow Camera & Microphone there.";
+      }
       return "Camera/mic access was blocked. Tap the lock icon in the address bar → Site settings → allow Camera & Microphone, then reload.";
     }
     if (name === "NotFoundError") return "No camera or microphone was found on this device.";
