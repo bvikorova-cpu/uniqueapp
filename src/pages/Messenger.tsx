@@ -524,7 +524,7 @@ const Messenger = () => {
     if (!selectedConversation) return;
 
     const channel = supabase
-      .channel(`messages:${selectedConversation}`)
+      .channel(`user:${user.id}:messages:${selectedConversation}`)
       .on(
         "postgres_changes",
         {
@@ -600,7 +600,7 @@ const Messenger = () => {
     if (!selectedConversation) return;
 
     const channel = supabase
-      .channel(`typing:${selectedConversation}`)
+      .channel(`user:${user.id}:typing:${selectedConversation}`)
       .on(
         "postgres_changes",
         {

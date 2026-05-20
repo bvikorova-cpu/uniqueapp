@@ -8240,6 +8240,44 @@ export type Database = {
         }
         Relationships: []
       }
+      call_signals: {
+        Row: {
+          conversation_id: string | null
+          created_at: string
+          event: string
+          id: string
+          payload: Json
+          receiver_id: string
+          sender_id: string
+        }
+        Insert: {
+          conversation_id?: string | null
+          created_at?: string
+          event: string
+          id?: string
+          payload?: Json
+          receiver_id: string
+          sender_id: string
+        }
+        Update: {
+          conversation_id?: string | null
+          created_at?: string
+          event?: string
+          id?: string
+          payload?: Json
+          receiver_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "call_signals_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       calorie_quests: {
         Row: {
           completed_at: string | null

@@ -20,9 +20,10 @@ import { Phone, PhoneOff, Mic, MicOff, Video, VideoOff } from "lucide-react";
 /**
  * Global incoming-call provider.
  *
- * Each authenticated user always subscribes to a personal signaling channel
- * (`user-rtc:${userId}`) — so a call ring reaches them anywhere in the app,
- * not only inside the Messenger conversation with the caller.
+ * Each authenticated user always subscribes to their own database-backed
+ * signaling stream. Broadcast topics are intentionally not used for call
+ * delivery because project realtime RLS only allows clients to write to their
+ * own `user:<uid>` topic, not another user's topic.
  *
  * Signaling events:
  *   - "offer"         { from, fromName, conversationId, offer }
@@ -74,7 +75,6 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
   const [isVideoOff, setIsVideoOff] = useState(false);
 
   const ownChannelRef = useRef<RealtimeChannel | null>(null);
-  const outboundChannelsRef = useRef<Map<string, RealtimeChannel>>(new Map());
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
   const pendingIceRef = useRef<RTCIceCandidateInit[]>([]);
@@ -86,46 +86,30 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
 
   // -- helpers -----------------------------------------------------------
 
-  const getOutboundChannel = useCallback(async (targetUserId: string) => {
-    let ch = outboundChannelsRef.current.get(targetUserId);
-    if (ch) return ch;
-    console.log("[call] creating outbound channel for", targetUserId);
-    ch = supabase.channel(`user-rtc:${targetUserId}`, {
-      config: { broadcast: { ack: true, self: false } },
-    });
-    outboundChannelsRef.current.set(targetUserId, ch);
-    await new Promise<void>((resolve) => {
-      let done = false;
-      const finish = () => { if (!done) { done = true; resolve(); } };
-      ch!.subscribe((status, err) => {
-        console.log("[call] outbound channel status →", status, err || "");
-        if (status === "SUBSCRIBED") finish();
-        if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") finish();
-      });
-      setTimeout(finish, 4000);
-    });
-    return ch;
-  }, []);
-
   const sendToUser = useCallback(
-    async (targetUserId: string, event: string, payload: Record<string, unknown>) => {
+    async (targetUserId: string, event: string, payload: Record<string, unknown>, conversationId?: string) => {
+      if (!user?.id) return;
       try {
-        const ch = await getOutboundChannel(targetUserId);
-        const res = await ch.send({ type: "broadcast", event, payload });
-        console.log("[call] sent", event, "→", targetUserId, "result:", res);
+        const { error } = await (supabase as any).from("call_signals").insert({
+          conversation_id: conversationId || (payload.conversationId as string | undefined) || null,
+          sender_id: user.id,
+          receiver_id: targetUserId,
+          event,
+          payload,
+        });
+        if (error) throw error;
+        console.log("[call] signal saved", event, "→", targetUserId);
       } catch (e) {
         console.error("[call] sendToUser failed", event, e);
+        toast({
+          title: "Call signal failed",
+          description: "Could not reach the other user. Please try again.",
+          variant: "destructive",
+        });
       }
     },
-    [getOutboundChannel],
+    [user?.id, toast],
   );
-
-  const cleanupOutbound = useCallback(() => {
-    outboundChannelsRef.current.forEach((ch) => {
-      try { supabase.removeChannel(ch); } catch {}
-    });
-    outboundChannelsRef.current.clear();
-  }, []);
 
   const cleanupMedia = useCallback(() => {
     if (localStreamRef.current) {
@@ -146,9 +130,8 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
   const resetCall = useCallback(() => {
     stopRingtone();
     cleanupMedia();
-    cleanupOutbound();
     setCall({ status: "idle" });
-  }, [cleanupMedia, cleanupOutbound]);
+  }, [cleanupMedia]);
 
   // -- media -------------------------------------------------------------
 
@@ -201,7 +184,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
           void sendToUser(peerId, "ice-candidate", {
             from: user?.id,
             candidate: event.candidate.toJSON(),
-          });
+          }, callRef.current.status !== "idle" ? callRef.current.conversationId : undefined);
         }
       };
       pc.onconnectionstatechange = () => {
@@ -231,23 +214,24 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (!user?.id) return;
-    console.log("[call] subscribing to own channel user-rtc:" + user.id);
+    console.log("[call] subscribing to call_signals for", user.id);
 
-    const channel = supabase.channel(`user-rtc:${user.id}`);
+    const handleSignal = async (row: any) => {
+      if (!row || row.receiver_id !== user.id) return;
+      const payload = row.payload || {};
+      console.log("[call] ←", row.event, "from", row.sender_id, payload);
 
-    channel
-      .on("broadcast", { event: "offer" }, ({ payload }) => {
-        console.log("[call] ← OFFER from", payload?.from, payload);
+      if (row.event === "offer") {
         if (callRef.current.status !== "idle") {
           console.log("[call] busy, auto-declining");
-          void sendToUser(payload.from, "decline-call", { from: user.id, reason: "busy" });
+          void sendToUser(row.sender_id, "decline-call", { from: user.id, reason: "busy" }, row.conversation_id);
           return;
         }
         setCall({
           status: "incoming",
-          peerId: payload.from,
+          peerId: row.sender_id,
           peerName: payload.fromName || "Someone",
-          conversationId: payload.conversationId || "",
+          conversationId: row.conversation_id || payload.conversationId || "",
           offer: payload.offer,
         });
         startRingtone();
@@ -260,8 +244,10 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
             n.onclick = () => { try { window.focus(); n.close(); } catch {} };
           }
         } catch {}
-      })
-      .on("broadcast", { event: "answer" }, async ({ payload }) => {
+        return;
+      }
+
+      if (row.event === "answer") {
         const pc = pcRef.current;
         if (!pc || !payload.answer) return;
         try {
@@ -270,8 +256,10 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
         } catch (e) {
           console.error("answer setRemoteDescription failed", e);
         }
-      })
-      .on("broadcast", { event: "ice-candidate" }, async ({ payload }) => {
+        return;
+      }
+
+      if (row.event === "ice-candidate") {
         if (!payload.candidate) return;
         const pc = pcRef.current;
         if (!pc || !pc.remoteDescription) {
@@ -281,24 +269,44 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
         try { await pc.addIceCandidate(new RTCIceCandidate(payload.candidate)); } catch (e) {
           console.warn("addIceCandidate failed", e);
         }
-      })
-      .on("broadcast", { event: "end-call" }, () => {
+        return;
+      }
+
+      if (row.event === "end-call") {
         toast({ title: "Call ended", description: "The other party hung up." });
         resetCall();
-      })
-      .on("broadcast", { event: "cancel-call" }, () => {
+        return;
+      }
+
+      if (row.event === "cancel-call") {
         toast({ title: "Call canceled", description: "Caller ended before you picked up." });
         resetCall();
-      })
-      .on("broadcast", { event: "decline-call" }, ({ payload }) => {
+        return;
+      }
+
+      if (row.event === "decline-call") {
         toast({
           title: "Call declined",
           description: payload?.reason === "busy" ? "User is on another call." : "The other party declined.",
         });
         resetCall();
-      })
+      }
+    };
+
+    const channel = supabase
+      .channel(`user:${user.id}:call-signals`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "call_signals",
+          filter: `receiver_id=eq.${user.id}`,
+        },
+        (payload) => { void handleSignal(payload.new); },
+      )
       .subscribe((status, err) => {
-        console.log("[call] own channel status →", status, err || "");
+        console.log("[call] call_signals status →", status, err || "");
       });
 
     ownChannelRef.current = channel;
@@ -336,7 +344,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
           fromName: myName,
           conversationId,
           offer,
-        });
+        }, conversationId);
       } catch (err: any) {
         console.error("[call] startCall failed", err);
         toast({ title: "Error", description: explainMediaError(err), variant: "destructive" });
@@ -362,7 +370,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
       const answer = await pc.createAnswer();
       await pc.setLocalDescription(answer);
 
-      await sendToUser(call.peerId, "answer", { from: user!.id, answer });
+      await sendToUser(call.peerId, "answer", { from: user!.id, answer }, call.conversationId);
 
       setCall({
         status: "in-call",
@@ -380,20 +388,20 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
 
   const declineIncoming = useCallback(() => {
     if (call.status !== "incoming") return;
-    void sendToUser(call.peerId, "decline-call", { from: user!.id });
+    void sendToUser(call.peerId, "decline-call", { from: user!.id }, call.conversationId);
     resetCall();
   }, [call, sendToUser, user, resetCall]);
 
   const cancelOutgoing = useCallback(() => {
     if (call.status !== "outgoing") return;
-    void sendToUser(call.peerId, "cancel-call", { from: user!.id });
+    void sendToUser(call.peerId, "cancel-call", { from: user!.id }, call.conversationId);
     resetCall();
   }, [call, sendToUser, user, resetCall]);
 
   const endActive = useCallback(() => {
     if (call.status === "idle") return;
     const peerId = (call as any).peerId;
-    if (peerId) void sendToUser(peerId, "end-call", { from: user!.id });
+    if (peerId) void sendToUser(peerId, "end-call", { from: user!.id }, (call as any).conversationId);
     resetCall();
   }, [call, sendToUser, user, resetCall]);
 
