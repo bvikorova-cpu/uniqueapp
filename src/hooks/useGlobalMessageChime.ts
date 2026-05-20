@@ -28,8 +28,9 @@ export const useGlobalMessageChime = () => {
     loadConvIds();
 
     // Refresh participant list when user is added to a new conversation
+    const rand = Math.random().toString(36).slice(2, 10);
     const partsChannel = supabase
-      .channel(`participants-watch-${user.id}`)
+      .channel(`participants-watch-${user.id}-${rand}`)
       .on(
         "postgres_changes",
         {
@@ -43,7 +44,7 @@ export const useGlobalMessageChime = () => {
       .subscribe();
 
     const msgChannel = supabase
-      .channel(`global-messages-${user.id}`)
+      .channel(`global-messages-${user.id}-${rand}`)
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "messages" },
