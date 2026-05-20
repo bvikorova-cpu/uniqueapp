@@ -347,7 +347,9 @@ const Navbar = () => {
                 </div>
 
                 {/* Wall Notifications */}
+                <MessagesBell />
                 <NotificationBell />
+
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -436,6 +438,7 @@ const Navbar = () => {
           {/* Mobile: Notification bell */}
           {user && (
             <div className="lg:hidden mr-1 flex items-center gap-1">
+              <MessagesBell />
               <NotificationBell />
             </div>
           )}
