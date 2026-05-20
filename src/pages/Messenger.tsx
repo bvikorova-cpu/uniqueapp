@@ -129,6 +129,8 @@ const Messenger = () => {
   const [newMessage, setNewMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [allUsers, setAllUsers] = useState<Profile[]>([]);
+  const [searchResults, setSearchResults] = useState<Profile[]>([]);
+  const [searching, setSearching] = useState(false);
   const [profilesCache, setProfilesCache] = useState<Map<string, Profile>>(new Map());
   const [isTyping, setIsTyping] = useState(false);
   const [otherUserTyping, setOtherUserTyping] = useState(false);
