@@ -220,18 +220,17 @@ const Messenger = () => {
     }
     setSearching(true);
     const handle = setTimeout(async () => {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("id, full_name, avatar_url")
-        .neq("id", user.id)
-        .ilike("full_name", `%${q}%`)
-        .order("full_name", { ascending: true })
-        .limit(30);
-      if (!error) setSearchResults((data as Profile[]) || []);
+      // Use the indexed search_users RPC for fast lookup instead of slow ilike on profiles
+      const { data, error } = await (supabase as any).rpc("search_users", { search_query: q });
+      if (!error) {
+        const rows = ((data as any[]) || []).filter((p) => p.id !== user.id);
+        setSearchResults(rows as Profile[]);
+      }
       setSearching(false);
-    }, 250);
+    }, 200);
     return () => clearTimeout(handle);
   }, [searchQuery, user]);
+
 
 
 
@@ -905,6 +904,47 @@ const Messenger = () => {
               aiCredits: 50,
             }}
           />
+
+          {/* Active chats preview — so users see their conversations right on the hub */}
+          {conversations.length > 0 && (
+            <Card className="mb-8 border-primary/20 bg-card/60 backdrop-blur-sm">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-lg font-black flex items-center gap-2">
+                    <MessageCircle className="h-5 w-5 text-primary" />
+                    Active Chats
+                  </h3>
+                  <Button variant="ghost" size="sm" onClick={() => setActiveView("chat")}>
+                    See all
+                  </Button>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {conversations.slice(0, 6).map((conv) => (
+                    <div
+                      key={conv.id}
+                      onClick={() => {
+                        setSelectedConversation(conv.id);
+                        setActiveView("chat");
+                      }}
+                      className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent cursor-pointer transition-colors"
+                    >
+                      <Avatar className="h-9 w-9">
+                        <AvatarImage src={conv.otherUser?.avatar_url || undefined} />
+                        <AvatarFallback>{conv.otherUser?.full_name?.[0] || "U"}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold truncate">{conv.otherUser?.full_name || "User"}</p>
+                        {conv.lastMessage && (
+                          <p className="text-xs text-muted-foreground truncate">{conv.lastMessage.content}</p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
 
           {/* Tools Grid */}
           <div className="mb-8">
