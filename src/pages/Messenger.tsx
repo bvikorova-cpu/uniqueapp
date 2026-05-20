@@ -1545,7 +1545,7 @@ const Messenger = () => {
                           </div>
                         </div>
                       </div>
-                        </>
+                        </Fragment>
                       );
                     })}
                     <div ref={messagesEndRef} />
