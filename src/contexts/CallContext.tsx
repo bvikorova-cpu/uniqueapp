@@ -88,7 +88,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
 
   const sendToUser = useCallback(
     async (targetUserId: string, event: string, payload: Record<string, unknown>, conversationId?: string) => {
-      if (!user?.id) return;
+      if (!user?.id) return false;
       try {
         const { error } = await (supabase as any).from("call_signals").insert({
           conversation_id: conversationId || (payload.conversationId as string | undefined) || null,
@@ -99,6 +99,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
         });
         if (error) throw error;
         console.log("[call] signal saved", event, "→", targetUserId);
+        return true;
       } catch (e) {
         console.error("[call] sendToUser failed", event, e);
         toast({
@@ -106,6 +107,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
           description: "Could not reach the other user. Please try again.",
           variant: "destructive",
         });
+        return false;
       }
     },
     [user?.id, toast],
@@ -339,12 +341,13 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
 
         setCall({ status: "outgoing", peerId: otherUserId, peerName: otherUserName, conversationId });
 
-        await sendToUser(otherUserId, "offer", {
+        const delivered = await sendToUser(otherUserId, "offer", {
           from: user.id,
           fromName: myName,
           conversationId,
           offer,
         }, conversationId);
+        if (!delivered) resetCall();
       } catch (err: any) {
         console.error("[call] startCall failed", err);
         toast({ title: "Error", description: explainMediaError(err), variant: "destructive" });

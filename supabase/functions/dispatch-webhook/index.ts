@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
+import webpush from "npm:web-push@3.6.7";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -27,37 +28,86 @@ interface Body {
   payload: Record<string, unknown>;
 }
 
+const VAPID_PUBLIC = Deno.env.get("VAPID_PUBLIC_KEY");
+const VAPID_PRIVATE = Deno.env.get("VAPID_PRIVATE_KEY");
+const VAPID_SUBJECT = Deno.env.get("VAPID_SUBJECT") || "mailto:admin@uniqueapp.fun";
+
+if (VAPID_PUBLIC && VAPID_PRIVATE) {
+  webpush.setVapidDetails(VAPID_SUBJECT, VAPID_PUBLIC, VAPID_PRIVATE);
+}
+
+async function sendPushNotifications(admin: ReturnType<typeof createClient>, userIds: string[], payload: Record<string, unknown>) {
+  if (!VAPID_PUBLIC || !VAPID_PRIVATE) throw new Error("Missing VAPID configuration");
+
+  const { data: subs, error } = await admin
+    .from("push_subscriptions")
+    .select("id, endpoint, p256dh, auth")
+    .in("user_id", userIds);
+
+  if (error) throw error;
+  if (!subs?.length) return { sent: 0, removed: 0 };
+
+  const stale: string[] = [];
+  let sent = 0;
+  const body = JSON.stringify(payload ?? {});
+
+  await Promise.all(subs.map(async (sub: any) => {
+    try {
+      await webpush.sendNotification(
+        { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
+        body,
+        { TTL: 60, urgency: "high" },
+      );
+      sent += 1;
+    } catch (e: any) {
+      if (e?.statusCode === 404 || e?.statusCode === 410) stale.push(sub.id);
+      console.error("push failed", e?.statusCode, e?.body || e?.message);
+    }
+  }));
+
+  if (stale.length) await admin.from("push_subscriptions").delete().in("id", stale);
+  return { sent, removed: stale.length };
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const body = (await req.json()) as Body;
-    if (!body?.user_id || !body?.event_type) {
+    const body = await req.json();
+    const admin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
+
+    if (Array.isArray(body?.user_ids) && body?.payload) {
+      const result = await sendPushNotifications(admin, body.user_ids, body.payload);
+      return new Response(JSON.stringify(result), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const webhookBody = body as Body;
+    if (!webhookBody?.user_id || !webhookBody?.event_type) {
       return new Response(JSON.stringify({ error: "Missing user_id or event_type" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const admin = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-    );
-
     const { data: hooks } = await admin
       .from("creator_webhooks")
       .select("id,url,secret,events")
-      .eq("user_id", body.user_id)
+      .eq("user_id", webhookBody.user_id)
       .eq("is_active", true);
 
-    const matching = (hooks ?? []).filter((h: any) => h.events.includes(body.event_type));
+    const matching = (hooks ?? []).filter((h: any) => h.events.includes(webhookBody.event_type));
     const results: any[] = [];
 
     for (const hook of matching) {
       const payloadStr = JSON.stringify({
-        event: body.event_type,
+        event: webhookBody.event_type,
         ts: Date.now(),
-        data: body.payload,
+        data: webhookBody.payload,
       });
       const signature = await hmac(hook.secret, payloadStr);
       let status = 0;
@@ -68,7 +118,7 @@ serve(async (req) => {
           headers: {
             "Content-Type": "application/json",
             "X-Webhook-Signature": signature,
-            "X-Webhook-Event": body.event_type,
+            "X-Webhook-Event": webhookBody.event_type,
           },
           body: payloadStr,
           signal: AbortSignal.timeout(8000),
@@ -81,8 +131,8 @@ serve(async (req) => {
 
       await admin.from("webhook_deliveries").insert({
         webhook_id: hook.id,
-        event_type: body.event_type,
-        payload: body.payload,
+        event_type: webhookBody.event_type,
+        payload: webhookBody.payload,
         status_code: status,
         response_body: respText,
         delivered_at: new Date().toISOString(),
