@@ -1087,10 +1087,20 @@ const Messenger = () => {
               <>
                 <div className="flex items-center justify-between gap-3 pb-4 border-b">
                   <div className="flex items-center gap-3">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="md:hidden -ml-2"
+                      onClick={() => setSelectedConversation(null)}
+                      aria-label="Back to chats"
+                    >
+                      <ArrowLeft className="h-5 w-5" />
+                    </Button>
                     <Avatar>
                       <AvatarImage src={otherUser?.avatar_url || undefined} />
                       <AvatarFallback>{otherUser?.full_name?.[0] || "U"}</AvatarFallback>
                     </Avatar>
+
                     <div>
                       <h3 className="text-xl font-semibold">
                         {otherUser?.full_name || "User"}
