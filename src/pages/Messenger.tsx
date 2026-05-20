@@ -985,7 +985,7 @@ const Messenger = () => {
       </div>
       <div className="container mx-auto px-4 h-[calc(100vh-10rem)]">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-full">
-          <Card className="col-span-1 p-4 flex flex-col">
+          <Card className={`col-span-1 p-4 flex flex-col ${selectedConversation ? "hidden md:flex" : "flex"}`}>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <MessageCircle className="h-6 w-6 text-primary" />
