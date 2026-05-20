@@ -1390,7 +1390,7 @@ const Messenger = () => {
                         </div>
                       ) : null;
                       return (
-                        <>
+                        <Fragment key={msg.id}>
                           {separator}
                       <div
                         key={msg.id}
