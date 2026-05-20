@@ -43,33 +43,41 @@ const MessagesBell = () => {
 
     loadUnread();
 
-    const ch = supabase
-      .channel(`messages-bell-${user.id}-${Math.random().toString(36).slice(2, 10)}`)
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "messages" },
-        (payload) => {
-          const m: any = payload.new;
-          if (!m || m.sender_id === user.id) return;
-          if (!convIdsRef.current.has(m.conversation_id)) return;
-          setUnread((n) => n + 1);
-        },
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "conversation_participants",
-          filter: `user_id=eq.${user.id}`,
-        },
-        () => loadUnread(),
-      )
-      .subscribe();
+    let ch: ReturnType<typeof supabase.channel> | null = null;
+    try {
+      ch = supabase
+        .channel(`messages-bell-${user.id}-${Math.random().toString(36).slice(2, 10)}-${Date.now()}`)
+        .on(
+          "postgres_changes",
+          { event: "INSERT", schema: "public", table: "messages" },
+          (payload) => {
+            const m: any = payload.new;
+            if (!m || m.sender_id === user.id) return;
+            if (!convIdsRef.current.has(m.conversation_id)) return;
+            setUnread((n) => n + 1);
+          },
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "conversation_participants",
+            filter: `user_id=eq.${user.id}`,
+          },
+          () => loadUnread(),
+        )
+        .subscribe();
+    } catch (err) {
+      // Realtime channel collision must never crash the navbar
+      console.warn("MessagesBell realtime setup failed", err);
+    }
 
     return () => {
       cancelled = true;
-      supabase.removeChannel(ch);
+      if (ch) {
+        try { supabase.removeChannel(ch); } catch {}
+      }
     };
   }, [user?.id]);
 
