@@ -535,8 +535,21 @@ const Messenger = () => {
           schema: "public",
           table: "message_reactions",
         },
-        () => {
-          fetchMessages(); // Refresh to get updated reactions
+        async (payload) => {
+          // Surgical: only refresh reactions for the affected message
+          // instead of re-fetching the entire conversation.
+          const row: any = (payload.new as any) || (payload.old as any);
+          const messageId = row?.message_id;
+          if (!messageId) return;
+          const { data } = await supabase
+            .from("message_reactions")
+            .select("*")
+            .eq("message_id", messageId);
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === messageId ? { ...m, reactions: data || [] } : m
+            )
+          );
         }
       )
       .subscribe((status) => {
