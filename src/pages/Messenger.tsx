@@ -1242,7 +1242,26 @@ const Messenger = () => {
                   )}
                 </div>
 
+                {!isOnline && (
+                  <div className="px-3 py-2 text-xs text-center bg-destructive/15 text-destructive border-y border-destructive/30">
+                    You're offline — messages will send once you're back online.
+                  </div>
+                )}
+
                 <ScrollArea className="flex-1 py-4">
+                  {loadingMessages && messages.length === 0 ? (
+                    <div className="flex items-center justify-center py-12 text-sm text-muted-foreground gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Loading messages…
+                    </div>
+                  ) : messagesError && messages.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-12 text-sm text-muted-foreground gap-2">
+                      <p>Couldn't load messages.</p>
+                      <Button size="sm" variant="outline" onClick={() => fetchMessages()}>
+                        Retry
+                      </Button>
+                    </div>
+                  ) : null}
                   <div className="space-y-4">
                     {messages.map((msg) => (
                       <div
