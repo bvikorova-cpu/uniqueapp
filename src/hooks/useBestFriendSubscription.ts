@@ -94,7 +94,7 @@ export function useBestFriendSubscription() {
         throw new Error('Please sign in to manage subscription');
       }
 
-      const { data, error } = await supabase.functions.invoke('best-friend-customer-portal');
+      const { data, error } = await supabase.functions.invoke('customer-portal');
 
       if (error) throw error;
       if (data?.url) {
