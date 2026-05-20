@@ -410,7 +410,7 @@ const Messenger = () => {
 
   const fetchAllUsers = async () => {
     const { data, error } = await supabase
-      .from("profiles")
+      .from("public_profiles")
       .select("id, full_name, avatar_url")
       .neq("id", user.id);
 
@@ -419,7 +419,9 @@ const Messenger = () => {
       return;
     }
 
-    setAllUsers(data || []);
+    const users = ((data || []) as Profile[]).filter((profile) => Boolean(profile.id));
+    primeProfileCache(users);
+    setAllUsers(users);
   };
 
   const fetchMessages = async () => {
