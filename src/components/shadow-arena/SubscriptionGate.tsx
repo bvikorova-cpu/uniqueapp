@@ -14,12 +14,12 @@ interface SubscriptionGateProps {
 }
 
 const FEATURE_KEYS = [
-  { icon: Skull, titleKey: 'shadow.gate.features.story_title', descKey: 'shadow.gate.features.story_desc' },
-  { icon: Flame, titleKey: 'shadow.gate.features.voting_title', descKey: 'shadow.gate.features.voting_desc' },
-  { icon: Volume2, titleKey: 'shadow.gate.features.sound_title', descKey: 'shadow.gate.features.sound_desc' },
-  { icon: Trophy, titleKey: 'shadow.gate.features.tour_title', descKey: 'shadow.gate.features.tour_desc' },
-  { icon: Ghost, titleKey: 'shadow.gate.features.live_title', descKey: 'shadow.gate.features.live_desc' },
-  { icon: Eye, titleKey: 'shadow.gate.features.vault_title', descKey: 'shadow.gate.features.vault_desc' },
+  { icon: Skull, title: 'AI Horror Story Generator', desc: 'Conjure spine-chilling tales with AI — illustrations, ambient sound, narrative twists.' },
+  { icon: Flame, title: 'Live Voting & Gifts', desc: 'Audience sends digital gifts in real time. Each gift = a vote. Top performers win.' },
+  { icon: Volume2, title: 'Horror Sound Library', desc: 'Curated screams, whispers, ambient drones + AI-generated atmospheric soundscapes.' },
+  { icon: Trophy, title: 'Battle Tournaments', desc: 'Weekly & monthly tournaments with cash prize pools and a global cursed leaderboard.' },
+  { icon: Ghost, title: 'Live Horror Battles', desc: 'Go LIVE and perform your tale to a terrified audience in real time.' },
+  { icon: Eye, title: 'Story Archive Vault', desc: 'Every AI-enhanced horror story preserved with atmospheric illustrations.' },
 ];
 
 export function SubscriptionGate({ children }: SubscriptionGateProps) {
