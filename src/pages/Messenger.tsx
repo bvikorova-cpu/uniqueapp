@@ -725,9 +725,7 @@ const Messenger = () => {
       return;
     }
 
-
-    setNewMessage("");
-    setReplyingTo(null);
+    // Input was already cleared optimistically above.
   };
 
   // Voice recording functions
