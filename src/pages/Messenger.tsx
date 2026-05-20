@@ -33,6 +33,13 @@ import { SmartNotifications } from "@/components/messenger/SmartNotifications";
 import { motion } from "framer-motion";
 import { playMessageChime } from "@/lib/messageChime";
 import {
+  requestNotificationPermission,
+  showMessageNotification,
+  incrementUnreadBadge,
+  installUnreadBadgeAutoClear,
+  clearUnreadBadge,
+} from "@/lib/messageNotifications";
+import {
   Popover,
   PopoverContent,
   PopoverTrigger,
