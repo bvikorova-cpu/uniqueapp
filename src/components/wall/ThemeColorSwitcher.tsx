@@ -184,42 +184,50 @@ const themes: ColorTheme[] = [
   },
 ];
 
-const STORAGE_KEY = "app-color-theme";
+const LEGACY_KEY = "app-color-theme";
+const storageKeyFor = (userId: string | null) =>
+  userId ? `app-color-theme:${userId}` : "app-color-theme:guest";
 const DEFAULT_THEME = "Purple & Pink";
 
-const applyThemeVars = (theme: ColorTheme) => {
-  const root = document.documentElement;
-  root.style.setProperty("--primary", theme.primary);
-  root.style.setProperty("--ring", theme.ring);
-  root.style.setProperty("--accent", theme.accent);
-  root.style.setProperty("--sidebar-primary", theme.primary);
-  root.style.setProperty("--sidebar-ring", theme.ring);
-
-  const isDark = root.classList.contains("dark");
-  if (isDark) {
-    const parts = theme.primary.split(" ");
-    if (parts.length === 3) {
-      const lightness = parseFloat(parts[2]);
-      root.style.setProperty(
-        "--primary",
-        `${parts[0]} ${parts[1]} ${Math.min(lightness + 7, 80)}%`
-      );
-    }
-  }
-};
-
 export function ThemeColorSwitcher() {
-  const [savedTheme, setSavedTheme] = useState<string>(
-    () => localStorage.getItem(STORAGE_KEY) || DEFAULT_THEME
-  );
+  const [userId, setUserId] = useState<string | null>(null);
+  const [savedTheme, setSavedTheme] = useState<string>(DEFAULT_THEME);
   const [previewTheme, setPreviewTheme] = useState<string | null>(null);
 
-  // Apply persisted theme on first mount
+  // Track auth user; re-load theme on user change so partners on same device don't bleed
   useEffect(() => {
-    const t = themes.find((t) => t.name === savedTheme);
-    if (t) applyThemeVars(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    let active = true;
+    supabase.auth.getUser().then(({ data }) => {
+      if (active) setUserId(data.user?.id ?? null);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      setUserId(session?.user?.id ?? null);
+    });
+    return () => {
+      active = false;
+      sub.subscription.unsubscribe();
+    };
   }, []);
+
+  // Load and apply per-user theme whenever the user changes
+  useEffect(() => {
+    const key = storageKeyFor(userId);
+    let name = localStorage.getItem(key);
+    // One-time migration of the old global key into the current user's slot
+    if (!name && userId) {
+      const legacy = localStorage.getItem(LEGACY_KEY);
+      if (legacy) {
+        localStorage.setItem(key, legacy);
+        localStorage.removeItem(LEGACY_KEY);
+        name = legacy;
+      }
+    }
+    const themeName = name || DEFAULT_THEME;
+    const t = themes.find((t) => t.name === themeName) ?? themes[0];
+    applyThemeVars(t);
+    setSavedTheme(themeName);
+    setPreviewTheme(null);
+  }, [userId]);
 
   const previewOnly = useCallback((theme: ColorTheme) => {
     applyThemeVars(theme);
@@ -228,7 +236,7 @@ export function ThemeColorSwitcher() {
 
   const savePreview = () => {
     if (!previewTheme) return;
-    localStorage.setItem(STORAGE_KEY, previewTheme);
+    localStorage.setItem(storageKeyFor(userId), previewTheme);
     setSavedTheme(previewTheme);
     setPreviewTheme(null);
     toast.success(`Theme "${previewTheme}" saved`);
