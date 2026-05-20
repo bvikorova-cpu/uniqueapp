@@ -297,7 +297,9 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
         });
         resetCall();
       })
-      .subscribe();
+      .subscribe((status, err) => {
+        console.log("[call] own channel status →", status, err || "");
+      });
 
     ownChannelRef.current = channel;
 
