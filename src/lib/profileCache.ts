@@ -34,7 +34,7 @@ export const fetchProfileCached = async (
       .eq("id", userId)
       .single();
     if (error || !data) return null;
-    const row = data as CachedProfile;
+    const row = data as unknown as CachedProfile;
     cache.set(userId, row);
     return row;
   })();
