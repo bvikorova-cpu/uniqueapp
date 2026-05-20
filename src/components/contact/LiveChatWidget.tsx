@@ -21,9 +21,7 @@ export const LiveChatWidget = () => {
   const [hidden, setHidden] = useState<boolean>(() => {
     try { return localStorage.getItem(HIDDEN_KEY) === "1"; } catch { return false; }
   });
-  // Suppress the floating support bubble inside the Messenger to avoid
-  // overlapping the real chat composer.
-  if (pathname.startsWith("/messenger")) return null;
+
 
   const [userId, setUserId] = useState<string | null>(null);
   useEffect(() => { supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null)); }, []);
