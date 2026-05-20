@@ -512,12 +512,7 @@ const queryClient = new QueryClient({
 
 const App = () => {
   useEffect(() => {
-    const applyLanguage = (lng: string) => {
-      document.documentElement.lang = lng || "en";
-    };
-    applyLanguage(i18n.language);
-    i18n.on("languageChanged", applyLanguage);
-    return () => i18n.off("languageChanged", applyLanguage);
+    document.documentElement.lang = "en";
   }, []);
 
   // A11Y: Auto-detect prefers-reduced-motion and apply system-wide
