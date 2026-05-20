@@ -325,9 +325,21 @@ const Messenger = () => {
     }
   }, [selectedConversation]);
 
+  // Smooth-scroll only when a NEW message arrives.
+  // On conversation switch we jump instantly (no animation).
+  const prevMessagesLenRef = useRef(0);
+  const prevConvRef = useRef<string | null>(null);
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    const convChanged = prevConvRef.current !== selectedConversation;
+    const grew = messages.length > prevMessagesLenRef.current;
+    if (convChanged) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
+    } else if (grew) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+    prevMessagesLenRef.current = messages.length;
+    prevConvRef.current = selectedConversation;
+  }, [messages, selectedConversation]);
 
   const getProfile = async (userId: string): Promise<Profile | null> => {
     const fromState = profilesCache.get(userId);
