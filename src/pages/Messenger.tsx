@@ -767,9 +767,8 @@ const Messenger = () => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const filteredUsers = allUsers.filter((u) =>
-    u.full_name?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredUsers = searchResults;
+
 
   const selectedConvData = conversations.find((c) => c.id === selectedConversation);
   const otherUser = selectedConvData?.otherUser;
