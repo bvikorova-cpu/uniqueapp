@@ -214,23 +214,24 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (!user?.id) return;
-    console.log("[call] subscribing to own channel user-rtc:" + user.id);
+    console.log("[call] subscribing to call_signals for", user.id);
 
-    const channel = supabase.channel(`user-rtc:${user.id}`);
+    const handleSignal = async (row: any) => {
+      if (!row || row.receiver_id !== user.id) return;
+      const payload = row.payload || {};
+      console.log("[call] ←", row.event, "from", row.sender_id, payload);
 
-    channel
-      .on("broadcast", { event: "offer" }, ({ payload }) => {
-        console.log("[call] ← OFFER from", payload?.from, payload);
+      if (row.event === "offer") {
         if (callRef.current.status !== "idle") {
           console.log("[call] busy, auto-declining");
-          void sendToUser(payload.from, "decline-call", { from: user.id, reason: "busy" });
+          void sendToUser(row.sender_id, "decline-call", { from: user.id, reason: "busy" }, row.conversation_id);
           return;
         }
         setCall({
           status: "incoming",
-          peerId: payload.from,
+          peerId: row.sender_id,
           peerName: payload.fromName || "Someone",
-          conversationId: payload.conversationId || "",
+          conversationId: row.conversation_id || payload.conversationId || "",
           offer: payload.offer,
         });
         startRingtone();
@@ -243,8 +244,10 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
             n.onclick = () => { try { window.focus(); n.close(); } catch {} };
           }
         } catch {}
-      })
-      .on("broadcast", { event: "answer" }, async ({ payload }) => {
+        return;
+      }
+
+      if (row.event === "answer") {
         const pc = pcRef.current;
         if (!pc || !payload.answer) return;
         try {
@@ -253,8 +256,10 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
         } catch (e) {
           console.error("answer setRemoteDescription failed", e);
         }
-      })
-      .on("broadcast", { event: "ice-candidate" }, async ({ payload }) => {
+        return;
+      }
+
+      if (row.event === "ice-candidate") {
         if (!payload.candidate) return;
         const pc = pcRef.current;
         if (!pc || !pc.remoteDescription) {
@@ -264,24 +269,44 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
         try { await pc.addIceCandidate(new RTCIceCandidate(payload.candidate)); } catch (e) {
           console.warn("addIceCandidate failed", e);
         }
-      })
-      .on("broadcast", { event: "end-call" }, () => {
+        return;
+      }
+
+      if (row.event === "end-call") {
         toast({ title: "Call ended", description: "The other party hung up." });
         resetCall();
-      })
-      .on("broadcast", { event: "cancel-call" }, () => {
+        return;
+      }
+
+      if (row.event === "cancel-call") {
         toast({ title: "Call canceled", description: "Caller ended before you picked up." });
         resetCall();
-      })
-      .on("broadcast", { event: "decline-call" }, ({ payload }) => {
+        return;
+      }
+
+      if (row.event === "decline-call") {
         toast({
           title: "Call declined",
           description: payload?.reason === "busy" ? "User is on another call." : "The other party declined.",
         });
         resetCall();
-      })
+      }
+    };
+
+    const channel = supabase
+      .channel(`call-signals:${user.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "call_signals",
+          filter: `receiver_id=eq.${user.id}`,
+        },
+        (payload) => { void handleSignal(payload.new); },
+      )
       .subscribe((status, err) => {
-        console.log("[call] own channel status →", status, err || "");
+        console.log("[call] call_signals status →", status, err || "");
       });
 
     ownChannelRef.current = channel;
