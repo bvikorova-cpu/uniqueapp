@@ -40,6 +40,11 @@ import {
   clearUnreadBadge,
 } from "@/lib/messageNotifications";
 import {
+  fetchProfileCached,
+  fetchProfilesCachedBatch,
+  primeProfileCache,
+} from "@/lib/profileCache";
+import {
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -305,19 +310,16 @@ const Messenger = () => {
   }, [messages]);
 
   const getProfile = async (userId: string): Promise<Profile | null> => {
-    if (profilesCache.has(userId)) {
-      return profilesCache.get(userId)!;
-    }
+    const fromState = profilesCache.get(userId);
+    if (fromState) return fromState;
 
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("id, full_name, avatar_url")
-      .eq("id", userId)
-      .single();
+    const data = await fetchProfileCached(userId);
+    if (!data) return null;
 
-    if (error || !data) return null;
-
-    setProfilesCache((prev) => new Map(prev).set(userId, data));
+    setProfilesCache((prev) => {
+      if (prev.has(userId)) return prev;
+      return new Map(prev).set(userId, data);
+    });
     return data;
   };
 
@@ -421,16 +423,12 @@ const Messenger = () => {
       reactionsData = rd || [];
     }
 
-    // Batch-fetch all sender profiles in a single query.
+    // Batch-fetch all sender profiles using the shared module cache
+    // (hits network only for missing ids).
     const senderIds = Array.from(new Set(rows.map((m) => m.sender_id)));
-    const profilesMap = new Map<string, any>();
-    if (senderIds.length > 0) {
-      const { data: profs } = await supabase
-        .from("profiles")
-        .select("id, full_name, avatar_url")
-        .in("id", senderIds);
-      (profs || []).forEach((p) => profilesMap.set(p.id, p));
-    }
+    const profilesMap = senderIds.length > 0
+      ? await fetchProfilesCachedBatch(senderIds)
+      : new Map<string, any>();
 
     const messagesWithProfiles = rows.map((msg) => {
       const profile = profilesMap.get(msg.sender_id) || {
@@ -537,8 +535,21 @@ const Messenger = () => {
           schema: "public",
           table: "message_reactions",
         },
-        () => {
-          fetchMessages(); // Refresh to get updated reactions
+        async (payload) => {
+          // Surgical: only refresh reactions for the affected message
+          // instead of re-fetching the entire conversation.
+          const row: any = (payload.new as any) || (payload.old as any);
+          const messageId = row?.message_id;
+          if (!messageId) return;
+          const { data } = await supabase
+            .from("message_reactions")
+            .select("*")
+            .eq("message_id", messageId);
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === messageId ? { ...m, reactions: data || [] } : m
+            )
+          );
         }
       )
       .subscribe((status) => {
