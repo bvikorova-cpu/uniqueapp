@@ -7,10 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply, Mic, Image, Smile, Square, Play, Pause, Users, BarChart3, Palette, Radio, Clock, ArrowLeft, Download, Brain, Gamepad2, Bell, Sticker } from "lucide-react";
+import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply, Mic, Image, Smile, Square, Play, Pause, Users, BarChart3, Palette, Radio, Clock, ArrowLeft, Download, Brain, Gamepad2, Bell, Sticker, Loader2 } from "lucide-react";
 import { EmojiPicker } from "@/components/messenger/EmojiPicker";
 import { GifPicker } from "@/components/messenger/GifPicker";
 import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 import VideoCall from "@/components/messenger/VideoCall";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { OnlineIndicator } from "@/components/messenger/OnlineIndicator";
@@ -148,13 +149,29 @@ const Messenger = () => {
   const [selectedMessageText, setSelectedMessageText] = useState<string>("");
   const [totalMessages, setTotalMessages] = useState(0);
   const [friendsOnlineCount, setFriendsOnlineCount] = useState(0);
+  const [loadingMessages, setLoadingMessages] = useState(false);
+  const [messagesError, setMessagesError] = useState(false);
+  const [isOnline, setIsOnline] = useState(typeof navigator !== "undefined" ? navigator.onLine : true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const otherTypingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const recordingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const audioRefs = useRef<Map<string, HTMLAudioElement>>(new Map());
+
+  // Track browser online/offline so we can show a banner inside the chat.
+  useEffect(() => {
+    const goOnline = () => setIsOnline(true);
+    const goOffline = () => setIsOnline(false);
+    window.addEventListener("online", goOnline);
+    window.addEventListener("offline", goOffline);
+    return () => {
+      window.removeEventListener("online", goOnline);
+      window.removeEventListener("offline", goOffline);
+    };
+  }, []);
 
   // Online status hook
   const { isUserOnline } = useOnlineStatus(user?.id || null);
@@ -247,6 +264,8 @@ const Messenger = () => {
       // Clear previous conversation messages immediately so the new
       // conversation always starts fresh and history is reloaded.
       setMessages([]);
+      setLoadingMessages(true);
+      setMessagesError(false);
       fetchMessages();
       const unsubscribeMessages = subscribeToMessages();
       const unsubscribeTyping = subscribeToTyping();
@@ -258,6 +277,8 @@ const Messenger = () => {
       };
     } else {
       setMessages([]);
+      setLoadingMessages(false);
+      setMessagesError(false);
     }
   }, [selectedConversation]);
 
@@ -352,6 +373,8 @@ const Messenger = () => {
     if (!selectedConversation) return;
 
     const convId = selectedConversation;
+    setLoadingMessages(true);
+    setMessagesError(false);
     const { data, error } = await supabase
       .from("messages")
       .select("id, content, sender_id, created_at, story_id, reply_to_id, is_read, read_at")
@@ -361,6 +384,10 @@ const Messenger = () => {
 
     if (error) {
       console.error("Error fetching messages:", error);
+      if (convId === selectedConversation) {
+        setMessagesError(true);
+        setLoadingMessages(false);
+      }
       return;
     }
 
@@ -422,6 +449,8 @@ const Messenger = () => {
     // Guard: if user switched conversations during the fetch, ignore stale results.
     if (convId !== selectedConversation) return;
     setMessages(messagesWithProfiles);
+    setLoadingMessages(false);
+    setMessagesError(false);
   };
 
   const markMessagesAsRead = async () => {
@@ -647,8 +676,9 @@ const Messenger = () => {
   };
 
 
-  const sendMessage = async () => {
-    if (!newMessage.trim() || !selectedConversation) return;
+  const sendMessage = async (overrideText?: string, overrideReplyId?: string | null) => {
+    const text = (overrideText ?? newMessage).trim();
+    if (!text || !selectedConversation) return;
 
     // Stop typing indicator
     setIsTyping(false);
@@ -661,25 +691,41 @@ const Messenger = () => {
       ? new Date(Date.now() + selfDestructDuration * 1000).toISOString()
       : null;
 
+    const replyId = overrideReplyId !== undefined ? overrideReplyId : (replyingTo?.id || null);
+
+    // Optimistically clear the input so the user can keep typing.
+    if (overrideText === undefined) {
+      setNewMessage("");
+      setReplyingTo(null);
+    }
+
     const { error } = await supabase.from("messages").insert({
       conversation_id: selectedConversation,
       sender_id: user.id,
-      content: newMessage.trim(),
-      reply_to_id: replyingTo?.id || null,
+      content: text,
+      reply_to_id: replyId,
       expires_at: expiresAt,
     });
 
     if (error) {
+      // Restore the text so nothing is lost, and offer a retry.
+      setNewMessage((prev) => (prev ? prev : text));
       toast({
-        title: "Error",
-        description: "Failed to send message",
+        title: "Message not sent",
+        description: !isOnline
+          ? "You're offline. Tap retry once you're back online."
+          : "Couldn't reach the server. Tap retry to try again.",
         variant: "destructive",
+        action: (
+          <ToastAction altText="Retry" onClick={() => sendMessage(text, replyId)}>
+            Retry
+          </ToastAction>
+        ),
       });
       return;
     }
 
-    setNewMessage("");
-    setReplyingTo(null);
+    // Input was already cleared optimistically above.
   };
 
   // Voice recording functions
@@ -1196,7 +1242,26 @@ const Messenger = () => {
                   )}
                 </div>
 
+                {!isOnline && (
+                  <div className="px-3 py-2 text-xs text-center bg-destructive/15 text-destructive border-y border-destructive/30">
+                    You're offline — messages will send once you're back online.
+                  </div>
+                )}
+
                 <ScrollArea className="flex-1 py-4">
+                  {loadingMessages && messages.length === 0 ? (
+                    <div className="flex items-center justify-center py-12 text-sm text-muted-foreground gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Loading messages…
+                    </div>
+                  ) : messagesError && messages.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-12 text-sm text-muted-foreground gap-2">
+                      <p>Couldn't load messages.</p>
+                      <Button size="sm" variant="outline" onClick={() => fetchMessages()}>
+                        Retry
+                      </Button>
+                    </div>
+                  ) : null}
                   <div className="space-y-4">
                     {messages.map((msg) => (
                       <div
@@ -1479,7 +1544,7 @@ const Messenger = () => {
                       }}
                       className="flex-1 min-w-0"
                     />
-                    <Button onClick={sendMessage} size="icon" className="shrink-0" disabled={isRecording || !newMessage.trim()}>
+                    <Button onClick={() => sendMessage()} size="icon" className="shrink-0" disabled={isRecording || !newMessage.trim()}>
                       <Send className="h-4 w-4" />
                     </Button>
                   </div>
