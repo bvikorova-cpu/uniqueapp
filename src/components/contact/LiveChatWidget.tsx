@@ -36,6 +36,11 @@ export const LiveChatWidget = () => {
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // Suppress the floating support bubble inside the Messenger to avoid
+  // overlapping the real chat composer. Placed after all hooks to preserve order.
+  if (pathname.startsWith("/messenger")) return null;
+
+
   useEffect(() => {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(messages.slice(-30))); } catch {}
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
