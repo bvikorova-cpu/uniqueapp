@@ -33,6 +33,13 @@ import { SmartNotifications } from "@/components/messenger/SmartNotifications";
 import { motion } from "framer-motion";
 import { playMessageChime } from "@/lib/messageChime";
 import {
+  requestNotificationPermission,
+  showMessageNotification,
+  incrementUnreadBadge,
+  installUnreadBadgeAutoClear,
+  clearUnreadBadge,
+} from "@/lib/messageNotifications";
+import {
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -172,6 +179,17 @@ const Messenger = () => {
       window.removeEventListener("offline", goOffline);
     };
   }, []);
+
+  // Ask for browser notification permission once + auto-clear unread tab badge on focus.
+  useEffect(() => {
+    requestNotificationPermission();
+    const cleanup = installUnreadBadgeAutoClear();
+    return () => {
+      cleanup();
+      clearUnreadBadge();
+    };
+  }, []);
+
 
   // Online status hook
   const { isUserOnline } = useOnlineStatus(user?.id || null);
@@ -504,6 +522,11 @@ const Messenger = () => {
           if (payload.new.sender_id !== user.id) {
             playMessageChime();
             markMessagesAsRead();
+            // Background notification + tab title badge when tab is hidden/blurred
+            const senderName = profile?.full_name || "New message";
+            const body = (payload.new as any).content || "Sent you a message";
+            showMessageNotification(senderName, String(body).slice(0, 140), profile?.avatar_url || undefined);
+            incrementUnreadBadge();
           }
         }
       )
