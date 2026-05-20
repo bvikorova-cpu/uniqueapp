@@ -60,7 +60,7 @@ export default function MegatalentTipJar({ creatorId, creatorName, categorySlug 
           if (error) throw error;
           if ((data as any)?.verified) {
             toast({
-              title: t("megatalent.tip.successTitle", "Thanks for your support!"),
+              title: "Thanks for your support!",
               description: t(
                 "megatalent.tip.successDesc",
                 "Your tip has been delivered to the creator.",
@@ -86,8 +86,8 @@ export default function MegatalentTipJar({ creatorId, creatorName, categorySlug 
   const handleTip = async () => {
     if (!user) {
       toast({
-        title: t("auth.required", "Sign in required"),
-        description: t("megatalent.tip.signInFirst", "Sign in to send a tip."),
+        title: "Sign in required",
+        description: "Sign in to send a tip.",
         variant: "destructive",
       });
       return;
@@ -95,8 +95,8 @@ export default function MegatalentTipJar({ creatorId, creatorName, categorySlug 
     const finalAmount = custom ? Math.round(parseFloat(custom) * 100) : amount;
     if (!Number.isFinite(finalAmount) || finalAmount < 100 || finalAmount > 50000) {
       toast({
-        title: t("megatalent.tip.invalidAmount", "Invalid amount"),
-        description: t("megatalent.tip.amountRange", "Tips must be €1 – €500."),
+        title: "Invalid amount",
+        description: "Tips must be €1 – €500.",
         variant: "destructive",
       });
       return;
@@ -116,7 +116,7 @@ export default function MegatalentTipJar({ creatorId, creatorName, categorySlug 
       if (url) window.location.href = url;
     } catch (e: any) {
       toast({
-        title: t("megatalent.tip.failed", "Tip failed"),
+        title: "Tip failed",
         description: e?.message ?? "Unknown error",
         variant: "destructive",
       });
@@ -130,16 +130,13 @@ export default function MegatalentTipJar({ creatorId, creatorName, categorySlug 
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Heart className="h-5 w-5 text-pink-500" />
-          {t("megatalent.tip.title", "Send a Tip")}
+          {"Send a Tip"}
           {creatorName ? <span className="text-muted-foreground">→ {creatorName}</span> : null}
         </CardTitle>
         {stats && stats.count > 0 ? (
           <p className="text-xs text-muted-foreground flex items-center gap-1">
             <Sparkles className="h-3 w-3" />
-            {t("megatalent.tip.statsLine", "{{count}} fans tipped €{{eur}} total", {
-              count: stats.count,
-              eur: (stats.total / 100).toFixed(2),
-            })}
+            {`${stats.count} fans tipped €${(stats.total / 100).toFixed(2)} total`}
           </p>
         ) : null}
       </CardHeader>
@@ -165,12 +162,12 @@ export default function MegatalentTipJar({ creatorId, creatorName, categorySlug 
           min={1}
           max={500}
           step={0.5}
-          placeholder={t("megatalent.tip.customAmount", "Custom amount (€)")}
+          placeholder={"Custom amount (€)"}
           value={custom}
           onChange={(e) => setCustom(e.target.value)}
         />
         <Textarea
-          placeholder={t("megatalent.tip.messagePlaceholder", "Optional message (max 280 chars)")}
+          placeholder={"Optional message (max 280 chars)"}
           maxLength={280}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
@@ -186,10 +183,10 @@ export default function MegatalentTipJar({ creatorId, creatorName, categorySlug 
           ) : (
             <Heart className="h-4 w-4 mr-2" />
           )}
-          {t("megatalent.tip.cta", "Send Tip")}
+          {"Send Tip"}
         </Button>
         <p className="text-[10px] text-muted-foreground text-center">
-          {t("megatalent.tip.split", "Creator receives 80% • Platform fee 20%")}
+          {"Creator receives 80% • Platform fee 20%"}
         </p>
       </CardContent>
     </Card>

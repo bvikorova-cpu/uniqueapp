@@ -103,15 +103,15 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["jobPreferences"] });
       toast({
-        title: t('jobs.preferences.saved', '✅ Preferences Saved'),
-        description: t('jobs.preferences.savedDesc', 'You will receive notifications about new job offers matching your preferences'),
+        title: "✅ Preferences Saved",
+        description: "You will receive notifications about new job offers matching your preferences",
       });
       setOpen(false);
     },
     onError: (error: any) => {
       toast({
         title: "❌ Error",
-        description: error.message || t('jobs.preferences.errorSaving', 'Failed to save preferences'),
+        description: error.message || "Failed to save preferences",
         variant: "destructive",
       });
     },
@@ -157,15 +157,15 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
       <DialogTrigger asChild>
         <Button variant="outline" size="sm" className="text-xs md:text-sm">
           <Bell className="h-4 w-4 mr-1 md:mr-2" />
-          <span className="hidden sm:inline">{t('jobs.preferences.title', 'Notification Settings')}</span>
+          <span className="hidden sm:inline">{"Notification Settings"}</span>
           <span className="sm:hidden">Notify</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{t('jobs.preferences.title', 'Job Preferences')}</DialogTitle>
+          <DialogTitle>{"Job Preferences"}</DialogTitle>
           <DialogDescription>
-            {t('jobs.preferences.description', 'Set your preferences and receive notifications about new offers that match')}
+            {"Set your preferences and receive notifications about new offers that match"}
           </DialogDescription>
         </DialogHeader>
 
@@ -173,9 +173,9 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
           {/* Enable Notifications */}
           <div className="flex items-center justify-between">
             <div>
-              <Label>{t('jobs.preferences.enableNotifications', 'Enable Notifications')}</Label>
+              <Label>{"Enable Notifications"}</Label>
               <p className="text-sm text-muted-foreground">
-                {t('jobs.preferences.enableNotificationsDesc', 'Receive alerts about new job offers')}
+                {"Receive alerts about new job offers"}
               </p>
             </div>
             <Switch
@@ -188,9 +188,9 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
 
           {/* Categories */}
           <div>
-            <Label>{t('jobs.preferences.categories', 'Categories')}</Label>
+            <Label>{"Categories"}</Label>
             <p className="text-sm text-muted-foreground mb-3">
-              {t('jobs.preferences.categoriesDesc', 'Select categories that interest you (leave empty for all)')}
+              {"Select categories that interest you (leave empty for all)"}
             </p>
             <div className="flex flex-wrap gap-2">
               {Object.entries(CATEGORIES).map(([key, label]) => (
@@ -208,9 +208,9 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
 
           {/* Job Types */}
           <div>
-            <Label>{t('jobs.preferences.jobTypes', 'Employment Type')}</Label>
+            <Label>{"Employment Type"}</Label>
             <p className="text-sm text-muted-foreground mb-3">
-              {t('jobs.preferences.jobTypesDesc', 'Select position types (leave empty for all)')}
+              {"Select position types (leave empty for all)"}
             </p>
             <div className="flex flex-wrap gap-2">
               {Object.entries(JOB_TYPES).map(([key, label]) => (
@@ -228,19 +228,19 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
 
           {/* Locations */}
           <div>
-            <Label>{t('jobs.preferences.locations', 'Locations')}</Label>
+            <Label>{"Locations"}</Label>
             <p className="text-sm text-muted-foreground mb-3">
-              {t('jobs.preferences.locationsDesc', 'Add locations where you are looking for work (leave empty for all)')}
+              {"Add locations where you are looking for work (leave empty for all)"}
             </p>
             <div className="flex gap-2 mb-2">
               <Input
-                placeholder={t('jobs.preferences.locationPlaceholder', 'e.g.: Bratislava, Prague, Remote...')}
+                placeholder={"e.g.: Bratislava, Prague, Remote..."}
                 value={locationInput}
                 onChange={(e) => setLocationInput(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && addLocation()}
               />
               <Button onClick={addLocation} type="button">
-                {t('jobs.preferences.add', 'Add')}
+                {"Add"}
               </Button>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -258,14 +258,14 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
 
           {/* Salary Range */}
           <div>
-            <Label>{t('jobs.preferences.salaryRange', 'Salary Range (€/month)')}</Label>
+            <Label>{"Salary Range (€/month)"}</Label>
             <p className="text-sm text-muted-foreground mb-3">
-              {t('jobs.preferences.salaryRangeDesc', 'Minimum and maximum gross salary (leave empty for any)')}
+              {"Minimum and maximum gross salary (leave empty for any)"}
             </p>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="min_salary" className="text-sm">
-                  {t('jobs.preferences.minimum', 'Minimum')}
+                  {"Minimum"}
                 </Label>
                 <Input
                   id="min_salary"
@@ -279,7 +279,7 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
               </div>
               <div>
                 <Label htmlFor="max_salary" className="text-sm">
-                  {t('jobs.preferences.maximum', 'Maximum')}
+                  {"Maximum"}
                 </Label>
                 <Input
                   id="max_salary"
@@ -299,7 +299,7 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
             disabled={saveMutation.isPending}
             className="w-full"
           >
-            {saveMutation.isPending ? t('jobs.preferences.saving', 'Saving...') : t('jobs.preferences.save', 'Save Preferences')}
+            {saveMutation.isPending ? "Saving..." : "Save Preferences"}
           </Button>
         </div>
       </DialogContent>
