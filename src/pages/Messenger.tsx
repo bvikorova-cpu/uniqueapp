@@ -220,18 +220,17 @@ const Messenger = () => {
     }
     setSearching(true);
     const handle = setTimeout(async () => {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("id, full_name, avatar_url")
-        .neq("id", user.id)
-        .ilike("full_name", `%${q}%`)
-        .order("full_name", { ascending: true })
-        .limit(30);
-      if (!error) setSearchResults((data as Profile[]) || []);
+      // Use the indexed search_users RPC for fast lookup instead of slow ilike on profiles
+      const { data, error } = await (supabase as any).rpc("search_users", { search_query: q });
+      if (!error) {
+        const rows = ((data as any[]) || []).filter((p) => p.id !== user.id);
+        setSearchResults(rows as Profile[]);
+      }
       setSearching(false);
-    }, 250);
+    }, 200);
     return () => clearTimeout(handle);
   }, [searchQuery, user]);
+
 
 
 
