@@ -966,6 +966,14 @@ const Messenger = () => {
             <ScrollArea className="flex-1">
               {searchQuery ? (
                 <div className="space-y-2">
+                  {searching && filteredUsers.length === 0 && (
+                    <p className="text-sm text-muted-foreground text-center py-6">Searching…</p>
+                  )}
+                  {!searching && filteredUsers.length === 0 && (
+                    <p className="text-sm text-muted-foreground text-center py-6">
+                      No users found for "{searchQuery}"
+                    </p>
+                  )}
                   {filteredUsers.map((u) => (
                     <div
                       key={u.id}
