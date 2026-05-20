@@ -28,6 +28,7 @@ import { CustomEmojiCreator } from "@/components/messenger/CustomEmojiCreator";
 import { ChatGames } from "@/components/messenger/ChatGames";
 import { SmartNotifications } from "@/components/messenger/SmartNotifications";
 import { motion } from "framer-motion";
+import { playMessageChime } from "@/lib/messageChime";
 import {
   Popover,
   PopoverContent,
