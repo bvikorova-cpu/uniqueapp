@@ -180,6 +180,17 @@ const Messenger = () => {
     };
   }, []);
 
+  // Ask for browser notification permission once + auto-clear unread tab badge on focus.
+  useEffect(() => {
+    requestNotificationPermission();
+    const cleanup = installUnreadBadgeAutoClear();
+    return () => {
+      cleanup();
+      clearUnreadBadge();
+    };
+  }, []);
+
+
   // Online status hook
   const { isUserOnline } = useOnlineStatus(user?.id || null);
 
