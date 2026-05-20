@@ -22,8 +22,8 @@ serve(async (req) => {
 
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
-      return new Response(JSON.stringify({ error: "Missing authorization header" }), {
-        status: 401,
+      // No session — banner stays hidden. Soft 200 prevents client runtime error.
+      return new Response(JSON.stringify({ has_pending: false, unauthenticated: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
