@@ -44,6 +44,11 @@ export const useRealTimeNotifications = () => {
             message: <Bell className="h-4 w-4 text-yellow-500" />,
           };
 
+          // Play distinct notification chime (different from message chime)
+          if (newNotification.type !== "message") {
+            playNotificationChime();
+          }
+
           toast(newNotification.message || "New notification", {
             icon: icons[newNotification.type] || <Bell className="h-4 w-4" />,
           });
