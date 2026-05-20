@@ -244,15 +244,20 @@ const Messenger = () => {
 
   useEffect(() => {
     if (selectedConversation) {
+      // Clear previous conversation messages immediately so the new
+      // conversation always starts fresh and history is reloaded.
+      setMessages([]);
       fetchMessages();
       const unsubscribeMessages = subscribeToMessages();
       const unsubscribeTyping = subscribeToTyping();
       markMessagesAsRead();
-      
+
       return () => {
         unsubscribeMessages?.();
         unsubscribeTyping?.();
       };
+    } else {
+      setMessages([]);
     }
   }, [selectedConversation]);
 
@@ -346,48 +351,76 @@ const Messenger = () => {
   const fetchMessages = async () => {
     if (!selectedConversation) return;
 
+    const convId = selectedConversation;
     const { data, error } = await supabase
       .from("messages")
       .select("id, content, sender_id, created_at, story_id, reply_to_id, is_read, read_at")
-      .eq("conversation_id", selectedConversation)
-      .order("created_at", { ascending: true });
+      .eq("conversation_id", convId)
+      .order("created_at", { ascending: true })
+      .limit(500);
 
     if (error) {
       console.error("Error fetching messages:", error);
       return;
     }
 
-    // Fetch reactions for all messages
-    const messageIds = (data || []).map(m => m.id);
-    const { data: reactionsData } = await supabase
-      .from("message_reactions")
-      .select("*")
-      .in("message_id", messageIds);
+    const rows = data || [];
 
-    const messagesWithProfiles = await Promise.all(
-      (data || []).map(async (msg) => {
-        const profile = await getProfile(msg.sender_id);
-        const reactions = reactionsData?.filter(r => r.message_id === msg.id) || [];
-        
-        // Get reply-to message if exists
-        let replyTo = null;
-        if (msg.reply_to_id) {
-          const replyMsg = data?.find(m => m.id === msg.reply_to_id);
-          if (replyMsg) {
-            const replyProfile = await getProfile(replyMsg.sender_id);
-            replyTo = { ...replyMsg, sender_profile: replyProfile };
-          }
+    // Fetch reactions only if there are messages.
+    let reactionsData: any[] = [];
+    if (rows.length > 0) {
+      const { data: rd } = await supabase
+        .from("message_reactions")
+        .select("*")
+        .in("message_id", rows.map((m) => m.id));
+      reactionsData = rd || [];
+    }
+
+    // Batch-fetch all sender profiles in a single query.
+    const senderIds = Array.from(new Set(rows.map((m) => m.sender_id)));
+    const profilesMap = new Map<string, any>();
+    if (senderIds.length > 0) {
+      const { data: profs } = await supabase
+        .from("profiles")
+        .select("id, full_name, avatar_url")
+        .in("id", senderIds);
+      (profs || []).forEach((p) => profilesMap.set(p.id, p));
+    }
+
+    const messagesWithProfiles = rows.map((msg) => {
+      const profile = profilesMap.get(msg.sender_id) || {
+        id: msg.sender_id,
+        full_name: null,
+        avatar_url: null,
+      };
+      const reactions = reactionsData.filter((r) => r.message_id === msg.id);
+
+      let replyTo: any = null;
+      if (msg.reply_to_id) {
+        const replyMsg = rows.find((m) => m.id === msg.reply_to_id);
+        if (replyMsg) {
+          replyTo = {
+            ...replyMsg,
+            sender_profile:
+              profilesMap.get(replyMsg.sender_id) || {
+                id: replyMsg.sender_id,
+                full_name: null,
+                avatar_url: null,
+              },
+          };
         }
-        
-        return {
-          ...msg,
-          sender_profile: profile || { id: msg.sender_id, full_name: null, avatar_url: null },
-          reactions,
-          reply_to: replyTo,
-        };
-      })
-    );
+      }
 
+      return {
+        ...msg,
+        sender_profile: profile,
+        reactions,
+        reply_to: replyTo,
+      };
+    });
+
+    // Guard: if user switched conversations during the fetch, ignore stale results.
+    if (convId !== selectedConversation) return;
     setMessages(messagesWithProfiles);
   };
 
