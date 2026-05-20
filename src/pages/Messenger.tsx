@@ -675,8 +675,9 @@ const Messenger = () => {
   };
 
 
-  const sendMessage = async () => {
-    if (!newMessage.trim() || !selectedConversation) return;
+  const sendMessage = async (overrideText?: string, overrideReplyId?: string | null) => {
+    const text = (overrideText ?? newMessage).trim();
+    if (!text || !selectedConversation) return;
 
     // Stop typing indicator
     setIsTyping(false);
@@ -689,22 +690,40 @@ const Messenger = () => {
       ? new Date(Date.now() + selfDestructDuration * 1000).toISOString()
       : null;
 
+    const replyId = overrideReplyId !== undefined ? overrideReplyId : (replyingTo?.id || null);
+
+    // Optimistically clear the input so the user can keep typing.
+    if (overrideText === undefined) {
+      setNewMessage("");
+      setReplyingTo(null);
+    }
+
     const { error } = await supabase.from("messages").insert({
       conversation_id: selectedConversation,
       sender_id: user.id,
-      content: newMessage.trim(),
-      reply_to_id: replyingTo?.id || null,
+      content: text,
+      reply_to_id: replyId,
       expires_at: expiresAt,
     });
 
     if (error) {
+      // Restore the text so nothing is lost, and offer a retry.
+      setNewMessage((prev) => (prev ? prev : text));
       toast({
-        title: "Error",
-        description: "Failed to send message",
+        title: "Message not sent",
+        description: !isOnline
+          ? "You're offline. Tap retry once you're back online."
+          : "Couldn't reach the server. Tap retry to try again.",
         variant: "destructive",
+        action: (
+          <ToastAction altText="Retry" onClick={() => sendMessage(text, replyId)}>
+            Retry
+          </ToastAction>
+        ),
       });
       return;
     }
+
 
     setNewMessage("");
     setReplyingTo(null);
