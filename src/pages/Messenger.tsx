@@ -7,7 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply, Mic, Image, Smile, Square, Play, Pause, Users, BarChart3, Palette, Radio, Clock, ArrowLeft, Download, Brain, Gamepad2, Bell } from "lucide-react";
+import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply, Mic, Image, Smile, Square, Play, Pause, Users, BarChart3, Palette, Radio, Clock, ArrowLeft, Download, Brain, Gamepad2, Bell, Sticker } from "lucide-react";
+import { EmojiPicker } from "@/components/messenger/EmojiPicker";
+import { GifPicker } from "@/components/messenger/GifPicker";
 import { useToast } from "@/hooks/use-toast";
 import VideoCall from "@/components/messenger/VideoCall";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
@@ -138,6 +140,7 @@ const Messenger = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [recordingDuration, setRecordingDuration] = useState(0);
   const [showGifPicker, setShowGifPicker] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
   const [selfDestructDuration, setSelfDestructDuration] = useState<number | null>(null);
   const [groupChats, setGroupChats] = useState<GroupChat[]>([]);
@@ -1274,24 +1277,25 @@ const Messenger = () => {
                       <Image className="h-4 w-4" />
                     </Button>
 
-                    <Popover open={showGifPicker} onOpenChange={setShowGifPicker}>
+                    <Popover open={showEmojiPicker} onOpenChange={setShowEmojiPicker}>
                       <PopoverTrigger asChild>
                         <Button variant="ghost" size="icon" className="shrink-0" disabled={isRecording}>
                           <Smile className="h-4 w-4" />
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-80 p-2">
-                        <div className="grid grid-cols-3 gap-2 max-h-60 overflow-y-auto">
-                          {POPULAR_GIFS.map((gif, index) => (
-                            <img
-                              key={index}
-                              src={gif}
-                              alt="GIF"
-                              className="w-full h-20 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity"
-                              onClick={() => sendGif(gif)}
-                            />
-                          ))}
-                        </div>
+                        <EmojiPicker onSelect={(emoji) => setNewMessage((prev) => prev + emoji)} />
+                      </PopoverContent>
+                    </Popover>
+
+                    <Popover open={showGifPicker} onOpenChange={setShowGifPicker}>
+                      <PopoverTrigger asChild>
+                        <Button variant="ghost" size="icon" className="shrink-0" disabled={isRecording}>
+                          <Sticker className="h-4 w-4" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-80 p-2">
+                        <GifPicker onSelect={(url) => sendGif(url)} />
                       </PopoverContent>
                     </Popover>
 
