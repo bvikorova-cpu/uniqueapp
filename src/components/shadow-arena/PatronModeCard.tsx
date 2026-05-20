@@ -10,20 +10,20 @@ export function PatronModeCard({ authorUserId, authorName }: { authorUserId: str
   const TIERS = [
     {
       id: "bronze" as const,
-      nameKey: "shadow.patron.bronze",
+      name: "Bronze",
       price: "€4.99/mo",
       perks: ["Patron badge", "Exclusive stories"],
     },
     {
       id: "silver" as const,
-      nameKey: "shadow.patron.silver",
+      name: "Silver",
       price: "€9.99/mo",
       perks: ["All Bronze perks", "Voice narrations", "Early access"],
       popular: true,
     },
     {
       id: "gold" as const,
-      nameKey: "shadow.patron.gold",
+      name: "Gold",
       price: "€19.99/mo",
       perks: ["All Silver perks", "Custom requests", "Direct messages"],
     },
