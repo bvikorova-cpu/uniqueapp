@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { Bell, Heart, MessageCircle, UserPlus, AtSign } from "lucide-react";
+import { playNotificationChime } from "@/lib/notificationChime";
 
 interface Notification {
   id: string;
