@@ -25,7 +25,7 @@ export const MobileBottomNav = () => {
   const { user } = useAuth();
 
   // Hide on auth flow & checkout to avoid friction
-  if (pathname.startsWith("/auth") || pathname.startsWith("/checkout")) return null;
+  if (pathname.startsWith("/auth") || pathname.startsWith("/checkout") || pathname.startsWith("/messenger")) return null;
 
   return (
     <nav

@@ -985,7 +985,7 @@ const Messenger = () => {
       </div>
       <div className="container mx-auto px-4 h-[calc(100vh-10rem)]">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-full">
-          <Card className="col-span-1 p-4 flex flex-col">
+          <Card className={`col-span-1 p-4 flex flex-col ${selectedConversation ? "hidden md:flex" : "flex"}`}>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <MessageCircle className="h-6 w-6 text-primary" />
@@ -1082,15 +1082,25 @@ const Messenger = () => {
             </ScrollArea>
           </Card>
 
-          <Card className="col-span-1 md:col-span-2 p-4 flex flex-col">
+          <Card className={`col-span-1 md:col-span-2 p-4 flex flex-col ${selectedConversation ? "flex" : "hidden md:flex"}`}>
             {selectedConversation ? (
               <>
                 <div className="flex items-center justify-between gap-3 pb-4 border-b">
                   <div className="flex items-center gap-3">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="md:hidden -ml-2"
+                      onClick={() => setSelectedConversation(null)}
+                      aria-label="Back to chats"
+                    >
+                      <ArrowLeft className="h-5 w-5" />
+                    </Button>
                     <Avatar>
                       <AvatarImage src={otherUser?.avatar_url || undefined} />
                       <AvatarFallback>{otherUser?.full_name?.[0] || "U"}</AvatarFallback>
                     </Avatar>
+
                     <div>
                       <h3 className="text-xl font-semibold">
                         {otherUser?.full_name || "User"}

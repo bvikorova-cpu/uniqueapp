@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { MessageCircle, Send, X, Loader2, Sparkles, EyeOff } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -15,9 +17,12 @@ const STORAGE_KEY = "unique:contact-livechat";
 const HIDDEN_KEY = "unique:contact-livechat:hidden";
 
 export const LiveChatWidget = () => {
+  const { pathname } = useLocation();
   const [hidden, setHidden] = useState<boolean>(() => {
     try { return localStorage.getItem(HIDDEN_KEY) === "1"; } catch { return false; }
   });
+
+
   const [userId, setUserId] = useState<string | null>(null);
   useEffect(() => { supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null)); }, []);
   const [open, setOpen] = useState(false);
@@ -35,6 +40,11 @@ export const LiveChatWidget = () => {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(messages.slice(-30))); } catch {}
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages]);
+
+  // Suppress the floating support bubble inside the Messenger to avoid
+  // overlapping the real chat composer. Placed after all hooks to preserve order.
+  if (pathname.startsWith("/messenger")) return null;
+
 
   const send = async () => {
     const text = input.trim();
