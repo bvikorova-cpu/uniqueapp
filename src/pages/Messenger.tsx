@@ -1083,6 +1083,10 @@ const Messenger = () => {
             }}
           />
 
+          <div className="mb-6 flex justify-end">
+            <PushOptInButton />
+          </div>
+
           {/* Active chats preview — so users see their conversations right on the hub */}
           {conversations.length > 0 && (
             <Card className="mb-8 border-primary/20 bg-card/60 backdrop-blur-sm">
