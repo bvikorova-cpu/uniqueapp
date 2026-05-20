@@ -146,6 +146,8 @@ const Messenger = () => {
   const [groupChats, setGroupChats] = useState<GroupChat[]>([]);
   const [activeTab, setActiveTab] = useState<"direct" | "groups">("direct");
   const [selectedMessageText, setSelectedMessageText] = useState<string>("");
+  const [totalMessages, setTotalMessages] = useState(0);
+  const [friendsOnlineCount, setFriendsOnlineCount] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
