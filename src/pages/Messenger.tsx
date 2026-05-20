@@ -1006,6 +1006,11 @@ const Messenger = () => {
                 </div>
               ) : (
                 <div className="space-y-2">
+                  {conversations.length === 0 && (
+                    <p className="text-sm text-muted-foreground text-center py-8">
+                      No active chats yet. Search for a user above to start a conversation.
+                    </p>
+                  )}
                   {conversations.map((conv) => (
                     <div
                       key={conv.id}
