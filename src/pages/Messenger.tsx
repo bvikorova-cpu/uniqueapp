@@ -373,6 +373,14 @@ const Messenger = () => {
       .eq("conversation_id", selectedConversation)
       .neq("sender_id", user.id)
       .eq("is_read", false);
+
+    await supabase
+      .from("conversation_participants")
+      .update({ last_read_at: new Date().toISOString() })
+      .eq("conversation_id", selectedConversation)
+      .eq("user_id", user.id);
+
+    window.dispatchEvent(new CustomEvent("messages-read"));
   };
 
   const subscribeToMessages = () => {
