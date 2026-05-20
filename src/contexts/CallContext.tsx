@@ -20,9 +20,10 @@ import { Phone, PhoneOff, Mic, MicOff, Video, VideoOff } from "lucide-react";
 /**
  * Global incoming-call provider.
  *
- * Each authenticated user always subscribes to a personal signaling channel
- * (`user-rtc:${userId}`) — so a call ring reaches them anywhere in the app,
- * not only inside the Messenger conversation with the caller.
+ * Each authenticated user always subscribes to their own database-backed
+ * signaling stream. Broadcast topics are intentionally not used for call
+ * delivery because project realtime RLS only allows clients to write to their
+ * own `user:<uid>` topic, not another user's topic.
  *
  * Signaling events:
  *   - "offer"         { from, fromName, conversationId, offer }
@@ -74,7 +75,6 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
   const [isVideoOff, setIsVideoOff] = useState(false);
 
   const ownChannelRef = useRef<RealtimeChannel | null>(null);
-  const outboundChannelsRef = useRef<Map<string, RealtimeChannel>>(new Map());
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
   const pendingIceRef = useRef<RTCIceCandidateInit[]>([]);
@@ -86,46 +86,30 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
 
   // -- helpers -----------------------------------------------------------
 
-  const getOutboundChannel = useCallback(async (targetUserId: string) => {
-    let ch = outboundChannelsRef.current.get(targetUserId);
-    if (ch) return ch;
-    console.log("[call] creating outbound channel for", targetUserId);
-    ch = supabase.channel(`user-rtc:${targetUserId}`, {
-      config: { broadcast: { ack: true, self: false } },
-    });
-    outboundChannelsRef.current.set(targetUserId, ch);
-    await new Promise<void>((resolve) => {
-      let done = false;
-      const finish = () => { if (!done) { done = true; resolve(); } };
-      ch!.subscribe((status, err) => {
-        console.log("[call] outbound channel status →", status, err || "");
-        if (status === "SUBSCRIBED") finish();
-        if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") finish();
-      });
-      setTimeout(finish, 4000);
-    });
-    return ch;
-  }, []);
-
   const sendToUser = useCallback(
-    async (targetUserId: string, event: string, payload: Record<string, unknown>) => {
+    async (targetUserId: string, event: string, payload: Record<string, unknown>, conversationId?: string) => {
+      if (!user?.id) return;
       try {
-        const ch = await getOutboundChannel(targetUserId);
-        const res = await ch.send({ type: "broadcast", event, payload });
-        console.log("[call] sent", event, "→", targetUserId, "result:", res);
+        const { error } = await (supabase as any).from("call_signals").insert({
+          conversation_id: conversationId || (payload.conversationId as string | undefined) || null,
+          sender_id: user.id,
+          receiver_id: targetUserId,
+          event,
+          payload,
+        });
+        if (error) throw error;
+        console.log("[call] signal saved", event, "→", targetUserId);
       } catch (e) {
         console.error("[call] sendToUser failed", event, e);
+        toast({
+          title: "Call signal failed",
+          description: "Could not reach the other user. Please try again.",
+          variant: "destructive",
+        });
       }
     },
-    [getOutboundChannel],
+    [user?.id, toast],
   );
-
-  const cleanupOutbound = useCallback(() => {
-    outboundChannelsRef.current.forEach((ch) => {
-      try { supabase.removeChannel(ch); } catch {}
-    });
-    outboundChannelsRef.current.clear();
-  }, []);
 
   const cleanupMedia = useCallback(() => {
     if (localStreamRef.current) {
@@ -146,9 +130,8 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
   const resetCall = useCallback(() => {
     stopRingtone();
     cleanupMedia();
-    cleanupOutbound();
     setCall({ status: "idle" });
-  }, [cleanupMedia, cleanupOutbound]);
+  }, [cleanupMedia]);
 
   // -- media -------------------------------------------------------------
 
