@@ -30,11 +30,13 @@ serve(async (req) => {
     const token = authHeader.replace("Bearer ", "");
     const { data: userData, error: userErr } = await supabase.auth.getUser(token);
     if (userErr || !userData.user?.email) {
-      return new Response(JSON.stringify({ error: "Not authenticated" }), {
-        status: 401,
+      // Auth backend may be momentarily unreachable. Return a soft 200 so the
+      // SCA banner stays hidden instead of surfacing as a client runtime error.
+      return new Response(JSON.stringify({ has_pending: false, auth_unavailable: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
     const user = userData.user;
     log("auth ok", { email: user.email });
 
