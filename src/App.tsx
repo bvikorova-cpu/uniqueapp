@@ -36,6 +36,7 @@ import { RealTimeNotificationsMount } from "@/components/notifications/RealTimeN
 import { GlobalMessageChimeMount } from "@/components/notifications/GlobalMessageChimeMount";
 import { AnimationProvider } from "@/contexts/AnimationContext";
 import { CurrencyProvider } from "@/contexts/CurrencyContext";
+import { CallProvider } from "@/contexts/CallContext";
 import { useEffect } from "react";
 import "@/i18n/config";
 import SkipLink from "./components/SkipLink";
