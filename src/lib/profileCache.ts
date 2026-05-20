@@ -29,13 +29,14 @@ export const fetchProfileCached = async (
 
   const p = (async () => {
     const { data, error } = await supabase
-      .from("profiles")
+      .from("public_profiles" as any)
       .select("id, full_name, avatar_url")
       .eq("id", userId)
       .single();
     if (error || !data) return null;
-    cache.set(userId, data);
-    return data;
+    const row = data as CachedProfile;
+    cache.set(userId, row);
+    return row;
   })();
 
   inflight.set(userId, p);
