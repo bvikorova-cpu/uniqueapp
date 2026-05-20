@@ -313,6 +313,12 @@ const Messenger = () => {
     );
 
     setConversations(conversationsWithDetails);
+
+    const { count: sentCount } = await supabase
+      .from("messages")
+      .select("id", { count: "exact", head: true })
+      .eq("sender_id", user.id);
+    setTotalMessages(sentCount || 0);
   };
 
   const fetchAllUsers = async () => {
