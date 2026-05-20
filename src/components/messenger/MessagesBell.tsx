@@ -73,8 +73,15 @@ const MessagesBell = () => {
       console.warn("MessagesBell realtime setup failed", err);
     }
 
+    const onRead = () => loadUnread();
+    const onFocus = () => loadUnread();
+    window.addEventListener("messages-read", onRead);
+    window.addEventListener("focus", onFocus);
+
     return () => {
       cancelled = true;
+      window.removeEventListener("messages-read", onRead);
+      window.removeEventListener("focus", onFocus);
       if (ch) {
         try { supabase.removeChannel(ch); } catch {}
       }

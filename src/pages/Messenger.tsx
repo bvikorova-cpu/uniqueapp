@@ -187,6 +187,17 @@ const Messenger = () => {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (!user) return;
+    const refresh = () => fetchConversations();
+    window.addEventListener("focus", refresh);
+    window.addEventListener("messages-read", refresh);
+    return () => {
+      window.removeEventListener("focus", refresh);
+      window.removeEventListener("messages-read", refresh);
+    };
+  }, [user]);
+
   // Server-side search by name so we can find anyone, not just the first 1000 cached profiles
   useEffect(() => {
     if (!user) return;
@@ -373,6 +384,14 @@ const Messenger = () => {
       .eq("conversation_id", selectedConversation)
       .neq("sender_id", user.id)
       .eq("is_read", false);
+
+    await supabase
+      .from("conversation_participants")
+      .update({ last_read_at: new Date().toISOString() })
+      .eq("conversation_id", selectedConversation)
+      .eq("user_id", user.id);
+
+    window.dispatchEvent(new CustomEvent("messages-read"));
   };
 
   const subscribeToMessages = () => {
@@ -998,6 +1017,11 @@ const Messenger = () => {
                 </div>
               ) : (
                 <div className="space-y-2">
+                  {conversations.length === 0 && (
+                    <p className="text-sm text-muted-foreground text-center py-8">
+                      No active chats yet. Search for a user above to start a conversation.
+                    </p>
+                  )}
                   {conversations.map((conv) => (
                     <div
                       key={conv.id}
