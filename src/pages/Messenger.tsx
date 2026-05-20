@@ -40,6 +40,11 @@ import {
   clearUnreadBadge,
 } from "@/lib/messageNotifications";
 import {
+  fetchProfileCached,
+  fetchProfilesCachedBatch,
+  primeProfileCache,
+} from "@/lib/profileCache";
+import {
   Popover,
   PopoverContent,
   PopoverTrigger,
