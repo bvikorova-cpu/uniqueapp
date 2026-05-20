@@ -89,22 +89,33 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
   const getOutboundChannel = useCallback(async (targetUserId: string) => {
     let ch = outboundChannelsRef.current.get(targetUserId);
     if (ch) return ch;
-    ch = supabase.channel(`user-rtc:${targetUserId}`, { config: { broadcast: { ack: false } } });
-    await new Promise<void>((resolve) => {
-      ch!.subscribe((status) => {
-        if (status === "SUBSCRIBED") resolve();
-      });
-      // Safety: don't hang forever
-      setTimeout(() => resolve(), 1500);
+    console.log("[call] creating outbound channel for", targetUserId);
+    ch = supabase.channel(`user-rtc:${targetUserId}`, {
+      config: { broadcast: { ack: true, self: false } },
     });
     outboundChannelsRef.current.set(targetUserId, ch);
+    await new Promise<void>((resolve) => {
+      let done = false;
+      const finish = () => { if (!done) { done = true; resolve(); } };
+      ch!.subscribe((status, err) => {
+        console.log("[call] outbound channel status →", status, err || "");
+        if (status === "SUBSCRIBED") finish();
+        if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") finish();
+      });
+      setTimeout(finish, 4000);
+    });
     return ch;
   }, []);
 
   const sendToUser = useCallback(
     async (targetUserId: string, event: string, payload: Record<string, unknown>) => {
-      const ch = await getOutboundChannel(targetUserId);
-      await ch.send({ type: "broadcast", event, payload });
+      try {
+        const ch = await getOutboundChannel(targetUserId);
+        const res = await ch.send({ type: "broadcast", event, payload });
+        console.log("[call] sent", event, "→", targetUserId, "result:", res);
+      } catch (e) {
+        console.error("[call] sendToUser failed", event, e);
+      }
     },
     [getOutboundChannel],
   );
