@@ -33,6 +33,7 @@ const DisneyCastleRedirect = () => {
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { RealTimeNotificationsMount } from "@/components/notifications/RealTimeNotificationsMount";
+import { GlobalMessageChimeMount } from "@/components/notifications/GlobalMessageChimeMount";
 import { AnimationProvider } from "@/contexts/AnimationContext";
 import { CurrencyProvider } from "@/contexts/CurrencyContext";
 import { useEffect } from "react";
@@ -539,6 +540,7 @@ const App = () => {
               <DunningBanner />
               <SCABanner />
               <RealTimeNotificationsMount />
+              <GlobalMessageChimeMount />
               <WelcomeOnboarding />
               <ComebackBonusModal />
             </Suspense>
