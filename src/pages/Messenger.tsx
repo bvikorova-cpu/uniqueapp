@@ -372,8 +372,9 @@ const Messenger = () => {
             } as MessageWithProfile,
           ]);
           
-          // Mark as read if it's from other user
+          // Mark as read + play unique chime if it's from other user
           if (payload.new.sender_id !== user.id) {
+            playMessageChime();
             markMessagesAsRead();
           }
         }
