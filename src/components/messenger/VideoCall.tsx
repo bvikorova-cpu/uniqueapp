@@ -230,14 +230,15 @@ const VideoCall = ({ conversationId, userId, otherUserId, otherUserName }: Video
 
       setIsInCall(true);
       setIncomingCall(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error handling offer:", error);
       toast({
         title: "Chyba",
-        description: "Failed to connect to the call",
+        description: explainMediaError(error),
         variant: "destructive",
       });
     }
+
   };
 
   const answerCall = () => {
