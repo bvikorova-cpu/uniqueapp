@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -325,9 +325,21 @@ const Messenger = () => {
     }
   }, [selectedConversation]);
 
+  // Smooth-scroll only when a NEW message arrives.
+  // On conversation switch we jump instantly (no animation).
+  const prevMessagesLenRef = useRef(0);
+  const prevConvRef = useRef<string | null>(null);
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    const convChanged = prevConvRef.current !== selectedConversation;
+    const grew = messages.length > prevMessagesLenRef.current;
+    if (convChanged) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
+    } else if (grew) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+    prevMessagesLenRef.current = messages.length;
+    prevConvRef.current = selectedConversation;
+  }, [messages, selectedConversation]);
 
   const getProfile = async (userId: string): Promise<Profile | null> => {
     const fromState = profilesCache.get(userId);
@@ -1350,7 +1362,36 @@ const Messenger = () => {
                     </div>
                   ) : null}
                   <div className="space-y-4">
-                    {messages.map((msg) => (
+                    {messages.map((msg, idx) => {
+                      // Date separator when day changes vs previous message
+                      const cur = new Date(msg.created_at);
+                      const prev = idx > 0 ? new Date(messages[idx - 1].created_at) : null;
+                      const sameDay = prev &&
+                        cur.getFullYear() === prev.getFullYear() &&
+                        cur.getMonth() === prev.getMonth() &&
+                        cur.getDate() === prev.getDate();
+                      const today = new Date();
+                      const yesterday = new Date(); yesterday.setDate(today.getDate() - 1);
+                      const isToday =
+                        cur.getFullYear() === today.getFullYear() &&
+                        cur.getMonth() === today.getMonth() &&
+                        cur.getDate() === today.getDate();
+                      const isYesterday =
+                        cur.getFullYear() === yesterday.getFullYear() &&
+                        cur.getMonth() === yesterday.getMonth() &&
+                        cur.getDate() === yesterday.getDate();
+                      const label = isToday ? "Today" : isYesterday ? "Yesterday" :
+                        cur.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" });
+                      const separator = !sameDay ? (
+                        <div key={`sep-${msg.id}`} className="flex items-center justify-center my-2">
+                          <span className="px-3 py-1 rounded-full bg-muted/50 text-[11px] text-muted-foreground uppercase tracking-wide">
+                            {label}
+                          </span>
+                        </div>
+                      ) : null;
+                      return (
+                        <Fragment key={msg.id}>
+                          {separator}
                       <div
                         key={msg.id}
                         className={`flex items-start gap-2 group ${
@@ -1504,7 +1545,9 @@ const Messenger = () => {
                           </div>
                         </div>
                       </div>
-                    ))}
+                        </Fragment>
+                      );
+                    })}
                     <div ref={messagesEndRef} />
                   </div>
                 </ScrollArea>
