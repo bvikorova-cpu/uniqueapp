@@ -81,12 +81,39 @@ const VideoCall = ({ conversationId, userId, otherUserId, otherUserName }: Video
     signalingChannelRef.current = channel;
   };
 
+  const requestMedia = async (): Promise<MediaStream> => {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      throw new DOMException(
+        "Camera/mic API not available. Open this page in your main browser (not inside an in-app browser).",
+        "NotSupportedError",
+      );
+    }
+    try {
+      return await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    } catch (err: any) {
+      // If video isn't available (no camera, blocked by policy), fall back to audio-only
+      if (err?.name === "NotFoundError" || err?.name === "OverconstrainedError") {
+        return await navigator.mediaDevices.getUserMedia({ video: false, audio: true });
+      }
+      throw err;
+    }
+  };
+
+  const explainMediaError = (err: any): string => {
+    const name = err?.name || "";
+    if (name === "NotAllowedError" || name === "SecurityError") {
+      return "Camera/mic access was blocked. Tap the lock icon in the address bar → Site settings → allow Camera & Microphone, then reload.";
+    }
+    if (name === "NotFoundError") return "No camera or microphone was found on this device.";
+    if (name === "NotReadableError") return "Camera or microphone is already in use by another app.";
+    if (name === "NotSupportedError") return err.message || "Camera/mic API not available in this browser.";
+    if (!window.isSecureContext) return "Video calls require HTTPS. Reload the page over https://.";
+    return err?.message || "Failed to start the call.";
+  };
+
   const startCall = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
-      });
+      const stream = await requestMedia();
 
       localStreamRef.current = stream;
       if (localVideoRef.current) {
@@ -137,22 +164,21 @@ const VideoCall = ({ conversationId, userId, otherUserId, otherUserName }: Video
 
       setIsRinging(true);
       setIsInCall(true);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error starting call:", error);
       toast({
         title: "Chyba",
-        description: "Failed to start the call. Check camera and microphone access.",
+        description: explainMediaError(error),
         variant: "destructive",
       });
     }
   };
 
+
   const handleOffer = async (offer: RTCSessionDescriptionInit, from: string) => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
-      });
+      const stream = await requestMedia();
+
 
       localStreamRef.current = stream;
       if (localVideoRef.current) {
@@ -204,14 +230,15 @@ const VideoCall = ({ conversationId, userId, otherUserId, otherUserName }: Video
 
       setIsInCall(true);
       setIncomingCall(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error handling offer:", error);
       toast({
         title: "Chyba",
-        description: "Failed to connect to the call",
+        description: explainMediaError(error),
         variant: "destructive",
       });
     }
+
   };
 
   const answerCall = () => {
