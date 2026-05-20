@@ -1622,6 +1622,7 @@ const Messenger = () => {
                       onChange={handleInputChange}
                       onKeyPress={(e) => e.key === "Enter" && sendMessage()}
                       disabled={isRecording}
+                      maxLength={MAX_MESSAGE_LEN}
                       onFocus={(e) => {
                         const el = e.currentTarget;
                         setTimeout(() => {
