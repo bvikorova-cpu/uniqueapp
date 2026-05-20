@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Sparkles, Loader2, CheckCircle, AlertCircle, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+
 
 interface JobMatch {
   jobId: string;
@@ -35,13 +35,11 @@ export function JobAIAssistant() {
   const [matches, setMatches] = useState<JobMatch[]>([]);
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { t } = useTranslation();
-
   const handleAnalyze = async () => {
     if (!cvText.trim()) {
       toast({
-        title: t('jobs.error'),
-        description: t('jobs.aiAssistant.enterCV', 'Please enter your CV'),
+        title: "❌ Error",
+        description: "Please enter your CV",
         variant: "destructive",
       });
       return;
@@ -65,20 +63,20 @@ export function JobAIAssistant() {
 
       if (!data.matches || data.matches.length === 0) {
         toast({
-          title: t('jobs.aiAssistant.noMatches', 'No Matches'),
-          description: t('jobs.aiAssistant.noMatchesDesc', 'We currently found no suitable positions for your profile.'),
+          title: "No Matches",
+          description: "We currently found no suitable positions for your profile.",
         });
       } else {
         toast({
-          title: t('jobs.aiAssistant.analysisComplete', 'Analysis Complete'),
-          description: t('jobs.aiAssistant.foundMatches', `Found ${data.matches.length} suitable positions`),
+          title: "Analysis Complete",
+          description: `Found ${data.matches.length} suitable positions`,
         });
       }
     } catch (error: any) {
       console.error("Error analyzing CV:", error);
       toast({
-        title: t('jobs.error'),
-        description: error.message || t('jobs.aiAssistant.errorAnalyzing', 'Failed to analyze CV'),
+        title: "❌ Error",
+        description: error.message || "Failed to analyze CV",
         variant: "destructive",
       });
     } finally {
@@ -93,9 +91,9 @@ export function JobAIAssistant() {
   };
 
   const getScoreBadge = (score: number) => {
-    if (score >= 80) return t('jobs.aiAssistant.excellentMatch', 'Excellent Match');
-    if (score >= 60) return t('jobs.aiAssistant.goodMatch', 'Good Match');
-    return t('jobs.aiAssistant.possibleMatch', 'Possible Match');
+    if (score >= 80) return "Excellent Match";
+    if (score >= 60) return "Good Match";
+    return "Possible Match";
   };
 
   return (
@@ -103,7 +101,7 @@ export function JobAIAssistant() {
       <DialogTrigger asChild>
         <Button variant="outline" size="sm" className="gap-1 md:gap-2 text-xs md:text-sm">
           <Sparkles className="h-4 w-4" />
-          <span className="hidden sm:inline">{t('jobs.aiAssistant.title', 'AI Job Assistant')}</span>
+          <span className="hidden sm:inline">{"AI Job Assistant"}</span>
           <span className="sm:hidden">AI</span>
         </Button>
       </DialogTrigger>
@@ -111,20 +109,20 @@ export function JobAIAssistant() {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-primary" />
-            {t('jobs.aiAssistant.title', 'AI Job Assistant')}
+            {"AI Job Assistant"}
           </DialogTitle>
           <DialogDescription>
-            {t('jobs.aiAssistant.description', 'Enter your CV and AI will help you find the most suitable job positions')}
+            {"Enter your CV and AI will help you find the most suitable job positions"}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
           <div>
             <label className="text-sm font-medium mb-2 block">
-              {t('jobs.aiAssistant.yourCV', 'Your CV (Resume)')}
+              {"Your CV (Resume)"}
             </label>
             <Textarea
-              placeholder={t('jobs.aiAssistant.cvPlaceholder', 'Paste your CV text here... (education, experience, skills, etc.)')}
+              placeholder={"Paste your CV text here... (education, experience, skills, etc.)"}
               value={cvText}
               onChange={(e) => setCvText(e.target.value)}
               className="min-h-[200px]"
@@ -140,12 +138,12 @@ export function JobAIAssistant() {
             {isAnalyzing ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                {t('jobs.aiAssistant.analyzing', 'Analyzing...')}
+                {"Analyzing..."}
               </>
             ) : (
               <>
                 <Sparkles className="h-4 w-4 mr-2" />
-                {t('jobs.aiAssistant.analyzeButton', 'Analyze and Find Suitable Positions')}
+                {"Analyze and Find Suitable Positions"}
               </>
             )}
           </Button>
@@ -153,7 +151,7 @@ export function JobAIAssistant() {
           {matches.length > 0 && (
             <div className="space-y-4 mt-6">
               <h3 className="font-semibold text-lg">
-                {t('jobs.aiAssistant.recommendedPositions', 'Recommended Positions')} ({matches.length})
+                {"Recommended Positions"} ({matches.length})
               </h3>
               
               {matches.map((match) => (
@@ -192,7 +190,7 @@ export function JobAIAssistant() {
                     <div>
                       <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
                         <CheckCircle className="h-4 w-4 text-green-600" />
-                        {t('jobs.aiAssistant.whySuitable', 'Why you are a suitable candidate:')}
+                        {"Why you are a suitable candidate:"}
                       </h4>
                       <ul className="text-sm space-y-1 ml-6">
                         {match.reasons.map((reason, idx) => (
@@ -205,7 +203,7 @@ export function JobAIAssistant() {
                       <div>
                         <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
                           <AlertCircle className="h-4 w-4 text-yellow-600" />
-                          {t('jobs.aiAssistant.areasToImprove', 'Areas to improve:')}
+                          {"Areas to improve:"}
                         </h4>
                         <ul className="text-sm space-y-1 ml-6">
                           {match.gaps.map((gap, idx) => (
@@ -217,7 +215,7 @@ export function JobAIAssistant() {
 
                     <div className="bg-muted p-3 rounded-md">
                       <p className="text-sm">
-                        <strong>{t('jobs.aiAssistant.recommendation', 'Recommendation')}:</strong> {match.recommendation}
+                        <strong>{"Recommendation"}:</strong> {match.recommendation}
                       </p>
                     </div>
 
@@ -228,7 +226,7 @@ export function JobAIAssistant() {
                       }}
                       className="w-full"
                     >
-                      {t('jobs.aiAssistant.viewDetails', 'View Position Details')}
+                      {"View Position Details"}
                       <ArrowRight className="h-4 w-4 ml-2" />
                     </Button>
                   </CardContent>

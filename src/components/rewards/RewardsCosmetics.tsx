@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Sparkles, Check } from "lucide-react";
 import { toast } from "sonner";
-import { useTranslation } from "react-i18next";
+
 
 const RARITY: Record<string, string> = {
   common: "border-slate-400 bg-slate-500/10",
@@ -19,17 +19,16 @@ const RARITY: Record<string, string> = {
 
 export default function RewardsCosmetics() {
   const { user } = useAuth();
-  const { t } = useTranslation();
   const [items, setItems] = useState<any[]>([]);
   const [owned, setOwned] = useState<Record<string, any>>({});
   const [tab, setTab] = useState("avatar_frame");
 
   const CATS = useMemo(() => [
-    { id: "avatar_frame", label: t("rewards.cosmetics.frames") },
-    { id: "profile_theme", label: t("rewards.cosmetics.themes") },
-    { id: "animated_border", label: t("rewards.cosmetics.borders") },
-    { id: "name_color", label: t("rewards.cosmetics.nameColor") },
-  ], [t]);
+    { id: "avatar_frame", label: "Frames" },
+    { id: "profile_theme", label: "Themes" },
+    { id: "animated_border", label: "Borders" },
+    { id: "name_color", label: "Name color" },
+  ], []);
 
   const load = async () => {
     const { data: cat } = await supabase.from("rewards_cosmetic_items").select("*").order("rarity");
@@ -57,9 +56,9 @@ export default function RewardsCosmetics() {
         body: { sessionId, itemId },
       });
       if (error || !(data as any)?.ok) {
-        toast.error((data as any)?.error ?? error?.message ?? t("rewards.cosmetics.acquireFailed"));
+        toast.error((data as any)?.error ?? error?.message ?? "Acquire failed");
       } else {
-        toast.success(t("rewards.cosmetics.acquired", { name: "" }));
+        toast.success(`Acquired ${""}!`);
         load();
       }
       // Clean URL.
@@ -93,8 +92,8 @@ export default function RewardsCosmetics() {
     const { data, error } = await supabase.rpc("acquire_cosmetic_item", { _item_id: item.id });
     if (error) return toast.error(error.message);
     const res = data as any;
-    if (!res?.ok) return toast.error(res?.error ?? t("rewards.cosmetics.acquireFailed"));
-    toast.success(t("rewards.cosmetics.acquired", { name: item.name }));
+    if (!res?.ok) return toast.error(res?.error ?? "Acquire failed");
+    toast.success(`Acquired ${item.name}!`);
     load();
   };
 
@@ -107,14 +106,14 @@ export default function RewardsCosmetics() {
       await supabase.from("user_rewards_cosmetics").update({ is_equipped: false }).eq("id", r.id);
     }
     await supabase.from("user_rewards_cosmetics").update({ is_equipped: true }).eq("id", rec.id);
-    toast.success(t("rewards.cosmetics.equippedToast", { name: item.name }));
+    toast.success(`Equipped ${item.name}`);
     load();
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2"><Sparkles className="h-5 w-5 text-primary" /> {t("rewards.cosmetics.title")}</CardTitle>
+        <CardTitle className="flex items-center gap-2"><Sparkles className="h-5 w-5 text-primary" /> {"Cosmetics catalog"}</CardTitle>
       </CardHeader>
       <CardContent>
         <Tabs value={tab} onValueChange={setTab}>
@@ -137,13 +136,13 @@ export default function RewardsCosmetics() {
                       <div className="mt-2">
                         {isOwned ? (
                           isEquipped ? (
-                            <Badge className="w-full justify-center"><Check className="h-3 w-3 mr-1" /> {t("rewards.cosmetics.equipped")}</Badge>
+                            <Badge className="w-full justify-center"><Check className="h-3 w-3 mr-1" /> {"Equipped"}</Badge>
                           ) : (
-                            <Button size="sm" variant="outline" className="w-full" onClick={() => equip(i)}>{t("rewards.cosmetics.equip")}</Button>
+                            <Button size="sm" variant="outline" className="w-full" onClick={() => equip(i)}>{"Equip"}</Button>
                           )
                         ) : (
                           <Button size="sm" className="w-full text-xs" onClick={() => acquire(i)}>
-                            {i.price_xp ? t("rewards.cosmetics.priceXp", { n: i.price_xp }) : i.price_eur ? t("rewards.cosmetics.priceEur", { n: i.price_eur }) : t("rewards.cosmetics.get")}
+                            {i.price_xp ? `${i.price_xp} XP` : i.price_eur ? `€${i.price_eur}` : "Get"}
                           </Button>
                         )}
                       </div>
@@ -151,7 +150,7 @@ export default function RewardsCosmetics() {
                   );
                 })}
                 {items.filter(i => i.category === c.id).length === 0 && (
-                  <p className="col-span-full text-sm text-muted-foreground text-center py-6">{t("rewards.cosmetics.noItems")}</p>
+                  <p className="col-span-full text-sm text-muted-foreground text-center py-6">{"No items in this category yet."}</p>
                 )}
               </div>
             </TabsContent>

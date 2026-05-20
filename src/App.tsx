@@ -36,7 +36,7 @@ import { RealTimeNotificationsMount } from "@/components/notifications/RealTimeN
 import { AnimationProvider } from "@/contexts/AnimationContext";
 import { CurrencyProvider } from "@/contexts/CurrencyContext";
 import { useEffect } from "react";
-import i18n from "@/i18n/config";
+import "@/i18n/config";
 import SkipLink from "./components/SkipLink";
 import { PageLoader } from "@/components/ui/PageLoader";
 import { ErrorBoundary } from "./components/ErrorBoundary";
@@ -512,12 +512,7 @@ const queryClient = new QueryClient({
 
 const App = () => {
   useEffect(() => {
-    const applyLanguage = (lng: string) => {
-      document.documentElement.lang = lng || "en";
-    };
-    applyLanguage(i18n.language);
-    i18n.on("languageChanged", applyLanguage);
-    return () => i18n.off("languageChanged", applyLanguage);
+    document.documentElement.lang = "en";
   }, []);
 
   // A11Y: Auto-detect prefers-reduced-motion and apply system-wide

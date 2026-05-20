@@ -7,10 +7,9 @@ import { Lock, Target } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useTranslation } from "react-i18next";
+
 
 export default function AchievementProgressCards({ userId }: { userId: string }) {
-  const { t } = useTranslation();
   const { data: allBadges = [] } = useAllBadges();
   const { data: userBadges = [] } = useUserBadges(userId);
   const { data: stats } = useQuery({
@@ -61,7 +60,7 @@ export default function AchievementProgressCards({ userId }: { userId: string })
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
           <Target className="h-5 w-5 text-primary" />
-          {t("rewards.achievements.nextToUnlock")}
+          {"Next Badges to Unlock"}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -85,13 +84,13 @@ export default function AchievementProgressCards({ userId }: { userId: string })
                   <div className="flex items-center justify-between gap-1 mb-1">
                     <p className="text-sm font-medium truncate">{badge.name}</p>
                     <Badge variant="outline" className="text-[10px] px-1.5 py-0 shrink-0">
-                      {t("rewards.achievements.xpReward", { n: badge.points_reward })}
+                      {`+${badge.points_reward} XP`}
                     </Badge>
                   </div>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <p className="text-[10px] text-muted-foreground truncate cursor-help">
-                        {t("rewards.achievements.requirement", { n: badge.requirement_value, type: badge.requirement_type })}
+                        {`${badge.requirement_value} ${badge.requirement_type} required`}
                       </p>
                     </TooltipTrigger>
                     <TooltipContent>{badge.description}</TooltipContent>

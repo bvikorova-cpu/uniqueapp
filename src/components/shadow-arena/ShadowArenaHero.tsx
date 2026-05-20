@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Ghost, Skull, Eye, Play, Pause, Volume2, VolumeX, Flame, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+
 import shadowVideo from "@/assets/shadow-arena-hero.mp4.asset.json";
 import shadowPoster from "@/assets/shadow-arena-poster.jpg";
 
@@ -18,8 +18,6 @@ export function ShadowArenaHero({ totalPrizePool = 0, activeBattles = 0, topStor
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
   const navigate = useNavigate();
-  const { t } = useTranslation();
-
   useEffect(() => {
     if (videoRef.current) videoRef.current.play().catch(() => setIsPlaying(false));
   }, []);
@@ -37,10 +35,10 @@ export function ShadowArenaHero({ totalPrizePool = 0, activeBattles = 0, topStor
   };
 
   const stats = [
-    { icon: Flame, label: t("shadow.hero.stat_pool"), value: `€${totalPrizePool.toFixed(2)}` },
-    { icon: Skull, label: t("shadow.hero.stat_battles"), value: activeBattles.toString() },
-    { icon: Eye, label: t("shadow.hero.stat_stories"), value: topStories.toString() },
-    { icon: Ghost, label: t("shadow.hero.stat_cut"), value: "20%" },
+    { icon: Flame, label: "Prize Pool", value: `€${totalPrizePool.toFixed(2)}` },
+    { icon: Skull, label: "Active Battles", value: activeBattles.toString() },
+    { icon: Eye, label: "Top Stories", value: topStories.toString() },
+    { icon: Ghost, label: "Platform Cut", value: "20%" },
   ];
 
   return (
@@ -88,7 +86,7 @@ export function ShadowArenaHero({ totalPrizePool = 0, activeBattles = 0, topStor
         >
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-950/50 backdrop-blur-md text-red-200 text-xs font-semibold border border-red-800/40">
             <Sparkles className="w-3.5 h-3.5 text-red-400" />
-            {t("shadow.hero.badge")}
+            {"Live Horror Arena · AI-Powered"}
           </span>
         </motion.div>
 
@@ -103,7 +101,7 @@ export function ShadowArenaHero({ totalPrizePool = 0, activeBattles = 0, topStor
             animate={{ skewX: [0, -1.2, 0, 1.2, 0] }}
             transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
           >
-            {t("shadow.hero.title")}
+            {"Shadow Arena"}
           </motion.span>
         </motion.h1>
 
@@ -113,7 +111,7 @@ export function ShadowArenaHero({ totalPrizePool = 0, activeBattles = 0, topStor
           transition={{ delay: 0.3 }}
           className="text-base sm:text-lg md:text-xl text-red-100/85 max-w-2xl mb-8 font-gothic-body italic"
         >
-          {t("shadow.hero.tagline")}
+          {"Where terror meets glory. Forge horror with AI, battle live, and claim cash prizes from a pool of fear."}
         </motion.p>
 
         {/* CTAs */}
@@ -129,7 +127,7 @@ export function ShadowArenaHero({ totalPrizePool = 0, activeBattles = 0, topStor
             className="bg-gradient-to-r from-red-700 to-red-900 hover:from-red-800 hover:to-red-950 border border-red-700/40 shadow-[0_0_25px_-5px_rgba(220,38,38,0.6)]"
           >
             <Skull className="mr-2 h-4 w-4" />
-            {t("shadow.hero.cta_submit")}
+            {"Submit Horror Story"}
           </Button>
           <Button
             size="lg"
@@ -138,7 +136,7 @@ export function ShadowArenaHero({ totalPrizePool = 0, activeBattles = 0, topStor
             className="bg-black/40 backdrop-blur-md border-purple-700/40 text-purple-100 hover:bg-purple-950/40"
           >
             <Flame className="mr-2 h-4 w-4" />
-            {t("shadow.hero.cta_battles")}
+            {"Enter Live Battles"}
           </Button>
         </motion.div>
 

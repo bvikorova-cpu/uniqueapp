@@ -19,7 +19,7 @@ import { SmartFeedTabs, type FeedTab } from "@/components/wall/SmartFeedTabs";
 import { SpacesDialog } from "@/components/wall/SpacesDialog";
 import { useForYouRanking } from "@/hooks/useForYouRanking";
 import { useUserMutes } from "@/hooks/useUserMutes";
-import { useTranslation } from "react-i18next";
+
 import type { Post, Repost, FeedItem } from "@/types/database";
 
 interface WallFeedProps {
@@ -52,7 +52,6 @@ export default function WallFeed({
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("all");
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
   const [activeTab, setActiveTab] = useState<FeedTab>("latest");
-  const { t } = useTranslation();
   const mutedKeywords = useMutedKeywords();
   const { mutedIds } = useUserMutes();
   const { data: forYouIds = [] } = useForYouRanking(activeTab === "for-you");
@@ -118,7 +117,7 @@ export default function WallFeed({
               }}
             />
             <span className="text-sm text-muted-foreground">
-              {pullToRefresh.canRefresh ? t('wall.feed.releaseToRefresh') : t('wall.feed.pullToRefresh')}
+              {pullToRefresh.canRefresh ? "Release to refresh" : "Pull to refresh"}
             </span>
           </div>
         </div>
@@ -166,7 +165,7 @@ export default function WallFeed({
               </div>
             ) : visibleFeedItems.length === 0 ? (
               <div className="glass-post-card p-12 text-center text-muted-foreground">
-                {t('wall.feed.noPostsFound')}
+                {"No posts found. Try adjusting your filters."}
               </div>
             ) : (
               <>
@@ -207,14 +206,14 @@ export default function WallFeed({
                 {loadingMore && (
                   <div className="glass-post-card p-6 flex items-center justify-center">
                     <Loader2 className="h-6 w-6 animate-spin text-primary mr-2" />
-                    <span className="text-sm text-muted-foreground">{t('wall.feed.loadingMore')}</span>
+                    <span className="text-sm text-muted-foreground">{"Loading more posts..."}</span>
                   </div>
                 )}
                 
                 {/* End of feed message */}
                 {!loading && !loadingMore && !hasMore && visibleFeedItems.length > 0 && (
                   <div className="glass-post-card p-6 text-center text-muted-foreground text-sm">
-                    {t('wall.feed.reachedEnd')}
+                    {"You've reached the end! 🎉"}
                   </div>
                 )}
               </>

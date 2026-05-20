@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Crown, Users, ShoppingBag, Store, Star, TrendingUp, Gift, MessageSquare, Video, MessageCircle, Trophy, FileText, Brain, Plane, Heart, Cross, Dumbbell, Home as HomeIcon, Package, UserPlus, Gamepad2, Briefcase, Radio, GraduationCap, Gavel, Sparkles, Search, Disc3, Music, Leaf, ImageIcon, Zap, PawPrint, Shirt, Palette, Sofa, Wand2, Image, Gem, Coffee, Bot, Globe, Layers, Coins, Rocket, Car, Baby, Mic } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
+
 
 // Import hero images - centralized for consistent cache-busting in preview
 import heroDating from "@/assets/hero/hero-dating-new.jpg";
@@ -20,11 +20,10 @@ import heroUserUpload8 from "@/assets/hero/hero-user-upload-8.jpg";
 
 const Home = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const [displayedText, setDisplayedText] = useState("");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const fullText = t('home.hero_title_highlight');
+  const fullText = "Unique";
 
   // All hero images for slideshow (both mobile and desktop)
   // NOTE: keep these imports in /assets/hero to avoid old cached variants in preview.
@@ -158,7 +157,7 @@ const Home = () => {
         
         <div className="relative z-10 text-center space-y-4 sm:space-y-8 px-3 sm:px-4 pt-16 sm:pt-32">
           <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold text-white leading-tight drop-shadow-2xl">
-            {t('home.hero_title')}{" "}
+            {"Welcome to"}{" "}
             <span className="relative inline-block">
               <span className="bg-gradient-to-r from-[#9C27B0] via-[#E91E63] to-[#FF4081] bg-clip-text text-transparent animate-glow drop-shadow-[0_0_30px_rgba(156,39,176,0.5)]">
                 {displayedText}
@@ -167,7 +166,7 @@ const Home = () => {
             </span>
           </h1>
           <p className="text-base sm:text-xl md:text-2xl text-white/80 max-w-3xl mx-auto drop-shadow-lg px-2">
-            {t('home.hero_subtitle')}
+            {"A social network where your talent can change your life. Compete, vote, shop and earn with friends!"}
           </p>
           
           {/* Search Bar */}
@@ -176,7 +175,7 @@ const Home = () => {
               <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-500" />
               <Input
                 type="text"
-                placeholder={t('home.search_placeholder')}
+                placeholder={"Search services... (e.g. games, education, dating)"}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 sm:pl-12 pr-4 py-4 sm:py-6 text-sm sm:text-lg text-black placeholder:text-gray-500 bg-white/95 backdrop-blur-sm border-2 border-white/20 focus:border-primary"
@@ -200,13 +199,13 @@ const Home = () => {
                 </div>
               </div>
               <CardTitle className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent mb-4">
-                {t('home.welcome_title')}
+                {"Welcome to \"Unique\" – The Platform That Helps and Connects!"}
               </CardTitle>
             </CardHeader>
             
             <CardContent className="relative space-y-6 text-center md:text-left px-6 md:px-8 pb-8">
               <p className="text-lg text-foreground/90 leading-relaxed text-justify">
-                {t('home.welcome_intro')}
+                {"At \"Unique,\" we believe in the power of community and that everyone deserves a digital space that inspires them, educates them, and connects them with the people they care about. Our platform is designed with dedication and the goal of bringing you a unique experience – from discovering new talents and pursuing education, to creative opportunities with artificial intelligence and brand building. We are here to help you achieve your dreams and goals."}
               </p>
               
               <div className="relative my-8">
@@ -214,22 +213,22 @@ const Home = () => {
                   <div className="w-full border-t border-primary/20"></div>
                 </div>
                 <div className="relative flex justify-center">
-                  <span className="bg-card px-4 text-sm text-primary font-semibold">{t('home.welcome_priority')}</span>
+                  <span className="bg-card px-4 text-sm text-primary font-semibold">{"Your satisfaction is our number one priority"}</span>
                 </div>
               </div>
               
               <p className="text-lg text-foreground/90 leading-relaxed text-justify">
-                {t('home.welcome_feedback')} <Link to="/contact" className="text-primary hover:text-primary-glow font-semibold underline decoration-primary/30 hover:decoration-primary transition-colors">{t('home.welcome_contact_link')}</Link>. {t('home.welcome_feedback_value')}
+                {"We know that even the best technology occasionally encounters unforeseen obstacles. If you come across any error, or have a suggestion for improvement, please do not hesitate to contact us! Use our"} <Link to="/contact" className="text-primary hover:text-primary-glow font-semibold underline decoration-primary/30 hover:decoration-primary transition-colors">{"Contact Form"}</Link>. {"Every piece of feedback you give us is valuable, and we take it seriously."}
               </p>
               
               <div className="bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-2xl p-6 mt-8 border border-primary/20">
                 <p className="text-lg font-semibold text-center text-foreground text-justify">
-                  {t('home.welcome_promise')}
+                  {"Because we believe that every user deserves what they paid for – and much more."}
                 </p>
               </div>
               
               <p className="text-xl font-bold text-center bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent pt-4">
-                {t('home.welcome_thanks')}
+                {"Thank you for being part of the community. Together, we are creating something exceptional!"}
               </p>
             </CardContent>
           </Card>
@@ -241,14 +240,14 @@ const Home = () => {
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-16 animate-fade-in">
             <h2 className="text-4xl md:text-5xl font-black mb-4">
-              {t('home.why_unique_title')}{" "}
+              {"Why"}{" "}
               <span className="bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent">
                 Unique
               </span>
               ?
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              {t('home.why_unique_discover')}
+              {"Discover what makes our platform stand out from the rest"}
             </p>
           </div>
 
@@ -261,12 +260,12 @@ const Home = () => {
                   <Layers className="w-8 h-8 text-white" />
                 </div>
                 <CardTitle className="text-2xl group-hover:text-primary transition-colors duration-300">
-                  {t('home.all_in_one_title')}
+                  {"All-in-One Platform"}
                 </CardTitle>
               </CardHeader>
               <CardContent className="relative">
                 <p className="text-muted-foreground leading-relaxed">
-                  {t('home.all_in_one_desc')}
+                  {"Everything you need in one place - from social networking and entertainment to education, shopping, and AI-powered tools. No need to juggle multiple apps."}
                 </p>
               </CardContent>
             </Card>
@@ -279,12 +278,12 @@ const Home = () => {
                   <Sparkles className="w-8 h-8 text-white" />
                 </div>
                 <CardTitle className="text-2xl group-hover:text-accent transition-colors duration-300">
-                  {t('home.premium_features_title')}
+                  {"Premium Features"}
                 </CardTitle>
               </CardHeader>
               <CardContent className="relative">
                 <p className="text-muted-foreground leading-relaxed">
-                  {t('home.premium_features_desc')}
+                  {"Access cutting-edge AI technology, advanced tools, and exclusive features. Experience the future of social networking with intelligent assistance."}
                 </p>
               </CardContent>
             </Card>
@@ -297,12 +296,12 @@ const Home = () => {
                   <Coins className="w-8 h-8 text-white" />
                 </div>
                 <CardTitle className="text-2xl group-hover:text-gold transition-colors duration-300">
-                  {t('home.earn_while_social_title')}
+                  {"Earn While You Social"}
                 </CardTitle>
               </CardHeader>
               <CardContent className="relative">
                 <p className="text-muted-foreground leading-relaxed">
-                  {t('home.earn_while_social_desc')}
+                  {"Turn your social activities into income. Create content, offer services, compete in contests, and get rewarded for your engagement and talent."}
                 </p>
               </CardContent>
             </Card>

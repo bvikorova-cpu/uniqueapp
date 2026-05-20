@@ -1,39 +1,37 @@
 import { motion } from "framer-motion";
 import { Eye, Lock, Sparkles, Crown } from "lucide-react";
-import { useTranslation } from "react-i18next";
+
 
 export const HowItWorksCard = () => {
-  const { t } = useTranslation();
-
   const items = [
     {
       icon: Eye,
-      title: t("megaforum.howItWorks.browseTitle"),
-      desc: t("megaforum.howItWorks.browseDesc"),
+      title: "Browse",
+      desc: "Free preview of posts",
       color: "text-emerald-400",
       bg: "bg-emerald-500/10",
       border: "border-emerald-500/20",
     },
     {
       icon: Lock,
-      title: t("megaforum.howItWorks.interactTitle"),
-      desc: t("megaforum.howItWorks.interactDesc"),
+      title: "Interact",
+      desc: "Login to post, like & vote",
       color: "text-blue-400",
       bg: "bg-blue-500/10",
       border: "border-blue-500/20",
     },
     {
       icon: Sparkles,
-      title: t("megaforum.howItWorks.aiTitle"),
-      desc: t("megaforum.howItWorks.aiDesc"),
+      title: "AI Tools",
+      desc: "3–5 credits per use",
       color: "text-purple-400",
       bg: "bg-purple-500/10",
       border: "border-purple-500/20",
     },
     {
       icon: Crown,
-      title: t("megaforum.howItWorks.premiumTitle"),
-      desc: t("megaforum.howItWorks.premiumDesc"),
+      title: "Premium",
+      desc: "Subscription unlocks all",
       color: "text-amber-400",
       bg: "bg-amber-500/10",
       border: "border-amber-500/20",
@@ -49,7 +47,7 @@ export const HowItWorksCard = () => {
     >
       <div className="flex items-center gap-2 mb-3">
         <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-          {t("megaforum.howItWorks.title")}
+          {"How it works"}
         </span>
         <div className="flex-1 h-px bg-border/40" />
       </div>

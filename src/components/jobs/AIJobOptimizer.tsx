@@ -24,7 +24,7 @@ import {
   Upload,
   Star
 } from "lucide-react";
-import { useTranslation } from "react-i18next";
+
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
@@ -57,7 +57,6 @@ export function AIJobOptimizer() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysis, setAnalysis] = useState<ResumeAnalysis | null>(null);
   const [showResults, setShowResults] = useState(false);
-  const { t } = useTranslation();
   const { toast } = useToast();
 
   // Check user's premium status and credits

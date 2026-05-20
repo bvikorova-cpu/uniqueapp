@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { CalendarDays, Gift, Check, Lock, Sparkles, Star } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import { useTranslation } from "react-i18next";
+
 
 interface Tpl {
   day_number: number;
@@ -34,7 +34,6 @@ const DEFAULTS: Tpl[] = Array.from({ length: 30 }, (_, i) => {
 
 export default function RewardsLoginCalendar() {
   const { user } = useAuth();
-  const { t, i18n } = useTranslation();
   const today = new Date();
   const todayDay = today.getDate();
   const mKey = monthKey(today);
@@ -67,20 +66,20 @@ export default function RewardsLoginCalendar() {
 
   const claim = async (day: number, tpl: Tpl) => {
     if (!user) return;
-    if (day !== todayDay) { toast.error(t("rewards.calendar.onlyToday")); return; }
-    if (claims.has(day)) { toast.info(t("rewards.calendar.alreadyClaimed")); return; }
+    if (day !== todayDay) { toast.error("Only today's reward can be claimed"); return; }
+    if (claims.has(day)) { toast.info("Already claimed"); return; }
 
     const { data, error } = await supabase.rpc("claim_calendar_day", {
       _month_key: mKey, _day_number: day,
     });
     if (error) { toast.error(error.message); return; }
     const res = data as any;
-    if (!res?.ok) { toast.error(res?.error ?? t("rewards.calendar.claimFailed")); return; }
-    toast.success(t("rewards.calendar.rewardClaimedToast", { label: tpl.reward_label }));
+    if (!res?.ok) { toast.error(res?.error ?? "Claim failed"); return; }
+    toast.success(`Claimed ${tpl.reward_label}! 🎁`);
     refresh();
   };
 
-  if (loading) return <p className="text-sm text-muted-foreground p-4">{t("rewards.calendar.loading")}</p>;
+  if (loading) return <p className="text-sm text-muted-foreground p-4">{"Loading calendar..."}</p>;
 
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
   const claimedCount = claims.size;
@@ -93,15 +92,15 @@ export default function RewardsLoginCalendar() {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <CalendarDays className="h-6 w-6" />
-                <h2 className="text-xl font-bold">{t("rewards.calendar.title")}</h2>
+                <h2 className="text-xl font-bold">{"Daily Login Calendar"}</h2>
               </div>
               <p className="text-sm opacity-90">
-                {t("rewards.calendar.monthDay", { month: today.toLocaleString(i18n.language || "en", { month: "long", year: "numeric" }), day: todayDay })}
+                {`${today.toLocaleString("en", { month: "long", year: "numeric" })} • Day ${todayDay}`}
               </p>
             </div>
             <div className="text-right">
               <p className="text-3xl font-bold">{claimedCount}/{daysInMonth}</p>
-              <p className="text-xs opacity-80">{t("rewards.calendar.claimed")}</p>
+              <p className="text-xs opacity-80">{"claimed"}</p>
             </div>
           </div>
         </div>
@@ -111,7 +110,7 @@ export default function RewardsLoginCalendar() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <Gift className="h-5 w-5 text-pink-500" />
-            {t("rewards.calendar.comingThisMonth")}
+            {"See what's coming this month"}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -139,7 +138,7 @@ export default function RewardsLoginCalendar() {
                     "bg-card border-border/40"
                   }`}
                 >
-                  <span className="text-[10px] text-muted-foreground">{t("rewards.calendar.dayShort")}</span>
+                  <span className="text-[10px] text-muted-foreground">{"Day"}</span>
                   <span className="text-sm font-bold">{day}</span>
                   {claimed ? <Check className="h-3 w-3 text-emerald-400 mt-0.5" /> :
                    isPast ? <Lock className="h-3 w-3 text-muted-foreground mt-0.5" /> :
@@ -151,10 +150,10 @@ export default function RewardsLoginCalendar() {
             })}
           </div>
           <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1"><Check className="h-3 w-3 text-emerald-400" /> {t("rewards.calendar.legendClaimed")}</span>
-            <span className="flex items-center gap-1"><Star className="h-3 w-3 text-pink-400" /> {t("rewards.calendar.legendAvailable")}</span>
-            <span className="flex items-center gap-1"><Sparkles className="h-3 w-3 text-yellow-500" /> {t("rewards.calendar.legendMilestone")}</span>
-            <Badge variant="outline" className="text-[10px]">{t("rewards.calendar.missDayHint")}</Badge>
+            <span className="flex items-center gap-1"><Check className="h-3 w-3 text-emerald-400" /> {"Claimed"}</span>
+            <span className="flex items-center gap-1"><Star className="h-3 w-3 text-pink-400" /> {"Available"}</span>
+            <span className="flex items-center gap-1"><Sparkles className="h-3 w-3 text-yellow-500" /> {"Milestone"}</span>
+            <Badge variant="outline" className="text-[10px]">{"Miss a day → use Streak Freeze"}</Badge>
           </div>
         </CardContent>
       </Card>

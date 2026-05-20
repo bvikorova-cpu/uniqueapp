@@ -29,7 +29,7 @@ import { JobAIAssistant } from "@/components/jobs/JobAIAssistant";
 import { OneClickApplyDialog } from "@/components/jobs/OneClickApplyDialog";
 import { AIJobOptimizer } from "@/components/jobs/AIJobOptimizer";
 import { WorkUserGuide } from "@/components/work/WorkUserGuide";
-import { useTranslation } from "react-i18next";
+
 import { useNavigate } from "react-router-dom";
 import JobsToolsGrid from "@/components/jobs/JobsToolsGrid";
 import JobsApplicationStreaks from "@/components/jobs/JobsApplicationStreaks";
@@ -97,7 +97,6 @@ const Jobs = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [user, setUser] = useState<SupabaseUser | null>(null);
-  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<ActiveTab>("jobs");
 
   useEffect(() => {

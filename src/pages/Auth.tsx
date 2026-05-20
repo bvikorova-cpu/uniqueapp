@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
-import { useTranslation } from "react-i18next";
+
 import { Eye, EyeOff, CalendarIcon, ShieldAlert, Baby } from "lucide-react";
 import { Age16Badge } from "@/components/Age16Badge";
 import { format, differenceInYears } from "date-fns";
@@ -26,8 +26,6 @@ const Auth = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
-  const { t, i18n } = useTranslation();
-
   // Where to send the user after successful login. Allow only same-origin paths.
   const redirectParam = searchParams.get("redirect");
   const safeRedirect =
@@ -101,7 +99,7 @@ const Auth = () => {
     const phone = formData.get("phone") as string;
     const companyName = formData.get("companyName") as string;
 
-    const selectedLanguage = i18n.language || 'en';
+    const selectedLanguage = 'en';
     const isoBirthDate = format(birthDate, "yyyy-MM-dd");
 
     const { data: signUpData, error } = await supabase.auth.signUp({
@@ -139,13 +137,13 @@ const Auth = () => {
     if (error) {
       toast({
         variant: "destructive",
-        title: t('auth.error_registration'),
+        title: "Registration error",
         description: error.message,
       });
     } else {
       toast({
-        title: t('auth.registration_success'),
-        description: t('auth.check_email'),
+        title: "Registration successful!",
+        description: "Check your email for confirmation.",
       });
     }
   };
@@ -168,12 +166,12 @@ const Auth = () => {
     if (error) {
       toast({
         variant: "destructive",
-        title: t('auth.error_login'),
+        title: "Login error",
         description: error.message,
       });
     } else {
       toast({
-        title: t('auth.login_success'),
+        title: "Login successful!",
       });
       navigate(safeRedirect, { replace: true });
     }
@@ -195,13 +193,13 @@ const Auth = () => {
     if (error) {
       toast({
         variant: "destructive",
-        title: t('auth.error'),
+        title: "Error",
         description: error.message,
       });
     } else {
       toast({
-        title: t('auth.reset_link_sent'),
-        description: t('auth.check_email_reset'),
+        title: "Password reset link sent!",
+        description: "Check your email for the reset link.",
       });
       setShowForgotPassword(false);
     }
@@ -273,10 +271,10 @@ const Auth = () => {
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1 flex-wrap">
-                <CardTitle>{t('auth.welcome')}</CardTitle>
+                <CardTitle>{"Welcome!"}</CardTitle>
                 <Age16Badge size="xs" withLabel={false} />
               </div>
-              <CardDescription>{t('auth.please_login')}</CardDescription>
+              <CardDescription>{"Please log in to continue"}</CardDescription>
             </div>
           </div>
         </CardHeader>
@@ -288,11 +286,11 @@ const Auth = () => {
                 onClick={() => setShowForgotPassword(false)}
                 className="mb-4"
               >
-                {t('auth.back_to_login')}
+                {"← Back to login"}
               </Button>
               <form onSubmit={handleForgotPassword} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="reset-email">{t('auth.email')}</Label>
+                  <Label htmlFor="reset-email">{"Email"}</Label>
                   <Input
                     id="reset-email"
                     name="email"
@@ -302,21 +300,21 @@ const Auth = () => {
                   />
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? t('auth.sending') : t('auth.send_reset_link')}
+                  {loading ? "Sending..." : "Send reset link"}
                 </Button>
               </form>
             </div>
           ) : (
             <Tabs defaultValue="login">
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="login">{t('auth.login_tab')}</TabsTrigger>
-                <TabsTrigger value="signup">{t('auth.signup_tab')}</TabsTrigger>
+                <TabsTrigger value="login">{"Login"}</TabsTrigger>
+                <TabsTrigger value="signup">{"Sign Up"}</TabsTrigger>
               </TabsList>
 
               <TabsContent value="login">
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="login-email">{t('auth.email')}</Label>
+                    <Label htmlFor="login-email">{"Email"}</Label>
                     <Input
                       id="login-email"
                       name="email"
@@ -326,7 +324,7 @@ const Auth = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="login-password">{t('auth.password')}</Label>
+                    <Label htmlFor="login-password">{"Password"}</Label>
                     <div className="relative">
                       <Input
                         id="login-password"
@@ -356,10 +354,10 @@ const Auth = () => {
                     className="px-0 text-sm"
                     onClick={() => setShowForgotPassword(true)}
                   >
-                    {t('auth.forgot_password')}
+                    {"Forgot password?"}
                   </Button>
                   <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? t('auth.logging_in') : t('auth.log_in')}
+                    {loading ? "Logging in..." : "Log in"}
                   </Button>
                 </form>
               </TabsContent>
@@ -367,7 +365,7 @@ const Auth = () => {
               <TabsContent value="signup">
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signup-name">{t('auth.full_name')}</Label>
+                    <Label htmlFor="signup-name">{"Full name"}</Label>
                     <Input
                       id="signup-name"
                       name="fullName"
@@ -377,7 +375,7 @@ const Auth = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-phone">{t('auth.phone')} *</Label>
+                    <Label htmlFor="signup-phone">{"Phone"} *</Label>
                     <Input
                       id="signup-phone"
                       name="phone"
@@ -387,16 +385,16 @@ const Auth = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-company">{t('auth.company_name')} ({t('auth.optional')})</Label>
+                    <Label htmlFor="signup-company">{"Company Name"} ({"optional"})</Label>
                     <Input
                       id="signup-company"
                       name="companyName"
                       type="text"
-                      placeholder={t('auth.company_placeholder')}
+                      placeholder={"Your Company Name"}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-email">{t('auth.email')}</Label>
+                    <Label htmlFor="signup-email">{"Email"}</Label>
                     <Input
                       id="signup-email"
                       name="email"
@@ -406,7 +404,7 @@ const Auth = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-password">{t('auth.password')}</Label>
+                    <Label htmlFor="signup-password">{"Password"}</Label>
                     <div className="relative">
                       <Input
                         id="signup-password"
@@ -520,7 +518,7 @@ const Auth = () => {
                   <Captcha onVerify={setCaptchaVerified} />
 
                   <Button type="submit" className="w-full" disabled={loading || !privacyConsent || !termsConsent || !birthDate || !captchaVerified}>
-                    {loading ? t('auth.registering') : t('auth.sign_up')}
+                    {loading ? "Registering..." : "Sign up"}
                   </Button>
                 </form>
               </TabsContent>

@@ -19,13 +19,12 @@ import { GlobalCurrencySwitcher } from "@/components/GlobalCurrencySwitcher";
 import megatalentLogo from "@/assets/megatalent-logo.png";
 import uniqueLogo from "@/assets/unique-logo.png";
 import { Age16Badge } from "@/components/Age16Badge";
-import { useTranslation } from "react-i18next";
+
 import GlobalSearch from "@/components/GlobalSearch";
 import { useAuth } from "@/contexts/AuthContext";
 
 const Navbar = () => {
   const { theme, setTheme } = useTheme();
-  const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -58,14 +57,14 @@ const Navbar = () => {
   };
 
   const mainNavItems = [
-    { path: "/wall", label: t('services.wall.title'), icon: MessageSquare },
-    { path: "/jobs", label: t('navbar.work'), icon: Briefcase },
-    { path: "/rewards", label: t('navbar.rewards'), icon: Trophy },
-    { path: "/megatalent", label: t('services.megatalent.title'), icon: Crown, premium: true },
+    { path: "/wall", label: "Wall", icon: MessageSquare },
+    { path: "/jobs", label: "Work", icon: Briefcase },
+    { path: "/rewards", label: "Rewards", icon: Trophy },
+    { path: "/megatalent", label: "Megatalent", icon: Crown, premium: true },
   ];
 
   const learningServices = [
-    { path: "/education", label: t('navbar.education'), icon: GraduationCap },
+    { path: "/education", label: "Education", icon: GraduationCap },
     { path: "/ai-mentor", label: "AI Personal Mentor", icon: UserCircle },
     { path: "/kids-channel", label: "Kids Channel", icon: Video },
     { path: "/coloring-pages", label: "Coloring Pages", icon: Palette },
@@ -122,17 +121,17 @@ const Navbar = () => {
     { path: "/time-reversal", label: "Time Reversal Social", icon: Clock },
     { path: "/masterchef-subscription", label: "KitchenStars Competition", icon: ChefHat },
     { path: "/f1-racing", label: "GP Fantasy Racing", icon: Car },
-    { path: "/messenger", label: t('services.messenger.title'), icon: Mail },
-    { path: "/influ-king", label: t('navbar.influ_king'), icon: Star },
-    { path: "/megaforum", label: t('navbar.megaforum'), icon: Users },
-    { path: "/psychologist", label: t('navbar.psychologist'), icon: Brain },
+    { path: "/messenger", label: "Messenger", icon: Mail },
+    { path: "/influ-king", label: "Influ-King", icon: Star },
+    { path: "/megaforum", label: "Megaforum", icon: Users },
+    { path: "/psychologist", label: "Psychologist", icon: Brain },
     { path: "/content-studio", label: "Content Studio", icon: Sparkles },
     { path: "/companions", label: "Character Companions", icon: MessageCircle },
     { path: "/ai-experiences", label: "Exclusive Experiences", icon: Sparkles },
     
-    { path: "/brand-builder", label: t('services.brand_builder.title'), icon: Sparkles },
-    { path: "/home-designer", label: t('services.home_designer.title'), icon: Home },
-    { path: "/beauty-studio", label: t('services.beauty_studio.title'), icon: Sparkles },
+    { path: "/brand-builder", label: "Brand Builder", icon: Sparkles },
+    { path: "/home-designer", label: "Home Designer", icon: Home },
+    { path: "/beauty-studio", label: "Beauty Studio", icon: Sparkles },
     { path: "/photo-restoration", label: "Photo Restoration", icon: Image },
     { path: "/antique-appraisal", label: "Antique Appraisal", icon: Gem },
     { path: "/collectibles", label: "Collectibles", icon: Sparkles },
@@ -153,11 +152,11 @@ const Navbar = () => {
     { path: "/ai-tattoo", label: "AI Tattoo Designer", icon: ImageIcon },
     { path: "/mystery-box", label: "Mystery Box", icon: Gift },
     { path: "/secret-santa", label: "Social Gifts Hub", icon: Gift },
-    { path: "/vacationer", label: t('navbar.vacationer'), icon: Plane },
-    { path: "/dating", label: t('navbar.dating'), icon: Heart },
-    { path: "/first-aid", label: t('navbar.first_aid'), icon: Activity },
-    { path: "/fit-slim", label: t('services.fit_slim.title'), icon: Apple },
-    { path: "/cooking", label: t('navbar.cooking'), icon: ChefHat },
+    { path: "/vacationer", label: "Vacationer", icon: Plane },
+    { path: "/dating", label: "Dating", icon: Heart },
+    { path: "/first-aid", label: "First Aid", icon: Activity },
+    { path: "/fit-slim", label: "Fit & Slim", icon: Apple },
+    { path: "/cooking", label: "Cooking", icon: ChefHat },
     { path: "/coffee", label: "Coffee Community", icon: Coffee },
     { path: "/ai-clone", label: "AI Personality Clone", icon: Bot },
     
@@ -167,19 +166,19 @@ const Navbar = () => {
     { path: "/stock-content-library", label: "Stock Content Library", icon: ImageIcon },
     { path: "/tutorial-platform", label: "Tutorial & Course Platform", icon: GraduationCap },
     { path: "/virtual-escape-room", label: "Virtual Escape Room", icon: Lock },
-    { path: "/marketplace", label: t('navbar.marketplace_skills'), icon: Briefcase },
-    { path: "/bazaar", label: t('navbar.bazaar'), icon: Store },
+    { path: "/marketplace", label: "Skills Marketplace", icon: Briefcase },
+    { path: "/bazaar", label: "Bazaar", icon: Store },
     { path: "/coupon-marketplace", label: "Coupon Marketplace", icon: Ticket },
     { path: "/analyzer", label: "Universal Analyzer", icon: Sparkles },
-    { path: "/ai-generation", label: t('navbar.ai_generation'), icon: Sparkles },
+    { path: "/ai-generation", label: "AI Generation", icon: Sparkles },
     { path: "/video-ad-generator", label: "Video Ad Generator", icon: Video },
-    { path: "/auction", label: t('navbar.auction'), icon: Gavel },
-    { path: "/best-friend", label: t('navbar.best_friend'), icon: UserPlus },
-    { path: "/referral", label: t('navbar.invite_friend'), icon: User },
+    { path: "/auction", label: "Online Auctions", icon: Gavel },
+    { path: "/best-friend", label: "Best Friend", icon: UserPlus },
+    { path: "/referral", label: "Invite friend", icon: User },
     { path: "/iq-platform", label: "IQ Platform", icon: Brain },
     { path: "/pet-translator", label: "AI Pet Translator", icon: PawPrint },
     { path: "/future-face", label: "Future Face - Age Prediction", icon: Clock },
-    { path: "/terms", label: t('navbar.terms'), icon: FileText },
+    { path: "/terms", label: "Terms", icon: FileText },
   ];
 
   const isLearningServiceActive = learningServices.some(item => location.pathname === item.path);
@@ -298,7 +297,7 @@ const Navbar = () => {
               <DropdownMenuTrigger asChild>
                 <Button variant={isOtherServiceActive ? "premium" : "ghost"}>
                   <MoreHorizontal className="h-4 w-4" />
-                  {t('navbar.other_services')}
+                  {"Other Services"}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56 max-h-96 overflow-y-auto bg-popover/95 backdrop-blur-xl border-border/50 shadow-[0_8px_40px_hsl(var(--primary)/0.08)]">
@@ -359,19 +358,19 @@ const Navbar = () => {
                     <DropdownMenuItem asChild>
                       <Link to={`/profile/${user.id}`} className="w-full cursor-pointer">
                         <UserCircle className="h-4 w-4 mr-2" />
-                        {t('navbar.view_profile')}
+                        {"View profile"}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/edit-profile" className="w-full cursor-pointer">
                         <Settings className="h-4 w-4 mr-2" />
-                        {t('navbar.edit_profile')}
+                        {"Edit profile"}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/subscription" className="w-full cursor-pointer">
                         <Crown className="h-4 w-4 mr-2" />
-                        {t('navbar.subscription')}
+                        {"Subscription"}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
@@ -389,42 +388,42 @@ const Navbar = () => {
                     <DropdownMenuItem asChild>
                       <Link to="/ai-credits" className="w-full cursor-pointer">
                         <Sparkles className="h-4 w-4 mr-2" />
-                        {t('navbar.ai_credits')}
+                        {"AI Credits"}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/earnings" className="w-full cursor-pointer">
                         <Euro className="h-4 w-4 mr-2" />
-                        {t('navbar.earnings')}
+                        {"My earnings"}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/contact" className="w-full cursor-pointer">
                         <Mail className="h-4 w-4 mr-2" />
-                        {t('navbar.contact')}
+                        {"Contact"}
                       </Link>
                     </DropdownMenuItem>
                     {isAdmin && (
                       <DropdownMenuItem asChild>
                         <Link to="/admin" className="w-full cursor-pointer">
                           <Settings className="h-4 w-4 mr-2" />
-                          {t('navbar.admin_panel')}
+                          {"Admin Panel"}
                         </Link>
                       </DropdownMenuItem>
                     )}
                   </DropdownMenuContent>
                 </DropdownMenu>
                 <Button onClick={handleLogout} variant="outline">
-                  {t('navbar.logout')}
+                  {"Logout"}
                 </Button>
               </>
             ) : (
               <>
                 <Link to="/auth">
-                  <Button variant="outline">{t('navbar.login')}</Button>
+                  <Button variant="outline">{"Login"}</Button>
                 </Link>
                 <Link to="/auth">
-                  <Button variant="hero">{t('navbar.register')}</Button>
+                  <Button variant="hero">{"Register"}</Button>
                 </Link>
               </>
             )}
@@ -560,7 +559,7 @@ const Navbar = () => {
             {/* Other Services Section */}
             <div className="pt-2 pb-1">
               <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground">
-                {t('navbar.other_services')}
+                {"Other Services"}
               </div>
               {otherServices.map((item) => {
                 const Icon = item.icon;
@@ -586,58 +585,58 @@ const Navbar = () => {
                   <Link to={`/profile/${user.id}`} onClick={() => setIsMenuOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start text-sm" size="sm">
                       <UserCircle className="h-4 w-4 mr-2" />
-                      {t('navbar.view_profile')}
+                      {"View profile"}
                     </Button>
                   </Link>
                   <Link to="/edit-profile" onClick={() => setIsMenuOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start text-sm" size="sm">
                       <Settings className="h-4 w-4 mr-2" />
-                      {t('navbar.edit_profile')}
+                      {"Edit profile"}
                     </Button>
                   </Link>
                   <Link to="/subscription" onClick={() => setIsMenuOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start text-sm" size="sm">
                       <Crown className="h-4 w-4 mr-2" />
-                      {t('navbar.subscription')}
+                      {"Subscription"}
                     </Button>
                   </Link>
                   <Link to="/ai-credits" onClick={() => setIsMenuOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start text-sm" size="sm">
                       <Sparkles className="h-4 w-4 mr-2" />
-                      {t('navbar.ai_credits')}
+                      {"AI Credits"}
                     </Button>
                   </Link>
                   <Link to="/earnings" onClick={() => setIsMenuOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start text-sm" size="sm">
                       <Euro className="h-4 w-4 mr-2" />
-                      {t('navbar.earnings')}
+                      {"My earnings"}
                     </Button>
                   </Link>
                   <Link to="/contact" onClick={() => setIsMenuOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start text-sm" size="sm">
                       <Mail className="h-4 w-4 mr-2" />
-                      {t('navbar.contact')}
+                      {"Contact"}
                     </Button>
                   </Link>
                   {isAdmin && (
                     <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
                       <Button variant="ghost" className="w-full justify-start text-sm" size="sm">
                         <Settings className="h-4 w-4 mr-2" />
-                        {t('navbar.admin_panel')}
+                        {"Admin Panel"}
                       </Button>
                     </Link>
                   )}
                   <Button onClick={handleLogout} variant="outline" className="w-full text-sm" size="sm">
-                    {t('navbar.logout')}
+                    {"Logout"}
                   </Button>
                 </>
               ) : (
               <>
                 <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="outline" className="w-full text-sm" size="sm">{t('navbar.login')}</Button>
+                  <Button variant="outline" className="w-full text-sm" size="sm">{"Login"}</Button>
                 </Link>
                 <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="hero" className="w-full text-sm" size="sm">{t('navbar.register')}</Button>
+                  <Button variant="hero" className="w-full text-sm" size="sm">{"Register"}</Button>
                 </Link>
                 </>
               )}

@@ -29,7 +29,7 @@ import { ChatModerationCard } from '@/components/shadow-arena/ChatModerationCard
 import { Plus, Swords, BookOpen, Trophy } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { useTranslation } from 'react-i18next';
+
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -53,7 +53,6 @@ interface Story {
 
 export default function ShadowArenaDashboard() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
   const [battles, setBattles] = useState<Battle[]>([]);
@@ -65,7 +64,7 @@ export default function ShadowArenaDashboard() {
     const sessionId = searchParams.get('session_id');
     const paymentStatus = searchParams.get('payment');
     if (paymentStatus === 'canceled') {
-      toast.error(t('shadow.credits.purchase_canceled'));
+      toast.error("Payment canceled");
       searchParams.delete('payment');
       setSearchParams(searchParams, { replace: true });
       return;
@@ -75,9 +74,9 @@ export default function ShadowArenaDashboard() {
         .invoke('verify-credits-payment', { body: { session_id: sessionId } })
         .then(({ data, error }) => {
           if (error || !data?.success) {
-            toast.error(t('shadow.credits.verify_failed'));
+            toast.error("Could not verify payment");
           } else {
-            toast.success(t('shadow.credits.purchase_success'));
+            toast.success("Credits added to your account!");
             queryClient.invalidateQueries({ queryKey: ['shadow-arena-credits'] });
           }
           searchParams.delete('payment');
@@ -85,7 +84,7 @@ export default function ShadowArenaDashboard() {
           setSearchParams(searchParams, { replace: true });
         });
     }
-  }, [searchParams, setSearchParams, t, queryClient]);
+  }, [searchParams, setSearchParams, queryClient]);
 
   useEffect(() => {
     fetchData();
@@ -168,11 +167,11 @@ export default function ShadowArenaDashboard() {
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="stories">
               <BookOpen className="mr-2 h-4 w-4" />
-              {t('shadow.dashboard.tab_stories')}
+              {"Top Stories"}
             </TabsTrigger>
             <TabsTrigger value="battles">
               <Trophy className="mr-2 h-4 w-4" />
-              {t('shadow.dashboard.tab_battles')}
+              {"Recent Battles"}
             </TabsTrigger>
           </TabsList>
 
@@ -183,10 +182,10 @@ export default function ShadowArenaDashboard() {
               </div>
             ) : stories.length === 0 ? (
               <Card className="p-12 text-center space-y-4">
-                <p className="text-muted-foreground">{t('shadow.dashboard.no_stories')}</p>
+                <p className="text-muted-foreground">{"No stories yet. Be the first to submit!"}</p>
                 <Button onClick={() => navigate('/shadow-arena/submit-story')}>
                   <Plus className="mr-2 h-4 w-4" />
-                  {t('shadow.dashboard.submit_story_cta')}
+                  {"Submit a Story"}
                 </Button>
               </Card>
             ) : (
@@ -205,10 +204,10 @@ export default function ShadowArenaDashboard() {
               </div>
             ) : battles.length === 0 ? (
               <Card className="p-12 text-center space-y-4">
-                <p className="text-muted-foreground">{t('shadow.dashboard.no_battles')}</p>
+                <p className="text-muted-foreground">{"No battles yet. Create the first one!"}</p>
                 <Button onClick={() => navigate('/shadow-arena/battles')}>
                   <Swords className="mr-2 h-4 w-4" />
-                  {t('shadow.dashboard.create_battle_cta')}
+                  {"Create a Battle"}
                 </Button>
               </Card>
             ) : (

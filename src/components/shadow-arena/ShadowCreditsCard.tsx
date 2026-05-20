@@ -3,16 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Coins, Zap } from "lucide-react";
 import { useShadowArenaCredits } from "@/hooks/useShadowArenaAI";
 import { motion } from "framer-motion";
-import { useTranslation } from "react-i18next";
+
 
 const PACKAGES = [
-  { credits: 30 as const, price: "€4.99", labelKey: "shadow.credits.pack_starter" },
-  { credits: 100 as const, price: "€12.99", labelKey: "shadow.credits.pack_creator", popular: true },
-  { credits: 280 as const, price: "€29.99", labelKey: "shadow.credits.pack_pro" },
+  { credits: 30 as const, price: "€4.99", label: "Starter" },
+  { credits: 100 as const, price: "€12.99", label: "Creator", popular: true },
+  { credits: 280 as const, price: "€29.99", label: "Pro" },
 ];
 
 export function ShadowCreditsCard() {
-  const { t } = useTranslation();
   const { credits, buyCredits, isLoading } = useShadowArenaCredits();
   const balance = credits?.credits_remaining ?? 0;
 
@@ -30,19 +29,19 @@ export function ShadowCreditsCard() {
             <Zap className="w-6 h-6 text-yellow-100" />
           </motion.div>
           <div>
-            <p className="text-sm text-red-200 font-semibold">{t("shadow.credits.title")}</p>
+            <p className="text-sm text-red-200 font-semibold">{"Shadow AI Credits"}</p>
             <p className="text-3xl font-black text-white drop-shadow-[0_0_10px_rgba(248,113,113,0.5)]">
               {isLoading ? "—" : balance}
             </p>
           </div>
         </div>
         <div className="text-right">
-          <p className="text-xs text-red-200 font-semibold mb-1">{t("shadow.credits.cost_label")}</p>
+          <p className="text-xs text-red-200 font-semibold mb-1">{"Cost per use"}</p>
           <div className="flex flex-wrap gap-1.5 text-[11px] text-red-50 justify-end">
-            <span className="px-2 py-0.5 rounded bg-red-950/70 border border-red-700/50 font-medium">{t("shadow.credits.cost_story")}</span>
-            <span className="px-2 py-0.5 rounded bg-red-950/70 border border-red-700/50 font-medium">{t("shadow.credits.cost_voice")}</span>
-            <span className="px-2 py-0.5 rounded bg-red-950/70 border border-red-700/50 font-medium">{t("shadow.credits.cost_predict")}</span>
-            <span className="px-2 py-0.5 rounded bg-red-950/70 border border-red-700/50 font-medium">{t("shadow.credits.cost_avatar")}</span>
+            <span className="px-2 py-0.5 rounded bg-red-950/70 border border-red-700/50 font-medium">{"Story 4"}</span>
+            <span className="px-2 py-0.5 rounded bg-red-950/70 border border-red-700/50 font-medium">{"Voice 6"}</span>
+            <span className="px-2 py-0.5 rounded bg-red-950/70 border border-red-700/50 font-medium">{"Predict 5"}</span>
+            <span className="px-2 py-0.5 rounded bg-red-950/70 border border-red-700/50 font-medium">{"Avatar 8"}</span>
           </div>
         </div>
       </div>
@@ -61,13 +60,13 @@ export function ShadowCreditsCard() {
           >
             {pkg.popular && (
               <span className="absolute -top-2 right-2 text-[9px] px-1.5 py-0.5 rounded-full bg-red-500 text-white font-bold shadow-md">
-                {t("shadow.credits.popular")}
+                {"POPULAR"}
               </span>
             )}
             <Coins className="w-4 h-4 text-yellow-300 mb-1" />
-            <span className="font-black text-white text-base">{pkg.credits} {t("shadow.credits.credits_unit")}</span>
+            <span className="font-black text-white text-base">{pkg.credits} {"cr"}</span>
             <span className="text-[11px] text-red-100 font-semibold">{pkg.price}</span>
-            <span className="text-[10px] text-red-200/90 mt-0.5 font-medium">{t(pkg.labelKey)}</span>
+            <span className="text-[10px] text-red-200/90 mt-0.5 font-medium">{pkg.label}</span>
           </Button>
         ))}
       </div>

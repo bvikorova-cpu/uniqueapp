@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { useTranslation } from "react-i18next";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -65,7 +65,6 @@ const TOOLS = [
 const categories = ["General", "Technology", "Sports", "Culture", "Music", "Film & TV", "Games", "Health", "Other"];
 
 const Megaforum = () => {
-  const { t } = useTranslation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [user, setUser] = useState<SupabaseUser | null>(null);
@@ -487,7 +486,7 @@ const Megaforum = () => {
                   variant="hero"
                   className="w-full"
                   onClick={() => {
-                    if (!requireAuth(t("megaforum.paywall.actionPost"))) return;
+                    if (!requireAuth("publish a post")) return;
                     if (!newPostTitle.trim() || !newPostContent.trim()) { toast({ title: "Fill in all fields", variant: "destructive" }); return; }
                     createPostMutation.mutate();
                   }}
@@ -617,7 +616,7 @@ const Megaforum = () => {
                             <div className="flex items-center gap-3 pt-2 border-t border-border/30">
                               <Button
                                 variant="ghost" size="sm"
-                                onClick={() => { if (!requireAuth(t("megaforum.paywall.actionLike"))) return; likeMutation.mutate(post.id); }}
+                                onClick={() => { if (!requireAuth("like this post")) return; likeMutation.mutate(post.id); }}
                                 className={`h-7 text-xs hover:text-primary ${isLiked ? "text-primary" : ""}`}
                               >
                                 <ThumbsUp className={`h-3.5 w-3.5 mr-1 ${isLiked ? "fill-current" : ""}`} />

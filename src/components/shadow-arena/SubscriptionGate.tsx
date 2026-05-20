@@ -6,7 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
+
 import shadowPoster from '@/assets/shadow-arena-poster.jpg';
 
 interface SubscriptionGateProps {
@@ -14,22 +14,20 @@ interface SubscriptionGateProps {
 }
 
 const FEATURE_KEYS = [
-  { icon: Skull, titleKey: 'shadow.gate.features.story_title', descKey: 'shadow.gate.features.story_desc' },
-  { icon: Flame, titleKey: 'shadow.gate.features.voting_title', descKey: 'shadow.gate.features.voting_desc' },
-  { icon: Volume2, titleKey: 'shadow.gate.features.sound_title', descKey: 'shadow.gate.features.sound_desc' },
-  { icon: Trophy, titleKey: 'shadow.gate.features.tour_title', descKey: 'shadow.gate.features.tour_desc' },
-  { icon: Ghost, titleKey: 'shadow.gate.features.live_title', descKey: 'shadow.gate.features.live_desc' },
-  { icon: Eye, titleKey: 'shadow.gate.features.vault_title', descKey: 'shadow.gate.features.vault_desc' },
+  { icon: Skull, title: 'AI Horror Story Generator', desc: 'Conjure spine-chilling tales with AI — illustrations, ambient sound, narrative twists.' },
+  { icon: Flame, title: 'Live Voting & Gifts', desc: 'Audience sends digital gifts in real time. Each gift = a vote. Top performers win.' },
+  { icon: Volume2, title: 'Horror Sound Library', desc: 'Curated screams, whispers, ambient drones + AI-generated atmospheric soundscapes.' },
+  { icon: Trophy, title: 'Battle Tournaments', desc: 'Weekly & monthly tournaments with cash prize pools and a global cursed leaderboard.' },
+  { icon: Ghost, title: 'Live Horror Battles', desc: 'Go LIVE and perform your tale to a terrified audience in real time.' },
+  { icon: Eye, title: 'Story Archive Vault', desc: 'Every AI-enhanced horror story preserved with atmospheric illustrations.' },
 ];
 
 export function SubscriptionGate({ children }: SubscriptionGateProps) {
   const { user } = useAuth();
   const { subscribed, loading } = useShadowSubscription();
-  const { t } = useTranslation();
-
   const handleSubscribe = async () => {
     if (!user) {
-      toast.error(t('shadow.gate.sign_in_required'));
+      toast.error("Please sign in to subscribe");
       return;
     }
     try {
@@ -41,7 +39,7 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
       }
     } catch (error) {
       console.error('Subscription error:', error);
-      toast.error(t('shadow.gate.subscribe_failed'));
+      toast.error("Failed to create subscription");
     }
   };
 
@@ -103,7 +101,7 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
             className="text-center mb-6"
           >
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-950/60 backdrop-blur border border-red-900/60 text-red-300 text-[11px] tracking-[0.25em] uppercase font-gothic-display">
-              <Sparkles className="w-3 h-3" /> {t('shadow.gate.eyebrow')}
+              <Sparkles className="w-3 h-3" /> {"Forbidden Access"}
             </span>
           </motion.div>
 
@@ -114,7 +112,7 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
             transition={{ duration: 0.9 }}
             className="text-center font-gothic-display font-black tracking-tight mb-4 text-5xl sm:text-7xl md:text-8xl shadow-blood-text shadow-flicker leading-[0.9]"
           >
-            {t('shadow.hero.title')}
+            {"Shadow Arena"}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0 }}
@@ -122,10 +120,10 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
             transition={{ delay: 0.3 }}
             className="text-center font-gothic-body italic text-red-100/80 text-base sm:text-xl max-w-2xl mx-auto mb-2"
           >
-            {t('shadow.gate.subtitle')}
+            {"Where the dead tell stories. Where the living compete for blood and gold."}
           </motion.p>
           <p className="text-center text-[11px] tracking-[0.3em] uppercase text-red-500/70 font-gothic-display mb-12">
-            {t('shadow.gate.warning')}
+            {"— Enter at your own risk —"}
           </p>
 
           {/* Lock + lore */}
@@ -139,10 +137,10 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
               <Lock className="w-9 h-9 text-red-100 drop-shadow-[0_0_10px_rgba(255,255,255,0.6)]" />
             </div>
             <h2 className="text-center font-gothic-display text-2xl sm:text-3xl text-red-200 mt-6 mb-4">
-              {t('shadow.gate.lock_title')}
+              {"Access Sealed by Ancient Curse"}
             </h2>
             <p className="font-gothic-body text-center text-red-100/85 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto">
-              {t('shadow.gate.lock_desc')}
+              {"Beyond this seal lies the darkest corner of storytelling. Live horror battles, AI-summoned tales, real cash prizes. Speak the rite — pay the offering — and the gate shall open."}
             </p>
           </motion.div>
 
@@ -152,7 +150,7 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
               const Icon = f.icon;
               return (
                 <motion.div
-                  key={f.titleKey}
+                  key={f.title}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 + i * 0.07 }}
@@ -161,8 +159,8 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
                 >
                   <div className="absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-700/60 to-transparent" />
                   <Icon className="w-8 h-8 text-red-400 mb-3 group-hover:text-red-300 transition-colors drop-shadow-[0_0_10px_rgba(220,38,38,0.4)]" />
-                  <h3 className="font-gothic-display text-red-100 text-base mb-1.5 tracking-wide">{t(f.titleKey)}</h3>
-                  <p className="font-gothic-body text-red-200/65 text-sm leading-relaxed">{t(f.descKey)}</p>
+                  <h3 className="font-gothic-display text-red-100 text-base mb-1.5 tracking-wide">{f.title}</h3>
+                  <p className="font-gothic-body text-red-200/65 text-sm leading-relaxed">{f.desc}</p>
                 </motion.div>
               );
             })}
@@ -178,10 +176,10 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
             <div className="absolute inset-0 shadow-grain" />
             <div className="relative">
               <p className="text-[11px] uppercase tracking-[0.4em] text-red-400/70 font-gothic-display mb-3">
-                {t('shadow.gate.offering')}
+                {"The Offering"}
               </p>
               <p className="font-gothic-display text-5xl sm:text-6xl shadow-blood-text mb-2">€2.00</p>
-              <p className="text-red-200/60 text-sm font-gothic-body italic mb-6">{t('shadow.gate.price_period')}</p>
+              <p className="text-red-200/60 text-sm font-gothic-body italic mb-6">{"per moon · break the pact anytime"}</p>
 
               <Button
                 onClick={handleSubscribe}
@@ -189,19 +187,19 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
                 className="w-full sm:w-auto px-12 py-7 text-lg font-gothic-display tracking-[0.15em] uppercase bg-gradient-to-r from-red-700 via-red-800 to-red-900 hover:from-red-600 hover:via-red-700 hover:to-red-800 text-red-50 border border-red-500/40 shadow-[0_0_40px_rgba(220,38,38,0.45)] hover:shadow-[0_0_60px_rgba(220,38,38,0.7)] transition-all"
               >
                 <Zap className="mr-2 w-5 h-5" />
-                {t('shadow.gate.cta')}
+                {"Break the Seal"}
               </Button>
 
               <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mt-6 text-[11px] uppercase tracking-widest text-red-300/60 font-gothic-display">
-                <span>{t('shadow.gate.trust_instant')}</span>
-                <span>{t('shadow.gate.trust_secure')}</span>
-                <span>{t('shadow.gate.trust_cancel')}</span>
+                <span>{"· Instant Entry ·"}</span>
+                <span>{"· Stripe Secure ·"}</span>
+                <span>{"· Cancel Anytime ·"}</span>
               </div>
             </div>
           </motion.div>
 
           <p className="text-center text-xs text-red-500/50 italic mt-8 font-gothic-body">
-            {t('shadow.gate.footnote')}
+            {"\"The arena does not forget those who refuse the offering.\""}
           </p>
         </div>
       </div>

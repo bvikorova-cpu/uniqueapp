@@ -5,13 +5,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MessageCircle, Send, ArrowRight, Sparkles, Zap } from "lucide-react";
-import { useTranslation } from "react-i18next";
+
 import { motion } from "framer-motion";
 
 export default function WallMessages() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
-
   const { data: user } = useQuery({
     queryKey: ["current-user"],
     queryFn: async () => { const { data: { user } } = await supabase.auth.getUser(); return user; },
@@ -46,13 +44,13 @@ export default function WallMessages() {
             </motion.div>
             <div>
               <h1 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-foreground via-blue-500 to-cyan-500 bg-clip-text text-transparent">
-                {t('wall.messages.title')}
+                {"Messages"}
               </h1>
-              <p className="text-sm text-muted-foreground mt-0.5">{t('wall.messages.quickAccess')}</p>
+              <p className="text-sm text-muted-foreground mt-0.5">{"Quick access to your conversations"}</p>
             </div>
           </div>
           <Button onClick={() => navigate("/messenger")} className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white hover:opacity-90 gap-2 shadow-xl shadow-blue-500/25 active:scale-[0.97]">
-            <Send className="h-4 w-4" /> {t('wall.messages.openMessenger')}
+            <Send className="h-4 w-4" /> {"Open Messenger"}
           </Button>
         </div>
       </motion.div>
@@ -64,8 +62,8 @@ export default function WallMessages() {
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }} className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center mx-auto mb-5">
               <MessageCircle className="h-10 w-10 text-blue-500" />
             </motion.div>
-            <h3 className="text-xl font-black mb-2">{t('wall.messages.noConversations')}</h3>
-            <p className="text-sm text-muted-foreground max-w-xs mx-auto">{t('wall.messages.connectFriends')}</p>
+            <h3 className="text-xl font-black mb-2">{"No conversations yet"}</h3>
+            <p className="text-sm text-muted-foreground max-w-xs mx-auto">{"Connect with friends to start messaging"}</p>
           </CardContent>
         </Card>
       ) : (
@@ -92,7 +90,7 @@ export default function WallMessages() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-black text-sm group-hover:text-blue-500 transition-colors">{friend.full_name}</p>
-                    <p className="text-xs text-muted-foreground">{t('wall.messages.clickToOpen')}</p>
+                    <p className="text-xs text-muted-foreground">{"Click to open conversation"}</p>
                   </div>
                   <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-blue-500 transition-all group-hover:translate-x-1 duration-300" />
                 </div>
@@ -109,9 +107,9 @@ export default function WallMessages() {
           <CardContent className="py-6 text-center relative">
             <Sparkles className="w-6 h-6 text-blue-500 mx-auto mb-2" />
             <p className="text-sm text-muted-foreground">
-              {t('wall.messages.fullFeatures')}{" "}
+              {"For full messaging features, open the"}{" "}
               <button onClick={() => navigate("/messenger")} className="text-blue-500 hover:underline font-bold">
-                {t('wall.messages.messengerApp')}
+                {"Messenger app"}
               </button>
             </p>
           </CardContent>
