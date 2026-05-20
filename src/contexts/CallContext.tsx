@@ -315,10 +315,12 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
 
   const startCall = useCallback(
     async ({ conversationId, otherUserId, otherUserName }: StartCallArgs) => {
-      if (!user?.id) return;
-      if (call.status !== "idle") return;
+      console.log("[call] startCall →", { otherUserId, otherUserName, conversationId });
+      if (!user?.id) { console.warn("[call] no user, abort"); return; }
+      if (callRef.current.status !== "idle") { console.warn("[call] already busy, abort"); return; }
       try {
         const stream = await requestMedia();
+        console.log("[call] got local media tracks:", stream.getTracks().map(t => t.kind));
         localStreamRef.current = stream;
         const pc = buildPeer(otherUserId);
         pcRef.current = pc;
@@ -336,12 +338,12 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
           offer,
         });
       } catch (err: any) {
-        console.error("startCall failed", err);
+        console.error("[call] startCall failed", err);
         toast({ title: "Error", description: explainMediaError(err), variant: "destructive" });
         resetCall();
       }
     },
-    [user?.id, call.status, buildPeer, sendToUser, myName, toast, resetCall],
+    [user?.id, buildPeer, sendToUser, myName, toast, resetCall],
   );
 
   const acceptIncoming = useCallback(async () => {
