@@ -518,7 +518,12 @@ const Messenger = () => {
           fetchMessages(); // Refresh to get updated reactions
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        // When (re)connected, refetch to catch any messages we missed while offline.
+        if (status === "SUBSCRIBED") {
+          fetchMessages();
+        }
+      });
 
     return () => {
       supabase.removeChannel(channel);
@@ -540,13 +545,29 @@ const Messenger = () => {
         },
         (payload) => {
           if (payload.new && (payload.new as any).user_id !== user.id) {
-            setOtherUserTyping((payload.new as any).is_typing);
+            const isTyping = (payload.new as any).is_typing;
+            setOtherUserTyping(isTyping);
+
+            // Safety: auto-clear typing indicator after 3s of silence
+            // in case the "stopped typing" event never arrives.
+            if (otherTypingTimeoutRef.current) {
+              clearTimeout(otherTypingTimeoutRef.current);
+            }
+            if (isTyping) {
+              otherTypingTimeoutRef.current = setTimeout(() => {
+                setOtherUserTyping(false);
+              }, 3000);
+            }
           }
         }
       )
       .subscribe();
 
     return () => {
+      if (otherTypingTimeoutRef.current) {
+        clearTimeout(otherTypingTimeoutRef.current);
+        otherTypingTimeoutRef.current = null;
+      }
       supabase.removeChannel(channel);
     };
   };
