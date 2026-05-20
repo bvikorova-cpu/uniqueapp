@@ -1527,7 +1527,7 @@ const Messenger = () => {
                       }}
                       className="flex-1 min-w-0"
                     />
-                    <Button onClick={sendMessage} size="icon" className="shrink-0" disabled={isRecording || !newMessage.trim()}>
+                    <Button onClick={() => sendMessage()} size="icon" className="shrink-0" disabled={isRecording || !newMessage.trim()}>
                       <Send className="h-4 w-4" />
                     </Button>
                   </div>
