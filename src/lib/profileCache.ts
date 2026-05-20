@@ -60,11 +60,11 @@ export const fetchProfilesCachedBatch = async (
   if (missing.length === 0) return result;
 
   const { data } = await supabase
-    .from("profiles")
+    .from("public_profiles" as any)
     .select("id, full_name, avatar_url")
     .in("id", missing);
 
-  (data || []).forEach((p) => {
+  ((data as unknown as CachedProfile[]) || []).forEach((p) => {
     cache.set(p.id, p);
     result.set(p.id, p);
   });
