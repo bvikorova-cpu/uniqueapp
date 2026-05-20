@@ -263,6 +263,8 @@ const Messenger = () => {
       // Clear previous conversation messages immediately so the new
       // conversation always starts fresh and history is reloaded.
       setMessages([]);
+      setLoadingMessages(true);
+      setMessagesError(false);
       fetchMessages();
       const unsubscribeMessages = subscribeToMessages();
       const unsubscribeTyping = subscribeToTyping();
@@ -274,6 +276,8 @@ const Messenger = () => {
       };
     } else {
       setMessages([]);
+      setLoadingMessages(false);
+      setMessagesError(false);
     }
   }, [selectedConversation]);
 
