@@ -368,6 +368,8 @@ const Messenger = () => {
     if (!selectedConversation) return;
 
     const convId = selectedConversation;
+    setLoadingMessages(true);
+    setMessagesError(false);
     const { data, error } = await supabase
       .from("messages")
       .select("id, content, sender_id, created_at, story_id, reply_to_id, is_read, read_at")
@@ -377,6 +379,10 @@ const Messenger = () => {
 
     if (error) {
       console.error("Error fetching messages:", error);
+      if (convId === selectedConversation) {
+        setMessagesError(true);
+        setLoadingMessages(false);
+      }
       return;
     }
 
