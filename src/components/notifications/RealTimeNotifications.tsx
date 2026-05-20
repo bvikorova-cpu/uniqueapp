@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { Bell, Heart, MessageCircle, UserPlus, AtSign } from "lucide-react";
+import { playNotificationChime } from "@/lib/notificationChime";
 
 interface Notification {
   id: string;
@@ -42,6 +43,11 @@ export const useRealTimeNotifications = () => {
             mention: <AtSign className="h-4 w-4 text-purple-500" />,
             message: <Bell className="h-4 w-4 text-yellow-500" />,
           };
+
+          // Play distinct notification chime (different from message chime)
+          if (newNotification.type !== "message") {
+            playNotificationChime();
+          }
 
           toast(newNotification.message || "New notification", {
             icon: icons[newNotification.type] || <Bell className="h-4 w-4" />,
