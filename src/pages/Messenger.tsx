@@ -539,13 +539,13 @@ const Messenger = () => {
       }
     }
 
-    const { data: conversation, error: convError } = await supabase
+    const newConvId = (crypto as any).randomUUID();
+    const { error: convError } = await supabase
       .from("conversations")
-      .insert({})
-      .select()
-      .single();
+      .insert({ id: newConvId, created_by: user.id });
 
-    if (convError || !conversation) {
+    if (convError) {
+      console.error("createConversation insert error:", convError);
       toast({
         title: "Error",
         description: "Failed to create conversation",
@@ -557,11 +557,12 @@ const Messenger = () => {
     const { error: participantsError } = await supabase
       .from("conversation_participants")
       .insert([
-        { conversation_id: conversation.id, user_id: user.id },
-        { conversation_id: conversation.id, user_id: otherUserId },
+        { conversation_id: newConvId, user_id: user.id },
+        { conversation_id: newConvId, user_id: otherUserId },
       ]);
 
     if (participantsError) {
+      console.error("createConversation participants error:", participantsError);
       toast({
         title: "Error",
         description: "Failed to add participants",
@@ -570,9 +571,10 @@ const Messenger = () => {
       return;
     }
 
-    setSelectedConversation(conversation.id);
+    setSelectedConversation(newConvId);
     fetchConversations();
   };
+
 
   const sendMessage = async () => {
     if (!newMessage.trim() || !selectedConversation) return;
