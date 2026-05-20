@@ -1253,8 +1253,7 @@ const Messenger = () => {
                   <EncryptionBadge />
                 </div>
 
-                <div className={`flex items-center gap-2 pt-2 ${replyingTo ? "" : "border-t"}`}>
-                  {/* Hidden file input */}
+                <div className={`pt-2 ${replyingTo ? "" : "border-t"}`}>
                   <input
                     type="file"
                     ref={fileInputRef}
@@ -1262,90 +1261,93 @@ const Messenger = () => {
                     className="hidden"
                     onChange={handleImageUpload}
                   />
-                  
-                  {/* Image upload button */}
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={isRecording}
-                  >
-                    <Image className="h-4 w-4" />
-                  </Button>
-                  
-                  {/* GIF picker */}
-                  <Popover open={showGifPicker} onOpenChange={setShowGifPicker}>
-                    <PopoverTrigger asChild>
-                      <Button variant="ghost" size="icon" disabled={isRecording}>
-                        <Smile className="h-4 w-4" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-80 p-2">
-                      <div className="grid grid-cols-3 gap-2 max-h-60 overflow-y-auto">
-                        {POPULAR_GIFS.map((gif, index) => (
-                          <img
-                            key={index}
-                            src={gif}
-                            alt="GIF"
-                            className="w-full h-20 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity"
-                            onClick={() => sendGif(gif)}
-                          />
-                        ))}
+
+                  {/* Tool row — scrolls horizontally on narrow screens */}
+                  <div className="flex items-center gap-1 overflow-x-auto pb-2 -mx-1 px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="shrink-0"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={isRecording}
+                    >
+                      <Image className="h-4 w-4" />
+                    </Button>
+
+                    <Popover open={showGifPicker} onOpenChange={setShowGifPicker}>
+                      <PopoverTrigger asChild>
+                        <Button variant="ghost" size="icon" className="shrink-0" disabled={isRecording}>
+                          <Smile className="h-4 w-4" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-80 p-2">
+                        <div className="grid grid-cols-3 gap-2 max-h-60 overflow-y-auto">
+                          {POPULAR_GIFS.map((gif, index) => (
+                            <img
+                              key={index}
+                              src={gif}
+                              alt="GIF"
+                              className="w-full h-20 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity"
+                              onClick={() => sendGif(gif)}
+                            />
+                          ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+
+                    <div className="shrink-0">
+                      <SelfDestructingMessage
+                        onSelectDuration={(duration) => setSelfDestructDuration(duration === 0 ? null : duration)}
+                        isActive={selfDestructDuration !== null && selfDestructDuration > 0}
+                        duration={selfDestructDuration}
+                      />
+                    </div>
+
+                    {user && (
+                      <div className="shrink-0">
+                        <MessengerAIFeatures
+                          userId={user.id}
+                          selectedText={selectedMessageText}
+                          messages={messages.map(m => ({
+                            sender_id: m.sender_id,
+                            content: m.content,
+                            sender_name: m.sender_profile?.full_name || undefined,
+                          }))}
+                          onInsertText={(text) => setNewMessage(text)}
+                        />
                       </div>
-                    </PopoverContent>
-                  </Popover>
-                  
-                  {/* Self-destructing message toggle */}
-                  <SelfDestructingMessage
-                    onSelectDuration={(duration) => setSelfDestructDuration(duration === 0 ? null : duration)}
-                    isActive={selfDestructDuration !== null && selfDestructDuration > 0}
-                    duration={selfDestructDuration}
-                  />
-                  
-                  {/* AI Features */}
-                  {user && (
-                    <MessengerAIFeatures
-                      userId={user.id}
-                      selectedText={selectedMessageText}
-                      messages={messages.map(m => ({
-                        sender_id: m.sender_id,
-                        content: m.content,
-                        sender_name: m.sender_profile?.full_name || undefined,
-                      }))}
-                      onInsertText={(text) => setNewMessage(text)}
-                    />
-                  )}
-                  
-                  {/* Voice recording button */}
-                  <Button
-                    variant={isRecording ? "destructive" : "ghost"}
-                    size="icon"
-                    onClick={isRecording ? stopRecording : startRecording}
-                  >
-                    {isRecording ? (
-                      <Square className="h-4 w-4" />
-                    ) : (
-                      <Mic className="h-4 w-4" />
                     )}
-                  </Button>
-                  
-                  {isRecording && (
-                    <span className="text-sm text-destructive animate-pulse">
-                      {formatDuration(recordingDuration)}
-                    </span>
-                  )}
-                  
-                  <Input
-                    placeholder="Write a message..."
-                    value={newMessage}
-                    onChange={handleInputChange}
-                    onKeyPress={(e) => e.key === "Enter" && sendMessage()}
-                    disabled={isRecording}
-                    className="flex-1"
-                  />
-                  <Button onClick={sendMessage} size="icon" disabled={isRecording || !newMessage.trim()}>
-                    <Send className="h-4 w-4" />
-                  </Button>
+                  </div>
+
+                  {/* Input row */}
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant={isRecording ? "destructive" : "ghost"}
+                      size="icon"
+                      className="shrink-0"
+                      onClick={isRecording ? stopRecording : startRecording}
+                    >
+                      {isRecording ? <Square className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                    </Button>
+
+                    {isRecording && (
+                      <span className="text-xs text-destructive animate-pulse shrink-0">
+                        {formatDuration(recordingDuration)}
+                      </span>
+                    )}
+
+                    <Input
+                      placeholder="Write a message..."
+                      value={newMessage}
+                      onChange={handleInputChange}
+                      onKeyPress={(e) => e.key === "Enter" && sendMessage()}
+                      disabled={isRecording}
+                      className="flex-1 min-w-0"
+                    />
+                    <Button onClick={sendMessage} size="icon" className="shrink-0" disabled={isRecording || !newMessage.trim()}>
+                      <Send className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
               </>
             ) : (
