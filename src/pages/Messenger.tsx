@@ -20,6 +20,7 @@ import { EncryptionBadge } from "@/components/messaging/EncryptionBadge";
 import { GroupChatDialog } from "@/components/messenger/GroupChatDialog";
 import { MessengerAIFeatures } from "@/components/messenger/MessengerAIFeatures";
 import { MessengerHero } from "@/components/messenger/MessengerHero";
+import PushOptInButton from "@/components/notifications/PushOptInButton";
 import { ChatAnalyticsDashboard } from "@/components/messenger/ChatAnalyticsDashboard";
 import { AIChatThemes } from "@/components/messenger/AIChatThemes";
 import { VoiceRoom } from "@/components/messenger/VoiceRoom";
