@@ -46,7 +46,7 @@ export function PatronModeCard({ authorUserId, authorName }: { authorUserId: str
             }`}
           >
             {tier.popular && <span className="block text-[10px] font-bold text-yellow-400 mb-1">{"POPULAR"}</span>}
-            <p className="font-bold text-yellow-100">{t(tier.nameKey)}</p>
+            <p className="font-bold text-yellow-100">{tier.name}</p>
             <p className="text-lg font-black text-yellow-200 mb-2">{tier.price}</p>
             <ul className="text-xs text-yellow-100/70 space-y-1 mb-3">
               {tier.perks.map((p) => <li key={p}>• {p}</li>)}
