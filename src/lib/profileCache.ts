@@ -7,6 +7,7 @@ export type CachedProfile = {
   id: string;
   full_name: string | null;
   avatar_url: string | null;
+  username?: string | null;
 };
 
 const cache = new Map<string, CachedProfile>();
@@ -29,12 +30,10 @@ export const fetchProfileCached = async (
 
   const p = (async () => {
     const { data, error } = await supabase
-      .from("public_profiles" as any)
-      .select("id, full_name, avatar_url")
-      .eq("id", userId)
-      .single();
+      .rpc("get_profiles_basic", { _ids: [userId] });
     if (error || !data) return null;
-    const row = data as unknown as CachedProfile;
+    const row = (data as unknown as CachedProfile[])[0];
+    if (!row) return null;
     cache.set(userId, row);
     return row;
   })();
@@ -60,9 +59,7 @@ export const fetchProfilesCachedBatch = async (
   if (missing.length === 0) return result;
 
   const { data } = await supabase
-    .from("public_profiles" as any)
-    .select("id, full_name, avatar_url")
-    .in("id", missing);
+    .rpc("get_profiles_basic", { _ids: missing });
 
   ((data as unknown as CachedProfile[]) || []).forEach((p) => {
     cache.set(p.id, p);
