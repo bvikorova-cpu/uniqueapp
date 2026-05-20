@@ -44,6 +44,7 @@ import {
   fetchProfilesCachedBatch,
   primeProfileCache,
 } from "@/lib/profileCache";
+import { sanitizeMessageContent, checkRateLimit, MAX_MESSAGE_LEN } from "@/lib/messageSafety";
 import {
   Popover,
   PopoverContent,
