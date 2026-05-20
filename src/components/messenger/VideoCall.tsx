@@ -174,7 +174,7 @@ const VideoCall = ({ conversationId, userId, otherUserId, otherUserName }: Video
     } catch (error: any) {
       console.error("Error starting call:", error);
       toast({
-        title: "Chyba",
+        title: "Error",
         description: explainMediaError(error),
         variant: "destructive",
       });
@@ -240,7 +240,7 @@ const VideoCall = ({ conversationId, userId, otherUserId, otherUserName }: Video
     } catch (error: any) {
       console.error("Error handling offer:", error);
       toast({
-        title: "Chyba",
+        title: "Error",
         description: explainMediaError(error),
         variant: "destructive",
       });
