@@ -34,7 +34,7 @@ export const useGlobalMessageChime = () => {
 
     try {
       partsChannel = supabase
-        .channel(`participants-watch-${user.id}-${rand}`)
+        .channel(`user:${user.id}:participants-watch:${rand}`)
         .on(
           "postgres_changes",
           {
@@ -48,7 +48,7 @@ export const useGlobalMessageChime = () => {
         .subscribe();
 
       msgChannel = supabase
-        .channel(`global-messages-${user.id}-${rand}`)
+        .channel(`user:${user.id}:global-messages:${rand}`)
         .on(
           "postgres_changes",
           { event: "INSERT", schema: "public", table: "messages" },
