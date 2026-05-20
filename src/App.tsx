@@ -1122,6 +1122,7 @@ const App = () => {
               </TooltipProvider>
               </CurrencyProvider>
             </AnimationProvider>
+            </CallProvider>
           </AuthProvider>
         </BrowserRouter>
       </ThemeProvider>
