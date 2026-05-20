@@ -511,6 +511,11 @@ const Messenger = () => {
           if (payload.new.sender_id !== user.id) {
             playMessageChime();
             markMessagesAsRead();
+            // Background notification + tab title badge when tab is hidden/blurred
+            const senderName = profile?.full_name || "New message";
+            const body = (payload.new as any).content || "Sent you a message";
+            showMessageNotification(senderName, String(body).slice(0, 140), profile?.avatar_url || undefined);
+            incrementUnreadBadge();
           }
         }
       )
