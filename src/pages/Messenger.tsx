@@ -11,6 +11,7 @@ import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply, Mic, Image, S
 import { EmojiPicker } from "@/components/messenger/EmojiPicker";
 import { GifPicker } from "@/components/messenger/GifPicker";
 import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 import VideoCall from "@/components/messenger/VideoCall";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { OnlineIndicator } from "@/components/messenger/OnlineIndicator";
