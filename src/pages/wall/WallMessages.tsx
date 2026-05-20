@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MessageCircle, Send, ArrowRight, Sparkles, Zap } from "lucide-react";
+import { fetchProfilesCachedBatch } from "@/lib/profileCache";
 
 import { motion } from "framer-motion";
 
@@ -22,8 +23,8 @@ export default function WallMessages() {
       const { data: friendships } = await supabase.from("friendships").select("user_id, friend_id").or(`user_id.eq.${user.id},friend_id.eq.${user.id}`).eq("status", "accepted").limit(10);
       const friendIds = friendships?.map((f) => f.user_id === user.id ? f.friend_id : f.user_id) || [];
       if (friendIds.length === 0) return [];
-      const { data: profiles } = await supabase.from("profiles").select("id, full_name, avatar_url").in("id", friendIds);
-      return profiles || [];
+      const profiles = await fetchProfilesCachedBatch(friendIds);
+      return Array.from(profiles.values());
     },
     enabled: !!user,
   });
