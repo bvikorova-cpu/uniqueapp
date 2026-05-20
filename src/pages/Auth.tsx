@@ -99,7 +99,7 @@ const Auth = () => {
     const phone = formData.get("phone") as string;
     const companyName = formData.get("companyName") as string;
 
-    const selectedLanguage = i18n.language || 'en';
+    const selectedLanguage = 'en';
     const isoBirthDate = format(birthDate, "yyyy-MM-dd");
 
     const { data: signUpData, error } = await supabase.auth.signUp({
