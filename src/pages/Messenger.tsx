@@ -184,6 +184,32 @@ const Messenger = () => {
     }
   }, [user]);
 
+  // Server-side search by name so we can find anyone, not just the first 1000 cached profiles
+  useEffect(() => {
+    if (!user) return;
+    const q = searchQuery.trim();
+    if (!q) {
+      setSearchResults([]);
+      setSearching(false);
+      return;
+    }
+    setSearching(true);
+    const handle = setTimeout(async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id, full_name, avatar_url")
+        .neq("id", user.id)
+        .ilike("full_name", `%${q}%`)
+        .order("full_name", { ascending: true })
+        .limit(30);
+      if (!error) setSearchResults((data as Profile[]) || []);
+      setSearching(false);
+    }, 250);
+    return () => clearTimeout(handle);
+  }, [searchQuery, user]);
+
+
+
   const fetchGroupChats = async () => {
     const { data } = await supabase
       .from("group_chats")
