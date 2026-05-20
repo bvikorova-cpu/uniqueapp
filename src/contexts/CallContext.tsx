@@ -89,22 +89,33 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
   const getOutboundChannel = useCallback(async (targetUserId: string) => {
     let ch = outboundChannelsRef.current.get(targetUserId);
     if (ch) return ch;
-    ch = supabase.channel(`user-rtc:${targetUserId}`, { config: { broadcast: { ack: false } } });
-    await new Promise<void>((resolve) => {
-      ch!.subscribe((status) => {
-        if (status === "SUBSCRIBED") resolve();
-      });
-      // Safety: don't hang forever
-      setTimeout(() => resolve(), 1500);
+    console.log("[call] creating outbound channel for", targetUserId);
+    ch = supabase.channel(`user-rtc:${targetUserId}`, {
+      config: { broadcast: { ack: true, self: false } },
     });
     outboundChannelsRef.current.set(targetUserId, ch);
+    await new Promise<void>((resolve) => {
+      let done = false;
+      const finish = () => { if (!done) { done = true; resolve(); } };
+      ch!.subscribe((status, err) => {
+        console.log("[call] outbound channel status →", status, err || "");
+        if (status === "SUBSCRIBED") finish();
+        if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") finish();
+      });
+      setTimeout(finish, 4000);
+    });
     return ch;
   }, []);
 
   const sendToUser = useCallback(
     async (targetUserId: string, event: string, payload: Record<string, unknown>) => {
-      const ch = await getOutboundChannel(targetUserId);
-      await ch.send({ type: "broadcast", event, payload });
+      try {
+        const ch = await getOutboundChannel(targetUserId);
+        const res = await ch.send({ type: "broadcast", event, payload });
+        console.log("[call] sent", event, "→", targetUserId, "result:", res);
+      } catch (e) {
+        console.error("[call] sendToUser failed", event, e);
+      }
     },
     [getOutboundChannel],
   );
@@ -214,16 +225,21 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
 
   // -- own channel subscription -----------------------------------------
 
+  // Keep latest call state in a ref so realtime callbacks never see stale data.
+  const callRef = useRef<CallState>(call);
+  useEffect(() => { callRef.current = call; }, [call]);
+
   useEffect(() => {
     if (!user?.id) return;
+    console.log("[call] subscribing to own channel user-rtc:" + user.id);
 
     const channel = supabase.channel(`user-rtc:${user.id}`);
 
     channel
       .on("broadcast", { event: "offer" }, ({ payload }) => {
-        // Ignore if we're already in/handling a call
-        if (call.status !== "idle") {
-          // Auto-decline (line busy)
+        console.log("[call] ← OFFER from", payload?.from, payload);
+        if (callRef.current.status !== "idle") {
+          console.log("[call] busy, auto-declining");
           void sendToUser(payload.from, "decline-call", { from: user.id, reason: "busy" });
           return;
         }
@@ -235,7 +251,6 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
           offer: payload.offer,
         });
         startRingtone();
-        // Best-effort browser notification
         try {
           if (typeof Notification !== "undefined" && Notification.permission === "granted") {
             const n = new Notification("Incoming call", {
@@ -282,7 +297,9 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
         });
         resetCall();
       })
-      .subscribe();
+      .subscribe((status, err) => {
+        console.log("[call] own channel status →", status, err || "");
+      });
 
     ownChannelRef.current = channel;
 
@@ -298,10 +315,12 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
 
   const startCall = useCallback(
     async ({ conversationId, otherUserId, otherUserName }: StartCallArgs) => {
-      if (!user?.id) return;
-      if (call.status !== "idle") return;
+      console.log("[call] startCall →", { otherUserId, otherUserName, conversationId });
+      if (!user?.id) { console.warn("[call] no user, abort"); return; }
+      if (callRef.current.status !== "idle") { console.warn("[call] already busy, abort"); return; }
       try {
         const stream = await requestMedia();
+        console.log("[call] got local media tracks:", stream.getTracks().map(t => t.kind));
         localStreamRef.current = stream;
         const pc = buildPeer(otherUserId);
         pcRef.current = pc;
@@ -319,12 +338,12 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
           offer,
         });
       } catch (err: any) {
-        console.error("startCall failed", err);
+        console.error("[call] startCall failed", err);
         toast({ title: "Error", description: explainMediaError(err), variant: "destructive" });
         resetCall();
       }
     },
-    [user?.id, call.status, buildPeer, sendToUser, myName, toast, resetCall],
+    [user?.id, buildPeer, sendToUser, myName, toast, resetCall],
   );
 
   const acceptIncoming = useCallback(async () => {
