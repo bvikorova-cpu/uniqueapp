@@ -36,7 +36,7 @@ import { RealTimeNotificationsMount } from "@/components/notifications/RealTimeN
 import { AnimationProvider } from "@/contexts/AnimationContext";
 import { CurrencyProvider } from "@/contexts/CurrencyContext";
 import { useEffect } from "react";
-import i18n from "@/i18n/config";
+import "@/i18n/config";
 import SkipLink from "./components/SkipLink";
 import { PageLoader } from "@/components/ui/PageLoader";
 import { ErrorBoundary } from "./components/ErrorBoundary";
