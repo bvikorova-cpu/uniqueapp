@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+
 import { Heart, Loader2, Sparkles } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,7 +19,6 @@ interface Props {
 }
 
 export default function MegatalentTipJar({ creatorId, creatorName, categorySlug }: Props) {
-  const { t } = useTranslation();
   const { user } = useAuth();
   const [amount, setAmount] = useState<number>(500);
   const [custom, setCustom] = useState<string>("");

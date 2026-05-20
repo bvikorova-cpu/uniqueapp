@@ -7,11 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Map, Lock, Check, Star, Skull } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { useTranslation } from "react-i18next";
+
 
 export default function RewardsQuestPath() {
   const { user } = useAuth();
-  const { t } = useTranslation();
   const [path, setPath] = useState<any>(null);
   const [nodes, setNodes] = useState<any[]>([]);
   const [progress, setProgress] = useState<any>(null);
@@ -49,8 +48,8 @@ export default function RewardsQuestPath() {
     });
     if (error) return toast.error(error.message);
     const res = data as any;
-    if (!res?.ok) return toast.error(res?.error || t("rewards.questPath.failedClaim"));
-    toast.success(res.xp_awarded > 0 ? t("rewards.questPath.xpClaimed", { xp: res.xp_awarded }) : t("rewards.questPath.nodeClaimed"));
+    if (!res?.ok) return toast.error(res?.error || "Failed to claim");
+    toast.success(res.xp_awarded > 0 ? `+${res.xp_awarded} XP claimed!` : "Node claimed!");
     load();
   };
 
@@ -62,12 +61,12 @@ export default function RewardsQuestPath() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Map className="h-5 w-5 text-primary" />
-            {path?.name || t("rewards.questPath.title")}
+            {path?.name || "Quest Path"}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {!path ? <p className="text-sm text-muted-foreground">{t("rewards.questPath.none")}</p> :
-           nodes.length === 0 ? <p className="text-sm text-muted-foreground">{t("rewards.questPath.noNodes")}</p> :
+          {!path ? <p className="text-sm text-muted-foreground">{"No active quest path. Ask admin to seed one."}</p> :
+           nodes.length === 0 ? <p className="text-sm text-muted-foreground">{"No nodes yet."}</p> :
            <div className="relative space-y-2">
              {nodes.map((n, idx) => {
                const isDone = completed.includes(n.node_index);
@@ -91,11 +90,11 @@ export default function RewardsQuestPath() {
                      {n.is_boss ? <Skull className="h-5 w-5" /> : isDone ? <Check className="h-5 w-5" /> : locked ? <Lock className="h-4 w-4" /> : <Star className="h-4 w-4" />}
                    </div>
                    <div className="flex-1 min-w-0">
-                     <p className="font-semibold text-sm">{n.title} {n.is_boss && <Badge variant="destructive" className="ml-1 text-[10px]">{t("rewards.questPath.boss")}</Badge>}</p>
+                     <p className="font-semibold text-sm">{n.title} {n.is_boss && <Badge variant="destructive" className="ml-1 text-[10px]">{"BOSS"}</Badge>}</p>
                      <p className="text-xs text-muted-foreground">{n.reward_label || `${n.reward_value} ${n.reward_type}`}</p>
                    </div>
-                   {!isDone && !locked && <Button size="sm" onClick={() => claim(n.node_index)}>{t("rewards.questPath.claim")}</Button>}
-                   {isDone && <Badge variant="outline" className="text-xs">{t("rewards.questPath.done")}</Badge>}
+                   {!isDone && !locked && <Button size="sm" onClick={() => claim(n.node_index)}>{"Claim"}</Button>}
+                   {isDone && <Badge variant="outline" className="text-xs">{"Done"}</Badge>}
                  </motion.div>
                );
              })}

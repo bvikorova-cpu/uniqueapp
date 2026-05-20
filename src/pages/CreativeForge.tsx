@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useCreativeForgeCredits, CREDIT_COSTS, CreativeCategory } from "@/hooks/useCreativeForgeCredits";
 import { useQuery } from "@tanstack/react-query";
-import { useTranslation } from "react-i18next";
+
 import {
   Sparkles, Download, Copy, Star, History, CreditCard, Loader2, RefreshCw,
   Music, Film, Theater, BookOpen, Feather, Mic2, Podcast, Megaphone, ArrowLeft
@@ -73,7 +73,6 @@ export default function CreativeForge() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
-  const { t: tt } = useTranslation();
   const t = tt as (key: string, opts?: Record<string, unknown>) => string;
   const { credits, isLoading: creditsLoading, purchaseCredits, verifyPayment, refreshCredits } = useCreativeForgeCredits();
 
@@ -122,22 +121,22 @@ export default function CreativeForge() {
       const addCredits = async () => {
         try {
           if (sessionId) await verifyPayment(sessionId, parseInt(creditsParam || "0"));
-          toast({ title: t("forge.payment_success_title"), description: t("forge.payment_success_desc", { count: creditsParam || "" }) });
+          toast({ title: "Payment Successful!", description: `${creditsParam || ""} credits added.` });
           refreshCredits();
         } catch (error) { console.error("Error verifying payment:", error); }
       };
       addCredits();
       navigate("/creative-forge", { replace: true });
     } else if (payment === "canceled") {
-      toast({ title: t("forge.payment_canceled_title"), description: t("forge.payment_canceled_desc"), variant: "destructive" });
+      toast({ title: "Payment Canceled", description: "Your payment was canceled.", variant: "destructive" });
       navigate("/creative-forge", { replace: true });
     }
   }, [searchParams]);
 
   const handleGenerate = async () => {
-    if (!title.trim()) { toast({ title: t("forge.error"), description: t("forge.title_required"), variant: "destructive" }); return; }
+    if (!title.trim()) { toast({ title: "Error", description: "Please enter a title or theme", variant: "destructive" }); return; }
     const cost = CREDIT_COSTS[selectedCategory];
-    if ((credits?.credits_remaining || 0) < cost) { toast({ title: t("forge.insufficient_credits_title"), description: t("forge.insufficient_credits_desc", { count: cost }), variant: "destructive" }); setActiveView("credits"); return; }
+    if ((credits?.credits_remaining || 0) < cost) { toast({ title: "Insufficient Credits", description: `You need ${cost} credits.`, variant: "destructive" }); setActiveView("credits"); return; }
     setIsGenerating(true);
     if (generatedContent) setPreviousContent(generatedContent);
     setGeneratedContent(null);
@@ -148,34 +147,34 @@ export default function CreativeForge() {
       if (error) throw error;
       setGeneratedContent(data.content);
       refreshCredits(); refetchProjects();
-      toast({ title: t("forge.content_generated"), description: t("forge.credits_used_remaining", { used: data.creditsUsed, remaining: data.creditsRemaining }) });
+      toast({ title: "Content Generated!", description: `Used ${data.creditsUsed} credits. ${data.creditsRemaining} remaining.` });
     } catch (error: any) {
       console.error("Generation error:", error);
-      toast({ title: t("forge.generation_failed"), description: error.message || t("forge.generation_failed_desc"), variant: "destructive" });
+      toast({ title: "Generation Failed", description: error.message || "Failed to generate content", variant: "destructive" });
     } finally { setIsGenerating(false); }
   };
 
   const handleRevision = async (originalContent: string, revisionNotes: string) => {
-    if ((credits?.credits_remaining || 0) < CREDIT_COSTS.revision) { toast({ title: t("forge.insufficient_credits_title"), description: t("forge.insufficient_credits_desc", { count: CREDIT_COSTS.revision }), variant: "destructive" }); return; }
+    if ((credits?.credits_remaining || 0) < CREDIT_COSTS.revision) { toast({ title: "Insufficient Credits", description: `You need ${CREDIT_COSTS.revision} credits.`, variant: "destructive" }); return; }
     setIsGenerating(true); setPreviousContent(originalContent);
     try {
       const { data, error } = await supabase.functions.invoke("generate-creative-content", { body: { category: selectedCategory, title, inputData: { revisionNotes }, isRevision: true, originalContent } });
       if (error) throw error;
       setGeneratedContent(data.content); refreshCredits(); refetchProjects();
-      toast({ title: t("forge.revision_complete"), description: t("forge.revision_used", { used: data.creditsUsed }) });
-    } catch (error: any) { toast({ title: t("forge.revision_failed"), description: error.message, variant: "destructive" }); }
+      toast({ title: "Revision Complete!", description: `Used ${data.creditsUsed} credits.` });
+    } catch (error: any) { toast({ title: "Revision Failed", description: error.message, variant: "destructive" }); }
     finally { setIsGenerating(false); }
   };
 
   const handlePurchase = async (creditAmount: number) => { const url = await purchaseCredits(creditAmount); if (url) window.open(url, "_blank"); };
-  const copyToClipboard = (text: string) => { navigator.clipboard.writeText(text); toast({ title: t("forge.copied"), description: t("forge.copied_desc") }); };
+  const copyToClipboard = (text: string) => { navigator.clipboard.writeText(text); toast({ title: "Copied!", description: "Content copied to clipboard" }); };
   const downloadContent = (content: string, filename: string) => {
     const blob = new Blob([content], { type: "text/plain" }); const url = URL.createObjectURL(blob);
     const a = document.createElement("a"); a.href = url; a.download = `${filename}.txt`; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
-    toast({ title: t("forge.downloaded"), description: t("forge.downloaded_desc") });
+    toast({ title: "Downloaded!", description: "Content saved to file" });
   };
   const shareContent = (content: string, ttl: string) => { if (navigator.share) { navigator.share({ title: `CreativeForge: ${ttl}`, text: content }).catch(() => {}); } else { copyToClipboard(content); } };
-  const applyTemplate = (tpl: QuickTemplate) => { setTitle(tpl.title); setGenre(tpl.genre); setMood(tpl.mood); setDescription(tpl.description); setCharacters(tpl.characters); setSetting(tpl.setting); setStyleReference(tpl.styleReference); toast({ title: t("forge.template_applied"), description: t("forge.template_loaded", { name: tpl.label }) }); };
+  const applyTemplate = (tpl: QuickTemplate) => { setTitle(tpl.title); setGenre(tpl.genre); setMood(tpl.mood); setDescription(tpl.description); setCharacters(tpl.characters); setSetting(tpl.setting); setStyleReference(tpl.styleReference); toast({ title: "Template Applied", description: `"${tpl.label}" loaded — customize and generate!` }); };
 
   const filteredProjects = (projects || []).filter((p: any) => {
     if (historyFilter !== "all" && p.category !== historyFilter) return false;
@@ -239,19 +238,19 @@ export default function CreativeForge() {
         <div className="relative z-10 container mx-auto px-2 sm:px-4 pt-20 pb-12 max-w-7xl">
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-4 flex items-center gap-3">
             <Button variant="ghost" onClick={() => setActiveView("hub")} className="gap-2">
-              <ArrowLeft className="h-4 w-4" /> {t("forge.back")}
+              <ArrowLeft className="h-4 w-4" /> {"Back to CreativeForge"}
             </Button>
             {activeView === "create" && (
               <div className="flex flex-wrap gap-2 ml-auto">
                 <Button variant="outline" size="sm" onClick={() => setAiStudioOpen(true)} className="gap-1 border-primary/40 text-primary hover:bg-primary/10"><SparkleIcon className="h-3.5 w-3.5" /> AI Studio</Button>
                 <Button variant="outline" size="sm" onClick={() => setBrandVoiceOpen(true)} className="gap-1"><Palette className="h-3.5 w-3.5" /> {activeBrandVoice ? `Voice: ${activeBrandVoice.name}` : "Brand Voice"}</Button>
                 <Button variant="outline" size="sm" onClick={() => setStoryBibleOpen(true)} className="gap-1"><BookMarked className="h-3.5 w-3.5" /> Story Bible</Button>
-                <Button variant="outline" size="sm" onClick={() => setCowriterOpen(true)} className="gap-1 border-amber-700/40 text-amber-200 hover:bg-amber-900/20 hover:text-amber-100"><Sparkles className="h-3.5 w-3.5" /> {t("forge.tools.cowriter")}</Button>
-                <Button variant="outline" size="sm" onClick={() => setStyleOpen(true)} className="gap-1 border-amber-700/40 text-amber-200 hover:bg-amber-900/20 hover:text-amber-100"><Wand2 className="h-3.5 w-3.5" /> {t("forge.tools.style_transfer")}</Button>
-                <Button variant="outline" size="sm" onClick={() => setVoiceOpen(true)} className="gap-1 border-amber-700/40 text-amber-200 hover:bg-amber-900/20 hover:text-amber-100"><Mic className="h-3.5 w-3.5" /> {t("forge.tools.voice")}</Button>
-                <Button variant="outline" size="sm" onClick={() => setRoomsOpen(true)} className="gap-1 border-amber-700/40 text-amber-200 hover:bg-amber-900/20 hover:text-amber-100"><Users className="h-3.5 w-3.5" /> {t("forge.tools.rooms")}</Button>
-                <Button variant="outline" size="sm" onClick={() => setActiveView("history")} className="gap-1"><History className="h-3.5 w-3.5" /> {t("forge.tools.history")}</Button>
-                <Button variant="outline" size="sm" onClick={() => setActiveView("credits")} className="gap-1"><CreditCard className="h-3.5 w-3.5" /> {t("forge.tools.credits")}</Button>
+                <Button variant="outline" size="sm" onClick={() => setCowriterOpen(true)} className="gap-1 border-amber-700/40 text-amber-200 hover:bg-amber-900/20 hover:text-amber-100"><Sparkles className="h-3.5 w-3.5" /> {"Co-Writer"}</Button>
+                <Button variant="outline" size="sm" onClick={() => setStyleOpen(true)} className="gap-1 border-amber-700/40 text-amber-200 hover:bg-amber-900/20 hover:text-amber-100"><Wand2 className="h-3.5 w-3.5" /> {"Style Transfer"}</Button>
+                <Button variant="outline" size="sm" onClick={() => setVoiceOpen(true)} className="gap-1 border-amber-700/40 text-amber-200 hover:bg-amber-900/20 hover:text-amber-100"><Mic className="h-3.5 w-3.5" /> {"Voice"}</Button>
+                <Button variant="outline" size="sm" onClick={() => setRoomsOpen(true)} className="gap-1 border-amber-700/40 text-amber-200 hover:bg-amber-900/20 hover:text-amber-100"><Users className="h-3.5 w-3.5" /> {"Rooms"}</Button>
+                <Button variant="outline" size="sm" onClick={() => setActiveView("history")} className="gap-1"><History className="h-3.5 w-3.5" /> {"History"}</Button>
+                <Button variant="outline" size="sm" onClick={() => setActiveView("credits")} className="gap-1"><CreditCard className="h-3.5 w-3.5" /> {"Credits"}</Button>
               </div>
             )}
           </motion.div>
@@ -269,56 +268,56 @@ export default function CreativeForge() {
                           {CATEGORIES.find(c => c.id === selectedCategory)?.emoji}
                           {CATEGORIES.find(c => c.id === selectedCategory)?.name}
                         </CardTitle>
-                        <CardDescription>{t("forge.form.describe_vision")}</CardDescription>
+                        <CardDescription>{"Describe your creative vision"}</CardDescription>
                       </CardHeader>
                       <CardContent className="space-y-3">
-                        <div><Label>{t("forge.form.title_label")}</Label><Input placeholder={t("forge.form.title_placeholder")} value={title} onChange={(e) => setTitle(e.target.value)} /></div>
+                        <div><Label>{"Title / Theme *"}</Label><Input placeholder={"Enter the main theme or title..."} value={title} onChange={(e) => setTitle(e.target.value)} /></div>
                         <div className="grid grid-cols-2 gap-3">
-                          <div><Label>{t("forge.form.genre")}</Label><Input placeholder={t("forge.form.genre_placeholder")} value={genre} onChange={(e) => setGenre(e.target.value)} /></div>
-                          <div><Label>{t("forge.form.mood")}</Label><Input placeholder={t("forge.form.mood_placeholder")} value={mood} onChange={(e) => setMood(e.target.value)} /></div>
+                          <div><Label>{"Genre / Style"}</Label><Input placeholder={"e.g., Romance, Thriller..."} value={genre} onChange={(e) => setGenre(e.target.value)} /></div>
+                          <div><Label>{"Mood / Tone"}</Label><Input placeholder={"e.g., Melancholic, Upbeat..."} value={mood} onChange={(e) => setMood(e.target.value)} /></div>
                         </div>
-                        <div><Label>{t("forge.form.description")}</Label><Textarea placeholder={t("forge.form.description_placeholder")} value={description} onChange={(e) => setDescription(e.target.value)} rows={3} /></div>
+                        <div><Label>{"Description"}</Label><Textarea placeholder={"Describe what you want in detail..."} value={description} onChange={(e) => setDescription(e.target.value)} rows={3} /></div>
                         {(selectedCategory === "screenplay" || selectedCategory === "theater_play" || selectedCategory === "novel_chapter") && (
                           <div className="grid grid-cols-2 gap-3">
-                            <div><Label>{t("forge.form.characters")}</Label><Input placeholder={t("forge.form.characters_placeholder")} value={characters} onChange={(e) => setCharacters(e.target.value)} /></div>
-                            <div><Label>{t("forge.form.setting")}</Label><Input placeholder={t("forge.form.setting_placeholder")} value={setting} onChange={(e) => setSetting(e.target.value)} /></div>
+                            <div><Label>{"Characters"}</Label><Input placeholder={"Main characters..."} value={characters} onChange={(e) => setCharacters(e.target.value)} /></div>
+                            <div><Label>{"Setting"}</Label><Input placeholder={"Time and place..."} value={setting} onChange={(e) => setSetting(e.target.value)} /></div>
                           </div>
                         )}
-                        {selectedCategory === "ad_copy" && (<div><Label>{t("forge.form.target_audience")}</Label><Input placeholder={t("forge.form.target_audience_placeholder")} value={targetAudience} onChange={(e) => setTargetAudience(e.target.value)} /></div>)}
+                        {selectedCategory === "ad_copy" && (<div><Label>{"Target Audience"}</Label><Input placeholder={"Who is this for..."} value={targetAudience} onChange={(e) => setTargetAudience(e.target.value)} /></div>)}
                         <div className="grid grid-cols-2 gap-3">
                           <div>
-                            <Label>{t("forge.form.style_reference")}</Label>
-                            <Select value={styleReference} onValueChange={setStyleReference}><SelectTrigger><SelectValue placeholder={t("forge.form.style_reference_placeholder")} /></SelectTrigger>
-                              <SelectContent><SelectItem value="none">{t("forge.form.no_specific_style")}</SelectItem>{STYLE_REFERENCES[selectedCategory]?.map((ref) => (<SelectItem key={ref} value={ref}>{ref}</SelectItem>))}</SelectContent>
+                            <Label>{"Style Reference"}</Label>
+                            <Select value={styleReference} onValueChange={setStyleReference}><SelectTrigger><SelectValue placeholder={"Write in the style of..."} /></SelectTrigger>
+                              <SelectContent><SelectItem value="none">{"No specific style"}</SelectItem>{STYLE_REFERENCES[selectedCategory]?.map((ref) => (<SelectItem key={ref} value={ref}>{ref}</SelectItem>))}</SelectContent>
                             </Select>
                           </div>
                           <div>
-                            <Label>{t("forge.form.content_length")}</Label>
+                            <Label>{"Content Length"}</Label>
                             <Select value={contentLength} onValueChange={setContentLength}><SelectTrigger><SelectValue /></SelectTrigger>
-                              <SelectContent><SelectItem value="short">{t("forge.form.length_short")}</SelectItem><SelectItem value="medium">{t("forge.form.length_medium")}</SelectItem><SelectItem value="long">{t("forge.form.length_long")}</SelectItem></SelectContent>
+                              <SelectContent><SelectItem value="short">{"Short"}</SelectItem><SelectItem value="medium">{"Medium"}</SelectItem><SelectItem value="long">{"Long"}</SelectItem></SelectContent>
                             </Select>
                           </div>
                         </div>
                         <Button onClick={handleGenerate} disabled={isGenerating || !title.trim()} className="w-full" size="lg">
-                          {isGenerating ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t("forge.generating")}</> : <><Sparkles className="mr-2 h-4 w-4" /> {t("forge.generate")} ({CREDIT_COSTS[selectedCategory]} {t("forge.credit_short")})</>}
+                          {isGenerating ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {"Generating..."}</> : <><Sparkles className="mr-2 h-4 w-4" /> {"Generate"} ({CREDIT_COSTS[selectedCategory]} {"cr"})</>}
                         </Button>
                       </CardContent>
                     </Card>
                     {/* Output */}
                     <Card className="border-border/50 backdrop-blur-xl bg-card/80">
-                      <CardHeader className="pb-3"><CardTitle className="text-lg">{t("forge.output.title")}</CardTitle><CardDescription>{t("forge.output.subtitle")}</CardDescription></CardHeader>
+                      <CardHeader className="pb-3"><CardTitle className="text-lg">{"Generated Content"}</CardTitle><CardDescription>{"Your AI-created masterpiece"}</CardDescription></CardHeader>
                       <CardContent>
                         {generatedContent ? (
                           <div className="space-y-3">
                             {previousContent && (
                               <div className="grid grid-cols-2 gap-2 mb-2">
-                                <Button size="sm" variant="outline" className="text-xs" onClick={() => { setGeneratedContent(previousContent); setPreviousContent(null); }}>{t("forge.output.previous_version")}</Button>
-                                <Badge variant="secondary" className="flex items-center justify-center text-xs">{t("forge.output.current_version")}</Badge>
+                                <Button size="sm" variant="outline" className="text-xs" onClick={() => { setGeneratedContent(previousContent); setPreviousContent(null); }}>{"← Previous Version"}</Button>
+                                <Badge variant="secondary" className="flex items-center justify-center text-xs">{"Current Version"}</Badge>
                               </div>
                             )}
                             <ScrollArea className="h-[300px] border rounded-xl p-4 bg-muted/20"><pre className="whitespace-pre-wrap font-mono text-sm leading-relaxed">{generatedContent}</pre></ScrollArea>
                             <div className="flex gap-2">
-                              <Button variant="outline" size="sm" onClick={() => copyToClipboard(generatedContent)} className="flex-1"><Copy className="mr-1.5 h-3.5 w-3.5" /> {t("forge.output.copy")}</Button>
+                              <Button variant="outline" size="sm" onClick={() => copyToClipboard(generatedContent)} className="flex-1"><Copy className="mr-1.5 h-3.5 w-3.5" /> {"Copy"}</Button>
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                   <Button variant="outline" size="sm" className="flex-1"><FileDown className="mr-1.5 h-3.5 w-3.5" /> Export</Button>
@@ -330,19 +329,19 @@ export default function CreativeForge() {
                                   <DropdownMenuItem onClick={() => exportAs("pdf", `${selectedCategory}-${title}`, generatedContent)}>PDF (print)</DropdownMenuItem>
                                 </DropdownMenuContent>
                               </DropdownMenu>
-                              <Button variant="outline" size="sm" onClick={() => shareContent(generatedContent, title)} className="flex-1"><Star className="mr-1.5 h-3.5 w-3.5" /> {t("forge.output.share")}</Button>
+                              <Button variant="outline" size="sm" onClick={() => shareContent(generatedContent, title)} className="flex-1"><Star className="mr-1.5 h-3.5 w-3.5" /> {"Share"}</Button>
                             </div>
                             <div className="pt-2 border-t">
-                              <Label className="text-xs">{t("forge.output.request_revision", { count: CREDIT_COSTS.revision })}</Label>
+                              <Label className="text-xs">{`Request Revision (${CREDIT_COSTS.revision} credits)`}</Label>
                               <div className="flex gap-2 mt-1">
-                                <Input placeholder={t("forge.output.revision_placeholder")} id="revision-notes" className="text-sm" />
+                                <Input placeholder={"What should be changed..."} id="revision-notes" className="text-sm" />
                                 <Button size="sm" variant="secondary" onClick={() => { const notes = (document.getElementById("revision-notes") as HTMLInputElement)?.value; if (notes) handleRevision(generatedContent, notes); }} disabled={isGenerating}><RefreshCw className="h-4 w-4" /></Button>
                               </div>
                             </div>
                           </div>
                         ) : (
                           <div className="h-[400px] flex items-center justify-center text-muted-foreground">
-                            <div className="text-center"><Sparkles className="h-12 w-12 mx-auto mb-4 opacity-30" /><p className="text-sm">{t("forge.output.empty_title")}</p><p className="text-xs text-muted-foreground mt-1">{t("forge.output.empty_subtitle")}</p></div>
+                            <div className="text-center"><Sparkles className="h-12 w-12 mx-auto mb-4 opacity-30" /><p className="text-sm">{"Select a template or describe your vision"}</p><p className="text-xs text-muted-foreground mt-1">{"Generated content will appear here"}</p></div>
                           </div>
                         )}
                       </CardContent>
@@ -354,11 +353,11 @@ export default function CreativeForge() {
               {activeView === "history" && (
                 <Card className="border-border/50 backdrop-blur-xl bg-card/80">
                   <CardHeader>
-                    <CardTitle>{t("forge.history.title")}</CardTitle><CardDescription>{t("forge.history.subtitle")}</CardDescription>
+                    <CardTitle>{"Your Projects"}</CardTitle><CardDescription>{"Previously generated content"}</CardDescription>
                     <div className="flex flex-col sm:flex-row gap-3 mt-3">
-                      <Input placeholder={t("forge.history.search_placeholder")} value={historySearch} onChange={(e) => setHistorySearch(e.target.value)} className="flex-1" />
-                      <Select value={historyFilter} onValueChange={setHistoryFilter}><SelectTrigger className="w-full sm:w-48"><SelectValue placeholder={t("forge.history.filter_all")} /></SelectTrigger>
-                        <SelectContent><SelectItem value="all">{t("forge.history.filter_all")}</SelectItem>{CATEGORIES.map((c) => (<SelectItem key={c.id} value={c.id}>{c.emoji} {c.name}</SelectItem>))}</SelectContent>
+                      <Input placeholder={"Search projects..."} value={historySearch} onChange={(e) => setHistorySearch(e.target.value)} className="flex-1" />
+                      <Select value={historyFilter} onValueChange={setHistoryFilter}><SelectTrigger className="w-full sm:w-48"><SelectValue placeholder={"All Types"} /></SelectTrigger>
+                        <SelectContent><SelectItem value="all">{"All Types"}</SelectItem>{CATEGORIES.map((c) => (<SelectItem key={c.id} value={c.id}>{c.emoji} {c.name}</SelectItem>))}</SelectContent>
                       </Select>
                     </div>
                   </CardHeader>
@@ -376,14 +375,14 @@ export default function CreativeForge() {
                                   <div className="flex items-center gap-2 mb-1 flex-wrap">
                                     <h4 className="font-medium text-sm">{project.title}</h4>
                                     <Badge variant="outline" className="text-xs">{category?.name}</Badge>
-                                    <Badge variant="secondary" className="text-xs">{project.credits_used} {t("forge.credit_short")}</Badge>
+                                    <Badge variant="secondary" className="text-xs">{project.credits_used} {"cr"}</Badge>
                                   </div>
                                   <p className="text-xs text-muted-foreground mb-2">{new Date(project.created_at).toLocaleDateString()}</p>
                                   <ScrollArea className="h-20 border rounded-lg p-2 bg-muted/20"><pre className="whitespace-pre-wrap text-xs font-mono">{project.generated_content?.substring(0, 500)}...</pre></ScrollArea>
                                   <div className="flex gap-2 mt-2">
-                                    <Button size="sm" variant="outline" onClick={() => copyToClipboard(project.generated_content)}><Copy className="h-3 w-3 mr-1" /> {t("forge.output.copy")}</Button>
-                                    <Button size="sm" variant="outline" onClick={() => downloadContent(project.generated_content, project.title)}><Download className="h-3 w-3 mr-1" /> {t("forge.output.download")}</Button>
-                                    <Button size="sm" variant="outline" onClick={() => shareContent(project.generated_content, project.title)}><Star className="h-3 w-3 mr-1" /> {t("forge.output.share")}</Button>
+                                    <Button size="sm" variant="outline" onClick={() => copyToClipboard(project.generated_content)}><Copy className="h-3 w-3 mr-1" /> {"Copy"}</Button>
+                                    <Button size="sm" variant="outline" onClick={() => downloadContent(project.generated_content, project.title)}><Download className="h-3 w-3 mr-1" /> {"Download"}</Button>
+                                    <Button size="sm" variant="outline" onClick={() => shareContent(project.generated_content, project.title)}><Star className="h-3 w-3 mr-1" /> {"Share"}</Button>
                                   </div>
                                 </div>
                               </div>
@@ -394,10 +393,10 @@ export default function CreativeForge() {
                     ) : (
                       <div className="text-center py-12 text-muted-foreground">
                         <History className="h-12 w-12 mx-auto mb-4 opacity-30" />
-                        <p className="text-sm mb-4">{historySearch || historyFilter !== "all" ? t("forge.history.no_matching") : t("forge.history.no_projects")}</p>
+                        <p className="text-sm mb-4">{historySearch || historyFilter !== "all" ? "No matching projects" : "No projects yet. Start creating!"}</p>
                         {!(historySearch || historyFilter !== "all") && (
                           <Button onClick={() => openTool("song_lyrics")} className="gap-2">
-                            <Sparkles className="h-4 w-4" /> {t("forge.history.start_creating")}
+                            <Sparkles className="h-4 w-4" /> {"Start Creating"}
                           </Button>
                         )}
                       </div>
@@ -410,18 +409,18 @@ export default function CreativeForge() {
                 <div className="space-y-6">
                   <ForgeCreditPackages onPurchase={handlePurchase} />
                   <Card className="border-border/50 backdrop-blur-xl bg-card/80">
-                    <CardHeader><CardTitle>{t("forge.credits_view.costs_title")}</CardTitle><CardDescription>{t("forge.credits_view.costs_subtitle")}</CardDescription></CardHeader>
+                    <CardHeader><CardTitle>{"Credit Costs"}</CardTitle><CardDescription>{"How many credits each content type uses"}</CardDescription></CardHeader>
                     <CardContent>
                       <div className="grid sm:grid-cols-2 gap-2">
                         {CATEGORIES.map((category) => (
                           <div key={category.id} className="flex items-center justify-between p-2.5 border border-border/50 rounded-lg">
                             <div className="flex items-center gap-2"><span>{category.emoji}</span><span className="text-sm font-medium">{category.name}</span></div>
-                            <Badge variant="secondary">{t("forge.credits", { count: CREDIT_COSTS[category.id as CreativeCategory] })}</Badge>
+                            <Badge variant="secondary">{`${CREDIT_COSTS[category.id as CreativeCategory]} credits`}</Badge>
                           </div>
                         ))}
                         <div className="flex items-center justify-between p-2.5 border border-dashed border-border/50 rounded-lg">
-                          <div className="flex items-center gap-2"><RefreshCw className="h-4 w-4 text-muted-foreground" /><span className="text-sm font-medium">{t("forge.credits_view.revision")}</span></div>
-                          <Badge variant="outline">{t("forge.credits", { count: CREDIT_COSTS.revision })}</Badge>
+                          <div className="flex items-center gap-2"><RefreshCw className="h-4 w-4 text-muted-foreground" /><span className="text-sm font-medium">{"Revision"}</span></div>
+                          <Badge variant="outline">{`${CREDIT_COSTS.revision} credits`}</Badge>
                         </div>
                       </div>
                     </CardContent>
@@ -477,8 +476,8 @@ export default function CreativeForge() {
                 <Wand2 className="h-5 w-5 text-white" />
               </div>
               <div>
-                <h4 className="font-bold text-amber-100" style={{ fontFamily: "Georgia, serif" }}>{t("forge.premium.style_transfer_title")}</h4>
-                <p className="text-xs text-amber-200/60">{t("forge.premium.style_transfer_desc")}</p>
+                <h4 className="font-bold text-amber-100" style={{ fontFamily: "Georgia, serif" }}>{"Style Transfer"}</h4>
+                <p className="text-xs text-amber-200/60">{"Rewrite as Shakespeare, Tarantino…"}</p>
               </div>
             </div>
           </button>
@@ -488,8 +487,8 @@ export default function CreativeForge() {
                 <Mic className="h-5 w-5 text-white" />
               </div>
               <div>
-                <h4 className="font-bold text-amber-100" style={{ fontFamily: "Georgia, serif" }}>{t("forge.premium.voice_title")}</h4>
-                <p className="text-xs text-amber-200/60">{t("forge.premium.voice_desc")}</p>
+                <h4 className="font-bold text-amber-100" style={{ fontFamily: "Georgia, serif" }}>{"Voice-to-Script"}</h4>
+                <p className="text-xs text-amber-200/60">{"Speak your idea, get a polished draft"}</p>
               </div>
             </div>
           </button>
@@ -499,8 +498,8 @@ export default function CreativeForge() {
                 <Users className="h-5 w-5 text-white" />
               </div>
               <div>
-                <h4 className="font-bold text-amber-100" style={{ fontFamily: "Georgia, serif" }}>{t("forge.premium.rooms_title")}</h4>
-                <p className="text-xs text-amber-200/60">{t("forge.premium.rooms_desc")}</p>
+                <h4 className="font-bold text-amber-100" style={{ fontFamily: "Georgia, serif" }}>{"Collaboration Rooms"}</h4>
+                <p className="text-xs text-amber-200/60">{"Co-write with friends + AI moderator"}</p>
               </div>
             </div>
           </button>
@@ -524,11 +523,11 @@ export default function CreativeForge() {
             <ForgeTestimonials />
             {/* Quick Actions */}
             <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
-              <CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><CreditCard className="w-4 h-4 text-primary" /> {t("forge.tools.quick_actions")}</CardTitle></CardHeader>
+              <CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><CreditCard className="w-4 h-4 text-primary" /> {"Quick Actions"}</CardTitle></CardHeader>
               <CardContent className="space-y-2">
-                <Button variant="outline" className="w-full justify-start gap-2" onClick={() => setActiveView("history")}><History className="h-4 w-4" /> {t("forge.tools.view_history")}</Button>
-                <Button variant="outline" className="w-full justify-start gap-2" onClick={() => setActiveView("credits")}><CreditCard className="h-4 w-4" /> {t("forge.tools.buy_credits")}</Button>
-                <Button variant="outline" className="w-full justify-start gap-2" onClick={() => setCowriterOpen(true)}><Sparkles className="h-4 w-4" /> {t("forge.tools.ai_cowriter_chat")}</Button>
+                <Button variant="outline" className="w-full justify-start gap-2" onClick={() => setActiveView("history")}><History className="h-4 w-4" /> {"View History"}</Button>
+                <Button variant="outline" className="w-full justify-start gap-2" onClick={() => setActiveView("credits")}><CreditCard className="h-4 w-4" /> {"Buy Credits"}</Button>
+                <Button variant="outline" className="w-full justify-start gap-2" onClick={() => setCowriterOpen(true)}><Sparkles className="h-4 w-4" /> {"AI Co-Writer Chat"}</Button>
               </CardContent>
             </Card>
           </div>
@@ -538,8 +537,8 @@ export default function CreativeForge() {
         {FORGE_TOOLS.length > 6 && (
           <div className="mb-8">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-4">
-              <h2 className="text-2xl font-black">{t("forge.hub.more_types")}</h2>
-              <p className="text-sm text-muted-foreground">{t("forge.hub.more_types_subtitle")}</p>
+              <h2 className="text-2xl font-black">{"More Content Types"}</h2>
+              <p className="text-sm text-muted-foreground">{"Explore all available writing categories"}</p>
             </motion.div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {FORGE_TOOLS.slice(6).map((tool, i) => (
@@ -556,12 +555,12 @@ export default function CreativeForge() {
 
         {/* How it works */}
         <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-6"><h2 className="text-2xl font-bold">{t("forge.hub.how_it_works")}</h2></div>
+          <div className="text-center mb-6"><h2 className="text-2xl font-bold">{"How It Works"}</h2></div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { step: "1", title: t("forge.hub.step1_title"), desc: t("forge.hub.step1_desc") },
-              { step: "2", title: t("forge.hub.step2_title"), desc: t("forge.hub.step2_desc") },
-              { step: "3", title: t("forge.hub.step3_title"), desc: t("forge.hub.step3_desc") },
+              { step: "1", title: "Choose Content Type", desc: "Select from 8 creative writing categories" },
+              { step: "2", title: "Describe Your Vision", desc: "Add details, style references, and templates" },
+              { step: "3", title: "Generate & Refine", desc: "Get AI content instantly, revise as needed" },
             ].map((item, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 + i * 0.1 }} className="text-center">
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">

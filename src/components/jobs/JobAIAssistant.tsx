@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Sparkles, Loader2, CheckCircle, AlertCircle, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+
 
 interface JobMatch {
   jobId: string;
@@ -35,12 +35,10 @@ export function JobAIAssistant() {
   const [matches, setMatches] = useState<JobMatch[]>([]);
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { t } = useTranslation();
-
   const handleAnalyze = async () => {
     if (!cvText.trim()) {
       toast({
-        title: t('jobs.error'),
+        title: "❌ Error",
         description: t('jobs.aiAssistant.enterCV', 'Please enter your CV'),
         variant: "destructive",
       });
@@ -77,7 +75,7 @@ export function JobAIAssistant() {
     } catch (error: any) {
       console.error("Error analyzing CV:", error);
       toast({
-        title: t('jobs.error'),
+        title: "❌ Error",
         description: error.message || t('jobs.aiAssistant.errorAnalyzing', 'Failed to analyze CV'),
         variant: "destructive",
       });

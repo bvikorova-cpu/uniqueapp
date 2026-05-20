@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
-import { useTranslation } from "react-i18next";
+
 
 const CATEGORIES = {
   it_software: "IT & Software",
@@ -50,7 +50,6 @@ interface CreateJobDialogProps {
 export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: CreateJobDialogProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { t } = useTranslation();
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showPackageDialog, setShowPackageDialog] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<typeof JOB_PACKAGES[0] | null>(null);
@@ -161,12 +160,12 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
         <DialogTrigger asChild>
           <Button onClick={handleOpenDialog}>
             <Plus className="h-4 w-4 mr-2" />
-            {t('jobs.addPosition')}
+            {"Add Position"}
           </Button>
         </DialogTrigger>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{t('jobs.addPosition')}</DialogTitle>
+            <DialogTitle>{"Add Position"}</DialogTitle>
             <DialogDescription>
               Create a new job listing
             </DialogDescription>

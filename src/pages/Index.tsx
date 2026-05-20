@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { useTranslation } from "react-i18next";
+
 import { useNavigate, Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -177,7 +177,6 @@ function AnimatedCounter({ target, suffix }: { target: number; suffix: string })
 // ── Component ─────────────────────────────────────────
 
 const Index = () => {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const { recent, favorites, trackVisit, toggleFavorite, isFavorite } = useRecentServices();
   const [search, setSearch] = useState("");
@@ -541,30 +540,30 @@ const Index = () => {
                 </div>
               </div>
               <CardTitle className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                {t('home.welcome_title')}
+                {"Welcome to \"Unique\" – The Platform That Helps and Connects!"}
               </CardTitle>
             </CardHeader>
             <CardContent className="relative space-y-5 text-center px-6 sm:px-10 pb-8">
               <p className="text-base sm:text-lg text-foreground/85 leading-relaxed">
-                {t('home.welcome_intro')}
+                {"At \"Unique,\" we believe in the power of community and that everyone deserves a digital space that inspires them, educates them, and connects them with the people they care about. Our platform is designed with dedication and the goal of bringing you a unique experience – from discovering new talents and pursuing education, to creative opportunities with artificial intelligence and brand building. We are here to help you achieve your dreams and goals."}
               </p>
               <div className="flex items-center gap-4">
                 <div className="flex-1 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
-                <span className="text-xs text-primary font-bold uppercase tracking-widest">{t('home.welcome_priority')}</span>
+                <span className="text-xs text-primary font-bold uppercase tracking-widest">{"Your satisfaction is our number one priority"}</span>
                 <div className="flex-1 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
               </div>
               <p className="text-base sm:text-lg text-foreground/85 leading-relaxed">
-                {t('home.welcome_feedback')}{" "}
-                <Link to="/contact" className="text-primary hover:underline font-semibold">{t('home.welcome_contact_link')}</Link>.{" "}
-                {t('home.welcome_feedback_value')}
+                {"We know that even the best technology occasionally encounters unforeseen obstacles. If you come across any error, or have a suggestion for improvement, please do not hesitate to contact us! Use our"}{" "}
+                <Link to="/contact" className="text-primary hover:underline font-semibold">{"Contact Form"}</Link>.{" "}
+                {"Every piece of feedback you give us is valuable, and we take it seriously."}
               </p>
               <div className="bg-primary/5 rounded-2xl p-5 border border-primary/10">
                 <p className="text-base font-semibold text-foreground/90">
-                  {t('home.welcome_promise')}
+                  {"Because we believe that every user deserves what they paid for – and much more."}
                 </p>
               </div>
               <p className="text-lg font-black bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                {t('home.welcome_thanks')}
+                {"Thank you for being part of the community. Together, we are creating something exceptional!"}
               </p>
             </CardContent>
           </Card>
@@ -574,11 +573,11 @@ const Index = () => {
         <section>
           <div className="text-center mb-8">
             <h2 className="text-3xl sm:text-4xl font-black mb-3">
-              {t('home.why_unique_title')}{" "}
+              {"Why"}{" "}
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Unique</span>?
             </h2>
             <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto">
-              {t('home.why_unique_discover')}
+              {"Discover what makes our platform stand out from the rest"}
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
@@ -587,10 +586,10 @@ const Index = () => {
                 <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-lg">
                   <Layers className="w-7 h-7 text-white" />
                 </div>
-                <CardTitle className="text-xl group-hover:text-primary transition-colors">{t('home.all_in_one_title')}</CardTitle>
+                <CardTitle className="text-xl group-hover:text-primary transition-colors">{"All-in-One Platform"}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground leading-relaxed">{t('home.all_in_one_desc')}</p>
+                <p className="text-muted-foreground leading-relaxed">{"Everything you need in one place - from social networking and entertainment to education, shopping, and AI-powered tools. No need to juggle multiple apps."}</p>
               </CardContent>
             </Card>
 
@@ -599,10 +598,10 @@ const Index = () => {
                 <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-accent to-purple-500 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-lg">
                   <Sparkles className="w-7 h-7 text-white" />
                 </div>
-                <CardTitle className="text-xl group-hover:text-accent transition-colors">{t('home.premium_features_title')}</CardTitle>
+                <CardTitle className="text-xl group-hover:text-accent transition-colors">{"Premium Features"}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground leading-relaxed">{t('home.premium_features_desc')}</p>
+                <p className="text-muted-foreground leading-relaxed">{"Access cutting-edge AI technology, advanced tools, and exclusive features. Experience the future of social networking with intelligent assistance."}</p>
               </CardContent>
             </Card>
 
@@ -611,10 +610,10 @@ const Index = () => {
                 <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold to-yellow-500 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-lg">
                   <Coins className="w-7 h-7 text-white" />
                 </div>
-                <CardTitle className="text-xl group-hover:text-gold transition-colors">{t('home.earn_while_social_title')}</CardTitle>
+                <CardTitle className="text-xl group-hover:text-gold transition-colors">{"Earn While You Social"}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground leading-relaxed">{t('home.earn_while_social_desc')}</p>
+                <p className="text-muted-foreground leading-relaxed">{"Turn your social activities into income. Create content, offer services, compete in contests, and get rewarded for your engagement and talent."}</p>
               </CardContent>
             </Card>
           </div>

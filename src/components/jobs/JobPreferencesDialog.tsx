@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Bell, X } from "lucide-react";
-import { useTranslation } from "react-i18next";
+
 
 interface JobPreferencesDialogProps {
   userId: string;
@@ -42,8 +42,6 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
-  const { t } = useTranslation();
-
   const [preferences, setPreferences] = useState({
     categories: [] as string[],
     job_types: [] as string[],
@@ -112,7 +110,7 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
     },
     onError: (error: any) => {
       toast({
-        title: t('jobs.error'),
+        title: "❌ Error",
         description: error.message || t('jobs.preferences.errorSaving', 'Failed to save preferences'),
         variant: "destructive",
       });

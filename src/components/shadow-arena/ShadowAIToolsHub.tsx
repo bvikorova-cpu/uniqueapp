@@ -8,7 +8,7 @@ import { Skull, Volume2, Sparkles, Wand2, Loader2, Image as ImageIcon, BookOpen,
 import { useShadowAITools, useShadowArenaCredits, SHADOW_AI_COSTS } from "@/hooks/useShadowArenaAI";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { useTranslation } from "react-i18next";
+
 
 const TONES = ["Cosmic dread", "Slasher", "Gothic", "Psychological", "Folk horror", "Body horror"];
 const LENGTHS = ["short", "medium", "long"];
@@ -21,7 +21,6 @@ const VOICES = [
 const AVATAR_STYLES = ["Demonic", "Vampire", "Zombie", "Possessed", "Wraith", "Cursed doll"];
 
 export function ShadowAIToolsHub() {
-  const { t } = useTranslation();
   const { generateStory, narrate, generateAvatar } = useShadowAITools();
   const { credits } = useShadowArenaCredits();
   const balance = credits?.credits_remaining ?? 0;
@@ -45,7 +44,7 @@ export function ShadowAIToolsHub() {
 
   const requireCredits = (need: number) => {
     if (balance < need) {
-      toast.error(t("shadow.studio.need_credits", { need, have: balance }));
+      toast.error(`Need ${need} credits — you have ${balance}. Buy more above.`);
       return false;
     }
     return true;
@@ -63,22 +62,22 @@ export function ShadowAIToolsHub() {
         </motion.div>
         <div>
           <h2 className="text-xl font-black bg-gradient-to-r from-purple-200 to-red-300 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(168,85,247,0.4)]">
-            {t("shadow.studio.title")}
+            {"Shadow AI Studio"}
           </h2>
-          <p className="text-xs text-red-100/90 font-medium">{t("shadow.studio.subtitle")}</p>
+          <p className="text-xs text-red-100/90 font-medium">{"Forge horror with premium AI tools"}</p>
         </div>
       </div>
 
       <Tabs defaultValue="story">
         <TabsList className="grid grid-cols-3 w-full bg-black/60 border border-red-800/50">
           <TabsTrigger value="story" className="text-red-100 data-[state=active]:bg-red-800/60 data-[state=active]:text-white">
-            <BookOpen className="w-3.5 h-3.5 mr-1" /> {t("shadow.studio.tab_story")}
+            <BookOpen className="w-3.5 h-3.5 mr-1" /> {"Story"}
           </TabsTrigger>
           <TabsTrigger value="narrator" className="text-red-100 data-[state=active]:bg-red-800/60 data-[state=active]:text-white">
-            <Volume2 className="w-3.5 h-3.5 mr-1" /> {t("shadow.studio.tab_voice")}
+            <Volume2 className="w-3.5 h-3.5 mr-1" /> {"Voice"}
           </TabsTrigger>
           <TabsTrigger value="avatar" className="text-red-100 data-[state=active]:bg-red-800/60 data-[state=active]:text-white">
-            <UserIcon className="w-3.5 h-3.5 mr-1" /> {t("shadow.studio.tab_avatar")}
+            <UserIcon className="w-3.5 h-3.5 mr-1" /> {"Avatar"}
           </TabsTrigger>
         </TabsList>
 
@@ -88,7 +87,7 @@ export function ShadowAIToolsHub() {
             value={storyPrompt}
             onChange={(e) => setStoryPrompt(e.target.value)}
             rows={3}
-            placeholder={t("shadow.studio.story_placeholder")}
+            placeholder={"A few words... 'abandoned doll factory at midnight'"}
             className="bg-black/60 border-red-800/50 text-red-50 placeholder:text-red-200/50 font-serif"
           />
           <div className="grid grid-cols-2 gap-2">
@@ -109,11 +108,11 @@ export function ShadowAIToolsHub() {
           </div>
           <label className="flex items-center gap-2 text-xs text-red-100 font-medium">
             <input type="checkbox" checked={storyImage} onChange={(e) => setStoryImage(e.target.checked)} />
-            {t("shadow.studio.story_include_image")}
+            {"Include AI horror illustration"}
           </label>
           <Button
             onClick={() => {
-              if (!storyPrompt.trim()) { toast.error(t("shadow.studio.story_need_prompt")); return; }
+              if (!storyPrompt.trim()) { toast.error("Enter a prompt"); return; }
               if (!requireCredits(SHADOW_AI_COSTS.story)) return;
               generateStory.mutate(
                 { prompt: storyPrompt, tone: storyTone, length: storyLength, generateImage: storyImage },
@@ -124,8 +123,8 @@ export function ShadowAIToolsHub() {
             className="w-full bg-gradient-to-r from-red-700 to-purple-800 hover:from-red-800 hover:to-purple-900"
           >
             {generateStory.isPending
-              ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t("shadow.studio.story_loading")}</>
-              : <><Sparkles className="w-4 h-4 mr-2" /> {t("shadow.studio.story_btn")} ({SHADOW_AI_COSTS.story} {t("shadow.credits.credits_unit")})</>}
+              ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {"Conjuring horror..."}</>
+              : <><Sparkles className="w-4 h-4 mr-2" /> {"Generate Story"} ({SHADOW_AI_COSTS.story} {"cr"})</>}
           </Button>
           {storyResult && (
             <motion.div
@@ -150,7 +149,7 @@ export function ShadowAIToolsHub() {
             value={narratorText}
             onChange={(e) => setNarratorText(e.target.value)}
             rows={5}
-            placeholder={t("shadow.studio.voice_placeholder")}
+            placeholder={"Paste the horror text to be narrated by a chilling AI voice..."}
             className="bg-black/60 border-red-800/50 text-red-50 placeholder:text-red-200/50 font-serif"
           />
           <select
@@ -162,8 +161,8 @@ export function ShadowAIToolsHub() {
           </select>
           <Button
             onClick={() => {
-              if (!narratorText.trim()) { toast.error(t("shadow.studio.voice_need_text")); return; }
-              if (narratorText.length > 2500) { toast.error(t("shadow.studio.voice_too_long")); return; }
+              if (!narratorText.trim()) { toast.error("Enter text to narrate"); return; }
+              if (narratorText.length > 2500) { toast.error("Max 2500 chars"); return; }
               if (!requireCredits(SHADOW_AI_COSTS.narrator)) return;
               narrate.mutate(
                 { text: narratorText, voiceId: narratorVoice, voiceLabel: VOICES.find(v => v.id === narratorVoice)?.label },
@@ -174,8 +173,8 @@ export function ShadowAIToolsHub() {
             className="w-full bg-gradient-to-r from-purple-700 to-red-800 hover:from-purple-800 hover:to-red-900"
           >
             {narrate.isPending
-              ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t("shadow.studio.voice_loading")}</>
-              : <><Volume2 className="w-4 h-4 mr-2" /> {t("shadow.studio.voice_btn")} ({SHADOW_AI_COSTS.narrator} {t("shadow.credits.credits_unit")})</>}
+              ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {"Summoning voice..."}</>
+              : <><Volume2 className="w-4 h-4 mr-2" /> {"Narrate"} ({SHADOW_AI_COSTS.narrator} {"cr"})</>}
           </Button>
           {narratorAudio && (
             <audio controls src={narratorAudio} className="w-full mt-3" />
@@ -187,7 +186,7 @@ export function ShadowAIToolsHub() {
           <Input
             value={avatarUrl}
             onChange={(e) => setAvatarUrl(e.target.value)}
-            placeholder={t("shadow.studio.avatar_placeholder")}
+            placeholder={"Public image URL (selfie or photo)"}
             className="bg-black/60 border-red-800/50 text-red-50 placeholder:text-red-200/50"
           />
           <select
@@ -199,7 +198,7 @@ export function ShadowAIToolsHub() {
           </select>
           <Button
             onClick={() => {
-              if (!avatarUrl.trim()) { toast.error(t("shadow.studio.avatar_need_url")); return; }
+              if (!avatarUrl.trim()) { toast.error("Enter image URL"); return; }
               if (!requireCredits(SHADOW_AI_COSTS.avatar)) return;
               generateAvatar.mutate(
                 { sourceImageUrl: avatarUrl, style: avatarStyle },
@@ -210,8 +209,8 @@ export function ShadowAIToolsHub() {
             className="w-full bg-gradient-to-r from-red-700 to-purple-800 hover:from-red-800 hover:to-purple-900"
           >
             {generateAvatar.isPending
-              ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t("shadow.studio.avatar_loading")}</>
-              : <><Skull className="w-4 h-4 mr-2" /> {t("shadow.studio.avatar_btn")} ({SHADOW_AI_COSTS.avatar} {t("shadow.credits.credits_unit")})</>}
+              ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {"Twisting reality..."}</>
+              : <><Skull className="w-4 h-4 mr-2" /> {"Create Nightmare"} ({SHADOW_AI_COSTS.avatar} {"cr"})</>}
           </Button>
           {avatarResult && (
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>

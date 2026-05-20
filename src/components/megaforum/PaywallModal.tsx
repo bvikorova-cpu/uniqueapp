@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Lock, LogIn, UserPlus, Eye } from "lucide-react";
@@ -12,8 +12,7 @@ interface PaywallModalProps {
 
 export const PaywallModal = ({ open, onClose, action }: PaywallModalProps) => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
-  const actionLabel = action || t("megaforum.paywall.actionDefault");
+  const actionLabel = action || "interact";
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
@@ -23,10 +22,10 @@ export const PaywallModal = ({ open, onClose, action }: PaywallModalProps) => {
             <Lock className="h-6 w-6 text-primary" />
           </div>
           <DialogTitle className="text-center text-lg">
-            {t("megaforum.paywall.title")}
+            {"Join the conversation"}
           </DialogTitle>
           <DialogDescription className="text-center text-sm">
-            {t("megaforum.paywall.description", { action: actionLabel })}
+            {`To ${actionLabel} on Megaforum you need an account. Browsing stays free — sign in only when you want to engage.`}
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-2 mt-2">
@@ -36,7 +35,7 @@ export const PaywallModal = ({ open, onClose, action }: PaywallModalProps) => {
             onClick={() => { onClose(); navigate("/auth"); }}
           >
             <LogIn className="h-4 w-4 mr-2" />
-            {t("megaforum.paywall.signIn")}
+            {"Sign In"}
           </Button>
           <Button
             variant="outline"
@@ -45,7 +44,7 @@ export const PaywallModal = ({ open, onClose, action }: PaywallModalProps) => {
             onClick={() => { onClose(); navigate("/auth?mode=signup"); }}
           >
             <UserPlus className="h-4 w-4 mr-2" />
-            {t("megaforum.paywall.createAccount")}
+            {"Create Account"}
           </Button>
           <Button
             variant="ghost"
@@ -53,11 +52,11 @@ export const PaywallModal = ({ open, onClose, action }: PaywallModalProps) => {
             onClick={onClose}
           >
             <Eye className="h-4 w-4 mr-2" />
-            {t("megaforum.paywall.keepBrowsing")}
+            {"Keep Browsing"}
           </Button>
         </div>
         <p className="text-[10px] text-center text-muted-foreground mt-1">
-          {t("megaforum.paywall.footer")}
+          {"AI tools cost 3–5 credits • Premium features require subscription"}
         </p>
       </DialogContent>
     </Dialog>

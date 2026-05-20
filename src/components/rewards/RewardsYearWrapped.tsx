@@ -6,11 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Share2, Sparkles, TrendingUp, Award, Flame } from "lucide-react";
 import { toast } from "sonner";
-import { useTranslation } from "react-i18next";
+
 
 export default function RewardsYearWrapped() {
   const { user } = useAuth();
-  const { t } = useTranslation();
   const [wrapped, setWrapped] = useState<any>(null);
   const [generating, setGenerating] = useState(false);
   const year = new Date().getFullYear();
@@ -56,7 +55,7 @@ export default function RewardsYearWrapped() {
     }, { onConflict: "user_id,year" });
 
     if (error) toast.error(error.message);
-    else toast.success(t("rewards.wrapped.ready"));
+    else toast.success("Your wrapped is ready!");
     setGenerating(false);
     load();
   };
@@ -71,7 +70,7 @@ export default function RewardsYearWrapped() {
     if (!wrapped?.share_slug) return;
     const url = `${window.location.origin}/wrapped/${wrapped.share_slug}`;
     navigator.clipboard.writeText(url);
-    toast.success(t("rewards.wrapped.linkCopied"));
+    toast.success("Share link copied!");
   };
 
   return (
@@ -79,48 +78,48 @@ export default function RewardsYearWrapped() {
       <div className="bg-gradient-to-br from-purple-600 via-pink-500 to-amber-500 p-6 text-white">
         <div className="flex items-center gap-2 mb-2">
           <Calendar className="h-5 w-5" />
-          <span className="text-sm opacity-90">{t("rewards.wrapped.yearLabel", { year })}</span>
+          <span className="text-sm opacity-90">{`Your ${year} wrapped`}</span>
         </div>
         {wrapped ? (
           <>
-            <h2 className="text-3xl font-bold mb-4">{t("rewards.wrapped.heading")}</h2>
+            <h2 className="text-3xl font-bold mb-4">{"A year of greatness ✨"}</h2>
             <div className="grid grid-cols-3 gap-3">
               <div className="bg-white/15 backdrop-blur rounded-lg p-3">
                 <TrendingUp className="h-5 w-5 mb-1 opacity-80" />
                 <p className="text-2xl font-bold">{Number(wrapped.total_xp).toLocaleString()}</p>
-                <p className="text-xs opacity-80">{t("rewards.wrapped.totalXp")}</p>
+                <p className="text-xs opacity-80">{"Total XP"}</p>
               </div>
               <div className="bg-white/15 backdrop-blur rounded-lg p-3">
                 <Award className="h-5 w-5 mb-1 opacity-80" />
                 <p className="text-2xl font-bold">{wrapped.badges_earned}</p>
-                <p className="text-xs opacity-80">{t("rewards.wrapped.badges")}</p>
+                <p className="text-xs opacity-80">{"Badges"}</p>
               </div>
               <div className="bg-white/15 backdrop-blur rounded-lg p-3">
                 <Flame className="h-5 w-5 mb-1 opacity-80" />
                 <p className="text-2xl font-bold">{wrapped.streak_max}</p>
-                <p className="text-xs opacity-80">{t("rewards.wrapped.bestStreak")}</p>
+                <p className="text-xs opacity-80">{"Best streak"}</p>
               </div>
             </div>
           </>
         ) : (
-          <h2 className="text-2xl font-bold">{t("rewards.wrapped.generatePrompt")}</h2>
+          <h2 className="text-2xl font-bold">{"Generate your year recap"}</h2>
         )}
       </div>
       <CardContent className="pt-4 space-y-3">
         {!wrapped ? (
           <Button onClick={generate} disabled={generating} className="w-full gap-2">
-            <Sparkles className="h-4 w-4" /> {generating ? t("rewards.wrapped.generating") : t("rewards.wrapped.generate", { year })}
+            <Sparkles className="h-4 w-4" /> {generating ? "Generating..." : `Generate my ${year} wrapped`}
           </Button>
         ) : (
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" size="sm" onClick={togglePublic}>
-              {wrapped.is_public ? t("rewards.wrapped.makePrivate") : t("rewards.wrapped.makePublic")}
+              {wrapped.is_public ? "Make private" : "Make public"}
             </Button>
             <Button size="sm" onClick={share} disabled={!wrapped.is_public}>
-              <Share2 className="h-4 w-4 mr-1" /> {t("rewards.wrapped.share")}
+              <Share2 className="h-4 w-4 mr-1" /> {"Share"}
             </Button>
-            <Button variant="ghost" size="sm" onClick={generate}>{t("rewards.wrapped.regenerate")}</Button>
-            {wrapped.is_public && <Badge variant="secondary">{t("rewards.wrapped.public")}</Badge>}
+            <Button variant="ghost" size="sm" onClick={generate}>{"Regenerate"}</Button>
+            {wrapped.is_public && <Badge variant="secondary">{"Public"}</Badge>}
           </div>
         )}
       </CardContent>

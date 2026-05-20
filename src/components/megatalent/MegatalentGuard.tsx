@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+
 import { Loader2, Lock, Star, CheckCircle2, Sparkles, Eye, Heart, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { safeInvoke } from "@/utils/safeInvoke";
@@ -32,7 +32,6 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const [checking, setChecking] = useState(true);
   const [subscribed, setSubscribed] = useState(false);
@@ -232,16 +231,16 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
 
           if (success) {
             toast({
-              title: t("megatalent.paywall.toast_payment_success_title"),
+              title: "Payment successful! 🎉",
               description: tier === "top_premium"
-                ? t("megatalent.paywall.toast_welcome_top")
-                : t("megatalent.paywall.toast_welcome_premium"),
+                ? "Welcome to MegaTalent TOP Premium! Activating access..."
+                : "Welcome to MegaTalent Premium! Activating access...",
             });
             // URL params already stripped synchronously above.
           } else if (pending && !reloadFlag) {
             toast({
-              title: t("megatalent.paywall.toast_continuing_title"),
-              description: t("megatalent.paywall.toast_continuing_desc"),
+              title: "Continuing activation",
+              description: "Finishing your subscription activation after login...",
             });
           }
 
@@ -392,9 +391,9 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
             <div className="mx-auto w-16 h-16 rounded-full bg-primary/15 flex items-center justify-center">
               <Loader2 className="w-8 h-8 text-primary animate-spin" />
             </div>
-            <CardTitle className="text-2xl">{t("megatalent.paywall.activating_title")}</CardTitle>
+            <CardTitle className="text-2xl">{"Activating your subscription..."}</CardTitle>
             <CardDescription className="text-base">
-              {t("megatalent.paywall.activating_desc")}
+              {"Payment received. Stripe needs a few seconds to activate — we'll redirect you to MegaTalent automatically as soon as it's ready."}
             </CardDescription>
           </CardHeader>
         </Card>
@@ -420,31 +419,31 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
                 }`}
               >
                 {isTop ? <Sparkles className="w-4 h-4" /> : <Star className="w-4 h-4" />}
-                {isTop ? t("megatalent.paywall.activated_top_premium_label") : t("megatalent.paywall.activated_premium_label")}
+                {isTop ? "MegaTalent TOP Premium activated" : "MegaTalent Premium activated"}
               </span>
             </div>
-            <CardTitle className="text-2xl">{t("megatalent.paywall.welcome_title")}</CardTitle>
+            <CardTitle className="text-2xl">{"Welcome to the contest! 🏆"}</CardTitle>
             <CardDescription className="text-base">
               {isTop
-                ? t("megatalent.paywall.activated_top_premium_desc")
-                : t("megatalent.paywall.activated_premium_desc")}
+                ? "You have access to all features + 2× vote weight and daily vote-boost."
+                : "You have access to all categories, AI tools and voting."}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             <ul className="text-sm space-y-1.5 bg-muted/40 rounded-lg p-3">
-              <li>{t("megatalent.paywall.activated_li_unlimited")}</li>
-              <li>{t("megatalent.paywall.activated_li_categories")}</li>
-              <li>{t("megatalent.paywall.activated_li_ai")}</li>
-              <li>{t("megatalent.paywall.activated_li_prizes")}</li>
+              <li>{"✅ Unlimited photo & video uploads"}</li>
+              <li>{"✅ Access to all 35+ categories"}</li>
+              <li>{"✅ AI Talent Coach and all AI tools"}</li>
+              <li>{"✅ Eligible for cash prizes for winners"}</li>
               {isTop && (
                 <>
-                  <li>{t("megatalent.paywall.activated_li_top_weight")}</li>
-                  <li>{t("megatalent.paywall.activated_li_top_boost")}</li>
+                  <li>{"⭐ 2× vote weight"}</li>
+                  <li>{"⭐ Daily vote-boost and TOP Premium badge"}</li>
                 </>
               )}
             </ul>
             <p className="text-xs text-muted-foreground text-center pt-1">
-              {t("megatalent.paywall.opening")}
+              {"Opening MegaTalent..."}
             </p>
           </CardContent>
         </Card>
@@ -462,13 +461,13 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
         <div className="max-w-5xl mx-auto space-y-8">
           {/* Preview tease: 3 latest submissions, blurred + non-interactive */}
           {previewItems.length > 0 && (
-            <section aria-label={t("megatalent.paywall.preview_heading")} className="space-y-3">
+            <section aria-label={"Contest preview"} className="space-y-3">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg sm:text-xl font-semibold flex items-center gap-2">
                   <Eye className="w-5 h-5 text-primary" />
-                  {t("megatalent.paywall.preview_heading")}
+                  {"Contest preview"}
                 </h2>
-                <Badge variant="secondary" className="text-xs">{t("megatalent.paywall.preview_badge")}</Badge>
+                <Badge variant="secondary" className="text-xs">{"3 of many"}</Badge>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {previewItems.map((item) => (
@@ -497,7 +496,7 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
                     <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent" />
                     <div className="absolute inset-0 flex flex-col justify-end p-3 gap-1">
                       <p className="text-sm font-semibold line-clamp-1">
-                        {item.title || t("megatalent.paywall.preview_default_title")}
+                        {item.title || "Contestant submission"}
                       </p>
                       <div className="flex items-center gap-3 text-xs text-muted-foreground">
                         <span className="flex items-center gap-1">
@@ -512,28 +511,28 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
                     </div>
                     <div className="absolute top-2 right-2 bg-background/85 backdrop-blur px-2 py-1 rounded-full flex items-center gap-1 text-[10px] font-semibold">
                       <Lock className="w-3 h-3" />
-                      {t("megatalent.paywall.preview_locked")}
+                      {"Locked"}
                     </div>
                   </div>
                 ))}
               </div>
               <p className="text-xs text-muted-foreground text-center">
-                {t("megatalent.paywall.preview_footnote")}
+                {"These are 3 of the latest submissions. Unlock with a subscription to access all 35+ categories."}
               </p>
             </section>
           )}
 
           {previewLoaded && previewItems.length === 0 && (
             <section
-              aria-label={t("megatalent.paywall.empty_aria")}
+              aria-label={"No submissions to preview"}
               className="rounded-xl border border-dashed border-primary/30 bg-muted/30 p-6 text-center space-y-2"
             >
               <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
                 <Sparkles className="w-6 h-6 text-primary" />
               </div>
-              <h2 className="text-lg font-semibold">{t("megatalent.paywall.empty_heading")}</h2>
+              <h2 className="text-lg font-semibold">{"The contest is just starting 🚀"}</h2>
               <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                {t("megatalent.paywall.empty_desc")}
+                {"There are no active submissions to preview yet. Be among the first — unlock with a subscription and upload your talent first across 35+ categories."}
               </p>
             </section>
           )}
@@ -543,17 +542,17 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
               <div className="mx-auto w-16 h-16 rounded-full bg-primary/15 flex items-center justify-center">
                 <Lock className="w-8 h-8 text-primary" />
               </div>
-              <CardTitle className="text-2xl">{t("megatalent.paywall.lock_title")}</CardTitle>
+              <CardTitle className="text-2xl">{"Unlock the MegaTalent contest 🏆"}</CardTitle>
               <CardDescription className="text-base">
-                {t("megatalent.paywall.lock_desc")}
+                {"Upload photos and videos, compete for cash prizes in 35+ categories and gain visibility in front of thousands of fans. Subscription starts in seconds."}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <ul className="text-sm space-y-1.5 bg-muted/40 rounded-lg p-3">
-                <li>{t("megatalent.paywall.feature_unlimited")}</li>
-                <li>{t("megatalent.paywall.feature_voting")}</li>
-                <li>{t("megatalent.paywall.feature_ai_tools")}</li>
-                <li>{t("megatalent.paywall.feature_prizes")}</li>
+                <li>{"✅ Unlimited photo & video uploads"}</li>
+                <li>{"✅ Voting and Live Leaderboard"}</li>
+                <li>{"✅ Access to all AI Talent tools"}</li>
+                <li>{"✅ Eligible for cash prizes for winners"}</li>
               </ul>
               <Button
                 size="lg"
@@ -562,10 +561,10 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
                 disabled={checkoutLoading !== null}
               >
                 <span className="flex items-center gap-2">
-                  <Star className="h-4 w-4" /> {t("megatalent.paywall.premium_label")}
+                  <Star className="h-4 w-4" /> {"Premium"}
                 </span>
                 <span className="font-bold">
-                  {checkoutLoading === "premium" ? <Loader2 className="h-4 w-4 animate-spin" /> : t("megatalent.paywall.price_premium")}
+                  {checkoutLoading === "premium" ? <Loader2 className="h-4 w-4 animate-spin" /> : "€10 / month"}
                 </span>
               </Button>
               <Button
@@ -576,17 +575,17 @@ export const MegatalentGuard = ({ children }: MegatalentGuardProps) => {
                 disabled={checkoutLoading !== null}
               >
                 <span className="flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 fill-current" /> {t("megatalent.paywall.top_premium_label")} <span className="text-xs opacity-80">{t("megatalent.paywall.top_premium_note")}</span>
+                  <Sparkles className="h-4 w-4 fill-current" /> {"TOP Premium"} <span className="text-xs opacity-80">{"(2× vote weight)"}</span>
                 </span>
                 <span className="font-bold">
-                  {checkoutLoading === "top_premium" ? <Loader2 className="h-4 w-4 animate-spin" /> : t("megatalent.paywall.price_top_premium")}
+                  {checkoutLoading === "top_premium" ? <Loader2 className="h-4 w-4 animate-spin" /> : "€15 / month"}
                 </span>
               </Button>
               <Button variant="outline" className="w-full" onClick={() => navigate("/")}>
-                {t("megatalent.paywall.back_home")}
+                {"Back to homepage"}
               </Button>
               <p className="text-xs text-muted-foreground text-center pt-2">
-                {t("megatalent.paywall.already_paid")} <button className="underline" onClick={() => window.location.reload()}>{t("megatalent.paywall.refresh_access")}</button>
+                {"Already paid?"} <button className="underline" onClick={() => window.location.reload()}>{"Refresh access"}</button>
               </p>
             </CardContent>
           </Card>
