@@ -21,7 +21,7 @@ serve(async (req) => {
     );
 
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
       // No session — banner stays hidden. Soft 200 prevents client runtime error.
       return new Response(JSON.stringify({ has_pending: false, unauthenticated: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -44,12 +44,19 @@ serve(async (req) => {
     // invoice.payment_action_required / invoice.payment_succeeded, so the DB
     // is the source of truth for the banner. We avoid loading Stripe SDK here
     // entirely to keep cold-starts cheap and prevent edge-runtime errors.
-    const { data: pendingRows } = await supabase
+    const { data: pendingRows, error: pendingErr } = await supabase
       .from("sca_pending_actions")
       .select("stripe_invoice_id, amount_cents, currency, hosted_invoice_url, next_action_url")
       .eq("user_id", user.id)
       .eq("status", "requires_action")
       .limit(1);
+
+    if (pendingErr) {
+      log("pending lookup unavailable", pendingErr);
+      return new Response(JSON.stringify({ has_pending: false, check_unavailable: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     if (!pendingRows || pendingRows.length === 0) {
       return new Response(JSON.stringify({ has_pending: false }), {
@@ -73,11 +80,10 @@ serve(async (req) => {
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e);
+    const msg = e instanceof Error ? e.message : JSON.stringify(e);
     log("ERROR", { msg });
-    return new Response(JSON.stringify({ error: msg }), {
+    return new Response(JSON.stringify({ has_pending: false, check_unavailable: true }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
     });
   }
 });

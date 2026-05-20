@@ -97,15 +97,20 @@ Deno.serve(async (req) => {
     );
 
     const { error } = await admin.from("vitals_log").insert(rows);
-    if (error) throw error;
+    if (error) {
+      console.error("[VITALS_INGEST] insert failed", JSON.stringify(error));
+      return new Response(JSON.stringify({ ok: false, accepted: 0 }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     return new Response(JSON.stringify({ ok: true, accepted: rows.length }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e);
-    return new Response(JSON.stringify({ error: msg }), {
-      status: 500,
+    const msg = e instanceof Error ? e.message : JSON.stringify(e);
+    console.error("[VITALS_INGEST] failed", msg);
+    return new Response(JSON.stringify({ ok: false, accepted: 0 }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
