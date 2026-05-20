@@ -177,10 +177,8 @@ const VideoCall = ({ conversationId, userId, otherUserId, otherUserName }: Video
 
   const handleOffer = async (offer: RTCSessionDescriptionInit, from: string) => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
-      });
+      const stream = await requestMedia();
+
 
       localStreamRef.current = stream;
       if (localVideoRef.current) {
