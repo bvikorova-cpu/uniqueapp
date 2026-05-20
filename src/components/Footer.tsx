@@ -1,10 +1,15 @@
 import { Copyright, Shield, Lock, HelpCircle, Mail, FileText, BookOpen, ExternalLink } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 import { Age16Badge } from "@/components/Age16Badge";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const { pathname } = useLocation();
+  // Messenger is a full-screen chat experience on mobile — the footer
+  // would otherwise leak through under the composer.
+  if (pathname.startsWith("/messenger")) return null;
+
 
   return (
     <footer className="bg-muted/50 border-t border-border mt-auto">
