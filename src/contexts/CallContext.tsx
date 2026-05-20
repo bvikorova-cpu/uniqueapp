@@ -184,7 +184,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
           void sendToUser(peerId, "ice-candidate", {
             from: user?.id,
             candidate: event.candidate.toJSON(),
-          });
+          }, callRef.current.status !== "idle" ? callRef.current.conversationId : undefined);
         }
       };
       pc.onconnectionstatechange = () => {
@@ -344,7 +344,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
           fromName: myName,
           conversationId,
           offer,
-        });
+        }, conversationId);
       } catch (err: any) {
         console.error("[call] startCall failed", err);
         toast({ title: "Error", description: explainMediaError(err), variant: "destructive" });
@@ -370,7 +370,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
       const answer = await pc.createAnswer();
       await pc.setLocalDescription(answer);
 
-      await sendToUser(call.peerId, "answer", { from: user!.id, answer });
+      await sendToUser(call.peerId, "answer", { from: user!.id, answer }, call.conversationId);
 
       setCall({
         status: "in-call",
@@ -388,20 +388,20 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
 
   const declineIncoming = useCallback(() => {
     if (call.status !== "incoming") return;
-    void sendToUser(call.peerId, "decline-call", { from: user!.id });
+    void sendToUser(call.peerId, "decline-call", { from: user!.id }, call.conversationId);
     resetCall();
   }, [call, sendToUser, user, resetCall]);
 
   const cancelOutgoing = useCallback(() => {
     if (call.status !== "outgoing") return;
-    void sendToUser(call.peerId, "cancel-call", { from: user!.id });
+    void sendToUser(call.peerId, "cancel-call", { from: user!.id }, call.conversationId);
     resetCall();
   }, [call, sendToUser, user, resetCall]);
 
   const endActive = useCallback(() => {
     if (call.status === "idle") return;
     const peerId = (call as any).peerId;
-    if (peerId) void sendToUser(peerId, "end-call", { from: user!.id });
+    if (peerId) void sendToUser(peerId, "end-call", { from: user!.id }, (call as any).conversationId);
     resetCall();
   }, [call, sendToUser, user, resetCall]);
 
