@@ -164,10 +164,27 @@ const Auth = () => {
     setLoading(false);
 
     if (error) {
+      // Detect transient backend outages (Supabase auth/DB timeouts, 5xx, network).
+      const msg = (error.message || "").toLowerCase();
+      const status = (error as any).status as number | undefined;
+      const isUnavailable =
+        status === 0 ||
+        status === 408 ||
+        status === 502 ||
+        status === 503 ||
+        status === 504 ||
+        msg.includes("timeout") ||
+        msg.includes("failed to fetch") ||
+        msg.includes("network") ||
+        msg.includes("unavailable") ||
+        msg.includes("upstream");
+
       toast({
         variant: "destructive",
-        title: "Login error",
-        description: error.message,
+        title: isUnavailable ? "Service temporarily unavailable" : "Login error",
+        description: isUnavailable
+          ? "Please try again in a moment."
+          : error.message,
       });
     } else {
       toast({
