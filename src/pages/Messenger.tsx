@@ -20,6 +20,7 @@ import { EncryptionBadge } from "@/components/messaging/EncryptionBadge";
 import { GroupChatDialog } from "@/components/messenger/GroupChatDialog";
 import { MessengerAIFeatures } from "@/components/messenger/MessengerAIFeatures";
 import { MessengerHero } from "@/components/messenger/MessengerHero";
+import PushOptInButton from "@/components/notifications/PushOptInButton";
 import { ChatAnalyticsDashboard } from "@/components/messenger/ChatAnalyticsDashboard";
 import { AIChatThemes } from "@/components/messenger/AIChatThemes";
 import { VoiceRoom } from "@/components/messenger/VoiceRoom";
@@ -1082,6 +1083,10 @@ const Messenger = () => {
               aiCredits: 50,
             }}
           />
+
+          <div className="mb-6 flex justify-end">
+            <PushOptInButton />
+          </div>
 
           {/* Active chats preview — so users see their conversations right on the hub */}
           {conversations.length > 0 && (

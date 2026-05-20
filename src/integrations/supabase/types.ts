@@ -60660,6 +60660,10 @@ export type Database = {
         Args: { p_amount: number; p_user_id: string }
         Returns: boolean
       }
+      dispatch_push: {
+        Args: { _payload: Json; _user_ids: string[] }
+        Returns: undefined
+      }
       edu_is_study_group_member: {
         Args: { _group_id: string; _user_id: string }
         Returns: boolean
