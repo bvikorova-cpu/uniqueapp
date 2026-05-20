@@ -249,25 +249,44 @@ const Messenger = () => {
     };
   }, [user]);
 
-  // Server-side search by name so we can find anyone, not just the first 1000 cached profiles
+  // Server-side search by name so we can find anyone, not just the first 1000 cached profiles.
+  // Debounced + cached + stale-response guarded.
+  const searchCacheRef = useRef<Map<string, Profile[]>>(new Map());
+  const searchSeqRef = useRef(0);
   useEffect(() => {
     if (!user) return;
-    const q = searchQuery.trim();
-    if (!q) {
+    const q = searchQuery.trim().toLowerCase();
+    if (q.length < 2) {
       setSearchResults([]);
       setSearching(false);
       return;
     }
+
+    // Serve from cache instantly if available.
+    const cached = searchCacheRef.current.get(q);
+    if (cached) {
+      setSearchResults(cached);
+      setSearching(false);
+      return;
+    }
+
     setSearching(true);
+    const mySeq = ++searchSeqRef.current;
     const handle = setTimeout(async () => {
-      // Use the indexed search_users RPC for fast lookup instead of slow ilike on profiles
       const { data, error } = await (supabase as any).rpc("search_users", { search_query: q });
+      // Drop stale responses (user typed again before this resolved).
+      if (mySeq !== searchSeqRef.current) return;
       if (!error) {
-        const rows = ((data as any[]) || []).filter((p) => p.id !== user.id);
-        setSearchResults(rows as Profile[]);
+        const rows = (((data as any[]) || []).filter((p) => p.id !== user.id)) as Profile[];
+        // Cache (cap to ~50 queries to avoid unbounded growth).
+        if (searchCacheRef.current.size > 50) searchCacheRef.current.clear();
+        searchCacheRef.current.set(q, rows);
+        // Warm shared profile cache so opening the chat is instant.
+        primeProfileCache(rows as any);
+        setSearchResults(rows);
       }
       setSearching(false);
-    }, 200);
+    }, 300);
     return () => clearTimeout(handle);
   }, [searchQuery, user]);
 
