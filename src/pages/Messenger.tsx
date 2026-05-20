@@ -423,16 +423,12 @@ const Messenger = () => {
       reactionsData = rd || [];
     }
 
-    // Batch-fetch all sender profiles in a single query.
+    // Batch-fetch all sender profiles using the shared module cache
+    // (hits network only for missing ids).
     const senderIds = Array.from(new Set(rows.map((m) => m.sender_id)));
-    const profilesMap = new Map<string, any>();
-    if (senderIds.length > 0) {
-      const { data: profs } = await supabase
-        .from("profiles")
-        .select("id, full_name, avatar_url")
-        .in("id", senderIds);
-      (profs || []).forEach((p) => profilesMap.set(p.id, p));
-    }
+    const profilesMap = senderIds.length > 0
+      ? await fetchProfilesCachedBatch(senderIds)
+      : new Map<string, any>();
 
     const messagesWithProfiles = rows.map((msg) => {
       const profile = profilesMap.get(msg.sender_id) || {
