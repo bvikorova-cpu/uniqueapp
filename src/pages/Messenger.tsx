@@ -129,6 +129,8 @@ const Messenger = () => {
   const [newMessage, setNewMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [allUsers, setAllUsers] = useState<Profile[]>([]);
+  const [searchResults, setSearchResults] = useState<Profile[]>([]);
+  const [searching, setSearching] = useState(false);
   const [profilesCache, setProfilesCache] = useState<Map<string, Profile>>(new Map());
   const [isTyping, setIsTyping] = useState(false);
   const [otherUserTyping, setOtherUserTyping] = useState(false);
@@ -181,6 +183,32 @@ const Messenger = () => {
       fetchGroupChats();
     }
   }, [user]);
+
+  // Server-side search by name so we can find anyone, not just the first 1000 cached profiles
+  useEffect(() => {
+    if (!user) return;
+    const q = searchQuery.trim();
+    if (!q) {
+      setSearchResults([]);
+      setSearching(false);
+      return;
+    }
+    setSearching(true);
+    const handle = setTimeout(async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id, full_name, avatar_url")
+        .neq("id", user.id)
+        .ilike("full_name", `%${q}%`)
+        .order("full_name", { ascending: true })
+        .limit(30);
+      if (!error) setSearchResults((data as Profile[]) || []);
+      setSearching(false);
+    }, 250);
+    return () => clearTimeout(handle);
+  }, [searchQuery, user]);
+
+
 
   const fetchGroupChats = async () => {
     const { data } = await supabase
@@ -765,9 +793,8 @@ const Messenger = () => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const filteredUsers = allUsers.filter((u) =>
-    u.full_name?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredUsers = searchResults;
+
 
   const selectedConvData = conversations.find((c) => c.id === selectedConversation);
   const otherUser = selectedConvData?.otherUser;
@@ -939,6 +966,14 @@ const Messenger = () => {
             <ScrollArea className="flex-1">
               {searchQuery ? (
                 <div className="space-y-2">
+                  {searching && filteredUsers.length === 0 && (
+                    <p className="text-sm text-muted-foreground text-center py-6">Searching…</p>
+                  )}
+                  {!searching && filteredUsers.length === 0 && (
+                    <p className="text-sm text-muted-foreground text-center py-6">
+                      No users found for "{searchQuery}"
+                    </p>
+                  )}
                   {filteredUsers.map((u) => (
                     <div
                       key={u.id}
