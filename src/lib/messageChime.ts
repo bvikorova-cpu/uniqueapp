@@ -4,6 +4,19 @@
 
 let ctx: AudioContext | null = null;
 let lastPlay = 0;
+let unlockBound = false;
+
+function bindUnlock() {
+  if (unlockBound || typeof window === "undefined") return;
+  unlockBound = true;
+  const unlock = () => {
+    const ac = getCtx();
+    if (ac && ac.state === "suspended") ac.resume().catch(() => {});
+  };
+  window.addEventListener("pointerdown", unlock, { once: false, passive: true });
+  window.addEventListener("keydown", unlock, { once: false });
+  window.addEventListener("touchstart", unlock, { once: false, passive: true });
+}
 
 function getCtx(): AudioContext | null {
   if (typeof window === "undefined") return null;
@@ -19,6 +32,8 @@ function getCtx(): AudioContext | null {
     return null;
   }
 }
+
+if (typeof window !== "undefined") bindUnlock();
 
 function tone(
   ac: AudioContext,

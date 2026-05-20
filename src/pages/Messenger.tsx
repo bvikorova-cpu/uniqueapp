@@ -146,6 +146,8 @@ const Messenger = () => {
   const [groupChats, setGroupChats] = useState<GroupChat[]>([]);
   const [activeTab, setActiveTab] = useState<"direct" | "groups">("direct");
   const [selectedMessageText, setSelectedMessageText] = useState<string>("");
+  const [totalMessages, setTotalMessages] = useState(0);
+  const [friendsOnlineCount, setFriendsOnlineCount] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -156,6 +158,15 @@ const Messenger = () => {
 
   // Online status hook
   const { isUserOnline } = useOnlineStatus(user?.id || null);
+
+  // Real "friends online" = unique conversation partners currently online
+  useEffect(() => {
+    const partnerIds = new Set<string>();
+    conversations.forEach((c) => { if (c.otherUser?.id) partnerIds.add(c.otherUser.id); });
+    let online = 0;
+    partnerIds.forEach((id) => { if (isUserOnline(id)) online++; });
+    setFriendsOnlineCount(online);
+  }, [conversations, isUserOnline]);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -311,6 +322,12 @@ const Messenger = () => {
     );
 
     setConversations(conversationsWithDetails);
+
+    const { count: sentCount } = await supabase
+      .from("messages")
+      .select("id", { count: "exact", head: true })
+      .eq("sender_id", user.id);
+    setTotalMessages(sentCount || 0);
   };
 
   const fetchAllUsers = async () => {
@@ -882,9 +899,9 @@ const Messenger = () => {
           <MessengerHero
             onOpenChat={() => setActiveView("chat")}
             stats={{
-              totalMessages: conversations.length * 12,
+              totalMessages,
               activeChats: conversations.length,
-              friendsOnline: allUsers.length,
+              friendsOnline: friendsOnlineCount,
               aiCredits: 50,
             }}
           />
