@@ -150,7 +150,7 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
               const Icon = f.icon;
               return (
                 <motion.div
-                  key={f.titleKey}
+                  key={f.title}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 + i * 0.07 }}
