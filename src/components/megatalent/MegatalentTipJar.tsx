@@ -61,10 +61,7 @@ export default function MegatalentTipJar({ creatorId, creatorName, categorySlug 
           if ((data as any)?.verified) {
             toast({
               title: "Thanks for your support!",
-              description: t(
-                "megatalent.tip.successDesc",
-                "Your tip has been delivered to the creator.",
-              ),
+              description: "Your tip has been delivered to the creator.",
             });
           }
         } catch (e: any) {
