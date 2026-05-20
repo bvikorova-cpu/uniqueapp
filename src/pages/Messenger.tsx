@@ -28,6 +28,7 @@ import { CustomEmojiCreator } from "@/components/messenger/CustomEmojiCreator";
 import { ChatGames } from "@/components/messenger/ChatGames";
 import { SmartNotifications } from "@/components/messenger/SmartNotifications";
 import { motion } from "framer-motion";
+import { playMessageChime } from "@/lib/messageChime";
 import {
   Popover,
   PopoverContent,
@@ -371,8 +372,9 @@ const Messenger = () => {
             } as MessageWithProfile,
           ]);
           
-          // Mark as read if it's from other user
+          // Mark as read + play unique chime if it's from other user
           if (payload.new.sender_id !== user.id) {
+            playMessageChime();
             markMessagesAsRead();
           }
         }
