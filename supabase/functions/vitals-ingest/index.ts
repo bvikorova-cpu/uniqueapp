@@ -44,15 +44,26 @@ Deno.serve(async (req) => {
     }
 
     // Resolve user_id if a real auth header is present (best-effort).
+    // Wrap in a short timeout — Supabase auth occasionally stalls and we
+    // must never let that turn this fire-and-forget ingest into a 504.
     let userId: string | null = null;
     const auth = req.headers.get("Authorization");
     if (auth?.startsWith("Bearer ")) {
-      const anon = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, {
-        global: { headers: { Authorization: auth } },
-      });
-      const { data } = await anon.auth.getUser();
-      userId = data.user?.id ?? null;
+      try {
+        const anon = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, {
+          global: { headers: { Authorization: auth } },
+        });
+        const userPromise = anon.auth.getUser();
+        const timeout = new Promise<{ data: { user: null } }>((resolve) =>
+          setTimeout(() => resolve({ data: { user: null } }), 1500),
+        );
+        const { data } = (await Promise.race([userPromise, timeout])) as any;
+        userId = data?.user?.id ?? null;
+      } catch {
+        userId = null;
+      }
     }
+
 
     const ua = clamp(req.headers.get("user-agent"), 300);
 
