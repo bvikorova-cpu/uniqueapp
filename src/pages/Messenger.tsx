@@ -187,6 +187,17 @@ const Messenger = () => {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (!user) return;
+    const refresh = () => fetchConversations();
+    window.addEventListener("focus", refresh);
+    window.addEventListener("messages-read", refresh);
+    return () => {
+      window.removeEventListener("focus", refresh);
+      window.removeEventListener("messages-read", refresh);
+    };
+  }, [user]);
+
   // Server-side search by name so we can find anyone, not just the first 1000 cached profiles
   useEffect(() => {
     if (!user) return;
