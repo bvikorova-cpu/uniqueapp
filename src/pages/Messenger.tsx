@@ -444,6 +444,8 @@ const Messenger = () => {
     // Guard: if user switched conversations during the fetch, ignore stale results.
     if (convId !== selectedConversation) return;
     setMessages(messagesWithProfiles);
+    setLoadingMessages(false);
+    setMessagesError(false);
   };
 
   const markMessagesAsRead = async () => {
