@@ -294,7 +294,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const channel = supabase
-      .channel(`call-signals:${user.id}`)
+      .channel(`user:${user.id}:call-signals`)
       .on(
         "postgres_changes",
         {
