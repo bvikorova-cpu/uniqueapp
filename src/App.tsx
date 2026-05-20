@@ -36,6 +36,7 @@ import { RealTimeNotificationsMount } from "@/components/notifications/RealTimeN
 import { GlobalMessageChimeMount } from "@/components/notifications/GlobalMessageChimeMount";
 import { AnimationProvider } from "@/contexts/AnimationContext";
 import { CurrencyProvider } from "@/contexts/CurrencyContext";
+import { CallProvider } from "@/contexts/CallContext";
 import { useEffect } from "react";
 import "@/i18n/config";
 import SkipLink from "./components/SkipLink";
@@ -534,6 +535,7 @@ const App = () => {
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <AuthProvider>
+            <CallProvider>
             <Suspense fallback={null}>
               <ReferralCaptureMount />
               <IQReferralCaptureMount />
@@ -1120,6 +1122,7 @@ const App = () => {
               </TooltipProvider>
               </CurrencyProvider>
             </AnimationProvider>
+            </CallProvider>
           </AuthProvider>
         </BrowserRouter>
       </ThemeProvider>
