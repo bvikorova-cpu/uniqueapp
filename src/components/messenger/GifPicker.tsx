@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Loader2, AlertCircle } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+
 
 interface GiphyItem {
   id: string;
@@ -20,12 +20,6 @@ export const GifPicker = ({ onSelect }: { onSelect: (url: string) => void }) => 
       setLoading(true);
       setError(false);
       try {
-        const { data, error: fnError } = await supabase.functions.invoke("giphy-search", {
-          body: null,
-          method: "GET" as any,
-          headers: {},
-        } as any);
-        // Use direct URL with query params instead
         const url = new URL(
           `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/giphy-search`
         );
