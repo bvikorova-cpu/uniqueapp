@@ -69,7 +69,7 @@ export function JobAIAssistant() {
       } else {
         toast({
           title: "Analysis Complete",
-          description: t('jobs.aiAssistant.foundMatches', `Found ${data.matches.length} suitable positions`),
+          description: `Found ${data.matches.length} suitable positions`,
         });
       }
     } catch (error: any) {
