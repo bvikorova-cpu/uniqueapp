@@ -1082,7 +1082,7 @@ const Messenger = () => {
             </ScrollArea>
           </Card>
 
-          <Card className="col-span-1 md:col-span-2 p-4 flex flex-col">
+          <Card className={`col-span-1 md:col-span-2 p-4 flex flex-col ${selectedConversation ? "flex" : "hidden md:flex"}`}>
             {selectedConversation ? (
               <>
                 <div className="flex items-center justify-between gap-3 pb-4 border-b">
