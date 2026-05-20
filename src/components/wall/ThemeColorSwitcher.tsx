@@ -189,6 +189,27 @@ const storageKeyFor = (userId: string | null) =>
   userId ? `app-color-theme:${userId}` : "app-color-theme:guest";
 const DEFAULT_THEME = "Purple & Pink";
 
+const applyThemeVars = (theme: ColorTheme) => {
+  const root = document.documentElement;
+  root.style.setProperty("--primary", theme.primary);
+  root.style.setProperty("--ring", theme.ring);
+  root.style.setProperty("--accent", theme.accent);
+  root.style.setProperty("--sidebar-primary", theme.primary);
+  root.style.setProperty("--sidebar-ring", theme.ring);
+
+  const isDark = root.classList.contains("dark");
+  if (isDark) {
+    const parts = theme.primary.split(" ");
+    if (parts.length === 3) {
+      const lightness = parseFloat(parts[2]);
+      root.style.setProperty(
+        "--primary",
+        `${parts[0]} ${parts[1]} ${Math.min(lightness + 7, 80)}%`
+      );
+    }
+  }
+};
+
 export function ThemeColorSwitcher() {
   const [userId, setUserId] = useState<string | null>(null);
   const [savedTheme, setSavedTheme] = useState<string>(DEFAULT_THEME);
