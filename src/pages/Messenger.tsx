@@ -1346,6 +1346,13 @@ const Messenger = () => {
                       onChange={handleInputChange}
                       onKeyPress={(e) => e.key === "Enter" && sendMessage()}
                       disabled={isRecording}
+                      onFocus={(e) => {
+                        const el = e.currentTarget;
+                        setTimeout(() => {
+                          el.scrollIntoView({ block: "center", behavior: "smooth" });
+                          messagesEndRef.current?.scrollIntoView({ block: "end", behavior: "smooth" });
+                        }, 300);
+                      }}
                       className="flex-1 min-w-0"
                     />
                     <Button onClick={sendMessage} size="icon" className="shrink-0" disabled={isRecording || !newMessage.trim()}>
