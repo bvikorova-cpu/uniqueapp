@@ -44,6 +44,7 @@ import {
   fetchProfilesCachedBatch,
   primeProfileCache,
 } from "@/lib/profileCache";
+import { sanitizeMessageContent, checkRateLimit, MAX_MESSAGE_LEN } from "@/lib/messageSafety";
 import {
   Popover,
   PopoverContent,
@@ -751,8 +752,20 @@ const Messenger = () => {
 
 
   const sendMessage = async (overrideText?: string, overrideReplyId?: string | null) => {
-    const text = (overrideText ?? newMessage).trim();
-    if (!text || !selectedConversation) return;
+    const text = sanitizeMessageContent(overrideText ?? newMessage);
+    if (!text || !selectedConversation || !user) return;
+
+    // Client-side rate limit: max 10 messages / 10s per user.
+    const rl = checkRateLimit(`send:${user.id}`, 10, 10_000);
+    if (!rl.ok) {
+      toast({
+        title: "Slow down",
+        description: `Too many messages. Try again in ${Math.ceil(rl.retryAfterMs / 1000)}s.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
 
     // Stop typing indicator
     setIsTyping(false);
@@ -1609,6 +1622,7 @@ const Messenger = () => {
                       onChange={handleInputChange}
                       onKeyPress={(e) => e.key === "Enter" && sendMessage()}
                       disabled={isRecording}
+                      maxLength={MAX_MESSAGE_LEN}
                       onFocus={(e) => {
                         const el = e.currentTarget;
                         setTimeout(() => {
