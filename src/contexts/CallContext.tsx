@@ -225,16 +225,21 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
 
   // -- own channel subscription -----------------------------------------
 
+  // Keep latest call state in a ref so realtime callbacks never see stale data.
+  const callRef = useRef<CallState>(call);
+  useEffect(() => { callRef.current = call; }, [call]);
+
   useEffect(() => {
     if (!user?.id) return;
+    console.log("[call] subscribing to own channel user-rtc:" + user.id);
 
     const channel = supabase.channel(`user-rtc:${user.id}`);
 
     channel
       .on("broadcast", { event: "offer" }, ({ payload }) => {
-        // Ignore if we're already in/handling a call
-        if (call.status !== "idle") {
-          // Auto-decline (line busy)
+        console.log("[call] ← OFFER from", payload?.from, payload);
+        if (callRef.current.status !== "idle") {
+          console.log("[call] busy, auto-declining");
           void sendToUser(payload.from, "decline-call", { from: user.id, reason: "busy" });
           return;
         }
@@ -246,7 +251,6 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
           offer: payload.offer,
         });
         startRingtone();
-        // Best-effort browser notification
         try {
           if (typeof Notification !== "undefined" && Notification.permission === "granted") {
             const n = new Notification("Incoming call", {
