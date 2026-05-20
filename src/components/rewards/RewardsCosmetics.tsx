@@ -28,7 +28,7 @@ export default function RewardsCosmetics() {
     { id: "profile_theme", label: "Themes" },
     { id: "animated_border", label: "Borders" },
     { id: "name_color", label: "Name color" },
-  ], [t]);
+  ], []);
 
   const load = async () => {
     const { data: cat } = await supabase.from("rewards_cosmetic_items").select("*").order("rarity");

@@ -78,7 +78,7 @@ export default function MegatalentTipJar({ creatorId, creatorName, categorySlug 
       next.delete("tip");
       setSearchParams(next, { replace: true });
     }
-  }, [searchParams, setSearchParams, t]);
+  }, [searchParams, setSearchParams]);
 
   const handleTip = async () => {
     if (!user) {

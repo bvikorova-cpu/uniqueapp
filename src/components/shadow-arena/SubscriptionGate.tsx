@@ -159,8 +159,8 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
                 >
                   <div className="absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-700/60 to-transparent" />
                   <Icon className="w-8 h-8 text-red-400 mb-3 group-hover:text-red-300 transition-colors drop-shadow-[0_0_10px_rgba(220,38,38,0.4)]" />
-                  <h3 className="font-gothic-display text-red-100 text-base mb-1.5 tracking-wide">{t(f.titleKey)}</h3>
-                  <p className="font-gothic-body text-red-200/65 text-sm leading-relaxed">{t(f.descKey)}</p>
+                  <h3 className="font-gothic-display text-red-100 text-base mb-1.5 tracking-wide">{f.title}</h3>
+                  <p className="font-gothic-body text-red-200/65 text-sm leading-relaxed">{f.desc}</p>
                 </motion.div>
               );
             })}

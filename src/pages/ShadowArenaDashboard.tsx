@@ -84,7 +84,7 @@ export default function ShadowArenaDashboard() {
           setSearchParams(searchParams, { replace: true });
         });
     }
-  }, [searchParams, setSearchParams, t, queryClient]);
+  }, [searchParams, setSearchParams, queryClient]);
 
   useEffect(() => {
     fetchData();

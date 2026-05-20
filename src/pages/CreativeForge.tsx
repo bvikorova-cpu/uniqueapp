@@ -73,7 +73,7 @@ export default function CreativeForge() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
-  const t = tt as (key: string, opts?: Record<string, unknown>) => string;
+  
   const { credits, isLoading: creditsLoading, purchaseCredits, verifyPayment, refreshCredits } = useCreativeForgeCredits();
 
   const [activeView, setActiveView] = useState<"hub" | "create" | "history" | "credits">("hub");

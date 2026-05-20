@@ -6,9 +6,9 @@ import { motion } from "framer-motion";
 
 
 const PACKAGES = [
-  { credits: 30 as const, price: "€4.99", labelKey: "shadow.credits.pack_starter" },
-  { credits: 100 as const, price: "€12.99", labelKey: "shadow.credits.pack_creator", popular: true },
-  { credits: 280 as const, price: "€29.99", labelKey: "shadow.credits.pack_pro" },
+  { credits: 30 as const, price: "€4.99", label: "Starter" },
+  { credits: 100 as const, price: "€12.99", label: "Creator", popular: true },
+  { credits: 280 as const, price: "€29.99", label: "Pro" },
 ];
 
 export function ShadowCreditsCard() {
@@ -66,7 +66,7 @@ export function ShadowCreditsCard() {
             <Coins className="w-4 h-4 text-yellow-300 mb-1" />
             <span className="font-black text-white text-base">{pkg.credits} {"cr"}</span>
             <span className="text-[11px] text-red-100 font-semibold">{pkg.price}</span>
-            <span className="text-[10px] text-red-200/90 mt-0.5 font-medium">{t(pkg.labelKey)}</span>
+            <span className="text-[10px] text-red-200/90 mt-0.5 font-medium">{pkg.label}</span>
           </Button>
         ))}
       </div>
