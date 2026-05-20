@@ -244,15 +244,20 @@ const Messenger = () => {
 
   useEffect(() => {
     if (selectedConversation) {
+      // Clear previous conversation messages immediately so the new
+      // conversation always starts fresh and history is reloaded.
+      setMessages([]);
       fetchMessages();
       const unsubscribeMessages = subscribeToMessages();
       const unsubscribeTyping = subscribeToTyping();
       markMessagesAsRead();
-      
+
       return () => {
         unsubscribeMessages?.();
         unsubscribeTyping?.();
       };
+    } else {
+      setMessages([]);
     }
   }, [selectedConversation]);
 
