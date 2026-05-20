@@ -159,6 +159,15 @@ const Messenger = () => {
   // Online status hook
   const { isUserOnline } = useOnlineStatus(user?.id || null);
 
+  // Real "friends online" = unique conversation partners currently online
+  useEffect(() => {
+    const partnerIds = new Set<string>();
+    conversations.forEach((c) => { if (c.otherUser?.id) partnerIds.add(c.otherUser.id); });
+    let online = 0;
+    partnerIds.forEach((id) => { if (isUserOnline(id)) online++; });
+    setFriendsOnlineCount(online);
+  }, [conversations, isUserOnline]);
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) {
