@@ -310,19 +310,16 @@ const Messenger = () => {
   }, [messages]);
 
   const getProfile = async (userId: string): Promise<Profile | null> => {
-    if (profilesCache.has(userId)) {
-      return profilesCache.get(userId)!;
-    }
+    const fromState = profilesCache.get(userId);
+    if (fromState) return fromState;
 
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("id, full_name, avatar_url")
-      .eq("id", userId)
-      .single();
+    const data = await fetchProfileCached(userId);
+    if (!data) return null;
 
-    if (error || !data) return null;
-
-    setProfilesCache((prev) => new Map(prev).set(userId, data));
+    setProfilesCache((prev) => {
+      if (prev.has(userId)) return prev;
+      return new Map(prev).set(userId, data);
+    });
     return data;
   };
 
