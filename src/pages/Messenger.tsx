@@ -890,9 +890,9 @@ const Messenger = () => {
           <MessengerHero
             onOpenChat={() => setActiveView("chat")}
             stats={{
-              totalMessages: conversations.length * 12,
+              totalMessages,
               activeChats: conversations.length,
-              friendsOnline: allUsers.length,
+              friendsOnline: friendsOnlineCount,
               aiCredits: 50,
             }}
           />
