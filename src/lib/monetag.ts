@@ -8,16 +8,15 @@ const loaded = new Set<string>();
 
 type LoadMonetagOptions = { reload?: boolean };
 
-export function loadMonetagZone(zoneId: string | number, options: LoadMonetagOptions = {}): void {
+export function loadMonetagZone(zoneId: string | number, _options: LoadMonetagOptions = {}): void {
   const id = String(zoneId);
-  if (!options.reload && loaded.has(id)) return;
+  // Always inject only once per page-load. No reload, no cache-buster.
+  // Popunder/Vignette behave like virus pop-ups on mobile, so we never use them.
+  if (loaded.has(id)) return;
   loaded.add(id);
   try {
-    if (options.reload) {
-      document.querySelectorAll(`script[data-monetag-zone="${id}"]`).forEach((node) => node.remove());
-    }
     const s = document.createElement("script");
-    s.src = `https://nap5k.com/tag.min.js?rnd=${Date.now()}_${Math.random().toString(36).slice(2)}`;
+    s.src = `https://nap5k.com/tag.min.js`;
     s.async = true;
     s.setAttribute("data-zone", id);
     s.setAttribute("data-monetag-zone", id);
@@ -29,18 +28,15 @@ export function loadMonetagZone(zoneId: string | number, options: LoadMonetagOpt
 }
 
 export const MONETAG_ZONES = {
+  // Only In-Page Push — slušná notifikácia v rohu, nie virusne pop-upy.
   IN_PAGE_PUSH: "11037514",
-  VIGNETTE: "11037515",
-  POPUNDER: "11037513",
 } as const;
 
 export const MONETAG_ZONE_IDS = Object.values(MONETAG_ZONES);
 
-/** Load all revenue-generating Monetag zones at once. Safe to call repeatedly. */
-export function loadAllMonetagZones(options: LoadMonetagOptions = {}): void {
-  loadMonetagZone(MONETAG_ZONES.POPUNDER, options);
-  loadMonetagZone(MONETAG_ZONES.IN_PAGE_PUSH, options);
-  loadMonetagZone(MONETAG_ZONES.VIGNETTE, options);
+/** Load only the non-intrusive In-Page Push zone. */
+export function loadAllMonetagZones(_options: LoadMonetagOptions = {}): void {
+  loadMonetagZone(MONETAG_ZONES.IN_PAGE_PUSH);
 }
 
 export function trackMonetagEvent(eventType: "click" | "impression", zoneId: string, sectionKey: string): void {
