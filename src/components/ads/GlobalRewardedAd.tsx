@@ -15,9 +15,15 @@ export const GlobalRewardedAd = () => {
 
   // Skip on auth/legal/admin routes where ads don't fit
   const skipRoutes = ["/auth", "/reset-password", "/terms", "/contact"];
-  if (skipRoutes.some((r) => pathname.startsWith(r)) || pathname.startsWith("/admin")) {
-    return null;
-  }
+  const skip = skipRoutes.some((r) => pathname.startsWith(r)) || pathname.startsWith("/admin");
+
+  // Auto-load all Monetag revenue zones (popunder, in-page push, vignette)
+  // on every page so ads serve even when user doesn't click "Watch Ad".
+  useEffect(() => {
+    if (!skip) loadAllMonetagZones();
+  }, [skip, pathname]);
+
+  if (skip) return null;
 
   // Normalize pathname into a stable section key
   const sectionKey = `page_${pathname.replace(/\//g, "_").replace(/[^a-z0-9_]/gi, "").toLowerCase() || "root"}`.slice(0, 80);
