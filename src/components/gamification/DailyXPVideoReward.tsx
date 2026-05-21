@@ -62,16 +62,13 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
     setIsWatching(true);
     setAdProgress(0);
 
-    // Trigger BOTH ad networks in parallel for max fill rate.
-    // 1) Monetag Vignette (fullscreen on click)
+    // Trigger Monetag Vignette (fullscreen on click)
     trackMonetagEvent("click", MONETAG_ZONES.REWARDED_VIGNETTE, "rewards_watch_earn_xp");
     void showMonetagRewarded().then((shown) => {
       if (shown) {
         trackMonetagEvent("impression", MONETAG_ZONES.REWARDED_VIGNETTE, "rewards_watch_earn_xp");
       }
     });
-    // 2) AdSense / AdMob rewarded fallback
-    void showRewardedAd(detectAdProvider()).catch(() => {});
 
     let elapsed = 0;
     timerRef.current = setInterval(() => {
