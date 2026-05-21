@@ -62,6 +62,14 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
     setIsWatching(true);
     setAdProgress(0);
 
+    // Trigger real Monetag rewarded ad in parallel with progress bar
+    trackMonetagEvent("click", MONETAG_ZONES.REWARDED_VIGNETTE, "rewards_watch_earn_xp");
+    void showMonetagRewarded().then((shown) => {
+      if (shown) {
+        trackMonetagEvent("impression", MONETAG_ZONES.REWARDED_VIGNETTE, "rewards_watch_earn_xp");
+      }
+    });
+
     let elapsed = 0;
     timerRef.current = setInterval(() => {
       elapsed += 1;
