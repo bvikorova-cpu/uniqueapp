@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import DailyRewardButton from "@/components/gamification/DailyRewardButton";
 import { DailyXPVideoReward } from "@/components/gamification/DailyXPVideoReward";
+import { XpToCreditsConverter } from "@/components/gamification/XpToCreditsConverter";
 import BadgesDisplay from "@/components/gamification/BadgesDisplay";
 import BadgeLeaderboard from "@/components/gamification/BadgeLeaderboard";
 import MyBadgesDisplay from "@/components/gamification/MyBadgesDisplay";
