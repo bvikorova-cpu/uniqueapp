@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply, Mic, Image, Smile, Square, Play, Pause, Users, BarChart3, Palette, Radio, Clock, ArrowLeft, Download, Brain, Gamepad2, Bell, Sticker, Loader2 } from "lucide-react";
+import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply, Mic, Image, Smile, Square, Play, Pause, Users, BarChart3, Palette, Radio, Clock, ArrowLeft, Download, Brain, Gamepad2, Bell, Loader2 } from "lucide-react";
 import { EmojiPicker } from "@/components/messenger/EmojiPicker";
-import { GifPicker } from "@/components/messenger/GifPicker";
+
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import VideoCall from "@/components/messenger/VideoCall";
@@ -120,20 +120,6 @@ interface Conversation {
 
 const REACTIONS = ["❤️", "👍", "😂", "😮", "😢", "🔥"];
 
-const POPULAR_GIFS = [
-  "https://media.giphy.com/media/l0MYGb1LuZ3n7dRnO/giphy.gif",
-  "https://media.giphy.com/media/xT5LMHxhOfscxPfIfm/giphy.gif",
-  "https://media.giphy.com/media/3o7TKz2fKpYhu3i168/giphy.gif",
-  "https://media.giphy.com/media/xT0xezQGU5xCDJuCPe/giphy.gif",
-  "https://media.giphy.com/media/l41lGvinEgARjB2HC/giphy.gif",
-  "https://media.giphy.com/media/3ohzdIuqJoo8QdKlnW/giphy.gif",
-  "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif",
-  "https://media.giphy.com/media/26u4cqiYI30juCOGY/giphy.gif",
-  "https://media.giphy.com/media/3o6Zt6ML6BklcajjsA/giphy.gif",
-  "https://media.giphy.com/media/l0HlvtIPzPdt2usKs/giphy.gif",
-  "https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif",
-  "https://media.giphy.com/media/l4FGuhL4U2WyjdkaY/giphy.gif",
-];
 
 const Messenger = () => {
   const navigate = useNavigate();
@@ -154,7 +140,7 @@ const Messenger = () => {
   const [replyingTo, setReplyingTo] = useState<MessageWithProfile | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingDuration, setRecordingDuration] = useState(0);
-  const [showGifPicker, setShowGifPicker] = useState(false);
+  
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
   const [selfDestructDuration, setSelfDestructDuration] = useState<number | null>(null);
@@ -960,29 +946,6 @@ const Messenger = () => {
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  // GIF sending
-  const sendGif = async (gifUrl: string) => {
-    if (!selectedConversation || !user) return;
-
-    const { error } = await supabase.from("messages").insert({
-      conversation_id: selectedConversation,
-      sender_id: user.id,
-      content: "GIF",
-      attachment_url: gifUrl,
-      attachment_type: "gif",
-      reply_to_id: replyingTo?.id || null,
-    });
-
-    if (error) {
-      toast({
-        title: "Error",
-        description: "Failed to send GIF",
-        variant: "destructive",
-      });
-    }
-    setShowGifPicker(false);
-    setReplyingTo(null);
-  };
 
   // Audio playback
   const toggleAudioPlayback = (messageId: string, audioUrl: string) => {
@@ -1614,16 +1577,6 @@ const Messenger = () => {
                       </PopoverContent>
                     </Popover>
 
-                    <Popover open={showGifPicker} onOpenChange={setShowGifPicker}>
-                      <PopoverTrigger asChild>
-                        <Button variant="ghost" size="icon" className="shrink-0" disabled={isRecording}>
-                          <Sticker className="h-4 w-4" />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-80 p-2">
-                        <GifPicker onSelect={(url) => sendGif(url)} />
-                      </PopoverContent>
-                    </Popover>
 
                     <div className="shrink-0">
                       <SelfDestructingMessage
