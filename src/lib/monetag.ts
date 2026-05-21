@@ -1,42 +1,21 @@
 import { supabase } from "@/integrations/supabase/client";
 
-// Lazy loader for Monetag single-zone tags.
-// By default each zone is injected once, but rewarded ads force a fresh
-// injection per click because Monetag pop/vignette tags fire on script load.
-
-const loaded = new Set<string>();
-
 type LoadMonetagOptions = { reload?: boolean };
 
 export function loadMonetagZone(zoneId: string | number, _options: LoadMonetagOptions = {}): void {
-  const id = String(zoneId);
-  // Always inject only once per page-load. No reload, no cache-buster.
-  // Popunder/Vignette behave like virus pop-ups on mobile, so we never use them.
-  if (loaded.has(id)) return;
-  loaded.add(id);
-  try {
-    const s = document.createElement("script");
-    s.src = `https://nap5k.com/tag.min.js`;
-    s.async = true;
-    s.setAttribute("data-zone", id);
-    s.setAttribute("data-monetag-zone", id);
-    s.setAttribute("data-cfasync", "false");
-    document.head.appendChild(s);
-  } catch {
-    /* noop */
-  }
+  // Disabled by design: no third-party popups, redirects, phone-number ads,
+  // or notification prompts are injected into the app.
+  void zoneId;
 }
 
 export const MONETAG_ZONES = {
-  // Only In-Page Push — slušná notifikácia v rohu, nie virusne pop-upy.
-  IN_PAGE_PUSH: "11037514",
+  SAFE_VIDEO: "safe-video-reward",
 } as const;
 
 export const MONETAG_ZONE_IDS = Object.values(MONETAG_ZONES);
 
-/** Load only the non-intrusive In-Page Push zone. */
 export function loadAllMonetagZones(_options: LoadMonetagOptions = {}): void {
-  loadMonetagZone(MONETAG_ZONES.IN_PAGE_PUSH);
+  // Kept for compatibility with existing callers; intentionally no-op.
 }
 
 export function trackMonetagEvent(eventType: "click" | "impression", zoneId: string, sectionKey: string): void {
