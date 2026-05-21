@@ -44,16 +44,19 @@ export function loadAllMonetagZones(options: LoadMonetagOptions = {}): void {
 }
 
 export function trackMonetagEvent(eventType: "click" | "impression", zoneId: string, sectionKey: string): void {
-  supabase.from("monetag_ad_events").insert({
-    event_type: eventType,
-    zone_id: zoneId,
-    revenue: 0,
-    currency: "USD",
-    sub_id: sectionKey,
-    raw: { source: "app_watch_ad" },
-  }).then(({ error }) => {
-    if (error) console.warn("Monetag tracking skipped", error.message);
-  }).catch(() => {
-    // Tracking must never block the ad or XP flow.
-  });
+  void (async () => {
+    try {
+      const { error } = await supabase.from("monetag_ad_events").insert({
+        event_type: eventType,
+        zone_id: zoneId,
+        revenue: 0,
+        currency: "USD",
+        sub_id: sectionKey,
+        raw: { source: "app_watch_ad" },
+      });
+      if (error) console.warn("Monetag tracking skipped", error.message);
+    } catch {
+      // Tracking must never block the ad or XP flow.
+    }
+  })();
 }
