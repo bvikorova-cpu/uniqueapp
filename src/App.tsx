@@ -54,6 +54,7 @@ const SubscriptionGuard = lazy(() => import("@/components/SubscriptionGuard").th
 const MegatalentGuard = lazy(() => import("@/components/megatalent/MegatalentGuard").then((module) => ({ default: module.MegatalentGuard })));
 const ProgressiveOnboarding = lazy(() => import("./components/onboarding/ProgressiveOnboarding"));
 const GlobalAnnouncementBanner = lazy(() => import("./components/GlobalAnnouncementBanner").then((module) => ({ default: module.GlobalAnnouncementBanner })));
+const GlobalRewardedAd = lazy(() => import("./components/ads/GlobalRewardedAd").then((module) => ({ default: module.GlobalRewardedAd })));
 const ReferralCaptureMount = lazy(() => import("@/components/referral/ReferralCaptureMount").then((module) => ({ default: module.ReferralCaptureMount })));
 const IQReferralCaptureMount = lazy(() => import("@/components/iq/IQReferralCaptureMount"));
 const WelcomeOnboarding = lazy(() => import("@/components/onboarding/WelcomeOnboarding"));
@@ -566,6 +567,10 @@ const App = () => {
                   <Suspense fallback={null}>
                     <GlobalAnnouncementBanner />
                   </Suspense>
+                  <Suspense fallback={null}>
+                    <GlobalRewardedAd />
+                  </Suspense>
+
                   <main id="main-content" className="flex-1">
                     <ErrorBoundary>
                       <Suspense fallback={<PageLoader />}>
