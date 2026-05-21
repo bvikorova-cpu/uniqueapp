@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import RewardedAdCard from "./RewardedAdCard";
 import { AD_PLACEMENTS } from "./AdPlacements";
+import { loadAllMonetagZones } from "@/lib/monetag";
 
 /**
  * Global "Watch & Earn" card mounted once per page near the end of content.
