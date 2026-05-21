@@ -37882,6 +37882,48 @@ export type Database = {
           },
         ]
       }
+      monetag_ad_events: {
+        Row: {
+          country: string | null
+          created_at: string
+          currency: string
+          event_at: string
+          event_type: string
+          id: string
+          raw: Json | null
+          revenue: number
+          sub_id: string | null
+          ymid: string | null
+          zone_id: string | null
+        }
+        Insert: {
+          country?: string | null
+          created_at?: string
+          currency?: string
+          event_at?: string
+          event_type: string
+          id?: string
+          raw?: Json | null
+          revenue?: number
+          sub_id?: string | null
+          ymid?: string | null
+          zone_id?: string | null
+        }
+        Update: {
+          country?: string | null
+          created_at?: string
+          currency?: string
+          event_at?: string
+          event_type?: string
+          id?: string
+          raw?: Json | null
+          revenue?: number
+          sub_id?: string | null
+          ymid?: string | null
+          zone_id?: string | null
+        }
+        Relationships: []
+      }
       mood_logs: {
         Row: {
           created_at: string
