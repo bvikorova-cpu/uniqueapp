@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Sparkles, Play, Check, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import AdBanner from "./AdBanner";
 import { loadAllMonetagZones, MONETAG_ZONE_IDS, trackMonetagEvent } from "@/lib/monetag";
 
 interface RewardedAdCardProps {
