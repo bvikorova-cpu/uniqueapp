@@ -1114,9 +1114,7 @@ const App = () => {
                     </Suspense>
                     </ErrorBoundary>
                   </main>
-                  <Suspense fallback={null}>
-                    <GlobalRewardedAd />
-                  </Suspense>
+
                   <Suspense fallback={null}>
                     <Footer />
                   </Suspense>
