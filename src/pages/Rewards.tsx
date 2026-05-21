@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import DailyRewardButton from "@/components/gamification/DailyRewardButton";
 import { DailyXPVideoReward } from "@/components/gamification/DailyXPVideoReward";
+import { XpToCreditsConverter } from "@/components/gamification/XpToCreditsConverter";
 import BadgesDisplay from "@/components/gamification/BadgesDisplay";
 import BadgeLeaderboard from "@/components/gamification/BadgeLeaderboard";
 import MyBadgesDisplay from "@/components/gamification/MyBadgesDisplay";
@@ -134,8 +135,16 @@ export default function Rewards() {
                   <Crown className="h-6 w-6" />
                   Premium Store
                 </Button>
-              </div>
             </div>
+            </div>
+
+            <div className="mb-8">
+              <XpToCreditsConverter userId={user.id} />
+            </div>
+
+
+
+
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
               <div className="lg:col-span-2 space-y-6">

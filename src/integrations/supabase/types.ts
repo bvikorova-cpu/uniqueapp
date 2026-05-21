@@ -59353,6 +59353,33 @@ export type Database = {
         }
         Relationships: []
       }
+      xp_conversions: {
+        Row: {
+          created_at: string
+          credits_received: number
+          id: string
+          target_pool: string
+          user_id: string
+          xp_spent: number
+        }
+        Insert: {
+          created_at?: string
+          credits_received: number
+          id?: string
+          target_pool: string
+          user_id: string
+          xp_spent: number
+        }
+        Update: {
+          created_at?: string
+          credits_received?: number
+          id?: string
+          target_pool?: string
+          user_id?: string
+          xp_spent?: number
+        }
+        Relationships: []
+      }
       xp_events: {
         Row: {
           amount: number
@@ -60759,6 +60786,10 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      convert_xp_to_credits: {
+        Args: { p_target: string; p_xp_amount: number }
+        Returns: Json
       }
       coupon_battle_pair: {
         Args: { p_category?: string }
