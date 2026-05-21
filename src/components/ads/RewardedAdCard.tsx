@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Play, Check, Clock } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
+import { Progress } from "@/components/ui/progress";
+import { Sparkles, Play, Check, Clock, Gift, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { loadAllMonetagZones, MONETAG_ZONE_IDS, trackMonetagEvent } from "@/lib/monetag";
+import { MONETAG_ZONE_IDS, trackMonetagEvent } from "@/lib/monetag";
+import adVideo from "@/assets/video-ad-hero.mp4.asset.json";
 
 interface RewardedAdCardProps {
   sectionKey: string;
@@ -49,6 +52,7 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
   const [phase, setPhase] = useState<"idle" | "watching" | "ready" | "claimed">("idle");
   const [secondsLeft, setSecondsLeft] = useState(WATCH_SECONDS);
   const [viewsToday, setViewsToday] = useState(0);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
@@ -64,11 +68,11 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
       trackMonetagEvent("click", zoneId, sectionKey);
       trackMonetagEvent("impression", zoneId, sectionKey);
     });
-    // Load only the non-intrusive In-Page Push ad (corner notification).
-    // No popunder, no vignette, no new tabs.
-    loadAllMonetagZones();
     setPhase("watching");
     setSecondsLeft(WATCH_SECONDS);
+    window.setTimeout(() => {
+      void videoRef.current?.play().catch(() => undefined);
+    }, 0);
     timerRef.current = setInterval(() => {
       setSecondsLeft((s) => {
         if (s <= 1) {
@@ -169,10 +173,47 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
 
         {phase === "watching" && (
           <div className="rounded-md border border-border/50 bg-muted/30 p-3 text-center text-xs text-muted-foreground">
-            Reklama sa zobrazí ako jemné upozornenie v rohu obrazovky. Počkaj {secondsLeft}s a potom si vyzdvihni XP.
+            Video reklama beží v bezpečnom okne. Počkaj {secondsLeft}s a potom si vyzdvihni XP.
           </div>
         )}
       </CardContent>
+      <Dialog open={phase === "watching"} onOpenChange={(open) => { if (!open && phase === "watching") setPhase("idle"); }}>
+        <DialogContent className="w-[calc(100vw-1rem)] max-w-2xl overflow-hidden border-primary/30 bg-card p-0 shadow-2xl sm:rounded-xl" hideCloseButton>
+          <div className="sr-only">
+            <DialogTitle>Sponsored video</DialogTitle>
+            <DialogDescription>Watch the sponsored video until the countdown finishes to claim XP.</DialogDescription>
+          </div>
+          <div className="relative aspect-video bg-muted">
+            <video
+              ref={videoRef}
+              src={adVideo.url}
+              muted
+              playsInline
+              autoPlay
+              loop
+              className="h-full w-full object-cover"
+            />
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background/95 via-background/45 to-transparent p-4">
+              <div className="flex items-end justify-between gap-3">
+                <div>
+                  <div className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-primary">
+                    <ShieldCheck className="h-4 w-4" /> Sponsored video
+                  </div>
+                  <p className="text-sm font-bold text-foreground">Unique partner spotlight</p>
+                </div>
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-primary/30 bg-background/80 text-lg font-black text-primary">
+                  {secondsLeft}
+                </div>
+              </div>
+              <Progress value={((WATCH_SECONDS - secondsLeft) / WATCH_SECONDS) * 100} className="mt-3 h-2" />
+            </div>
+          </div>
+          <div className="flex items-center justify-between gap-3 px-4 pb-4 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1.5"><Gift className="h-4 w-4 text-primary" /> Reward unlocks after the video.</span>
+            <span>No popups · no redirects</span>
+          </div>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 };
