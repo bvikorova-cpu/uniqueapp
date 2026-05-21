@@ -206,7 +206,7 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
         )}
       </CardContent>
       <Dialog open={phase === "watching"} onOpenChange={(open) => { if (!open && phase === "watching") cancelWatch(); }}>
-        <DialogContent className="w-screen h-screen max-w-none max-h-none p-0 m-0 border-0 rounded-none bg-black sm:rounded-none translate-x-0 translate-y-0 top-0 left-0 inset-0 overflow-hidden">
+        <DialogContent className="!w-screen !h-screen !max-w-none !max-h-none p-0 m-0 border-0 !rounded-none bg-black !left-0 !top-0 !translate-x-0 !translate-y-0 !inset-0 sm:!rounded-none overflow-hidden flex">
           <div className="sr-only">
             <DialogTitle>Sponsored video</DialogTitle>
             <DialogDescription>Watch the sponsored video until the countdown finishes to claim XP.</DialogDescription>
