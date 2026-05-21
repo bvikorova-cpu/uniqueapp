@@ -17,6 +17,7 @@ interface RewardedAdCardProps {
 
 const WATCH_SECONDS = 15;
 const STORAGE_KEY = "rewarded_ad_views_local";
+const MONETAG_DIRECT_LINK = "https://omg10.com/4/11039047";
 
 type LocalViews = Record<string, { date: string; count: number }>;
 
@@ -77,7 +78,12 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
       trackMonetagEvent("impression", zoneId, sectionKey);
     });
 
-    // Fire the real Monetag Vignette fullscreen ad (non-blocking — countdown runs in parallel).
+    // Open Monetag Direct Link in a new tab — real ad page that counts impressions/revenue.
+    try {
+      window.open(MONETAG_DIRECT_LINK, "_blank", "noopener,noreferrer");
+    } catch { /* ignore popup blocker */ }
+
+    // Also fire the Vignette fullscreen ad as a bonus (non-blocking).
     void showMonetagRewarded(MONETAG_ZONES.REWARDED_VIGNETTE);
 
     setPhase("watching");
