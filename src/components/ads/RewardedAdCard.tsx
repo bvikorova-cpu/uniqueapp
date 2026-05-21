@@ -5,7 +5,7 @@ import { Sparkles, Play, Check, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import AdBanner from "./AdBanner";
-import { loadMonetagZone, MONETAG_ZONES } from "@/lib/monetag";
+import { loadMonetagZone, loadAllMonetagZones, MONETAG_ZONES } from "@/lib/monetag";
 
 interface RewardedAdCardProps {
   sectionKey: string;
