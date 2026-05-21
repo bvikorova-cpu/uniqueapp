@@ -5,8 +5,7 @@ import { PostFilters, SortBy, TimeFilter, CategoryFilter } from "@/components/fe
 import { Loader2 } from "lucide-react";
 import { AchievementsBadge } from "@/components/wall/AchievementsBadge";
 import { SearchBar } from "@/components/wall/SearchBar";
-import RewardedAdCard from "@/components/ads/RewardedAdCard";
-import { AD_PLACEMENTS } from "@/components/ads/AdPlacements";
+import MonetagInFeedAd from "@/components/ads/MonetagInFeedAd";
 import { NotesBar } from "@/components/wall/NotesBar";
 import { MutedKeywordsDialog, useMutedKeywords } from "@/components/wall/MutedKeywordsDialog";
 import { MutedUsersDialog } from "@/components/wall/MutedUsersDialog";
@@ -187,16 +186,13 @@ export default function WallFeed({
                         />
                       )}
                     </div>
-                    {/* Rewarded ad after every 20th post */}
+                    {/* Monetag In-Page Push sponsored card after every 20th post */}
                     {(index + 1) % 20 === 0 && (
-                      <div 
+                      <div
                         className="animate-fade-in mt-5"
                         style={{ animationDelay: `${index * 0.05}s` }}
                       >
-                        <RewardedAdCard 
-                          sectionKey={`wall_feed_${Math.floor((index + 1) / 20)}`}
-                          adSlot={AD_PLACEMENTS.FOOTER_BANNER}
-                        />
+                        <MonetagInFeedAd slotIndex={Math.floor((index + 1) / 20)} />
                       </div>
                     )}
                   </div>
