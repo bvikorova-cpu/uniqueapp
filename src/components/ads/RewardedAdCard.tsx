@@ -76,6 +76,10 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
       trackMonetagEvent("click", zoneId, sectionKey);
       trackMonetagEvent("impression", zoneId, sectionKey);
     });
+
+    // Fire the real Monetag Vignette fullscreen ad (non-blocking — countdown runs in parallel).
+    void showMonetagRewarded(MONETAG_ZONES.REWARDED_VIGNETTE);
+
     setPhase("watching");
     setSecondsLeft(WATCH_SECONDS);
     window.setTimeout(() => {
