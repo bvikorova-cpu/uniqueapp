@@ -1614,16 +1614,6 @@ const Messenger = () => {
                       </PopoverContent>
                     </Popover>
 
-                    <Popover open={showGifPicker} onOpenChange={setShowGifPicker}>
-                      <PopoverTrigger asChild>
-                        <Button variant="ghost" size="icon" className="shrink-0" disabled={isRecording}>
-                          <Sticker className="h-4 w-4" />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-80 p-2">
-                        <GifPicker onSelect={(url) => sendGif(url)} />
-                      </PopoverContent>
-                    </Popover>
 
                     <div className="shrink-0">
                       <SelfDestructingMessage
