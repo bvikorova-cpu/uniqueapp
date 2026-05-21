@@ -178,7 +178,7 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
         )}
       </CardContent>
       <Dialog open={phase === "watching"} onOpenChange={(open) => { if (!open && phase === "watching") setPhase("idle"); }}>
-        <DialogContent className="w-[calc(100vw-1rem)] max-w-2xl overflow-hidden border-primary/30 bg-card p-0 shadow-2xl sm:rounded-xl" hideCloseButton>
+        <DialogContent className="w-[calc(100vw-1rem)] max-w-2xl overflow-hidden border-primary/30 bg-card p-0 shadow-2xl sm:rounded-xl">
           <div className="sr-only">
             <DialogTitle>Sponsored video</DialogTitle>
             <DialogDescription>Watch the sponsored video until the countdown finishes to claim XP.</DialogDescription>
