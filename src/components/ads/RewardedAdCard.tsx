@@ -61,7 +61,10 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
   }, []);
 
   const startWatch = () => {
-    MONETAG_ZONE_IDS.forEach((zoneId) => trackMonetagEvent("click", zoneId, sectionKey));
+    MONETAG_ZONE_IDS.forEach((zoneId) => {
+      trackMonetagEvent("click", zoneId, sectionKey);
+      trackMonetagEvent("impression", zoneId, sectionKey);
+    });
     // Trigger ALL Monetag formats so something definitely shows:
     // Popunder (new tab), Vignette (full-screen), In-Page Push (corner).
     loadAllMonetagZones({ reload: true });
