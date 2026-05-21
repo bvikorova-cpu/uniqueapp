@@ -94,9 +94,19 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
         body: { section_key: sectionKey },
       });
 
-      if (error || (data as { error?: string })?.error) {
-        const msg = (data as { error?: string })?.error || error?.message || "Failed to claim";
-        throw new Error(msg);
+      // Supabase SDK surfaces non-2xx as `error` but still parses the JSON body into `data`.
+      const bodyErr = (data as { error?: string; retry_after?: number } | null)?.error;
+      if (bodyErr || error) {
+        if (bodyErr === "Too fast") {
+          const wait = (data as { retry_after?: number })?.retry_after ?? 10;
+          toast({
+            title: "Slow down ⏱️",
+            description: `Please wait ${wait}s before claiming again.`,
+          });
+          setPhase("idle");
+          return;
+        }
+        throw new Error(bodyErr || error?.message || "Failed to claim");
       }
 
       bumpLocalViews(sectionKey);
