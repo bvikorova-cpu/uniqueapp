@@ -17,6 +17,7 @@ interface RewardedAdCardProps {
 
 const WATCH_SECONDS = 15;
 const STORAGE_KEY = "rewarded_ad_views_local";
+const MONETAG_DIRECT_LINK = "https://omg10.com/4/11039047";
 
 type LocalViews = Record<string, { date: string; count: number }>;
 
