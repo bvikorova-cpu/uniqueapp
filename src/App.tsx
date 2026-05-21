@@ -568,7 +568,11 @@ const App = () => {
                   <Suspense fallback={null}>
                     <GlobalAnnouncementBanner />
                   </Suspense>
+                  <Suspense fallback={null}>
+                    <GlobalRewardedAd />
+                  </Suspense>
                   <main id="main-content" className="flex-1">
+
                     <ErrorBoundary>
                       <Suspense fallback={<PageLoader />}>
                         {/* All routes render inside this Suspense boundary */}
