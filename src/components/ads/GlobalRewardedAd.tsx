@@ -23,6 +23,9 @@ export const GlobalRewardedAd = () => {
 
   useEffect(() => {
     if (skip) return;
+    // Load Monetag In-Page Push once (safe corner notification) so impressions
+    // are counted in the Monetag dashboard and revenue keeps flowing.
+    loadAllMonetagZones();
     // Wait for lazy route content to mount, then check for existing rewarded ads.
     const t = window.setTimeout(() => {
       const existing = document.querySelectorAll("[data-rewarded-ad-card]").length;
