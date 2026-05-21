@@ -109,11 +109,30 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
         body: { section_key: sectionKey },
       });
 
-      // Supabase SDK surfaces non-2xx as `error` but still parses the JSON body into `data`.
-      const bodyErr = (data as { error?: string; retry_after?: number } | null)?.error;
+      // Supabase SDK surfaces non-2xx as `error`. For 429 we need to read the body from error.context.
+      let bodyErr = (data as { error?: string; retry_after?: number } | null)?.error;
+      let retryAfter = (data as { retry_after?: number } | null)?.retry_after;
+
+      if (!bodyErr && error) {
+        try {
+          const ctx = (error as { context?: Response }).context;
+          if (ctx && typeof (ctx as Response).json === "function") {
+            const parsed = await (ctx as Response).clone().json();
+            bodyErr = parsed?.error;
+            retryAfter = parsed?.retry_after;
+          }
+        } catch {
+          /* ignore */
+        }
+        // Fallback: detect 429 from error message string
+        if (!bodyErr && /429|too fast/i.test(error.message ?? "")) {
+          bodyErr = "Too fast";
+        }
+      }
+
       if (bodyErr || error) {
         if (bodyErr === "Too fast") {
-          const wait = (data as { retry_after?: number })?.retry_after ?? 10;
+          const wait = retryAfter ?? 10;
           toast({
             title: "Slow down ⏱️",
             description: `Please wait ${wait}s before claiming again.`,
@@ -123,6 +142,7 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
         }
         throw new Error(bodyErr || error?.message || "Failed to claim");
       }
+
 
       bumpLocalViews(sectionKey);
       const newCount = viewsToday + 1;
