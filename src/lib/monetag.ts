@@ -1,17 +1,26 @@
+import { supabase } from "@/integrations/supabase/client";
+
 // Lazy loader for Monetag single-zone tags.
-// Each zone is injected at most once per page load.
+// By default each zone is injected once, but rewarded ads force a fresh
+// injection per click because Monetag pop/vignette tags fire on script load.
 
 const loaded = new Set<string>();
 
-export function loadMonetagZone(zoneId: string | number): void {
+type LoadMonetagOptions = { reload?: boolean };
+
+export function loadMonetagZone(zoneId: string | number, options: LoadMonetagOptions = {}): void {
   const id = String(zoneId);
-  if (loaded.has(id)) return;
+  if (!options.reload && loaded.has(id)) return;
   loaded.add(id);
   try {
+    if (options.reload) {
+      document.querySelectorAll(`script[data-monetag-zone="${id}"]`).forEach((node) => node.remove());
+    }
     const s = document.createElement("script");
-    s.src = "https://nap5k.com/tag.min.js";
+    s.src = `https://nap5k.com/tag.min.js?rnd=${Date.now()}_${Math.random().toString(36).slice(2)}`;
     s.async = true;
     s.setAttribute("data-zone", id);
+    s.setAttribute("data-monetag-zone", id);
     s.setAttribute("data-cfasync", "false");
     document.head.appendChild(s);
   } catch {
@@ -25,9 +34,26 @@ export const MONETAG_ZONES = {
   POPUNDER: "11037513",
 } as const;
 
+export const MONETAG_ZONE_IDS = Object.values(MONETAG_ZONES);
+
 /** Load all revenue-generating Monetag zones at once. Safe to call repeatedly. */
-export function loadAllMonetagZones(): void {
-  loadMonetagZone(MONETAG_ZONES.POPUNDER);
-  loadMonetagZone(MONETAG_ZONES.IN_PAGE_PUSH);
-  loadMonetagZone(MONETAG_ZONES.VIGNETTE);
+export function loadAllMonetagZones(options: LoadMonetagOptions = {}): void {
+  loadMonetagZone(MONETAG_ZONES.POPUNDER, options);
+  loadMonetagZone(MONETAG_ZONES.IN_PAGE_PUSH, options);
+  loadMonetagZone(MONETAG_ZONES.VIGNETTE, options);
+}
+
+export function trackMonetagEvent(eventType: "click" | "impression", zoneId: string, sectionKey: string): void {
+  supabase.functions.invoke("monetag-postback", {
+    body: {
+      event_type: eventType,
+      zone_id: zoneId,
+      revenue: 0,
+      currency: "USD",
+      sub_id: sectionKey,
+      source: "app_watch_ad",
+    },
+  }).catch(() => {
+    // Tracking must never block the ad or XP flow.
+  });
 }
