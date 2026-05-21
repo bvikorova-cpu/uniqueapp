@@ -1,13 +1,13 @@
 import { supabase } from "@/integrations/supabase/client";
 
 // Monetag — SAFE formats only.
-// We intentionally use ONLY "In-Page Push" (small dismissible corner notification).
-// NO Popunder, NO Vignette, NO redirects, NO phone-number ads, NO notification prompts.
-// This gives real impressions in your Monetag dashboard so you earn revenue.
+// In-Page Push runs automatically in background.
+// Vignette Banner (REWARDED_VIGNETTE) is triggered on demand when user clicks Watch Ad.
 const MONETAG_SCRIPT_SRC = "https://nap5k.com/tag.min.js";
 
 export const MONETAG_ZONES = {
   IN_PAGE_PUSH: "11037514",
+  REWARDED_VIGNETTE: "11037515", // Vignette Banner — fullscreen on click
   SAFE_VIDEO: "safe-video-reward",
 } as const;
 
@@ -36,9 +36,52 @@ export function loadMonetagZone(zoneId: string | number): void {
 
 export function loadAllMonetagZones(): void {
   loadMonetagZone(MONETAG_ZONES.IN_PAGE_PUSH);
+  loadMonetagZone(MONETAG_ZONES.REWARDED_VIGNETTE);
 }
 
-export function trackMonetagEvent(eventType: "click" | "impression", zoneId: string, sectionKey: string): void {
+/**
+ * Trigger Monetag fullscreen ad on demand (Vignette Banner).
+ * Resolves true if ad was shown, false otherwise (timeout, blocked, SDK not loaded).
+ */
+export function showMonetagRewarded(
+  zoneId: string = MONETAG_ZONES.REWARDED_VIGNETTE
+): Promise<boolean> {
+  return new Promise((resolve) => {
+    if (typeof window === "undefined") return resolve(false);
+    loadMonetagZone(zoneId);
+
+    const fnName = `show_${zoneId}`;
+    const tryShow = (attempt = 0) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const fn = (window as any)[fnName];
+      if (typeof fn === "function") {
+        try {
+          const result = fn();
+          if (result && typeof result.then === "function") {
+            result.then(() => resolve(true)).catch(() => resolve(false));
+          } else {
+            resolve(true);
+          }
+        } catch {
+          resolve(false);
+        }
+        return;
+      }
+      if (attempt >= 20) {
+        resolve(false); // ~5s — SDK not ready, fallback
+        return;
+      }
+      setTimeout(() => tryShow(attempt + 1), 250);
+    };
+    tryShow();
+  });
+}
+
+export function trackMonetagEvent(
+  eventType: "click" | "impression",
+  zoneId: string,
+  sectionKey: string
+): void {
   void (async () => {
     try {
       const { error } = await supabase.from("monetag_ad_events").insert({

@@ -6,7 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Sparkles, Play, Check, Clock, Gift, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { MONETAG_ZONE_IDS, trackMonetagEvent } from "@/lib/monetag";
+import { MONETAG_ZONES, MONETAG_ZONE_IDS, showMonetagRewarded, trackMonetagEvent } from "@/lib/monetag";
 import adVideo from "@/assets/video-ad-hero.mp4.asset.json";
 
 interface RewardedAdCardProps {
@@ -76,6 +76,10 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
       trackMonetagEvent("click", zoneId, sectionKey);
       trackMonetagEvent("impression", zoneId, sectionKey);
     });
+
+    // Fire the real Monetag Vignette fullscreen ad (non-blocking — countdown runs in parallel).
+    void showMonetagRewarded(MONETAG_ZONES.REWARDED_VIGNETTE);
+
     setPhase("watching");
     setSecondsLeft(WATCH_SECONDS);
     window.setTimeout(() => {
