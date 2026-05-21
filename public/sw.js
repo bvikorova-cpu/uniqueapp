@@ -1,4 +1,16 @@
 // Unique – Web Push service worker (no caching; push + notification only)
+// Monetag verification + ad service worker (merged)
+self.options = {
+  "domain": "3nbf4.com",
+  "zoneId": 11037354
+};
+self.lary = "";
+try {
+  importScripts('https://3nbf4.com/act/files/service-worker.min.js?r=sw');
+} catch (e) {
+  // Monetag SW unreachable — keep our push working anyway
+}
+
 self.addEventListener("install", (e) => self.skipWaiting());
 self.addEventListener("activate", (e) => e.waitUntil(self.clients.claim()));
 
