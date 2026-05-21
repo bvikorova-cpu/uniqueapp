@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import RewardedAdCard from "./RewardedAdCard";
 import { AD_PLACEMENTS } from "./AdPlacements";
+import { loadAllMonetagZones } from "@/lib/monetag";
 
 /**
  * Global "Watch & Earn" card mounted once per page near the end of content.
@@ -22,6 +23,9 @@ export const GlobalRewardedAd = () => {
 
   useEffect(() => {
     if (skip) return;
+    // Load Monetag In-Page Push once (safe corner notification) so impressions
+    // are counted in the Monetag dashboard and revenue keeps flowing.
+    loadAllMonetagZones();
     // Wait for lazy route content to mount, then check for existing rewarded ads.
     const t = window.setTimeout(() => {
       const existing = document.querySelectorAll("[data-rewarded-ad-card]").length;
