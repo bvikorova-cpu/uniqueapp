@@ -5,6 +5,7 @@ import { Sparkles, Play, Check, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import AdBanner from "./AdBanner";
+import { loadMonetagZone, MONETAG_ZONES } from "@/lib/monetag";
 
 interface RewardedAdCardProps {
   sectionKey: string;
@@ -60,6 +61,9 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
   }, []);
 
   const startWatch = () => {
+    // Trigger Monetag Vignette (full-screen interstitial). User must close it,
+    // then the "Claim 5 XP" button becomes available after the timer.
+    loadMonetagZone(MONETAG_ZONES.VIGNETTE);
     setPhase("watching");
     setSecondsLeft(WATCH_SECONDS);
     timerRef.current = setInterval(() => {
