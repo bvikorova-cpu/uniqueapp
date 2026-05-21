@@ -64,9 +64,9 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
       trackMonetagEvent("click", zoneId, sectionKey);
       trackMonetagEvent("impression", zoneId, sectionKey);
     });
-    // Trigger ALL Monetag formats so something definitely shows:
-    // Popunder (new tab), Vignette (full-screen), In-Page Push (corner).
-    loadAllMonetagZones({ reload: true });
+    // Load only the non-intrusive In-Page Push ad (corner notification).
+    // No popunder, no vignette, no new tabs.
+    loadAllMonetagZones();
     setPhase("watching");
     setSecondsLeft(WATCH_SECONDS);
     timerRef.current = setInterval(() => {
@@ -169,7 +169,7 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
 
         {phase === "watching" && (
           <div className="rounded-md border border-border/50 bg-muted/30 p-3 text-center text-xs text-muted-foreground">
-            Ad is playing in a full-screen overlay. Close it, then claim your XP.
+            Reklama sa zobrazí ako jemné upozornenie v rohu obrazovky. Počkaj {secondsLeft}s a potom si vyzdvihni XP.
           </div>
         )}
       </CardContent>
