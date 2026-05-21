@@ -136,10 +136,13 @@ export default function Rewards() {
                   Premium Store
                 </Button>
             </div>
+            </div>
 
             <div className="mb-8">
               <XpToCreditsConverter userId={user.id} />
             </div>
+
+
 
 
 
