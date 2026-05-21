@@ -163,7 +163,37 @@ serve(async (req) => {
           })),
         );
       }
-      return json({ ok: true, status: finalStatus, fraud_score: score, reasons });
+
+      // Award XP immediately on approved referral (idempotent via ref_id)
+      let xpAwarded = false;
+      if (finalStatus === "approved") {
+        const refId = attr.id;
+        const [r1, r2] = await Promise.all([
+          supabase.rpc("award_xp", {
+            _user_id: referrerId,
+            _amount: 2500,
+            _source: "referral_signup",
+            _ref_id: refId,
+          }),
+          supabase.rpc("award_xp", {
+            _user_id: user.id,
+            _amount: 1250,
+            _source: "referral_welcome",
+            _ref_id: refId,
+          }),
+        ]);
+        xpAwarded = !r1.error && !r2.error;
+      }
+
+      return json({
+        ok: true,
+        status: finalStatus,
+        fraud_score: score,
+        reasons,
+        xp_awarded: xpAwarded,
+        referrer_xp: finalStatus === "approved" ? 2500 : 0,
+        welcome_xp: finalStatus === "approved" ? 1250 : 0,
+      });
     }
   } catch (e) {
     return json({ error: (e as Error).message }, 500);
