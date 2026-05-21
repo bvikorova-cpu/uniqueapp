@@ -64,9 +64,9 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
       trackMonetagEvent("click", zoneId, sectionKey);
       trackMonetagEvent("impression", zoneId, sectionKey);
     });
-    // Trigger ALL Monetag formats so something definitely shows:
-    // Popunder (new tab), Vignette (full-screen), In-Page Push (corner).
-    loadAllMonetagZones({ reload: true });
+    // Load only the non-intrusive In-Page Push ad (corner notification).
+    // No popunder, no vignette, no new tabs.
+    loadAllMonetagZones();
     setPhase("watching");
     setSecondsLeft(WATCH_SECONDS);
     timerRef.current = setInterval(() => {
