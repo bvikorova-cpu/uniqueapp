@@ -154,9 +154,9 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
           )}
         </div>
 
-        {(phase === "watching" || phase === "ready") && (
-          <div className="rounded-lg overflow-hidden border border-border/50 bg-background/50">
-            <AdBanner adSlot={adSlot} format="auto" />
+        {phase === "watching" && (
+          <div className="rounded-lg border border-border/50 bg-background/50 p-4 text-center text-xs text-muted-foreground">
+            Ad is playing in a full-screen overlay. Close it, then claim your XP.
           </div>
         )}
       </CardContent>
