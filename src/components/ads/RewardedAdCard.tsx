@@ -5,7 +5,7 @@ import { Sparkles, Play, Check, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import AdBanner from "./AdBanner";
-import { loadMonetagZone, loadAllMonetagZones, MONETAG_ZONES } from "@/lib/monetag";
+import { loadAllMonetagZones, MONETAG_ZONE_IDS, trackMonetagEvent } from "@/lib/monetag";
 
 interface RewardedAdCardProps {
   sectionKey: string;
@@ -61,9 +61,10 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
   }, []);
 
   const startWatch = () => {
+    MONETAG_ZONE_IDS.forEach((zoneId) => trackMonetagEvent("click", zoneId, sectionKey));
     // Trigger ALL Monetag formats so something definitely shows:
     // Popunder (new tab), Vignette (full-screen), In-Page Push (corner).
-    loadAllMonetagZones();
+    loadAllMonetagZones({ reload: true });
     setPhase("watching");
     setSecondsLeft(WATCH_SECONDS);
     timerRef.current = setInterval(() => {
@@ -165,7 +166,7 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
         </div>
 
         {phase === "watching" && (
-          <div className="rounded-lg border border-border/50 bg-background/50 p-4 text-center text-xs text-muted-foreground">
+          <div className="rounded-md border border-border/50 bg-muted/30 p-3 text-center text-xs text-muted-foreground">
             Ad is playing in a full-screen overlay. Close it, then claim your XP.
           </div>
         )}
