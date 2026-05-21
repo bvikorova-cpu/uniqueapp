@@ -55,8 +55,9 @@ Deno.serve(async (req) => {
 
     const today = new Date().toISOString().split("T")[0];
 
-    // Soft throttle: enforce 30s cooldown between claims (anti-fraud, prevents bot spam)
-    const THROTTLE_SECONDS = 30;
+    // Soft throttle: enforce 10s cooldown between claims (anti-fraud, prevents bot spam).
+    // Must stay below the UI's WATCH_SECONDS (15s) so legitimate users never hit it.
+    const THROTTLE_SECONDS = 10;
     const cutoff = new Date(Date.now() - THROTTLE_SECONDS * 1000).toISOString();
     const { data: recent } = await supabase
       .from("rewarded_ad_views")
