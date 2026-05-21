@@ -7,6 +7,7 @@ import { Play, Sparkles, CheckCircle, Clock, Tv } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { showMonetagRewarded, trackMonetagEvent, MONETAG_ZONES } from "@/lib/monetag";
 
 interface DailyXPVideoRewardProps {
   userId: string;
