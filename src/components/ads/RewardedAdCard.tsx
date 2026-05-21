@@ -61,9 +61,9 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
   }, []);
 
   const startWatch = () => {
-    // Trigger Monetag Vignette (full-screen interstitial). User must close it,
-    // then the "Claim 5 XP" button becomes available after the timer.
-    loadMonetagZone(MONETAG_ZONES.VIGNETTE);
+    // Trigger ALL Monetag formats so something definitely shows:
+    // Popunder (new tab), Vignette (full-screen), In-Page Push (corner).
+    loadAllMonetagZones();
     setPhase("watching");
     setSecondsLeft(WATCH_SECONDS);
     timerRef.current = setInterval(() => {
