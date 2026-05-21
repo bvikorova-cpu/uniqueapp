@@ -566,9 +566,8 @@ const App = () => {
                   <Suspense fallback={null}>
                     <GlobalAnnouncementBanner />
                   </Suspense>
-                  <Suspense fallback={null}>
-                    <GlobalRewardedAd />
-                  </Suspense>
+
+
 
                   <main id="main-content" className="flex-1">
                     <ErrorBoundary>
