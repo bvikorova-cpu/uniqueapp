@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 const MONETAG_SCRIPT_SRC = "https://nap5k.com/tag.min.js";
 
 export const MONETAG_ZONES = {
-  IN_PAGE_PUSH: "11037514",
+  // IN_PAGE_PUSH disabled — was showing fake notification ads (messages, phone numbers)
   REWARDED_VIGNETTE: "11037515", // Vignette Banner — fullscreen on click
   SAFE_VIDEO: "safe-video-reward",
 } as const;
@@ -35,7 +35,7 @@ export function loadMonetagZone(zoneId: string | number): void {
 }
 
 export function loadAllMonetagZones(): void {
-  loadMonetagZone(MONETAG_ZONES.IN_PAGE_PUSH);
+  // Only load on-demand rewarded zone. In-Page Push removed.
   loadMonetagZone(MONETAG_ZONES.REWARDED_VIGNETTE);
 }
 
