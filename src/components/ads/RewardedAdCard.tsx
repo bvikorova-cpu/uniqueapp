@@ -206,12 +206,12 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
         )}
       </CardContent>
       <Dialog open={phase === "watching"} onOpenChange={(open) => { if (!open && phase === "watching") cancelWatch(); }}>
-        <DialogContent className="w-[calc(100vw-1rem)] max-w-2xl overflow-hidden border-primary/30 bg-card p-0 shadow-2xl sm:rounded-xl">
+        <DialogContent className="w-screen h-screen max-w-none max-h-none p-0 m-0 border-0 rounded-none bg-black sm:rounded-none translate-x-0 translate-y-0 top-0 left-0 inset-0 overflow-hidden">
           <div className="sr-only">
             <DialogTitle>Sponsored video</DialogTitle>
             <DialogDescription>Watch the sponsored video until the countdown finishes to claim XP.</DialogDescription>
           </div>
-          <div className="relative aspect-video bg-muted">
+          <div className="relative w-full h-full bg-black">
             <video
               ref={videoRef}
               src={adVideo.url}
@@ -219,29 +219,28 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
               playsInline
               autoPlay
               loop
-              className="h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-contain"
             />
-            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background/95 via-background/45 to-transparent p-4">
-              <div className="flex items-end justify-between gap-3">
-                <div>
-                  <div className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-primary">
-                    <ShieldCheck className="h-4 w-4" /> Sponsored video
-                  </div>
-                  <p className="text-sm font-bold text-foreground">Unique partner spotlight</p>
-                </div>
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-primary/30 bg-background/80 text-lg font-black text-primary">
-                  {secondsLeft}
-                </div>
+            <div className="absolute top-4 left-4 right-4 flex items-start justify-between gap-3 z-10">
+              <div className="flex items-center gap-2 rounded-full bg-background/80 backdrop-blur px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-primary border border-primary/30">
+                <ShieldCheck className="h-4 w-4" /> Sponsored video
               </div>
-              <Progress value={((WATCH_SECONDS - secondsLeft) / WATCH_SECONDS) * 100} className="mt-3 h-2" />
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-2 border-primary/50 bg-background/80 backdrop-blur text-xl font-black text-primary">
+                {secondsLeft}
+              </div>
             </div>
-          </div>
-          <div className="flex items-center justify-between gap-3 px-4 pb-4 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1.5"><Gift className="h-4 w-4 text-primary" /> Reward unlocks after the video.</span>
-            <span>No popups · no redirects</span>
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-6 z-10">
+              <p className="text-base sm:text-lg font-bold text-white mb-2">Unique partner spotlight</p>
+              <Progress value={((WATCH_SECONDS - secondsLeft) / WATCH_SECONDS) * 100} className="h-2 mb-3" />
+              <div className="flex items-center justify-between gap-3 text-xs text-white/80">
+                <span className="flex items-center gap-1.5"><Gift className="h-4 w-4 text-primary" /> Reward unlocks after the video.</span>
+                <span>No popups · no redirects</span>
+              </div>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
+
     </Card>
   );
 };
