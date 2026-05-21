@@ -1,6 +1,8 @@
+import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import RewardedAdCard from "./RewardedAdCard";
 import { AD_PLACEMENTS } from "./AdPlacements";
+import { loadAllMonetagZones } from "@/lib/monetag";
 
 /**
  * Global rewarded ad shown on EVERY page, placed right under the
