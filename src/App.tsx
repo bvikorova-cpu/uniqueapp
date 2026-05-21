@@ -466,6 +466,8 @@ const AdminCohortRetention = lazy(() => import("@/pages/admin/AdminCohortRetenti
 const AdminOpsTools = lazy(() => import("@/pages/admin/AdminOpsTools"));
 const AdminRewardsSeed = lazy(() => import("@/pages/admin/AdminRewardsSeed"));
 const AdminEngagement = lazy(() => import("@/pages/admin/AdminEngagement"));
+const AdminMonetagStats = lazy(() => import("@/pages/admin/AdminMonetagStats"));
+const GlobalRewardedAd = lazy(() => import("@/components/ads/GlobalRewardedAd"));
 const AdminVitals = lazy(() => import("@/pages/admin/AdminVitals"));
 const AdminDunning = lazy(() => import("@/pages/admin/AdminDunning"));
 const AdminWinBack = lazy(() => import("@/pages/admin/AdminWinBack"));
@@ -565,6 +567,9 @@ const App = () => {
                   </ErrorBoundary>
                   <Suspense fallback={null}>
                     <GlobalAnnouncementBanner />
+                  </Suspense>
+                  <Suspense fallback={null}>
+                    <GlobalRewardedAd />
                   </Suspense>
 
 
@@ -894,6 +899,7 @@ const App = () => {
                         <Route path="/admin/ops-tools" element={<ProtectedRoute requireAdmin={true}><AdminOpsTools /></ProtectedRoute>} />
                         <Route path="/admin/rewards-seed" element={<ProtectedRoute requireAdmin={true}><AdminRewardsSeed /></ProtectedRoute>} />
                         <Route path="/admin/engagement" element={<ProtectedRoute requireAdmin={true}><AdminEngagement /></ProtectedRoute>} />
+                        <Route path="/admin/monetag-stats" element={<ProtectedRoute requireAdmin={true}><AdminMonetagStats /></ProtectedRoute>} />
                         <Route path="/admin/vitals" element={<ProtectedRoute requireAdmin={true}><AdminVitals /></ProtectedRoute>} />
                         <Route path="/admin/dunning" element={<ProtectedRoute requireAdmin={true}><AdminDunning /></ProtectedRoute>} />
                         <Route path="/admin/winback" element={<ProtectedRoute requireAdmin={true}><AdminWinBack /></ProtectedRoute>} />
