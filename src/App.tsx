@@ -466,6 +466,8 @@ const AdminCohortRetention = lazy(() => import("@/pages/admin/AdminCohortRetenti
 const AdminOpsTools = lazy(() => import("@/pages/admin/AdminOpsTools"));
 const AdminRewardsSeed = lazy(() => import("@/pages/admin/AdminRewardsSeed"));
 const AdminEngagement = lazy(() => import("@/pages/admin/AdminEngagement"));
+const AdminMonetagStats = lazy(() => import("@/pages/admin/AdminMonetagStats"));
+const GlobalRewardedAd = lazy(() => import("@/components/ads/GlobalRewardedAd"));
 const AdminVitals = lazy(() => import("@/pages/admin/AdminVitals"));
 const AdminDunning = lazy(() => import("@/pages/admin/AdminDunning"));
 const AdminWinBack = lazy(() => import("@/pages/admin/AdminWinBack"));
@@ -565,6 +567,9 @@ const App = () => {
                   </ErrorBoundary>
                   <Suspense fallback={null}>
                     <GlobalAnnouncementBanner />
+                  </Suspense>
+                  <Suspense fallback={null}>
+                    <GlobalRewardedAd />
                   </Suspense>
 
 
