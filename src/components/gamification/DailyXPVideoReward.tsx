@@ -7,6 +7,7 @@ import { Play, Sparkles, CheckCircle, Clock, Tv } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { showMonetagRewarded, trackMonetagEvent, MONETAG_ZONES } from "@/lib/monetag";
 
 interface DailyXPVideoRewardProps {
   userId: string;
@@ -60,6 +61,14 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
     setShowAdDialog(true);
     setIsWatching(true);
     setAdProgress(0);
+
+    // Trigger real Monetag rewarded ad in parallel with progress bar
+    trackMonetagEvent("click", MONETAG_ZONES.REWARDED_VIGNETTE, "rewards_watch_earn_xp");
+    void showMonetagRewarded().then((shown) => {
+      if (shown) {
+        trackMonetagEvent("impression", MONETAG_ZONES.REWARDED_VIGNETTE, "rewards_watch_earn_xp");
+      }
+    });
 
     let elapsed = 0;
     timerRef.current = setInterval(() => {
