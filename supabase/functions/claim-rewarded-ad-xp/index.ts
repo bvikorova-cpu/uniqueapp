@@ -111,7 +111,7 @@ Deno.serve(async (req) => {
       const code = (insertErr as { code?: string }).code;
       if (code === "23505") {
         return new Response(
-          JSON.stringify({ error: "Too fast", retry_after: 30 }),
+          JSON.stringify({ error: "Too fast", retry_after: 10 }),
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
