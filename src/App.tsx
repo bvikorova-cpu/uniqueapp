@@ -568,9 +568,7 @@ const App = () => {
                   <Suspense fallback={null}>
                     <GlobalAnnouncementBanner />
                   </Suspense>
-                  <Suspense fallback={null}>
-                    <GlobalRewardedAd />
-                  </Suspense>
+                  {/* GlobalRewardedAd removed — Watch Ad now only renders below the hero on each page via <HeroRewardedAd /> */}
                   <main id="main-content" className="flex-1">
 
                     <ErrorBoundary>
