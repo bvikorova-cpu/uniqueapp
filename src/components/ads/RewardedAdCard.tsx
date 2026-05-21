@@ -63,6 +63,14 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
     if (timerRef.current) clearInterval(timerRef.current);
   }, []);
 
+  const cancelWatch = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = null;
+    videoRef.current?.pause();
+    setPhase("idle");
+    setSecondsLeft(WATCH_SECONDS);
+  };
+
   const startWatch = () => {
     MONETAG_ZONE_IDS.forEach((zoneId) => {
       trackMonetagEvent("click", zoneId, sectionKey);
@@ -177,7 +185,7 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
           </div>
         )}
       </CardContent>
-      <Dialog open={phase === "watching"} onOpenChange={(open) => { if (!open && phase === "watching") setPhase("idle"); }}>
+      <Dialog open={phase === "watching"} onOpenChange={(open) => { if (!open && phase === "watching") cancelWatch(); }}>
         <DialogContent className="w-[calc(100vw-1rem)] max-w-2xl overflow-hidden border-primary/30 bg-card p-0 shadow-2xl sm:rounded-xl">
           <div className="sr-only">
             <DialogTitle>Sponsored video</DialogTitle>
