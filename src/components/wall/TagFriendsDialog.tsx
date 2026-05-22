@@ -13,6 +13,8 @@ import { Button } from "@/components/ui/button";
 import { Search, X } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
+const publicProfiles = () => (supabase as any).from("public_profiles");
+
 interface TagFriendsDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -53,13 +55,12 @@ export function TagFriendsDialog({
 
       if (friendIds.length === 0) return [];
 
-      let query = supabase
-        .from("profiles")
-        .select("id, full_name, avatar_url")
+      let query = publicProfiles()
+        .select("id, full_name, avatar_url, username")
         .in("id", friendIds);
 
       if (searchQuery.trim()) {
-        query = query.ilike("full_name", `%${searchQuery}%`);
+        query = query.or(`full_name.ilike.%${searchQuery}%,username.ilike.%${searchQuery}%`);
       }
 
       const { data: profiles } = await query;
@@ -103,9 +104,9 @@ export function TagFriendsDialog({
                     <div className="flex items-center gap-3">
                       <Avatar className="h-10 w-10">
                         <AvatarImage src={friend.avatar_url || undefined} />
-                        <AvatarFallback>{friend.full_name?.[0]}</AvatarFallback>
+                        <AvatarFallback>{friend.full_name?.[0] ?? friend.username?.[0] ?? "?"}</AvatarFallback>
                       </Avatar>
-                      <span className="font-medium">{friend.full_name}</span>
+                      <span className="font-medium">{friend.full_name ?? friend.username ?? "User"}</span>
                     </div>
                     {isSelected && (
                       <div className="flex items-center gap-2">
