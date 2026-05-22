@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, Fragment } from "react";
 // preview-sync: 2026-01-05a (touch file to ensure consistent preview refresh)
 import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -64,6 +64,7 @@ import WallCreatorBadges from "@/components/wall/WallCreatorBadges";
 import WallSocialChallenges from "@/components/wall/WallSocialChallenges";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import MonetagInFeedAd from "@/components/ads/MonetagInFeedAd";
 interface Post {
   id: string;
   content: string;
