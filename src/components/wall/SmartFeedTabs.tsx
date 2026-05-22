@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
-import { Sparkles, Users, TrendingUp, Clock } from "lucide-react";
+import { Sparkles, Users, TrendingUp, Clock, UserCheck } from "lucide-react";
 
-export type FeedTab = "for-you" | "following" | "trending" | "latest";
+export type FeedTab = "for-you" | "following" | "friends" | "trending" | "latest";
 
 interface SmartFeedTabsProps {
   activeTab: FeedTab;
@@ -11,6 +11,7 @@ interface SmartFeedTabsProps {
 const tabs = [
   { id: "for-you" as FeedTab, label: "For You", icon: Sparkles, gradient: "from-primary to-accent" },
   { id: "following" as FeedTab, label: "Following", icon: Users, gradient: "from-blue-500 to-cyan-500" },
+  { id: "friends" as FeedTab, label: "Friends", icon: UserCheck, gradient: "from-pink-500 to-purple-500" },
   { id: "trending" as FeedTab, label: "Trending", icon: TrendingUp, gradient: "from-orange-500 to-rose-500" },
   { id: "latest" as FeedTab, label: "Latest", icon: Clock, gradient: "from-emerald-500 to-teal-500" },
 ];
