@@ -292,7 +292,8 @@ export default function WallFriends() {
         <div className="relative flex items-center justify-between sm:justify-start sm:gap-6 mt-6">
           {[
             { icon: <Users2 className="w-4 h-4" />, label: "Friends", value: friends.length },
-            { icon: <UserPlus className="w-4 h-4" />, label: "Requests", value: requests.length },
+            { icon: <UserPlus className="w-4 h-4" />, label: "Incoming", value: requests.length },
+            { icon: <Clock className="w-4 h-4" />, label: "Sent", value: outgoing.length },
             { icon: <Sparkles className="w-4 h-4" />, label: "Tips", value: visibleSuggestions.length },
           ].map((stat, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 + i * 0.1 }} className="flex items-center gap-2">
