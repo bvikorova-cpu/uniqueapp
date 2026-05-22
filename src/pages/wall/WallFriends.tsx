@@ -41,6 +41,7 @@ export default function WallFriends() {
   const navigate = useNavigate();
   const [showAllRequests, setShowAllRequests] = useState(false);
   const [showAllSuggestions, setShowAllSuggestions] = useState(false);
+  const [showAllOutgoing, setShowAllOutgoing] = useState(false);
   const [friendSearch, setFriendSearch] = useState("");
   const [globalSearch, setGlobalSearch] = useState("");
   const [globalResults, setGlobalResults] = useState<Profile[]>([]);
@@ -253,6 +254,7 @@ export default function WallFriends() {
 
   const visibleSuggestions = suggestions.filter(s => !hiddenSuggestions.includes(s.id));
   const displayedRequests = showAllRequests ? requests : requests.slice(0, 8);
+  const displayedOutgoing = showAllOutgoing ? outgoing : outgoing.slice(0, 8);
   const displayedSuggestions = showAllSuggestions ? visibleSuggestions : visibleSuggestions.slice(0, 12);
 
   const filteredFriends = friends.filter(f =>
@@ -327,6 +329,8 @@ export default function WallFriends() {
             {globalResults.map((p, i) => {
               const isFriend = friends.some(f => f.id === p.id);
               const isSelf = user?.id === p.id;
+              const pendingOutgoing = (outgoing as any[]).some((o: any) => o.friend_id === p.id);
+              const pendingIncoming = requests.some((r: any) => r.user_id === p.id);
               return (
                 <Card key={p.id} className="overflow-hidden border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/50 transition-all">
                   <div className={`h-12 bg-gradient-to-br ${gradients[i % gradients.length]}`} />
@@ -336,11 +340,25 @@ export default function WallFriends() {
                       <AvatarFallback className="bg-gradient-to-br from-primary/30 to-accent/30 text-sm font-bold">{p.full_name?.[0] || "?"}</AvatarFallback>
                     </Avatar>
                     <h3 className="font-bold text-xs truncate mt-1.5">{p.full_name || "Unknown"}</h3>
-                    {!isSelf && !isFriend && (
+                    {!isSelf && !isFriend && !pendingOutgoing && !pendingIncoming && (
                       <Button size="sm" className="w-full mt-2 text-[10px] h-7 gap-1 bg-gradient-to-r from-primary to-accent text-white"
                         onClick={() => sendRequestMutation.mutate(p.id)} disabled={sendRequestMutation.isPending}>
                         <UserPlus className="h-3 w-3" /> Add
                       </Button>
+                    )}
+                    {pendingOutgoing && (
+                      <Button size="sm" variant="outline" className="w-full mt-2 text-[10px] h-7 gap-1 border-destructive/50 text-destructive hover:bg-destructive/10"
+                        onClick={() => {
+                          const req = (outgoing as any[]).find((o: any) => o.friend_id === p.id);
+                          if (req) cancelMutation.mutate(req.id);
+                        }} disabled={cancelMutation.isPending}>
+                        <X className="h-3 w-3" /> Cancel
+                      </Button>
+                    )}
+                    {pendingIncoming && (
+                      <p className="text-[10px] text-amber-400 mt-2 text-center flex items-center justify-center gap-1">
+                        <Clock className="h-3 w-3" /> Incoming request
+                      </p>
                     )}
                     {isFriend && <p className="text-[10px] text-primary mt-2 text-center">✓ Friends</p>}
                     {isSelf && <p className="text-[10px] text-muted-foreground mt-2 text-center">You</p>}
