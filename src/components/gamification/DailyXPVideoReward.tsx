@@ -217,7 +217,7 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
         </CardContent>
       </Card>
 
-      <MonetagInFeedAd slotIndex={0} />
+
 
 
 
