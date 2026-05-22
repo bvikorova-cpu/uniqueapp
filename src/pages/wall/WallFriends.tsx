@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Users2, UserPlus, UserMinus, Loader2, ChevronRight, X, Check, Search, Heart, Sparkles } from "lucide-react";
+import { Users2, UserPlus, UserMinus, Loader2, ChevronRight, X, Check, Search, Heart, Sparkles, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useNavigate } from "react-router-dom";
