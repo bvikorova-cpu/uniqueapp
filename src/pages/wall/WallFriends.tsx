@@ -309,7 +309,7 @@ export default function WallFriends() {
             })}
           </div>
         )}
-        {globalSearch.trim().length >= 2 && !searchingGlobal && globalResults.length === 0 && (
+        {globalSearch.trim().length >= 1 && !searchingGlobal && globalResults.length === 0 && (
           <p className="text-sm text-muted-foreground text-center py-4">No people found</p>
         )}
       </section>
