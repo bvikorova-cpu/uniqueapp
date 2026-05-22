@@ -128,13 +128,44 @@ export function useFriendships(userId: string | undefined) {
   const sendRequest = useMutation({
     mutationFn: async (friendId: string) => {
       if (!userId) throw new Error("Not authenticated");
+      if (friendId === userId) throw new Error("You can't add yourself");
+
+      // Check if a friendship already exists in either direction
+      const { data: existing } = await supabase
+        .from("friendships")
+        .select("id, status, user_id, friend_id")
+        .or(
+          `and(user_id.eq.${userId},friend_id.eq.${friendId}),and(user_id.eq.${friendId},friend_id.eq.${userId})`
+        )
+        .maybeSingle();
+
+      if (existing) {
+        if (existing.status === "accepted") {
+          throw new Error("You are already friends");
+        }
+        if (existing.status === "pending") {
+          // If they sent us a request, accept it instead
+          if (existing.friend_id === userId) {
+            const { error } = await supabase
+              .from("friendships")
+              .update({ status: "accepted" })
+              .eq("id", existing.id);
+            if (error) throw error;
+            return { accepted: true };
+          }
+          throw new Error("Friend request already sent");
+        }
+        throw new Error("Cannot send request");
+      }
+
       const { error } = await supabase
         .from("friendships")
         .insert({ user_id: userId, friend_id: friendId, status: "pending" });
       if (error) throw error;
+      return { accepted: false };
     },
-    onSuccess: () => {
-      toast.success("Friend request sent");
+    onSuccess: (res: any) => {
+      toast.success(res?.accepted ? "Friend request accepted" : "Friend request sent");
       qc.invalidateQueries({ queryKey: KEY });
     },
     onError: (e: any) => toast.error(e.message ?? "Failed to send request"),
