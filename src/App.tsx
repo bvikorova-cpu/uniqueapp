@@ -559,6 +559,8 @@ const App = () => {
                 </Suspense>
                 <Toaster />
                 <Sonner />
+                <GoogleTranslateWidget />
+
                 <div className="flex flex-col min-h-screen">
                   <ErrorBoundary>
                     <Suspense fallback={<div className="h-16 border-b border-border bg-background/95" aria-hidden="true" />}>
