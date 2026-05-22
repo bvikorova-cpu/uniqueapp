@@ -444,6 +444,71 @@ export default function WallFriends() {
         )}
       </section>
 
+      {/* Sent Requests */}
+      <section>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Clock className="w-5 h-5 text-amber-400" />
+            <h2 className="text-lg font-black">Sent Requests</h2>
+            {outgoing.length > 0 && (
+              <Badge className="bg-amber-500/20 text-amber-400 text-xs border-amber-500/30">{outgoing.length}</Badge>
+            )}
+          </div>
+          {outgoing.length > 8 && (
+            <Button variant="link" className="text-primary text-xs" onClick={() => setShowAllOutgoing(!showAllOutgoing)}>
+              {showAllOutgoing ? "Show less" : "See all"}
+            </Button>
+          )}
+        </div>
+
+        {outgoing.length === 0 ? (
+          <Card className="border-dashed border-2 border-border/50 bg-card/50">
+            <CardContent className="py-10 text-center">
+              <Clock className="h-10 w-10 mx-auto mb-3 text-muted-foreground/40" />
+              <p className="text-sm text-muted-foreground">No pending sent requests</p>
+            </CardContent>
+          </Card>
+        ) : (
+          <ScrollArea className="w-full">
+            <div className="flex gap-3 pb-4">
+              {displayedOutgoing.map((req: any, i: number) => (
+                <motion.div
+                  key={req.id}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: i * 0.05 }}
+                >
+                  <Card className="flex-shrink-0 w-[180px] overflow-hidden border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/50 hover:shadow-xl transition-all duration-300">
+                    <div className={`h-16 bg-gradient-to-br ${gradients[i % gradients.length]} relative`}>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                    </div>
+                    <div className="px-3 pb-3 -mt-6 relative">
+                      <Avatar className="h-12 w-12 border-[3px] border-card shadow-lg cursor-pointer" onClick={() => navigate(`/profile/${req.friend_id}`)}>
+                        <AvatarImage src={req.profile?.avatar_url || undefined} className="object-cover" />
+                        <AvatarFallback className="bg-gradient-to-br from-primary/30 to-accent/30 font-bold">
+                          {req.profile?.full_name?.[0] || "?"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <h3 className="font-bold text-sm truncate mt-2">{req.profile?.full_name || "Unknown"}</h3>
+                      <p className="text-[10px] text-muted-foreground flex items-center gap-1 mt-0.5">
+                        <Clock className="h-2.5 w-2.5" /> Waiting for response
+                      </p>
+                      <div className="mt-2">
+                        <Button size="sm" variant="outline" className="w-full text-xs border-destructive/50 text-destructive hover:bg-destructive/10"
+                          onClick={() => cancelMutation.mutate(req.id)} disabled={cancelMutation.isPending}>
+                          {cancelMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <><X className="h-3 w-3 mr-1" /> Cancel</>}
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+        )}
+      </section>
+
       {/* People You May Know */}
       {visibleSuggestions.length > 0 && (
         <section>
