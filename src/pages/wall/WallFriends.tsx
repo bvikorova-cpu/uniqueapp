@@ -59,19 +59,23 @@ export default function WallFriends() {
   // Inline effect via useQuery would re-run; we use a simple async on change instead.
   const runGlobalSearch = async (q: string) => {
     setGlobalSearch(q);
-    if (!q.trim() || q.trim().length < 1) { setGlobalResults([]); return; }
+    if (!q.trim()) { setGlobalResults([]); return; }
     setSearchingGlobal(true);
     try {
+      console.log("[WallFriends] searching:", q);
       const { data, error } = await (supabase as any).rpc("search_users", { search_query: q.trim() });
+      console.log("[WallFriends] search result:", { data, error });
       if (error) throw error;
       setGlobalResults(((data as unknown) as Profile[]) || []);
     } catch (e: any) {
+      console.error("[WallFriends] search error:", e);
       toast({ title: "Search error", description: e.message, variant: "destructive" });
       setGlobalResults([]);
     } finally {
       setSearchingGlobal(false);
     }
   };
+
 
 
   const { data: friends = [], refetch: refetchFriends } = useQuery({
