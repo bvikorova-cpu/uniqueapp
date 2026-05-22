@@ -32,8 +32,11 @@ interface FriendSuggestion {
   id: string;
   full_name: string | null;
   avatar_url: string | null;
+  username?: string | null;
   mutual_count: number;
 }
+
+const publicProfiles = () => (supabase as any).from("public_profiles");
 
 export default function WallFriends() {
   const { toast } = useToast();
@@ -92,8 +95,7 @@ export default function WallFriends() {
         f.user_id === user.id ? f.friend_id : f.user_id
       ) || [];
       if (friendIds.length === 0) return [];
-      const { data: profiles } = await supabase
-        .from("profiles")
+      const { data: profiles } = await publicProfiles()
         .select("id, full_name, avatar_url")
         .in("id", friendIds);
       return profiles || [];
@@ -112,8 +114,7 @@ export default function WallFriends() {
         .eq("status", "pending");
       if (!friendships || friendships.length === 0) return [];
       const userIds = friendships.map(f => f.user_id);
-      const { data: profiles } = await supabase
-        .from("profiles")
+      const { data: profiles } = await publicProfiles()
         .select("id, full_name, avatar_url")
         .in("id", userIds);
       const requestsWithMutual = await Promise.all(friendships.map(async (f) => {
@@ -164,8 +165,7 @@ export default function WallFriends() {
       ) || []);
       const filteredIds = Array.from(suggestionIds).filter(id => !pendingIds.has(id));
       if (filteredIds.length === 0) return [];
-      const { data: profiles } = await supabase
-        .from("profiles")
+      const { data: profiles } = await publicProfiles()
         .select("id, full_name, avatar_url")
         .in("id", filteredIds)
         .limit(20);
@@ -188,8 +188,7 @@ export default function WallFriends() {
         .eq("status", "pending");
       if (!friendships || friendships.length === 0) return [];
       const friendIds = friendships.map(f => f.friend_id);
-      const { data: profiles } = await supabase
-        .from("profiles")
+      const { data: profiles } = await publicProfiles()
         .select("id, full_name, avatar_url")
         .in("id", friendIds);
       return friendships.map(f => ({

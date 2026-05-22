@@ -25,6 +25,8 @@ export interface FriendSuggestion extends FriendProfile {
 
 const KEY = ["friendships"] as const;
 
+const publicProfiles = () => (supabase as any).from("public_profiles");
+
 export function useFriendships(userId: string | undefined) {
   const qc = useQueryClient();
 
@@ -43,8 +45,7 @@ export function useFriendships(userId: string | undefined) {
         .map((r) => (r.user_id === userId ? r.friend_id : r.user_id))
         .filter(Boolean);
       if (ids.length === 0) return [];
-      const { data: profs } = await supabase
-        .from("profiles")
+      const { data: profs } = await publicProfiles()
         .select("id, full_name, avatar_url, username")
         .in("id", ids);
       return (profs ?? []) as FriendProfile[];
@@ -64,8 +65,7 @@ export function useFriendships(userId: string | undefined) {
       if (error) throw error;
       const ids = (data ?? []).map((r) => r.user_id);
       if (ids.length === 0) return [] as (Friendship & { profile: FriendProfile })[];
-      const { data: profs } = await supabase
-        .from("profiles")
+      const { data: profs } = await publicProfiles()
         .select("id, full_name, avatar_url, username")
         .in("id", ids);
       const map = new Map((profs ?? []).map((p: any) => [p.id, p]));
@@ -107,8 +107,7 @@ export function useFriendships(userId: string | undefined) {
       if (error) throw error;
       const ids = (data ?? []).map((r: any) => r.suggested_id);
       if (ids.length === 0) return [];
-      const { data: profs } = await supabase
-        .from("profiles")
+      const { data: profs } = await publicProfiles()
         .select("id, full_name, avatar_url, username")
         .in("id", ids);
       const map = new Map((profs ?? []).map((p: any) => [p.id, p]));
