@@ -176,6 +176,29 @@ export default function WallFriends() {
     enabled: !!user,
   });
 
+  const { data: outgoing = [] } = useQuery({
+    queryKey: ["friend-outgoing", user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data: friendships } = await supabase
+        .from("friendships")
+        .select("id, friend_id, created_at")
+        .eq("user_id", user.id)
+        .eq("status", "pending");
+      if (!friendships || friendships.length === 0) return [];
+      const friendIds = friendships.map(f => f.friend_id);
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("id, full_name, avatar_url")
+        .in("id", friendIds);
+      return friendships.map(f => ({
+        ...f,
+        profile: profiles?.find(p => p.id === f.friend_id) || null,
+      }));
+    },
+    enabled: !!user,
+  });
+
   const acceptMutation = useMutation({
     mutationFn: async (friendshipId: string) => {
       const { error } = await supabase.from("friendships").update({ status: "accepted" }).eq("id", friendshipId);
@@ -198,6 +221,19 @@ export default function WallFriends() {
     onError: () => { toast({ title: "Error", description: "Failed to decline request", variant: "destructive" }); }
   });
 
+  const cancelMutation = useMutation({
+    mutationFn: async (friendshipId: string) => {
+      const { error } = await supabase.from("friendships").delete().eq("id", friendshipId).eq("status", "pending");
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast({ title: "Request cancelled", description: "Your friend request has been withdrawn" });
+      queryClient.invalidateQueries({ queryKey: ["friend-outgoing"] });
+      queryClient.invalidateQueries({ queryKey: ["friend-suggestions"] });
+    },
+    onError: () => { toast({ title: "Error", description: "Failed to cancel request", variant: "destructive" }); }
+  });
+
   const sendRequestMutation = useMutation({
     mutationFn: async (targetUserId: string) => {
       if (!user) throw new Error("Not logged in");
@@ -207,6 +243,7 @@ export default function WallFriends() {
     onSuccess: () => {
       toast({ title: "Request sent", description: "Waiting for acceptance" });
       queryClient.invalidateQueries({ queryKey: ["friend-suggestions"] });
+      queryClient.invalidateQueries({ queryKey: ["friend-outgoing"] });
     },
     onError: () => { toast({ title: "Error", description: "Failed to send request", variant: "destructive" }); }
   });
