@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserPlus, Users, Check, X, Sparkles } from "lucide-react";
+import { UserPlus, Users, Check, X, Sparkles, UserCheck } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -17,15 +17,16 @@ export function FriendsHubWidget() {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id));
   }, []);
 
-  const { incoming, suggestions, accept, reject, sendRequest } =
+  const { friends, incoming, suggestions, accept, reject, sendRequest } =
     useFriendships(userId);
 
   if (!userId) return null;
 
+  const friendsList = friends.data ?? [];
   const incomingList = incoming.data ?? [];
   const suggestionList = suggestions.data ?? [];
 
-  if (incomingList.length === 0 && suggestionList.length === 0) return null;
+  if (friendsList.length === 0 && incomingList.length === 0 && suggestionList.length === 0) return null;
 
   return (
     <Card className="bg-card/80 backdrop-blur-md border-primary/20">
@@ -36,6 +37,40 @@ export function FriendsHubWidget() {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3 p-3">
+        {friendsList.length > 0 && (
+          <div>
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold mb-1.5 flex items-center gap-1">
+              <UserCheck className="h-3 w-3" /> My friends ({friendsList.length})
+            </p>
+            <ScrollArea className="max-h-[220px]">
+              <div className="space-y-2">
+                {friendsList.map((friend) => (
+                  <div
+                    key={friend.id}
+                    className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-muted/40"
+                  >
+                    <Avatar
+                      className="h-8 w-8 cursor-pointer"
+                      onClick={() => navigate(`/profile/${friend.id}`)}
+                    >
+                      <AvatarImage src={friend.avatar_url ?? undefined} />
+                      <AvatarFallback>
+                        {friend.full_name?.[0] ?? friend.username?.[0] ?? "?"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <button
+                      onClick={() => navigate(`/profile/${friend.id}`)}
+                      className="flex-1 text-xs font-medium truncate text-left hover:underline"
+                    >
+                      {friend.full_name ?? friend.username ?? "User"}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+          </div>
+        )}
+
         {incomingList.length > 0 && (
           <div>
             <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold mb-1.5 flex items-center gap-1">
