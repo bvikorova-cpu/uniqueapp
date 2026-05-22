@@ -46,6 +46,7 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 import { installGlobalErrorHandlers } from "@/utils/logger";
 import { installImagePerformancePatch } from "@/utils/imagePerformance";
 import { HelmetProvider } from "react-helmet-async";
+import GoogleTranslateWidget from "@/components/GoogleTranslateWidget";
 
 const Navbar = lazy(() => import("./components/Navbar"));
 const Footer = lazy(() => import("./components/Footer"));
@@ -559,6 +560,8 @@ const App = () => {
                 </Suspense>
                 <Toaster />
                 <Sonner />
+                <GoogleTranslateWidget />
+
                 <div className="flex flex-col min-h-screen">
                   <ErrorBoundary>
                     <Suspense fallback={<div className="h-16 border-b border-border bg-background/95" aria-hidden="true" />}>
