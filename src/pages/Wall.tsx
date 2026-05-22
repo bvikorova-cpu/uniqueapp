@@ -687,37 +687,42 @@ const Feed = () => {
                         No posts found. Try adjusting your filters.
                       </Card>
                     ) : (
-                      <>
-                        {filteredFeedItems.map((item, index) => (
-                          <div 
-                            key={`${item.type}-${item.data.id}`}
-                            className="animate-fade-in relative"
-                            style={{ animationDelay: `${index * 0.05}s` }}
-                          >
-                            {item.type === 'post' ? (
-                              <PostCard post={item.data} onDelete={fetchPosts} />
-                            ) : (
-                              <RepostCard repost={item.data} onDelete={fetchPosts} />
-                            )}
-                            <div className="absolute bottom-2 right-2 z-10">
-                              <FloatingReactions postId={item.data.id} />
+                    <>
+                      {filteredFeedItems.map((item, index) => {
+                        const showAd = (index + 1) % 20 === 0;
+                        return (
+                          <Fragment key={`${item.type}-${item.data.id}`}>
+                            <div
+                              className="animate-fade-in relative"
+                              style={{ animationDelay: `${index * 0.05}s` }}
+                            >
+                              {item.type === 'post' ? (
+                                <PostCard post={item.data} onDelete={fetchPosts} />
+                              ) : (
+                                <RepostCard repost={item.data} onDelete={fetchPosts} />
+                              )}
+                              <div className="absolute bottom-2 right-2 z-10">
+                                <FloatingReactions postId={item.data.id} />
+                              </div>
                             </div>
-                          </div>
-                        ))}
-                        
-                        {loadingMore && (
-                          <Card className="p-3 sm:p-4 flex items-center justify-center">
-                            <Loader2 className="h-5 w-5 sm:h-6 sm:w-6 animate-spin text-primary mr-2" />
-                            <span className="text-xs sm:text-sm text-muted-foreground">Loading more posts...</span>
-                          </Card>
-                        )}
-                        
-                        {!loading && !loadingMore && !hasMore && filteredFeedItems.length > 0 && (
-                          <Card className="p-3 sm:p-4 text-center text-muted-foreground text-xs sm:text-sm">
-                            You've reached the end! 🎉
-                          </Card>
-                        )}
-                      </>
+                            {showAd && <MonetagInFeedAd slotIndex={Math.floor((index + 1) / 20)} />}
+                          </Fragment>
+                        );
+                      })}
+                      
+                      {loadingMore && (
+                        <Card className="p-3 sm:p-4 flex items-center justify-center">
+                          <Loader2 className="h-5 w-5 sm:h-6 sm:w-6 animate-spin text-primary mr-2" />
+                          <span className="text-xs sm:text-sm text-muted-foreground">Loading more posts...</span>
+                        </Card>
+                      )}
+                      
+                      {!loading && !loadingMore && !hasMore && filteredFeedItems.length > 0 && (
+                        <Card className="p-3 sm:p-4 text-center text-muted-foreground text-xs sm:text-sm">
+                          You've reached the end! 🎉
+                        </Card>
+                      )}
+                    </>
                     )}
                   </div>
                 </>
