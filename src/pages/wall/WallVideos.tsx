@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import PostCard from "@/components/feed/PostCard";
 import VideoUploadDialog from "@/components/wall/VideoUploadDialog";
 import VideoCard from "@/components/wall/VideoCard";
+import MonetagInFeedAd from "@/components/ads/MonetagInFeedAd";
+import { Fragment } from "react";
 import { motion } from "framer-motion";
 
 export default function WallVideos() {
