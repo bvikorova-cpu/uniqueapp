@@ -96,7 +96,7 @@ export const LiveChatWidget = () => {
   return (
     <>
       {!open && (
-        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-1">
+        <div className="fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] right-3 md:bottom-6 md:right-6 z-50 flex flex-col items-end gap-1">
           <button
             onClick={hide}
             className="opacity-60 hover:opacity-100 bg-background/80 backdrop-blur border border-border rounded-full p-1 transition"
