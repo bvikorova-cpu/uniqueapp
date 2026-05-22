@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import PostCard from "@/components/feed/PostCard";
 import VideoUploadDialog from "@/components/wall/VideoUploadDialog";
 import VideoCard from "@/components/wall/VideoCard";
+import MonetagInFeedAd from "@/components/ads/MonetagInFeedAd";
+import { Fragment } from "react";
 import { motion } from "framer-motion";
 
 export default function WallVideos() {
@@ -83,16 +85,19 @@ export default function WallVideos() {
         </Card>
       ) : (
         <div className="space-y-4">
-          {standaloneVideos.map((video, i) => (
-            <motion.div key={video.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06, type: "spring", stiffness: 200 }}>
-              <VideoCard video={video} />
-            </motion.div>
-          ))}
-          {videoPosts.map((post, i) => (
-            <motion.div key={post.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: (standaloneVideos.length + i) * 0.06, type: "spring", stiffness: 200 }}>
-              <PostCard post={post} onDelete={refetch} />
-            </motion.div>
-          ))}
+          {[...standaloneVideos.map((v: any) => ({ kind: "video" as const, data: v })),
+            ...videoPosts.map((p: any) => ({ kind: "post" as const, data: p }))
+          ].map((item, i) => {
+            const showAd = (i + 1) % 20 === 0;
+            return (
+              <Fragment key={item.kind === "video" ? `v-${item.data.id}` : `p-${item.data.id}`}>
+                <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06, type: "spring", stiffness: 200 }}>
+                  {item.kind === "video" ? <VideoCard video={item.data} /> : <PostCard post={item.data} onDelete={refetch} />}
+                </motion.div>
+                {showAd && <MonetagInFeedAd slotIndex={Math.floor((i + 1) / 20)} />}
+              </Fragment>
+            );
+          })}
         </div>
       )}
     </div>
