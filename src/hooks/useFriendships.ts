@@ -186,6 +186,23 @@ export function useFriendships(userId: string | undefined) {
     onError: (e: any) => toast.error(e.message ?? "Failed"),
   });
 
+  const cancelRequest = useMutation({
+    mutationFn: async (friendshipId: string) => {
+      const { error } = await supabase
+        .from("friendships")
+        .delete()
+        .eq("id", friendshipId)
+        .eq("user_id", userId!)
+        .eq("status", "pending");
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Friend request cancelled");
+      qc.invalidateQueries({ queryKey: KEY });
+    },
+    onError: (e: any) => toast.error(e.message ?? "Failed to cancel request"),
+  });
+
   const reject = useMutation({
     mutationFn: async (friendshipId: string) => {
       const { error } = await supabase
@@ -225,6 +242,7 @@ export function useFriendships(userId: string | undefined) {
     sendRequest,
     accept,
     reject,
+    cancelRequest,
     removeFriend,
   };
 }

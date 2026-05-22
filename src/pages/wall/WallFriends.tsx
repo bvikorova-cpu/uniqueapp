@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Users2, UserPlus, UserMinus, Loader2, ChevronRight, X, Check, Search, Heart, Sparkles } from "lucide-react";
+import { Users2, UserPlus, UserMinus, Loader2, ChevronRight, X, Check, Search, Heart, Sparkles, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useNavigate } from "react-router-dom";
@@ -41,6 +41,7 @@ export default function WallFriends() {
   const navigate = useNavigate();
   const [showAllRequests, setShowAllRequests] = useState(false);
   const [showAllSuggestions, setShowAllSuggestions] = useState(false);
+  const [showAllOutgoing, setShowAllOutgoing] = useState(false);
   const [friendSearch, setFriendSearch] = useState("");
   const [globalSearch, setGlobalSearch] = useState("");
   const [globalResults, setGlobalResults] = useState<Profile[]>([]);
@@ -176,6 +177,29 @@ export default function WallFriends() {
     enabled: !!user,
   });
 
+  const { data: outgoing = [] } = useQuery({
+    queryKey: ["friend-outgoing", user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data: friendships } = await supabase
+        .from("friendships")
+        .select("id, friend_id, created_at")
+        .eq("user_id", user.id)
+        .eq("status", "pending");
+      if (!friendships || friendships.length === 0) return [];
+      const friendIds = friendships.map(f => f.friend_id);
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("id, full_name, avatar_url")
+        .in("id", friendIds);
+      return friendships.map(f => ({
+        ...f,
+        profile: profiles?.find(p => p.id === f.friend_id) || null,
+      }));
+    },
+    enabled: !!user,
+  });
+
   const acceptMutation = useMutation({
     mutationFn: async (friendshipId: string) => {
       const { error } = await supabase.from("friendships").update({ status: "accepted" }).eq("id", friendshipId);
@@ -198,6 +222,19 @@ export default function WallFriends() {
     onError: () => { toast({ title: "Error", description: "Failed to decline request", variant: "destructive" }); }
   });
 
+  const cancelMutation = useMutation({
+    mutationFn: async (friendshipId: string) => {
+      const { error } = await supabase.from("friendships").delete().eq("id", friendshipId).eq("status", "pending");
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast({ title: "Request cancelled", description: "Your friend request has been withdrawn" });
+      queryClient.invalidateQueries({ queryKey: ["friend-outgoing"] });
+      queryClient.invalidateQueries({ queryKey: ["friend-suggestions"] });
+    },
+    onError: () => { toast({ title: "Error", description: "Failed to cancel request", variant: "destructive" }); }
+  });
+
   const sendRequestMutation = useMutation({
     mutationFn: async (targetUserId: string) => {
       if (!user) throw new Error("Not logged in");
@@ -207,6 +244,7 @@ export default function WallFriends() {
     onSuccess: () => {
       toast({ title: "Request sent", description: "Waiting for acceptance" });
       queryClient.invalidateQueries({ queryKey: ["friend-suggestions"] });
+      queryClient.invalidateQueries({ queryKey: ["friend-outgoing"] });
     },
     onError: () => { toast({ title: "Error", description: "Failed to send request", variant: "destructive" }); }
   });
@@ -216,6 +254,7 @@ export default function WallFriends() {
 
   const visibleSuggestions = suggestions.filter(s => !hiddenSuggestions.includes(s.id));
   const displayedRequests = showAllRequests ? requests : requests.slice(0, 8);
+  const displayedOutgoing = showAllOutgoing ? outgoing : outgoing.slice(0, 8);
   const displayedSuggestions = showAllSuggestions ? visibleSuggestions : visibleSuggestions.slice(0, 12);
 
   const filteredFriends = friends.filter(f =>
@@ -253,7 +292,8 @@ export default function WallFriends() {
         <div className="relative flex items-center justify-between sm:justify-start sm:gap-6 mt-6">
           {[
             { icon: <Users2 className="w-4 h-4" />, label: "Friends", value: friends.length },
-            { icon: <UserPlus className="w-4 h-4" />, label: "Requests", value: requests.length },
+            { icon: <UserPlus className="w-4 h-4" />, label: "Incoming", value: requests.length },
+            { icon: <Clock className="w-4 h-4" />, label: "Sent", value: outgoing.length },
             { icon: <Sparkles className="w-4 h-4" />, label: "Tips", value: visibleSuggestions.length },
           ].map((stat, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 + i * 0.1 }} className="flex items-center gap-2">
@@ -290,6 +330,8 @@ export default function WallFriends() {
             {globalResults.map((p, i) => {
               const isFriend = friends.some(f => f.id === p.id);
               const isSelf = user?.id === p.id;
+              const pendingOutgoing = (outgoing as any[]).some((o: any) => o.friend_id === p.id);
+              const pendingIncoming = requests.some((r: any) => r.user_id === p.id);
               return (
                 <Card key={p.id} className="overflow-hidden border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/50 transition-all">
                   <div className={`h-12 bg-gradient-to-br ${gradients[i % gradients.length]}`} />
@@ -299,11 +341,25 @@ export default function WallFriends() {
                       <AvatarFallback className="bg-gradient-to-br from-primary/30 to-accent/30 text-sm font-bold">{p.full_name?.[0] || "?"}</AvatarFallback>
                     </Avatar>
                     <h3 className="font-bold text-xs truncate mt-1.5">{p.full_name || "Unknown"}</h3>
-                    {!isSelf && !isFriend && (
+                    {!isSelf && !isFriend && !pendingOutgoing && !pendingIncoming && (
                       <Button size="sm" className="w-full mt-2 text-[10px] h-7 gap-1 bg-gradient-to-r from-primary to-accent text-white"
                         onClick={() => sendRequestMutation.mutate(p.id)} disabled={sendRequestMutation.isPending}>
                         <UserPlus className="h-3 w-3" /> Add
                       </Button>
+                    )}
+                    {pendingOutgoing && (
+                      <Button size="sm" variant="outline" className="w-full mt-2 text-[10px] h-7 gap-1 border-destructive/50 text-destructive hover:bg-destructive/10"
+                        onClick={() => {
+                          const req = (outgoing as any[]).find((o: any) => o.friend_id === p.id);
+                          if (req) cancelMutation.mutate(req.id);
+                        }} disabled={cancelMutation.isPending}>
+                        <X className="h-3 w-3" /> Cancel
+                      </Button>
+                    )}
+                    {pendingIncoming && (
+                      <p className="text-[10px] text-amber-400 mt-2 text-center flex items-center justify-center gap-1">
+                        <Clock className="h-3 w-3" /> Incoming request
+                      </p>
                     )}
                     {isFriend && <p className="text-[10px] text-primary mt-2 text-center">✓ Friends</p>}
                     {isSelf && <p className="text-[10px] text-muted-foreground mt-2 text-center">You</p>}
@@ -377,6 +433,71 @@ export default function WallFriends() {
                         <Button size="sm" variant="outline" className="w-full text-xs"
                           onClick={() => declineMutation.mutate(request.id)} disabled={declineMutation.isPending}>
                           Remove
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+        )}
+      </section>
+
+      {/* Sent Requests */}
+      <section>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Clock className="w-5 h-5 text-amber-400" />
+            <h2 className="text-lg font-black">Sent Requests</h2>
+            {outgoing.length > 0 && (
+              <Badge className="bg-amber-500/20 text-amber-400 text-xs border-amber-500/30">{outgoing.length}</Badge>
+            )}
+          </div>
+          {outgoing.length > 8 && (
+            <Button variant="link" className="text-primary text-xs" onClick={() => setShowAllOutgoing(!showAllOutgoing)}>
+              {showAllOutgoing ? "Show less" : "See all"}
+            </Button>
+          )}
+        </div>
+
+        {outgoing.length === 0 ? (
+          <Card className="border-dashed border-2 border-border/50 bg-card/50">
+            <CardContent className="py-10 text-center">
+              <Clock className="h-10 w-10 mx-auto mb-3 text-muted-foreground/40" />
+              <p className="text-sm text-muted-foreground">No pending sent requests</p>
+            </CardContent>
+          </Card>
+        ) : (
+          <ScrollArea className="w-full">
+            <div className="flex gap-3 pb-4">
+              {displayedOutgoing.map((req: any, i: number) => (
+                <motion.div
+                  key={req.id}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: i * 0.05 }}
+                >
+                  <Card className="flex-shrink-0 w-[180px] overflow-hidden border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/50 hover:shadow-xl transition-all duration-300">
+                    <div className={`h-16 bg-gradient-to-br ${gradients[i % gradients.length]} relative`}>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                    </div>
+                    <div className="px-3 pb-3 -mt-6 relative">
+                      <Avatar className="h-12 w-12 border-[3px] border-card shadow-lg cursor-pointer" onClick={() => navigate(`/profile/${req.friend_id}`)}>
+                        <AvatarImage src={req.profile?.avatar_url || undefined} className="object-cover" />
+                        <AvatarFallback className="bg-gradient-to-br from-primary/30 to-accent/30 font-bold">
+                          {req.profile?.full_name?.[0] || "?"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <h3 className="font-bold text-sm truncate mt-2">{req.profile?.full_name || "Unknown"}</h3>
+                      <p className="text-[10px] text-muted-foreground flex items-center gap-1 mt-0.5">
+                        <Clock className="h-2.5 w-2.5" /> Waiting for response
+                      </p>
+                      <div className="mt-2">
+                        <Button size="sm" variant="outline" className="w-full text-xs border-destructive/50 text-destructive hover:bg-destructive/10"
+                          onClick={() => cancelMutation.mutate(req.id)} disabled={cancelMutation.isPending}>
+                          {cancelMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <><X className="h-3 w-3 mr-1" /> Cancel</>}
                         </Button>
                       </div>
                     </div>
