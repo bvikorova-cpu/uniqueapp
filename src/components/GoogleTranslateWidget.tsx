@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Languages, X } from "lucide-react";
 
 declare global {
   interface Window {
@@ -8,10 +9,13 @@ declare global {
 }
 
 /**
- * Floating Google Translate widget — lets users translate the entire app
- * into any language supported by Google Translate. Mounted once globally.
+ * Floating Google Translate widget — collapsed by default into a small
+ * glassmorphism icon button. Expands to reveal the language picker.
+ * Hidden visually on mobile until tapped, so it never blocks the feed.
  */
 export default function GoogleTranslateWidget() {
+  const [open, setOpen] = useState(false);
+
   useEffect(() => {
     if (document.getElementById("google-translate-script")) return;
 
@@ -34,33 +38,58 @@ export default function GoogleTranslateWidget() {
     s.async = true;
     document.body.appendChild(s);
 
-    // Hide Google's top banner that pushes the page down
     const style = document.createElement("style");
     style.id = "google-translate-style";
     style.innerHTML = `
-      .goog-te-banner-frame.skiptranslate, .goog-te-gadget-icon { display: none !important; }
+      .goog-te-banner-frame.skiptranslate,
+      .goog-te-gadget-icon,
+      .goog-logo-link,
+      .goog-te-gadget > span > a { display: none !important; }
       body { top: 0 !important; }
-      #google_translate_element .goog-te-gadget { color: transparent !important; font-size: 0 !important; }
+      #google_translate_element .goog-te-gadget {
+        color: transparent !important;
+        font-size: 0 !important;
+        line-height: 0 !important;
+      }
       #google_translate_element .goog-te-gadget .goog-te-combo {
         color: hsl(var(--foreground));
-        background: hsl(var(--background));
+        background: hsl(var(--background) / 0.95);
         border: 1px solid hsl(var(--border));
         border-radius: 9999px;
-        padding: 6px 10px;
-        font-size: 12px;
+        padding: 8px 14px;
+        font-size: 13px;
         font-weight: 600;
         cursor: pointer;
-        box-shadow: 0 4px 12px hsl(270 91% 58% / 0.2);
+        outline: none;
+        box-shadow: 0 8px 24px hsl(270 91% 58% / 0.25);
+        max-width: 180px;
+      }
+      #google_translate_element .goog-te-gadget .goog-te-combo:focus {
+        border-color: hsl(var(--primary));
       }
     `;
     document.head.appendChild(style);
   }, []);
 
   return (
-    <div
-      id="google_translate_element"
-      className="fixed bottom-4 right-4 z-[9999] backdrop-blur-md bg-background/70 rounded-full px-2 py-1 border border-border/50 shadow-lg"
-      aria-label="Translate page"
-    />
+    <div className="fixed bottom-4 right-4 z-[9999] flex items-center gap-2">
+      <div
+        id="google_translate_element"
+        aria-label="Translate page"
+        className={`transition-all duration-300 ${
+          open
+            ? "opacity-100 translate-x-0 pointer-events-auto"
+            : "opacity-0 translate-x-4 pointer-events-none w-0 overflow-hidden"
+        }`}
+      />
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-label={open ? "Hide translator" : "Translate page"}
+        className="h-10 w-10 rounded-full flex items-center justify-center bg-background/60 hover:bg-background/80 backdrop-blur-xl border border-border/50 shadow-lg shadow-primary/20 text-foreground/80 hover:text-primary transition-all active:scale-95"
+      >
+        {open ? <X className="h-4 w-4" /> : <Languages className="h-4 w-4" />}
+      </button>
+    </div>
   );
 }
