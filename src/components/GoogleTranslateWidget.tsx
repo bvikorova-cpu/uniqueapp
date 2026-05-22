@@ -72,7 +72,7 @@ export default function GoogleTranslateWidget() {
   }, []);
 
   return (
-    <div className="fixed bottom-4 right-4 z-[9999] flex items-center gap-2">
+    <div className="fixed bottom-[calc(9rem+env(safe-area-inset-bottom))] right-3 md:bottom-24 md:right-6 z-[9999] flex items-center gap-2">
       <div
         id="google_translate_element"
         aria-label="Translate page"
