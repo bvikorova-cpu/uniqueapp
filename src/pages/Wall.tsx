@@ -494,9 +494,38 @@ const Feed = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [loadingMore, hasMore, page]);
 
+  // Friends list for the "Friends" feed tab
+  const { data: friendIds = [] } = useQuery({
+    queryKey: ["friend-ids", user?.id],
+    enabled: !!user?.id,
+    queryFn: async (): Promise<string[]> => {
+      const { data, error } = await supabase
+        .from("friendships")
+        .select("user_id,friend_id")
+        .or(`user_id.eq.${user!.id},friend_id.eq.${user!.id}`)
+        .eq("status", "accepted");
+      if (error) return [];
+      return (data ?? [])
+        .map((r) => (r.user_id === user!.id ? r.friend_id : r.user_id))
+        .filter(Boolean) as string[];
+    },
+  });
+
   // Filter and sort feed items
   const filteredFeedItems = useMemo(() => {
     let filtered = [...feedItems];
+
+    // Friends-only tab: keep posts whose author is an accepted friend
+    if (feedTab === "friends") {
+      const allowed = new Set(friendIds);
+      filtered = filtered.filter((item) => {
+        const authorId =
+          item.type === "post"
+            ? (item.data as Post).user_id
+            : (item.data as Repost).user_id;
+        return allowed.has(authorId);
+      });
+    }
 
     // Search filter only
     if (searchQuery.trim()) {
@@ -522,7 +551,8 @@ const Feed = () => {
     }
 
     return filtered;
-  }, [feedItems, searchQuery]);
+  }, [feedItems, searchQuery, feedTab, friendIds]);
+
 
   const location = useLocation();
   const currentPath = location.pathname;
