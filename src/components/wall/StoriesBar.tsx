@@ -25,11 +25,13 @@ const StoryAdTile = ({ slotIndex }: { slotIndex: number }) => {
     if (loading || claimed) return;
     setLoading(true);
     try {
+      trackMonetagEvent("impression", MONETAG_ZONES.REWARDED_VIGNETTE, `story_slot_${slotIndex}`);
       const shown = await showMonetagRewarded();
       if (!shown) {
         toast.error("Ad couldn't load. Try again in a moment.");
         return;
       }
+      trackMonetagEvent("click", MONETAG_ZONES.REWARDED_VIGNETTE, `story_slot_${slotIndex}`);
       const { data: auth } = await supabase.auth.getUser();
       const uid = auth?.user?.id;
       if (!uid) return;
