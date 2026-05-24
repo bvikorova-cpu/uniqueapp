@@ -2,18 +2,22 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import { detectAdProvider, showRewardedAd } from "@/lib/ads/adProvider";
+import { showMonetagRewarded } from "@/lib/monetag";
 
 const COOLDOWN_MS = 60_000;
 const STORAGE_KEY = "lastAdRewardAt";
+const XP_REWARD = 25;
 
+/**
+ * Rewarded-ad hook backed by Monetag (Vignette).
+ * Flow: showMonetagRewarded() -> award_xp RPC -> 60s local cooldown.
+ */
 export function useRewardedAd() {
   const [isLoading, setIsLoading] = useState(false);
   const [cooldownRemaining, setCooldownRemaining] = useState(0);
   const qc = useQueryClient();
   const tickRef = useRef<number | null>(null);
 
-  // Tick cooldown every second
   useEffect(() => {
     const update = () => {
       const last = Number(localStorage.getItem(STORAGE_KEY) || 0);
@@ -32,41 +36,36 @@ export function useRewardedAd() {
     }
     setIsLoading(true);
     try {
-      const provider = detectAdProvider();
-
-      // 1. Start session
-      const { data: session, error: sErr } = await supabase.functions.invoke("start-ad-session", {
-        body: { provider },
-      });
-      if (sErr || !session?.client_token) {
-        if (sErr?.context?.status === 429 || session?.error === "cooldown") {
-          toast.info("Please wait a moment before the next ad");
-        } else {
-          toast.error("Could not start ad");
-        }
+      const shown = await showMonetagRewarded();
+      if (!shown) {
+        toast.error("Ad couldn't load. Try again in a moment.");
         return;
       }
 
-      // 2. Show ad
-      const watched = await showRewardedAd(provider);
-      if (!watched) {
-        toast.info("Ad not completed");
+      const { data: auth } = await supabase.auth.getUser();
+      const uid = auth?.user?.id;
+      if (!uid) {
+        toast.error("Sign in to earn XP from ads.");
         return;
       }
 
-      // 3. Claim
-      const { data: claim, error: cErr } = await supabase.functions.invoke("claim-ad-reward", {
-        body: { client_token: session.client_token },
+      const today = new Date().toISOString().slice(0, 10);
+      const { error } = await supabase.rpc("award_xp", {
+        _user_id: uid,
+        _amount: XP_REWARD,
+        _source: "rewarded_ad_view",
+        _ref_id: `${today}:${Date.now()}`,
       });
-      if (cErr || !claim?.success) {
-        toast.error(claim?.error === "cooldown" ? "Please wait before next ad" : "Could not claim reward");
+      if (error) {
+        toast.error("Couldn't credit XP. Please retry.");
         return;
       }
 
       localStorage.setItem(STORAGE_KEY, String(Date.now()));
-      toast.success(`+${claim.xp_granted} XP earned!`);
+      toast.success(`+${XP_REWARD} XP earned!`);
       qc.invalidateQueries({ queryKey: ["user-xp"] });
       qc.invalidateQueries({ queryKey: ["weekly-xp"] });
+      qc.invalidateQueries({ queryKey: ["gamification"] });
     } catch (e) {
       console.error(e);
       toast.error("Ad reward failed");
