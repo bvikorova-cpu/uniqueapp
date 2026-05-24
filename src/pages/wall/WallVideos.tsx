@@ -35,9 +35,37 @@ export default function WallVideos() {
     },
   });
 
-  const isLoading = loadingPosts || loadingVideos;
-  const refetch = () => { refetchPosts(); refetchVideos(); };
-  const totalVideos = standaloneVideos.length + videoPosts.length;
+  const { data: storyVideos = [], isLoading: loadingStories, refetch: refetchStories } = useQuery({
+    queryKey: ["story-videos-in-wall"],
+    queryFn: async () => {
+      const now = new Date().toISOString();
+      const { data: stories } = await supabase
+        .from("stories")
+        .select("*")
+        .eq("media_type", "video")
+        .gt("expires_at", now)
+        .order("created_at", { ascending: false });
+      if (!stories?.length) return [];
+      const userIds = Array.from(new Set(stories.map((s: any) => s.user_id)));
+      const { data: profiles } = await supabase.from("profiles").select("id, full_name, avatar_url").in("id", userIds);
+      const map = new Map((profiles || []).map((p: any) => [p.id, p]));
+      return stories.map((s: any) => ({
+        id: `story-${s.id}`,
+        title: s.caption || "Story",
+        description: null,
+        video_url: s.media_url,
+        thumbnail_url: null,
+        views_count: 0,
+        likes_count: 0,
+        created_at: s.created_at,
+        profiles: map.get(s.user_id) || { full_name: null, avatar_url: null },
+      }));
+    },
+  });
+
+  const isLoading = loadingPosts || loadingVideos || loadingStories;
+  const refetch = () => { refetchPosts(); refetchVideos(); refetchStories(); };
+  const totalVideos = standaloneVideos.length + videoPosts.length + storyVideos.length;
 
   return (
     <div className="max-w-4xl mx-auto px-4 pt-12 sm:pt-6 pb-8 space-y-6">
