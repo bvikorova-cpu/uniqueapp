@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Plus, Play, Camera, Video } from "lucide-react";
+import { useState, Fragment } from "react";
+import { Plus, Play, Camera, Video, Megaphone, Loader2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -9,6 +9,71 @@ import { useStories } from "@/hooks/useStories";
 import { motion, AnimatePresence } from "framer-motion";
 import { StoryAnalyticsPanel } from "@/components/story/StoryAnalyticsPanel";
 import { useAuth } from "@/contexts/AuthContext";
+import { showMonetagRewarded } from "@/lib/monetag";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+
+const STORY_AD_INTERVAL = 10;
+const STORY_AD_XP = 25;
+
+const StoryAdTile = ({ slotIndex }: { slotIndex: number }) => {
+  const [loading, setLoading] = useState(false);
+  const [claimed, setClaimed] = useState(false);
+
+  const handleWatch = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (loading || claimed) return;
+    setLoading(true);
+    try {
+      const shown = await showMonetagRewarded();
+      if (!shown) {
+        toast.error("Ad couldn't load. Try again in a moment.");
+        return;
+      }
+      const { data: auth } = await supabase.auth.getUser();
+      const uid = auth?.user?.id;
+      if (!uid) return;
+      const today = new Date().toISOString().slice(0, 10);
+      await supabase.rpc("award_xp", {
+        _user_id: uid,
+        _amount: STORY_AD_XP,
+        _source: "story_ad_view",
+        _ref_id: `${today}:story:${slotIndex}`,
+      });
+      setClaimed(true);
+      toast.success(`+${STORY_AD_XP} XP earned!`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <motion.button
+      whileHover={{ scale: 1.05, y: -2 }}
+      whileTap={{ scale: 0.95 }}
+      onClick={handleWatch}
+      disabled={loading || claimed}
+      className="flex-shrink-0 relative w-[100px] h-[150px] rounded-2xl overflow-hidden group border border-primary/30"
+    >
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-accent/30 to-primary/20 backdrop-blur-xl" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+      <div className="relative h-full flex flex-col items-center justify-center gap-2 p-2 text-center">
+        {loading ? (
+          <Loader2 className="w-6 h-6 text-white animate-spin" />
+        ) : (
+          <Megaphone className="w-6 h-6 text-white" />
+        )}
+        <span className="text-[10px] font-bold text-white uppercase tracking-wider">
+          {claimed ? "Claimed" : "Sponsored"}
+        </span>
+        <span className="text-[10px] text-white/90">+{STORY_AD_XP} XP</span>
+      </div>
+      <span className="absolute top-1 right-1 text-[8px] uppercase text-white/70 border border-white/30 rounded-full px-1.5">
+        Ad
+      </span>
+    </motion.button>
+  );
+};
 
 export const StoriesBar = () => {
   const [open, setOpen] = useState(false);
@@ -63,18 +128,19 @@ export const StoriesBar = () => {
             </div>
           </motion.button>
 
-          {/* Story items */}
+          {/* Story items with sponsored tile every Nth */}
           {stories.map((story, index) => (
-            <motion.button
-              key={story.id}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.05 }}
-              whileHover={{ scale: 1.05, y: -4 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => handleViewStory(story)}
-              className="flex-shrink-0 relative w-[100px] h-[150px] rounded-2xl overflow-hidden group cursor-pointer"
-            >
+            <Fragment key={story.id}>
+              <motion.button
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.05 }}
+                whileHover={{ scale: 1.05, y: -4 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => handleViewStory(story)}
+                className="flex-shrink-0 relative w-[100px] h-[150px] rounded-2xl overflow-hidden group cursor-pointer"
+              >
+
               {/* Story background */}
               <div className="absolute inset-0 bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 backdrop-blur-xl" />
               <div className="absolute inset-0">
@@ -114,7 +180,12 @@ export const StoriesBar = () => {
                 </span>
               </div>
             </motion.button>
+            {(index + 1) % STORY_AD_INTERVAL === 0 && (
+              <StoryAdTile slotIndex={Math.floor(index / STORY_AD_INTERVAL)} />
+            )}
+            </Fragment>
           ))}
+
 
           {/* Placeholder stories for visual richness */}
           {stories.length < 3 && (
