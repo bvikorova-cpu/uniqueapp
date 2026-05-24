@@ -113,7 +113,8 @@ export default function WallVideos() {
         </Card>
       ) : (
         <div className="space-y-4">
-          {[...standaloneVideos.map((v: any) => ({ kind: "video" as const, data: v })),
+          {[...storyVideos.map((v: any) => ({ kind: "video" as const, data: v })),
+            ...standaloneVideos.map((v: any) => ({ kind: "video" as const, data: v })),
             ...videoPosts.map((p: any) => ({ kind: "post" as const, data: p }))
           ].map((item, i) => {
             const showAd = (i + 1) % 20 === 0;
