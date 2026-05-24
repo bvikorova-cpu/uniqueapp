@@ -180,7 +180,12 @@ export const StoriesBar = () => {
                 </span>
               </div>
             </motion.button>
+            {(index + 1) % STORY_AD_INTERVAL === 0 && (
+              <StoryAdTile slotIndex={Math.floor(index / STORY_AD_INTERVAL)} />
+            )}
+            </Fragment>
           ))}
+
 
           {/* Placeholder stories for visual richness */}
           {stories.length < 3 && (
