@@ -9,7 +9,7 @@ import { useStories } from "@/hooks/useStories";
 import { motion, AnimatePresence } from "framer-motion";
 import { StoryAnalyticsPanel } from "@/components/story/StoryAnalyticsPanel";
 import { useAuth } from "@/contexts/AuthContext";
-import { showMonetagRewarded } from "@/lib/monetag";
+import { showMonetagRewarded, trackMonetagEvent, MONETAG_ZONES } from "@/lib/monetag";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
