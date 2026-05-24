@@ -128,18 +128,19 @@ export const StoriesBar = () => {
             </div>
           </motion.button>
 
-          {/* Story items */}
+          {/* Story items with sponsored tile every Nth */}
           {stories.map((story, index) => (
-            <motion.button
-              key={story.id}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.05 }}
-              whileHover={{ scale: 1.05, y: -4 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => handleViewStory(story)}
-              className="flex-shrink-0 relative w-[100px] h-[150px] rounded-2xl overflow-hidden group cursor-pointer"
-            >
+            <Fragment key={story.id}>
+              <motion.button
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.05 }}
+                whileHover={{ scale: 1.05, y: -4 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => handleViewStory(story)}
+                className="flex-shrink-0 relative w-[100px] h-[150px] rounded-2xl overflow-hidden group cursor-pointer"
+              >
+
               {/* Story background */}
               <div className="absolute inset-0 bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 backdrop-blur-xl" />
               <div className="absolute inset-0">
