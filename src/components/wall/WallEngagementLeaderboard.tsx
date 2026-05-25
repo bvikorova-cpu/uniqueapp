@@ -33,7 +33,7 @@ export default function WallEngagementLeaderboard() {
 
       const ids = (data || []).map((r: any) => r.user_id);
       const { data: profs } = ids.length
-        ? await supabase.from("profiles").select("id, full_name, avatar_url").in("id", ids)
+        ? await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", ids)
         : { data: [] as any[] };
       const pmap = new Map((profs || []).map((p: any) => [p.id, p]));
 
