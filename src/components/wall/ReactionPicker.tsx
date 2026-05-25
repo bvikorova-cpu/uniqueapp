@@ -62,7 +62,7 @@ export const ReactionPicker = ({ postId }: ReactionPickerProps) => {
             variant="ghost"
             size="sm"
             className={userReactionType ? "text-primary" : ""}
-            onClick={(e) => e.preventDefault()}
+            onClick={(e) => e.stopPropagation()}
           >
             <span className="text-xl mr-2">{userReactionEmoji || "👍"}</span>
             {userReactionType ? "Reacted" : "React"}
