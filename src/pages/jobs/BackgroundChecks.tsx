@@ -37,7 +37,7 @@ export default function BackgroundChecks() {
 
   const send = async () => {
     if (!candidateEmail || selected.length === 0) return toast.error("Email + at least one check");
-    const { data: prof } = await (supabase as any).from("profiles_public" as any).select("user_id").eq("email", candidateEmail).maybeSingle();
+    const { data: prof } = await (supabase as any).from("profiles_public").select("user_id").eq("email", candidateEmail).maybeSingle();
     if (!prof) return toast.error("Candidate not found");
     const { error } = await (supabase as any).from("background_check_requests").insert({
       employer_id: userId, candidate_id: prof.user_id, check_types: selected, status: "awaiting_consent",
