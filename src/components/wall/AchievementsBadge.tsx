@@ -63,7 +63,7 @@ export const AchievementsBadge = () => {
         .select("*")
         .eq("user_id", uid)
         .eq("claim_date", today)
-        .single();
+        .maybeSingle();
 
       setClaimedToday(!!claim);
       setCanClaim(!claim);
