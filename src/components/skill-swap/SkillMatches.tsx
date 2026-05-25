@@ -43,11 +43,11 @@ export const SkillMatches = () => {
         .order('match_score', { ascending: false }).limit(10);
       if (error) throw error;
       const matchedUserIds = matchesData?.map(m => m.matched_user_id) || [];
-      const { data: profilesData } = await supabase
-        .from('profiles_public' as any).select('id, full_name, rating_average, total_reviews, completed_exchanges, skills_offered, skills_wanted')
+      const { data: profilesData } = await (supabase as any)
+        .from('profiles_public').select('id, full_name, rating_average, total_reviews, completed_exchanges, skills_offered, skills_wanted')
         .in('id', matchedUserIds);
-      const profilesMap = new Map(profilesData?.map(p => [p.id, p]) || []);
-      setMatches((matchesData || []).map(match => ({ ...match, matched_profile: profilesMap.get(match.matched_user_id) })));
+      const profilesMap = new Map<string, any>((profilesData || []).map((p: any) => [p.id, p]));
+      setMatches((matchesData || []).map((match: any) => ({ ...match, matched_profile: profilesMap.get(match.matched_user_id) })));
     } catch (error) { console.error('Error loading matches:', error); toast.error('Failed to load skill matches'); }
     finally { setLoading(false); }
   };
