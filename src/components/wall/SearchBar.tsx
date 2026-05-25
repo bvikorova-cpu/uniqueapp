@@ -47,16 +47,12 @@ export const SearchBar = () => {
           // Search posts
           supabase
             .from("posts")
-            .select("id, content, created_at, profiles(id, full_name, avatar_url)")
+            .select("id, content, created_at")
             .ilike("content", `%${query}%`)
             .order("created_at", { ascending: false })
             .limit(5),
-          // Search ALL users (not just friends)
-          supabase
-            .from("profiles")
-            .select("id, full_name, avatar_url, bio")
-            .or(`full_name.ilike.%${query}%`)
-            .limit(8),
+          // Search ALL users via safe RPC (works across users without exposing PII)
+          (supabase as any).rpc("search_users", { q: query, lim: 8 }),
           // Search hashtags
           supabase
             .from("hashtags")
