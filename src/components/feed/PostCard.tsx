@@ -768,7 +768,9 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
 
         {/* Interaction Buttons */}
         <div className="flex items-center gap-2 pt-4 border-t">
-          <ReactionPicker postId={post.id} />
+          <div onClick={(e) => e.stopPropagation()}>
+            <ReactionPicker postId={post.id} />
+          </div>
 
           <Button
             variant="ghost"
