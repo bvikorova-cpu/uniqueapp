@@ -81,7 +81,9 @@ export const GroupsList = () => {
             group={group}
             onJoin={joinGroup}
             onLeave={leaveGroup}
+            onDelete={deleteGroup}
             isMember={userGroups.has(group.id)}
+            isCreator={currentUserId === group.creator_id}
           />
         ))}
       </div>
