@@ -46,7 +46,7 @@ export const NotesBar = () => {
     setNotes(
       (notesData ?? []).map((n) => ({
         ...n,
-        profile: profileMap.get(n.user_id) ?? null,
+        profile: (profileMap.get(n.user_id) as any) ?? null,
       }))
     );
   }, []);
