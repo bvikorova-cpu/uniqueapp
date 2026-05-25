@@ -1,8 +1,19 @@
-import { Users, Lock } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Users, Lock, Trash2 } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface GroupCardProps {
   group: {
@@ -17,10 +28,12 @@ interface GroupCardProps {
   };
   onJoin: (groupId: string) => void;
   onLeave: (groupId: string) => void;
+  onDelete?: (groupId: string) => void;
   isMember: boolean;
+  isCreator?: boolean;
 }
 
-export const GroupCard = ({ group, onJoin, onLeave, isMember }: GroupCardProps) => {
+export const GroupCard = ({ group, onJoin, onLeave, onDelete, isMember, isCreator }: GroupCardProps) => {
   const navigate = useNavigate();
   const memberCount = group.members_count || 0;
 
@@ -29,12 +42,11 @@ export const GroupCard = ({ group, onJoin, onLeave, isMember }: GroupCardProps) 
   };
 
   return (
-    <div 
+    <div
       className="glass-post-card overflow-hidden hover:scale-[1.02] transition-all duration-500 cursor-pointer"
       onClick={handleCardClick}
     >
-      {/* Cover Image */}
-      <div 
+      <div
         className="h-32 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 relative"
         style={group.cover_image ? { backgroundImage: `url(${group.cover_image})`, backgroundSize: 'cover' } : {}}
       >
@@ -46,7 +58,6 @@ export const GroupCard = ({ group, onJoin, onLeave, isMember }: GroupCardProps) 
         )}
       </div>
 
-      {/* Content */}
       <div className="p-6 space-y-4">
         <div className="flex items-start gap-3">
           <Avatar className="w-12 h-12 border-2 border-primary/20">
@@ -72,16 +83,48 @@ export const GroupCard = ({ group, onJoin, onLeave, isMember }: GroupCardProps) 
           </p>
         )}
 
-        <Button
-          onClick={(e) => {
-            e.stopPropagation();
-            isMember ? onLeave(group.id) : onJoin(group.id);
-          }}
-          variant={isMember ? "outline" : "default"}
-          className="w-full"
-        >
-          {isMember ? "Leave Group" : "Join Group"}
-        </Button>
+        {isCreator ? (
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                onClick={(e) => e.stopPropagation()}
+                variant="destructive"
+                className="w-full"
+              >
+                <Trash2 className="w-4 h-4 mr-2" />
+                Delete Group
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete "{group.name}"?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will permanently delete the group and remove all members. This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => onDelete?.(group.id)}
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        ) : (
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              isMember ? onLeave(group.id) : onJoin(group.id);
+            }}
+            variant={isMember ? "outline" : "default"}
+            className="w-full"
+          >
+            {isMember ? "Leave Group" : "Join Group"}
+          </Button>
+        )}
       </div>
     </div>
   );
