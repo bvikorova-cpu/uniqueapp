@@ -14,11 +14,18 @@ export const useFollows = () => {
 
       const { data, error } = await supabase
         .from("follows")
-        .select("*, profiles!follows_following_id_fkey(*)")
+        .select("*")
         .eq("follower_id", user.id);
 
       if (error) throw error;
-      return data;
+      const ids = (data || []).map((f: any) => f.following_id);
+      if (ids.length === 0) return data || [];
+      const { data: profs } = await (supabase as any)
+        .from("profiles_public")
+        .select("id, full_name, avatar_url, username, headline, is_verified")
+        .in("id", ids);
+      const map = new Map((profs || []).map((p: any) => [p.id, p]));
+      return (data || []).map((f: any) => ({ ...f, profiles: map.get(f.following_id) || null }));
     },
   });
 
@@ -30,11 +37,18 @@ export const useFollows = () => {
 
       const { data, error } = await supabase
         .from("follows")
-        .select("*, profiles!follows_follower_id_fkey(*)")
+        .select("*")
         .eq("following_id", user.id);
 
       if (error) throw error;
-      return data;
+      const ids = (data || []).map((f: any) => f.follower_id);
+      if (ids.length === 0) return data || [];
+      const { data: profs } = await (supabase as any)
+        .from("profiles_public")
+        .select("id, full_name, avatar_url, username, headline, is_verified")
+        .in("id", ids);
+      const map = new Map((profs || []).map((p: any) => [p.id, p]));
+      return (data || []).map((f: any) => ({ ...f, profiles: map.get(f.follower_id) || null }));
     },
   });
 
