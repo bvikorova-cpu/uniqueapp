@@ -13,10 +13,17 @@ export const useCloseFriends = () => {
       if (!user) return [];
       const { data, error } = await supabase
         .from("user_close_friends")
-        .select("id, friend_id, created_at, profiles:friend_id(id, full_name, avatar_url)")
+        .select("id, friend_id, created_at")
         .eq("user_id", user.id);
       if (error) throw error;
-      return data || [];
+      const ids = (data || []).map((r: any) => r.friend_id);
+      if (ids.length === 0) return data || [];
+      const { data: profs } = await (supabase as any)
+        .from("profiles_public")
+        .select("id, full_name, avatar_url")
+        .in("id", ids);
+      const map = new Map((profs || []).map((p: any) => [p.id, p]));
+      return (data || []).map((r: any) => ({ ...r, profiles: map.get(r.friend_id) || null }));
     },
   });
 
