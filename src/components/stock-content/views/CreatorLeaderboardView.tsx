@@ -66,7 +66,7 @@ export function CreatorLeaderboardView({ onBack }: CreatorLeaderboardViewProps) 
       const ids = (data || []).map((r: any) => r.creator_id);
       const sb: any = supabase;
       const profsRes: any = ids.length
-        ? await sb.from("profiles").select("id, full_name").in("id", ids)
+        ? await (sb as any).from("profiles_public").select("id, full_name").in("id", ids)
         : { data: [] };
       const itemsRes: any = ids.length
         ? await sb.from("stock_content_items").select("creator_id").in("creator_id", ids)

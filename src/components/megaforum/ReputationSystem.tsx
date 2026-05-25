@@ -77,7 +77,7 @@ export const ReputationSystem = ({ onBack }: ReputationSystemProps) => {
     queryFn: async () => {
       const ids = leaderboard.map((l: any) => l.user_id);
       if (ids.length === 0) return {};
-      const { data } = await supabase.from("profiles").select("id, full_name, avatar_url").in("id", ids);
+      const { data } = await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", ids);
       const map: Record<string, any> = {};
       data?.forEach(p => { map[p.id] = p; });
       return map;

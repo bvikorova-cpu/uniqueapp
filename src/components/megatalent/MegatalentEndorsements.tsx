@@ -38,7 +38,7 @@ const MegatalentEndorsements = ({ category, categories, userId }: Props) => {
       if (ids.length) {
         const [{ data: endRows }, { data: profs }] = await Promise.all([
           (supabase as any).from("talent_endorsements").select("talent_user_id,endorser_id,skill").in("talent_user_id", ids),
-          supabase.from("profiles").select("id,full_name,avatar_url").in("id", ids),
+          (supabase as any).from("profiles_public").select("id,full_name,avatar_url").in("id", ids),
         ]);
         setRows((endRows as Row[]) || []);
         const map: Record<string, Profile> = {};

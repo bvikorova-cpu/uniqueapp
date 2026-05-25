@@ -24,7 +24,7 @@ export const SystemHealthMonitor = () => {
 
       // Database
       const t1 = performance.now();
-      const { error: dbErr } = await supabase.from("profiles").select("id").limit(1);
+      const { error: dbErr } = await (supabase as any).from("profiles_public").select("id").limit(1);
       results.push({
         name: "Database",
         status: dbErr ? "down" : "operational",

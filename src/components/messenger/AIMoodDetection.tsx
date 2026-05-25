@@ -121,7 +121,7 @@ export const AIMoodDetection = ({ onBack, userId }: AIMoodDetectionProps) => {
         .limit(1);
 
       if (parts?.[0]) {
-        const { data: profile } = await supabase.from("profiles").select("full_name").eq("id", parts[0].user_id).single();
+        const { data: profile } = await (supabase as any).from("profiles_public").select("full_name").eq("id", parts[0].user_id).single();
         conversationMoods.push({ name: profile?.full_name || "Unknown", mood: dominant });
       }
     }

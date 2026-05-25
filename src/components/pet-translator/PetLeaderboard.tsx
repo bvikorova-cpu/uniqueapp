@@ -51,14 +51,14 @@ export default function PetLeaderboard() {
 
       const [{ data: profs }, { data: pets }] = await Promise.all([
         userIds.length
-          ? supabase.from("profiles").select("id, full_name").in("id", userIds)
+          ? (supabase as any).from("profiles_public").select("id, full_name").in("id", userIds)
           : Promise.resolve({ data: [] as any[] }),
         petIds.length
           ? supabase.from("pets").select("id, name, breed, species").in("id", petIds)
           : Promise.resolve({ data: [] as any[] }),
       ]);
-      const pmap = new Map((profs || []).map((p: any) => [p.id, p.full_name]));
-      const petMap = new Map((pets || []).map((p: any) => [p.id, p]));
+      const pmap = new Map<string, any>((profs || []).map((p: any) => [p.id, p.full_name]));
+      const petMap = new Map<string, any>((pets || []).map((p: any) => [p.id, p]));
 
       const final: Row[] = top.map(([uid, v], i) => {
         const pet = v.pet_id ? petMap.get(v.pet_id) : null;

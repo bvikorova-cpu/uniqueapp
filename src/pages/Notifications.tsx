@@ -73,7 +73,7 @@ const Notifications = () => {
 
     const actorIds = [...new Set((data || []).map((n: any) => n.actor_id).filter(Boolean))];
     const { data: profiles } = actorIds.length
-      ? await supabase.from("profiles").select("id, full_name, avatar_url").in("id", actorIds)
+      ? await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", actorIds)
       : { data: [] as any[] };
     const map = new Map((profiles || []).map((p: any) => [p.id, p]));
     setItems(

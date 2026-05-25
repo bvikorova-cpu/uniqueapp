@@ -46,7 +46,7 @@ export const LiveLeaderboardView = () => {
 
       if (data && data.length > 0) {
         const userIds = [...new Set(data.map(d => d.user_id))];
-        const { data: profiles } = await supabase.from("profiles").select("id, full_name, avatar_url").in("id", userIds);
+        const { data: profiles } = await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", userIds);
         const { data: subs } = await supabase.from("megatalent_subscriptions").select("user_id, tier").in("user_id", userIds).eq("status", "active");
         const tierMap: Record<string, string> = {};
         subs?.forEach(s => { tierMap[s.user_id] = s.tier; });

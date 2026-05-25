@@ -62150,6 +62150,7 @@ export type Database = {
           suggested_id: string
         }[]
       }
+      unaccent: { Args: { "": string }; Returns: string }
       update_battle_stats: {
         Args: { loser_id: string; winner_id: string }
         Returns: undefined

@@ -58,35 +58,30 @@ export const GiftChat = () => {
       // Get users from received gifts
       const { data: receivedGifts } = await supabase
         .from("secret_santa_gifts")
-        .select("sender_id, profiles!secret_santa_gifts_sender_id_fkey(id, username, avatar_url)")
+        .select("sender_id")
         .eq("recipient_id", currentUserId);
 
       // Get users from sent gifts
       const { data: sentGifts } = await supabase
         .from("secret_santa_gifts")
-        .select("recipient_id, profiles!secret_santa_gifts_recipient_id_fkey(id, username, avatar_url)")
+        .select("recipient_id")
         .eq("sender_id", currentUserId);
 
-      const userMap = new Map<string, ChatUser>();
-      
-      receivedGifts?.forEach((gift: any) => {
-        if (gift.profiles && gift.sender_id !== currentUserId) {
-          userMap.set(gift.profiles.id, {
-            id: gift.profiles.id,
-            username: gift.profiles.username,
-            avatar_url: gift.profiles.avatar_url,
-          });
-        }
-      });
+      const partnerIds = Array.from(new Set([
+        ...(receivedGifts || []).map((g: any) => g.sender_id),
+        ...(sentGifts || []).map((g: any) => g.recipient_id),
+      ].filter((id) => id && id !== currentUserId)));
 
-      sentGifts?.forEach((gift: any) => {
-        if (gift.profiles && gift.recipient_id !== currentUserId) {
-          userMap.set(gift.profiles.id, {
-            id: gift.profiles.id,
-            username: gift.profiles.username,
-            avatar_url: gift.profiles.avatar_url,
-          });
-        }
+      if (partnerIds.length === 0) return [];
+
+      const { data: profs } = await (supabase as any)
+        .from("profiles_public")
+        .select("id, username, avatar_url")
+        .in("id", partnerIds);
+
+      const userMap = new Map<string, ChatUser>();
+      (profs || []).forEach((p: any) => {
+        userMap.set(p.id, { id: p.id, username: p.username, avatar_url: p.avatar_url });
       });
 
       return Array.from(userMap.values());

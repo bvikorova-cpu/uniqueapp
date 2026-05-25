@@ -22,8 +22,8 @@ export default function WallSaved() {
       const { data: posts } = await supabase.from("posts").select(`*, media (*)`).in("id", postIds);
       if (!posts) return [];
       const userIds = Array.from(new Set(posts.map(p => p.user_id)));
-      const { data: profiles } = await supabase.from("profiles").select("id, full_name, avatar_url").in("id", userIds);
-      const profilesMap = new Map((profiles || []).map(p => [p.id, p]));
+      const { data: profiles } = await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", userIds);
+      const profilesMap = new Map<string, any>((profiles || []).map((p: any) => [p.id, p]));
       return posts.map(post => ({
         ...post,
         profiles: profilesMap.get(post.user_id) || { id: post.user_id, full_name: null, avatar_url: null }

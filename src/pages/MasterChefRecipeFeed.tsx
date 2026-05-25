@@ -44,7 +44,7 @@ export default function MasterChefRecipeFeed() {
 
       if (data) {
         const userIds = [...new Set(data.map((p: any) => p.user_id))] as string[];
-        const { data: profiles } = await supabase.from("profiles").select("id, full_name").in("id", userIds);
+        const { data: profiles } = await (supabase as any).from("profiles_public").select("id, full_name").in("id", userIds);
         const profileMap = new Map((profiles || []).map(p => [p.id, p.full_name || "Chef"]));
 
         setPosts(data.map((p: any) => ({

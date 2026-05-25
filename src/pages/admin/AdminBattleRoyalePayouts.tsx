@@ -39,7 +39,7 @@ const AdminBattleRoyalePayouts = () => {
 
       const uids = Array.from(new Set((p || []).map((x: any) => x.owner_user_id)));
       if (uids.length) {
-        const { data: profs } = await supabase.from("profiles").select("id,full_name,avatar_url").in("id", uids);
+        const { data: profs } = await (supabase as any).from("profiles_public").select("id,full_name,avatar_url").in("id", uids);
         const map: any = {};
         (profs || []).forEach((p: any) => { map[p.id] = p; });
         setProfiles(map);

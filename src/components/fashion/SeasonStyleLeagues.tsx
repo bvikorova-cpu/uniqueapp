@@ -30,15 +30,19 @@ export default function SeasonStyleLeagues() {
     queryFn: async () => {
       const { data: battles } = await supabase
         .from("fashion_style_battles")
-        .select("creator_id, profiles:creator_id(full_name, avatar_url)")
+        .select("creator_id")
         .eq("status", "completed");
 
       if (!battles) return [];
+      const ids = Array.from(new Set(battles.map((b: any) => b.creator_id).filter(Boolean)));
+      const { data: profs } = await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", ids);
+      const pmap = new Map<string, any>((profs || []).map((p: any) => [p.id, p]));
 
       const scoreMap = new Map<string, { name: string; avatar: string; wins: number; score: number }>();
       battles.forEach((b: any) => {
         const id = b.creator_id;
-        const existing = scoreMap.get(id) || { name: b.profiles?.full_name || "Anonymous", avatar: b.profiles?.avatar_url || "", wins: 0, score: 0 };
+        const p = pmap.get(id);
+        const existing = scoreMap.get(id) || { name: p?.full_name || "Anonymous", avatar: p?.avatar_url || "", wins: 0, score: 0 };
         existing.wins += 1;
         existing.score += 150;
         scoreMap.set(id, existing);

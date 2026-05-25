@@ -49,13 +49,16 @@ export const PetTrading = () => {
     queryFn: async () => {
       if (!user) return [];
       const { data, error } = await supabase.from('pet_trades').select(`
-        *, from_user:profiles!pet_trades_from_user_id_fkey(full_name),
-        to_user:profiles!pet_trades_to_user_id_fkey(full_name),
+        *,
         offered_pet:pets!pet_trades_offered_pet_id_fkey(name, level, pet_types(name)),
         requested_pet:pets!pet_trades_requested_pet_id_fkey(name, level, pet_types(name))
       `).or(`from_user_id.eq.${user.id},to_user_id.eq.${user.id}`).order('created_at', { ascending: false });
       if (error) throw error;
-      return data;
+      const rows = data || [];
+      const ids = Array.from(new Set(rows.flatMap((r: any) => [r.from_user_id, r.to_user_id]).filter(Boolean)));
+      const { data: profs } = await (supabase as any).from("profiles_public").select("id, full_name").in("id", ids);
+      const pmap = new Map<string, any>((profs || []).map((p: any) => [p.id, p]));
+      return rows.map((r: any) => ({ ...r, from_user: pmap.get(r.from_user_id) || null, to_user: pmap.get(r.to_user_id) || null }));
     },
     enabled: !!user
   });
