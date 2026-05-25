@@ -51,7 +51,7 @@ const AdminMegatalentModeration = () => {
     const uniq = Array.from(new Set(ids.filter(Boolean)));
     const missing = uniq.filter(i => !profiles[i]);
     if (!missing.length) return;
-    const { data } = await supabase.from("profiles").select("id,full_name,avatar_url").in("id", missing);
+    const { data } = await supabase.from("profiles_public" as any).select("id,full_name,avatar_url").in("id", missing);
     if (data) {
       const map: any = {};
       data.forEach((p: any) => { map[p.id] = p; });

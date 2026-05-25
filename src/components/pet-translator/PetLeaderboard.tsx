@@ -51,7 +51,7 @@ export default function PetLeaderboard() {
 
       const [{ data: profs }, { data: pets }] = await Promise.all([
         userIds.length
-          ? supabase.from("profiles").select("id, full_name").in("id", userIds)
+          ? supabase.from("profiles_public" as any).select("id, full_name").in("id", userIds)
           : Promise.resolve({ data: [] as any[] }),
         petIds.length
           ? supabase.from("pets").select("id, name, breed, species").in("id", petIds)

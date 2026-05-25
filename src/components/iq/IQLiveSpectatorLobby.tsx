@@ -39,8 +39,7 @@ export default function IQLiveSpectatorLobby() {
       const u = data.user;
       if (!u) return;
       const { data: prof } = await supabase
-        .from("profiles")
-        .select("full_name")
+        .from("profiles_public" as any).select("full_name")
         .eq("id", u.id)
         .maybeSingle();
       setMe({ id: u.id, name: prof?.full_name ?? "Spectator" });
@@ -58,7 +57,7 @@ export default function IQLiveSpectatorLobby() {
     setDuels(list);
     const ids = Array.from(new Set(list.flatMap((d) => [d.host_id, d.opponent_id]).filter(Boolean) as string[]));
     if (ids.length) {
-      const { data: profs } = await supabase.from("profiles").select("id,full_name").in("id", ids);
+      const { data: profs } = await supabase.from("profiles_public" as any).select("id,full_name").in("id", ids);
       const map: Record<string, string> = {};
       for (const p of (profs ?? []) as ProfileLite[]) map[p.id] = p.full_name ?? "Player";
       setProfiles(map);

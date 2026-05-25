@@ -37,7 +37,7 @@ export function Leaderboard({ playerScore, playerName = "You" }: LeaderboardProp
 
       const ids = (data || []).map((r: any) => r.child_id).filter(Boolean);
       const { data: profs } = ids.length
-        ? await supabase.from("profiles").select("id, full_name").in("id", ids)
+        ? await supabase.from("profiles_public" as any).select("id, full_name").in("id", ids)
         : { data: [] as any[] };
       const pmap = new Map((profs || []).map((p: any) => [p.id, p.full_name]));
 

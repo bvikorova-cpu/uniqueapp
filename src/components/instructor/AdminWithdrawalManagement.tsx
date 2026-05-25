@@ -72,8 +72,7 @@ export function AdminWithdrawalManagement() {
       if (requestsData && requestsData.length > 0) {
         const userIds = requestsData.map(r => r.instructor_profiles.user_id);
         const { data: profilesData } = await supabase
-          .from("profiles")
-          .select("id, full_name, email")
+          .from("profiles_public" as any).select("id, full_name, email")
           .in("id", userIds);
 
         // Merge the data

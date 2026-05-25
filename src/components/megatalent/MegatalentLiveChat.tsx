@@ -23,7 +23,7 @@ const MegatalentLiveChat = ({ category, userId }: { category?: string; userId: s
   // Load name
   useEffect(() => {
     if (!userId) { setMyName("Guest"); return; }
-    supabase.from("profiles").select("full_name").eq("id", userId).maybeSingle()
+    supabase.from("profiles_public" as any).select("full_name").eq("id", userId).maybeSingle()
       .then(({ data }) => setMyName(data?.full_name || "User"));
   }, [userId]);
 

@@ -44,7 +44,7 @@ export const SkillMatches = () => {
       if (error) throw error;
       const matchedUserIds = matchesData?.map(m => m.matched_user_id) || [];
       const { data: profilesData } = await supabase
-        .from('profiles').select('id, full_name, rating_average, total_reviews, completed_exchanges, skills_offered, skills_wanted')
+        .from('profiles_public' as any).select('id, full_name, rating_average, total_reviews, completed_exchanges, skills_offered, skills_wanted')
         .in('id', matchedUserIds);
       const profilesMap = new Map(profilesData?.map(p => [p.id, p]) || []);
       setMatches((matchesData || []).map(match => ({ ...match, matched_profile: profilesMap.get(match.matched_user_id) })));

@@ -11,7 +11,7 @@ const UsernameRedirect = () => {
     (async () => {
       if (!username) { navigate("/"); return; }
       const { data } = await supabase
-        .from("profiles").select("id")
+        .from("profiles_public" as any).select("id")
         .ilike("username", username).maybeSingle();
       if (data?.id) {
         // record a view (anonymous-friendly)

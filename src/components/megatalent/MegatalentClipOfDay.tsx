@@ -40,7 +40,7 @@ const MegatalentClipOfDay = ({ category }: Props) => {
       .select("id,title,media_url,media_type,user_id").eq("id", c.submission_id).maybeSingle();
     setSub((s as Sub) || null);
     if (s?.user_id) {
-      const { data: p } = await supabase.from("profiles").select("id,full_name,avatar_url").eq("id", s.user_id).maybeSingle();
+      const { data: p } = await supabase.from("profiles_public" as any).select("id,full_name,avatar_url").eq("id", s.user_id).maybeSingle();
       setProfile((p as Profile) || null);
     }
     setBroken(false);

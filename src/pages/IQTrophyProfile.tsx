@@ -59,7 +59,7 @@ export default function IQTrophyProfile() {
     let alive = true;
     (async () => {
       const [profileRes, statsRes, winsRes, playedRes, tourneyRes] = await Promise.all([
-        supabase.from("profiles").select("full_name,avatar_url").eq("id", userId).maybeSingle(),
+        supabase.from("profiles_public" as any).select("full_name,avatar_url").eq("id", userId).maybeSingle(),
         supabase.from("iq_user_stats").select("best_iq,latest_iq,total_tests,current_streak,longest_streak,tier,country_code").eq("user_id", userId).maybeSingle(),
         supabase.from("iq_duels").select("id,mode,finished_at,host_id,opponent_id,host_score,opponent_score").eq("status", "finished").eq("winner_id", userId).order("finished_at", { ascending: false }).limit(10),
         supabase.from("iq_duels").select("id", { count: "exact", head: true }).eq("status", "finished").or(`host_id.eq.${userId},opponent_id.eq.${userId}`),

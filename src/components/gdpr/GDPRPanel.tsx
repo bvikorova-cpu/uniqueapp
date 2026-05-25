@@ -60,7 +60,7 @@ export function GDPRPanel() {
     
     try {
       const [profileRes, postsRes, messagesRes] = await Promise.all([
-        supabase.from("profiles").select("*").eq("id", user.id).single(),
+        supabase.from("profiles_public" as any).select("*").eq("id", user.id).single(),
         supabase.from("posts").select("*").eq("user_id", user.id),
         supabase.from("messages").select("*").or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`),
       ]);

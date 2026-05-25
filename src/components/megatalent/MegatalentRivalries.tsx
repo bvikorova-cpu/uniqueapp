@@ -64,7 +64,7 @@ const MegatalentRivalries = ({ category, categories }: Props) => {
 
         const uids = Array.from(new Set(list.flatMap(r => [r.aId, r.bId])));
         if (uids.length) {
-          const { data: profs } = await supabase.from("profiles").select("id,full_name,avatar_url").in("id", uids);
+          const { data: profs } = await supabase.from("profiles_public" as any).select("id,full_name,avatar_url").in("id", uids);
           const map: Record<string, Profile> = {}; (profs || []).forEach((p: any) => { map[p.id] = p; });
           setProfiles(map);
         }

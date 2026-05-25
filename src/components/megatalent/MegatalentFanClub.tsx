@@ -33,7 +33,7 @@ const MegatalentFanClub = ({ userId }: { userId: string | null }) => {
     const idList = [...uniqueIds].slice(0, 12);
     if (!idList.length) { setItems([]); setLoading(false); return; }
 
-    const { data: profs } = await supabase.from("profiles").select("id,full_name,avatar_url").in("id", idList);
+    const { data: profs } = await supabase.from("profiles_public" as any).select("id,full_name,avatar_url").in("id", idList);
     const profMap: Record<string, any> = {};
     (profs || []).forEach((p: any) => { profMap[p.id] = p; });
 

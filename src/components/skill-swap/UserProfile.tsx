@@ -50,12 +50,12 @@ export const UserProfile = () => {
   const loadProfile = async () => {
     if (!userId || userId === 'undefined') { setLoading(false); return; }
     try {
-      const { data: profileData, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
+      const { data: profileData, error } = await supabase.from('profiles_public' as any).select('*').eq('id', userId).single();
       if (error) throw error;
       setProfile(profileData);
       const { data: reviewsData } = await supabase.from('skill_swap_reviews').select('*').eq('reviewed_user_id', userId).order('created_at', { ascending: false });
       const reviewerIds = reviewsData?.map(r => r.reviewer_id) || [];
-      const { data: profilesData } = await supabase.from('profiles').select('id, full_name').in('id', reviewerIds);
+      const { data: profilesData } = await supabase.from('profiles_public' as any).select('id, full_name').in('id', reviewerIds);
       const profilesMap = new Map(profilesData?.map(p => [p.id, p]) || []);
       setReviews((reviewsData || []).map(r => ({ ...r, reviewer: { full_name: profilesMap.get(r.reviewer_id)?.full_name || 'Anonymous' } })));
     } catch (error) { console.error('Error loading profile:', error); toast.error('Error loading profile'); }
