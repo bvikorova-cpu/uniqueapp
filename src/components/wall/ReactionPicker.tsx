@@ -97,7 +97,8 @@ export const ReactionPicker = ({ postId }: ReactionPickerProps) => {
             </div>
             {userReactionType && (
               <button
-                onClick={handleRemoveReaction}
+                type="button"
+                onClick={(e) => { e.preventDefault(); handleRemoveReaction(); }}
                 className="flex items-center justify-center gap-1 text-sm text-destructive hover:bg-destructive/10 rounded-lg p-2 transition-colors"
               >
                 <X className="h-4 w-4" />
