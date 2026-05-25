@@ -73,8 +73,6 @@ export const ReactionPicker = ({ postId }: ReactionPickerProps) => {
         </PopoverTrigger>
         <PopoverContent
           className="w-auto p-2"
-          align="start"
-          side="top"
           onOpenAutoFocus={(e) => e.preventDefault()}
           onCloseAutoFocus={(e) => e.preventDefault()}
         >
