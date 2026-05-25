@@ -47,16 +47,12 @@ export const SearchBar = () => {
           // Search posts
           supabase
             .from("posts")
-            .select("id, content, created_at, profiles(id, full_name, avatar_url)")
+            .select("id, content, created_at")
             .ilike("content", `%${query}%`)
             .order("created_at", { ascending: false })
             .limit(5),
-          // Search ALL users (not just friends)
-          supabase
-            .from("profiles")
-            .select("id, full_name, avatar_url, bio")
-            .or(`full_name.ilike.%${query}%`)
-            .limit(8),
+          // Search ALL users via safe RPC (works across users without exposing PII)
+          (supabase as any).rpc("search_users", { q: query, lim: 8 }),
           // Search hashtags
           supabase
             .from("hashtags")
@@ -213,13 +209,9 @@ export const SearchBar = () => {
                       className="w-full px-3 py-2 flex items-center gap-3 hover:bg-accent transition-colors text-left"
                     >
                       <Avatar className="h-8 w-8">
-                        <AvatarImage src={post.profiles?.avatar_url} />
-                        <AvatarFallback className="text-xs">
-                          {post.profiles?.full_name?.[0] || "U"}
-                        </AvatarFallback>
+                        <AvatarFallback className="text-xs">P</AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-muted-foreground">{post.profiles?.full_name}</p>
                         <p className="text-sm truncate">{post.content}</p>
                       </div>
                     </button>

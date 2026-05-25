@@ -4575,6 +4575,13 @@ export type Database = {
             foreignKeyName: "bazaar_items_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "profiles_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bazaar_items_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
@@ -4634,6 +4641,13 @@ export type Database = {
             foreignKeyName: "bazaar_messages_receiver_id_fkey"
             columns: ["receiver_id"]
             isOneToOne: false
+            referencedRelation: "profiles_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bazaar_messages_receiver_id_fkey"
+            columns: ["receiver_id"]
+            isOneToOne: false
             referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
@@ -4649,6 +4663,13 @@ export type Database = {
             columns: ["sender_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bazaar_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_public"
             referencedColumns: ["id"]
           },
           {
@@ -12716,6 +12737,13 @@ export type Database = {
             foreignKeyName: "completed_courses_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "profiles_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "completed_courses_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
@@ -14717,6 +14745,13 @@ export type Database = {
             foreignKeyName: "course_progress_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "profiles_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "course_progress_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
@@ -14877,6 +14912,13 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "course_statistics_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_public"
             referencedColumns: ["id"]
           },
           {
@@ -19125,6 +19167,13 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dunning_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_public"
             referencedColumns: ["id"]
           },
           {
@@ -23396,6 +23445,13 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "forum_posts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_public"
             referencedColumns: ["id"]
           },
           {
@@ -50362,6 +50418,13 @@ export type Database = {
             foreignKeyName: "skill_offerings_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "profiles_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "skill_offerings_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
@@ -57575,6 +57638,13 @@ export type Database = {
             foreignKeyName: "videos_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "profiles_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "videos_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
@@ -60028,6 +60098,102 @@ export type Database = {
           },
         ]
       }
+      profiles_public: {
+        Row: {
+          accent_color: string | null
+          animated_avatar_url: string | null
+          avatar_3d_url: string | null
+          avatar_url: string | null
+          banner_url: string | null
+          bio: string | null
+          company: string | null
+          completed_exchanges: number | null
+          cover_url: string | null
+          created_at: string | null
+          full_name: string | null
+          headline: string | null
+          id: string | null
+          interests: string[] | null
+          is_verified: boolean | null
+          languages: string[] | null
+          location: string | null
+          occupation: string | null
+          open_to_work: boolean | null
+          profile_theme: string | null
+          rating_average: number | null
+          seo_description: string | null
+          seo_title: string | null
+          skills_offered: string[] | null
+          skills_wanted: string[] | null
+          theme_color: string | null
+          total_reviews: number | null
+          user_type: string | null
+          username: string | null
+        }
+        Insert: {
+          accent_color?: string | null
+          animated_avatar_url?: string | null
+          avatar_3d_url?: string | null
+          avatar_url?: string | null
+          banner_url?: string | null
+          bio?: string | null
+          company?: string | null
+          completed_exchanges?: number | null
+          cover_url?: string | null
+          created_at?: string | null
+          full_name?: string | null
+          headline?: string | null
+          id?: string | null
+          interests?: string[] | null
+          is_verified?: boolean | null
+          languages?: string[] | null
+          location?: string | null
+          occupation?: string | null
+          open_to_work?: boolean | null
+          profile_theme?: string | null
+          rating_average?: number | null
+          seo_description?: string | null
+          seo_title?: string | null
+          skills_offered?: string[] | null
+          skills_wanted?: string[] | null
+          theme_color?: string | null
+          total_reviews?: number | null
+          user_type?: string | null
+          username?: string | null
+        }
+        Update: {
+          accent_color?: string | null
+          animated_avatar_url?: string | null
+          avatar_3d_url?: string | null
+          avatar_url?: string | null
+          banner_url?: string | null
+          bio?: string | null
+          company?: string | null
+          completed_exchanges?: number | null
+          cover_url?: string | null
+          created_at?: string | null
+          full_name?: string | null
+          headline?: string | null
+          id?: string | null
+          interests?: string[] | null
+          is_verified?: boolean | null
+          languages?: string[] | null
+          location?: string | null
+          occupation?: string | null
+          open_to_work?: boolean | null
+          profile_theme?: string | null
+          rating_average?: number | null
+          seo_description?: string | null
+          seo_title?: string | null
+          skills_offered?: string[] | null
+          skills_wanted?: string[] | null
+          theme_color?: string | null
+          total_reviews?: number | null
+          user_type?: string | null
+          username?: string | null
+        }
+        Relationships: []
+      }
       public_businesses: {
         Row: {
           address: string | null
@@ -61799,15 +61965,27 @@ export type Database = {
       }
       rotate_mystery_events: { Args: never; Returns: undefined }
       rotate_seasonal_missions: { Args: never; Returns: Json }
-      search_users: {
-        Args: { search_query: string }
-        Returns: {
-          avatar_url: string
-          full_name: string
-          id: string
-          username: string
-        }[]
-      }
+      search_users:
+        | {
+            Args: { lim?: number; q: string }
+            Returns: {
+              avatar_url: string
+              full_name: string
+              headline: string
+              id: string
+              is_verified: boolean
+              username: string
+            }[]
+          }
+        | {
+            Args: { search_query: string }
+            Returns: {
+              avatar_url: string
+              full_name: string
+              id: string
+              username: string
+            }[]
+          }
       send_secret_santa_gift: {
         Args: {
           p_animation_type?: string
