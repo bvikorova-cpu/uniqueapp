@@ -71,7 +71,13 @@ export const ReactionPicker = ({ postId }: ReactionPickerProps) => {
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-2">
+        <PopoverContent
+          className="w-auto p-2"
+          align="start"
+          side="top"
+          onOpenAutoFocus={(e) => e.preventDefault()}
+          onCloseAutoFocus={(e) => e.preventDefault()}
+        >
           <div className="flex flex-col gap-2">
             <div className="flex gap-1">
               {REACTIONS.map((reaction) => (
