@@ -57,7 +57,13 @@ export const ReactionPicker = ({ postId }: ReactionPickerProps) => {
     <div className="flex items-center gap-2">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button variant="ghost" size="sm" className={userReactionType ? "text-primary" : ""}>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className={userReactionType ? "text-primary" : ""}
+            onClick={(e) => e.preventDefault()}
+          >
             <span className="text-xl mr-2">{userReactionEmoji || "👍"}</span>
             {userReactionType ? "Reacted" : "React"}
             {totalReactions > 0 && (
@@ -71,7 +77,8 @@ export const ReactionPicker = ({ postId }: ReactionPickerProps) => {
               {REACTIONS.map((reaction) => (
                 <button
                   key={reaction.type}
-                  onClick={() => handleReaction(reaction.type)}
+                  type="button"
+                  onClick={(e) => { e.preventDefault(); handleReaction(reaction.type); }}
                   className={`p-2 hover:bg-accent rounded-lg transition-colors relative group ${
                     userReactionType === reaction.type 
                       ? "bg-primary/20 ring-2 ring-primary" 
@@ -90,7 +97,8 @@ export const ReactionPicker = ({ postId }: ReactionPickerProps) => {
             </div>
             {userReactionType && (
               <button
-                onClick={handleRemoveReaction}
+                type="button"
+                onClick={(e) => { e.preventDefault(); handleRemoveReaction(); }}
                 className="flex items-center justify-center gap-1 text-sm text-destructive hover:bg-destructive/10 rounded-lg p-2 transition-colors"
               >
                 <X className="h-4 w-4" />
