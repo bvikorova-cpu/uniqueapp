@@ -18,7 +18,7 @@ export const useAchievementChecker = () => {
       .from("achievements")
       .select("id, name, icon, points")
       .eq("code", achievementCode)
-      .single();
+      .maybeSingle();
 
     if (!achievement) return false;
 
