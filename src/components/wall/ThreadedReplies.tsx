@@ -44,14 +44,16 @@ export function ThreadedReplies({ postId, commentId, depth = 0, maxDepth = 3 }: 
     queryFn: async () => {
       const { data } = await (supabase as any)
         .from("comments")
-        .select(`
-          id, content, created_at, user_id, parent_comment_id,
-          profiles:user_id(full_name, avatar_url)
-        `)
+        .select(`id, content, created_at, user_id, parent_comment_id`)
         .eq("parent_comment_id", commentId)
         .order("created_at", { ascending: true });
 
-      return (data as any[]) || [];
+      const rows = (data as any[]) || [];
+      if (!rows.length) return [];
+      const ids = Array.from(new Set(rows.map((r: any) => r.user_id).filter(Boolean)));
+      const { data: profs } = await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", ids);
+      const m = new Map((profs || []).map((p: any) => [p.id, p]));
+      return rows.map((r: any) => ({ ...r, profiles: m.get(r.user_id) || { full_name: null, avatar_url: null } }));
     },
     enabled: expanded,
   });

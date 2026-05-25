@@ -18,7 +18,7 @@ export default function WallVideos() {
       if (!posts) return [];
       const videoPostsData = posts.filter(post => post.media?.some((m: any) => m.file_type?.startsWith("video/")));
       const userIds = Array.from(new Set(videoPostsData.map(p => p.user_id)));
-      const { data: profiles } = await supabase.from("profiles").select("id, full_name, avatar_url").in("id", userIds);
+      const { data: profiles } = await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", userIds);
       const profilesMap = new Map((profiles || []).map(p => [p.id, p]));
       return videoPostsData.map(post => ({
         ...post,
@@ -30,8 +30,12 @@ export default function WallVideos() {
   const { data: standaloneVideos = [], isLoading: loadingVideos, refetch: refetchVideos } = useQuery({
     queryKey: ["standalone-videos"],
     queryFn: async () => {
-      const { data: videos } = await supabase.from("videos").select("*, profiles:user_id(full_name, avatar_url)").order("created_at", { ascending: false });
-      return videos || [];
+      const { data: videos } = await supabase.from("videos").select("*").order("created_at", { ascending: false });
+      if (!videos?.length) return [];
+      const ids = Array.from(new Set(videos.map((v: any) => v.user_id).filter(Boolean)));
+      const { data: profs } = await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", ids);
+      const m = new Map((profs || []).map((p: any) => [p.id, p]));
+      return videos.map((v: any) => ({ ...v, profiles: m.get(v.user_id) || { full_name: null, avatar_url: null } }));
     },
   });
 
@@ -47,7 +51,7 @@ export default function WallVideos() {
         .order("created_at", { ascending: false });
       if (!stories?.length) return [];
       const userIds = Array.from(new Set(stories.map((s: any) => s.user_id)));
-      const { data: profiles } = await supabase.from("profiles").select("id, full_name, avatar_url").in("id", userIds);
+      const { data: profiles } = await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", userIds);
       const map = new Map((profiles || []).map((p: any) => [p.id, p]));
       return stories.map((s: any) => ({
         id: `story-${s.id}`,
