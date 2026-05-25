@@ -8,7 +8,7 @@ import { Search, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 export const GroupsList = () => {
-  const { groups, isLoading, joinGroup, leaveGroup } = useGroups();
+  const { groups, isLoading, joinGroup, leaveGroup, deleteGroup } = useGroups();
   const [searchQuery, setSearchQuery] = useState("");
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [userGroups, setUserGroups] = useState<Set<string>>(new Set());
@@ -81,7 +81,9 @@ export const GroupsList = () => {
             group={group}
             onJoin={joinGroup}
             onLeave={leaveGroup}
+            onDelete={deleteGroup}
             isMember={userGroups.has(group.id)}
+            isCreator={currentUserId === group.creator_id}
           />
         ))}
       </div>
