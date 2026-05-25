@@ -59,7 +59,7 @@ const MegatalentComments = ({ category, categories, userId }: Props) => {
       setComments(list);
       const uids = Array.from(new Set(list.map(c => c.user_id)));
       if (uids.length) {
-        const { data: profs } = await supabase.from("profiles_public" as any).select("id,full_name,avatar_url").in("id", uids);
+        const { data: profs } = await (supabase as any).from("profiles_public").select("id,full_name,avatar_url").in("id", uids);
         const map: Record<string, Profile> = {};
         (profs || []).forEach((p: any) => { map[p.id] = p; });
         if (mounted) setProfiles(prev => ({ ...prev, ...map }));
@@ -72,7 +72,7 @@ const MegatalentComments = ({ category, categories, userId }: Props) => {
           const c = payload.new as Comment;
           setComments(prev => prev.find(x => x.id === c.id) ? prev : [...prev, c]);
           if (!profiles[c.user_id]) {
-            supabase.from("profiles_public" as any).select("id,full_name,avatar_url").eq("id", c.user_id).maybeSingle().then(({ data }) => {
+            (supabase as any).from("profiles_public").select("id,full_name,avatar_url").eq("id", c.user_id).maybeSingle().then(({ data }) => {
               if (data) setProfiles(prev => ({ ...prev, [data.id]: data as Profile }));
             });
           }

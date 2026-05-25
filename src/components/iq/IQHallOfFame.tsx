@@ -39,7 +39,7 @@ export default function IQHallOfFame() {
           ? supabase.from("iq_competitions").select("id, title, finalized_at").in("id", compIds)
           : Promise.resolve({ data: [] as any[] }),
         userIds.length
-          ? supabase.from("profiles_public" as any).select("id, full_name, avatar_url").in("id", userIds)
+          ? (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", userIds)
           : Promise.resolve({ data: [] as any[] }),
       ]);
 

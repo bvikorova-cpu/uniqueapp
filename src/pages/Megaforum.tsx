@@ -115,7 +115,7 @@ const Megaforum = () => {
     queryFn: async () => {
       const userIds = [...new Set(posts.map(p => p.user_id))];
       if (userIds.length === 0) return {};
-      const { data, error } = await supabase.from("profiles_public" as any).select("id, full_name, avatar_url").in("id", userIds);
+      const { data, error } = await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", userIds);
       if (error) throw error;
       const map: Record<string, Profile> = {};
       data?.forEach(p => { map[p.id] = p; });
@@ -142,7 +142,7 @@ const Megaforum = () => {
     queryFn: async () => {
       const userIds = [...new Set(comments.map((c: any) => c.user_id))];
       if (userIds.length === 0) return {};
-      const { data, error } = await supabase.from("profiles_public" as any).select("id, full_name, avatar_url").in("id", userIds);
+      const { data, error } = await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", userIds);
       if (error) throw error;
       const map: Record<string, Profile> = {};
       data?.forEach(p => { map[p.id] = p; });

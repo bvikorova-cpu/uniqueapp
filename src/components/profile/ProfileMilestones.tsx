@@ -37,7 +37,7 @@ export function ProfileMilestones({ userId }: ProfileMilestonesProps) {
           (supabase as any).from("post_comments").select("*", { count: "exact", head: true }).eq("user_id", userId),
           (supabase as any).from("megatalent_entries").select("*", { count: "exact", head: true }).eq("user_id", userId),
           (supabase as any).from("follows").select("*", { count: "exact", head: true }).eq("following_id", userId),
-          supabase.from("profiles_public" as any).select("created_at").eq("id", userId).maybeSingle(),
+          (supabase as any).from("profiles_public").select("created_at").eq("id", userId).maybeSingle(),
         ]);
         const created = (profile.data as any)?.created_at;
         const days = created ? Math.max(1, Math.floor((Date.now() - new Date(created).getTime()) / 86400000)) : 0;

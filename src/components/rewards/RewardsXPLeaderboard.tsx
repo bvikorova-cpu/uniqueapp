@@ -29,7 +29,7 @@ async function fetchLeaderboard(): Promise<LeaderboardEntry[]> {
 
   const userIds = points.map((p) => p.user_id);
   const [profilesRes, badgesRes] = await Promise.all([
-    supabase.from("profiles_public" as any).select("id, full_name, username, avatar_url").in("id", userIds),
+    (supabase as any).from("profiles_public").select("id, full_name, username, avatar_url").in("id", userIds),
     supabase.from("user_badges").select("user_id").in("user_id", userIds),
   ]);
 

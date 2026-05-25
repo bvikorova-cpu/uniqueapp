@@ -45,7 +45,7 @@ export default function CandidateSearch() {
     // Enrich with profile names
     const ids = list.map((c: any) => c.user_id);
     if (ids.length) {
-      const { data: profs } = await supabase.from("profiles_public" as any).select("id, full_name, avatar_url").in("id", ids);
+      const { data: profs } = await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", ids);
       const map = Object.fromEntries((profs ?? []).map((p: any) => [p.id, p]));
       list = list.map((c: any) => ({ ...c, profile: map[c.user_id] }));
     }

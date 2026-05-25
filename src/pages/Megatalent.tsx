@@ -149,7 +149,7 @@ const Megatalent = () => {
       if (error) throw error;
       if (submissionsData && submissionsData.length > 0) {
         const userIds = [...new Set(submissionsData.map(s => s.user_id))];
-        const { data: profilesData } = await supabase.from('profiles_public' as any).select('id, full_name, avatar_url').in('id', userIds);
+        const { data: profilesData } = await (supabase as any).from('profiles_public').select('id, full_name, avatar_url').in('id', userIds);
         const { data: subsData } = await supabase.from('megatalent_subscriptions').select('user_id, tier').in('user_id', userIds).eq('status', 'active');
         const userTiers: Record<string, string> = {};
         subsData?.forEach(sub => { userTiers[sub.user_id] = sub.tier; });
@@ -225,7 +225,7 @@ const Megatalent = () => {
       if (error) throw error;
       if (commentsData && commentsData.length > 0) {
         const userIds = [...new Set(commentsData.map(c => c.user_id))];
-        const { data: profilesData } = await supabase.from('profiles_public' as any).select('id, full_name, avatar_url').in('id', userIds);
+        const { data: profilesData } = await (supabase as any).from('profiles_public').select('id, full_name, avatar_url').in('id', userIds);
         setComments(prev => ({ ...prev, [submissionId]: commentsData.map(c => ({ ...c, profiles: profilesData?.find(p => p.id === c.user_id) })) }));
       } else { setComments(prev => ({ ...prev, [submissionId]: [] })); }
     } catch (error) { console.error('Error fetching comments:', error); }

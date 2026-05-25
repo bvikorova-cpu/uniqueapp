@@ -128,7 +128,7 @@ const MegatalentBattleResults = () => {
 
       const userIds = [...new Set((subsData || []).map((s: any) => s.user_id))];
       if (userIds.length) {
-        const { data: profs, error: pe } = await supabase.from("profiles_public" as any).select("id,full_name,avatar_url").in("id", userIds);
+        const { data: profs, error: pe } = await (supabase as any).from("profiles_public").select("id,full_name,avatar_url").in("id", userIds);
         if (pe) throw pe;
         (profs || []).forEach((p: any) => { pMap[p.id] = p; });
       }

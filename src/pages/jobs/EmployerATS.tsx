@@ -45,7 +45,7 @@ export default function EmployerATS() {
     const ids = (a ?? []).map((x: any) => x.applicant_id);
     let profilesMap: Record<string, any> = {};
     if (ids.length) {
-      const { data: profs } = await supabase.from("profiles_public" as any).select("id, full_name, avatar_url").in("id", ids);
+      const { data: profs } = await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", ids);
       profilesMap = Object.fromEntries((profs ?? []).map((p: any) => [p.id, p]));
     }
     setApps((a ?? []).map((x: any) => ({ ...x, profile: profilesMap[x.applicant_id] })));

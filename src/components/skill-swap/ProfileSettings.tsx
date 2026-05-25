@@ -28,7 +28,7 @@ export const ProfileSettings = () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { navigate('/auth'); return; }
-      const { data, error } = await supabase.from('profiles_public' as any).select('*').eq('id', session.user.id).single();
+      const { data, error } = await (supabase as any).from('profiles_public').select('*').eq('id', session.user.id).single();
       if (error) throw error;
       setProfile({ full_name: data.full_name || "", bio: data.bio || "", location: data.location || "", skills_offered: data.skills_offered || [], skills_wanted: data.skills_wanted || [] });
     } catch (error) { console.error('Error:', error); toast.error('Failed to load profile'); }

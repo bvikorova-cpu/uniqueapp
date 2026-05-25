@@ -36,7 +36,7 @@ export function LiveSessionsView({ onBack }: Props) {
       const rows = (data ?? []) as LiveSession[];
       if (rows.length) {
         const ids = [...new Set(rows.map(r => r.instructor_id))];
-        const { data: profs } = await supabase.from("profiles_public" as any).select("id,username,full_name").in("id", ids);
+        const { data: profs } = await (supabase as any).from("profiles_public").select("id,username,full_name").in("id", ids);
         const pMap = new Map((profs ?? []).map((p: any) => [p.id, p.username || p.full_name || "Instructor"]));
         rows.forEach(r => { r.instructor_name = pMap.get(r.instructor_id) || "Instructor"; });
       }

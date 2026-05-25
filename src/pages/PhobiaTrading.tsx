@@ -74,7 +74,7 @@ const PhobiaTrading = () => {
     try {
       const [{ count: c1 }, { count: c2 }] = await Promise.all([
         supabase.from("ai_generated_content").select("*", { count: "exact", head: true }).like("title", "fear_journal_%"),
-        supabase.from("profiles_public" as any).select("*", { count: "exact", head: true }),
+        (supabase as any).from("profiles_public").select("*", { count: "exact", head: true }),
       ]);
       setStats({ phobias: c1 || 0, trades: 0, members: c2 || 0 });
     } catch (e) { console.error(e); }

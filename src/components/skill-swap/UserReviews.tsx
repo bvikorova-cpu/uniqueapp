@@ -28,7 +28,7 @@ export const UserReviews = ({ userId }: UserReviewsProps) => {
         .eq('reviewed_user_id', userId).order('created_at', { ascending: false });
       if (error) throw error;
       const reviewerIds = [...new Set((data || []).map(r => r.reviewer_id))];
-      const { data: profiles } = await supabase.from('profiles_public' as any).select('id, full_name, avatar_url').in('id', reviewerIds);
+      const { data: profiles } = await (supabase as any).from('profiles_public').select('id, full_name, avatar_url').in('id', reviewerIds);
       const profilesMap = new Map(profiles?.map(p => [p.id, p]));
       setReviews((data || []).map(r => ({
         id: r.id, rating: r.rating, comment: r.comment, created_at: r.created_at,

@@ -46,7 +46,7 @@ export function CourseReviewSystemView({ onBack }: Props) {
       const userIds = [...new Set(rows.map(r => r.user_id))];
       const [{ data: courses }, { data: profs }] = await Promise.all([
         supabase.from("courses").select("id,title").in("id", courseIds),
-        supabase.from("profiles_public" as any).select("id,username,full_name").in("id", userIds),
+        (supabase as any).from("profiles_public").select("id,username,full_name").in("id", userIds),
       ]);
       const cMap = new Map((courses ?? []).map((c: any) => [c.id, c.title]));
       const pMap = new Map((profs ?? []).map((p: any) => [p.id, p.username || p.full_name || "Student"]));

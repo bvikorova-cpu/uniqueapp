@@ -65,7 +65,7 @@ const MegatalentJudgePanel = ({ category, categories, userId }: Props) => {
       setSubs(sMap);
 
       if (uids.length) {
-        const { data: profs } = await supabase.from("profiles_public" as any).select("id,full_name,avatar_url").in("id", uids);
+        const { data: profs } = await (supabase as any).from("profiles_public").select("id,full_name,avatar_url").in("id", uids);
         const map: Record<string, Profile> = {}; (profs || []).forEach((p: any) => { map[p.id] = p; });
         setProfiles(map);
       }

@@ -86,7 +86,7 @@ export const RealtimeActivityFeed = () => {
     // Initial load
     const loadInitial = async () => {
       const [users, txs, msgs, tickets] = await Promise.all([
-        supabase.from("profiles_public" as any).select("id, full_name, email, created_at").order("created_at", { ascending: false }).limit(5),
+        (supabase as any).from("profiles_public").select("id, full_name, email, created_at").order("created_at", { ascending: false }).limit(5),
         supabase.from("transactions").select("id, amount, item_type, created_at").order("created_at", { ascending: false }).limit(5),
         supabase.from("contact_messages").select("id, name, subject, created_at").order("created_at", { ascending: false }).limit(5),
         supabase.from("support_tickets").select("id, name, subject, ticket_number, created_at").order("created_at", { ascending: false }).limit(5),
