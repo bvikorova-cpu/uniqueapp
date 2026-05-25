@@ -48,8 +48,8 @@ export function StudentCommunityView({ onBack }: Props) {
         supabase.from("courses").select("id,title").in("id", courseIds),
         (supabase as any).from("profiles_public").select("id,username,full_name").in("id", userIds),
       ]);
-      const cMap = new Map((courses ?? []).map((c: any) => [c.id, c.title]));
-      const pMap = new Map((profs ?? []).map((p: any) => [p.id, p.username || p.full_name || "Student"]));
+      const cMap = new Map<string, any>((courses ?? []).map((c: any) => [c.id, c.title]));
+      const pMap = new Map<string, any>((profs ?? []).map((p: any) => [p.id, p.username || p.full_name || "Student"]));
       rows.forEach(r => { r.course_title = cMap.get(r.course_id) || "General"; r.author = pMap.get(r.user_id) || "Student"; });
     }
     setThreads(rows);

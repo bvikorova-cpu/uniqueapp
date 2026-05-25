@@ -56,7 +56,7 @@ export const UserProfile = () => {
       const { data: reviewsData } = await supabase.from('skill_swap_reviews').select('*').eq('reviewed_user_id', userId).order('created_at', { ascending: false });
       const reviewerIds = reviewsData?.map(r => r.reviewer_id) || [];
       const { data: profilesData } = await (supabase as any).from('profiles_public').select('id, full_name').in('id', reviewerIds);
-      const profilesMap = new Map(profilesData?.map(p => [p.id, p]) || []);
+      const profilesMap = new Map<string, any>(profilesData?.map((p: any) => [p.id, p]) || []);
       setReviews((reviewsData || []).map(r => ({ ...r, reviewer: { full_name: profilesMap.get(r.reviewer_id)?.full_name || 'Anonymous' } })));
     } catch (error) { console.error('Error loading profile:', error); toast.error('Error loading profile'); }
     finally { setLoading(false); }

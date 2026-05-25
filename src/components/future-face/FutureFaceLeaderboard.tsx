@@ -65,7 +65,7 @@ export default function FutureFaceLeaderboard() {
       const { data: profs } = ids.length
         ? await (supabase as any).from("profiles_public").select("id, full_name").in("id", ids)
         : { data: [] as any[] };
-      const pmap = new Map((profs || []).map((p: any) => [p.id, p.full_name]));
+      const pmap = new Map<string, any>((profs || []).map((p: any) => [p.id, p.full_name]));
 
       const final: Row[] = top.map(([id, g], i) => ({
         rank: i + 1,

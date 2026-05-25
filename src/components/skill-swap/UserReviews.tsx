@@ -29,7 +29,7 @@ export const UserReviews = ({ userId }: UserReviewsProps) => {
       if (error) throw error;
       const reviewerIds = [...new Set((data || []).map(r => r.reviewer_id))];
       const { data: profiles } = await (supabase as any).from('profiles_public').select('id, full_name, avatar_url').in('id', reviewerIds);
-      const profilesMap = new Map(profiles?.map(p => [p.id, p]));
+      const profilesMap = new Map<string, any>(profiles?.map((p: any) => [p.id, p]));
       setReviews((data || []).map(r => ({
         id: r.id, rating: r.rating, comment: r.comment, created_at: r.created_at,
         reviewer: profilesMap.get(r.reviewer_id) || { full_name: 'Unknown User' },

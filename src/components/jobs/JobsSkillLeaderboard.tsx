@@ -50,7 +50,7 @@ export default function JobsSkillLeaderboard() {
       const { data: profs } = ids.length
         ? await (supabase as any).from("profiles_public").select("id, full_name").in("id", ids)
         : { data: [] as any[] };
-      const pmap = new Map((profs || []).map((p: any) => [p.id, p.full_name]));
+      const pmap = new Map<string, any>((profs || []).map((p: any) => [p.id, p.full_name]));
 
       const final: Row[] = src.map((r: any, i: number) => ({
         rank: i + 1,
