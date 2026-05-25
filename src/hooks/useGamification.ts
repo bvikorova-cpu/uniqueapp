@@ -119,13 +119,14 @@ export const useLeaderboard = (limit: number = 10) => {
     queryFn: async () => {
       const { data } = await supabase
         .from("user_points")
-        .select(`
-          *,
-          profile:profiles(*)
-        `)
+        .select("*")
         .order("total_points", { ascending: false })
         .limit(limit);
-      return data || [];
+      const rows = data || [];
+      const ids = Array.from(new Set(rows.map((r: any) => r.user_id).filter(Boolean)));
+      const { data: profs } = await (supabase as any).from("profiles_public").select("id, full_name, avatar_url, username").in("id", ids);
+      const pmap = new Map<string, any>((profs || []).map((p: any) => [p.id, p]));
+      return rows.map((r: any) => ({ ...r, profile: pmap.get(r.user_id) || null }));
     },
   });
 };
