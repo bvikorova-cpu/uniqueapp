@@ -25,13 +25,22 @@ export const useEvents = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("events")
-        .select("*, profiles(*), event_attendees(count)")
+        .select("*, event_attendees(count)")
         .eq("is_public", true)
         .gte("end_time", new Date().toISOString())
         .order("start_time", { ascending: true });
-
       if (error) throw error;
-      return data;
+
+      const creatorIds = Array.from(new Set((data || []).map((e: any) => e.creator_id).filter(Boolean)));
+      let profilesById: Record<string, any> = {};
+      if (creatorIds.length > 0) {
+        const { data: profs } = await (supabase as any)
+          .from("profiles_public")
+          .select("id, full_name, avatar_url, username")
+          .in("id", creatorIds);
+        profilesById = Object.fromEntries((profs || []).map((p: any) => [p.id, p]));
+      }
+      return (data || []).map((e: any) => ({ ...e, profiles: profilesById[e.creator_id] || null }));
     },
   });
 
