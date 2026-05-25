@@ -77,7 +77,8 @@ export const ReactionPicker = ({ postId }: ReactionPickerProps) => {
               {REACTIONS.map((reaction) => (
                 <button
                   key={reaction.type}
-                  onClick={() => handleReaction(reaction.type)}
+                  type="button"
+                  onClick={(e) => { e.preventDefault(); handleReaction(reaction.type); }}
                   className={`p-2 hover:bg-accent rounded-lg transition-colors relative group ${
                     userReactionType === reaction.type 
                       ? "bg-primary/20 ring-2 ring-primary" 
