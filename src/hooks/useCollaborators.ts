@@ -22,11 +22,18 @@ export const useCollaborators = (postId?: string) => {
 
       const { data, error } = await supabase
         .from("post_collaborators")
-        .select("*, profiles!post_collaborators_collaborator_id_fkey(full_name, avatar_url)")
+        .select("*")
         .eq("post_id", postId);
 
       if (error) throw error;
-      return data;
+      const ids = (data || []).map((c: any) => c.collaborator_id);
+      if (ids.length === 0) return data;
+      const { data: profiles } = await (supabase as any)
+        .from("profiles_public")
+        .select("id, full_name, avatar_url")
+        .in("id", ids);
+      const map = new Map((profiles || []).map((p: any) => [p.id, p]));
+      return (data || []).map((c: any) => ({ ...c, profiles: map.get(c.collaborator_id) || null }));
     },
     enabled: !!postId,
   });
