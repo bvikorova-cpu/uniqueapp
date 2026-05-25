@@ -9,7 +9,7 @@ export const useSearch = () => {
 
     const { data, error } = await supabase
       .from("posts")
-      .select("*, profiles(*)")
+      .select("*")
       .ilike("content", `%${query}%`)
       .order("created_at", { ascending: false })
       .limit(20);
@@ -21,11 +21,7 @@ export const useSearch = () => {
   const searchUsers = async (query: string) => {
     if (!query.trim()) return [];
 
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("*")
-      .or(`full_name.ilike.%${query}%,username.ilike.%${query}%`)
-      .limit(20);
+    const { data, error } = await (supabase as any).rpc("search_users", { q: query, lim: 20 });
 
     if (error) throw error;
     return data;
