@@ -34,12 +34,8 @@ export const SharePostToDM = ({ postId, trigger }: Props) => {
       return;
     }
     const t = setTimeout(async () => {
-      const { data } = await supabase
-        .from("profiles")
-        .select("id, full_name, avatar_url")
-        .ilike("full_name", `%${search}%`)
-        .limit(10);
-      setResults(data ?? []);
+      const { data } = await (supabase as any).rpc("search_users", { q: search, lim: 10 });
+      setResults((data ?? []).map((p: any) => ({ id: p.id, full_name: p.full_name, avatar_url: p.avatar_url })));
     }, 250);
     return () => clearTimeout(t);
   }, [search]);
