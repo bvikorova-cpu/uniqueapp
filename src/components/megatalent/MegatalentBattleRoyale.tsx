@@ -109,8 +109,8 @@ const MegatalentBattleRoyale = ({ category, categories }: { category?: string; c
 
       const userIds = [...new Set((subs || []).map((s: any) => s.user_id))];
       if (userIds.length) {
-        const { data: profs } = await supabase
-          .from("profiles_public" as any).select("id,full_name,avatar_url").in("id", userIds);
+        const { data: profs } = await (supabase as any)
+          .from("profiles_public").select("id,full_name,avatar_url").in("id", userIds);
         const pMap: Record<string, ProfileLite> = {};
         (profs || []).forEach((p: any) => { pMap[p.id] = p; });
         setProfiles(pMap);

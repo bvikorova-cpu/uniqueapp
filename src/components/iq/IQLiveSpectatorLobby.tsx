@@ -38,8 +38,8 @@ export default function IQLiveSpectatorLobby() {
     supabase.auth.getUser().then(async ({ data }) => {
       const u = data.user;
       if (!u) return;
-      const { data: prof } = await supabase
-        .from("profiles_public" as any).select("full_name")
+      const { data: prof } = await (supabase as any)
+        .from("profiles_public").select("full_name")
         .eq("id", u.id)
         .maybeSingle();
       setMe({ id: u.id, name: prof?.full_name ?? "Spectator" });

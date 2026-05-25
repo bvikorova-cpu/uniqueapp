@@ -10,8 +10,8 @@ const UsernameRedirect = () => {
   useEffect(() => {
     (async () => {
       if (!username) { navigate("/"); return; }
-      const { data } = await supabase
-        .from("profiles_public" as any).select("id")
+      const { data } = await (supabase as any)
+        .from("profiles_public").select("id")
         .ilike("username", username).maybeSingle();
       if (data?.id) {
         // record a view (anonymous-friendly)

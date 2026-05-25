@@ -59,8 +59,8 @@ export const AdminInfluencerWithdrawals = () => {
 
       // Get user emails
       const userIds = [...new Set(data?.map(r => r.influencer_profiles.user_id) || [])];
-      const { data: profiles } = await supabase
-        .from("profiles_public" as any).select("id, email")
+      const { data: profiles } = await (supabase as any)
+        .from("profiles_public").select("id, email")
         .in("id", userIds);
 
       const profilesMap = new Map(profiles?.map(p => [p.id, p]) || []);
