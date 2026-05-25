@@ -24,14 +24,9 @@ export const CloseFriendsDialog = ({ trigger }: Props) => {
     enabled: q.length >= 2,
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("id, full_name, avatar_url")
-        .ilike("full_name", `%${q}%`)
-        .neq("id", user?.id || "")
-        .limit(20);
+      const { data, error } = await (supabase as any).rpc("search_users", { q, lim: 20 });
       if (error) throw error;
-      return data || [];
+      return (data || []).filter((u: any) => u.id !== user?.id);
     },
   });
 
