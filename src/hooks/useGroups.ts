@@ -173,11 +173,26 @@ export const useGroups = () => {
     },
   });
 
+  const deleteGroup = useMutation({
+    mutationFn: async (groupId: string) => {
+      const { error } = await supabase.from("groups").delete().eq("id", groupId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["groups"] });
+      toast({ title: "Group deleted" });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Error deleting group", description: error.message, variant: "destructive" });
+    },
+  });
+
   return {
     groups: groups || [],
     isLoading,
     createGroup: createGroup.mutate,
     joinGroup: joinGroup.mutate,
     leaveGroup: leaveGroup.mutate,
+    deleteGroup: deleteGroup.mutate,
   };
 };
