@@ -49,8 +49,8 @@ export function WallRightbar() {
 
       if (friendIds.length === 0) return [];
 
-      const { data: profiles } = await supabase
-        .from("profiles")
+      const { data: profiles } = await (supabase as any)
+        .from("profiles_public")
         .select("id, full_name, avatar_url")
         .in("id", friendIds)
         .limit(10);
@@ -78,11 +78,10 @@ export function WallRightbar() {
 
       if (friendIds.length === 0) return [];
 
-      const { data: profiles } = await supabase
-        .from("profiles")
+      const { data: profiles } = await (supabase as any)
+        .from("profiles_public")
         .select("id, full_name, avatar_url")
         .in("id", friendIds)
-        .not("date_of_birth", "is", null)
         .limit(5);
 
       return profiles || [];

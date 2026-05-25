@@ -33,15 +33,15 @@ export default function WallEngagementLeaderboard() {
 
       const ids = (data || []).map((r: any) => r.user_id);
       const { data: profs } = ids.length
-        ? await supabase.from("profiles").select("id, full_name, avatar_url").in("id", ids)
+        ? await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", ids)
         : { data: [] as any[] };
       const pmap = new Map((profs || []).map((p: any) => [p.id, p]));
 
       const top: Row[] = (data || []).slice(0, 10).map((r: any, i: number) => ({
         rank: i + 1,
         user_id: r.user_id,
-        name: pmap.get(r.user_id)?.full_name || "User",
-        avatar_url: pmap.get(r.user_id)?.avatar_url || null,
+        name: (pmap.get(r.user_id) as any)?.full_name || "User",
+        avatar_url: (pmap.get(r.user_id) as any)?.avatar_url || null,
         score: Number(r.total_xp) || 0,
       }));
 

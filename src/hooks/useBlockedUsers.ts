@@ -14,11 +14,18 @@ export const useBlockedUsers = () => {
 
       const { data, error } = await supabase
         .from("blocked_users")
-        .select("blocked_user_id, profiles(*)")
+        .select("blocked_user_id")
         .eq("user_id", user.id);
 
       if (error) throw error;
-      return data;
+      const ids = (data || []).map((b: any) => b.blocked_user_id);
+      if (ids.length === 0) return [];
+      const { data: profiles } = await (supabase as any)
+        .from("profiles_public")
+        .select("id, full_name, avatar_url, username")
+        .in("id", ids);
+      const map = new Map((profiles || []).map((p: any) => [p.id, p]));
+      return (data || []).map((b: any) => ({ ...b, profiles: map.get(b.blocked_user_id) || null }));
     },
   });
 
