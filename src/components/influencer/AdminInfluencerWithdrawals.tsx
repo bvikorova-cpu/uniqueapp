@@ -63,7 +63,7 @@ export const AdminInfluencerWithdrawals = () => {
         .from("profiles_public").select("id, email")
         .in("id", userIds);
 
-      const profilesMap = new Map(profiles?.map(p => [p.id, p]) || []);
+      const profilesMap = new Map<string, any>((profiles || []).map((p: any) => [p.id, p]));
 
       const enrichedRequests = (data || []).map(req => ({
         ...req,
