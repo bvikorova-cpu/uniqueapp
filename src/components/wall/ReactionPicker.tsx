@@ -57,7 +57,13 @@ export const ReactionPicker = ({ postId }: ReactionPickerProps) => {
     <div className="flex items-center gap-2">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button variant="ghost" size="sm" className={userReactionType ? "text-primary" : ""}>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className={userReactionType ? "text-primary" : ""}
+            onClick={(e) => e.preventDefault()}
+          >
             <span className="text-xl mr-2">{userReactionEmoji || "👍"}</span>
             {userReactionType ? "Reacted" : "React"}
             {totalReactions > 0 && (
