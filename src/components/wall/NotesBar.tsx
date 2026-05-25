@@ -40,7 +40,7 @@ export const NotesBar = () => {
     if (error) return;
     const userIds = Array.from(new Set((notesData ?? []).map((n) => n.user_id)));
     const { data: profiles } = userIds.length
-      ? await supabase.from("profiles").select("id, full_name, avatar_url").in("id", userIds)
+      ? await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", userIds)
       : { data: [] as any[] };
     const profileMap = new Map((profiles ?? []).map((p: any) => [p.id, p]));
     setNotes(
