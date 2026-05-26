@@ -17,6 +17,7 @@ export default function MegatalentSpotlight({ category, categories }: Props) {
   const [item, setItem] = useState<any | null>(null);
   const [profile, setProfile] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
