@@ -10,7 +10,7 @@ const corsHeaders = {
 };
 
 const CREDIT_COST = 6;
-const MODEL = "google/gemini-3-flash-preview";
+const MODEL = "gpt-4o-mini";
 
 type Action =
   | "brainstorm"
@@ -96,10 +96,10 @@ serve(async (req) => {
       userPrompt = `Brand voice profile:\n${JSON.stringify(extra.brand_voice)}\n\n${userPrompt}`;
     }
 
-    const apiKey = Deno.env.get("LOVABLE_API_KEY");
-    if (!apiKey) throw new Error("LOVABLE_API_KEY missing");
+    const apiKey = Deno.env.get("OPENAI_API_KEY");
+    if (!apiKey) throw new Error("OPENAI_API_KEY missing");
 
-    const ai = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const ai = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({

@@ -11,8 +11,8 @@ serve(async (req) => {
     const { title, company, level, skills, tone = "professional", language = "English", remote = false } = await req.json();
     if (!title) return new Response(JSON.stringify({ error: "title required" }), { status: 400, headers: corsHeaders });
 
-    const apiKey = Deno.env.get("LOVABLE_API_KEY");
-    if (!apiKey) return new Response(JSON.stringify({ error: "LOVABLE_API_KEY missing" }), { status: 500, headers: corsHeaders });
+    const apiKey = Deno.env.get("OPENAI_API_KEY");
+    if (!apiKey) return new Response(JSON.stringify({ error: "OPENAI_API_KEY missing" }), { status: 500, headers: corsHeaders });
 
     const prompt = `Write a complete job description in ${language} for the role "${title}"${company ? ` at ${company}` : ""}.
 Level: ${level || "any"}. Remote: ${remote ? "yes" : "no/hybrid"}. Tone: ${tone}.
@@ -28,11 +28,11 @@ Structure with markdown headings:
 
 Be concrete, avoid clichés ("rockstar", "ninja"), no salary unless provided. End with a single CTA line.`;
 
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "gpt-4o-mini",
         messages: [{ role: "user", content: prompt }],
       }),
     });

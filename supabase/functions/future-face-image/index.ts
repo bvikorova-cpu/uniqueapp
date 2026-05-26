@@ -30,7 +30,7 @@ serve(async (req) => {
 
   try {
     const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
-    const lovableKey = Deno.env.get("LOVABLE_API_KEY");
+    const lovableKey = Deno.env.get("OPENAI_API_KEY");
     if (!lovableKey) return json({ error: "AI gateway not configured" }, 500);
 
     const authHeader = req.headers.get("Authorization");
@@ -53,38 +53,62 @@ serve(async (req) => {
     if (deductError) { console.error("deduct error:", deductError); return json({ error: "Credit deduction failed" }, 500); }
     if (!deducted) return json({ error: `Insufficient credits. Need ${cfg.cost}.` }, 402);
 
-    const userContent: any[] = [
-      { type: "text", text: cfg.prompt(params || {}) },
-      { type: "image_url", image_url: { url: sourceUrl } },
-    ];
-    if (sourceUrl2) userContent.push({ type: "image_url", image_url: { url: sourceUrl2 } });
+    // Fetch source image(s) and send to OpenAI gpt-image-1 /v1/images/edits
+    async function fetchAsBlob(url: string): Promise<Blob> {
+      if (url.startsWith("data:")) {
+        const m = url.match(/^data:([^;]+);base64,(.+)$/);
+        if (!m) throw new Error("Invalid data URL");
+        const bytes = Uint8Array.from(atob(m[2]), c => c.charCodeAt(0));
+        return new Blob([bytes], { type: m[1] });
+      }
+      const r = await fetch(url);
+      if (!r.ok) throw new Error(`Source fetch failed ${r.status}`);
+      return await r.blob();
+    }
 
-    const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: { "Authorization": `Bearer ${lovableKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image-preview",
-        messages: [{ role: "user", content: userContent }],
-        modalities: ["image", "text"],
-      }),
-    });
+    let aiRes: Response;
+    try {
+      const form = new FormData();
+      form.append("model", "gpt-image-1");
+      form.append("prompt", cfg.prompt(params || {}).slice(0, 4000));
+      form.append("n", "1");
+      form.append("size", "1024x1024");
+      const b1 = await fetchAsBlob(sourceUrl);
+      form.append("image", b1, "source.png");
+      if (sourceUrl2) {
+        const b2 = await fetchAsBlob(sourceUrl2);
+        form.append("image", b2, "source2.png");
+      }
+
+      aiRes = await fetch("https://api.openai.com/v1/images/edits", {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${lovableKey}` },
+        body: form,
+      });
+    } catch (e: any) {
+      console.error("OpenAI image edit fetch error:", e);
+      try {
+        const { data: cur } = await supabase.from("ai_credits").select("credits_remaining").eq("user_id", user.id).single();
+        await supabase.from("ai_credits").update({ credits_remaining: (cur?.credits_remaining || 0) + cfg.cost }).eq("user_id", user.id);
+      } catch (_) {}
+      return json({ error: "Image generation failed. Credits refunded." }, 502);
+    }
 
     if (!aiRes.ok) {
       const errText = await aiRes.text();
-      console.error("Lovable AI image error:", aiRes.status, errText);
-      // refund
+      console.error("OpenAI image error:", aiRes.status, errText);
       try {
         const { data: cur } = await supabase.from("ai_credits").select("credits_remaining").eq("user_id", user.id).single();
         await supabase.from("ai_credits").update({ credits_remaining: (cur?.credits_remaining || 0) + cfg.cost }).eq("user_id", user.id);
       } catch (_) {}
       if (aiRes.status === 429) return json({ error: "Rate limit exceeded. Try again shortly." }, 429);
-      if (aiRes.status === 402) return json({ error: "AI workspace credits exhausted." }, 402);
       return json({ error: "Image generation failed. Credits refunded." }, 502);
     }
 
     const aiData = await aiRes.json();
-    const msg = aiData.choices?.[0]?.message;
-    const imageUrl: string | undefined = msg?.images?.[0]?.image_url?.url;
+    const b64 = aiData?.data?.[0]?.b64_json;
+    const urlResp = aiData?.data?.[0]?.url;
+    const imageUrl: string | undefined = b64 ? `data:image/png;base64,${b64}` : urlResp;
     if (!imageUrl) {
       console.error("No image in AI response", JSON.stringify(aiData).slice(0, 500));
       return json({ error: "No image returned" }, 502);

@@ -150,15 +150,13 @@ Format as JSON with keys: slogan, tagline, colors (array), socialStrategy (objec
     
     let logoUrl = null;
     try {
-      const logoResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+      const logoResponse = await fetch('https://api.openai.com/v1/images/generations', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${OPENAI_API_KEY}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ model: "gpt-image-1", prompt: logoPrompt,
-        n: 1,
-        size: "1024x1024", modalities: ["image", "text"] }),
+        body: JSON.stringify({ model: "gpt-image-1", prompt: logoPrompt, n: 1, size: "1024x1024" }),
       });
 
       if (logoResponse.ok) {

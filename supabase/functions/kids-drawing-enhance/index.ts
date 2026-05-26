@@ -1,5 +1,5 @@
-// Kids Drawing Enhance — turns a child's sketch into polished AI art (style transfer).
-// Costs 4 kids_drawing credits per enhancement. Uses Lovable AI Gateway image model.
+// Kids Drawing Enhance — turns a child's sketch into polished AI art.
+// Costs 4 kids_drawing credits per enhancement. Uses OpenAI gpt-image-1 (supports image input).
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
@@ -9,10 +9,9 @@ const corsHeaders = {
 };
 
 const COST = 4;
-const MODEL = "google/gemini-2.5-flash-image";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
+const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY")!;
 
 const STYLE_HINTS: Record<string, string> = {
   watercolor: "soft watercolor painting, gentle pastel colors, paper texture",
@@ -32,6 +31,15 @@ function json(body: unknown, status = 200) {
     status,
     headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
+}
+
+function dataUrlToBlob(dataUrl: string): { blob: Blob; ext: string } {
+  const m = dataUrl.match(/^data:(image\/[^;]+);base64,(.+)$/);
+  if (!m) throw new Error("Invalid data URL");
+  const mime = m[1];
+  const ext = mime.split("/")[1] || "png";
+  const bytes = Uint8Array.from(atob(m[2]), c => c.charCodeAt(0));
+  return { blob: new Blob([bytes], { type: mime }), ext };
 }
 
 Deno.serve(async (req) => {
@@ -63,7 +71,6 @@ Deno.serve(async (req) => {
 
     const admin = createClient(SUPABASE_URL, SERVICE_KEY);
 
-    // Ensure & check credits
     const { data: credRow } = await admin
       .from("kids_drawing_credits")
       .select("credits_remaining")
@@ -82,43 +89,36 @@ Deno.serve(async (req) => {
     }
 
     const styleHint = STYLE_HINTS[style] || STYLE_HINTS.cartoon;
-    const prompt = `You are an AI art teacher polishing a child's hand-drawn sketch.
-Take the sketch in the attached image and transform it into a polished, beautiful artwork that PRESERVES the child's composition, subject, and creative intent — same characters, same poses, same scene, same overall layout.
+    const prompt = `Polish this child's hand-drawn sketch into a beautiful artwork. PRESERVE composition, subject, poses, and creative intent.
 ${description ? `The child says it shows: ${description}.` : ""}
-Render it in this style: ${styleHint}.
-Rules: keep it kid-friendly (ages 4-12), no text or letters in the image, no scary, violent or adult content, friendly faces, vibrant and inspiring. Output a single full-bleed illustration.`;
+Render in style: ${styleHint}.
+Kid-friendly (ages 4-12), no text or letters, no scary or violent content, friendly faces, vibrant.`;
 
-    const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const { blob, ext } = dataUrlToBlob(sketchBase64);
+    const form = new FormData();
+    form.append("model", "gpt-image-1");
+    form.append("prompt", prompt.slice(0, 4000));
+    form.append("n", "1");
+    form.append("size", "1024x1024");
+    form.append("image", blob, `sketch.${ext}`);
+
+    const aiResp = await fetch("https://api.openai.com/v1/images/edits", {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        messages: [{
-          role: "user",
-          content: [
-            { type: "text", text: prompt },
-            { type: "image_url", image_url: { url: sketchBase64 } },
-          ],
-        }],
-        modalities: ["image", "text"],
-      }),
+      headers: { Authorization: `Bearer ${OPENAI_API_KEY}` },
+      body: form,
     });
 
     if (aiResp.status === 429) return json({ error: "Rate limited, try again shortly" }, 429);
-    if (aiResp.status === 402) return json({ error: "AI credits exhausted (workspace)" }, 402);
     if (!aiResp.ok) {
       const txt = await aiResp.text();
-      console.error("AI image error", aiResp.status, txt);
+      console.error("OpenAI image edit error", aiResp.status, txt);
       return json({ error: "Enhancement failed" }, 500);
     }
 
     const aiJson = await aiResp.json();
-    const imageUrl: string | undefined =
-      aiJson?.choices?.[0]?.message?.images?.[0]?.image_url?.url ||
-      aiJson?.choices?.[0]?.message?.images?.[0]?.url;
+    const b64 = aiJson?.data?.[0]?.b64_json;
+    const url = aiJson?.data?.[0]?.url;
+    const imageUrl = b64 ? `data:image/png;base64,${b64}` : url;
 
     if (!imageUrl) {
       console.error("No image in response", JSON.stringify(aiJson).slice(0, 500));

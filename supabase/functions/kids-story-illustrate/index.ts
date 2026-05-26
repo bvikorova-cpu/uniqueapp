@@ -1,5 +1,5 @@
 // Kids Story Illustrate — generates a single AI illustration for one story page.
-// Costs 2 kids_story credits per page. Uses Lovable AI Gateway image model.
+// Costs 2 kids_story credits per page. Uses OpenAI DALL-E 3.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
@@ -9,10 +9,10 @@ const corsHeaders = {
 };
 
 const COST = 2;
-const MODEL = "google/gemini-2.5-flash-image";
+const MODEL = "dall-e-3";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
+const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY")!;
 
 const STYLE_HINTS: Record<string, string> = {
   watercolor: "soft watercolor children's book illustration, gentle pastel colors",
@@ -56,7 +56,6 @@ Deno.serve(async (req) => {
 
     const admin = createClient(SUPABASE_URL, SERVICE_KEY);
 
-    // Ensure & check credits
     const { data: credRow } = await admin
       .from("kids_story_credits")
       .select("credits_remaining")
@@ -79,38 +78,38 @@ Scene to depict: ${pageText}
 ${characters ? `Main characters: ${characters}.` : ""}
 Visual style: ${styleHint}. Age-appropriate for kids 4-10, friendly and safe, no text or letters in the image, no scary or violent imagery, vibrant composition, full-bleed illustration.`;
 
-    const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const aiResp = await fetch("https://api.openai.com/v1/images/generations", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        Authorization: `Bearer ${OPENAI_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         model: MODEL,
-        messages: [{ role: "user", content: prompt }],
-        modalities: ["image", "text"],
+        prompt: prompt.slice(0, 4000),
+        n: 1,
+        size: "1024x1024",
+        response_format: "b64_json",
       }),
     });
 
     if (aiResp.status === 429) return json({ error: "Rate limited, try again shortly" }, 429);
-    if (aiResp.status === 402) return json({ error: "AI credits exhausted (workspace)" }, 402);
     if (!aiResp.ok) {
       const txt = await aiResp.text();
-      console.error("AI image error", aiResp.status, txt);
+      console.error("OpenAI image error", aiResp.status, txt);
       return json({ error: "Illustration failed" }, 500);
     }
 
     const aiJson = await aiResp.json();
-    const imageUrl: string | undefined =
-      aiJson?.choices?.[0]?.message?.images?.[0]?.image_url?.url ||
-      aiJson?.choices?.[0]?.message?.images?.[0]?.url;
+    const b64 = aiJson?.data?.[0]?.b64_json;
+    const url = aiJson?.data?.[0]?.url;
+    const imageUrl = b64 ? `data:image/png;base64,${b64}` : url;
 
     if (!imageUrl) {
       console.error("No image in response", JSON.stringify(aiJson).slice(0, 500));
       return json({ error: "No image generated" }, 500);
     }
 
-    // Deduct credits only after success
     const newBalance = balance - COST;
     await admin
       .from("kids_story_credits")

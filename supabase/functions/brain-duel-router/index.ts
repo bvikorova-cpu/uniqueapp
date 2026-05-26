@@ -8,7 +8,7 @@ const corsHeaders = {
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
 
 const CREDIT_COSTS: Record<string, number> = {
   "ai.generateQuiz": 5,
@@ -54,12 +54,12 @@ async function spendBrainDuelCredits(admin: any, userId: string, amount: number)
 }
 
 async function callAI(prompt: string, system = "You are a precise quiz generator. Respond with valid JSON only.") {
-  if (!LOVABLE_API_KEY) return { text: "AI unavailable" };
-  const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+  if (!OPENAI_API_KEY) return { text: "AI unavailable" };
+  const res = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
-    headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: "google/gemini-2.5-flash",
+      model: "gpt-4o-mini",
       messages: [{ role: "system", content: system }, { role: "user", content: prompt }],
     }),
   });
