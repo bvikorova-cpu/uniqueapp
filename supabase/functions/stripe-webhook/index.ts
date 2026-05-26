@@ -1018,14 +1018,8 @@ serve(async (req) => {
             break;
           }
 
-          // Resolve dynamic reward (default €5)
-          let rewardEur = 5;
-          try {
-            const { data: rewardData } = await supabase.rpc("get_affiliate_reward_eur", {
-              _user_id: attr.referrer_id,
-            });
-            if (typeof rewardData === "number" && rewardData > 0) rewardEur = Number(rewardData);
-          } catch (_e) { /* fall back to €5 */ }
+          // Flat referral reward: €5 per paid invoice (no tier multipliers)
+          const rewardEur = 5;
 
           const periodStart = new Date().toISOString();
           const periodEnd = new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString();
