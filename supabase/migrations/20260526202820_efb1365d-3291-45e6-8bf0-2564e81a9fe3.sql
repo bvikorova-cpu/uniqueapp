@@ -1,0 +1,1 @@
+UPDATE public.education_achievements SET description = 'Score 100% on a quiz' WHERE id = 'f710f7fb-17d3-4828-8f98-a400f00d0d47';
