@@ -58,6 +58,7 @@ function ExpiryCell({ expires_at }: { expires_at: string | null }) {
 export function JobPostingsStatus() {
   const [rows, setRows] = useState<PostingRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [renewTarget, setRenewTarget] = useState<{ id: string; title: string } | null>(null);
 
   useEffect(() => {
     (async () => {
