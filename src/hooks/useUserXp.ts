@@ -18,7 +18,7 @@ export const useUserXp = (userId: string | null) => {
   useEffect(() => {
     if (!userId) return;
     const ch = supabase
-      .channel(`user_xp:${userId}`)
+      .channel(`user_xp:${userId}:${Math.random().toString(36).slice(2)}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "user_xp", filter: `user_id=eq.${userId}` },
         (payload: any) => setXp((payload.new?.total_xp ?? 0)))
       .subscribe();
