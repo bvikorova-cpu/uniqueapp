@@ -60860,10 +60860,24 @@ export type Database = {
         Args: { p_amount: number; p_user_id: string }
         Returns: boolean
       }
-      add_user_points: {
-        Args: { p_activity_type: string; p_points: number; p_user_id: string }
-        Returns: undefined
-      }
+      add_user_points:
+        | {
+            Args: {
+              p_activity_type: string
+              p_points: number
+              p_user_id: string
+            }
+            Returns: undefined
+          }
+        | {
+            Args: {
+              p_activity_type: string
+              p_meta: string
+              p_points: number
+              p_user_id: string
+            }
+            Returns: undefined
+          }
       admin_get_xp_events: {
         Args: { _target_user_id: string }
         Returns: {
