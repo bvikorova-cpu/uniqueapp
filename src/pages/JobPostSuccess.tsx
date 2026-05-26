@@ -29,7 +29,17 @@ export default function JobPostSuccess() {
           setMessage("Your job listing is now live!");
         } else {
           setStatus("error");
-          setMessage(`Payment status: ${data?.status ?? "unknown"}`);
+          setMessage(`Payment status: ${data?.status ?? "unknown"}. You can retry payment from the dashboard.`);
+          // Notify employer of failure so they see retry CTA later
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            await supabase.from("notifications").insert({
+              user_id: user.id,
+              type: "job_listing_payment_failed",
+              title: "Job listing payment failed",
+              message: "Your last checkout did not complete. Open the employer dashboard and click Retry Payment.",
+            });
+          }
         }
       } catch (e: any) {
         setStatus("error");
