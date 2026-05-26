@@ -167,11 +167,18 @@ export function JobPostingsStatus() {
                         {canRenew && (
                           <Button
                             size="sm"
-                            variant={isExpired || expiringSoon ? "default" : "outline"}
+                            variant={isExpired || expiringSoon || r.paid_status === "failed" ? "default" : "outline"}
+                            className={r.paid_status === "failed" ? "bg-destructive hover:bg-destructive/90" : undefined}
                             onClick={() => setRenewTarget({ id: r.id, title: r.title })}
                           >
                             <RefreshCcw className="h-3.5 w-3.5 mr-1.5" />
-                            {isExpired ? "Renew" : expiringSoon ? "Extend" : "Renew"}
+                            {r.paid_status === "failed"
+                              ? "Retry Payment"
+                              : isExpired
+                                ? "Renew"
+                                : expiringSoon
+                                  ? "Extend"
+                                  : "Renew"}
                           </Button>
                         )}
                       </TableCell>
