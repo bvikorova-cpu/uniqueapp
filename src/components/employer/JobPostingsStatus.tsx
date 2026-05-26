@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Receipt, Clock, CheckCircle2, XCircle, AlertCircle, CalendarClock } from "lucide-react";
-import { format, formatDistanceToNow, isPast } from "date-fns";
+import { Receipt, Clock, CheckCircle2, XCircle, AlertCircle, CalendarClock, RefreshCcw } from "lucide-react";
+import { format, formatDistanceToNow, isPast, differenceInDays } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
+import { RenewJobDialog } from "./RenewJobDialog";
 
 interface PostingRow {
   id: string;
@@ -56,6 +58,7 @@ function ExpiryCell({ expires_at }: { expires_at: string | null }) {
 export function JobPostingsStatus() {
   const [rows, setRows] = useState<PostingRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [renewTarget, setRenewTarget] = useState<{ id: string; title: string } | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -122,14 +125,18 @@ export function JobPostingsStatus() {
                   <TableHead>Listing</TableHead>
                   <TableHead className="text-right">Posted</TableHead>
                   <TableHead className="text-right">Expires</TableHead>
+                  <TableHead className="text-right">Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {rows.map((r) => {
                   const price = PRICE_BY_DAYS[r.duration_days];
                   const isExpired = r.expires_at ? isPast(new Date(r.expires_at)) : false;
+                  const daysLeft = r.expires_at ? differenceInDays(new Date(r.expires_at), new Date()) : null;
+                  const expiringSoon = daysLeft !== null && daysLeft >= 0 && daysLeft <= 3;
                   const effectiveStatus = isExpired && (r.paid_status === "paid" || r.paid_status === "active")
                     ? "expired" : r.paid_status;
+                  const canRenew = r.paid_status === "active" || r.paid_status === "paid" || r.paid_status === "failed";
                   return (
                     <TableRow key={r.id} className="border-border/20 hover:bg-primary/5 transition-colors">
                       <TableCell>
@@ -156,12 +163,24 @@ export function JobPostingsStatus() {
                       <TableCell className="text-right">
                         <ExpiryCell expires_at={r.expires_at} />
                       </TableCell>
+                      <TableCell className="text-right">
+                        {canRenew && (
+                          <Button
+                            size="sm"
+                            variant={isExpired || expiringSoon ? "default" : "outline"}
+                            onClick={() => setRenewTarget({ id: r.id, title: r.title })}
+                          >
+                            <RefreshCcw className="h-3.5 w-3.5 mr-1.5" />
+                            {isExpired ? "Renew" : expiringSoon ? "Extend" : "Renew"}
+                          </Button>
+                        )}
+                      </TableCell>
                     </TableRow>
                   );
                 })}
                 {rows.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-12">
+                    <TableCell colSpan={7} className="text-center py-12">
                       <Receipt className="h-10 w-10 text-muted-foreground/40 mx-auto mb-3" />
                       <p className="text-muted-foreground">No job postings yet.</p>
                     </TableCell>
@@ -172,6 +191,15 @@ export function JobPostingsStatus() {
           )}
         </CardContent>
       </Card>
+
+      {renewTarget && (
+        <RenewJobDialog
+          jobId={renewTarget.id}
+          jobTitle={renewTarget.title}
+          open={!!renewTarget}
+          onOpenChange={(open) => !open && setRenewTarget(null)}
+        />
+      )}
     </div>
   );
 }
