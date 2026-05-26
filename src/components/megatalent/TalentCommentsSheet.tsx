@@ -184,7 +184,7 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
   useEffect(() => {
     if (!open || !submissionId) return;
     const channel = supabase
-      .channel(`talent_comments:${submissionId}`)
+      .channel(`talent_comments:${submissionId}:${Math.random().toString(36).slice(2)}`)
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "talent_comments", filter: `submission_id=eq.${submissionId}` },
