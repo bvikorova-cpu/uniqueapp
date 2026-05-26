@@ -61761,6 +61761,10 @@ export type Database = {
         Args: { _user_id: string }
         Returns: boolean
       }
+      has_applied_to_job: {
+        Args: { _job_id: string; _user_id: string }
+        Returns: boolean
+      }
       has_confession_access: {
         Args: { service_type_param: string; user_id_param: string }
         Returns: boolean
@@ -61860,6 +61864,10 @@ export type Database = {
         Returns: boolean
       }
       is_iq_pro: { Args: { _user_id: string }; Returns: boolean }
+      is_job_employer: {
+        Args: { _job_id: string; _user_id: string }
+        Returns: boolean
+      }
       is_lottery_syndicate_member: {
         Args: { _syndicate_id: string; _user_id: string }
         Returns: boolean
