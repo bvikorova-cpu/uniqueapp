@@ -1,0 +1,1 @@
+DELETE FROM public.education_daily_challenges WHERE jsonb_array_length(COALESCE(payload->'questions','[]'::jsonb)) = 0;

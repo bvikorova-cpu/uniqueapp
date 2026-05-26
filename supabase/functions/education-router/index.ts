@@ -133,21 +133,45 @@ Deno.serve(async (req) => {
           .eq("challenge_date", today)
           .maybeSingle();
 
-        if (!ch) {
-          // Generate 5 questions from existing quiz_questions pool
+        if (!ch || !ch.payload?.questions || ch.payload.questions.length === 0) {
+          // Generate 5 questions from existing quiz_questions pool; if empty, fall back to AI.
           const { data: pool } = await admin
             .from("quiz_questions")
             .select("question, options, correct_answer, explanation")
             .limit(200);
-          const picked = (pool ?? [])
+          let picked = (pool ?? [])
             .sort(() => Math.random() - 0.5)
             .slice(0, 5);
-          const ins = await admin
-            .from("education_daily_challenges")
-            .insert({ challenge_date: today, type: "quiz", payload: { questions: picked }, xp_reward: 50 })
-            .select()
-            .single();
-          ch = ins.data;
+
+          if (picked.length === 0) {
+            try {
+              const content = await callAI([
+                { role: "system", content: "You generate fun general-knowledge multiple-choice quiz questions. Respond ONLY with JSON." },
+                { role: "user", content: 'Return JSON {"questions":[{"question":string,"options":string[4],"correct_answer":string,"explanation":string}]} with exactly 5 varied questions (science, history, geography, arts, sports). correct_answer must be one of the options.' },
+              ], { json: true });
+              const parsed = JSON.parse(content);
+              if (Array.isArray(parsed?.questions)) picked = parsed.questions.slice(0, 5);
+            } catch (e) {
+              console.error("daily AI fallback failed", e);
+            }
+          }
+
+          if (ch) {
+            const upd = await admin
+              .from("education_daily_challenges")
+              .update({ payload: { questions: picked } })
+              .eq("id", ch.id)
+              .select()
+              .single();
+            ch = upd.data;
+          } else {
+            const ins = await admin
+              .from("education_daily_challenges")
+              .insert({ challenge_date: today, type: "quiz", payload: { questions: picked }, xp_reward: 50 })
+              .select()
+              .single();
+            ch = ins.data;
+          }
         }
 
         const { data: done } = await admin
