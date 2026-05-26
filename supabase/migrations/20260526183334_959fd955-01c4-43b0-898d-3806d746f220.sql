@@ -1,0 +1,1 @@
+GRANT EXECUTE ON FUNCTION public.has_active_megatalent_subscription(uuid) TO authenticated, anon, service_role;
