@@ -47,15 +47,13 @@ CRITICAL: Pay very close attention to the eye color (${eyeColor || "blue"}), cos
 
     console.log('Generating character image with OpenAI:', characterName, 'hair:', hairColor, 'eyes:', eyeColor, 'costume:', costumeColor, 'skin:', skinColor);
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://api.openai.com/v1/images/generations', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ model: "gpt-image-1", prompt: prompt,
-        n: 1,
-        size: "1024x1024", modalities: ["image", "text"] }),
+      body: JSON.stringify({ model: "gpt-image-1", prompt: prompt, n: 1, size: "1024x1024" }),
     });
 
     if (!response.ok) {
