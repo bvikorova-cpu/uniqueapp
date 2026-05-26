@@ -9,10 +9,10 @@ const corsHeaders = {
 };
 
 const COST = 3;
-const MODEL = "google/gemini-2.5-flash";
+const MODEL = "gpt-4o-mini";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
+const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY")!;
 
 const ALLOWED_SUBJECTS = ["math", "science", "english", "history", "geography"];
 const SUBJECT_HINTS: Record<string, string> = {
@@ -115,10 +115,10 @@ Schema:
       userContent.push({ type: "text", text: question });
     }
 
-    const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const aiResp = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        Authorization: `Bearer ${OPENAI_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({

@@ -30,7 +30,7 @@ serve(async (req) => {
 
   try {
     const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
-    const lovableKey = Deno.env.get("LOVABLE_API_KEY");
+    const lovableKey = Deno.env.get("OPENAI_API_KEY");
     if (!lovableKey) return json({ error: "AI gateway not configured" }, 500);
 
     const authHeader = req.headers.get("Authorization");
@@ -59,7 +59,7 @@ serve(async (req) => {
     ];
     if (sourceUrl2) userContent.push({ type: "image_url", image_url: { url: sourceUrl2 } });
 
-    const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: { "Authorization": `Bearer ${lovableKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({

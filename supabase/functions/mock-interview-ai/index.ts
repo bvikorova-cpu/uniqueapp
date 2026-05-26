@@ -1,6 +1,6 @@
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
 
-const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY')!
+const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY')!
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
@@ -19,10 +19,10 @@ Reply in plain text/markdown.`
       { role: 'user', content: action === 'evaluate' ? 'Evaluate the entire conversation now.' : 'Ask the next question.' },
     ]
 
-    const r = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const r = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
-      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'google/gemini-2.5-flash', messages }),
+      headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'gpt-4o-mini', messages }),
     })
     if (!r.ok) return json({ error: 'AI error', detail: await r.text() }, r.status)
     const data = await r.json()
