@@ -136,7 +136,7 @@ export function JobPostingsStatus() {
                   const expiringSoon = daysLeft !== null && daysLeft >= 0 && daysLeft <= 3;
                   const effectiveStatus = isExpired && (r.paid_status === "paid" || r.paid_status === "active")
                     ? "expired" : r.paid_status;
-                  const canRenew = r.paid_status === "active" || r.paid_status === "paid" || r.paid_status === "failed";
+                  const canRenew = r.paid_status === "active" || r.paid_status === "paid" || r.paid_status === "failed" || r.paid_status === "pending";
                   return (
                     <TableRow key={r.id} className="border-border/20 hover:bg-primary/5 transition-colors">
                       <TableCell>
@@ -167,11 +167,20 @@ export function JobPostingsStatus() {
                         {canRenew && (
                           <Button
                             size="sm"
-                            variant={isExpired || expiringSoon ? "default" : "outline"}
+                            variant={isExpired || expiringSoon || r.paid_status === "failed" ? "default" : "outline"}
+                            className={r.paid_status === "failed" ? "bg-destructive hover:bg-destructive/90" : undefined}
                             onClick={() => setRenewTarget({ id: r.id, title: r.title })}
                           >
                             <RefreshCcw className="h-3.5 w-3.5 mr-1.5" />
-                            {isExpired ? "Renew" : expiringSoon ? "Extend" : "Renew"}
+                            {r.paid_status === "failed"
+                              ? "Retry Payment"
+                              : r.paid_status === "pending"
+                                ? "Complete Payment"
+                                : isExpired
+                                  ? "Renew"
+                                  : expiringSoon
+                                    ? "Extend"
+                                    : "Renew"}
                           </Button>
                         )}
                       </TableCell>
