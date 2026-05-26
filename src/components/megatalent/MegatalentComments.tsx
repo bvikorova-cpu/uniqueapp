@@ -66,7 +66,7 @@ const MegatalentComments = ({ category, categories, userId }: Props) => {
       }
     })();
 
-    const ch = supabase.channel(`talent_comments:${selectedId}`)
+    const ch = supabase.channel(`talent_comments:${selectedId}:${Math.random().toString(36).slice(2)}`)
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "talent_comments", filter: `submission_id=eq.${selectedId}` },
         (payload: any) => {
           const c = payload.new as Comment;
