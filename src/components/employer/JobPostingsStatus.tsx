@@ -136,7 +136,7 @@ export function JobPostingsStatus() {
                   const expiringSoon = daysLeft !== null && daysLeft >= 0 && daysLeft <= 3;
                   const effectiveStatus = isExpired && (r.paid_status === "paid" || r.paid_status === "active")
                     ? "expired" : r.paid_status;
-                  const canRenew = r.paid_status === "active" || r.paid_status === "paid" || r.paid_status === "failed";
+                  const canRenew = r.paid_status === "active" || r.paid_status === "paid" || r.paid_status === "failed" || r.paid_status === "pending";
                   return (
                     <TableRow key={r.id} className="border-border/20 hover:bg-primary/5 transition-colors">
                       <TableCell>
