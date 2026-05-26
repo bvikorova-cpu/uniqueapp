@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Receipt, Clock, CheckCircle2, XCircle, AlertCircle, CalendarClock } from "lucide-react";
-import { format, formatDistanceToNow, isPast } from "date-fns";
+import { Receipt, Clock, CheckCircle2, XCircle, AlertCircle, CalendarClock, RefreshCcw } from "lucide-react";
+import { format, formatDistanceToNow, isPast, differenceInDays } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
+import { RenewJobDialog } from "./RenewJobDialog";
 
 interface PostingRow {
   id: string;
