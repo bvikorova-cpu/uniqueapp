@@ -174,11 +174,13 @@ export function JobPostingsStatus() {
                             <RefreshCcw className="h-3.5 w-3.5 mr-1.5" />
                             {r.paid_status === "failed"
                               ? "Retry Payment"
-                              : isExpired
-                                ? "Renew"
-                                : expiringSoon
-                                  ? "Extend"
-                                  : "Renew"}
+                              : r.paid_status === "pending"
+                                ? "Complete Payment"
+                                : isExpired
+                                  ? "Renew"
+                                  : expiringSoon
+                                    ? "Extend"
+                                    : "Renew"}
                           </Button>
                         )}
                       </TableCell>
