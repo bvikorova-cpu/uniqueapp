@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Sparkles, Heart, Eye, Trophy } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface Props {
   category?: string;
@@ -16,6 +17,7 @@ export default function MegatalentSpotlight({ category, categories }: Props) {
   const [item, setItem] = useState<any | null>(null);
   const [profile, setProfile] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -78,14 +80,19 @@ export default function MegatalentSpotlight({ category, categories }: Props) {
           </Badge>
         </div>
 
-        <div className="relative aspect-video w-full overflow-hidden">
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="relative aspect-video w-full overflow-hidden block text-left focus:outline-none focus:ring-2 focus:ring-primary"
+          aria-label={`Open spotlight: ${item.title}`}
+        >
           {item.media_type === "video" ? (
             <video src={item.media_url} className="w-full h-full object-cover" muted loop autoPlay playsInline />
           ) : (
             <img src={item.media_url} alt={item.title} className="w-full h-full object-cover" />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-        </div>
+        </button>
 
         <CardContent className="relative -mt-16 z-10 space-y-3 pt-0">
           <div className="flex items-center gap-3">
@@ -118,13 +125,40 @@ export default function MegatalentSpotlight({ category, categories }: Props) {
             <Badge variant="outline" className="text-[10px]">
               {item.category}
             </Badge>
-            <Button size="sm" variant="default" className="ml-auto h-8">
+            <Button size="sm" variant="default" className="ml-auto h-8" onClick={() => setOpen(true)}>
               <Eye className="h-3.5 w-3.5 mr-1.5" />
               View
             </Button>
           </div>
         </CardContent>
       </Card>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>{item.title}</DialogTitle>
+          </DialogHeader>
+          <div className="rounded-lg overflow-hidden border border-border/30">
+            {item.media_type === "video" ? (
+              <video src={item.media_url} controls autoPlay className="w-full max-h-[70vh]" />
+            ) : (
+              <img src={item.media_url} alt={item.title} className="w-full max-h-[70vh] object-contain" />
+            )}
+          </div>
+          {item.description && (
+            <p className="text-sm text-muted-foreground">{item.description}</p>
+          )}
+          <div className="flex items-center gap-3 text-sm">
+            <div className="flex items-center gap-1.5">
+              <Heart className="h-4 w-4 text-red-500 fill-red-500" />
+              <span className="font-bold">{(item.votes_count || 0).toLocaleString()}</span>
+            </div>
+            <Badge variant="outline" className="text-[10px]">{item.category}</Badge>
+            <span className="ml-auto text-xs text-muted-foreground">by {profile?.full_name || "Unknown talent"}</span>
+          </div>
+        </DialogContent>
+      </Dialog>
     </motion.div>
   );
 }
+
