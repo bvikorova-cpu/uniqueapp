@@ -59,20 +59,15 @@ const AIMentorChat = () => {
       setUser(user);
 
       if (!isAdmin) {
-        const { data: sub } = await supabase
-          .from('mentor_subscriptions')
-          .select('*')
-          .eq('user_id', user.id)
-          .eq('mentor_area', area as any)
-          .eq('status', 'active')
-          .maybeSingle();
-
-        if (!sub) {
+        const { data: subData } = await supabase.functions.invoke('mentor-router', {
+          body: { action: 'premium.check', area: area as string },
+        });
+        if (!subData?.subscribed) {
           toast({
             title: "Subscription required",
             description: "You need an active subscription for this mentor area",
           });
-          navigate('/subscription');
+          navigate('/ai-mentor/premium');
           return;
         }
       }

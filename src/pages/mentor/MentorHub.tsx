@@ -38,7 +38,7 @@ export default function MentorHub() {
             <h1 className="text-3xl md:text-4xl font-black mb-1 flex items-center gap-2">
               <Flame className="w-7 h-7 text-primary" /> Personal Mentor
             </h1>
-            <p className="text-muted-foreground">All 18 AI coaching tools in one place.</p>
+            <p className="text-muted-foreground">All 15 AI coaching tools in one place.</p>
           </div>
           {sub?.subscribed ? (
             <span className="text-xs font-bold bg-primary/15 text-primary px-3 py-1 rounded-full">
