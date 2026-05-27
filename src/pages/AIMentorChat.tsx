@@ -127,14 +127,13 @@ const AIMentorChat = () => {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('ai-mentor-chat', {
-        body: { message: userMessage, mentorArea: area, sessionId },
+      const { data, error } = await supabase.functions.invoke('mentor-ai-tools', {
+        body: { action: 'voice-coaching', message: userMessage, mentorArea: area },
       });
 
       if (error) throw error;
-      const replyText = data?.message || data?.text || data?.result || data?.content || "I'm here to help.";
+      const replyText = data?.reply || data?.message || data?.text || "I'm here to help.";
       setMessages(prev => [...prev, { role: "assistant", content: replyText }]);
-      if (data?.sessionId) setSessionId(data.sessionId);
     } catch (error: any) {
       console.error('Error:', error);
       // Restore the user's message so they can retry
