@@ -134,7 +134,7 @@ Deno.serve(async (req) => {
           .maybeSingle();
 
         if (!ch || !ch.payload?.questions || ch.payload.questions.length === 0) {
-          // Generate 5 questions from existing quiz_questions pool; if empty, fall back to AI.
+          // Generate 5 questions from existing quiz_questions pool; if empty, fall back to AI; finally a hardcoded set.
           const { data: pool } = await admin
             .from("quiz_questions")
             .select("question, options, correct_answer, explanation")
@@ -156,6 +156,17 @@ Deno.serve(async (req) => {
             }
           }
 
+          // Hardcoded last-resort fallback so Daily Challenge is never empty
+          if (picked.length === 0) {
+            picked = [
+              { question: "What is the capital of France?", options: ["London", "Berlin", "Paris", "Madrid"], correct_answer: "Paris", explanation: "Paris has been the capital of France since 987 AD." },
+              { question: "What is 7 × 8?", options: ["54", "56", "62", "64"], correct_answer: "56", explanation: "7 × 8 = 56." },
+              { question: "Which planet is known as the Red Planet?", options: ["Venus", "Mars", "Jupiter", "Saturn"], correct_answer: "Mars", explanation: "Mars appears red due to iron oxide on its surface." },
+              { question: "Who wrote 'Romeo and Juliet'?", options: ["Charles Dickens", "Mark Twain", "William Shakespeare", "Jane Austen"], correct_answer: "William Shakespeare", explanation: "Shakespeare wrote it around 1595." },
+              { question: "What is the chemical symbol for gold?", options: ["Go", "Gd", "Au", "Ag"], correct_answer: "Au", explanation: "Au comes from the Latin 'aurum'." },
+            ];
+          }
+
           if (ch) {
             const upd = await admin
               .from("education_daily_challenges")
@@ -173,6 +184,7 @@ Deno.serve(async (req) => {
             ch = ins.data;
           }
         }
+
 
         const { data: done } = await admin
           .from("education_daily_completions")
