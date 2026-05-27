@@ -114,6 +114,17 @@ Deno.serve(async (req) => {
       case "premium.check": {
         // Returns map of per-area subscriptions, plus aggregate `subscribed` if any area is active
         const requestedArea = body.area as string | undefined;
+        // Beta tester bypass — grants all 4 areas for QA accounts
+        const TEST_USERS = ["beata.vikorova@yandex.com"];
+        if (user.email && TEST_USERS.includes(user.email.toLowerCase())) {
+          const periodEnd = new Date(Date.now() + 365 * 24 * 3600 * 1000).toISOString();
+          const allAreas: Record<string, any> = {};
+          for (const a of ["career", "fitness", "mindset", "relationships"]) {
+            allAreas[a] = { subscribed: true, plan: "yearly", current_period_end: periodEnd, subscription_id: "beta_test" };
+          }
+          if (requestedArea) return json({ subscribed: true, ...allAreas[requestedArea], areas: allAreas });
+          return json({ subscribed: true, areas: allAreas });
+        }
         if (!user.email) return json({ subscribed: false, areas: {} });
         const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
         if (!stripeKey) return json({ subscribed: false, areas: {}, error: "Stripe is not configured" }, 200);
