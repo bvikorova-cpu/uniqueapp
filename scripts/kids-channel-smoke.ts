@@ -15,7 +15,7 @@ const ROUTES = [
 let pass = 0, fail = 0;
 for (const p of ROUTES) {
   try {
-    const r = await fetch(BASE + p, { redirect: "manual" });
+    const r = await fetch(BASE + p);
     const ok = r.status < 500;
     const txt = await r.text();
     const hasShell = txt.includes("<div id=\"root\"") || txt.includes("id=root");
