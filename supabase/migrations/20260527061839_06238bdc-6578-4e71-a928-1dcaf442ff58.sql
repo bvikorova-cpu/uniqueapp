@@ -1,0 +1,1 @@
+DELETE FROM public.education_daily_challenges WHERE challenge_date = CURRENT_DATE AND (payload->'questions' IS NULL OR jsonb_array_length(payload->'questions') = 0);
