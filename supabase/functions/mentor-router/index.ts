@@ -27,12 +27,12 @@ function json(b: unknown, s = 200) {
 }
 
 async function ai(messages: any[], opts: { model?: string; jsonMode?: boolean } = {}) {
-  if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
-  const r = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+  if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY is not configured");
+  const r = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
-    headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: opts.model ?? "google/gemini-2.5-flash",
+      model: opts.model ?? "gpt-4o-mini",
       messages,
       ...(opts.jsonMode ? { response_format: { type: "json_object" } } : {}),
     }),
