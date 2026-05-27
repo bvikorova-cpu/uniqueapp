@@ -55,7 +55,7 @@ export async function requireAiCredits(
   }
 
   const token = authHeader.replace("Bearer ", "");
-  const { data: { user }, error: userErr } = await supabase.auth.getUser(token);
+  const { data: { user }, error: userErr } = await authClient.auth.getUser(token);
   if (userErr || !user) {
     return {
       errorResponse: new Response(
