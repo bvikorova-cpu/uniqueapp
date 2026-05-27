@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // Lightweight HTTP smoke for Kids Channel — verifies SPA serves 200 + HTML for every route.
-const BASE = process.env.BASE_URL || "https://id-preview--3ea492b4-277a-4b1d-a6dd-ca2a3efd9225.lovable.app";
+const BASE = process.env.BASE_URL || "https://uniqueapp.lovable.app";
 const HUB = ["children","age-filter","path","saved","reports","screen-time","curriculum","recommend","safety","approval","narration","phonics","math","difficulty","pet","economy","assignments","share"];
 const ROUTES = [
   "/kids-channel","/kids-channel/hub","/kids-channel/fairy-castles","/kids-channel/certificate-gallery",
