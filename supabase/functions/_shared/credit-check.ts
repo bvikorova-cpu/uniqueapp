@@ -37,7 +37,12 @@ export async function requireAiCredits(
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
   const anonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
-  const supabase = createClient(supabaseUrl, anonKey);
+  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+  // Auth client (anon) is used only to validate the caller's JWT.
+  // Data client uses the service role so RLS doesn't hide the user's own
+  // ai_credits row when the helper queries it server-side.
+  const authClient = createClient(supabaseUrl, anonKey);
+  const supabase = createClient(supabaseUrl, serviceKey || anonKey);
 
   const authHeader = req.headers.get("Authorization");
   if (!authHeader) {
