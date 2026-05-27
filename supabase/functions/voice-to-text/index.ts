@@ -1,9 +1,16 @@
-// Voice-to-text via Lovable AI Gateway (Gemini supports audio input)
+// Voice-to-text via OpenAI Whisper
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
+
+function b64ToBytes(b64: string): Uint8Array {
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes;
+}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -15,33 +22,28 @@ Deno.serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY is not configured");
 
-    const r = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const bytes = b64ToBytes(audio);
+    const mime = format === "mp3" ? "audio/mpeg" : format === "wav" ? "audio/wav" : format === "m4a" ? "audio/mp4" : "audio/webm";
+    const form = new FormData();
+    form.append("file", new Blob([bytes], { type: mime }), `audio.${format}`);
+    form.append("model", "whisper-1");
+
+    const r = await fetch("https://api.openai.com/v1/audio/transcriptions", {
       method: "POST",
-      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [{
-          role: "user",
-          content: [
-            { type: "text", text: "Transcribe this audio verbatim. Return only the transcript text, no commentary." },
-            { type: "input_audio", input_audio: { data: audio, format } },
-          ],
-        }],
-      }),
+      headers: { Authorization: `Bearer ${OPENAI_API_KEY}` },
+      body: form,
     });
 
     if (!r.ok) {
       const txt = await r.text();
       if (r.status === 429) return new Response(JSON.stringify({ error: "Rate limit exceeded" }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      if (r.status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted" }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      throw new Error(`AI ${r.status}: ${txt}`);
+      throw new Error(`Whisper ${r.status}: ${txt}`);
     }
     const d = await r.json();
-    const text = d.choices?.[0]?.message?.content ?? "";
-    return new Response(JSON.stringify({ text }), {
+    return new Response(JSON.stringify({ text: d.text ?? "" }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
