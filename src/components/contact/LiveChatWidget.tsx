@@ -41,9 +41,9 @@ export const LiveChatWidget = () => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages]);
 
-  // Suppress the floating support bubble inside the Messenger to avoid
-  // overlapping the real chat composer. Placed after all hooks to preserve order.
-  if (pathname.startsWith("/messenger")) return null;
+  // Suppress the floating support bubble inside pages with their own chat composer
+  // (Messenger, AI Mentor) to avoid overlapping their send button.
+  if (pathname.startsWith("/messenger") || pathname.startsWith("/ai-mentor")) return null;
 
 
   const send = async () => {
