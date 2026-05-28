@@ -331,10 +331,12 @@ const KidsChannel = () => {
           <Button
             size="lg"
             onClick={() => navigate('/kids-channel/hub')}
-            className="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white font-bold py-6 text-lg shadow-2xl hover:scale-[1.01] transition"
+            className="w-full h-auto bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white font-bold py-4 sm:py-6 px-4 text-sm sm:text-lg shadow-2xl hover:scale-[1.01] transition whitespace-normal text-center leading-snug"
           >
-            <Sparkles className="w-6 h-6 mr-2" />
-            Open Kids Hub — 18 new family tools (profiles, learning paths, parental controls, mini-games)
+            <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 mr-2 shrink-0" />
+            <span className="break-words">
+              Open Kids Hub — 18 new family tools (profiles, learning paths, parental controls, mini-games)
+            </span>
           </Button>
         </div>
 
