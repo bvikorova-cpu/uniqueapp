@@ -422,6 +422,7 @@ import {
   AdminComedyPayouts,
   AdminInfluencerPayouts,
   AdminBrandCampaigns,
+  AdminBrandModeration,
   AdminPlatformEarnings,
   AdminIQDashboard,
   AdminIQAnalytics,
