@@ -33,7 +33,8 @@ serve(async (req) => {
 
     if (!question) throw new Error("Question not found");
 
-    const isCorrect = answer === question.correct_answer;
+    const norm = (s: any) => String(s ?? "").trim().toLowerCase();
+    const isCorrect = norm(answer) === norm(question.correct_answer);
 
     // Calculate points (faster = more points)
     const basePoints = isCorrect ? 100 : 0;
