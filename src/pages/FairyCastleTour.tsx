@@ -37,6 +37,8 @@ export default function FairyCastleTour() {
   const completeRoom = useCompleteRoom();
   const earnStamp = useEarnStamp();
   const saveCertificate = useSaveCertificate();
+  const { stamps: userStamps } = useUserStamps();
+  const hasStamp = !!userStamps?.some((s: any) => s.castle_id === castleId);
 
   const currentRoom = rooms?.[currentRoomIndex];
   const { data: roomCollectibles } = useRoomCollectibles(currentRoom?.id || "");
