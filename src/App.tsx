@@ -422,6 +422,7 @@ import {
   AdminComedyPayouts,
   AdminInfluencerPayouts,
   AdminBrandCampaigns,
+  AdminBrandModeration,
   AdminPlatformEarnings,
   AdminIQDashboard,
   AdminIQAnalytics,
@@ -693,6 +694,7 @@ const App = () => {
                         <Route path="/admin/masterchef-payouts" element={<ProtectedRoute requireAdmin={true}><AdminMasterChefPayouts /></ProtectedRoute>} />
                         <Route path="/admin/comedy-payouts" element={<ProtectedRoute requireAdmin={true}><AdminComedyPayouts /></ProtectedRoute>} />
                         <Route path="/admin/brand-campaigns" element={<ProtectedRoute requireAdmin={true}><AdminBrandCampaigns /></ProtectedRoute>} />
+                        <Route path="/admin/brand-moderation" element={<ProtectedRoute requireAdmin={true}><AdminBrandModeration /></ProtectedRoute>} />
                        <Route path="/contact" element={<Contact />} />
                        <Route path="/status" element={<StatusPage />} />
                         <Route path="/auth" element={<Auth />} />

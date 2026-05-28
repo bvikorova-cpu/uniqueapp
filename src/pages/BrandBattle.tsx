@@ -135,6 +135,7 @@ export default function BrandBattle() {
         .from("brand_sponsors")
         .select("*")
         .eq("subscription_status", "active")
+        .eq("moderation_status", "approved")
         .order("total_votes", { ascending: false });
       if (error) throw error;
       return data as BrandSponsor[];
@@ -151,7 +152,8 @@ export default function BrandBattle() {
       const { count: totalSponsors } = await supabase
         .from("brand_sponsors")
         .select("*", { count: "exact", head: true })
-        .eq("subscription_status", "active");
+        .eq("subscription_status", "active")
+        .eq("moderation_status", "approved");
       return { totalVotes: totalVotes || 0, totalSponsors: totalSponsors || 0 };
     },
   });

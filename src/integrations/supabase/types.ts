@@ -7332,6 +7332,44 @@ export type Database = {
         }
         Relationships: []
       }
+      brand_moderation_audit: {
+        Row: {
+          admin_id: string
+          brand_id: string
+          created_at: string
+          id: string
+          new_status: string
+          previous_status: string | null
+          reason: string | null
+        }
+        Insert: {
+          admin_id: string
+          brand_id: string
+          created_at?: string
+          id?: string
+          new_status: string
+          previous_status?: string | null
+          reason?: string | null
+        }
+        Update: {
+          admin_id?: string
+          brand_id?: string
+          created_at?: string
+          id?: string
+          new_status?: string
+          previous_status?: string | null
+          reason?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brand_moderation_audit_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brand_sponsors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       brand_name_suggestions: {
         Row: {
           created_at: string | null
@@ -7402,6 +7440,10 @@ export type Database = {
           description: string
           id: string
           logo: string
+          moderated_at: string | null
+          moderated_by: string | null
+          moderation_reason: string | null
+          moderation_status: string
           name: string
           stripe_customer_id: string | null
           stripe_subscription_id: string | null
@@ -7420,6 +7462,10 @@ export type Database = {
           description: string
           id?: string
           logo: string
+          moderated_at?: string | null
+          moderated_by?: string | null
+          moderation_reason?: string | null
+          moderation_status?: string
           name: string
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
@@ -7438,6 +7484,10 @@ export type Database = {
           description?: string
           id?: string
           logo?: string
+          moderated_at?: string | null
+          moderated_by?: string | null
+          moderation_reason?: string | null
+          moderation_status?: string
           name?: string
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null

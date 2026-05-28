@@ -392,6 +392,7 @@ export const AdminMasterChefPayouts = lazy(() => import("@/pages/AdminMasterChef
 export const AdminComedyPayouts = lazy(() => import("@/pages/AdminComedyPayouts"));
 export const AdminInfluencerPayouts = lazy(() => import("@/pages/AdminInfluencerPayouts"));
 export const AdminBrandCampaigns = lazy(() => import("@/pages/AdminBrandCampaigns"));
+export const AdminBrandModeration = lazy(() => import("@/pages/AdminBrandModeration"));
 export const AdminPlatformEarnings = lazy(() => import("@/pages/AdminPlatformEarnings"));
 export const AdminIQDashboard = lazy(() => import("@/pages/AdminIQDashboard"));
 export const AdminIQAnalytics = lazy(() => import("@/pages/AdminIQAnalytics"));
