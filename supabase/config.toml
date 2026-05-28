@@ -381,9 +381,6 @@ verify_jwt = true
 [functions.generate-video-ad]
 verify_jwt = false
 
-[functions.generate-story-video]
-verify_jwt = false
-
 [functions.generate-recipe-from-ingredients]
 verify_jwt = true
 

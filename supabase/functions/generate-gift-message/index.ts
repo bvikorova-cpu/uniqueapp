@@ -14,6 +14,135 @@ serve(async (req) => {
 
   try {
     const reqBody = await req.json();
+
+    // ─── STORY VIDEO PIPELINE (multi-scene story + illustrations + TTS) ───
+    if (reqBody.type === "story_video" || reqBody.type === "generate_story_video") {
+      const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+      if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY is not configured");
+
+      const sb = createClient(
+        Deno.env.get("SUPABASE_URL") ?? "",
+        Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      );
+      const authHeader = req.headers.get("Authorization") || "";
+      const { data: u } = await sb.auth.getUser(authHeader.replace("Bearer ", ""));
+      const user = u.user;
+      if (!user) {
+        return new Response(JSON.stringify({ error: "Not authenticated" }), {
+          status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const theme = String(reqBody.theme || reqBody.prompt || "").trim().slice(0, 500);
+      const language = String(reqBody.language || "English").slice(0, 40);
+      const sceneCount = Math.max(2, Math.min(8, Number(reqBody.sceneCount) || 4));
+      const wantAudio = reqBody.audio !== false;
+      if (!theme) {
+        return new Response(JSON.stringify({ error: "theme required" }), {
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const admin = createClient(
+        Deno.env.get("SUPABASE_URL") ?? "",
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      );
+      const cost = 1 + sceneCount * 2 + (wantAudio ? sceneCount : 0);
+      const { data: credRow } = await admin
+        .from("kids_story_credits")
+        .select("credits_remaining")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (!credRow) {
+        await admin.from("kids_story_credits").insert({
+          user_id: user.id, credits_remaining: 0, total_credits_purchased: 0,
+        });
+      }
+      const balance = credRow?.credits_remaining ?? 0;
+      if (balance < cost) {
+        return new Response(JSON.stringify({ error: "Insufficient credits", credits_remaining: balance, cost }), {
+          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      // 1) Scenes
+      const scRes = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [
+            { role: "system", content: `You are a children's story writer. Output ONLY a JSON object {"scenes":[...]} with exactly ${sceneCount} short scene descriptions in ${language}, each 2-3 sentences, warm, magical, safe for kids 4-10.` },
+            { role: "user", content: `Theme: ${theme}` },
+          ],
+          response_format: { type: "json_object" },
+        }),
+      });
+      if (!scRes.ok) {
+        console.error("story_video scene fail", scRes.status, await scRes.text());
+        return new Response(JSON.stringify({ error: "Story generation failed" }), {
+          status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const scJson = await scRes.json();
+      let scenes: string[] = [];
+      try {
+        const parsed = JSON.parse(scJson.choices?.[0]?.message?.content || "{}");
+        const arr = Array.isArray(parsed) ? parsed : (parsed.scenes || parsed.story || []);
+        scenes = (Array.isArray(arr) ? arr : []).map((s: any) =>
+          typeof s === "string" ? s : (s?.text || s?.scene || "")
+        ).filter(Boolean).slice(0, sceneCount);
+      } catch { /* ignore */ }
+      if (scenes.length === 0) {
+        return new Response(JSON.stringify({ error: "No scenes produced" }), {
+          status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      // 2) Illustrations (parallel)
+      const images = await Promise.all(scenes.map(async (scene) => {
+        const r = await fetch("https://api.openai.com/v1/images/generations", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "dall-e-3",
+            prompt: `Children's storybook illustration. Scene: ${scene}. Soft warm watercolor style, age-appropriate, friendly, no text, no letters, vibrant, full-bleed.`.slice(0, 4000),
+            n: 1,
+            size: "1024x1024",
+            response_format: "b64_json",
+          }),
+        });
+        if (!r.ok) { console.error("img fail", r.status); return ""; }
+        const j = await r.json();
+        const b64 = j?.data?.[0]?.b64_json;
+        return b64 ? `data:image/png;base64,${b64}` : (j?.data?.[0]?.url || "");
+      }));
+
+      // 3) TTS (parallel)
+      const audioFiles = wantAudio ? await Promise.all(scenes.map(async (scene) => {
+        const r = await fetch("https://api.openai.com/v1/audio/speech", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ model: "tts-1", voice: "nova", input: scene.slice(0, 4000), response_format: "mp3" }),
+        });
+        if (!r.ok) { console.error("tts fail", r.status); return ""; }
+        const buf = new Uint8Array(await r.arrayBuffer());
+        let bin = ""; for (let i = 0; i < buf.length; i++) bin += String.fromCharCode(buf[i]);
+        return `data:audio/mp3;base64,${btoa(bin)}`;
+      })) : undefined;
+
+      await admin
+        .from("kids_story_credits")
+        .update({ credits_remaining: balance - cost, last_used_at: new Date().toISOString() })
+        .eq("user_id", user.id);
+
+      return new Response(JSON.stringify({
+        scenes, images, audioFiles,
+        credits_remaining: balance - cost, cost,
+      }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+    // ─── END STORY VIDEO PIPELINE ───
+
     // Module-specific ledgers below (secret_santa_credits, kids_*_credits, teen_career_credits)
     // already act as the credit gate for legacy gift + kids flows. Universal AI helpers
     // (mentor_chat, chef_chat, legal, etc.) still need the unified ai_credits gate.
