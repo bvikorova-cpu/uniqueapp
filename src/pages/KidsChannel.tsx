@@ -426,7 +426,7 @@ const KidsChannel = () => {
 
           <FeatureCard
             title="Fairy Castles! 🏰"
-            description="Explore all 6 magical fairy castles around the world in HD 360° tours!"
+            description="Explore all 12 magical fairy castles around the world in HD 360° tours!"
             icon={Castle}
             iconColor="text-blue-500"
             gradient="from-blue-100/95 to-sky-100/95"

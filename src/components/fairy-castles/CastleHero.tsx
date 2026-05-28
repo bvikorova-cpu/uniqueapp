@@ -63,7 +63,7 @@ export function CastleHero({ stampsCount, totalCastles, visitedCount }: CastleHe
         </h1>
 
         <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-8">
-          Explore 6 magical castles in stunning 360° panoramic views from around the world!
+          Explore 12 magical castles in stunning 360° panoramic views from around the world!
         </p>
       </motion.div>
 
