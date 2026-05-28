@@ -31,11 +31,18 @@ export const useColoringCredits = () => {
   const canUse = balance >= COLORING_CREDIT_COST;
 
   const purchase = async (credits: number): Promise<string | null> => {
+    if (!user) {
+      toast.error("Please sign in to buy credits.");
+      setTimeout(() => {
+        window.location.href = `/auth?redirect=${encodeURIComponent(window.location.pathname)}`;
+      }, 600);
+      return null;
+    }
     const { data: res, error } = await supabase.functions.invoke("create-checkout", {
       body: { credits, creditType: "coloring" },
     });
     if (error || !res?.url) {
-      toast.error("Failed to start checkout");
+      toast.error("Failed to start checkout. Please try again.");
       return null;
     }
     return res.url as string;
