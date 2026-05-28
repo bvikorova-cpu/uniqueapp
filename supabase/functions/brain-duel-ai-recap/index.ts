@@ -30,11 +30,11 @@ serve(async (req) => {
     // Check credits (costs 1 credit)
     const { data: credits } = await supabase
       .from("brain_duel_credits")
-      .select("balance")
+      .select("credits")
       .eq("user_id", user.id)
       .maybeSingle();
 
-    if (!credits || credits.balance < 5) {
+    if (!credits || credits.credits < 5) {
       return new Response(JSON.stringify({ error: "Insufficient credits. AI recap costs 5 credits." }), {
         status: 402,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -136,7 +136,7 @@ Write a 150-200 word recap with sections: Performance Summary, Highlights, Areas
     // Deduct credits
     await supabase
       .from("brain_duel_credits")
-      .update({ balance: credits.balance - 5 })
+      .update({ credits: credits.credits - 5 })
       .eq("user_id", user.id);
 
     // Save recap

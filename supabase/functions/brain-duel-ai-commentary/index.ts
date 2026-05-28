@@ -29,11 +29,11 @@ serve(async (req) => {
     // Check credits
     const { data: credits } = await supabase
       .from("brain_duel_credits")
-      .select("balance")
+      .select("credits")
       .eq("user_id", user.id)
       .single();
 
-    if (!credits || credits.balance < CREDITS_COST) {
+    if (!credits || credits.credits < CREDITS_COST) {
       return new Response(JSON.stringify({ error: "Insufficient credits. You need 3 credits for AI commentary." }), {
         status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -115,7 +115,7 @@ Generate an engaging ${commentaryStyle}-style commentary of this match (200-400 
     // Deduct credits
     await supabase
       .from("brain_duel_credits")
-      .update({ balance: credits.balance - CREDITS_COST })
+      .update({ credits: credits.credits - CREDITS_COST })
       .eq("user_id", user.id);
 
     // Save commentary
@@ -131,7 +131,7 @@ Generate an engaging ${commentaryStyle}-style commentary of this match (200-400 
       .select()
       .single();
 
-    return new Response(JSON.stringify({ commentary, id: saved?.id, credits_remaining: credits.balance - CREDITS_COST }), {
+    return new Response(JSON.stringify({ commentary, id: saved?.id, credits_remaining: credits.credits - CREDITS_COST }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e: any) {

@@ -85,14 +85,14 @@ serve(async (req) => {
     for (const uid of [user.id, codeData.user_id]) {
       const { data: existingCredits } = await supabase
         .from("brain_duel_credits")
-        .select("balance")
+        .select("credits")
         .eq("user_id", uid)
         .maybeSingle();
 
       if (existingCredits) {
         await supabase
           .from("brain_duel_credits")
-          .update({ balance: existingCredits.balance + BONUS_CREDITS })
+          .update({ credits: existingCredits.credits + BONUS_CREDITS })
           .eq("user_id", uid);
       } else {
         await supabase
