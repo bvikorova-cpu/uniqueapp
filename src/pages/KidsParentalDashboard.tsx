@@ -11,7 +11,6 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, BarChart3, Shield, Crown, Timer, Trophy, Eye, Clock, Brain, BookOpen, Mail } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
-import { useKidsGoldPass } from "@/hooks/useKidsGoldPass";
 import { supabase } from "@/integrations/supabase/client";
 
 import { ParentalHero } from "@/components/kids/parental/ParentalHero";
