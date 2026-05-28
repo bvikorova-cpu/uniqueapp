@@ -66,7 +66,9 @@ export const BrainDuelGame = () => {
   const [answerResult, setAnswerResult] = useState<AnswerResult | null>(null);
   const [myScore, setMyScore] = useState(0);
   const [opponentScore, setOpponentScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(15);
+  // TEMP DEBUG: ?slow=1 extends timer to 60s for end-to-end testing (Nathalie)
+  const QUESTION_TIME = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('slow') === '1' ? 60 : 15;
+  const [timeLeft, setTimeLeft] = useState(QUESTION_TIME);
   const [matchResult, setMatchResult] = useState<MatchResult | null>(null);
   const [aiAnalysis, setAiAnalysis] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -130,7 +132,7 @@ export const BrainDuelGame = () => {
 
       setQuestions(qData.questions);
       setGamePhase('playing');
-      setTimeLeft(15);
+      setTimeLeft(QUESTION_TIME);
       setAnswerStartTime(Date.now());
       toast.success('Match started! AI generated unique questions for you.', { duration: 2000 });
     } catch (err: any) {
@@ -175,7 +177,7 @@ export const BrainDuelGame = () => {
       setAnswerResult(null);
       setHiddenOptions([]);
       setShowHint(false);
-      setTimeLeft(15);
+      setTimeLeft(QUESTION_TIME);
       setAnswerStartTime(Date.now());
       setGamePhase('playing');
     } else {
