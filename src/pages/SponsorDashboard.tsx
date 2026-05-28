@@ -47,6 +47,7 @@ interface BrandSponsor {
   created_at?: string;
   moderation_status?: "pending" | "approved" | "rejected";
   moderation_reason?: string | null;
+  user_id?: string;
 }
 
 const TIER_INFO = {
