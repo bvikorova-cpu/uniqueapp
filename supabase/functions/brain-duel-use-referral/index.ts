@@ -97,7 +97,7 @@ serve(async (req) => {
       } else {
         await supabase
           .from("brain_duel_credits")
-          .insert({ user_id: uid, balance: BONUS_CREDITS });
+          .insert({ user_id: uid, credits: BONUS_CREDITS });
       }
     }
 
