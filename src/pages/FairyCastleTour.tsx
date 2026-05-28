@@ -30,6 +30,7 @@ export default function FairyCastleTour() {
   const [showQuiz, setShowQuiz] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [tourStarted, setTourStarted] = useState(false);
+  const [selectedGuide, setSelectedGuide] = useState<TourGuideId>("explorer");
 
   const { rooms, isLoading: roomsLoading } = useCastleRooms(castleId!);
   const startTour = useStartTour();
