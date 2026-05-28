@@ -195,8 +195,8 @@ export default function KidsParentalDashboard() {
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Kids Channel
           </Button>
-          <Badge className="bg-gradient-to-r from-yellow-500 to-amber-500 gap-1">
-            <Crown className="w-4 h-4" /> Gold Pass Active
+          <Badge className="bg-gradient-to-r from-primary to-accent gap-1">
+            <Crown className="w-4 h-4" /> Parent Mode
           </Badge>
         </div>
 
