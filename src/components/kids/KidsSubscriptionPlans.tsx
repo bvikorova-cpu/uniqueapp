@@ -25,8 +25,8 @@ const PRODUCT_TIERS = {
     price_id: "price_1SShj3GaXSfGtYFtGEneXVhs"
   },
   gold_pass: {
-    product_id: "prod_KidsGoldPass",
-    price_id: "price_KidsGoldPass"
+    product_id: "prod_UbEDgqmGITgxMA",
+    price_id: "price_1Tc1kyGaXSfGtYFtcfVW1fcY"
   }
 };
 
