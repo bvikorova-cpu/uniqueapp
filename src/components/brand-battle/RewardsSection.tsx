@@ -33,7 +33,8 @@ export const RewardsSection = () => {
       const { count: totalSponsors } = await supabase
         .from("brand_sponsors")
         .select("*", { count: "exact", head: true })
-        .eq("subscription_status", "active");
+        .eq("subscription_status", "active")
+        .eq("moderation_status", "approved");
       const now = new Date();
       const currentQuarterEnd = new Date(now.getFullYear(), Math.ceil((now.getMonth() + 1) / 3) * 3, 0);
       const daysRemaining = Math.max(0, Math.ceil((currentQuarterEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
