@@ -83,9 +83,15 @@ export default function FairyCastleTour() {
     }
   }, [castle, visit, tourStarted]);
 
-  // If user already visited, skip onboarding
+  // If user already visited, skip onboarding and restore last guide
   useEffect(() => {
     if (visit) {
+      try {
+        const saved = localStorage.getItem('fairy.guide') as TourGuideId | null;
+        if (saved === 'princess' || saved === 'wizard' || saved === 'explorer') {
+          setSelectedGuide(saved);
+        }
+      } catch {}
       setShowOnboarding(false);
       setTourStarted(true);
     }
