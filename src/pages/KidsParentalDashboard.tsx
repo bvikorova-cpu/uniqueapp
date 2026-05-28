@@ -36,7 +36,6 @@ interface UsageStats {
 export default function KidsParentalDashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { hasGoldPass } = useKidsGoldPass();
   const queryClient = useQueryClient();
 
   const [sleepTimerEnabled, setSleepTimerEnabled] = useState(false);
