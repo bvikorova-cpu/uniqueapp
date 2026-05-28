@@ -1207,6 +1207,10 @@ export function FairyPanoramaViewer({
 
       {/* Audio Mixer (Ambient + POI) */}
       <div className="absolute top-56 sm:top-24 right-3 sm:right-6 bg-white/90 backdrop-blur-sm p-2.5 sm:p-3 rounded-xl shadow-lg space-y-2 min-w-[160px] sm:min-w-[180px] max-w-[calc(100%-1.5rem)]">
+        <div className="flex items-center justify-center gap-1.5 pb-1.5 border-b border-black/10 text-[11px] font-semibold text-gray-700" aria-label={`Narrated by ${guidePersona.label}`}>
+          <span className="text-base leading-none">{guidePersona.emoji}</span>
+          <span>{guidePersona.label} narrating</span>
+        </div>
         {ambientSound && (
           <div className="flex items-center gap-2">
             <Button
