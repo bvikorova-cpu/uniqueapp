@@ -98,16 +98,17 @@ export default function FairyCastleTour() {
     setIsFading(true);
 
     setTimeout(() => {
+      // Mark the current room as visited (once) regardless of whether it's last
       if (currentRoom && visit) {
         completeRoom.mutate({ visitId: visit.id, roomId: currentRoom.id });
       }
 
       if (isLastRoom) {
-        if (currentRoom && visit) {
-          completeRoom.mutate({ visitId: visit.id, roomId: currentRoom.id });
-        }
         if (castleId) {
-          earnStamp.mutate({ castleId });
+          // Only award stamp if not already earned (DB has UNIQUE(user_id, castle_id))
+          if (!hasStamp) {
+            earnStamp.mutate({ castleId });
+          }
           saveCertificate.mutate({
             castleId,
             completionTimeMs: Date.now() - tourStartTime,
