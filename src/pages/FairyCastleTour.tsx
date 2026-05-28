@@ -208,7 +208,7 @@ export default function FairyCastleTour() {
       />
 
       {/* Header */}
-      <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/80 to-transparent p-3 sm:p-6">
+      <div className="absolute top-16 sm:top-0 left-0 right-0 z-30 bg-gradient-to-b from-black/85 to-transparent p-3 sm:p-6">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
             <Button
