@@ -162,20 +162,20 @@ export default function KidsParentalDashboard() {
     { name: "Drawings", value: stats?.drawings_made || 0 },
   ];
 
-  if (!hasGoldPass) {
+  if (!user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100 flex items-center justify-center px-4">
         <Card className="max-w-md w-full text-center">
           <CardHeader>
-            <Crown className="w-16 h-16 mx-auto text-amber-500 mb-4" />
-            <CardTitle className="text-2xl text-amber-700">Gold Pass Required</CardTitle>
+            <Shield className="w-16 h-16 mx-auto text-primary mb-4" />
+            <CardTitle className="text-2xl">Sign in required</CardTitle>
             <CardDescription>
-              The Parental Analytics Dashboard is available with the Unique Kids Gold Pass subscription.
+              Please sign in to view the Parental Analytics Dashboard.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Button onClick={() => navigate("/kids-pricing")} className="w-full bg-gradient-to-r from-yellow-500 to-amber-500">
-              Get Gold Pass
+            <Button onClick={() => navigate("/auth")} className="w-full">
+              Sign in
             </Button>
             <Button variant="outline" onClick={() => navigate("/kids-channel")}>
               Back to Kids Channel
@@ -185,6 +185,7 @@ export default function KidsParentalDashboard() {
       </div>
     );
   }
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 py-8 px-4 pt-24">
