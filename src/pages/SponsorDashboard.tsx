@@ -15,6 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 import Navbar from "@/components/Navbar";
 import { GoalSettingDialog } from "@/components/sponsor/GoalSettingDialog";
 import { GoalProgressCard } from "@/components/sponsor/GoalProgressCard";
+import { BrandAppealForm } from "@/components/sponsor/BrandAppealForm";
 import { 
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, 
   Tooltip, Legend, ResponsiveContainer, Area, AreaChart 
