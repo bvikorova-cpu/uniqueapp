@@ -3,13 +3,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Compass, Sparkles, Volume2, MapPin } from "lucide-react";
 
+export type TourGuideId = "princess" | "wizard" | "explorer";
+
 interface TourOnboardingProps {
   castleName: string;
   castleCountry: string;
   funFacts: string[];
   totalRooms: number;
   isVisible: boolean;
-  onStart: () => void;
+  onStart: (guide: TourGuideId) => void;
 }
 
 const guides = [
