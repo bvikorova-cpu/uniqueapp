@@ -10,7 +10,7 @@ import { CastleCertificate } from "@/components/fairy-castles/CastleCertificate"
 import { CastleQuiz } from "@/components/fairy-castles/CastleQuiz";
 import { TourOnboarding, type TourGuideId } from "@/components/fairy-castles/TourOnboarding";
 import { useQuery } from "@tanstack/react-query";
-import { useCastleRooms, useStartTour, useCompleteRoom, useEarnStamp } from "@/hooks/useFairyCastles";
+import { useCastleRooms, useStartTour, useCompleteRoom, useEarnStamp, useUserStamps } from "@/hooks/useFairyCastles";
 import { useRoomCollectibles, useCollectDisneyItem, useUserDisneyCollectibles } from "@/hooks/useCollectibles";
 import { useSaveCertificate } from "@/hooks/useCertificates";
 import { supabase } from "@/integrations/supabase/client";
