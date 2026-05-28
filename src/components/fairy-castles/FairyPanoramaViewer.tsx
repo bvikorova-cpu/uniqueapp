@@ -84,11 +84,20 @@ import shanghaiStorybook8 from "@/assets/fairy-castles/panoramas/shanghai-storyb
 import shanghaiStorybook9 from "@/assets/fairy-castles/panoramas/shanghai-storybook-9.jpg";
 import shanghaiStorybook10 from "@/assets/fairy-castles/panoramas/shanghai-storybook-10.jpg";
 
+export type GuideVoice = "princess" | "wizard" | "explorer";
+
+const GUIDE_INTRO: Record<GuideVoice, { label: string; emoji: string; prefix: string }> = {
+  princess: { label: "Princess", emoji: "👸", prefix: "Welcome, dear traveler — let me tell you the elegant tale of this room. " },
+  wizard:   { label: "Wizard",   emoji: "🧙", prefix: "Ahh… step closer, and I shall reveal the magic hidden within these walls. " },
+  explorer: { label: "Explorer", emoji: "🗺️", prefix: "Adventurer! Get ready — here are the fun facts you cannot miss. " },
+};
+
 interface FairyPanoramaViewerProps {
   imageUrl: string;
   audioGuideText?: string;
   ambientSound?: string;
   roomName?: string;
+  guide?: GuideVoice;
   collectibles?: Array<{
     id: string;
     position_x: number;
