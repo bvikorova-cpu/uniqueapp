@@ -152,14 +152,14 @@ serve(async (req) => {
       if (challenge && score >= Math.ceil((challenge.question_count || 5) * 0.6)) {
         const { data: credits } = await supabase
           .from("brain_duel_credits")
-          .select("balance")
+          .select("credits")
           .eq("user_id", user.id)
           .single();
 
         if (credits) {
           await supabase
             .from("brain_duel_credits")
-            .update({ balance: credits.balance + (challenge.reward_credits || 10) })
+            .update({ credits: credits.credits + (challenge.reward_credits || 10) })
             .eq("user_id", user.id);
         }
       }
