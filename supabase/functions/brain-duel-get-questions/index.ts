@@ -132,17 +132,34 @@ CRITICAL RULES:
       }
     }
 
-    // Store questions in DB
-    const questionsToInsert = generatedQuestions.map((q: any) => ({
-      category,
-      question: q.question,
-      option_a: q.option_a,
-      option_b: q.option_b,
-      option_c: q.option_c,
-      option_d: q.option_d,
-      correct_answer: q.correct_answer,
-      difficulty: q.difficulty || "medium",
-    }));
+    // Store questions in DB — derive correct_answer letter from text to prevent AI mislabeling
+    const norm = (s: string) => (s || "").trim().toLowerCase();
+    const questionsToInsert = generatedQuestions
+      .map((q: any) => {
+        const opts: Record<string, string> = {
+          a: q.option_a, b: q.option_b, c: q.option_c, d: q.option_d,
+        };
+        const target = norm(q.correct_answer_text || q.correct_answer || "");
+        let letter = (["a", "b", "c", "d"] as const).find((k) => norm(opts[k]) === target);
+        // Fallback: if AI returned a single letter, accept it
+        if (!letter && ["a", "b", "c", "d"].includes(norm(q.correct_answer || ""))) {
+          letter = norm(q.correct_answer) as "a" | "b" | "c" | "d";
+        }
+        if (!letter) return null;
+        return {
+          category,
+          question: q.question,
+          option_a: q.option_a,
+          option_b: q.option_b,
+          option_c: q.option_c,
+          option_d: q.option_d,
+          correct_answer: letter,
+          difficulty: q.difficulty || "medium",
+        };
+      })
+      .filter(Boolean);
+
+    if (questionsToInsert.length === 0) throw new Error("AI returned no valid questions");
 
     const { data: savedQuestions, error: qError } = await supabase
       .from("brain_duel_questions")
