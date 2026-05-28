@@ -15,6 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 import Navbar from "@/components/Navbar";
 import { GoalSettingDialog } from "@/components/sponsor/GoalSettingDialog";
 import { GoalProgressCard } from "@/components/sponsor/GoalProgressCard";
+import { BrandAppealForm } from "@/components/sponsor/BrandAppealForm";
 import { 
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, 
   Tooltip, Legend, ResponsiveContainer, Area, AreaChart 
@@ -47,6 +48,7 @@ interface BrandSponsor {
   created_at?: string;
   moderation_status?: "pending" | "approved" | "rejected";
   moderation_reason?: string | null;
+  user_id?: string;
 }
 
 const TIER_INFO = {
@@ -387,6 +389,9 @@ export default function SponsorDashboard() {
                     ? sponsor.moderation_reason || "Please contact support for details."
                     : "Until an admin approves it, your brand will not appear in Brand Battle Arena listings or competitions."}
                 </p>
+                {sponsor.moderation_status === "rejected" && (
+                  <BrandAppealForm brandId={sponsor.id} brandUserId={sponsor.user_id ?? ""} />
+                )}
               </div>
             </CardContent>
           </Card>

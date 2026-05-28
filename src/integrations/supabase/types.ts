@@ -7332,6 +7332,56 @@ export type Database = {
         }
         Relationships: []
       }
+      brand_moderation_appeals: {
+        Row: {
+          admin_response: string | null
+          appeal_text: string
+          brand_id: string
+          created_at: string
+          id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          supporting_url: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_response?: string | null
+          appeal_text: string
+          brand_id: string
+          created_at?: string
+          id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          supporting_url?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_response?: string | null
+          appeal_text?: string
+          brand_id?: string
+          created_at?: string
+          id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          supporting_url?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brand_moderation_appeals_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brand_sponsors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       brand_moderation_audit: {
         Row: {
           admin_id: string
