@@ -218,7 +218,7 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   "generate-phobia-cure":               { target: "generate-gift-message", bodyExtras: { type: "phobia_cure" } },
   "generate-recipe-from-ingredients":   { target: "generate-gift-message", bodyExtras: { type: "recipe_from_ingredients" } },
   "generate-sports-prediction":         { target: "generate-gift-message", bodyExtras: { type: "sports_prediction" } },
-  "generate-story-video":               { target: "generate-gift-message", bodyExtras: { type: "story_video" } },
+  // generate-story-video — real edge function, no proxy
   "generate-tattoo":                    { target: "generate-gift-message", bodyExtras: { type: "tattoo" } },
   "generate-teacher-coloring":          { target: "generate-gift-message", bodyExtras: { type: "teacher_coloring" } },
   "generate-video-ad":                  { target: "generate-gift-message", bodyExtras: { type: "video_ad" } },
