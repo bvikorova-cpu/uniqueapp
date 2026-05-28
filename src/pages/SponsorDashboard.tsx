@@ -387,6 +387,9 @@ export default function SponsorDashboard() {
                     ? sponsor.moderation_reason || "Please contact support for details."
                     : "Until an admin approves it, your brand will not appear in Brand Battle Arena listings or competitions."}
                 </p>
+                {sponsor.moderation_status === "rejected" && (
+                  <BrandAppealForm brandId={sponsor.id} brandUserId={sponsor.user_id ?? ""} />
+                )}
               </div>
             </CardContent>
           </Card>
