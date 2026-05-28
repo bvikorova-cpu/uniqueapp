@@ -146,8 +146,8 @@ export default function BedtimeStories() {
     } catch (e) { console.warn("progress save failed", e); }
 
     try {
-      const { data, error } = await supabase.functions.invoke('translate-and-generate-audio', {
-        body: { text: story.text, language }
+      const { data, error } = await supabase.functions.invoke('kids-story-tts', {
+        body: { text: story.text, voice: 'nova' }
       });
       if (error) throw error;
       if (!data?.audioContent) throw new Error('No audio content received');
