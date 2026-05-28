@@ -102,7 +102,7 @@ export function TourOnboarding({ castleName, castleCountry, funFacts, totalRooms
                 ))}
               </div>
 
-              <Button onClick={onStart} className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl py-5">
+              <Button onClick={() => onStart(selectedGuide as TourGuideId)} className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl py-5">
                 🚀 Start Tour!
               </Button>
             </motion.div>
