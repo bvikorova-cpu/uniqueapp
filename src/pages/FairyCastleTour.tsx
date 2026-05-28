@@ -208,28 +208,32 @@ export default function FairyCastleTour() {
       />
 
       {/* Header */}
-      <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/70 to-transparent p-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+      <div className="absolute top-16 sm:top-0 left-0 right-0 z-30 bg-gradient-to-b from-black/85 to-transparent p-3 sm:p-6">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
             <Button
               variant="ghost"
+              size="sm"
               onClick={() => navigate("/kids-channel/fairy-castles")}
-              className="text-white hover:bg-white/20"
+              className="text-white hover:bg-white/20 px-2 sm:px-3 shrink-0"
             >
-              <ArrowLeft className="mr-2 h-4 w-4" /> Exit
+              <ArrowLeft className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Exit</span>
             </Button>
-            <div className="text-white">
-              <h2 className="font-bold text-xl">{castle.name}</h2>
-              <p className="text-sm opacity-80">{currentRoom.room_name}</p>
+            <div className="text-white min-w-0">
+              <h2 className="font-bold text-sm sm:text-xl truncate">{castle.name}</h2>
+              <p className="text-xs sm:text-sm opacity-80 truncate">{currentRoom.room_name}</p>
             </div>
           </div>
 
-          <div className="flex gap-2">
-            <Button onClick={() => setShowMiniMap(true)} variant="outline" className="bg-white/20 backdrop-blur-sm text-white border-white/30">
-              <Map className="mr-2 h-4 w-4" /> Map
+          <div className="flex gap-1.5 sm:gap-2 shrink-0">
+            <Button onClick={() => setShowMiniMap(true)} variant="outline" size="sm" className="bg-white/20 backdrop-blur-sm text-white border-white/30 px-2 sm:px-3">
+              <Map className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Map</span>
             </Button>
-            <Button onClick={() => setShowFunFacts(!showFunFacts)} variant="outline" className="bg-white/20 backdrop-blur-sm text-white border-white/30">
-              <Sparkles className="mr-2 h-4 w-4" /> Facts
+            <Button onClick={() => setShowFunFacts(!showFunFacts)} variant="outline" size="sm" className="bg-white/20 backdrop-blur-sm text-white border-white/30 px-2 sm:px-3">
+              <Sparkles className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Facts</span>
             </Button>
           </div>
         </div>

@@ -1014,7 +1014,7 @@ export function FairyPanoramaViewer({
 
       {/* POI counter chip */}
       {pois.length > 0 && (
-        <div className="absolute top-44 right-6 z-10 bg-black/60 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full border border-white/20 flex items-center gap-1.5">
+        <div className="absolute top-[19rem] sm:top-44 right-3 sm:right-6 z-10 bg-black/60 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full border border-white/20 flex items-center gap-1.5">
           <MapPin className="h-3.5 w-3.5 text-amber-300" />
           <span className="font-semibold">{visitedPois.size}/{pois.length}</span>
           <span className="opacity-70">discovered</span>
@@ -1194,7 +1194,7 @@ export function FairyPanoramaViewer({
       )}
 
       {/* Audio Mixer (Ambient + POI) */}
-      <div className="absolute top-24 right-6 bg-white/90 backdrop-blur-sm p-3 rounded-xl shadow-lg space-y-2 min-w-[180px]">
+      <div className="absolute top-56 sm:top-24 right-3 sm:right-6 bg-white/90 backdrop-blur-sm p-2.5 sm:p-3 rounded-xl shadow-lg space-y-2 min-w-[160px] sm:min-w-[180px] max-w-[calc(100%-1.5rem)]">
         {ambientSound && (
           <div className="flex items-center gap-2">
             <Button
