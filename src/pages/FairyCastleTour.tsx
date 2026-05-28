@@ -278,11 +278,12 @@ export default function FairyCastleTour() {
       {/* Panorama Viewer */}
       <div className={`transition-opacity duration-300 ${isFading ? 'opacity-0' : 'opacity-100'}`}>
         <FairyPanoramaViewer
-          key={`${castleId}-${currentRoomIndex}`}
+          key={`${castleId}-${currentRoomIndex}-${selectedGuide}`}
           imageUrl={panoramaUrl}
           audioGuideText={currentRoom.audio_guide_text || ""}
           ambientSound={ambientSound}
           roomName={currentRoom.room_name}
+          guide={selectedGuide}
           collectibles={roomCollectibles || []}
           onCollectItem={handleCollectItem}
           collectedIds={collectedIds}
