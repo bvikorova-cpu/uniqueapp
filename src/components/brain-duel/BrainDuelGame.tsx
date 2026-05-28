@@ -132,7 +132,7 @@ export const BrainDuelGame = () => {
 
       setQuestions(qData.questions);
       setGamePhase('playing');
-      setTimeLeft(15);
+      setTimeLeft(QUESTION_TIME);
       setAnswerStartTime(Date.now());
       toast.success('Match started! AI generated unique questions for you.', { duration: 2000 });
     } catch (err: any) {
