@@ -128,9 +128,20 @@ function useAction<T = any>() {
       refreshCredits?.();
       return res;
     } catch (e: any) {
-      if (e.message === "insufficient_credits") toast.error("Not enough credits. Please top up.");
-      else if (e.message === "unauthorized") toast.error("You need to sign in.");
-      else toast.error(e.message ?? "Error");
+      const msg = String(e?.message ?? "");
+      if (msg === "insufficient_credits") toast.error("Not enough credits. Please top up.", {
+        action: { label: "Buy credits", onClick: () => { window.location.href = "/ai-credits-store"; } },
+      });
+      else if (msg === "unauthorized") {
+        toast.error("Please sign in to continue.");
+        setTimeout(() => {
+          window.location.href = `/auth?redirect=${encodeURIComponent(window.location.pathname)}`;
+        }, 600);
+      }
+      else if (msg === "rate_limited" || /rate.?limit|too many/i.test(msg)) {
+        toast.error("Too many requests — please wait a moment and try again.");
+      }
+      else toast.error(msg || "Something went wrong. Please try again.");
       return null;
     } finally { setLoading(false); }
   };
