@@ -1194,7 +1194,7 @@ export function FairyPanoramaViewer({
       )}
 
       {/* Audio Mixer (Ambient + POI) */}
-      <div className="absolute top-28 sm:top-24 right-3 sm:right-6 bg-white/90 backdrop-blur-sm p-2.5 sm:p-3 rounded-xl shadow-lg space-y-2 min-w-[160px] sm:min-w-[180px] max-w-[calc(100%-1.5rem)]">
+      <div className="absolute top-56 sm:top-24 right-3 sm:right-6 bg-white/90 backdrop-blur-sm p-2.5 sm:p-3 rounded-xl shadow-lg space-y-2 min-w-[160px] sm:min-w-[180px] max-w-[calc(100%-1.5rem)]">
         {ambientSound && (
           <div className="flex items-center gap-2">
             <Button
