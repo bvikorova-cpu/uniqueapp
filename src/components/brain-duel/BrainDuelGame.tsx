@@ -177,7 +177,7 @@ export const BrainDuelGame = () => {
       setAnswerResult(null);
       setHiddenOptions([]);
       setShowHint(false);
-      setTimeLeft(15);
+      setTimeLeft(QUESTION_TIME);
       setAnswerStartTime(Date.now());
       setGamePhase('playing');
     } else {
