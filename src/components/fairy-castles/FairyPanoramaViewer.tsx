@@ -561,10 +561,13 @@ export function FairyPanoramaViewer({
   audioGuideText,
   ambientSound,
   roomName,
+  guide = "explorer",
   collectibles = [],
   onCollectItem,
   collectedIds = []
 }: FairyPanoramaViewerProps) {
+  const guidePersona = GUIDE_INTRO[guide];
+  const narratedText = audioGuideText ? `${guidePersona.prefix}${audioGuideText}` : audioGuideText;
   const [isPlaying, setIsPlaying] = useState(false);
   const [showInfo, setShowInfo] = useState(true);
   const [ambientVolume, setAmbientVolume] = useState<number>(() => {
