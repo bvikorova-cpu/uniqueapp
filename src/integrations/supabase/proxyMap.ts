@@ -217,6 +217,15 @@ export function resolveProxy(
     return { target: "create-checkout", body: { ...b, product: "ai_auto_recharge" } };
   }
 
+  // Kids subscription helpers — keep immediate (avoid timing race with
+  // patchSupabaseFunctions, which loads after React render).
+  if (functionName === "check-kids-subscription") {
+    return { target: "check-subscription", body: { ...b, tier: "kids" } };
+  }
+  if (functionName === "kids-customer-portal") {
+    return { target: "check-connect-status", body: { ...b, action: "customer_portal" } };
+  }
+
   const aiType = AI_PROXY_MAP[functionName];
   if (aiType) {
     return { target: "generate-gift-message", body: { ...b, type: (b as any).type ?? aiType } };
