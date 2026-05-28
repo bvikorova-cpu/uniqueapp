@@ -8,9 +8,9 @@ import { CastleRoomMiniMap } from "@/components/fairy-castles/CastleRoomMiniMap"
 import { CastleProgressTracker } from "@/components/fairy-castles/CastleProgressTracker";
 import { CastleCertificate } from "@/components/fairy-castles/CastleCertificate";
 import { CastleQuiz } from "@/components/fairy-castles/CastleQuiz";
-import { TourOnboarding } from "@/components/fairy-castles/TourOnboarding";
+import { TourOnboarding, type TourGuideId } from "@/components/fairy-castles/TourOnboarding";
 import { useQuery } from "@tanstack/react-query";
-import { useCastleRooms, useStartTour, useCompleteRoom, useEarnStamp } from "@/hooks/useFairyCastles";
+import { useCastleRooms, useStartTour, useCompleteRoom, useEarnStamp, useUserStamps } from "@/hooks/useFairyCastles";
 import { useRoomCollectibles, useCollectDisneyItem, useUserDisneyCollectibles } from "@/hooks/useCollectibles";
 import { useSaveCertificate } from "@/hooks/useCertificates";
 import { supabase } from "@/integrations/supabase/client";
@@ -30,12 +30,15 @@ export default function FairyCastleTour() {
   const [showQuiz, setShowQuiz] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [tourStarted, setTourStarted] = useState(false);
+  const [selectedGuide, setSelectedGuide] = useState<TourGuideId>("explorer");
 
   const { rooms, isLoading: roomsLoading } = useCastleRooms(castleId!);
   const startTour = useStartTour();
   const completeRoom = useCompleteRoom();
   const earnStamp = useEarnStamp();
   const saveCertificate = useSaveCertificate();
+  const { stamps: userStamps } = useUserStamps();
+  const hasStamp = !!userStamps?.some((s: any) => s.castle_id === castleId);
 
   const currentRoom = rooms?.[currentRoomIndex];
   const { data: roomCollectibles } = useRoomCollectibles(currentRoom?.id || "");
@@ -80,9 +83,15 @@ export default function FairyCastleTour() {
     }
   }, [castle, visit, tourStarted]);
 
-  // If user already visited, skip onboarding
+  // If user already visited, skip onboarding and restore last guide
   useEffect(() => {
     if (visit) {
+      try {
+        const saved = localStorage.getItem('fairy.guide') as TourGuideId | null;
+        if (saved === 'princess' || saved === 'wizard' || saved === 'explorer') {
+          setSelectedGuide(saved);
+        }
+      } catch {}
       setShowOnboarding(false);
       setTourStarted(true);
     }
@@ -95,16 +104,17 @@ export default function FairyCastleTour() {
     setIsFading(true);
 
     setTimeout(() => {
+      // Mark the current room as visited (once) regardless of whether it's last
       if (currentRoom && visit) {
         completeRoom.mutate({ visitId: visit.id, roomId: currentRoom.id });
       }
 
       if (isLastRoom) {
-        if (currentRoom && visit) {
-          completeRoom.mutate({ visitId: visit.id, roomId: currentRoom.id });
-        }
         if (castleId) {
-          earnStamp.mutate({ castleId });
+          // Only award stamp if not already earned (DB has UNIQUE(user_id, castle_id))
+          if (!hasStamp) {
+            earnStamp.mutate({ castleId });
+          }
           saveCertificate.mutate({
             castleId,
             completionTimeMs: Date.now() - tourStartTime,
@@ -190,7 +200,9 @@ export default function FairyCastleTour() {
     }
   };
 
-  const handleStartTour = () => {
+  const handleStartTour = (guide: TourGuideId) => {
+    setSelectedGuide(guide);
+    try { localStorage.setItem('fairy.guide', guide); } catch {}
     setShowOnboarding(false);
     setTourStarted(true);
   };
@@ -266,11 +278,12 @@ export default function FairyCastleTour() {
       {/* Panorama Viewer */}
       <div className={`transition-opacity duration-300 ${isFading ? 'opacity-0' : 'opacity-100'}`}>
         <FairyPanoramaViewer
-          key={`${castleId}-${currentRoomIndex}`}
+          key={`${castleId}-${currentRoomIndex}-${selectedGuide}`}
           imageUrl={panoramaUrl}
           audioGuideText={currentRoom.audio_guide_text || ""}
           ambientSound={ambientSound}
           roomName={currentRoom.room_name}
+          guide={selectedGuide}
           collectibles={roomCollectibles || []}
           onCollectItem={handleCollectItem}
           collectedIds={collectedIds}

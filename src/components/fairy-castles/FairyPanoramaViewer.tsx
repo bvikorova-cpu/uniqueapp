@@ -84,11 +84,20 @@ import shanghaiStorybook8 from "@/assets/fairy-castles/panoramas/shanghai-storyb
 import shanghaiStorybook9 from "@/assets/fairy-castles/panoramas/shanghai-storybook-9.jpg";
 import shanghaiStorybook10 from "@/assets/fairy-castles/panoramas/shanghai-storybook-10.jpg";
 
+export type GuideVoice = "princess" | "wizard" | "explorer";
+
+const GUIDE_INTRO: Record<GuideVoice, { label: string; emoji: string; prefix: string }> = {
+  princess: { label: "Princess", emoji: "👸", prefix: "Welcome, dear traveler — let me tell you the elegant tale of this room. " },
+  wizard:   { label: "Wizard",   emoji: "🧙", prefix: "Ahh… step closer, and I shall reveal the magic hidden within these walls. " },
+  explorer: { label: "Explorer", emoji: "🗺️", prefix: "Adventurer! Get ready — here are the fun facts you cannot miss. " },
+};
+
 interface FairyPanoramaViewerProps {
   imageUrl: string;
   audioGuideText?: string;
   ambientSound?: string;
   roomName?: string;
+  guide?: GuideVoice;
   collectibles?: Array<{
     id: string;
     position_x: number;
@@ -552,10 +561,13 @@ export function FairyPanoramaViewer({
   audioGuideText,
   ambientSound,
   roomName,
+  guide = "explorer",
   collectibles = [],
   onCollectItem,
   collectedIds = []
 }: FairyPanoramaViewerProps) {
+  const guidePersona = GUIDE_INTRO[guide];
+  const narratedText = audioGuideText ? `${guidePersona.prefix}${audioGuideText}` : audioGuideText;
   const [isPlaying, setIsPlaying] = useState(false);
   const [showInfo, setShowInfo] = useState(true);
   const [ambientVolume, setAmbientVolume] = useState<number>(() => {
@@ -865,8 +877,8 @@ export function FairyPanoramaViewer({
       return;
     }
 
-    // Check cache first
-    const cacheKey = `${imageUrl}-${selectedLanguage}`;
+    // Check cache first (per guide persona, so each voice has its own cache)
+    const cacheKey = `${imageUrl}-${selectedLanguage}-${guide}`;
     if (audioCache[cacheKey]) {
       playAudio(audioCache[cacheKey]);
       return;
@@ -877,7 +889,7 @@ export function FairyPanoramaViewer({
     try {
       const { data, error } = await supabase.functions.invoke('translate-and-generate-audio', {
         body: {
-          text: audioGuideText,
+          text: narratedText,
           language: selectedLanguage,
         },
       });
@@ -1195,6 +1207,10 @@ export function FairyPanoramaViewer({
 
       {/* Audio Mixer (Ambient + POI) */}
       <div className="absolute top-56 sm:top-24 right-3 sm:right-6 bg-white/90 backdrop-blur-sm p-2.5 sm:p-3 rounded-xl shadow-lg space-y-2 min-w-[160px] sm:min-w-[180px] max-w-[calc(100%-1.5rem)]">
+        <div className="flex items-center justify-center gap-1.5 pb-1.5 border-b border-black/10 text-[11px] font-semibold text-gray-700" aria-label={`Narrated by ${guidePersona.label}`}>
+          <span className="text-base leading-none">{guidePersona.emoji}</span>
+          <span>{guidePersona.label} narrating</span>
+        </div>
         {ambientSound && (
           <div className="flex items-center gap-2">
             <Button

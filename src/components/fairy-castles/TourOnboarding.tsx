@@ -3,13 +3,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Compass, Sparkles, Volume2, MapPin } from "lucide-react";
 
+export type TourGuideId = "princess" | "wizard" | "explorer";
+
 interface TourOnboardingProps {
   castleName: string;
   castleCountry: string;
   funFacts: string[];
   totalRooms: number;
   isVisible: boolean;
-  onStart: () => void;
+  onStart: (guide: TourGuideId) => void;
 }
 
 const guides = [
@@ -100,7 +102,7 @@ export function TourOnboarding({ castleName, castleCountry, funFacts, totalRooms
                 ))}
               </div>
 
-              <Button onClick={onStart} className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl py-5">
+              <Button onClick={() => onStart(selectedGuide as TourGuideId)} className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl py-5">
                 🚀 Start Tour!
               </Button>
             </motion.div>
