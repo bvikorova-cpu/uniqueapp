@@ -803,6 +803,24 @@ serve(async (req) => {
       }
     }
 
+    // ─── KIDS SUBSCRIPTION — tier-based real price IDs ───
+    if (body.product === "kids_subscription" && body.tier) {
+      const KIDS_TIERS: Record<string, { priceId: string; name: string }> = {
+        monthly:   { priceId: "price_1SShj2GaXSfGtYFtcKlTJYGa", name: "Unique Kids Monthly" },
+        annual:    { priceId: "price_1SShj3GaXSfGtYFtGEneXVhs", name: "Unique Kids Annual" },
+        gold_pass: { priceId: "price_1Tc1kyGaXSfGtYFtcfVW1fcY", name: "Unique Kids Gold Pass" },
+      };
+      const kt = KIDS_TIERS[String(body.tier)];
+      if (kt) {
+        body.priceId = kt.priceId;
+        body.productName = kt.name;
+        body.mode = "subscription";
+        body.metadata = { ...(body.metadata || {}), tier: String(body.tier), product: "kids_subscription" };
+        body.successUrl = body.successUrl || `${origin}/kids-pricing?success=true&tier=${body.tier}&session_id={CHECKOUT_SESSION_ID}`;
+        body.cancelUrl = body.cancelUrl || `${origin}/kids-pricing?canceled=true`;
+      }
+    }
+
     if (body.product && !body.priceId && !body.productKey && !body.credits) {
       // Free actions (e.g. create-character, create-universe) just return ok
       if (body.free === true) {
