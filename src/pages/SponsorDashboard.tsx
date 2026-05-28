@@ -45,6 +45,8 @@ interface BrandSponsor {
   subscription_end: string;
   stripe_subscription_id: string;
   created_at?: string;
+  moderation_status?: "pending" | "approved" | "rejected";
+  moderation_reason?: string | null;
 }
 
 const TIER_INFO = {
