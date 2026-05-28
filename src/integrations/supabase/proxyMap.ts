@@ -58,7 +58,7 @@ export const AI_PROXY_MAP: Record<string, string> = {
   "generate-phobia-cure": "generate_phobia_cure",
   "generate-recipe-from-ingredients": "generate_recipe_from_ingredients",
   "generate-sports-prediction": "generate_sports_prediction",
-  "generate-story-video": "generate_story_video",
+  // "generate-story-video": real edge function, not proxied
   "generate-tattoo": "generate_tattoo",
   "generate-teacher-coloring": "generate_teacher_coloring",
   "generate-video-ad": "generate_video_ad",
