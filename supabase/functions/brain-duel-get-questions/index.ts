@@ -56,16 +56,13 @@ serve(async (req) => {
             role: "user",
             content: `Generate ${totalQuestions} unique trivia questions about "${category}". Mix easy, medium and hard difficulty.
 
-Return JSON array:
-[{"question":"...","option_a":"...","option_b":"...","option_c":"...","option_d":"...","correct_answer":"a","difficulty":"medium"}]
-
-Rules:
-- correct_answer must be "a", "b", "c", or "d"
-- Each question must have exactly 4 options
-- Questions should be factual and verifiable
-- Mix difficulties: 3 easy, 4 medium, 3 hard (adjust for ${totalQuestions} total)
-- No duplicate questions
-- Return ONLY the JSON array, no extra text`
+CRITICAL RULES:
+- "correct_answer_text" MUST be EXACTLY equal (character-for-character, same casing) to one of option_a/b/c/d
+- Do NOT invent a new string — copy it verbatim from the matching option
+- Each question must have exactly 4 distinct options
+- Questions must be factual and verifiable
+- Mix difficulties (~30% easy, 40% medium, 30% hard)
+- No duplicate questions`
           }
         ],
         tools: [
@@ -87,10 +84,10 @@ Rules:
                         option_b: { type: "string" },
                         option_c: { type: "string" },
                         option_d: { type: "string" },
-                        correct_answer: { type: "string", enum: ["a", "b", "c", "d"] },
+                        correct_answer_text: { type: "string", description: "Must exactly match one of the four options verbatim" },
                         difficulty: { type: "string", enum: ["easy", "medium", "hard"] }
                       },
-                      required: ["question", "option_a", "option_b", "option_c", "option_d", "correct_answer", "difficulty"]
+                      required: ["question", "option_a", "option_b", "option_c", "option_d", "correct_answer_text", "difficulty"]
                     }
                   }
                 },
