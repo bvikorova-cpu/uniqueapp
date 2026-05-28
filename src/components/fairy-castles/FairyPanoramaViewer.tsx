@@ -877,8 +877,8 @@ export function FairyPanoramaViewer({
       return;
     }
 
-    // Check cache first
-    const cacheKey = `${imageUrl}-${selectedLanguage}`;
+    // Check cache first (per guide persona, so each voice has its own cache)
+    const cacheKey = `${imageUrl}-${selectedLanguage}-${guide}`;
     if (audioCache[cacheKey]) {
       playAudio(audioCache[cacheKey]);
       return;
@@ -889,7 +889,7 @@ export function FairyPanoramaViewer({
     try {
       const { data, error } = await supabase.functions.invoke('translate-and-generate-audio', {
         body: {
-          text: audioGuideText,
+          text: narratedText,
           language: selectedLanguage,
         },
       });
