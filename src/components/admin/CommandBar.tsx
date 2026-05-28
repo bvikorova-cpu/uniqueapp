@@ -20,6 +20,7 @@ const commands = [
   { label: "Corporate Inquiries", path: "/admin/corporate-inquiries", icon: Briefcase, group: "Trust & Safety" },
 
   { label: "Brand Campaigns", path: "/admin/brand-campaigns", icon: Building2, group: "Content" },
+  { label: "Brand Moderation", path: "/admin/brand-moderation", icon: ShieldCheck, group: "Trust & Safety" },
   { label: "Image Editor", path: "/admin/image-editor", icon: ImageIcon, group: "Content" },
 
   { label: "Back to Command Center", path: "/admin", icon: Users, group: "Navigation" },
