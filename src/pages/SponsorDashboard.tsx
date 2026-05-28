@@ -360,6 +360,39 @@ export default function SponsorDashboard() {
           </Button>
         </div>
 
+        {/* Moderation status banner */}
+        {sponsor.moderation_status && sponsor.moderation_status !== "approved" && (
+          <Card
+            data-testid="moderation-banner"
+            className={`mb-6 border-2 ${
+              sponsor.moderation_status === "rejected"
+                ? "border-red-500/60 bg-red-950/40"
+                : "border-yellow-500/60 bg-yellow-950/30"
+            }`}
+          >
+            <CardContent className="p-4 flex items-start gap-3">
+              {sponsor.moderation_status === "rejected" ? (
+                <XCircle className="h-5 w-5 text-red-400 mt-0.5" />
+              ) : (
+                <AlertCircle className="h-5 w-5 text-yellow-400 mt-0.5" />
+              )}
+              <div className="text-sm">
+                <p className="font-semibold text-white">
+                  {sponsor.moderation_status === "rejected"
+                    ? "Your brand was rejected by moderation"
+                    : "Your brand is awaiting moderation approval"}
+                </p>
+                <p className="text-gray-300 mt-1">
+                  {sponsor.moderation_status === "rejected"
+                    ? sponsor.moderation_reason || "Please contact support for details."
+                    : "Until an admin approves it, your brand will not appear in Brand Battle Arena listings or competitions."}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+
         {/* Header Section */}
         <Card className="bg-black/40 backdrop-blur-lg border-purple-500/50 mb-8">
           <CardContent className="p-8">
