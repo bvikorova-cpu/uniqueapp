@@ -485,10 +485,11 @@ function SharePanel({ child }: { child: KidsChild }) {
 export default function KidsFeature() {
   const { slug } = useParams();
   const feature = KIDS_FEATURES.find(f => f.slug === slug);
-  const { activeChild } = useKidsChildren();
+  const { activeChild, loading } = useKidsChildren();
   if (!feature) return <Shell title="Not found"><Card className="p-6">Unknown feature.</Card></Shell>;
 
   const needsChild = !["safety","approval"].includes(feature.slug);
+  if (needsChild && loading) return <Shell title={feature.title} desc={feature.desc}><Card className="p-6 text-center text-muted-foreground">Loading profile…</Card></Shell>;
   if (needsChild && !activeChild) return <Shell title={feature.title} desc={feature.desc}><NeedChild /></Shell>;
 
   let content: JSX.Element = <Card className="p-6">Coming soon</Card>;
