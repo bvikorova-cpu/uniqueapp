@@ -135,6 +135,7 @@ export default function BrandBattle() {
         .from("brand_sponsors")
         .select("*")
         .eq("subscription_status", "active")
+        .eq("moderation_status", "approved")
         .order("total_votes", { ascending: false });
       if (error) throw error;
       return data as BrandSponsor[];
