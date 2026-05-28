@@ -194,7 +194,9 @@ export default function FairyCastleTour() {
     }
   };
 
-  const handleStartTour = () => {
+  const handleStartTour = (guide: TourGuideId) => {
+    setSelectedGuide(guide);
+    try { localStorage.setItem('fairy.guide', guide); } catch {}
     setShowOnboarding(false);
     setTourStarted(true);
   };
