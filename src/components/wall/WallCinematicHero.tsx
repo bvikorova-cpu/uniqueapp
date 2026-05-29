@@ -31,9 +31,9 @@ export default function WallCinematicHero({ totalPosts, totalUsers, totalLikes, 
   }, []);
 
   const statCards = [
-    { value: totalPosts > 0 ? totalPosts.toLocaleString() : "—", label: "Posts Today", icon: MessageCircle, accent: "from-orange-500/20 to-coral-500/10", iconColor: "text-orange-400" },
-    { value: totalUsers > 0 ? totalUsers.toLocaleString() : "—", label: "Active Users", icon: Users, accent: "from-teal-500/20 to-cyan-500/10", iconColor: "text-teal-400" },
-    { value: totalLikes > 0 ? totalLikes.toLocaleString() : "—", label: "Interactions", icon: Heart, accent: "from-rose-500/20 to-pink-500/10", iconColor: "text-rose-400" },
+    { value: totalPosts.toLocaleString(), label: "Posts Today", icon: MessageCircle, accent: "from-orange-500/20 to-coral-500/10", iconColor: "text-orange-400" },
+    { value: totalUsers.toLocaleString(), label: "Active Users", icon: Users, accent: "from-teal-500/20 to-cyan-500/10", iconColor: "text-teal-400" },
+    { value: totalLikes.toLocaleString(), label: "Interactions", icon: Heart, accent: "from-rose-500/20 to-pink-500/10", iconColor: "text-rose-400" },
     { value: `${timeLeft.days}d ${timeLeft.hours}h`, label: "Challenge Ends", icon: Zap, accent: "from-amber-500/20 to-yellow-500/10", iconColor: "text-amber-400" },
   ];
 
