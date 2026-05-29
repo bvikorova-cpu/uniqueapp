@@ -165,7 +165,7 @@ export const StoryWizardFlow = ({ onGenerate, loading, disabled, initialData }: 
 
         <Button
           onClick={handleSubmit}
-          disabled={!canProceed || loading || disabled}
+          disabled={!canProceed || loading || (disabled && step === 3)}
           size="lg"
           className="gap-2 px-8"
         >
