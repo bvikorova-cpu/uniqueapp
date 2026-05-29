@@ -280,7 +280,7 @@ const Auth = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4 pb-48 sm:pb-4">
       <div className="w-full max-w-md">
         <AuthReferralBanner />
       <Card className="w-full">
