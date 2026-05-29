@@ -2,9 +2,13 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Bell, Mail, Smartphone, Inbox } from "lucide-react";
+import { Bell, Mail, Smartphone, Inbox, Volume2 } from "lucide-react";
 import { useNotificationPreferences, NotifCategory, DigestFrequency } from "@/hooks/useNotificationPreferences";
 import { usePushSubscription } from "@/hooks/usePushSubscription";
+import { playMessageChime } from "@/lib/messageChime";
+import { playNotificationChime } from "@/lib/notificationChime";
+import { toast } from "sonner";
+import { useState } from "react";
 
 const LABELS: Record<NotifCategory, string> = {
   likes: "Likes & reactions",
@@ -44,6 +48,8 @@ export function NotificationSettings() {
           )}
         </CardContent>
       </Card>
+
+      <SoundTestCard />
 
       <Card className="bg-card/50 backdrop-blur border-border/50">
         <CardHeader>
@@ -97,5 +103,43 @@ function Toggle({ icon, label, value, onChange }: { icon: React.ReactNode; label
       <span className="hidden sm:inline">{label}</span>
       <Switch checked={value} onCheckedChange={onChange} />
     </label>
+  );
+}
+
+function SoundTestCard() {
+  const [busy, setBusy] = useState(false);
+
+  const testBoth = async () => {
+    setBusy(true);
+    try {
+      // unlock audio context
+      await playNotificationChime();
+      await new Promise((r) => setTimeout(r, 400));
+      await playMessageChime();
+      toast.success("Sound test passed — if you didn't hear it, check your device volume and make sure the browser tab is active.");
+    } catch {
+      toast.error("Sound blocked — some browsers require a first click or interaction before playing audio.");
+    }
+    setBusy(false);
+  };
+
+  return (
+    <Card className="bg-card/50 backdrop-blur border-border/50">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-base">
+          <Volume2 className="h-4 w-4 text-primary" />
+          Sound test
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="flex items-center justify-between">
+        <div className="text-sm text-muted-foreground">
+          Tap below to preview notification and message chimes. Audio only works when the tab is in the foreground.
+        </div>
+        <Button size="sm" onClick={testBoth} disabled={busy} className="gap-2">
+          <Volume2 className="h-4 w-4" />
+          {busy ? "Playing…" : "Test sound"}
+        </Button>
+      </CardContent>
+    </Card>
   );
 }
