@@ -90,7 +90,7 @@ export const KidsAcademyShop = () => {
             </div>
             <Badge className="bg-primary/15 text-primary border-primary/30">
               <Coins className="w-3 h-3 mr-1" />
-              Earn stars by completing challenges!
+              1 star per 10 XP
             </Badge>
           </div>
         </CardContent>
