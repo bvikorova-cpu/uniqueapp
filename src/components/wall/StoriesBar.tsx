@@ -189,17 +189,7 @@ export const StoriesBar = () => {
           ))}
 
 
-          {/* Placeholder stories for visual richness */}
-          {stories.length < 3 && (
-            <>
-              {[...Array(4 - stories.length)].map((_, i) => (
-                <div 
-                  key={`placeholder-${i}`}
-                  className="flex-shrink-0 w-[100px] h-[150px] rounded-2xl overflow-hidden bg-accent/30 backdrop-blur-sm border border-white/5 animate-pulse"
-                />
-              ))}
-            </>
-          )}
+
         </div>
       </div>
 

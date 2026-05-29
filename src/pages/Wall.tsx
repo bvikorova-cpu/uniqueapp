@@ -641,24 +641,32 @@ const Feed = () => {
                 <>
                   {/* Find people search */}
                   <UserSearch />
-                  {/* New Phase 1-4 Tools Toolbar */}
+                  {/* Quick tools toolbar — primary actions + collapsed "More tools" on mobile */}
                   <div className="glass-card rounded-2xl p-2 backdrop-blur-xl border border-white/10 flex flex-wrap gap-2">
                     <SpacesDialog />
-                    <MutedUsersDialog />
-                    <MutedKeywordsDialog />
-                    <CloseFriendsDialog />
-                    <SavedSearchesDialog />
-                    <FollowedTopicsDialog />
                     <GroupChatDialog />
                     <CommunitiesDialog />
-                    <ModerationQueueDialog />
-                    <CreatorSubscriptionDialog />
-                    <CreatorFundDialog />
-                    <DailyLoginRewardDialog />
-                    <CreatorWebhooksDialog />
-                    <AccessibilityFieldsDialog />
-                    <OfflineStatusIndicator />
+                    <CloseFriendsDialog />
+                    <details className="group inline-block">
+                      <summary className="list-none cursor-pointer inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors">
+                        More tools
+                      </summary>
+                      <div className="mt-2 flex flex-wrap gap-2 p-2 rounded-lg bg-background/50 border border-white/10">
+                        <MutedUsersDialog />
+                        <MutedKeywordsDialog />
+                        <SavedSearchesDialog />
+                        <FollowedTopicsDialog />
+                        <ModerationQueueDialog />
+                        <CreatorSubscriptionDialog />
+                        <CreatorFundDialog />
+                        <DailyLoginRewardDialog />
+                        <CreatorWebhooksDialog />
+                        <AccessibilityFieldsDialog />
+                        <OfflineStatusIndicator />
+                      </div>
+                    </details>
                   </div>
+
 
                   {/* Notes / Status Bar (24h ephemeral) */}
                   <NotesBar />
