@@ -56,6 +56,8 @@ export const SmartFeedTabs = ({ activeTab, onTabChange }: SmartFeedTabsProps) =>
           </motion.button>
         );
       })}
+      </div>
+      <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-background to-transparent" />
     </div>
   );
 };
