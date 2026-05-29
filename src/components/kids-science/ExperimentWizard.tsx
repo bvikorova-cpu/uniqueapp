@@ -84,7 +84,6 @@ export const ExperimentWizard = ({
               <ScienceCategorySelector
                 selected={category}
                 onSelect={setCategory}
-                disabled={!canAnalyze}
               />
               <DifficultySelector selected={difficulty} onSelect={setDifficulty} />
             </div>
@@ -103,7 +102,6 @@ export const ExperimentWizard = ({
                 onChange={(e) => setHypothesis(e.target.value)}
                 placeholder="I think that when..."
                 className="min-h-[120px] text-base"
-                disabled={!canAnalyze}
               />
             </div>
           )}
@@ -121,7 +119,6 @@ export const ExperimentWizard = ({
                 onChange={(e) => setObservations(e.target.value)}
                 placeholder="I observed that..."
                 className="min-h-[120px] text-base"
-                disabled={!canAnalyze}
               />
             </div>
           )}
