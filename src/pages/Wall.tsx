@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, Fragment } from "react";
+import { useEffect, useState, useMemo, useRef, useCallback, Fragment } from "react";
 // preview-sync: 2026-01-05a (touch file to ensure consistent preview refresh)
 import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -114,7 +114,7 @@ const Feed = () => {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(0);
+  // pagination uses lastCursor ref (keyset), no page state needed
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [feedTab, setFeedTab] = useState<FeedTab>("for-you");
   const [activeView, setActiveView] = useState("feed");
@@ -146,133 +146,122 @@ const Feed = () => {
     enabled: !!user,
   });
 
-  const fetchPosts = async (loadMore = false) => {
+  // Race-condition lock + cursor for keyset pagination (avoids range duplicates)
+  const fetchInFlight = useRef(false);
+  const lastCursor = useRef<string | null>(null);
+
+  const fetchPosts = useCallback(async (loadMore = false) => {
+    if (fetchInFlight.current) return;
+    fetchInFlight.current = true;
     try {
       if (loadMore) {
         setLoadingMore(true);
       } else {
         setLoading(true);
-        setPage(0);
+        lastCursor.current = null;
         setHasMore(true);
       }
 
-      const currentPage = loadMore ? page + 1 : 0;
-      const from = currentPage * POSTS_PER_PAGE;
-      const to = from + POSTS_PER_PAGE - 1;
+      const cursor = loadMore ? lastCursor.current : null;
 
-      // Fetch regular posts with pagination
-      const { data: postsData, error: postsError } = await supabase
+      let postsQuery = supabase
         .from("posts")
-        .select(`
-          *,
-          media (*)
-        `)
+        .select(`*, media (*)`)
         .order("created_at", { ascending: false })
-        .range(from, to);
+        .limit(POSTS_PER_PAGE);
+      if (cursor) postsQuery = postsQuery.lt("created_at", cursor);
 
-      if (postsError) throw postsError;
-
-      // Fetch reposts with pagination
-      const { data: repostsData, error: repostsError } = await supabase
+      let repostsQuery = supabase
         .from("reposts")
         .select(`*`)
         .order("created_at", { ascending: false })
-        .range(from, to);
+        .limit(POSTS_PER_PAGE);
+      if (cursor) repostsQuery = repostsQuery.lt("created_at", cursor);
 
-      if (repostsError) throw repostsError;
+      const [postsRes, repostsRes] = await Promise.all([postsQuery, repostsQuery]);
+      if (postsRes.error) throw postsRes.error;
+      if (repostsRes.error) throw repostsRes.error;
+      const postsData = postsRes.data || [];
+      const repostsData = repostsRes.data || [];
 
-      // Check if we have more data
-      const hasMoreData = (postsData?.length || 0) + (repostsData?.length || 0) === POSTS_PER_PAGE;
-      setHasMore(hasMoreData);
+      setHasMore(postsData.length >= POSTS_PER_PAGE || repostsData.length >= POSTS_PER_PAGE);
 
-      // Collect all unique user IDs and post IDs needed
       const userIds = new Set<string>();
       const originalPostIds = new Set<string>();
-
-      (postsData || []).forEach(post => userIds.add(post.user_id));
-      (repostsData || []).forEach(repost => {
-        userIds.add(repost.user_id);
-        originalPostIds.add(repost.original_post_id);
+      postsData.forEach((p: any) => userIds.add(p.user_id));
+      repostsData.forEach((r: any) => {
+        userIds.add(r.user_id);
+        originalPostIds.add(r.original_post_id);
       });
 
-      // Batch fetch all profiles (via RPC so non-friends/non-self are visible)
-      const { data: profilesData } = await supabase
-        .rpc("get_profiles_basic", { _ids: Array.from(userIds) });
+      const [profilesRes, originalPostsRes] = await Promise.all([
+        userIds.size
+          ? supabase.rpc("get_profiles_basic", { _ids: Array.from(userIds) })
+          : Promise.resolve({ data: [] as any[] }),
+        originalPostIds.size
+          ? supabase.from("posts").select(`*, media (*)`).in("id", Array.from(originalPostIds))
+          : Promise.resolve({ data: [] as any[] }),
+      ]);
 
-      const profilesMap = new Map(
-        (profilesData || []).map(p => [p.id, p])
-      );
+      const profilesMap = new Map(((profilesRes as any).data || []).map((p: any) => [p.id, p]));
+      const originalPostsMap = new Map(((originalPostsRes as any).data || []).map((p: any) => [p.id, p]));
+      const fallback = (id: string) => ({ id, full_name: null, avatar_url: null });
 
-      // Batch fetch all original posts for reposts
-      const { data: originalPostsData } = await supabase
-        .from("posts")
-        .select(`*, media (*)`)
-        .in("id", Array.from(originalPostIds));
-
-      const originalPostsMap = new Map(
-        (originalPostsData || []).map(p => [p.id, p])
-      );
-
-      // Map posts with profiles
-      const postsWithProfiles = (postsData || []).map(post => ({
+      const postsWithProfiles = postsData.map((post: any) => ({
         ...post,
-        profiles: profilesMap.get(post.user_id) || { 
-          id: post.user_id, 
-          full_name: null, 
-          avatar_url: null 
-        }
-      }));
+        profiles: profilesMap.get(post.user_id) || fallback(post.user_id),
+      })) as Post[];
 
-      // Map reposts with profiles and original posts
-      const repostsWithData = (repostsData || [])
-        .map(repost => {
-          const originalPost = originalPostsMap.get(repost.original_post_id);
-          if (!originalPost) return null;
-
+      const repostsWithData = repostsData
+        .map((repost: any) => {
+          const op: any = originalPostsMap.get(repost.original_post_id);
+          if (!op) return null;
           return {
             ...repost,
-            profiles: profilesMap.get(repost.user_id) || { 
-              id: repost.user_id, 
-              full_name: null, 
-              avatar_url: null 
-            },
+            profiles: profilesMap.get(repost.user_id) || fallback(repost.user_id),
             original_post: {
-              ...originalPost,
-              profiles: profilesMap.get(originalPost.user_id) || { 
-                id: originalPost.user_id, 
-                full_name: null, 
-                avatar_url: null 
-              }
-            }
+              ...op,
+              profiles: profilesMap.get(op.user_id) || fallback(op.user_id),
+            },
           };
         })
-        .filter(r => r !== null) as Repost[];
+        .filter(Boolean) as Repost[];
+
+      const newItems: FeedItem[] = [
+        ...postsWithProfiles.map((p) => ({ type: "post" as const, data: p })),
+        ...repostsWithData.map((r) => ({ type: "repost" as const, data: r })),
+      ].sort(
+        (a, b) =>
+          new Date(b.data.created_at).getTime() - new Date(a.data.created_at).getTime()
+      );
 
       if (loadMore) {
-        setPosts(prev => [...prev, ...postsWithProfiles]);
-        setReposts(prev => [...prev, ...repostsWithData]);
+        setPosts((prev) => {
+          const seen = new Set(prev.map((p) => p.id));
+          return [...prev, ...postsWithProfiles.filter((p) => !seen.has(p.id))];
+        });
+        setReposts((prev) => {
+          const seen = new Set(prev.map((r) => r.id));
+          return [...prev, ...repostsWithData.filter((r) => !seen.has(r.id))];
+        });
       } else {
         setPosts(postsWithProfiles);
         setReposts(repostsWithData);
       }
 
-      // Combine and sort all feed items by created_at
-      const newItems: FeedItem[] = [
-        ...postsWithProfiles.map(post => ({ type: 'post' as const, data: post })),
-        ...repostsWithData.map(repost => ({ type: 'repost' as const, data: repost }))
-      ];
-
-      newItems.sort((a, b) => {
-        const dateA = new Date(a.data.created_at).getTime();
-        const dateB = new Date(b.data.created_at).getTime();
-        return dateB - dateA;
+      setFeedItems((prev) => {
+        const merged = loadMore ? [...prev, ...newItems] : newItems;
+        const seen = new Set<string>();
+        return merged.filter((it) => {
+          const k = `${it.type}-${it.data.id}`;
+          if (seen.has(k)) return false;
+          seen.add(k);
+          return true;
+        });
       });
 
-      if (loadMore) {
-        setFeedItems(prev => [...prev, ...newItems]);
-        setPage(currentPage);
-      } else {
-        setFeedItems(newItems);
+      if (newItems.length > 0) {
+        lastCursor.current = newItems[newItems.length - 1].data.created_at;
       }
     } catch (error: any) {
       toast({
@@ -281,13 +270,11 @@ const Feed = () => {
         variant: "destructive",
       });
     } finally {
-      if (loadMore) {
-        setLoadingMore(false);
-      } else {
-        setLoading(false);
-      }
+      fetchInFlight.current = false;
+      setLoading(false);
+      setLoadingMore(false);
     }
-  };
+  }, [toast]);
 
   const fetchSavedPosts = async () => {
     if (!user) return;
@@ -375,125 +362,111 @@ const Feed = () => {
 
     fetchPosts();
 
-    // Subscribe to new posts and reposts
+    // Debounced realtime — coalesce bursts so 10 inserts/sec don't trigger 10 refetches
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    const debouncedRefetch = () => {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => fetchPosts(false), 1500);
+    };
+
     const postsChannel = supabase
       .channel("posts-changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "posts",
-        },
-        () => {
-          fetchPosts();
-        }
-      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "posts" }, debouncedRefetch)
       .subscribe();
 
     const repostsChannel = supabase
       .channel("reposts-changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "reposts",
-        },
-        () => {
-          fetchPosts();
-        }
-      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "reposts" }, debouncedRefetch)
       .subscribe();
 
     return () => {
+      if (timer) clearTimeout(timer);
       supabase.removeChannel(postsChannel);
       supabase.removeChannel(repostsChannel);
       subscription.unsubscribe();
     };
-  }, [navigate]);
+  }, [navigate, fetchPosts]);
 
-  // Pull-to-refresh functionality - simplified to not block scrolling
+  // Pull-to-refresh — keep all transient state in refs so we don't re-attach listeners on every frame
+  const pullStateRef = useRef({ startY: 0, isPulling: false, canRefresh: false });
+
   useEffect(() => {
-    let startY = 0;
-    let isPulling = false;
+    const state = pullStateRef.current;
 
     const handleTouchStart = (e: TouchEvent) => {
       const scrollTop = window.scrollY || document.documentElement.scrollTop;
       if (scrollTop <= 0) {
-        startY = e.touches[0].clientY;
-        isPulling = true;
+        state.startY = e.touches[0].clientY;
+        state.isPulling = true;
       }
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      if (!isPulling) return;
-      
+      if (!state.isPulling) return;
       const scrollTop = window.scrollY || document.documentElement.scrollTop;
       if (scrollTop > 0) {
-        isPulling = false;
+        state.isPulling = false;
+        state.canRefresh = false;
         setPullToRefresh({ pulling: false, pullDistance: 0, canRefresh: false });
         return;
       }
-
       const currentY = e.touches[0].clientY;
-      const pullDistance = Math.max(0, currentY - startY);
-      
-      // Only show pull indicator, don't block scrolling
-      if (pullDistance > 10 && scrollTop <= 0) {
+      const pullDistance = Math.max(0, currentY - state.startY);
+      if (pullDistance > 10) {
+        const canRefresh = pullDistance > PULL_THRESHOLD;
+        state.canRefresh = canRefresh;
         setPullToRefresh({
           pulling: true,
           pullDistance: Math.min(pullDistance, 120),
-          canRefresh: pullDistance > PULL_THRESHOLD,
+          canRefresh,
         });
       }
     };
 
-    const handleTouchEnd = async () => {
-      if (pullToRefresh.canRefresh && !loading) {
-        setLoading(true);
-        setPullToRefresh({ pulling: false, pullDistance: 0, canRefresh: false });
-        await fetchPosts();
-        setLoading(false);
-      } else {
-        setPullToRefresh({ pulling: false, pullDistance: 0, canRefresh: false });
-      }
-      isPulling = false;
+    const handleTouchEnd = () => {
+      const shouldRefresh = state.canRefresh && !fetchInFlight.current;
+      state.isPulling = false;
+      state.canRefresh = false;
+      setPullToRefresh({ pulling: false, pullDistance: 0, canRefresh: false });
+      if (shouldRefresh) fetchPosts(false);
     };
 
-    document.addEventListener('touchstart', handleTouchStart, { passive: true });
-    document.addEventListener('touchmove', handleTouchMove, { passive: true });
-    document.addEventListener('touchend', handleTouchEnd, { passive: true });
+    document.addEventListener("touchstart", handleTouchStart, { passive: true });
+    document.addEventListener("touchmove", handleTouchMove, { passive: true });
+    document.addEventListener("touchend", handleTouchEnd, { passive: true });
 
     return () => {
-      document.removeEventListener('touchstart', handleTouchStart);
-      document.removeEventListener('touchmove', handleTouchMove);
-      document.removeEventListener('touchend', handleTouchEnd);
+      document.removeEventListener("touchstart", handleTouchStart);
+      document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [pullToRefresh.canRefresh, loading]);
+  }, [fetchPosts]);
 
-  // Infinite scroll effect and back to top button visibility
+  // Infinite scroll — rAF-throttled, ref-guarded against duplicate fires
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      const scrollTop = document.documentElement.scrollTop;
-      
-      // Show back to top button when scrolled down 400px
-      setShowBackToTop(scrollTop > 400);
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const scrollTop = document.documentElement.scrollTop;
+        setShowBackToTop(scrollTop > 400);
 
-      if (loadingMore || !hasMore) return;
-
-      const scrollHeight = document.documentElement.scrollHeight;
-      const clientHeight = document.documentElement.clientHeight;
-
-      // Load more when user is 300px from bottom
-      if (scrollHeight - scrollTop - clientHeight < 300) {
-        fetchPosts(true);
-      }
+        if (!fetchInFlight.current && hasMore) {
+          const scrollHeight = document.documentElement.scrollHeight;
+          const clientHeight = document.documentElement.clientHeight;
+          if (scrollHeight - scrollTop - clientHeight < 300) {
+            fetchPosts(true);
+          }
+        }
+        ticking = false;
+      });
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [loadingMore, hasMore, page]);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [hasMore, fetchPosts]);
 
   // Friends list for the "Friends" feed tab
   const { data: friendIds = [] } = useQuery({
@@ -702,7 +675,7 @@ const Feed = () => {
                           <Fragment key={`${item.type}-${item.data.id}`}>
                             <div
                               className="animate-fade-in"
-                              style={{ animationDelay: `${index * 0.05}s` }}
+                              style={{ animationDelay: `${Math.min(index, 10) * 0.05}s` }}
                             >
                               {item.type === 'post' ? (
                                 <PostCard post={item.data} onDelete={fetchPosts} />

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -10,17 +10,68 @@ interface CreatePostProps {
   onPostCreated: () => void;
 }
 
+const MAX_CONTENT = 5000;
+const MAX_FILE_BYTES = 25 * 1024 * 1024; // 25 MB
+const MAX_FILES = 10;
+const ALLOWED_IMG = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+const ALLOWED_VID = ["video/mp4", "video/webm", "video/quicktime"];
+const ALLOWED_EXT = new Set([
+  "jpg", "jpeg", "png", "webp", "gif", "mp4", "webm", "mov",
+]);
+
 const CreatePost = ({ onPostCreated }: CreatePostProps) => {
   const [content, setContent] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
+  const submittingRef = useRef(false);
   const { toast } = useToast();
 
+  // Stable object URLs with cleanup to prevent memory leaks
+  const previews = useMemo(
+    () =>
+      files.map((f) =>
+        f.type.startsWith("image/") ? URL.createObjectURL(f) : null
+      ),
+    [files]
+  );
+
+  useEffect(() => {
+    return () => {
+      previews.forEach((u) => u && URL.revokeObjectURL(u));
+    };
+  }, [previews]);
+
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const selectedFiles = Array.from(e.target.files);
-      setFiles((prev) => [...prev, ...selectedFiles]);
+    if (!e.target.files) return;
+    const incoming = Array.from(e.target.files);
+    const accepted: File[] = [];
+    for (const f of incoming) {
+      const okType = ALLOWED_IMG.includes(f.type) || ALLOWED_VID.includes(f.type);
+      const okSize = f.size <= MAX_FILE_BYTES;
+      if (!okType || !okSize) {
+        toast({
+          title: "File rejected",
+          description: `${f.name}: ${!okType ? "unsupported type" : "exceeds 25 MB"}`,
+          variant: "destructive",
+        });
+        continue;
+      }
+      accepted.push(f);
     }
+    setFiles((prev) => {
+      const merged = [...prev, ...accepted];
+      if (merged.length > MAX_FILES) {
+        toast({
+          title: "Too many files",
+          description: `Max ${MAX_FILES} per post`,
+          variant: "destructive",
+        });
+        return merged.slice(0, MAX_FILES);
+      }
+      return merged;
+    });
+    // Reset input so the same file can be re-selected if removed
+    e.target.value = "";
   };
 
   const removeFile = (index: number) => {
@@ -29,8 +80,10 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submittingRef.current) return;
 
-    if (!content.trim() && files.length === 0) {
+    const trimmed = content.trim();
+    if (!trimmed && files.length === 0) {
       toast({
         title: "Empty post",
         description: "Add text or media",
@@ -38,14 +91,23 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
       });
       return;
     }
+    if (trimmed.length > MAX_CONTENT) {
+      toast({
+        title: "Too long",
+        description: `Max ${MAX_CONTENT} characters`,
+        variant: "destructive",
+      });
+      return;
+    }
 
+    submittingRef.current = true;
     setUploading(true);
 
-    try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+    const uploadedPaths: string[] = [];
+    let createdPostId: string | null = null;
 
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         toast({
           title: "You must be logged in",
@@ -55,61 +117,60 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
         return;
       }
 
-      // Create post
       const { data: post, error: postError } = await supabase
         .from("posts")
-        .insert({
-          user_id: user.id,
-          content: content.trim(),
-        })
+        .insert({ user_id: user.id, content: trimmed })
         .select()
         .single();
-
       if (postError) throw postError;
+      createdPostId = post.id;
 
-      // Upload files if any
-      if (files.length > 0) {
-        for (const file of files) {
-          const fileExt = file.name.split(".").pop();
-          const fileName = `${user.id}/${Date.now()}.${fileExt}`;
-          const fileType = file.type.startsWith("image/") ? "image" : "video";
-
-          const { error: uploadError } = await supabase.storage
-            .from("media")
-            .upload(fileName, file);
-
-          if (uploadError) throw uploadError;
-
-          const {
-            data: { publicUrl },
-          } = supabase.storage.from("media").getPublicUrl(fileName);
-
-          const { error: mediaError } = await supabase.from("media").insert({
-            post_id: post.id,
-            file_url: publicUrl,
-            file_type: fileType,
-            file_name: file.name,
-          });
-
-          if (mediaError) throw mediaError;
+      for (const file of files) {
+        const ext = (file.name.split(".").pop() || "").toLowerCase();
+        if (!ALLOWED_EXT.has(ext)) {
+          throw new Error(`Rejected extension: .${ext}`);
         }
+        const safeName = `${user.id}/${post.id}/${Date.now()}-${crypto.randomUUID()}.${ext}`;
+        const fileType = ALLOWED_IMG.includes(file.type) ? "image" : "video";
+
+        const { error: uploadError } = await supabase.storage
+          .from("media")
+          .upload(safeName, file, { contentType: file.type, upsert: false });
+        if (uploadError) throw uploadError;
+        uploadedPaths.push(safeName);
+
+        const { data: { publicUrl } } = supabase.storage
+          .from("media")
+          .getPublicUrl(safeName);
+
+        const { error: mediaError } = await supabase.from("media").insert({
+          post_id: post.id,
+          file_url: publicUrl,
+          file_type: fileType,
+          file_name: file.name,
+        });
+        if (mediaError) throw mediaError;
       }
 
-      toast({
-        title: "Success!",
-        description: "Post created successfully",
-      });
-
+      toast({ title: "Success!", description: "Post created successfully" });
       setContent("");
       setFiles([]);
       onPostCreated();
     } catch (error: any) {
+      // Rollback: remove orphan storage objects + post if media failed
+      if (uploadedPaths.length) {
+        try { await supabase.storage.from("media").remove(uploadedPaths); } catch {}
+      }
+      if (createdPostId && files.length > 0 && uploadedPaths.length < files.length) {
+        try { await supabase.from("posts").delete().eq("id", createdPostId); } catch {}
+      }
       toast({
         title: "Error",
-        description: error.message,
+        description: error?.message ?? "Failed to create post",
         variant: "destructive",
       });
     } finally {
+      submittingRef.current = false;
       setUploading(false);
     }
   };
@@ -120,18 +181,22 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
         <Textarea
           placeholder="What's on your mind?"
           value={content}
-          onChange={(e) => setContent(e.target.value)}
+          onChange={(e) => setContent(e.target.value.slice(0, MAX_CONTENT))}
+          maxLength={MAX_CONTENT}
           className="min-h-[100px] resize-none"
         />
+        <div className="flex justify-end text-xs text-muted-foreground">
+          {content.length} / {MAX_CONTENT}
+        </div>
 
         {files.length > 0 && (
           <div className="grid grid-cols-2 gap-2">
             {files.map((file, index) => (
-              <div key={index} className="relative">
+              <div key={`${file.name}-${index}`} className="relative">
                 <div className="aspect-video bg-secondary rounded-lg overflow-hidden flex items-center justify-center">
-                  {file.type.startsWith("image/") ? (
+                  {file.type.startsWith("image/") && previews[index] ? (
                     <img
-                      src={URL.createObjectURL(file)}
+                      src={previews[index]!}
                       alt={file.name}
                       className="w-full h-full object-cover"
                     />
@@ -145,6 +210,7 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
                   size="icon"
                   className="absolute top-2 right-2 h-6 w-6"
                   onClick={() => removeFile(index)}
+                  aria-label={`Remove ${file.name}`}
                 >
                   <X className="h-4 w-4" />
                 </Button>
@@ -160,6 +226,7 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
               variant="outline"
               size="icon"
               onClick={() => document.getElementById("image-upload")?.click()}
+              aria-label="Add image"
             >
               <Image className="h-5 w-5" />
             </Button>
@@ -168,13 +235,14 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
               variant="outline"
               size="icon"
               onClick={() => document.getElementById("video-upload")?.click()}
+              aria-label="Add video"
             >
               <Video className="h-5 w-5" />
             </Button>
             <input
               id="image-upload"
               type="file"
-              accept="image/*"
+              accept={ALLOWED_IMG.join(",")}
               multiple
               className="hidden"
               onChange={handleFileSelect}
@@ -182,7 +250,7 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
             <input
               id="video-upload"
               type="file"
-              accept="video/*"
+              accept={ALLOWED_VID.join(",")}
               multiple
               className="hidden"
               onChange={handleFileSelect}
