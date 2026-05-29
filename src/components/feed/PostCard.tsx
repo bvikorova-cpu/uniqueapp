@@ -144,10 +144,31 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
   }, [post.id]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const selectedFiles = Array.from(e.target.files);
-      setNewFiles((prev) => [...prev, ...selectedFiles]);
+    if (!e.target.files) return;
+    const incoming = Array.from(e.target.files);
+    const accepted: File[] = [];
+    for (const f of incoming) {
+      const okType = ALLOWED_IMG.includes(f.type) || ALLOWED_VID.includes(f.type);
+      const okSize = f.size <= MAX_FILE_BYTES;
+      if (!okType || !okSize) {
+        toast({
+          title: "File rejected",
+          description: `${f.name}: ${!okType ? "unsupported type" : "exceeds 25 MB"}`,
+          variant: "destructive",
+        });
+        continue;
+      }
+      accepted.push(f);
     }
+    setNewFiles((prev) => {
+      const merged = [...prev, ...accepted];
+      if (merged.length > MAX_FILES) {
+        toast({ title: "Too many files", description: `Max ${MAX_FILES}`, variant: "destructive" });
+        return merged.slice(0, MAX_FILES);
+      }
+      return merged;
+    });
+    e.target.value = "";
   };
 
   const removeNewFile = (index: number) => {
