@@ -289,88 +289,83 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
   };
 
   const handleEdit = async () => {
-    if (!editContent.trim() && existingMedia.length === 0 && newFiles.length === 0) {
-      toast({
-        title: "Error",
-        description: "Post must contain text or images",
-        variant: "destructive",
-      });
+    if (editLockRef.current) return;
+    const trimmed = editContent.trim();
+    if (!trimmed && existingMedia.length === 0 && newFiles.length === 0) {
+      toast({ title: "Error", description: "Post must contain text or images", variant: "destructive" });
       return;
     }
-
+    if (trimmed.length > MAX_POST_CONTENT) {
+      toast({ title: "Too long", description: `Max ${MAX_POST_CONTENT} chars`, variant: "destructive" });
+      return;
+    }
+    editLockRef.current = true;
     setSaving(true);
+    const uploadedPaths: string[] = [];
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("You are not logged in");
+      if (user.id !== post.user_id) throw new Error("You can only edit your own posts");
 
-      // Update post content
       const { error: updateError } = await supabase
         .from("posts")
-        .update({ content: editContent })
+        .update({ content: trimmed })
         .eq("id", post.id);
-
       if (updateError) throw updateError;
 
-      // Delete marked media
+      // Delete marked media — derive bucket-relative path safely
       for (const mediaId of mediaToDelete) {
-        const media = post.media.find(m => m.id === mediaId);
-        if (media) {
-          // Extract file path from URL
-          const urlParts = media.file_url.split('/');
-          const fileName = urlParts.slice(-2).join('/'); // Get user_id/timestamp.ext
-          
-          // Delete from storage
-          await supabase.storage.from("media").remove([fileName]);
-          
-          // Delete from database
-          await supabase.from("media").delete().eq("id", mediaId);
-        }
+        const media = post.media.find((m) => m.id === mediaId);
+        if (!media) continue;
+        try {
+          const marker = "/media/";
+          const idx = media.file_url.indexOf(marker);
+          const path = idx >= 0 ? media.file_url.slice(idx + marker.length) : null;
+          if (path) await supabase.storage.from("media").remove([path]);
+        } catch {}
+        await supabase.from("media").delete().eq("id", mediaId);
       }
 
-      // Upload new files
-      if (newFiles.length > 0) {
-        for (const file of newFiles) {
-          const fileExt = file.name.split(".").pop();
-          const fileName = `${user.id}/${Date.now()}.${fileExt}`;
-          const fileType = file.type.startsWith("image/") ? "image" : "video";
-
-          const { error: uploadError } = await supabase.storage
-            .from("media")
-            .upload(fileName, file);
-
-          if (uploadError) throw uploadError;
-
-          const { data: { publicUrl } } = supabase.storage
-            .from("media")
-            .getPublicUrl(fileName);
-
-          const { error: mediaError } = await supabase.from("media").insert({
-            post_id: post.id,
-            file_url: publicUrl,
-            file_type: fileType,
-            file_name: file.name,
-          });
-
-          if (mediaError) throw mediaError;
+      // Upload new files with hardened path + whitelist
+      for (const file of newFiles) {
+        const ext = (file.name.split(".").pop() || "").toLowerCase();
+        if (!ALLOWED_EXT.has(ext)) throw new Error(`Rejected extension: .${ext}`);
+        if (!(ALLOWED_IMG.includes(file.type) || ALLOWED_VID.includes(file.type))) {
+          throw new Error(`Rejected MIME: ${file.type}`);
         }
+        if (file.size > MAX_FILE_BYTES) throw new Error(`${file.name} exceeds 25 MB`);
+
+        const safeName = `${user.id}/${post.id}/${Date.now()}-${crypto.randomUUID()}.${ext}`;
+        const fileType = ALLOWED_IMG.includes(file.type) ? "image" : "video";
+
+        const { error: uploadError } = await supabase.storage
+          .from("media")
+          .upload(safeName, file, { contentType: file.type, upsert: false });
+        if (uploadError) throw uploadError;
+        uploadedPaths.push(safeName);
+
+        const { data: { publicUrl } } = supabase.storage.from("media").getPublicUrl(safeName);
+        const { error: mediaError } = await supabase.from("media").insert({
+          post_id: post.id,
+          file_url: publicUrl,
+          file_type: fileType,
+          file_name: file.name,
+        });
+        if (mediaError) throw mediaError;
       }
 
-      toast({
-        title: "Success",
-        description: "Post was updated",
-      });
-
+      toast({ title: "Success", description: "Post was updated" });
       setShowEditDialog(false);
       setNewFiles([]);
       setMediaToDelete([]);
-      onDelete(); // Refresh posts
+      onDelete();
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      if (uploadedPaths.length) {
+        try { await supabase.storage.from("media").remove(uploadedPaths); } catch {}
+      }
+      toast({ title: "Error", description: error?.message ?? "Edit failed", variant: "destructive" });
     } finally {
+      editLockRef.current = false;
       setSaving(false);
     }
   };
