@@ -72,19 +72,25 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
     setSecondsLeft(WATCH_SECONDS);
   };
 
+  // Kid/teen surfaces must not open third-party Monetag links or vignettes
+  // (those can render deceptive "download is ready" prompts). Detect by sectionKey.
+  const isKidSafe = /kids|homework|academy|story|reading|drawing|science|family/i.test(sectionKey);
+
   const startWatch = () => {
     MONETAG_ZONE_IDS.forEach((zoneId) => {
       trackMonetagEvent("click", zoneId, sectionKey);
       trackMonetagEvent("impression", zoneId, sectionKey);
     });
 
-    // Open Monetag Direct Link in a new tab — real ad page that counts impressions/revenue.
-    try {
-      window.open(MONETAG_DIRECT_LINK, "_blank", "noopener,noreferrer");
-    } catch { /* ignore popup blocker */ }
+    if (!isKidSafe) {
+      // Open Monetag Direct Link in a new tab — only on adult surfaces.
+      try {
+        window.open(MONETAG_DIRECT_LINK, "_blank", "noopener,noreferrer");
+      } catch { /* ignore popup blocker */ }
 
-    // Also fire the Vignette fullscreen ad as a bonus (non-blocking).
-    void showMonetagRewarded(MONETAG_ZONES.REWARDED_VIGNETTE);
+      // Also fire the Vignette fullscreen ad as a bonus (non-blocking).
+      void showMonetagRewarded(MONETAG_ZONES.REWARDED_VIGNETTE);
+    }
 
     setPhase("watching");
     setSecondsLeft(WATCH_SECONDS);
