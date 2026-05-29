@@ -29,6 +29,11 @@ function getCtx(): AudioContext | null {
       if (!AC) return null;
       ctx = new AC();
     }
+    if (!masterGain && ctx) {
+      masterGain = ctx.createGain();
+      masterGain.gain.value = 2.8; // global boost
+      masterGain.connect(ctx.destination);
+    }
     if (ctx.state === "suspended") ctx.resume().catch(() => {});
     return ctx;
   } catch {
@@ -50,6 +55,7 @@ function tone(
   osc.frequency.setValueAtTime(freq, start);
   gain.gain.setValueAtTime(0.0001, start);
   gain.gain.exponentialRampToValueAtTime(peak, start + 0.02);
+
   gain.gain.exponentialRampToValueAtTime(0.0001, start + dur);
   osc.connect(gain).connect(ac.destination);
   osc.start(start);
