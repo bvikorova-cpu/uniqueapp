@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -63,6 +63,16 @@ interface PostCardProps {
   post: Post;
   onDelete: () => void;
 }
+
+const MAX_POST_CONTENT = 5000;
+const MAX_COMMENT_CONTENT = 1000;
+const MAX_REPOST_COMMENT = 500;
+const MAX_FILE_BYTES = 25 * 1024 * 1024;
+const MAX_FILES = 10;
+const ALLOWED_IMG = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+const ALLOWED_VID = ["video/mp4", "video/webm", "video/quicktime"];
+const ALLOWED_EXT = new Set(["jpg","jpeg","png","webp","gif","mp4","webm","mov"]);
+
 
 const PostCard = ({ post, onDelete }: PostCardProps) => {
   const navigate = useNavigate();
