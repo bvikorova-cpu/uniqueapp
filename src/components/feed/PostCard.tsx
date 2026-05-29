@@ -105,6 +105,23 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
   const [saved, setSaved] = useState(false);
   const { toast } = useToast();
 
+  // Action locks against rapid double-clicks (React batching can let 2 clicks through `useState` flags)
+  const likeLockRef = useRef(false);
+  const saveLockRef = useRef(false);
+  const reactionLockRef = useRef(false);
+  const commentLockRef = useRef(false);
+  const repostLockRef = useRef(false);
+  const editLockRef = useRef(false);
+
+  // Stable object URL previews for new-file edit grid, with revoke on unmount/change
+  const newFilePreviews = useMemo(
+    () => newFiles.map((f) => (f.type.startsWith("image/") ? URL.createObjectURL(f) : null)),
+    [newFiles]
+  );
+  useEffect(() => {
+    return () => { newFilePreviews.forEach((u) => u && URL.revokeObjectURL(u)); };
+  }, [newFilePreviews]);
+
   // Get current user and check if post is saved
   useEffect(() => {
     const init = async () => {
