@@ -113,8 +113,8 @@ export const ReactionPicker = ({ postId }: ReactionPickerProps) => {
         </PopoverContent>
       </Popover>
       
-      {/* Display reaction summary */}
-      {totalReactions > 0 && (
+      {/* Display reaction breakdown only when multiple different reaction types exist */}
+      {Object.values(counts).filter((c) => c > 0).length > 1 && (
         <div className="flex gap-1">
           {Object.entries(counts).map(([type, count]) => {
             const reaction = REACTIONS.find((r) => r.type === type);
