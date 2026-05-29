@@ -157,6 +157,15 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
       bumpLocalViews(sectionKey);
       const newCount = viewsToday + 1;
       setViewsToday(newCount);
+
+      // Mirror the +5 XP into Kids Academy's local XP store so the Progress tab
+      // (which reads from localStorage `kids-academy-xp`) reflects ad rewards.
+      try {
+        const prev = parseInt(localStorage.getItem("kids-academy-xp") || "0", 10) || 0;
+        localStorage.setItem("kids-academy-xp", String(prev + 5));
+        window.dispatchEvent(new StorageEvent("storage", { key: "kids-academy-xp" }));
+      } catch { /* ignore */ }
+
       setPhase("claimed");
       toast({
         title: "+5 XP earned! ✨",

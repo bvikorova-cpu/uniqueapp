@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Swords, Trophy, Users, Zap, Crown } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ const WEEKLY_TOURNAMENTS = [
 ];
 
 export const KidsAcademyQuizArena = () => {
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   return (
@@ -65,9 +67,11 @@ export const KidsAcademyQuizArena = () => {
               disabled={!selectedCategory}
               onClick={() => {
                 const cat = QUIZ_CATEGORIES.find(c => c.id === selectedCategory);
-                toast.success(`Starting ${cat?.name} Quiz! ${cat?.emoji}`, {
+                if (!cat) return;
+                toast.success(`Starting ${cat.name} Quiz! ${cat.emoji}`, {
                   description: "5 questions • +20 XP per correct answer",
                 });
+                navigate(`/quiz?category=${cat.id}&mode=quick`);
               }}
             >
               <Zap className="w-4 h-4 mr-2" />
