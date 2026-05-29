@@ -1011,9 +1011,9 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
                   {newFiles.map((file, index) => (
                     <div key={index} className="relative">
                       <div className="aspect-video bg-secondary rounded-lg overflow-hidden flex items-center justify-center">
-                        {file.type.startsWith("image/") ? (
+                        {file.type.startsWith("image/") && newFilePreviews[index] ? (
                           <img
-                            src={URL.createObjectURL(file)}
+                            src={newFilePreviews[index]!}
                             alt={file.name}
                             className="w-full h-full object-cover"
                           />
@@ -1096,12 +1096,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
         </DialogContent>
       </Dialog>
 
-      {/* Image Modal */}
-      <Dialog open={showImageModal} onOpenChange={setShowImageModal}>
-        <DialogContent className="max-w-4xl p-0">
-          <img src={selectedImage} alt="Full size" className="w-full" />
-        </DialogContent>
-      </Dialog>
+      {/* (duplicate image modal removed — single modal at top of card) */}
 
       {/* Report Dialog */}
       {/* Report functionality handled via dropdown menu */}
