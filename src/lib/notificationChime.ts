@@ -57,7 +57,7 @@ function tone(
   gain.gain.exponentialRampToValueAtTime(peak, start + 0.02);
 
   gain.gain.exponentialRampToValueAtTime(0.0001, start + dur);
-  osc.connect(gain).connect(ac.destination);
+  osc.connect(gain).connect(masterGain ?? ac.destination);
   osc.start(start);
   osc.stop(start + dur + 0.02);
 }
