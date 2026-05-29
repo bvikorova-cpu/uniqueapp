@@ -387,87 +387,86 @@ const Feed = () => {
     };
   }, [navigate, fetchPosts]);
 
-  // Pull-to-refresh functionality - simplified to not block scrolling
+  // Pull-to-refresh — keep all transient state in refs so we don't re-attach listeners on every frame
+  const pullStateRef = useRef({ startY: 0, isPulling: false, canRefresh: false });
+
   useEffect(() => {
-    let startY = 0;
-    let isPulling = false;
+    const state = pullStateRef.current;
 
     const handleTouchStart = (e: TouchEvent) => {
       const scrollTop = window.scrollY || document.documentElement.scrollTop;
       if (scrollTop <= 0) {
-        startY = e.touches[0].clientY;
-        isPulling = true;
+        state.startY = e.touches[0].clientY;
+        state.isPulling = true;
       }
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      if (!isPulling) return;
-      
+      if (!state.isPulling) return;
       const scrollTop = window.scrollY || document.documentElement.scrollTop;
       if (scrollTop > 0) {
-        isPulling = false;
+        state.isPulling = false;
+        state.canRefresh = false;
         setPullToRefresh({ pulling: false, pullDistance: 0, canRefresh: false });
         return;
       }
-
       const currentY = e.touches[0].clientY;
-      const pullDistance = Math.max(0, currentY - startY);
-      
-      // Only show pull indicator, don't block scrolling
-      if (pullDistance > 10 && scrollTop <= 0) {
+      const pullDistance = Math.max(0, currentY - state.startY);
+      if (pullDistance > 10) {
+        const canRefresh = pullDistance > PULL_THRESHOLD;
+        state.canRefresh = canRefresh;
         setPullToRefresh({
           pulling: true,
           pullDistance: Math.min(pullDistance, 120),
-          canRefresh: pullDistance > PULL_THRESHOLD,
+          canRefresh,
         });
       }
     };
 
-    const handleTouchEnd = async () => {
-      if (pullToRefresh.canRefresh && !loading) {
-        setLoading(true);
-        setPullToRefresh({ pulling: false, pullDistance: 0, canRefresh: false });
-        await fetchPosts();
-        setLoading(false);
-      } else {
-        setPullToRefresh({ pulling: false, pullDistance: 0, canRefresh: false });
-      }
-      isPulling = false;
+    const handleTouchEnd = () => {
+      const shouldRefresh = state.canRefresh && !fetchInFlight.current;
+      state.isPulling = false;
+      state.canRefresh = false;
+      setPullToRefresh({ pulling: false, pullDistance: 0, canRefresh: false });
+      if (shouldRefresh) fetchPosts(false);
     };
 
-    document.addEventListener('touchstart', handleTouchStart, { passive: true });
-    document.addEventListener('touchmove', handleTouchMove, { passive: true });
-    document.addEventListener('touchend', handleTouchEnd, { passive: true });
+    document.addEventListener("touchstart", handleTouchStart, { passive: true });
+    document.addEventListener("touchmove", handleTouchMove, { passive: true });
+    document.addEventListener("touchend", handleTouchEnd, { passive: true });
 
     return () => {
-      document.removeEventListener('touchstart', handleTouchStart);
-      document.removeEventListener('touchmove', handleTouchMove);
-      document.removeEventListener('touchend', handleTouchEnd);
+      document.removeEventListener("touchstart", handleTouchStart);
+      document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [pullToRefresh.canRefresh, loading]);
+  }, [fetchPosts]);
 
-  // Infinite scroll effect and back to top button visibility
+  // Infinite scroll — rAF-throttled, ref-guarded against duplicate fires
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      const scrollTop = document.documentElement.scrollTop;
-      
-      // Show back to top button when scrolled down 400px
-      setShowBackToTop(scrollTop > 400);
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const scrollTop = document.documentElement.scrollTop;
+        setShowBackToTop(scrollTop > 400);
 
-      if (loadingMore || !hasMore) return;
-
-      const scrollHeight = document.documentElement.scrollHeight;
-      const clientHeight = document.documentElement.clientHeight;
-
-      // Load more when user is 300px from bottom
-      if (scrollHeight - scrollTop - clientHeight < 300) {
-        fetchPosts(true);
-      }
+        if (!fetchInFlight.current && hasMore) {
+          const scrollHeight = document.documentElement.scrollHeight;
+          const clientHeight = document.documentElement.clientHeight;
+          if (scrollHeight - scrollTop - clientHeight < 300) {
+            fetchPosts(true);
+          }
+        }
+        ticking = false;
+      });
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [loadingMore, hasMore, page]);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [hasMore, fetchPosts]);
 
   // Friends list for the "Friends" feed tab
   const { data: friendIds = [] } = useQuery({
