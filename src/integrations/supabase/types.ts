@@ -61038,7 +61038,7 @@ export type Database = {
         Args: { _app_id: string; _notes?: string }
         Returns: undefined
       }
-      are_friends: { Args: { a: string; b: string }; Returns: boolean }
+      are_friends: { Args: { _a: string; _b: string }; Returns: boolean }
       assign_user_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -61095,6 +61095,10 @@ export type Database = {
         Returns: number
       }
       calculate_level: { Args: { points: number }; Returns: number }
+      can_view_post: {
+        Args: { _author: string; _privacy: string; _viewer: string }
+        Returns: boolean
+      }
       check_and_award_badges: {
         Args: { p_user_id: string }
         Returns: undefined
@@ -61938,6 +61942,7 @@ export type Database = {
         Args: { _tournament_id: string; _user_id: string }
         Returns: boolean
       }
+      is_blocked_between: { Args: { _a: string; _b: string }; Returns: boolean }
       is_campaign_owner: {
         Args: { _campaign_id: string; _campaign_type: string; _user_id: string }
         Returns: boolean
@@ -61952,6 +61957,10 @@ export type Database = {
       }
       is_creative_room_member: {
         Args: { _room_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_following: {
+        Args: { _follower: string; _target: string }
         Returns: boolean
       }
       is_group_admin: {
@@ -61988,6 +61997,10 @@ export type Database = {
         Returns: boolean
       }
       is_megatalent_vip: { Args: { _user_id: string }; Returns: boolean }
+      is_muted_by: {
+        Args: { _author: string; _viewer: string }
+        Returns: boolean
+      }
       is_shadowbanned: { Args: { p_user_id: string }; Returns: boolean }
       is_verified_coupon_seller: {
         Args: { p_user_id: string }
