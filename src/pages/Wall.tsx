@@ -43,7 +43,7 @@ import { CreatorFundDialog } from "@/components/wall/CreatorFundDialog";
 import { CreatorWebhooksDialog } from "@/components/wall/CreatorWebhooksDialog";
 import { AccessibilityFieldsDialog } from "@/components/wall/AccessibilityFieldsDialog";
 import { OfflineStatusIndicator } from "@/components/wall/OfflineStatusIndicator";
-import { FloatingReactions } from "@/components/wall/FloatingReactions";
+
 import { useQuery } from "@tanstack/react-query";
 import { useTrendingPosts } from "@/hooks/useTrends";
 import WallMessages from "./wall/WallMessages";
@@ -701,7 +701,7 @@ const Feed = () => {
                         return (
                           <Fragment key={`${item.type}-${item.data.id}`}>
                             <div
-                              className="animate-fade-in relative"
+                              className="animate-fade-in"
                               style={{ animationDelay: `${index * 0.05}s` }}
                             >
                               {item.type === 'post' ? (
@@ -709,9 +709,6 @@ const Feed = () => {
                               ) : (
                                 <RepostCard repost={item.data} onDelete={fetchPosts} />
                               )}
-                              <div className="absolute bottom-2 right-2 z-10">
-                                <FloatingReactions postId={item.data.id} />
-                              </div>
                             </div>
                             {showAd && <MonetagInFeedAd slotIndex={Math.floor((index + 1) / 20)} />}
                           </Fragment>
@@ -765,7 +762,7 @@ const Feed = () => {
           <SheetTrigger asChild>
             <Button
               size="icon"
-              className="lg:hidden fixed bottom-6 left-4 z-50 h-14 w-14 rounded-full shadow-lg bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white"
+              className="lg:hidden fixed bottom-40 right-4 z-50 h-14 w-14 rounded-full shadow-lg bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white"
             >
               <span className="text-2xl font-bold">+</span>
             </Button>
