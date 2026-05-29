@@ -1063,7 +1063,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
               <input
                 id="edit-image-upload"
                 type="file"
-                accept="image/*"
+                accept={ALLOWED_IMG.join(",")}
                 multiple
                 className="hidden"
                 onChange={handleFileSelect}
@@ -1071,7 +1071,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
               <input
                 id="edit-video-upload"
                 type="file"
-                accept="video/*"
+                accept={ALLOWED_VID.join(",")}
                 multiple
                 className="hidden"
                 onChange={handleFileSelect}
