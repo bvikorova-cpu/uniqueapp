@@ -43,7 +43,7 @@ import { CreatorFundDialog } from "@/components/wall/CreatorFundDialog";
 import { CreatorWebhooksDialog } from "@/components/wall/CreatorWebhooksDialog";
 import { AccessibilityFieldsDialog } from "@/components/wall/AccessibilityFieldsDialog";
 import { OfflineStatusIndicator } from "@/components/wall/OfflineStatusIndicator";
-import { FloatingReactions } from "@/components/wall/FloatingReactions";
+
 import { useQuery } from "@tanstack/react-query";
 import { useTrendingPosts } from "@/hooks/useTrends";
 import WallMessages from "./wall/WallMessages";
