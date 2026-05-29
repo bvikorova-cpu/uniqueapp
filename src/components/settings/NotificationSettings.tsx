@@ -2,9 +2,13 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Bell, Mail, Smartphone, Inbox } from "lucide-react";
+import { Bell, Mail, Smartphone, Inbox, Volume2 } from "lucide-react";
 import { useNotificationPreferences, NotifCategory, DigestFrequency } from "@/hooks/useNotificationPreferences";
 import { usePushSubscription } from "@/hooks/usePushSubscription";
+import { playMessageChime } from "@/lib/messageChime";
+import { playNotificationChime } from "@/lib/notificationChime";
+import { toast } from "sonner";
+import { useState } from "react";
 
 const LABELS: Record<NotifCategory, string> = {
   likes: "Likes & reactions",
