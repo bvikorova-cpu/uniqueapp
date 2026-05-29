@@ -114,10 +114,13 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         toast({
-          title: "Sign in required",
-          description: "Please sign in to earn XP rewards.",
-          variant: "destructive",
+          title: "Sign in to claim 5 XP",
+          description: "Redirecting you to sign in…",
         });
+        const redirect = encodeURIComponent(window.location.pathname + window.location.search);
+        window.setTimeout(() => {
+          window.location.href = `/auth?redirect=${redirect}`;
+        }, 800);
         return;
       }
 
