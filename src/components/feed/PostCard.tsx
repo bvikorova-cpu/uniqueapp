@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -64,6 +64,16 @@ interface PostCardProps {
   onDelete: () => void;
 }
 
+const MAX_POST_CONTENT = 5000;
+const MAX_COMMENT_CONTENT = 1000;
+const MAX_REPOST_COMMENT = 500;
+const MAX_FILE_BYTES = 25 * 1024 * 1024;
+const MAX_FILES = 10;
+const ALLOWED_IMG = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+const ALLOWED_VID = ["video/mp4", "video/webm", "video/quicktime"];
+const ALLOWED_EXT = new Set(["jpg","jpeg","png","webp","gif","mp4","webm","mov"]);
+
+
 const PostCard = ({ post, onDelete }: PostCardProps) => {
   const navigate = useNavigate();
   const [deleting, setDeleting] = useState(false);
@@ -95,6 +105,23 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
   const [saved, setSaved] = useState(false);
   const { toast } = useToast();
 
+  // Action locks against rapid double-clicks (React batching can let 2 clicks through `useState` flags)
+  const likeLockRef = useRef(false);
+  const saveLockRef = useRef(false);
+  const reactionLockRef = useRef(false);
+  const commentLockRef = useRef(false);
+  const repostLockRef = useRef(false);
+  const editLockRef = useRef(false);
+
+  // Stable object URL previews for new-file edit grid, with revoke on unmount/change
+  const newFilePreviews = useMemo(
+    () => newFiles.map((f) => (f.type.startsWith("image/") ? URL.createObjectURL(f) : null)),
+    [newFiles]
+  );
+  useEffect(() => {
+    return () => { newFilePreviews.forEach((u) => u && URL.revokeObjectURL(u)); };
+  }, [newFilePreviews]);
+
   // Get current user and check if post is saved
   useEffect(() => {
     const init = async () => {
@@ -117,10 +144,31 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
   }, [post.id]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const selectedFiles = Array.from(e.target.files);
-      setNewFiles((prev) => [...prev, ...selectedFiles]);
+    if (!e.target.files) return;
+    const incoming = Array.from(e.target.files);
+    const accepted: File[] = [];
+    for (const f of incoming) {
+      const okType = ALLOWED_IMG.includes(f.type) || ALLOWED_VID.includes(f.type);
+      const okSize = f.size <= MAX_FILE_BYTES;
+      if (!okType || !okSize) {
+        toast({
+          title: "File rejected",
+          description: `${f.name}: ${!okType ? "unsupported type" : "exceeds 25 MB"}`,
+          variant: "destructive",
+        });
+        continue;
+      }
+      accepted.push(f);
     }
+    setNewFiles((prev) => {
+      const merged = [...prev, ...accepted];
+      if (merged.length > MAX_FILES) {
+        toast({ title: "Too many files", description: `Max ${MAX_FILES}`, variant: "destructive" });
+        return merged.slice(0, MAX_FILES);
+      }
+      return merged;
+    });
+    e.target.value = "";
   };
 
   const removeNewFile = (index: number) => {
@@ -241,197 +289,163 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
   };
 
   const handleEdit = async () => {
-    if (!editContent.trim() && existingMedia.length === 0 && newFiles.length === 0) {
-      toast({
-        title: "Error",
-        description: "Post must contain text or images",
-        variant: "destructive",
-      });
+    if (editLockRef.current) return;
+    const trimmed = editContent.trim();
+    if (!trimmed && existingMedia.length === 0 && newFiles.length === 0) {
+      toast({ title: "Error", description: "Post must contain text or images", variant: "destructive" });
       return;
     }
-
+    if (trimmed.length > MAX_POST_CONTENT) {
+      toast({ title: "Too long", description: `Max ${MAX_POST_CONTENT} chars`, variant: "destructive" });
+      return;
+    }
+    editLockRef.current = true;
     setSaving(true);
+    const uploadedPaths: string[] = [];
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("You are not logged in");
+      if (user.id !== post.user_id) throw new Error("You can only edit your own posts");
 
-      // Update post content
       const { error: updateError } = await supabase
         .from("posts")
-        .update({ content: editContent })
+        .update({ content: trimmed })
         .eq("id", post.id);
-
       if (updateError) throw updateError;
 
-      // Delete marked media
+      // Delete marked media — derive bucket-relative path safely
       for (const mediaId of mediaToDelete) {
-        const media = post.media.find(m => m.id === mediaId);
-        if (media) {
-          // Extract file path from URL
-          const urlParts = media.file_url.split('/');
-          const fileName = urlParts.slice(-2).join('/'); // Get user_id/timestamp.ext
-          
-          // Delete from storage
-          await supabase.storage.from("media").remove([fileName]);
-          
-          // Delete from database
-          await supabase.from("media").delete().eq("id", mediaId);
-        }
+        const media = post.media.find((m) => m.id === mediaId);
+        if (!media) continue;
+        try {
+          const marker = "/media/";
+          const idx = media.file_url.indexOf(marker);
+          const path = idx >= 0 ? media.file_url.slice(idx + marker.length) : null;
+          if (path) await supabase.storage.from("media").remove([path]);
+        } catch {}
+        await supabase.from("media").delete().eq("id", mediaId);
       }
 
-      // Upload new files
-      if (newFiles.length > 0) {
-        for (const file of newFiles) {
-          const fileExt = file.name.split(".").pop();
-          const fileName = `${user.id}/${Date.now()}.${fileExt}`;
-          const fileType = file.type.startsWith("image/") ? "image" : "video";
-
-          const { error: uploadError } = await supabase.storage
-            .from("media")
-            .upload(fileName, file);
-
-          if (uploadError) throw uploadError;
-
-          const { data: { publicUrl } } = supabase.storage
-            .from("media")
-            .getPublicUrl(fileName);
-
-          const { error: mediaError } = await supabase.from("media").insert({
-            post_id: post.id,
-            file_url: publicUrl,
-            file_type: fileType,
-            file_name: file.name,
-          });
-
-          if (mediaError) throw mediaError;
+      // Upload new files with hardened path + whitelist
+      for (const file of newFiles) {
+        const ext = (file.name.split(".").pop() || "").toLowerCase();
+        if (!ALLOWED_EXT.has(ext)) throw new Error(`Rejected extension: .${ext}`);
+        if (!(ALLOWED_IMG.includes(file.type) || ALLOWED_VID.includes(file.type))) {
+          throw new Error(`Rejected MIME: ${file.type}`);
         }
+        if (file.size > MAX_FILE_BYTES) throw new Error(`${file.name} exceeds 25 MB`);
+
+        const safeName = `${user.id}/${post.id}/${Date.now()}-${crypto.randomUUID()}.${ext}`;
+        const fileType = ALLOWED_IMG.includes(file.type) ? "image" : "video";
+
+        const { error: uploadError } = await supabase.storage
+          .from("media")
+          .upload(safeName, file, { contentType: file.type, upsert: false });
+        if (uploadError) throw uploadError;
+        uploadedPaths.push(safeName);
+
+        const { data: { publicUrl } } = supabase.storage.from("media").getPublicUrl(safeName);
+        const { error: mediaError } = await supabase.from("media").insert({
+          post_id: post.id,
+          file_url: publicUrl,
+          file_type: fileType,
+          file_name: file.name,
+        });
+        if (mediaError) throw mediaError;
       }
 
-      toast({
-        title: "Success",
-        description: "Post was updated",
-      });
-
+      toast({ title: "Success", description: "Post was updated" });
       setShowEditDialog(false);
       setNewFiles([]);
       setMediaToDelete([]);
-      onDelete(); // Refresh posts
+      onDelete();
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      if (uploadedPaths.length) {
+        try { await supabase.storage.from("media").remove(uploadedPaths); } catch {}
+      }
+      toast({ title: "Error", description: error?.message ?? "Edit failed", variant: "destructive" });
     } finally {
+      editLockRef.current = false;
       setSaving(false);
     }
   };
 
   const handleLike = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (likeLockRef.current) return;
+    likeLockRef.current = true;
+    const wasLiked = liked;
+    // Optimistic update
+    setLiked(!wasLiked);
+    setLikesCount((prev) => prev + (wasLiked ? -1 : 1));
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      if (liked) {
-        await supabase
-          .from("post_likes")
-          .delete()
-          .eq("post_id", post.id)
-          .eq("user_id", user.id);
-        setLiked(false);
-        setLikesCount((prev) => prev - 1);
-      } else {
-        await supabase
-          .from("post_likes")
-          .insert({ post_id: post.id, user_id: user.id });
-        setLiked(true);
-        setLikesCount((prev) => prev + 1);
-      }
+      if (!user) throw new Error("Not authenticated");
+      const { error } = wasLiked
+        ? await supabase.from("post_likes").delete().eq("post_id", post.id).eq("user_id", user.id)
+        : await supabase.from("post_likes").insert({ post_id: post.id, user_id: user.id });
+      if (error) throw error;
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      // Rollback
+      setLiked(wasLiked);
+      setLikesCount((prev) => prev + (wasLiked ? 1 : -1));
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } finally {
+      likeLockRef.current = false;
     }
   };
 
   const handleSave = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (saveLockRef.current) return;
+    saveLockRef.current = true;
+    const wasSaved = saved;
+    setSaved(!wasSaved); // Optimistic
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        toast({
-          title: "Login required",
-          description: "Please login to save posts",
-          variant: "destructive",
-        });
+        setSaved(wasSaved);
+        toast({ title: "Login required", description: "Please login to save posts", variant: "destructive" });
         return;
       }
-
-      if (saved) {
-        await supabase
-          .from("saved_posts")
-          .delete()
-          .eq("post_id", post.id)
-          .eq("user_id", user.id);
-        setSaved(false);
-        toast({
-          title: "Removed",
-          description: "Post removed from bookmarks",
-        });
-      } else {
-        await supabase
-          .from("saved_posts")
-          .insert({ post_id: post.id, user_id: user.id });
-        setSaved(true);
-        toast({
-          title: "Saved",
-          description: "Post saved to bookmarks",
-        });
-      }
-    } catch (error: any) {
+      const { error } = wasSaved
+        ? await supabase.from("saved_posts").delete().eq("post_id", post.id).eq("user_id", user.id)
+        : await supabase.from("saved_posts").insert({ post_id: post.id, user_id: user.id });
+      if (error) throw error;
       toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
+        title: wasSaved ? "Removed" : "Saved",
+        description: wasSaved ? "Post removed from bookmarks" : "Post saved to bookmarks",
       });
+    } catch (error: any) {
+      setSaved(wasSaved); // Rollback
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } finally {
+      saveLockRef.current = false;
     }
   };
 
   const handleReaction = async (reactionType: string) => {
+    if (reactionLockRef.current) return;
+    reactionLockRef.current = true;
+    const prevReaction = selectedReaction;
+    const next = prevReaction === reactionType ? null : reactionType;
+    setSelectedReaction(next); // Optimistic
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      if (selectedReaction === reactionType) {
-        await supabase
-          .from("post_reactions")
-          .delete()
-          .eq("post_id", post.id)
-          .eq("user_id", user.id)
-          .eq("reaction_type", reactionType);
-        setSelectedReaction(null);
-      } else {
-        if (selectedReaction) {
-          await supabase
-            .from("post_reactions")
-            .delete()
-            .eq("post_id", post.id)
-            .eq("user_id", user.id);
-        }
-        await supabase
-          .from("post_reactions")
-          .insert({ post_id: post.id, user_id: user.id, reaction_type: reactionType });
-        setSelectedReaction(reactionType);
+      if (!user) throw new Error("Not authenticated");
+      // Always wipe existing reaction (single-row-per-user pattern) then insert new
+      await supabase.from("post_reactions")
+        .delete().eq("post_id", post.id).eq("user_id", user.id);
+      if (next) {
+        const { error } = await supabase.from("post_reactions")
+          .insert({ post_id: post.id, user_id: user.id, reaction_type: next });
+        if (error) throw error;
       }
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      setSelectedReaction(prevReaction); // Rollback
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } finally {
+      reactionLockRef.current = false;
     }
   };
 
@@ -446,7 +460,6 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
 
       if (error) throw error;
 
-      // Fetch profiles in one batch via RPC (so non-friend authors are visible)
       const commentUserIds = Array.from(new Set((commentsData || []).map((c: any) => c.user_id)));
       const { data: profilesBatch } = commentUserIds.length
         ? await supabase.rpc("get_profiles_basic", { _ids: commentUserIds })
@@ -459,92 +472,81 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
 
       setComments(commentsWithProfiles);
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: error.message, variant: "destructive" });
     } finally {
       setLoadingComments(false);
     }
   };
 
   const handleComment = async () => {
-    if (!newComment.trim()) return;
-
+    if (commentLockRef.current) return;
+    const trimmed = newComment.trim();
+    if (!trimmed) return;
+    if (trimmed.length > MAX_COMMENT_CONTENT) {
+      toast({ title: "Too long", description: `Max ${MAX_COMMENT_CONTENT} chars`, variant: "destructive" });
+      return;
+    }
+    commentLockRef.current = true;
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
       const { error } = await supabase
         .from("post_comments")
-        .insert({ post_id: post.id, user_id: user.id, content: newComment });
-
+        .insert({ post_id: post.id, user_id: user.id, content: trimmed });
       if (error) throw error;
 
       setNewComment("");
       setCommentsCount((prev) => prev + 1);
       fetchComments();
-
-      toast({
-        title: "Success",
-        description: "Comment was added",
-      });
+      toast({ title: "Success", description: "Comment was added" });
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } finally {
+      commentLockRef.current = false;
     }
   };
 
   const handleRepost = async () => {
-    if (!repostComment.trim()) {
-      toast({
-        title: "Error",
-        description: "Add a comment to the repost",
-        variant: "destructive",
-      });
+    if (repostLockRef.current) return;
+    const trimmed = repostComment.trim();
+    if (!trimmed) {
+      toast({ title: "Error", description: "Add a comment to the repost", variant: "destructive" });
       return;
     }
-
+    if (trimmed.length > MAX_REPOST_COMMENT) {
+      toast({ title: "Too long", description: `Max ${MAX_REPOST_COMMENT} chars`, variant: "destructive" });
+      return;
+    }
+    repostLockRef.current = true;
     setReposting(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        toast({
-          title: "Error",
-          description: "You must be logged in",
-          variant: "destructive",
-        });
+        toast({ title: "Error", description: "You must be logged in", variant: "destructive" });
+        return;
+      }
+      if (user.id === post.user_id) {
+        toast({ title: "Error", description: "You can't repost your own post", variant: "destructive" });
         return;
       }
 
       const { error } = await supabase.from("reposts").insert({
         user_id: user.id,
         original_post_id: post.id,
-        comment: repostComment,
+        comment: trimmed,
       });
-
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Post was shared to your profile",
-      });
-
+      toast({ title: "Success", description: "Post was shared to your profile" });
       setShowRepostDialog(false);
       setRepostComment("");
-      setRepostsCount(prev => prev + 1);
-      onDelete(); // Refresh feed
+      setRepostsCount((prev) => prev + 1);
+      onDelete();
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: error.message, variant: "destructive" });
     } finally {
+      repostLockRef.current = false;
       setReposting(false);
     }
   };
@@ -882,10 +884,12 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
           <div className="space-y-4 py-4">
             <Textarea
               value={repostComment}
-              onChange={(e) => setRepostComment(e.target.value)}
+              onChange={(e) => setRepostComment(e.target.value.slice(0, MAX_REPOST_COMMENT))}
+              maxLength={MAX_REPOST_COMMENT}
               placeholder="What do you think?"
               className="min-h-[100px]"
             />
+            <div className="text-xs text-muted-foreground text-right">{repostComment.length} / {MAX_REPOST_COMMENT}</div>
             
             {/* Preview of original post */}
             <div className="border rounded-lg p-4 bg-muted/30">
@@ -963,10 +967,12 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
           <div className="grid gap-4 py-4">
             <Textarea
               value={editContent}
-              onChange={(e) => setEditContent(e.target.value)}
+              onChange={(e) => setEditContent(e.target.value.slice(0, MAX_POST_CONTENT))}
+              maxLength={MAX_POST_CONTENT}
               placeholder="What's on your mind?"
               className="min-h-[100px]"
             />
+            <div className="text-xs text-muted-foreground text-right">{editContent.length} / {MAX_POST_CONTENT}</div>
 
             {/* Existing Media */}
             {existingMedia.length > 0 && (
@@ -1009,9 +1015,9 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
                   {newFiles.map((file, index) => (
                     <div key={index} className="relative">
                       <div className="aspect-video bg-secondary rounded-lg overflow-hidden flex items-center justify-center">
-                        {file.type.startsWith("image/") ? (
+                        {file.type.startsWith("image/") && newFilePreviews[index] ? (
                           <img
-                            src={URL.createObjectURL(file)}
+                            src={newFilePreviews[index]!}
                             alt={file.name}
                             className="w-full h-full object-cover"
                           />
@@ -1057,7 +1063,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
               <input
                 id="edit-image-upload"
                 type="file"
-                accept="image/*"
+                accept={ALLOWED_IMG.join(",")}
                 multiple
                 className="hidden"
                 onChange={handleFileSelect}
@@ -1065,7 +1071,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
               <input
                 id="edit-video-upload"
                 type="file"
-                accept="video/*"
+                accept={ALLOWED_VID.join(",")}
                 multiple
                 className="hidden"
                 onChange={handleFileSelect}
@@ -1094,12 +1100,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
         </DialogContent>
       </Dialog>
 
-      {/* Image Modal */}
-      <Dialog open={showImageModal} onOpenChange={setShowImageModal}>
-        <DialogContent className="max-w-4xl p-0">
-          <img src={selectedImage} alt="Full size" className="w-full" />
-        </DialogContent>
-      </Dialog>
+      {/* (duplicate image modal removed — single modal at top of card) */}
 
       {/* Report Dialog */}
       {/* Report functionality handled via dropdown menu */}
