@@ -49,6 +49,8 @@ export function NotificationSettings() {
         </CardContent>
       </Card>
 
+      <SoundTestCard />
+
       <Card className="bg-card/50 backdrop-blur border-border/50">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
