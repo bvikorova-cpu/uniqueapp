@@ -675,7 +675,7 @@ const Feed = () => {
                           <Fragment key={`${item.type}-${item.data.id}`}>
                             <div
                               className="animate-fade-in"
-                              style={{ animationDelay: `${index * 0.05}s` }}
+                              style={{ animationDelay: `${Math.min(index, 10) * 0.05}s` }}
                             >
                               {item.type === 'post' ? (
                                 <PostCard post={item.data} onDelete={fetchPosts} />

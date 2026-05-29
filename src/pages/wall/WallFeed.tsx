@@ -66,7 +66,7 @@ export default function WallFeed({
             ? data.content ?? ""
             : (data.comment ?? "") + " " + (data.original_post?.content ?? "");
         const lower = text.toLowerCase();
-        if (mutedKeywords.some((kw) => lower.includes(kw))) return false;
+        if (mutedKeywords.some((kw) => kw && lower.includes(kw))) return false;
       }
       return true;
     });
@@ -100,7 +100,7 @@ export default function WallFeed({
       {/* Pull-to-refresh indicator */}
       {pullToRefresh.pulling && (
         <div 
-          className="fixed top-0 left-80 right-80 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm transition-all duration-200"
+          className="fixed top-0 left-0 right-0 lg:left-80 lg:right-80 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm transition-all duration-200"
           style={{ 
             height: `${pullToRefresh.pullDistance}px`,
             opacity: pullToRefresh.pullDistance / PULL_THRESHOLD 
@@ -172,7 +172,7 @@ export default function WallFeed({
                   <div key={`${item.type}-${item.data.id}`}>
                     <div 
                       className="animate-fade-in"
-                      style={{ animationDelay: `${index * 0.05}s` }}
+                      style={{ animationDelay: `${Math.min(index, 10) * 0.05}s` }}
                     >
                       {item.type === 'post' ? (
                         <PostCard
@@ -190,7 +190,7 @@ export default function WallFeed({
                     {(index + 1) % 20 === 0 && (
                       <div
                         className="animate-fade-in mt-5"
-                        style={{ animationDelay: `${index * 0.05}s` }}
+                        style={{ animationDelay: `${Math.min(index, 10) * 0.05}s` }}
                       >
                         <MonetagInFeedAd slotIndex={Math.floor((index + 1) / 20)} />
                       </div>
