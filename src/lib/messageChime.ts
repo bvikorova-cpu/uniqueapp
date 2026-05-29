@@ -3,8 +3,10 @@
 // — distinctive enough to not be confused with native OS sounds.
 
 let ctx: AudioContext | null = null;
+let masterGain: GainNode | null = null;
 let lastPlay = 0;
 let unlockBound = false;
+
 
 function bindUnlock() {
   if (unlockBound || typeof window === "undefined") return;
