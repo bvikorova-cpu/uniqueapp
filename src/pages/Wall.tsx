@@ -362,43 +362,30 @@ const Feed = () => {
 
     fetchPosts();
 
-    // Subscribe to new posts and reposts
+    // Debounced realtime — coalesce bursts so 10 inserts/sec don't trigger 10 refetches
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    const debouncedRefetch = () => {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => fetchPosts(false), 1500);
+    };
+
     const postsChannel = supabase
       .channel("posts-changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "posts",
-        },
-        () => {
-          fetchPosts();
-        }
-      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "posts" }, debouncedRefetch)
       .subscribe();
 
     const repostsChannel = supabase
       .channel("reposts-changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "reposts",
-        },
-        () => {
-          fetchPosts();
-        }
-      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "reposts" }, debouncedRefetch)
       .subscribe();
 
     return () => {
+      if (timer) clearTimeout(timer);
       supabase.removeChannel(postsChannel);
       supabase.removeChannel(repostsChannel);
       subscription.unsubscribe();
     };
-  }, [navigate]);
+  }, [navigate, fetchPosts]);
 
   // Pull-to-refresh functionality - simplified to not block scrolling
   useEffect(() => {
