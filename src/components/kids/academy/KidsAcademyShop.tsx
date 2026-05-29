@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { getStars, spendStars } from "@/lib/kidsAcademyEconomy";
 
 const SHOP_ITEMS = [
   { id: "avatar-robot", name: "Robot Avatar", emoji: "🤖", price: 50, category: "avatar", owned: false },
