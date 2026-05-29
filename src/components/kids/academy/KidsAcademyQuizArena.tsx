@@ -1,11 +1,14 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Swords, Trophy, Users, Zap, Crown } from "lucide-react";
+import { Swords, Trophy, Users, Zap, Crown, Copy, Send } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { addFriendChallenge, getFriendChallenges } from "@/lib/kidsAcademyEconomy";
 
 const QUIZ_CATEGORIES = [
   { id: "animals", name: "Animals", emoji: "🐾", color: "bg-green-500/15 border-green-500/30" },
@@ -25,6 +28,28 @@ const WEEKLY_TOURNAMENTS = [
 export const KidsAcademyQuizArena = () => {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [friendDialogOpen, setFriendDialogOpen] = useState(false);
+  const [friendName, setFriendName] = useState("");
+  const [pendingCount, setPendingCount] = useState(() => getFriendChallenges().filter(c => c.status === "pending").length);
+
+  const sendChallenge = () => {
+    const cat = QUIZ_CATEGORIES.find(c => c.id === selectedCategory);
+    if (!cat) return;
+    const name = friendName.trim();
+    if (name.length < 2) {
+      toast.error("Please enter your friend's name");
+      return;
+    }
+    const challenge = addFriendChallenge({ friendName: name, category: cat.id });
+    const shareLink = `${window.location.origin}/quiz?category=${cat.id}&mode=quick&challenge=${challenge.id}`;
+    navigator.clipboard?.writeText(shareLink).catch(() => {});
+    toast.success(`Challenge sent to ${name}! ${cat.emoji}`, {
+      description: "Share link copied to clipboard — send it to your friend!",
+    });
+    setPendingCount(c => c + 1);
+    setFriendName("");
+    setFriendDialogOpen(false);
+  };
 
   return (
     <div className="space-y-6">
@@ -34,6 +59,11 @@ export const KidsAcademyQuizArena = () => {
           <CardTitle className="flex items-center gap-2 text-lg">
             <Swords className="w-5 h-5 text-primary" />
             Quiz Arena
+            {pendingCount > 0 && (
+              <Badge className="ml-auto bg-amber-500/15 text-amber-600 border-amber-500/30 text-xs">
+                {pendingCount} friend challenge{pendingCount > 1 ? "s" : ""}
+              </Badge>
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -81,11 +111,7 @@ export const KidsAcademyQuizArena = () => {
               variant="outline"
               className="flex-1"
               disabled={!selectedCategory}
-              onClick={() => {
-                toast.info("Friend challenge coming soon!", {
-                  description: "Invite friends to compete in real-time quizzes.",
-                });
-              }}
+              onClick={() => setFriendDialogOpen(true)}
             >
               <Users className="w-4 h-4 mr-2" />
               Challenge a Friend
@@ -138,6 +164,42 @@ export const KidsAcademyQuizArena = () => {
           ))}
         </CardContent>
       </Card>
+
+      {/* Friend challenge dialog */}
+      <Dialog open={friendDialogOpen} onOpenChange={setFriendDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Users className="w-5 h-5 text-primary" />
+              Challenge a Friend
+            </DialogTitle>
+            <DialogDescription>
+              Send a quiz challenge in {QUIZ_CATEGORIES.find(c => c.id === selectedCategory)?.name} {QUIZ_CATEGORIES.find(c => c.id === selectedCategory)?.emoji}.
+              The share link will be copied to your clipboard.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <Input
+              placeholder="Friend's name (e.g. Sam)"
+              value={friendName}
+              onChange={(e) => setFriendName(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && sendChallenge()}
+              autoFocus
+              maxLength={40}
+            />
+            <p className="text-[11px] text-muted-foreground flex items-center gap-1">
+              <Copy className="w-3 h-3" /> A unique quiz link is generated and copied automatically.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setFriendDialogOpen(false)}>Cancel</Button>
+            <Button onClick={sendChallenge}>
+              <Send className="w-4 h-4 mr-2" />
+              Send Challenge
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
