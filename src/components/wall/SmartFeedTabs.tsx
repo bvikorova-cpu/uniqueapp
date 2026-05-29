@@ -18,7 +18,8 @@ const tabs = [
 
 export const SmartFeedTabs = ({ activeTab, onTabChange }: SmartFeedTabsProps) => {
   return (
-    <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
+    <div className="relative">
+      <div className="flex gap-2 overflow-x-auto pb-1 pr-6 scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
       {tabs.map((tab) => {
         const isActive = activeTab === tab.id;
         const Icon = tab.icon;
