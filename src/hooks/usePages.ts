@@ -23,7 +23,7 @@ export const usePages = () => {
   });
 
   const invalidateAll = () => {
-    queryClient.invalidateQueries({ queryKey: ["pages"] });
+    invalidateAll();
     queryClient.invalidateQueries({ queryKey: ["suggested-pages"] });
   };
 
@@ -67,7 +67,7 @@ export const usePages = () => {
       if (followerError) throw followerError;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["pages"] });
+      invalidateAll();
       toast({ title: "Page created!" });
     },
   });
@@ -92,7 +92,7 @@ export const usePages = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["pages"] });
+      invalidateAll();
       toast({ title: "Following page!" });
     },
   });
@@ -111,7 +111,7 @@ export const usePages = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["pages"] });
+      invalidateAll();
       toast({ title: "Unfollowed page" });
     },
   });
