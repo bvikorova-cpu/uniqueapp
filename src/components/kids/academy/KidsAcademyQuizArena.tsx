@@ -23,6 +23,7 @@ const WEEKLY_TOURNAMENTS = [
 ];
 
 export const KidsAcademyQuizArena = () => {
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   return (
