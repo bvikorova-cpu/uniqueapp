@@ -701,7 +701,7 @@ const Feed = () => {
                         return (
                           <Fragment key={`${item.type}-${item.data.id}`}>
                             <div
-                              className="animate-fade-in relative"
+                              className="animate-fade-in"
                               style={{ animationDelay: `${index * 0.05}s` }}
                             >
                               {item.type === 'post' ? (
@@ -709,9 +709,6 @@ const Feed = () => {
                               ) : (
                                 <RepostCard repost={item.data} onDelete={fetchPosts} />
                               )}
-                              <div className="absolute bottom-2 right-2 z-10">
-                                <FloatingReactions postId={item.data.id} />
-                              </div>
                             </div>
                             {showAd && <MonetagInFeedAd slotIndex={Math.floor((index + 1) / 20)} />}
                           </Fragment>
