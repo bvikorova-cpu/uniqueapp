@@ -17,9 +17,11 @@ export const useReactions = (postId: string) => {
     },
   });
 
-  const userReaction = () => {
-    const userId = supabase.auth.getUser().then((r) => r.data.user?.id);
-    return reactions?.find((r) => r.user_id === userId.toString());
+  const userReaction = async () => {
+    const { data } = await supabase.auth.getUser();
+    const userId = data.user?.id;
+    if (!userId) return undefined;
+    return reactions?.find((r) => r.user_id === userId);
   };
 
   const getReactionCounts = () => {
