@@ -28,7 +28,13 @@ function getCtx(): AudioContext | null {
       if (!AC) return null;
       ctx = new AC();
     }
+    if (!masterGain && ctx) {
+      masterGain = ctx.createGain();
+      masterGain.gain.value = 2.8; // global boost so chime is audible on mobile
+      masterGain.connect(ctx.destination);
+    }
     if (ctx.state === "suspended") ctx.resume().catch(() => {});
+
     return ctx;
   } catch {
     return null;
