@@ -173,6 +173,25 @@ const KidsHomework = () => {
             </div>
           )}
 
+          {/* Sign-in teaser for anonymous visitors */}
+          {!user && (
+            <Card className="mb-6 border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-accent/5">
+              <CardContent className="p-5 flex flex-col sm:flex-row items-center gap-4">
+                <div className="text-4xl" aria-hidden>🏆</div>
+                <div className="flex-1 text-center sm:text-left">
+                  <h3 className="font-semibold text-base">Sign in to track your progress</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Earn XP, unlock badges, complete daily challenges and keep your streak.
+                  </p>
+                </div>
+                <Button onClick={() => navigate(`/auth?redirect=${encodeURIComponent("/kids-homework")}`)}>
+                  Sign in
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
+
           <Tabs defaultValue="homework" className="w-full">
             <TabsList className="grid w-full grid-cols-3 mb-6 h-auto">
               <TabsTrigger value="homework" className="text-xs sm:text-sm">📚 Ask AI</TabsTrigger>
