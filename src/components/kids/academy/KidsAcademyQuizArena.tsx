@@ -67,9 +67,11 @@ export const KidsAcademyQuizArena = () => {
               disabled={!selectedCategory}
               onClick={() => {
                 const cat = QUIZ_CATEGORIES.find(c => c.id === selectedCategory);
-                toast.success(`Starting ${cat?.name} Quiz! ${cat?.emoji}`, {
+                if (!cat) return;
+                toast.success(`Starting ${cat.name} Quiz! ${cat.emoji}`, {
                   description: "5 questions • +20 XP per correct answer",
                 });
+                navigate(`/quiz?category=${cat.id}&mode=quick`);
               }}
             >
               <Zap className="w-4 h-4 mr-2" />
