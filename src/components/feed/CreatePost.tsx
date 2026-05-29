@@ -159,10 +159,10 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
     } catch (error: any) {
       // Rollback: remove orphan storage objects + post if media failed
       if (uploadedPaths.length) {
-        await supabase.storage.from("media").remove(uploadedPaths).catch(() => {});
+        try { await supabase.storage.from("media").remove(uploadedPaths); } catch {}
       }
       if (createdPostId && files.length > 0 && uploadedPaths.length < files.length) {
-        await supabase.from("posts").delete().eq("id", createdPostId).catch(() => {});
+        try { await supabase.from("posts").delete().eq("id", createdPostId); } catch {}
       }
       toast({
         title: "Error",
