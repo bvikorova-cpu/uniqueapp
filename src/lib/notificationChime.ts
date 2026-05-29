@@ -3,7 +3,23 @@
 // for a warmer, alert-style timbre (vs. the bright bell of messages).
 
 let ctx: AudioContext | null = null;
+let masterGain: GainNode | null = null;
 let lastPlay = 0;
+let unlockBound = false;
+
+function bindUnlock() {
+  if (unlockBound || typeof window === "undefined") return;
+  unlockBound = true;
+  const unlock = () => {
+    const ac = getCtx();
+    if (ac && ac.state === "suspended") ac.resume().catch(() => {});
+  };
+  window.addEventListener("pointerdown", unlock, { passive: true });
+  window.addEventListener("keydown", unlock);
+  window.addEventListener("touchstart", unlock, { passive: true });
+}
+if (typeof window !== "undefined") bindUnlock();
+
 
 function getCtx(): AudioContext | null {
   if (typeof window === "undefined") return null;
