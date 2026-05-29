@@ -884,10 +884,12 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
           <div className="space-y-4 py-4">
             <Textarea
               value={repostComment}
-              onChange={(e) => setRepostComment(e.target.value)}
+              onChange={(e) => setRepostComment(e.target.value.slice(0, MAX_REPOST_COMMENT))}
+              maxLength={MAX_REPOST_COMMENT}
               placeholder="What do you think?"
               className="min-h-[100px]"
             />
+            <div className="text-xs text-muted-foreground text-right">{repostComment.length} / {MAX_REPOST_COMMENT}</div>
             
             {/* Preview of original post */}
             <div className="border rounded-lg p-4 bg-muted/30">
@@ -965,10 +967,12 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
           <div className="grid gap-4 py-4">
             <Textarea
               value={editContent}
-              onChange={(e) => setEditContent(e.target.value)}
+              onChange={(e) => setEditContent(e.target.value.slice(0, MAX_POST_CONTENT))}
+              maxLength={MAX_POST_CONTENT}
               placeholder="What's on your mind?"
               className="min-h-[100px]"
             />
+            <div className="text-xs text-muted-foreground text-right">{editContent.length} / {MAX_POST_CONTENT}</div>
 
             {/* Existing Media */}
             {existingMedia.length > 0 && (
