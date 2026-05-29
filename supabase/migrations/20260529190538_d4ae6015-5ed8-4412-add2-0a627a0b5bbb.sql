@@ -1,0 +1,2 @@
+UPDATE public.friendships SET status='accepted', updated_at=now() WHERE id='3baae039-01b3-49a1-85ee-cc8e6bcc0cf5';
+INSERT INTO public.friendships (user_id, friend_id, status) VALUES ('69e6cf11-bc89-4ee6-84fb-89a825cca9d2','a8f98c5c-3ce8-4928-bfaf-061a700411c6','accepted') ON CONFLICT DO NOTHING;
