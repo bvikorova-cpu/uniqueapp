@@ -114,7 +114,7 @@ const Feed = () => {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(0);
+  // pagination uses lastCursor ref (keyset), no page state needed
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [feedTab, setFeedTab] = useState<FeedTab>("for-you");
   const [activeView, setActiveView] = useState("feed");
