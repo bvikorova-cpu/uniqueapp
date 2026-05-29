@@ -23,7 +23,7 @@ export const usePages = () => {
   });
 
   const invalidateAll = () => {
-    invalidateAll();
+    queryClient.invalidateQueries({ queryKey: ["pages"] });
     queryClient.invalidateQueries({ queryKey: ["suggested-pages"] });
   };
 
