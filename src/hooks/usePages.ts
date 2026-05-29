@@ -11,13 +11,21 @@ export const usePages = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("pages")
-        .select("*")
+        .select("*, page_followers(count)")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data;
+      return (data || []).map((p: any) => ({
+        ...p,
+        follower_count: p.page_followers?.[0]?.count ?? 0,
+      }));
     },
   });
+
+  const invalidateAll = () => {
+    queryClient.invalidateQueries({ queryKey: ["pages"] });
+    queryClient.invalidateQueries({ queryKey: ["suggested-pages"] });
+  };
 
   const createPage = useMutation({
     mutationFn: async ({
@@ -59,7 +67,7 @@ export const usePages = () => {
       if (followerError) throw followerError;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["pages"] });
+      invalidateAll();
       toast({ title: "Page created!" });
     },
   });
@@ -84,7 +92,7 @@ export const usePages = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["pages"] });
+      invalidateAll();
       toast({ title: "Following page!" });
     },
   });
@@ -103,7 +111,7 @@ export const usePages = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["pages"] });
+      invalidateAll();
       toast({ title: "Unfollowed page" });
     },
   });
