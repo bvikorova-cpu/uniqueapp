@@ -99,34 +99,33 @@ export function CookieConsentBanner() {
   if (!showBanner) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-background/95 backdrop-blur-sm border-t border-border shadow-lg sm:bg-transparent sm:border-t-0 sm:shadow-none">
+    <div className="fixed bottom-0 left-0 right-0 z-50 p-2 sm:p-4 bg-background/95 backdrop-blur-sm border-t border-border shadow-lg sm:bg-transparent sm:border-t-0 sm:shadow-none">
       <div className="container mx-auto max-w-4xl">
-        <Card className="p-5 sm:p-6 shadow-xl">
-          <div className="flex items-start gap-3 sm:gap-4">
-            <div className="p-3 rounded-full bg-primary/10">
+        <Card className="p-3 sm:p-6 shadow-xl">
+          <div className="flex items-start gap-2 sm:gap-4">
+            <div className="hidden sm:block p-3 rounded-full bg-primary/10">
               <Cookie className="h-6 w-6 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
-                <Shield className="h-5 w-5" />
+              <h3 className="font-semibold text-sm sm:text-lg mb-1 sm:mb-2 flex items-center gap-2">
+                <Shield className="h-4 w-4 sm:h-5 sm:w-5" />
                 Protecting your privacy
               </h3>
-              <p className="text-muted-foreground text-sm mb-4">
-                We use cookies to improve your experience, personalize content, and analyze traffic. 
-                You can choose which cookies you want to allow.
+              <p className="text-muted-foreground text-xs sm:text-sm mb-2 sm:mb-4 line-clamp-2 sm:line-clamp-none">
+                We use cookies to improve your experience, personalize content, and analyze traffic.
               </p>
-              <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3">
-                <Button onClick={acceptAll} className="gap-2">
+              <div className="flex flex-row flex-wrap gap-2 sm:gap-3">
+                <Button onClick={acceptAll} size="sm" className="gap-2 flex-1 sm:flex-none">
                   Accept all
                 </Button>
-                <Button variant="outline" onClick={rejectAll}>
+                <Button variant="outline" size="sm" onClick={rejectAll} className="flex-1 sm:flex-none">
                   Only necessary
                 </Button>
                 <Dialog open={showSettings} onOpenChange={setShowSettings}>
                   <DialogTrigger asChild>
-                    <Button variant="ghost" className="gap-2">
+                    <Button variant="ghost" size="sm" className="gap-2">
                       <Settings className="h-4 w-4" />
-                      Settings
+                      <span className="hidden sm:inline">Settings</span>
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="max-w-md">
@@ -197,7 +196,7 @@ export function CookieConsentBanner() {
               variant="ghost"
               size="icon"
               onClick={rejectAll}
-              className="shrink-0"
+              className="shrink-0 h-7 w-7 sm:h-10 sm:w-10"
             >
               <X className="h-4 w-4" />
             </Button>
