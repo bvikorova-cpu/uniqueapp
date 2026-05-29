@@ -372,109 +372,80 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
 
   const handleLike = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (likeLockRef.current) return;
+    likeLockRef.current = true;
+    const wasLiked = liked;
+    // Optimistic update
+    setLiked(!wasLiked);
+    setLikesCount((prev) => prev + (wasLiked ? -1 : 1));
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      if (liked) {
-        await supabase
-          .from("post_likes")
-          .delete()
-          .eq("post_id", post.id)
-          .eq("user_id", user.id);
-        setLiked(false);
-        setLikesCount((prev) => prev - 1);
-      } else {
-        await supabase
-          .from("post_likes")
-          .insert({ post_id: post.id, user_id: user.id });
-        setLiked(true);
-        setLikesCount((prev) => prev + 1);
-      }
+      if (!user) throw new Error("Not authenticated");
+      const { error } = wasLiked
+        ? await supabase.from("post_likes").delete().eq("post_id", post.id).eq("user_id", user.id)
+        : await supabase.from("post_likes").insert({ post_id: post.id, user_id: user.id });
+      if (error) throw error;
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      // Rollback
+      setLiked(wasLiked);
+      setLikesCount((prev) => prev + (wasLiked ? 1 : -1));
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } finally {
+      likeLockRef.current = false;
     }
   };
 
   const handleSave = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (saveLockRef.current) return;
+    saveLockRef.current = true;
+    const wasSaved = saved;
+    setSaved(!wasSaved); // Optimistic
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        toast({
-          title: "Login required",
-          description: "Please login to save posts",
-          variant: "destructive",
-        });
+        setSaved(wasSaved);
+        toast({ title: "Login required", description: "Please login to save posts", variant: "destructive" });
         return;
       }
-
-      if (saved) {
-        await supabase
-          .from("saved_posts")
-          .delete()
-          .eq("post_id", post.id)
-          .eq("user_id", user.id);
-        setSaved(false);
-        toast({
-          title: "Removed",
-          description: "Post removed from bookmarks",
-        });
-      } else {
-        await supabase
-          .from("saved_posts")
-          .insert({ post_id: post.id, user_id: user.id });
-        setSaved(true);
-        toast({
-          title: "Saved",
-          description: "Post saved to bookmarks",
-        });
-      }
-    } catch (error: any) {
+      const { error } = wasSaved
+        ? await supabase.from("saved_posts").delete().eq("post_id", post.id).eq("user_id", user.id)
+        : await supabase.from("saved_posts").insert({ post_id: post.id, user_id: user.id });
+      if (error) throw error;
       toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
+        title: wasSaved ? "Removed" : "Saved",
+        description: wasSaved ? "Post removed from bookmarks" : "Post saved to bookmarks",
       });
+    } catch (error: any) {
+      setSaved(wasSaved); // Rollback
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } finally {
+      saveLockRef.current = false;
     }
   };
 
   const handleReaction = async (reactionType: string) => {
+    if (reactionLockRef.current) return;
+    reactionLockRef.current = true;
+    const prevReaction = selectedReaction;
+    const next = prevReaction === reactionType ? null : reactionType;
+    setSelectedReaction(next); // Optimistic
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      if (selectedReaction === reactionType) {
-        await supabase
-          .from("post_reactions")
-          .delete()
-          .eq("post_id", post.id)
-          .eq("user_id", user.id)
-          .eq("reaction_type", reactionType);
-        setSelectedReaction(null);
-      } else {
-        if (selectedReaction) {
-          await supabase
-            .from("post_reactions")
-            .delete()
-            .eq("post_id", post.id)
-            .eq("user_id", user.id);
-        }
-        await supabase
-          .from("post_reactions")
-          .insert({ post_id: post.id, user_id: user.id, reaction_type: reactionType });
-        setSelectedReaction(reactionType);
+      if (!user) throw new Error("Not authenticated");
+      // Always wipe existing reaction (single-row-per-user pattern) then insert new
+      await supabase.from("post_reactions")
+        .delete().eq("post_id", post.id).eq("user_id", user.id);
+      if (next) {
+        const { error } = await supabase.from("post_reactions")
+          .insert({ post_id: post.id, user_id: user.id, reaction_type: next });
+        if (error) throw error;
       }
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      setSelectedReaction(prevReaction); // Rollback
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } finally {
+      reactionLockRef.current = false;
     }
   };
 
@@ -489,7 +460,6 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
 
       if (error) throw error;
 
-      // Fetch profiles in one batch via RPC (so non-friend authors are visible)
       const commentUserIds = Array.from(new Set((commentsData || []).map((c: any) => c.user_id)));
       const { data: profilesBatch } = commentUserIds.length
         ? await supabase.rpc("get_profiles_basic", { _ids: commentUserIds })
@@ -502,92 +472,81 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
 
       setComments(commentsWithProfiles);
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: error.message, variant: "destructive" });
     } finally {
       setLoadingComments(false);
     }
   };
 
   const handleComment = async () => {
-    if (!newComment.trim()) return;
-
+    if (commentLockRef.current) return;
+    const trimmed = newComment.trim();
+    if (!trimmed) return;
+    if (trimmed.length > MAX_COMMENT_CONTENT) {
+      toast({ title: "Too long", description: `Max ${MAX_COMMENT_CONTENT} chars`, variant: "destructive" });
+      return;
+    }
+    commentLockRef.current = true;
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
       const { error } = await supabase
         .from("post_comments")
-        .insert({ post_id: post.id, user_id: user.id, content: newComment });
-
+        .insert({ post_id: post.id, user_id: user.id, content: trimmed });
       if (error) throw error;
 
       setNewComment("");
       setCommentsCount((prev) => prev + 1);
       fetchComments();
-
-      toast({
-        title: "Success",
-        description: "Comment was added",
-      });
+      toast({ title: "Success", description: "Comment was added" });
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } finally {
+      commentLockRef.current = false;
     }
   };
 
   const handleRepost = async () => {
-    if (!repostComment.trim()) {
-      toast({
-        title: "Error",
-        description: "Add a comment to the repost",
-        variant: "destructive",
-      });
+    if (repostLockRef.current) return;
+    const trimmed = repostComment.trim();
+    if (!trimmed) {
+      toast({ title: "Error", description: "Add a comment to the repost", variant: "destructive" });
       return;
     }
-
+    if (trimmed.length > MAX_REPOST_COMMENT) {
+      toast({ title: "Too long", description: `Max ${MAX_REPOST_COMMENT} chars`, variant: "destructive" });
+      return;
+    }
+    repostLockRef.current = true;
     setReposting(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        toast({
-          title: "Error",
-          description: "You must be logged in",
-          variant: "destructive",
-        });
+        toast({ title: "Error", description: "You must be logged in", variant: "destructive" });
+        return;
+      }
+      if (user.id === post.user_id) {
+        toast({ title: "Error", description: "You can't repost your own post", variant: "destructive" });
         return;
       }
 
       const { error } = await supabase.from("reposts").insert({
         user_id: user.id,
         original_post_id: post.id,
-        comment: repostComment,
+        comment: trimmed,
       });
-
       if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Post was shared to your profile",
-      });
-
+      toast({ title: "Success", description: "Post was shared to your profile" });
       setShowRepostDialog(false);
       setRepostComment("");
-      setRepostsCount(prev => prev + 1);
-      onDelete(); // Refresh feed
+      setRepostsCount((prev) => prev + 1);
+      onDelete();
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: error.message, variant: "destructive" });
     } finally {
+      repostLockRef.current = false;
       setReposting(false);
     }
   };
