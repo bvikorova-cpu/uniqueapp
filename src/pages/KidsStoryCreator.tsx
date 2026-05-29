@@ -239,8 +239,15 @@ const KidsStoryCreator = () => {
                 <StoryLibrary />
               ) : (
                 <Card>
-                  <CardContent className="py-8 text-center">
-                    <p className="text-muted-foreground">Sign in to access your story library</p>
+                  <CardContent className="py-10 text-center space-y-4">
+                    <div className="text-4xl">📚</div>
+                    <p className="text-muted-foreground">Sign in to access your story library and save your magical creations.</p>
+                    <Button
+                      onClick={() => navigate(`/auth?redirect=${encodeURIComponent('/kids-story-creator')}`)}
+                      className="bg-gradient-to-r from-purple-500 to-pink-500 text-white"
+                    >
+                      ✨ Sign in to view library
+                    </Button>
                   </CardContent>
                 </Card>
               )}
