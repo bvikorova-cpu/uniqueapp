@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { PenTool, FlaskConical, Palette, BookOpen, Calculator, Briefcase, Shield } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { recordModuleVisit } from "@/lib/kidsAcademyEconomy";
 
 const worlds = [
   {
