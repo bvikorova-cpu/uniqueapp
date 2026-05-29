@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { getStars, spendStars } from "@/lib/kidsAcademyEconomy";
 
 const SHOP_ITEMS = [
   { id: "avatar-robot", name: "Robot Avatar", emoji: "🤖", price: 50, category: "avatar", owned: false },
@@ -30,19 +31,23 @@ const CATEGORIES = [
 ];
 
 export const KidsAcademyShop = () => {
-  const [stars, setStars] = useState(() => {
-    const saved = localStorage.getItem("kids-academy-stars");
-    return saved ? parseInt(saved, 10) : 0;
-  });
+  const [stars, setStars] = useState<number>(() => getStars());
   const [owned, setOwned] = useState<string[]>(() => {
     const saved = localStorage.getItem("kids-academy-shop-owned");
     return saved ? JSON.parse(saved) : [];
   });
   const [filter, setFilter] = useState("all");
 
+  // Keep stars in sync with XP changes (XP earned anywhere → stars update here).
   useEffect(() => {
-    localStorage.setItem("kids-academy-stars", String(stars));
-  }, [stars]);
+    const refresh = () => setStars(getStars());
+    window.addEventListener("storage", refresh);
+    const interval = setInterval(refresh, 1500);
+    return () => {
+      window.removeEventListener("storage", refresh);
+      clearInterval(interval);
+    };
+  }, []);
 
   useEffect(() => {
     localStorage.setItem("kids-academy-shop-owned", JSON.stringify(owned));
@@ -53,11 +58,11 @@ export const KidsAcademyShop = () => {
       toast.info("You already own this item!");
       return;
     }
-    if (stars < item.price) {
-      toast.error("Not enough stars!", { description: `You need ${item.price - stars} more stars.` });
+    if (!spendStars(item.price)) {
+      toast.error("Not enough stars!", { description: `You need ${item.price - stars} more stars. Earn XP to get more!` });
       return;
     }
-    setStars(prev => prev - item.price);
+    setStars(getStars());
     setOwned(prev => [...prev, item.id]);
     toast.success(`Unlocked: ${item.name} ${item.emoji}`);
   };
@@ -85,7 +90,7 @@ export const KidsAcademyShop = () => {
             </div>
             <Badge className="bg-primary/15 text-primary border-primary/30">
               <Coins className="w-3 h-3 mr-1" />
-              Earn stars by completing challenges!
+              1 star per 10 XP
             </Badge>
           </div>
         </CardContent>

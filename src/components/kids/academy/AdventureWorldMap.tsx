@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { PenTool, FlaskConical, Palette, BookOpen, Calculator, Briefcase, Shield } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { recordModuleVisit } from "@/lib/kidsAcademyEconomy";
 
 const worlds = [
   {
@@ -101,7 +102,7 @@ export const AdventureWorldMap = () => {
               transition={{ delay: i * 0.08 }}
               whileHover={{ scale: 1.03, y: -4 }}
               whileTap={{ scale: 0.97 }}
-              onClick={() => navigate(world.path)}
+              onClick={() => { recordModuleVisit(world.id); navigate(world.path); }}
               className={`relative cursor-pointer rounded-2xl bg-gradient-to-br ${world.gradient} backdrop-blur-sm border-2 ${world.border} p-5 shadow-lg ${world.glow} hover:shadow-xl transition-shadow`}
             >
               {/* Parent check badge */}
