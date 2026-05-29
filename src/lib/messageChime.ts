@@ -3,8 +3,10 @@
 // — distinctive enough to not be confused with native OS sounds.
 
 let ctx: AudioContext | null = null;
+let masterGain: GainNode | null = null;
 let lastPlay = 0;
 let unlockBound = false;
+
 
 function bindUnlock() {
   if (unlockBound || typeof window === "undefined") return;
@@ -26,7 +28,13 @@ function getCtx(): AudioContext | null {
       if (!AC) return null;
       ctx = new AC();
     }
+    if (!masterGain && ctx) {
+      masterGain = ctx.createGain();
+      masterGain.gain.value = 2.8; // global boost so chime is audible on mobile
+      masterGain.connect(ctx.destination);
+    }
     if (ctx.state === "suspended") ctx.resume().catch(() => {});
+
     return ctx;
   } catch {
     return null;
@@ -54,7 +62,7 @@ function tone(
   gain.gain.exponentialRampToValueAtTime(peak, start + 0.012);
   gain.gain.exponentialRampToValueAtTime(0.0001, start + dur);
 
-  osc.connect(gain).connect(ac.destination);
+  osc.connect(gain).connect(masterGain ?? ac.destination);
   osc.start(start);
   osc.stop(start + dur + 0.02);
 }

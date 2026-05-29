@@ -3,7 +3,23 @@
 // for a warmer, alert-style timbre (vs. the bright bell of messages).
 
 let ctx: AudioContext | null = null;
+let masterGain: GainNode | null = null;
 let lastPlay = 0;
+let unlockBound = false;
+
+function bindUnlock() {
+  if (unlockBound || typeof window === "undefined") return;
+  unlockBound = true;
+  const unlock = () => {
+    const ac = getCtx();
+    if (ac && ac.state === "suspended") ac.resume().catch(() => {});
+  };
+  window.addEventListener("pointerdown", unlock, { passive: true });
+  window.addEventListener("keydown", unlock);
+  window.addEventListener("touchstart", unlock, { passive: true });
+}
+if (typeof window !== "undefined") bindUnlock();
+
 
 function getCtx(): AudioContext | null {
   if (typeof window === "undefined") return null;
@@ -12,6 +28,11 @@ function getCtx(): AudioContext | null {
       const AC = (window.AudioContext || (window as any).webkitAudioContext);
       if (!AC) return null;
       ctx = new AC();
+    }
+    if (!masterGain && ctx) {
+      masterGain = ctx.createGain();
+      masterGain.gain.value = 2.8; // global boost
+      masterGain.connect(ctx.destination);
     }
     if (ctx.state === "suspended") ctx.resume().catch(() => {});
     return ctx;
@@ -34,8 +55,9 @@ function tone(
   osc.frequency.setValueAtTime(freq, start);
   gain.gain.setValueAtTime(0.0001, start);
   gain.gain.exponentialRampToValueAtTime(peak, start + 0.02);
+
   gain.gain.exponentialRampToValueAtTime(0.0001, start + dur);
-  osc.connect(gain).connect(ac.destination);
+  osc.connect(gain).connect(masterGain ?? ac.destination);
   osc.start(start);
   osc.stop(start + dur + 0.02);
 }
