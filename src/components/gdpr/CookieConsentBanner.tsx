@@ -115,10 +115,10 @@ export function CookieConsentBanner() {
                 We use cookies to improve your experience, personalize content, and analyze traffic.
               </p>
               <div className="flex flex-row flex-wrap gap-2 sm:gap-3">
-                <Button onClick={acceptAll} size="sm" className="gap-2 flex-1 sm:flex-none">
+                <Button onClick={acceptAll} size="sm" className="gap-2 flex-1 sm:flex-none min-w-0">
                   Accept all
                 </Button>
-                <Button variant="outline" size="sm" onClick={rejectAll} className="flex-1 sm:flex-none">
+                <Button variant="outline" size="sm" onClick={rejectAll} className="flex-1 sm:flex-none min-w-0">
                   Only necessary
                 </Button>
                 <Dialog open={showSettings} onOpenChange={setShowSettings}>
