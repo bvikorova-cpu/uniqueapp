@@ -35,6 +35,17 @@ Deno.serve(async (req) => {
       return json({ ok: true, router: "horse-router", actions: HORSE_ACTIONS });
     }
 
+    // Test-mode bypass: skips auth + DB writes, returns stub.
+    const tm = checkTestMode(req);
+    if (tm) {
+      const tmBody = await req.json().catch(() => ({}));
+      const tmAction = String((tmBody as any)?.action ?? "").trim();
+      if (!HORSE_ACTIONS.includes(tmAction) || tmAction === "ping") {
+        return json({ error: `Unknown horse action: ${tmAction}` }, 400);
+      }
+      return tm.stub(tmAction);
+    }
+
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) return json({ error: "No auth" }, 401);
 
