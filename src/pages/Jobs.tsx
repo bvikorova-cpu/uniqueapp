@@ -10,7 +10,18 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useDebounce } from "@/hooks/use-debounce";
+import { z } from "zod";
 import { Briefcase, MapPin, DollarSign, Clock, Search, Plus, Building2, Globe, Wrench, Flame, Trophy, Medal, Zap, Bookmark, ListChecks, Bell, HelpCircle, Users, Sparkles, Map as MapIcon } from "lucide-react";
+
+// PostgREST .or() escape: comma, parens, and quotes break the parser and
+// can also be abused for injection-style filter manipulation.
+const escapeOrTerm = (s: string) => s.replace(/[\\,()"%*]/g, "\\$&");
+
+const applicationSchema = z.object({
+  cover_letter: z.string().trim().min(20, "Cover letter must be at least 20 characters").max(5000, "Cover letter must be under 5000 characters"),
+  resume_url: z.string().trim().max(500, "Resume URL too long").url("Invalid resume URL").or(z.literal("")),
+});
 import { ResumeManagerDialog } from "@/components/jobs/ResumeManagerDialog";
 import CandidateSearchProfileDialog from "@/components/jobs/CandidateSearchProfileDialog";
 import { JobsPushButton } from "@/components/jobs/JobsPushButton";
@@ -113,19 +124,22 @@ const Jobs = () => {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const success = params.get('success');
-    const jobId = params.get('job_id');
     const sessionId = params.get('session_id');
-    if (success === 'true' && jobId && sessionId) {
+    if (success === 'true' && sessionId) {
       const activateJob = async () => {
         try {
-          const { error } = await supabase.functions.invoke('activate-job-listing', {
-            body: { jobId, sessionId }
+          const { data, error } = await supabase.functions.invoke('verify-job-listing-payment', {
+            body: { sessionId },
           });
           if (error) throw error;
-          toast({ title: "✅ Payment Successful!", description: "Your job listing is now active and visible to candidates" });
-          queryClient.invalidateQueries({ queryKey: ["jobs"] });
+          if (data?.verified) {
+            toast({ title: "✅ Payment Successful!", description: "Your job listing is now active and visible to candidates" });
+            queryClient.invalidateQueries({ queryKey: ["jobs"] });
+          } else {
+            toast({ title: "⚠️ Payment Pending", description: `Status: ${data?.status ?? 'unknown'}. We'll activate it once Stripe confirms.` });
+          }
         } catch (error: any) {
-          toast({ title: "⚠️ Activation Pending", description: "Payment received, your listing will be activated shortly" });
+          toast({ title: "⚠️ Activation Failed", description: error?.message || "Could not verify payment.", variant: "destructive" });
         }
       };
       activateJob();
@@ -160,17 +174,22 @@ const Jobs = () => {
     enabled: !!user,
   });
 
+  const debouncedSearch = useDebounce(searchQuery, 300);
+
   const { data: jobs = [], isLoading } = useQuery({
-    queryKey: ["jobs", searchQuery, selectedCategory, selectedType, selectedCountry],
+    queryKey: ["jobs", debouncedSearch, selectedCategory, selectedType, selectedCountry],
     queryFn: async () => {
       // Read from sanitized view (excludes employer contact_email).
       // Employers/admins/applicants get the full row by querying job_listings
       // directly (RLS allows it). Anonymous browsers stay PII-safe.
       let query = (supabase.from as any)("job_listings_public")
         .select("*")
-        .eq("is_active", true)
-        .order("created_at", { ascending: false });
-      if (searchQuery) query = query.or(`title.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%,company_name.ilike.%${searchQuery}%`);
+        .order("created_at", { ascending: false })
+        .limit(500);
+      if (debouncedSearch) {
+        const term = escapeOrTerm(debouncedSearch);
+        query = query.or(`title.ilike.%${term}%,description.ilike.%${term}%,company_name.ilike.%${term}%`);
+      }
       if (selectedCategory !== "all") query = query.eq("category", selectedCategory as any);
       if (selectedType !== "all") query = query.eq("job_type", selectedType as any);
       if (selectedCountry !== "all") query = query.eq("country", selectedCountry);
@@ -182,13 +201,19 @@ const Jobs = () => {
 
   const countries = Array.from(new Set(jobs.map((job) => job.country).filter(c => c && c.trim() !== ""))).sort();
 
-
-
-
   const applyMutation = useMutation({
     mutationFn: async () => {
       if (!user || !selectedJob) throw new Error("Must be logged in");
-      const { error } = await supabase.from("job_applications").insert({ job_id: selectedJob.id, applicant_id: user.id, ...application });
+      const parsed = applicationSchema.safeParse(application);
+      if (!parsed.success) {
+        throw new Error(parsed.error.issues[0]?.message || "Invalid application");
+      }
+      const { error } = await supabase.from("job_applications").insert({
+        job_id: selectedJob.id,
+        applicant_id: user.id,
+        cover_letter: parsed.data.cover_letter,
+        resume_url: parsed.data.resume_url || null,
+      });
       if (error) throw error;
     },
     onSuccess: () => {
@@ -198,7 +223,13 @@ const Jobs = () => {
       setApplication({ cover_letter: "", resume_url: "" });
       toast({ title: "✅ Application Sent", description: "Your application has been sent" });
     },
-    onError: (error: any) => { toast({ title: "❌ Error", description: error.message, variant: "destructive" }); },
+    onError: (error: any) => {
+      const msg = String(error?.message || "");
+      const friendly = /duplicate|unique|already/i.test(msg)
+        ? "You have already applied to this job."
+        : msg || "Failed to send application";
+      toast({ title: "❌ Error", description: friendly, variant: "destructive" });
+    },
   });
 
   const registerEmployerMutation = useMutation({
@@ -236,9 +267,15 @@ const Jobs = () => {
     setShowApplyDialog(true);
   };
 
-  const handleViewDetails = (job: JobListing) => {
+  const handleViewDetails = async (job: JobListing) => {
     if (!user) { toast({ title: "Login Required", description: "Please sign in to view details" }); window.location.href = "/auth"; return; }
-    setSelectedJob(job);
+    // Pull contact_email from raw table (RLS: applicant after apply, or employer)
+    const { data: full } = await supabase
+      .from("job_listings")
+      .select("contact_email")
+      .eq("id", job.id)
+      .maybeSingle();
+    setSelectedJob({ ...job, contact_email: (full as any)?.contact_email ?? "" });
     setShowJobDetailsDialog(true);
   };
 

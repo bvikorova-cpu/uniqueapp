@@ -1,4 +1,5 @@
 // Verifies a Stripe checkout session for a job listing and activates the listing.
+// Hardened: requires JWT, enforces ownership match against Stripe metadata.
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
@@ -13,14 +14,64 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { sessionId } = await req.json();
-    if (!sessionId) throw new Error("Missing sessionId");
+    // ---- Auth ----------------------------------------------------------
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const token = authHeader.replace("Bearer ", "");
+
+    const authClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      { global: { headers: { Authorization: authHeader } } }
+    );
+    const { data: claimsData, error: claimsErr } = await authClient.auth.getClaims(token);
+    if (claimsErr || !claimsData?.claims?.sub) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const callerId = claimsData.claims.sub as string;
+
+    // ---- Input ---------------------------------------------------------
+    const body = await req.json().catch(() => ({}));
+    const sessionId = typeof body?.sessionId === "string" ? body.sessionId : null;
+    if (!sessionId || !/^cs_(test|live)_[A-Za-z0-9]+$/.test(sessionId)) {
+      return new Response(JSON.stringify({ error: "Invalid sessionId" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
     });
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+    const meta = (session.metadata || {}) as Record<string, string>;
+    const productKey = meta.productKey;
+    const jobListingId = meta.jobListingId;
+    const ownerId = meta.userId;
+
+    if (!jobListingId) {
+      return new Response(JSON.stringify({ error: "Missing jobListingId in metadata" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (ownerId && ownerId !== callerId) {
+      return new Response(JSON.stringify({ error: "Forbidden" }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     if (session.payment_status !== "paid") {
       return new Response(
         JSON.stringify({ verified: false, status: session.payment_status }),
@@ -28,17 +79,29 @@ serve(async (req) => {
       );
     }
 
-    const supabase = createClient(
+    const admin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    const meta = session.metadata || {};
-    const productKey = meta.productKey;
-    const jobListingId = meta.jobListingId;
-    const userId = meta.userId;
-
-    if (!jobListingId) throw new Error("Missing jobListingId in metadata");
+    // Double-check listing ownership against DB row.
+    const { data: listing, error: listingErr } = await admin
+      .from("job_listings")
+      .select("employer_id")
+      .eq("id", jobListingId)
+      .maybeSingle();
+    if (listingErr || !listing) {
+      return new Response(JSON.stringify({ error: "Listing not found" }), {
+        status: 404,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (listing.employer_id !== callerId) {
+      return new Response(JSON.stringify({ error: "Forbidden" }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     // Determine duration
     let durationDays = 7;
@@ -47,13 +110,13 @@ serve(async (req) => {
     else if (productKey === "job_listing_30") durationDays = 30;
     else if (productKey === "job_listing_featured") {
       isFeatured = true;
-      durationDays = 0; // featured upgrade only
+      durationDays = 0;
     }
 
-    // Record payment (idempotent)
-    await supabase.from("job_listing_payments").upsert(
+    // Record payment (idempotent on stripe_session_id)
+    await admin.from("job_listing_payments").upsert(
       {
-        user_id: userId,
+        user_id: callerId,
         job_listing_id: jobListingId,
         stripe_session_id: sessionId,
         amount: session.amount_total ?? 0,
@@ -65,16 +128,15 @@ serve(async (req) => {
       { onConflict: "stripe_session_id" }
     );
 
-    // Activate listing
     if (isFeatured) {
-      await supabase
+      await admin
         .from("job_listings")
         .update({ is_featured: true })
         .eq("id", jobListingId);
     } else {
       const publishedAt = new Date();
       const expiresAt = new Date(publishedAt.getTime() + durationDays * 86400000);
-      await supabase
+      await admin
         .from("job_listings")
         .update({
           paid_status: "active",
