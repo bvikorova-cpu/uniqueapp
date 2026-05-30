@@ -46,7 +46,7 @@ const courses = [
       {
         id: "immediate",
         title: "Immediate Response",
-        content: `When being bullied:\n\n1. **Stay Calm**: Don't show anger or fear - bullies want a reaction\n2. **Walk Away**: Remove yourself from the situation when safe\n3. **Use Confident Body Language**: Stand tall, make eye contact\n4. **Use Assertive Responses**: \"Stop. That's not okay.\" then walk away\n5. **Find Safety**: Go to a trusted adult or crowded area`,
+        content: `When being bullied:\n\n1. **Stay Calm**: Don't show anger or fear - bullies want a reaction\n2. **Walk Away**: Remove yourself from the situation when safe\n3. **Use Confident Body Language**: Stand tall, make eye contact\n4. **Use Assertive Responses**: "Stop. That's not okay." then walk away\n5. **Find Safety**: Go to a trusted adult or crowded area`,
         quiz: {
           question: "What is the best immediate response to verbal bullying?",
           options: ["Fight back physically", "Cry to make them feel bad", "Stay calm and walk away", "Insult them back"],

@@ -163,16 +163,6 @@ ${inviteUrl}`,
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
   };
 
-  if (loading) {
-    return (
-      <Card className="border-primary/20 bg-card/80 backdrop-blur-xl">
-        <CardContent className="flex items-center justify-center py-16">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
-        </CardContent>
-      </Card>
-    );
-  }
-
   const totalEarnings = stats?.totalEarnings ?? 0;
   const pendingEarnings = stats?.pendingEarnings ?? 0;
   const paidEarnings = stats?.paidEarnings ?? 0;
@@ -191,6 +181,16 @@ ${inviteUrl}`,
       return true;
     });
   }, [recent, search, typeFilter, statusFilter]);
+
+  if (loading) {
+    return (
+      <Card className="border-primary/20 bg-card/80 backdrop-blur-xl">
+        <CardContent className="flex items-center justify-center py-16">
+          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+        </CardContent>
+      </Card>
+    );
+  }
 
   const filtersActive = search.trim() !== "" || typeFilter !== "all" || statusFilter !== "all";
   const clearFilters = () => {

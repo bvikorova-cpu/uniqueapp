@@ -21,7 +21,7 @@ export const GiftConfetti = ({ trigger, type = "send" }: GiftConfettiProps) => {
             colors: ["#f59e0b", "#f97316", "#fbbf24", "#fcd34d"],
           });
           break;
-        case "receive":
+        case "receive": {
           // Rain from top with hearts
           const end = Date.now() + 2000;
           const colors = ["#ff6b81", "#ff4757", "#ffa502", "#ff6348"];
@@ -49,7 +49,8 @@ export const GiftConfetti = ({ trigger, type = "send" }: GiftConfettiProps) => {
             }
           })();
           break;
-        case "badge":
+        }
+        case "badge": {
           // Star explosion
           const badgeDefaults = {
             spread: 360,
@@ -73,7 +74,8 @@ export const GiftConfetti = ({ trigger, type = "send" }: GiftConfettiProps) => {
             shapes: ["circle"],
           });
           break;
-        case "levelup":
+        }
+        case "levelup": {
           // Grand celebration
           const duration = 3000;
           const animationEnd = Date.now() + duration;
@@ -110,6 +112,7 @@ export const GiftConfetti = ({ trigger, type = "send" }: GiftConfettiProps) => {
             });
           }, 250);
           break;
+        }
         case "mystery":
           // Mystery box reveal - sparkle effect
           confetti({

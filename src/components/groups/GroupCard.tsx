@@ -117,7 +117,7 @@ export const GroupCard = ({ group, onJoin, onLeave, onDelete, isMember, isCreato
           <Button
             onClick={(e) => {
               e.stopPropagation();
-              isMember ? onLeave(group.id) : onJoin(group.id);
+              if (isMember) onLeave(group.id); else onJoin(group.id);
             }}
             variant={isMember ? "outline" : "default"}
             className="w-full"

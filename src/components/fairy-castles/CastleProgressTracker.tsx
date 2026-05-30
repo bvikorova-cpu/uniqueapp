@@ -79,7 +79,7 @@ export const CastleProgressTracker = ({
     return () => clearInterval(interval);
   }, [startTime, isVisible]);
 
-  if (!isVisible) return null;
+  
 
   const progressPercentage = ((currentRoomIndex + 1) / totalRooms) * 100;
   const visitedCount = visitedRoomIds.length;
@@ -126,6 +126,8 @@ export const CastleProgressTracker = ({
       }
     });
   }, [progressPercentage]);
+
+  if (!isVisible) return null;
 
   const handleConfettiComplete = () => {
     setShowConfetti(false);

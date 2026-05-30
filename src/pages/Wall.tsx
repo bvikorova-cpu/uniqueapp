@@ -535,7 +535,7 @@ const Feed = () => {
         return <WallInfo />;
       case '/wall/memories':
         return <WallMemories />;
-      default:
+      default: {
         // Default Feed content
         const WALL_TABS = [
           { id: "feed", icon: Home, label: "Feed" },
@@ -722,6 +722,7 @@ const Feed = () => {
             </div>
           </>
         );
+      }
     }
   };
 

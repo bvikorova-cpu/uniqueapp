@@ -16,12 +16,12 @@ const parseCareerPaths = (text: string) => {
   const paths: { title: string; matchPercent: number; salary: string; demand: string; content: string }[] = [];
   
   // Try to extract career paths with match percentages
-  const sections = text.split(/(?=###?\s*\d+[\.\):]|(?=Career\s*(?:Path|Option)\s*\d))/gi);
+  const sections = text.split(/(?=###?\s*\d+[.):]|(?=Career\s*(?:Path|Option)\s*\d))/gi);
   
   sections.forEach((section, i) => {
     if (section.trim().length < 20) return;
     
-    const titleMatch = section.match(/^###?\s*\d+[\.\):]?\s*(.+?)(?:\n|$)/m);
+    const titleMatch = section.match(/^###?\s*\d+[.):]?\s*(.+?)(?:\n|$)/m);
     const title = titleMatch ? titleMatch[1].replace(/[*#]/g, '').trim() : `Career Path ${i + 1}`;
     
     // Generate realistic match % based on position (first recommendations are best matches)
@@ -129,7 +129,7 @@ export const CareerResults = ({ guidance, onExportPDF }: CareerResultsProps) => 
 
                     {/* Preview */}
                     <p className="text-xs text-muted-foreground line-clamp-3">
-                      {career.content.replace(/[#*\-]/g, '').substring(0, 200)}...
+                      {career.content.replace(/[#*-]/g, '').substring(0, 200)}...
                     </p>
                   </CardContent>
                 </Card>

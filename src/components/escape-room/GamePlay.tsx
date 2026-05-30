@@ -169,14 +169,6 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
     });
   };
 
-  if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-  }
-
-  const currentRoom = rooms[currentRoomIndex];
-  const currentPuzzle = puzzles[currentPuzzleIndex];
-  const progress = rooms.length > 0 ? ((currentRoomIndex + 1) / rooms.length) * 100 : 0;
-
   // State for panorama rooms with AI-generated URLs
   const [panoramaRooms, setPanoramaRooms] = useState<RoomData[]>(() => 
     getRoomsForTheme(room?.theme || "mystery")
@@ -187,12 +179,21 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
     setPanoramaRooms(getRoomsForTheme(room?.theme || "mystery"));
   }, [room?.theme]);
 
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+
+  const currentRoom = rooms[currentRoomIndex];
+  const currentPuzzle = puzzles[currentPuzzleIndex];
+  const progress = rooms.length > 0 ? ((currentRoomIndex + 1) / rooms.length) * 100 : 0;
+
   // Callback to update a room's panorama URL
   const handleUpdateRoomPanorama = (roomIndex: number, newUrl: string) => {
     setPanoramaRooms(prev => prev.map((r, idx) => 
       idx === roomIndex ? { ...r, panoramaUrl: newUrl } : r
     ));
   };
+
 
   // Panorama mode - main game mode
   if (gameMode === "panorama") {
