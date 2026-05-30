@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "node scripts/generate-sitemap.mjs && node scripts/i18n-check.mjs && node scripts/check-routes.mjs",
+    "prebuild": "node scripts/generate-sitemap.mjs && node scripts/generate-jobs-sitemap.mjs && node scripts/validate-seo.mjs && node scripts/i18n-check.mjs && node scripts/check-routes.mjs",
     "check:routes": "node scripts/check-routes.mjs",
     "check:routes:strict": "node scripts/check-routes.mjs --strict",
     "build": "vite build",
@@ -14,7 +14,8 @@
     "bundle:report": "node scripts/bundle-report.mjs",
     "lh": "lhci autorun --config=./lighthouserc.cjs",
     "lh:collect": "lhci collect --config=./lighthouserc.cjs",
-    "sitemap": "node scripts/generate-sitemap.mjs",
+    "sitemap": "node scripts/generate-sitemap.mjs && node scripts/generate-jobs-sitemap.mjs",
+    "seo:validate": "node scripts/validate-seo.mjs",
     "i18n:check": "node scripts/i18n-check.mjs",
     "i18n:fill": "node scripts/i18n-fill.mjs",
     "lint": "eslint .",
