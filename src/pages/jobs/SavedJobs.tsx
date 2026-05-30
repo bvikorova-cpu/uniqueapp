@@ -15,7 +15,7 @@ export default function SavedJobs() {
     setLoading(true);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setLoading(false); return; }
-    const { data } = await supabase.from("saved_jobs").select("id, created_at, notes, job_listings(*)").eq("user_id", user.id).order("created_at", { ascending: false });
+    const { data } = await supabase.from("saved_jobs").select("id, created_at, notes, job_listings(id, slug, title, company_name, location, salary_min, salary_max)").eq("user_id", user.id).order("created_at", { ascending: false });
     setItems(data || []);
     setLoading(false);
   };
@@ -57,7 +57,7 @@ export default function SavedJobs() {
             return (
               <Card key={item.id} className="hover:border-primary/40 transition-all">
                 <CardContent className="p-4 flex justify-between gap-4">
-                  <div className="flex-1 min-w-0 cursor-pointer" onClick={() => navigate(`/jobs?id=${j.id}`)}>
+                  <div className="flex-1 min-w-0 cursor-pointer" onClick={() => navigate(`/jobs/listing/${j.slug || j.id}`)}>
                     <h3 className="font-bold truncate">{j.title}</h3>
                     <div className="flex flex-wrap gap-3 text-xs text-muted-foreground mt-1">
                       <span className="flex items-center gap-1"><Building2 className="h-3 w-3" />{j.company_name}</span>
