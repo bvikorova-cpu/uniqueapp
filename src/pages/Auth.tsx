@@ -102,19 +102,25 @@ const Auth = () => {
       return;
     }
 
-    setLoading(true);
-
     const formData = new FormData(e.currentTarget);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-    const fullName = formData.get("fullName") as string;
-    const phone = formData.get("phone") as string;
-    const companyName = formData.get("companyName") as string;
+    const email = ((formData.get("email") as string) || "").trim().toLowerCase();
+    const password = (formData.get("password") as string) || "";
+    const fullName = ((formData.get("fullName") as string) || "").trim();
+    const phone = ((formData.get("phone") as string) || "").trim();
+    const companyName = ((formData.get("companyName") as string) || "").trim();
+
+    const strengthError = passwordStrengthError(password);
+    if (strengthError) {
+      toast({ variant: "destructive", title: "Weak password", description: strengthError });
+      return;
+    }
+
+    setLoading(true);
 
     const selectedLanguage = 'en';
     const isoBirthDate = format(birthDate, "yyyy-MM-dd");
 
-    const { data: signUpData, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -129,24 +135,20 @@ const Auth = () => {
       },
     });
 
-    // Persist preferred_language + birth_date directly to the profile (best-effort)
-    if (!error && signUpData?.user?.id) {
-      try {
-        await supabase
-          .from('profiles')
-          .update({
-            preferred_language: selectedLanguage,
-            birth_date: isoBirthDate,
-          } as any)
-          .eq('id', signUpData.user.id);
-      } catch (e) {
-        console.warn('Could not persist profile fields at signup:', e);
-      }
-    }
+    // Profile fields (birth_date, preferred_language) are persisted server-side by
+    // the public.handle_new_user trigger from raw_user_meta_data. Do NOT update from
+    // the client: when email confirmation is required there is no session yet and
+    // RLS would reject the UPDATE.
 
     setLoading(false);
 
     if (error) {
+      const msg = (error.message || "").toLowerCase();
+      const isAgeBlock = msg.includes("at least 16") || msg.includes("check_violation");
+      if (isAgeBlock) {
+        setShowAgeBlock(true);
+        return;
+      }
       toast({
         variant: "destructive",
         title: "Registration error",
