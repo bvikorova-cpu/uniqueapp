@@ -30148,6 +30148,54 @@ export type Database = {
         }
         Relationships: []
       }
+      job_reports: {
+        Row: {
+          created_at: string
+          details: string | null
+          id: string
+          job_id: string
+          reason: string
+          reporter_id: string
+          reviewed_at: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          job_id: string
+          reason: string
+          reporter_id: string
+          reviewed_at?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          job_id?: string
+          reason?: string
+          reporter_id?: string
+          reviewed_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_reports_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "job_listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_reports_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "job_listings_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       job_response_templates: {
         Row: {
           body: string
@@ -61335,6 +61383,7 @@ export type Database = {
       evaluate_xp_bets: { Args: never; Returns: number }
       expire_auctions: { Args: never; Returns: number }
       expire_featured_listings: { Args: never; Returns: undefined }
+      expire_old_job_listings: { Args: never; Returns: number }
       fail_job: {
         Args: { p_error?: string; p_job_id: string }
         Returns: undefined

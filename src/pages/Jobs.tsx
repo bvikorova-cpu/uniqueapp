@@ -18,9 +18,33 @@ import { Briefcase, MapPin, DollarSign, Clock, Search, Plus, Building2, Globe, W
 // can also be abused for injection-style filter manipulation.
 const escapeOrTerm = (s: string) => s.replace(/[\\,()"%*]/g, "\\$&");
 
+// Resume URL whitelist: https only + trusted hosts to block phishing/SSRF.
+const RESUME_HOST_WHITELIST = [
+  "drive.google.com", "docs.google.com", "dropbox.com", "www.dropbox.com",
+  "onedrive.live.com", "1drv.ms", "linkedin.com", "www.linkedin.com",
+  "github.com", "gitlab.com", "notion.so", "www.notion.so",
+  "icloud.com", "box.com", "app.box.com", "read.cv", "standardresume.co",
+];
+const isAllowedResumeUrl = (raw: string): boolean => {
+  if (!raw) return true;
+  try {
+    const u = new URL(raw);
+    if (u.protocol !== "https:") return false;
+    const host = u.hostname.toLowerCase();
+    if (host.endsWith(".pdf")) return true;
+    return RESUME_HOST_WHITELIST.some((h) => host === h || host.endsWith("." + h)) ||
+           u.pathname.toLowerCase().endsWith(".pdf");
+  } catch {
+    return false;
+  }
+};
+
 const applicationSchema = z.object({
   cover_letter: z.string().trim().min(20, "Cover letter must be at least 20 characters").max(5000, "Cover letter must be under 5000 characters"),
-  resume_url: z.string().trim().max(500, "Resume URL too long").url("Invalid resume URL").or(z.literal("")),
+  resume_url: z.string().trim().max(500, "Resume URL too long").refine(
+    (v) => v === "" || isAllowedResumeUrl(v),
+    "Resume URL must be https and from a trusted host (Drive, Dropbox, LinkedIn, GitHub, …) or a direct .pdf"
+  ),
 });
 import { ResumeManagerDialog } from "@/components/jobs/ResumeManagerDialog";
 import CandidateSearchProfileDialog from "@/components/jobs/CandidateSearchProfileDialog";
@@ -40,6 +64,7 @@ import { JobAIAssistant } from "@/components/jobs/JobAIAssistant";
 import { OneClickApplyDialog } from "@/components/jobs/OneClickApplyDialog";
 import { AIJobOptimizer } from "@/components/jobs/AIJobOptimizer";
 import { WorkUserGuide } from "@/components/work/WorkUserGuide";
+import { ReportJobDialog } from "@/components/jobs/ReportJobDialog";
 
 import { useNavigate } from "react-router-dom";
 import JobsToolsGrid from "@/components/jobs/JobsToolsGrid";
@@ -159,6 +184,7 @@ const Jobs = () => {
   const [selectedJob, setSelectedJob] = useState<JobListing | null>(null);
   const [showJobDetailsDialog, setShowJobDetailsDialog] = useState(false);
   const [quickFilter, setQuickFilter] = useState<string | null>(null);
+  const [showReportDialog, setShowReportDialog] = useState(false);
 
   const [application, setApplication] = useState({ cover_letter: "", resume_url: "" });
 
@@ -225,9 +251,10 @@ const Jobs = () => {
     },
     onError: (error: any) => {
       const msg = String(error?.message || "");
-      const friendly = /duplicate|unique|already/i.test(msg)
-        ? "You have already applied to this job."
-        : msg || "Failed to send application";
+      let friendly = msg || "Failed to send application";
+      if (/duplicate|unique|already/i.test(msg)) friendly = "You have already applied to this job.";
+      else if (/Daily application limit/i.test(msg)) friendly = "Daily limit reached (20 applications / 24h). Try again tomorrow.";
+      else if (/Resume URL/i.test(msg)) friendly = msg;
       toast({ title: "❌ Error", description: friendly, variant: "destructive" });
     },
   });
@@ -549,6 +576,47 @@ const Jobs = () => {
         {/* Job Details Dialog */}
         <Dialog open={showJobDetailsDialog} onOpenChange={setShowJobDetailsDialog}>
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            {selectedJob && (
+              <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                  __html: JSON.stringify({
+                    "@context": "https://schema.org/",
+                    "@type": "JobPosting",
+                    title: selectedJob.title,
+                    description: selectedJob.description,
+                    datePosted: selectedJob.created_at,
+                    employmentType: selectedJob.job_type,
+                    hiringOrganization: {
+                      "@type": "Organization",
+                      name: selectedJob.company_name,
+                    },
+                    jobLocation: {
+                      "@type": "Place",
+                      address: {
+                        "@type": "PostalAddress",
+                        addressLocality: selectedJob.location,
+                        addressCountry: selectedJob.country,
+                      },
+                    },
+                    ...(selectedJob.salary_min && selectedJob.salary_max
+                      ? {
+                          baseSalary: {
+                            "@type": "MonetaryAmount",
+                            currency: selectedJob.salary_currency || "EUR",
+                            value: {
+                              "@type": "QuantitativeValue",
+                              minValue: Number(selectedJob.salary_min),
+                              maxValue: Number(selectedJob.salary_max),
+                              unitText: "YEAR",
+                            },
+                          },
+                        }
+                      : {}),
+                  }),
+                }}
+              />
+            )}
             <DialogHeader>
               <DialogTitle className="text-3xl font-bold">{selectedJob?.title}</DialogTitle>
               <DialogDescription>
@@ -629,9 +697,27 @@ const Jobs = () => {
                   <Search className="h-5 w-5 mr-2" /> Sign In to Apply
                 </Button>
               )}
+              {user && selectedJob && (
+                <button
+                  type="button"
+                  onClick={() => setShowReportDialog(true)}
+                  className="text-xs text-muted-foreground hover:text-destructive underline underline-offset-2 mt-2"
+                >
+                  Report this job
+                </button>
+              )}
             </div>
           </DialogContent>
         </Dialog>
+
+        {selectedJob && (
+          <ReportJobDialog
+            jobId={selectedJob.id}
+            jobTitle={selectedJob.title}
+            open={showReportDialog}
+            onOpenChange={setShowReportDialog}
+          />
+        )}
 
 
 
