@@ -21,7 +21,7 @@ import { exportToCsv } from "@/lib/exportCsv";
  * Read-only. Surfaces anomalies (stuck active bets, fraud counts, payout drift).
  */
 export default function AdminRewardsAudit() {
-  const { isAdmin, isLoading: adminLoading } = useIsAdmin();
+  const { isAdmin, loading: adminLoading } = useIsAdmin();
 
   const stats = useQuery({
     queryKey: ["rewards-audit-stats"],
