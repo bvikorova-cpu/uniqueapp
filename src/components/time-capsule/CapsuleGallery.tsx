@@ -18,7 +18,7 @@ export const CapsuleGallery = ({ onBack }: { onBack: () => void }) => {
   const [liked, setLiked] = useState<Set<string>>(new Set());
   const [filter, setFilter] = useState<"all" | "text" | "video" | "letter">("all");
 
-  const toggle = (id: string) => setLiked(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
+  const toggle = (id: string) => setLiked(prev => { const n = new Set(prev); if (n.has(id)) n.delete(id); else n.add(id); return n; });
   const filtered = filter === "all" ? SAMPLE_CAPSULES : SAMPLE_CAPSULES.filter(c => c.type === filter);
 
   return (

@@ -15,7 +15,7 @@ export const MessengerHero = ({ onOpenChat, stats }: MessengerHeroProps) => {
   const [isPlaying, setIsPlaying] = useState(true);
 
   const toggleMute = () => { if (videoRef.current) { videoRef.current.muted = !isMuted; setIsMuted(!isMuted); } };
-  const togglePlay = () => { if (videoRef.current) { isPlaying ? videoRef.current.pause() : videoRef.current.play(); setIsPlaying(!isPlaying); } };
+  const togglePlay = () => { if (videoRef.current) { if (isPlaying) videoRef.current.pause(); else videoRef.current.play(); setIsPlaying(!isPlaying); } };
 
   const statItems = [
     { icon: Send, label: "Messages Sent", value: stats.totalMessages.toLocaleString(), color: "text-cyan-400" },

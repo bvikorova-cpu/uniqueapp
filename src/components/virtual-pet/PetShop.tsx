@@ -51,7 +51,7 @@ export const PetShop = () => {
       setTimeout(() => navigate('/ai-credits'), 1500);
       return;
     }
-    type === 'accessory' ? purchaseMutation.mutate(item) : openMysteryBoxMutation.mutate(item);
+    if (type === 'accessory') purchaseMutation.mutate(item); else openMysteryBoxMutation.mutate(item);
   };
 
   const purchaseMutation = useMutation({

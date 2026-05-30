@@ -40,7 +40,7 @@ export function StreamScheduleCard() {
   const remind = async (id: string) => {
     try {
       const r = await shadowArenaCall<{ subscribed: boolean }>("reminder_toggle", { schedule_id: id });
-      const ns = new Set(subs); r.subscribed ? ns.add(id) : ns.delete(id); setSubs(ns);
+      const ns = new Set(subs); if (r.subscribed) ns.add(id); else ns.delete(id); setSubs(ns);
     } catch (e: any) { toast.error(e.message); }
   };
 

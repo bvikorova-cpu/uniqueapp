@@ -570,7 +570,7 @@ const CouponMarketplace = () => {
             <TrendingStoresLeaderboard />
             <CouponFilterChips active={activeChips} onToggle={(id) => {
               const next = new Set(activeChips);
-              next.has(id) ? next.delete(id) : next.add(id);
+              if (next.has(id)) next.delete(id); else next.add(id);
               setActiveChips(next);
             }} />
             <div className="space-y-3 mb-6">

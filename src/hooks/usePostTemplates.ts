@@ -62,7 +62,7 @@ export const usePostTemplates = () => {
     },
   });
 
-  const useTemplate = useMutation({
+  const applyTemplate = useMutation({
     mutationFn: async (templateId: string) => {
       // First get current uses_count
       const { data: template } = await supabase
@@ -89,6 +89,6 @@ export const usePostTemplates = () => {
     templates: templates || [],
     isLoading,
     createTemplate: createTemplate.mutate,
-    useTemplate: useTemplate.mutate,
+    applyTemplate: applyTemplate.mutate,
   };
 };

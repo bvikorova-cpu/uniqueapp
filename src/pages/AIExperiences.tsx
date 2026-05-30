@@ -235,7 +235,7 @@ const AIExperiences = () => {
   };
 
   const toggleMute = () => { if (videoRef.current) { videoRef.current.muted = !isMuted; setIsMuted(!isMuted); } };
-  const togglePlay = () => { if (videoRef.current) { isPlaying ? videoRef.current.pause() : videoRef.current.play(); setIsVideoPlaying(!isPlaying); } };
+  const togglePlay = () => { if (videoRef.current) { if (isPlaying) videoRef.current.pause(); else videoRef.current.play(); setIsVideoPlaying(!isPlaying); } };
 
   const statItems = [
     { icon: Globe, label: "Virtual Tours", value: stats.tours || "—", color: "text-cyan-400" },

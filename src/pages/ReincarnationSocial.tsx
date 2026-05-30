@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  Sparkles, Heart, Crown, Eye, Infinity, Star, Globe, Shield,
+  Sparkles, Heart, Crown, Eye, Infinity as InfinityIcon, Star, Globe, Shield,
   Play, Pause, Volume2, VolumeX, Flame, Trophy, Target, ArrowLeft,
   MapPin, BookOpen, Users, Timer, MessageSquare, Loader2,
   Headphones, Paintbrush, BarChart3, Link2
@@ -39,7 +39,7 @@ type ToolView = "hub" | "regression" | "karma" | "soulmates" | "plan" |
 
 const tools: { id: ToolView; label: string; icon: any; color: string; desc: string }[] = [
   { id: "regression", label: "Past Life Regression", icon: Eye, color: "from-violet-500 to-purple-600", desc: "AI-guided exploration of your previous incarnations" },
-  { id: "karma", label: "Karmic Debt Tracker", icon: Infinity, color: "from-amber-500 to-orange-600", desc: "Track and resolve your karmic balance across lifetimes" },
+  { id: "karma", label: "Karmic Debt Tracker", icon: InfinityIcon, color: "from-amber-500 to-orange-600", desc: "Track and resolve your karmic balance across lifetimes" },
   { id: "soulmates", label: "Soulmate Matching", icon: Heart, color: "from-pink-500 to-rose-600", desc: "Find souls you've shared past lives with" },
   { id: "plan", label: "Reincarnation Plan", icon: Crown, color: "from-yellow-500 to-amber-600", desc: "Map your soul's destiny for the next incarnation" },
   { id: "journey-map", label: "Soul Journey Map", icon: MapPin, color: "from-emerald-500 to-teal-600", desc: "Visualize your soul's migration through lifetimes" },
@@ -308,7 +308,7 @@ const ReincarnationSocial = () => {
               <span className="font-black text-sm">Achievements</span>
             </div>
             <div className="grid grid-cols-4 gap-2">
-              {[Eye, Infinity, Heart, Crown, MapPin, BookOpen, Star, Timer].map((Icon, i) => (
+              {[Eye, InfinityIcon, Heart, Crown, MapPin, BookOpen, Star, Timer].map((Icon, i) => (
                 <div key={i} className={`aspect-square rounded-lg flex items-center justify-center transition-all
                   ${i < 3 ? "bg-amber-500/20 shadow-inner" : "bg-muted/20 opacity-40"}`}>
                   <Icon className={`w-4 h-4 ${i < 3 ? "text-amber-500" : "text-muted-foreground"}`} />
@@ -385,7 +385,7 @@ const ReincarnationSocial = () => {
 const PricingCards = ({ handlePurchase, loading }: { handlePurchase: (id: string) => void; loading: string | null }) => {
   const services = [
     { id: "past_life_regression", title: "Past Life Regression", price: "€79", type: "one-time", icon: Eye, features: ["AI-guided past life exploration", "Detailed regression reports", "Historical context", "Soul pattern recognition"], highlighted: false },
-    { id: "karmic_debt_calculator", title: "Karmic Debt Calculator", price: "€19", type: "/month", icon: Infinity, features: ["Real-time karma tracking", "Debt resolution guidance", "Daily karmic insights", "Spiritual balance reports"], highlighted: true },
+    { id: "karmic_debt_calculator", title: "Karmic Debt Calculator", price: "€19", type: "/month", icon: InfinityIcon, features: ["Real-time karma tracking", "Debt resolution guidance", "Daily karmic insights", "Spiritual balance reports"], highlighted: true },
     { id: "soulmate_matching", title: "Soulmate Matching", price: "€29", type: "/month", icon: Heart, features: ["Cross-lifetime soul matching", "Past relationship detection", "Soul contract insights", "Reunion probability"], highlighted: true },
     { id: "reincarnation_guarantee", title: "Reincarnation Guarantee™", price: "€199", type: "one-time", icon: Crown, features: ["Personalized reincarnation plan", "Soul preservation protocol", "Next life destiny mapping", "Lifetime spiritual support"], highlighted: false },
   ];

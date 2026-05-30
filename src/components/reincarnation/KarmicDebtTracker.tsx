@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Infinity, TrendingUp, CheckCircle, AlertCircle, Lock } from "lucide-react";
+import { Loader2, Infinity as InfinityIcon, TrendingUp, CheckCircle, AlertCircle, Lock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -63,7 +63,7 @@ export const KarmicDebtTracker = () => {
 
   return (
     <Card className="border-primary/20">
-      <CardHeader><CardTitle className="flex items-center gap-2"><Infinity className="h-6 w-6 text-primary" />Karmic Debt Tracker</CardTitle></CardHeader>
+      <CardHeader><CardTitle className="flex items-center gap-2"><InfinityIcon className="h-6 w-6 text-primary" />Karmic Debt Tracker</CardTitle></CardHeader>
       <CardContent className="space-y-4">
         {insights && (
           <div className="space-y-4">
