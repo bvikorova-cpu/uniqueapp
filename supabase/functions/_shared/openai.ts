@@ -66,6 +66,7 @@ export async function callOpenAIRaw(opts: CallOptions): Promise<any> {
   if (opts.temperature !== undefined) body.temperature = opts.temperature;
   if (opts.max_tokens !== undefined) body.max_tokens = opts.max_tokens;
   if (opts.response_format) body.response_format = opts.response_format;
+  else if (opts.json) body.response_format = { type: "json_object" };
 
   const res = await fetch(OPENAI_URL, {
     method: "POST",
