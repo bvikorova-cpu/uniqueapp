@@ -352,6 +352,7 @@ const Auth = () => {
                       name="email"
                       type="email"
                       placeholder="your@email.com"
+                      autoComplete="email"
                       required
                     />
                   </div>
@@ -362,6 +363,7 @@ const Auth = () => {
                         id="login-password"
                         name="password"
                         type={showLoginPassword ? "text" : "password"}
+                        autoComplete="current-password"
                         required
                         className="pr-10"
                       />
