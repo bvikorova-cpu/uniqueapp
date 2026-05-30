@@ -41,12 +41,16 @@ const Auth = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
-  // Where to send the user after successful login. Allow only same-origin paths.
+  // Where to send the user after successful login. Allow only same-origin paths
+  // and blacklist auth-flow routes to prevent infinite redirect loops.
+  const REDIRECT_BLACKLIST = ["/auth", "/reset-password", "/logout"];
   const redirectParam = searchParams.get("redirect");
-  const safeRedirect =
-    redirectParam && redirectParam.startsWith("/") && !redirectParam.startsWith("//")
-      ? redirectParam
-      : "/wall";
+  const isSafePath =
+    !!redirectParam &&
+    redirectParam.startsWith("/") &&
+    !redirectParam.startsWith("//") &&
+    !REDIRECT_BLACKLIST.some((p) => redirectParam === p || redirectParam.startsWith(`${p}/`) || redirectParam.startsWith(`${p}?`));
+  const safeRedirect = isSafePath ? (redirectParam as string) : "/wall";
   const [loading, setLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [showLoginPassword, setShowLoginPassword] = useState(false);
@@ -56,17 +60,47 @@ const Auth = () => {
   const [birthDate, setBirthDate] = useState<Date | undefined>(undefined);
   const [showAgeBlock, setShowAgeBlock] = useState(false);
   const [captchaVerified, setCaptchaVerified] = useState(false);
+  const [unconfirmedEmail, setUnconfirmedEmail] = useState<string | null>(null);
+  const [resendCooldown, setResendCooldown] = useState(0);
 
-  // Check if user is already logged in
+  // Check existing session AND listen for cross-tab logins.
   useEffect(() => {
-    const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
+    let cancelled = false;
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!cancelled && session) navigate(safeRedirect, { replace: true });
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session && (event === "SIGNED_IN" || event === "TOKEN_REFRESHED")) {
         navigate(safeRedirect, { replace: true });
       }
+    });
+    return () => {
+      cancelled = true;
+      subscription.unsubscribe();
     };
-    checkSession();
   }, [navigate, safeRedirect]);
+
+  // Resend cooldown ticker
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const t = setTimeout(() => setResendCooldown((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [resendCooldown]);
+
+  const handleResendConfirmation = async () => {
+    if (!unconfirmedEmail || resendCooldown > 0) return;
+    setResendCooldown(60);
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email: unconfirmedEmail,
+      options: { emailRedirectTo: `${window.location.origin}/` },
+    });
+    if (error) {
+      toast({ variant: "destructive", title: "Resend failed", description: error.message });
+    } else {
+      toast({ title: "Confirmation email sent", description: `Check ${unconfirmedEmail}.` });
+    }
+  };
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
