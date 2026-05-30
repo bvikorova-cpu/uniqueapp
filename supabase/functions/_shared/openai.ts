@@ -9,6 +9,22 @@
 const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
 export const DEFAULT_MODEL = "gpt-4o";
 
+export const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
+export function jsonResponse(body: unknown, status = 200): Response {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+}
+
+export function errorResponse(message: string, status = 500): Response {
+  return jsonResponse({ error: message }, status);
+}
+
 export type ChatMessage = { role: "system" | "user" | "assistant"; content: string };
 
 export interface CallOptions {
@@ -19,6 +35,8 @@ export interface CallOptions {
   temperature?: number;
   max_tokens?: number;
   response_format?: { type: "json_object" } | { type: "text" };
+  /** Convenience: when true, forces response_format=json_object. */
+  json?: boolean;
 }
 
 export class OpenAIError extends Error {
@@ -48,6 +66,7 @@ export async function callOpenAIRaw(opts: CallOptions): Promise<any> {
   if (opts.temperature !== undefined) body.temperature = opts.temperature;
   if (opts.max_tokens !== undefined) body.max_tokens = opts.max_tokens;
   if (opts.response_format) body.response_format = opts.response_format;
+  else if (opts.json) body.response_format = { type: "json_object" };
 
   const res = await fetch(OPENAI_URL, {
     method: "POST",

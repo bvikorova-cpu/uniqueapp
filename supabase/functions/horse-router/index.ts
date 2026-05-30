@@ -23,9 +23,17 @@ const EQUIPMENT_PRICES: Record<string, number> = {
 };
 const CHAMPIONSHIP_FEE = 500;
 
+const HORSE_ACTIONS = ["ping", "create", "train", "join_race", "purchase_equipment", "championship_enroll", "claim_quest_reward"];
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
+    // Health probe: no auth, no credits.
+    const probe = req.method === "GET" ? {} : await req.clone().json().catch(() => ({}));
+    if ((probe as any)?.action === "ping" || new URL(req.url).searchParams.get("action") === "ping") {
+      return json({ ok: true, router: "horse-router", actions: HORSE_ACTIONS });
+    }
+
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) return json({ error: "No auth" }, 401);
 

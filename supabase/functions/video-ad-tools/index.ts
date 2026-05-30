@@ -12,6 +12,16 @@ serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
 
   try {
+    // Health probe: no auth, no credits.
+    const probe = req.method === 'GET' ? {} : await req.clone().json().catch(() => ({}));
+    if ((probe as any)?.action === 'ping' || new URL(req.url).searchParams.get('action') === 'ping') {
+      return new Response(JSON.stringify({
+        ok: true,
+        router: 'video-ad-tools',
+        actions: ['ping', 'generate_script', 'storyboard', 'ad_copy', 'audience_analyzer', 'performance_predictor', 'brand_voice', 'multi_platform', 'competitor_analysis', 'thumbnail_generator', 'music_composer', 'voiceover_script', 'campaign_planner', 'social_calendar', 'roi_calculator', 'ad_analytics', 'multi_language_translator', 'ab_tester', 'url_to_video', 'hook_analyzer', 'caption_generator', 'winning_ads_recommend', 'avatar_plan', 'stock_footage', 'resize_advice', 'text_to_video_split', 'scenes', 'sfx', 'tts', 'voice_clone'],
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) throw new Error('Not authenticated');
 

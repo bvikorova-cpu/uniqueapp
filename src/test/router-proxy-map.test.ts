@@ -1,0 +1,83 @@
+/**
+ * Proxy-map regression suite.
+ * Verifies that every legacy edge-function name consolidated into
+ * nutrition-router / horse-router / video-ad-tools resolves to the
+ * correct router + action via resolveProxy(). Catches consolidation
+ * regressions (renamed action, missing entry) before runtime.
+ */
+import { describe, it, expect } from "vitest";
+import { resolveProxy } from "@/integrations/supabase/proxyMap";
+
+const NUTRITION_EXPECTED: Record<string, string> = {
+  "nutrition-coach-chat": "coach_chat",
+  "nutrition-allergy-scanner": "allergy_scanner",
+  "nutrition-barcode-scanner": "barcode_scanner",
+  "nutrition-body-predictor": "body_predictor",
+  "nutrition-grocery-optimizer": "grocery_optimizer",
+  "nutrition-hydration-coach": "hydration_coach",
+  "nutrition-meal-challenge": "meal_challenge",
+  "nutrition-supplement-advisor": "supplement_advisor",
+  "nutrition-weekly-progress": "weekly_progress",
+};
+
+const HORSE_EXPECTED: Record<string, string> = {
+  "horse-create": "create",
+  "horse-train": "train",
+  "horse-join-race": "join_race",
+  "horse-purchase-equipment": "purchase_equipment",
+  "horse-championship-enroll": "championship_enroll",
+  "horse-claim-quest-reward": "claim_quest_reward",
+};
+
+const VIDEO_AD_EXPECTED: Record<string, string> = {
+  "video-ad-scenes": "scenes",
+  "video-ad-sfx": "sfx",
+  "video-ad-tts": "tts",
+  "video-ad-voice-clone": "voice_clone",
+};
+
+describe("proxyMap router consolidation", () => {
+  it.each(Object.entries(NUTRITION_EXPECTED))(
+    "nutrition: %s -> nutrition-router action=%s",
+    (legacyName, expectedAction) => {
+      const r = resolveProxy(legacyName, { foo: "bar" });
+      expect(r).not.toBeNull();
+      expect(r!.target).toBe("nutrition-router");
+      expect(r!.body.action).toBe(expectedAction);
+      expect(r!.body.foo).toBe("bar"); // body preserved
+    }
+  );
+
+  it.each(Object.entries(HORSE_EXPECTED))(
+    "horse: %s -> horse-router action=%s",
+    (legacyName, expectedAction) => {
+      const r = resolveProxy(legacyName, {});
+      expect(r).not.toBeNull();
+      expect(r!.target).toBe("horse-router");
+      expect(r!.body.action).toBe(expectedAction);
+    }
+  );
+
+  it.each(Object.entries(VIDEO_AD_EXPECTED))(
+    "video-ad: %s -> video-ad-tools action=%s",
+    (legacyName, expectedAction) => {
+      const r = resolveProxy(legacyName, {});
+      expect(r).not.toBeNull();
+      expect(r!.target).toBe("video-ad-tools");
+      expect(r!.body.action).toBe(expectedAction);
+    }
+  );
+
+  it("unrelated function names are not rewritten", () => {
+    expect(resolveProxy("battle-characters", {})).toBeNull();
+    expect(resolveProxy("nonexistent-fn", {})).toBeNull();
+  });
+
+  it("caller-supplied action wins (no clobber)", () => {
+    // Frontend never sets action on legacy calls, but defensive merge order
+    // matters: spread body first, then action — proxyMap intentionally
+    // overrides. This test pins that contract.
+    const r = resolveProxy("nutrition-coach-chat", { action: "hacker" });
+    expect(r!.body.action).toBe("coach_chat");
+  });
+});

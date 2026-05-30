@@ -52,6 +52,13 @@ const ACTIONS: Record<string, Spec> = {
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
+    // Health probe: no auth, no credits. Used by health-check function + CI.
+    const url = new URL(req.url);
+    const probeBody = req.method === "GET" ? {} : await req.clone().json().catch(() => ({}));
+    if (url.searchParams.get("action") === "ping" || (probeBody as any)?.action === "ping") {
+      return jsonResponse({ ok: true, router: "nutrition-router", actions: Object.keys(ACTIONS) });
+    }
+
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) return errorResponse("Missing authorization", 401);
     const supabase = createClient(
