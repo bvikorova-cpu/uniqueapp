@@ -61848,6 +61848,10 @@ export type Database = {
           samples: number
         }[]
       }
+      get_wall_feed: {
+        Args: { _cursor?: string; _limit?: number }
+        Returns: Json
+      }
       get_weekly_xp_leaderboard: {
         Args: never
         Returns: {
