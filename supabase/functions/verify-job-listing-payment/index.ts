@@ -129,23 +129,52 @@ serve(async (req) => {
     );
 
     if (isFeatured) {
+      // Featured boost: 30 days from now or extend existing featured window
+      const { data: cur } = await admin
+        .from("job_listings")
+        .select("featured_until")
+        .eq("id", jobListingId)
+        .maybeSingle();
+      const base = cur?.featured_until && new Date(cur.featured_until) > new Date()
+        ? new Date(cur.featured_until)
+        : new Date();
+      const featuredUntil = new Date(base.getTime() + 30 * 86400000);
       await admin
         .from("job_listings")
-        .update({ is_featured: true })
+        .update({ is_featured: true, featured_until: featuredUntil.toISOString() })
         .eq("id", jobListingId);
     } else {
-      const publishedAt = new Date();
-      const expiresAt = new Date(publishedAt.getTime() + durationDays * 86400000);
+      // Renewal aware: extend from GREATEST(now, expires_at)
+      const { data: cur } = await admin
+        .from("job_listings")
+        .select("expires_at, published_at")
+        .eq("id", jobListingId)
+        .maybeSingle();
+      const now = new Date();
+      const baseDate = cur?.expires_at && new Date(cur.expires_at) > now
+        ? new Date(cur.expires_at)
+        : now;
+      const expiresAt = new Date(baseDate.getTime() + durationDays * 86400000);
       await admin
         .from("job_listings")
         .update({
           paid_status: "active",
           is_active: true,
-          published_at: publishedAt.toISOString(),
+          published_at: cur?.published_at ?? now.toISOString(),
           expires_at: expiresAt.toISOString(),
           duration_days: durationDays,
         })
         .eq("id", jobListingId);
+
+      // Notify renewal success
+      await admin.from("notifications").insert({
+        user_id: callerId,
+        type: "job_listing_renewed",
+        title: "Job listing renewed",
+        message: `Your listing is active until ${expiresAt.toISOString().slice(0,10)}.`,
+        related_id: jobListingId,
+        action_url: "/employer/dashboard",
+      });
     }
 
     return new Response(
