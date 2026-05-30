@@ -190,7 +190,6 @@ export const VERIFY_PROXY_MAP: Record<string, string> = {
 };
 
 // Nutrition router consolidation: 9 nutrition-* functions merged into nutrition-router.
-// Legacy function names map to action keys handled by the router.
 export const NUTRITION_ROUTER_MAP: Record<string, string> = {
   "nutrition-coach-chat": "coach_chat",
   "nutrition-allergy-scanner": "allergy_scanner",
@@ -201,6 +200,24 @@ export const NUTRITION_ROUTER_MAP: Record<string, string> = {
   "nutrition-meal-challenge": "meal_challenge",
   "nutrition-supplement-advisor": "supplement_advisor",
   "nutrition-weekly-progress": "weekly_progress",
+};
+
+// Horse router consolidation: 6 horse-* functions merged into horse-router.
+export const HORSE_ROUTER_MAP: Record<string, string> = {
+  "horse-create": "create",
+  "horse-train": "train",
+  "horse-join-race": "join_race",
+  "horse-purchase-equipment": "purchase_equipment",
+  "horse-championship-enroll": "championship_enroll",
+  "horse-claim-quest-reward": "claim_quest_reward",
+};
+
+// Video-ad router consolidation: 4 video-ad-* media functions merged into video-ad-tools.
+export const VIDEO_AD_ROUTER_MAP: Record<string, string> = {
+  "video-ad-scenes": "scenes",
+  "video-ad-sfx": "sfx",
+  "video-ad-tts": "tts",
+  "video-ad-voice-clone": "voice_clone",
 };
 
 /**
@@ -244,6 +261,18 @@ export function resolveProxy(
   const nutrition = NUTRITION_ROUTER_MAP[functionName];
   if (nutrition) {
     return { target: "nutrition-router", body: { ...b, action: nutrition } };
+  }
+
+  // Horse router consolidation (6 functions -> 1).
+  const horse = HORSE_ROUTER_MAP[functionName];
+  if (horse) {
+    return { target: "horse-router", body: { ...b, action: horse } };
+  }
+
+  // Video-ad router consolidation (4 media functions merged into video-ad-tools).
+  const videoAd = VIDEO_AD_ROUTER_MAP[functionName];
+  if (videoAd) {
+    return { target: "video-ad-tools", body: { ...b, action: videoAd } };
   }
 
   const aiType = AI_PROXY_MAP[functionName];
