@@ -484,7 +484,11 @@ const Auth = () => {
                           mode="single"
                           selected={birthDate}
                           onSelect={setBirthDate}
-                          disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
+                          disabled={(date) => {
+                            const maxBirth = new Date();
+                            maxBirth.setFullYear(maxBirth.getFullYear() - MIN_AGE);
+                            return date > maxBirth || date < new Date("1900-01-01");
+                          }}
                           captionLayout="dropdown-buttons"
                           fromYear={1900}
                           toYear={new Date().getFullYear()}
