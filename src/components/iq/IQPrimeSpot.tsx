@@ -27,7 +27,7 @@ const IQPrimeSpot = () => {
   useEffect(() => { const s = localStorage.getItem(KEY); if (s) setBest(parseInt(s, 10) || 0); }, []);
 
   const tap = (n: number) => {
-    const np = new Set(picked); np.has(n) ? np.delete(n) : np.add(n); setPicked(np);
+    const np = new Set(picked); if (np.has(n)) np.delete(n); else np.add(n); setPicked(np);
   };
 
   const check = () => {

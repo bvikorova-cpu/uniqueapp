@@ -16,7 +16,7 @@ export default function PetLiveListenMode({ onBack, onDetected }: { onBack: () =
 
   const stop = () => {
     setListening(false);
-    rafRef.current && cancelAnimationFrame(rafRef.current);
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
     streamRef.current?.getTracks().forEach((t) => t.stop());
     ctxRef.current?.close().catch(() => {});
     streamRef.current = null; ctxRef.current = null;

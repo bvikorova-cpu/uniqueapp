@@ -94,7 +94,7 @@ const PhobiaTrading = () => {
 
   const togglePlay = () => {
     if (!videoRef.current) return;
-    isPlaying ? videoRef.current.pause() : videoRef.current.play();
+    if (isPlaying) videoRef.current.pause(); else videoRef.current.play();
     setIsPlaying(!isPlaying);
   };
 

@@ -76,7 +76,7 @@ export const PageCard = ({ page, onFollow, onUnfollow, isFollowing }: PageCardPr
         <Button
           onClick={(e) => {
             e.stopPropagation();
-            isFollowing ? onUnfollow(page.id) : onFollow(page.id);
+            if (isFollowing) onUnfollow(page.id); else onFollow(page.id);
           }}
           variant={isFollowing ? "outline" : "default"}
           className="w-full"

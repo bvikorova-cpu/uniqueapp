@@ -22,7 +22,7 @@ export const PostTemplatesDialog = ({
   onOpenChange,
   onSelectTemplate,
 }: PostTemplatesDialogProps) => {
-  const { templates, useTemplate, isLoading } = usePostTemplates();
+  const { templates, applyTemplate, isLoading } = usePostTemplates();
   const [search, setSearch] = useState("");
 
   const filteredTemplates = templates.filter(
@@ -33,7 +33,7 @@ export const PostTemplatesDialog = ({
   );
 
   const handleSelectTemplate = (template: typeof templates[0]) => {
-    useTemplate(template.id);
+    applyTemplate(template.id);
     onSelectTemplate(template.content);
     onOpenChange(false);
   };

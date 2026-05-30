@@ -94,7 +94,7 @@ const SecretSanta = () => {
         {/* Video Controls */}
         <div className="absolute bottom-4 right-4 flex gap-2 z-20">
           <Button variant="ghost" size="icon" className="bg-black/30 backdrop-blur-sm hover:bg-black/50 text-white h-8 w-8"
-            onClick={() => { if (videoRef.current) { isPlaying ? videoRef.current.pause() : videoRef.current.play(); setIsPlaying(!isPlaying); } }}>
+            onClick={() => { if (videoRef.current) { if (isPlaying) videoRef.current.pause(); else videoRef.current.play(); setIsPlaying(!isPlaying); } }}>
             {isPlaying ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
           </Button>
           <Button variant="ghost" size="icon" className="bg-black/30 backdrop-blur-sm hover:bg-black/50 text-white h-8 w-8"
