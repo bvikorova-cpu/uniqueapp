@@ -434,6 +434,7 @@ const Auth = () => {
                       name="email"
                       type="email"
                       placeholder="your@email.com"
+                      autoComplete="email"
                       required
                     />
                   </div>
@@ -444,6 +445,8 @@ const Auth = () => {
                         id="signup-password"
                         name="password"
                         type={showSignupPassword ? "text" : "password"}
+                        autoComplete="new-password"
+                        minLength={MIN_PASSWORD_LENGTH}
                         required
                         className="pr-10"
                       />
