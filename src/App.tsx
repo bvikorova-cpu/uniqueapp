@@ -269,6 +269,7 @@ import {
   Handwriting,
   CreativeForge,
   Jobs,
+  JobDetailPage,
   JobPostSuccess,
   SavedJobs,
   ApplicationTracker,
