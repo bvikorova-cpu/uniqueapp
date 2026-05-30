@@ -19,8 +19,20 @@ import { AuthReferralBanner } from "@/components/referral/AuthReferralBanner";
 import { Captcha } from "@/components/Captcha";
 
 const MIN_AGE = 16;
+const MIN_PASSWORD_LENGTH = 10;
 
 const calculateAge = (birthDate: Date): number => differenceInYears(new Date(), birthDate);
+
+const passwordStrengthError = (pwd: string): string | null => {
+  if (pwd.length < MIN_PASSWORD_LENGTH) return `Password must be at least ${MIN_PASSWORD_LENGTH} characters.`;
+  let classes = 0;
+  if (/[a-z]/.test(pwd)) classes++;
+  if (/[A-Z]/.test(pwd)) classes++;
+  if (/\d/.test(pwd)) classes++;
+  if (/[^A-Za-z0-9]/.test(pwd)) classes++;
+  if (classes < 3) return "Password must contain at least 3 of: lowercase, uppercase, digit, symbol.";
+  return null;
+};
 
 const Auth = () => {
   const navigate = useNavigate();
