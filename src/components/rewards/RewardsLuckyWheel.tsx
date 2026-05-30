@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Disc3, Gift, Sparkles } from "lucide-react";
+import { Disc3, Gift, Sparkles, Loader2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -21,27 +21,52 @@ const prizes = [
 export default function RewardsLuckyWheel() {
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState<{ label: string; emoji: string; color: string } | null>(null);
-  const [canSpin, setCanSpin] = useState(true);
+  // Default false — guard against pre-check spin races. Enabled only after DB check returns 0.
+  const [canSpin, setCanSpin] = useState(false);
+  const [checking, setChecking] = useState(true);
   const [rotation, setRotation] = useState(0);
   const { toast } = useToast();
   const qc = useQueryClient();
+  const spinLock = useRef(false);
+  const mounted = useRef(true);
+  const revealTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+      if (revealTimer.current) clearTimeout(revealTimer.current);
+    };
+  }, []);
 
   useEffect(() => {
     (async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      const start = new Date(); start.setUTCHours(0, 0, 0, 0);
-      const { count } = await supabase
-        .from("lucky_spin_log")
-        .select("id", { count: "exact", head: true })
-        .eq("user_id", user.id)
-        .gte("created_at", start.toISOString());
-      setCanSpin((count ?? 0) === 0);
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user || !mounted.current) return;
+        const start = new Date();
+        start.setUTCHours(0, 0, 0, 0);
+        const { count, error } = await supabase
+          .from("lucky_spin_log")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", user.id)
+          .gte("created_at", start.toISOString());
+        if (!mounted.current) return;
+        if (error) {
+          // Fail closed — if we cannot verify, do not allow client-side spin.
+          setCanSpin(false);
+        } else {
+          setCanSpin((count ?? 0) === 0);
+        }
+      } finally {
+        if (mounted.current) setChecking(false);
+      }
     })();
   }, []);
 
   const spin = async () => {
-    if (spinning || !canSpin) return;
+    if (spinLock.current || spinning || !canSpin) return;
+    spinLock.current = true;
     setSpinning(true);
     setResult(null);
     setRotation((r) => r + 1440 + Math.random() * 360);
@@ -51,25 +76,49 @@ export default function RewardsLuckyWheel() {
       if (error) throw error;
       const res = data as { error?: string; prize?: string };
       if (res?.error) {
-        toast({ title: "Spin failed", description: res.error.replace(/_/g, " "), variant: "destructive" });
-        if (res.error === "already_spun_today") setCanSpin(false);
-        setSpinning(false);
+        toast({
+          title: "Spin failed",
+          description: res.error.replace(/_/g, " "),
+          variant: "destructive",
+        });
+        if (res.error === "already_spun_today" && mounted.current) setCanSpin(false);
+        if (mounted.current) setSpinning(false);
         return;
       }
-      const matched = prizes.find((p) => p.label === res.prize) || { label: res.prize!, emoji: "🎁", color: "text-amber-400" };
-      setTimeout(() => {
+      const matched =
+        prizes.find((p) => p.label === res.prize) ||
+        { label: res.prize ?? "Prize", emoji: "🎁", color: "text-amber-400" };
+      revealTimer.current = setTimeout(() => {
+        if (!mounted.current) return;
         setResult(matched);
         setSpinning(false);
         setCanSpin(false);
-        toast({ title: `🎉 You won: ${matched.label}!`, description: "XP/item credited to your account." });
+        toast({
+          title: `🎉 You won: ${matched.label}!`,
+          description: "XP/item credited to your account.",
+        });
         qc.invalidateQueries({ queryKey: ["rewards-stats"] });
         qc.invalidateQueries({ queryKey: ["gamification"] });
       }, 3000);
     } catch (e) {
-      setSpinning(false);
-      toast({ title: "Error", description: e instanceof Error ? e.message : "Spin failed", variant: "destructive" });
+      if (mounted.current) setSpinning(false);
+      toast({
+        title: "Error",
+        description: e instanceof Error ? e.message : "Spin failed",
+        variant: "destructive",
+      });
+    } finally {
+      spinLock.current = false;
     }
   };
+
+  const buttonLabel = checking
+    ? "Checking…"
+    : spinning
+    ? "Spinning..."
+    : canSpin
+    ? "Spin the Wheel"
+    : "Come Back Tomorrow!";
 
   return (
     <div className="space-y-4">
@@ -87,7 +136,14 @@ export default function RewardsLuckyWheel() {
             {prizes.map((prize, i) => {
               const angle = (i / prizes.length) * 360;
               return (
-                <div key={i} className="absolute text-lg" style={{ transform: `rotate(${angle}deg) translateY(-70px)`, transformOrigin: "center center" }}>
+                <div
+                  key={i}
+                  className="absolute text-lg"
+                  style={{
+                    transform: `rotate(${angle}deg) translateY(-70px) rotate(${-angle}deg)`,
+                    transformOrigin: "center center",
+                  }}
+                >
                   {prize.emoji}
                 </div>
               );
@@ -103,13 +159,17 @@ export default function RewardsLuckyWheel() {
 
         <Button
           onClick={spin}
-          disabled={spinning || !canSpin}
+          disabled={spinning || !canSpin || checking}
+          type="button"
           className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-bold hover:opacity-90 w-full"
         >
-          {spinning ? "Spinning..." : canSpin ? "Spin the Wheel" : "Come Back Tomorrow!"}
+          {checking && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+          {buttonLabel}
         </Button>
 
-        <p className="text-xs text-muted-foreground mt-2">1 free spin daily • Real XP and items credited instantly</p>
+        <p className="text-xs text-muted-foreground mt-2">
+          1 free spin daily • Real XP and items credited instantly
+        </p>
       </Card>
 
       <AnimatePresence>
@@ -125,7 +185,9 @@ export default function RewardsLuckyWheel() {
       </AnimatePresence>
 
       <Card className="p-4 bg-card/80 backdrop-blur-md border-amber-400/15">
-        <h4 className="font-bold text-sm mb-3 flex items-center gap-2"><Gift className="h-4 w-4 text-amber-500" /> Possible Prizes</h4>
+        <h4 className="font-bold text-sm mb-3 flex items-center gap-2">
+          <Gift className="h-4 w-4 text-amber-500" /> Possible Prizes
+        </h4>
         <div className="grid grid-cols-2 gap-2">
           {prizes.map((prize, i) => (
             <div key={i} className="flex items-center gap-2 p-2 rounded-lg bg-muted/20">
