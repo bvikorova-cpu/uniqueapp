@@ -713,40 +713,55 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
               )}
             </div>
           </div>
-          {currentUserId === post.user_id && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <MoreVertical className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
-                <DropdownMenuItem
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowEditDialog(true);
-                  }}
-                  className="gap-2"
-                >
-                  <Edit2 className="h-4 w-4" />
-                  Edit
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={handleDelete}
-                  disabled={deleting}
-                  className="gap-2 text-destructive focus:text-destructive"
-                >
-                  <Trash2 className="h-4 w-4" />
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 opacity-60 group-hover:opacity-100 transition-opacity"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
+              {currentUserId === post.user_id ? (
+                <>
+                  <DropdownMenuItem
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowEditDialog(true);
+                    }}
+                    className="gap-2"
+                  >
+                    <Edit2 className="h-4 w-4" />
+                    Edit
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={handleDelete}
+                    disabled={deleting}
+                    className="gap-2 text-destructive focus:text-destructive"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    Delete
+                  </DropdownMenuItem>
+                </>
+              ) : (
+                <ReportDialog
+                  postId={post.id}
+                  trigger={
+                    <DropdownMenuItem
+                      onSelect={(e) => e.preventDefault()}
+                      className="gap-2 text-destructive focus:text-destructive cursor-pointer"
+                    >
+                      <Flag className="h-4 w-4" />
+                      Report post
+                    </DropdownMenuItem>
+                  }
+                />
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         {/* Content */}
