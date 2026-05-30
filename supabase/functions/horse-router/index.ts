@@ -1,6 +1,7 @@
 // Universal horse router - consolidates 6 horse-* functions.
 // Frontend calls remain unchanged via proxyMap.ts rewrite.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { checkTestMode } from "../_shared/testMode.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -32,6 +33,17 @@ Deno.serve(async (req) => {
     const probe = req.method === "GET" ? {} : await req.clone().json().catch(() => ({}));
     if ((probe as any)?.action === "ping" || new URL(req.url).searchParams.get("action") === "ping") {
       return json({ ok: true, router: "horse-router", actions: HORSE_ACTIONS });
+    }
+
+    // Test-mode bypass: skips auth + DB writes, returns stub.
+    const tm = checkTestMode(req);
+    if (tm) {
+      const tmBody = await req.json().catch(() => ({}));
+      const tmAction = String((tmBody as any)?.action ?? "").trim();
+      if (!HORSE_ACTIONS.includes(tmAction) || tmAction === "ping") {
+        return json({ error: `Unknown horse action: ${tmAction}` }, 400);
+      }
+      return tm.stub(tmAction);
     }
 
     const authHeader = req.headers.get("Authorization");

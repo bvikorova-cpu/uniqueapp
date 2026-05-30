@@ -25792,6 +25792,36 @@ export type Database = {
         }
         Relationships: []
       }
+      health_check_log: {
+        Row: {
+          alerted: boolean
+          created_at: string
+          id: string
+          ok: boolean
+          response: Json
+          source: string
+          status_code: number | null
+        }
+        Insert: {
+          alerted?: boolean
+          created_at?: string
+          id?: string
+          ok: boolean
+          response?: Json
+          source?: string
+          status_code?: number | null
+        }
+        Update: {
+          alerted?: boolean
+          created_at?: string
+          id?: string
+          ok?: boolean
+          response?: Json
+          source?: string
+          status_code?: number | null
+        }
+        Relationships: []
+      }
       healthcare_collections: {
         Row: {
           age_group: string | null
