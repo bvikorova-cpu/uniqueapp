@@ -1,5 +1,7 @@
 import { useState, useMemo } from "react";
+import { Virtuoso } from "react-virtuoso";
 import PostCard from "@/components/feed/PostCard";
+
 import RepostCard from "@/components/feed/RepostCard";
 import { PostFilters, SortBy, TimeFilter, CategoryFilter } from "@/components/feed/PostFilters";
 import { Loader2 } from "lucide-react";
@@ -167,54 +169,50 @@ export default function WallFeed({
                 {"No posts found. Try adjusting your filters."}
               </div>
             ) : (
-              <>
-                {visibleFeedItems.map((item, index) => (
-                  <div key={`${item.type}-${item.data.id}`}>
-                    <div 
-                      className="animate-fade-in"
-                      style={{ animationDelay: `${Math.min(index, 10) * 0.05}s` }}
-                    >
-                      {item.type === 'post' ? (
-                        <PostCard
-                          post={item.data}
-                          onDelete={fetchPosts}
-                        />
-                      ) : (
-                        <RepostCard
-                          repost={item.data}
-                          onDelete={fetchPosts}
-                        />
-                      )}
-                    </div>
-                    {/* Monetag In-Page Push sponsored card after every 20th post */}
+              <Virtuoso
+                useWindowScroll
+                data={visibleFeedItems}
+                computeItemKey={(_, item) => `${item.type}-${item.data.id}`}
+                endReached={() => {
+                  if (hasMore && !loadingMore) fetchPosts(true);
+                }}
+                overscan={800}
+                increaseViewportBy={{ top: 400, bottom: 800 }}
+                itemContent={(index, item) => (
+                  <div className="pb-5">
+                    {item.type === 'post' ? (
+                      <PostCard post={item.data} onDelete={fetchPosts} />
+                    ) : (
+                      <RepostCard repost={item.data} onDelete={fetchPosts} />
+                    )}
                     {(index + 1) % 20 === 0 && (
-                      <div
-                        className="animate-fade-in mt-5"
-                        style={{ animationDelay: `${Math.min(index, 10) * 0.05}s` }}
-                      >
+                      <div className="mt-5">
                         <MonetagInFeedAd slotIndex={Math.floor((index + 1) / 20)} />
                       </div>
                     )}
                   </div>
-                ))}
-                
-                {/* Loading more indicator */}
-                {loadingMore && (
-                  <div className="glass-post-card p-6 flex items-center justify-center">
-                    <Loader2 className="h-6 w-6 animate-spin text-primary mr-2" />
-                    <span className="text-sm text-muted-foreground">{"Loading more posts..."}</span>
-                  </div>
                 )}
-                
-                {/* End of feed message */}
-                {!loading && !loadingMore && !hasMore && visibleFeedItems.length > 0 && (
-                  <div className="glass-post-card p-6 text-center text-muted-foreground text-sm">
-                    {"You've reached the end! 🎉"}
-                  </div>
-                )}
-              </>
+                components={{
+                  Footer: () => (
+                    <>
+                      {loadingMore && (
+                        <div className="glass-post-card p-6 flex items-center justify-center">
+                          <Loader2 className="h-6 w-6 animate-spin text-primary mr-2" />
+                          <span className="text-sm text-muted-foreground">Loading more posts...</span>
+                        </div>
+                      )}
+                      {!loading && !loadingMore && !hasMore && visibleFeedItems.length > 0 && (
+                        <div className="glass-post-card p-6 text-center text-muted-foreground text-sm">
+                          You've reached the end! 🎉
+                        </div>
+                      )}
+                    </>
+                  ),
+                }}
+              />
             )}
           </div>
+
         </div>
       </div>
     </>
