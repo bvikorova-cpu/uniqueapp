@@ -24039,6 +24039,42 @@ export type Database = {
         }
         Relationships: []
       }
+      gdpr_consent_audit: {
+        Row: {
+          consent_type: string
+          consent_version: string
+          created_at: string
+          granted: boolean
+          id: string
+          ip_address: unknown
+          source: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          consent_type: string
+          consent_version: string
+          created_at?: string
+          granted: boolean
+          id?: string
+          ip_address?: unknown
+          source?: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          consent_type?: string
+          consent_version?: string
+          created_at?: string
+          granted?: boolean
+          id?: string
+          ip_address?: unknown
+          source?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       genetic_dating_profiles: {
         Row: {
           age: number | null
