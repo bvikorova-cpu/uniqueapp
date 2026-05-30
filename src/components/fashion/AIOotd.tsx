@@ -18,7 +18,7 @@ export default function AIOotd() {
   const [occasion, setOccasion] = useState("");
   const [season, setSeason] = useState("");
   const [result, setResult] = useState<any>(null);
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
 
   const { data: history } = useQuery({
     queryKey: ["ootd-history"],
@@ -39,7 +39,7 @@ export default function AIOotd() {
       if (!session) throw new Error("Not authenticated");
 
       for (let i = 0; i < CREDIT_COST; i++) {
-        const ok = await useCredit("custom_generation", "Outfit of the Day Score");
+        const ok = await spendCredit("custom_generation", "Outfit of the Day Score");
         if (!ok && i === 0) throw new Error("Insufficient credits");
       }
 

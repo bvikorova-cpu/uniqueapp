@@ -23,7 +23,7 @@ export default function PetDailyTip() {
     setLoading(false);
     if (data?.result) { setTip(data.result); localStorage.setItem(KEY, JSON.stringify({ date: today, tip: data.result })); }
   };
-  useEffect(() => { fetchTip(); /* eslint-disable-next-line */ }, [active?.species]);
+  useEffect(() => { fetchTip();   }, [active?.species]);
 
   return (
     <Card className="p-4 border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5">

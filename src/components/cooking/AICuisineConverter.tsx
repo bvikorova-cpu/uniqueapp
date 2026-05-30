@@ -13,7 +13,7 @@ interface Props { onBack: () => void; }
 const CUISINES = ["Italian", "Japanese", "Mexican", "Indian", "French", "Thai", "Korean", "Mediterranean", "Middle Eastern", "Chinese"];
 
 export default function AICuisineConverter({ onBack }: Props) {
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const [input, setInput] = useState("");
   const [targetCuisine, setTargetCuisine] = useState("");
   const [result, setResult] = useState("");
@@ -24,7 +24,7 @@ export default function AICuisineConverter({ onBack }: Props) {
     if (credits.credits_remaining < 3) { toast({ title: "Not enough credits", variant: "destructive" }); return; }
     setLoading(true);
     try {
-      const ok = await useCredit("custom_generation", "AI Cuisine Converter");
+      const ok = await spendCredit("custom_generation", "AI Cuisine Converter");
       if (!ok) throw new Error("Failed to use credit");
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: { prompt: `You are a world-renowned chef specializing in fusion cuisine. Convert the following recipe into authentic ${targetCuisine} style. Include: 1) Converted recipe name (in the target language + English), 2) Ingredient swaps with authentic alternatives, 3) Technique modifications, 4) Flavor profile changes, 5) Traditional serving suggestions, 6) Cultural context and tips, 7) Full step-by-step instructions. Original recipe: ${input}` },

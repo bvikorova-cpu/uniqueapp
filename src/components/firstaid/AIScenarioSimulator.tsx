@@ -27,10 +27,10 @@ export const AIScenarioSimulator = ({ onBack }: Props) => {
   const [outcome, setOutcome] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
 
   const startScenario = async (scenarioId: string) => {
-    const ok = await useCredit("custom_generation", "First Aid Scenario Simulator");
+    const ok = await spendCredit("custom_generation", "First Aid Scenario Simulator");
     if (!ok) { toast({ title: "Insufficient Credits", description: "You need 3 credits to start a scenario.", variant: "destructive" }); return; }
     
     setSelectedScenario(scenarioId);

@@ -26,7 +26,7 @@ interface FabricResult {
 }
 
 export default function AIFabricAnalyzer() {
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const [preview, setPreview] = useState<string | null>(null);
   const [result, setResult] = useState<FabricResult | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -43,7 +43,7 @@ export default function AIFabricAnalyzer() {
     mutationFn: async () => {
       if (!preview) throw new Error("Please upload a fabric image");
       if ((credits?.credits_remaining || 0) < CREDIT_COST) throw new Error("Not enough credits");
-      const success = await useCredit("custom_generation", "Fabric Analyzer");
+      const success = await spendCredit("custom_generation", "Fabric Analyzer");
       if (!success) throw new Error("Failed to use credits");
 
       const { data, error } = await supabase.functions.invoke("fashion-ai", {

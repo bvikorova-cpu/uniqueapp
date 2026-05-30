@@ -53,7 +53,7 @@ export function AIContentAssistant({ content, onInsertContent, onInsertHashtags 
   const [captions, setCaptions] = useState<CaptionResult[]>([]);
   const [sentiment, setSentiment] = useState<SentimentResult | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const { toast } = useToast();
 
   const callAI = async (type: AITool) => {
@@ -62,7 +62,7 @@ export function AIContentAssistant({ content, onInsertContent, onInsertHashtags 
       return;
     }
 
-    const hasCredit = await useCredit("custom_generation", `Wall AI: ${type}`);
+    const hasCredit = await spendCredit("custom_generation", `Wall AI: ${type}`);
     if (!hasCredit) {
       toast({ title: "Insufficient credits", description: "Buy credits for AI features.", variant: "destructive" });
       return;

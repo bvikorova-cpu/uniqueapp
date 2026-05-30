@@ -18,7 +18,7 @@ interface AILucidDreamCoachProps {
 
 const AILucidDreamCoach = ({ onBack }: AILucidDreamCoachProps) => {
   const navigate = useNavigate();
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const [loading, setLoading] = useState(false);
   const [experience, setExperience] = useState("beginner");
   const [goal, setGoal] = useState("");
@@ -35,7 +35,7 @@ const AILucidDreamCoach = ({ onBack }: AILucidDreamCoachProps) => {
     }
     setLoading(true);
     try {
-      const used = await useCredit("effect", "Lucid Dream Coaching");
+      const used = await spendCredit("effect", "Lucid Dream Coaching");
       if (!used) throw new Error("Failed to use credit");
 
       const { data: { session } } = await supabase.auth.getSession();

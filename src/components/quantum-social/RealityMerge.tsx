@@ -26,7 +26,7 @@ export function RealityMerge({ onBack }: { onBack: () => void }) {
   const [reality1, setReality1] = useState("");
   const [reality2, setReality2] = useState("");
   const { toast } = useToast();
-  const { useCredit } = useAICredits();
+  const { spendCredit } = useAICredits();
 
   useEffect(() => { fetchMerges(); }, []);
 
@@ -41,7 +41,7 @@ export function RealityMerge({ onBack }: { onBack: () => void }) {
     if (!user) { toast({ title: "Login Required", variant: "destructive" }); return; }
     if (!reality1.trim() || !reality2.trim()) { toast({ title: "Both realities required", variant: "destructive" }); return; }
 
-    const hasCredits = await useCredit("custom_generation", "Reality Merge");
+    const hasCredits = await spendCredit("custom_generation", "Reality Merge");
     if (!hasCredits) { toast({ title: "Not enough credits (2 required)", variant: "destructive" }); return; }
 
     setCreating(true);

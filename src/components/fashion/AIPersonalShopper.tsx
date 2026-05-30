@@ -27,7 +27,7 @@ export default function AIPersonalShopper() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -39,7 +39,7 @@ export default function AIPersonalShopper() {
       if (!session) throw new Error("Not authenticated");
 
       for (let i = 0; i < CREDIT_COST; i++) {
-        const ok = await useCredit("custom_generation", "AI Personal Shopper Chat");
+        const ok = await spendCredit("custom_generation", "AI Personal Shopper Chat");
         if (!ok && i === 0) throw new Error("Insufficient credits");
       }
 

@@ -53,7 +53,7 @@ export default function CandidateSearch() {
     setLoading(false);
   };
 
-  useEffect(() => { load(); /* eslint-disable-next-line */ }, []);
+  useEffect(() => { load();   }, []);
 
   if (!loading && !verified) {
     return (

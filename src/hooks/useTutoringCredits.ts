@@ -54,7 +54,7 @@ export const useTutoringCredits = () => {
     },
   });
 
-  const useCredit = useMutation({
+  const spendCredit = useMutation({
     mutationFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
@@ -153,10 +153,10 @@ export const useTutoringCredits = () => {
     credits: credits?.credits_remaining ?? 0,
     totalPurchased: credits?.total_credits_purchased ?? 0,
     isLoading,
-    useCredit: useCredit.mutateAsync,
+    spendCredit: spendCredit.mutateAsync,
     purchaseCredits: purchaseCredits.mutate,
     activatePurchase: activatePurchase.mutateAsync,
     refundCredit: refundCredit.mutateAsync,
-    isUsingCredit: useCredit.isPending,
+    isUsingCredit: spendCredit.isPending,
   };
 };

@@ -54,7 +54,7 @@ export default function EmployerATS() {
     setLoading(false);
   };
 
-  useEffect(() => { load(); /* eslint-disable-next-line */ }, [jobId]);
+  useEffect(() => { load();   }, [jobId]);
 
   const moveStage = async (appId: string, status: string) => {
     const { error } = await supabase.from("job_applications").update({ status }).eq("id", appId);

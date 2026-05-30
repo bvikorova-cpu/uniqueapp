@@ -11,7 +11,7 @@ import { toast } from "@/hooks/use-toast";
 interface Props { onBack: () => void; }
 
 export default function AIDietaryAdvisor({ onBack }: Props) {
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const [input, setInput] = useState("");
   const [dietType, setDietType] = useState("general");
   const [result, setResult] = useState("");
@@ -22,7 +22,7 @@ export default function AIDietaryAdvisor({ onBack }: Props) {
     if (credits.credits_remaining < 3) { toast({ title: "Not enough credits", description: "You need 3 credits.", variant: "destructive" }); return; }
     setLoading(true);
     try {
-      const ok = await useCredit("custom_generation", "AI Dietary Advisor");
+      const ok = await spendCredit("custom_generation", "AI Dietary Advisor");
       if (!ok) throw new Error("Failed to use credit");
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: { prompt: `You are a certified nutritionist and allergen specialist. Analyze the following food/recipe for dietary compatibility. Diet type: ${dietType}. Provide:

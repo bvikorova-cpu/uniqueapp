@@ -31,7 +31,7 @@ export function EntanglementNetworkMap({ onBack }: { onBack: () => void }) {
   const [analysis, setAnalysis] = useState<string | null>(null);
   const [totalStrength, setTotalStrength] = useState(0);
   const { toast } = useToast();
-  const { useCredit } = useAICredits();
+  const { spendCredit } = useAICredits();
 
   useEffect(() => { generateNetwork(); }, []);
 
@@ -56,7 +56,7 @@ export function EntanglementNetworkMap({ onBack }: { onBack: () => void }) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { toast({ title: "Login Required", variant: "destructive" }); return; }
 
-    const hasCredits = await useCredit("custom_generation", "Entanglement Network Analysis");
+    const hasCredits = await spendCredit("custom_generation", "Entanglement Network Analysis");
     if (!hasCredits) { toast({ title: "Not enough credits (2 required)", variant: "destructive" }); return; }
 
     setAnalyzing(true);

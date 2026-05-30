@@ -84,7 +84,7 @@ const Education = () => {
   const [chatMessage, setChatMessage] = useState("");
   const [chatHistory, setChatHistory] = useState<Array<{ role: string; content: string }>>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { credits, isLoading: creditsLoading, useCredit, activatePurchase, refundCredit, isUsingCredit } = useTutoringCredits();
+  const { credits, isLoading: creditsLoading, spendCredit, activatePurchase, refundCredit, isUsingCredit } = useTutoringCredits();
   const { data: eduStats } = useEducationStats();
 
   useEffect(() => {
@@ -113,7 +113,7 @@ const Education = () => {
     setIsLoading(true);
     let creditDeducted = false;
     try {
-      await useCredit();
+      await spendCredit();
       creditDeducted = true;
       const { data, error } = await supabase.functions.invoke("tutoring-chat", { body: { message: userMessage, history: chatHistory } });
       if (error) throw error;

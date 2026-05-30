@@ -15,7 +15,7 @@ interface DreamDictionaryProps {
 }
 
 const DreamDictionary = ({ onBack }: DreamDictionaryProps) => {
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const [loading, setLoading] = useState(false);
   const [symbol, setSymbol] = useState("");
   const [context, setContext] = useState("");
@@ -34,7 +34,7 @@ const DreamDictionary = ({ onBack }: DreamDictionaryProps) => {
     }
     setLoading(true);
     try {
-      const used = await useCredit("effect", "Dream Dictionary Lookup");
+      const used = await spendCredit("effect", "Dream Dictionary Lookup");
       if (!used) throw new Error("Failed to use credit");
 
       const { data: { session } } = await supabase.auth.getSession();

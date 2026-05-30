@@ -18,7 +18,7 @@ interface InventoryItem {
 interface Props { onBack: () => void; }
 
 export default function AIKitchenInventory({ onBack }: Props) {
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const [items, setItems] = useState<InventoryItem[]>([]);
   const [newItem, setNewItem] = useState("");
   const [newQty, setNewQty] = useState("");
@@ -40,7 +40,7 @@ export default function AIKitchenInventory({ onBack }: Props) {
     if (credits.credits_remaining < 3) { toast({ title: "Not enough credits", description: "You need 3 credits.", variant: "destructive" }); return; }
     setLoading(true);
     try {
-      const ok = await useCredit("custom_generation", "AI Kitchen Inventory");
+      const ok = await spendCredit("custom_generation", "AI Kitchen Inventory");
       if (!ok) throw new Error("Failed to use credit");
       const itemList = items.map(i => `${i.name} (${i.quantity})`).join(', ');
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {

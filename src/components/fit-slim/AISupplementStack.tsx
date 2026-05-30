@@ -10,7 +10,7 @@ import { toast } from "@/hooks/use-toast";
 interface Props { onBack: () => void; }
 
 export default function AISupplementStack({ onBack }: Props) {
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const [input, setInput] = useState("");
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,7 +20,7 @@ export default function AISupplementStack({ onBack }: Props) {
     if (credits.credits_remaining < 3) { toast({ title: "Not enough credits", description: "You need 3 credits.", variant: "destructive" }); return; }
     setLoading(true);
     try {
-      const ok = await useCredit("custom_generation", "AI Supplement Stack");
+      const ok = await spendCredit("custom_generation", "AI Supplement Stack");
       if (!ok) throw new Error("Failed to use credit");
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: { prompt: `You are a certified sports nutritionist. Based on the user's fitness goals, training style, diet, and health info, recommend a complete supplement stack. Include: 1) Essential Stack (must-haves with exact dosages and timing), 2) Performance Stack (pre/intra/post workout), 3) Recovery Stack (sleep, joints, inflammation), 4) Health Stack (vitamins, minerals, omega-3), 5) Budget Option (top 3 if budget is tight), 6) Warnings & Interactions, 7) Monthly Cost Estimate. User info: ${input}` },

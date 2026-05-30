@@ -10,7 +10,7 @@ import { toast } from "@/hooks/use-toast";
 interface Props { onBack: () => void; }
 
 export default function AIPlatingCoach({ onBack }: Props) {
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const [input, setInput] = useState("");
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,7 +20,7 @@ export default function AIPlatingCoach({ onBack }: Props) {
     if (credits.credits_remaining < 3) { toast({ title: "Not enough credits", variant: "destructive" }); return; }
     setLoading(true);
     try {
-      const ok = await useCredit("custom_generation", "AI Plating Coach");
+      const ok = await spendCredit("custom_generation", "AI Plating Coach");
       if (!ok) throw new Error("Failed to use credit");
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: { prompt: `You are a Michelin-star chef specializing in food presentation and plating. For the dish described, provide: 1) Plate selection (shape, color, size), 2) Color composition strategy, 3) Step-by-step plating instructions, 4) Sauce placement techniques (dots, swoosh, pool), 5) Garnish recommendations (micro greens, edible flowers, etc.), 6) Height and dimension tips, 7) Photography angle suggestions for Instagram. Dish: ${input}` },

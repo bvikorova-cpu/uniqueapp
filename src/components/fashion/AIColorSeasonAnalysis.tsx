@@ -27,7 +27,7 @@ interface SeasonResult {
 }
 
 export default function AIColorSeasonAnalysis() {
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const [skinTone, setSkinTone] = useState("medium");
   const [hairColor, setHairColor] = useState("brown");
   const [eyeColor, setEyeColor] = useState("brown");
@@ -37,7 +37,7 @@ export default function AIColorSeasonAnalysis() {
   const analyze = useMutation({
     mutationFn: async () => {
       if ((credits?.credits_remaining || 0) < CREDIT_COST) throw new Error("Not enough credits");
-      const success = await useCredit("custom_generation", "Color Season Analysis");
+      const success = await spendCredit("custom_generation", "Color Season Analysis");
       if (!success) throw new Error("Failed to use credits");
 
       const { data, error } = await supabase.functions.invoke("fashion-ai", {

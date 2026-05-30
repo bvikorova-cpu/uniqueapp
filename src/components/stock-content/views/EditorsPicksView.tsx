@@ -71,7 +71,7 @@ export function EditorsPicksView({ onBack }: Props) {
     setLoading(false);
   };
 
-  useEffect(() => { load(); /* eslint-disable-next-line */ }, [isAdmin, showDrafts]);
+  useEffect(() => { load();   }, [isAdmin, showDrafts]);
 
   const addPick = async () => {
     if (!newItemId.trim()) { toast.error("Enter content item ID"); return; }

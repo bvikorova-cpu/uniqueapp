@@ -13,14 +13,14 @@ import { useAICredits } from "@/hooks/useAICredits";
 interface Props { onBack: () => void; }
 
 export default function AIBarcodeScanner({ onBack }: Props) {
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const [barcode, setBarcode] = useState("");
   const [productName, setProductName] = useState("");
   const [result, setResult] = useState<any>(null);
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const credited = await useCredit('custom_generation', 'Barcode Scanner');
+      const credited = await spendCredit('custom_generation', 'Barcode Scanner');
       if (!credited) throw new Error('Not enough credits (3 required)');
       const { data, error } = await supabase.functions.invoke('nutrition-barcode-scanner', {
         body: { barcode: barcode || undefined, product_name: productName || undefined }

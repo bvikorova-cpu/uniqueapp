@@ -37,7 +37,7 @@ interface CloneResult {
 }
 
 export default function AICelebrityStyleClone() {
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const [celebrity, setCelebrity] = useState("");
   const [budget, setBudget] = useState("medium");
   const [result, setResult] = useState<CloneResult | null>(null);
@@ -45,7 +45,7 @@ export default function AICelebrityStyleClone() {
   const clone = useMutation({
     mutationFn: async () => {
       if ((credits?.credits_remaining || 0) < CREDIT_COST) throw new Error("Not enough credits");
-      const success = await useCredit("custom_generation", "Celebrity Style Clone");
+      const success = await spendCredit("custom_generation", "Celebrity Style Clone");
       if (!success) throw new Error("Failed to use credits");
 
       const { data, error } = await supabase.functions.invoke("fashion-ai", {

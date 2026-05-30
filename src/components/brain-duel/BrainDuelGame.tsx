@@ -56,7 +56,7 @@ const CATEGORIES = [
 
 export const BrainDuelGame = () => {
   const { credits, isLoading: creditsLoading } = useBrainDuelCredits();
-  const { powerups, usePowerup: usePowerupHook } = useBrainDuelPowerups();
+  const { powerups, consumePowerup: triggerPowerup } = useBrainDuelPowerups();
   const [gamePhase, setGamePhase] = useState<'category' | 'loading' | 'playing' | 'answer-reveal' | 'results' | 'analysis'>('category');
   const [category, setCategory] = useState('');
   const [matchId, setMatchId] = useState<string | null>(null);
@@ -223,7 +223,7 @@ export const BrainDuelGame = () => {
     }
   };
 
-  const usePowerup = async (type: string) => {
+  const consumePowerup = async (type: string) => {
     const powerup = powerups.find(p => p.powerup_type === type && p.quantity > 0);
     if (!powerup) { toast.error("You don't have this power-up"); return; }
 
@@ -245,7 +245,7 @@ export const BrainDuelGame = () => {
         nextQuestion();
       }
 
-      await usePowerupHook({ powerupId: powerup.id, quantity: powerup.quantity });
+      await triggerPowerup({ powerupId: powerup.id, quantity: powerup.quantity });
       toast.success(`Power-up activated! ⚡`);
     } catch (err) {
       toast.error('Failed to use power-up');
@@ -363,7 +363,7 @@ export const BrainDuelGame = () => {
           {availablePowerups.map(p => {
             const qty = powerups.find(up => up.powerup_type === p.type)?.quantity || 0;
             return (
-              <Button key={p.type} onClick={() => usePowerup(p.type)} disabled={qty === 0 || !!selectedAnswer}
+              <Button key={p.type} onClick={() => consumePowerup(p.type)} disabled={qty === 0 || !!selectedAnswer}
                 variant="outline" size="sm" className="flex-1 relative text-xs py-1.5 h-auto">
                 <p.icon className="w-3.5 h-3.5 mr-1" />
                 {p.label}

@@ -24,7 +24,7 @@ export default function GlobalStreetStyleFeed() {
   const [uploading, setUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const queryClient = useQueryClient();
 
   const { data: posts = [], isLoading } = useQuery({
@@ -75,7 +75,7 @@ export default function GlobalStreetStyleFeed() {
       if (!session) throw new Error("Not authenticated");
 
       for (let i = 0; i < AI_SCORE_COST; i++) {
-        const ok = await useCredit("custom_generation", "Street Style Post");
+        const ok = await spendCredit("custom_generation", "Street Style Post");
         if (!ok && i === 0) throw new Error("Insufficient credits");
       }
 

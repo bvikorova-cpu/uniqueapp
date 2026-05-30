@@ -36,7 +36,7 @@ export function QuantumTimeTravel({ onBack }: { onBack: () => void }) {
   const [result, setResult] = useState<string | null>(null);
   const [selectedBranch, setSelectedBranch] = useState("alpha");
   const { toast } = useToast();
-  const { useCredit } = useAICredits();
+  const { spendCredit } = useAICredits();
 
   useEffect(() => { fetchLogs(); }, []);
 
@@ -53,7 +53,7 @@ export function QuantumTimeTravel({ onBack }: { onBack: () => void }) {
     if (!user) { toast({ title: "Login Required", variant: "destructive" }); return; }
     if (!query.trim()) { toast({ title: "Enter what to explore", variant: "destructive" }); return; }
 
-    const hasCredits = await useCredit("custom_generation", "Quantum Time Travel");
+    const hasCredits = await spendCredit("custom_generation", "Quantum Time Travel");
     if (!hasCredits) { toast({ title: "Not enough credits (1 required)", variant: "destructive" }); return; }
 
     setTraveling(true);

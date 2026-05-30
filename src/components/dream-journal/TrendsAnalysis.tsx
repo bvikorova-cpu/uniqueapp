@@ -9,14 +9,14 @@ import { useAICredits } from "@/hooks/useAICredits";
 
 const TrendsAnalysis = () => {
   const { toast } = useToast();
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const [loading, setLoading] = useState(false);
   const [trends, setTrends] = useState<any>(null);
 
   const analyzeTrends = async () => {
     setLoading(true);
     try {
-      await useCredit("effect");
+      await spendCredit("effect");
 
       const { data: { session } } = await supabase.auth.getSession();
       const response = await supabase.functions.invoke("mood-trends", {

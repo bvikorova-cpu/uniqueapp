@@ -38,7 +38,7 @@ export default function AIStyleScanner() {
   const [uploading, setUploading] = useState(false);
   const [result, setResult] = useState<ScanResult | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
 
   const handleUpload = async (file: File) => {
     setUploading(true);
@@ -67,7 +67,7 @@ export default function AIStyleScanner() {
       if (!session) throw new Error("Not authenticated");
 
       for (let i = 0; i < CREDIT_COST; i++) {
-        const ok = await useCredit("custom_generation", "AI Style Scanner");
+        const ok = await spendCredit("custom_generation", "AI Style Scanner");
         if (!ok && i === 0) throw new Error("Insufficient credits");
       }
 

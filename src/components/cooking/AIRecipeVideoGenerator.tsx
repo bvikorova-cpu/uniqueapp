@@ -10,7 +10,7 @@ import { toast } from "@/hooks/use-toast";
 interface Props { onBack: () => void; }
 
 export default function AIRecipeVideoGenerator({ onBack }: Props) {
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const [input, setInput] = useState("");
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,7 +20,7 @@ export default function AIRecipeVideoGenerator({ onBack }: Props) {
     if (credits.credits_remaining < 5) { toast({ title: "Not enough credits", description: "You need 5 credits for video script generation.", variant: "destructive" }); return; }
     setLoading(true);
     try {
-      const ok = await useCredit("custom_generation", "AI Recipe Video Generator");
+      const ok = await spendCredit("custom_generation", "AI Recipe Video Generator");
       if (!ok) throw new Error("Failed to use credit");
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: { prompt: `You are a professional food videographer and content creator. Create a detailed recipe video script and production plan for the following recipe. Include:
