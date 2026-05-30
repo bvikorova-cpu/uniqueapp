@@ -64,6 +64,7 @@ import { JobAIAssistant } from "@/components/jobs/JobAIAssistant";
 import { OneClickApplyDialog } from "@/components/jobs/OneClickApplyDialog";
 import { AIJobOptimizer } from "@/components/jobs/AIJobOptimizer";
 import { WorkUserGuide } from "@/components/work/WorkUserGuide";
+import { ReportJobDialog } from "@/components/jobs/ReportJobDialog";
 
 import { useNavigate } from "react-router-dom";
 import JobsToolsGrid from "@/components/jobs/JobsToolsGrid";
@@ -183,6 +184,7 @@ const Jobs = () => {
   const [selectedJob, setSelectedJob] = useState<JobListing | null>(null);
   const [showJobDetailsDialog, setShowJobDetailsDialog] = useState(false);
   const [quickFilter, setQuickFilter] = useState<string | null>(null);
+  const [showReportDialog, setShowReportDialog] = useState(false);
 
   const [application, setApplication] = useState({ cover_letter: "", resume_url: "" });
 
@@ -574,6 +576,47 @@ const Jobs = () => {
         {/* Job Details Dialog */}
         <Dialog open={showJobDetailsDialog} onOpenChange={setShowJobDetailsDialog}>
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            {selectedJob && (
+              <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                  __html: JSON.stringify({
+                    "@context": "https://schema.org/",
+                    "@type": "JobPosting",
+                    title: selectedJob.title,
+                    description: selectedJob.description,
+                    datePosted: selectedJob.created_at,
+                    employmentType: selectedJob.job_type,
+                    hiringOrganization: {
+                      "@type": "Organization",
+                      name: selectedJob.company_name,
+                    },
+                    jobLocation: {
+                      "@type": "Place",
+                      address: {
+                        "@type": "PostalAddress",
+                        addressLocality: selectedJob.location,
+                        addressCountry: selectedJob.country,
+                      },
+                    },
+                    ...(selectedJob.salary_min && selectedJob.salary_max
+                      ? {
+                          baseSalary: {
+                            "@type": "MonetaryAmount",
+                            currency: selectedJob.salary_currency || "EUR",
+                            value: {
+                              "@type": "QuantitativeValue",
+                              minValue: Number(selectedJob.salary_min),
+                              maxValue: Number(selectedJob.salary_max),
+                              unitText: "YEAR",
+                            },
+                          },
+                        }
+                      : {}),
+                  }),
+                }}
+              />
+            )}
             <DialogHeader>
               <DialogTitle className="text-3xl font-bold">{selectedJob?.title}</DialogTitle>
               <DialogDescription>
