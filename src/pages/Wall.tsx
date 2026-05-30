@@ -164,68 +164,43 @@ const Feed = () => {
 
       const cursor = loadMore ? lastCursor.current : null;
 
-      let postsQuery = supabase
-        .from("posts")
-        .select(`*, media (*)`)
-        .order("created_at", { ascending: false })
-        .limit(POSTS_PER_PAGE);
-      if (cursor) postsQuery = postsQuery.lt("created_at", cursor);
+      // Single-RPC fetch: posts + reposts + profiles + media + original_posts in 1 round-trip.
+      const { data: feedData, error: feedErr } = await supabase.rpc("get_wall_feed", {
+        _cursor: cursor,
+        _limit: POSTS_PER_PAGE,
+      });
+      if (feedErr) throw feedErr;
 
-      let repostsQuery = supabase
-        .from("reposts")
-        .select(`*`)
-        .order("created_at", { ascending: false })
-        .limit(POSTS_PER_PAGE);
-      if (cursor) repostsQuery = repostsQuery.lt("created_at", cursor);
-
-      const [postsRes, repostsRes] = await Promise.all([postsQuery, repostsQuery]);
-      if (postsRes.error) throw postsRes.error;
-      if (repostsRes.error) throw repostsRes.error;
-      const postsData = postsRes.data || [];
-      const repostsData = repostsRes.data || [];
+      const payload = (feedData as any) || { posts: [], reposts: [] };
+      const postsData: any[] = payload.posts || [];
+      const repostsData: any[] = payload.reposts || [];
 
       setHasMore(postsData.length >= POSTS_PER_PAGE || repostsData.length >= POSTS_PER_PAGE);
 
-      const userIds = new Set<string>();
-      const originalPostIds = new Set<string>();
-      postsData.forEach((p: any) => userIds.add(p.user_id));
-      repostsData.forEach((r: any) => {
-        userIds.add(r.user_id);
-        originalPostIds.add(r.original_post_id);
-      });
-
-      const [profilesRes, originalPostsRes] = await Promise.all([
-        userIds.size
-          ? supabase.rpc("get_profiles_basic", { _ids: Array.from(userIds) })
-          : Promise.resolve({ data: [] as any[] }),
-        originalPostIds.size
-          ? supabase.from("posts").select(`*, media (*)`).in("id", Array.from(originalPostIds))
-          : Promise.resolve({ data: [] as any[] }),
-      ]);
-
-      const profilesMap = new Map(((profilesRes as any).data || []).map((p: any) => [p.id, p]));
-      const originalPostsMap = new Map(((originalPostsRes as any).data || []).map((p: any) => [p.id, p]));
       const fallback = (id: string) => ({ id, full_name: null, avatar_url: null });
 
       const postsWithProfiles = postsData.map((post: any) => ({
         ...post,
-        profiles: profilesMap.get(post.user_id) || fallback(post.user_id),
+        media: post.media || [],
+        profiles: post.profiles || fallback(post.user_id),
       })) as Post[];
 
       const repostsWithData = repostsData
         .map((repost: any) => {
-          const op: any = originalPostsMap.get(repost.original_post_id);
+          const op = repost.original_post;
           if (!op) return null;
           return {
             ...repost,
-            profiles: profilesMap.get(repost.user_id) || fallback(repost.user_id),
+            profiles: repost.profiles || fallback(repost.user_id),
             original_post: {
               ...op,
-              profiles: profilesMap.get(op.user_id) || fallback(op.user_id),
+              media: op.media || [],
+              profiles: op.profiles || fallback(op.user_id),
             },
           };
         })
         .filter(Boolean) as Repost[];
+
 
       const newItems: FeedItem[] = [
         ...postsWithProfiles.map((p) => ({ type: "post" as const, data: p })),
