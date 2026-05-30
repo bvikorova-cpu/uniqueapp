@@ -29863,6 +29863,7 @@ export type Database = {
           salary_max: number | null
           salary_min: number | null
           salary_transparency_score: number | null
+          search_vector: unknown
           slug: string | null
           title: string
           updated_at: string | null
@@ -29906,6 +29907,7 @@ export type Database = {
           salary_max?: number | null
           salary_min?: number | null
           salary_transparency_score?: number | null
+          search_vector?: unknown
           slug?: string | null
           title: string
           updated_at?: string | null
@@ -29949,6 +29951,7 @@ export type Database = {
           salary_max?: number | null
           salary_min?: number | null
           salary_transparency_score?: number | null
+          search_vector?: unknown
           slug?: string | null
           title?: string
           updated_at?: string | null
@@ -61402,6 +61405,23 @@ export type Database = {
         Returns: Json
       }
       finalize_iq_tournaments: { Args: never; Returns: number }
+      find_similar_jobs: {
+        Args: { _job_id: string; _limit?: number }
+        Returns: {
+          category: string
+          company_name: string
+          country: string
+          id: string
+          is_remote: boolean
+          location: string
+          salary_currency: string
+          salary_max: number
+          salary_min: number
+          score: number
+          slug: string
+          title: string
+        }[]
+      }
       find_skill_matches: { Args: { p_user_id: string }; Returns: undefined }
       founding_members_remaining: { Args: never; Returns: number }
       gdpr_purge_user_data: { Args: { _user_id: string }; Returns: Json }
