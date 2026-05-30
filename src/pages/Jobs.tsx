@@ -10,7 +10,18 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useDebounce } from "@/hooks/use-debounce";
+import { z } from "zod";
 import { Briefcase, MapPin, DollarSign, Clock, Search, Plus, Building2, Globe, Wrench, Flame, Trophy, Medal, Zap, Bookmark, ListChecks, Bell, HelpCircle, Users, Sparkles, Map as MapIcon } from "lucide-react";
+
+// PostgREST .or() escape: comma, parens, and quotes break the parser and
+// can also be abused for injection-style filter manipulation.
+const escapeOrTerm = (s: string) => s.replace(/[\\,()"%*]/g, "\\$&");
+
+const applicationSchema = z.object({
+  cover_letter: z.string().trim().min(20, "Cover letter must be at least 20 characters").max(5000, "Cover letter must be under 5000 characters"),
+  resume_url: z.string().trim().max(500, "Resume URL too long").url("Invalid resume URL").or(z.literal("")),
+});
 import { ResumeManagerDialog } from "@/components/jobs/ResumeManagerDialog";
 import CandidateSearchProfileDialog from "@/components/jobs/CandidateSearchProfileDialog";
 import { JobsPushButton } from "@/components/jobs/JobsPushButton";
