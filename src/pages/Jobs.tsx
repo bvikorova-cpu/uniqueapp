@@ -174,17 +174,22 @@ const Jobs = () => {
     enabled: !!user,
   });
 
+  const debouncedSearch = useDebounce(searchQuery, 300);
+
   const { data: jobs = [], isLoading } = useQuery({
-    queryKey: ["jobs", searchQuery, selectedCategory, selectedType, selectedCountry],
+    queryKey: ["jobs", debouncedSearch, selectedCategory, selectedType, selectedCountry],
     queryFn: async () => {
       // Read from sanitized view (excludes employer contact_email).
       // Employers/admins/applicants get the full row by querying job_listings
       // directly (RLS allows it). Anonymous browsers stay PII-safe.
       let query = (supabase.from as any)("job_listings_public")
         .select("*")
-        .eq("is_active", true)
-        .order("created_at", { ascending: false });
-      if (searchQuery) query = query.or(`title.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%,company_name.ilike.%${searchQuery}%`);
+        .order("created_at", { ascending: false })
+        .limit(500);
+      if (debouncedSearch) {
+        const term = escapeOrTerm(debouncedSearch);
+        query = query.or(`title.ilike.%${term}%,description.ilike.%${term}%,company_name.ilike.%${term}%`);
+      }
       if (selectedCategory !== "all") query = query.eq("category", selectedCategory as any);
       if (selectedType !== "all") query = query.eq("job_type", selectedType as any);
       if (selectedCountry !== "all") query = query.eq("country", selectedCountry);
@@ -196,13 +201,19 @@ const Jobs = () => {
 
   const countries = Array.from(new Set(jobs.map((job) => job.country).filter(c => c && c.trim() !== ""))).sort();
 
-
-
-
   const applyMutation = useMutation({
     mutationFn: async () => {
       if (!user || !selectedJob) throw new Error("Must be logged in");
-      const { error } = await supabase.from("job_applications").insert({ job_id: selectedJob.id, applicant_id: user.id, ...application });
+      const parsed = applicationSchema.safeParse(application);
+      if (!parsed.success) {
+        throw new Error(parsed.error.issues[0]?.message || "Invalid application");
+      }
+      const { error } = await supabase.from("job_applications").insert({
+        job_id: selectedJob.id,
+        applicant_id: user.id,
+        cover_letter: parsed.data.cover_letter,
+        resume_url: parsed.data.resume_url || null,
+      });
       if (error) throw error;
     },
     onSuccess: () => {
@@ -212,7 +223,13 @@ const Jobs = () => {
       setApplication({ cover_letter: "", resume_url: "" });
       toast({ title: "✅ Application Sent", description: "Your application has been sent" });
     },
-    onError: (error: any) => { toast({ title: "❌ Error", description: error.message, variant: "destructive" }); },
+    onError: (error: any) => {
+      const msg = String(error?.message || "");
+      const friendly = /duplicate|unique|already/i.test(msg)
+        ? "You have already applied to this job."
+        : msg || "Failed to send application";
+      toast({ title: "❌ Error", description: friendly, variant: "destructive" });
+    },
   });
 
   const registerEmployerMutation = useMutation({
