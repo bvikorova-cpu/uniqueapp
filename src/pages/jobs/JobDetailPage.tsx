@@ -8,6 +8,7 @@ import { Briefcase, MapPin, Globe, Clock, DollarSign, Building2, ArrowLeft } fro
 
 interface JobDetail {
   id: string;
+  slug?: string | null;
   title: string;
   description: string;
   company_name: string;
@@ -27,9 +28,11 @@ interface JobDetail {
 }
 
 const SITE = "https://www.uniqueapp.fun";
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export default function JobDetailPage() {
-  const { id } = useParams<{ id: string }>();
+  // Param key is `:slug` but we still accept legacy UUIDs for backwards compatibility.
+  const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const [job, setJob] = useState<JobDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -38,22 +41,27 @@ export default function JobDetailPage() {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      if (!id) return;
+      if (!slug) return;
       setLoading(true);
+      const column = UUID_RE.test(slug) ? "id" : "slug";
       const { data, error } = await (supabase.from as any)("job_listings_public")
         .select("*")
-        .eq("id", id)
+        .eq(column, slug)
         .maybeSingle();
       if (cancelled) return;
       if (error || !data) {
         setNotFound(true);
       } else {
         setJob(data as JobDetail);
+        // Canonicalize legacy UUID URL -> slug URL
+        if (column === "id" && (data as JobDetail).slug) {
+          navigate(`/jobs/listing/${(data as JobDetail).slug}`, { replace: true });
+        }
       }
       setLoading(false);
     })();
     return () => { cancelled = true; };
-  }, [id]);
+  }, [slug, navigate]);
 
   if (loading) {
     return (
@@ -82,7 +90,7 @@ export default function JobDetailPage() {
     );
   }
 
-  const canonical = `${SITE}/jobs/${job.id}`;
+  const canonical = `${SITE}/jobs/listing/${job.slug || job.id}`;
   const desc = (job.description || "").slice(0, 155).replace(/\s+/g, " ").trim();
 
   const jsonLd = {

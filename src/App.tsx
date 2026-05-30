@@ -643,7 +643,7 @@ const App = () => {
                         <Route path="/games" element={<Games />} />
                         <Route path="/jobs" element={<Jobs />} />
                         <Route path="/jobs/post/success" element={<JobPostSuccess />} />
-                        <Route path="/jobs/listing/:id" element={<JobDetailPage />} />
+                        <Route path="/jobs/listing/:slug" element={<JobDetailPage />} />
                         <Route path="/jobs/saved" element={<ProtectedRoute><SavedJobs /></ProtectedRoute>} />
                         <Route path="/jobs/applications" element={<ProtectedRoute><ApplicationTracker /></ProtectedRoute>} />
                         <Route path="/jobs/alerts" element={<ProtectedRoute><JobAlerts /></ProtectedRoute>} />
