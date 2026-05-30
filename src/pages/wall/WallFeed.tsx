@@ -1,5 +1,7 @@
 import { useState, useMemo } from "react";
+import { Virtuoso } from "react-virtuoso";
 import PostCard from "@/components/feed/PostCard";
+
 import RepostCard from "@/components/feed/RepostCard";
 import { PostFilters, SortBy, TimeFilter, CategoryFilter } from "@/components/feed/PostFilters";
 import { Loader2 } from "lucide-react";
