@@ -16,7 +16,7 @@ interface SleepQualityAnalyzerProps {
 }
 
 const SleepQualityAnalyzer = ({ onBack }: SleepQualityAnalyzerProps) => {
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const [loading, setLoading] = useState(false);
   const [sleepHours, setSleepHours] = useState([7]);
   const [quality, setQuality] = useState("moderate");
@@ -31,7 +31,7 @@ const SleepQualityAnalyzer = ({ onBack }: SleepQualityAnalyzerProps) => {
     }
     setLoading(true);
     try {
-      const used = await useCredit("effect", "Sleep Quality Analysis");
+      const used = await spendCredit("effect", "Sleep Quality Analysis");
       if (!used) throw new Error("Failed to use credit");
 
       const { data: { session } } = await supabase.auth.getSession();

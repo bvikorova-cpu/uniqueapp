@@ -47,7 +47,7 @@ export function QuantumNFTs({ onBack }: { onBack: () => void }) {
   const [mintDesc, setMintDesc] = useState("");
   const [tab, setTab] = useState<"my" | "market">("market");
   const { toast } = useToast();
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
 
   useEffect(() => { fetchNFTs(); }, [tab]);
 
@@ -70,7 +70,7 @@ export function QuantumNFTs({ onBack }: { onBack: () => void }) {
     if (!user) { toast({ title: "Login Required", variant: "destructive" }); return; }
     if (!mintName.trim()) { toast({ title: "Name required", variant: "destructive" }); return; }
 
-    const hasCredits = await useCredit("custom_generation", "Quantum NFT Mint");
+    const hasCredits = await spendCredit("custom_generation", "Quantum NFT Mint");
     if (!hasCredits) { toast({ title: "Not enough credits", description: "Purchase credits to mint NFTs (2 credits)", variant: "destructive" }); return; }
 
     setMinting(true);

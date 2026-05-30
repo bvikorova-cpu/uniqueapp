@@ -12,7 +12,7 @@ const SR: any =
   (typeof window !== "undefined" && ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition));
 
 const VoiceTutor = () => {
-  const { credits, useCredit, refundCredit, isUsingCredit } = useTutoringCredits();
+  const { credits, spendCredit, refundCredit, isUsingCredit } = useTutoringCredits();
   const [listening, setListening] = useState(false);
   const [thinking, setThinking] = useState(false);
   const [transcript, setTranscript] = useState("");
@@ -42,7 +42,7 @@ const VoiceTutor = () => {
     setReply("");
     let credited = false;
     try {
-      await useCredit();
+      await spendCredit();
       credited = true;
       const { data, error } = await supabase.functions.invoke("tutoring-chat", {
         body: { message: text, history: [] },

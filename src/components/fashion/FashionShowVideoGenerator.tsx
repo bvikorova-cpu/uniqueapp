@@ -38,7 +38,7 @@ export default function FashionShowVideoGenerator() {
   const [duration, setDuration] = useState("60");
   const [mood, setMood] = useState("");
   const [result, setResult] = useState<VideoResult | null>(null);
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -46,7 +46,7 @@ export default function FashionShowVideoGenerator() {
       if (!session) throw new Error("Not authenticated");
 
       for (let i = 0; i < CREDIT_COST; i++) {
-        const ok = await useCredit("custom_generation", "Fashion Show Video Generator");
+        const ok = await spendCredit("custom_generation", "Fashion Show Video Generator");
         if (!ok && i === 0) throw new Error("Insufficient credits");
       }
 

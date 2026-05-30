@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
  * Uses the tutoring_credits table as the shared credit pool.
  */
 export const useTutorialAICredits = () => {
-  const { credits, isLoading, useCredit, isUsingCredit } = useTutoringCredits();
+  const { credits, isLoading, spendCredit, isUsingCredit } = useTutoringCredits();
   const { toast } = useToast();
 
   const checkAndDeduct = async (amount: number): Promise<boolean> => {
@@ -21,7 +21,7 @@ export const useTutorialAICredits = () => {
 
     try {
       for (let i = 0; i < amount; i++) {
-        await useCredit();
+        await spendCredit();
       }
       return true;
     } catch (err) {

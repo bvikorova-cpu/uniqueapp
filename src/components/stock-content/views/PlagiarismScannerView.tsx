@@ -23,7 +23,7 @@ interface ScanResult {
 
 export function PlagiarismScannerView({ onBack }: PlagiarismScannerViewProps) {
   const { toast } = useToast();
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const [imageUrl, setImageUrl] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [scanning, setScanning] = useState(false);
@@ -49,7 +49,7 @@ export function PlagiarismScannerView({ onBack }: PlagiarismScannerViewProps) {
 
     setScanning(true);
     try {
-      const success = await useCredit("custom_generation", "AI Plagiarism Scanner");
+      const success = await spendCredit("custom_generation", "AI Plagiarism Scanner");
       if (!success) throw new Error("Failed to deduct credits");
 
       let uploadedUrl = imageUrl;

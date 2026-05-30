@@ -33,7 +33,7 @@ interface ForecastResult {
 }
 
 export default function AIFashionForecastCalendar() {
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const [location, setLocation] = useState("");
   const [style, setStyle] = useState("casual-chic");
   const [result, setResult] = useState<ForecastResult | null>(null);
@@ -43,7 +43,7 @@ export default function AIFashionForecastCalendar() {
       if ((credits?.credits_remaining || 0) < CREDIT_COST) {
         throw new Error("Not enough credits. You need " + CREDIT_COST + " credits.");
       }
-      const success = await useCredit("custom_generation", "Fashion Forecast Calendar");
+      const success = await spendCredit("custom_generation", "Fashion Forecast Calendar");
       if (!success) throw new Error("Failed to use credits");
 
       const { data, error } = await supabase.functions.invoke("fashion-ai", {

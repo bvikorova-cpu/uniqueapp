@@ -76,7 +76,7 @@ export const usePremiumStore = () => {
   const [userAvatars, setUserAvatars] = useState<UserAvatar[]>([]);
   
   const [loading, setLoading] = useState(true);
-  const { useCredit, refresh: refreshCredits } = useAICredits();
+  const { spendCredit, refresh: refreshCredits } = useAICredits();
 
   useEffect(() => {
     loadData();
@@ -134,7 +134,7 @@ export const usePremiumStore = () => {
       // Admin does not have to pay
       if (!adminRole) {
         // Deduct credits
-        const success = await useCredit('custom_generation', `Purchased ${featureName}`);
+        const success = await spendCredit('custom_generation', `Purchased ${featureName}`);
         if (!success) return false;
       }
 
@@ -180,7 +180,7 @@ export const usePremiumStore = () => {
       if (!adminRole) {
         // Deduct credits (using the actual cost multiple times)
         for (let i = 0; i < cost; i++) {
-          const success = await useCredit('custom_generation', 'Premium badge purchase');
+          const success = await spendCredit('custom_generation', 'Premium badge purchase');
           if (!success) return false;
         }
       }
@@ -228,7 +228,7 @@ export const usePremiumStore = () => {
       if (!adminRole) {
         // Deduct credits
         for (let i = 0; i < cost; i++) {
-          const success = await useCredit('custom_generation', 'Premium theme purchase');
+          const success = await spendCredit('custom_generation', 'Premium theme purchase');
           if (!success) return false;
         }
       }
@@ -276,7 +276,7 @@ export const usePremiumStore = () => {
       if (!adminRole) {
         // Deduct credits
         for (let i = 0; i < cost; i++) {
-          const success = await useCredit('custom_generation', 'Premium avatar purchase');
+          const success = await spendCredit('custom_generation', 'Premium avatar purchase');
           if (!success) return false;
         }
       }

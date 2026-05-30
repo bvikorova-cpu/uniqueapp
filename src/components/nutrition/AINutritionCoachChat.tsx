@@ -12,7 +12,7 @@ interface Props { onBack: () => void; }
 interface Message { role: "user" | "assistant"; content: string; }
 
 export default function AINutritionCoachChat({ onBack }: Props) {
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const [messages, setMessages] = useState<Message[]>([
     { role: "assistant", content: "Hi! I'm your AI Nutrition Coach 🥗 Ask me anything about diet, macros, meal timing, supplements, or your fitness nutrition. Each message costs 2 credits." }
   ]);
@@ -27,7 +27,7 @@ export default function AINutritionCoachChat({ onBack }: Props) {
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
     
-    const credited = await useCredit('custom_generation', 'Nutrition Coach Chat');
+    const credited = await spendCredit('custom_generation', 'Nutrition Coach Chat');
     if (!credited) { toast.error("Not enough credits (2 required)"); return; }
 
     const userMsg: Message = { role: "user", content: input.trim() };

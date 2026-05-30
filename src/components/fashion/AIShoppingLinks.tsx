@@ -36,7 +36,7 @@ export default function AIShoppingLinks() {
   const [budget, setBudget] = useState("200");
   const [style, setStyle] = useState("casual-chic");
   const [result, setResult] = useState<ShoppingResult | null>(null);
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -44,7 +44,7 @@ export default function AIShoppingLinks() {
       if (!session) throw new Error("Not authenticated");
 
       for (let i = 0; i < CREDIT_COST; i++) {
-        const ok = await useCredit("custom_generation", "AI Shopping Links");
+        const ok = await spendCredit("custom_generation", "AI Shopping Links");
         if (!ok && i === 0) throw new Error("Insufficient credits");
       }
 

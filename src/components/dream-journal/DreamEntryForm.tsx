@@ -17,7 +17,7 @@ interface DreamEntryFormProps {
 const DreamEntryForm = ({ onSuccess }: DreamEntryFormProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -44,7 +44,7 @@ const DreamEntryForm = ({ onSuccess }: DreamEntryFormProps) => {
         return;
       }
 
-      await useCredit("effect");
+      await spendCredit("effect");
 
       const { data: { session } } = await supabase.auth.getSession();
       const analysisResponse = await supabase.functions.invoke("analyze-dream", {

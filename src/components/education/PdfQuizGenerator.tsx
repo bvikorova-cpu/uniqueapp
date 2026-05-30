@@ -19,7 +19,7 @@ interface Quiz {
 }
 
 const PdfQuizGenerator = () => {
-  const { credits, useCredit, refundCredit, isUsingCredit } = useTutoringCredits();
+  const { credits, spendCredit, refundCredit, isUsingCredit } = useTutoringCredits();
   const fileRef = useRef<HTMLInputElement>(null);
   const [extracting, setExtracting] = useState(false);
   const [generating, setGenerating] = useState(false);
@@ -93,7 +93,7 @@ const PdfQuizGenerator = () => {
     setAnswers({});
     let credited = false;
     try {
-      await useCredit();
+      await spendCredit();
       credited = true;
       const { data, error } = await supabase.functions.invoke("education-ai", {
         body: { action: "pdf_to_quiz", text, numQuestions: 8, difficulty: "medium" },

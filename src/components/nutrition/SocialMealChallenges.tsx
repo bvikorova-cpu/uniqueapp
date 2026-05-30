@@ -14,7 +14,7 @@ import { useAICredits } from "@/hooks/useAICredits";
 interface Props { onBack: () => void; }
 
 export default function SocialMealChallenges({ onBack }: Props) {
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const [goal, setGoal] = useState("lose_weight");
   const [duration, setDuration] = useState("7");
   const [participants, setParticipants] = useState("4");
@@ -22,7 +22,7 @@ export default function SocialMealChallenges({ onBack }: Props) {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const credited = await useCredit('custom_generation', 'Meal Challenge');
+      const credited = await spendCredit('custom_generation', 'Meal Challenge');
       if (!credited) throw new Error('Not enough credits (8 required)');
       const { data, error } = await supabase.functions.invoke('nutrition-meal-challenge', {
         body: { goal, duration_days: Number(duration), max_participants: Number(participants) }

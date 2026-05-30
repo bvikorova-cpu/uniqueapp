@@ -32,7 +32,7 @@ interface AnalyticsResult {
 
 export default function WardrobeAnalytics() {
   const [result, setResult] = useState<AnalyticsResult | null>(null);
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
 
   const { data: wardrobeItems = [], isLoading: loadingItems } = useQuery({
     queryKey: ["wardrobe-analytics-items"],
@@ -50,7 +50,7 @@ export default function WardrobeAnalytics() {
       if (!session) throw new Error("Not authenticated");
 
       for (let i = 0; i < CREDIT_COST; i++) {
-        const ok = await useCredit("custom_generation", "Wardrobe Analytics");
+        const ok = await spendCredit("custom_generation", "Wardrobe Analytics");
         if (!ok && i === 0) throw new Error("Insufficient credits");
       }
 

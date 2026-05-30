@@ -10,7 +10,7 @@ import { toast } from "@/hooks/use-toast";
 interface Props { onBack: () => void; }
 
 export default function AIPostureAnalyzer({ onBack }: Props) {
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const [input, setInput] = useState("");
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,7 +20,7 @@ export default function AIPostureAnalyzer({ onBack }: Props) {
     if (credits.credits_remaining < 3) { toast({ title: "Not enough credits", description: "You need 3 credits for posture analysis.", variant: "destructive" }); return; }
     setLoading(true);
     try {
-      const ok = await useCredit("custom_generation", "AI Posture Analyzer");
+      const ok = await spendCredit("custom_generation", "AI Posture Analyzer");
       if (!ok) throw new Error("Failed to use credit");
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: { prompt: `You are an expert physiotherapist and posture specialist. A user describes their posture issues or daily habits. Provide: 1) Posture Assessment (identify likely problems), 2) Risk Analysis (what could worsen), 3) Corrective Exercises (5-6 specific exercises with reps/sets), 4) Ergonomic Recommendations (desk/chair/screen setup), 5) Daily Posture Routine (morning + evening). User description: ${input}` },

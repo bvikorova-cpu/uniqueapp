@@ -18,7 +18,7 @@ export default function AIFashionShowSimulator() {
   const [theme, setTheme] = useState("");
   const [mood, setMood] = useState("");
   const [result, setResult] = useState<any>(null);
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
 
   const addOutfit = () => setOutfits([...outfits, ""]);
   const removeOutfit = (i: number) => setOutfits(outfits.filter((_, idx) => idx !== i));
@@ -34,7 +34,7 @@ export default function AIFashionShowSimulator() {
       if (!session) throw new Error("Not authenticated");
 
       for (let i = 0; i < CREDIT_COST; i++) {
-        const ok = await useCredit("custom_generation", "Fashion Show Simulator");
+        const ok = await spendCredit("custom_generation", "Fashion Show Simulator");
         if (!ok && i === 0) throw new Error("Insufficient credits");
       }
 

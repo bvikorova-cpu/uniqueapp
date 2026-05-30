@@ -10,7 +10,7 @@ import { toast } from "@/hooks/use-toast";
 interface Props { onBack: () => void; }
 
 export default function AIIngredientSubstitution({ onBack }: Props) {
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const [input, setInput] = useState("");
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,7 +20,7 @@ export default function AIIngredientSubstitution({ onBack }: Props) {
     if (credits.credits_remaining < 3) { toast({ title: "Not enough credits", description: "You need 3 credits.", variant: "destructive" }); return; }
     setLoading(true);
     try {
-      const ok = await useCredit("custom_generation", "AI Ingredient Substitution");
+      const ok = await spendCredit("custom_generation", "AI Ingredient Substitution");
       if (!ok) throw new Error("Failed to use credit");
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: { prompt: `You are a professional chef and food scientist. The user needs ingredient substitutions. For each ingredient they mention, provide: 1) Best substitute with exact ratio, 2) How it changes flavor/texture, 3) Allergen-free alternative, 4) Budget-friendly option, 5) Tips for the swap. Also suggest if any technique changes are needed. User request: ${input}` },

@@ -34,10 +34,10 @@ export const AICertificationSystem = ({ onBack }: Props) => {
   const [loading, setLoading] = useState(false);
   const [certified, setCertified] = useState(false);
   const { toast } = useToast();
-  const { useCredit } = useAICredits();
+  const { spendCredit } = useAICredits();
 
   const startExam = async (trackId: string) => {
-    const ok = await useCredit("custom_generation", "First Aid Certification Exam");
+    const ok = await spendCredit("custom_generation", "First Aid Certification Exam");
     if (!ok) { toast({ title: "Insufficient Credits", description: "You need 3 credits.", variant: "destructive" }); return; }
 
     setSelectedTrack(trackId);

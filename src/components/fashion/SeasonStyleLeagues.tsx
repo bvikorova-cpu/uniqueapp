@@ -22,7 +22,7 @@ const SEASONS = ["Spring 2026", "Summer 2026", "Autumn 2026", "Winter 2026"];
 
 export default function SeasonStyleLeagues() {
   const [activeSeason] = useState(SEASONS[0]);
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const queryClient = useQueryClient();
 
   const { data: leaderboard = [], isLoading } = useQuery({
@@ -61,7 +61,7 @@ export default function SeasonStyleLeagues() {
       if (!session) throw new Error("Not authenticated");
 
       for (let i = 0; i < CREDIT_COST; i++) {
-        const ok = await useCredit("custom_generation", "Season Style League Entry");
+        const ok = await spendCredit("custom_generation", "Season Style League Entry");
         if (!ok && i === 0) throw new Error("Insufficient credits");
       }
 

@@ -14,7 +14,7 @@ interface AIDreamVisualizerProps {
 }
 
 const AIDreamVisualizer = ({ onBack }: AIDreamVisualizerProps) => {
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const [loading, setLoading] = useState(false);
   const [dreamDescription, setDreamDescription] = useState("");
   const [artStyle, setArtStyle] = useState("surrealist");
@@ -40,7 +40,7 @@ const AIDreamVisualizer = ({ onBack }: AIDreamVisualizerProps) => {
     }
     setLoading(true);
     try {
-      const used = await useCredit("effect", "AI Dream Visualization");
+      const used = await spendCredit("effect", "AI Dream Visualization");
       if (!used) throw new Error("Failed to use credits");
 
       const { data: { session } } = await supabase.auth.getSession();

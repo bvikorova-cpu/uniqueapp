@@ -18,7 +18,7 @@ interface TimerItem {
 interface Props { onBack: () => void; }
 
 export default function AICookingTimer({ onBack }: Props) {
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const [input, setInput] = useState("");
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,7 +30,7 @@ export default function AICookingTimer({ onBack }: Props) {
     if (credits.credits_remaining < 3) { toast({ title: "Not enough credits", description: "You need 3 credits.", variant: "destructive" }); return; }
     setLoading(true);
     try {
-      const ok = await useCredit("custom_generation", "AI Cooking Timer");
+      const ok = await spendCredit("custom_generation", "AI Cooking Timer");
       if (!ok) throw new Error("Failed to use credit");
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: { prompt: `You are a professional chef timer assistant. Based on the recipe or dish the user describes, create a detailed multi-step cooking timeline with precise timers. For each step provide: 1) Step name, 2) Duration in minutes, 3) What to do during this time, 4) Temperature settings, 5) Visual/sensory cues for doneness. Also provide tips on parallel tasks to save time. Format each timer step clearly. User recipe: ${input}` },

@@ -12,7 +12,7 @@ import rehypeKatex from "rehype-katex";
 import remarkGfm from "remark-gfm";
 
 const PhotoMathSolver = () => {
-  const { credits, useCredit, refundCredit, isUsingCredit } = useTutoringCredits();
+  const { credits, spendCredit, refundCredit, isUsingCredit } = useTutoringCredits();
   const fileRef = useRef<HTMLInputElement>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [question, setQuestion] = useState("");
@@ -47,7 +47,7 @@ const PhotoMathSolver = () => {
     setSolution(null);
     let credited = false;
     try {
-      await useCredit();
+      await spendCredit();
       credited = true;
       const { data, error } = await supabase.functions.invoke("education-ai", {
         body: { action: "photo_math", imageDataUrl: imageUrl, question },

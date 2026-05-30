@@ -23,7 +23,7 @@ const suggestionCategories = [
 
 export function AITutorChatView({ onBack }: Props) {
   const { toast } = useToast();
-  const { credits, isLoading: creditsLoading, useCredit, isUsingCredit } = useTutoringCredits();
+  const { credits, isLoading: creditsLoading, spendCredit, isUsingCredit } = useTutoringCredits();
   const [messages, setMessages] = useState<Message[]>([
     { role: "assistant", content: "Hello! 👋 I'm your AI Tutor. I can help you with programming, data science, design, marketing, and more. Pick a topic below or ask me anything!" }
   ]);
@@ -55,7 +55,7 @@ export function AITutorChatView({ onBack }: Props) {
     try {
       // Deduct credits first
       for (let i = 0; i < CREDITS_PER_MESSAGE; i++) {
-        await useCredit();
+        await spendCredit();
       }
 
       const { data, error } = await supabase.functions.invoke('stock-content-ai', {

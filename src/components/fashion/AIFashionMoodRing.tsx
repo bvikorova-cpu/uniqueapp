@@ -49,7 +49,7 @@ const MOODS = [
 ];
 
 export default function AIFashionMoodRing() {
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [energy, setEnergy] = useState([50]);
   const [context, setContext] = useState("");
@@ -59,7 +59,7 @@ export default function AIFashionMoodRing() {
     mutationFn: async () => {
       if (!selectedMood) throw new Error("Please select your mood");
       if ((credits?.credits_remaining || 0) < CREDIT_COST) throw new Error("Not enough credits");
-      const success = await useCredit("custom_generation", "Fashion Mood Ring");
+      const success = await spendCredit("custom_generation", "Fashion Mood Ring");
       if (!success) throw new Error("Failed to use credits");
 
       const { data, error } = await supabase.functions.invoke("fashion-ai", {

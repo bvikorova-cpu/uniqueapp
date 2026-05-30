@@ -16,7 +16,7 @@ const ENTRY_CREDIT_COST = 5;
 
 export default function StyleBattleArena() {
   const queryClient = useQueryClient();
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const [showCreate, setShowCreate] = useState(false);
   const [title, setTitle] = useState("");
   const [theme, setTheme] = useState("");
@@ -78,7 +78,7 @@ export default function StyleBattleArena() {
       if (!session) throw new Error("Not authenticated");
 
       for (let i = 0; i < ENTRY_CREDIT_COST; i++) {
-        const ok = await useCredit("custom_generation", "Style Battle Entry + AI Score");
+        const ok = await spendCredit("custom_generation", "Style Battle Entry + AI Score");
         if (!ok && i === 0) throw new Error("Insufficient credits");
       }
 

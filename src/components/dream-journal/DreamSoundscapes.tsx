@@ -15,7 +15,7 @@ interface DreamSoundscapesProps {
 }
 
 const DreamSoundscapes = ({ onBack }: DreamSoundscapesProps) => {
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const [loading, setLoading] = useState(false);
   const [dreamTheme, setDreamTheme] = useState("");
   const [mood, setMood] = useState("calm");
@@ -41,7 +41,7 @@ const DreamSoundscapes = ({ onBack }: DreamSoundscapesProps) => {
     }
     setLoading(true);
     try {
-      const used = await useCredit("effect", "Dream Soundscape Generation");
+      const used = await spendCredit("effect", "Dream Soundscape Generation");
       if (!used) throw new Error("Failed to use credits");
 
       const { data: { session } } = await supabase.auth.getSession();

@@ -16,7 +16,7 @@ interface Props { onBack: () => void; }
 const COLORS = ["#8b5cf6", "#06b6d4", "#f59e0b", "#ef4444", "#10b981"];
 
 export default function WeeklyProgressDashboard({ onBack }: Props) {
-  const { credits, useCredit } = useAICredits();
+  const { credits, spendCredit } = useAICredits();
   const [avgCalories, setAvgCalories] = useState("2000");
   const [avgProtein, setAvgProtein] = useState("120");
   const [workoutsPerWeek, setWorkoutsPerWeek] = useState("4");
@@ -25,7 +25,7 @@ export default function WeeklyProgressDashboard({ onBack }: Props) {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const credited = await useCredit('custom_generation', 'Weekly Progress');
+      const credited = await spendCredit('custom_generation', 'Weekly Progress');
       if (!credited) throw new Error('Not enough credits (6 required)');
       const { data, error } = await supabase.functions.invoke('nutrition-weekly-progress', {
         body: { avg_daily_calories: Number(avgCalories), avg_daily_protein: Number(avgProtein), workouts_per_week: Number(workoutsPerWeek), current_weight: Number(currentWeight) }

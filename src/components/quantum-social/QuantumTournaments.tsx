@@ -33,7 +33,7 @@ export function QuantumTournaments({ onBack }: { onBack: () => void }) {
   const [loading, setLoading] = useState(true);
   const [joining, setJoining] = useState<string | null>(null);
   const { toast } = useToast();
-  const { useCredit } = useAICredits();
+  const { spendCredit } = useAICredits();
 
   useEffect(() => { fetchTournaments(); }, []);
 
@@ -61,7 +61,7 @@ export function QuantumTournaments({ onBack }: { onBack: () => void }) {
     if (tournament.joined) { toast({ title: "Already joined!" }); return; }
 
     if (tournament.entry_fee > 0) {
-      const hasCredits = await useCredit("custom_generation", `Tournament Entry: ${tournament.name}`);
+      const hasCredits = await spendCredit("custom_generation", `Tournament Entry: ${tournament.name}`);
       if (!hasCredits) { toast({ title: "Not enough credits", description: `Entry fee: ${tournament.entry_fee} credits`, variant: "destructive" }); return; }
     }
 

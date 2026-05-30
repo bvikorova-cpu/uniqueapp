@@ -72,6 +72,6 @@ export const useBrainDuelPowerups = () => {
     isLoading,
     purchasePowerup: purchasePowerup.mutate,
     isPurchasing: purchasePowerup.isPending,
-    usePowerup: usePowerupMutation.mutateAsync,
+    consumePowerup: usePowerupMutation.mutateAsync,
   };
 };
