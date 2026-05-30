@@ -15,6 +15,7 @@ export default function AICandidateRanking() {
   const [job, setJob] = useState<any>(null);
   const [applications, setApplications] = useState<any[]>([]);
   const [rankings, setRankings] = useState<any[]>([]);
+  const [profiles, setProfiles] = useState<Record<string, { name: string; avatar?: string | null }>>({});
   const [loading, setLoading] = useState(true);
   const [running, setRunning] = useState(false);
 
@@ -29,6 +30,23 @@ export default function AICandidateRanking() {
     const { data: r } = await (supabase as any).from("ai_candidate_rankings")
       .select("*").eq("job_id", jobId).order("rank_position", { ascending: true });
     setRankings(r ?? []);
+
+    // Resolve candidate display names via profiles
+    const ids = Array.from(new Set([
+      ...(apps ?? []).map((a: any) => a.applicant_id).filter(Boolean),
+      ...(r ?? []).map((x: any) => x.candidate_id).filter(Boolean),
+    ]));
+    if (ids.length > 0) {
+      const { data: profs } = await supabase
+        .from("profiles")
+        .select("id, full_name, username, avatar_url")
+        .in("id", ids as string[]);
+      const map: Record<string, { name: string; avatar?: string | null }> = {};
+      (profs ?? []).forEach((p: any) => {
+        map[p.id] = { name: p.full_name || p.username || p.id.slice(0, 8), avatar: p.avatar_url };
+      });
+      setProfiles(map);
+    }
     setLoading(false);
   };
   useEffect(() => { load(); }, [jobId]);
@@ -95,7 +113,9 @@ export default function AICandidateRanking() {
                   <Badge variant={r.rank_position <= 3 ? "default" : "secondary"}>
                     <Trophy className="h-3 w-3 mr-1" /> #{r.rank_position}
                   </Badge>
-                  <span className="font-mono text-xs text-muted-foreground">{r.candidate_id?.slice(0, 8)}</span>
+                  <span className="text-sm font-semibold">
+                    {profiles[r.candidate_id]?.name || (r.candidate_id?.slice(0, 8) ?? "Unknown")}
+                  </span>
                 </div>
                 <span className="text-2xl font-black text-primary">{r.score}</span>
               </div>
