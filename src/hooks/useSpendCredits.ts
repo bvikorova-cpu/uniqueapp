@@ -29,20 +29,7 @@ export function useSpendCredits() {
       }
       const amount = CREDIT_COSTS[action];
 
-      // 1) Try free-tier credits (atomic RPC)
-      try {
-        const { data, error } = await (supabase as any).rpc("consume_free_tier_credits", {
-          p_amount: amount,
-          p_reason: action,
-        });
-        if (!error && data) return true;
-        if (error && !String(error.message || "").includes("INSUFFICIENT_CREDITS")) {
-          // fall through to AI credits on unexpected error
-          console.warn("free tier consume error, falling back to AI credits", error);
-        }
-      } catch (e) {
-        console.warn("free tier consume threw, falling back", e);
-      }
+      // Free-tier path removed — paid-only model (Core).
 
       // 2) Fallback to AI credits
       try {
