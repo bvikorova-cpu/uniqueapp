@@ -29863,6 +29863,7 @@ export type Database = {
           salary_max: number | null
           salary_min: number | null
           salary_transparency_score: number | null
+          slug: string | null
           title: string
           updated_at: string | null
           views_count: number | null
@@ -29905,6 +29906,7 @@ export type Database = {
           salary_max?: number | null
           salary_min?: number | null
           salary_transparency_score?: number | null
+          slug?: string | null
           title: string
           updated_at?: string | null
           views_count?: number | null
@@ -29947,6 +29949,7 @@ export type Database = {
           salary_max?: number | null
           salary_min?: number | null
           salary_transparency_score?: number | null
+          slug?: string | null
           title?: string
           updated_at?: string | null
           views_count?: number | null
@@ -60175,6 +60178,7 @@ export type Database = {
           id: string | null
           is_active: boolean | null
           is_featured: boolean | null
+          is_remote: boolean | null
           job_type: Database["public"]["Enums"]["job_type"] | null
           location: string | null
           paid_status: string | null
@@ -60183,6 +60187,7 @@ export type Database = {
           salary_currency: string | null
           salary_max: number | null
           salary_min: number | null
+          slug: string | null
           title: string | null
           updated_at: string | null
           views_count: number | null
@@ -60201,6 +60206,7 @@ export type Database = {
           id?: string | null
           is_active?: boolean | null
           is_featured?: boolean | null
+          is_remote?: boolean | null
           job_type?: Database["public"]["Enums"]["job_type"] | null
           location?: string | null
           paid_status?: string | null
@@ -60209,6 +60215,7 @@ export type Database = {
           salary_currency?: string | null
           salary_max?: number | null
           salary_min?: number | null
+          slug?: string | null
           title?: string | null
           updated_at?: string | null
           views_count?: number | null
@@ -60227,6 +60234,7 @@ export type Database = {
           id?: string | null
           is_active?: boolean | null
           is_featured?: boolean | null
+          is_remote?: boolean | null
           job_type?: Database["public"]["Enums"]["job_type"] | null
           location?: string | null
           paid_status?: string | null
@@ -60235,6 +60243,7 @@ export type Database = {
           salary_currency?: string | null
           salary_max?: number | null
           salary_min?: number | null
+          slug?: string | null
           title?: string | null
           updated_at?: string | null
           views_count?: number | null
@@ -61398,6 +61407,10 @@ export type Database = {
       gdpr_purge_user_data: { Args: { _user_id: string }; Returns: Json }
       generate_certificate_number: { Args: never; Returns: string }
       generate_daily_homework_challenge: { Args: never; Returns: undefined }
+      generate_job_slug: {
+        Args: { _id: string; _title: string }
+        Returns: string
+      }
       generate_megatalent_bracket: {
         Args: { _category: string }
         Returns: string
