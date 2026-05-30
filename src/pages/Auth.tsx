@@ -134,6 +134,10 @@ const Auth = () => {
           company_name: companyName || null,
           preferred_language: selectedLanguage,
           birth_date: isoBirthDate,
+          // GDPR consent audit — server trigger reads these and writes an append-only row.
+          privacy_consent_version: PRIVACY_POLICY_VERSION,
+          terms_consent_version: TERMS_OF_USE_VERSION,
+          signup_user_agent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 500) : null,
         },
       },
     });
