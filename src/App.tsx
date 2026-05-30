@@ -468,6 +468,7 @@ const AdminSubscriptionAnalytics = lazy(() => import("@/pages/admin/AdminSubscri
 const AdminCohortRetention = lazy(() => import("@/pages/admin/AdminCohortRetention"));
 const AdminOpsTools = lazy(() => import("@/pages/admin/AdminOpsTools"));
 const AdminRewardsSeed = lazy(() => import("@/pages/admin/AdminRewardsSeed"));
+const AdminRewardsAudit = lazy(() => import("@/pages/admin/AdminRewardsAudit"));
 const AdminEngagement = lazy(() => import("@/pages/admin/AdminEngagement"));
 const AdminMonetagStats = lazy(() => import("@/pages/admin/AdminMonetagStats"));
 const GlobalRewardedAd = lazy(() => import("@/components/ads/GlobalRewardedAd"));
@@ -738,6 +739,7 @@ const App = () => {
                         <Route path="/rewards/audit" element={<ProtectedRoute><XPAuditLog /></ProtectedRoute>} />
                         <Route path="/admin/xp-audit" element={<ProtectedRoute><AdminXPAudit /></ProtectedRoute>} />
                         <Route path="/admin/xp-audit/reconciliation" element={<ProtectedRoute><AdminXPReconciliation /></ProtectedRoute>} />
+                        <Route path="/admin/rewards-audit" element={<ProtectedRoute><AdminRewardsAudit /></ProtectedRoute>} />
                         <Route path="/generate-courses" element={<GenerateCourses />} />
                         <Route path="/premium-store" element={<PremiumStore />} />
                         <Route path="/premium" element={<Premium />} />
