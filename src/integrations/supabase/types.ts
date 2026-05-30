@@ -62010,6 +62010,7 @@ export type Database = {
         Args: { p_user_id: string }
         Returns: boolean
       }
+      is_verified_employer: { Args: { _user_id: string }; Returns: boolean }
       is_video_owner: {
         Args: { _user_id: string; _video_id: string }
         Returns: boolean
