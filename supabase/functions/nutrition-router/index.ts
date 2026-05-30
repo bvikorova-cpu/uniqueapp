@@ -5,6 +5,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { callOpenAI, corsHeaders, errorResponse, jsonResponse } from "../_shared/openai.ts";
 import { deductAICredits } from "../_shared/credits.ts";
+import { checkTestMode } from "../_shared/testMode.ts";
 
 type Spec = { system: string; cost: number; temperature?: number; chat?: boolean };
 
