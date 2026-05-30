@@ -1,6 +1,7 @@
 // Universal horse router - consolidates 6 horse-* functions.
 // Frontend calls remain unchanged via proxyMap.ts rewrite.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { checkTestMode } from "../_shared/testMode.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
