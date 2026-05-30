@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Briefcase, MapPin, Globe, Clock, DollarSign, Building2, ArrowLeft } from "lucide-react";
+import { SimilarJobs } from "@/components/jobs/SimilarJobs";
 
 interface JobDetail {
   id: string;
@@ -181,6 +182,12 @@ export default function JobDetailPage() {
               </div>
             </CardContent>
           </Card>
+          <SimilarJobs
+            jobId={job.id}
+            category={job.category}
+            title={job.title}
+            country={job.country}
+          />
         </div>
       </div>
     </>
