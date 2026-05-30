@@ -62,6 +62,28 @@ const Auth = () => {
   const [captchaVerified, setCaptchaVerified] = useState(false);
   const [unconfirmedEmail, setUnconfirmedEmail] = useState<string | null>(null);
   const [resendCooldown, setResendCooldown] = useState(0);
+  const [signupPassword, setSignupPassword] = useState("");
+  const [signupPhone, setSignupPhone] = useState("");
+
+  // E.164-ish: + optional, 8-15 digits
+  const phoneError = (p: string): string | null => {
+    const trimmed = p.trim();
+    if (!trimmed) return "Phone is required.";
+    if (!/^\+?[0-9\s\-().]{8,20}$/.test(trimmed)) return "Enter a valid phone (digits, optional +, 8–15 digits).";
+    const digits = trimmed.replace(/\D/g, "");
+    if (digits.length < 8 || digits.length > 15) return "Phone must have 8–15 digits.";
+    return null;
+  };
+
+  // Password strength score 0–4
+  const passwordStrength = (pwd: string) => {
+    let s = 0;
+    if (pwd.length >= MIN_PASSWORD_LENGTH) s++;
+    if (/[a-z]/.test(pwd) && /[A-Z]/.test(pwd)) s++;
+    if (/\d/.test(pwd)) s++;
+    if (/[^A-Za-z0-9]/.test(pwd)) s++;
+    return s;
+  };
 
   // Check existing session AND listen for cross-tab logins.
   useEffect(() => {
@@ -149,6 +171,12 @@ const Auth = () => {
     const strengthError = passwordStrengthError(password);
     if (strengthError) {
       toast({ variant: "destructive", title: "Weak password", description: strengthError });
+      return;
+    }
+
+    const phErr = phoneError(phone);
+    if (phErr) {
+      toast({ variant: "destructive", title: "Invalid phone", description: phErr });
       return;
     }
 
@@ -471,6 +499,7 @@ const Auth = () => {
                       name="fullName"
                       type="text"
                       placeholder="Your name"
+                      autoComplete="name"
                       required
                     />
                   </div>
@@ -480,9 +509,17 @@ const Auth = () => {
                       id="signup-phone"
                       name="phone"
                       type="tel"
-                      placeholder="+1 XXX XXX XXXX"
+                      placeholder="+421 900 000 000"
+                      autoComplete="tel"
+                      inputMode="tel"
+                      pattern="^\+?[0-9\s\-().]{8,20}$"
+                      value={signupPhone}
+                      onChange={(e) => setSignupPhone(e.target.value)}
                       required
                     />
+                    {signupPhone && phoneError(signupPhone) && (
+                      <p className="text-xs text-destructive">{phoneError(signupPhone)}</p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="signup-company">{"Company Name"} ({"optional"})</Label>
@@ -491,6 +528,7 @@ const Auth = () => {
                       name="companyName"
                       type="text"
                       placeholder={"Your Company Name"}
+                      autoComplete="organization"
                     />
                   </div>
                   <div className="space-y-2">
@@ -513,6 +551,8 @@ const Auth = () => {
                         type={showSignupPassword ? "text" : "password"}
                         autoComplete="new-password"
                         minLength={MIN_PASSWORD_LENGTH}
+                        value={signupPassword}
+                        onChange={(e) => setSignupPassword(e.target.value)}
                         required
                         className="pr-10"
                       />
@@ -530,6 +570,27 @@ const Auth = () => {
                         )}
                       </Button>
                     </div>
+                    {signupPassword && (
+                      <div className="space-y-1">
+                        <div className="flex gap-1">
+                          {[0, 1, 2, 3].map((i) => {
+                            const s = passwordStrength(signupPassword);
+                            const active = i < s;
+                            const color =
+                              s <= 1 ? "bg-destructive" : s === 2 ? "bg-yellow-500" : s === 3 ? "bg-primary" : "bg-green-500";
+                            return (
+                              <div
+                                key={i}
+                                className={cn("h-1 flex-1 rounded-full transition-colors", active ? color : "bg-muted")}
+                              />
+                            );
+                          })}
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          Min 10 chars + 3 of: lowercase, uppercase, digit, symbol.
+                        </p>
+                      </div>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="signup-dob" className="flex items-center gap-2">
