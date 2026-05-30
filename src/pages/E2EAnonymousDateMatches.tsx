@@ -16,10 +16,6 @@ import { ActiveMatches } from "@/components/anonymous-date/ActiveMatches";
 export default function E2EAnonymousDateMatches() {
   const [params] = useSearchParams();
 
-  if (!import.meta.env.DEV) {
-    return null;
-  }
-
   const matches = useMemo(() => {
     const raw = params.get("fixture");
     if (!raw) return [];
@@ -31,6 +27,10 @@ export default function E2EAnonymousDateMatches() {
       return [];
     }
   }, [params]);
+
+  if (!import.meta.env.DEV) {
+    return null;
+  }
 
   return (
     <div data-testid="e2e-anon-date-harness" className="container py-10">

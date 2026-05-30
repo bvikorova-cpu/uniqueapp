@@ -432,7 +432,7 @@ export function PanoramaEscapeRoom({
         }
         break;
         
-      case "door":
+      case "door": {
         const lockHotspots = currentRoom.hotspots.filter(h => h.type === "lock");
         const allLocksOpen = lockHotspots.every(h => 
           solvedHotspots.has(`${currentRoomIndex}-${h.id}`)
@@ -462,6 +462,7 @@ export function PanoramaEscapeRoom({
           });
         }
         break;
+      }
     }
   }, [currentRoomIndex, solvedHotspots, selectedItem, addToInventory, removeFromInventory, rooms, currentRoom, toast, elapsedTime, hintsUsed, onComplete, sounds, foundHiddenItems]);
 

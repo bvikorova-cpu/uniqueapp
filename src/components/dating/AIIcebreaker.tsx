@@ -30,7 +30,7 @@ export const AIIcebreaker = ({ onBack }: Props) => {
       });
       if (error) throw error;
       const text = data.message || data.text;
-      const lines = text.split(/\d+[\.\)]\s*/).filter((l: string) => l.trim());
+      const lines = text.split(/\d+[.)]\s*/).filter((l: string) => l.trim());
       setResults(lines.length > 1 ? lines : [text]);
     } catch (e: any) {
       toast({ title: "Error", description: e.message, variant: "destructive" });

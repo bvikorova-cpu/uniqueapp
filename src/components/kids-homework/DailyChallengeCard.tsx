@@ -92,13 +92,14 @@ export const DailyChallengeCard = ({ challenge, progress, isCompleted }: DailyCh
       case 'diverse_subjects':
         currentProgress = progress.subjects_today.length;
         break;
-      case 'subject_focus':
+      case 'subject_focus': {
         const subjectCounts: { [key: string]: number } = {};
         for (const subject of progress.subjects_today) {
           subjectCounts[subject] = (subjectCounts[subject] || 0) + 1;
         }
         currentProgress = Math.max(...Object.values(subjectCounts), 0);
         break;
+      }
     }
     progressPercentage = Math.min((currentProgress / challenge.requirement_value) * 100, 100);
   } else if (isCompleted) {
