@@ -73,10 +73,6 @@ module.exports = (() => {
       // Public temp storage — no account needed, reports kept ~7 days.
       target: "temporary-public-storage",
     },
-    upload: {
-      // Public temp storage — no account needed, reports kept ~7 days.
-      target: "temporary-public-storage",
-    },
   },
 };
 })();
