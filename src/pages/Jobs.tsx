@@ -697,9 +697,27 @@ const Jobs = () => {
                   <Search className="h-5 w-5 mr-2" /> Sign In to Apply
                 </Button>
               )}
+              {user && selectedJob && (
+                <button
+                  type="button"
+                  onClick={() => setShowReportDialog(true)}
+                  className="text-xs text-muted-foreground hover:text-destructive underline underline-offset-2 mt-2"
+                >
+                  Report this job
+                </button>
+              )}
             </div>
           </DialogContent>
         </Dialog>
+
+        {selectedJob && (
+          <ReportJobDialog
+            jobId={selectedJob.id}
+            jobTitle={selectedJob.title}
+            open={showReportDialog}
+            onOpenChange={setShowReportDialog}
+          />
+        )}
 
 
 
