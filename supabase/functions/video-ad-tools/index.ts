@@ -2,6 +2,9 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 import { encode as b64encode, decode as b64decode } from "https://deno.land/std@0.168.0/encoding/base64.ts";
+import { checkTestMode } from "../_shared/testMode.ts";
+
+const VIDEO_AD_ACTIONS = ['ping', 'generate_script', 'storyboard', 'ad_copy', 'audience_analyzer', 'performance_predictor', 'brand_voice', 'multi_platform', 'competitor_analysis', 'thumbnail_generator', 'music_composer', 'voiceover_script', 'campaign_planner', 'social_calendar', 'roi_calculator', 'ad_analytics', 'multi_language_translator', 'ab_tester', 'url_to_video', 'hook_analyzer', 'caption_generator', 'winning_ads_recommend', 'avatar_plan', 'stock_footage', 'resize_advice', 'text_to_video_split', 'scenes', 'sfx', 'tts', 'voice_clone'];
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -18,8 +21,20 @@ serve(async (req) => {
       return new Response(JSON.stringify({
         ok: true,
         router: 'video-ad-tools',
-        actions: ['ping', 'generate_script', 'storyboard', 'ad_copy', 'audience_analyzer', 'performance_predictor', 'brand_voice', 'multi_platform', 'competitor_analysis', 'thumbnail_generator', 'music_composer', 'voiceover_script', 'campaign_planner', 'social_calendar', 'roi_calculator', 'ad_analytics', 'multi_language_translator', 'ab_tester', 'url_to_video', 'hook_analyzer', 'caption_generator', 'winning_ads_recommend', 'avatar_plan', 'stock_footage', 'resize_advice', 'text_to_video_split', 'scenes', 'sfx', 'tts', 'voice_clone'],
+      actions: VIDEO_AD_ACTIONS,
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // Test-mode bypass: skip auth, credits, OpenAI.
+    const tm = checkTestMode(req);
+    if (tm) {
+      const tmBody = await req.json().catch(() => ({}));
+      const tmAction = String((tmBody as any)?.action ?? "").trim();
+      if (!VIDEO_AD_ACTIONS.includes(tmAction) || tmAction === 'ping') {
+        return new Response(JSON.stringify({ error: `Unknown video-ad action: ${tmAction}` }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+      return tm.stub(tmAction);
     }
 
     const authHeader = req.headers.get('Authorization');
