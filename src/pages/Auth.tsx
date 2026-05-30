@@ -20,6 +20,9 @@ import { Captcha } from "@/components/Captcha";
 
 const MIN_AGE = 16;
 const MIN_PASSWORD_LENGTH = 10;
+// Bump these when the legal text changes — the new value is captured in gdpr_consent_audit.
+const PRIVACY_POLICY_VERSION = "2026-01-15";
+const TERMS_OF_USE_VERSION = "2026-01-15";
 
 const calculateAge = (birthDate: Date): number => differenceInYears(new Date(), birthDate);
 
@@ -131,6 +134,10 @@ const Auth = () => {
           company_name: companyName || null,
           preferred_language: selectedLanguage,
           birth_date: isoBirthDate,
+          // GDPR consent audit — server trigger reads these and writes an append-only row.
+          privacy_consent_version: PRIVACY_POLICY_VERSION,
+          terms_consent_version: TERMS_OF_USE_VERSION,
+          signup_user_agent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 500) : null,
         },
       },
     });
