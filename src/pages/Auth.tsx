@@ -196,6 +196,7 @@ const Auth = () => {
         description: error.message,
       });
     } else {
+      setUnconfirmedEmail(email);
       toast({
         title: "Registration successful!",
         description: "Check your email for confirmation.",
