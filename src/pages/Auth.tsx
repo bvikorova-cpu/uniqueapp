@@ -327,6 +327,7 @@ const Auth = () => {
                     name="email"
                     type="email"
                     placeholder="your@email.com"
+                    autoComplete="email"
                     required
                   />
                 </div>
