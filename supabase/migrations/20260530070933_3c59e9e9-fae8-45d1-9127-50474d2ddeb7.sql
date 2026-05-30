@@ -1,0 +1,1 @@
+DELETE FROM public.posts WHERE id IN ('bbc6bc48-8d3d-41a3-a24a-23d752624862','ed79f20a-9b13-49ff-90c6-ff8c1d104c31');
