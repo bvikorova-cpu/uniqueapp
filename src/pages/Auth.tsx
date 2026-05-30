@@ -62,6 +62,28 @@ const Auth = () => {
   const [captchaVerified, setCaptchaVerified] = useState(false);
   const [unconfirmedEmail, setUnconfirmedEmail] = useState<string | null>(null);
   const [resendCooldown, setResendCooldown] = useState(0);
+  const [signupPassword, setSignupPassword] = useState("");
+  const [signupPhone, setSignupPhone] = useState("");
+
+  // E.164-ish: + optional, 8-15 digits
+  const phoneError = (p: string): string | null => {
+    const trimmed = p.trim();
+    if (!trimmed) return "Phone is required.";
+    if (!/^\+?[0-9\s\-().]{8,20}$/.test(trimmed)) return "Enter a valid phone (digits, optional +, 8–15 digits).";
+    const digits = trimmed.replace(/\D/g, "");
+    if (digits.length < 8 || digits.length > 15) return "Phone must have 8–15 digits.";
+    return null;
+  };
+
+  // Password strength score 0–4
+  const passwordStrength = (pwd: string) => {
+    let s = 0;
+    if (pwd.length >= MIN_PASSWORD_LENGTH) s++;
+    if (/[a-z]/.test(pwd) && /[A-Z]/.test(pwd)) s++;
+    if (/\d/.test(pwd)) s++;
+    if (/[^A-Za-z0-9]/.test(pwd)) s++;
+    return s;
+  };
 
   // Check existing session AND listen for cross-tab logins.
   useEffect(() => {
