@@ -249,9 +249,10 @@ const Jobs = () => {
     },
     onError: (error: any) => {
       const msg = String(error?.message || "");
-      const friendly = /duplicate|unique|already/i.test(msg)
-        ? "You have already applied to this job."
-        : msg || "Failed to send application";
+      let friendly = msg || "Failed to send application";
+      if (/duplicate|unique|already/i.test(msg)) friendly = "You have already applied to this job.";
+      else if (/Daily application limit/i.test(msg)) friendly = "Daily limit reached (20 applications / 24h). Try again tomorrow.";
+      else if (/Resume URL/i.test(msg)) friendly = msg;
       toast({ title: "❌ Error", description: friendly, variant: "destructive" });
     },
   });
