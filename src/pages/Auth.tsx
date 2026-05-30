@@ -499,6 +499,7 @@ const Auth = () => {
                       name="fullName"
                       type="text"
                       placeholder="Your name"
+                      autoComplete="name"
                       required
                     />
                   </div>
@@ -508,9 +509,17 @@ const Auth = () => {
                       id="signup-phone"
                       name="phone"
                       type="tel"
-                      placeholder="+1 XXX XXX XXXX"
+                      placeholder="+421 900 000 000"
+                      autoComplete="tel"
+                      inputMode="tel"
+                      pattern="^\+?[0-9\s\-().]{8,20}$"
+                      value={signupPhone}
+                      onChange={(e) => setSignupPhone(e.target.value)}
                       required
                     />
+                    {signupPhone && phoneError(signupPhone) && (
+                      <p className="text-xs text-destructive">{phoneError(signupPhone)}</p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="signup-company">{"Company Name"} ({"optional"})</Label>
@@ -519,6 +528,7 @@ const Auth = () => {
                       name="companyName"
                       type="text"
                       placeholder={"Your Company Name"}
+                      autoComplete="organization"
                     />
                   </div>
                   <div className="space-y-2">
@@ -541,6 +551,8 @@ const Auth = () => {
                         type={showSignupPassword ? "text" : "password"}
                         autoComplete="new-password"
                         minLength={MIN_PASSWORD_LENGTH}
+                        value={signupPassword}
+                        onChange={(e) => setSignupPassword(e.target.value)}
                         required
                         className="pr-10"
                       />
@@ -558,6 +570,27 @@ const Auth = () => {
                         )}
                       </Button>
                     </div>
+                    {signupPassword && (
+                      <div className="space-y-1">
+                        <div className="flex gap-1">
+                          {[0, 1, 2, 3].map((i) => {
+                            const s = passwordStrength(signupPassword);
+                            const active = i < s;
+                            const color =
+                              s <= 1 ? "bg-destructive" : s === 2 ? "bg-yellow-500" : s === 3 ? "bg-primary" : "bg-green-500";
+                            return (
+                              <div
+                                key={i}
+                                className={cn("h-1 flex-1 rounded-full transition-colors", active ? color : "bg-muted")}
+                              />
+                            );
+                          })}
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          Min 10 chars + 3 of: lowercase, uppercase, digit, symbol.
+                        </p>
+                      </div>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="signup-dob" className="flex items-center gap-2">
