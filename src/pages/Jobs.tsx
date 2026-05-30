@@ -124,19 +124,22 @@ const Jobs = () => {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const success = params.get('success');
-    const jobId = params.get('job_id');
     const sessionId = params.get('session_id');
-    if (success === 'true' && jobId && sessionId) {
+    if (success === 'true' && sessionId) {
       const activateJob = async () => {
         try {
-          const { error } = await supabase.functions.invoke('activate-job-listing', {
-            body: { jobId, sessionId }
+          const { data, error } = await supabase.functions.invoke('verify-job-listing-payment', {
+            body: { sessionId },
           });
           if (error) throw error;
-          toast({ title: "✅ Payment Successful!", description: "Your job listing is now active and visible to candidates" });
-          queryClient.invalidateQueries({ queryKey: ["jobs"] });
+          if (data?.verified) {
+            toast({ title: "✅ Payment Successful!", description: "Your job listing is now active and visible to candidates" });
+            queryClient.invalidateQueries({ queryKey: ["jobs"] });
+          } else {
+            toast({ title: "⚠️ Payment Pending", description: `Status: ${data?.status ?? 'unknown'}. We'll activate it once Stripe confirms.` });
+          }
         } catch (error: any) {
-          toast({ title: "⚠️ Activation Pending", description: "Payment received, your listing will be activated shortly" });
+          toast({ title: "⚠️ Activation Failed", description: error?.message || "Could not verify payment.", variant: "destructive" });
         }
       };
       activateJob();
