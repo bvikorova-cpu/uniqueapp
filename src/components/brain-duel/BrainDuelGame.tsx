@@ -56,7 +56,7 @@ const CATEGORIES = [
 
 export const BrainDuelGame = () => {
   const { credits, isLoading: creditsLoading } = useBrainDuelCredits();
-  const { powerups, consumePowerup: usePowerupHook } = useBrainDuelPowerups();
+  const { powerups, consumePowerup: triggerPowerup } = useBrainDuelPowerups();
   const [gamePhase, setGamePhase] = useState<'category' | 'loading' | 'playing' | 'answer-reveal' | 'results' | 'analysis'>('category');
   const [category, setCategory] = useState('');
   const [matchId, setMatchId] = useState<string | null>(null);
@@ -245,7 +245,7 @@ export const BrainDuelGame = () => {
         nextQuestion();
       }
 
-      await usePowerupHook({ powerupId: powerup.id, quantity: powerup.quantity });
+      await triggerPowerup({ powerupId: powerup.id, quantity: powerup.quantity });
       toast.success(`Power-up activated! ⚡`);
     } catch (err) {
       toast.error('Failed to use power-up');
