@@ -574,6 +574,17 @@ const Jobs = () => {
                     {filteredJobs.map((job) => (
                       <JobCardRedesigned key={job.id} job={job} onViewDetails={handleViewDetails} onApply={handleApply} isLoggedIn={!!user} />
                     ))}
+                    {hasNextPage && !quickFilter && (
+                      <div className="flex justify-center pt-4">
+                        <Button
+                          variant="outline"
+                          onClick={() => fetchNextPage()}
+                          disabled={isFetchingNextPage}
+                        >
+                          {isFetchingNextPage ? "Loading…" : "Load more jobs"}
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
