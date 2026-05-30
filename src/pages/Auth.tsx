@@ -20,6 +20,9 @@ import { Captcha } from "@/components/Captcha";
 
 const MIN_AGE = 16;
 const MIN_PASSWORD_LENGTH = 10;
+// Bump these when the legal text changes — the new value is captured in gdpr_consent_audit.
+const PRIVACY_POLICY_VERSION = "2026-01-15";
+const TERMS_OF_USE_VERSION = "2026-01-15";
 
 const calculateAge = (birthDate: Date): number => differenceInYears(new Date(), birthDate);
 
