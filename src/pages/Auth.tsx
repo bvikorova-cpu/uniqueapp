@@ -174,6 +174,12 @@ const Auth = () => {
       return;
     }
 
+    const phErr = phoneError(phone);
+    if (phErr) {
+      toast({ variant: "destructive", title: "Invalid phone", description: phErr });
+      return;
+    }
+
     setLoading(true);
 
     const selectedLanguage = 'en';
