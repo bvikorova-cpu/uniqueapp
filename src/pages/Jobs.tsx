@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import { useDebounce } from "@/hooks/use-debounce";
 import { z } from "zod";
 import { Briefcase, MapPin, DollarSign, Clock, Search, Plus, Building2, Globe, Wrench, Flame, Trophy, Medal, Zap, Bookmark, ListChecks, Bell, HelpCircle, Users, Sparkles, Map as MapIcon } from "lucide-react";
