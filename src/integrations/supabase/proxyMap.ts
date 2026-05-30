@@ -189,6 +189,20 @@ export const VERIFY_PROXY_MAP: Record<string, string> = {
   "verify-tip-purchase": "tip",
 };
 
+// Nutrition router consolidation: 9 nutrition-* functions merged into nutrition-router.
+// Legacy function names map to action keys handled by the router.
+export const NUTRITION_ROUTER_MAP: Record<string, string> = {
+  "nutrition-coach-chat": "coach_chat",
+  "nutrition-allergy-scanner": "allergy_scanner",
+  "nutrition-barcode-scanner": "barcode_scanner",
+  "nutrition-body-predictor": "body_predictor",
+  "nutrition-grocery-optimizer": "grocery_optimizer",
+  "nutrition-hydration-coach": "hydration_coach",
+  "nutrition-meal-challenge": "meal_challenge",
+  "nutrition-supplement-advisor": "supplement_advisor",
+  "nutrition-weekly-progress": "weekly_progress",
+};
+
 /**
  * Resolve a function name to a universal router + augmented body.
  * Returns null when the function name is not a proxy (call as-is).
@@ -224,6 +238,12 @@ export function resolveProxy(
   }
   if (functionName === "kids-customer-portal") {
     return { target: "check-connect-status", body: { ...b, action: "customer_portal" } };
+  }
+
+  // Nutrition router consolidation (9 functions -> 1).
+  const nutrition = NUTRITION_ROUTER_MAP[functionName];
+  if (nutrition) {
+    return { target: "nutrition-router", body: { ...b, action: nutrition } };
   }
 
   const aiType = AI_PROXY_MAP[functionName];
