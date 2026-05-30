@@ -1,6 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { encode as b64encode, decode as b64decode } from "https://deno.land/std@0.168.0/encoding/base64.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -58,6 +59,11 @@ serve(async (req) => {
       stock_footage: 3,
       resize_advice: 3,
       text_to_video_split: 3,
+      // Merged from video-ad-scenes/sfx/tts/voice-clone
+      scenes: 5,
+      sfx: 5,
+      tts: 5,
+      voice_clone: 10,
     };
 
     const cost = costs[action] || 1;
@@ -237,6 +243,91 @@ serve(async (req) => {
         systemPrompt = 'You are an expert at splitting a video ad script into shootable B-roll scenes. Return JSON with: scenes (array of {sceneNumber, durationSeconds, visualPrompt (detailed cinematic description for AI video/image gen), cameraMove (static/pan/zoom/dolly), lighting, mood, voiceoverLine, textOverlay (optional)}), totalScenes, totalDuration, suggestedAspect (16:9/9:16/1:1), styleGuide.';
         userPrompt = `Split this script into ${params.sceneCount || 5} cinematic B-roll scenes ready for AI video gen. Script: "${params.script}". Style: ${params.style || 'cinematic modern'}. Aspect: ${params.aspect || '9:16'}.`;
         break;
+
+      case 'scenes': {
+        const openaiKey2 = Deno.env.get('OPENAI_API_KEY');
+        if (!openaiKey2) { await refund(); throw new Error('OPENAI_API_KEY not configured'); }
+        const { scenes, aspectRatio } = params;
+        if (!Array.isArray(scenes) || scenes.length < 1 || scenes.length > 8) {
+          await refund();
+          return new Response(JSON.stringify({ error: 'scenes must be 1-8 prompts' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+        }
+        const size = aspectRatio === '9:16' ? '1024x1536' : aspectRatio === '1:1' ? '1024x1024' : '1536x1024';
+        const frames: { prompt: string; b64: string }[] = [];
+        for (const sceneText of scenes) {
+          const r = await fetch('https://api.openai.com/v1/images/generations', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${openaiKey2}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ model: 'gpt-image-1', prompt: `Cinematic video ad scene, professional advertising photography, high quality: ${sceneText}`, size, quality: 'medium', n: 1 }),
+          });
+          if (!r.ok) {
+            const errTxt = await r.text();
+            await refund();
+            return new Response(JSON.stringify({ error: `OpenAI image error ${r.status}: ${errTxt.slice(0, 200)}`, partialFrames: frames.length }), { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+          }
+          const j = await r.json();
+          const b64 = j.data?.[0]?.b64_json;
+          if (!b64) { await refund(); return new Response(JSON.stringify({ error: 'No image data returned', partialFrames: frames.length }), { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }); }
+          frames.push({ prompt: sceneText, b64 });
+        }
+        return new Response(JSON.stringify({ frames, credits_used: cost }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      case 'sfx': {
+        const elevenKey = Deno.env.get('ELEVENLABS_API_KEY');
+        if (!elevenKey) { await refund(); throw new Error('ELEVENLABS_API_KEY not configured'); }
+        const { prompt, durationSeconds = 5, promptInfluence = 0.4 } = params;
+        if (!prompt || typeof prompt !== 'string' || prompt.length < 3 || prompt.length > 500) {
+          await refund();
+          return new Response(JSON.stringify({ error: 'prompt must be 3-500 chars' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+        }
+        const dur = Math.min(22, Math.max(0.5, Number(durationSeconds) || 5));
+        const r = await fetch('https://api.elevenlabs.io/v1/sound-generation', {
+          method: 'POST',
+          headers: { 'xi-api-key': elevenKey, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: prompt, duration_seconds: dur, prompt_influence: promptInfluence }),
+        });
+        if (!r.ok) { const txt = await r.text(); await refund(); return new Response(JSON.stringify({ error: `ElevenLabs SFX error ${r.status}: ${txt.slice(0, 200)}` }), { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }); }
+        const buf = await r.arrayBuffer();
+        return new Response(JSON.stringify({ audioBase64: b64encode(new Uint8Array(buf)), mimeType: 'audio/mpeg', credits_used: cost }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      case 'tts': {
+        const elevenKey = Deno.env.get('ELEVENLABS_API_KEY');
+        if (!elevenKey) { await refund(); throw new Error('ELEVENLABS_API_KEY not configured'); }
+        const { text, voiceId } = params;
+        if (!text || typeof text !== 'string' || text.length < 1 || text.length > 5000) {
+          await refund();
+          return new Response(JSON.stringify({ error: 'Invalid text (1-5000 chars)' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+        }
+        const vId = voiceId || 'JBFqnCBsd6RMkjVDRZzb';
+        const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${vId}?output_format=mp3_44100_128`, {
+          method: 'POST',
+          headers: { 'xi-api-key': elevenKey, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text, model_id: 'eleven_multilingual_v2', voice_settings: { stability: 0.5, similarity_boost: 0.75, style: 0.4, use_speaker_boost: true } }),
+        });
+        if (!r.ok) { await refund(); const errTxt = await r.text(); return new Response(JSON.stringify({ error: `ElevenLabs error ${r.status}: ${errTxt.slice(0, 300)}` }), { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }); }
+        const audioBuf = await r.arrayBuffer();
+        return new Response(JSON.stringify({ audioBase64: b64encode(new Uint8Array(audioBuf)), mimeType: 'audio/mpeg', credits_used: cost }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      case 'voice_clone': {
+        const elevenKey = Deno.env.get('ELEVENLABS_API_KEY');
+        if (!elevenKey) { await refund(); throw new Error('ELEVENLABS_API_KEY not configured'); }
+        const { name, description, audioBase64, mimeType = 'audio/mpeg' } = params;
+        if (!name || !audioBase64) { await refund(); return new Response(JSON.stringify({ error: 'name and audioBase64 are required' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }); }
+        if (audioBase64.length > 14_000_000) { await refund(); return new Response(JSON.stringify({ error: 'Audio sample too large (max ~10MB)' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }); }
+        const audioBytes = b64decode(audioBase64);
+        const ext = mimeType.includes('wav') ? 'wav' : mimeType.includes('m4a') ? 'm4a' : 'mp3';
+        const form = new FormData();
+        form.append('name', String(name).slice(0, 80));
+        if (description) form.append('description', String(description).slice(0, 500));
+        form.append('files', new Blob([audioBytes], { type: mimeType }), `sample.${ext}`);
+        const r = await fetch('https://api.elevenlabs.io/v1/voices/add', { method: 'POST', headers: { 'xi-api-key': elevenKey }, body: form });
+        if (!r.ok) { const txt = await r.text(); await refund(); return new Response(JSON.stringify({ error: `ElevenLabs voice clone error ${r.status}: ${txt.slice(0, 300)}` }), { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }); }
+        const j = await r.json();
+        return new Response(JSON.stringify({ voiceId: j.voice_id, credits_used: cost }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
 
       default:
         await refund();
