@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import { useDebounce } from "@/hooks/use-debounce";
 import { z } from "zod";
 import { Briefcase, MapPin, DollarSign, Clock, Search, Plus, Building2, Globe, Wrench, Flame, Trophy, Medal, Zap, Bookmark, ListChecks, Bell, HelpCircle, Users, Sparkles, Map as MapIcon } from "lucide-react";
@@ -202,16 +202,23 @@ const Jobs = () => {
 
   const debouncedSearch = useDebounce(searchQuery, 300);
 
-  const { data: jobs = [], isLoading } = useQuery({
+  const PAGE_SIZE = 50;
+  const {
+    data: jobsPages,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
     queryKey: ["jobs", debouncedSearch, selectedCategory, selectedType, selectedCountry],
-    queryFn: async () => {
-      // Read from sanitized view (excludes employer contact_email).
-      // Employers/admins/applicants get the full row by querying job_listings
-      // directly (RLS allows it). Anonymous browsers stay PII-safe.
+    initialPageParam: 0,
+    queryFn: async ({ pageParam = 0 }) => {
+      const from = (pageParam as number) * PAGE_SIZE;
+      const to = from + PAGE_SIZE - 1;
       let query = (supabase.from as any)("job_listings_public")
         .select("*")
         .order("created_at", { ascending: false })
-        .limit(500);
+        .range(from, to);
       if (debouncedSearch) {
         const term = escapeOrTerm(debouncedSearch);
         query = query.or(`title.ilike.%${term}%,description.ilike.%${term}%,company_name.ilike.%${term}%`);
@@ -221,9 +228,13 @@ const Jobs = () => {
       if (selectedCountry !== "all") query = query.eq("country", selectedCountry);
       const { data, error } = await query;
       if (error) throw error;
-      return data as JobListing[];
+      return (data as JobListing[]) ?? [];
     },
+    getNextPageParam: (lastPage, allPages) =>
+      lastPage.length === PAGE_SIZE ? allPages.length : undefined,
   });
+
+  const jobs: JobListing[] = jobsPages?.pages.flat() ?? [];
 
   const countries = Array.from(new Set(jobs.map((job) => job.country).filter(c => c && c.trim() !== ""))).sort();
 
@@ -563,6 +574,17 @@ const Jobs = () => {
                     {filteredJobs.map((job) => (
                       <JobCardRedesigned key={job.id} job={job} onViewDetails={handleViewDetails} onApply={handleApply} isLoggedIn={!!user} />
                     ))}
+                    {hasNextPage && !quickFilter && (
+                      <div className="flex justify-center pt-4">
+                        <Button
+                          variant="outline"
+                          onClick={() => fetchNextPage()}
+                          disabled={isFetchingNextPage}
+                        >
+                          {isFetchingNextPage ? "Loading…" : "Load more jobs"}
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
