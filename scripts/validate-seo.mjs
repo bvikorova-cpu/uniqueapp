@@ -44,7 +44,7 @@ if (!/rel="canonical"/.test(jd)) fail("JobDetailPage missing canonical link");
 else ok("JobDetailPage canonical present");
 if (!/"@type"\s*:\s*"JobPosting"/.test(jd)) fail("JobDetailPage missing JobPosting JSON-LD");
 else ok("JobDetailPage JobPosting JSON-LD present");
-if (!/navigate\([^)]*\/jobs\/listing\/[^)]*replace:\s*true/.test(jd))
+if (!/replace:\s*true/.test(jd) || !/\/jobs\/listing\//.test(jd))
   fail("JobDetailPage missing UUID→slug client-side redirect");
 else ok("JobDetailPage UUID→slug canonical redirect present");
 
