@@ -14,7 +14,7 @@ import { useTheme } from "next-themes";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import MessagesBell from "@/components/messenger/MessagesBell";
 import { AICreditsBalanceWidget } from "@/components/ai-credits/AICreditsBalanceWidget";
-import { FreeTierBalanceWidget } from "@/components/credits/FreeTierBalanceWidget";
+// FreeTierBalanceWidget import removed — paid-only model
 import { GlobalCurrencySwitcher } from "@/components/GlobalCurrencySwitcher";
 
 import megatalentLogo from "@/assets/megatalent-logo.png";
@@ -341,10 +341,7 @@ const Navbar = () => {
                   <AICreditsBalanceWidget compact />
                 </div>
 
-                {/* Free Tier Credits */}
-                <div className="hidden sm:block">
-                  <FreeTierBalanceWidget compact />
-                </div>
+                {/* Free Tier Credits removed — paid-only model */}
 
                 {/* Wall Notifications */}
                 <MessagesBell />
@@ -457,12 +454,7 @@ const Navbar = () => {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="lg:hidden py-3 space-y-1 max-h-[calc(100vh-5rem)] overflow-y-auto">
-            {/* Free tier balance — visible to logged-in users */}
-            {user && (
-              <div className="px-2 pb-2 flex justify-start">
-                <FreeTierBalanceWidget compact />
-              </div>
-            )}
+            {/* Free tier balance removed — paid-only model */}
             {/* Main Navigation Items */}
             {mainNavItems.map((item) => {
               const Icon = item.icon;

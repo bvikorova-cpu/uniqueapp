@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, ArrowLeft, Briefcase, Video, Bookmark, Trophy, GraduationCap, Brain, Package, Sparkles, ArrowRightLeft, Users, UserPlus, UserCheck, Gift } from "lucide-react";
-import { FreeTierBalanceWidget } from "@/components/credits/FreeTierBalanceWidget";
+// FreeTierBalanceWidget import removed — paid-only model
 import { FreeTierHistory } from "@/components/credits/FreeTierHistory";
 import { StreakMultiplierCard } from "@/components/gamification/StreakMultiplierCard";
 import { VictoryCardGenerator } from "@/components/social/VictoryCardGenerator";
@@ -489,7 +489,7 @@ const Profile = () => {
         {userId && (
           <div className="mb-4 grid md:grid-cols-2 gap-4">
             <ProfileMilestones userId={userId} />
-            {currentUserId === userId && <FreeTierBalanceWidget />}
+            {/* FreeTierBalanceWidget removed — paid-only model */}
             {currentUserId === userId && <StreakMultiplierCard />}
             {currentUserId === userId && <FreeTierHistory />}
             {currentUserId === userId && <VictoryCardGenerator username={profile?.username ?? null} avatarUrl={profile?.avatar_url ?? null} />}
