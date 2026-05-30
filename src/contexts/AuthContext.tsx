@@ -44,8 +44,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signUp = async (email: string, password: string, fullName: string) => {
     const redirectUrl = `${window.location.origin}/`;
-    
-    const { error } = await supabase.auth.signUp({
+
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -55,24 +55,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       }
     });
-    
-    if (!error) {
+
+    // Only navigate when a session is established (email confirmation NOT required).
+    // Otherwise the caller should show a "check your email" message and stay on /auth.
+    if (!error && data?.session) {
       navigate('/');
     }
-    
+
     return { error };
   };
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
-    
-    if (!error) {
+
+    if (!error && data?.session) {
       navigate('/');
     }
-    
+
     return { error };
   };
 
