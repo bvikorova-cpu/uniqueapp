@@ -60,6 +60,17 @@ serve(async (req) => {
       return jsonResponse({ ok: true, router: "nutrition-router", actions: Object.keys(ACTIONS) });
     }
 
+    // Test-mode bypass (no auth/credit deduction, no OpenAI call).
+    // Used by E2E to validate every action's request/response shape.
+    const tm = checkTestMode(req);
+    if (tm) {
+      const tmBody = await req.json().catch(() => ({}));
+      const action = String((tmBody as any)?.action ?? "").trim();
+      const spec = ACTIONS[action];
+      if (!spec) return errorResponse(`Unknown nutrition action: ${action}`, 400);
+      return tm.stub(action, spec);
+    }
+
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) return errorResponse("Missing authorization", 401);
     const supabase = createClient(
