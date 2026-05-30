@@ -640,6 +640,24 @@ const Feed = () => {
                   <SmartSuggestionsCard />
 
                   <div className="space-y-3 sm:space-y-4">
+                    {/* Realtime "new posts" banner */}
+                    {newRealtimeCount > 0 && (
+                      <div className="sticky top-20 z-30 flex justify-center pointer-events-none">
+                        <Button
+                          size="sm"
+                          className="pointer-events-auto rounded-full shadow-lg bg-primary text-primary-foreground hover:bg-primary/90 gap-2 animate-fade-in"
+                          onClick={() => {
+                            resetRealtimeCount();
+                            fetchPosts(false);
+                            window.scrollTo({ top: 0, behavior: "smooth" });
+                          }}
+                        >
+                          <Sparkles className="h-4 w-4" />
+                          {newRealtimeCount} new {newRealtimeCount === 1 ? "post" : "posts"} — tap to refresh
+                        </Button>
+                      </div>
+                    )}
+
                     {loading ? (
                       <Card className="p-6 sm:p-8 flex items-center justify-center">
                         <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin text-primary" />
@@ -649,40 +667,49 @@ const Feed = () => {
                         No posts found. Try adjusting your filters.
                       </Card>
                     ) : (
-                    <>
-                      {filteredFeedItems.map((item, index) => {
-                        const showAd = (index + 1) % 20 === 0;
-                        return (
-                          <Fragment key={`${item.type}-${item.data.id}`}>
-                            <div
-                              className="animate-fade-in"
-                              style={{ animationDelay: `${Math.min(index, 10) * 0.05}s` }}
-                            >
-                              {item.type === 'post' ? (
-                                <PostCard post={item.data} onDelete={fetchPosts} />
-                              ) : (
-                                <RepostCard repost={item.data} onDelete={fetchPosts} />
+                      <Virtuoso
+                        useWindowScroll
+                        data={filteredFeedItems}
+                        computeItemKey={(_, item) => `${item.type}-${item.data.id}`}
+                        endReached={() => {
+                          if (hasMore && !loadingMore) fetchPosts(true);
+                        }}
+                        overscan={800}
+                        increaseViewportBy={{ top: 400, bottom: 800 }}
+                        itemContent={(index, item) => (
+                          <div className="pb-3 sm:pb-4">
+                            {item.type === 'post' ? (
+                              <PostCard post={item.data} onDelete={fetchPosts} />
+                            ) : (
+                              <RepostCard repost={item.data} onDelete={fetchPosts} />
+                            )}
+                            {(index + 1) % 20 === 0 && (
+                              <div className="mt-3 sm:mt-4">
+                                <MonetagInFeedAd slotIndex={Math.floor((index + 1) / 20)} />
+                              </div>
+                            )}
+                          </div>
+                        )}
+                        components={{
+                          Footer: () => (
+                            <>
+                              {loadingMore && (
+                                <Card className="p-3 sm:p-4 flex items-center justify-center">
+                                  <Loader2 className="h-5 w-5 sm:h-6 sm:w-6 animate-spin text-primary mr-2" />
+                                  <span className="text-xs sm:text-sm text-muted-foreground">Loading more posts...</span>
+                                </Card>
                               )}
-                            </div>
-                            {showAd && <MonetagInFeedAd slotIndex={Math.floor((index + 1) / 20)} />}
-                          </Fragment>
-                        );
-                      })}
-                      
-                      {loadingMore && (
-                        <Card className="p-3 sm:p-4 flex items-center justify-center">
-                          <Loader2 className="h-5 w-5 sm:h-6 sm:w-6 animate-spin text-primary mr-2" />
-                          <span className="text-xs sm:text-sm text-muted-foreground">Loading more posts...</span>
-                        </Card>
-                      )}
-                      
-                      {!loading && !loadingMore && !hasMore && filteredFeedItems.length > 0 && (
-                        <Card className="p-3 sm:p-4 text-center text-muted-foreground text-xs sm:text-sm">
-                          You've reached the end! 🎉
-                        </Card>
-                      )}
-                    </>
+                              {!loading && !loadingMore && !hasMore && filteredFeedItems.length > 0 && (
+                                <Card className="p-3 sm:p-4 text-center text-muted-foreground text-xs sm:text-sm">
+                                  You've reached the end! 🎉
+                                </Card>
+                              )}
+                            </>
+                          ),
+                        }}
+                      />
                     )}
+
                   </div>
                 </>
               )}
