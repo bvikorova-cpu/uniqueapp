@@ -234,6 +234,9 @@ const Auth = () => {
         msg.includes("unavailable") ||
         msg.includes("upstream");
 
+      const isUnconfirmed = msg.includes("not confirmed") || msg.includes("email not confirmed");
+      if (isUnconfirmed) setUnconfirmedEmail(email);
+
       toast({
         variant: "destructive",
         title: isUnavailable ? "Service temporarily unavailable" : "Login error",
