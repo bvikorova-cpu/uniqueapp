@@ -189,6 +189,37 @@ export const VERIFY_PROXY_MAP: Record<string, string> = {
   "verify-tip-purchase": "tip",
 };
 
+// Nutrition router consolidation: 9 nutrition-* functions merged into nutrition-router.
+export const NUTRITION_ROUTER_MAP: Record<string, string> = {
+  "nutrition-coach-chat": "coach_chat",
+  "nutrition-allergy-scanner": "allergy_scanner",
+  "nutrition-barcode-scanner": "barcode_scanner",
+  "nutrition-body-predictor": "body_predictor",
+  "nutrition-grocery-optimizer": "grocery_optimizer",
+  "nutrition-hydration-coach": "hydration_coach",
+  "nutrition-meal-challenge": "meal_challenge",
+  "nutrition-supplement-advisor": "supplement_advisor",
+  "nutrition-weekly-progress": "weekly_progress",
+};
+
+// Horse router consolidation: 6 horse-* functions merged into horse-router.
+export const HORSE_ROUTER_MAP: Record<string, string> = {
+  "horse-create": "create",
+  "horse-train": "train",
+  "horse-join-race": "join_race",
+  "horse-purchase-equipment": "purchase_equipment",
+  "horse-championship-enroll": "championship_enroll",
+  "horse-claim-quest-reward": "claim_quest_reward",
+};
+
+// Video-ad router consolidation: 4 video-ad-* media functions merged into video-ad-tools.
+export const VIDEO_AD_ROUTER_MAP: Record<string, string> = {
+  "video-ad-scenes": "scenes",
+  "video-ad-sfx": "sfx",
+  "video-ad-tts": "tts",
+  "video-ad-voice-clone": "voice_clone",
+};
+
 /**
  * Resolve a function name to a universal router + augmented body.
  * Returns null when the function name is not a proxy (call as-is).
@@ -224,6 +255,24 @@ export function resolveProxy(
   }
   if (functionName === "kids-customer-portal") {
     return { target: "check-connect-status", body: { ...b, action: "customer_portal" } };
+  }
+
+  // Nutrition router consolidation (9 functions -> 1).
+  const nutrition = NUTRITION_ROUTER_MAP[functionName];
+  if (nutrition) {
+    return { target: "nutrition-router", body: { ...b, action: nutrition } };
+  }
+
+  // Horse router consolidation (6 functions -> 1).
+  const horse = HORSE_ROUTER_MAP[functionName];
+  if (horse) {
+    return { target: "horse-router", body: { ...b, action: horse } };
+  }
+
+  // Video-ad router consolidation (4 media functions merged into video-ad-tools).
+  const videoAd = VIDEO_AD_ROUTER_MAP[functionName];
+  if (videoAd) {
+    return { target: "video-ad-tools", body: { ...b, action: videoAd } };
   }
 
   const aiType = AI_PROXY_MAP[functionName];
