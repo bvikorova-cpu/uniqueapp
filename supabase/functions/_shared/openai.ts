@@ -35,6 +35,8 @@ export interface CallOptions {
   temperature?: number;
   max_tokens?: number;
   response_format?: { type: "json_object" } | { type: "text" };
+  /** Convenience: when true, forces response_format=json_object. */
+  json?: boolean;
 }
 
 export class OpenAIError extends Error {
