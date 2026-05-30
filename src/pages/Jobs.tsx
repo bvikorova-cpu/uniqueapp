@@ -267,9 +267,15 @@ const Jobs = () => {
     setShowApplyDialog(true);
   };
 
-  const handleViewDetails = (job: JobListing) => {
+  const handleViewDetails = async (job: JobListing) => {
     if (!user) { toast({ title: "Login Required", description: "Please sign in to view details" }); window.location.href = "/auth"; return; }
-    setSelectedJob(job);
+    // Pull contact_email from raw table (RLS: applicant after apply, or employer)
+    const { data: full } = await supabase
+      .from("job_listings")
+      .select("contact_email")
+      .eq("id", job.id)
+      .maybeSingle();
+    setSelectedJob({ ...job, contact_email: (full as any)?.contact_email ?? "" });
     setShowJobDetailsDialog(true);
   };
 
