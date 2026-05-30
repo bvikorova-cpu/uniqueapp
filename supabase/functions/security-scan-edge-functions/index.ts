@@ -42,8 +42,8 @@ const RULES: Array<(name: string, src: string) => Finding[]> = [
     const patterns: Array<[RegExp, string]> = [
       [/sk_live_[A-Za-z0-9]{20,}/, "Stripe live secret key hardcoded"],
       [/sk_test_[A-Za-z0-9]{20,}/, "Stripe test secret key hardcoded"],
-      [/AIza[0-9A-Za-z_\-]{35}/, "Google API key hardcoded"],
-      [/eyJ[A-Za-z0-9_\-]{20,}\.eyJ[A-Za-z0-9_\-]{20,}\.[A-Za-z0-9_\-]{20,}/, "JWT-shaped secret hardcoded"],
+      [/AIza[0-9A-Za-z_-]{35}/, "Google API key hardcoded"],
+      [/eyJ[A-Za-z0-9_-]{20,}\.eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}/, "JWT-shaped secret hardcoded"],
     ];
     for (const [re, label] of patterns) {
       if (re.test(src)) out.push({ fn, rule: "hardcoded_secret", severity: "critical",

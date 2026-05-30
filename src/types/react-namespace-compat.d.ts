@@ -10,6 +10,7 @@ declare global {
     // Core
     export type ReactNode = ReactTypes.ReactNode;
     export type ReactElement<P = any, T extends string | ReactTypes.JSXElementConstructor<any> = string | ReactTypes.JSXElementConstructor<any>> = ReactTypes.ReactElement<P, T>;
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     export type FC<P = {}> = ReactTypes.FC<P>;
 
     // Events
