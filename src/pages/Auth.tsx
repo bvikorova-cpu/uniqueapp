@@ -355,6 +355,27 @@ const Auth = () => {
           </div>
         </CardHeader>
         <CardContent>
+          {unconfirmedEmail && (
+            <div className="mb-4 rounded-lg border border-primary/30 bg-primary/5 p-3 text-sm">
+              <p className="mb-2">
+                Email <strong>{unconfirmedEmail}</strong> is not confirmed yet. Check your inbox or resend the link.
+              </p>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  onClick={handleResendConfirmation}
+                  disabled={resendCooldown > 0}
+                >
+                  {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : "Resend confirmation email"}
+                </Button>
+                <Button type="button" size="sm" variant="ghost" onClick={() => setUnconfirmedEmail(null)}>
+                  Dismiss
+                </Button>
+              </div>
+            </div>
+          )}
           {showForgotPassword ? (
             <div>
               <Button
