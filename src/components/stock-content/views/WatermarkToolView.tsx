@@ -30,7 +30,7 @@ export function WatermarkToolView({ onBack }: Props) {
     setImageUrl(URL.createObjectURL(file));
   };
 
-  useEffect(() => { if (imageUrl) renderWatermark(); /* eslint-disable-next-line */ }, [imageUrl, text, opacity, size, rotation, position, color]);
+  useEffect(() => { if (imageUrl) renderWatermark();   }, [imageUrl, text, opacity, size, rotation, position, color]);
 
   const renderWatermark = async () => {
     if (!imageUrl || !canvasRef.current) return;

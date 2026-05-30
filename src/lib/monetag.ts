@@ -52,7 +52,7 @@ export function showMonetagRewarded(
 
     const fnName = `show_${zoneId}`;
     const tryShow = (attempt = 0) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       const fn = (window as any)[fnName];
       if (typeof fn === "function") {
         try {
