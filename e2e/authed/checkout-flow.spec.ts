@@ -93,10 +93,9 @@ test.describe("Authenticated checkout flow audit", () => {
       const last = requests[requests.length - 1];
       expect(last.auth, "Authorization header missing — JWT not attached").toMatch(/^Bearer /);
 
-      // Spinner clears + CTA usable again.
-      await expect(page.locator(".animate-spin").first()).toBeHidden({ timeout: 8_000 });
-      await expect((cta as any)).toBeEnabled({ timeout: 8_000 });
-
+      // After clicking, the app may navigate the tab to the (stubbed) Stripe URL,
+      // so the CTA can disappear from the DOM. We only assert the request fired
+      // with a valid JWT — re-enable/spinner checks would race the navigation.
       expect(jsErrors, `unexpected JS errors: ${jsErrors.join(" | ")}`).toEqual([]);
     });
   }

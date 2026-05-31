@@ -67,14 +67,17 @@ setup("authenticate", async ({ request }) => {
     }
   } catch {}
 
+  const onboardingPayload = JSON.stringify({ at: Date.now(), interests: [] });
   const localStorageItems = [
     { name: STORAGE_KEY, value: JSON.stringify(storedSession) },
     { name: "onboarding_completed", value: "true" },
-    { name: "welcome_onboarding_v1", value: JSON.stringify({ at: Date.now(), interests: [] }) },
-    {
-      name: `welcome_onboarding_v1_${session.user.id}`,
-      value: JSON.stringify({ at: Date.now(), interests: [] }),
-    },
+    { name: "welcome_onboarding_v1", value: onboardingPayload },
+    { name: `welcome_onboarding_v1_${session.user.id}`, value: onboardingPayload },
+    // WelcomeOnboarding gates on `unique_onboarding_v1_{userId}`.
+    { name: "unique_onboarding_v1", value: onboardingPayload },
+    { name: `unique_onboarding_v1_${session.user.id}`, value: onboardingPayload },
+    // MegaTalentOnboarding gates on `megatalent_onboarding_done_{userId}` = "1".
+    { name: `megatalent_onboarding_done_${session.user.id}`, value: "1" },
   ];
 
   const state = {

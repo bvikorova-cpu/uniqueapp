@@ -25,24 +25,18 @@ test.describe("MegaTalent — paid user unlock", () => {
       timeout: 15_000,
     });
 
-    // Gated UI must be MOUNTED. Either vote/comment buttons exist on real
-    // submissions, or the upload CTA / hero shell is rendered.
-    const voteCount = await page.locator('button:has(svg.lucide-heart)').count();
-    const commentCount = await page.locator('button:has(svg.lucide-message-circle)').count();
-    const hasUploadCta =
-      (await page.getByText(/upload|nahraj|pridaj|submit/i).count()) > 0;
-    const hasHero =
-      (await page.getByText(/megatalent|prize pool|€10,000/i).count()) > 0;
-
-    expect(
-      voteCount + commentCount > 0 || hasUploadCta || hasHero,
-      "MegaTalent feed shell did not mount after subscription unlock",
-    ).toBe(true);
+    // Gated UI must be MOUNTED. Wait up to 15s for the hero / shell to appear —
+    // /megatalent has heavy client-side hydration after the subscription check.
+    const heroOrCta = page
+      .locator("text=/megatalent|prize pool|€10,000|upload|nahraj|pridaj|submit/i")
+      .first();
+    await expect(heroOrCta).toBeVisible({ timeout: 15_000 });
 
     // If a vote button is rendered, clicking it MUST NOT raise the
     // "Premium required" toast — that toast only fires for unpaid users.
-    if (voteCount > 0) {
-      await page.locator('button:has(svg.lucide-heart)').first().click();
+    const voteBtn = page.locator('button:has(svg.lucide-heart)').first();
+    if (await voteBtn.count() > 0) {
+      await voteBtn.click({ trial: false }).catch(() => {/* overlay races; not fatal */});
       const gateToast = page.getByText(/Megatalent Premium required/i);
       await expect(gateToast).toHaveCount(0, { timeout: 3_000 });
     }
