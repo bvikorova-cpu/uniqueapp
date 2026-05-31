@@ -18,7 +18,7 @@ import { AICreditsBalanceWidget } from "@/components/ai-credits/AICreditsBalance
 import { GlobalCurrencySwitcher } from "@/components/GlobalCurrencySwitcher";
 
 import megatalentLogo from "@/assets/megatalent-logo.png";
-import uniqueLogo from "@/assets/unique-logo.png";
+import uniqueLogo from "@/assets/unique-logo.webp";
 import { Age16Badge } from "@/components/Age16Badge";
 
 import GlobalSearch from "@/components/GlobalSearch";

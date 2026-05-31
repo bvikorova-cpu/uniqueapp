@@ -145,7 +145,7 @@ const stats = [
 import spotlightAvatars from "@/assets/spotlight-avatars.jpg";
 import spotlightRacing from "@/assets/spotlight-racing.jpg";
 import spotlightChef from "@/assets/spotlight-chef.jpg";
-import spotlightBeauty from "@/assets/spotlight-beauty.jpg";
+import spotlightBeauty from "@/assets/spotlight-beauty.webp";
 
 const spotlightServices = [
   { ...coreModules[4], spotlight: "🔥 Hot Now", image: spotlightBeauty },
@@ -242,7 +242,7 @@ const Index = () => {
           loop
           playsInline
           preload="none"
-          poster="/unique-hero-poster-hd.jpg"
+          poster="/unique-hero-poster-hd.webp"
           className="absolute inset-0 w-full h-full object-cover object-center"
           style={{ objectPosition: "center 35%" }}
         >
@@ -353,13 +353,13 @@ const Index = () => {
         <FoundingMembersBanner />
 
         {/* ── Stats ────────────────────────────────────── */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-2 sm:-mt-16 relative z-20">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-2 sm:-mt-16 relative z-20 [contain:layout]">
           {stats.map((stat, i) => (
             <div
               key={i}
               className="text-center p-5 sm:p-7 rounded-2xl bg-card border border-border/40 hover:border-primary/40 transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1"
             >
-              <p className="text-3xl sm:text-5xl font-black bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
+              <p className="text-3xl sm:text-5xl font-black bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent tabular-nums">
                 <AnimatedCounter target={stat.value} suffix={stat.suffix} />
               </p>
               <p className="text-xs sm:text-sm text-muted-foreground mt-1 font-medium">{stat.label}</p>
