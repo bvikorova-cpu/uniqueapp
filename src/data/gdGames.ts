@@ -44,15 +44,14 @@ export interface GDGame {
 }
 
 export const gdGames: GDGame[] = [
-  // Example placeholder — replace with real embeds from Game Distributor.
-  // {
-  //   id: "example-1",
-  //   title: "Example Game",
-  //   category: "action",
-  //   thumbnail: "https://img.gamedistribution.com/.../512x384.jpg",
-  //   embedUrl: "https://html5.gamedistribution.com/<GAME_ID>/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
-  //   aspectRatio: "16/9",
-  // },
+  {
+    id: "gd-fd5ae555",
+    title: "Featured Game",
+    category: "arcade",
+    embedUrl:
+      "https://html5.gamedistribution.com/fd5ae555f42e4dac872819ed9125616c/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
 ];
 
 export const getGDGamesByCategory = (cat: GDCategory) =>
