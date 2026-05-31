@@ -9,7 +9,7 @@ import { Gamepad2, ArrowLeft, Sparkles, Search, X, ChevronDown, ExternalLink } f
 import { SEO } from "@/components/SEO";
 import { gdGames, gdCategories, getGDGamesByCategory, type GDCategory, type GDGame } from "@/data/gdGames";
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 30;
 
 const isGameDistributionUrl = (url?: string) =>
   Boolean(url?.includes("html5.gamedistribution.com"));
