@@ -67,14 +67,16 @@ setup("authenticate", async ({ request }) => {
     }
   } catch {}
 
+  const onboardingPayload = JSON.stringify({ at: Date.now(), interests: [] });
   const localStorageItems = [
     { name: STORAGE_KEY, value: JSON.stringify(storedSession) },
     { name: "onboarding_completed", value: "true" },
-    { name: "welcome_onboarding_v1", value: JSON.stringify({ at: Date.now(), interests: [] }) },
-    {
-      name: `welcome_onboarding_v1_${session.user.id}`,
-      value: JSON.stringify({ at: Date.now(), interests: [] }),
-    },
+    { name: "welcome_onboarding_v1", value: onboardingPayload },
+    { name: `welcome_onboarding_v1_${session.user.id}`, value: onboardingPayload },
+    // WelcomeOnboarding uses `unique_onboarding_v1_{userId}` — this is the
+    // key that actually suppresses the Radix Dialog overlay blocking clicks.
+    { name: "unique_onboarding_v1", value: onboardingPayload },
+    { name: `unique_onboarding_v1_${session.user.id}`, value: onboardingPayload },
   ];
 
   const state = {
