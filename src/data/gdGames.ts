@@ -656,6 +656,96 @@ export const gdGames: GDGame[] = [
       "https://html5.gamedistribution.com/d83a6203efec418084fc93da189e0abb/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
     aspectRatio: "16/9",
   },
+  {
+    id: "c07ca66b157144bfb03ba69e7bbf5156",
+    title: "Garten Of BanBan 1 Escape",
+    category: "arcade",
+    thumbnail: gdThumb("c07ca66b157144bfb03ba69e7bbf5156"),
+    embedUrl:
+      "https://html5.gamedistribution.com/c07ca66b157144bfb03ba69e7bbf5156/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "8c85fb2b116f4299927e33071c852847",
+    title: "Artillery Vs Tanks",
+    category: "action",
+    thumbnail: gdThumb("8c85fb2b116f4299927e33071c852847"),
+    embedUrl:
+      "https://html5.gamedistribution.com/8c85fb2b116f4299927e33071c852847/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "7cb8b1ed1f174128bb7da70c7fb14361",
+    title: "Merge Blocks 2048",
+    category: "puzzle",
+    thumbnail: gdThumb("7cb8b1ed1f174128bb7da70c7fb14361"),
+    embedUrl:
+      "https://html5.gamedistribution.com/7cb8b1ed1f174128bb7da70c7fb14361/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "644044c3831d4d77a6cee53e6b9d01c9",
+    title: "Fruite Swipe",
+    category: "puzzle",
+    thumbnail: gdThumb("644044c3831d4d77a6cee53e6b9d01c9"),
+    embedUrl:
+      "https://html5.gamedistribution.com/644044c3831d4d77a6cee53e6b9d01c9/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "16/9",
+  },
+  {
+    id: "80a3f1d615d1414ea4eaace523d94056",
+    title: "Treasure Hunt Puzzle",
+    category: "puzzle",
+    thumbnail: gdThumb("80a3f1d615d1414ea4eaace523d94056"),
+    embedUrl:
+      "https://html5.gamedistribution.com/80a3f1d615d1414ea4eaace523d94056/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "9/16",
+  },
+  {
+    id: "c61be3d80a54455a908a44a1ea7087fb",
+    title: "Meme Mukbang ASMR Game",
+    category: "arcade",
+    thumbnail: gdThumb("c61be3d80a54455a908a44a1ea7087fb"),
+    embedUrl:
+      "https://html5.gamedistribution.com/c61be3d80a54455a908a44a1ea7087fb/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "9/16",
+  },
+  {
+    id: "6465ba06644349ccab4cdd4e65196aef",
+    title: "Obby Rescue Pin",
+    category: "arcade",
+    thumbnail: gdThumb("6465ba06644349ccab4cdd4e65196aef"),
+    embedUrl:
+      "https://html5.gamedistribution.com/6465ba06644349ccab4cdd4e65196aef/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "9/16",
+  },
+  {
+    id: "c51a61ffce8044a6b1333575047534f3",
+    title: "Reach 2048",
+    category: "puzzle",
+    thumbnail: gdThumb("c51a61ffce8044a6b1333575047534f3"),
+    embedUrl:
+      "https://html5.gamedistribution.com/c51a61ffce8044a6b1333575047534f3/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "16/9",
+  },
+  {
+    id: "fbcdbc6cbf174116a48aa3c297b45bf8",
+    title: "Solitaire Farm Seasons 3",
+    category: "puzzle",
+    thumbnail: gdThumb("fbcdbc6cbf174116a48aa3c297b45bf8"),
+    embedUrl:
+      "https://html5.gamedistribution.com/fbcdbc6cbf174116a48aa3c297b45bf8/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "ed99a63b0a35407792cbd1f93b7b7b83",
+    title: "ColorWars.io - Conquest Game",
+    category: "action",
+    thumbnail: gdThumb("ed99a63b0a35407792cbd1f93b7b7b83"),
+    embedUrl:
+      "https://html5.gamedistribution.com/ed99a63b0a35407792cbd1f93b7b7b83/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
 ];
 
 export const getGDGamesByCategory = (cat: GDCategory) =>
