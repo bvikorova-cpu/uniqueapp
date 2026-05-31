@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Lock, Skull, Ghost, Eye, Flame, Trophy, Sparkles, Volume2, Zap } from 'lucide-react';
 import { useShadowSubscription } from '@/hooks/useShadowSubscription';
@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
+import { loadGoogleFont } from '@/utils/lazyFonts';
 
 import shadowPoster from '@/assets/shadow-arena-poster.jpg';
 
@@ -25,6 +26,7 @@ const FEATURE_KEYS = [
 export function SubscriptionGate({ children }: SubscriptionGateProps) {
   const { user } = useAuth();
   const { subscribed, loading } = useShadowSubscription();
+  useEffect(() => { loadGoogleFont('gothic'); }, []);
   const handleSubscribe = async () => {
     if (!user) {
       toast.error("Please sign in to subscribe");
