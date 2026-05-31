@@ -836,6 +836,96 @@ export const gdGames: GDGame[] = [
       "https://html5.gamedistribution.com/ce1b2e5eabe44debb11bf77cd04c0f85/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
     aspectRatio: "4/3",
   },
+  {
+    id: "a33aed73c90f428da97f4772503b50eb",
+    title: "Doodle Dino Run",
+    category: "action",
+    thumbnail: gdThumb("a33aed73c90f428da97f4772503b50eb"),
+    embedUrl:
+      "https://html5.gamedistribution.com/a33aed73c90f428da97f4772503b50eb/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "16/9",
+  },
+  {
+    id: "9f82549300b14817a917bfca75210fd0",
+    title: "City Tower Builder",
+    category: "puzzle",
+    thumbnail: gdThumb("9f82549300b14817a917bfca75210fd0"),
+    embedUrl:
+      "https://html5.gamedistribution.com/9f82549300b14817a917bfca75210fd0/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "09fd115d31734cb0bbab0e58fa6e4a1b",
+    title: "Office Spider Solitaire",
+    category: "puzzle",
+    thumbnail: gdThumb("09fd115d31734cb0bbab0e58fa6e4a1b"),
+    embedUrl:
+      "https://html5.gamedistribution.com/09fd115d31734cb0bbab0e58fa6e4a1b/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "efa7f45d308f48e9a3f3dc641b83556c",
+    title: "Obby - Escape Barry's Jail Parkour",
+    category: "action",
+    thumbnail: gdThumb("efa7f45d308f48e9a3f3dc641b83556c"),
+    embedUrl:
+      "https://html5.gamedistribution.com/efa7f45d308f48e9a3f3dc641b83556c/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "3bbe72ba374644f5b7360a993fa8bc46",
+    title: "Closed City",
+    category: "action",
+    thumbnail: gdThumb("3bbe72ba374644f5b7360a993fa8bc46"),
+    embedUrl:
+      "https://html5.gamedistribution.com/3bbe72ba374644f5b7360a993fa8bc46/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "ab572c1e1dc04e4499da4db26e768286",
+    title: "Office Solitaire",
+    category: "puzzle",
+    thumbnail: gdThumb("ab572c1e1dc04e4499da4db26e768286"),
+    embedUrl:
+      "https://html5.gamedistribution.com/ab572c1e1dc04e4499da4db26e768286/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "63e4110fb71d4588a8f4b6081fea5bdb",
+    title: "Cooking Empire",
+    category: "puzzle",
+    thumbnail: gdThumb("63e4110fb71d4588a8f4b6081fea5bdb"),
+    embedUrl:
+      "https://html5.gamedistribution.com/63e4110fb71d4588a8f4b6081fea5bdb/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "cfa73398f23a40feaed85292ab9ae51d",
+    title: "PaperWar.io",
+    category: "action",
+    thumbnail: gdThumb("cfa73398f23a40feaed85292ab9ae51d"),
+    embedUrl:
+      "https://html5.gamedistribution.com/cfa73398f23a40feaed85292ab9ae51d/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "b5c96767c4484a959e6154fc64a73144",
+    title: "Logic Storm: Animals Puzzle",
+    category: "puzzle",
+    thumbnail: gdThumb("b5c96767c4484a959e6154fc64a73144"),
+    embedUrl:
+      "https://html5.gamedistribution.com/b5c96767c4484a959e6154fc64a73144/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "16/9",
+  },
+  {
+    id: "63cf93e7b28a43f2a781bafa61cf5307",
+    title: "Super Ninja Balloon",
+    category: "action",
+    thumbnail: gdThumb("63cf93e7b28a43f2a781bafa61cf5307"),
+    embedUrl:
+      "https://html5.gamedistribution.com/63cf93e7b28a43f2a781bafa61cf5307/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "9/16",
+  },
 ];
 
 export const getGDGamesByCategory = (cat: GDCategory) =>
