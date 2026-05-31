@@ -5,11 +5,44 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Gamepad2, ArrowLeft, Sparkles, Search, X, ChevronDown, ExternalLink } from "lucide-react";
+import { Gamepad2, ArrowLeft, Sparkles, Search, X, ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { gdGames, gdCategories, getGDGamesByCategory, type GDCategory, type GDGame } from "@/data/gdGames";
 
 const PAGE_SIZE = 30;
+
+const Pager = ({ page, totalPages, onChange }: { page: number; totalPages: number; onChange: (p: number) => void }) => {
+  if (totalPages <= 1) return null;
+  const go = (p: number) => {
+    onChange(p);
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  const pages: number[] = [];
+  const start = Math.max(1, page - 2);
+  const end = Math.min(totalPages, start + 4);
+  for (let i = start; i <= end; i++) pages.push(i);
+  return (
+    <div className="flex items-center justify-center gap-2 mt-8 flex-wrap">
+      <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => go(page - 1)} className="gap-1">
+        <ChevronLeft className="h-4 w-4" /> Prev
+      </Button>
+      {pages.map((p) => (
+        <Button
+          key={p}
+          size="sm"
+          variant={p === page ? "default" : "outline"}
+          onClick={() => go(p)}
+          className="min-w-9"
+        >
+          {p}
+        </Button>
+      ))}
+      <Button variant="outline" size="sm" disabled={page >= totalPages} onClick={() => go(page + 1)} className="gap-1">
+        Next <ChevronRight className="h-4 w-4" />
+      </Button>
+    </div>
+  );
+};
 
 const isGameDistributionUrl = (url?: string) =>
   Boolean(url?.includes("html5.gamedistribution.com"));
