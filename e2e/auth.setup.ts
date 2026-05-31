@@ -53,30 +53,36 @@ setup("authenticate", async ({ request }) => {
   };
 
   const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:8080";
-  const origin = new URL(baseURL).origin;
+  const baseOrigin = new URL(baseURL).origin;
+  // uniqueapp.fun → www.uniqueapp.fun 302. localStorage is origin-scoped, so
+  // pre-seed both so the session survives the redirect.
+  const origins = new Set<string>([baseOrigin]);
+  try {
+    const u = new URL(baseURL);
+    if (!u.hostname.startsWith("www.") && !u.hostname.match(/^localhost|^\d/)) {
+      origins.add(`${u.protocol}//www.${u.hostname}`);
+    }
+    if (u.hostname.startsWith("www.")) {
+      origins.add(`${u.protocol}//${u.hostname.replace(/^www\./, "")}`);
+    }
+  } catch {}
+
+  const localStorageItems = [
+    { name: STORAGE_KEY, value: JSON.stringify(storedSession) },
+    { name: "onboarding_completed", value: "true" },
+    { name: "welcome_onboarding_v1", value: JSON.stringify({ at: Date.now(), interests: [] }) },
+    {
+      name: `welcome_onboarding_v1_${session.user.id}`,
+      value: JSON.stringify({ at: Date.now(), interests: [] }),
+    },
+  ];
 
   const state = {
     cookies: [],
-    origins: [
-      {
-        origin,
-        localStorage: [
-          { name: STORAGE_KEY, value: JSON.stringify(storedSession) },
-          { name: "onboarding_completed", value: "true" },
-          {
-            name: "welcome_onboarding_v1",
-            value: JSON.stringify({ at: Date.now(), interests: [] }),
-          },
-          {
-            name: `welcome_onboarding_v1_${session.user.id}`,
-            value: JSON.stringify({ at: Date.now(), interests: [] }),
-          },
-        ],
-      },
-    ],
+    origins: Array.from(origins).map((origin) => ({ origin, localStorage: localStorageItems })),
   };
 
   mkdirSync(dirname(STATE_PATH), { recursive: true });
   writeFileSync(STATE_PATH, JSON.stringify(state, null, 2));
-  console.log(`[auth.setup] persisted session for ${session.user.email} → ${STATE_PATH}`);
+  console.log(`[auth.setup] persisted session for ${session.user.email} → ${STATE_PATH} (origins: ${Array.from(origins).join(", ")})`);
 });
