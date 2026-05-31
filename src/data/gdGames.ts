@@ -43,11 +43,16 @@ export interface GDGame {
   aspectRatio?: "16/9" | "4/3" | "1/1" | "9/16";
 }
 
+/** Auto-builds the Game Distributor CDN thumbnail URL from a game id. */
+export const gdThumb = (gdId: string, size: "512x384" | "512x512" | "1280x720" = "512x384") =>
+  `https://img.gamedistribution.com/${gdId}-${size}.jpg`;
+
 export const gdGames: GDGame[] = [
   {
-    id: "gd-fd5ae555",
+    id: "fd5ae555f42e4dac872819ed9125616c",
     title: "Featured Game",
     category: "arcade",
+    thumbnail: gdThumb("fd5ae555f42e4dac872819ed9125616c"),
     embedUrl:
       "https://html5.gamedistribution.com/fd5ae555f42e4dac872819ed9125616c/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
     aspectRatio: "4/3",
