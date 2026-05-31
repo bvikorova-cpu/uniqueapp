@@ -27,36 +27,7 @@ if (typeof window !== "undefined") {
     setTimeout(warmup, 200);
   }
 
-  // Lazy-load AdSense ONLY after the user interacts (scroll/touch/click) or
-  // after a long idle delay. The previous requestIdleCallback-after-load
-  // strategy still fired during LCP on slow networks (PageSpeed measured
-  // 6 s render-blocking for show_ads_impl). Real users start scrolling
-  // long after LCP, so this defers the 173 KiB script past the critical path.
-  const loadAdSense = () => {
-    if (document.querySelector('script[data-adsense="bootstrap"]')) return;
-    const s = document.createElement("script");
-    s.async = true;
-    s.crossOrigin = "anonymous";
-    s.dataset.adsense = "bootstrap";
-    s.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3821622017213888";
-    document.head.appendChild(s);
-  };
-  const triggerOnce = () => {
-    loadAdSense();
-    ["scroll", "touchstart", "mousedown", "keydown"].forEach((ev) =>
-      window.removeEventListener(ev, triggerOnce)
-    );
-  };
-  const armAds = () => {
-    ["scroll", "touchstart", "mousedown", "keydown"].forEach((ev) =>
-      window.addEventListener(ev, triggerOnce, { once: true, passive: true })
-    );
-    // Hard fallback: load after 8 s even if user is idle, so impressions
-    // still register for visitors who never scroll.
-    window.setTimeout(loadAdSense, 8000);
-  };
-  if (document.readyState === "complete") armAds();
-  else window.addEventListener("load", armAds, { once: true });
+  // AdSense fully removed — monetization uses Monetag only (src/lib/monetag.ts).
 }
 
 
