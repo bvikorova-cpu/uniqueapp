@@ -359,7 +359,7 @@ const Index = () => {
               key={i}
               className="text-center p-5 sm:p-7 rounded-2xl bg-card border border-border/40 hover:border-primary/40 transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1"
             >
-              <p className="text-3xl sm:text-5xl font-black bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
+              <p className="text-3xl sm:text-5xl font-black bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent tabular-nums">
                 <AnimatedCounter target={stat.value} suffix={stat.suffix} />
               </p>
               <p className="text-xs sm:text-sm text-muted-foreground mt-1 font-medium">{stat.label}</p>
