@@ -15,9 +15,16 @@ declare global {
  */
 export default function GoogleTranslateWidget() {
   const [open, setOpen] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
+  // Defer the 122 KiB translate.google.com script until the user actually
+  // opens the widget. Loading it eagerly cost ~7 s on PageSpeed mobile.
   useEffect(() => {
-    if (document.getElementById("google-translate-script")) return;
+    if (!open || loaded) return;
+    if (document.getElementById("google-translate-script")) {
+      setLoaded(true);
+      return;
+    }
 
     window.googleTranslateElementInit = () => {
       try {
@@ -34,42 +41,45 @@ export default function GoogleTranslateWidget() {
 
     const s = document.createElement("script");
     s.id = "google-translate-script";
-    s.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+    s.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
     s.async = true;
     document.body.appendChild(s);
 
-    const style = document.createElement("style");
-    style.id = "google-translate-style";
-    style.innerHTML = `
-      .goog-te-banner-frame.skiptranslate,
-      .goog-te-gadget-icon,
-      .goog-logo-link,
-      .goog-te-gadget > span > a { display: none !important; }
-      body { top: 0 !important; }
-      #google_translate_element .goog-te-gadget {
-        color: transparent !important;
-        font-size: 0 !important;
-        line-height: 0 !important;
-      }
-      #google_translate_element .goog-te-gadget .goog-te-combo {
-        color: hsl(var(--foreground));
-        background: hsl(var(--background) / 0.95);
-        border: 1px solid hsl(var(--border));
-        border-radius: 9999px;
-        padding: 8px 14px;
-        font-size: 13px;
-        font-weight: 600;
-        cursor: pointer;
-        outline: none;
-        box-shadow: 0 8px 24px hsl(270 91% 58% / 0.25);
-        max-width: 180px;
-      }
-      #google_translate_element .goog-te-gadget .goog-te-combo:focus {
-        border-color: hsl(var(--primary));
-      }
-    `;
-    document.head.appendChild(style);
-  }, []);
+    if (!document.getElementById("google-translate-style")) {
+      const style = document.createElement("style");
+      style.id = "google-translate-style";
+      style.innerHTML = `
+        .goog-te-banner-frame.skiptranslate,
+        .goog-te-gadget-icon,
+        .goog-logo-link,
+        .goog-te-gadget > span > a { display: none !important; }
+        body { top: 0 !important; }
+        #google_translate_element .goog-te-gadget {
+          color: transparent !important;
+          font-size: 0 !important;
+          line-height: 0 !important;
+        }
+        #google_translate_element .goog-te-gadget .goog-te-combo {
+          color: hsl(var(--foreground));
+          background: hsl(var(--background) / 0.95);
+          border: 1px solid hsl(var(--border));
+          border-radius: 9999px;
+          padding: 8px 14px;
+          font-size: 13px;
+          font-weight: 600;
+          cursor: pointer;
+          outline: none;
+          box-shadow: 0 8px 24px hsl(270 91% 58% / 0.25);
+          max-width: 180px;
+        }
+        #google_translate_element .goog-te-gadget .goog-te-combo:focus {
+          border-color: hsl(var(--primary));
+        }
+      `;
+      document.head.appendChild(style);
+    }
+    setLoaded(true);
+  }, [open, loaded]);
 
   return (
     <div className="fixed bottom-[calc(9rem+env(safe-area-inset-bottom))] right-3 md:bottom-24 md:right-6 z-[9999] flex items-center gap-2">
