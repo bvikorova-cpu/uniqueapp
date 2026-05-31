@@ -746,6 +746,96 @@ export const gdGames: GDGame[] = [
       "https://html5.gamedistribution.com/ed99a63b0a35407792cbd1f93b7b7b83/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
     aspectRatio: "4/3",
   },
+  {
+    id: "9fc92d0c20434f779cfb934aa7e5fa33",
+    title: "Bus Escape: Clear Jam",
+    category: "puzzle",
+    thumbnail: gdThumb("9fc92d0c20434f779cfb934aa7e5fa33"),
+    embedUrl:
+      "https://html5.gamedistribution.com/9fc92d0c20434f779cfb934aa7e5fa33/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "16/9",
+  },
+  {
+    id: "139b8e0290914556898663a6f2311817",
+    title: "Candy Jewels",
+    category: "puzzle",
+    thumbnail: gdThumb("139b8e0290914556898663a6f2311817"),
+    embedUrl:
+      "https://html5.gamedistribution.com/139b8e0290914556898663a6f2311817/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "92211d47448849d189bbc32d0d4d8f6f",
+    title: "Grand Mahjong Connect",
+    category: "puzzle",
+    thumbnail: gdThumb("92211d47448849d189bbc32d0d4d8f6f"),
+    embedUrl:
+      "https://html5.gamedistribution.com/92211d47448849d189bbc32d0d4d8f6f/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "b230a24fa8f14fb3a3a595f9e797feb3",
+    title: "Anime Couple: Avatar Maker",
+    category: "girls",
+    thumbnail: gdThumb("b230a24fa8f14fb3a3a595f9e797feb3"),
+    embedUrl:
+      "https://html5.gamedistribution.com/b230a24fa8f14fb3a3a595f9e797feb3/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "9/16",
+  },
+  {
+    id: "f5fa6153725e42e69e4b0de40d2ef9c7",
+    title: "Fruit Match Juicy Puzzle",
+    category: "puzzle",
+    thumbnail: gdThumb("f5fa6153725e42e69e4b0de40d2ef9c7"),
+    embedUrl:
+      "https://html5.gamedistribution.com/f5fa6153725e42e69e4b0de40d2ef9c7/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "9/16",
+  },
+  {
+    id: "9ffaf2fb134844958788642d2f76c6cd",
+    title: "Block Escape",
+    category: "puzzle",
+    thumbnail: gdThumb("9ffaf2fb134844958788642d2f76c6cd"),
+    embedUrl:
+      "https://html5.gamedistribution.com/9ffaf2fb134844958788642d2f76c6cd/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "9/16",
+  },
+  {
+    id: "9f201fb381ab42efbcc0530f9990f777",
+    title: "Emoji Guess",
+    category: "puzzle",
+    thumbnail: gdThumb("9f201fb381ab42efbcc0530f9990f777"),
+    embedUrl:
+      "https://html5.gamedistribution.com/9f201fb381ab42efbcc0530f9990f777/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "82e9077372484a82ab196e2e38c7efc6",
+    title: "Sudo Tetroid Daily",
+    category: "puzzle",
+    thumbnail: gdThumb("82e9077372484a82ab196e2e38c7efc6"),
+    embedUrl:
+      "https://html5.gamedistribution.com/82e9077372484a82ab196e2e38c7efc6/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "9/16",
+  },
+  {
+    id: "04bfaeb994ba4c38bd977a7082a7f07c",
+    title: "Mojicon Garden Connect",
+    category: "puzzle",
+    thumbnail: gdThumb("04bfaeb994ba4c38bd977a7082a7f07c"),
+    embedUrl:
+      "https://html5.gamedistribution.com/04bfaeb994ba4c38bd977a7082a7f07c/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "ce1b2e5eabe44debb11bf77cd04c0f85",
+    title: "Vex X3M 3",
+    category: "action",
+    thumbnail: gdThumb("ce1b2e5eabe44debb11bf77cd04c0f85"),
+    embedUrl:
+      "https://html5.gamedistribution.com/ce1b2e5eabe44debb11bf77cd04c0f85/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
 ];
 
 export const getGDGamesByCategory = (cat: GDCategory) =>
