@@ -57,6 +57,24 @@ export const gdGames: GDGame[] = [
       "https://html5.gamedistribution.com/fd5ae555f42e4dac872819ed9125616c/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
     aspectRatio: "4/3",
   },
+  {
+    id: "2fb1dc3ebec147eeb9d7875354afcc20",
+    title: "Game 2",
+    category: "arcade",
+    thumbnail: gdThumb("2fb1dc3ebec147eeb9d7875354afcc20"),
+    embedUrl:
+      "https://html5.gamedistribution.com/2fb1dc3ebec147eeb9d7875354afcc20/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "679c57024b5944f584585244718e1cee",
+    title: "Game 3",
+    category: "arcade",
+    thumbnail: gdThumb("679c57024b5944f584585244718e1cee"),
+    embedUrl:
+      "https://html5.gamedistribution.com/679c57024b5944f584585244718e1cee/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
 ];
 
 export const getGDGamesByCategory = (cat: GDCategory) =>
