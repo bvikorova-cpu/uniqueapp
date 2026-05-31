@@ -349,10 +349,10 @@ const Index = () => {
 
       <div className="max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-10 space-y-10 sm:space-y-14">
 
-        {/* ── Founding Members programme (first 100) ───── */}
-        <FoundingMembersBanner />
-
         {/* ── Stats ────────────────────────────────────── */}
+        {/* Rendered BEFORE FoundingMembersBanner so the async banner
+            (which appears after a hook resolves) can't push the stats
+            grid downward and trigger CLS (~0.085 on PageSpeed mobile). */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-2 sm:-mt-16 relative z-20 [contain:layout]">
           {stats.map((stat, i) => (
             <div
@@ -366,6 +366,10 @@ const Index = () => {
             </div>
           ))}
         </div>
+
+        {/* ── Founding Members programme (first 100) ───── */}
+        <FoundingMembersBanner />
+
 
         {/* ── Quick Actions ────────────────────────────── */}
         <section>
