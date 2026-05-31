@@ -47,6 +47,39 @@ const GameFrame = ({ game, onBack }: { game: GDGame; onBack: () => void }) => {
   );
 };
 
+const GameCard = ({ game, onClick }: { game: GDGame; onClick: () => void }) => (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.95 }}
+    animate={{ opacity: 1, scale: 1 }}
+    exit={{ opacity: 0, scale: 0.95 }}
+    transition={{ duration: 0.2 }}
+  >
+    <Card
+      className="group relative overflow-hidden cursor-pointer border border-border hover:border-primary/50 transition-all hover:shadow-[0_8px_30px_hsl(var(--primary)/0.2)]"
+      onClick={onClick}
+    >
+      <div className="aspect-video bg-muted overflow-hidden">
+        {game.thumbnail ? (
+          <img
+            src={game.thumbnail}
+            alt={game.title}
+            loading="lazy"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-accent/20">
+            <Gamepad2 className="w-10 h-10 text-primary/60" />
+          </div>
+        )}
+      </div>
+      <div className="p-2 sm:p-3">
+        <p className="text-sm font-semibold truncate">{game.title}</p>
+        <p className="text-xs text-muted-foreground">{gdCategories[game.category]}</p>
+      </div>
+    </Card>
+  </motion.div>
+);
+
 const GamesHub = () => {
   const [active, setActive] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
