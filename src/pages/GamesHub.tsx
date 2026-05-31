@@ -1,13 +1,15 @@
-import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { useMemo, useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Gamepad2, ArrowLeft, Sparkles, Search, X } from "lucide-react";
+import { Gamepad2, ArrowLeft, Sparkles, Search, X, ChevronDown } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { gdGames, gdCategories, getGDGamesByCategory, type GDCategory, type GDGame } from "@/data/gdGames";
+
+const PAGE_SIZE = 12;
 
 const GameFrame = ({ game, onBack }: { game: GDGame; onBack: () => void }) => {
   const ratio = game.aspectRatio ?? "16/9";
@@ -45,15 +47,62 @@ const GameFrame = ({ game, onBack }: { game: GDGame; onBack: () => void }) => {
   );
 };
 
+const GameCard = ({ game, onClick }: { game: GDGame; onClick: () => void }) => (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.95 }}
+    animate={{ opacity: 1, scale: 1 }}
+    exit={{ opacity: 0, scale: 0.95 }}
+    transition={{ duration: 0.2 }}
+  >
+    <Card
+      className="group relative overflow-hidden cursor-pointer border border-border hover:border-primary/50 transition-all hover:shadow-[0_8px_30px_hsl(var(--primary)/0.2)]"
+      onClick={onClick}
+    >
+      <div className="aspect-video bg-muted overflow-hidden">
+        {game.thumbnail ? (
+          <img
+            src={game.thumbnail}
+            alt={game.title}
+            loading="lazy"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-accent/20">
+            <Gamepad2 className="w-10 h-10 text-primary/60" />
+          </div>
+        )}
+      </div>
+      <div className="p-2 sm:p-3">
+        <p className="text-sm font-semibold truncate">{game.title}</p>
+        <p className="text-xs text-muted-foreground">{gdCategories[game.category]}</p>
+      </div>
+    </Card>
+  </motion.div>
+);
+
 const GamesHub = () => {
   const [active, setActive] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchVisibleCount, setSearchVisibleCount] = useState(PAGE_SIZE);
+  const [catVisibleCount, setCatVisibleCount] = useState<Record<string, number>>({});
   const categories = Object.keys(gdCategories) as GDCategory[];
   const usedCategories = useMemo(
     () => categories.filter((c) => getGDGamesByCategory(c).length > 0),
     [categories]
   );
   const tabCats = usedCategories.length > 0 ? usedCategories : categories;
+
+  const getCatVisible = (cat: string) => catVisibleCount[cat] ?? PAGE_SIZE;
+  const loadMoreCat = (cat: string, total: number) => {
+    setCatVisibleCount((prev) => ({
+      ...prev,
+      [cat]: Math.min((prev[cat] ?? PAGE_SIZE) + PAGE_SIZE, total),
+    }));
+  };
+
+  useEffect(() => {
+    setSearchVisibleCount(PAGE_SIZE);
+  }, [searchQuery]);
 
   const filteredGames = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -129,34 +178,27 @@ const GamesHub = () => {
                   <p className="text-xs mt-1">Try a different search term.</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
-                  {filteredGames.map((g) => (
-                    <Card
-                      key={g.id}
-                      className="group relative overflow-hidden cursor-pointer border border-border hover:border-primary/50 transition-all hover:shadow-[0_8px_30px_hsl(var(--primary)/0.2)]"
-                      onClick={() => setActive(g.id)}
-                    >
-                      <div className="aspect-video bg-muted overflow-hidden">
-                        {g.thumbnail ? (
-                          <img
-                            src={g.thumbnail}
-                            alt={g.title}
-                            loading="lazy"
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-accent/20">
-                            <Gamepad2 className="w-10 h-10 text-primary/60" />
-                          </div>
-                        )}
-                      </div>
-                      <div className="p-2 sm:p-3">
-                        <p className="text-sm font-semibold truncate">{g.title}</p>
-                        <p className="text-xs text-muted-foreground">{gdCategories[g.category]}</p>
-                      </div>
-                    </Card>
-                  ))}
-                </div>
+                <>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+                    <AnimatePresence>
+                      {filteredGames.slice(0, searchVisibleCount).map((g) => (
+                        <GameCard key={g.id} game={g} onClick={() => setActive(g.id)} />
+                      ))}
+                    </AnimatePresence>
+                  </div>
+                  {searchVisibleCount < filteredGames.length && (
+                    <div className="flex justify-center mt-6">
+                      <Button
+                        variant="outline"
+                        onClick={() => setSearchVisibleCount((c) => Math.min(c + PAGE_SIZE, filteredGames.length))}
+                        className="gap-2"
+                      >
+                        <ChevronDown className="h-4 w-4" />
+                        Load More ({filteredGames.length - searchVisibleCount} left)
+                      </Button>
+                    </div>
+                  )}
+                </>
               )}
             </motion.div>
           ) : (
@@ -188,34 +230,27 @@ const GamesHub = () => {
                         <p className="text-xs mt-1">Send Game Distributor embed codes to add them here.</p>
                       </div>
                     ) : (
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
-                        {list.map((g) => (
-                          <Card
-                            key={g.id}
-                            className="group relative overflow-hidden cursor-pointer border border-border hover:border-primary/50 transition-all hover:shadow-[0_8px_30px_hsl(var(--primary)/0.2)]"
-                            onClick={() => setActive(g.id)}
-                          >
-                            <div className="aspect-video bg-muted overflow-hidden">
-                              {g.thumbnail ? (
-                                <img
-                                  src={g.thumbnail}
-                                  alt={g.title}
-                                  loading="lazy"
-                                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-accent/20">
-                                  <Gamepad2 className="w-10 h-10 text-primary/60" />
-                                </div>
-                              )}
-                            </div>
-                            <div className="p-2 sm:p-3">
-                              <p className="text-sm font-semibold truncate">{g.title}</p>
-                              <p className="text-xs text-muted-foreground">{gdCategories[g.category]}</p>
-                            </div>
-                          </Card>
-                        ))}
-                      </div>
+                      <>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+                          <AnimatePresence>
+                            {list.slice(0, getCatVisible(cat)).map((g) => (
+                              <GameCard key={g.id} game={g} onClick={() => setActive(g.id)} />
+                            ))}
+                          </AnimatePresence>
+                        </div>
+                        {getCatVisible(cat) < list.length && (
+                          <div className="flex justify-center mt-6">
+                            <Button
+                              variant="outline"
+                              onClick={() => loadMoreCat(cat, list.length)}
+                              className="gap-2"
+                            >
+                              <ChevronDown className="h-4 w-4" />
+                              Load More ({list.length - getCatVisible(cat)} left)
+                            </Button>
+                          </div>
+                        )}
+                      </>
                     )}
                   </TabsContent>
                 );
