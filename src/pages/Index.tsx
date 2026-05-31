@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRecentServices } from "@/hooks/useRecentServices";
 import RewardedAdCard from "@/components/ads/RewardedAdCard";
 import { AD_PLACEMENTS } from "@/components/ads/AdPlacements";
-import heroHdVideo from "@/assets/unique-hero-hd.mp4.asset.json";
+import { HeroSlideshow } from "@/components/home/HeroSlideshow";
 import { SEO } from "@/components/SEO";
 import { Age16Badge } from "@/components/Age16Badge";
 import { HowItWorksTrust } from "@/components/trust/HowItWorksTrust";
