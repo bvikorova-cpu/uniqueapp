@@ -304,6 +304,96 @@ export const gdGames: GDGame[] = [
       "https://html5.gamedistribution.com/57e0f26d59df4e2a95c4ea779012310e/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
     aspectRatio: "9/16",
   },
+  {
+    id: "17113941a2f5409290016059b594d0b5",
+    title: "Stick: Tactics & Destruction",
+    category: "action",
+    description: "by GamePush",
+    thumbnail: gdThumb("17113941a2f5409290016059b594d0b5"),
+    embedUrl:
+      "https://html5.gamedistribution.com/17113941a2f5409290016059b594d0b5/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "1561f24d736b4bf292e0ae33059f909f",
+    title: "Bubble Pop Legend",
+    category: "puzzle",
+    description: "by Anna Inc",
+    thumbnail: gdThumb("1561f24d736b4bf292e0ae33059f909f"),
+    embedUrl:
+      "https://html5.gamedistribution.com/1561f24d736b4bf292e0ae33059f909f/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "24834535f13b4c7aa2b696bb62ec2685",
+    title: "Zombie Rush",
+    category: "action",
+    description: "by SqueakyGamesInc",
+    thumbnail: gdThumb("24834535f13b4c7aa2b696bb62ec2685"),
+    embedUrl:
+      "https://html5.gamedistribution.com/24834535f13b4c7aa2b696bb62ec2685/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "16/9",
+  },
+  {
+    id: "82efd9293b264d2ebf2255857a4912e7",
+    title: "Coin Blitz",
+    category: "arcade",
+    description: "by LevelKraft Technologies",
+    thumbnail: gdThumb("82efd9293b264d2ebf2255857a4912e7"),
+    embedUrl:
+      "https://html5.gamedistribution.com/82efd9293b264d2ebf2255857a4912e7/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "16/9",
+  },
+  {
+    id: "600319e8d5d94a41bb3374c726ba15fc",
+    title: "Apocalypse Shelter",
+    category: "strategy",
+    description: "by GamePush",
+    thumbnail: gdThumb("600319e8d5d94a41bb3374c726ba15fc"),
+    embedUrl:
+      "https://html5.gamedistribution.com/600319e8d5d94a41bb3374c726ba15fc/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "504e7fdd353f469b95f1680e4f63b36b",
+    title: "Snake Puzzle Escape",
+    category: "puzzle",
+    description: "by Extremesols",
+    thumbnail: gdThumb("504e7fdd353f469b95f1680e4f63b36b"),
+    embedUrl:
+      "https://html5.gamedistribution.com/504e7fdd353f469b95f1680e4f63b36b/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "16/9",
+  },
+  {
+    id: "95a7eb46911a48ae845dd8e58ea1dba2",
+    title: "Car Parking Simulator",
+    category: "racing",
+    description: "by bestgames.com",
+    thumbnail: gdThumb("95a7eb46911a48ae845dd8e58ea1dba2"),
+    embedUrl:
+      "https://html5.gamedistribution.com/95a7eb46911a48ae845dd8e58ea1dba2/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "16/9",
+  },
+  {
+    id: "f9d0af2d87e644e68e65e0ea2184a0f7",
+    title: "Ship & Fish",
+    category: "arcade",
+    description: "by KDS Group",
+    thumbnail: gdThumb("f9d0af2d87e644e68e65e0ea2184a0f7"),
+    embedUrl:
+      "https://html5.gamedistribution.com/f9d0af2d87e644e68e65e0ea2184a0f7/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "a71168b1feb94d4bbeb466d22c292b53",
+    title: "Caterfall 2048",
+    category: "puzzle",
+    description: "by GamePush",
+    thumbnail: gdThumb("a71168b1feb94d4bbeb466d22c292b53"),
+    embedUrl:
+      "https://html5.gamedistribution.com/a71168b1feb94d4bbeb466d22c292b53/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
 ];
 
 export const getGDGamesByCategory = (cat: GDCategory) =>
