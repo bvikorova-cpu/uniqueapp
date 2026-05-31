@@ -254,27 +254,24 @@ const GamesHub = () => {
                         <p className="text-xs mt-1">Send Game Distributor embed codes to add them here.</p>
                       </div>
                     ) : (
-                      <>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
-                          <AnimatePresence>
-                            {list.slice(0, getCatVisible(cat)).map((g) => (
-                              <GameCard key={g.id} game={g} onClick={() => setActive(g.id)} />
-                            ))}
-                          </AnimatePresence>
-                        </div>
-                        {getCatVisible(cat) < list.length && (
-                          <div className="flex justify-center mt-6">
-                            <Button
-                              variant="outline"
-                              onClick={() => loadMoreCat(cat, list.length)}
-                              className="gap-2"
-                            >
-                              <ChevronDown className="h-4 w-4" />
-                              Load More ({list.length - getCatVisible(cat)} left)
-                            </Button>
-                          </div>
-                        )}
-                      </>
+                      (() => {
+                        const totalPages = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
+                        const page = Math.min(getCatPage(cat), totalPages);
+                        const start = (page - 1) * PAGE_SIZE;
+                        const pageItems = list.slice(start, start + PAGE_SIZE);
+                        return (
+                          <>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+                              <AnimatePresence>
+                                {pageItems.map((g) => (
+                                  <GameCard key={g.id} game={g} onClick={() => setActive(g.id)} />
+                                ))}
+                              </AnimatePresence>
+                            </div>
+                            <Pager page={page} totalPages={totalPages} onChange={(p) => setCatPageFor(cat, p)} />
+                          </>
+                        );
+                      })()
                     )}
                   </TabsContent>
                 );
