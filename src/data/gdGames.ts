@@ -394,6 +394,106 @@ export const gdGames: GDGame[] = [
       "https://html5.gamedistribution.com/a71168b1feb94d4bbeb466d22c292b53/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
     aspectRatio: "4/3",
   },
+  {
+    id: "9a4cfbdbd33b4b028a69b908699502eb",
+    title: "Obby Champions",
+    category: "action",
+    description: "by Mirra Games",
+    thumbnail: gdThumb("9a4cfbdbd33b4b028a69b908699502eb"),
+    embedUrl:
+      "https://html5.gamedistribution.com/9a4cfbdbd33b4b028a69b908699502eb/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "1abaea29fe734e8ba27448bc7a9c3422",
+    title: "Wool Sorting",
+    category: "puzzle",
+    description: "by SecGame",
+    thumbnail: gdThumb("1abaea29fe734e8ba27448bc7a9c3422"),
+    embedUrl:
+      "https://html5.gamedistribution.com/1abaea29fe734e8ba27448bc7a9c3422/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "1623f11ab941461899f9146501c36d9e",
+    title: "Tap Bead",
+    category: "puzzle",
+    description: "by Guangzhou Yomitoo Network Technology Co., Ltd.",
+    thumbnail: gdThumb("1623f11ab941461899f9146501c36d9e"),
+    embedUrl:
+      "https://html5.gamedistribution.com/1623f11ab941461899f9146501c36d9e/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "9/16",
+  },
+  {
+    id: "6ff158a48fed4f3aa40877422662a71a",
+    title: "Ninja Survivor",
+    category: "action",
+    description: "by Mirra Games",
+    thumbnail: gdThumb("6ff158a48fed4f3aa40877422662a71a"),
+    embedUrl:
+      "https://html5.gamedistribution.com/6ff158a48fed4f3aa40877422662a71a/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "d882b7ce8c7145c5b20bef128bd2fabf",
+    title: "Solitaire Summer: Klondike",
+    category: "casual",
+    description: "by Playades International LLC",
+    thumbnail: gdThumb("d882b7ce8c7145c5b20bef128bd2fabf"),
+    embedUrl:
+      "https://html5.gamedistribution.com/d882b7ce8c7145c5b20bef128bd2fabf/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "ca808ce686fa485c81fcf487ef65cac1",
+    title: "Office Pyramid Solitaire",
+    category: "casual",
+    description: "by Sanoma",
+    thumbnail: gdThumb("ca808ce686fa485c81fcf487ef65cac1"),
+    embedUrl:
+      "https://html5.gamedistribution.com/ca808ce686fa485c81fcf487ef65cac1/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "c6d324c4729f48ef9a3cd8882bdf078e",
+    title: "Jungle Match Adventures",
+    category: "puzzle",
+    description: "by SOFTGAMES – Mobile Entertainment Services GmbH",
+    thumbnail: gdThumb("c6d324c4729f48ef9a3cd8882bdf078e"),
+    embedUrl:
+      "https://html5.gamedistribution.com/c6d324c4729f48ef9a3cd8882bdf078e/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "4254dba037de4b798541d2c97eae5016",
+    title: "Fruit Match",
+    category: "puzzle",
+    description: "by GameBerry Studio",
+    thumbnail: gdThumb("4254dba037de4b798541d2c97eae5016"),
+    embedUrl:
+      "https://html5.gamedistribution.com/4254dba037de4b798541d2c97eae5016/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "91028829ed0c4d2aba1f0e1fb537733b",
+    title: "Mine Quest Daily",
+    category: "puzzle",
+    description: "by Denda Games",
+    thumbnail: gdThumb("91028829ed0c4d2aba1f0e1fb537733b"),
+    embedUrl:
+      "https://html5.gamedistribution.com/91028829ed0c4d2aba1f0e1fb537733b/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "9/16",
+  },
+  {
+    id: "780bdf6c7e3244ed9237d175f6c099db",
+    title: "Royal Pin",
+    category: "arcade",
+    description: "by Gamee JSC",
+    thumbnail: gdThumb("780bdf6c7e3244ed9237d175f6c099db"),
+    embedUrl:
+      "https://html5.gamedistribution.com/780bdf6c7e3244ed9237d175f6c099db/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "9/16",
+  },
 ];
 
 export const getGDGamesByCategory = (cat: GDCategory) =>
