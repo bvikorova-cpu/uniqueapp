@@ -185,6 +185,10 @@ export default {
             transform: "scale(1.5)"
           },
         },
+        "hero-kenburns": {
+          "0%": { transform: "scale(1.05) translate3d(0,0,0)" },
+          "100%": { transform: "scale(1.18) translate3d(-1.5%, -1%, 0)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -204,6 +208,7 @@ export default {
         "gradient-shift": "gradient-shift 8s ease infinite",
         "pulse-slow": "pulse-slow 4s ease-in-out infinite",
         "blink": "blink 1s step-start infinite",
+        "hero-kenburns": "hero-kenburns 6s ease-out forwards",
       },
     },
   },
