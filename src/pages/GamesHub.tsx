@@ -5,11 +5,14 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Gamepad2, ArrowLeft, Sparkles, Search, X, ChevronDown } from "lucide-react";
+import { Gamepad2, ArrowLeft, Sparkles, Search, X, ChevronDown, ExternalLink } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { gdGames, gdCategories, getGDGamesByCategory, type GDCategory, type GDGame } from "@/data/gdGames";
 
 const PAGE_SIZE = 12;
+
+const isGameDistributionUrl = (url?: string) =>
+  Boolean(url?.includes("html5.gamedistribution.com"));
 
 const GameFrame = ({ game, onBack }: { game: GDGame; onBack: () => void }) => {
   const ratio = game.aspectRatio ?? "16/9";
@@ -23,8 +26,34 @@ const GameFrame = ({ game, onBack }: { game: GDGame; onBack: () => void }) => {
           <h1 className="text-xl sm:text-2xl font-bold">{game.title}</h1>
           <Badge variant="secondary">{gdCategories[game.category]}</Badge>
         </div>
-        <div className="w-full rounded-xl overflow-hidden border border-border bg-black" style={{ aspectRatio: ratio }}>
-          {game.embedUrl ? (
+        <div className="w-full rounded-xl overflow-hidden border border-border bg-background" style={{ aspectRatio: ratio }}>
+          {isGameDistributionUrl(game.embedUrl) ? (
+            <div className="w-full h-full flex flex-col items-center justify-center gap-4 p-4 text-center bg-background">
+              <p className="text-sm sm:text-lg font-semibold uppercase">
+                If you want to play {game.title},{" "}
+                <a
+                  href={game.embedUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-4 hover:text-primary inline-flex items-center gap-1"
+                >
+                  click here to play <ExternalLink className="h-4 w-4" />
+                </a>
+              </p>
+              {game.thumbnail && (
+                <img
+                  src={game.thumbnail}
+                  alt={game.title}
+                  className="w-36 sm:w-48 max-h-48 rounded-md object-cover border border-border"
+                />
+              )}
+              <Button asChild size="lg" variant="secondary" className="min-w-36 uppercase text-lg">
+                <a href={game.embedUrl} target="_blank" rel="noopener noreferrer">
+                  Play <ExternalLink className="ml-2 h-4 w-4" />
+                </a>
+              </Button>
+            </div>
+          ) : game.embedUrl ? (
             <iframe
               src={game.embedUrl}
               title={game.title}
