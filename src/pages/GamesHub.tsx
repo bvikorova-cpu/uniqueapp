@@ -100,6 +100,10 @@ const GamesHub = () => {
     }));
   };
 
+  useEffect(() => {
+    setSearchVisibleCount(PAGE_SIZE);
+  }, [searchQuery]);
+
   const filteredGames = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     if (!q) return null;
