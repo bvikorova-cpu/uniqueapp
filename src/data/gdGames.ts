@@ -1016,6 +1016,96 @@ export const gdGames: GDGame[] = [
       "https://html5.gamedistribution.com/bece97115f26426491fa08e409e545aa/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
     aspectRatio: "4/3",
   },
+  {
+    id: "4217557d28cc4038b6822767a09b79e3",
+    title: "Ludo Star",
+    category: "puzzle",
+    thumbnail: gdThumb("4217557d28cc4038b6822767a09b79e3"),
+    embedUrl:
+      "https://html5.gamedistribution.com/4217557d28cc4038b6822767a09b79e3/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "d60f8c65c1f64c838d6aa490ed5c649d",
+    title: "Park Me: Draw Path",
+    category: "racing",
+    thumbnail: gdThumb("d60f8c65c1f64c838d6aa490ed5c649d"),
+    embedUrl:
+      "https://html5.gamedistribution.com/d60f8c65c1f64c838d6aa490ed5c649d/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "16/9",
+  },
+  {
+    id: "0340635cab9e421ca6c3cda5acaa03f1",
+    title: "Bloons Survival.io",
+    category: "action",
+    thumbnail: gdThumb("0340635cab9e421ca6c3cda5acaa03f1"),
+    embedUrl:
+      "https://html5.gamedistribution.com/0340635cab9e421ca6c3cda5acaa03f1/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "6d334740fa9245898dba6281e2766ee1",
+    title: "Sudoblock Daily",
+    category: "puzzle",
+    thumbnail: gdThumb("6d334740fa9245898dba6281e2766ee1"),
+    embedUrl:
+      "https://html5.gamedistribution.com/6d334740fa9245898dba6281e2766ee1/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "9/16",
+  },
+  {
+    id: "13eabea86f7c4cd993a156258420e9ec",
+    title: "Football Legends 2026",
+    category: "sports",
+    thumbnail: gdThumb("13eabea86f7c4cd993a156258420e9ec"),
+    embedUrl:
+      "https://html5.gamedistribution.com/13eabea86f7c4cd993a156258420e9ec/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "16/9",
+  },
+  {
+    id: "ac3276e1819644858f0c8693c219064c",
+    title: "Hexa Stack",
+    category: "puzzle",
+    thumbnail: gdThumb("ac3276e1819644858f0c8693c219064c"),
+    embedUrl:
+      "https://html5.gamedistribution.com/ac3276e1819644858f0c8693c219064c/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "1ab4aa63ba214e85bda2c11aa5653ed8",
+    title: "Fruit Merge Arena",
+    category: "puzzle",
+    thumbnail: gdThumb("1ab4aa63ba214e85bda2c11aa5653ed8"),
+    embedUrl:
+      "https://html5.gamedistribution.com/1ab4aa63ba214e85bda2c11aa5653ed8/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "9/16",
+  },
+  {
+    id: "d12e86faf8f4439aa45389a10cec4592",
+    title: "Jump to the Mountain for the Brainrots",
+    category: "action",
+    thumbnail: gdThumb("d12e86faf8f4439aa45389a10cec4592"),
+    embedUrl:
+      "https://html5.gamedistribution.com/d12e86faf8f4439aa45389a10cec4592/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "16/9",
+  },
+  {
+    id: "96990bc0c10949bab8d1d5c844eb5b7f",
+    title: "Mobile Phone Case Design & DIY",
+    category: "girls",
+    thumbnail: gdThumb("96990bc0c10949bab8d1d5c844eb5b7f"),
+    embedUrl:
+      "https://html5.gamedistribution.com/96990bc0c10949bab8d1d5c844eb5b7f/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "9/16",
+  },
+  {
+    id: "55e0e53f26824f0f8f689ac52f9009d7",
+    title: "Theo Morini's Magical Resort",
+    category: "adventure",
+    thumbnail: gdThumb("55e0e53f26824f0f8f689ac52f9009d7"),
+    embedUrl:
+      "https://html5.gamedistribution.com/55e0e53f26824f0f8f689ac52f9009d7/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
 ];
 
 export const getGDGamesByCategory = (cat: GDCategory) =>
