@@ -1365,7 +1365,7 @@ export const gdGames: GDGame[] = [
   {
     id: "d42224913b654f31b321996f49fcd5ad",
     title: "Grow a Garden 3D",
-    category: "simulation",
+    category: "casual",
     thumbnail: gdThumb("d42224913b654f31b321996f49fcd5ad"),
     embedUrl: "https://html5.gamedistribution.com/d42224913b654f31b321996f49fcd5ad",
     aspectRatio: "16/9",
