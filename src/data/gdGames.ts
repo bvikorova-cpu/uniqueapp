@@ -494,6 +494,78 @@ export const gdGames: GDGame[] = [
       "https://html5.gamedistribution.com/780bdf6c7e3244ed9237d175f6c099db/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
     aspectRatio: "9/16",
   },
+  {
+    id: "74d4566d990d431ab7e58166f3fc3d2d",
+    title: "Game 46",
+    category: "arcade",
+    thumbnail: gdThumb("74d4566d990d431ab7e58166f3fc3d2d"),
+    embedUrl:
+      "https://html5.gamedistribution.com/74d4566d990d431ab7e58166f3fc3d2d/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "16/9",
+  },
+  {
+    id: "d9a1e7343c9642988d8ec4623df4196c",
+    title: "Game 47",
+    category: "arcade",
+    thumbnail: gdThumb("d9a1e7343c9642988d8ec4623df4196c"),
+    embedUrl:
+      "https://html5.gamedistribution.com/d9a1e7343c9642988d8ec4623df4196c/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "9/16",
+  },
+  {
+    id: "77183764be80432a90acd34174f4dade",
+    title: "Game 48",
+    category: "arcade",
+    thumbnail: gdThumb("77183764be80432a90acd34174f4dade"),
+    embedUrl:
+      "https://html5.gamedistribution.com/77183764be80432a90acd34174f4dade/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "9/16",
+  },
+  {
+    id: "141b948c1f5c4476acc673d84f2ad1c0",
+    title: "Game 49",
+    category: "puzzle",
+    thumbnail: gdThumb("141b948c1f5c4476acc673d84f2ad1c0"),
+    embedUrl:
+      "https://html5.gamedistribution.com/141b948c1f5c4476acc673d84f2ad1c0/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "73d8b722929e42d192795617dc4dd372",
+    title: "Game 50",
+    category: "arcade",
+    thumbnail: gdThumb("73d8b722929e42d192795617dc4dd372"),
+    embedUrl:
+      "https://html5.gamedistribution.com/73d8b722929e42d192795617dc4dd372/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "16/9",
+  },
+  {
+    id: "69507828a2d441b781740ecff532057a",
+    title: "Game 51",
+    category: "puzzle",
+    thumbnail: gdThumb("69507828a2d441b781740ecff532057a"),
+    embedUrl:
+      "https://html5.gamedistribution.com/69507828a2d441b781740ecff532057a/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "96f82746df35411e81a1227bc9fbd798",
+    title: "Game 52",
+    category: "arcade",
+    thumbnail: gdThumb("96f82746df35411e81a1227bc9fbd798"),
+    embedUrl:
+      "https://html5.gamedistribution.com/96f82746df35411e81a1227bc9fbd798/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "16/9",
+  },
+  {
+    id: "92f19fdd8fe24ff18cfb3a07799c7114",
+    title: "Game 53",
+    category: "puzzle",
+    thumbnail: gdThumb("92f19fdd8fe24ff18cfb3a07799c7114"),
+    embedUrl:
+      "https://html5.gamedistribution.com/92f19fdd8fe24ff18cfb3a07799c7114/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
 ];
 
 export const getGDGamesByCategory = (cat: GDCategory) =>
