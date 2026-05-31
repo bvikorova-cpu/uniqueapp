@@ -643,6 +643,7 @@ const App = () => {
                         <Route path="/admin/battle-royale-payouts" element={<AdminBattleRoyalePayouts />} />
                         <Route path="/referral" element={<Referral />} />
                         <Route path="/games" element={<Games />} />
+                        <Route path="/games-hub" element={<GamesHub />} />
                         <Route path="/jobs" element={<Jobs />} />
                         <Route path="/jobs/post/success" element={<JobPostSuccess />} />
                         <Route path="/jobs/listing/:slug" element={<JobDetailPage />} />
