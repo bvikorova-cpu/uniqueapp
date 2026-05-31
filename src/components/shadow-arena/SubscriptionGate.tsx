@@ -26,6 +26,7 @@ const FEATURE_KEYS = [
 export function SubscriptionGate({ children }: SubscriptionGateProps) {
   const { user } = useAuth();
   const { subscribed, loading } = useShadowSubscription();
+  useEffect(() => { loadGoogleFont('gothic'); }, []);
   const handleSubscribe = async () => {
     if (!user) {
       toast.error("Please sign in to subscribe");
