@@ -1,11 +1,14 @@
 import { defineConfig, devices } from "@playwright/test";
 
 /**
- * Playwright config — E2E smoke tests against a running dev server or a deployed URL.
+ * Playwright config — three projects:
+ *   1. setup        — logs in once, persists session to e2e/.auth/authed-state.json
+ *   2. chromium     — anonymous (no auth) over e2e/*.spec.ts EXCEPT e2e/authed/**
+ *   3. chromium-authed — uses the persisted session, runs e2e/authed/**.spec.ts
  *
  * Run locally:
- *   bun run e2e          # uses webServer below
- *   PLAYWRIGHT_BASE_URL=https://uniqueapp.fun bun run e2e   # against prod
+ *   bun run e2e
+ *   PLAYWRIGHT_BASE_URL=https://uniqueapp.fun bun run e2e
  *
  * Browsers must be installed once: `bunx playwright install --with-deps chromium`
  */
@@ -22,13 +25,35 @@ export default defineConfig({
     baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:8080",
     trace: "on-first-retry",
     video: "retain-on-failure",
-    storageState: "e2e/.auth/storage-state.json",
   },
   projects: [
     {
+      name: "setup",
+      testMatch: /auth\.setup\.ts$/,
+      use: {
+        launchOptions: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH
+          ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH }
+          : undefined,
+      },
+    },
+    {
       name: "chromium",
+      testIgnore: [/auth\.setup\.ts$/, /authed\//],
       use: {
         ...devices["Desktop Chrome"],
+        storageState: "e2e/.auth/storage-state.json",
+        launchOptions: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH
+          ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH }
+          : undefined,
+      },
+    },
+    {
+      name: "chromium-authed",
+      testMatch: /authed\/.*\.spec\.ts$/,
+      dependencies: ["setup"],
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: "e2e/.auth/authed-state.json",
         launchOptions: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH
           ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH }
           : undefined,
