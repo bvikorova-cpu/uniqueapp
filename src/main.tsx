@@ -27,9 +27,11 @@ if (typeof window !== "undefined") {
     setTimeout(warmup, 200);
   }
 
-  // Lazy-load AdSense AFTER the page is fully loaded so its 173 KiB script
-  // can't block LCP/FCP. Used to be a render-blocking <script async> in
-  // index.html which delayed mobile LCP by ~9 s on PageSpeed.
+  // Lazy-load AdSense ONLY after the user interacts (scroll/touch/click) or
+  // after a long idle delay. The previous requestIdleCallback-after-load
+  // strategy still fired during LCP on slow networks (PageSpeed measured
+  // 6 s render-blocking for show_ads_impl). Real users start scrolling
+  // long after LCP, so this defers the 173 KiB script past the critical path.
   const loadAdSense = () => {
     if (document.querySelector('script[data-adsense="bootstrap"]')) return;
     const s = document.createElement("script");
@@ -39,16 +41,24 @@ if (typeof window !== "undefined") {
     s.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3821622017213888";
     document.head.appendChild(s);
   };
-  const scheduleAds = () => {
-    if ("requestIdleCallback" in window) {
-      (window as any).requestIdleCallback(loadAdSense, { timeout: 4000 });
-    } else {
-      setTimeout(loadAdSense, 2500);
-    }
+  const triggerOnce = () => {
+    loadAdSense();
+    ["scroll", "touchstart", "mousedown", "keydown"].forEach((ev) =>
+      window.removeEventListener(ev, triggerOnce)
+    );
   };
-  if (document.readyState === "complete") scheduleAds();
-  else window.addEventListener("load", scheduleAds, { once: true });
+  const armAds = () => {
+    ["scroll", "touchstart", "mousedown", "keydown"].forEach((ev) =>
+      window.addEventListener(ev, triggerOnce, { once: true, passive: true })
+    );
+    // Hard fallback: load after 8 s even if user is idle, so impressions
+    // still register for visitors who never scroll.
+    window.setTimeout(loadAdSense, 8000);
+  };
+  if (document.readyState === "complete") armAds();
+  else window.addEventListener("load", armAds, { once: true });
 }
+
 
 declare global {
   interface Window {
