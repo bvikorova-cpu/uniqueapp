@@ -1,0 +1,21 @@
+# Long-lived cache for immutable hero media. Versioned filenames (-v3, -hd)
+# mean a content change ships under a new path, so 1-year immutable is safe
+# and removes the "Cache TTL: None" warning from PageSpeed.
+/*.mp4
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.png
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.jpg
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.svg
+  Cache-Control: public, max-age=31536000, immutable
+
+# Vite hashes /assets/* filenames, so they are also safe to cache forever.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
