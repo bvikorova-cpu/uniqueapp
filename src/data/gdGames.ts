@@ -1136,7 +1136,7 @@ export const gdGames: GDGame[] = [
     category: "adventure",
     thumbnail: gdThumb("4e0bcf98b67346bf94f5642e01ebd691"),
     embedUrl: "https://html5.gamedistribution.com/4e0bcf98b67346bf94f5642e01ebd691",
-    aspectRatio: "5/3",
+    aspectRatio: "16/9",
   },
   {
     id: "f73be292c3d643d6a2488938dcc47007",
@@ -1168,7 +1168,7 @@ export const gdGames: GDGame[] = [
     category: "puzzle",
     thumbnail: gdThumb("6d6556f0c714498fbe8e5b24941f57bf"),
     embedUrl: "https://html5.gamedistribution.com/6d6556f0c714498fbe8e5b24941f57bf",
-    aspectRatio: "2/1",
+    aspectRatio: "16/9",
   },
   {
     id: "ebe613bf6d5b44ad8908c7a36a710b7b",
