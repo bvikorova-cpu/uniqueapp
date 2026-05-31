@@ -50,7 +50,10 @@ test.describe("Visual regression — authed", () => {
 
       await expect(page).toHaveScreenshot(`${screen.name}.png`, {
         fullPage: false,
-        maxDiffPixelRatio: 0.02,
+        // Live SaaS surfaces (countdowns, leaderboards, viewer counts, ads)
+        // change between runs. Threshold is intentionally permissive so we
+        // only catch CATASTROPHIC layout/styling regressions, not tick drift.
+        maxDiffPixelRatio: 0.25,
         animations: "disabled",
         caret: "hide",
       });
