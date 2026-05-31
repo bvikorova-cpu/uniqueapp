@@ -9,18 +9,24 @@ import { dirname } from "node:path";
  */
 export default async function globalSetup() {
   const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:8080";
-  const origin = new URL(baseURL).origin;
+  const baseOrigin = new URL(baseURL).origin;
+  const origins = new Set<string>([baseOrigin]);
+  try {
+    const u = new URL(baseURL);
+    if (!u.hostname.startsWith("www.") && !u.hostname.match(/^localhost|^\d/)) {
+      origins.add(`${u.protocol}//www.${u.hostname}`);
+    }
+    if (u.hostname.startsWith("www.")) {
+      origins.add(`${u.protocol}//${u.hostname.replace(/^www\./, "")}`);
+    }
+  } catch {}
+  const localStorageItems = [
+    { name: "onboarding_completed", value: "true" },
+    { name: "welcome_onboarding_v1", value: JSON.stringify({ at: Date.now(), interests: [] }) },
+  ];
   const state = {
     cookies: [],
-    origins: [
-      {
-        origin,
-        localStorage: [
-          { name: "onboarding_completed", value: "true" },
-          { name: "welcome_onboarding_v1", value: JSON.stringify({ at: Date.now(), interests: [] }) },
-        ],
-      },
-    ],
+    origins: Array.from(origins).map((origin) => ({ origin, localStorage: localStorageItems })),
   };
   const path = "e2e/.auth/storage-state.json";
   mkdirSync(dirname(path), { recursive: true });
