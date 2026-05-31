@@ -1,28 +1,26 @@
 /**
  * Megatalent payment flow — ANONYMOUS visitor.
  *
- * Verifies the gate works for a logged-out user:
- *   1. /megatalent renders the paywall (no feed, no vote/comment buttons).
- *   2. Both checkout buttons (€10 Premium / €15 TOP Premium) are visible.
- *   3. Clicking a paid tier without a session does NOT call Stripe — the user
- *      is either bounced to /auth or the call short-circuits (no Stripe URL
- *      ever returned), proving anonymous users cannot bypass auth to pay.
+ * Verifies the auth/paywall gate for a logged-out user:
+ *   1. Visiting /megatalent without a session redirects to /auth
+ *      (MegatalentGuard renders <Navigate to="/auth" /> when !user).
+ *   2. No request to create-megatalent-checkout is ever fired.
+ *   3. No Stripe Checkout popup ever opens.
  *
- * The full success path (anonymous → pay → return → unlock) is exercised by
- * the authed companion at e2e/authed/megatalent-payment-flow.spec.ts, because
- * Stripe webhook -> DB activation requires an authenticated user_id.
+ * The full success path (pay → return → unlock) requires an authenticated
+ * session because the Stripe webhook activates the subscription against the
+ * user's id — that flow is exercised by the authed companion spec at
+ * e2e/authed/megatalent-payment-flow.spec.ts.
  */
 import { test, expect } from "@playwright/test";
 
 const SUPABASE_HOST = "jufrdzeonywluwutvyxz.supabase.co";
 
 test.describe("Megatalent paywall — anonymous", () => {
-  test("paywall blocks feed and anonymous checkout cannot reach Stripe", async ({ page }) => {
+  test("anonymous visitor is bounced to /auth and never reaches Stripe", async ({ page, context }) => {
     let checkoutInvoked = false;
     let stripeOpened = false;
 
-    // Spy on the create-megatalent-checkout edge function. If it ever fires
-    // for an anonymous user it must NOT return a valid Stripe URL — stub a 401.
     await page.route(`https://${SUPABASE_HOST}/functions/v1/create-megatalent-checkout`, async (route) => {
       checkoutInvoked = true;
       await route.fulfill({
@@ -32,43 +30,26 @@ test.describe("Megatalent paywall — anonymous", () => {
       });
     });
 
-    // Catch any popup to checkout.stripe.com — must never happen anonymously.
-    page.context().on("page", (p) => {
+    context.on("page", (p) => {
       if (p.url().includes("checkout.stripe.com")) stripeOpened = true;
     });
     await page.route("https://checkout.stripe.com/**", (r) => {
       stripeOpened = true;
-      return r.fulfill({ status: 200, body: "<html>stripe</html>" });
+      return r.fulfill({ status: 200, body: "<html>stub</html>" });
     });
 
     await page.goto("/megatalent");
+
+    // Guard redirects unauth users to /auth — wait for the URL to settle there.
+    await page.waitForURL(/\/auth(\b|\?|#|$)/, { timeout: 15_000 });
     await page.waitForLoadState("networkidle");
 
-    // Paywall title rendered (component uses English copy).
-    await expect(
-      page.getByText(/Unlock the MegaTalent contest|Odomkni MegaTalent/i),
-    ).toBeVisible({ timeout: 15_000 });
+    // No paid-tier buttons should be on the auth page.
+    expect(await page.getByRole("button", { name: /€10 \/ month/i }).count()).toBe(0);
+    expect(await page.getByRole("button", { name: /€15 \/ month/i }).count()).toBe(0);
 
-    // Both paid tier buttons rendered.
-    await expect(page.getByRole("button", { name: /€10 \/ month/i })).toBeVisible();
-    await expect(page.getByRole("button", { name: /€15 \/ month/i })).toBeVisible();
-
-    // Gated UI must NOT be mounted: no vote / comment affordances behind the paywall.
-    expect(await page.locator("button:has(svg.lucide-heart)").count()).toBe(0);
-    expect(await page.locator("button:has(svg.lucide-message-circle)").count()).toBe(0);
-
-    // Click Premium. Even if invoke is attempted, it MUST be rejected — no
-    // Stripe popup may open. Some apps short-circuit before invoking; that is
-    // also acceptable (checkoutInvoked stays false).
-    await page.getByRole("button", { name: /€10 \/ month/i }).click();
-    await page.waitForTimeout(1500);
-
-    expect(stripeOpened, "Anonymous user reached Stripe Checkout — auth gate broken").toBe(false);
-    if (checkoutInvoked) {
-      // If the function was hit it returned 401 → toast / paywall stays.
-      await expect(
-        page.getByText(/Unlock the MegaTalent contest|Odomkni MegaTalent/i),
-      ).toBeVisible();
-    }
+    // And critically: no checkout was attempted, no Stripe popup opened.
+    expect(checkoutInvoked, "Anonymous visit invoked create-megatalent-checkout").toBe(false);
+    expect(stripeOpened, "Anonymous visit reached Stripe Checkout").toBe(false);
   });
 });
