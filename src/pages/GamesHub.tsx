@@ -1,13 +1,15 @@
 import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Gamepad2, ArrowLeft, Sparkles, Search, X } from "lucide-react";
+import { Gamepad2, ArrowLeft, Sparkles, Search, X, ChevronDown } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { gdGames, gdCategories, getGDGamesByCategory, type GDCategory, type GDGame } from "@/data/gdGames";
+
+const PAGE_SIZE = 12;
 
 const GameFrame = ({ game, onBack }: { game: GDGame; onBack: () => void }) => {
   const ratio = game.aspectRatio ?? "16/9";
