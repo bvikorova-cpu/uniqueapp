@@ -96,6 +96,106 @@ export const gdGames: GDGame[] = [
     aspectRatio: "4/3",
   },
   {
+    id: "1d9ac2ca58b2436ab1e7ce3b83fd709f",
+    title: "Stacking Match",
+    category: "puzzle",
+    description: "by Yizhiyuan Network Technology Co., Ltd.",
+    thumbnail: gdThumb("1d9ac2ca58b2436ab1e7ce3b83fd709f"),
+    embedUrl:
+      "https://html5.gamedistribution.com/1d9ac2ca58b2436ab1e7ce3b83fd709f/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "f000cd0f0a0444aa82a1b937828a9954",
+    title: "Pogo Masters",
+    category: "arcade",
+    description: "by GamesMrkt",
+    thumbnail: gdThumb("f000cd0f0a0444aa82a1b937828a9954"),
+    embedUrl:
+      "https://html5.gamedistribution.com/f000cd0f0a0444aa82a1b937828a9954/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "16/9",
+  },
+  {
+    id: "a2b83c1a317c4eb0bffcc4ffcece5ef9",
+    title: "Float for Brainrots",
+    category: "arcade",
+    description: "by gameVgames",
+    thumbnail: gdThumb("a2b83c1a317c4eb0bffcc4ffcece5ef9"),
+    embedUrl:
+      "https://html5.gamedistribution.com/a2b83c1a317c4eb0bffcc4ffcece5ef9/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "16/9",
+  },
+  {
+    id: "a0cd025397ff4b23ba3879e8da7936b2",
+    title: "Bears vs. Art",
+    category: "arcade",
+    description: "by Yes2Games",
+    thumbnail: gdThumb("a0cd025397ff4b23ba3879e8da7936b2"),
+    embedUrl:
+      "https://html5.gamedistribution.com/a0cd025397ff4b23ba3879e8da7936b2/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "e098ff2d14cf45efbc5d1896631372e5",
+    title: "HexaFill",
+    category: "puzzle",
+    description: "by GamePush",
+    thumbnail: gdThumb("e098ff2d14cf45efbc5d1896631372e5"),
+    embedUrl:
+      "https://html5.gamedistribution.com/e098ff2d14cf45efbc5d1896631372e5/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "6b3a8b1a95db42cdb8c166093d0c78a5",
+    title: "Tidy Master Satisfeel ASMR",
+    category: "casual",
+    description: "by Yiv.Com",
+    thumbnail: gdThumb("6b3a8b1a95db42cdb8c166093d0c78a5"),
+    embedUrl:
+      "https://html5.gamedistribution.com/6b3a8b1a95db42cdb8c166093d0c78a5/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "16/9",
+  },
+  {
+    id: "7d506f1931fc46c59714305fbd9ae056",
+    title: "Asylum: Baldi Granny Slender",
+    category: "action",
+    description: "by Starodymov Games",
+    thumbnail: gdThumb("7d506f1931fc46c59714305fbd9ae056"),
+    embedUrl:
+      "https://html5.gamedistribution.com/7d506f1931fc46c59714305fbd9ae056/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "16/9",
+  },
+  {
+    id: "47ae55f0a59a41ed871cd94c93083b01",
+    title: "City Gas Station Simulator",
+    category: "casual",
+    description: "by bestgames.com",
+    thumbnail: gdThumb("47ae55f0a59a41ed871cd94c93083b01"),
+    embedUrl:
+      "https://html5.gamedistribution.com/47ae55f0a59a41ed871cd94c93083b01/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "16/9",
+  },
+  {
+    id: "7cd661a59cc4416693b71d686b06d25d",
+    title: "Build a Go-Kart",
+    category: "racing",
+    description: "by GamePush",
+    thumbnail: gdThumb("7cd661a59cc4416693b71d686b06d25d"),
+    embedUrl:
+      "https://html5.gamedistribution.com/7cd661a59cc4416693b71d686b06d25d/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "47d3e4e4cc2d4ed293509052e3e39c91",
+    title: "Lemonade Tycoon Idle",
+    category: "strategy",
+    description: "by MHL",
+    thumbnail: gdThumb("47d3e4e4cc2d4ed293509052e3e39c91"),
+    embedUrl:
+      "https://html5.gamedistribution.com/47d3e4e4cc2d4ed293509052e3e39c91/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "16/9",
+  },
+  {
     id: "59560ac116da4d729dd6a07439d3995e",
     title: "Stacking Match",
     category: "puzzle",
