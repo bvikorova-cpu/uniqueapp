@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRecentServices } from "@/hooks/useRecentServices";
 import RewardedAdCard from "@/components/ads/RewardedAdCard";
 import { AD_PLACEMENTS } from "@/components/ads/AdPlacements";
-import heroHdVideo from "@/assets/unique-hero-hd.mp4.asset.json";
+import { HeroSlideshow } from "@/components/home/HeroSlideshow";
 import { SEO } from "@/components/SEO";
 import { Age16Badge } from "@/components/Age16Badge";
 import { HowItWorksTrust } from "@/components/trust/HowItWorksTrust";
@@ -235,24 +235,8 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       {/* ── Hero Section ─────────────────────────────── */}
       <div className="relative overflow-hidden min-h-[500px] sm:min-h-[640px] lg:min-h-[720px] xl:min-h-[820px]">
-        {/* Video background */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="none"
-          poster="/unique-hero-poster-hd.webp"
-          className="absolute inset-0 w-full h-full object-cover object-center"
-          style={{ objectPosition: "center 35%" }}
-        >
-          {/* AV1/WebM first — ~30-40 % smaller than the H.264 .mp4 fallbacks. */}
-          <source src="/unique-hero-mobile-v4.webm" type="video/webm" media="(max-width: 767px)" />
-          <source src="/unique-hero-opt-v4.webm" type="video/webm" media="(min-width: 768px)" />
-          <source src="/unique-hero-mobile-v3.mp4" type="video/mp4" media="(max-width: 767px)" />
-          <source src={heroHdVideo.url} type="video/mp4" media="(min-width: 768px)" />
-          <source src="/unique-hero-opt-v3.mp4" type="video/mp4" />
-        </video>
+        {/* Crisp hero slideshow – nahrádza video pre ostrú kvalitu na PC aj mobile */}
+        <HeroSlideshow />
         {/* Gradient fallback behind video */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary via-accent to-primary animate-gradient-shift -z-10" />
         {/* Cinematic overlays — vignette + bottom gradient for text legibility */}
