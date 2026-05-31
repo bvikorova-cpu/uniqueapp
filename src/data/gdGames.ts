@@ -59,8 +59,9 @@ export const gdGames: GDGame[] = [
   },
   {
     id: "2fb1dc3ebec147eeb9d7875354afcc20",
-    title: "Game 2",
-    category: "arcade",
+    title: "Arrow Sorting",
+    category: "puzzle",
+    description: "by GameBerry Studio",
     thumbnail: gdThumb("2fb1dc3ebec147eeb9d7875354afcc20"),
     embedUrl:
       "https://html5.gamedistribution.com/2fb1dc3ebec147eeb9d7875354afcc20/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
@@ -68,8 +69,9 @@ export const gdGames: GDGame[] = [
   },
   {
     id: "679c57024b5944f584585244718e1cee",
-    title: "Game 3",
-    category: "arcade",
+    title: "Mojicon Garden JigSolitaire",
+    category: "puzzle",
+    description: "by 2Million Games",
     thumbnail: gdThumb("679c57024b5944f584585244718e1cee"),
     embedUrl:
       "https://html5.gamedistribution.com/679c57024b5944f584585244718e1cee/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
