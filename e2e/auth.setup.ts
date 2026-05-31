@@ -73,10 +73,11 @@ setup("authenticate", async ({ request }) => {
     { name: "onboarding_completed", value: "true" },
     { name: "welcome_onboarding_v1", value: onboardingPayload },
     { name: `welcome_onboarding_v1_${session.user.id}`, value: onboardingPayload },
-    // WelcomeOnboarding uses `unique_onboarding_v1_{userId}` — this is the
-    // key that actually suppresses the Radix Dialog overlay blocking clicks.
+    // WelcomeOnboarding gates on `unique_onboarding_v1_{userId}`.
     { name: "unique_onboarding_v1", value: onboardingPayload },
     { name: `unique_onboarding_v1_${session.user.id}`, value: onboardingPayload },
+    // MegaTalentOnboarding gates on `megatalent_onboarding_done_{userId}` = "1".
+    { name: `megatalent_onboarding_done_${session.user.id}`, value: "1" },
   ];
 
   const state = {
