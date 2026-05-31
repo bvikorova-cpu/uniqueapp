@@ -1872,7 +1872,7 @@ export const gdGames: GDGame[] = [
     category: "puzzle",
     thumbnail: gdThumb("1639172f16614f62af1d30e270a6b9a0"),
     embedUrl: "https://html5.gamedistribution.com/1639172f16614f62af1d30e270a6b9a0",
-    aspectRatio: "3/4",
+    aspectRatio: "9/16",
   },
   {
     id: "724f9f245a0e47308239bf37795141e6",
@@ -1880,7 +1880,7 @@ export const gdGames: GDGame[] = [
     category: "shooting",
     thumbnail: gdThumb("724f9f245a0e47308239bf37795141e6"),
     embedUrl: "https://html5.gamedistribution.com/724f9f245a0e47308239bf37795141e6",
-    aspectRatio: "5/3",
+    aspectRatio: "16/9",
   },
   {
     id: "4f0be8dddab5440b9011a238ac03db35",
