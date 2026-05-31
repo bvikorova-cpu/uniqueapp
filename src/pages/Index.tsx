@@ -246,6 +246,9 @@ const Index = () => {
           className="absolute inset-0 w-full h-full object-cover object-center"
           style={{ objectPosition: "center 35%" }}
         >
+          {/* AV1/WebM first — ~30-40 % smaller than the H.264 .mp4 fallbacks. */}
+          <source src="/unique-hero-mobile-v4.webm" type="video/webm" media="(max-width: 767px)" />
+          <source src="/unique-hero-opt-v4.webm" type="video/webm" media="(min-width: 768px)" />
           <source src="/unique-hero-mobile-v3.mp4" type="video/mp4" media="(max-width: 767px)" />
           <source src={heroHdVideo.url} type="video/mp4" media="(min-width: 768px)" />
           <source src="/unique-hero-opt-v3.mp4" type="video/mp4" />
