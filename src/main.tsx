@@ -26,6 +26,28 @@ if (typeof window !== "undefined") {
   } else {
     setTimeout(warmup, 200);
   }
+
+  // Lazy-load AdSense AFTER the page is fully loaded so its 173 KiB script
+  // can't block LCP/FCP. Used to be a render-blocking <script async> in
+  // index.html which delayed mobile LCP by ~9 s on PageSpeed.
+  const loadAdSense = () => {
+    if (document.querySelector('script[data-adsense="bootstrap"]')) return;
+    const s = document.createElement("script");
+    s.async = true;
+    s.crossOrigin = "anonymous";
+    s.dataset.adsense = "bootstrap";
+    s.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3821622017213888";
+    document.head.appendChild(s);
+  };
+  const scheduleAds = () => {
+    if ("requestIdleCallback" in window) {
+      (window as any).requestIdleCallback(loadAdSense, { timeout: 4000 });
+    } else {
+      setTimeout(loadAdSense, 2500);
+    }
+  };
+  if (document.readyState === "complete") scheduleAds();
+  else window.addEventListener("load", scheduleAds, { once: true });
 }
 
 declare global {
