@@ -5,11 +5,44 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Gamepad2, ArrowLeft, Sparkles, Search, X, ChevronDown, ExternalLink } from "lucide-react";
+import { Gamepad2, ArrowLeft, Sparkles, Search, X, ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { gdGames, gdCategories, getGDGamesByCategory, type GDCategory, type GDGame } from "@/data/gdGames";
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 30;
+
+const Pager = ({ page, totalPages, onChange }: { page: number; totalPages: number; onChange: (p: number) => void }) => {
+  if (totalPages <= 1) return null;
+  const go = (p: number) => {
+    onChange(p);
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  const pages: number[] = [];
+  const start = Math.max(1, page - 2);
+  const end = Math.min(totalPages, start + 4);
+  for (let i = start; i <= end; i++) pages.push(i);
+  return (
+    <div className="flex items-center justify-center gap-2 mt-8 flex-wrap">
+      <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => go(page - 1)} className="gap-1">
+        <ChevronLeft className="h-4 w-4" /> Prev
+      </Button>
+      {pages.map((p) => (
+        <Button
+          key={p}
+          size="sm"
+          variant={p === page ? "default" : "outline"}
+          onClick={() => go(p)}
+          className="min-w-9"
+        >
+          {p}
+        </Button>
+      ))}
+      <Button variant="outline" size="sm" disabled={page >= totalPages} onClick={() => go(page + 1)} className="gap-1">
+        Next <ChevronRight className="h-4 w-4" />
+      </Button>
+    </div>
+  );
+};
 
 const isGameDistributionUrl = (url?: string) =>
   Boolean(url?.includes("html5.gamedistribution.com"));
@@ -112,8 +145,8 @@ const GameCard = ({ game, onClick }: { game: GDGame; onClick: () => void }) => (
 const GamesHub = () => {
   const [active, setActive] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchVisibleCount, setSearchVisibleCount] = useState(PAGE_SIZE);
-  const [catVisibleCount, setCatVisibleCount] = useState<Record<string, number>>({});
+  const [searchPage, setSearchPage] = useState(1);
+  const [catPage, setCatPage] = useState<Record<string, number>>({});
   const categories = Object.keys(gdCategories) as GDCategory[];
   const usedCategories = useMemo(
     () => categories.filter((c) => getGDGamesByCategory(c).length > 0),
@@ -121,16 +154,12 @@ const GamesHub = () => {
   );
   const tabCats = usedCategories.length > 0 ? usedCategories : categories;
 
-  const getCatVisible = (cat: string) => catVisibleCount[cat] ?? PAGE_SIZE;
-  const loadMoreCat = (cat: string, total: number) => {
-    setCatVisibleCount((prev) => ({
-      ...prev,
-      [cat]: Math.min((prev[cat] ?? PAGE_SIZE) + PAGE_SIZE, total),
-    }));
-  };
+  const getCatPage = (cat: string) => catPage[cat] ?? 1;
+  const setCatPageFor = (cat: string, page: number) =>
+    setCatPage((prev) => ({ ...prev, [cat]: page }));
 
   useEffect(() => {
-    setSearchVisibleCount(PAGE_SIZE);
+    setSearchPage(1);
   }, [searchQuery]);
 
   const filteredGames = useMemo(() => {
@@ -208,25 +237,24 @@ const GamesHub = () => {
                 </div>
               ) : (
                 <>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
-                    <AnimatePresence>
-                      {filteredGames.slice(0, searchVisibleCount).map((g) => (
-                        <GameCard key={g.id} game={g} onClick={() => setActive(g.id)} />
-                      ))}
-                    </AnimatePresence>
-                  </div>
-                  {searchVisibleCount < filteredGames.length && (
-                    <div className="flex justify-center mt-6">
-                      <Button
-                        variant="outline"
-                        onClick={() => setSearchVisibleCount((c) => Math.min(c + PAGE_SIZE, filteredGames.length))}
-                        className="gap-2"
-                      >
-                        <ChevronDown className="h-4 w-4" />
-                        Load More ({filteredGames.length - searchVisibleCount} left)
-                      </Button>
-                    </div>
-                  )}
+                  {(() => {
+                    const totalPages = Math.max(1, Math.ceil(filteredGames.length / PAGE_SIZE));
+                    const page = Math.min(searchPage, totalPages);
+                    const start = (page - 1) * PAGE_SIZE;
+                    const pageItems = filteredGames.slice(start, start + PAGE_SIZE);
+                    return (
+                      <>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+                          <AnimatePresence>
+                            {pageItems.map((g) => (
+                              <GameCard key={g.id} game={g} onClick={() => setActive(g.id)} />
+                            ))}
+                          </AnimatePresence>
+                        </div>
+                        <Pager page={page} totalPages={totalPages} onChange={setSearchPage} />
+                      </>
+                    );
+                  })()}
                 </>
               )}
             </motion.div>
@@ -259,27 +287,24 @@ const GamesHub = () => {
                         <p className="text-xs mt-1">Send Game Distributor embed codes to add them here.</p>
                       </div>
                     ) : (
-                      <>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
-                          <AnimatePresence>
-                            {list.slice(0, getCatVisible(cat)).map((g) => (
-                              <GameCard key={g.id} game={g} onClick={() => setActive(g.id)} />
-                            ))}
-                          </AnimatePresence>
-                        </div>
-                        {getCatVisible(cat) < list.length && (
-                          <div className="flex justify-center mt-6">
-                            <Button
-                              variant="outline"
-                              onClick={() => loadMoreCat(cat, list.length)}
-                              className="gap-2"
-                            >
-                              <ChevronDown className="h-4 w-4" />
-                              Load More ({list.length - getCatVisible(cat)} left)
-                            </Button>
-                          </div>
-                        )}
-                      </>
+                      (() => {
+                        const totalPages = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
+                        const page = Math.min(getCatPage(cat), totalPages);
+                        const start = (page - 1) * PAGE_SIZE;
+                        const pageItems = list.slice(start, start + PAGE_SIZE);
+                        return (
+                          <>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+                              <AnimatePresence>
+                                {pageItems.map((g) => (
+                                  <GameCard key={g.id} game={g} onClick={() => setActive(g.id)} />
+                                ))}
+                              </AnimatePresence>
+                            </div>
+                            <Pager page={page} totalPages={totalPages} onChange={(p) => setCatPageFor(cat, p)} />
+                          </>
+                        );
+                      })()
                     )}
                   </TabsContent>
                 );
