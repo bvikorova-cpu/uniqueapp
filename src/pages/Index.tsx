@@ -145,7 +145,7 @@ const stats = [
 import spotlightAvatars from "@/assets/spotlight-avatars.jpg";
 import spotlightRacing from "@/assets/spotlight-racing.jpg";
 import spotlightChef from "@/assets/spotlight-chef.jpg";
-import spotlightBeauty from "@/assets/spotlight-beauty.jpg";
+import spotlightBeauty from "@/assets/spotlight-beauty.webp";
 
 const spotlightServices = [
   { ...coreModules[4], spotlight: "🔥 Hot Now", image: spotlightBeauty },
