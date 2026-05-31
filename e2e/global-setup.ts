@@ -20,9 +20,14 @@ export default async function globalSetup() {
       origins.add(`${u.protocol}//${u.hostname.replace(/^www\./, "")}`);
     }
   } catch {}
+  // NOTE: WelcomeOnboarding (src/components/onboarding/WelcomeOnboarding.tsx)
+  // gates on `unique_onboarding_v1_{userId}`. For anonymous tests there's no
+  // user id, so we just block the modal globally with the legacy keys too.
+  const onboardingPayload = JSON.stringify({ at: Date.now(), interests: [] });
   const localStorageItems = [
     { name: "onboarding_completed", value: "true" },
-    { name: "welcome_onboarding_v1", value: JSON.stringify({ at: Date.now(), interests: [] }) },
+    { name: "welcome_onboarding_v1", value: onboardingPayload },
+    { name: "unique_onboarding_v1", value: onboardingPayload },
   ];
   const state = {
     cookies: [],
