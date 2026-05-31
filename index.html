@@ -6,18 +6,11 @@
     <!-- Performance: preconnect to critical origins so first API/asset request is faster -->
     <link rel="preconnect" href="https://jufrdzeonywluwutvyxz.supabase.co" crossorigin />
     <link rel="dns-prefetch" href="https://jufrdzeonywluwutvyxz.supabase.co" />
-    <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
     <!-- Note: fonts.googleapis.com/fonts.gstatic.com preconnects removed — niche
          fonts are now lazy-injected via src/utils/lazyFonts.ts only on pages
          that need them. Adding them back would waste a TCP/TLS handshake on
          every cold page load. -->
-
-    <!--
-      AdSense bootstrap is intentionally NOT loaded here anymore. The 173 KiB
-      adsbygoogle.js script was blocking LCP by ~9 s on mobile (PageSpeed mobile
-      score 53). It is now lazy-loaded by src/main.tsx after the window load
-      event so it cannot delay first paint. Ad slots still render normally.
-    -->
+    <!-- AdSense fully removed — monetization runs through Monetag (src/lib/monetag.ts). -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     <meta http-equiv="content-language" content="en" />
     <style>

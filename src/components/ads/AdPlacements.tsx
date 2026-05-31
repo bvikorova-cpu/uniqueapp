@@ -1,44 +1,39 @@
 /**
- * 📍 Google AdSense Ad Placement Configuration
- * 
- * Replace the placeholder slot IDs below with real AdSense ad unit slot IDs
- * from your Google AdSense dashboard (adsense.google.com > Ads > By ad unit).
+ * Ad placement identifiers — used as section keys for Monetag rewarded ads
+ * and analytics. AdSense was fully removed; these strings are now just
+ * section labels, not real ad-unit slot IDs.
  */
-
 export const AD_PLACEMENTS = {
-  // 🏠 Global
-  FOOTER_BANNER: "0000000001", // Replace with real ad slot ID
-  
-  // 🎯 Section-specific (replace with real slot IDs from AdSense)
+  FOOTER_BANNER: "footer_banner",
   ESCAPE_ROOM: {
-    BETWEEN_ROOMS: "0000000002",
-    END_GAME: "0000000003",
+    BETWEEN_ROOMS: "escape_room_between",
+    END_GAME: "escape_room_end",
   },
   COFFEE_BUDDY: {
-    LIST_NATIVE: "0000000004",
-    DETAIL_SIDEBAR: "0000000005",
+    LIST_NATIVE: "coffee_buddy_list",
+    DETAIL_SIDEBAR: "coffee_buddy_detail",
   },
   ASTROLOGY: {
-    FORECAST_NATIVE: "0000000006",
+    FORECAST_NATIVE: "astrology_forecast",
   },
   CHARACTER_ARENA: {
-    BATTLE_END: "0000000007",
-    LEADERBOARD_SIDEBAR: "0000000008",
+    BATTLE_END: "character_arena_end",
+    LEADERBOARD_SIDEBAR: "character_arena_leaderboard",
   },
   NUTRITION: {
-    RECIPE_LIST: "0000000009",
-    RECIPE_DETAIL: "0000000010",
+    RECIPE_LIST: "nutrition_recipe_list",
+    RECIPE_DETAIL: "nutrition_recipe_detail",
   },
   MUSIC_PRODUCER: {
-    AFTER_GENERATION: "0000000011",
+    AFTER_GENERATION: "music_producer_after",
   },
   COLLECTIBLES: {
-    MARKETPLACE_NATIVE: "0000000012",
+    MARKETPLACE_NATIVE: "collectibles_marketplace",
   },
   KIDS_QUIZ: {
-    BETWEEN_QUIZZES: "0000000013",
+    BETWEEN_QUIZZES: "kids_quiz_between",
   },
   MINIBIZ: {
-    BUSINESS_LIST: "0000000014",
+    BUSINESS_LIST: "minibiz_list",
   },
 };
