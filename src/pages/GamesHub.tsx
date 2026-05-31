@@ -204,25 +204,24 @@ const GamesHub = () => {
                 </div>
               ) : (
                 <>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
-                    <AnimatePresence>
-                      {filteredGames.slice(0, searchVisibleCount).map((g) => (
-                        <GameCard key={g.id} game={g} onClick={() => setActive(g.id)} />
-                      ))}
-                    </AnimatePresence>
-                  </div>
-                  {searchVisibleCount < filteredGames.length && (
-                    <div className="flex justify-center mt-6">
-                      <Button
-                        variant="outline"
-                        onClick={() => setSearchVisibleCount((c) => Math.min(c + PAGE_SIZE, filteredGames.length))}
-                        className="gap-2"
-                      >
-                        <ChevronDown className="h-4 w-4" />
-                        Load More ({filteredGames.length - searchVisibleCount} left)
-                      </Button>
-                    </div>
-                  )}
+                  {(() => {
+                    const totalPages = Math.max(1, Math.ceil(filteredGames.length / PAGE_SIZE));
+                    const page = Math.min(searchPage, totalPages);
+                    const start = (page - 1) * PAGE_SIZE;
+                    const pageItems = filteredGames.slice(start, start + PAGE_SIZE);
+                    return (
+                      <>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+                          <AnimatePresence>
+                            {pageItems.map((g) => (
+                              <GameCard key={g.id} game={g} onClick={() => setActive(g.id)} />
+                            ))}
+                          </AnimatePresence>
+                        </div>
+                        <Pager page={page} totalPages={totalPages} onChange={setSearchPage} />
+                      </>
+                    );
+                  })()}
                 </>
               )}
             </motion.div>
