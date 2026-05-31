@@ -179,32 +179,46 @@ test.describe("Wall – bezpečnosť / RLS", () => {
 });
 
 test.describe("Wall – Theme Colors", () => {
-  test("výber farby zmení tému (data-theme / CSS premenná)", async ({ page }) => {
+  test("výber farby zmení CSS premennú --primary alebo --accent", async ({ page }) => {
+    await page.setViewportSize({ width: 1600, height: 900 });
     await gotoWall(page);
 
-    // Theme switcher button má title=name
-    const themes = ["Ocean", "Sunset", "Midnight"];
+    const themes = ["Ocean", "Sunset", "Midnight", "Forest", "Cherry", "Arctic", "Neon", "Golden"];
+    let switched = false;
     for (const name of themes) {
       const btn = page.locator(`button[title="${name}"]`).first();
+      if (!(await btn.count())) continue;
+      await btn.scrollIntoViewIfNeeded().catch(() => {});
       if (!(await btn.isVisible().catch(() => false))) continue;
 
-      const beforePrimary = await page.evaluate(() =>
-        getComputedStyle(document.documentElement).getPropertyValue("--primary").trim(),
-      );
+      const before = await page.evaluate(() => ({
+        p: getComputedStyle(document.documentElement).getPropertyValue("--primary").trim(),
+        a: getComputedStyle(document.documentElement).getPropertyValue("--accent").trim(),
+      }));
 
-      await btn.click();
-      // Po preview môže byť potreba kliknúť Save
-      const save = page.getByRole("button", { name: /save|uložiť/i }).first();
-      if (await save.isVisible().catch(() => false)) await save.click().catch(() => {});
+      await btn.click({ force: true });
 
-      await expect.poll(async () =>
-        page.evaluate(() =>
-          getComputedStyle(document.documentElement).getPropertyValue("--primary").trim(),
-        ),
-        { timeout: 3_000 },
-      ).not.toBe(beforePrimary);
-      break; // stačí overiť že prepínanie funguje na jednej téme
+      const changed = await page
+        .waitForFunction(
+          (b) => {
+            const cs = getComputedStyle(document.documentElement);
+            return (
+              cs.getPropertyValue("--primary").trim() !== b.p ||
+              cs.getPropertyValue("--accent").trim() !== b.a
+            );
+          },
+          before,
+          { timeout: 3000 },
+        )
+        .then(() => true)
+        .catch(() => false);
+
+      if (changed) {
+        switched = true;
+        break;
+      }
     }
+    expect(switched, "žiadny theme button nezmenil CSS premenné").toBeTruthy();
   });
 });
 
