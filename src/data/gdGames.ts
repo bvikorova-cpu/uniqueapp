@@ -77,6 +77,33 @@ export const gdGames: GDGame[] = [
       "https://html5.gamedistribution.com/679c57024b5944f584585244718e1cee/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
     aspectRatio: "4/3",
   },
+  {
+    id: "c725caf57a5940deb09730cdf322f3a1",
+    title: "Combinations Daily",
+    category: "puzzle",
+    thumbnail: gdThumb("c725caf57a5940deb09730cdf322f3a1"),
+    embedUrl:
+      "https://html5.gamedistribution.com/c725caf57a5940deb09730cdf322f3a1/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "9/16",
+  },
+  {
+    id: "8a7fdc0a68ad4311a72557de8368b8cd",
+    title: "Game 5",
+    category: "arcade",
+    thumbnail: gdThumb("8a7fdc0a68ad4311a72557de8368b8cd"),
+    embedUrl:
+      "https://html5.gamedistribution.com/8a7fdc0a68ad4311a72557de8368b8cd/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "59560ac116da4d729dd6a07439d3995e",
+    title: "Stacking Match",
+    category: "puzzle",
+    thumbnail: gdThumb("59560ac116da4d729dd6a07439d3995e"),
+    embedUrl:
+      "https://html5.gamedistribution.com/59560ac116da4d729dd6a07439d3995e/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
 ];
 
 export const getGDGamesByCategory = (cat: GDCategory) =>
