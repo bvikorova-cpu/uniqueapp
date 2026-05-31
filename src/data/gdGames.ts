@@ -204,6 +204,106 @@ export const gdGames: GDGame[] = [
       "https://html5.gamedistribution.com/59560ac116da4d729dd6a07439d3995e/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
     aspectRatio: "4/3",
   },
+  {
+    id: "fff2efce32324f56a3e9d59ddb42cf1b",
+    title: "Pato Vs Cops",
+    category: "racing",
+    description: "by GMG",
+    thumbnail: gdThumb("fff2efce32324f56a3e9d59ddb42cf1b"),
+    embedUrl:
+      "https://html5.gamedistribution.com/fff2efce32324f56a3e9d59ddb42cf1b/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "d4a7c2d0d8914a888912ca21d0e20ae7",
+    title: "Power Puzzle",
+    category: "puzzle",
+    description: "by HDCorp",
+    thumbnail: gdThumb("d4a7c2d0d8914a888912ca21d0e20ae7"),
+    embedUrl:
+      "https://html5.gamedistribution.com/d4a7c2d0d8914a888912ca21d0e20ae7/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "16/9",
+  },
+  {
+    id: "dc0290265efc4df58436136b8a8b0b52",
+    title: "Match Dream Garden",
+    category: "puzzle",
+    description: "by Inlogic Software",
+    thumbnail: gdThumb("dc0290265efc4df58436136b8a8b0b52"),
+    embedUrl:
+      "https://html5.gamedistribution.com/dc0290265efc4df58436136b8a8b0b52/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "9dc3a58253534d52ad8be29b14c86fa9",
+    title: "Belote 3in1",
+    category: "casual",
+    description: "by Playades International LLC",
+    thumbnail: gdThumb("9dc3a58253534d52ad8be29b14c86fa9"),
+    embedUrl:
+      "https://html5.gamedistribution.com/9dc3a58253534d52ad8be29b14c86fa9/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "966d94f902de491eb224711f51d7a92e",
+    title: "Dogs vs Aliens",
+    category: "arcade",
+    description: "by Square Dino LLC",
+    thumbnail: gdThumb("966d94f902de491eb224711f51d7a92e"),
+    embedUrl:
+      "https://html5.gamedistribution.com/966d94f902de491eb224711f51d7a92e/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "75c605af07684a719fd9ebbc552c246b",
+    title: "TRIVIA NATION",
+    category: "casual",
+    description: "by BUSIDOL",
+    thumbnail: gdThumb("75c605af07684a719fd9ebbc552c246b"),
+    embedUrl:
+      "https://html5.gamedistribution.com/75c605af07684a719fd9ebbc552c246b/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "16/9",
+  },
+  {
+    id: "59c9c46de0c744e9ae989546e860d7e8",
+    title: "Emoji Frenzy",
+    category: "arcade",
+    description: "by ArKeny",
+    thumbnail: gdThumb("59c9c46de0c744e9ae989546e860d7e8"),
+    embedUrl:
+      "https://html5.gamedistribution.com/59c9c46de0c744e9ae989546e860d7e8/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "109536c4ebad4fceb14224df11b0b158",
+    title: "Oreplication",
+    category: "puzzle",
+    description: "by GamePush",
+    thumbnail: gdThumb("109536c4ebad4fceb14224df11b0b158"),
+    embedUrl:
+      "https://html5.gamedistribution.com/109536c4ebad4fceb14224df11b0b158/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "26a55f4431144dd3a7230222c772e676",
+    title: "Word Game 2026",
+    category: "puzzle",
+    description: "by Aman Bhai",
+    thumbnail: gdThumb("26a55f4431144dd3a7230222c772e676"),
+    embedUrl:
+      "https://html5.gamedistribution.com/26a55f4431144dd3a7230222c772e676/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "9/16",
+  },
+  {
+    id: "57e0f26d59df4e2a95c4ea779012310e",
+    title: "Match Ten Number Puzzle",
+    category: "puzzle",
+    description: "by PuzzleGame.Com",
+    thumbnail: gdThumb("57e0f26d59df4e2a95c4ea779012310e"),
+    embedUrl:
+      "https://html5.gamedistribution.com/57e0f26d59df4e2a95c4ea779012310e/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "9/16",
+  },
 ];
 
 export const getGDGamesByCategory = (cat: GDCategory) =>
