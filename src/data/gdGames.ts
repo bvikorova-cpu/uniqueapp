@@ -926,6 +926,96 @@ export const gdGames: GDGame[] = [
       "https://html5.gamedistribution.com/63cf93e7b28a43f2a781bafa61cf5307/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
     aspectRatio: "9/16",
   },
+  {
+    id: "6eff71bc2e824830be09d6a78b967c20",
+    title: "Pubg Hack",
+    category: "action",
+    thumbnail: gdThumb("6eff71bc2e824830be09d6a78b967c20"),
+    embedUrl:
+      "https://html5.gamedistribution.com/6eff71bc2e824830be09d6a78b967c20/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "16/9",
+  },
+  {
+    id: "7fcb55f25f4a4a07848c630dffe1ae6e",
+    title: "67 Clicker Tap Tap",
+    category: "puzzle",
+    thumbnail: gdThumb("7fcb55f25f4a4a07848c630dffe1ae6e"),
+    embedUrl:
+      "https://html5.gamedistribution.com/7fcb55f25f4a4a07848c630dffe1ae6e/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "16/10",
+  },
+  {
+    id: "040ff13a2a9f44b98009750960a523ae",
+    title: "World Cup Soccer Caps",
+    category: "sports",
+    thumbnail: gdThumb("040ff13a2a9f44b98009750960a523ae"),
+    embedUrl:
+      "https://html5.gamedistribution.com/040ff13a2a9f44b98009750960a523ae/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "16/9",
+  },
+  {
+    id: "5a0b0fc8fd1e48468fe289997085b0bb",
+    title: "Jungle Solitaire",
+    category: "puzzle",
+    thumbnail: gdThumb("5a0b0fc8fd1e48468fe289997085b0bb"),
+    embedUrl:
+      "https://html5.gamedistribution.com/5a0b0fc8fd1e48468fe289997085b0bb/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "81eb4f30ea604c2dba1c486c27d7744f",
+    title: "PopSortica",
+    category: "puzzle",
+    thumbnail: gdThumb("81eb4f30ea604c2dba1c486c27d7744f"),
+    embedUrl:
+      "https://html5.gamedistribution.com/81eb4f30ea604c2dba1c486c27d7744f/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "ecc90172a5a8427b85f6b1b75e5306e7",
+    title: "Slingshot Fortress",
+    category: "action",
+    thumbnail: gdThumb("ecc90172a5a8427b85f6b1b75e5306e7"),
+    embedUrl:
+      "https://html5.gamedistribution.com/ecc90172a5a8427b85f6b1b75e5306e7/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "d70eb84a934f4a6aa9e574bb3629bbfb",
+    title: "Worm Escape",
+    category: "puzzle",
+    thumbnail: gdThumb("d70eb84a934f4a6aa9e574bb3629bbfb"),
+    embedUrl:
+      "https://html5.gamedistribution.com/d70eb84a934f4a6aa9e574bb3629bbfb/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "b1d11769f6754c14ad36e726b998bbc5",
+    title: "My Castle. Merge & Story",
+    category: "puzzle",
+    thumbnail: gdThumb("b1d11769f6754c14ad36e726b998bbc5"),
+    embedUrl:
+      "https://html5.gamedistribution.com/b1d11769f6754c14ad36e726b998bbc5/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "3521ba73a1694cc2abf79a510b1e98ce",
+    title: "Darling Doll",
+    category: "girls",
+    thumbnail: gdThumb("3521ba73a1694cc2abf79a510b1e98ce"),
+    embedUrl:
+      "https://html5.gamedistribution.com/3521ba73a1694cc2abf79a510b1e98ce/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "9/16",
+  },
+  {
+    id: "bece97115f26426491fa08e409e545aa",
+    title: "Fish Out of Water!",
+    category: "action",
+    thumbnail: gdThumb("bece97115f26426491fa08e409e545aa"),
+    embedUrl:
+      "https://html5.gamedistribution.com/bece97115f26426491fa08e409e545aa/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
+    aspectRatio: "4/3",
+  },
 ];
 
 export const getGDGamesByCategory = (cat: GDCategory) =>
