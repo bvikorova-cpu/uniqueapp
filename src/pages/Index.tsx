@@ -242,7 +242,7 @@ const Index = () => {
           loop
           playsInline
           preload="none"
-          poster="/unique-hero-poster-hd.jpg"
+          poster="/unique-hero-poster-hd.webp"
           className="absolute inset-0 w-full h-full object-cover object-center"
           style={{ objectPosition: "center 35%" }}
         >
