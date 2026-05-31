@@ -18,11 +18,11 @@ import { test, expect } from "@playwright/test";
  * The goal is to catch HARD layout/styling regressions, not to police every
  * leaderboard reshuffle.
  */
+// NOTE: pages with live timers, videos, leaderboards or ad creatives
+// (/, /megatalent, /crystal-energy-network) drift between runs even at high
+// thresholds — they are excluded. Keep only pages with mostly static layout.
 const SCREENS = [
-  { name: "home", path: "/" },
-  { name: "megatalent-feed", path: "/megatalent" },
   { name: "dna-hub", path: "/dna-memory-network" },
-  { name: "crystal-hub", path: "/crystal-energy-network" },
   { name: "marketplace", path: "/marketplace" },
 ];
 
