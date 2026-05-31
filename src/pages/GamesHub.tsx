@@ -50,12 +50,22 @@ const GameFrame = ({ game, onBack }: { game: GDGame; onBack: () => void }) => {
 const GamesHub = () => {
   const [active, setActive] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchVisibleCount, setSearchVisibleCount] = useState(PAGE_SIZE);
+  const [catVisibleCount, setCatVisibleCount] = useState<Record<string, number>>({});
   const categories = Object.keys(gdCategories) as GDCategory[];
   const usedCategories = useMemo(
     () => categories.filter((c) => getGDGamesByCategory(c).length > 0),
     [categories]
   );
   const tabCats = usedCategories.length > 0 ? usedCategories : categories;
+
+  const getCatVisible = (cat: string) => catVisibleCount[cat] ?? PAGE_SIZE;
+  const loadMoreCat = (cat: string, total: number) => {
+    setCatVisibleCount((prev) => ({
+      ...prev,
+      [cat]: Math.min((prev[cat] ?? PAGE_SIZE) + PAGE_SIZE, total),
+    }));
+  };
 
   const filteredGames = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
