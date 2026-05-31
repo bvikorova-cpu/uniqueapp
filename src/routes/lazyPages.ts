@@ -36,6 +36,7 @@ export const Megaforum = lazy(() => import("@/pages/Megaforum"));
 
 // Entertainment & Games
 export const Games = lazy(() => import("@/pages/Games"));
+export const GamesHub = lazy(() => import("@/pages/GamesHub"));
 export const BrainDuel = lazy(() => import("@/pages/BrainDuel"));
 export const VirtualEscapeRoom = lazy(() => import("@/pages/VirtualEscapeRoom"));
 export const HorseRacing = lazy(() => import("@/pages/HorseRacing"));

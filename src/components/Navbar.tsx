@@ -59,6 +59,7 @@ const Navbar = () => {
 
   const mainNavItems = [
     { path: "/wall", label: "Wall", icon: MessageSquare },
+    { path: "/games-hub", label: "Games", icon: Gamepad2 },
     { path: "/jobs", label: "Work", icon: Briefcase },
     { path: "/rewards", label: "Rewards", icon: Trophy },
     { path: "/megatalent", label: "Megatalent", icon: Crown, premium: true },
@@ -193,7 +194,15 @@ const Navbar = () => {
         <div className="flex items-baseline justify-between h-16 pt-4">
           <Link to="/" className="flex items-center group lg:mr-8 xl:mr-12">
             <img src={uniqueLogo} alt="Unique Logo" className="h-8 w-8 object-contain transition-transform duration-300 group-hover:scale-110" />
-            <span className="text-3xl font-extrabold bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] bg-clip-text text-transparent -ml-1 transition-all duration-500 group-hover:bg-[position:100%_0]">
+            {/* Brand wordmark — fixed colors, independent of theme switcher */}
+            <span
+              className="text-3xl font-extrabold bg-clip-text text-transparent -ml-1 transition-all duration-500"
+              style={{
+                backgroundImage:
+                  "linear-gradient(90deg, hsl(270 91% 60%), hsl(330 100% 60%), hsl(270 91% 60%))",
+                backgroundSize: "200% auto",
+              }}
+            >
               nique
             </span>
             <Age16Badge size="xs" withLabel={false} className="ml-2 self-center" />
