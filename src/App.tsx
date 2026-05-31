@@ -228,6 +228,7 @@ import {
   TeacherDashboard,
   TutorialPlatform,
   Games,
+  GamesHub,
   Rewards,
   XPAuditLog,
   AdminXPAudit,
