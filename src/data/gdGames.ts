@@ -942,7 +942,7 @@ export const gdGames: GDGame[] = [
     thumbnail: gdThumb("7fcb55f25f4a4a07848c630dffe1ae6e"),
     embedUrl:
       "https://html5.gamedistribution.com/7fcb55f25f4a4a07848c630dffe1ae6e/?gd_sdk_referrer_url=https://uniqueapp.fun/games-hub",
-    aspectRatio: "16/10",
+    aspectRatio: "16/9",
   },
   {
     id: "040ff13a2a9f44b98009750960a523ae",
