@@ -3,8 +3,10 @@
   <head>
     <meta charset="UTF-8" />
 
-    <!-- Performance: preconnect to critical origins so first API/asset request is faster -->
-    <link rel="preconnect" href="https://jufrdzeonywluwutvyxz.supabase.co" crossorigin />
+    <!-- Performance: preconnect to Supabase. NOTE: no `crossorigin` attr — supabase-js
+         uses fetch without credentials, so a credentialed preconnect would not match
+         the real request and Lighthouse flags it as "unused preconnect". -->
+    <link rel="preconnect" href="https://jufrdzeonywluwutvyxz.supabase.co" />
     <link rel="dns-prefetch" href="https://jufrdzeonywluwutvyxz.supabase.co" />
     <!-- Note: fonts.googleapis.com/fonts.gstatic.com preconnects removed — niche
          fonts are now lazy-injected via src/utils/lazyFonts.ts only on pages
