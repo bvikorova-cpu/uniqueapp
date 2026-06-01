@@ -2312,7 +2312,7 @@ export const gdGames: GDGame[] = [
     category: "casual",
     thumbnail: gdThumb("22c23c982349439294e9a3d0d55b7a76"),
     embedUrl: "https://html5.gamedistribution.com/22c23c982349439294e9a3d0d55b7a76",
-    aspectRatio: "3/2",
+    aspectRatio: "4/3",
   },
   {
     id: "a93152c0e931494987338969f804c732",
@@ -2333,7 +2333,7 @@ export const gdGames: GDGame[] = [
   {
     id: "d0d82cafb2ac4d848507a3144f9e8900",
     title: "Gas Station - Stick Simulator",
-    category: "simulation",
+    category: "casual",
     thumbnail: gdThumb("d0d82cafb2ac4d848507a3144f9e8900"),
     embedUrl: "https://html5.gamedistribution.com/d0d82cafb2ac4d848507a3144f9e8900",
     aspectRatio: "9/16",
@@ -2352,7 +2352,7 @@ export const gdGames: GDGame[] = [
     category: "casual",
     thumbnail: gdThumb("eece738ce7be411cba9b6e333f1ec96f"),
     embedUrl: "https://html5.gamedistribution.com/eece738ce7be411cba9b6e333f1ec96f",
-    aspectRatio: "8/5",
+    aspectRatio: "16/9",
   },
   {
     id: "5eac6df2561f49d1ac2992d130900bca",
