@@ -40,21 +40,21 @@ const PAGE_SIZE = 200;
 
 // Friendly labels for known reason codes (prefix match supported via startsWith)
 const REASON_LABELS: Record<string, string> = {
-  manual_add: "Manuálne pridanie",
-  manual_deduct: "Manuálne odpočítanie",
-  founding_member_bonus: "Bonus zakladajúceho člena",
-  gift_sent: "Darček odoslaný",
-  gift_received: "Darček prijatý",
-  lucky_wheel_cost: "Koleso šťastia – vklad",
-  lucky_wheel_prize: "Koleso šťastia – výhra",
-  mystery_box_purchase: "Mystery Box nákup",
-  purchase: "Nákup kreditov",
-  subscription_grant: "Predplatné – kredity",
-  ai_generation: "AI generovanie",
-  refund: "Vrátenie kreditov",
-  promo_code: "Promo kód",
-  referral_bonus: "Odporúčací bonus",
-  unknown_update: "Neznáma zmena",
+  manual_add: "Manual add",
+  manual_deduct: "Manual deduct",
+  founding_member_bonus: "Founding member bonus",
+  gift_sent: "Gift sent",
+  gift_received: "Gift received",
+  lucky_wheel_cost: "Lucky Wheel – spin",
+  lucky_wheel_prize: "Lucky Wheel – prize",
+  mystery_box_purchase: "Mystery Box purchase",
+  purchase: "Credit purchase",
+  subscription_grant: "Subscription – credits",
+  ai_generation: "AI generation",
+  refund: "Credit refund",
+  promo_code: "Promo code",
+  referral_bonus: "Referral bonus",
+  unknown_update: "Unknown change",
 };
 
 function prettyReason(reason: string | null): string {
