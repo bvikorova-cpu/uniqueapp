@@ -32,9 +32,13 @@ interface Notification {
   actor?: {
     id: string;
     full_name: string | null;
+    username?: string | null;
     avatar_url: string | null;
   };
 }
+
+const displayNameOf = (actor?: Notification["actor"] | null) =>
+  actor?.full_name?.trim() || actor?.username?.trim() || "Someone";
 
 const NotificationBell = () => {
   const navigate = useNavigate();
@@ -72,22 +76,24 @@ const NotificationBell = () => {
         async (payload) => {
           if (cancelled) return;
           if (payload.new.actor_id) {
-            const { data: profile } = await supabase
-              .from("profiles")
-              .select("id, full_name, avatar_url")
-              .eq("id", payload.new.actor_id)
-              .single();
+            const { data: profiles } = await supabase
+              .rpc("get_public_profiles", { ids: [payload.new.actor_id] });
+            const profile = (profiles || [])[0];
 
             const newNotification = {
               ...payload.new,
               actor: profile || {
                 id: payload.new.actor_id,
                 full_name: null,
+                username: null,
                 avatar_url: null,
               },
             };
 
             setNotifications(prev => [newNotification as Notification, ...prev].slice(0, 20));
+            setUnreadCount(prev => prev + 1);
+          } else {
+            setNotifications(prev => [payload.new as Notification, ...prev].slice(0, 20));
             setUnreadCount(prev => prev + 1);
           }
         }
@@ -117,20 +123,20 @@ const NotificationBell = () => {
 
       if (error) throw error;
 
-      // Fetch actor profiles
-      const actorIds = [...new Set(data?.map(n => n.actor_id).filter(Boolean) || [])];
-      const { data: profiles } = await supabase
-        .from("profiles")
-        .select("id, full_name, avatar_url")
-        .in("id", actorIds);
-
-      const profilesMap = new Map(profiles?.map(p => [p.id, p]) || []);
+      // Fetch actor profiles via security-definer RPC (RLS-safe public fields)
+      const actorIds = [...new Set(data?.map(n => n.actor_id).filter(Boolean) || [])] as string[];
+      let profilesMap = new Map<string, any>();
+      if (actorIds.length) {
+        const { data: profiles } = await supabase.rpc("get_public_profiles", { ids: actorIds });
+        profilesMap = new Map((profiles || []).map((p: any) => [p.id, p]));
+      }
 
       const notificationsWithActors = (data || []).map(notification => ({
         ...notification,
         actor: notification.actor_id ? (profilesMap.get(notification.actor_id) || {
           id: notification.actor_id,
           full_name: null,
+          username: null,
           avatar_url: null,
         }) : undefined,
       }));
@@ -146,7 +152,8 @@ const NotificationBell = () => {
 
 
   const getNotificationText = (notification: Notification): string => {
-    const actorName = notification.actor?.full_name || "Someone";
+    const actorName = displayNameOf(notification.actor);
+    
     
     switch (notification.type) {
       case "like":
@@ -352,19 +359,31 @@ const NotificationBell = () => {
                     <Avatar className="h-10 w-10">
                       <AvatarImage src={notification.actor?.avatar_url || undefined} />
                       <AvatarFallback>
-                        {notification.actor?.full_name?.charAt(0) || "U"}
+                        {notification.actor
+                          ? displayNameOf(notification.actor).charAt(0).toUpperCase()
+                          : <Bell className="h-4 w-4" />}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start gap-2">
                         <span className="text-lg">{getNotificationIcon(notification.type)}</span>
                         <div className="flex-1">
-                          <p className="text-sm">
-                            <span className="font-semibold">
-                              {notification.actor?.full_name || "Someone"}
-                            </span>{" "}
-                            {getNotificationText(notification).replace(notification.actor?.full_name || "Someone", "").trim()}
-                          </p>
+                          {notification.actor ? (
+                            <p className="text-sm">
+                              <span className="font-semibold">{displayNameOf(notification.actor)}</span>{" "}
+                              {getNotificationText(notification)
+                                .replace(displayNameOf(notification.actor), "")
+                                .trim()}
+                            </p>
+                          ) : (
+                            <p className="text-sm">
+                              {notification.title && (
+                                <span className="font-semibold">{notification.title}</span>
+                              )}
+                              {notification.title && notification.message ? " — " : ""}
+                              {notification.message || (!notification.title ? getNotificationText(notification) : "")}
+                            </p>
+                          )}
                           <p className="text-xs text-muted-foreground mt-1">
                             {formatDistanceToNow(new Date(notification.created_at), {
                               addSuffix: true,

@@ -61997,6 +61997,15 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_public_profiles: {
+        Args: { ids: string[] }
+        Returns: {
+          avatar_url: string
+          full_name: string
+          id: string
+          username: string
+        }[]
+      }
       get_random_questions: {
         Args: { p_count: number; p_difficulty: string }
         Returns: {
