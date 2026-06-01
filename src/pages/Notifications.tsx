@@ -28,7 +28,7 @@ interface Notification {
 }
 
 const displayNameOf = (actor?: Notification["actor"]) =>
-  actor?.full_name?.trim() || actor?.username?.trim() || "Unknown user";
+  actor?.full_name?.trim() || actor?.username?.trim() || "";
 
 const notificationBody = (n: Notification) => {
   if (!n.actor) return n.message || n.title || `Notification (${n.type})`;
