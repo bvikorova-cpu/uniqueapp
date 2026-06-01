@@ -24,8 +24,18 @@ interface Notification {
   action_url?: string | null;
   title?: string | null;
   message?: string | null;
-  actor?: { id: string; full_name: string | null; avatar_url: string | null } | null;
+  actor?: { id: string; full_name: string | null; username: string | null; avatar_url: string | null } | null;
 }
+
+const displayNameOf = (actor?: Notification["actor"]) =>
+  actor?.full_name?.trim() || actor?.username?.trim() || "Unknown user";
+
+const notificationBody = (n: Notification) => {
+  if (!n.actor) return n.message || n.title || `Notification (${n.type})`;
+  const name = displayNameOf(n.actor);
+  const text = n.message || n.title || `interacted with you (${n.type})`;
+  return text.replace(name, "").trim() || text;
+};
 
 const FILTERS = [
   { key: "all", label: "All" },
@@ -73,7 +83,7 @@ const Notifications = () => {
 
     const actorIds = [...new Set((data || []).map((n: any) => n.actor_id).filter(Boolean))];
     const { data: profiles } = actorIds.length
-      ? await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", actorIds)
+      ? await (supabase as any).rpc("get_public_profiles", { ids: actorIds })
       : { data: [] as any[] };
     const map = new Map((profiles || []).map((p: any) => [p.id, p]));
     setItems(
@@ -199,15 +209,17 @@ const Notifications = () => {
                   <div className="flex gap-3">
                     <Avatar className="h-10 w-10 flex-shrink-0">
                       <AvatarImage src={n.actor?.avatar_url || undefined} />
-                      <AvatarFallback>{n.actor?.full_name?.charAt(0) || "U"}</AvatarFallback>
+                      <AvatarFallback>
+                        {n.actor ? displayNameOf(n.actor).charAt(0).toUpperCase() : <Bell className="h-4 w-4" />}
+                      </AvatarFallback>
                     </Avatar>
                     <div
                       className="flex-1 min-w-0 cursor-pointer"
                       onClick={() => navigateFromNotif(n)}
                     >
                       <p className="text-sm break-words">
-                        <span className="font-semibold">{n.actor?.full_name || "Someone"}</span>{" "}
-                        {n.message || n.title || `interacted with you (${n.type})`}
+                        {n.actor && <span className="font-semibold">{displayNameOf(n.actor)} </span>}
+                        {notificationBody(n)}
                       </p>
                       <p className="text-xs text-muted-foreground mt-1">
                         {formatDistanceToNow(new Date(n.created_at), { addSuffix: true })}
