@@ -349,11 +349,11 @@ export default function MyCreditsLedger() {
         {/* Mobile list */}
         <div className="md:hidden space-y-2">
           {loading && (
-            <Card className="p-6 text-center text-muted-foreground text-sm">Načítavam…</Card>
+            <Card className="p-6 text-center text-muted-foreground text-sm">Loading…</Card>
           )}
           {!loading && !rows.length && (
             <Card className="p-6 text-center text-muted-foreground text-sm">
-              Žiadne pohyby pre tieto filtre.
+              No movements for these filters.
             </Card>
           )}
           {rows.map((r) => (
