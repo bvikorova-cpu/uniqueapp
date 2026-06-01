@@ -119,6 +119,23 @@ Deno.serve(async (req) => {
           return;
         }
       }
+
+      // 3) in-app notification (best-effort, do not fail the grant on notify error)
+      const monthLabel = new Date(`${grantMonth}T00:00:00Z`).toLocaleString("en-US", {
+        month: "long", year: "numeric", timeZone: "UTC",
+      });
+      const { error: notifErr } = await supabase.from("notifications").insert({
+        user_id: userId,
+        type: "monthly_credits",
+        title: `+${MONTHLY_AMOUNT} AI credits for ${monthLabel}`,
+        message: `Your monthly bonus of ${MONTHLY_AMOUNT} AI credits has been added. Unused credits roll over.`,
+        action_url: "/ai-credits-store",
+        metadata: { grant_month: grantMonth, credits_granted: MONTHLY_AMOUNT },
+      });
+      if (notifErr) {
+        console.error(`[monthly-credits-grant] notification insert failed user=${userId}`, notifErr);
+      }
+
       granted++;
     } catch (e: any) {
       failed++;
