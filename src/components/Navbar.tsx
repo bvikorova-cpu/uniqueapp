@@ -463,8 +463,9 @@ const Navbar = () => {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="lg:hidden py-3 space-y-1 max-h-[calc(100vh-5rem)] overflow-y-auto">
-            {/* Free tier balance removed — paid-only model */}
+            <MobileCreditsPill />
             {/* Main Navigation Items */}
+
             {mainNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
