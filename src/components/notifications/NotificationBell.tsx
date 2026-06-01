@@ -38,7 +38,7 @@ interface Notification {
 }
 
 const displayNameOf = (actor?: Notification["actor"] | null) =>
-  actor?.full_name?.trim() || actor?.username?.trim() || "Someone";
+  actor?.full_name?.trim() || actor?.username?.trim() || "";
 
 const NotificationBell = () => {
   const navigate = useNavigate();
@@ -153,27 +153,27 @@ const NotificationBell = () => {
 
   const getNotificationText = (notification: Notification): string => {
     const actorName = displayNameOf(notification.actor);
-    
-    
+    const hasActor = !!notification.actor;
+
     switch (notification.type) {
       case "like":
-        return `${actorName} liked your post`;
+        return hasActor ? `${actorName} liked your post` : "Someone liked your post";
       case "comment":
-        return `${actorName} commented on your post`;
+        return hasActor ? `${actorName} commented on your post` : "New comment on your post";
       case "reaction":
-        return `${actorName} reacted to your post`;
+        return hasActor ? `${actorName} reacted to your post` : "New reaction on your post";
       case "repost":
-        return `${actorName} shared your post`;
+        return hasActor ? `${actorName} shared your post` : "Your post was shared";
       case "follow":
-        return `${actorName} started following you`;
+        return hasActor ? `${actorName} started following you` : "You have a new follower";
       case "friend_request":
-        return notification.message || `${actorName} sent you a friend request`;
+        return notification.message || (hasActor ? `${actorName} sent you a friend request` : "New friend request");
       case "job_match":
         return "New job listing matches your preferences";
       case "job_application":
-        return `${actorName} applied for your job position`;
+        return hasActor ? `${actorName} applied for your job position` : "New job application";
       case "verification_request":
-        return `${actorName} submitted a company verification request`;
+        return hasActor ? `${actorName} submitted a company verification request` : "New verification request";
       case "masterchef_payout":
         return "New KitchenStars payout pending";
       case "masterchef_withdrawal":
@@ -188,7 +188,7 @@ const NotificationBell = () => {
       case "weekly_xp_leaderboard":
         return notification.message || notification.title || "You won the Weekly XP Leaderboard!";
       default:
-        return notification.message || notification.title || `${actorName} interacted with your content`;
+        return notification.message || notification.title || (hasActor ? `${actorName} interacted with your content` : "New notification");
     }
   };
 
