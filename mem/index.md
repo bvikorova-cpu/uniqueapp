@@ -3,7 +3,7 @@
 ## Core
 - Language: 12-language support (SK, EN, HU, etc.) with auto-detection.
 - Currency: EUR (€) exclusively.
-- Access: 100% paid-only model (no free tiers). AI tools cost 2-5 credits per use.
+- Access: Paid AI credits + Free tier (10 at signup, +10 monthly on 1st, Europe/Bratislava). AI tools cost 2-5 credits per use.
 - Age Rating: 16+ for main platform, Kids Channel for ages 6–12.
 - Theme: Primary purple (270 91%), accent hot pink (330 100%), 0.75rem radius, dark luxury glassmorphism.
 - Branding: "Unique" wordmark in Lobster Two Bold font.
