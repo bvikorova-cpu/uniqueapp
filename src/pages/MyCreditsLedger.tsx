@@ -177,15 +177,25 @@ export default function MyCreditsLedger() {
           </Button>
         </div>
 
-        <header className="mb-6 flex items-center gap-3">
-          <div className="rounded-xl bg-primary/15 p-3">
-            <Coins className="h-6 w-6 text-primary" />
+        <header className="mb-6 flex flex-wrap items-center gap-3 justify-between">
+          <div className="flex items-center gap-3">
+            <div className="rounded-xl bg-primary/15 p-3">
+              <Coins className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold">História kreditov</h1>
+              <p className="text-sm text-muted-foreground">
+                Všetky pohyby tvojich AI kreditov s dôvodom každej transakcie.
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold">História kreditov</h1>
-            <p className="text-sm text-muted-foreground">
-              Všetky pohyby tvojich AI kreditov s dôvodom každej transakcie.
-            </p>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => navigate("/lucky-wheel")}>
+              🎡 Koleso šťastia
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => navigate("/credit-gifts")}>
+              🎁 Poslať darček
+            </Button>
           </div>
         </header>
 

@@ -62477,6 +62477,14 @@ export type Database = {
               username: string
             }[]
           }
+      send_credit_gift: {
+        Args: {
+          p_amount: number
+          p_message?: string
+          p_recipient_email: string
+        }
+        Returns: Json
+      }
       send_secret_santa_gift: {
         Args: {
           p_animation_type?: string
