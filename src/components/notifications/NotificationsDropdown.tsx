@@ -222,7 +222,7 @@ export const NotificationsDropdown = () => {
     const hasActor = !!notification.actor && !!name;
     switch (notification.type) {
       case 'like':
-        return hasActor ? `${name} liked your post` : "Someone liked your post";
+        return hasActor ? `${name} liked your post` : "Your post got a new like";
       case 'comment':
         return hasActor ? `${name} commented on your post` : "New comment on your post";
       case 'reaction':

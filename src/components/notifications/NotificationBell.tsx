@@ -157,7 +157,7 @@ const NotificationBell = () => {
 
     switch (notification.type) {
       case "like":
-        return hasActor ? `${actorName} liked your post` : "Someone liked your post";
+        return hasActor ? `${actorName} liked your post` : "Your post got a new like";
       case "comment":
         return hasActor ? `${actorName} commented on your post` : "New comment on your post";
       case "reaction":
