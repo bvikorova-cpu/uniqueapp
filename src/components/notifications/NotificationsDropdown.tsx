@@ -295,7 +295,7 @@ export const NotificationsDropdown = () => {
                   <Avatar className="h-10 w-10">
                     <AvatarImage src={notification.actor.avatar_url || undefined} />
                     <AvatarFallback className="text-xs">
-                      {notification.actor.full_name?.charAt(0) || "U"}
+                      {notification.actor.full_name?.charAt(0) || <User className="h-4 w-4" />}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
