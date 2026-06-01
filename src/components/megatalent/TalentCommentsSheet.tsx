@@ -85,7 +85,7 @@ export function TalentCommentsSheet({ submissionId, open, onOpenChange, onCountC
       }
     } catch (err: any) {
       toast({
-        title: "Chyba pri checkoute",
+        title: "Checkout error",
         description: err?.message || "Failed to initiate payment.",
         variant: "destructive",
       });
