@@ -25,7 +25,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MobileCreditsPill } from "@/components/wall/MobileCreditsPill";
 
 
 interface WallTopNavProps {
