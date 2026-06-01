@@ -32,9 +32,13 @@ interface Notification {
   actor?: {
     id: string;
     full_name: string | null;
+    username?: string | null;
     avatar_url: string | null;
   };
 }
+
+const displayNameOf = (actor?: Notification["actor"] | null) =>
+  actor?.full_name?.trim() || actor?.username?.trim() || "Someone";
 
 const NotificationBell = () => {
   const navigate = useNavigate();
