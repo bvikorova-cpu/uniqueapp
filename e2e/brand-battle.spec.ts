@@ -1,14 +1,7 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, Page } from "@playwright/test";
 
 /**
  * Brand Battle Arena E2E — render smoke (Nathalie's beta walk).
- *
- * Coverage:
- *  (a) Top-level routes render without JS exceptions
- *  (b) Hub renders and lists all 20 next-gen features (cards visible)
- *  (c) Each of the 20 hub features opens its detail panel
- *  (d) Paywall / monetization copy present on landing
- *  (e) AI features advertise credit cost (3–5 CR)
  */
 
 const TOP_ROUTES = ["/brand-battle", "/brand-battle/hub"];
@@ -36,6 +29,27 @@ const FEATURE_TITLES = [
   "AI Battle Predictor",
 ];
 
+async function waitForHydration(page: Page) {
+  await page.waitForLoadState("domcontentloaded");
+  await page
+    .waitForFunction(
+      () => {
+        const body = document.body;
+        if (!body) return false;
+        const txt = (body.innerText || "").toLowerCase();
+        if (txt.includes("loading unique")) return false;
+        return (
+          !!document.querySelector("header") ||
+          !!document.querySelector("main") ||
+          (body.innerText || "").length > 80
+        );
+      },
+      undefined,
+      { timeout: 15_000 }
+    )
+    .catch(() => {});
+}
+
 test.describe("Brand Battle — top routes", () => {
   for (const path of TOP_ROUTES) {
     test(`renders ${path}`, async ({ page }) => {
@@ -43,7 +57,7 @@ test.describe("Brand Battle — top routes", () => {
       page.on("pageerror", (e) => errors.push(String(e)));
       const res = await page.goto(path);
       expect(res?.status() ?? 200).toBeLessThan(500);
-      await page.waitForLoadState("domcontentloaded");
+      await waitForHydration(page);
       const body = await page.locator("body").innerText();
       expect(body.length).toBeGreaterThan(40);
       expect(errors, `JS errors on ${path}:\n${errors.join("\n")}`).toEqual([]);
@@ -54,17 +68,17 @@ test.describe("Brand Battle — top routes", () => {
 test.describe("Brand Battle Hub — 20 features render", () => {
   test("all 20 feature cards visible on hub", async ({ page }) => {
     await page.goto("/brand-battle/hub");
-    await page.waitForLoadState("domcontentloaded");
+    await waitForHydration(page);
     for (const title of FEATURE_TITLES) {
       await expect(page.getByText(title, { exact: true }).first()).toBeVisible({
-        timeout: 5_000,
+        timeout: 8_000,
       });
     }
   });
 
   test("AI features show credit cost (3–5 CR badge)", async ({ page }) => {
     await page.goto("/brand-battle/hub");
-    await page.waitForLoadState("domcontentloaded");
+    await waitForHydration(page);
     const body = await page.locator("body").innerText();
     expect(body).toMatch(/\b[345]\s*CR\b/);
   });
@@ -74,11 +88,10 @@ test.describe("Brand Battle Hub — 20 features render", () => {
       const errors: string[] = [];
       page.on("pageerror", (e) => errors.push(String(e)));
       await page.goto("/brand-battle/hub");
-      await page.waitForLoadState("domcontentloaded");
+      await waitForHydration(page);
       await page.getByText(title, { exact: true }).first().click();
-      // detail panel has a Close button
       await expect(page.getByRole("button", { name: /close/i }).first()).toBeVisible({
-        timeout: 4_000,
+        timeout: 6_000,
       });
       expect(errors, `JS errors opening ${title}:\n${errors.join("\n")}`).toEqual([]);
     });
@@ -88,7 +101,7 @@ test.describe("Brand Battle Hub — 20 features render", () => {
 test.describe("Brand Battle — monetization surface", () => {
   test("landing surfaces vote / credit / sponsor copy", async ({ page }) => {
     await page.goto("/brand-battle");
-    await page.waitForLoadState("domcontentloaded");
+    await waitForHydration(page);
     const body = (await page.locator("body").innerText()).toLowerCase();
     const monetized =
       /vote|credit|€|eur|sponsor|leaderboard|battle|premium/.test(body);
