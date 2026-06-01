@@ -53,12 +53,8 @@ export default function RewardsGiftXP() {
     searchLock.current = true;
     setSearching(true);
     try {
-      const safe = escapeIlike(trimmed.slice(0, MAX_QUERY));
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("id,full_name,avatar_url")
-        .ilike("full_name", `%${safe}%`)
-        .limit(10);
+      const safe = trimmed.slice(0, MAX_QUERY);
+      const { data, error } = await (supabase as any).rpc("search_users", { search_query: safe });
       if (error) {
         toast({ title: "Search failed", description: error.message, variant: "destructive" });
         setResults([]);
