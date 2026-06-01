@@ -1,40 +1,38 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 
 /**
  * Coloring Pages E2E — beta test suite (Nathalie).
  *
- * Coverage:
- *  (a) Top-level routes render under 500 with no JS exceptions
- *  (b) All 18 hub feature slugs render
- *  (c) Legacy redirects (/schools, /healthcare, /corporate-events)
- *  (d) Paid-only model: AI features require auth / credits
- *  (e) Credit checkout button reachable
+ * IMPORTANT: SPA shows "Loading Unique…" placeholder before React hydrates.
+ * Every body-text assertion MUST wait for hydration; otherwise we measure
+ * the placeholder and fail with body.length === 16.
  */
 
-const TOP_ROUTES = [
-  "/coloring-pages",
-  "/coloring-pages/hub",
-];
+async function waitForHydration(page: Page) {
+  await page.waitForLoadState("domcontentloaded");
+  await page
+    .waitForFunction(
+      () => {
+        const body = document.body?.innerText?.toLowerCase() ?? "";
+        if (body.includes("loading unique")) return false;
+        return (
+          document.querySelector("header") !== null ||
+          document.querySelector("main") !== null ||
+          body.length > 80
+        );
+      },
+      { timeout: 15_000 },
+    )
+    .catch(() => {});
+}
+
+const TOP_ROUTES = ["/coloring-pages", "/coloring-pages/hub"];
 
 const HUB_SLUGS = [
-  "color-by-number",
-  "paint-bucket",
-  "brushes",
-  "mandala",
-  "layers",
-  "smart-palettes",
-  "zoom-stylus",
-  "streaks",
-  "contests",
-  "timelapse",
-  "follow-feed",
-  "remix",
-  "collab",
-  "collections",
-  "licensed",
-  "ai-examples",
-  "mindfulness",
-  "print-on-demand",
+  "color-by-number", "paint-bucket", "brushes", "mandala", "layers",
+  "smart-palettes", "zoom-stylus", "streaks", "contests", "timelapse",
+  "follow-feed", "remix", "collab", "collections", "licensed",
+  "ai-examples", "mindfulness", "print-on-demand",
 ];
 
 const LEGACY_REDIRECTS = [
@@ -50,7 +48,7 @@ test.describe("Coloring Pages — top routes", () => {
       page.on("pageerror", (e) => errors.push(String(e)));
       const res = await page.goto(path);
       expect(res?.status() ?? 200).toBeLessThan(500);
-      await page.waitForLoadState("domcontentloaded");
+      await waitForHydration(page);
       const body = await page.locator("body").innerText();
       expect(body.length).toBeGreaterThan(20);
       expect(errors, `JS errors on ${path}:\n${errors.join("\n")}`).toEqual([]);
@@ -64,7 +62,7 @@ test.describe("Coloring Pages — 18 hub slugs", () => {
       const errors: string[] = [];
       page.on("pageerror", (e) => errors.push(String(e)));
       await page.goto(`/coloring-pages/hub/${slug}`);
-      await page.waitForLoadState("domcontentloaded");
+      await waitForHydration(page);
       const body = await page.locator("body").innerText();
       expect(body.length).toBeGreaterThan(10);
       expect(errors, `JS errors on hub/${slug}:\n${errors.join("\n")}`).toEqual([]);
@@ -76,7 +74,7 @@ test.describe("Coloring Pages — legacy redirects", () => {
   for (const { from, to } of LEGACY_REDIRECTS) {
     test(`${from} redirects to ${to}`, async ({ page }) => {
       await page.goto(from);
-      await page.waitForLoadState("domcontentloaded");
+      await page.waitForURL(new RegExp(to.replace(/\//g, "\\/")), { timeout: 10_000 }).catch(() => {});
       expect(page.url()).toContain(to);
     });
   }
@@ -85,21 +83,17 @@ test.describe("Coloring Pages — legacy redirects", () => {
 test.describe("Coloring Pages — payment / paywall surface", () => {
   test("landing shows a CTA or credits pricing copy in EUR", async ({ page }) => {
     await page.goto("/coloring-pages");
-    await page.waitForLoadState("domcontentloaded");
+    await waitForHydration(page);
     const body = (await page.locator("body").innerText()).toLowerCase();
-    // Paid-only model: must mention credits, price, €, or buy/get
-    const monetized =
-      /credit|€|eur|buy|get started|subscribe|upgrade|pricing|premium/.test(body);
+    const monetized = /credit|€|eur|buy|get started|subscribe|upgrade|pricing|premium/.test(body);
     expect(monetized).toBe(true);
   });
 
   test("paid feature panel renders gating UI when signed out", async ({ page }) => {
-    // color-by-number is the headline paid feature (5 credits)
     await page.goto("/coloring-pages/hub/color-by-number");
-    await page.waitForLoadState("domcontentloaded");
+    await waitForHydration(page);
     const body = (await page.locator("body").innerText()).toLowerCase();
-    const gated =
-      /sign in|log in|prihlás|login|credit|buy|unlock|upgrade|€/.test(body);
+    const gated = /sign in|log in|prihlás|login|credit|buy|unlock|upgrade|€/.test(body);
     expect(gated).toBe(true);
   });
 });
