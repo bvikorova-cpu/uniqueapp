@@ -218,7 +218,7 @@ export const NotificationsDropdown = () => {
   };
 
   const getNotificationText = (notification: Notification) => {
-    const name = notification.actor.full_name || "Someone";
+    const name = notification.actor.full_name?.trim() || notification.actor.username?.trim() || "Someone";
     switch (notification.type) {
       case 'like':
         return `${name} liked your post`;
