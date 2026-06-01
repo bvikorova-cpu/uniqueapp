@@ -218,18 +218,19 @@ export const NotificationsDropdown = () => {
   };
 
   const getNotificationText = (notification: Notification) => {
-    const name = notification.actor.full_name?.trim() || notification.actor.username?.trim() || "Someone";
+    const name = notification.actor?.full_name?.trim() || notification.actor?.username?.trim() || "";
+    const hasActor = !!notification.actor && !!name;
     switch (notification.type) {
       case 'like':
-        return `${name} liked your post`;
+        return hasActor ? `${name} liked your post` : "Someone liked your post";
       case 'comment':
-        return `${name} commented on your post`;
+        return hasActor ? `${name} commented on your post` : "New comment on your post";
       case 'reaction':
-        return `${name} reacted to your post`;
+        return hasActor ? `${name} reacted to your post` : "New reaction on your post";
       case 'repost':
-        return `${name} shared your post`;
+        return hasActor ? `${name} shared your post` : "Your post was shared";
       case 'follow':
-        return `${name} started following you`;
+        return hasActor ? `${name} started following you` : "You have a new follower";
       default:
         return "";
     }
