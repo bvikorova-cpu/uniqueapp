@@ -108,26 +108,23 @@ export const NotificationsDropdown = () => {
 
       if (error) throw error;
 
-      // Fetch actor profiles
-      const notificationsWithProfiles = await Promise.all(
-        (notificationsData || []).map(async (notification: any) => {
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("id, full_name, avatar_url")
-            .eq("id", notification.actor_id)
-            .single();
+      // Fetch actor profiles via security-definer RPC (RLS-safe public fields)
+      const actorIds = [...new Set((notificationsData || []).map((n: any) => n.actor_id).filter(Boolean))] as string[];
+      let profilesMap = new Map<string, any>();
+      if (actorIds.length) {
+        const { data: profiles } = await supabase.rpc("get_public_profiles", { ids: actorIds });
+        profilesMap = new Map((profiles || []).map((p: any) => [p.id, p]));
+      }
 
-          return {
-            id: notification.id,
-            type: notification.type,
-            post_id: notification.post_id,
-            actor_id: notification.actor_id,
-            is_read: notification.is_read,
-            created_at: notification.created_at,
-            actor: profile || { id: notification.actor_id, full_name: null, avatar_url: null }
-          } as Notification;
-        })
-      );
+      const notificationsWithProfiles = (notificationsData || []).map((notification: any) => ({
+        id: notification.id,
+        type: notification.type,
+        post_id: notification.post_id,
+        actor_id: notification.actor_id,
+        is_read: notification.is_read,
+        created_at: notification.created_at,
+        actor: profilesMap.get(notification.actor_id) || { id: notification.actor_id, full_name: null, avatar_url: null },
+      } as Notification));
 
       setNotifications(notificationsWithProfiles);
       setUnreadCount(notificationsWithProfiles.filter(n => !n.is_read).length);
