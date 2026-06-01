@@ -373,7 +373,7 @@ export default function MyCreditsLedger() {
                   </div>
                   {r.source && (
                     <div className="text-[11px] text-muted-foreground mt-1">
-                      Zdroj: {r.source}
+                      Source: {r.source}
                     </div>
                   )}
                 </div>
@@ -388,8 +388,8 @@ export default function MyCreditsLedger() {
               </div>
               {(r.balance_before !== null || r.balance_after !== null) && (
                 <div className="mt-2 pt-2 border-t border-border/40 text-[11px] text-muted-foreground flex justify-between">
-                  <span>Pred: {r.balance_before ?? "—"}</span>
-                  <span>Po: {r.balance_after ?? "—"}</span>
+                  <span>Before: {r.balance_before ?? "—"}</span>
+                  <span>After: {r.balance_after ?? "—"}</span>
                 </div>
               )}
             </Card>
