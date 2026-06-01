@@ -10,7 +10,12 @@ import { dirname } from "node:path";
 export default async function globalSetup() {
   const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:8080";
   const baseOrigin = new URL(baseURL).origin;
-  const origins = new Set<string>([baseOrigin]);
+  const origins = new Set<string>([
+    baseOrigin,
+    "https://uniqueapp.fun",
+    "https://www.uniqueapp.fun",
+    "https://uniqueapp.lovable.app",
+  ]);
   try {
     const u = new URL(baseURL);
     if (!u.hostname.startsWith("www.") && !u.hostname.match(/^localhost|^\d/)) {

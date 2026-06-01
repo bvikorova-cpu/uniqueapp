@@ -54,9 +54,14 @@ setup("authenticate", async ({ request }) => {
 
   const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:8080";
   const baseOrigin = new URL(baseURL).origin;
-  // uniqueapp.fun → www.uniqueapp.fun 302. localStorage is origin-scoped, so
-  // pre-seed both so the session survives the redirect.
-  const origins = new Set<string>([baseOrigin]);
+  // uniqueapp.fun and uniqueapp.lovable.app both 302 → www.uniqueapp.fun.
+  // localStorage is origin-scoped, so seed every known production/preview origin.
+  const origins = new Set<string>([
+    baseOrigin,
+    "https://uniqueapp.fun",
+    "https://www.uniqueapp.fun",
+    "https://uniqueapp.lovable.app",
+  ]);
   try {
     const u = new URL(baseURL);
     if (!u.hostname.startsWith("www.") && !u.hostname.match(/^localhost|^\d/)) {
