@@ -101,7 +101,7 @@ export default function AdminCreditsLedger() {
         <AdminPageHeader
           icon={Coins}
           title="AI Credits Ledger"
-          subtitle="Audit trail všetkých zmien ai_credits — kto, kedy, prečo."
+          subtitle="Audit trail of all ai_credits changes — who, when, why."
         />
 
         <AdminGlassCard className="p-4 mb-4">
