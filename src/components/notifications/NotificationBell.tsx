@@ -359,19 +359,31 @@ const NotificationBell = () => {
                     <Avatar className="h-10 w-10">
                       <AvatarImage src={notification.actor?.avatar_url || undefined} />
                       <AvatarFallback>
-                        {notification.actor?.full_name?.charAt(0) || "U"}
+                        {notification.actor
+                          ? displayNameOf(notification.actor).charAt(0).toUpperCase()
+                          : <Bell className="h-4 w-4" />}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start gap-2">
                         <span className="text-lg">{getNotificationIcon(notification.type)}</span>
                         <div className="flex-1">
-                          <p className="text-sm">
-                            <span className="font-semibold">
-                              {notification.actor?.full_name || "Someone"}
-                            </span>{" "}
-                            {getNotificationText(notification).replace(notification.actor?.full_name || "Someone", "").trim()}
-                          </p>
+                          {notification.actor ? (
+                            <p className="text-sm">
+                              <span className="font-semibold">{displayNameOf(notification.actor)}</span>{" "}
+                              {getNotificationText(notification)
+                                .replace(displayNameOf(notification.actor), "")
+                                .trim()}
+                            </p>
+                          ) : (
+                            <p className="text-sm">
+                              {notification.title && (
+                                <span className="font-semibold">{notification.title}</span>
+                              )}
+                              {notification.title && notification.message ? " — " : ""}
+                              {notification.message || (!notification.title ? getNotificationText(notification) : "")}
+                            </p>
+                          )}
                           <p className="text-xs text-muted-foreground mt-1">
                             {formatDistanceToNow(new Date(notification.created_at), {
                               addSuffix: true,
