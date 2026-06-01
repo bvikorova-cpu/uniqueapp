@@ -46,11 +46,17 @@ test.describe("Landing page smoke", () => {
   test("auth page is reachable", async ({ page }) => {
     await page.goto("/auth");
     await waitForHydration(page);
-    const hasAuthControls =
-      (await page.getByRole("button", { name: /sign in|log in|prihlás|continue|register|sign up/i }).count()) > 0 ||
-      (await page.locator('input[type="password"], input[type="email"]').count()) > 0;
-    expect(hasAuthControls).toBe(true);
+    // Poll — Auth.tsx renders Tabs (Login/Register) with email+password inputs.
+    await expect
+      .poll(
+        async () =>
+          (await page.locator('input[type="password"], input[type="email"]').count()) +
+          (await page.getByRole("button", { name: /login|sign in|log in|register|sign up|prihlás/i }).count()),
+        { timeout: 10_000 },
+      )
+      .toBeGreaterThan(0);
   });
+
 
   test("404 page renders for unknown route", async ({ page }) => {
     const res = await page.goto("/this-route-does-not-exist-xyz");
