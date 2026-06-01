@@ -124,7 +124,7 @@ export const NotificationsDropdown = () => {
         actor_id: notification.actor_id,
         is_read: notification.is_read,
         created_at: notification.created_at,
-        actor: profilesMap.get(notification.actor_id) || { id: notification.actor_id, full_name: null, avatar_url: null },
+        actor: profilesMap.get(notification.actor_id) || { id: notification.actor_id, full_name: null, username: null, avatar_url: null },
       } as Notification));
 
       setNotifications(notificationsWithProfiles);
