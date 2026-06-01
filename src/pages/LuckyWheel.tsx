@@ -44,16 +44,15 @@ export default function LuckyWheel() {
 
   const spin = async () => {
     if (balance !== null && balance < SPIN_COST) {
-      toast.error("Nedostatok kreditov", {
-        description: `Potrebuješ aspoň ${SPIN_COST} CR. Doplň si v AI Credits Store.`,
-        action: { label: "Doplniť", onClick: () => navigate("/ai-credits-store") },
+      toast.error("Not enough credits", {
+        description: `You need at least ${SPIN_COST} CR. Top up in the AI Credits Store.`,
+        action: { label: "Top up", onClick: () => navigate("/ai-credits-store") },
       });
       return;
     }
     setSpinning(true);
     setResult(null);
 
-    // Animate
     const targetSpin = 1440 + Math.floor(Math.random() * 360);
     setAngle((a) => a + targetSpin);
 
@@ -61,19 +60,18 @@ export default function LuckyWheel() {
       const { data, error } = await supabase.rpc("spin_lucky_wheel");
       if (error) throw error;
       const r = data as unknown as SpinResult;
-      // Wait for visual animation
       await new Promise((r) => setTimeout(r, 1800));
       setResult(r);
       setBalance(r.balance_after);
       if (r.prize > 0) {
-        toast.success(`Výhra: ${r.prize} CR!`, {
+        toast.success(`You won ${r.prize} CR!`, {
           description: `Net: ${r.net >= 0 ? "+" : ""}${r.net} CR`,
         });
       } else {
-        toast(`Tentokrát smola — strata ${SPIN_COST} CR`);
+        toast(`No win this time — lost ${SPIN_COST} CR`);
       }
     } catch (e: any) {
-      toast.error(e.message || "Chyba pri točení");
+      toast.error(e.message || "Spin failed");
     } finally {
       setSpinning(false);
     }
@@ -82,32 +80,32 @@ export default function LuckyWheel() {
   return (
     <div className="min-h-screen bg-background">
       <SEO
-        title="Koleso šťastia | Unique"
-        description="Toč koleso šťastia a vyhraj kredity. Cena 5 CR za spin."
+        title="Lucky Wheel | Unique"
+        description="Spin the lucky wheel and win credits. 5 CR per spin."
         canonical="/lucky-wheel"
       />
       <div className="container max-w-2xl mx-auto px-4 py-6">
         <div className="flex items-center justify-between mb-6">
           <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
-            <ArrowLeft className="h-4 w-4 mr-2" /> Späť
+            <ArrowLeft className="h-4 w-4 mr-2" /> Back
           </Button>
           <Button variant="outline" size="sm" onClick={() => navigate("/credits/history")}>
-            <History className="h-4 w-4 mr-2" /> História
+            <History className="h-4 w-4 mr-2" /> History
           </Button>
         </div>
 
         <div className="flex items-center gap-3 mb-2">
           <Sparkles className="h-7 w-7 text-primary" />
-          <h1 className="text-3xl font-bold">Koleso šťastia</h1>
+          <h1 className="text-3xl font-bold">Lucky Wheel</h1>
         </div>
         <p className="text-muted-foreground mb-6">
-          Cena <strong>{SPIN_COST} CR</strong> za jeden spin. Možné výhry: {PRIZES.join(" / ")} CR.
+          Cost <strong>{SPIN_COST} CR</strong> per spin. Possible prizes: {PRIZES.join(" / ")} CR.
         </p>
 
         <Card className="p-8 text-center">
           <div className="flex items-center justify-center gap-2 mb-6 text-sm">
             <Coins className="h-4 w-4 text-primary" />
-            <span>Tvoj zostatok:</span>
+            <span>Your balance:</span>
             <strong>{balance ?? "—"} CR</strong>
           </div>
 
@@ -144,23 +142,23 @@ export default function LuckyWheel() {
           >
             {spinning ? (
               <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Točím…
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Spinning…
               </>
             ) : (
               <>
-                <Sparkles className="h-4 w-4 mr-2" /> Toč ({SPIN_COST} CR)
+                <Sparkles className="h-4 w-4 mr-2" /> Spin ({SPIN_COST} CR)
               </>
             )}
           </Button>
 
           {result && (
             <div className="mt-6 p-4 rounded-lg bg-muted">
-              <div className="text-sm text-muted-foreground">Posledný spin:</div>
+              <div className="text-sm text-muted-foreground">Last spin:</div>
               <div className="text-2xl font-bold mt-1">
-                {result.prize > 0 ? `+${result.prize} CR výhra` : "Žiadna výhra"}
+                {result.prize > 0 ? `+${result.prize} CR won` : "No win"}
               </div>
               <div className="text-xs text-muted-foreground mt-1">
-                Net: <strong>{result.net >= 0 ? "+" : ""}{result.net} CR</strong> · Zostatok:{" "}
+                Net: <strong>{result.net >= 0 ? "+" : ""}{result.net} CR</strong> · Balance:{" "}
                 <strong>{result.balance_after} CR</strong>
               </div>
             </div>
