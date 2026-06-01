@@ -61161,10 +61161,17 @@ export type Database = {
         Args: { p_theme_id: string; p_user_id: string }
         Returns: undefined
       }
-      add_ai_credits: {
-        Args: { p_amount: number; p_user_id: string }
-        Returns: boolean
-      }
+      add_ai_credits:
+        | { Args: { p_amount: number; p_user_id: string }; Returns: boolean }
+        | {
+            Args: {
+              p_amount: number
+              p_reason?: string
+              p_source?: string
+              p_user_id: string
+            }
+            Returns: boolean
+          }
       add_comedy_coins: {
         Args: { _amount: number; _purchased?: boolean; _user_id: string }
         Returns: number
@@ -61506,10 +61513,17 @@ export type Database = {
       create_weekly_iq_tournament: { Args: never; Returns: string }
       deactivate_expired_job_listings: { Args: never; Returns: undefined }
       deactivate_expired_listings: { Args: never; Returns: undefined }
-      deduct_ai_credits: {
-        Args: { p_amount: number; p_user_id: string }
-        Returns: boolean
-      }
+      deduct_ai_credits:
+        | { Args: { p_amount: number; p_user_id: string }; Returns: boolean }
+        | {
+            Args: {
+              p_amount: number
+              p_reason?: string
+              p_source?: string
+              p_user_id: string
+            }
+            Returns: boolean
+          }
       deduct_comedian_balance: {
         Args: { p_amount: number; p_comedian_id: string }
         Returns: undefined
