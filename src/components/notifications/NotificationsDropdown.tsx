@@ -19,7 +19,7 @@ interface Notification {
   id: string;
   type: 'like' | 'comment' | 'reaction' | 'repost' | 'follow';
   post_id: string | null;
-  actor_id: string;
+  actor_id: string | null;
   is_read: boolean;
   created_at: string;
   actor: {
@@ -27,7 +27,7 @@ interface Notification {
     full_name: string | null;
     username: string | null;
     avatar_url: string | null;
-  };
+  } | null;
 }
 
 export const NotificationsDropdown = () => {
