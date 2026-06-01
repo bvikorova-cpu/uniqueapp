@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Bell, Heart, MessageCircle, Smile, Repeat2, Check } from "lucide-react";
+import { Bell, Heart, MessageCircle, Smile, Repeat2, Check, User } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
 
