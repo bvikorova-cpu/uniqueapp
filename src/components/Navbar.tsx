@@ -22,6 +22,7 @@ import uniqueLogo from "@/assets/unique-logo.webp";
 import { Age16Badge } from "@/components/Age16Badge";
 
 import GlobalSearch from "@/components/GlobalSearch";
+import { MobileCreditsPill } from "@/components/wall/MobileCreditsPill";
 import { useAuth } from "@/contexts/AuthContext";
 
 const Navbar = () => {
@@ -463,8 +464,9 @@ const Navbar = () => {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="lg:hidden py-3 space-y-1 max-h-[calc(100vh-5rem)] overflow-y-auto">
-            {/* Free tier balance removed — paid-only model */}
+            <MobileCreditsPill />
             {/* Main Navigation Items */}
+
             {mainNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
