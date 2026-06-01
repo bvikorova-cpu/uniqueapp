@@ -47,6 +47,8 @@ import { installGlobalErrorHandlers } from "@/utils/logger";
 import { installImagePerformancePatch } from "@/utils/imagePerformance";
 import { HelmetProvider } from "react-helmet-async";
 import GoogleTranslateWidget from "@/components/GoogleTranslateWidget";
+import { GlobalPaymentCleanup } from "@/components/payment/GlobalPaymentCleanup";
+
 
 const Navbar = lazy(() => import("./components/Navbar"));
 const Footer = lazy(() => import("./components/Footer"));
@@ -579,6 +581,8 @@ const App = () => {
                   </Suspense>
                   {/* GlobalRewardedAd removed — Watch Ad now only renders below the hero on each page via <HeroRewardedAd /> */}
                   <main id="main-content" className="flex-1">
+                    <GlobalPaymentCleanup />
+
 
                     <ErrorBoundary>
                       <Suspense fallback={<PageLoader />}>
