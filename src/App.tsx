@@ -474,6 +474,8 @@ const AdminRewardsSeed = lazy(() => import("@/pages/admin/AdminRewardsSeed"));
 const AdminRewardsAudit = lazy(() => import("@/pages/admin/AdminRewardsAudit"));
 const AdminCreditsLedger = lazy(() => import("@/pages/admin/AdminCreditsLedger"));
 const MyCreditsLedger = lazy(() => import("@/pages/MyCreditsLedger"));
+const LuckyWheel = lazy(() => import("@/pages/LuckyWheel"));
+const CreditGifts = lazy(() => import("@/pages/CreditGifts"));
 const AdminEngagement = lazy(() => import("@/pages/admin/AdminEngagement"));
 const AdminMonetagStats = lazy(() => import("@/pages/admin/AdminMonetagStats"));
 const GlobalRewardedAd = lazy(() => import("@/components/ads/GlobalRewardedAd"));
