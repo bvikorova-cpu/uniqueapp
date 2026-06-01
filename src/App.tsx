@@ -579,6 +579,8 @@ const App = () => {
                   </Suspense>
                   {/* GlobalRewardedAd removed — Watch Ad now only renders below the hero on each page via <HeroRewardedAd /> */}
                   <main id="main-content" className="flex-1">
+                    <GlobalPaymentCleanup />
+
 
                     <ErrorBoundary>
                       <Suspense fallback={<PageLoader />}>
