@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Bell, Heart, MessageCircle, Smile, Repeat2, Check } from "lucide-react";
+import { Bell, Heart, MessageCircle, Smile, Repeat2, Check, User } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
 
@@ -25,6 +25,7 @@ interface Notification {
   actor: {
     id: string;
     full_name: string | null;
+    username: string | null;
     avatar_url: string | null;
   };
 }
@@ -217,7 +218,7 @@ export const NotificationsDropdown = () => {
   };
 
   const getNotificationText = (notification: Notification) => {
-    const name = notification.actor.full_name || "Someone";
+    const name = notification.actor.full_name?.trim() || notification.actor.username?.trim() || "Someone";
     switch (notification.type) {
       case 'like':
         return `${name} liked your post`;
@@ -294,7 +295,7 @@ export const NotificationsDropdown = () => {
                   <Avatar className="h-10 w-10">
                     <AvatarImage src={notification.actor.avatar_url || undefined} />
                     <AvatarFallback className="text-xs">
-                      {notification.actor.full_name?.charAt(0) || "U"}
+                      {notification.actor.full_name?.charAt(0) || <User className="h-4 w-4" />}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">

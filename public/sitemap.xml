@@ -67,6 +67,8 @@
   <url><loc>https://uniqueapp.fun/creator-dashboard</loc><lastmod>2026-06-01</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://uniqueapp.fun/creator-payouts</loc><lastmod>2026-06-01</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://uniqueapp.fun/creator-studio</loc><lastmod>2026-06-01</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://uniqueapp.fun/credit-gifts</loc><lastmod>2026-06-01</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://uniqueapp.fun/credits/history</loc><lastmod>2026-06-01</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://uniqueapp.fun/crystal-energy</loc><lastmod>2026-06-01</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://uniqueapp.fun/crystal-energy-network</loc><lastmod>2026-06-01</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://uniqueapp.fun/crystal-marketplace</loc><lastmod>2026-06-01</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
@@ -226,6 +228,7 @@
   <url><loc>https://uniqueapp.fun/livestream</loc><lastmod>2026-06-01</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://uniqueapp.fun/lottery-ai</loc><lastmod>2026-06-01</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://uniqueapp.fun/lottery-history</loc><lastmod>2026-06-01</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://uniqueapp.fun/lucky-wheel</loc><lastmod>2026-06-01</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://uniqueapp.fun/marketplace</loc><lastmod>2026-06-01</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
   <url><loc>https://uniqueapp.fun/masterchef</loc><lastmod>2026-06-01</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://uniqueapp.fun/masterchef-subscription</loc><lastmod>2026-06-01</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
@@ -261,6 +264,7 @@
   <url><loc>https://uniqueapp.fun/music-production</loc><lastmod>2026-06-01</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://uniqueapp.fun/musician-dashboard</loc><lastmod>2026-06-01</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://uniqueapp.fun/my-auctions</loc><lastmod>2026-06-01</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://uniqueapp.fun/my-credits-history</loc><lastmod>2026-06-01</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://uniqueapp.fun/my-learning</loc><lastmod>2026-06-01</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://uniqueapp.fun/my-properties</loc><lastmod>2026-06-01</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://uniqueapp.fun/my-purchased-tips</loc><lastmod>2026-06-01</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
