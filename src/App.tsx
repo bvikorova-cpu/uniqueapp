@@ -47,6 +47,8 @@ import { installGlobalErrorHandlers } from "@/utils/logger";
 import { installImagePerformancePatch } from "@/utils/imagePerformance";
 import { HelmetProvider } from "react-helmet-async";
 import GoogleTranslateWidget from "@/components/GoogleTranslateWidget";
+import { GlobalPaymentCleanup } from "@/components/payment/GlobalPaymentCleanup";
+
 
 const Navbar = lazy(() => import("./components/Navbar"));
 const Footer = lazy(() => import("./components/Footer"));
