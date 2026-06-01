@@ -341,7 +341,7 @@ export default function MyCreditsLedger() {
           </div>
           {rows.length === PAGE_SIZE && (
             <div className="p-3 text-center text-xs text-muted-foreground border-t border-border/40">
-              Zobrazujem prvých {PAGE_SIZE} záznamov. Použi filtre pre zúženie.
+              Showing first {PAGE_SIZE} records. Use filters to narrow.
             </div>
           )}
         </Card>
