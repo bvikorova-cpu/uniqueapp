@@ -76,22 +76,24 @@ const NotificationBell = () => {
         async (payload) => {
           if (cancelled) return;
           if (payload.new.actor_id) {
-            const { data: profile } = await supabase
-              .from("profiles")
-              .select("id, full_name, avatar_url")
-              .eq("id", payload.new.actor_id)
-              .single();
+            const { data: profiles } = await supabase
+              .rpc("get_public_profiles", { ids: [payload.new.actor_id] });
+            const profile = (profiles || [])[0];
 
             const newNotification = {
               ...payload.new,
               actor: profile || {
                 id: payload.new.actor_id,
                 full_name: null,
+                username: null,
                 avatar_url: null,
               },
             };
 
             setNotifications(prev => [newNotification as Notification, ...prev].slice(0, 20));
+            setUnreadCount(prev => prev + 1);
+          } else {
+            setNotifications(prev => [payload.new as Notification, ...prev].slice(0, 20));
             setUnreadCount(prev => prev + 1);
           }
         }
