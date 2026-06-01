@@ -47,15 +47,15 @@ export default function CreditGifts() {
   const send = async () => {
     const n = parseInt(amount, 10);
     if (!email.trim() || !email.includes("@")) {
-      toast.error("Zadaj platný email príjemcu");
+      toast.error("Enter a valid recipient email");
       return;
     }
     if (!Number.isFinite(n) || n < 1 || n > 1000) {
-      toast.error("Suma musí byť 1–1000 CR");
+      toast.error("Amount must be between 1 and 1000 CR");
       return;
     }
     if (balance !== null && balance < n) {
-      toast.error("Nedostatok kreditov");
+      toast.error("Not enough credits");
       return;
     }
 
@@ -70,17 +70,17 @@ export default function CreditGifts() {
       const r = data as unknown as GiftResult;
       setLastResult(r);
       setBalance(r.sender_balance_after);
-      toast.success(`Darček odoslaný: ${n} CR`, { description: email });
+      toast.success(`Gift sent: ${n} CR`, { description: email });
       setEmail("");
       setMessage("");
     } catch (e: any) {
-      const msg = e.message || "Chyba pri odoslaní";
+      const msg = e.message || "Send failed";
       if (msg.includes("Recipient not found")) {
-        toast.error("Príjemca nenájdený", { description: "Skontroluj email." });
+        toast.error("Recipient not found", { description: "Check the email address." });
       } else if (msg.includes("Cannot gift yourself")) {
-        toast.error("Nemôžeš poslať darček sám sebe");
+        toast.error("You cannot gift yourself");
       } else if (msg.includes("Insufficient credits")) {
-        toast.error("Nedostatok kreditov");
+        toast.error("Not enough credits");
       } else {
         toast.error(msg);
       }
@@ -92,31 +92,31 @@ export default function CreditGifts() {
   return (
     <div className="min-h-screen bg-background">
       <SEO
-        title="Kreditové darčeky | Unique"
-        description="Pošli kredity inému používateľovi ako darček."
+        title="Credit Gifts | Unique"
+        description="Send credits to another user as a gift."
         canonical="/credit-gifts"
       />
       <div className="container max-w-xl mx-auto px-4 py-6">
         <div className="flex items-center justify-between mb-6">
           <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
-            <ArrowLeft className="h-4 w-4 mr-2" /> Späť
+            <ArrowLeft className="h-4 w-4 mr-2" /> Back
           </Button>
           <Button variant="outline" size="sm" onClick={() => navigate("/credits/history")}>
-            <History className="h-4 w-4 mr-2" /> História
+            <History className="h-4 w-4 mr-2" /> History
           </Button>
         </div>
 
         <div className="flex items-center gap-3 mb-2">
           <Gift className="h-7 w-7 text-primary" />
-          <h1 className="text-3xl font-bold">Kreditové darčeky</h1>
+          <h1 className="text-3xl font-bold">Credit Gifts</h1>
         </div>
         <p className="text-muted-foreground mb-6">
-          Pošli 1–1000 CR inému používateľovi. Transakcia sa zaznamená do tvojej{" "}
+          Send 1–1000 CR to another user. The transaction is recorded in your{" "}
           <button
             className="underline"
             onClick={() => navigate("/credits/history")}
           >
-            histórie kreditov
+            credit history
           </button>
           .
         </p>
@@ -124,17 +124,17 @@ export default function CreditGifts() {
         <Card className="p-6">
           <div className="flex items-center gap-2 mb-4 text-sm">
             <Coins className="h-4 w-4 text-primary" />
-            <span>Tvoj zostatok:</span>
+            <span>Your balance:</span>
             <strong>{balance ?? "—"} CR</strong>
           </div>
 
           <div className="space-y-4">
             <div>
-              <Label htmlFor="recipient">Email príjemcu</Label>
+              <Label htmlFor="recipient">Recipient email</Label>
               <Input
                 id="recipient"
                 type="email"
-                placeholder="priatel@example.com"
+                placeholder="friend@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={sending}
@@ -142,7 +142,7 @@ export default function CreditGifts() {
             </div>
 
             <div>
-              <Label htmlFor="amount">Suma (CR)</Label>
+              <Label htmlFor="amount">Amount (CR)</Label>
               <Input
                 id="amount"
                 type="number"
@@ -155,10 +155,10 @@ export default function CreditGifts() {
             </div>
 
             <div>
-              <Label htmlFor="message">Správa (voliteľné)</Label>
+              <Label htmlFor="message">Message (optional)</Label>
               <Textarea
                 id="message"
-                placeholder="Veselé Vianoce!"
+                placeholder="Happy holidays!"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 disabled={sending}
@@ -175,11 +175,11 @@ export default function CreditGifts() {
             >
               {sending ? (
                 <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Odosielam…
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Sending…
                 </>
               ) : (
                 <>
-                  <Send className="h-4 w-4 mr-2" /> Poslať darček
+                  <Send className="h-4 w-4 mr-2" /> Send gift
                 </>
               )}
             </Button>
@@ -187,9 +187,9 @@ export default function CreditGifts() {
 
           {lastResult && (
             <div className="mt-6 p-4 rounded-lg bg-muted text-sm">
-              <div className="font-medium">Posledný darček odoslaný</div>
+              <div className="font-medium">Last gift sent</div>
               <div className="text-muted-foreground mt-1">
-                {lastResult.amount} CR · Zostatok: <strong>{lastResult.sender_balance_after} CR</strong>
+                {lastResult.amount} CR · Balance: <strong>{lastResult.sender_balance_after} CR</strong>
               </div>
             </div>
           )}

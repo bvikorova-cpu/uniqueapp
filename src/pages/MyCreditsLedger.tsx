@@ -40,21 +40,21 @@ const PAGE_SIZE = 200;
 
 // Friendly labels for known reason codes (prefix match supported via startsWith)
 const REASON_LABELS: Record<string, string> = {
-  manual_add: "Manuálne pridanie",
-  manual_deduct: "Manuálne odpočítanie",
-  founding_member_bonus: "Bonus zakladajúceho člena",
-  gift_sent: "Darček odoslaný",
-  gift_received: "Darček prijatý",
-  lucky_wheel_cost: "Koleso šťastia – vklad",
-  lucky_wheel_prize: "Koleso šťastia – výhra",
-  mystery_box_purchase: "Mystery Box nákup",
-  purchase: "Nákup kreditov",
-  subscription_grant: "Predplatné – kredity",
-  ai_generation: "AI generovanie",
-  refund: "Vrátenie kreditov",
-  promo_code: "Promo kód",
-  referral_bonus: "Odporúčací bonus",
-  unknown_update: "Neznáma zmena",
+  manual_add: "Manual add",
+  manual_deduct: "Manual deduct",
+  founding_member_bonus: "Founding member bonus",
+  gift_sent: "Gift sent",
+  gift_received: "Gift received",
+  lucky_wheel_cost: "Lucky Wheel – spin",
+  lucky_wheel_prize: "Lucky Wheel – prize",
+  mystery_box_purchase: "Mystery Box purchase",
+  purchase: "Credit purchase",
+  subscription_grant: "Subscription – credits",
+  ai_generation: "AI generation",
+  refund: "Credit refund",
+  promo_code: "Promo code",
+  referral_bonus: "Referral bonus",
+  unknown_update: "Unknown change",
 };
 
 function prettyReason(reason: string | null): string {
@@ -160,8 +160,8 @@ export default function MyCreditsLedger() {
   return (
     <div className="min-h-screen bg-background pb-24">
       <SEO
-        title="História kreditov | Unique"
-        description="Prehľad všetkých pohybov AI kreditov s dôvodom každej transakcie."
+        title="Credit history | Unique"
+        description="Overview of all AI credit movements with the reason for each transaction."
       />
 
       <div className="max-w-5xl mx-auto p-4 md:p-6">
@@ -173,7 +173,7 @@ export default function MyCreditsLedger() {
             className="gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
-            Späť
+            Back
           </Button>
         </div>
 
@@ -183,18 +183,18 @@ export default function MyCreditsLedger() {
               <Coins className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold">História kreditov</h1>
+              <h1 className="text-2xl md:text-3xl font-bold">Credit history</h1>
               <p className="text-sm text-muted-foreground">
-                Všetky pohyby tvojich AI kreditov s dôvodom každej transakcie.
+                Every movement of your AI credits with the reason for each transaction.
               </p>
             </div>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={() => navigate("/lucky-wheel")}>
-              🎡 Koleso šťastia
+              🎡 Lucky Wheel
             </Button>
             <Button variant="outline" size="sm" onClick={() => navigate("/credit-gifts")}>
-              🎁 Poslať darček
+              🎁 Send gift
             </Button>
           </div>
         </header>
@@ -202,13 +202,13 @@ export default function MyCreditsLedger() {
         <Card className="p-4 mb-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
             <div>
-              <label className="text-xs text-muted-foreground mb-1 block">Dôvod</label>
+              <label className="text-xs text-muted-foreground mb-1 block">Reason</label>
               <Select value={reasonFilter} onValueChange={setReasonFilter}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Všetky</SelectItem>
+                  <SelectItem value="all">All</SelectItem>
                   {reasons.map((r) => (
                     <SelectItem key={r} value={r}>
                       {prettyReason(r)}
@@ -218,31 +218,31 @@ export default function MyCreditsLedger() {
               </Select>
             </div>
             <div>
-              <label className="text-xs text-muted-foreground mb-1 block">Smer</label>
+              <label className="text-xs text-muted-foreground mb-1 block">Direction</label>
               <Select value={directionFilter} onValueChange={setDirectionFilter}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Všetky</SelectItem>
-                  <SelectItem value="credit">Príjmy (+)</SelectItem>
-                  <SelectItem value="debit">Výdaje (−)</SelectItem>
+                  <SelectItem value="all">All</SelectItem>
+                  <SelectItem value="credit">Credits in (+)</SelectItem>
+                  <SelectItem value="debit">Credits out (−)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <label className="text-xs text-muted-foreground mb-1 block">Od</label>
+              <label className="text-xs text-muted-foreground mb-1 block">From</label>
               <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
             </div>
             <div>
-              <label className="text-xs text-muted-foreground mb-1 block">Do</label>
+              <label className="text-xs text-muted-foreground mb-1 block">To</label>
               <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
             </div>
           </div>
           <div className="flex flex-wrap gap-2 mt-4">
             <Button onClick={load} disabled={loading}>
               <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
-              Použiť filtre
+              Apply filters
             </Button>
             <Button variant="outline" onClick={exportCsv} disabled={!rows.length}>
               <Download className="h-4 w-4 mr-2" /> Export CSV
@@ -252,23 +252,23 @@ export default function MyCreditsLedger() {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
           <Card className="p-4">
-            <div className="text-xs text-muted-foreground">Záznamy</div>
+            <div className="text-xs text-muted-foreground">Records</div>
             <div className="text-2xl font-bold">{stats.count}</div>
           </Card>
           <Card className="p-4">
             <div className="text-xs text-muted-foreground flex items-center gap-1">
-              <TrendingUp className="h-3 w-3 text-green-500" /> Príjmy
+              <TrendingUp className="h-3 w-3 text-green-500" /> Credits in
             </div>
             <div className="text-2xl font-bold text-green-500">+{stats.credits}</div>
           </Card>
           <Card className="p-4">
             <div className="text-xs text-muted-foreground flex items-center gap-1">
-              <TrendingDown className="h-3 w-3 text-red-500" /> Výdaje
+              <TrendingDown className="h-3 w-3 text-red-500" /> Credits out
             </div>
             <div className="text-2xl font-bold text-red-500">{stats.debits}</div>
           </Card>
           <Card className="p-4">
-            <div className="text-xs text-muted-foreground">Netto</div>
+            <div className="text-xs text-muted-foreground">Net</div>
             <div
               className={`text-2xl font-bold ${
                 stats.net >= 0 ? "text-green-500" : "text-red-500"
@@ -286,26 +286,26 @@ export default function MyCreditsLedger() {
             <table className="w-full text-sm">
               <thead className="bg-muted/30 text-xs uppercase text-muted-foreground">
                 <tr>
-                  <th className="text-left p-3">Kedy</th>
+                  <th className="text-left p-3">When</th>
                   <th className="text-right p-3">Δ</th>
-                  <th className="text-right p-3">Pred</th>
-                  <th className="text-right p-3">Po</th>
-                  <th className="text-left p-3">Dôvod</th>
-                  <th className="text-left p-3">Zdroj</th>
+                  <th className="text-right p-3">Before</th>
+                  <th className="text-right p-3">After</th>
+                  <th className="text-left p-3">Reason</th>
+                  <th className="text-left p-3">Source</th>
                 </tr>
               </thead>
               <tbody>
                 {loading && (
                   <tr>
                     <td colSpan={6} className="p-6 text-center text-muted-foreground">
-                      Načítavam…
+                      Loading…
                     </td>
                   </tr>
                 )}
                 {!loading && !rows.length && (
                   <tr>
                     <td colSpan={6} className="p-6 text-center text-muted-foreground">
-                      Žiadne pohyby pre tieto filtre.
+                      No movements for these filters.
                     </td>
                   </tr>
                 )}
@@ -341,7 +341,7 @@ export default function MyCreditsLedger() {
           </div>
           {rows.length === PAGE_SIZE && (
             <div className="p-3 text-center text-xs text-muted-foreground border-t border-border/40">
-              Zobrazujem prvých {PAGE_SIZE} záznamov. Použi filtre pre zúženie.
+              Showing first {PAGE_SIZE} records. Use filters to narrow.
             </div>
           )}
         </Card>
@@ -349,11 +349,11 @@ export default function MyCreditsLedger() {
         {/* Mobile list */}
         <div className="md:hidden space-y-2">
           {loading && (
-            <Card className="p-6 text-center text-muted-foreground text-sm">Načítavam…</Card>
+            <Card className="p-6 text-center text-muted-foreground text-sm">Loading…</Card>
           )}
           {!loading && !rows.length && (
             <Card className="p-6 text-center text-muted-foreground text-sm">
-              Žiadne pohyby pre tieto filtre.
+              No movements for these filters.
             </Card>
           )}
           {rows.map((r) => (
@@ -373,7 +373,7 @@ export default function MyCreditsLedger() {
                   </div>
                   {r.source && (
                     <div className="text-[11px] text-muted-foreground mt-1">
-                      Zdroj: {r.source}
+                      Source: {r.source}
                     </div>
                   )}
                 </div>
@@ -388,8 +388,8 @@ export default function MyCreditsLedger() {
               </div>
               {(r.balance_before !== null || r.balance_after !== null) && (
                 <div className="mt-2 pt-2 border-t border-border/40 text-[11px] text-muted-foreground flex justify-between">
-                  <span>Pred: {r.balance_before ?? "—"}</span>
-                  <span>Po: {r.balance_after ?? "—"}</span>
+                  <span>Before: {r.balance_before ?? "—"}</span>
+                  <span>After: {r.balance_after ?? "—"}</span>
                 </div>
               )}
             </Card>
