@@ -720,6 +720,45 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_credits_ledger: {
+        Row: {
+          actor: string | null
+          balance_after: number
+          balance_before: number
+          created_at: string
+          delta: number
+          id: string
+          metadata: Json | null
+          reason: string
+          source: string | null
+          user_id: string
+        }
+        Insert: {
+          actor?: string | null
+          balance_after: number
+          balance_before: number
+          created_at?: string
+          delta: number
+          id?: string
+          metadata?: Json | null
+          reason?: string
+          source?: string | null
+          user_id: string
+        }
+        Update: {
+          actor?: string | null
+          balance_after?: number
+          balance_before?: number
+          created_at?: string
+          delta?: number
+          id?: string
+          metadata?: Json | null
+          reason?: string
+          source?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       ai_dedications: {
         Row: {
           artist_name: string

@@ -25,3 +25,4 @@
 - [Credit Checkout Router](mem://features/credit-checkout-router) — Universal create-checkout logic.
 - [Admin Stripe Payout](mem://features/admin-stripe-payout) — Automated withdrawal wiring.
 - [Kids & Teen AI Credit Matrix](mem://features/kids-teen-ai-credit-matrix) — Credit tables, costs, and edge functions for all Kids & Teen AI modules.
+- [AI Credits Grant Policy](mem://features/ai-credits-policy) — STRIKTNÉ: žiadne nové automatické granty ai_credits bez schválenia. Schválené iba: monthly +10, founding +50, Stripe, promo, referral, gift, auto-recharge. Ledger + trigger auditujú každú zmenu.
