@@ -471,6 +471,7 @@ const AdminOpsTools = lazy(() => import("@/pages/admin/AdminOpsTools"));
 const AdminRewardsSeed = lazy(() => import("@/pages/admin/AdminRewardsSeed"));
 const AdminRewardsAudit = lazy(() => import("@/pages/admin/AdminRewardsAudit"));
 const AdminCreditsLedger = lazy(() => import("@/pages/admin/AdminCreditsLedger"));
+const MyCreditsLedger = lazy(() => import("@/pages/MyCreditsLedger"));
 const AdminEngagement = lazy(() => import("@/pages/admin/AdminEngagement"));
 const AdminMonetagStats = lazy(() => import("@/pages/admin/AdminMonetagStats"));
 const GlobalRewardedAd = lazy(() => import("@/components/ads/GlobalRewardedAd"));
@@ -731,6 +732,8 @@ const App = () => {
                         <Route path="/premium-plans" element={<Navigate to="/premium" replace />} />
                         <Route path="/ai-credits-store" element={<AICreditsStore />} />
                         <Route path="/ai-credits" element={<AICreditsStore />} />
+                        <Route path="/credits/history" element={<ProtectedRoute><MyCreditsLedger /></ProtectedRoute>} />
+                        <Route path="/my-credits-history" element={<ProtectedRoute><MyCreditsLedger /></ProtectedRoute>} />
                         <Route path="/admin/transactions" element={<ProtectedRoute requireAdmin={true}><AdminTransactions /></ProtectedRoute>} />
                         <Route path="/admin/corporate-inquiries" element={<ProtectedRoute requireAdmin={true}><AdminCorporateInquiries /></ProtectedRoute>} />
                         <Route path="/admin/tipsters" element={<ProtectedRoute requireAdmin={true}><AdminTipsters /></ProtectedRoute>} />
