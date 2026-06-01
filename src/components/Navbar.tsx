@@ -22,6 +22,7 @@ import uniqueLogo from "@/assets/unique-logo.webp";
 import { Age16Badge } from "@/components/Age16Badge";
 
 import GlobalSearch from "@/components/GlobalSearch";
+import { MobileCreditsPill } from "@/components/wall/MobileCreditsPill";
 import { useAuth } from "@/contexts/AuthContext";
 
 const Navbar = () => {
