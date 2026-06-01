@@ -152,7 +152,8 @@ const NotificationBell = () => {
 
 
   const getNotificationText = (notification: Notification): string => {
-    const actorName = notification.actor?.full_name || "Someone";
+    const actorName = displayNameOf(notification.actor);
+    
     
     switch (notification.type) {
       case "like":
