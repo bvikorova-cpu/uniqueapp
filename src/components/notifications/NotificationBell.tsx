@@ -38,7 +38,7 @@ interface Notification {
 }
 
 const displayNameOf = (actor?: Notification["actor"] | null) =>
-  actor?.full_name?.trim() || actor?.username?.trim() || "Someone";
+  actor?.full_name?.trim() || actor?.username?.trim() || "";
 
 const NotificationBell = () => {
   const navigate = useNavigate();
