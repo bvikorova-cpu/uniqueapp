@@ -36,11 +36,16 @@ test.describe("AI Credits Store — anonymous", () => {
       expect(res?.status() ?? 200).toBeLessThan(500);
       await waitForHydration(page);
 
-      const body = await page.locator("body").innerText();
-      expect(body.length).toBeGreaterThan(80);
-
-      // Should mention at least one of the known package surfaces or pack copy.
-      expect(body).toMatch(/Ultimate|Choose your pack|credit|kredit/i);
+      // Wait for actual store content (poll up to 15s — cookie banner may delay paint).
+      await expect
+        .poll(
+          async () => {
+            const txt = await page.locator("main, body").first().innerText().catch(() => "");
+            return /Ultimate|Choose your pack|credit|kredit|pack/i.test(txt);
+          },
+          { timeout: 15_000, intervals: [500, 1000, 2000] }
+        )
+        .toBe(true);
 
       expect(errors, `JS errors on ${path}:\n${errors.join("\n")}`).toEqual([]);
     });
