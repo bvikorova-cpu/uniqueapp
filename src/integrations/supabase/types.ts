@@ -38265,6 +38265,30 @@ export type Database = {
         }
         Relationships: []
       }
+      monthly_credit_grants: {
+        Row: {
+          created_at: string
+          credits_granted: number
+          grant_month: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_granted?: number
+          grant_month: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_granted?: number
+          grant_month?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       mood_logs: {
         Row: {
           created_at: string
