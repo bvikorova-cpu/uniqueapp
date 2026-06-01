@@ -22,6 +22,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { WallSidebar } from "@/components/wall/WallSidebar";
 import { WallRightbar } from "@/components/wall/WallRightbar";
 import { MobileWallMenu } from "@/components/wall/MobileWallMenu";
+import { MobileCreditsPill } from "@/components/wall/MobileCreditsPill";
 import { EnhancedCreatePost } from "@/components/wall/EnhancedCreatePost";
 import { AchievementsBadge } from "@/components/wall/AchievementsBadge";
 import { SearchBar } from "@/components/wall/SearchBar";
