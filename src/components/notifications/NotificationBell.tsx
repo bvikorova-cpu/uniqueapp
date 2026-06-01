@@ -123,20 +123,20 @@ const NotificationBell = () => {
 
       if (error) throw error;
 
-      // Fetch actor profiles
-      const actorIds = [...new Set(data?.map(n => n.actor_id).filter(Boolean) || [])];
-      const { data: profiles } = await supabase
-        .from("profiles")
-        .select("id, full_name, avatar_url")
-        .in("id", actorIds);
-
-      const profilesMap = new Map(profiles?.map(p => [p.id, p]) || []);
+      // Fetch actor profiles via security-definer RPC (RLS-safe public fields)
+      const actorIds = [...new Set(data?.map(n => n.actor_id).filter(Boolean) || [])] as string[];
+      let profilesMap = new Map<string, any>();
+      if (actorIds.length) {
+        const { data: profiles } = await supabase.rpc("get_public_profiles", { ids: actorIds });
+        profilesMap = new Map((profiles || []).map((p: any) => [p.id, p]));
+      }
 
       const notificationsWithActors = (data || []).map(notification => ({
         ...notification,
         actor: notification.actor_id ? (profilesMap.get(notification.actor_id) || {
           id: notification.actor_id,
           full_name: null,
+          username: null,
           avatar_url: null,
         }) : undefined,
       }));
