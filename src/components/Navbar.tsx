@@ -618,23 +618,29 @@ const Navbar = () => {
               <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground">
                 {"Other Services"}
               </div>
-              {otherServices.map((item) => {
-                const Icon = item.icon;
-                const isActive = location.pathname === item.path;
-                
-                return (
-                  <Link key={item.path} to={item.path} onClick={() => setIsMenuOpen(false)}>
-                    <Button
-                      variant={isActive ? "premium" : "ghost"}
-                      className="w-full justify-start text-sm py-2"
-                      size="sm"
-                    >
-                      <Icon className="h-4 w-4" />
-                      {item.label}
-                    </Button>
-                  </Link>
-                );
-              })}
+              {otherServiceGroups.map((group) => (
+                <div key={group.category} className="mt-2">
+                  <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70 border-t border-border/40 pt-2">
+                    {group.category}
+                  </div>
+                  {group.items.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = location.pathname === item.path;
+                    return (
+                      <Link key={item.path} to={item.path} onClick={() => setIsMenuOpen(false)}>
+                        <Button
+                          variant={isActive ? "premium" : "ghost"}
+                          className="w-full justify-start text-sm py-2"
+                          size="sm"
+                        >
+                          <Icon className="h-4 w-4" />
+                          {item.label}
+                        </Button>
+                      </Link>
+                    );
+                  })}
+                </div>
+              ))}
             </div>
             <div className="pt-3 space-y-1.5">
               {user ? (
