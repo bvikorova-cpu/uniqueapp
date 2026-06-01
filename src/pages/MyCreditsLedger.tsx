@@ -286,26 +286,26 @@ export default function MyCreditsLedger() {
             <table className="w-full text-sm">
               <thead className="bg-muted/30 text-xs uppercase text-muted-foreground">
                 <tr>
-                  <th className="text-left p-3">Kedy</th>
+                  <th className="text-left p-3">When</th>
                   <th className="text-right p-3">Δ</th>
-                  <th className="text-right p-3">Pred</th>
-                  <th className="text-right p-3">Po</th>
-                  <th className="text-left p-3">Dôvod</th>
-                  <th className="text-left p-3">Zdroj</th>
+                  <th className="text-right p-3">Before</th>
+                  <th className="text-right p-3">After</th>
+                  <th className="text-left p-3">Reason</th>
+                  <th className="text-left p-3">Source</th>
                 </tr>
               </thead>
               <tbody>
                 {loading && (
                   <tr>
                     <td colSpan={6} className="p-6 text-center text-muted-foreground">
-                      Načítavam…
+                      Loading…
                     </td>
                   </tr>
                 )}
                 {!loading && !rows.length && (
                   <tr>
                     <td colSpan={6} className="p-6 text-center text-muted-foreground">
-                      Žiadne pohyby pre tieto filtre.
+                      No movements for these filters.
                     </td>
                   </tr>
                 )}
