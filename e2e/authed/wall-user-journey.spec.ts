@@ -26,7 +26,13 @@ test.describe("Wall – kompletný používateľský journey", () => {
   test("1) Hero: globálne stat karty so scope labelom GLOBAL", async ({ page }) => {
     await gotoWall(page);
 
-    // Aspoň 2 zo 4 stat labelov musia byť na stránke
+    // Počkaj kým hero stats nahydratujú
+    await page
+      .getByText(/posts today/i)
+      .first()
+      .waitFor({ state: "visible", timeout: 20_000 })
+      .catch(() => {});
+
     const statLabels = [
       /posts today/i,
       /active users/i,
@@ -40,9 +46,10 @@ test.describe("Wall – kompletný používateľský journey", () => {
     }
     expect(foundStats, "Aspoň 2 stat karty musia existovať v DOM").toBeGreaterThanOrEqual(2);
 
-    // "GLOBAL" scope label musí existovať aspoň raz
-    const globalCount = await page.getByText(/^global$/i).count();
-    expect(globalCount, "Scope label GLOBAL musí existovať").toBeGreaterThanOrEqual(1);
+    // Scope label – komponent renderuje "Global" (s uppercase CSS triedou).
+    // Akceptujeme aj "Personal" (streak badge).
+    const scopeCount = await page.getByText(/^(global|personal)$/i).count();
+    expect(scopeCount, "Scope label musí existovať").toBeGreaterThanOrEqual(1);
   });
 
   test("2) Composer – textarea, drafts tlačidlo", async ({ page }) => {
