@@ -54,12 +54,7 @@ export const NotificationsPanel = () => {
                     if (!notification.is_read) {
                       markAsRead(notification.id);
                     }
-                    // Navigate based on notification type
-                    if (notification.post_id) {
-                      window.location.href = `/wall?post=${notification.post_id}`;
-                    } else if (notification.related_id) {
-                      window.location.href = `/wall?id=${notification.related_id}`;
-                    }
+                    navigate(getNotificationRoute(notification as any));
                   }}
                 >
                   <div className="flex items-start gap-3">
