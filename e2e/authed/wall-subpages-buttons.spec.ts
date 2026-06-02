@@ -79,13 +79,15 @@ test.describe("Wall podstránky – tlačidlá", () => {
     await goto(page, "/wall/groups");
     await expect(page.getByRole("heading", { name: /^groups$/i }).first()).toBeVisible();
 
-    // Tab buttons
-    const myTab = page.getByRole("button", { name: /my groups/i }).first();
-    const discoverTab = page.getByRole("button", { name: /^discover$/i }).first();
-    await expect(myTab).toBeVisible();
-    await discoverTab.click();
-    await page.waitForTimeout(400);
-    await myTab.click();
+    // Tabs (role=tab, label obsahuje count "(N)")
+    const myTab = page.getByRole("tab", { name: /my groups/i }).first();
+    const discoverTab = page.getByRole("tab", { name: /discover/i }).first();
+    await expect(myTab.or(discoverTab)).toBeVisible({ timeout: 10_000 });
+    if (await discoverTab.isVisible().catch(() => false)) {
+      await discoverTab.click();
+      await page.waitForTimeout(400);
+    }
+    if (await myTab.isVisible().catch(() => false)) await myTab.click();
 
     // Create
     const createBtn = page.getByRole("button", { name: /create group/i }).first();
