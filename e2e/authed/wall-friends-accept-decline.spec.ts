@@ -255,11 +255,11 @@ test.describe("Wall Friends – accept & decline (two účty)", () => {
 
       await gotoFriends(pageB);
 
-      const declineBtn = pageB
+      const requestsSection = pageB
         .locator("section")
-        .filter({ hasText: /friend requests/i })
-        .locator('button:has(svg.lucide-x)')
+        .filter({ has: pageB.getByRole("heading", { name: /friend requests/i }) })
         .first();
+      const declineBtn = requestsSection.getByRole("button", { name: /remove/i }).first();
       await expect(declineBtn).toBeVisible({ timeout: 15_000 });
 
       const delResp = pageB
