@@ -52,11 +52,11 @@ interface Profile {
   id: string;
   full_name: string | null;
   avatar_url: string | null;
-  email: string | null;
+  email?: string | null;
   bio: string | null;
   location: string | null;
-  birth_date: string | null;
-  phone: string | null;
+  birth_date?: string | null;
+  phone?: string | null;
   website: string | null;
   interests: string[] | null;
   occupation: string | null;
