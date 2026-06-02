@@ -90,7 +90,7 @@ test.describe("Wall – všetky tlačidlá v TopNav", () => {
     await more.click();
 
     for (const item of MORE_ITEMS) {
-      await expect(page.getByRole("menuitem", { name: item.label })).toBeVisible();
+      await expect(page.getByRole("menuitem", { name: item.label, exact: true })).toBeVisible();
     }
 
     // Zatvor dropdown (Escape)
@@ -102,7 +102,7 @@ test.describe("Wall – všetky tlačidlá v TopNav", () => {
       const more = page.getByRole("button", { name: /^More$/ }).first();
       await more.click();
 
-      const menuItem = page.getByRole("menuitem", { name: item.label });
+      const menuItem = page.getByRole("menuitem", { name: item.label, exact: true });
       await expect(menuItem).toBeVisible();
       await expect(menuItem).toBeEnabled();
 
