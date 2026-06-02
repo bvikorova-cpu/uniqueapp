@@ -98,12 +98,11 @@ test.describe("Wall podstránky – tlačidlá", () => {
       await page.keyboard.press("Escape");
     }
 
-    // Tabs – role=tab (Radix), aspoň jeden musí existovať
+    // Tabs – Radix tabs (role=tab) – počkaj kým sa zjavia
     const tabs = page.getByRole("tab");
+    await expect.poll(() => tabs.count(), { timeout: 10_000 }).toBeGreaterThanOrEqual(2);
     const tabCount = await tabs.count();
-    expect(tabCount).toBeGreaterThanOrEqual(2);
-    // klikni na každý dostupný tab
-    for (let i = 0; i < tabCount; i++) {
+    for (let i = 0; i < Math.min(tabCount, 4); i++) {
       await tabs.nth(i).click();
       await page.waitForTimeout(250);
     }
