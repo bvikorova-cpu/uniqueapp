@@ -469,20 +469,52 @@ const Feed = () => {
     },
   });
 
+  // Followed user IDs for the "Following" feed tab
+  const { data: followingIds = [] } = useQuery({
+    queryKey: ["following-ids", user?.id],
+    enabled: !!user?.id,
+    queryFn: async (): Promise<string[]> => {
+      const { data, error } = await supabase
+        .from("user_follows")
+        .select("following_id")
+        .eq("follower_id", user!.id);
+      if (error) return [];
+      return (data ?? []).map((r: any) => r.following_id).filter(Boolean);
+    },
+  });
+
   // Filter and sort feed items
   const filteredFeedItems = useMemo(() => {
     let filtered = [...feedItems];
 
-    // Friends-only tab: keep posts whose author is an accepted friend
+    const authorOf = (item: FeedItem) =>
+      item.type === "post"
+        ? (item.data as Post).user_id
+        : (item.data as Repost).user_id;
+    const createdAtOf = (item: FeedItem) =>
+      item.type === "post"
+        ? (item.data as Post).created_at
+        : (item.data as Repost).created_at;
+    const scoreOf = (item: FeedItem) => {
+      const p = item.type === "post" ? (item.data as Post) : (item.data as Repost).original_post;
+      return (p?.likes_count ?? 0) * 3 + (p?.comments_count ?? 0) * 2 + (p?.shares_count ?? 0) + (p?.reposts_count ?? 0);
+    };
+
     if (feedTab === "friends") {
       const allowed = new Set(friendIds);
-      filtered = filtered.filter((item) => {
-        const authorId =
-          item.type === "post"
-            ? (item.data as Post).user_id
-            : (item.data as Repost).user_id;
-        return allowed.has(authorId);
-      });
+      filtered = filtered.filter((item) => allowed.has(authorOf(item)));
+    } else if (feedTab === "following") {
+      const allowed = new Set(followingIds);
+      filtered = filtered.filter((item) => allowed.has(authorOf(item)));
+    } else if (feedTab === "trending") {
+      const dayAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+      filtered = filtered
+        .filter((item) => new Date(createdAtOf(item)).getTime() >= dayAgo)
+        .sort((a, b) => scoreOf(b) - scoreOf(a));
+    } else if (feedTab === "latest") {
+      filtered = filtered.sort(
+        (a, b) => new Date(createdAtOf(b)).getTime() - new Date(createdAtOf(a)).getTime()
+      );
     }
 
     // Search filter only
