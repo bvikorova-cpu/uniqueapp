@@ -211,6 +211,13 @@
       "noPostsFound": "Žádné příspěvky nenalezeny. Zkuste upravit své filtry.",
       "loadingMore": "Načítání dalších příspěvků...",
       "reachedEnd": "Dostali jste se na konec! 🎉"
+    },
+    "tooltip": {
+      "postsToday": "Global: total number of posts from all users today",
+      "activeUsers": "Global: number of active users in the last 15 minutes",
+      "interactions": "Global: total number of likes and comments today",
+      "challengeEnds": "Global: time until the end of the weekly challenge for the whole community",
+      "streak": "Personal: your current daily streak on the Wall"
     }
   },
   "jobs": {

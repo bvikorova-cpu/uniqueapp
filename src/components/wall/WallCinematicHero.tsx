@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
@@ -24,6 +25,7 @@ interface WallCinematicHeroProps {
 }
 
 export default function WallCinematicHero({ totalPosts, totalUsers, totalLikes, streak }: WallCinematicHeroProps) {
+  const { t } = useTranslation();
   const [timeLeft, setTimeLeft] = useState(getWeeklyTimeLeft());
 
   useEffect(() => {
@@ -32,10 +34,10 @@ export default function WallCinematicHero({ totalPosts, totalUsers, totalLikes, 
   }, []);
 
   const statCards = [
-    { value: totalPosts.toLocaleString(), label: "Posts Today", icon: MessageCircle, accent: "from-orange-500/20 to-coral-500/10", iconColor: "text-orange-400", tooltip: "Globálne: celkový počet príspevkov od všetkých používateľov dnes" },
-    { value: totalUsers.toLocaleString(), label: "Active Users", icon: Users, accent: "from-teal-500/20 to-cyan-500/10", iconColor: "text-teal-400", tooltip: "Globálne: počet aktívnych používateľov za posledných 15 minút" },
-    { value: totalLikes.toLocaleString(), label: "Interactions", icon: Heart, accent: "from-rose-500/20 to-pink-500/10", iconColor: "text-rose-400", tooltip: "Globálne: celkový počet páči sa mi a komentárov dnes" },
-    { value: `${timeLeft.days}d ${timeLeft.hours}h`, label: "Challenge Ends", icon: Zap, accent: "from-amber-500/20 to-yellow-500/10", iconColor: "text-amber-400", tooltip: "Globálne: čas do konca týždenného výzvy pre celú komunitu" },
+    { value: totalPosts.toLocaleString(), label: "Posts Today", icon: MessageCircle, accent: "from-orange-500/20 to-coral-500/10", iconColor: "text-orange-400", tooltip: t("wall.tooltip.postsToday") },
+    { value: totalUsers.toLocaleString(), label: "Active Users", icon: Users, accent: "from-teal-500/20 to-cyan-500/10", iconColor: "text-teal-400", tooltip: t("wall.tooltip.activeUsers") },
+    { value: totalLikes.toLocaleString(), label: "Interactions", icon: Heart, accent: "from-rose-500/20 to-pink-500/10", iconColor: "text-rose-400", tooltip: t("wall.tooltip.interactions") },
+    { value: `${timeLeft.days}d ${timeLeft.hours}h`, label: "Challenge Ends", icon: Zap, accent: "from-amber-500/20 to-yellow-500/10", iconColor: "text-amber-400", tooltip: t("wall.tooltip.challengeEnds") },
   ];
 
   return (
@@ -77,7 +79,7 @@ export default function WallCinematicHero({ totalPosts, totalUsers, totalLikes, 
                       </Badge>
                     </TooltipTrigger>
                     <TooltipContent side="bottom" className="max-w-[220px] text-center">
-                      Osobné: tvoj aktuálny denný streak na Walle
+                      {t("wall.tooltip.streak")}
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>

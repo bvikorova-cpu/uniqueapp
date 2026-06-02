@@ -80,6 +80,13 @@
       "noPostsFound": "投稿が見つかりませんでした。フィルターを調整してみてください。",
       "loadingMore": "さらに投稿を読み込み中...",
       "reachedEnd": "これで終わりです！🎉"
+    },
+    "tooltip": {
+      "postsToday": "Global: total number of posts from all users today",
+      "activeUsers": "Global: number of active users in the last 15 minutes",
+      "interactions": "Global: total number of likes and comments today",
+      "challengeEnds": "Global: time until the end of the weekly challenge for the whole community",
+      "streak": "Personal: your current daily streak on the Wall"
     }
   },
   "jobs": {
