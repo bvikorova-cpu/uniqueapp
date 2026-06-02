@@ -36,7 +36,7 @@ interface FriendSuggestion {
   mutual_count: number;
 }
 
-const publicProfiles = () => (supabase as any).from("public_profiles");
+const publicProfiles = () => (supabase as any).from("profiles_public");
 
 export default function WallFriends() {
   const { toast } = useToast();
