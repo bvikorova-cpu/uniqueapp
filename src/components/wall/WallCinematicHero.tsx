@@ -79,7 +79,7 @@ export default function WallCinematicHero({ totalPosts, totalUsers, totalLikes, 
                       </Badge>
                     </TooltipTrigger>
                     <TooltipContent side="bottom" className="max-w-[220px] text-center">
-                      Osobné: tvoj aktuálny denný streak na Walle
+                      {t("wall.tooltip.streak")}
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
