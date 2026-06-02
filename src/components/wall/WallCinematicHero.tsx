@@ -69,9 +69,18 @@ export default function WallCinematicHero({ totalPosts, totalUsers, totalLikes, 
             </motion.div>
             {streak > 0 && (
               <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.3, type: "spring" }}>
-                <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-amber-400/50">
-                  <Flame className="h-3 w-3 mr-1" /> {streak} Day Streak
-                </Badge>
+                <TooltipProvider delayDuration={200}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-amber-400/50 cursor-help">
+                        <Flame className="h-3 w-3 mr-1" /> {streak} Day Streak
+                      </Badge>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="max-w-[220px] text-center">
+                      Osobné: tvoj aktuálny denný streak na Walle
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </motion.div>
             )}
           </div>
