@@ -444,25 +444,25 @@ const Profile = () => {
           friendsAction={
             <>
               {friendshipStatus === 'none' && (
-                <Button onClick={handleAddFriend} className="bg-gradient-to-r from-amber-500 to-pink-500 text-white border-0 shadow-lg w-full sm:w-auto">
+                <Button onClick={handleAddFriend} className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white border-0 shadow-lg shadow-violet-500/30">
                   <UserPlus className="h-4 w-4 mr-2" />
                   Add Friend
                 </Button>
               )}
               {friendshipStatus === 'pending_sent' && (
-                <Button variant="outline" size="sm" disabled className="bg-card/80 backdrop-blur-md">
+                <Button disabled className="bg-gradient-to-r from-violet-600/60 to-purple-600/60 text-white border-0">
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                   Sent
                 </Button>
               )}
               {friendshipStatus === 'pending_received' && (
-                <Button onClick={handleAcceptFriend} className="bg-gradient-to-r from-emerald-500 to-amber-500 text-white border-0 shadow-lg w-full sm:w-auto">
+                <Button onClick={handleAcceptFriend} className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white border-0 shadow-lg shadow-violet-500/30">
                   <UserCheck className="h-4 w-4 mr-2" />
                   Accept Friend
                 </Button>
               )}
               {friendshipStatus === 'accepted' && (
-                <Button variant="outline" size="sm" onClick={handleRemoveFriend} className="bg-card/80 backdrop-blur-md border-emerald-400/40">
+                <Button onClick={handleRemoveFriend} className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white border-0 shadow-lg shadow-violet-500/30">
                   <Users className="h-4 w-4 mr-2" />
                   Friends
                 </Button>

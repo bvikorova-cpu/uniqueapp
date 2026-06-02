@@ -155,7 +155,7 @@ export const MessageButton = ({ userId, userName, userAvatar }: MessageButtonPro
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
+        <Button className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white border-0 shadow-lg shadow-violet-500/30">
           <MessageCircle className="w-4 h-4 mr-2" />
           Message
         </Button>
