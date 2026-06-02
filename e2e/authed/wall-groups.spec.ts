@@ -52,13 +52,16 @@ test.describe("WallGroups – tvorba, validácia, join/leave", () => {
 
     await expect(page.getByText(/group created successfully/i).first()).toBeVisible({ timeout: 10_000 });
 
-    // Skupina je teraz v My Groups (creator sa pridáva ako admin)
-    const groupCard = page.locator("text=" + name).first();
+    // Wait for refetch + reload to ensure new group renders
+    await page.waitForTimeout(800);
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.waitForTimeout(1500);
+
+    const groupCard = page.locator(`div:has(> div h4:has-text("${name}"))`).first();
     await expect(groupCard).toBeVisible({ timeout: 10_000 });
 
-    // Leave button na karte (nemusí byť unikátny – scope na kartu)
-    const card = page.locator(`text=${name}`).locator("xpath=ancestor::*[contains(@class,'cursor-pointer') or self::div][1]");
-    const leaveBtn = card.getByRole("button", { name: /leave/i }).first();
+    const leaveBtn = groupCard.getByRole("button", { name: /leave/i }).first();
+    await leaveBtn.scrollIntoViewIfNeeded();
     await leaveBtn.click();
     await expect(page.getByText(/left group successfully/i).first()).toBeVisible({ timeout: 10_000 });
   });
