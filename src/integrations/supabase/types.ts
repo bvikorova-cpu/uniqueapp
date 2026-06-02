@@ -43400,9 +43400,13 @@ export type Database = {
           platform_fee_cents: number
           recipient_amount_cents: number | null
           recipient_id: string
+          refund_reason: string | null
+          refunded_at: string | null
+          refunded_by: string | null
           sender_id: string
           status: string
           stripe_payment_intent_id: string | null
+          stripe_refund_id: string | null
           stripe_session_id: string | null
           stripe_transfer_id: string | null
         }
@@ -43418,9 +43422,13 @@ export type Database = {
           platform_fee_cents?: number
           recipient_amount_cents?: number | null
           recipient_id: string
+          refund_reason?: string | null
+          refunded_at?: string | null
+          refunded_by?: string | null
           sender_id: string
           status?: string
           stripe_payment_intent_id?: string | null
+          stripe_refund_id?: string | null
           stripe_session_id?: string | null
           stripe_transfer_id?: string | null
         }
@@ -43436,9 +43444,13 @@ export type Database = {
           platform_fee_cents?: number
           recipient_amount_cents?: number | null
           recipient_id?: string
+          refund_reason?: string | null
+          refunded_at?: string | null
+          refunded_by?: string | null
           sender_id?: string
           status?: string
           stripe_payment_intent_id?: string | null
+          stripe_refund_id?: string | null
           stripe_session_id?: string | null
           stripe_transfer_id?: string | null
         }
