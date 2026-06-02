@@ -111,16 +111,14 @@ test.describe("Wall podstránky – tlačidlá", () => {
   });
 
   // ---------------- PAGES ----------------
-  test("PAGES: tabs + Create Page dialog otvorí a vytvorí page", async ({ page }) => {
+  test("PAGES: search + Create Page dialog otvorí a vytvorí page", async ({ page }) => {
     await goto(page, "/wall/pages");
     await expect(page.getByRole("heading", { name: /^pages$/i }).first()).toBeVisible();
 
-    // 1) Tabs check FIRST (Mine/Following/Discover) – custom <button> v tab pill
-    const tabButtons = page.locator('button').filter({ hasText: /^(My Pages|Following|Discover)/ });
-    const found = await tabButtons.count();
-    expect(found, "Aspoň 3 tab tlačidlá (Mine/Following/Discover)").toBeGreaterThanOrEqual(3);
+    // Search input existuje
+    await expect(page.getByPlaceholder(/search pages/i).first()).toBeVisible();
 
-    // 2) Create Page dialog
+    // Create Page dialog
     const createBtn = page.getByRole("button", { name: /^create page$/i }).first();
     await createBtn.click();
     await expect(
