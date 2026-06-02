@@ -198,22 +198,14 @@ test.describe("Wall Friends – accept & decline (two účty)", () => {
       const before = await getFriendship(request, sessionA.access_token, userAId, userBId);
       expect(before?.status).toBe("pending");
 
-      // B otvorí Friends a v sekcii "Friend Requests" klikne na ✓ Accept
+      // B otvorí Friends a v sekcii "Friend Requests" klikne na "Confirm"
       await gotoFriends(pageB);
 
-      const requestCard = pageB
+      const requestsSection = pageB
         .locator("section")
-        .filter({ hasText: /friend requests/i })
-        .locator('[class*="card" i], .rounded-2xl, .rounded-xl')
-        .filter({ hasText: /e2e friend b|/i })
+        .filter({ has: pageB.getByRole("heading", { name: /friend requests/i }) })
         .first();
-
-      // Accept tlačidlo: ikonka Check vnútri sekcie Friend Requests
-      const acceptBtn = pageB
-        .locator("section")
-        .filter({ hasText: /friend requests/i })
-        .locator('button:has(svg.lucide-check)')
-        .first();
+      const acceptBtn = requestsSection.getByRole("button", { name: /confirm/i }).first();
 
       await expect(acceptBtn).toBeVisible({ timeout: 15_000 });
 
