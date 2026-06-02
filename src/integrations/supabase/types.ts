@@ -43390,30 +43390,57 @@ export type Database = {
       profile_tips: {
         Row: {
           amount: number
+          amount_cents: number | null
+          completed_at: string | null
           created_at: string
           currency: string
+          destination_account_id: string | null
           id: string
           message: string | null
+          platform_fee_cents: number
+          recipient_amount_cents: number | null
           recipient_id: string
           sender_id: string
+          status: string
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string | null
+          stripe_transfer_id: string | null
         }
         Insert: {
           amount?: number
+          amount_cents?: number | null
+          completed_at?: string | null
           created_at?: string
           currency?: string
+          destination_account_id?: string | null
           id?: string
           message?: string | null
+          platform_fee_cents?: number
+          recipient_amount_cents?: number | null
           recipient_id: string
           sender_id: string
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          stripe_transfer_id?: string | null
         }
         Update: {
           amount?: number
+          amount_cents?: number | null
+          completed_at?: string | null
           created_at?: string
           currency?: string
+          destination_account_id?: string | null
           id?: string
           message?: string | null
+          platform_fee_cents?: number
+          recipient_amount_cents?: number | null
           recipient_id?: string
           sender_id?: string
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          stripe_transfer_id?: string | null
         }
         Relationships: []
       }
@@ -61931,6 +61958,14 @@ export type Database = {
           isOneToOne: false
           isSetofReturn: true
         }
+      }
+      get_profile_tip_stats: {
+        Args: { _recipient: string }
+        Returns: {
+          total_amount_cents: number
+          total_count: number
+          total_recipient_cents: number
+        }[]
       }
       get_profiles_basic: {
         Args: { _ids: string[] }
