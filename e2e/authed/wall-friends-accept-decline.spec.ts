@@ -74,8 +74,17 @@ function buildStorageState(session: Session, baseURL: string) {
     { name: `unique_onboarding_v1_${session.user.id}`, value: onboardingPayload },
     { name: `megatalent_onboarding_done_${session.user.id}`, value: "1" },
   ];
-  const origin = new URL(baseURL).origin;
-  return { cookies: [], origins: [{ origin, localStorage }] };
+  // Seed every known production/preview origin (app redirects lovable.app → www.uniqueapp.fun)
+  const origins = new Set<string>([
+    new URL(baseURL).origin,
+    "https://uniqueapp.fun",
+    "https://www.uniqueapp.fun",
+    "https://uniqueapp.lovable.app",
+  ]);
+  return {
+    cookies: [],
+    origins: Array.from(origins).map((origin) => ({ origin, localStorage })),
+  };
 }
 
 async function deleteFriendshipsBetween(
