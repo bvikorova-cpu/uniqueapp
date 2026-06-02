@@ -1,21 +1,11 @@
 import { UserPlus } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { useRecommendations } from "@/hooks/useRecommendations";
-import { FollowButton } from "@/components/FollowButton";
-import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { FollowButton } from "@/components/wall/FollowButton";
 
 export const RecommendedUsers = () => {
   const { recommendations, isLoading } = useRecommendations();
-  const [currentUserId, setCurrentUserId] = useState<string>();
-
-  useState(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      setCurrentUserId(data.user?.id);
-    });
-  });
 
   if (isLoading || recommendations.length === 0) return null;
 
@@ -42,14 +32,11 @@ export const RecommendedUsers = () => {
                 )}
               </div>
             </div>
-            <FollowButton
-              currentUserId={currentUserId}
-              targetUserId={rec.recommended_user_id}
-              size="sm"
-            />
+            <FollowButton userId={rec.recommended_user_id} size="sm" />
           </div>
         ))}
       </div>
     </Card>
   );
 };
+
