@@ -5,6 +5,7 @@ import { Edit, MapPin, Briefcase, Sparkles, TrendingUp, Users, Trophy, Zap } fro
 import heroVideo from "@/assets/profile-hero.mp4.asset.json";
 import { VerifiedFounderBadge } from "@/components/wall/VerifiedFounderBadge";
 import { FollowButton } from "@/components/profile/FollowButton";
+import { MessageButton } from "@/components/wall/MessageButton";
 import { ReactNode } from "react";
 
 interface ProfileHeroProps {
@@ -163,6 +164,13 @@ export const ProfileHero = ({
                     variant="default"
                     size="sm"
                   />
+                  {userId && (
+                    <MessageButton
+                      userId={userId}
+                      userName={profile.full_name || "User"}
+                      userAvatar={profile.avatar_url || undefined}
+                    />
+                  )}
                 </>
               )}
             </motion.div>
