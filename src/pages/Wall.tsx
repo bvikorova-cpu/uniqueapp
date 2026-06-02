@@ -115,6 +115,7 @@ const Feed = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const { newCount: newRealtimeCount, reset: resetRealtimeCount } = useWallRealtime(user?.id);
+  const wallStats = useWallStats(user?.id);
   const [posts, setPosts] = useState<Post[]>([]);
   const [reposts, setReposts] = useState<Repost[]>([]);
   const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
