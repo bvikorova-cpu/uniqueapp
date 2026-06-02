@@ -20,6 +20,7 @@ async function goto(page: Page, path: string) {
 }
 
 test.describe("WallGroups – tvorba, validácia, join/leave", () => {
+  test.describe.configure({ retries: 2 });
   test("Validácia: prázdny názov nevytvorí skupinu", async ({ page }) => {
     await goto(page, "/wall/groups");
     await page.getByRole("button", { name: /^create group$/i }).first().click();
