@@ -79,20 +79,10 @@ test.describe("Wall podstránky – tlačidlá", () => {
     await goto(page, "/wall/groups");
     await expect(page.getByRole("heading", { name: /^groups$/i }).first()).toBeVisible();
 
-    // Tabs (role=tab, label obsahuje count "(N)")
-    const myTab = page.getByRole("tab", { name: /my groups/i }).first();
-    const discoverTab = page.getByRole("tab", { name: /discover/i }).first();
-    await expect(myTab.or(discoverTab)).toBeVisible({ timeout: 10_000 });
-    if (await discoverTab.isVisible().catch(() => false)) {
-      await discoverTab.click();
-      await page.waitForTimeout(400);
-    }
-    if (await myTab.isVisible().catch(() => false)) await myTab.click();
-
-    // Create
-    const createBtn = page.getByRole("button", { name: /create group/i }).first();
+    // Click Create FIRST (pred prepínaním tabov, aby button v hero bol istý)
+    const createBtn = page.getByRole("button", { name: /^create group$/i }).first();
     await createBtn.click();
-    await expect(page.getByText(/Create New Group/i)).toBeVisible();
+    await expect(page.getByText(/Create New Group/i)).toBeVisible({ timeout: 5000 });
 
     const name = `E2E Group ${stamp()}`;
     await page.getByPlaceholder(/enter group name/i).fill(name);
@@ -104,26 +94,28 @@ test.describe("Wall podstránky – tlačidlá", () => {
       .click();
 
     await expect(page.getByText(/success|created/i).first()).toBeVisible({ timeout: 10_000 });
+
+    // Tabs – role=tab (Radix), aspoň jeden musí existovať
+    const tabs = page.getByRole("tab");
+    const tabCount = await tabs.count();
+    expect(tabCount).toBeGreaterThanOrEqual(2);
+    // klikni na každý dostupný tab
+    for (let i = 0; i < tabCount; i++) {
+      await tabs.nth(i).click();
+      await page.waitForTimeout(250);
+    }
     await noRuntimeError(page);
   });
 
   // ---------------- PAGES ----------------
-  test("PAGES: tabs (Mine/Following/Discover) + Create Page vytvorí stránku", async ({ page }) => {
+  test("PAGES: tabs + Create Page dialog otvorí a vytvorí page", async ({ page }) => {
     await goto(page, "/wall/pages");
     await expect(page.getByRole("heading", { name: /^pages$/i }).first()).toBeVisible();
 
-    // Tabs (role=tab)
-    for (const label of [/my pages/i, /following/i, /discover/i]) {
-      const tab = page.getByRole("tab", { name: label }).first();
-      if (await tab.isVisible({ timeout: 5000 }).catch(() => false)) {
-        await tab.click();
-        await page.waitForTimeout(250);
-      }
-    }
-
-    // Create
-    await page.getByRole("button", { name: /create page/i }).first().click();
-    await expect(page.getByText(/Create New Page/i)).toBeVisible();
+    // Hero Create Page (prvý visible v hero, nie v empty state)
+    const createBtn = page.getByRole("button", { name: /^create page$/i }).first();
+    await createBtn.click();
+    await expect(page.getByText(/Create New Page/i)).toBeVisible({ timeout: 5000 });
 
     const name = `E2E Page ${stamp()}`;
     await page.getByPlaceholder(/enter page name/i).fill(name);
@@ -135,8 +127,12 @@ test.describe("Wall podstránky – tlačidlá", () => {
       .getByRole("button", { name: /^create page$/i })
       .click();
 
-    // Page reaguje – buď toast alebo dialog zmizne
     await page.waitForTimeout(2000);
+
+    // Tabs – buttony s textom (Mine/Following/Discover) – sú custom <button>
+    const tabButtons = page.locator('button:has-text("My Pages"), button:has-text("Following"), button:has-text("Discover")');
+    const found = await tabButtons.count();
+    expect(found).toBeGreaterThanOrEqual(3);
     await noRuntimeError(page);
   });
 
