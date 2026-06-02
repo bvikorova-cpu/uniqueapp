@@ -14,6 +14,9 @@ import { test, expect, Page, Route } from "@playwright/test";
 
 const WALL = "/wall";
 const SUPABASE_HOST = "jufrdzeonywluwutvyxz.supabase.co";
+const SUPABASE_ANON_KEY =
+  process.env.E2E_SUPABASE_ANON_KEY ??
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1ZnJkemVvbnl3bHV3dXR2eXh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMzU0MTgsImV4cCI6MjA3NDcxMTQxOH0.UOe-_WQoTeBGFmnezRHRcjFJaJd71a7rYlurDkI6h4Q";
 
 async function gotoWall(page: Page) {
   await page.goto(WALL, { waitUntil: "domcontentloaded" });
