@@ -115,7 +115,7 @@ test.describe("Wall podstránky – tlačidlá", () => {
     // Hero Create Page (prvý visible v hero, nie v empty state)
     const createBtn = page.getByRole("button", { name: /^create page$/i }).first();
     await createBtn.click();
-    await expect(page.getByText(/Create New Page/i)).toBeVisible({ timeout: 5000 });
+    await expect(page.getByRole("dialog").getByRole("heading", { name: /create (new )?page/i }).first()).toBeVisible({ timeout: 5000 });
 
     const name = `E2E Page ${stamp()}`;
     await page.getByPlaceholder(/enter page name/i).fill(name);
