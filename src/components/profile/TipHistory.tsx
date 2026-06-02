@@ -1,7 +1,30 @@
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
-import { Coffee, Heart, TrendingUp } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import {
+  Coffee,
+  Heart,
+  TrendingUp,
+  CheckCircle2,
+  Clock,
+  XCircle,
+  Undo2,
+  Loader2,
+} from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 interface TipHistoryProps {
@@ -15,8 +38,10 @@ interface TipRow {
   recipient_amount_cents: number | null;
   message: string | null;
   created_at: string;
+  status: string;
   sender_id: string;
-  sender?: { full_name: string | null; username: string | null; avatar_url: string | null } | null;
+  refunded_at?: string | null;
+  sender?: { full_name: string | null; username: string | null } | null;
 }
 
 interface Stats {
@@ -25,48 +50,102 @@ interface Stats {
   total_recipient_cents: number;
 }
 
+const STATUS_META: Record<
+  string,
+  { label: string; icon: any; cls: string }
+> = {
+  completed: {
+    label: "Prijaté",
+    icon: CheckCircle2,
+    cls: "bg-emerald-500/15 text-emerald-300 border-emerald-400/30",
+  },
+  pending: {
+    label: "Spracúva sa",
+    icon: Clock,
+    cls: "bg-amber-500/15 text-amber-300 border-amber-400/30",
+  },
+  failed: {
+    label: "Neúspešné",
+    icon: XCircle,
+    cls: "bg-rose-500/15 text-rose-300 border-rose-400/30",
+  },
+  refunded: {
+    label: "Vrátené",
+    icon: Undo2,
+    cls: "bg-slate-500/20 text-slate-300 border-slate-400/30",
+  },
+};
+
 export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
+  const { toast } = useToast();
   const [stats, setStats] = useState<Stats | null>(null);
   const [tips, setTips] = useState<TipRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refundingId, setRefundingId] = useState<string | null>(null);
+
+  const load = async () => {
+    setLoading(true);
+    const [{ data: statsRows }, { data: tipsRows }] = await Promise.all([
+      supabase.rpc("get_profile_tip_stats", { _recipient: userId }),
+      supabase
+        .from("profile_tips")
+        .select(
+          "id, amount_cents, recipient_amount_cents, message, created_at, status, sender_id, refunded_at",
+        )
+        .eq("recipient_id", userId)
+        .order("created_at", { ascending: false })
+        .limit(20),
+    ]);
+
+    const s = Array.isArray(statsRows) ? statsRows[0] : statsRows;
+    setStats(s ?? { total_count: 0, total_amount_cents: 0, total_recipient_cents: 0 });
+
+    let list: TipRow[] = (tipsRows ?? []) as TipRow[];
+    if (list.length && isOwnProfile) {
+      const ids = Array.from(new Set(list.map((t) => t.sender_id)));
+      const { data: senders } = await supabase
+        .from("profiles")
+        .select("id, full_name, username")
+        .in("id", ids);
+      const map = new Map((senders ?? []).map((p: any) => [p.id, p]));
+      list = list.map((t) => ({ ...t, sender: map.get(t.sender_id) ?? null }));
+    }
+    setTips(list);
+    setLoading(false);
+  };
 
   useEffect(() => {
     let alive = true;
     (async () => {
-      setLoading(true);
-      const [{ data: statsRows }, { data: tipsRows }] = await Promise.all([
-        supabase.rpc("get_profile_tip_stats", { _recipient: userId }),
-        supabase
-          .from("profile_tips")
-          .select("id, amount_cents, recipient_amount_cents, message, created_at, sender_id")
-          .eq("recipient_id", userId)
-          .eq("status", "completed")
-          .order("created_at", { ascending: false })
-          .limit(20),
-      ]);
+      await load();
       if (!alive) return;
-
-      const s = Array.isArray(statsRows) ? statsRows[0] : statsRows;
-      setStats(s ?? { total_count: 0, total_amount_cents: 0, total_recipient_cents: 0 });
-
-      // Fetch senders (only visible to recipient — RLS hides for others, list may be empty)
-      let list: TipRow[] = (tipsRows ?? []) as TipRow[];
-      if (list.length && isOwnProfile) {
-        const ids = Array.from(new Set(list.map((t) => t.sender_id)));
-        const { data: senders } = await supabase
-          .from("profiles")
-          .select("id, full_name, username, avatar_url")
-          .in("id", ids);
-        const map = new Map((senders ?? []).map((p: any) => [p.id, p]));
-        list = list.map((t) => ({ ...t, sender: map.get(t.sender_id) ?? null }));
-      }
-      setTips(list);
-      setLoading(false);
     })();
     return () => {
       alive = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, isOwnProfile]);
+
+  const handleRefund = async (tipId: string) => {
+    setRefundingId(tipId);
+    try {
+      const { data, error } = await supabase.functions.invoke("refund-profile-tip", {
+        body: { tipId, reason: "requested_by_recipient" },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      toast({ title: "Tip vrátený", description: "Prevod bol stornovaný cez Stripe." });
+      await load();
+    } catch (e: any) {
+      toast({
+        title: "Refund zlyhal",
+        description: e?.message || "Skús neskôr",
+        variant: "destructive",
+      });
+    } finally {
+      setRefundingId(null);
+    }
+  };
 
   const totalEur = (stats?.total_amount_cents ?? 0) / 100;
   const netEur = (stats?.total_recipient_cents ?? 0) / 100;
@@ -103,35 +182,85 @@ export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
           Zatiaľ žiadne tipy. Buď prvý kto pošle podporu!
         </p>
       ) : (
-        <ul className="space-y-2 max-h-72 overflow-y-auto">
-          {tips.map((t) => (
-            <li
-              key={t.id}
-              className="flex items-start gap-2 rounded-md border border-violet-400/10 bg-background/40 p-2"
-            >
-              <div className="h-7 w-7 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shrink-0">
-                <Heart className="h-3.5 w-3.5 text-white" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-sm font-semibold truncate">
-                    {isOwnProfile
-                      ? t.sender?.full_name || t.sender?.username || "Anonymný darca"
-                      : "Tipper"}
-                  </span>
-                  <span className="text-sm font-black text-violet-300 shrink-0">
-                    €{(t.amount_cents / 100).toFixed(2)}
-                  </span>
+        <ul className="space-y-2 max-h-[28rem] overflow-y-auto">
+          {tips.map((t) => {
+            const meta = STATUS_META[t.status] ?? STATUS_META.pending;
+            const Icon = meta.icon;
+            const canRefund = isOwnProfile && t.status === "completed";
+            return (
+              <li
+                key={t.id}
+                className="flex items-start gap-2 rounded-md border border-violet-400/10 bg-background/40 p-2"
+              >
+                <div className="h-7 w-7 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shrink-0">
+                  <Heart className="h-3.5 w-3.5 text-white" />
                 </div>
-                {t.message && (
-                  <p className="text-xs italic text-muted-foreground line-clamp-2">"{t.message}"</p>
-                )}
-                <p className="text-[10px] text-muted-foreground">
-                  {formatDistanceToNow(new Date(t.created_at), { addSuffix: true })}
-                </p>
-              </div>
-            </li>
-          ))}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-semibold truncate">
+                      {isOwnProfile
+                        ? t.sender?.full_name || t.sender?.username || "Anonymný darca"
+                        : "Tipper"}
+                    </span>
+                    <span
+                      className={`text-sm font-black shrink-0 ${
+                        t.status === "refunded" ? "line-through text-muted-foreground" : "text-violet-300"
+                      }`}
+                    >
+                      €{(t.amount_cents / 100).toFixed(2)}
+                    </span>
+                  </div>
+                  {t.message && (
+                    <p className="text-xs italic text-muted-foreground line-clamp-2">"{t.message}"</p>
+                  )}
+                  <div className="flex items-center justify-between gap-2 mt-1 flex-wrap">
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className={`gap-1 text-[10px] py-0 px-1.5 ${meta.cls}`}>
+                        <Icon className="h-3 w-3" />
+                        {meta.label}
+                      </Badge>
+                      <span className="text-[10px] text-muted-foreground">
+                        {formatDistanceToNow(new Date(t.created_at), { addSuffix: true })}
+                      </span>
+                    </div>
+                    {canRefund && (
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="h-6 px-2 text-[10px] gap-1 text-rose-300 hover:text-rose-200 hover:bg-rose-500/10"
+                            disabled={refundingId === t.id}
+                          >
+                            {refundingId === t.id ? (
+                              <Loader2 className="h-3 w-3 animate-spin" />
+                            ) : (
+                              <Undo2 className="h-3 w-3" />
+                            )}
+                            Vrátiť
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Vrátiť tip €{(t.amount_cents / 100).toFixed(2)}?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Suma bude cez Stripe vrátená darcovi. Túto akciu nie je možné vrátiť späť.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Zrušiť</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleRefund(t.id)}>
+                              Vrátiť
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    )}
+                  </div>
+                </div>
+              </li>
+            );
+          })}
         </ul>
       )}
     </Card>
