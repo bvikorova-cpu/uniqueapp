@@ -1,6 +1,12 @@
-import { UserPlus, UserMinus } from "lucide-react";
+import { UserPlus, UserMinus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useFollows } from "@/hooks/useFollows";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  useIsFollowing,
+  useFollowMutation,
+  useUnfollowMutation,
+} from "@/hooks/useFollow";
 
 interface FollowButtonProps {
   userId: string;
@@ -9,25 +15,43 @@ interface FollowButtonProps {
 }
 
 export const FollowButton = ({ userId, variant = "default", size = "default" }: FollowButtonProps) => {
-  const { isFollowing, toggleFollow } = useFollows();
+  const { data: currentUser } = useQuery({
+    queryKey: ["current-user"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      return user;
+    },
+  });
+
+  const { data: isFollowing = false } = useIsFollowing(currentUser?.id, userId);
+  const followMutation = useFollowMutation();
+  const unfollowMutation = useUnfollowMutation();
+
+  const pending = followMutation.isPending || unfollowMutation.isPending;
+  const disabled = !currentUser || currentUser.id === userId || pending;
+
+  const handleClick = () => {
+    if (!currentUser) return;
+    const args = { followerId: currentUser.id, followingId: userId };
+    if (isFollowing) unfollowMutation.mutate(args);
+    else followMutation.mutate(args);
+  };
 
   return (
     <Button
-      variant={isFollowing(userId) ? "outline" : variant}
+      variant={isFollowing ? "outline" : variant}
       size={size}
-      onClick={() => toggleFollow(userId)}
+      onClick={handleClick}
+      disabled={disabled}
     >
-      {isFollowing(userId) ? (
-        <>
-          <UserMinus className="w-4 h-4 mr-2" />
-          Unfollow
-        </>
+      {pending ? (
+        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+      ) : isFollowing ? (
+        <UserMinus className="w-4 h-4 mr-2" />
       ) : (
-        <>
-          <UserPlus className="w-4 h-4 mr-2" />
-          Follow
-        </>
+        <UserPlus className="w-4 h-4 mr-2" />
       )}
+      {isFollowing ? "Unfollow" : "Follow"}
     </Button>
   );
 };
