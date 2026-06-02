@@ -82,6 +82,7 @@ export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
   const [tips, setTips] = useState<TipRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [refundingId, setRefundingId] = useState<string | null>(null);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -135,6 +136,7 @@ export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       toast({ title: "Tip vrátený", description: "Prevod bol stornovaný cez Stripe." });
+      setConfirmId(null);
       await load();
     } catch (e: any) {
       toast({
@@ -142,6 +144,7 @@ export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
         description: e?.message || "Skús neskôr",
         variant: "destructive",
       });
+      setConfirmId(null);
     } finally {
       setRefundingId(null);
     }
@@ -224,13 +227,14 @@ export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
                       </span>
                     </div>
                     {canRefund && (
-                      <AlertDialog>
+                      <AlertDialog open={confirmId === t.id} onOpenChange={(open) => { if (!open) setConfirmId(null); }}>
                         <AlertDialogTrigger asChild>
                           <Button
                             size="sm"
                             variant="ghost"
                             className="h-6 px-2 text-[10px] gap-1 text-rose-300 hover:text-rose-200 hover:bg-rose-500/10"
-                            disabled={refundingId === t.id}
+                            disabled={!!refundingId}
+                            onClick={() => setConfirmId(t.id)}
                           >
                             {refundingId === t.id ? (
                               <Loader2 className="h-3 w-3 animate-spin" />
@@ -248,8 +252,14 @@ export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel>Zrušiť</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => handleRefund(t.id)}>
+                            <AlertDialogCancel disabled={refundingId === t.id}>Zrušiť</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => handleRefund(t.id)}
+                              disabled={refundingId === t.id}
+                            >
+                              {refundingId === t.id ? (
+                                <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                              ) : null}
                               Vrátiť
                             </AlertDialogAction>
                           </AlertDialogFooter>
