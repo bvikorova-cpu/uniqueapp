@@ -166,7 +166,7 @@ test.describe("Wall – bezpečnosť / RLS", () => {
       `https://${SUPABASE_HOST}/rest/v1/post_reactions`,
       {
         headers: {
-          apikey: process.env.E2E_SUPABASE_ANON_KEY ?? "",
+          apikey: SUPABASE_ANON_KEY,
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
           Prefer: "return=representation",
