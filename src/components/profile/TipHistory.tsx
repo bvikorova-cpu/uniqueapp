@@ -136,6 +136,7 @@ export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
       toast({ title: "Tip vrátený", description: "Prevod bol stornovaný cez Stripe." });
+      setConfirmId(null);
       await load();
     } catch (e: any) {
       toast({
@@ -143,6 +144,7 @@ export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
         description: e?.message || "Skús neskôr",
         variant: "destructive",
       });
+      setConfirmId(null);
     } finally {
       setRefundingId(null);
     }
