@@ -116,7 +116,7 @@ test.describe("Wall podstránky – tlačidlá", () => {
     await expect(page.getByRole("heading", { name: /^pages$/i }).first()).toBeVisible();
 
     // Tabs – custom <button> v pill kontajneri (My Pages / Following / Discover)
-    const tabButtons = page.locator('button').filter({ hasText: /^(My Pages|Following|Discover)$/ });
+    const tabButtons = page.getByRole("button", { name: /^(My Pages|Following|Discover)$/ });
     expect(await tabButtons.count(), "3 tab tlačidlá").toBeGreaterThanOrEqual(3);
     // klikni postupne každý tab
     for (let i = 0; i < 3; i++) {
