@@ -71,18 +71,19 @@ export default function WallCinematicHero({ totalPosts, totalUsers, totalLikes, 
             </motion.div>
             {streak > 0 && (
               <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.3, type: "spring" }}>
-                <TooltipProvider delayDuration={200}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-amber-400/50 cursor-help">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button type="button">
+                      <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-amber-400/50 cursor-pointer">
                         <Flame className="h-3 w-3 mr-1" /> {streak} Day Streak
+                        <Info className="h-3 w-3 ml-1 opacity-70" />
                       </Badge>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom" className="max-w-[220px] text-center">
-                      {t("wall.tooltip.streak")}
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent side="bottom" className="max-w-[240px] text-center text-xs">
+                    {t("wall.tooltip.streak")}
+                  </PopoverContent>
+                </Popover>
               </motion.div>
             )}
           </div>
