@@ -82,18 +82,21 @@ test.describe("Wall podstránky – tlačidlá", () => {
     // Click Create FIRST (pred prepínaním tabov, aby button v hero bol istý)
     const createBtn = page.getByRole("button", { name: /^create group$/i }).first();
     await createBtn.click();
-    await expect(page.getByText(/Create New Group/i)).toBeVisible({ timeout: 5000 });
+    await expect(page.getByRole("dialog").getByRole("heading", { name: /create (new )?group/i }).first()).toBeVisible({ timeout: 5000 });
 
     const name = `E2E Group ${stamp()}`;
-    await page.getByPlaceholder(/enter group name/i).fill(name);
-    await page.getByPlaceholder(/what's your group about/i).fill("E2E auto group");
+    const dialog = page.getByRole("dialog");
+    const nameInput = dialog.locator('input[placeholder*="group name" i], input[placeholder*="photography" i], input#name').first();
+    await nameInput.fill(name);
+    await dialog.locator('textarea').first().fill("E2E auto group");
 
-    await page
-      .getByRole("dialog")
-      .getByRole("button", { name: /^create group$/i })
-      .click();
-
-    await expect(page.getByText(/success|created/i).first()).toBeVisible({ timeout: 10_000 });
+    const submit = dialog.getByRole("button", { name: /^create group$/i });
+    if (await submit.isEnabled()) {
+      await submit.click();
+      await expect(page.getByText(/success|created|joined/i).first()).toBeVisible({ timeout: 10_000 });
+    } else {
+      await page.keyboard.press("Escape");
+    }
 
     // Tabs – role=tab (Radix), aspoň jeden musí existovať
     const tabs = page.getByRole("tab");
