@@ -93,7 +93,14 @@ test.describe("WallGroups – tvorba, validácia, join/leave", () => {
     await dialog.getByRole("button", { name: /^create group$/i }).click();
     await expect(page.getByText(/group created successfully/i).first()).toBeVisible({ timeout: 10_000 });
 
-    await page.locator(`text=${name}`).first().click();
+    await page.waitForTimeout(800);
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.waitForTimeout(1500);
+
+    const card = page.locator(`h4:has-text("${name}")`).first();
+    await expect(card).toBeVisible({ timeout: 10_000 });
+    await card.scrollIntoViewIfNeeded();
+    await card.click();
     await expect(page).toHaveURL(/\/wall\/groups\/[0-9a-f-]+/i, { timeout: 10_000 });
   });
 });
