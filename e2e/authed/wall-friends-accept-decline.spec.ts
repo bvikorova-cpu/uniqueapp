@@ -139,12 +139,16 @@ async function insertFriendRequest(
 
 async function gotoFriends(page: Page) {
   await page.goto("/wall/friends", { waitUntil: "domcontentloaded", timeout: 25_000 });
-  await page.waitForTimeout(2500);
+  await page.waitForTimeout(3500);
   // Dismiss welcome onboarding modal if present
   const close = page.locator('[role="dialog"] button[aria-label*="close" i]').first();
   if (await close.isVisible({ timeout: 1000 }).catch(() => false)) {
     await close.click().catch(() => {});
   }
+  // Debug log
+  const url = page.url();
+  const bodyText = await page.locator("body").innerText().catch(() => "");
+  console.log(`[gotoFriends] url=${url} bodySample=${bodyText.slice(0, 200).replace(/\s+/g, " ")}`);
 }
 
 let sessionA: Session;
