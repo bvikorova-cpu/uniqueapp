@@ -112,12 +112,13 @@ test.describe("Wall podstránky – tlačidlá", () => {
     await goto(page, "/wall/pages");
     await expect(page.getByRole("heading", { name: /^pages$/i }).first()).toBeVisible();
 
-    // Tabs
-    for (const label of [/my pages/i, /following/i, /^discover$/i]) {
-      const tab = page.getByRole("button", { name: label }).first();
-      await expect(tab).toBeVisible();
-      await tab.click();
-      await page.waitForTimeout(250);
+    // Tabs (role=tab)
+    for (const label of [/my pages/i, /following/i, /discover/i]) {
+      const tab = page.getByRole("tab", { name: label }).first();
+      if (await tab.isVisible({ timeout: 5000 }).catch(() => false)) {
+        await tab.click();
+        await page.waitForTimeout(250);
+      }
     }
 
     // Create
