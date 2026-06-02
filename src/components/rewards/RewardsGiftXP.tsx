@@ -54,7 +54,7 @@ export default function RewardsGiftXP() {
     setSearching(true);
     try {
       const safe = trimmed.slice(0, MAX_QUERY);
-      const { data, error } = await (supabase as any).rpc("search_users", { search_query: safe });
+      const { data, error } = await (supabase as any).rpc("search_users", { q: safe, lim: 20 });
       if (error) {
         toast({ title: "Search failed", description: error.message, variant: "destructive" });
         setResults([]);

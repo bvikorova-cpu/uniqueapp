@@ -261,7 +261,7 @@ const Messenger = () => {
     setSearching(true);
     const mySeq = ++searchSeqRef.current;
     const handle = setTimeout(async () => {
-      const { data, error } = await (supabase as any).rpc("search_users", { search_query: q });
+      const { data, error } = await (supabase as any).rpc("search_users", { q: q, lim: 20 });
       // Drop stale responses (user typed again before this resolved).
       if (mySeq !== searchSeqRef.current) return;
       if (!error) {
