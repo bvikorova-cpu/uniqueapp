@@ -571,7 +571,7 @@ const Feed = () => {
 
             <div className="max-w-3xl mx-auto px-2 sm:px-4 py-3 sm:py-4 space-y-3 sm:space-y-4">
               {/* Cinematic Hero */}
-              <WallCinematicHero totalPosts={posts.length} totalUsers={42} totalLikes={feedItems.reduce((acc, item) => acc + (item.type === 'post' ? (item.data as Post).likes_count : 0), 0)} streak={7} />
+              <WallCinematicHero totalPosts={wallStats.postsToday} totalUsers={wallStats.activeUsers} totalLikes={wallStats.interactionsToday} streak={wallStats.streak} />
               <HeroRewardedAd sectionKey="page_wall" />
 
 
