@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { MessageCircle, Users, Heart, Globe, TrendingUp, Flame, Zap } from "lucide-react";
 import heroVideo from "@/assets/wall-hero.mp4.asset.json";
 
@@ -31,10 +32,10 @@ export default function WallCinematicHero({ totalPosts, totalUsers, totalLikes, 
   }, []);
 
   const statCards = [
-    { value: totalPosts.toLocaleString(), label: "Posts Today", icon: MessageCircle, accent: "from-orange-500/20 to-coral-500/10", iconColor: "text-orange-400" },
-    { value: totalUsers.toLocaleString(), label: "Active Users", icon: Users, accent: "from-teal-500/20 to-cyan-500/10", iconColor: "text-teal-400" },
-    { value: totalLikes.toLocaleString(), label: "Interactions", icon: Heart, accent: "from-rose-500/20 to-pink-500/10", iconColor: "text-rose-400" },
-    { value: `${timeLeft.days}d ${timeLeft.hours}h`, label: "Challenge Ends", icon: Zap, accent: "from-amber-500/20 to-yellow-500/10", iconColor: "text-amber-400" },
+    { value: totalPosts.toLocaleString(), label: "Posts Today", icon: MessageCircle, accent: "from-orange-500/20 to-coral-500/10", iconColor: "text-orange-400", tooltip: "Globálne: celkový počet príspevkov od všetkých používateľov dnes" },
+    { value: totalUsers.toLocaleString(), label: "Active Users", icon: Users, accent: "from-teal-500/20 to-cyan-500/10", iconColor: "text-teal-400", tooltip: "Globálne: počet aktívnych používateľov za posledných 15 minút" },
+    { value: totalLikes.toLocaleString(), label: "Interactions", icon: Heart, accent: "from-rose-500/20 to-pink-500/10", iconColor: "text-rose-400", tooltip: "Globálne: celkový počet páči sa mi a komentárov dnes" },
+    { value: `${timeLeft.days}d ${timeLeft.hours}h`, label: "Challenge Ends", icon: Zap, accent: "from-amber-500/20 to-yellow-500/10", iconColor: "text-amber-400", tooltip: "Globálne: čas do konca týždenného výzvy pre celú komunitu" },
   ];
 
   return (
@@ -68,9 +69,18 @@ export default function WallCinematicHero({ totalPosts, totalUsers, totalLikes, 
             </motion.div>
             {streak > 0 && (
               <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.3, type: "spring" }}>
-                <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-amber-400/50">
-                  <Flame className="h-3 w-3 mr-1" /> {streak} Day Streak
-                </Badge>
+                <TooltipProvider delayDuration={200}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-amber-400/50 cursor-help">
+                        <Flame className="h-3 w-3 mr-1" /> {streak} Day Streak
+                      </Badge>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="max-w-[220px] text-center">
+                      Osobné: tvoj aktuálny denný streak na Walle
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </motion.div>
             )}
           </div>
@@ -91,21 +101,29 @@ export default function WallCinematicHero({ totalPosts, totalUsers, totalLikes, 
         </div>
       </motion.div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {statCards.map((item, i) => (
-          <motion.div
-            key={item.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 * i + 0.4 }}
-            className={`rounded-xl bg-gradient-to-br ${item.accent} bg-card/80 backdrop-blur-md border border-border/30 p-3 sm:p-4 text-center`}
-          >
-            <item.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${item.iconColor} mx-auto mb-1`} />
-            <p className="text-lg sm:text-2xl font-black">{item.value}</p>
-            <p className="text-[10px] sm:text-xs text-muted-foreground">{item.label}</p>
-          </motion.div>
-        ))}
-      </div>
+      <TooltipProvider delayDuration={200}>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {statCards.map((item, i) => (
+            <Tooltip key={item.label}>
+              <TooltipTrigger asChild>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 * i + 0.4 }}
+                  className={`rounded-xl bg-gradient-to-br ${item.accent} bg-card/80 backdrop-blur-md border border-border/30 p-3 sm:p-4 text-center cursor-help`}
+                >
+                  <item.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${item.iconColor} mx-auto mb-1`} />
+                  <p className="text-lg sm:text-2xl font-black">{item.value}</p>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground">{item.label}</p>
+                </motion.div>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-[220px] text-center">
+                {item.tooltip}
+              </TooltipContent>
+            </Tooltip>
+          ))}
+        </div>
+      </TooltipProvider>
     </div>
   );
 }
