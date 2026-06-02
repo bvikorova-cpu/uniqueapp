@@ -17,8 +17,9 @@ const SUPABASE_HOST = "jufrdzeonywluwutvyxz.supabase.co";
 
 async function gotoWall(page: Page) {
   await page.goto(WALL, { waitUntil: "domcontentloaded" });
-  // Onboarding overlay už je dismissnutý v storageState; isto si počkáme na composer.
-  await page.waitForLoadState("networkidle").catch(() => {});
+  // Websocket realtime drží connection — nečakáme na networkidle (timeoutuje).
+  // Stačí krátky settle.
+  await page.waitForTimeout(1500);
 }
 
 async function getComposer(page: Page) {
