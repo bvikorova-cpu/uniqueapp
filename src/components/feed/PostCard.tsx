@@ -143,6 +143,38 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
     init();
   }, [post.id]);
 
+  // Realtime sync for likes / comments / reposts counts on this post
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    const refreshCounts = () => {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(async () => {
+        const { data } = await supabase
+          .from("posts")
+          .select("likes_count, comments_count, reposts_count")
+          .eq("id", post.id)
+          .maybeSingle();
+        if (data) {
+          setLikesCount(data.likes_count ?? 0);
+          setCommentsCount(data.comments_count ?? 0);
+          setRepostsCount(data.reposts_count ?? 0);
+        }
+      }, 400);
+    };
+
+    const channel = supabase
+      .channel(`post-counts-${post.id}`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "post_likes", filter: `post_id=eq.${post.id}` }, refreshCounts)
+      .on("postgres_changes", { event: "*", schema: "public", table: "post_comments", filter: `post_id=eq.${post.id}` }, refreshCounts)
+      .on("postgres_changes", { event: "*", schema: "public", table: "reposts", filter: `original_post_id=eq.${post.id}` }, refreshCounts)
+      .subscribe();
+
+    return () => {
+      if (timer) clearTimeout(timer);
+      supabase.removeChannel(channel);
+    };
+  }, [post.id]);
+
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const incoming = Array.from(e.target.files);

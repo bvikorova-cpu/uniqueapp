@@ -16,9 +16,7 @@ import { FollowedTopicsDialog } from "@/components/wall/FollowedTopicsDialog";
 import { SavedSearchesDialog } from "@/components/wall/SavedSearchesDialog";
 import { GroupChatDialog } from "@/components/wall/GroupChatDialog";
 import { ProfileCustomizationDialog } from "@/components/profile/ProfileCustomizationDialog";
-import { SmartFeedTabs, type FeedTab } from "@/components/wall/SmartFeedTabs";
 import { SpacesDialog } from "@/components/wall/SpacesDialog";
-import { useForYouRanking } from "@/hooks/useForYouRanking";
 import { useUserMutes } from "@/hooks/useUserMutes";
 
 import type { Post, Repost, FeedItem } from "@/types/database";
@@ -52,13 +50,16 @@ export default function WallFeed({
   const [sortBy, setSortBy] = useState<SortBy>("newest");
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("all");
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
-  const [activeTab, setActiveTab] = useState<FeedTab>("latest");
+  const [activeTab] = useState<"latest">("latest");
+  void activeTab;
   const mutedKeywords = useMutedKeywords();
   const { mutedIds } = useUserMutes();
-  const { data: forYouIds = [] } = useForYouRanking(activeTab === "for-you");
 
+  // Note: feed-tab filtering (For You / Following / Trending / Latest / Friends) is
+  // handled by Wall.tsx via filteredFeedItems. This component only applies the
+  // user-level mute filters on top of what the parent already filtered/sorted.
   const visibleFeedItems = useMemo(() => {
-    const filtered = filteredFeedItems.filter((item) => {
+    return filteredFeedItems.filter((item) => {
       const data: any = item.data;
       const authorId = data.user_id || data.profiles?.id;
       if (authorId && mutedIds.includes(authorId)) return false;
@@ -72,24 +73,7 @@ export default function WallFeed({
       }
       return true;
     });
-
-    if (activeTab === "for-you" && forYouIds.length > 0) {
-      const order = new Map(forYouIds.map((id, i) => [id, i]));
-      return [...filtered].sort((a, b) => {
-        const ai = order.has(a.data.id) ? order.get(a.data.id)! : 9999;
-        const bi = order.has(b.data.id) ? order.get(b.data.id)! : 9999;
-        return ai - bi;
-      });
-    }
-    if (activeTab === "trending") {
-      return [...filtered].sort((a: any, b: any) => {
-        const sa = (a.data.likes_count ?? 0) + (a.data.comments_count ?? 0) * 2;
-        const sb = (b.data.likes_count ?? 0) + (b.data.comments_count ?? 0) * 2;
-        return sb - sa;
-      });
-    }
-    return filtered;
-  }, [filteredFeedItems, mutedKeywords, mutedIds, activeTab, forYouIds]);
+  }, [filteredFeedItems, mutedKeywords, mutedIds]);
 
   const handleResetFilters = () => {
     setSortBy("newest");
@@ -142,8 +126,7 @@ export default function WallFeed({
           {/* Notes / 24h status bar */}
           <NotesBar />
 
-          {/* Smart feed tabs */}
-          <SmartFeedTabs activeTab={activeTab} onTabChange={setActiveTab} />
+          {/* Smart feed tabs are rendered by the Wall page (parent) — do not duplicate here */}
 
           {/* Search Bar */}
           <SearchBar />

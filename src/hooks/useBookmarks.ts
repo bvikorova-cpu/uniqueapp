@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+// Unified with saved_posts table (single source of truth for "saved/bookmarked" posts).
 export const useBookmarks = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -13,7 +14,7 @@ export const useBookmarks = () => {
       if (!user) return [];
 
       const { data, error } = await supabase
-        .from("bookmarks")
+        .from("saved_posts")
         .select("*, posts(*)")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
@@ -24,7 +25,7 @@ export const useBookmarks = () => {
   });
 
   const isBookmarked = (postId: string) => {
-    return bookmarks?.some(b => b.post_id === postId) || false;
+    return bookmarks?.some((b: any) => b.post_id === postId) || false;
   };
 
   const toggleBookmark = useMutation({
@@ -32,30 +33,28 @@ export const useBookmarks = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const existing = bookmarks?.find(b => b.post_id === postId);
+      const existing = bookmarks?.find((b: any) => b.post_id === postId);
 
       if (existing) {
         const { error } = await supabase
-          .from("bookmarks")
+          .from("saved_posts")
           .delete()
-          .eq("id", existing.id);
+          .eq("id", (existing as any).id);
         if (error) throw error;
-        return { action: "removed" };
+        return { action: "removed" as const };
       } else {
         const { error } = await supabase
-          .from("bookmarks")
-          .insert({
-            user_id: user.id,
-            post_id: postId,
-          });
+          .from("saved_posts")
+          .insert({ user_id: user.id, post_id: postId });
         if (error) throw error;
-        return { action: "added" };
+        return { action: "added" as const };
       }
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["bookmarks"] });
-      toast({ 
-        title: data.action === "added" ? "Bookmark saved!" : "Bookmark removed" 
+      queryClient.invalidateQueries({ queryKey: ["saved-posts"] });
+      toast({
+        title: data.action === "added" ? "Bookmark saved!" : "Bookmark removed",
       });
     },
   });
