@@ -23,6 +23,7 @@ export default function WallEvents() {
   const [newEventDescription, setNewEventDescription] = useState("");
   const [newEventLocation, setNewEventLocation] = useState("");
   const [newEventStartTime, setNewEventStartTime] = useState("");
+  const [newEventEndTime, setNewEventEndTime] = useState("");
   const [newEventCoverImage, setNewEventCoverImage] = useState<string | undefined>();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
@@ -51,14 +52,19 @@ export default function WallEvents() {
 
   const createEvent = async () => {
     if (!user || !newEventTitle.trim() || !newEventStartTime) return;
+    const endTime = newEventEndTime || newEventStartTime;
+    if (new Date(endTime) < new Date(newEventStartTime)) {
+      toast({ title: "Invalid time", description: "End time must be after start time", variant: "destructive" });
+      return;
+    }
     try {
       const { error } = await supabase.from("events").insert({
         title: newEventTitle, description: newEventDescription, location: newEventLocation,
-        start_time: newEventStartTime, end_time: newEventStartTime, cover_image: newEventCoverImage || null, creator_id: user.id,
+        start_time: newEventStartTime, end_time: endTime, cover_image: newEventCoverImage || null, creator_id: user.id,
       });
       if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
       toast({ title: "Success", description: "Event created!" });
-      setIsCreateDialogOpen(false); setNewEventTitle(""); setNewEventDescription(""); setNewEventLocation(""); setNewEventStartTime(""); setNewEventCoverImage(undefined);
+      setIsCreateDialogOpen(false); setNewEventTitle(""); setNewEventDescription(""); setNewEventLocation(""); setNewEventStartTime(""); setNewEventEndTime(""); setNewEventCoverImage(undefined);
       refetchEvents(); refetchUpcoming();
     } catch { toast({ title: "Error", description: "An unexpected error occurred", variant: "destructive" }); }
   };
@@ -157,6 +163,7 @@ export default function WallEvents() {
                 <div><Label>Event Title</Label><Input value={newEventTitle} onChange={(e) => setNewEventTitle(e.target.value)} placeholder="Enter event title" /></div>
                 <div><Label>Location</Label><Input value={newEventLocation} onChange={(e) => setNewEventLocation(e.target.value)} placeholder="Add location" /></div>
                 <div><Label>Start Time</Label><Input type="datetime-local" value={newEventStartTime} onChange={(e) => setNewEventStartTime(e.target.value)} /></div>
+                <div><Label>End Time</Label><Input type="datetime-local" value={newEventEndTime} onChange={(e) => setNewEventEndTime(e.target.value)} min={newEventStartTime || undefined} /></div>
                 <div><Label>Description</Label><Textarea value={newEventDescription} onChange={(e) => setNewEventDescription(e.target.value)} placeholder="Tell people about this event..." rows={3} /></div>
                 <Button onClick={createEvent} className="w-full bg-gradient-to-r from-primary to-accent text-white shadow-lg">Create Event</Button>
               </div>
