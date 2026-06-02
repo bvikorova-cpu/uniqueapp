@@ -82,7 +82,7 @@ test.describe("Wall – user ↔ user interakcie", () => {
       test.skip(true, "Žiadny post");
       return;
     }
-    const nameEl = foreign.locator("p.font-semibold.cursor-pointer, p.cursor-pointer").first();
+    const nameEl = foreign.locator("p.font-semibold").first();
     if (!(await nameEl.isVisible({ timeout: 3000 }).catch(() => false))) {
       test.skip(true, "Meno autora nenájdené");
       return;
@@ -204,7 +204,7 @@ test.describe("Wall – user ↔ user interakcie", () => {
       return;
     }
 
-    const nameEl = foreign.locator("p.font-semibold.cursor-pointer, p.cursor-pointer").first();
+    const nameEl = foreign.locator("p.font-semibold").first();
     if (!(await nameEl.isVisible({ timeout: 3000 }).catch(() => false))) {
       test.skip(true, "Klikateľné meno nenájdené");
       return;
