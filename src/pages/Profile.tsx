@@ -533,7 +533,7 @@ const Profile = () => {
         <Avatar3D userId={userId!} />
 
         {/* Founder Story / Bio */}
-        <FounderStory profile={profile} />
+        <FounderStory profile={profile as any} />
 
         {/* Trophy Wall */}
         <AchievementsWall
