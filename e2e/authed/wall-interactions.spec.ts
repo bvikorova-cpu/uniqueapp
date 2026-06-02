@@ -108,7 +108,7 @@ test.describe("Wall – like / unlike / perzistencia / realtime", () => {
 
     // Perzistencia – po reloade niekde existuje pressed/active stav
     await page.reload({ waitUntil: "domcontentloaded" });
-    await page.waitForLoadState("networkidle").catch(() => {});
+    await page.waitForTimeout(1500);
   });
 
   test("realtime – druhý kontext dostane Supabase event", async ({ browser }) => {
