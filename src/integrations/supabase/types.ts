@@ -61563,6 +61563,7 @@ export type Database = {
       expire_auctions: { Args: never; Returns: number }
       expire_featured_listings: { Args: never; Returns: undefined }
       expire_old_job_listings: { Args: never; Returns: number }
+      f_unaccent: { Args: { "": string }; Returns: string }
       fail_job: {
         Args: { p_error?: string; p_job_id: string }
         Returns: undefined
@@ -62465,27 +62466,17 @@ export type Database = {
       }
       rotate_mystery_events: { Args: never; Returns: undefined }
       rotate_seasonal_missions: { Args: never; Returns: Json }
-      search_users:
-        | {
-            Args: { lim?: number; q: string }
-            Returns: {
-              avatar_url: string
-              full_name: string
-              headline: string
-              id: string
-              is_verified: boolean
-              username: string
-            }[]
-          }
-        | {
-            Args: { search_query: string }
-            Returns: {
-              avatar_url: string
-              full_name: string
-              id: string
-              username: string
-            }[]
-          }
+      search_users: {
+        Args: { lim?: number; q: string }
+        Returns: {
+          avatar_url: string
+          full_name: string
+          headline: string
+          id: string
+          is_verified: boolean
+          username: string
+        }[]
+      }
       send_credit_gift: {
         Args: {
           p_amount: number
