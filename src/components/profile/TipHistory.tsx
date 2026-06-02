@@ -82,6 +82,7 @@ export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
   const [tips, setTips] = useState<TipRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [refundingId, setRefundingId] = useState<string | null>(null);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
 
   const load = async () => {
     setLoading(true);
