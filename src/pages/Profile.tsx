@@ -40,6 +40,7 @@ import { ProfileMusicPlayer } from "@/components/profile/ProfileMusicPlayer";
 import { MutualConnections } from "@/components/profile/MutualConnections";
 import { VCardDownloadButton } from "@/components/profile/VCardDownloadButton";
 import { TipJar } from "@/components/profile/TipJar";
+import { TipHistory } from "@/components/profile/TipHistory";
 import { ProfileQRCode } from "@/components/profile/ProfileQRCode";
 import { ThemePicker } from "@/components/profile/ThemePicker";
 import { Endorsements } from "@/components/profile/Endorsements";
@@ -123,6 +124,42 @@ const Profile = () => {
       setCurrentUserId(session?.user?.id || null);
     });
   }, []);
+
+  // Verify Stripe Checkout tip session on return
+  useEffect(() => {
+    const tipStatus = searchParams.get('tip');
+    const sessionId = searchParams.get('session_id');
+    if (tipStatus === 'cancel') {
+      toast({ title: 'Tip zrušený', description: 'Platba bola zrušená.' });
+      searchParams.delete('tip');
+      setSearchParams(searchParams, { replace: true });
+      return;
+    }
+    if (tipStatus === 'success' && sessionId) {
+      (async () => {
+        try {
+          const { data, error } = await supabase.functions.invoke('verify-profile-tip', {
+            body: { sessionId },
+          });
+          if (error) throw error;
+          if (data?.verified) {
+            toast({
+              title: '🎉 Tip úspešne odoslaný!',
+              description: `Vďaka za podporu (€${((data.tip?.amount_cents ?? 0) / 100).toFixed(2)}).`,
+            });
+          } else {
+            toast({ title: 'Tip čaká na spracovanie', description: 'Skúste obnoviť za chvíľu.' });
+          }
+        } catch (e: any) {
+          toast({ title: 'Overenie zlyhalo', description: e.message, variant: 'destructive' });
+        } finally {
+          searchParams.delete('tip');
+          searchParams.delete('session_id');
+          setSearchParams(searchParams, { replace: true });
+        }
+      })();
+    }
+  }, [searchParams, setSearchParams, toast]);
 
   useEffect(() => {
     const tab = searchParams.get('tab');
