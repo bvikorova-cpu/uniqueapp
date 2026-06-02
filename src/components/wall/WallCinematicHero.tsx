@@ -34,10 +34,10 @@ export default function WallCinematicHero({ totalPosts, totalUsers, totalLikes, 
   }, []);
 
   const statCards = [
-    { value: totalPosts.toLocaleString(), label: "Posts Today", icon: MessageCircle, accent: "from-orange-500/20 to-coral-500/10", iconColor: "text-orange-400", tooltip: t("wall.tooltip.postsToday") },
-    { value: totalUsers.toLocaleString(), label: "Active Users", icon: Users, accent: "from-teal-500/20 to-cyan-500/10", iconColor: "text-teal-400", tooltip: t("wall.tooltip.activeUsers") },
-    { value: totalLikes.toLocaleString(), label: "Interactions", icon: Heart, accent: "from-rose-500/20 to-pink-500/10", iconColor: "text-rose-400", tooltip: t("wall.tooltip.interactions") },
-    { value: `${timeLeft.days}d ${timeLeft.hours}h`, label: "Challenge Ends", icon: Zap, accent: "from-amber-500/20 to-yellow-500/10", iconColor: "text-amber-400", tooltip: t("wall.tooltip.challengeEnds") },
+    { value: totalPosts.toLocaleString(), label: "Posts Today", scope: "Global", icon: MessageCircle, accent: "from-orange-500/20 to-coral-500/10", iconColor: "text-orange-400", tooltip: t("wall.tooltip.postsToday") },
+    { value: totalUsers.toLocaleString(), label: "Active Users", scope: "Global", icon: Users, accent: "from-teal-500/20 to-cyan-500/10", iconColor: "text-teal-400", tooltip: t("wall.tooltip.activeUsers") },
+    { value: totalLikes.toLocaleString(), label: "Interactions", scope: "Global", icon: Heart, accent: "from-rose-500/20 to-pink-500/10", iconColor: "text-rose-400", tooltip: t("wall.tooltip.interactions") },
+    { value: `${timeLeft.days}d ${timeLeft.hours}h`, label: "Challenge Ends", scope: "Global", icon: Zap, accent: "from-amber-500/20 to-yellow-500/10", iconColor: "text-amber-400", tooltip: t("wall.tooltip.challengeEnds") },
   ];
 
   return (
@@ -75,7 +75,7 @@ export default function WallCinematicHero({ totalPosts, totalUsers, totalLikes, 
                   <PopoverTrigger asChild>
                     <button type="button">
                       <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-amber-400/50 cursor-pointer">
-                        <Flame className="h-3 w-3 mr-1" /> {streak} Day Streak
+                        <Flame className="h-3 w-3 mr-1" /> Personal · {streak} Day Streak
                         <Info className="h-3 w-3 ml-1 opacity-70" />
                       </Badge>
                     </button>
@@ -119,6 +119,7 @@ export default function WallCinematicHero({ totalPosts, totalUsers, totalLikes, 
                 <item.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${item.iconColor} mx-auto mb-1`} />
                 <p className="text-lg sm:text-2xl font-black">{item.value}</p>
                 <p className="text-[10px] sm:text-xs text-muted-foreground">{item.label}</p>
+                <p className="mt-1 text-[9px] sm:text-[10px] font-bold uppercase tracking-wide text-primary">{item.scope}</p>
               </motion.button>
             </PopoverTrigger>
             <PopoverContent side="top" className="max-w-[240px] text-center text-xs">
