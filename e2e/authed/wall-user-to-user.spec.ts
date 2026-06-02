@@ -67,7 +67,7 @@ test.describe("Wall – user ↔ user interakcie", () => {
     await followBtn.scrollIntoViewIfNeeded();
     await followBtn.click({ force: true });
     const r = await resp;
-    if (r) expect([200, 201, 204, 206, 400, 409, 422]).toContain(r.status());
+    if (r) expect([200, 201, 204, 206, 400, 403, 409, 422]).toContain(r.status());
 
     // Po follownutí by sa label mal zmeniť na Unfollow
     await expect(

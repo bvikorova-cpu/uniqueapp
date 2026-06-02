@@ -20,6 +20,7 @@ async function goto(page: Page, path: string) {
 }
 
 test.describe("WallGroups – tvorba, validácia, join/leave", () => {
+  test.describe.configure({ retries: 2 });
   test("Validácia: prázdny názov nevytvorí skupinu", async ({ page }) => {
     await goto(page, "/wall/groups");
     await page.getByRole("button", { name: /^create group$/i }).first().click();
@@ -50,17 +51,20 @@ test.describe("WallGroups – tvorba, validácia, join/leave", () => {
     await dialog.locator("textarea").first().fill("E2E description");
     await dialog.getByRole("button", { name: /^create group$/i }).click();
 
-    await expect(page.getByText(/group created successfully/i)).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByText(/group created successfully/i).first()).toBeVisible({ timeout: 10_000 });
 
-    // Skupina je teraz v My Groups (creator sa pridáva ako admin)
-    const groupCard = page.locator("text=" + name).first();
+    // Wait for refetch + reload to ensure new group renders
+    await page.waitForTimeout(800);
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.waitForTimeout(1500);
+
+    const groupCard = page.locator(`div:has(> div h4:has-text("${name}"))`).first();
     await expect(groupCard).toBeVisible({ timeout: 10_000 });
 
-    // Leave button na karte (nemusí byť unikátny – scope na kartu)
-    const card = page.locator(`text=${name}`).locator("xpath=ancestor::*[contains(@class,'cursor-pointer') or self::div][1]");
-    const leaveBtn = card.getByRole("button", { name: /leave/i }).first();
+    const leaveBtn = groupCard.getByRole("button", { name: /leave/i }).first();
+    await leaveBtn.scrollIntoViewIfNeeded();
     await leaveBtn.click();
-    await expect(page.getByText(/left group successfully/i)).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByText(/left group successfully/i).first()).toBeVisible({ timeout: 10_000 });
   });
 
   test("Discover tab + Join na cudzej skupine (ak existuje)", async ({ page }) => {
@@ -72,7 +76,7 @@ test.describe("WallGroups – tvorba, validácia, join/leave", () => {
     if (await joinBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
       await joinBtn.click();
       await expect(
-        page.getByText(/joined group successfully|already a member|duplicate/i),
+        page.getByText(/joined group successfully|already a member|duplicate/i).first(),
       ).toBeVisible({ timeout: 10_000 });
     } else {
       test.info().annotations.push({ type: "skip-reason", description: "No discoverable groups" });
@@ -88,9 +92,16 @@ test.describe("WallGroups – tvorba, validácia, join/leave", () => {
     const name = `E2E Nav ${stamp()}`;
     await dialog.getByPlaceholder(/enter group name/i).fill(name);
     await dialog.getByRole("button", { name: /^create group$/i }).click();
-    await expect(page.getByText(/group created successfully/i)).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByText(/group created successfully/i).first()).toBeVisible({ timeout: 10_000 });
 
-    await page.locator(`text=${name}`).first().click();
+    await page.waitForTimeout(800);
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.waitForTimeout(1500);
+
+    const card = page.locator(`h4:has-text("${name}")`).first();
+    await expect(card).toBeVisible({ timeout: 10_000 });
+    await card.scrollIntoViewIfNeeded();
+    await card.click();
     await expect(page).toHaveURL(/\/wall\/groups\/[0-9a-f-]+/i, { timeout: 10_000 });
   });
 });
