@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
-import { MessageCircle, Users, Heart, Globe, TrendingUp, Flame, Zap } from "lucide-react";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { MessageCircle, Users, Heart, Globe, TrendingUp, Flame, Zap, Info } from "lucide-react";
 import heroVideo from "@/assets/wall-hero.mp4.asset.json";
 
 function getWeeklyTimeLeft() {
