@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,6 +11,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
+import { useDebounce } from "@/hooks/use-debounce";
 
 interface Profile {
   id: string;
