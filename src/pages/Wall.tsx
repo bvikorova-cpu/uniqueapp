@@ -62,6 +62,7 @@ import WallTrending from "./wall/WallTrending";
 import WallInfo from "./wall/WallInfo";
 import WallMemories from "./wall/WallMemories";
 import WallCinematicHero from "@/components/wall/WallCinematicHero";
+import { useWallStats } from "@/hooks/useWallStats";
 import WallAIToolsGrid from "@/components/wall/WallAIToolsGrid";
 import WallPostingStreaks from "@/components/wall/WallPostingStreaks";
 import WallEngagementLeaderboard from "@/components/wall/WallEngagementLeaderboard";
