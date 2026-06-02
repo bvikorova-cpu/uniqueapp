@@ -429,7 +429,7 @@ const Profile = () => {
 
         {/* Cinematic Hero with video, portrait, live stats */}
         <ProfileHero
-          profile={profile}
+          profile={profile as any}
           userId={userId}
           currentUserId={currentUserId}
           isOwnProfile={currentUserId === userId}
