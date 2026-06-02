@@ -554,6 +554,11 @@ const Profile = () => {
 
         <Endorsements profileUserId={userId!} currentUserId={currentUserId} />
 
+        {/* Tip history & totals — visible to everyone, sender names only to owner */}
+        <div className="my-4">
+          <TipHistory userId={userId!} isOwnProfile={currentUserId === userId} />
+        </div>
+
         {profile.open_to_work && (
           <OpenToWorkBadge details={profile.open_to_work_details} />
         )}
