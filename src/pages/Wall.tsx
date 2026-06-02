@@ -541,7 +541,7 @@ const Feed = () => {
     }
 
     return filtered;
-  }, [feedItems, searchQuery, feedTab, friendIds]);
+  }, [feedItems, searchQuery, feedTab, friendIds, followingIds]);
 
 
   const location = useLocation();
