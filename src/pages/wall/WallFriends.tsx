@@ -67,7 +67,7 @@ export default function WallFriends() {
     setSearchingGlobal(true);
     try {
       console.log("[WallFriends] searching:", q);
-      const { data, error } = await (supabase as any).rpc("search_users", { search_query: q.trim() });
+      const { data, error } = await (supabase as any).rpc("search_users", { q: q.trim(), lim: 20 });
       console.log("[WallFriends] search result:", { data, error });
       if (error) throw error;
       setGlobalResults(((data as unknown) as Profile[]) || []);

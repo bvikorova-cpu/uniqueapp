@@ -33,7 +33,7 @@ const UserSearch = () => {
     (async () => {
       setSearching(true);
       try {
-        const { data, error } = await (supabase as any).rpc("search_users", { search_query: q });
+        const { data, error } = await (supabase as any).rpc("search_users", { q: q, lim: 20 });
         if (error) throw error;
         if (!cancelled) setSearchResults(((data as unknown) as Profile[]) || []);
       } catch (error: any) {
