@@ -138,10 +138,10 @@ const Profile = () => {
       try {
         // Fetch profile
         const { data: profileData, error: profileError } = await supabase
-          .from("profiles")
+          .from("public_profiles")
           .select("*")
           .eq("id", userId)
-          .single();
+          .maybeSingle();
 
         if (profileError) throw profileError;
         setProfile(profileData);
