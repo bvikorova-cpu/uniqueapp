@@ -18,8 +18,8 @@ import { test, expect, type Page } from "@playwright/test";
 const WALL = "/wall";
 
 async function gotoWall(page: Page) {
-  await page.goto(WALL, { waitUntil: "domcontentloaded" });
-  await page.waitForLoadState("networkidle").catch(() => {});
+  await page.goto(WALL, { waitUntil: "domcontentloaded", timeout: 20_000 });
+  await page.waitForTimeout(2500); // krátky settle, žiadny networkidle (websocket blokuje)
 }
 
 test.describe("Wall – kompletný používateľský journey", () => {
