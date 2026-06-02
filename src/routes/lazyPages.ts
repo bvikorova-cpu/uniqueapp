@@ -20,7 +20,7 @@ export const Index = lazy(() => import("@/pages/Index"));
 
 // Wall subpages
 export const Groups = lazy(() => import("@/pages/Groups"));
-export const Pages = lazy(() => import("@/pages/Pages"));
+export const Pages = lazy(() => import("@/pages/wall/WallPages"));
 export const GroupDetail = lazy(() => import("@/pages/wall/GroupDetail"));
 export const PageDetail = lazy(() => import("@/pages/wall/PageDetail"));
 export const EventDetail = lazy(() => import("@/pages/wall/EventDetail"));
