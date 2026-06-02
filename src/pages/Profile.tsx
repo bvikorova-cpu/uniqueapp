@@ -52,11 +52,11 @@ interface Profile {
   id: string;
   full_name: string | null;
   avatar_url: string | null;
-  email: string | null;
+  email?: string | null;
   bio: string | null;
   location: string | null;
-  birth_date: string | null;
-  phone: string | null;
+  birth_date?: string | null;
+  phone?: string | null;
   website: string | null;
   interests: string[] | null;
   occupation: string | null;
@@ -138,10 +138,10 @@ const Profile = () => {
       try {
         // Fetch profile
         const { data: profileData, error: profileError } = await supabase
-          .from("profiles")
+          .from("public_profiles")
           .select("*")
           .eq("id", userId)
-          .single();
+          .maybeSingle();
 
         if (profileError) throw profileError;
         setProfile(profileData);
@@ -429,7 +429,7 @@ const Profile = () => {
 
         {/* Cinematic Hero with video, portrait, live stats */}
         <ProfileHero
-          profile={profile}
+          profile={profile as any}
           userId={userId}
           currentUserId={currentUserId}
           isOwnProfile={currentUserId === userId}
@@ -533,7 +533,7 @@ const Profile = () => {
         <Avatar3D userId={userId!} />
 
         {/* Founder Story / Bio */}
-        <FounderStory profile={profile} />
+        <FounderStory profile={profile as any} />
 
         {/* Trophy Wall */}
         <AchievementsWall
