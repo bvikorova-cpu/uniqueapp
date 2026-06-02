@@ -227,13 +227,14 @@ export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
                       </span>
                     </div>
                     {canRefund && (
-                      <AlertDialog>
+                      <AlertDialog open={confirmId === t.id} onOpenChange={(open) => { if (!open) setConfirmId(null); }}>
                         <AlertDialogTrigger asChild>
                           <Button
                             size="sm"
                             variant="ghost"
                             className="h-6 px-2 text-[10px] gap-1 text-rose-300 hover:text-rose-200 hover:bg-rose-500/10"
-                            disabled={refundingId === t.id}
+                            disabled={!!refundingId}
+                            onClick={() => setConfirmId(t.id)}
                           >
                             {refundingId === t.id ? (
                               <Loader2 className="h-3 w-3 animate-spin" />
@@ -251,8 +252,14 @@ export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel>Zrušiť</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => handleRefund(t.id)}>
+                            <AlertDialogCancel disabled={refundingId === t.id}>Zrušiť</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => handleRefund(t.id)}
+                              disabled={refundingId === t.id}
+                            >
+                              {refundingId === t.id ? (
+                                <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                              ) : null}
                               Vrátiť
                             </AlertDialogAction>
                           </AlertDialogFooter>
