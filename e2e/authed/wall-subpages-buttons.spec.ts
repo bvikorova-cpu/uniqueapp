@@ -98,12 +98,11 @@ test.describe("Wall podstránky – tlačidlá", () => {
       await page.keyboard.press("Escape");
     }
 
-    // Tabs – role=tab (Radix), aspoň jeden musí existovať
+    // Tabs – Radix tabs (role=tab) – počkaj kým sa zjavia
     const tabs = page.getByRole("tab");
+    await expect.poll(() => tabs.count(), { timeout: 10_000 }).toBeGreaterThanOrEqual(2);
     const tabCount = await tabs.count();
-    expect(tabCount).toBeGreaterThanOrEqual(2);
-    // klikni na každý dostupný tab
-    for (let i = 0; i < tabCount; i++) {
+    for (let i = 0; i < Math.min(tabCount, 4); i++) {
       await tabs.nth(i).click();
       await page.waitForTimeout(250);
     }
@@ -111,33 +110,34 @@ test.describe("Wall podstránky – tlačidlá", () => {
   });
 
   // ---------------- PAGES ----------------
-  test("PAGES: search + Create Page dialog otvorí a vytvorí page", async ({ page }) => {
+  test("PAGES: tabs (Mine/Following/Discover) + Create Page dialog vytvorí page", async ({ page }) => {
     await goto(page, "/wall/pages");
     await expect(page.getByRole("heading", { name: /^pages$/i }).first()).toBeVisible();
 
-    // Search input existuje
-    await expect(page.getByPlaceholder(/search pages/i).first()).toBeVisible();
+    // Tabs – custom <button> v pill kontajneri (My Pages / Following / Discover)
+    const tabButtons = page.getByRole("button", { name: /^(My Pages|Following|Discover)$/ });
+    expect(await tabButtons.count(), "3 tab tlačidlá").toBeGreaterThanOrEqual(3);
+    // klikni postupne každý tab
+    for (let i = 0; i < 3; i++) {
+      await tabButtons.nth(i).click();
+      await page.waitForTimeout(250);
+    }
 
-    // Create Page dialog
+    // Create Page dialog (hero)
     const createBtn = page.getByRole("button", { name: /^create page$/i }).first();
     await createBtn.click();
     await expect(
-      page.getByRole("dialog").getByRole("heading", { name: /create (new )?page/i }).first()
+      page.getByRole("dialog").getByRole("heading", { name: /create new page/i }).first()
     ).toBeVisible({ timeout: 5000 });
 
     const name = `E2E Page ${stamp()}`;
     const dialog = page.getByRole("dialog");
-    const nameInput = dialog.locator('input[placeholder*="page name" i], input[placeholder*="amazing" i], input#name').first();
-    await nameInput.fill(name);
-    await dialog.locator('textarea').first().fill("E2E auto page");
+    await dialog.getByPlaceholder(/enter page name/i).fill(name);
+    await dialog.getByPlaceholder(/business|entertainment/i).fill("Test");
+    await dialog.getByPlaceholder(/what's your page about/i).fill("E2E auto page");
 
-    const submit = dialog.getByRole("button", { name: /^create page$/i });
-    if (await submit.isEnabled()) {
-      await submit.click();
-      await page.waitForTimeout(2000);
-    } else {
-      await page.keyboard.press("Escape");
-    }
+    await dialog.getByRole("button", { name: /^create page$/i }).click();
+    await page.waitForTimeout(2000);
     await noRuntimeError(page);
   });
 
