@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,6 +11,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
+import { useDebounce } from "@/hooks/use-debounce";
 
 interface Profile {
   id: string;
@@ -36,7 +37,7 @@ interface FriendSuggestion {
   mutual_count: number;
 }
 
-const publicProfiles = () => (supabase as any).from("public_profiles");
+const publicProfiles = () => (supabase as any).from("profiles_public");
 
 export default function WallFriends() {
   const { toast } = useToast();
@@ -59,26 +60,28 @@ export default function WallFriends() {
   });
 
   // Global search across all profiles (debounced)
-  useState(() => null);
-  // Inline effect via useQuery would re-run; we use a simple async on change instead.
-  const runGlobalSearch = async (q: string) => {
-    setGlobalSearch(q);
-    if (!q.trim()) { setGlobalResults([]); return; }
+  const debouncedSearch = useDebounce(globalSearch, 300);
+  useEffect(() => {
+    const q = debouncedSearch.trim();
+    if (!q) { setGlobalResults([]); return; }
+    let cancelled = false;
     setSearchingGlobal(true);
-    try {
-      console.log("[WallFriends] searching:", q);
-      const { data, error } = await (supabase as any).rpc("search_users", { q: q.trim(), lim: 20 });
-      console.log("[WallFriends] search result:", { data, error });
-      if (error) throw error;
-      setGlobalResults(((data as unknown) as Profile[]) || []);
-    } catch (e: any) {
-      console.error("[WallFriends] search error:", e);
-      toast({ title: "Search error", description: e.message, variant: "destructive" });
-      setGlobalResults([]);
-    } finally {
-      setSearchingGlobal(false);
-    }
-  };
+    (async () => {
+      try {
+        const { data, error } = await (supabase as any).rpc("search_users", { q, lim: 20 });
+        if (error) throw error;
+        if (!cancelled) setGlobalResults(((data as unknown) as Profile[]) || []);
+      } catch (e: any) {
+        if (!cancelled) {
+          toast({ title: "Search error", description: e.message, variant: "destructive" });
+          setGlobalResults([]);
+        }
+      } finally {
+        if (!cancelled) setSearchingGlobal(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [debouncedSearch, toast]);
 
 
 
@@ -316,7 +319,7 @@ export default function WallFriends() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             value={globalSearch}
-            onChange={(e) => runGlobalSearch(e.target.value)}
+            onChange={(e) => setGlobalSearch(e.target.value)}
             placeholder="Search by name or username..."
             className="pl-10 bg-muted/30 border-border/50"
           />

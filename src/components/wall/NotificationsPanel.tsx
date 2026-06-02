@@ -1,4 +1,5 @@
 import { Bell } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -9,8 +10,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useNotifications } from "@/hooks/useNotifications";
 import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow } from "date-fns";
+import { getNotificationRoute } from "@/utils/notificationRoutes";
 
 export const NotificationsPanel = () => {
+  const navigate = useNavigate();
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
 
   return (
@@ -51,12 +54,7 @@ export const NotificationsPanel = () => {
                     if (!notification.is_read) {
                       markAsRead(notification.id);
                     }
-                    // Navigate based on notification type
-                    if (notification.post_id) {
-                      window.location.href = `/wall?post=${notification.post_id}`;
-                    } else if (notification.related_id) {
-                      window.location.href = `/wall?id=${notification.related_id}`;
-                    }
+                    navigate(getNotificationRoute(notification as any));
                   }}
                 >
                   <div className="flex items-start gap-3">
