@@ -92,21 +92,29 @@ export default function WallCinematicHero({ totalPosts, totalUsers, totalLikes, 
         </div>
       </motion.div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {statCards.map((item, i) => (
-          <motion.div
-            key={item.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 * i + 0.4 }}
-            className={`rounded-xl bg-gradient-to-br ${item.accent} bg-card/80 backdrop-blur-md border border-border/30 p-3 sm:p-4 text-center`}
-          >
-            <item.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${item.iconColor} mx-auto mb-1`} />
-            <p className="text-lg sm:text-2xl font-black">{item.value}</p>
-            <p className="text-[10px] sm:text-xs text-muted-foreground">{item.label}</p>
-          </motion.div>
-        ))}
-      </div>
+      <TooltipProvider delayDuration={200}>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {statCards.map((item, i) => (
+            <Tooltip key={item.label}>
+              <TooltipTrigger asChild>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 * i + 0.4 }}
+                  className={`rounded-xl bg-gradient-to-br ${item.accent} bg-card/80 backdrop-blur-md border border-border/30 p-3 sm:p-4 text-center cursor-help`}
+                >
+                  <item.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${item.iconColor} mx-auto mb-1`} />
+                  <p className="text-lg sm:text-2xl font-black">{item.value}</p>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground">{item.label}</p>
+                </motion.div>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-[220px] text-center">
+                {item.tooltip}
+              </TooltipContent>
+            </Tooltip>
+          ))}
+        </div>
+      </TooltipProvider>
     </div>
   );
 }
