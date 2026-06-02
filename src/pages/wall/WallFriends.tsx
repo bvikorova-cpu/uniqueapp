@@ -231,11 +231,17 @@ export default function WallFriends() {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast({ title: "Request cancelled", description: "Your friend request has been withdrawn" });
+      sonnerToast.success("Request cancelled", {
+        description: "Your friend request has been withdrawn",
+      });
       queryClient.invalidateQueries({ queryKey: ["friend-outgoing"] });
       queryClient.invalidateQueries({ queryKey: ["friend-suggestions"] });
     },
-    onError: () => { toast({ title: "Error", description: "Failed to cancel request", variant: "destructive" }); }
+    onError: () => {
+      sonnerToast.error("Failed to cancel request", {
+        description: "Please try again later",
+      });
+    }
   });
 
   const sendRequestMutation = useMutation({
