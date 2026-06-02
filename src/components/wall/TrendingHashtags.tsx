@@ -1,9 +1,11 @@
 import { Hash } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { useHashtags } from "@/hooks/useHashtags";
 
 export const TrendingHashtags = () => {
   const { trending } = useHashtags();
+  const navigate = useNavigate();
 
   if (trending.length === 0) return null;
 
@@ -18,10 +20,9 @@ export const TrendingHashtags = () => {
           <button
             key={hashtag.id}
             className="flex items-center justify-between w-full p-2 hover:bg-accent rounded-lg text-left transition-colors"
-            onClick={() => {
-              // Navigate to hashtag search
-              window.location.href = `/wall?hashtag=${hashtag.tag.replace("#", "")}`;
-            }}
+            onClick={() =>
+              navigate(`/wall?hashtag=${encodeURIComponent(hashtag.tag.replace("#", ""))}`)
+            }
           >
             <span className="font-medium text-primary">{hashtag.tag}</span>
             <span className="text-xs text-muted-foreground">
@@ -33,3 +34,4 @@ export const TrendingHashtags = () => {
     </Card>
   );
 };
+
