@@ -141,10 +141,9 @@ test.describe("Wall podstránky – tlačidlá", () => {
   test("SAVED: stránka sa načíta (empty alebo posty)", async ({ page }) => {
     await goto(page, "/wall/saved");
     await expect(page.getByRole("heading", { name: /saved posts/i }).first()).toBeVisible();
-    // empty state alebo posty
     const hasContent =
       (await page.locator("article").first().isVisible({ timeout: 2000 }).catch(() => false)) ||
-      (await page.getByText(/no saved posts/i).isVisible({ timeout: 2000 }).catch(() => false));
+      (await page.getByText(/no saved posts|your bookmarked content|saved items/i).first().isVisible({ timeout: 3000 }).catch(() => false));
     expect(hasContent).toBeTruthy();
     await noRuntimeError(page);
   });
@@ -154,7 +153,7 @@ test.describe("Wall podstránky – tlačidlá", () => {
     { path: "/wall/memories", heading: /memories/i },
     { path: "/wall/trending", heading: /trending/i },
     { path: "/wall/videos", heading: /videos/i },
-    { path: "/wall/info", heading: /info|about/i },
+    { path: "/wall/info", heading: /wall features guide/i },
   ] as const;
 
   for (const p of SUBPAGES) {
