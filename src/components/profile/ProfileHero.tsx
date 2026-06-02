@@ -144,12 +144,11 @@ export const ProfileHero = ({
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="grid grid-cols-2 sm:flex sm:flex-wrap sm:justify-start justify-center gap-2 mt-4 w-full [&>*]:w-full sm:[&>*]:w-auto"
+              className="flex flex-col sm:flex-row sm:flex-wrap sm:justify-start gap-2 mt-4 w-full [&>*]:w-full [&>*]:h-11 [&>*]:text-sm [&>*]:px-4 sm:[&>*]:w-auto sm:[&>*]:h-10"
             >
               {isOwnProfile ? (
                 <Button
                   onClick={onEdit}
-                  size="sm"
                   className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-semibold border-0 shadow-lg shadow-amber-500/30"
                 >
                   <Edit className="h-4 w-4 mr-2" />
@@ -162,7 +161,6 @@ export const ProfileHero = ({
                     userId={userId}
                     currentUserId={currentUserId || undefined}
                     variant="default"
-                    size="sm"
                   />
                   {userId && (
                     <MessageButton
