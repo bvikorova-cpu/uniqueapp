@@ -235,13 +235,13 @@ const GamesHub = () => {
           ) : (
             /* Category tabs */
             <Tabs defaultValue={tabCats[0]} className="w-full">
-              <div className="overflow-x-auto scrollbar-hide mb-6">
-                <TabsList className="inline-flex w-max min-w-full bg-card/80 backdrop-blur-sm border">
+              <div className="mb-6">
+                <TabsList className="flex flex-wrap w-full h-auto bg-card/80 backdrop-blur-sm border">
                   {tabCats.map((cat) => (
                     <TabsTrigger
                       key={cat}
                       value={cat}
-                      className="flex items-center gap-1.5 px-3 py-2 whitespace-nowrap data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                      className="flex items-center gap-1.5 px-3 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                     >
                       <Gamepad2 className="h-4 w-4 flex-shrink-0" />
                       <span className="text-xs sm:text-sm">{gdCategories[cat]}</span>
