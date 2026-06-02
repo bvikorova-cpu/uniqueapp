@@ -115,33 +115,31 @@ test.describe("Wall podstránky – tlačidlá", () => {
     await goto(page, "/wall/pages");
     await expect(page.getByRole("heading", { name: /^pages$/i }).first()).toBeVisible();
 
-    // Hero Create Page (prvý visible v hero, nie v empty state)
+    // 1) Tabs check FIRST (Mine/Following/Discover) – custom <button> v tab pill
+    const tabButtons = page.locator('button').filter({ hasText: /^(My Pages|Following|Discover)/ });
+    const found = await tabButtons.count();
+    expect(found, "Aspoň 3 tab tlačidlá (Mine/Following/Discover)").toBeGreaterThanOrEqual(3);
+
+    // 2) Create Page dialog
     const createBtn = page.getByRole("button", { name: /^create page$/i }).first();
     await createBtn.click();
-    await expect(page.getByRole("dialog").getByRole("heading", { name: /create (new )?page/i }).first()).toBeVisible({ timeout: 5000 });
+    await expect(
+      page.getByRole("dialog").getByRole("heading", { name: /create (new )?page/i }).first()
+    ).toBeVisible({ timeout: 5000 });
 
     const name = `E2E Page ${stamp()}`;
     const dialog = page.getByRole("dialog");
-    // Vyplnenie – tolerantné na dva varianty dialógu (WallPages vs CreatePageDialog)
     const nameInput = dialog.locator('input[placeholder*="page name" i], input[placeholder*="amazing" i], input#name').first();
     await nameInput.fill(name);
-    const descInput = dialog.locator('textarea').first();
-    await descInput.fill("E2E auto page");
+    await dialog.locator('textarea').first().fill("E2E auto page");
 
-    // Submit – môže byť disabled ak chýba category v druhom variante; klikáme len ak enabled
     const submit = dialog.getByRole("button", { name: /^create page$/i });
     if (await submit.isEnabled()) {
       await submit.click();
       await page.waitForTimeout(2000);
     } else {
-      // zatvor dialog
       await page.keyboard.press("Escape");
     }
-
-    // Tabs – buttony s textom (Mine/Following/Discover) – sú custom <button>
-    const tabButtons = page.locator('button:has-text("My Pages"), button:has-text("Following"), button:has-text("Discover")');
-    const found = await tabButtons.count();
-    expect(found).toBeGreaterThanOrEqual(3);
     await noRuntimeError(page);
   });
 
