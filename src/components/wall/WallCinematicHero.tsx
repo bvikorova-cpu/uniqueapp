@@ -25,6 +25,7 @@ interface WallCinematicHeroProps {
 }
 
 export default function WallCinematicHero({ totalPosts, totalUsers, totalLikes, streak }: WallCinematicHeroProps) {
+  const { t } = useTranslation();
   const [timeLeft, setTimeLeft] = useState(getWeeklyTimeLeft());
 
   useEffect(() => {
