@@ -60,26 +60,28 @@ export default function WallFriends() {
   });
 
   // Global search across all profiles (debounced)
-  useState(() => null);
-  // Inline effect via useQuery would re-run; we use a simple async on change instead.
-  const runGlobalSearch = async (q: string) => {
-    setGlobalSearch(q);
-    if (!q.trim()) { setGlobalResults([]); return; }
+  const debouncedSearch = useDebounce(globalSearch, 300);
+  useEffect(() => {
+    const q = debouncedSearch.trim();
+    if (!q) { setGlobalResults([]); return; }
+    let cancelled = false;
     setSearchingGlobal(true);
-    try {
-      console.log("[WallFriends] searching:", q);
-      const { data, error } = await (supabase as any).rpc("search_users", { q: q.trim(), lim: 20 });
-      console.log("[WallFriends] search result:", { data, error });
-      if (error) throw error;
-      setGlobalResults(((data as unknown) as Profile[]) || []);
-    } catch (e: any) {
-      console.error("[WallFriends] search error:", e);
-      toast({ title: "Search error", description: e.message, variant: "destructive" });
-      setGlobalResults([]);
-    } finally {
-      setSearchingGlobal(false);
-    }
-  };
+    (async () => {
+      try {
+        const { data, error } = await (supabase as any).rpc("search_users", { q, lim: 20 });
+        if (error) throw error;
+        if (!cancelled) setGlobalResults(((data as unknown) as Profile[]) || []);
+      } catch (e: any) {
+        if (!cancelled) {
+          toast({ title: "Search error", description: e.message, variant: "destructive" });
+          setGlobalResults([]);
+        }
+      } finally {
+        if (!cancelled) setSearchingGlobal(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [debouncedSearch, toast]);
 
 
 
