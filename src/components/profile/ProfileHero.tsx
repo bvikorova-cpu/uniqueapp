@@ -144,7 +144,7 @@ export const ProfileHero = ({
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="flex flex-wrap justify-center sm:justify-start gap-2 mt-4"
+              className="grid grid-cols-2 sm:flex sm:flex-wrap sm:justify-start justify-center gap-2 mt-4 w-full [&>*]:w-full sm:[&>*]:w-auto"
             >
               {isOwnProfile ? (
                 <Button
