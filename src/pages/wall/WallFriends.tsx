@@ -319,7 +319,7 @@ export default function WallFriends() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             value={globalSearch}
-            onChange={(e) => runGlobalSearch(e.target.value)}
+            onChange={(e) => setGlobalSearch(e.target.value)}
             placeholder="Search by name or username..."
             className="pl-10 bg-muted/30 border-border/50"
           />
