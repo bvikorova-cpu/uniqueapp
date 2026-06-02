@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Users2, UserPlus, UserMinus, Loader2, ChevronRight, X, Check, Search, Heart, Sparkles, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { toast as sonnerToast } from "sonner";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
@@ -230,11 +231,17 @@ export default function WallFriends() {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast({ title: "Request cancelled", description: "Your friend request has been withdrawn" });
+      sonnerToast.success("Request cancelled", {
+        description: "Your friend request has been withdrawn",
+      });
       queryClient.invalidateQueries({ queryKey: ["friend-outgoing"] });
       queryClient.invalidateQueries({ queryKey: ["friend-suggestions"] });
     },
-    onError: () => { toast({ title: "Error", description: "Failed to cancel request", variant: "destructive" }); }
+    onError: () => {
+      sonnerToast.error("Failed to cancel request", {
+        description: "Please try again later",
+      });
+    }
   });
 
   const sendRequestMutation = useMutation({
