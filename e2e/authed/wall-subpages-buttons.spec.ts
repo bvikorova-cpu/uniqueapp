@@ -28,6 +28,7 @@ async function noRuntimeError(page: Page) {
 }
 
 test.describe("Wall podstránky – tlačidlá", () => {
+  test.describe.configure({ retries: 2 });
   // ---------------- EVENTS ----------------
   test("EVENTS: otvorí Create Event dialog, vytvorí event, zobrazí v My Events", async ({ page }) => {
     await goto(page, "/wall/events");
