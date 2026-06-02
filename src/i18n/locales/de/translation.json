@@ -211,6 +211,13 @@
       "noPostsFound": "Keine Beiträge gefunden. Versuche, deine Filter anzupassen.",
       "loadingMore": "Lade mehr Beiträge...",
       "reachedEnd": "Du hast das Ende erreicht! 🎉"
+    },
+    "tooltip": {
+      "postsToday": "Global: total number of posts from all users today",
+      "activeUsers": "Global: number of active users in the last 15 minutes",
+      "interactions": "Global: total number of likes and comments today",
+      "challengeEnds": "Global: time until the end of the weekly challenge for the whole community",
+      "streak": "Personal: your current daily streak on the Wall"
     }
   },
   "jobs": {

@@ -446,6 +446,13 @@
       "noPostsFound": "Žiadne príspevky nenájdené. Skúste upraviť svoje filtre.",
       "loadingMore": "Načítavam ďalšie príspevky...",
       "reachedEnd": "Dostali ste sa na koniec! 🎉"
+    },
+    "tooltip": {
+      "postsToday": "Global: total number of posts from all users today",
+      "activeUsers": "Global: number of active users in the last 15 minutes",
+      "interactions": "Global: total number of likes and comments today",
+      "challengeEnds": "Global: time until the end of the weekly challenge for the whole community",
+      "streak": "Personal: your current daily streak on the Wall"
     }
   },
   "games": {
