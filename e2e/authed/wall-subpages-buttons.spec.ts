@@ -75,37 +75,29 @@ test.describe("Wall podstránky – tlačidlá", () => {
   });
 
   // ---------------- GROUPS ----------------
-  test("GROUPS: tabs prepínajú a Create Group vytvorí novú skupinu", async ({ page }) => {
+  test("GROUPS: pill tabs (My/Discover) + Create Group vytvorí skupinu", async ({ page }) => {
     await goto(page, "/wall/groups");
     await expect(page.getByRole("heading", { name: /^groups$/i }).first()).toBeVisible();
 
-    // Click Create FIRST (pred prepínaním tabov, aby button v hero bol istý)
+    // Pill tabs (custom <button> – nie Radix role=tab)
+    const tabButtons = page.getByRole("button", { name: /^(My Groups|Discover)$/ });
+    await expect.poll(() => tabButtons.count(), { timeout: 10_000 }).toBeGreaterThanOrEqual(2);
+    await tabButtons.first().click();
+    await page.waitForTimeout(200);
+    await tabButtons.nth(1).click();
+    await page.waitForTimeout(200);
+
+    // Open Create dialog z hero
     const createBtn = page.getByRole("button", { name: /^create group$/i }).first();
     await createBtn.click();
-    await expect(page.getByRole("dialog").getByRole("heading", { name: /create (new )?group/i }).first()).toBeVisible({ timeout: 5000 });
+    const dialog = page.getByRole("dialog");
+    await expect(dialog.getByRole("heading", { name: /create new group/i }).first()).toBeVisible({ timeout: 5000 });
 
     const name = `E2E Group ${stamp()}`;
-    const dialog = page.getByRole("dialog");
-    const nameInput = dialog.locator('input[placeholder*="group name" i], input[placeholder*="photography" i], input#name').first();
-    await nameInput.fill(name);
-    await dialog.locator('textarea').first().fill("E2E auto group");
-
-    const submit = dialog.getByRole("button", { name: /^create group$/i });
-    if (await submit.isEnabled()) {
-      await submit.click();
-      await expect(page.getByText(/success|created|joined/i).first()).toBeVisible({ timeout: 10_000 });
-    } else {
-      await page.keyboard.press("Escape");
-    }
-
-    // Tabs – Radix tabs (role=tab) – počkaj kým sa zjavia
-    const tabs = page.getByRole("tab");
-    await expect.poll(() => tabs.count(), { timeout: 10_000 }).toBeGreaterThanOrEqual(2);
-    const tabCount = await tabs.count();
-    for (let i = 0; i < Math.min(tabCount, 4); i++) {
-      await tabs.nth(i).click();
-      await page.waitForTimeout(250);
-    }
+    await dialog.getByPlaceholder(/enter group name/i).fill(name);
+    await dialog.locator("textarea").first().fill("E2E auto group");
+    await dialog.getByRole("button", { name: /^create group$/i }).click();
+    await expect(page.getByText(/success|created/i).first()).toBeVisible({ timeout: 10_000 });
     await noRuntimeError(page);
   });
 
