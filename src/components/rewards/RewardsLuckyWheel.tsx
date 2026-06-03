@@ -203,7 +203,11 @@ export default function RewardsLuckyWheel() {
             <Card className="p-4 bg-gradient-to-r from-amber-500/20 to-yellow-500/10 border-amber-400/30 text-center">
               <span className="text-4xl block mb-2">{result.emoji}</span>
               <p className={`font-black text-lg ${result.color}`}>{result.label}</p>
-              <p className="text-xs text-muted-foreground mt-1">Added to your account!</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {result.prize > 0
+                  ? `Net: ${result.net >= 0 ? "+" : ""}${result.net} CR · Balance: ${result.balanceAfter} CR`
+                  : `Lost 5 CR · Balance: ${result.balanceAfter} CR`}
+              </p>
             </Card>
           </motion.div>
         )}
