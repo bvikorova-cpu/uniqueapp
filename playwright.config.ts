@@ -59,6 +59,31 @@ export default defineConfig({
           : undefined,
       },
     },
+    // Cross-browser projekty pre špecifické testy (autoplay, audio policy).
+    // Aktivujú sa nastavením PLAYWRIGHT_ENABLE_CROSS_BROWSER=1
+    // a vyžadujú `bunx playwright install firefox webkit`.
+    ...(process.env.PLAYWRIGHT_ENABLE_CROSS_BROWSER
+      ? [
+          {
+            name: "firefox-authed",
+            testMatch: /authed\/.*\.spec\.ts$/,
+            dependencies: ["setup"],
+            use: {
+              ...devices["Desktop Firefox"],
+              storageState: "e2e/.auth/authed-state.json",
+            },
+          },
+          {
+            name: "webkit-authed",
+            testMatch: /authed\/.*\.spec\.ts$/,
+            dependencies: ["setup"],
+            use: {
+              ...devices["Desktop Safari"],
+              storageState: "e2e/.auth/authed-state.json",
+            },
+          },
+        ]
+      : []),
   ],
   webServer: process.env.PLAYWRIGHT_BASE_URL
     ? undefined
