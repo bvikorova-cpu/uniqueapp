@@ -80,6 +80,16 @@ const mockChallenges: Challenge[] = [
 export function StreaksAndChallenges() {
   const [activeTab, setActiveTab] = useState<"streak" | "challenges">("streak");
   const [expandedChallenge, setExpandedChallenge] = useState<string | null>(null);
+  const qc = useQueryClient();
+
+  useEffect(() => {
+    const handler = () => {
+      qc.invalidateQueries({ queryKey: ["user-streak"] });
+      qc.invalidateQueries({ queryKey: ["streak-week"] });
+    };
+    window.addEventListener("streak-updated", handler);
+    return () => window.removeEventListener("streak-updated", handler);
+  }, [qc]);
 
   const { data: user } = useQuery({
     queryKey: ["current-user"],
