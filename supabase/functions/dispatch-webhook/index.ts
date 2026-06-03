@@ -55,7 +55,8 @@ async function sendPushNotifications(admin: ReturnType<typeof createClient>, use
   }
   if (!subs?.length) {
     await logRow({ user_ids: userIds, payload, status: "no_subscriptions", sent_count: 0, removed_count: 0, source: "dispatch-webhook" });
-    return { sent: 0, removed: 0 };
+    const fallback = await ensureInAppFallback(admin, userIds, payload);
+    return { sent: 0, removed: 0, in_app_fallback: fallback };
   }
 
   const stale: string[] = [];
