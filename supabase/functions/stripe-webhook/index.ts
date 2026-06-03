@@ -791,6 +791,34 @@ serve(async (req) => {
             },
           });
         }
+
+        // ── Job listing dispute: deactivate listing on dispute.created ─────
+        if (event.type === "charge.dispute.created" && piId) {
+          try {
+            const { data: jlPay } = await supabase
+              .from("job_listing_payments")
+              .select("id, job_id")
+              .eq("stripe_payment_intent_id", piId)
+              .maybeSingle();
+            if (jlPay?.job_id) {
+              await supabase
+                .from("job_listing_payments")
+                .update({ status: "disputed" })
+                .eq("id", jlPay.id);
+              await supabase
+                .from("job_listings")
+                .update({
+                  paid_status: "disputed",
+                  is_active: false,
+                  updated_at: new Date().toISOString(),
+                })
+                .eq("id", jlPay.job_id);
+              log("job listing disputed via webhook", { jobId: jlPay.job_id, piId });
+            }
+          } catch (e) {
+            log("job listing dispute handler error", { err: (e as Error).message });
+          }
+        }
         break;
       }
 
