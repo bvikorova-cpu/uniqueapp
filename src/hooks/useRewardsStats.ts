@@ -21,7 +21,7 @@ export function useRewardsStats(userId: string | undefined) {
     enabled: !!userId,
     queryFn: async (): Promise<RewardsStats> => {
       const [pointsRes, badgesRes] = await Promise.all([
-        supabase
+        (supabase as any)
           .from("user_points")
           .select("total_points, level, current_level_points, login_streak, longest_streak")
           .eq("user_id", userId!)
