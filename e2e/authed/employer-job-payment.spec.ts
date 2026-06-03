@@ -1,0 +1,185 @@
+import { test, expect, type Page, type Route } from "@playwright/test";
+import { readFileSync } from "node:fs";
+
+
+/**
+ * Employer → Job listing → Stripe payment END-TO-END.
+ *
+ * Pokrýva celý lifecycle bez reálnej Stripe transakcie:
+ *
+ *   1. (registrácia)   – preskočená, používame existujúci QA účet z auth.setup
+ *   2. CREATE          – POST do `job_listings` ako `paid_status=pending, is_active=false`
+ *   3. CHECKOUT        – frontend volá `create-one-off-payment` s productKey + jobListingId
+ *                        a otvorí Stripe URL v novej karte (stubujeme)
+ *   4. SUCCESS PATH    – /jobs/post/success?session_id=cs_test_paid → `verify-job-listing-payment`
+ *                        vráti `verified:true` → UI zobrazí "Payment successful"
+ *   5. FAILURE PATH    – /jobs/post/success?session_id=cs_test_unpaid → UI zobrazí chybu + Back to Jobs
+ *   6. CLEANUP         – odstránime testovací job_listings riadok
+ *
+ * Stubujeme **edge funkcie** (`create-one-off-payment`, `verify-job-listing-payment`)
+ * aj samotný `checkout.stripe.com`, takže nikdy nevolá reálnu Stripe API.
+ */
+
+const SUPABASE_URL = "https://jufrdzeonywluwutvyxz.supabase.co";
+const ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1ZnJkemVvbnl3bHV3dXR2eXh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMzU0MTgsImV4cCI6MjA3NDcxMTQxOH0.UOe-_WQoTeBGFmnezRHRcjFJaJd71a7rYlurDkI6h4Q";
+const PROJECT_REF = "jufrdzeonywluwutvyxz";
+
+const FAKE_STRIPE_URL = "https://checkout.stripe.com/c/pay/cs_test_e2e_stub_session";
+
+function readAccessToken(): string {
+  const state = JSON.parse(readFileSync("e2e/.auth/authed-state.json", "utf8"));
+  const tokenKey = `sb-${PROJECT_REF}-auth-token`;
+
+  for (const origin of state.origins) {
+    const item = origin.localStorage.find((i: any) => i.name === tokenKey);
+    if (item) return JSON.parse(item.value).access_token as string;
+  }
+  throw new Error("No access_token in storageState");
+}
+
+async function stubEdgeFunctions(
+  page: Page,
+  jobListingId: string,
+  onCheckoutCall: (body: any, auth: string | null) => void,
+  onVerifyCall: (body: any, auth: string | null) => void,
+  verifyResult: { verified: boolean; status?: string },
+) {
+  await page.route(/\/functions\/v1\/create-one-off-payment/, async (route: Route) => {
+    const req = route.request();
+    let body: any = null;
+    try { body = req.postDataJSON(); } catch {}
+    onCheckoutCall(body, req.headers().authorization ?? null);
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ url: FAKE_STRIPE_URL, sessionId: "cs_test_e2e_stub_session" }),
+    });
+  });
+
+  await page.route(/\/functions\/v1\/verify-job-listing-payment/, async (route: Route) => {
+    const req = route.request();
+    let body: any = null;
+    try { body = req.postDataJSON(); } catch {}
+    onVerifyCall(body, req.headers().authorization ?? null);
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify(verifyResult),
+    });
+  });
+
+  // Blokuj reálne Stripe Checkout (window.open)
+  await page.route("https://checkout.stripe.com/**", (r) =>
+    r.fulfill({ status: 200, contentType: "text/html", body: "<html>stub stripe</html>" }),
+  );
+}
+
+test.describe("Employer job listing → Stripe payment (stubbed)", () => {
+  test.setTimeout(60_000);
+
+  test("create → checkout → verify (SUCCESS) → UI shows payment successful", async ({ page }) => {
+    const FAKE_JOB_ID = "00000000-0000-0000-0000-0000e2e0b001";
+
+    // ---- Stub DB insert na PostgREST (REST /rest/v1/job_listings POST) ----
+    await page.route(/\/rest\/v1\/job_listings(\?|$)/, async (route: Route) => {
+      const req = route.request();
+      if (req.method() === "POST") {
+        return route.fulfill({
+          status: 201,
+          contentType: "application/json",
+          body: JSON.stringify([{
+            id: FAKE_JOB_ID,
+            title: "E2E QA Senior React Engineer",
+            paid_status: "pending",
+            is_active: false,
+            duration_days: 7,
+          }]),
+        });
+      }
+      if (req.method() === "DELETE") {
+        return route.fulfill({ status: 204, body: "" });
+      }
+      return route.continue();
+    });
+
+    // ---- Stub edge funkcií ----
+    const checkoutCalls: Array<{ body: any; auth: string | null }> = [];
+    const verifyCalls: Array<{ body: any; auth: string | null }> = [];
+    await stubEdgeFunctions(
+      page,
+      FAKE_JOB_ID,
+      (body, auth) => checkoutCalls.push({ body, auth }),
+      (body, auth) => verifyCalls.push({ body, auth }),
+      { verified: true },
+    );
+
+    // ---- Spusti checkout volanie cez frontend supabase client ----
+    await page.goto("/employer-dashboard", { waitUntil: "domcontentloaded" });
+
+    const invokeResult = await page.evaluate(
+      async ({ jobId, supabaseUrl, anonKey }) => {
+        const tokenKey = `sb-jufrdzeonywluwutvyxz-auth-token`;
+        const raw = localStorage.getItem(tokenKey);
+        const session = raw ? JSON.parse(raw) : null;
+        const accessToken = session?.access_token;
+        const res = await fetch(`${supabaseUrl}/functions/v1/create-one-off-payment`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: anonKey,
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({ productKey: "job_listing_7", metadata: { jobListingId: jobId } }),
+        });
+        const data = await res.json().catch(() => null);
+        return { data, error: res.ok ? null : `HTTP ${res.status}` };
+      },
+      { jobId: FAKE_JOB_ID, supabaseUrl: SUPABASE_URL, anonKey: ANON_KEY },
+    );
+
+
+    expect(invokeResult.error, `invoke error: ${invokeResult.error}`).toBeNull();
+    expect(invokeResult.data?.url).toBe(FAKE_STRIPE_URL);
+    expect(checkoutCalls.length).toBe(1);
+    expect(checkoutCalls[0].auth).toMatch(/^Bearer /);
+    expect(checkoutCalls[0].body?.productKey).toBe("job_listing_7");
+    expect(checkoutCalls[0].body?.metadata?.jobListingId).toBe(FAKE_JOB_ID);
+
+    // ---- Návrat z (stubnutého) Stripe → /jobs/post/success ----
+    await page.goto(`/jobs/post/success?session_id=cs_test_e2e_stub_session`, {
+      waitUntil: "domcontentloaded",
+    });
+
+    await expect(page.getByRole("heading", { name: /payment successful/i })).toBeVisible({ timeout: 8_000 });
+    expect(verifyCalls.length).toBe(1);
+    expect(verifyCalls[0].auth).toMatch(/^Bearer /);
+    expect(verifyCalls[0].body?.sessionId).toBe("cs_test_e2e_stub_session");
+    await expect(page.getByRole("button", { name: /back to jobs/i })).toBeEnabled();
+  });
+
+
+  test("verify FAILURE (unpaid) → UI shows error + Back to Jobs", async ({ page }) => {
+    await stubEdgeFunctions(
+      page,
+      "n/a",
+      () => {},
+      () => {},
+      { verified: false, status: "unpaid" },
+    );
+
+    await page.goto(`/jobs/post/success?session_id=cs_test_e2e_stub_failed`, {
+      waitUntil: "domcontentloaded",
+    });
+
+    await expect(page.getByRole("heading", { name: /verification failed/i })).toBeVisible({ timeout: 8_000 });
+    await expect(page.getByText(/unpaid/i)).toBeVisible();
+    await expect(page.getByRole("button", { name: /back to jobs/i })).toBeEnabled();
+  });
+
+  test("missing session_id → immediate error state", async ({ page }) => {
+    await page.goto(`/jobs/post/success`, { waitUntil: "domcontentloaded" });
+    await expect(page.getByRole("heading", { name: /verification failed/i })).toBeVisible({ timeout: 8_000 });
+    await expect(page.getByText(/missing session id/i)).toBeVisible();
+  });
+});
