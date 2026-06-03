@@ -485,6 +485,7 @@ const AdminDunning = lazy(() => import("@/pages/admin/AdminDunning"));
 const AdminWinBack = lazy(() => import("@/pages/admin/AdminWinBack"));
 const AdminSCA = lazy(() => import("@/pages/admin/AdminSCA"));
 const AdminKYC = lazy(() => import("@/pages/admin/AdminKYC"));
+const AdminFounders = lazy(() => import("@/pages/admin/AdminFounders"));
 const AdminAffiliateTiers = lazy(() => import("@/pages/admin/AdminAffiliateTiers"));
 const AdminPauseOverview = lazy(() => import("@/pages/admin/AdminPauseOverview"));
 const AdminErrorLogs = lazy(() => import("@/pages/admin/AdminErrorLogs"));
@@ -927,6 +928,7 @@ const App = () => {
                         <Route path="/admin/winback" element={<ProtectedRoute requireAdmin={true}><AdminWinBack /></ProtectedRoute>} />
                         <Route path="/admin/sca" element={<ProtectedRoute requireAdmin={true}><AdminSCA /></ProtectedRoute>} />
                         <Route path="/admin/kyc" element={<ProtectedRoute requireAdmin={true}><AdminKYC /></ProtectedRoute>} />
+                        <Route path="/admin/founders" element={<ProtectedRoute requireAdmin={true}><AdminFounders /></ProtectedRoute>} />
 <Route path="/admin/affiliate-tiers" element={<ProtectedRoute requireAdmin={true}><AdminAffiliateTiers /></ProtectedRoute>} />
                         <Route path="/admin/pauses" element={<ProtectedRoute requireAdmin={true}><AdminPauseOverview /></ProtectedRoute>} />
                         <Route path="/account/verification" element={<ProtectedRoute><CreatorVerification /></ProtectedRoute>} />
