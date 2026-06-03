@@ -85,6 +85,25 @@ E2E_TEST_OUTSIDER_USER_ID=<uuid of a profile the test user has NO match with>
 
 Auto-skips when any required env var is missing.
 
+### Cross-user (A ↔ B) Rewards test
+
+`authed/friend-quest-cross-user.spec.ts` overuje skutočný cross-user flow
+medzi dvomi rôznymi účtami: User A (z perzistovanej session) pošle
+friend quest invite User B (REST sign-in), B akceptuje cez RPC a test
+overí, že DB triggery vytvoria správne notifikácie pre obe strany
+(`friend_quest_invite` pre B, `friend_quest_accepted` pre A) s
+`related_id=invite.id` a `action_url=/rewards?tab=friend-quests`.
+
+Auto-skips bez druhého účtu. Spustenie:
+
+```bash
+E2E_TEST_EMAIL_B=second.tester@example.com \
+E2E_TEST_PASSWORD_B='...'                  \
+  bunx playwright test e2e/authed/friend-quest-cross-user.spec.ts
+```
+
+Druhý účet musí byť reálne registrovaný (potvrdený email) v Supabase.
+
 ## Why this is not in `bun run test`
 
 Vitest (`src/**/*.test.ts`) is fast, headless, and runs in CI on every push.
