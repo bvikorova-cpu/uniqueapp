@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { AudienceSelector } from "@/components/wall/AudienceSelector";
 import { supabase } from "@/integrations/supabase/client";
+import { trackChallengeAction } from "@/lib/trackChallenge";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
