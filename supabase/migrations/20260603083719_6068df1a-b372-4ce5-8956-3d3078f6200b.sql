@@ -1,0 +1,3 @@
+INSERT INTO public.job_listings (id, employer_id, title, description, company_name, location, country, category, job_type, contact_email, duration_days, paid_status, is_active)
+VALUES ('00000000-0000-0000-0000-00000000e2e1', 'a8f98c5c-3ce8-4928-bfaf-061a700411c6', 'E2E Test Listing', 'E2E webhook test', 'E2E Co', 'Bratislava', 'SK', 'it_software', 'full_time', 'e2e@example.com', 7, 'pending', false)
+ON CONFLICT (id) DO UPDATE SET paid_status='pending', is_active=false, expires_at=NULL;

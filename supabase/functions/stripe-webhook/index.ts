@@ -378,20 +378,25 @@ serve(async (req) => {
                     isFeatured = true;
                     durationDays = 0;
                   }
+                  const payExpiresAt = new Date(
+                    Date.now() + Math.max(durationDays, 30) * 86400000,
+                  ).toISOString();
 
-                  await supabase.from("job_listing_payments").upsert(
-                    {
-                      user_id: listing.employer_id,
-                      job_listing_id: jobListingId,
-                      stripe_session_id: session.id,
-                      amount: session.amount_total ?? 0,
-                      currency: (session.currency || "eur").toUpperCase(),
-                      product_kind: productKey,
-                      status: "completed",
-                      completed_at: new Date().toISOString(),
-                    },
-                    { onConflict: "stripe_session_id" },
-                  );
+                  const { error: payErr } = await supabase
+                    .from("job_listing_payments")
+                    .upsert(
+                      {
+                        user_id: listing.employer_id,
+                        job_id: jobListingId,
+                        stripe_session_id: session.id,
+                        amount: session.amount_total ?? 0,
+                        duration_days: durationDays,
+                        status: "completed",
+                        expires_at: payExpiresAt,
+                      },
+                      { onConflict: "stripe_session_id" },
+                    );
+                  if (payErr) log("job_listing_payments upsert error", { err: payErr.message });
 
                   if (isFeatured) {
                     const base = listing.featured_until && new Date(listing.featured_until) > new Date()

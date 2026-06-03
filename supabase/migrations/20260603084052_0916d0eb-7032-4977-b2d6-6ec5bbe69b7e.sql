@@ -1,0 +1,1 @@
+ALTER TABLE public.job_listing_payments ADD CONSTRAINT job_listing_payments_stripe_session_id_key UNIQUE (stripe_session_id);

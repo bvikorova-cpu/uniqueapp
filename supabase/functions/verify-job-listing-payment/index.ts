@@ -117,13 +117,14 @@ serve(async (req) => {
     await admin.from("job_listing_payments").upsert(
       {
         user_id: callerId,
-        job_listing_id: jobListingId,
+        job_id: jobListingId,
         stripe_session_id: sessionId,
         amount: session.amount_total ?? 0,
-        currency: (session.currency || "eur").toUpperCase(),
-        product_kind: productKey,
+        duration_days: durationDays,
         status: "completed",
-        completed_at: new Date().toISOString(),
+        expires_at: new Date(
+          Date.now() + Math.max(durationDays, 30) * 86400000,
+        ).toISOString(),
       },
       { onConflict: "stripe_session_id" }
     );
