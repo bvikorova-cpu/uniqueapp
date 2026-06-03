@@ -37,28 +37,20 @@ export default function RewardsStreakFreeze() {
 
   const buy = async (pack: typeof PACKS[number], method: "xp" | "eur") => {
     if (!user) return;
-    if (method === "xp") {
-      const { data: pts } = await supabase.from("user_points").select("total_points").eq("user_id", user.id).maybeSingle();
-      if ((pts?.total_points ?? 0) < pack.xp) { toast.error("Not enough XP"); return; }
-      await supabase.from("user_points").update({ total_points: (pts!.total_points - pack.xp) }).eq("user_id", user.id);
-    } else {
-      toast.info("Stripe checkout coming soon — using XP for now");
+    if (method === "eur") {
+      toast.info("Stripe checkout coming soon");
       return;
     }
-    const current = data?.available_count ?? 0;
-    if (data) {
-      await supabase.from("user_streak_freezes").update({
-        available_count: current + pack.qty,
-        total_purchased: (data.total_purchased ?? 0) + pack.qty,
-      }).eq("user_id", user.id);
-    } else {
-      await supabase.from("user_streak_freezes").insert({
-        user_id: user.id, available_count: pack.qty, total_purchased: pack.qty,
-      });
-    }
-    await supabase.from("streak_freeze_history").insert({
-      user_id: user.id, action: "purchased", quantity: pack.qty, cost_xp: pack.xp,
+    const { data, error } = await supabase.rpc("buy_streak_freeze_xp" as any, {
+      _qty: pack.qty,
+      _cost_xp: pack.xp,
     });
+    if (error) return toast.error(error.message);
+    const res = data as any;
+    if (!res?.ok) {
+      const msg = res?.error === "insufficient_xp" ? "Not enough XP" : (res?.error ?? "Purchase failed");
+      return toast.error(msg);
+    }
     toast.success(`+${pack.qty} Streak Freeze${pack.qty > 1 ? "s" : ""}! ❄️`);
     refresh();
   };
