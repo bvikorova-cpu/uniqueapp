@@ -59,7 +59,7 @@ export default defineConfig({
           : undefined,
       },
     },
-    // Cross-browser projekty pre špecifické testy (autoplay, audio policy).
+    // Cross-browser projekty pre celú authed suite (autoplay, audio policy, ...).
     // Aktivujú sa nastavením PLAYWRIGHT_ENABLE_CROSS_BROWSER=1
     // a vyžadujú `bunx playwright install firefox webkit`.
     ...(process.env.PLAYWRIGHT_ENABLE_CROSS_BROWSER
@@ -80,6 +80,44 @@ export default defineConfig({
             use: {
               ...devices["Desktop Safari"],
               storageState: "e2e/.auth/authed-state.json",
+            },
+          },
+        ]
+      : []),
+    // Cross-browser projekty len pre Wall functionality suite – rýchlejšie ako celá authed.
+    // Aktivujú sa cez PLAYWRIGHT_WALL_CROSS_BROWSER=1.
+    // Príklad:
+    //   PLAYWRIGHT_WALL_CROSS_BROWSER=1 bunx playwright test --project=firefox-wall --project=webkit-wall
+    ...(process.env.PLAYWRIGHT_WALL_CROSS_BROWSER
+      ? [
+          {
+            name: "firefox-wall",
+            testMatch: /authed\/wall-features-functionality\.spec\.ts$/,
+            dependencies: ["setup"],
+            use: {
+              ...devices["Desktop Firefox"],
+              storageState: "e2e/.auth/authed-state.json",
+            },
+          },
+          {
+            name: "webkit-wall",
+            testMatch: /authed\/wall-features-functionality\.spec\.ts$/,
+            dependencies: ["setup"],
+            use: {
+              ...devices["Desktop Safari"],
+              storageState: "e2e/.auth/authed-state.json",
+            },
+          },
+          {
+            name: "chromium-wall",
+            testMatch: /authed\/wall-features-functionality\.spec\.ts$/,
+            dependencies: ["setup"],
+            use: {
+              ...devices["Desktop Chrome"],
+              storageState: "e2e/.auth/authed-state.json",
+              launchOptions: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH
+                ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH }
+                : undefined,
             },
           },
         ]
