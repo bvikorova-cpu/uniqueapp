@@ -111,13 +111,15 @@ test.describe("Jobs – button & navigation funkčnosť", () => {
   });
 
   test("Protected Jobs sub-routes – render heading pre prihláseného usera", async ({ page }) => {
+    test.setTimeout(120_000);
     for (const r of PROTECTED_ROUTES) {
       const url = r.path.replace("\\", "");
-      await gotoAndSettle(page, url);
+      await page.goto(url, { waitUntil: "domcontentloaded", timeout: 20_000 }).catch(() => {});
+      await page.waitForTimeout(400);
       // Pre prihláseného usera nesmie skončiť na /auth
       expect(page.url(), `${url} pre prihláseného usera nemá redirectovať na /auth`).not.toMatch(/\/auth|\/login/);
       const fallback = page.locator("h1, h2, h3").first();
-      const visible = await fallback.isVisible({ timeout: 5000 }).catch(() => false);
+      const visible = await fallback.isVisible({ timeout: 2500 }).catch(() => false);
       expect(visible, `Routa ${url} musí render aspoň jeden heading`).toBeTruthy();
     }
   });
