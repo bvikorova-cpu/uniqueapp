@@ -53,9 +53,14 @@ export function StreaksAndChallenges() {
     const handler = () => {
       qc.invalidateQueries({ queryKey: ["user-streak"] });
       qc.invalidateQueries({ queryKey: ["streak-week"] });
+      qc.invalidateQueries({ queryKey: ["user-challenges"] });
     };
     window.addEventListener("streak-updated", handler);
-    return () => window.removeEventListener("streak-updated", handler);
+    window.addEventListener("challenges-updated", handler);
+    return () => {
+      window.removeEventListener("streak-updated", handler);
+      window.removeEventListener("challenges-updated", handler);
+    };
   }, [qc]);
 
   const { data: user } = useQuery({
