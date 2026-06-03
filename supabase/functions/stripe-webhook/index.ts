@@ -382,6 +382,9 @@ serve(async (req) => {
                     Date.now() + Math.max(durationDays, 30) * 86400000,
                   ).toISOString();
 
+                  const piIdFb = typeof session.payment_intent === "string"
+                    ? session.payment_intent
+                    : (session.payment_intent as any)?.id ?? null;
                   const { error: payErr } = await supabase
                     .from("job_listing_payments")
                     .upsert(
@@ -389,6 +392,7 @@ serve(async (req) => {
                         user_id: listing.employer_id,
                         job_id: jobListingId,
                         stripe_session_id: session.id,
+                        stripe_payment_intent_id: piIdFb,
                         amount: session.amount_total ?? 0,
                         duration_days: durationDays,
                         status: "completed",
@@ -674,6 +678,36 @@ serve(async (req) => {
         } catch (e) {
           log("donation refund handler error", { err: (e as Error).message });
         }
+
+        // ── Job listing refund: deactivate listing + mark payment refunded ──
+        try {
+          const { data: jlPay } = await supabase
+            .from("job_listing_payments")
+            .select("id, job_id")
+            .eq("stripe_payment_intent_id", piId)
+            .maybeSingle();
+          if (jlPay?.job_id) {
+            await supabase
+              .from("job_listing_payments")
+              .update({
+                status: "refunded",
+                refunded_at: new Date().toISOString(),
+                refund_amount: refundAmount,
+              })
+              .eq("id", jlPay.id);
+            await supabase
+              .from("job_listings")
+              .update({
+                paid_status: "refunded",
+                is_active: false,
+                updated_at: new Date().toISOString(),
+              })
+              .eq("id", jlPay.job_id);
+            log("job listing refunded via webhook", { jobId: jlPay.job_id, piId });
+          }
+        } catch (e) {
+          log("job listing refund handler error", { err: (e as Error).message });
+        }
         break;
       }
 
@@ -756,6 +790,34 @@ serve(async (req) => {
               amount: dispute.amount,
             },
           });
+        }
+
+        // ── Job listing dispute: deactivate listing on dispute.created ─────
+        if (event.type === "charge.dispute.created" && piId) {
+          try {
+            const { data: jlPay } = await supabase
+              .from("job_listing_payments")
+              .select("id, job_id")
+              .eq("stripe_payment_intent_id", piId)
+              .maybeSingle();
+            if (jlPay?.job_id) {
+              await supabase
+                .from("job_listing_payments")
+                .update({ status: "disputed" })
+                .eq("id", jlPay.id);
+              await supabase
+                .from("job_listings")
+                .update({
+                  paid_status: "disputed",
+                  is_active: false,
+                  updated_at: new Date().toISOString(),
+                })
+                .eq("id", jlPay.job_id);
+              log("job listing disputed via webhook", { jobId: jlPay.job_id, piId });
+            }
+          } catch (e) {
+            log("job listing dispute handler error", { err: (e as Error).message });
+          }
         }
         break;
       }

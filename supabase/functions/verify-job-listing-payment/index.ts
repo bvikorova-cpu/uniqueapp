@@ -114,11 +114,15 @@ serve(async (req) => {
     }
 
     // Record payment (idempotent on stripe_session_id)
+    const piId = typeof session.payment_intent === "string"
+      ? session.payment_intent
+      : (session.payment_intent as any)?.id ?? null;
     await admin.from("job_listing_payments").upsert(
       {
         user_id: callerId,
         job_id: jobListingId,
         stripe_session_id: sessionId,
+        stripe_payment_intent_id: piId,
         amount: session.amount_total ?? 0,
         duration_days: durationDays,
         status: "completed",

@@ -29884,7 +29884,10 @@ export type Database = {
           expires_at: string
           id: string
           job_id: string | null
+          refund_amount: number | null
+          refunded_at: string | null
           status: string
+          stripe_payment_intent_id: string | null
           stripe_session_id: string | null
           user_id: string
         }
@@ -29896,7 +29899,10 @@ export type Database = {
           expires_at: string
           id?: string
           job_id?: string | null
+          refund_amount?: number | null
+          refunded_at?: string | null
           status?: string
+          stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
           user_id: string
         }
@@ -29908,7 +29914,10 @@ export type Database = {
           expires_at?: string
           id?: string
           job_id?: string | null
+          refund_amount?: number | null
+          refunded_at?: string | null
           status?: string
+          stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
           user_id?: string
         }
