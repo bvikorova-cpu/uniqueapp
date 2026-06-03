@@ -89,17 +89,41 @@ export function StreaksAndChallenges() {
     },
   });
 
-  // Mock streak data
-  const streakDays = 7;
+  // Real streak data
+  const { data: streakRow } = useQuery({
+    queryKey: ["user-streak", user?.id],
+    enabled: !!user?.id,
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("user_streaks")
+        .select("current_streak,longest_streak,total_xp,last_active_date")
+        .eq("user_id", user!.id)
+        .maybeSingle();
+      return data;
+    },
+  });
+
+  const { data: week } = useQuery({
+    queryKey: ["streak-week", user?.id],
+    enabled: !!user?.id,
+    queryFn: async () => {
+      const { data } = await supabase.rpc("get_streak_week");
+      return (data ?? []) as Array<{ day_date: string; is_active: boolean; xp_earned: number }>;
+    },
+  });
+
+  const streakDays = streakRow?.current_streak ?? 0;
   const weekDays = ["M", "T", "W", "T", "F", "S", "S"];
-  const activeWeekDays = [true, true, true, true, true, true, true];
-  const currentXP = 1250;
-  const nextLevelXP = 2000;
-  const level = 12;
+  const activeWeekDays = weekDays.map((_, i) => week?.[i]?.is_active ?? false);
+  const currentXP = streakRow?.total_xp ?? 0;
+  const level = Math.floor(currentXP / 200) + 1;
+  const nextLevelXP = level * 200;
+  const todayXP = week?.find(d => d.day_date === new Date().toISOString().slice(0, 10))?.xp_earned ?? 0;
 
   const dailyChallenges = mockChallenges.filter((c) => c.type === "daily");
   const weeklyChallenges = mockChallenges.filter((c) => c.type === "weekly");
   const communityChallenges = mockChallenges.filter((c) => c.type === "community");
+
 
   return (
     <div className="glass-card rounded-2xl p-4 space-y-4">
