@@ -44860,6 +44860,42 @@ export type Database = {
         }
         Relationships: []
       }
+      push_notification_logs: {
+        Row: {
+          created_at: string
+          error: string | null
+          id: string
+          payload: Json
+          removed_count: number
+          sent_count: number
+          source: string | null
+          status: string
+          user_ids: string[]
+        }
+        Insert: {
+          created_at?: string
+          error?: string | null
+          id?: string
+          payload: Json
+          removed_count?: number
+          sent_count?: number
+          source?: string | null
+          status: string
+          user_ids: string[]
+        }
+        Update: {
+          created_at?: string
+          error?: string | null
+          id?: string
+          payload?: Json
+          removed_count?: number
+          sent_count?: number
+          source?: string | null
+          status?: string
+          user_ids?: string[]
+        }
+        Relationships: []
+      }
       push_subscriptions: {
         Row: {
           auth: string | null
@@ -57255,6 +57291,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_push_settings: {
+        Row: {
+          enabled: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          enabled?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          enabled?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_quest_path_progress: {
         Row: {

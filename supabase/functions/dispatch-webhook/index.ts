@@ -39,15 +39,27 @@ if (VAPID_PUBLIC && VAPID_PRIVATE) {
 async function sendPushNotifications(admin: ReturnType<typeof createClient>, userIds: string[], payload: Record<string, unknown>) {
   if (!VAPID_PUBLIC || !VAPID_PRIVATE) throw new Error("Missing VAPID configuration");
 
+  const logRow = async (row: Record<string, unknown>) => {
+    try { await admin.from("push_notification_logs").insert(row); }
+    catch (e) { console.error("push log insert failed", (e as Error).message); }
+  };
+
   const { data: subs, error } = await admin
     .from("push_subscriptions")
     .select("id, endpoint, p256dh, auth")
     .in("user_id", userIds);
 
-  if (error) throw error;
-  if (!subs?.length) return { sent: 0, removed: 0 };
+  if (error) {
+    await logRow({ user_ids: userIds, payload, status: "failed", sent_count: 0, removed_count: 0, error: error.message, source: "dispatch-webhook" });
+    throw error;
+  }
+  if (!subs?.length) {
+    await logRow({ user_ids: userIds, payload, status: "no_subscriptions", sent_count: 0, removed_count: 0, source: "dispatch-webhook" });
+    return { sent: 0, removed: 0 };
+  }
 
   const stale: string[] = [];
+  const errors: string[] = [];
   let sent = 0;
   const body = JSON.stringify(payload ?? {});
 
@@ -61,11 +73,24 @@ async function sendPushNotifications(admin: ReturnType<typeof createClient>, use
       sent += 1;
     } catch (e: any) {
       if (e?.statusCode === 404 || e?.statusCode === 410) stale.push(sub.id);
+      const msg = `${e?.statusCode ?? ""} ${e?.body || e?.message || "unknown"}`.trim();
+      errors.push(msg);
       console.error("push failed", e?.statusCode, e?.body || e?.message);
     }
   }));
 
   if (stale.length) await admin.from("push_subscriptions").delete().in("id", stale);
+
+  await logRow({
+    user_ids: userIds,
+    payload,
+    status: sent > 0 ? "sent" : "failed",
+    sent_count: sent,
+    removed_count: stale.length,
+    error: errors.length ? errors.join(" | ").slice(0, 1000) : null,
+    source: "dispatch-webhook",
+  });
+
   return { sent, removed: stale.length };
 }
 
