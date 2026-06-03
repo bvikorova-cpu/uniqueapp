@@ -35,10 +35,26 @@ export default function RewardsStreakFreeze() {
 
   useEffect(() => { refresh(); }, [user?.id]);
 
+  useEffect(() => {
+    const onDone = () => refresh();
+    window.addEventListener("rewards-purchase-completed", onDone);
+    return () => window.removeEventListener("rewards-purchase-completed", onDone);
+  }, [user?.id]);
+
   const buy = async (pack: typeof PACKS[number], method: "xp" | "eur") => {
     if (!user) return;
     if (method === "eur") {
-      toast.info("Stripe checkout coming soon");
+      try {
+        const { data, error } = await supabase.functions.invoke("create-rewards-checkout", {
+          body: { kind: "streak_freeze", qty: pack.qty },
+        });
+        if (error) throw error;
+        const url = (data as any)?.url;
+        if (!url) throw new Error("No checkout URL");
+        window.location.href = url;
+      } catch (e: any) {
+        toast.error(e?.message || "Checkout failed");
+      }
       return;
     }
     const { data, error } = await supabase.rpc("buy_streak_freeze_xp" as any, {
