@@ -1,23 +1,27 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Flame, Gift, Star, Trophy, Zap, CheckCircle } from "lucide-react";
+import { Flame, Trophy, Zap, CheckCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRewardsStats } from "@/hooks/useRewardsStats";
 
 const milestones = [
-  { days: 3, reward: "🔥", title: "Warm Up", xp: 50, unlocked: false },
-  { days: 7, reward: "⭐", title: "Weekly Warrior", xp: 150, unlocked: false },
-  { days: 14, reward: "💎", title: "Consistent Creator", xp: 300, unlocked: false },
-  { days: 30, reward: "👑", title: "Content King", xp: 750, unlocked: false },
-  { days: 60, reward: "🏆", title: "Legendary Poster", xp: 1500, unlocked: false },
-  { days: 100, reward: "🌟", title: "Hall of Fame", xp: 3000, unlocked: false },
-  { days: 365, reward: "💫", title: "Annual Champion", xp: 10000, unlocked: false },
+  { days: 3, reward: "🔥", title: "Warm Up", xp: 50 },
+  { days: 7, reward: "⭐", title: "Weekly Warrior", xp: 150 },
+  { days: 14, reward: "💎", title: "Consistent Creator", xp: 300 },
+  { days: 30, reward: "👑", title: "Content King", xp: 750 },
+  { days: 60, reward: "🏆", title: "Legendary Poster", xp: 1500 },
+  { days: 100, reward: "🌟", title: "Hall of Fame", xp: 3000 },
+  { days: 365, reward: "💫", title: "Annual Champion", xp: 10000 },
 ];
 
 export default function WallPostingStreaks() {
-  const [currentStreak] = useState(7);
-  const [longestStreak] = useState(12);
+  const { user } = useAuth();
+  const { data: stats, isLoading } = useRewardsStats(user?.id);
+  const currentStreak = stats?.streak ?? 0;
+  const longestStreak = currentStreak; // best-known live value; backend doesn't track historical max yet
   const [todayPosted, setTodayPosted] = useState(false);
   const { toast } = useToast();
 
@@ -27,7 +31,6 @@ export default function WallPostingStreaks() {
 
   return (
     <div className="space-y-4">
-      {/* Streak Display */}
       <Card className="p-5 bg-gradient-to-br from-orange-500/10 to-amber-500/10 border-orange-400/20 backdrop-blur-md">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
@@ -35,7 +38,7 @@ export default function WallPostingStreaks() {
               <Flame className="h-7 w-7 text-white" />
             </div>
             <div>
-              <p className="text-3xl font-black">{currentStreak}</p>
+              <p className="text-3xl font-black">{isLoading ? "—" : currentStreak}</p>
               <p className="text-xs text-muted-foreground font-semibold">Day Streak</p>
             </div>
           </div>
@@ -45,7 +48,6 @@ export default function WallPostingStreaks() {
           </div>
         </div>
 
-        {/* Week tracker */}
         <div className="grid grid-cols-7 gap-2 mb-4">
           {weekDays.map((day, i) => {
             const isCompleted = i <= adjustedToday && i >= adjustedToday - currentStreak + 1;
@@ -66,7 +68,7 @@ export default function WallPostingStreaks() {
         </div>
 
         {!todayPosted && (
-          <Button 
+          <Button
             className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:opacity-90"
             onClick={() => { setTodayPosted(true); toast({ title: "🔥 Streak continued!", description: "+50 XP earned for today's post!" }); }}
           >
@@ -75,7 +77,6 @@ export default function WallPostingStreaks() {
         )}
       </Card>
 
-      {/* Milestones */}
       <Card className="p-4 bg-card/80 backdrop-blur-md border-border/30">
         <h3 className="font-bold mb-3 flex items-center gap-2"><Trophy className="h-4 w-4 text-orange-500" /> Streak Milestones</h3>
         <div className="space-y-2">
