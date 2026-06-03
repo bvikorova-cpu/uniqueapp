@@ -24,7 +24,7 @@ export default function AdminFounders() {
 
   const load = async () => {
     setLoading(true);
-    const { data, error } = await supabase.rpc("list_verified_founders");
+    const { data, error } = await (supabase as any).rpc("list_verified_founders");
     setLoading(false);
     if (error) {
       toast.error(error.message);
@@ -52,7 +52,7 @@ export default function AdminFounders() {
         toast.error("No user with that email");
         return;
       }
-      const { error } = await supabase.rpc("grant_founder_role", { _user_id: profile.id });
+      const { error } = await (supabase as any).rpc("grant_founder_role", { _user_id: profile.id });
       if (error) throw error;
       toast.success(`Granted founder role to ${email}`);
       setEmailInput("");
@@ -66,7 +66,7 @@ export default function AdminFounders() {
 
   const handleRevoke = async (userId: string, email: string | null) => {
     if (!confirm(`Revoke founder role from ${email ?? userId}?`)) return;
-    const { error } = await supabase.rpc("revoke_founder_role", { _user_id: userId });
+    const { error } = await (supabase as any).rpc("revoke_founder_role", { _user_id: userId });
     if (error) {
       toast.error(error.message);
       return;
