@@ -56050,6 +56050,27 @@ export type Database = {
         }
         Relationships: []
       }
+      user_activity_days: {
+        Row: {
+          activity_date: string
+          created_at: string
+          user_id: string
+          xp_earned: number
+        }
+        Insert: {
+          activity_date: string
+          created_at?: string
+          user_id: string
+          xp_earned?: number
+        }
+        Update: {
+          activity_date?: string
+          created_at?: string
+          user_id?: string
+          xp_earned?: number
+        }
+        Relationships: []
+      }
       user_badges: {
         Row: {
           badge_id: string
@@ -57621,6 +57642,36 @@ export type Database = {
           last_used_at?: string | null
           total_purchased?: number
           total_used?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_streaks: {
+        Row: {
+          created_at: string
+          current_streak: number
+          last_active_date: string | null
+          longest_streak: number
+          total_xp: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_streak?: number
+          last_active_date?: string | null
+          longest_streak?: number
+          total_xp?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_streak?: number
+          last_active_date?: string | null
+          longest_streak?: number
+          total_xp?: number
           updated_at?: string
           user_id?: string
         }
@@ -62169,6 +62220,14 @@ export type Database = {
         }[]
       }
       get_rls_ref: { Args: never; Returns: string }
+      get_streak_week: {
+        Args: never
+        Returns: {
+          day_date: string
+          is_active: boolean
+          xp_earned: number
+        }[]
+      }
       get_today_iq_challenge: {
         Args: never
         Returns: {
@@ -62554,6 +62613,15 @@ export type Database = {
       recompute_affiliate_tier: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["affiliate_tier"]
+      }
+      record_daily_activity: {
+        Args: { _xp?: number }
+        Returns: {
+          current_streak: number
+          is_new_day: boolean
+          longest_streak: number
+          total_xp: number
+        }[]
       }
       redeem_iq_promo_code: { Args: { _code: string }; Returns: Json }
       redeem_iq_referral_code: { Args: { _code: string }; Returns: Json }
