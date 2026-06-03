@@ -62423,6 +62423,7 @@ export type Database = {
         Returns: undefined
       }
       give_starter_balance: { Args: { p_user_id: string }; Returns: undefined }
+      grant_founder_role: { Args: { _user_id: string }; Returns: undefined }
       has_active_megatalent_subscription: {
         Args: { _user_id: string }
         Returns: boolean
@@ -62562,6 +62563,15 @@ export type Database = {
       is_vip_user: { Args: { user_id_param: string }; Returns: boolean }
       join_guild: { Args: { _guild_id: string }; Returns: Json }
       leave_guild: { Args: never; Returns: Json }
+      list_verified_founders: {
+        Args: never
+        Returns: {
+          email: string
+          full_name: string
+          granted_at: string
+          user_id: string
+        }[]
+      }
       log_admin_action: {
         Args: {
           _action: string
@@ -62760,6 +62770,7 @@ export type Database = {
         Args: { _notes?: string; _report_id: string; _status: string }
         Returns: undefined
       }
+      revoke_founder_role: { Args: { _user_id: string }; Returns: undefined }
       rotate_mystery_events: { Args: never; Returns: undefined }
       rotate_seasonal_missions: { Args: never; Returns: Json }
       search_users: {
