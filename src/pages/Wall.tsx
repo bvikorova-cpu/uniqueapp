@@ -753,7 +753,7 @@ const Feed = () => {
               {activeView === "streaks" && <WallPostingStreaks />}
               {activeView === "ranks" && <WallEngagementLeaderboard />}
               {activeView === "badges" && <WallCreatorBadges />}
-              {activeView === "challenges" && <WallSocialChallenges />}
+              {activeView === "challenges" && <StreaksAndChallenges />}
             </div>
           </>
         );
