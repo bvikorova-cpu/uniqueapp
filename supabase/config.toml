@@ -222,6 +222,12 @@ verify_jwt = true
 [functions.activate-job-listing]
 verify_jwt = true
 
+[functions.create-one-off-payment]
+verify_jwt = true
+
+[functions.verify-job-listing-payment]
+verify_jwt = true
+
 [functions.check-employer-payment]
 verify_jwt = true
 
