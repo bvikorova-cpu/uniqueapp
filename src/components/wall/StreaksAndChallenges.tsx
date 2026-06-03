@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import { Flame, Target, Trophy, Zap, ChevronRight, Star, Calendar, Users, TrendingUp } from "lucide-react";
@@ -80,6 +80,16 @@ const mockChallenges: Challenge[] = [
 export function StreaksAndChallenges() {
   const [activeTab, setActiveTab] = useState<"streak" | "challenges">("streak");
   const [expandedChallenge, setExpandedChallenge] = useState<string | null>(null);
+  const qc = useQueryClient();
+
+  useEffect(() => {
+    const handler = () => {
+      qc.invalidateQueries({ queryKey: ["user-streak"] });
+      qc.invalidateQueries({ queryKey: ["streak-week"] });
+    };
+    window.addEventListener("streak-updated", handler);
+    return () => window.removeEventListener("streak-updated", handler);
+  }, [qc]);
 
   const { data: user } = useQuery({
     queryKey: ["current-user"],
