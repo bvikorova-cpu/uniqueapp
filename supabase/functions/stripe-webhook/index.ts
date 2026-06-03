@@ -382,6 +382,9 @@ serve(async (req) => {
                     Date.now() + Math.max(durationDays, 30) * 86400000,
                   ).toISOString();
 
+                  const piIdFb = typeof session.payment_intent === "string"
+                    ? session.payment_intent
+                    : (session.payment_intent as any)?.id ?? null;
                   const { error: payErr } = await supabase
                     .from("job_listing_payments")
                     .upsert(
@@ -389,6 +392,7 @@ serve(async (req) => {
                         user_id: listing.employer_id,
                         job_id: jobListingId,
                         stripe_session_id: session.id,
+                        stripe_payment_intent_id: piIdFb,
                         amount: session.amount_total ?? 0,
                         duration_days: durationDays,
                         status: "completed",
