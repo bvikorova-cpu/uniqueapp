@@ -94,14 +94,9 @@ export default function RewardsBattlePass() {
   };
 
   const purchasePremium = async () => {
-    if (!user || !season) return;
-    const { error } = await supabase.from("user_battle_pass")
-      .update({ has_premium: true, premium_purchased_at: new Date().toISOString() })
-      .eq("user_id", user.id)
-      .eq("season_id", season.id);
-    if (error) { toast.error(error.message); return; }
-    toast.success("Premium Battle Pass unlocked! 🎉");
-    refresh();
+    // Payment flow not yet wired. Server trigger blocks client-side has_premium flips,
+    // so we surface a clear message instead of attempting an INSERT that will fail.
+    toast.info("Premium Battle Pass checkout coming soon");
   };
 
   if (loading) return <p className="text-sm text-muted-foreground p-4">{"Loading Battle Pass..."}</p>;
