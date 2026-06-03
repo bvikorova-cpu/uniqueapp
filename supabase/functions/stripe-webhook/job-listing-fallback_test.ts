@@ -113,10 +113,10 @@ Deno.test("webhook: real job_listing → activates listing + creates payment row
 
   const { data: pay } = await sb
     .from("job_listing_payments")
-    .select("status, stripe_session_id, product_kind")
+    .select("status, stripe_session_id, duration_days")
     .eq("stripe_session_id", sessionId)
     .maybeSingle();
   console.log("[real-listing] payment row:", pay);
   assertEquals(pay?.status, "completed");
-  assertEquals(pay?.product_kind, "job_listing_7");
+  assertEquals(pay?.duration_days, 7);
 });
