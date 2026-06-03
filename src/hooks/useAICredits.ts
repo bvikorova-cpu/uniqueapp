@@ -81,6 +81,12 @@ export const useAICredits = () => {
     loadCredits();
   }, [loadCredits]);
 
+  useEffect(() => {
+    const handler = () => loadCredits();
+    window.addEventListener('ai-credits-updated', handler);
+    return () => window.removeEventListener('ai-credits-updated', handler);
+  }, [loadCredits]);
+
   /**
    * Spend 1 credit. Free tier first, paid AI fallback.
    * Returns boolean for backwards compat; use spendCreditDetailed for source info.
