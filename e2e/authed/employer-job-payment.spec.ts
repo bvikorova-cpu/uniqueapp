@@ -1,4 +1,6 @@
 import { test, expect, type Page, type Route } from "@playwright/test";
+import { readFileSync } from "node:fs";
+
 
 /**
  * Employer → Job listing → Stripe payment END-TO-END.
