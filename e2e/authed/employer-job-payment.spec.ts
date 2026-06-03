@@ -28,9 +28,9 @@ const PROJECT_REF = "jufrdzeonywluwutvyxz";
 const FAKE_STRIPE_URL = "https://checkout.stripe.com/c/pay/cs_test_e2e_stub_session";
 
 function readAccessToken(): string {
-  const fs = require("node:fs") as typeof import("node:fs");
-  const state = JSON.parse(fs.readFileSync("e2e/.auth/authed-state.json", "utf8"));
+  const state = JSON.parse(readFileSync("e2e/.auth/authed-state.json", "utf8"));
   const tokenKey = `sb-${PROJECT_REF}-auth-token`;
+
   for (const origin of state.origins) {
     const item = origin.localStorage.find((i: any) => i.name === tokenKey);
     if (item) return JSON.parse(item.value).access_token as string;
