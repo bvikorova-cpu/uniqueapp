@@ -59,11 +59,15 @@ test("realtime notification triggers chime in UI", async ({ page }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await page.waitForLoadState("load").catch(() => {});
 
-  // 2) Vytiahneme access_token a user id z localStorage.
-  const session = await page.evaluate((key) => {
+  // 2) Vytiahneme access_token z localStorage (key môže mať iný ref).
+  const session = await page.evaluate(() => {
+    const key = Object.keys(localStorage).find(
+      (k) => k.startsWith("sb-") && k.endsWith("-auth-token"),
+    );
+    if (!key) return null;
     const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : null;
-  }, STORAGE_KEY);
+    try { return raw ? JSON.parse(raw) : null; } catch { return null; }
+  });
   expect(session?.access_token, "missing supabase session in storage").toBeTruthy();
   const userId: string = session.user.id;
   const accessToken: string = session.access_token;
