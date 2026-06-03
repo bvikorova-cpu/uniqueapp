@@ -74,10 +74,13 @@ export const useStories = () => {
       });
 
       if (error) throw error;
+
+      // Award +15 XP & track Daily Storyteller challenge
+      await trackChallengeAction("story", 15);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["stories"] });
-      toast({ title: "Story created!" });
+      toast({ title: "Story created!", description: "+15 XP earned" });
     },
   });
 
