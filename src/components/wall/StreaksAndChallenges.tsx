@@ -102,9 +102,30 @@ export function StreaksAndChallenges() {
   const nextLevelXP = level * 200;
   const todayXP = week?.find(d => d.day_date === new Date().toISOString().slice(0, 10))?.xp_earned ?? 0;
 
-  const dailyChallenges = mockChallenges.filter((c) => c.type === "daily");
-  const weeklyChallenges = mockChallenges.filter((c) => c.type === "weekly");
-  const communityChallenges = mockChallenges.filter((c) => c.type === "community");
+  const { data: dbChallenges } = useQuery({
+    queryKey: ["user-challenges", user?.id],
+    enabled: !!user?.id,
+    queryFn: async () => {
+      const { data } = await supabase.rpc("get_user_challenges");
+      return (data ?? []) as DBChallenge[];
+    },
+  });
+
+  const mapped: Challenge[] = (dbChallenges ?? []).map((c) => ({
+    id: c.id,
+    title: c.title,
+    description: c.description,
+    icon: c.icon,
+    xpReward: c.xp_reward,
+    progress: c.completed ? c.target_count : Math.min(c.progress, c.target_count),
+    target: c.target_count,
+    type: c.challenge_type,
+    endsIn: formatEndsIn(c.ends_at),
+  }));
+
+  const dailyChallenges = mapped.filter((c) => c.type === "daily");
+  const weeklyChallenges = mapped.filter((c) => c.type === "weekly");
+  const communityChallenges = mapped.filter((c) => c.type === "community");
 
 
   return (
