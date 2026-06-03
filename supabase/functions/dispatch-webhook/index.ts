@@ -36,6 +36,32 @@ if (VAPID_PUBLIC && VAPID_PRIVATE) {
   webpush.setVapidDetails(VAPID_SUBJECT, VAPID_PUBLIC, VAPID_PRIVATE);
 }
 
+async function ensureInAppFallback(admin: ReturnType<typeof createClient>, userIds: string[], payload: Record<string, any>) {
+  const type = String(payload?.type ?? "push_fallback");
+  const title = String(payload?.title ?? "Notification");
+  const message = String(payload?.body ?? "");
+  const action_url = payload?.url ? String(payload.url) : null;
+  const related_id = payload?.related_id ? String(payload.related_id) : null;
+  let inserted = 0;
+  for (const uid of userIds) {
+    try {
+      // Dedupe: skip if a matching notification already exists in the last 5 minutes
+      let q = admin.from("notifications").select("id", { head: true, count: "exact" })
+        .eq("user_id", uid).eq("type", type)
+        .gte("created_at", new Date(Date.now() - 5 * 60_000).toISOString());
+      if (related_id) q = q.eq("related_id", related_id);
+      const { count } = await q;
+      if ((count ?? 0) > 0) continue;
+      const { error } = await admin.from("notifications").insert({
+        user_id: uid, type, title, message, action_url, related_id, is_read: false,
+      });
+      if (!error) inserted += 1;
+      else console.error("fallback notification insert failed", error.message);
+    } catch (e) { console.error("fallback err", (e as Error).message); }
+  }
+  return { inserted };
+}
+
 async function sendPushNotifications(admin: ReturnType<typeof createClient>, userIds: string[], payload: Record<string, unknown>) {
   if (!VAPID_PUBLIC || !VAPID_PRIVATE) throw new Error("Missing VAPID configuration");
 
@@ -55,7 +81,8 @@ async function sendPushNotifications(admin: ReturnType<typeof createClient>, use
   }
   if (!subs?.length) {
     await logRow({ user_ids: userIds, payload, status: "no_subscriptions", sent_count: 0, removed_count: 0, source: "dispatch-webhook" });
-    return { sent: 0, removed: 0 };
+    const fallback = await ensureInAppFallback(admin, userIds, payload);
+    return { sent: 0, removed: 0, in_app_fallback: fallback };
   }
 
   const stale: string[] = [];
