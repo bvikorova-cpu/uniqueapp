@@ -235,12 +235,7 @@ export function WallPostActions({
       if (error) throw error;
       setNewComment("");
       setCommentsCount((c) => c + 1);
-      supabase.rpc("record_daily_activity", { _xp: 10 }).then(() => {
-        window.dispatchEvent(new Event("streak-updated"));
-      });
-      supabase.rpc("track_challenge_action", { _action: "comment" }).then(() => {
-        window.dispatchEvent(new Event("challenges-updated"));
-      });
+      trackChallengeAction("comment", 10);
       await fetchComments();
     } catch (err: any) {
       toast({
