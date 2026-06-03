@@ -64,7 +64,7 @@ export default function StreakHeatmap({ userId }: { userId: string }) {
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: i * 0.01 }}
-                  className={`aspect-square rounded-sm sm:rounded-md transition-colors cursor-pointer ${
+                  className={`aspect-square rounded-sm sm:rounded-md transition-colors ${
                     day.active
                       ? "bg-primary hover:bg-primary/80"
                       : "bg-muted/30 hover:bg-muted/50"

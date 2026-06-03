@@ -51,6 +51,8 @@ export function getNotificationRoute(n: NotifLike): string {
     weekly_xp_winner: "/rewards",
     weekly_xp_leaderboard: "/rewards",
     xp_milestone: "/rewards",
+    xp_gift_received: "/rewards?tab=gift-xp",
+    xp_gift_sent: "/rewards?tab=gift-xp",
     achievement: "/education/achievements",
 
     // Messaging

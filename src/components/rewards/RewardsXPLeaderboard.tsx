@@ -17,51 +17,78 @@ interface LeaderboardEntry {
   rank: number;
 }
 
-async function fetchLeaderboard(): Promise<LeaderboardEntry[]> {
-  // Pull top 50 by total_points; join profile for name/avatar; count badges client-side per row.
-  const { data: points, error } = await supabase
-    .from("user_points")
-    .select("user_id, total_points, level, login_streak")
-    .order("total_points", { ascending: false })
-    .limit(50);
+type Period = "weekly" | "monthly" | "alltime";
 
-  if (error || !points || points.length === 0) return [];
+async function fetchLeaderboard(period: Period): Promise<LeaderboardEntry[]> {
+  let totals: { user_id: string; total: number }[] = [];
 
-  const userIds = points.map((p) => p.user_id);
-  const [profilesRes, badgesRes] = await Promise.all([
+  if (period === "alltime") {
+    const { data, error } = await supabase
+      .from("user_points")
+      .select("user_id, total_points")
+      .order("total_points", { ascending: false })
+      .limit(50);
+    if (error || !data) return [];
+    totals = data.map((r) => ({ user_id: r.user_id, total: r.total_points ?? 0 }));
+  } else {
+    const since = new Date();
+    since.setDate(since.getDate() - (period === "weekly" ? 7 : 30));
+    const { data, error } = await supabase
+      .from("xp_events")
+      .select("user_id, amount")
+      .gte("created_at", since.toISOString())
+      .gt("amount", 0)
+      .limit(5000);
+    if (error || !data) return [];
+    const agg = new Map<string, number>();
+    for (const r of data as any[]) {
+      agg.set(r.user_id, (agg.get(r.user_id) ?? 0) + (r.amount ?? 0));
+    }
+    totals = [...agg.entries()]
+      .map(([user_id, total]) => ({ user_id, total }))
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 50);
+  }
+
+  if (totals.length === 0) return [];
+  const userIds = totals.map((t) => t.user_id);
+
+  const [pointsRes, profilesRes, badgesRes] = await Promise.all([
+    supabase.from("user_points").select("user_id, level, login_streak").in("user_id", userIds),
     (supabase as any).from("profiles_public").select("id, full_name, username, avatar_url").in("id", userIds),
     supabase.from("user_badges").select("user_id").in("user_id", userIds),
   ]);
 
+  const pointsMap = new Map((pointsRes.data ?? []).map((p: any) => [p.user_id, p]));
   const profileMap = new Map((profilesRes.data ?? []).map((p: any) => [p.id, p]));
   const badgeCounts = new Map<string, number>();
   for (const b of badgesRes.data ?? []) {
     badgeCounts.set(b.user_id, (badgeCounts.get(b.user_id) ?? 0) + 1);
   }
 
-  return points
-    .filter((p) => p.total_points > 0)
-    .map((p, i) => {
-      const profile: any = profileMap.get(p.user_id);
+  return totals
+    .filter((t) => t.total > 0)
+    .map((t, i) => {
+      const profile: any = profileMap.get(t.user_id);
+      const pts: any = pointsMap.get(t.user_id);
       return {
-        user_id: p.user_id,
-        display_name:
-          profile?.username || profile?.full_name || `Player ${p.user_id.slice(0, 4)}`,
+        user_id: t.user_id,
+        display_name: profile?.username || profile?.full_name || `Player ${t.user_id.slice(0, 4)}`,
         avatar_url: profile?.avatar_url ?? null,
-        total_points: p.total_points,
-        level: p.level ?? 1,
-        login_streak: p.login_streak ?? 0,
-        badges: badgeCounts.get(p.user_id) ?? 0,
+        total_points: t.total,
+        level: pts?.level ?? 1,
+        login_streak: pts?.login_streak ?? 0,
+        badges: badgeCounts.get(t.user_id) ?? 0,
         rank: i + 1,
       };
     });
 }
 
 export default function RewardsXPLeaderboard() {
-  const [period, setPeriod] = useState("alltime");
+  const [period, setPeriod] = useState<Period>("alltime");
   const { data: leaderboard = [], isLoading } = useQuery({
     queryKey: ["rewards-xp-leaderboard", period],
-    queryFn: fetchLeaderboard,
+    queryFn: () => fetchLeaderboard(period),
     staleTime: 60_000,
   });
 
@@ -83,7 +110,7 @@ export default function RewardsXPLeaderboard() {
     <Card className="p-4 bg-card/80 backdrop-blur-md border-amber-400/15">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-bold flex items-center gap-2"><Trophy className="h-5 w-5 text-amber-500" /> XP Leaderboard</h3>
-        <Tabs value={period} onValueChange={setPeriod}>
+        <Tabs value={period} onValueChange={(v) => setPeriod(v as Period)}>
           <TabsList className="h-8">
             <TabsTrigger value="weekly" className="text-xs px-3 h-7">Weekly</TabsTrigger>
             <TabsTrigger value="monthly" className="text-xs px-3 h-7">Monthly</TabsTrigger>
@@ -91,12 +118,6 @@ export default function RewardsXPLeaderboard() {
           </TabsList>
         </Tabs>
       </div>
-
-      {period !== "alltime" && (
-        <p className="text-xs text-muted-foreground mb-3 italic">
-          Weekly & monthly rankings coming soon — showing all-time leaders.
-        </p>
-      )}
 
       {isLoading ? (
         <div className="flex items-center justify-center py-12 text-muted-foreground">
