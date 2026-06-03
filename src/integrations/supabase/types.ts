@@ -9286,6 +9286,51 @@ export type Database = {
           },
         ]
       }
+      challenges: {
+        Row: {
+          action_type: string
+          active: boolean
+          challenge_type: string
+          created_at: string
+          description: string
+          ends_at: string | null
+          icon: string
+          id: string
+          slug: string
+          target_count: number
+          title: string
+          xp_reward: number
+        }
+        Insert: {
+          action_type: string
+          active?: boolean
+          challenge_type: string
+          created_at?: string
+          description: string
+          ends_at?: string | null
+          icon?: string
+          id?: string
+          slug: string
+          target_count?: number
+          title: string
+          xp_reward?: number
+        }
+        Update: {
+          action_type?: string
+          active?: boolean
+          challenge_type?: string
+          created_at?: string
+          description?: string
+          ends_at?: string | null
+          icon?: string
+          id?: string
+          slug?: string
+          target_count?: number
+          title?: string
+          xp_reward?: number
+        }
+        Relationships: []
+      }
       character_battles: {
         Row: {
           battle_commentary: string | null
@@ -56382,6 +56427,41 @@ export type Database = {
           },
         ]
       }
+      user_challenge_progress: {
+        Row: {
+          challenge_id: string
+          completed_at: string | null
+          period_key: string
+          progress: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          completed_at?: string | null
+          period_key: string
+          progress?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          completed_at?: string | null
+          period_key?: string
+          progress?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_challenge_progress_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_character_access: {
         Row: {
           character_id: string
@@ -61480,6 +61560,7 @@ export type Database = {
         Args: { _author: string; _privacy: string; _viewer: string }
         Returns: boolean
       }
+      challenge_period_key: { Args: { _type: string }; Returns: string }
       check_and_award_badges: {
         Args: { p_user_id: string }
         Returns: undefined
@@ -62253,6 +62334,22 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_user_challenges: {
+        Args: never
+        Returns: {
+          challenge_type: string
+          completed: boolean
+          description: string
+          ends_at: string
+          icon: string
+          id: string
+          progress: number
+          slug: string
+          target_count: number
+          title: string
+          xp_reward: number
+        }[]
+      }
       get_user_mission_progress: {
         Args: never
         Returns: {
@@ -62746,6 +62843,7 @@ export type Database = {
           suggested_id: string
         }[]
       }
+      track_challenge_action: { Args: { _action: string }; Returns: number }
       unaccent: { Args: { "": string }; Returns: string }
       update_battle_stats: {
         Args: { loser_id: string; winner_id: string }
