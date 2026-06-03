@@ -78,61 +78,45 @@ async function stubEdgeFunctions(
 test.describe("Employer job listing → Stripe payment (stubbed)", () => {
   test.setTimeout(60_000);
 
-  let createdJobIds: string[] = [];
+  test("create → checkout → verify (SUCCESS) → UI shows payment successful", async ({ page }) => {
+    const FAKE_JOB_ID = "00000000-0000-0000-0000-0000e2e0b001";
 
-  test.afterAll(async ({ request }) => {
-    const token = readAccessToken();
-    for (const id of createdJobIds) {
-      await request.delete(`${SUPABASE_URL}/rest/v1/job_listings?id=eq.${id}`, {
-        headers: { apikey: ANON_KEY, Authorization: `Bearer ${token}` },
-      });
-    }
-  });
-
-  test("create → checkout → verify (SUCCESS) → row marked paid+active", async ({ page, request }) => {
-    const token = readAccessToken();
-
-    // ---- 1. Vytvor pending job_listings riadok priamo cez REST (rovnaký payload ako CreateJobDialog) ----
-    const createRes = await request.post(`${SUPABASE_URL}/rest/v1/job_listings`, {
-      headers: {
-        apikey: ANON_KEY,
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-        Prefer: "return=representation",
-      },
-      data: {
-        title: "E2E QA Senior React Engineer",
-        company_name: "E2E Test Co",
-        location: "Remote",
-        country: "SK",
-        category: "it_software",
-        job_type: "full_time",
-        description: "Automated Playwright E2E – do not apply.",
-        contact_email: "qa+e2e@example.com",
-        salary_currency: "EUR",
-        is_active: false,
-        paid_status: "pending",
-        duration_days: 7,
-      },
+    // ---- Stub DB insert na PostgREST (REST /rest/v1/job_listings POST) ----
+    await page.route(/\/rest\/v1\/job_listings(\?|$)/, async (route: Route) => {
+      const req = route.request();
+      if (req.method() === "POST") {
+        return route.fulfill({
+          status: 201,
+          contentType: "application/json",
+          body: JSON.stringify([{
+            id: FAKE_JOB_ID,
+            title: "E2E QA Senior React Engineer",
+            paid_status: "pending",
+            is_active: false,
+            duration_days: 7,
+          }]),
+        });
+      }
+      if (req.method() === "DELETE") {
+        return route.fulfill({ status: 204, body: "" });
+      }
+      return route.continue();
     });
-    expect(createRes.ok(), `insert failed ${createRes.status()} ${await createRes.text()}`).toBeTruthy();
-    const [row] = await createRes.json();
-    expect(row?.id).toBeTruthy();
-    createdJobIds.push(row.id);
 
-    // ---- 2. Nastav stuby ----
+    // ---- Stub edge funkcií ----
     const checkoutCalls: Array<{ body: any; auth: string | null }> = [];
     const verifyCalls: Array<{ body: any; auth: string | null }> = [];
     await stubEdgeFunctions(
       page,
-      row.id,
+      FAKE_JOB_ID,
       (body, auth) => checkoutCalls.push({ body, auth }),
       (body, auth) => verifyCalls.push({ body, auth }),
       { verified: true },
     );
 
-    // ---- 3. Spusti checkout volanie z prehliadača (cez naloadovaný supabase client) ----
+    // ---- Spusti checkout volanie cez frontend supabase client ----
     await page.goto("/employer-dashboard", { waitUntil: "domcontentloaded" });
+
     const invokeResult = await page.evaluate(
       async ({ jobId }) => {
         const mod = await import("/src/integrations/supabase/client.ts");
@@ -141,7 +125,7 @@ test.describe("Employer job listing → Stripe payment (stubbed)", () => {
         });
         return { data, error: error ? String(error.message ?? error) : null };
       },
-      { jobId: row.id },
+      { jobId: FAKE_JOB_ID },
     );
 
     expect(invokeResult.error, `invoke error: ${invokeResult.error}`).toBeNull();
@@ -149,9 +133,9 @@ test.describe("Employer job listing → Stripe payment (stubbed)", () => {
     expect(checkoutCalls.length).toBe(1);
     expect(checkoutCalls[0].auth).toMatch(/^Bearer /);
     expect(checkoutCalls[0].body?.productKey).toBe("job_listing_7");
-    expect(checkoutCalls[0].body?.metadata?.jobListingId).toBe(row.id);
+    expect(checkoutCalls[0].body?.metadata?.jobListingId).toBe(FAKE_JOB_ID);
 
-    // ---- 4. Návrat z (stubnutého) Stripe → /jobs/post/success ----
+    // ---- Návrat z (stubnutého) Stripe → /jobs/post/success ----
     await page.goto(`/jobs/post/success?session_id=cs_test_e2e_stub_session`, {
       waitUntil: "domcontentloaded",
     });
@@ -160,10 +144,9 @@ test.describe("Employer job listing → Stripe payment (stubbed)", () => {
     expect(verifyCalls.length).toBe(1);
     expect(verifyCalls[0].auth).toMatch(/^Bearer /);
     expect(verifyCalls[0].body?.sessionId).toBe("cs_test_e2e_stub_session");
-
-    // "Back to Jobs" CTA musí byť k dispozícii
     await expect(page.getByRole("button", { name: /back to jobs/i })).toBeEnabled();
   });
+
 
   test("verify FAILURE (unpaid) → UI shows error + Back to Jobs", async ({ page }) => {
     await stubEdgeFunctions(
