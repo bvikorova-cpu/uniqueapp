@@ -3,7 +3,9 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Target, Clock, Zap, Trophy, MessageSquare, Heart, Users } from "lucide-react";
+import { Target, Clock, Zap, MessageSquare, Heart } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Challenge {
   id: string;
@@ -17,49 +19,14 @@ interface Challenge {
   color: string;
 }
 
-const getWeeklyChallenges = (): Challenge[] => [
-  {
-    id: "posts",
-    title: "Content Creator",
-    description: "Create 5 posts this week",
-    icon: Target,
-    xpReward: 50,
-    progress: 0,
-    goal: 5,
-    color: "text-primary",
-  },
-  {
-    id: "comments",
-    title: "Conversation Starter",
-    description: "Leave 10 comments",
-    icon: MessageSquare,
-    xpReward: 30,
-    progress: 0,
-    goal: 10,
-    color: "text-blue-500",
-  },
-  {
-    id: "likes",
-    title: "Supporter",
-    description: "Like 20 posts",
-    icon: Heart,
-    xpReward: 20,
-    progress: 0,
-    goal: 20,
-    color: "text-pink-500",
-  },
-  {
-    id: "streak",
-    title: "Streak Master",
-    description: "Login 7 days in a row",
-    icon: Zap,
-    xpReward: 100,
-    multiplier: "2x XP",
-    progress: 0,
-    goal: 7,
-    color: "text-orange-500",
-  },
-];
+function buildChallenges(p: { posts: number; comments: number; likes: number; streak: number }): Challenge[] {
+  return [
+    { id: "posts", title: "Content Creator", description: "Create 5 posts this week", icon: Target, xpReward: 50, progress: p.posts, goal: 5, color: "text-primary" },
+    { id: "comments", title: "Conversation Starter", description: "Leave 10 comments", icon: MessageSquare, xpReward: 30, progress: p.comments, goal: 10, color: "text-blue-500" },
+    { id: "likes", title: "Supporter", description: "Like 20 posts", icon: Heart, xpReward: 20, progress: p.likes, goal: 20, color: "text-pink-500" },
+    { id: "streak", title: "Streak Master", description: "Login 7 days in a row", icon: Zap, xpReward: 100, multiplier: "2x XP", progress: p.streak, goal: 7, color: "text-orange-500" },
+  ];
+}
 
 function getTimeUntilReset() {
   const now = new Date();
@@ -73,13 +40,32 @@ function getTimeUntilReset() {
 }
 
 export default function WeeklyChallenges() {
+  const { user } = useAuth();
   const [timeLeft, setTimeLeft] = useState(getTimeUntilReset());
-  const challenges = getWeeklyChallenges();
+  const [progress, setProgress] = useState({ posts: 0, comments: 0, likes: 0, streak: 0 });
+  const challenges = buildChallenges(progress);
 
   useEffect(() => {
     const timer = setInterval(() => setTimeLeft(getTimeUntilReset()), 60000);
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase.rpc("get_weekly_challenge_progress" as any);
+      const res = data as any;
+      if (cancelled || !res?.ok) return;
+      setProgress({
+        posts: res.posts ?? 0,
+        comments: res.comments ?? 0,
+        likes: res.likes ?? 0,
+        streak: res.streak ?? 0,
+      });
+    })();
+    return () => { cancelled = true; };
+  }, [user?.id]);
 
   return (
     <Card className="backdrop-blur-xl bg-card/80 border-primary/20 overflow-hidden">

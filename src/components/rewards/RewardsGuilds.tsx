@@ -55,16 +55,20 @@ export default function RewardsGuilds() {
 
   const join = async (guildId: string) => {
     if (!user) return;
-    const { error } = await supabase.from("guild_members").insert({ guild_id: guildId, user_id: user.id, role: "member" });
+    const { data, error } = await supabase.rpc("join_guild" as any, { _guild_id: guildId });
     if (error) return toast.error(error.message);
-    await supabase.rpc("increment" as any, {}).then(() => {});
+    const res = data as any;
+    if (!res?.ok) return toast.error(res?.error ?? "Failed to join");
     toast.success("Joined!");
     load();
   };
 
   const leave = async () => {
     if (!user || !myGuild) return;
-    await supabase.from("guild_members").delete().eq("guild_id", myGuild.guild_id).eq("user_id", user.id);
+    const { data, error } = await supabase.rpc("leave_guild" as any, {});
+    if (error) return toast.error(error.message);
+    const res = data as any;
+    if (!res?.ok) return toast.error(res?.error ?? "Failed to leave");
     toast.success("Left guild");
     setMyGuild(null);
     load();

@@ -61197,6 +61197,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      accept_friend_quest_invite: {
+        Args: { _invite_id: string }
+        Returns: Json
+      }
       accept_iq_friend: { Args: { _friendship_id: string }; Returns: boolean }
       accept_iq_friend_challenge: {
         Args: { _code: string }
@@ -61347,6 +61351,10 @@ export type Database = {
         Returns: Json
       }
       bucket_30s: { Args: { ts: string }; Returns: number }
+      buy_streak_freeze_xp: {
+        Args: { _cost_xp: number; _qty: number }
+        Returns: Json
+      }
       cache_get: { Args: { p_key: string }; Returns: Json }
       cache_invalidate_by_tag: { Args: { p_tag: string }; Returns: number }
       cache_set: {
@@ -61584,6 +61592,15 @@ export type Database = {
       dispatch_push: {
         Args: { _payload: Json; _user_ids: string[] }
         Returns: undefined
+      }
+      donate_xp: {
+        Args: {
+          _amount: number
+          _campaign_id?: string
+          _campaign_name?: string
+          _rate?: number
+        }
+        Returns: Json
       }
       edu_is_study_group_member: {
         Args: { _group_id: string; _user_id: string }
@@ -62167,6 +62184,7 @@ export type Database = {
         Args: { _cursor?: string; _limit?: number }
         Returns: Json
       }
+      get_weekly_challenge_progress: { Args: never; Returns: Json }
       get_weekly_xp_leaderboard: {
         Args: never
         Returns: {
@@ -62331,6 +62349,8 @@ export type Database = {
         Returns: boolean
       }
       is_vip_user: { Args: { user_id_param: string }; Returns: boolean }
+      join_guild: { Args: { _guild_id: string }; Returns: Json }
+      leave_guild: { Args: never; Returns: Json }
       log_admin_action: {
         Args: {
           _action: string

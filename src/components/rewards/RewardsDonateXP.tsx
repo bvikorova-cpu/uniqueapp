@@ -44,16 +44,16 @@ export default function RewardsDonateXP() {
     setLoading(true);
     const eur = amount / RATE;
     const camp = campaigns.find(c => c.id === selectedId);
-    const { error } = await supabase.from("xp_charity_donations").insert({
-      user_id: user.id,
-      campaign_id: selectedId || null,
-      campaign_name: camp?.title || "General fund",
-      xp_amount: amount,
-      eur_value: eur,
-      conversion_rate: RATE,
+    const { data, error } = await supabase.rpc("donate_xp" as any, {
+      _amount: amount,
+      _campaign_id: selectedId || null,
+      _campaign_name: camp?.title || "General fund",
+      _rate: RATE,
     });
     setLoading(false);
     if (error) return toast.error(error.message);
+    const res = data as any;
+    if (!res?.ok) return toast.error(res?.error ?? "Donation failed");
     toast.success(`Donated ${amount} XP (€${eur.toFixed(2)})!`);
     load();
   };

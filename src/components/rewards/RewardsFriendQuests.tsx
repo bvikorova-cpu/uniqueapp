@@ -57,14 +57,10 @@ export default function RewardsFriendQuests() {
 
   const accept = async (inv: any) => {
     if (!user) return;
-    const qt = QUEST_TYPES.find(q => q.id === inv.quest_type) || QUEST_TYPES[0];
-    const ends = new Date(); ends.setDate(ends.getDate() + 14);
-    const { error: e1 } = await supabase.from("friend_quests").insert({
-      quest_type: qt.id, title: qt.title, user_a: inv.from_user, user_b: user.id,
-      target_value: qt.target, reward_xp: qt.reward, ends_at: ends.toISOString(),
-    });
-    if (e1) return toast.error(e1.message);
-    await supabase.from("friend_quest_invites").update({ status: "accepted", responded_at: new Date().toISOString() }).eq("id", inv.id);
+    const { data, error } = await supabase.rpc("accept_friend_quest_invite" as any, { _invite_id: inv.id });
+    if (error) return toast.error(error.message);
+    const res = data as any;
+    if (!res?.ok) return toast.error(res?.error ?? "Failed to accept");
     toast.success("Quest started!");
     load();
   };
