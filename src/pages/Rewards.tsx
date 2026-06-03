@@ -139,6 +139,31 @@ export default function Rewards() {
     };
   }, [navigate]);
 
+  // Stripe return: verify rewards purchase once, then notify components to refresh.
+  const verifiedRef = useRef(false);
+  useEffect(() => {
+    const sid = searchParams.get("session_id");
+    if (!sid || verifiedRef.current) return;
+    verifiedRef.current = true;
+    (async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke("verify-rewards-payment", {
+          body: { sessionId: sid },
+        });
+        if (error) throw error;
+        if ((data as any)?.ok) {
+          window.dispatchEvent(new CustomEvent("rewards-purchase-completed"));
+        }
+      } catch (e) {
+        console.error("[rewards verify]", e);
+      } finally {
+        const next = new URLSearchParams(searchParams);
+        next.delete("session_id"); next.delete("payment"); next.delete("success");
+        setSearchParams(next, { replace: true });
+      }
+    })();
+  }, [searchParams, setSearchParams]);
+
   // Scroll active tab into view (mobile UX — 24 tabs in horizontal scroller).
   useEffect(() => {
     const el = tabRefs.current[activeView];
