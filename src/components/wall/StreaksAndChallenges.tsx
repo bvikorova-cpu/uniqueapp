@@ -209,7 +209,7 @@ export function StreaksAndChallenges() {
                 </div>
                 <Badge variant="outline" className="text-[10px]">
                   <Zap className="h-3 w-3 mr-0.5 text-yellow-500" />
-                  +50 XP today
+                  +{todayXP} XP today
                 </Badge>
               </div>
               <Progress value={(currentXP / nextLevelXP) * 100} className="h-2" />
