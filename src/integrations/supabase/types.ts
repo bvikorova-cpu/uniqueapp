@@ -57234,6 +57234,7 @@ export type Database = {
           last_login_date: string | null
           level: number | null
           login_streak: number | null
+          longest_streak: number
           total_points: number | null
           updated_at: string | null
           user_id: string
@@ -57245,6 +57246,7 @@ export type Database = {
           last_login_date?: string | null
           level?: number | null
           login_streak?: number | null
+          longest_streak?: number
           total_points?: number | null
           updated_at?: string | null
           user_id: string
@@ -57256,6 +57258,7 @@ export type Database = {
           last_login_date?: string | null
           level?: number | null
           login_streak?: number | null
+          longest_streak?: number
           total_points?: number | null
           updated_at?: string | null
           user_id?: string
