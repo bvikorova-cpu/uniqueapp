@@ -118,15 +118,26 @@ test.describe("Employer job listing → Stripe payment (stubbed)", () => {
     await page.goto("/employer-dashboard", { waitUntil: "domcontentloaded" });
 
     const invokeResult = await page.evaluate(
-      async ({ jobId }) => {
-        const mod = await import("/src/integrations/supabase/client.ts");
-        const { data, error } = await mod.supabase.functions.invoke("create-one-off-payment", {
-          body: { productKey: "job_listing_7", metadata: { jobListingId: jobId } },
+      async ({ jobId, supabaseUrl, anonKey }) => {
+        const tokenKey = `sb-jufrdzeonywluwutvyxz-auth-token`;
+        const raw = localStorage.getItem(tokenKey);
+        const session = raw ? JSON.parse(raw) : null;
+        const accessToken = session?.access_token;
+        const res = await fetch(`${supabaseUrl}/functions/v1/create-one-off-payment`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: anonKey,
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({ productKey: "job_listing_7", metadata: { jobListingId: jobId } }),
         });
-        return { data, error: error ? String(error.message ?? error) : null };
+        const data = await res.json().catch(() => null);
+        return { data, error: res.ok ? null : `HTTP ${res.status}` };
       },
-      { jobId: FAKE_JOB_ID },
+      { jobId: FAKE_JOB_ID, supabaseUrl: SUPABASE_URL, anonKey: ANON_KEY },
     );
+
 
     expect(invokeResult.error, `invoke error: ${invokeResult.error}`).toBeNull();
     expect(invokeResult.data?.url).toBe(FAKE_STRIPE_URL);
