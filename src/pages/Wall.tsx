@@ -67,7 +67,7 @@ import WallAIToolsGrid from "@/components/wall/WallAIToolsGrid";
 import WallPostingStreaks from "@/components/wall/WallPostingStreaks";
 import WallEngagementLeaderboard from "@/components/wall/WallEngagementLeaderboard";
 import WallCreatorBadges from "@/components/wall/WallCreatorBadges";
-import WallSocialChallenges from "@/components/wall/WallSocialChallenges";
+import { StreaksAndChallenges } from "@/components/wall/StreaksAndChallenges";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import MonetagInFeedAd from "@/components/ads/MonetagInFeedAd";
