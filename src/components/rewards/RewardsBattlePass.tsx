@@ -94,10 +94,26 @@ export default function RewardsBattlePass() {
   };
 
   const purchasePremium = async () => {
-    // Payment flow not yet wired. Server trigger blocks client-side has_premium flips,
-    // so we surface a clear message instead of attempting an INSERT that will fail.
-    toast.info("Premium Battle Pass checkout coming soon");
+    if (!user || !season) return;
+    try {
+      const { data, error } = await supabase.functions.invoke("create-rewards-checkout", {
+        body: { kind: "battle_pass_premium" },
+      });
+      if (error) throw error;
+      const url = (data as any)?.url;
+      if (!url) throw new Error("No checkout URL");
+      window.location.href = url;
+    } catch (e: any) {
+      toast.error(e?.message || "Checkout failed");
+    }
   };
+
+  useEffect(() => {
+    const onDone = () => refresh();
+    window.addEventListener("rewards-purchase-completed", onDone);
+    return () => window.removeEventListener("rewards-purchase-completed", onDone);
+  }, [user?.id]);
+
 
   if (loading) return <p className="text-sm text-muted-foreground p-4">{"Loading Battle Pass..."}</p>;
   if (!season) return (
