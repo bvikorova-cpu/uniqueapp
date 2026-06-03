@@ -59,13 +59,21 @@ export default function LuckyWheel() {
     try {
       const { data, error } = await supabase.rpc("spin_lucky_wheel");
       if (error) throw error;
-      const r = data as unknown as SpinResult;
-      await new Promise((r) => setTimeout(r, 1800));
+      const r = data as unknown as (SpinResult & { error?: string });
+      await new Promise((res) => setTimeout(res, 1800));
+
+      if (r?.error === "already_spun_today") {
+        toast.error("Come back tomorrow", {
+          description: "You've already spun the wheel today.",
+        });
+        return;
+      }
+
       setResult(r);
       setBalance(r.balance_after);
       if (r.prize > 0) {
         toast.success(`You won ${r.prize} CR!`, {
-          description: `Net: ${r.net >= 0 ? "+" : ""}${r.net} CR`,
+          description: `Net: ${r.net >= 0 ? "+" : ""}${r.net} CR · Balance: ${r.balance_after} CR`,
         });
       } else {
         toast(`No win this time — lost ${SPIN_COST} CR`);
