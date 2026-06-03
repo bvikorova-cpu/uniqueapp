@@ -382,13 +382,11 @@ serve(async (req) => {
                   await supabase.from("job_listing_payments").upsert(
                     {
                       user_id: listing.employer_id,
-                      job_listing_id: jobListingId,
+                      job_id: jobListingId,
                       stripe_session_id: session.id,
                       amount: session.amount_total ?? 0,
-                      currency: (session.currency || "eur").toUpperCase(),
-                      product_kind: productKey,
+                      duration_days: durationDays,
                       status: "completed",
-                      completed_at: new Date().toISOString(),
                     },
                     { onConflict: "stripe_session_id" },
                   );
