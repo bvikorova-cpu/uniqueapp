@@ -18,7 +18,14 @@ const prizes = [
 
 export default function RewardsLuckyWheel() {
   const [spinning, setSpinning] = useState(false);
-  const [result, setResult] = useState<{ label: string; emoji: string; color: string } | null>(null);
+  const [result, setResult] = useState<{
+    label: string;
+    emoji: string;
+    color: string;
+    prize: number;
+    net: number;
+    balanceAfter: number;
+  } | null>(null);
   // Default false — guard against pre-check spin races. Enabled only after DB check returns 0.
   const [canSpin, setCanSpin] = useState(false);
   const [checking, setChecking] = useState(true);
