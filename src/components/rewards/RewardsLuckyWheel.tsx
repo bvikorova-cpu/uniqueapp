@@ -74,14 +74,17 @@ export default function RewardsLuckyWheel() {
     try {
       const { data, error } = await supabase.rpc("spin_lucky_wheel");
       if (error) throw error;
-      const res = data as { error?: string; prize?: string };
-      if (res?.error) {
+      const res = (data ?? {}) as { error?: string; prize?: string };
+      if (res.error) {
+        const isCooldown = res.error === "already_spun_today";
         toast({
-          title: "Spin failed",
-          description: res.error.replace(/_/g, " "),
-          variant: "destructive",
+          title: isCooldown ? "Come back tomorrow!" : "Spin failed",
+          description: isCooldown
+            ? "You've already spun the wheel today. New spin available tomorrow."
+            : res.error.replace(/_/g, " "),
+          variant: isCooldown ? "default" : "destructive",
         });
-        if (res.error === "already_spun_today" && mounted.current) setCanSpin(false);
+        if (isCooldown && mounted.current) setCanSpin(false);
         if (mounted.current) setSpinning(false);
         return;
       }
