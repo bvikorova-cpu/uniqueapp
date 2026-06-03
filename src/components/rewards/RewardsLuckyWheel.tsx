@@ -8,14 +8,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 
 const prizes = [
-  { label: "+25 XP", emoji: "⭐", color: "text-yellow-400" },
-  { label: "+50 XP", emoji: "💫", color: "text-amber-400" },
-  { label: "+100 XP", emoji: "🔥", color: "text-orange-500" },
-  { label: "Mystery Badge", emoji: "🏅", color: "text-purple-400" },
-  { label: "Streak Shield", emoji: "🛡️", color: "text-blue-400" },
-  { label: "+200 XP", emoji: "💎", color: "text-cyan-400" },
-  { label: "1 Free AI Credit", emoji: "🤖", color: "text-emerald-400" },
-  { label: "JACKPOT +500 XP", emoji: "👑", color: "text-amber-300" },
+  { label: "0 CR", emoji: "💨", color: "text-muted-foreground" },
+  { label: "2 CR", emoji: "🪙", color: "text-emerald-400" },
+  { label: "5 CR", emoji: "🪙", color: "text-emerald-400" },
+  { label: "10 CR", emoji: "💰", color: "text-yellow-400" },
+  { label: "25 CR", emoji: "💰", color: "text-amber-400" },
+  { label: "100 CR", emoji: "👑", color: "text-amber-300" },
 ];
 
 export default function RewardsLuckyWheel() {
