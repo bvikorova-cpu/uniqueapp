@@ -125,8 +125,8 @@ export default function RewardsStreakFreeze() {
               <Button onClick={() => buy(pack, "xp")} variant="outline" className="w-full">
                 {pack.xp} XP
               </Button>
-              <Button onClick={() => buy(pack, "eur")} disabled className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 opacity-60 cursor-not-allowed">
-                €{pack.eur} · soon
+              <Button onClick={() => buy(pack, "eur")} className="w-full bg-gradient-to-r from-cyan-500 to-blue-600">
+                €{pack.eur}
               </Button>
 
             </CardContent>
