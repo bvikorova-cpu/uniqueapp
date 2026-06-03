@@ -122,6 +122,9 @@ serve(async (req) => {
         amount: session.amount_total ?? 0,
         duration_days: durationDays,
         status: "completed",
+        expires_at: new Date(
+          Date.now() + Math.max(durationDays, 30) * 86400000,
+        ).toISOString(),
       },
       { onConflict: "stripe_session_id" }
     );
