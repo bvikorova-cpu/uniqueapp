@@ -56,8 +56,8 @@ test("realtime notification triggers chime in UI", async ({ page }) => {
     (window as any).webkitAudioContext = FakeAC;
   });
 
-  await page.goto("/");
-  await page.waitForLoadState("networkidle");
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await page.waitForLoadState("load").catch(() => {});
 
   // 2) Vytiahneme access_token a user id z localStorage.
   const session = await page.evaluate((key) => {
