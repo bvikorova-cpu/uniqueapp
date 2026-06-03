@@ -236,6 +236,9 @@ export function WallPostActions({
       supabase.rpc("record_daily_activity", { _xp: 10 }).then(() => {
         window.dispatchEvent(new Event("streak-updated"));
       });
+      supabase.rpc("track_challenge_action", { _action: "comment" }).then(() => {
+        window.dispatchEvent(new Event("challenges-updated"));
+      });
       await fetchComments();
     } catch (err: any) {
       toast({
