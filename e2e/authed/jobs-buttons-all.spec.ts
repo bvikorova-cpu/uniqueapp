@@ -79,7 +79,7 @@ test.describe("Jobs – button & navigation funkčnosť", () => {
   test("Tab buttons na /jobs reagujú (active state sa mení)", async ({ page }) => {
     await gotoAndSettle(page, "/jobs");
     // Tabs sú implementované cez setActiveTab – aspoň 2 by mali byť v DOM
-    const tabBtns = page.getByRole("button", { name: /search|browse|recommend|for you|saved|map/i });
+    const tabBtns = page.getByRole("button", { name: /^(jobs|ai tools|streaks|ranks|badges|challenges)$/i });
     const count = await tabBtns.count();
     expect(count, "Musí byť aspoň 2 tab buttony").toBeGreaterThanOrEqual(2);
 
