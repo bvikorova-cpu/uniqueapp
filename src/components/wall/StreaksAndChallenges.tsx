@@ -21,61 +21,28 @@ interface Challenge {
   endsIn?: string;
 }
 
-const mockChallenges: Challenge[] = [
-  {
-    id: "1",
-    title: "Daily Creator",
-    description: "Post at least once today",
-    icon: "✍️",
-    xpReward: 50,
-    progress: 0,
-    target: 1,
-    type: "daily",
-  },
-  {
-    id: "2",
-    title: "Social Butterfly",
-    description: "Leave 5 comments on friends' posts",
-    icon: "💬",
-    xpReward: 75,
-    progress: 3,
-    target: 5,
-    type: "daily",
-  },
-  {
-    id: "3",
-    title: "Reaction Master",
-    description: "React to 10 posts today",
-    icon: "❤️",
-    xpReward: 30,
-    progress: 7,
-    target: 10,
-    type: "daily",
-  },
-  {
-    id: "4",
-    title: "Weekly Storyteller",
-    description: "Share 5 stories this week",
-    icon: "📸",
-    xpReward: 200,
-    progress: 2,
-    target: 5,
-    type: "weekly",
-    endsIn: "3 days",
-  },
-  {
-    id: "5",
-    title: "Community Photo Challenge",
-    description: "Share your best sunset photo",
-    icon: "🌅",
-    xpReward: 500,
-    progress: 0,
-    target: 1,
-    type: "community",
-    participants: 1247,
-    endsIn: "5 days",
-  },
-];
+interface DBChallenge {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  icon: string;
+  challenge_type: "daily" | "weekly" | "community";
+  target_count: number;
+  xp_reward: number;
+  progress: number;
+  completed: boolean;
+  ends_at: string | null;
+}
+
+function formatEndsIn(endsAt: string | null): string | undefined {
+  if (!endsAt) return undefined;
+  const ms = new Date(endsAt).getTime() - Date.now();
+  if (ms <= 0) return "ended";
+  const days = Math.ceil(ms / 86400000);
+  return days === 1 ? "1 day" : `${days} days`;
+}
+
 
 export function StreaksAndChallenges() {
   const [activeTab, setActiveTab] = useState<"streak" | "challenges">("streak");
@@ -86,9 +53,14 @@ export function StreaksAndChallenges() {
     const handler = () => {
       qc.invalidateQueries({ queryKey: ["user-streak"] });
       qc.invalidateQueries({ queryKey: ["streak-week"] });
+      qc.invalidateQueries({ queryKey: ["user-challenges"] });
     };
     window.addEventListener("streak-updated", handler);
-    return () => window.removeEventListener("streak-updated", handler);
+    window.addEventListener("challenges-updated", handler);
+    return () => {
+      window.removeEventListener("streak-updated", handler);
+      window.removeEventListener("challenges-updated", handler);
+    };
   }, [qc]);
 
   const { data: user } = useQuery({
@@ -130,9 +102,30 @@ export function StreaksAndChallenges() {
   const nextLevelXP = level * 200;
   const todayXP = week?.find(d => d.day_date === new Date().toISOString().slice(0, 10))?.xp_earned ?? 0;
 
-  const dailyChallenges = mockChallenges.filter((c) => c.type === "daily");
-  const weeklyChallenges = mockChallenges.filter((c) => c.type === "weekly");
-  const communityChallenges = mockChallenges.filter((c) => c.type === "community");
+  const { data: dbChallenges } = useQuery({
+    queryKey: ["user-challenges", user?.id],
+    enabled: !!user?.id,
+    queryFn: async () => {
+      const { data } = await supabase.rpc("get_user_challenges");
+      return (data ?? []) as DBChallenge[];
+    },
+  });
+
+  const mapped: Challenge[] = (dbChallenges ?? []).map((c) => ({
+    id: c.id,
+    title: c.title,
+    description: c.description,
+    icon: c.icon,
+    xpReward: c.xp_reward,
+    progress: c.completed ? c.target_count : Math.min(c.progress, c.target_count),
+    target: c.target_count,
+    type: c.challenge_type,
+    endsIn: formatEndsIn(c.ends_at),
+  }));
+
+  const dailyChallenges = mapped.filter((c) => c.type === "daily");
+  const weeklyChallenges = mapped.filter((c) => c.type === "weekly");
+  const communityChallenges = mapped.filter((c) => c.type === "community");
 
 
   return (

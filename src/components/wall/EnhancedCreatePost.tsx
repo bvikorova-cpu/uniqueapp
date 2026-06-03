@@ -215,9 +215,12 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
         }
       }
 
-      // Record streak activity (+20 XP for a post)
+      // Record streak activity (+20 XP for a post) + challenge tracking
       supabase.rpc("record_daily_activity", { _xp: 20 }).then(() => {
         window.dispatchEvent(new Event("streak-updated"));
+      });
+      supabase.rpc("track_challenge_action", { _action: "post" }).then(() => {
+        window.dispatchEvent(new Event("challenges-updated"));
       });
 
       toast({ title: "Success!", description: "Post created successfully" });

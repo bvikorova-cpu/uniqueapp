@@ -151,6 +151,9 @@ export function WallPostActions({
           .from("post_likes")
           .insert({ post_id: postId, user_id: userId! });
         if (error) throw error;
+        supabase.rpc("track_challenge_action", { _action: "reaction" }).then(() => {
+          window.dispatchEvent(new Event("challenges-updated"));
+        });
       } else {
         const { error } = await supabase
           .from("post_likes")
@@ -235,6 +238,9 @@ export function WallPostActions({
       setCommentsCount((c) => c + 1);
       supabase.rpc("record_daily_activity", { _xp: 10 }).then(() => {
         window.dispatchEvent(new Event("streak-updated"));
+      });
+      supabase.rpc("track_challenge_action", { _action: "comment" }).then(() => {
+        window.dispatchEvent(new Event("challenges-updated"));
       });
       await fetchComments();
     } catch (err: any) {
