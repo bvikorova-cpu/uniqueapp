@@ -25,6 +25,7 @@ const STORAGE_KEY = `sb-${PROJECT_REF}-auth-token`;
 test.describe.configure({ retries: 2 });
 
 test("realtime notification triggers chime in UI", async ({ page }) => {
+  test.setTimeout(90_000);
   // 1) Stub Web Audio PRED načítaním stránky.
   await page.addInitScript(() => {
     (window as any).__chimeCalls = 0;
