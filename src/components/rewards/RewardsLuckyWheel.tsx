@@ -79,7 +79,12 @@ export default function RewardsLuckyWheel() {
     try {
       const { data, error } = await supabase.rpc("spin_lucky_wheel");
       if (error) throw error;
-      const res = (data ?? {}) as { error?: string; prize?: string };
+      const res = (data ?? {}) as {
+        error?: string;
+        prize?: number;
+        net?: number;
+        balance_after?: number;
+      };
       if (res.error) {
         const isCooldown = res.error === "already_spun_today";
         toast({
@@ -93,17 +98,29 @@ export default function RewardsLuckyWheel() {
         if (mounted.current) setSpinning(false);
         return;
       }
+      const prizeNum = res.prize ?? 0;
+      const netNum = res.net ?? prizeNum - 5;
+      const balanceAfter = res.balance_after ?? 0;
+      const prizeLabel = prizeNum > 0 ? `+${prizeNum} CR` : "0 CR";
       const matched =
-        prizes.find((p) => p.label === res.prize) ||
-        { label: res.prize ?? "Prize", emoji: "🎁", color: "text-amber-400" };
+        prizes.find((p) => p.label === prizeLabel) ??
+        (prizeNum > 0
+          ? { label: prizeLabel, emoji: "🪙", color: "text-emerald-400" }
+          : { label: prizeLabel, emoji: "💨", color: "text-muted-foreground" });
       revealTimer.current = setTimeout(() => {
         if (!mounted.current) return;
-        setResult(matched);
+        setResult({ ...matched, prize: prizeNum, net: netNum, balanceAfter });
         setSpinning(false);
         setCanSpin(false);
         toast({
-          title: `🎉 You won: ${matched.label}!`,
-          description: "XP/item credited to your account.",
+          title:
+            prizeNum > 0
+              ? `🎉 You won: ${prizeLabel}!`
+              : "💨 No win this time",
+          description:
+            prizeNum > 0
+              ? `Net: ${netNum >= 0 ? "+" : ""}${netNum} CR · Balance: ${balanceAfter} CR`
+              : `Lost 5 CR · Balance: ${balanceAfter} CR`,
         });
         qc.invalidateQueries({ queryKey: ["rewards-stats"] });
         qc.invalidateQueries({ queryKey: ["gamification"] });
