@@ -233,6 +233,9 @@ export function WallPostActions({
       if (error) throw error;
       setNewComment("");
       setCommentsCount((c) => c + 1);
+      supabase.rpc("record_daily_activity", { _xp: 10 }).then(() => {
+        window.dispatchEvent(new Event("streak-updated"));
+      });
       await fetchComments();
     } catch (err: any) {
       toast({
