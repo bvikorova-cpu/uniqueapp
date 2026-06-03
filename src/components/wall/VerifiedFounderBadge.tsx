@@ -7,47 +7,44 @@ import {
 } from "@/components/ui/tooltip";
 import { Shield, Crown, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-// HARDCODED FOUNDER IDENTITY - Cannot be changed via database
-const VERIFIED_FOUNDER = {
-  name: "Mgr. Beáta Vikorová, MBA, LL.M., MSc.",
-  email: "b.vikorova@gmail.com",
-};
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface VerifiedFounderBadgeProps {
-  userName: string;
+  userName?: string;
   userEmail?: string;
-  userId?: string;
+  userId?: string | null;
   className?: string;
   size?: "sm" | "md" | "lg";
 }
 
-export const isVerifiedFounder = (
-  userName?: string | null,
-  userEmail?: string | null,
-  userId?: string | null
-): boolean => {
-  // Check against hardcoded founder identity
-  const nameMatch = userName?.toLowerCase().includes("beáta vikorová") ||
-                    userName?.toLowerCase().includes("beata vikorova") ||
-                    userName === VERIFIED_FOUNDER.name;
-  
-  // Additional security: check email or userId if provided
-  // const emailMatch = userEmail === VERIFIED_FOUNDER.email;
-  // const idMatch = userId === VERIFIED_FOUNDER.userId;
-  
-  return nameMatch;
-};
+/**
+ * Legacy sync helper — kept for backwards compatibility.
+ * Always returns false; use the <VerifiedFounderBadge /> component
+ * (which checks DB via is_verified_founder RPC) instead.
+ */
+export const isVerifiedFounder = (..._args: unknown[]): boolean => false;
 
-export const VerifiedFounderBadge = ({ 
+export const VerifiedFounderBadge = ({
   userName,
-  userEmail,
   userId,
   className,
-  size = "md"
+  size = "md",
 }: VerifiedFounderBadgeProps) => {
-  const isFounder = isVerifiedFounder(userName, userEmail, userId);
-  
+  const { data: isFounder } = useQuery({
+    queryKey: ["is-verified-founder", userId],
+    queryFn: async () => {
+      if (!userId) return false;
+      const { data, error } = await supabase.rpc("is_verified_founder", {
+        _user_id: userId,
+      });
+      if (error) return false;
+      return !!data;
+    },
+    enabled: !!userId,
+    staleTime: 5 * 60 * 1000,
+  });
+
   if (!isFounder) return null;
 
   const sizeClasses = {
@@ -66,7 +63,7 @@ export const VerifiedFounderBadge = ({
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Badge 
+          <Badge
             className={cn(
               "gap-1 border-0 cursor-pointer",
               "bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600",
@@ -78,8 +75,8 @@ export const VerifiedFounderBadge = ({
               className
             )}
             style={{
-              backgroundSize: '200% 100%',
-              animation: 'shimmer 3s linear infinite',
+              backgroundSize: "200% 100%",
+              animation: "shimmer 3s linear infinite",
             }}
           >
             <Crown className={cn("fill-current", iconSizes[size])} />
@@ -88,21 +85,19 @@ export const VerifiedFounderBadge = ({
             <Star className={cn("fill-current", iconSizes[size])} />
           </Badge>
         </TooltipTrigger>
-        <TooltipContent 
-          side="top" 
+        <TooltipContent
+          side="top"
           className="max-w-xs bg-gradient-to-br from-amber-500/95 to-yellow-600/95 text-white border-amber-400"
         >
           <div className="space-y-1 p-1">
             <p className="font-bold flex items-center gap-2">
               <Crown className="h-4 w-4" />
-              Platform Founder & CEO
+              Platform Founder
             </p>
-            <p className="text-xs opacity-90">
-              {VERIFIED_FOUNDER.name}
-            </p>
+            {userName && <p className="text-xs opacity-90">{userName}</p>}
             <p className="text-[10px] opacity-75 flex items-center gap-1">
               <Shield className="h-3 w-3" />
-              This badge is cryptographically verified and cannot be replicated.
+              Verified via database role.
             </p>
           </div>
         </TooltipContent>
@@ -111,7 +106,6 @@ export const VerifiedFounderBadge = ({
   );
 };
 
-// Add shimmer animation to index.css or use inline style
 const shimmerKeyframes = `
 @keyframes shimmer {
   0% { background-position: 200% 0; }
@@ -119,11 +113,10 @@ const shimmerKeyframes = `
 }
 `;
 
-// Inject keyframes if not already present
-if (typeof document !== 'undefined') {
-  const styleId = 'founder-badge-shimmer';
+if (typeof document !== "undefined") {
+  const styleId = "founder-badge-shimmer";
   if (!document.getElementById(styleId)) {
-    const style = document.createElement('style');
+    const style = document.createElement("style");
     style.id = styleId;
     style.textContent = shimmerKeyframes;
     document.head.appendChild(style);

@@ -62554,6 +62554,7 @@ export type Database = {
         Returns: boolean
       }
       is_verified_employer: { Args: { _user_id: string }; Returns: boolean }
+      is_verified_founder: { Args: { _user_id: string }; Returns: boolean }
       is_video_owner: {
         Args: { _user_id: string; _video_id: string }
         Returns: boolean
@@ -62865,7 +62866,13 @@ export type Database = {
         | "amulet"
         | "shield"
       affiliate_tier: "bronze" | "silver" | "gold" | "diamond"
-      app_role: "admin" | "moderator" | "user" | "employer" | "judge"
+      app_role:
+        | "admin"
+        | "moderator"
+        | "user"
+        | "employer"
+        | "judge"
+        | "founder"
       br_match_status: "pending" | "open" | "closed"
       br_status: "signup" | "active" | "completed"
       clothing_category:
@@ -63225,7 +63232,7 @@ export const Constants = {
         "shield",
       ],
       affiliate_tier: ["bronze", "silver", "gold", "diamond"],
-      app_role: ["admin", "moderator", "user", "employer", "judge"],
+      app_role: ["admin", "moderator", "user", "employer", "judge", "founder"],
       br_match_status: ["pending", "open", "closed"],
       br_status: ["signup", "active", "completed"],
       clothing_category: [

@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { trackChallengeAction } from "@/lib/trackChallenge";
 
 export const useStories = () => {
   const { toast } = useToast();
@@ -73,10 +74,13 @@ export const useStories = () => {
       });
 
       if (error) throw error;
+
+      // Award +15 XP & track Daily Storyteller challenge
+      await trackChallengeAction("story", 15);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["stories"] });
-      toast({ title: "Story created!" });
+      toast({ title: "Story created!", description: "+15 XP earned" });
     },
   });
 
