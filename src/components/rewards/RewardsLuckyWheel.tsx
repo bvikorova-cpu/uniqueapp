@@ -193,7 +193,7 @@ export default function RewardsLuckyWheel() {
         </Button>
 
         <p className="text-xs text-muted-foreground mt-2">
-          1 free spin daily • Real XP and items credited instantly
+          1 free spin daily • Credits credited instantly
         </p>
       </Card>
 
