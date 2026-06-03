@@ -1,11 +1,10 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { Flame, Trophy, Zap, CheckCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRewardsStats } from "@/hooks/useRewardsStats";
+import { format, startOfWeek, addDays, isSameDay } from "date-fns";
 
 const milestones = [
   { days: 3, reward: "🔥", title: "Warm Up", xp: 50 },
@@ -21,13 +20,18 @@ export default function WallPostingStreaks() {
   const { user } = useAuth();
   const { data: stats, isLoading } = useRewardsStats(user?.id);
   const currentStreak = stats?.streak ?? 0;
-  const longestStreak = currentStreak; // best-known live value; backend doesn't track historical max yet
-  const [todayPosted, setTodayPosted] = useState(false);
-  const { toast } = useToast();
+  const longestStreak = stats?.longestStreak ?? 0;
 
   const weekDays = ["M", "T", "W", "T", "F", "S", "S"];
-  const today = new Date().getDay();
-  const adjustedToday = today === 0 ? 6 : today - 1;
+  const today = new Date();
+  const monday = startOfWeek(today, { weekStartsOn: 1 });
+  const todayIdx = (today.getDay() + 6) % 7;
+
+  const scrollToComposer = () => {
+    window.dispatchEvent(new CustomEvent("open-create-post"));
+    document.getElementById("wall-create-post")?.scrollIntoView({ behavior: "smooth", block: "center" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <div className="space-y-4">
@@ -50,10 +54,12 @@ export default function WallPostingStreaks() {
 
         <div className="grid grid-cols-7 gap-2 mb-4">
           {weekDays.map((day, i) => {
-            const isCompleted = i <= adjustedToday && i >= adjustedToday - currentStreak + 1;
-            const isToday = i === adjustedToday;
+            const dayDate = addDays(monday, i);
+            const isToday = isSameDay(dayDate, today);
+            const isPast = i < todayIdx;
+            const isCompleted = (isPast || isToday) && i > todayIdx - currentStreak;
             return (
-              <div key={i} className="flex flex-col items-center gap-1">
+              <div key={i} className="flex flex-col items-center gap-1" title={format(dayDate, "PP")}>
                 <span className="text-[10px] text-muted-foreground font-bold">{day}</span>
                 <div className={`h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold ${
                   isCompleted ? "bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-md" :
@@ -67,15 +73,14 @@ export default function WallPostingStreaks() {
           })}
         </div>
 
-        {!todayPosted && (
-          <Button
-            className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:opacity-90"
-            onClick={() => { setTodayPosted(true); toast({ title: "🔥 Streak continued!", description: "+50 XP earned for today's post!" }); }}
-          >
-            <Zap className="h-4 w-4 mr-2" /> Post Today to Continue Streak
-          </Button>
-        )}
+        <Button
+          className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:opacity-90"
+          onClick={scrollToComposer}
+        >
+          <Zap className="h-4 w-4 mr-2" /> Post Today to Continue Streak
+        </Button>
       </Card>
+
 
       <Card className="p-4 bg-card/80 backdrop-blur-md border-border/30">
         <h3 className="font-bold mb-3 flex items-center gap-2"><Trophy className="h-4 w-4 text-orange-500" /> Streak Milestones</h3>
