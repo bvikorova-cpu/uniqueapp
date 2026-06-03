@@ -678,6 +678,36 @@ serve(async (req) => {
         } catch (e) {
           log("donation refund handler error", { err: (e as Error).message });
         }
+
+        // ── Job listing refund: deactivate listing + mark payment refunded ──
+        try {
+          const { data: jlPay } = await supabase
+            .from("job_listing_payments")
+            .select("id, job_id")
+            .eq("stripe_payment_intent_id", piId)
+            .maybeSingle();
+          if (jlPay?.job_id) {
+            await supabase
+              .from("job_listing_payments")
+              .update({
+                status: "refunded",
+                refunded_at: new Date().toISOString(),
+                refund_amount: refundAmount,
+              })
+              .eq("id", jlPay.id);
+            await supabase
+              .from("job_listings")
+              .update({
+                paid_status: "refunded",
+                is_active: false,
+                updated_at: new Date().toISOString(),
+              })
+              .eq("id", jlPay.job_id);
+            log("job listing refunded via webhook", { jobId: jlPay.job_id, piId });
+          }
+        } catch (e) {
+          log("job listing refund handler error", { err: (e as Error).message });
+        }
         break;
       }
 
