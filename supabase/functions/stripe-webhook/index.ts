@@ -350,6 +350,96 @@ serve(async (req) => {
             }
           }
 
+          // ── Job listing activation fallback (in case verify-job-listing-payment
+          //    never fires — e.g. user closed tab before redirect). Idempotent via
+          //    job_listing_payments.stripe_session_id. Mirrors verify-job-listing-payment.
+          try {
+            const jobListingId = session.metadata?.jobListingId;
+            const productKey = session.metadata?.productKey;
+            const ownerId = session.metadata?.userId;
+            if (jobListingId && productKey?.startsWith("job_listing")) {
+              const { data: existingPay } = await supabase
+                .from("job_listing_payments")
+                .select("id, status")
+                .eq("stripe_session_id", session.id)
+                .maybeSingle();
+              if (!existingPay || existingPay.status !== "completed") {
+                const { data: listing } = await supabase
+                  .from("job_listings")
+                  .select("id, employer_id, expires_at, published_at, featured_until")
+                  .eq("id", jobListingId)
+                  .maybeSingle();
+                if (listing && (!ownerId || ownerId === listing.employer_id)) {
+                  let durationDays = 7;
+                  let isFeatured = false;
+                  if (productKey === "job_listing_14") durationDays = 14;
+                  else if (productKey === "job_listing_30") durationDays = 30;
+                  else if (productKey === "job_listing_featured") {
+                    isFeatured = true;
+                    durationDays = 0;
+                  }
+
+                  await supabase.from("job_listing_payments").upsert(
+                    {
+                      user_id: listing.employer_id,
+                      job_listing_id: jobListingId,
+                      stripe_session_id: session.id,
+                      amount: session.amount_total ?? 0,
+                      currency: (session.currency || "eur").toUpperCase(),
+                      product_kind: productKey,
+                      status: "completed",
+                      completed_at: new Date().toISOString(),
+                    },
+                    { onConflict: "stripe_session_id" },
+                  );
+
+                  if (isFeatured) {
+                    const base = listing.featured_until && new Date(listing.featured_until) > new Date()
+                      ? new Date(listing.featured_until)
+                      : new Date();
+                    const featuredUntil = new Date(base.getTime() + 30 * 86400000);
+                    await supabase
+                      .from("job_listings")
+                      .update({ is_featured: true, featured_until: featuredUntil.toISOString() })
+                      .eq("id", jobListingId);
+                  } else {
+                    const now = new Date();
+                    const baseDate = listing.expires_at && new Date(listing.expires_at) > now
+                      ? new Date(listing.expires_at)
+                      : now;
+                    const expiresAt = new Date(baseDate.getTime() + durationDays * 86400000);
+                    await supabase
+                      .from("job_listings")
+                      .update({
+                        paid_status: "active",
+                        is_active: true,
+                        published_at: listing.published_at ?? now.toISOString(),
+                        expires_at: expiresAt.toISOString(),
+                        duration_days: durationDays,
+                      })
+                      .eq("id", jobListingId);
+
+                    await supabase.from("notifications").insert({
+                      user_id: listing.employer_id,
+                      type: "job_listing_activated",
+                      title: "Job listing activated",
+                      message: `Your listing is active until ${expiresAt.toISOString().slice(0, 10)}.`,
+                      related_id: jobListingId,
+                      action_url: "/employer/dashboard",
+                    });
+                  }
+                  log("job listing activated via webhook fallback", {
+                    jobListingId, productKey, sessionId: session.id,
+                  });
+                }
+              }
+            }
+          } catch (jlErr) {
+            log("job listing webhook fallback error", { err: (jlErr as Error).message });
+          }
+
+
+
           // ── Shadow Arena gift fulfilment ──
           if (session.metadata?.type === "shadow_gift" && session.metadata?.gift_id) {
             const giftId = session.metadata.gift_id;
