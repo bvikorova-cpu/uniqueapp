@@ -152,9 +152,7 @@ export function WallPostActions({
           .from("post_likes")
           .insert({ post_id: postId, user_id: userId! });
         if (error) throw error;
-        supabase.rpc("track_challenge_action", { _action: "reaction" }).then(() => {
-          window.dispatchEvent(new Event("challenges-updated"));
-        });
+        trackChallengeAction("reaction");
       } else {
         const { error } = await supabase
           .from("post_likes")
