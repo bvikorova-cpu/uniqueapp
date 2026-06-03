@@ -58,6 +58,8 @@ test("realtime notification triggers chime in UI", async ({ page }) => {
 
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await page.waitForLoadState("load").catch(() => {});
+  await page.waitForTimeout(2000);
+  console.log("[chime-test] page.url after load =", page.url());
 
   // 2) Vytiahneme access_token z localStorage (key môže mať iný ref).
   const dump = await page.evaluate(() => {
