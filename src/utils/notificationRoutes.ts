@@ -21,6 +21,11 @@ export function getNotificationRoute(n: NotifLike): string {
     friend_request: "/friends?tab=requests",
     friend_accepted: n.actor_id ? `/profile/${n.actor_id}` : "/friends",
 
+    // Friend quests
+    friend_quest_invite: "/rewards?tab=friend-quests",
+    friend_quest_accepted: "/rewards?tab=friend-quests",
+    friend_quest_rejected: "/rewards?tab=friend-quests",
+
     // Secret Santa
     secret_santa_gift: "/secret-santa?tab=received",
     secret_santa_received: "/secret-santa?tab=received",
