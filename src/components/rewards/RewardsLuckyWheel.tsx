@@ -124,6 +124,8 @@ export default function RewardsLuckyWheel() {
         });
         qc.invalidateQueries({ queryKey: ["rewards-stats"] });
         qc.invalidateQueries({ queryKey: ["gamification"] });
+        qc.invalidateQueries({ queryKey: ["ai-credits"] });
+        window.dispatchEvent(new Event("ai-credits-updated"));
       }, 3000);
     } catch (e) {
       if (mounted.current) setSpinning(false);
