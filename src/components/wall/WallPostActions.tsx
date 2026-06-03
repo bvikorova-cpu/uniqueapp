@@ -26,6 +26,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { supabase } from "@/integrations/supabase/client";
+import { trackChallengeAction } from "@/lib/trackChallenge";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 
@@ -151,9 +152,7 @@ export function WallPostActions({
           .from("post_likes")
           .insert({ post_id: postId, user_id: userId! });
         if (error) throw error;
-        supabase.rpc("track_challenge_action", { _action: "reaction" }).then(() => {
-          window.dispatchEvent(new Event("challenges-updated"));
-        });
+        trackChallengeAction("reaction");
       } else {
         const { error } = await supabase
           .from("post_likes")
@@ -236,12 +235,7 @@ export function WallPostActions({
       if (error) throw error;
       setNewComment("");
       setCommentsCount((c) => c + 1);
-      supabase.rpc("record_daily_activity", { _xp: 10 }).then(() => {
-        window.dispatchEvent(new Event("streak-updated"));
-      });
-      supabase.rpc("track_challenge_action", { _action: "comment" }).then(() => {
-        window.dispatchEvent(new Event("challenges-updated"));
-      });
+      trackChallengeAction("comment", 10);
       await fetchComments();
     } catch (err: any) {
       toast({

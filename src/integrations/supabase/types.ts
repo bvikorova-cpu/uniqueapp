@@ -62843,7 +62843,7 @@ export type Database = {
           suggested_id: string
         }[]
       }
-      track_challenge_action: { Args: { _action: string }; Returns: number }
+      track_challenge_action: { Args: { _action: string }; Returns: Json }
       unaccent: { Args: { "": string }; Returns: string }
       update_battle_stats: {
         Args: { loser_id: string; winner_id: string }
