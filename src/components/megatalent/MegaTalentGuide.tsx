@@ -66,11 +66,12 @@ export const MegaTalentGuide = () => {
                   </h4>
                   <ul className="list-disc list-inside space-y-1 ml-2 mt-2">
                     <li>All Premium features included</li>
-                    <li><strong>+100,000 bonus votes</strong> to boost your entries</li>
-                    <li><strong>+50% increased winning chance</strong></li>
+                    <li><strong>+100% algorithmic ranking boost</strong> (real votes × 2 in leaderboard)</li>
                     <li>Priority placement in category feeds</li>
                     <li>Exclusive TOP Premium badge</li>
+                    <li><strong>Referral program (€5/month per friend)</strong> – same as Premium</li>
                   </ul>
+
                 </div>
               </AccordionContent>
             </AccordionItem>
