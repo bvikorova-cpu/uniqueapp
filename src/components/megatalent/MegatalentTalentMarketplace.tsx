@@ -40,6 +40,7 @@ const MegatalentTalentMarketplace = ({ category }: { category?: string }) => {
   const [buying, setBuying] = useState<string | null>(null);
   const [myOrders, setMyOrders] = useState<MyOrder[]>([]);
   const [releasing, setReleasing] = useState<string | null>(null);
+  const [releaseStatus, setReleaseStatus] = useState<Record<string, "loading" | "success" | "error">>({});
 
   const load = async () => {
     setLoading(true);

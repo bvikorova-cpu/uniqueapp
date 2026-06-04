@@ -42,6 +42,7 @@ const MegatalentMentorshipBooking = ({ category }: { category?: string }) => {
   const [iAmMentor, setIAmMentor] = useState(false);
   const [myBookings, setMyBookings] = useState<MyBooking[]>([]);
   const [releasing, setReleasing] = useState<string | null>(null);
+  const [releaseStatus, setReleaseStatus] = useState<Record<string, "loading" | "success" | "error">>({});
 
   const load = async () => {
     setLoading(true);
