@@ -173,12 +173,52 @@ serve(async (req) => {
           .eq("stripe_payment_intent_id", pi.id)
           .neq("status", "refunded");
         if (error) log("update paid failed", { error: error.message });
+
+        // ── Megatalent mentorship/marketplace orders (metadata-driven) ──
+        try {
+          const mtKind = pi.metadata?.mt_kind as string | undefined;
+          const mtRowId = pi.metadata?.mt_row_id as string | undefined;
+          if (mtKind && mtRowId) {
+            const table = mtKind === "mentorship" ? "mt_mentorship_bookings" : "mt_marketplace_orders";
+            const { error: mtErr } = await supabase.from(table).update({
+              status: "paid",
+              stripe_payment_intent_id: pi.id,
+              paid_at: new Date().toISOString(),
+            }).eq("id", mtRowId).eq("status", "pending");
+            if (mtErr) log("mt order update failed", { error: mtErr.message });
+            else log("mt order marked paid", { kind: mtKind, id: mtRowId });
+          }
+        } catch (e) {
+          log("mt order handler error", { err: (e as Error).message });
+        }
         break;
       }
 
       // ─── CHECKOUT COMPLETED (fallback if frontend verify never fires) ─
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
+
+        // ── Megatalent: flip pending → paid by session metadata ─────────
+        try {
+          const mtKind = session.metadata?.mt_kind as string | undefined;
+          const mtRowId = session.metadata?.mt_row_id as string | undefined;
+          if (mtKind && mtRowId && session.payment_status === "paid") {
+            const table = mtKind === "mentorship" ? "mt_mentorship_bookings" : "mt_marketplace_orders";
+            const pi = typeof session.payment_intent === "string"
+              ? session.payment_intent
+              : session.payment_intent?.id;
+            await supabase.from(table).update({
+              status: "paid",
+              stripe_payment_intent_id: pi ?? null,
+              stripe_session_id: session.id,
+              paid_at: new Date().toISOString(),
+            }).eq("id", mtRowId).eq("status", "pending");
+            log("mt order marked paid via session", { kind: mtKind, id: mtRowId });
+          }
+        } catch (e) {
+          log("mt session handler error", { err: (e as Error).message });
+        }
+
         if (session.payment_status === "paid") {
           // ── Tutoring credits auto-activation (safety net if user closes tab
           //    before frontend redirect runs `tutoring-add-credits`) ─────────
