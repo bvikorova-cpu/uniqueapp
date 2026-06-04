@@ -29,6 +29,7 @@ import UnifiedXPLeaderboard from "@/components/shared/UnifiedXPLeaderboard";
 import NextVotingCountdown from "@/components/megatalent/NextVotingCountdown";
 import MegaTalentCategoryGrid from "@/components/megatalent/MegaTalentCategoryGrid";
 import ContestStatsSidebar from "@/components/megatalent/ContestStatsSidebar";
+import { LiveVoting } from "@/components/megatalent/LiveVoting";
 import MegaTalentSubmissionCard from "@/components/megatalent/MegaTalentSubmissionCard";
 import MegaTalentFeedFilters, { type FeedFilter } from "@/components/megatalent/MegaTalentFeedFilters";
 import MegaTalentLatestFeed from "@/components/megatalent/MegaTalentLatestFeed";
