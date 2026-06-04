@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Flame, Trophy, Star } from "lucide-react";
+import { useVotingStreak } from "@/hooks/useVotingStreak";
+import { useMegatalentContestStats } from "@/hooks/useMegatalentContestStats";
 
 interface Props {
   totalVotes: number;
@@ -8,10 +10,42 @@ interface Props {
 }
 
 const MegatalentEngagementRow = ({ totalVotes, subscriptionTier }: Props) => {
+  const { data: streak } = useVotingStreak();
+  const { data: stats } = useMegatalentContestStats();
+
+  const streakDays = streak?.currentStreak ?? 0;
+  const longest = streak?.longestStreak ?? 0;
+  const categoryCount = stats?.categoryCount ?? 0;
+  const activeTalents = stats?.activeTalents ?? 0;
+
   const items = [
-    { icon: Flame, label: "Contest Streak", value: "Active", sub: "Monthly competition running", color: "text-orange-500" },
-    { icon: Trophy, label: "Your Rank", value: `${totalVotes.toLocaleString()} votes`, sub: `${subscriptionTier === 'top_premium' ? 'TOP Premium' : 'Premium'} tier`, color: "text-yellow-500" },
-    { icon: Star, label: "Categories", value: "30+", sub: "Talent categories available", color: "text-amber-500" },
+    {
+      icon: Flame,
+      label: "Voting Streak",
+      value: `${streakDays} ${streakDays === 1 ? "day" : "days"}`,
+      sub: longest > 0 ? `Longest: ${longest} days` : "Vote daily to start a streak",
+      color: "text-orange-500",
+    },
+    {
+      icon: Trophy,
+      label: "Your Votes",
+      value: totalVotes.toLocaleString(),
+      sub: subscriptionTier === "top_premium"
+        ? "TOP Premium — real votes × 2 in ranking"
+        : subscriptionTier === "premium"
+          ? "Premium tier"
+          : "Subscribe to enter the contest",
+      color: "text-yellow-500",
+    },
+    {
+      icon: Star,
+      label: "Categories",
+      value: categoryCount ? `${categoryCount}` : "—",
+      sub: activeTalents
+        ? `${activeTalents.toLocaleString()} active talents`
+        : "Talent categories available",
+      color: "text-amber-500",
+    },
   ];
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
