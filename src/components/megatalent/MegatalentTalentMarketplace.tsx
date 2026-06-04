@@ -89,15 +89,18 @@ const MegatalentTalentMarketplace = ({ category }: { category?: string }) => {
   }, [category]);
 
   const markCompleted = async (orderId: string) => {
+    setReleaseStatus((prev) => ({ ...prev, [orderId]: "loading" }));
     setReleasing(orderId);
     const { data, error } = await supabase.functions.invoke("mt-release-funds", {
       body: { kind: "marketplace", id: orderId },
     });
     setReleasing(null);
     if (error || (data as any)?.error) {
+      setReleaseStatus((prev) => ({ ...prev, [orderId]: "error" }));
       toast.error("Release failed", { description: error?.message || (data as any)?.error });
       return;
     }
+    setReleaseStatus((prev) => ({ ...prev, [orderId]: "success" }));
     toast.success("Order completed — 80% sent to seller");
     if (userId) loadMyOrders(userId);
   };
@@ -227,9 +230,17 @@ const MegatalentTalentMarketplace = ({ category }: { category?: string }) => {
                     <div className="text-[11px] text-muted-foreground">€{(o.price_cents / 100).toFixed(0)} · {o.status}</div>
                   </div>
                   {o.status === "paid" ? (
-                    <Button size="sm" variant="secondary" onClick={() => markCompleted(o.id)} disabled={releasing === o.id}>
-                      {releasing === o.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><CheckCircle2 className="h-3 w-3 mr-1" />Mark completed</>}
-                    </Button>
+                    <div className="flex flex-col items-end gap-1">
+                      <Button size="sm" variant="secondary" onClick={() => markCompleted(o.id)} disabled={releasing === o.id || releaseStatus[o.id] === "success"}>
+                        {releasing === o.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><CheckCircle2 className="h-3 w-3 mr-1" />Mark completed</>}
+                      </Button>
+                      {releaseStatus[o.id] === "success" && (
+                        <span className="text-[11px] text-green-500">Completed</span>
+                      )}
+                      {releaseStatus[o.id] === "error" && (
+                        <span className="text-[11px] text-red-500">Failed</span>
+                      )}
+                    </div>
                   ) : (
                     <Badge variant="outline" className="gap-1 text-[10px]"><CheckCircle2 className="h-3 w-3" />Done</Badge>
                   )}
