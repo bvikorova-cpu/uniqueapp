@@ -35,13 +35,20 @@ export const VoteBoostTooltip = ({
           </button>
         </TooltipTrigger>
         <TooltipContent
-          className="max-w-[260px] bg-gradient-to-r from-gold/90 to-yellow-500/90 text-black border-gold"
+          className="max-w-[300px] bg-gradient-to-r from-gold/95 to-yellow-500/95 text-black border-gold"
           sideOffset={5}
         >
-          <p className="text-sm font-medium">
-            🏆 TOP Premium: 50% algorithmic ranking boost and priority display. Vote count shown is the real number.
-          </p>
+          <div className="space-y-1.5 text-sm">
+            <p className="font-bold">🏆 TOP Premium ranking boost</p>
+            <p className="font-medium">
+              Ranking score = real votes × 2 (+100%).
+            </p>
+            <p className="text-xs opacity-90">
+              The vote number you see is always the real count. The ×2 multiplier only changes the order in the leaderboard, not the displayed votes or the final prize calculation.
+            </p>
+          </div>
         </TooltipContent>
+
       </Tooltip>
     </TooltipProvider>
   );
