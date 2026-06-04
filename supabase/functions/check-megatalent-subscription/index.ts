@@ -98,8 +98,9 @@ serve(async (req) => {
       user_id: user.id,
       tier,
       price: TIER_PRICE[tier],
-      bonus_votes: tier === "top_premium" ? 100000 : 0,
-      win_chance_boost: tier === "top_premium" ? 50 : 0,
+      bonus_votes: 0,
+      win_chance_boost: tier === "top_premium" ? 100 : 0,
+
       status: "active",
       stripe_customer_id: customerId,
       stripe_subscription_id: mtSub.id,
