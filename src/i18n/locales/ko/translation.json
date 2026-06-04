@@ -850,7 +850,7 @@
     "subscription_cancelled_desc": "구독은 현재 기간이 끝나면 취소됩니다",
     "cancel_error": "구독 취소 실패",
     "your_votes": "총 투표 수:",
-    "bonus_votes": "+100% ranking boost (real votes × 2) "bonus_votes": "50% ranking boost & priority display" priority display",
+    "bonus_votes": "+100% ranking boost (real votes × 2) and priority display",
     "votes": "표",
     "referral_program": "추천 프로그램",
     "contest": "콘테스트",

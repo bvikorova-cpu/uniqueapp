@@ -850,7 +850,7 @@
     "subscription_cancelled_desc": "サブスクリプションは現在の期間の終わりにキャンセルされます",
     "cancel_error": "サブスクリプションのキャンセルに失敗しました",
     "your_votes": "総投票数：",
-    "bonus_votes": "+100% ranking boost (real votes × 2) "bonus_votes": "50% ranking boost & priority display" priority display",
+    "bonus_votes": "+100% ranking boost (real votes × 2) and priority display",
     "votes": "票",
     "referral_program": "紹介プログラム",
     "contest": "コンテスト",

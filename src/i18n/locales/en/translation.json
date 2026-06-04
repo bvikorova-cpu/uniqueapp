@@ -850,7 +850,7 @@
     "subscription_cancelled_desc": "Subscription will be cancelled at the end of the current period",
     "cancel_error": "Failed to cancel subscription",
     "your_votes": "Total vote count:",
-    "bonus_votes": "+100% ranking boost (real votes × 2) "bonus_votes": "50% ranking boost & priority display" priority display",
+    "bonus_votes": "+100% ranking boost (real votes × 2) and priority display",
     "votes": "votes",
     "referral_program": "Referral Program",
     "contest": "Contest",

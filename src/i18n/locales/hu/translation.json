@@ -850,7 +850,7 @@
     "subscription_cancelled_desc": "Az előfizetés a jelenlegi időszak végén lemondásra kerül",
     "cancel_error": "Az előfizetés lemondása sikertelen",
     "your_votes": "Összes szavazat:",
-    "bonus_votes": "+100% ranking boost (real votes × 2) "bonus_votes": "50% ranking boost & priority display" priority display",
+    "bonus_votes": "+100% ranking boost (real votes × 2) and priority display",
     "votes": "szavazat",
     "referral_program": "Ajánlói program",
     "contest": "Verseny",

@@ -850,7 +850,7 @@
     "subscription_cancelled_desc": "Das Abonnement wird am Ende des aktuellen Zeitraums gekündigt",
     "cancel_error": "Kündigung des Abonnements fehlgeschlagen",
     "your_votes": "Gesamtanzahl der Stimmen:",
-    "bonus_votes": "+100% ranking boost (real votes × 2) "bonus_votes": "50% ranking boost & priority display" priority display",
+    "bonus_votes": "+100% ranking boost (real votes × 2) and priority display",
     "votes": "Stimmen",
     "referral_program": "Empfehlungsprogramm",
     "contest": "Wettbewerb",
