@@ -21,7 +21,7 @@ import { VoteBoostTooltip } from "@/components/megatalent/VoteBoostTooltip";
 import MegaTalentHero from "@/components/megatalent/MegaTalentHero";
 import MegatalentClipOfDay from "@/components/megatalent/MegatalentClipOfDay";
 import MegatalentTalentShop from "@/components/megatalent/MegatalentTalentShop";
-import MegatalentReferralProgram from "@/components/megatalent/MegatalentReferralProgram";
+
 import BattleRoyalePayouts from "@/components/megatalent/BattleRoyalePayouts";
 import MegatalentNotificationBell from "@/components/megatalent/MegatalentNotificationBell";
 import { LiveSocialProof } from "@/components/social/LiveSocialProof";
@@ -397,7 +397,7 @@ const Megatalent = () => {
               <MegatalentTalentShop userId={currentUserId} />
             </div>
 
-            <MegatalentReferralProgram userId={currentUserId} />
+            <ReferralProgram />
             <BattleRoyalePayouts userId={currentUserId} />
             <UnifiedXPLeaderboard hub="megatalent" />
           </section>
