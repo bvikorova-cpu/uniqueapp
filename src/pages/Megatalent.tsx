@@ -510,7 +510,24 @@ const Megatalent = () => {
                 </div>
 
                 <div className="lg:col-span-1 order-3">
-                  <div className="sticky top-24"><ContestStatsSidebar subscriptionTier={subscriptionTier} totalVotes={totalVotes} /></div>
+                  <div className="sticky top-24 space-y-4">
+                    <LiveVoting
+                      contestants={sortedSubmissions.slice(0, 5).map(s => {
+                        const total = sortedSubmissions.slice(0, 5).reduce((a, b) => a + (b.votes_count || 0), 0) || 1;
+                        return {
+                          id: s.id,
+                          name: s.profiles?.full_name || s.title || "User",
+                          votes: s.votes_count || 0,
+                          percentage: Math.round(((s.votes_count || 0) / total) * 100),
+                        };
+                      })}
+                      totalVotes={sortedSubmissions.reduce((a, b) => a + (b.votes_count || 0), 0)}
+                      isVotingOpen={true}
+                      onVote={handleVote}
+                      userVotedFor={[...likedSubmissions][0] || null}
+                    />
+                    <ContestStatsSidebar subscriptionTier={subscriptionTier} totalVotes={totalVotes} />
+                  </div>
                 </div>
               </div>
             </TabsContent>
