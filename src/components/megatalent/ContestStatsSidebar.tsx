@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Users, TrendingUp, Flame, Award, Star } from "lucide-react";
+import { useMegatalentContestStats } from "@/hooks/useMegatalentContestStats";
 
 interface ContestStatsSidebarProps {
   subscriptionTier: "premium" | "top_premium" | null;
@@ -9,6 +10,8 @@ interface ContestStatsSidebarProps {
 }
 
 export default function ContestStatsSidebar({ subscriptionTier, totalVotes }: ContestStatsSidebarProps) {
+  const { data: stats } = useMegatalentContestStats();
+  const prizeLabel = stats?.prizePool ? stats.prizePoolFormatted : "TBA";
   return (
     <div className="space-y-4">
       {/* Contest Prize Card */}
