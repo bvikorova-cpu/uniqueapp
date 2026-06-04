@@ -21,7 +21,7 @@ const MegatalentTalentPortfolio = ({ category, categories }: { category?: string
       setItems(data || []);
     };
     load();
-  }, [category]);
+  }, [category, categories]);
 
   if (!items.length) return null;
 

@@ -45,7 +45,7 @@ import MegatalentEndorsements from "@/components/megatalent/MegatalentEndorsemen
 import MegatalentComments from "@/components/megatalent/MegatalentComments";
 import MegatalentClipOfDay from "@/components/megatalent/MegatalentClipOfDay";
 import MegatalentTalentShop from "@/components/megatalent/MegatalentTalentShop";
-import MegatalentReferralProgram from "@/components/megatalent/MegatalentReferralProgram";
+import { ReferralProgram } from "@/components/megatalent/ReferralProgram";
 import MegatalentJudgePanel from "@/components/megatalent/MegatalentJudgePanel";
 import JudgeApplication from "@/components/megatalent/JudgeApplication";
 import MegatalentRivalries from "@/components/megatalent/MegatalentRivalries";
@@ -446,7 +446,7 @@ const MegatalentCategory = () => {
         </div>
         <div className="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
           <MegatalentTalentShop userId={currentUserId} />
-          <MegatalentReferralProgram userId={currentUserId} />
+          <ReferralProgram />
         </div>
         <div className="mb-6"><MegatalentRivalries category={category} categories={config?.categories} /></div>
 

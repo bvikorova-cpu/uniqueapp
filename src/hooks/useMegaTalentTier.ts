@@ -30,12 +30,11 @@ export const TIER_BENEFITS = {
   },
   top_premium: {
     price: 15,
-    bonusVotes: 100000,
+    bonusVotes: 0,
     winChanceBoost: 50,
     algorithmicBoost: true,
     features: [
       'All Premium features',
-      '+100,000 Bonus Votes',
       '50% Algorithmic Boost in rankings',
       'Priority display in category',
       'Exclusive TOP Premium badge',
@@ -92,16 +91,11 @@ export const useMegaTalentTier = (): MegaTalentTierInfo => {
   };
 };
 
-// Utility function to calculate total votes with bonus
+// Total votes = real votes only. TOP Premium provides ranking boost, NOT extra fake votes.
 export const calculateTotalVotesWithBonus = (
   baseVotes: number,
-  tier: MegaTalentTier
-): number => {
-  if (tier === 'top_premium') {
-    return baseVotes + TIER_BENEFITS.top_premium.bonusVotes;
-  }
-  return baseVotes;
-};
+  _tier: MegaTalentTier
+): number => baseVotes;
 
 // Utility function to get ranking boost factor
 export const getRankingBoostFactor = (tier: MegaTalentTier): number => {

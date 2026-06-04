@@ -38644,6 +38644,51 @@ export type Database = {
           },
         ]
       }
+      mt_pinned_submissions: {
+        Row: {
+          created_at: string
+          id: string
+          submission_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          submission_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          submission_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mt_streak_claims: {
+        Row: {
+          claimed_at: string
+          day: number
+          id: string
+          reward_label: string
+          user_id: string
+        }
+        Insert: {
+          claimed_at?: string
+          day: number
+          id?: string
+          reward_label: string
+          user_id: string
+        }
+        Update: {
+          claimed_at?: string
+          day?: number
+          id?: string
+          reward_label?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       multiverse_purchases: {
         Row: {
           created_at: string | null

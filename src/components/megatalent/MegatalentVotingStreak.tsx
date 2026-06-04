@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Flame, Calendar, Gift } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Flame, Calendar, Gift, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 
 interface Props {
   userId: string | null;
@@ -21,68 +23,72 @@ export default function MegatalentVotingStreak({ userId }: Props) {
   const [streak, setStreak] = useState(0);
   const [totalVotes, setTotalVotes] = useState(0);
   const [activeDays, setActiveDays] = useState<Set<string>>(new Set());
+  const [claimedDays, setClaimedDays] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [claiming, setClaiming] = useState<number | null>(null);
 
-  useEffect(() => {
+  const load = async () => {
     if (!userId) {
       setLoading(false);
       return;
     }
-    let cancelled = false;
-    (async () => {
-      setLoading(true);
-      try {
-        const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
-        const { data, error } = await supabase
-          .from("talent_votes")
-          .select("created_at")
-          .eq("user_id", userId)
-          .gte("created_at", thirtyDaysAgo)
-          .order("created_at", { ascending: false });
-        if (error) throw error;
+    setLoading(true);
+    try {
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString();
+      const [{ data: votes, error: vErr }, { data: claims }] = await Promise.all([
+        supabase.from("talent_votes").select("created_at").eq("user_id", userId).gte("created_at", thirtyDaysAgo).order("created_at", { ascending: false }),
+        supabase.from("mt_streak_claims").select("day").eq("user_id", userId),
+      ]);
+      if (vErr) throw vErr;
 
-        const rows = data || [];
-        const daySet = new Set<string>();
-        rows.forEach((r: any) => daySet.add(new Date(r.created_at).toISOString().slice(0, 10)));
+      const rows = votes || [];
+      const daySet = new Set<string>();
+      rows.forEach((r: any) => daySet.add(new Date(r.created_at).toISOString().slice(0, 10)));
 
-        // compute current streak from today backwards
-        let s = 0;
-        const d = new Date();
-        while (true) {
-          const key = d.toISOString().slice(0, 10);
-          if (daySet.has(key)) {
-            s++;
-            d.setDate(d.getDate() - 1);
-          } else {
-            // allow today to not yet have a vote without breaking streak
-            if (s === 0 && key === new Date().toISOString().slice(0, 10)) {
-              d.setDate(d.getDate() - 1);
-              continue;
-            }
-            break;
-          }
-        }
-
-        if (!cancelled) {
-          setStreak(s);
-          setTotalVotes(rows.length);
-          setActiveDays(daySet);
-        }
-      } catch (e) {
-        console.error("Streak error", e);
-      } finally {
-        if (!cancelled) setLoading(false);
+      let s = 0;
+      const d = new Date();
+      while (true) {
+        const k = d.toISOString().slice(0, 10);
+        if (daySet.has(k)) { s++; d.setDate(d.getDate() - 1); }
+        else if (s === 0 && k === new Date().toISOString().slice(0, 10)) { d.setDate(d.getDate() - 1); }
+        else break;
       }
-    })();
-    return () => {
-      cancelled = true;
-    };
+      setStreak(s);
+      setTotalVotes(rows.length);
+      setActiveDays(daySet);
+      setClaimedDays(new Set((claims ?? []).map((c: any) => c.day)));
+    } catch (e) {
+      console.error("Streak error", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => { if (!cancelled) await load(); })();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
+
+  const claim = async (day: number) => {
+    setClaiming(day);
+    try {
+      const { data, error } = await supabase.functions.invoke("mt-claim-streak", { body: { day } });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      toast.success(`Claimed ${(data as any)?.reward ?? "reward"}`);
+      setClaimedDays((prev) => new Set([...prev, day]));
+    } catch (e: any) {
+      toast.error(e?.message ?? "Claim failed");
+    } finally {
+      setClaiming(null);
+    }
+  };
 
   if (!userId) return null;
   if (loading) return <Skeleton className="h-48 w-full rounded-xl" />;
 
-  // last 14 days grid
   const days: { key: string; label: number; active: boolean }[] = [];
   for (let i = 13; i >= 0; i--) {
     const d = new Date();
@@ -91,7 +97,7 @@ export default function MegatalentVotingStreak({ userId }: Props) {
     days.push({ key, label: d.getDate(), active: activeDays.has(key) });
   }
 
-  const nextReward = STREAK_REWARDS.find((r) => r.day > streak) || STREAK_REWARDS[STREAK_REWARDS.length - 1];
+  const nextReward = STREAK_REWARDS.find((r) => r.day > streak && !claimedDays.has(r.day)) || STREAK_REWARDS[STREAK_REWARDS.length - 1];
 
   return (
     <Card className="backdrop-blur-xl bg-gradient-to-br from-orange-500/10 to-red-500/5 border-orange-500/30">
@@ -140,16 +146,24 @@ export default function MegatalentVotingStreak({ userId }: Props) {
           ))}
         </div>
 
-        <div className="flex flex-wrap gap-1.5">
-          {STREAK_REWARDS.map((r) => (
-            <Badge
-              key={r.day}
-              variant={streak >= r.day ? "default" : "outline"}
-              className="text-[10px]"
-            >
-              Day {r.day}: {r.label}
-            </Badge>
-          ))}
+        <div className="grid grid-cols-2 gap-2">
+          {STREAK_REWARDS.map((r) => {
+            const claimed = claimedDays.has(r.day);
+            const eligible = streak >= r.day && !claimed;
+            return (
+              <Button
+                key={r.day}
+                variant={claimed ? "secondary" : eligible ? "default" : "outline"}
+                size="sm"
+                disabled={!eligible || claiming === r.day}
+                onClick={() => claim(r.day)}
+                className="text-[11px] h-8 justify-between"
+              >
+                <span>Day {r.day}: {r.label}</span>
+                {claiming === r.day ? <Loader2 className="h-3 w-3 animate-spin" /> : claimed ? <span>✓</span> : eligible ? <span>Claim</span> : <span className="opacity-60">Locked</span>}
+              </Button>
+            );
+          })}
         </div>
       </CardContent>
     </Card>
