@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Flame, Target, Gift, Trophy, CheckCircle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const MILESTONES = [
