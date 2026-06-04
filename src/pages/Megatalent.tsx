@@ -326,9 +326,13 @@ const Megatalent = () => {
   const sortedSubmissions = [...submissions].sort((a, b) => {
     if (feedFilter === "top") return (b.votes_count || 0) - (a.votes_count || 0);
     if (feedFilter === "new") return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-    const scoreA = (a.votes_count || 0) + (new Date(a.created_at).getTime() / 1e10);
-    const scoreB = (b.votes_count || 0) + (new Date(b.created_at).getTime() / 1e10);
-    return scoreB - scoreA;
+    // hot: Reddit-style score = (votes - dislikes) / (age_hours + 2)^1.5
+    const hot = (s: any) => {
+      const ageH = Math.max(0, (Date.now() - new Date(s.created_at).getTime()) / 3_600_000);
+      const score = (s.votes_count || 0) - (s.dislikes_count || 0) * 0.5;
+      return score / Math.pow(ageH + 2, 1.5);
+    };
+    return hot(b) - hot(a);
   });
 
   if (activeView) {
