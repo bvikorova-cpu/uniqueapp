@@ -56783,6 +56783,36 @@ export type Database = {
         }
         Relationships: []
       }
+      user_job_streaks: {
+        Row: {
+          created_at: string
+          current_streak: number
+          last_check_in_date: string | null
+          longest_streak: number
+          total_check_ins: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_streak?: number
+          last_check_in_date?: string | null
+          longest_streak?: number
+          total_check_ins?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_streak?: number
+          last_check_in_date?: string | null
+          longest_streak?: number
+          total_check_ins?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_league_standings: {
         Row: {
           created_at: string
@@ -62734,6 +62764,7 @@ export type Database = {
           total_xp: number
         }[]
       }
+      record_job_checkin: { Args: never; Returns: Json }
       redeem_iq_promo_code: { Args: { _code: string }; Returns: Json }
       redeem_iq_referral_code: { Args: { _code: string }; Returns: Json }
       redeem_referral: {
