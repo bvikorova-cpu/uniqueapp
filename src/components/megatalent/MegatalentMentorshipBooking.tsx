@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { GraduationCap, Star, Clock, Sparkles, Loader2, Plus } from "lucide-react";
+import { GraduationCap, Star, Clock, Sparkles, Loader2, Plus, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -22,6 +22,14 @@ interface Mentor {
   sessions_count: number;
 }
 
+interface MyBooking {
+  id: string;
+  mentor_id: string;
+  price_cents: number;
+  status: string;
+  mentor_name?: string;
+}
+
 const MegatalentMentorshipBooking = ({ category }: { category?: string }) => {
   const [mentors, setMentors] = useState<Mentor[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,12 +40,33 @@ const MegatalentMentorshipBooking = ({ category }: { category?: string }) => {
   const [applyOpen, setApplyOpen] = useState(false);
   const [applyForm, setApplyForm] = useState({ display_name: "", expertise: "", bio: "", price: 50, emoji: "🎓" });
   const [iAmMentor, setIAmMentor] = useState(false);
+  const [myBookings, setMyBookings] = useState<MyBooking[]>([]);
+  const [releasing, setReleasing] = useState<string | null>(null);
 
   const load = async () => {
     setLoading(true);
     const { data } = await (supabase as any).from("mt_mentors").select("*").eq("active", true).order("rating", { ascending: false });
     setMentors((data || []) as Mentor[]);
     setLoading(false);
+  };
+
+  const loadMyBookings = async (uid: string) => {
+    const { data } = await (supabase as any)
+      .from("mt_mentorship_bookings")
+      .select("id, mentor_id, price_cents, status")
+      .eq("student_id", uid)
+      .in("status", ["paid", "completed"])
+      .order("created_at", { ascending: false })
+      .limit(20);
+    const rows = (data || []) as MyBooking[];
+    if (rows.length) {
+      const mids = [...new Set(rows.map((r) => r.mentor_id))];
+      const { data: ms } = await (supabase as any).from("mt_mentors").select("id, display_name").in("id", mids);
+      const map: Record<string, string> = {};
+      (ms || []).forEach((m: any) => (map[m.id] = m.display_name));
+      rows.forEach((r) => (r.mentor_name = map[r.mentor_id] || "Mentor"));
+    }
+    setMyBookings(rows);
   };
 
   useEffect(() => {
@@ -47,10 +76,25 @@ const MegatalentMentorshipBooking = ({ category }: { category?: string }) => {
       if (uid) {
         const { data: mine } = await (supabase as any).from("mt_mentors").select("id").eq("user_id", uid).maybeSingle();
         setIAmMentor(!!mine);
+        loadMyBookings(uid);
       }
     });
     load();
   }, []);
+
+  const markCompleted = async (bookingId: string) => {
+    setReleasing(bookingId);
+    const { data, error } = await supabase.functions.invoke("mt-release-funds", {
+      body: { kind: "mentorship", id: bookingId },
+    });
+    setReleasing(null);
+    if (error || (data as any)?.error) {
+      toast.error("Release failed", { description: error?.message || (data as any)?.error });
+      return;
+    }
+    toast.success("Session completed — 80% sent to mentor");
+    if (userId) loadMyBookings(userId);
+  };
 
   const book = async () => {
     if (!userId || !bookingMentor) {
@@ -169,6 +213,29 @@ const MegatalentMentorshipBooking = ({ category }: { category?: string }) => {
                 </Button>
               </motion.div>
             ))}
+          </div>
+        )}
+
+        {myBookings.length > 0 && (
+          <div className="mt-5 pt-4 border-t border-border/30">
+            <div className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">My bookings</div>
+            <div className="space-y-2">
+              {myBookings.map((b) => (
+                <div key={b.id} className="flex items-center gap-2 rounded-lg border border-border/40 bg-background/40 px-3 py-2">
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-medium truncate">{b.mentor_name}</div>
+                    <div className="text-[11px] text-muted-foreground">€{(b.price_cents / 100).toFixed(0)} · {b.status}</div>
+                  </div>
+                  {b.status === "paid" ? (
+                    <Button size="sm" variant="secondary" onClick={() => markCompleted(b.id)} disabled={releasing === b.id}>
+                      {releasing === b.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><CheckCircle2 className="h-3 w-3 mr-1" />Mark completed</>}
+                    </Button>
+                  ) : (
+                    <Badge variant="outline" className="gap-1 text-[10px]"><CheckCircle2 className="h-3 w-3" />Done</Badge>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
