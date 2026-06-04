@@ -1,0 +1,1 @@
+DROP INDEX IF EXISTS public.idx_referral_earnings_unique_sub;
