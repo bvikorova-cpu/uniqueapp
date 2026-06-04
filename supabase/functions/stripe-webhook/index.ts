@@ -75,8 +75,9 @@ async function syncMegatalentSubscription(
     user_id: userId,
     tier,
     price: MEGATALENT_TIER_PRICE[tier],
-    bonus_votes: tier === "top_premium" ? 100000 : 0,
-    win_chance_boost: tier === "top_premium" ? 50 : 0,
+    bonus_votes: 0,
+    win_chance_boost: tier === "top_premium" ? 100 : 0,
+
     status: isActive ? "active" : "inactive",
     stripe_customer_id: customerId ?? null,
     stripe_subscription_id: sub.id,
