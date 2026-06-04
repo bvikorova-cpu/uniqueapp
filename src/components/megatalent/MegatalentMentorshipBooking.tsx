@@ -50,6 +50,25 @@ const MegatalentMentorshipBooking = ({ category }: { category?: string }) => {
     setLoading(false);
   };
 
+  const loadMyBookings = async (uid: string) => {
+    const { data } = await (supabase as any)
+      .from("mt_mentorship_bookings")
+      .select("id, mentor_id, price_cents, status")
+      .eq("student_id", uid)
+      .in("status", ["paid", "completed"])
+      .order("created_at", { ascending: false })
+      .limit(20);
+    const rows = (data || []) as MyBooking[];
+    if (rows.length) {
+      const mids = [...new Set(rows.map((r) => r.mentor_id))];
+      const { data: ms } = await (supabase as any).from("mt_mentors").select("id, display_name").in("id", mids);
+      const map: Record<string, string> = {};
+      (ms || []).forEach((m: any) => (map[m.id] = m.display_name));
+      rows.forEach((r) => (r.mentor_name = map[r.mentor_id] || "Mentor"));
+    }
+    setMyBookings(rows);
+  };
+
   useEffect(() => {
     supabase.auth.getUser().then(async ({ data }) => {
       const uid = data.user?.id ?? null;
@@ -57,10 +76,25 @@ const MegatalentMentorshipBooking = ({ category }: { category?: string }) => {
       if (uid) {
         const { data: mine } = await (supabase as any).from("mt_mentors").select("id").eq("user_id", uid).maybeSingle();
         setIAmMentor(!!mine);
+        loadMyBookings(uid);
       }
     });
     load();
   }, []);
+
+  const markCompleted = async (bookingId: string) => {
+    setReleasing(bookingId);
+    const { data, error } = await supabase.functions.invoke("mt-release-funds", {
+      body: { kind: "mentorship", id: bookingId },
+    });
+    setReleasing(null);
+    if (error || (data as any)?.error) {
+      toast.error("Release failed", { description: error?.message || (data as any)?.error });
+      return;
+    }
+    toast.success("Session completed — 80% sent to mentor");
+    if (userId) loadMyBookings(userId);
+  };
 
   const book = async () => {
     if (!userId || !bookingMentor) {
