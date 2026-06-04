@@ -215,6 +215,29 @@ const MegatalentTalentMarketplace = ({ category }: { category?: string }) => {
           </div>
         )}
 
+        {myOrders.length > 0 && (
+          <div className="mt-5 pt-4 border-t border-border/30">
+            <div className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">My orders</div>
+            <div className="space-y-2">
+              {myOrders.map((o) => (
+                <div key={o.id} className="flex items-center gap-2 rounded-lg border border-border/40 bg-background/40 px-3 py-2">
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-medium truncate">{o.listing_title}</div>
+                    <div className="text-[11px] text-muted-foreground">€{(o.price_cents / 100).toFixed(0)} · {o.status}</div>
+                  </div>
+                  {o.status === "paid" ? (
+                    <Button size="sm" variant="secondary" onClick={() => markCompleted(o.id)} disabled={releasing === o.id}>
+                      {releasing === o.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><CheckCircle2 className="h-3 w-3 mr-1" />Mark completed</>}
+                    </Button>
+                  ) : (
+                    <Badge variant="outline" className="gap-1 text-[10px]"><CheckCircle2 className="h-3 w-3" />Done</Badge>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <Dialog open={createOpen} onOpenChange={setCreateOpen}>
           <DialogContent>
             <DialogHeader>
