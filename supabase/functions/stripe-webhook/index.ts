@@ -75,8 +75,9 @@ async function syncMegatalentSubscription(
     user_id: userId,
     tier,
     price: MEGATALENT_TIER_PRICE[tier],
-    bonus_votes: tier === "top_premium" ? 100000 : 0,
-    win_chance_boost: tier === "top_premium" ? 50 : 0,
+    bonus_votes: 0,
+    win_chance_boost: tier === "top_premium" ? 100 : 0,
+
     status: isActive ? "active" : "inactive",
     stripe_customer_id: customerId ?? null,
     stripe_subscription_id: sub.id,
@@ -114,7 +115,7 @@ async function syncMegatalentSubscription(
         type: "megatalent_premium_unlocked",
         title: tier === "top_premium" ? "Top Premium activated 🚀" : "Premium activated ⭐",
         message: tier === "top_premium"
-          ? "Your Megatalent Top Premium features are unlocked: 100,000 bonus votes + 50% boost."
+          ? "Your Megatalent Top Premium features are unlocked: +100% ranking boost (real votes × 2) and €5/month referral rewards."
           : "Your Megatalent Premium features are unlocked.",
         is_read: false,
       });

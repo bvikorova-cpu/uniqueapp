@@ -66,11 +66,12 @@ export const MegaTalentGuide = () => {
                   </h4>
                   <ul className="list-disc list-inside space-y-1 ml-2 mt-2">
                     <li>All Premium features included</li>
-                    <li><strong>+100,000 bonus votes</strong> to boost your entries</li>
-                    <li><strong>+50% increased winning chance</strong></li>
+                    <li><strong>+100% algorithmic ranking boost</strong> (real votes × 2 in leaderboard)</li>
                     <li>Priority placement in category feeds</li>
                     <li>Exclusive TOP Premium badge</li>
+                    <li><strong>Referral program (€5/month per friend)</strong> – same as Premium</li>
                   </ul>
+
                 </div>
               </AccordionContent>
             </AccordionItem>
@@ -142,7 +143,7 @@ export const MegaTalentGuide = () => {
                   <li>Click the ❤️ heart icon to vote for a submission</li>
                   <li>You can vote for multiple entries across categories</li>
                   <li>Votes are counted toward the creator's total score</li>
-                  <li>TOP Premium users get +100,000 bonus votes added to their total</li>
+                  <li>Vote count shown is always the real number — no fake/bonus votes</li>
                   <li>You can remove your vote by clicking the heart again</li>
                 </ul>
                 <p className="mt-2">
@@ -162,18 +163,28 @@ export const MegaTalentGuide = () => {
               <AccordionContent className="text-muted-foreground space-y-2">
                 <p><strong>How to win:</strong></p>
                 <ul className="list-disc list-inside space-y-1 ml-2">
-                  <li>Winners are determined by total votes received</li>
+                  <li>Winners are determined by the leaderboard ranking score</li>
                   <li>Competitions run on a monthly cycle</li>
-                  <li>TOP Premium users have +50% increased winning chance</li>
                   <li>Each category has its own competition</li>
                 </ul>
+                <div className="bg-amber-500/10 p-3 rounded-xl mt-2 space-y-2">
+                  <p className="text-sm font-bold">📐 Ranking formula (transparent & auditable):</p>
+                  <ul className="list-disc list-inside space-y-1 ml-2 text-sm">
+                    <li><strong>Standard / Premium:</strong> ranking score = real votes × 1.0</li>
+                    <li><strong>TOP Premium:</strong> ranking score = real votes × 2.0 (+100% boost)</li>
+                  </ul>
+                  <p className="text-xs opacity-90">
+                    The vote number displayed on every card is always the real, audited count from the database. The boost multiplier is applied only to the sorting score used to order the leaderboard.
+                  </p>
+                </div>
                 <div className="bg-amber-500/10 p-3 rounded-xl mt-2">
                   <p className="text-sm">
-                    <strong>🏆 Prize Structure:</strong> Winners in each category receive cash prizes 
-                    and recognition. The more votes you accumulate, the higher your chances of winning!
+                    <strong>🏆 Prize Structure:</strong> Winners in each category receive cash prizes
+                    and recognition. The grand prize is €10,000.
                   </p>
                 </div>
               </AccordionContent>
+
             </AccordionItem>
 
             <AccordionItem value="referral" className="border-2 border-green-500/30 rounded-xl px-4 bg-green-500/5">
@@ -226,7 +237,7 @@ export const MegaTalentGuide = () => {
                   <li><strong>Share your submissions:</strong> Promote on social media for more votes</li>
                   <li><strong>Quality over quantity:</strong> Focus on your best work</li>
                   <li><strong>Use referrals:</strong> Grow the community and earn extra income</li>
-                  <li><strong>Consider TOP Premium:</strong> The bonus votes and winning boost can make a significant difference</li>
+                  <li><strong>Consider TOP Premium:</strong> the +100% ranking boost can significantly improve your leaderboard position with the same real votes</li>
                 </ul>
               </AccordionContent>
             </AccordionItem>

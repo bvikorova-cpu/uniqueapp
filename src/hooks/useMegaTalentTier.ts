@@ -31,16 +31,22 @@ export const TIER_BENEFITS = {
   top_premium: {
     price: 15,
     bonusVotes: 0,
-    winChanceBoost: 50,
+    winChanceBoost: 100,
     algorithmicBoost: true,
     features: [
       'All Premium features',
-      '50% Algorithmic Boost in rankings',
+      '100% Algorithmic Boost in rankings (real votes × 2)',
       'Priority display in category',
       'Exclusive TOP Premium badge',
+      'Referral program (€5/month per friend)',
     ],
   },
 } as const;
+
+// TOP Premium ranking multiplier. Real vote count is always shown to users;
+// this multiplier only affects ordering in the leaderboard.
+export const TOP_PREMIUM_BOOST_MULTIPLIER = 2.0; // +100%
+export const TOP_PREMIUM_BOOST_PERCENT = 100;
 
 export const useMegaTalentTier = (): MegaTalentTierInfo => {
   const [tier, setTier] = useState<MegaTalentTier>(null);
@@ -97,10 +103,11 @@ export const calculateTotalVotesWithBonus = (
   _tier: MegaTalentTier
 ): number => baseVotes;
 
-// Utility function to get ranking boost factor
+// Ranking boost factor used for ordering submissions in leaderboards.
+// Real vote counts displayed in UI are NOT affected.
 export const getRankingBoostFactor = (tier: MegaTalentTier): number => {
   if (tier === 'top_premium') {
-    return 1.5; // 50% boost
+    return TOP_PREMIUM_BOOST_MULTIPLIER;
   }
   return 1.0;
 };
