@@ -754,6 +754,7 @@ const App = () => {
                         <Route path="/stories/:userId" element={<Stories />} />
                         <Route path="/rewards" element={<Rewards />} />
                         <Route path="/rewards/audit" element={<ProtectedRoute><XPAuditLog /></ProtectedRoute>} />
+                        <Route path="/my-progress" element={<ProtectedRoute><MyProgress /></ProtectedRoute>} />
                         <Route path="/wrapped/:slug" element={<YearWrappedPublic />} />
                         <Route path="/admin/xp-audit" element={<ProtectedRoute><AdminXPAudit /></ProtectedRoute>} />
                         <Route path="/admin/xp-audit/reconciliation" element={<ProtectedRoute><AdminXPReconciliation /></ProtectedRoute>} />
