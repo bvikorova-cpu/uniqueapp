@@ -701,6 +701,19 @@ serve(async (req) => {
           .eq("stripe_payment_intent_id", piId);
         if (error) log("refund sync failed", { error: error.message });
 
+        // ── Megatalent refund: flip mt_* row to refunded ────────────────
+        try {
+          for (const t of ["mt_mentorship_bookings", "mt_marketplace_orders"]) {
+            await supabase.from(t).update({
+              status: "refunded",
+            }).eq("stripe_payment_intent_id", piId);
+          }
+        } catch (e) {
+          log("mt refund handler error", { err: (e as Error).message });
+        }
+
+
+
         // ── Campaign donation refund: decrement campaign total, mark donation refunded ──
         try {
           const { data: drRes, error: drErr } = await supabase.rpc(
