@@ -62107,6 +62107,17 @@ export type Database = {
           week_start: string
         }[]
       }
+      get_job_challenges_hall_of_fame: {
+        Args: never
+        Returns: {
+          challenge_slug: string
+          challenge_title: string
+          top_user_id: string
+          top_user_name: string
+          total_completions: number
+          xp_reward: number
+        }[]
+      }
       get_last_week_xp_winners: {
         Args: never
         Returns: {
@@ -62381,6 +62392,19 @@ export type Database = {
           target_count: number
           title: string
           xp_reward: number
+        }[]
+      }
+      get_user_job_achievements: {
+        Args: never
+        Returns: {
+          code: string
+          description: string
+          icon: string
+          name: string
+          points: number
+          progress: number
+          target: number
+          unlocked: boolean
         }[]
       }
       get_user_mission_progress: {
