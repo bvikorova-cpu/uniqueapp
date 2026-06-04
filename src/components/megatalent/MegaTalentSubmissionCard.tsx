@@ -38,9 +38,7 @@ export default function MegaTalentSubmissionCard({
   onMediaClick,
 }: SubmissionCardProps) {
   const isTopPremium = submission.subscriptionTier === "top_premium";
-  const displayVotes = isTopPremium
-    ? ((submission.votes_count || 0) + 100000).toLocaleString()
-    : (submission.votes_count || 0).toLocaleString();
+  const displayVotes = (submission.votes_count || 0).toLocaleString();
 
   return (
     <motion.div

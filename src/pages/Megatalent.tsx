@@ -132,7 +132,7 @@ const Megatalent = () => {
       const { data, error } = await supabase.from('talent_submissions').select('votes_count').eq('user_id', user.id).eq('is_active', true);
       if (error) throw error;
       const total = data?.reduce((sum, s) => sum + (s.votes_count || 0), 0) || 0;
-      setTotalVotes(total + (subscriptionTier === 'top_premium' ? 100000 : 0));
+      setTotalVotes(total);
     } catch (error) { console.error('Error fetching total votes:', error); }
   };
 
@@ -427,7 +427,7 @@ const Megatalent = () => {
                               <span className="text-sm font-medium">Your Votes</span>
                               <VoteBoostTooltip isTopPremium={subscriptionTier === 'top_premium'} />
                             </div>
-                            <AnimatedVoteCounter targetValue={totalVotes} bonusVotes={subscriptionTier === 'top_premium' ? 100000 : 0} isTopPremium={subscriptionTier === 'top_premium'} />
+                            <AnimatedVoteCounter targetValue={totalVotes} bonusVotes={0} isTopPremium={subscriptionTier === 'top_premium'} />
                           </div>
                         </div>
                       )}
