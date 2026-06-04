@@ -12,6 +12,8 @@
 
 ## Memories
 - [Monetization Rules](mem://features/monetization) — Revenue splits (e.g., 80/20 for Brand Collabs), paid-only strategy, Stripe Connect.
+- [Megatalent Subscription Split](mem://features/megatalent-subscription-split) — Premium €10 / TOP €15: flat €5 referrer + rest platform. Subs DO NOT fund prize pool.
+- [Megatalent Contest Periods](mem://features/megatalent-contest-periods) — Quarterly schedule, fixed €10,000/quarter via mt_contest_settings table. Q3+Q4 2026 seeded.
 - [Legal & Compliance](mem://constraints/compliance) — 16+ age restriction, no health claims, GDPR visual rules.
 - [Global Design Patterns](mem://design/global-patterns) — Glassmorphism, Cinematic Hub 2.0, Lucide icons.
 - [Architecture Standards](mem://architecture/project-standards) — Video imports, AI throttling, Three.js type pinning.
