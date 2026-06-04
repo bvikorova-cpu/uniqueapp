@@ -472,6 +472,7 @@ const AdminCohortRetention = lazy(() => import("@/pages/admin/AdminCohortRetenti
 const AdminOpsTools = lazy(() => import("@/pages/admin/AdminOpsTools"));
 const AdminRewardsSeed = lazy(() => import("@/pages/admin/AdminRewardsSeed"));
 const AdminRewardsAudit = lazy(() => import("@/pages/admin/AdminRewardsAudit"));
+const MyProgress = lazy(() => import("@/pages/MyProgress"));
 const YearWrappedPublic = lazy(() => import("@/pages/YearWrappedPublic"));
 const AdminCreditsLedger = lazy(() => import("@/pages/admin/AdminCreditsLedger"));
 const MyCreditsLedger = lazy(() => import("@/pages/MyCreditsLedger"));
@@ -753,6 +754,7 @@ const App = () => {
                         <Route path="/stories/:userId" element={<Stories />} />
                         <Route path="/rewards" element={<Rewards />} />
                         <Route path="/rewards/audit" element={<ProtectedRoute><XPAuditLog /></ProtectedRoute>} />
+                        <Route path="/my-progress" element={<ProtectedRoute><MyProgress /></ProtectedRoute>} />
                         <Route path="/wrapped/:slug" element={<YearWrappedPublic />} />
                         <Route path="/admin/xp-audit" element={<ProtectedRoute><AdminXPAudit /></ProtectedRoute>} />
                         <Route path="/admin/xp-audit/reconciliation" element={<ProtectedRoute><AdminXPReconciliation /></ProtectedRoute>} />
