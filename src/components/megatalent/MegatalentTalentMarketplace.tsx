@@ -64,20 +64,30 @@ const MegatalentTalentMarketplace = ({ category }: { category?: string }) => {
       return;
     }
     setBuying(l.id);
-    const { error } = await (supabase as any).from("mt_marketplace_orders").insert({
-      listing_id: l.id,
-      buyer_id: userId,
-      seller_id: l.seller_id,
-      price_cents: l.price_cents,
-    });
-    setBuying(null);
-    if (error) {
-      toast.error("Order failed", { description: error.message });
+    const { data: order, error } = await (supabase as any)
+      .from("mt_marketplace_orders")
+      .insert({
+        listing_id: l.id,
+        buyer_id: userId,
+        seller_id: l.seller_id,
+        price_cents: l.price_cents,
+      })
+      .select("id")
+      .single();
+    if (error || !order) {
+      setBuying(null);
+      toast.error("Order failed", { description: error?.message });
       return;
     }
-    toast.success(`Order placed: ${l.title}`, {
-      description: `€${(l.price_cents / 100).toFixed(2)} reserved · delivery in ${l.eta_days} days · 80/20 split`,
+    const { data: co, error: coErr } = await supabase.functions.invoke("mt-checkout", {
+      body: { kind: "marketplace", id: order.id },
     });
+    setBuying(null);
+    if (coErr || !(co as any)?.url) {
+      toast.error("Checkout failed", { description: coErr?.message || (co as any)?.error });
+      return;
+    }
+    window.location.href = (co as any).url;
   };
 
   const create = async () => {
