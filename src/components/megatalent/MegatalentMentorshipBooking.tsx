@@ -216,6 +216,29 @@ const MegatalentMentorshipBooking = ({ category }: { category?: string }) => {
           </div>
         )}
 
+        {myBookings.length > 0 && (
+          <div className="mt-5 pt-4 border-t border-border/30">
+            <div className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">My bookings</div>
+            <div className="space-y-2">
+              {myBookings.map((b) => (
+                <div key={b.id} className="flex items-center gap-2 rounded-lg border border-border/40 bg-background/40 px-3 py-2">
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-medium truncate">{b.mentor_name}</div>
+                    <div className="text-[11px] text-muted-foreground">€{(b.price_cents / 100).toFixed(0)} · {b.status}</div>
+                  </div>
+                  {b.status === "paid" ? (
+                    <Button size="sm" variant="secondary" onClick={() => markCompleted(b.id)} disabled={releasing === b.id}>
+                      {releasing === b.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><CheckCircle2 className="h-3 w-3 mr-1" />Mark completed</>}
+                    </Button>
+                  ) : (
+                    <Badge variant="outline" className="gap-1 text-[10px]"><CheckCircle2 className="h-3 w-3" />Done</Badge>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Booking dialog */}
         <Dialog open={!!bookingMentor} onOpenChange={(o) => !o && setBookingMentor(null)}>
           <DialogContent>
