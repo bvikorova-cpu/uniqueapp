@@ -163,18 +163,28 @@ export const MegaTalentGuide = () => {
               <AccordionContent className="text-muted-foreground space-y-2">
                 <p><strong>How to win:</strong></p>
                 <ul className="list-disc list-inside space-y-1 ml-2">
-                  <li>Winners are determined by total votes received</li>
+                  <li>Winners are determined by the leaderboard ranking score</li>
                   <li>Competitions run on a monthly cycle</li>
-                  <li>TOP Premium users have +50% increased winning chance</li>
                   <li>Each category has its own competition</li>
                 </ul>
+                <div className="bg-amber-500/10 p-3 rounded-xl mt-2 space-y-2">
+                  <p className="text-sm font-bold">📐 Ranking formula (transparent & auditable):</p>
+                  <ul className="list-disc list-inside space-y-1 ml-2 text-sm">
+                    <li><strong>Standard / Premium:</strong> ranking score = real votes × 1.0</li>
+                    <li><strong>TOP Premium:</strong> ranking score = real votes × 2.0 (+100% boost)</li>
+                  </ul>
+                  <p className="text-xs opacity-90">
+                    The vote number displayed on every card is always the real, audited count from the database. The boost multiplier is applied only to the sorting score used to order the leaderboard.
+                  </p>
+                </div>
                 <div className="bg-amber-500/10 p-3 rounded-xl mt-2">
                   <p className="text-sm">
-                    <strong>🏆 Prize Structure:</strong> Winners in each category receive cash prizes 
-                    and recognition. The more votes you accumulate, the higher your chances of winning!
+                    <strong>🏆 Prize Structure:</strong> Winners in each category receive cash prizes
+                    and recognition. The grand prize is €10,000.
                   </p>
                 </div>
               </AccordionContent>
+
             </AccordionItem>
 
             <AccordionItem value="referral" className="border-2 border-green-500/30 rounded-xl px-4 bg-green-500/5">
