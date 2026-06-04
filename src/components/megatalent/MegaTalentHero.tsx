@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Heart, Clock, Flame, Crown, Sparkles } from "lucide-react";
 import heroVideo from "@/assets/megatalent-hero.mp4.asset.json";
+import { useMegatalentContestStats } from "@/hooks/useMegatalentContestStats";
 
 function getContestTimeLeft() {
   const now = new Date();
