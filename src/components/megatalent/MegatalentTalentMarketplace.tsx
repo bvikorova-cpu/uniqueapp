@@ -58,11 +58,48 @@ const MegatalentTalentMarketplace = ({ category }: { category?: string }) => {
     setLoading(false);
   };
 
+  const loadMyOrders = async (uid: string) => {
+    const { data } = await (supabase as any)
+      .from("mt_marketplace_orders")
+      .select("id, listing_id, price_cents, status")
+      .eq("buyer_id", uid)
+      .in("status", ["paid", "completed"])
+      .order("created_at", { ascending: false })
+      .limit(20);
+    const rows = (data || []) as MyOrder[];
+    if (rows.length) {
+      const lids = [...new Set(rows.map((r) => r.listing_id))];
+      const { data: ls } = await (supabase as any).from("mt_marketplace_listings").select("id, title").in("id", lids);
+      const map: Record<string, string> = {};
+      (ls || []).forEach((l: any) => (map[l.id] = l.title));
+      rows.forEach((r) => (r.listing_title = map[r.listing_id] || "Listing"));
+    }
+    setMyOrders(rows);
+  };
+
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
+    supabase.auth.getUser().then(({ data }) => {
+      const uid = data.user?.id ?? null;
+      setUserId(uid);
+      if (uid) loadMyOrders(uid);
+    });
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category]);
+
+  const markCompleted = async (orderId: string) => {
+    setReleasing(orderId);
+    const { data, error } = await supabase.functions.invoke("mt-release-funds", {
+      body: { kind: "marketplace", id: orderId },
+    });
+    setReleasing(null);
+    if (error || (data as any)?.error) {
+      toast.error("Release failed", { description: error?.message || (data as any)?.error });
+      return;
+    }
+    toast.success("Order completed — 80% sent to seller");
+    if (userId) loadMyOrders(userId);
+  };
 
   const buy = async (l: Listing) => {
     if (!userId) {
