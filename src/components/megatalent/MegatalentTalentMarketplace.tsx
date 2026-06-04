@@ -22,6 +22,14 @@ interface Listing {
   seller_name?: string;
 }
 
+interface MyOrder {
+  id: string;
+  listing_id: string;
+  price_cents: number;
+  status: string;
+  listing_title?: string;
+}
+
 const MegatalentTalentMarketplace = ({ category }: { category?: string }) => {
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,6 +38,8 @@ const MegatalentTalentMarketplace = ({ category }: { category?: string }) => {
   const [form, setForm] = useState({ title: "", description: "", price: 25, eta_days: 7, emoji: "🎁" });
   const [submitting, setSubmitting] = useState(false);
   const [buying, setBuying] = useState<string | null>(null);
+  const [myOrders, setMyOrders] = useState<MyOrder[]>([]);
+  const [releasing, setReleasing] = useState<string | null>(null);
 
   const load = async () => {
     setLoading(true);
