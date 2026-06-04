@@ -41,7 +41,7 @@ const MegatalentStories = () => {
     const rows = (data || []) as Story[];
     if (rows.length) {
       const uids = [...new Set(rows.map((r) => r.user_id))];
-      const { data: profs } = await supabase.from("profiles").select("id, full_name, avatar_url").in("id", uids);
+      const { data: profs } = await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", uids);
       const pmap: Record<string, any> = {};
       (profs || []).forEach((p: any) => (pmap[p.id] = p));
       rows.forEach((r) => (r.author = pmap[r.user_id]));
