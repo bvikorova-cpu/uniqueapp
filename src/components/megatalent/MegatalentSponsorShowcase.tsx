@@ -13,15 +13,9 @@ interface Props {
 interface Sponsor {
   id: string;
   name: string;
-  tagline: string | null;
-  description: string | null;
-  emoji: string | null;
-  cta_label: string;
-  cta_url: string;
-  prize: string | null;
-  gradient: string | null;
-  category: string | null;
-  tier: string;
+  logo_url: string | null;
+  website_url: string | null;
+  placement: string;
 }
 
 export default function MegatalentSponsorShowcase({ category }: Props) {
@@ -37,7 +31,7 @@ export default function MegatalentSponsorShowcase({ category }: Props) {
       if (cancelled) return;
       let rows = (data || []) as Sponsor[];
       if (category) {
-        const matched = rows.filter((r) => !r.category || r.category === category);
+        const matched = rows.filter((r) => r.placement === "default" || r.placement === category);
         if (matched.length) rows = matched;
       }
       setSponsors(rows);
@@ -67,7 +61,7 @@ export default function MegatalentSponsorShowcase({ category }: Props) {
           <span className="text-muted-foreground font-medium">Sponsored</span>
           <Badge variant="outline" className="ml-auto text-[9px] gap-0.5 px-1.5 py-0">
             <Sparkles className="h-2.5 w-2.5" />
-            {s.tier === "platinum" ? "Platinum" : "Partner"}
+            Partner
           </Badge>
         </CardTitle>
       </CardHeader>
@@ -79,35 +73,39 @@ export default function MegatalentSponsorShowcase({ category }: Props) {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.4 }}
-            className={`relative bg-gradient-to-br ${s.gradient || "from-primary to-accent"} p-4 text-white`}
+            className="relative bg-gradient-to-br from-primary to-accent p-4 text-primary-foreground"
           >
             <div className="flex items-start gap-3">
-              {s.emoji && (
-                <div className="text-4xl bg-white/15 backdrop-blur rounded-xl p-2 shrink-0">{s.emoji}</div>
+              {s.logo_url && (
+                <div className="h-14 w-14 bg-primary-foreground/15 backdrop-blur rounded-xl p-2 shrink-0">
+                  <img src={s.logo_url} alt={`${s.name} logo`} className="h-full w-full object-contain" />
+                </div>
               )}
               <div className="flex-1 min-w-0">
                 <div className="flex items-baseline gap-2 flex-wrap">
                   <h3 className="font-black text-lg">{s.name}</h3>
-                  {s.tagline && <span className="text-xs text-white/80 italic">{s.tagline}</span>}
+                  <span className="text-xs text-primary-foreground/80 italic">{s.placement}</span>
                 </div>
-                {s.description && <p className="text-sm text-white/90 mt-1">{s.description}</p>}
+                <p className="text-sm text-primary-foreground/90 mt-1">Megatalent official sponsor</p>
               </div>
             </div>
             <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/20">
               <div>
-                <p className="text-[10px] uppercase tracking-wider text-white/70">Prize</p>
-                <p className="text-sm font-bold">{s.prize || "—"}</p>
+                <p className="text-[10px] uppercase tracking-wider text-primary-foreground/70">Placement</p>
+                <p className="text-sm font-bold">{s.placement}</p>
               </div>
               <Button
                 size="sm"
                 variant="secondary"
-                className="bg-white text-black hover:bg-white/90 gap-1.5"
+                className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 gap-1.5"
+                disabled={!s.website_url}
                 onClick={() => {
-                  if (s.cta_url.startsWith("/")) window.location.href = s.cta_url;
-                  else window.open(s.cta_url, "_blank", "noopener");
+                  if (!s.website_url) return;
+                  if (s.website_url.startsWith("/")) window.location.href = s.website_url;
+                  else window.open(s.website_url, "_blank", "noopener");
                 }}
               >
-                {s.cta_label}
+                Visit
                 <ExternalLink className="h-3 w-3" />
               </Button>
             </div>

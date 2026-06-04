@@ -79,10 +79,11 @@ const MegatalentStories = () => {
     setUploading(true);
     try {
       const ext = file.name.split(".").pop() || (isVideo ? "mp4" : "jpg");
-      const path = `${userId}/${Date.now()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("mt-stories").upload(path, file, { contentType: file.type });
+      const bucket = isVideo ? "videos" : "media";
+      const path = `${userId}/stories/${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from(bucket).upload(path, file, { contentType: file.type });
       if (upErr) throw upErr;
-      const { data: pub } = supabase.storage.from("mt-stories").getPublicUrl(path);
+      const { data: pub } = supabase.storage.from(bucket).getPublicUrl(path);
       const { error: insErr } = await (supabase as any).from("mt_stories").insert({
         user_id: userId,
         media_url: pub.publicUrl,

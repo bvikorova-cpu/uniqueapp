@@ -21,6 +21,10 @@ import { VoteBoostTooltip } from "@/components/megatalent/VoteBoostTooltip";
 import MegaTalentHero from "@/components/megatalent/MegaTalentHero";
 import MegatalentClipOfDay from "@/components/megatalent/MegatalentClipOfDay";
 import MegatalentTalentShop from "@/components/megatalent/MegatalentTalentShop";
+import MegatalentStories from "@/components/megatalent/MegatalentStories";
+import MegatalentSponsorShowcase from "@/components/megatalent/MegatalentSponsorShowcase";
+import MegatalentVotingStreak from "@/components/megatalent/MegatalentVotingStreak";
+import MegatalentAchievements from "@/components/megatalent/MegatalentAchievements";
 
 import BattleRoyalePayouts from "@/components/megatalent/BattleRoyalePayouts";
 import MegatalentNotificationBell from "@/components/megatalent/MegatalentNotificationBell";
@@ -215,6 +219,7 @@ const Megatalent = () => {
         setSubmissions(prev => prev.map(s => s.id === submissionId ? { ...s, votes_count: (s.votes_count || 0) - 1 } : s));
       } else {
         await supabase.from('talent_votes').insert({ submission_id: submissionId, user_id: user.id });
+        await (supabase as any).rpc('mt_bump_voting_streak', { _user_id: user.id });
         setLikedSubmissions(prev => new Set(prev).add(submissionId));
         setSubmissions(prev => prev.map(s => s.id === submissionId ? { ...s, votes_count: (s.votes_count || 0) + 1 } : s));
       }
@@ -394,8 +399,12 @@ const Megatalent = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <MegatalentStories />
+              <MegatalentSponsorShowcase category={selectedCategory} />
               <MegatalentClipOfDay category={selectedCategory} />
               <MegatalentTalentShop userId={currentUserId} />
+              <MegatalentVotingStreak userId={currentUserId} />
+              <MegatalentAchievements userId={currentUserId} />
             </div>
 
             <ReferralProgram />

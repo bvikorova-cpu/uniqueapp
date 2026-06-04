@@ -63,9 +63,9 @@ export default function MegatalentAchievements({ userId }: Props) {
           return;
         }
 
-        const [{ data: subs }, { data: already }] = await Promise.all([
+        const [{ data: subs }, { data: catalog }] = await Promise.all([
           supabase.from("talent_submissions").select("votes_count").eq("user_id", uid).eq("is_active", true),
-          supabase.from("megatalent_achievements").select("code").eq("user_id", uid),
+          (supabase as any).from("mt_achievements").select("id, achievement_key, active").eq("active", true),
         ]);
 
         const submissions = subs?.length || 0;
@@ -73,19 +73,24 @@ export default function MegatalentAchievements({ userId }: Props) {
         const topVotes = (subs || []).reduce((m: number, s: any) => Math.max(m, s.votes_count || 0), 0);
         const newStats = { submissions, totalVotes, topVotes };
 
-        const have = new Set<string>((already || []).map((a: any) => a.code));
+        const ids = Object.fromEntries((catalog || []).map((a: any) => [a.achievement_key, a.id]));
+        const { data: already } = Object.keys(ids).length
+          ? await (supabase as any)
+              .from("mt_user_achievements")
+              .select("achievement_id")
+              .eq("user_id", uid)
+              .in("achievement_id", Object.values(ids))
+          : { data: [] };
+        const keyById = Object.fromEntries(Object.entries(ids).map(([key, id]) => [id, key]));
+        const have = new Set<string>((already || []).map((a: any) => keyById[a.achievement_id]).filter(Boolean));
 
         // Unlock new ones
         const toInsert = DEFS.filter((d) => d.check(newStats) && !have.has(d.code));
         if (toInsert.length > 0) {
-          await supabase.from("megatalent_achievements").insert(
+          await (supabase as any).from("mt_user_achievements").insert(
             toInsert.map((d) => ({
               user_id: uid,
-              code: d.code,
-              title: d.title,
-              description: d.description,
-              icon: d.code,
-              tier: d.tier,
+              achievement_id: ids[d.code],
             })) as any,
           );
           toInsert.forEach((d) => have.add(d.code));
