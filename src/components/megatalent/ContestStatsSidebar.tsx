@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Users, TrendingUp, Flame, Award, Star } from "lucide-react";
+import { useMegatalentContestStats } from "@/hooks/useMegatalentContestStats";
 
 interface ContestStatsSidebarProps {
   subscriptionTier: "premium" | "top_premium" | null;
@@ -9,6 +10,7 @@ interface ContestStatsSidebarProps {
 }
 
 export default function ContestStatsSidebar({ subscriptionTier, totalVotes }: ContestStatsSidebarProps) {
+  const { data: stats } = useMegatalentContestStats();
   return (
     <div className="space-y-4">
       {/* Contest Prize Card */}
@@ -28,9 +30,9 @@ export default function ContestStatsSidebar({ subscriptionTier, totalVotes }: Co
               transition={{ type: "spring", delay: 0.2 }}
               className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-yellow-500 to-amber-500 bg-clip-text text-transparent"
             >
-              €10,000
+              €{stats?.prizePool ? stats.prizePool.toLocaleString("en-US") : "—"}
             </motion.div>
-            <p className="text-xs text-muted-foreground mt-1">Grand Prize</p>
+            <p className="text-xs text-muted-foreground mt-1">Prize Pool (from active subscriptions)</p>
           </div>
 
           <div className="space-y-2">
