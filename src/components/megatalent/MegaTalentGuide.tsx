@@ -237,7 +237,7 @@ export const MegaTalentGuide = () => {
                   <li><strong>Share your submissions:</strong> Promote on social media for more votes</li>
                   <li><strong>Quality over quantity:</strong> Focus on your best work</li>
                   <li><strong>Use referrals:</strong> Grow the community and earn extra income</li>
-                  <li><strong>Consider TOP Premium:</strong> The bonus votes and winning boost can make a significant difference</li>
+                  <li><strong>Consider TOP Premium:</strong> the +100% ranking boost can significantly improve your leaderboard position with the same real votes</li>
                 </ul>
               </AccordionContent>
             </AccordionItem>
