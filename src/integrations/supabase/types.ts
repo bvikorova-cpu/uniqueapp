@@ -38439,6 +38439,45 @@ export type Database = {
         }
         Relationships: []
       }
+      mt_achievements: {
+        Row: {
+          achievement_key: string
+          active: boolean
+          created_at: string
+          criteria_json: Json
+          description: string | null
+          id: string
+          label: string
+          reward_credits: number
+          reward_xp: number
+          updated_at: string
+        }
+        Insert: {
+          achievement_key: string
+          active?: boolean
+          created_at?: string
+          criteria_json?: Json
+          description?: string | null
+          id?: string
+          label: string
+          reward_credits?: number
+          reward_xp?: number
+          updated_at?: string
+        }
+        Update: {
+          achievement_key?: string
+          active?: boolean
+          created_at?: string
+          criteria_json?: Json
+          description?: string | null
+          id?: string
+          label?: string
+          reward_credits?: number
+          reward_xp?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       mt_contest_settings: {
         Row: {
           created_at: string
@@ -38800,6 +38839,81 @@ export type Database = {
         }
         Relationships: []
       }
+      mt_sponsors: {
+        Row: {
+          active: boolean
+          created_at: string
+          ends_at: string | null
+          id: string
+          logo_url: string | null
+          name: string
+          placement: string
+          starts_at: string | null
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          logo_url?: string | null
+          name: string
+          placement?: string
+          starts_at?: string | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          logo_url?: string | null
+          name?: string
+          placement?: string
+          starts_at?: string | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
+      mt_stories: {
+        Row: {
+          caption: string | null
+          created_at: string
+          expires_at: string
+          id: string
+          media_type: string
+          media_url: string
+          updated_at: string
+          user_id: string
+          view_count: number
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          media_type?: string
+          media_url: string
+          updated_at?: string
+          user_id: string
+          view_count?: number
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          media_type?: string
+          media_url?: string
+          updated_at?: string
+          user_id?: string
+          view_count?: number
+        }
+        Relationships: []
+      }
       mt_streak_claims: {
         Row: {
           claimed_at: string
@@ -38823,6 +38937,68 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      mt_submission_reactions: {
+        Row: {
+          created_at: string
+          emoji: string
+          id: string
+          submission_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          emoji: string
+          id?: string
+          submission_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          emoji?: string
+          id?: string
+          submission_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mt_user_achievements: {
+        Row: {
+          achievement_id: string
+          claimed_at: string | null
+          created_at: string
+          id: string
+          unlocked_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          achievement_id: string
+          claimed_at?: string | null
+          created_at?: string
+          id?: string
+          unlocked_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          achievement_id?: string
+          claimed_at?: string | null
+          created_at?: string
+          id?: string
+          unlocked_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mt_user_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "mt_achievements"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       mt_user_quest_progress: {
         Row: {
@@ -38855,6 +39031,36 @@ export type Database = {
           progress?: number
           quest_date?: string
           quest_key?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mt_voting_streaks: {
+        Row: {
+          created_at: string
+          current_streak: number
+          id: string
+          last_vote_date: string | null
+          longest_streak: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_streak?: number
+          id?: string
+          last_vote_date?: string | null
+          longest_streak?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_streak?: number
+          id?: string
+          last_vote_date?: string | null
+          longest_streak?: number
           updated_at?: string
           user_id?: string
         }
@@ -63067,6 +63273,24 @@ export type Database = {
       moderate_comment: {
         Args: { _comment_id: string; _hide: boolean; _reason?: string }
         Returns: undefined
+      }
+      mt_bump_voting_streak: {
+        Args: { _user_id: string }
+        Returns: {
+          created_at: string
+          current_streak: number
+          id: string
+          last_vote_date: string | null
+          longest_streak: number
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "mt_voting_streaks"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       open_mystery_box: { Args: { p_user_box_id: string }; Returns: Json }
       payout_requires_review: {
