@@ -231,9 +231,17 @@ const MegatalentMentorshipBooking = ({ category }: { category?: string }) => {
                     <div className="text-[11px] text-muted-foreground">€{(b.price_cents / 100).toFixed(0)} · {b.status}</div>
                   </div>
                   {b.status === "paid" ? (
-                    <Button size="sm" variant="secondary" onClick={() => markCompleted(b.id)} disabled={releasing === b.id}>
-                      {releasing === b.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><CheckCircle2 className="h-3 w-3 mr-1" />Mark completed</>}
-                    </Button>
+                    <div className="flex flex-col items-end gap-1">
+                      <Button size="sm" variant="secondary" onClick={() => markCompleted(b.id)} disabled={releasing === b.id || releaseStatus[b.id] === "success"}>
+                        {releasing === b.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><CheckCircle2 className="h-3 w-3 mr-1" />Mark completed</>}
+                      </Button>
+                      {releaseStatus[b.id] === "success" && (
+                        <span className="text-[11px] text-green-500">Completed</span>
+                      )}
+                      {releaseStatus[b.id] === "error" && (
+                        <span className="text-[11px] text-red-500">Failed</span>
+                      )}
+                    </div>
                   ) : (
                     <Badge variant="outline" className="gap-1 text-[10px]"><CheckCircle2 className="h-3 w-3" />Done</Badge>
                   )}
