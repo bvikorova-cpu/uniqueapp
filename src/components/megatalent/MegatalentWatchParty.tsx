@@ -1,9 +1,29 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Radio, Send, Users, Tv } from "lucide-react";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Radio,
+  Send,
+  Users,
+  Tv,
+  ImagePlus,
+  X,
+  Loader2,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -13,6 +33,7 @@ interface Stream {
   category: string;
   title: string;
   description: string | null;
+  thumbnail_url: string | null;
   status: string;
   started_at: string | null;
   viewer_count: number;
@@ -30,6 +51,23 @@ interface Props {
   category: string;
 }
 
+const goLiveSchema = z.object({
+  title: z
+    .string()
+    .min(3, "Názov musí mať aspoň 3 znaky")
+    .max(100, "Názov môže mať najviac 100 znakov"),
+  description: z
+    .string()
+    .max(500, "Popis môže mať najviac 500 znakov")
+    .optional()
+    .or(z.literal("")),
+});
+
+type GoLiveValues = z.infer<typeof goLiveSchema>;
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+
 export const MegatalentWatchParty = ({ category }: Props) => {
   const { toast } = useToast();
   const [streams, setStreams] = useState<Stream[]>([]);
@@ -38,10 +76,19 @@ export const MegatalentWatchParty = ({ category }: Props) => {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
-  const [title, setTitle] = useState("");
+  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+  const [thumbnailError, setThumbnailError] = useState<string | null>(null);
+  const [isStarting, setIsStarting] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const loadStreams = async () => {
+  const form = useForm<GoLiveValues>({
+    resolver: zodResolver(goLiveSchema),
+    defaultValues: { title: "", description: "" },
+  });
+
+  const loadStreams = useCallback(async () => {
     const { data } = await (supabase as any)
       .from("megatalent_live_streams")
       .select("*")
@@ -51,7 +98,7 @@ export const MegatalentWatchParty = ({ category }: Props) => {
       .limit(10);
     setStreams((data ?? []) as Stream[]);
     setLoading(false);
-  };
+  }, [category]);
 
   useEffect(() => {
     loadStreams();
@@ -66,8 +113,7 @@ export const MegatalentWatchParty = ({ category }: Props) => {
     return () => {
       supabase.removeChannel(ch);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category]);
+  }, [category, loadStreams]);
 
   useEffect(() => {
     if (!activeStream) return;
@@ -99,6 +145,98 @@ export const MegatalentWatchParty = ({ category }: Props) => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setThumbnailError(null);
+    const file = e.target.files?.[0];
+    if (!file) {
+      setThumbnailPreview(null);
+      setThumbnailFile(null);
+      return;
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      setThumbnailError("Obrázok môže mať najviac 5 MB");
+      setThumbnailPreview(null);
+      setThumbnailFile(null);
+      return;
+    }
+    if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+      setThumbnailError("Podporované formáty: JPG, PNG, WebP");
+      setThumbnailPreview(null);
+      setThumbnailFile(null);
+      return;
+    }
+    setThumbnailFile(file);
+    const reader = new FileReader();
+    reader.onloadend = () => setThumbnailPreview(reader.result as string);
+    reader.readAsDataURL(file);
+  };
+
+  const uploadThumbnail = async (file: File): Promise<string | null> => {
+    const { data: u } = await supabase.auth.getUser();
+    if (!u.user) return null;
+    const ext = file.name.split(".").pop() || "jpg";
+    const path = `stream-thumbnails/${u.user.id}/${Date.now()}.${ext}`;
+    const { error: upError } = await supabase.storage
+      .from("megatalent-thumbnails")
+      .upload(path, file, { upsert: true });
+    if (upError) {
+      toast({ title: "Chyba nahrávania", description: upError.message, variant: "destructive" });
+      return null;
+    }
+    const { data: urlData } = supabase.storage
+      .from("megatalent-thumbnails")
+      .getPublicUrl(path);
+    return urlData.publicUrl;
+  };
+
+  const createStream = async (values: GoLiveValues) => {
+    setIsStarting(true);
+    const { data: u } = await supabase.auth.getUser();
+    if (!u.user) {
+      toast({ title: "Sign in to create a stream", variant: "destructive" });
+      setIsStarting(false);
+      return;
+    }
+
+    let thumbnailUrl: string | null = null;
+    if (thumbnailFile) {
+      thumbnailUrl = await uploadThumbnail(thumbnailFile);
+      if (thumbnailUrl === null) {
+        setIsStarting(false);
+        return;
+      }
+    }
+
+    const { data, error } = await (supabase as any)
+      .from("megatalent_live_streams")
+      .insert({
+        host_user_id: u.user.id,
+        category,
+        title: values.title.trim(),
+        description: values.description?.trim() || null,
+        status: "live",
+        started_at: new Date().toISOString(),
+        ...(thumbnailUrl ? { thumbnail_url: thumbnailUrl } : {}),
+      })
+      .select()
+      .single();
+
+    if (error) {
+      toast({ title: "Chyba", description: error.message, variant: "destructive" });
+      setIsStarting(false);
+      return;
+    }
+
+    form.reset();
+    setThumbnailPreview(null);
+    setThumbnailFile(null);
+    setThumbnailError(null);
+    setCreating(false);
+    setActiveStream(data as Stream);
+    setIsStarting(false);
+    toast({ title: "🎥 Stream is live!" });
+  };
+
   const send = async () => {
     if (!input.trim() || !activeStream) return;
     const { data: u } = await supabase.auth.getUser();
@@ -116,34 +254,6 @@ export const MegatalentWatchParty = ({ category }: Props) => {
     if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
   };
 
-  const createStream = async () => {
-    if (!title.trim()) return;
-    const { data: u } = await supabase.auth.getUser();
-    if (!u.user) {
-      toast({ title: "Sign in to create a stream", variant: "destructive" });
-      return;
-    }
-    const { data, error } = await (supabase as any)
-      .from("megatalent_live_streams")
-      .insert({
-        host_user_id: u.user.id,
-        category,
-        title: title.trim(),
-        status: "live",
-        started_at: new Date().toISOString(),
-      })
-      .select()
-      .single();
-    if (error) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
-      return;
-    }
-    setTitle("");
-    setCreating(false);
-    setActiveStream(data as Stream);
-    toast({ title: "🎥 Stream is live!" });
-  };
-
   const endStream = async () => {
     if (!activeStream) return;
     await (supabase as any)
@@ -152,6 +262,13 @@ export const MegatalentWatchParty = ({ category }: Props) => {
       .eq("id", activeStream.id);
     setActiveStream(null);
     toast({ title: "Stream ended" });
+  };
+
+  const clearThumbnail = () => {
+    setThumbnailPreview(null);
+    setThumbnailFile(null);
+    setThumbnailError(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   if (loading) return null;
@@ -173,21 +290,121 @@ export const MegatalentWatchParty = ({ category }: Props) => {
       </CardHeader>
       <CardContent className="space-y-3">
         {creating && !activeStream && (
-          <div className="space-y-2 p-3 rounded-lg bg-card/50 border border-border/50">
-            <Input
-              placeholder="Stream title…"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              maxLength={100}
-            />
-            <div className="flex gap-2">
-              <Button size="sm" onClick={createStream} className="flex-1">
-                <Radio className="h-3.5 w-3.5 mr-1" /> Start
-              </Button>
-              <Button size="sm" variant="ghost" onClick={() => setCreating(false)}>
-                Cancel
-              </Button>
-            </div>
+          <div className="p-4 rounded-xl bg-card/60 border border-border/50 space-y-4">
+            <h4 className="text-sm font-semibold flex items-center gap-2">
+              <Radio className="h-4 w-4 text-rose-500" />
+              Spustiť nový stream
+            </h4>
+
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(createStream)} className="space-y-3">
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Názov streamu *</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Stream title…"
+                          maxLength={100}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Popis</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Krátky popis streamu…"
+                          maxLength={500}
+                          rows={3}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                      <p className="text-[10px] text-muted-foreground text-right">
+                        {field.value?.length || 0}/500
+                      </p>
+                    </FormItem>
+                  )}
+                />
+
+                <div className="space-y-2">
+                  <FormLabel>Thumbnail</FormLabel>
+                  {thumbnailPreview ? (
+                    <div className="relative rounded-lg overflow-hidden border border-border/50 aspect-video max-h-40">
+                      <img
+                        src={thumbnailPreview}
+                        alt="Thumbnail preview"
+                        className="w-full h-full object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={clearThumbnail}
+                        className="absolute top-2 right-2 p-1 rounded-full bg-black/60 text-white hover:bg-black/80 transition"
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  ) : (
+                    <label className="flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border/60 bg-muted/30 hover:bg-muted/50 hover:border-primary/40 transition cursor-pointer py-6 aspect-video max-h-40">
+                      <ImagePlus className="h-8 w-8 text-muted-foreground" />
+                      <span className="text-xs text-muted-foreground">
+                        Klikni pre výber obrázka (JPG, PNG, WebP, max 5 MB)
+                      </span>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        onChange={handleThumbnailChange}
+                        className="hidden"
+                      />
+                    </label>
+                  )}
+                  {thumbnailError && (
+                    <p className="text-sm font-medium text-destructive">{thumbnailError}</p>
+                  )}
+                </div>
+
+                <div className="flex gap-2 pt-1">
+                  <Button
+                    type="submit"
+                    size="sm"
+                    disabled={isStarting}
+                    className="flex-1"
+                  >
+                    {isStarting ? (
+                      <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" />
+                    ) : (
+                      <Radio className="h-3.5 w-3.5 mr-1" />
+                    )}
+                    {isStarting ? "Spúšťam…" : "Start"}
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    disabled={isStarting}
+                    onClick={() => {
+                      setCreating(false);
+                      form.reset();
+                      clearThumbnail();
+                    }}
+                  >
+                    Zrušiť
+                  </Button>
+                </div>
+              </form>
+            </Form>
           </div>
         )}
 
@@ -204,12 +421,24 @@ export const MegatalentWatchParty = ({ category }: Props) => {
                 ← Back
               </Button>
             </div>
-            <div className="aspect-video bg-black rounded-lg flex items-center justify-center">
-              <div className="text-center text-white/70 px-4">
-                <Tv className="h-10 w-10 mx-auto mb-2 opacity-50" />
-                <p className="text-xs">Watch party in progress</p>
+
+            {activeStream.thumbnail_url ? (
+              <div className="aspect-video rounded-lg overflow-hidden bg-black">
+                <img
+                  src={activeStream.thumbnail_url}
+                  alt={activeStream.title}
+                  className="w-full h-full object-cover"
+                />
               </div>
-            </div>
+            ) : (
+              <div className="aspect-video bg-black rounded-lg flex items-center justify-center">
+                <div className="text-center text-white/70 px-4">
+                  <Tv className="h-10 w-10 mx-auto mb-2 opacity-50" />
+                  <p className="text-xs">Watch party in progress</p>
+                </div>
+              </div>
+            )}
+
             <div className="border border-border/50 rounded-lg bg-card/40">
               <div className="h-48 overflow-y-auto p-2 space-y-1">
                 {messages.length === 0 ? (
@@ -256,9 +485,18 @@ export const MegatalentWatchParty = ({ category }: Props) => {
               <button
                 key={s.id}
                 onClick={() => setActiveStream(s)}
-                className="w-full text-left p-3 rounded-lg bg-card/50 hover:bg-card border border-border/50 hover:border-rose-500/50 transition-all"
+                className="w-full text-left rounded-lg bg-card/50 hover:bg-card border border-border/50 hover:border-rose-500/50 transition-all overflow-hidden"
               >
-                <div className="flex items-center justify-between">
+                {s.thumbnail_url && (
+                  <div className="h-24 w-full">
+                    <img
+                      src={s.thumbnail_url}
+                      alt={s.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+                <div className="p-3 flex items-center justify-between">
                   <div className="flex items-center gap-2 min-w-0">
                     {s.status === "live" && (
                       <Badge className="bg-red-600 text-white text-[10px] shrink-0">
