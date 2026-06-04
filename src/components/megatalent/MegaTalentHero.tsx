@@ -22,17 +22,21 @@ interface MegaTalentHeroProps {
 
 export default function MegaTalentHero({ totalVotes, isSubscribed, subscriptionTier }: MegaTalentHeroProps) {
   const [timeLeft, setTimeLeft] = useState(getContestTimeLeft());
+  const { data: stats } = useMegatalentContestStats();
 
   useEffect(() => {
     const timer = setInterval(() => setTimeLeft(getContestTimeLeft()), 60000);
     return () => clearInterval(timer);
   }, []);
 
+  const prizePoolLabel = stats?.prizePool ? stats.prizePoolFormatted : "TBA";
+  const categoryLabel = stats ? `${stats.categoryCount}` : "—";
+
   const statCards = [
     { value: `${timeLeft.days}d ${timeLeft.hours}h`, label: "Time Left", icon: Clock, accent: "from-red-500/20 to-orange-500/10", iconColor: "text-red-400" },
-    { value: "€10,000", label: "Prize Pool", icon: Trophy, accent: "from-yellow-500/20 to-amber-500/10", iconColor: "text-yellow-400" },
+    { value: prizePoolLabel, label: "Prize Pool", icon: Trophy, accent: "from-yellow-500/20 to-amber-500/10", iconColor: "text-yellow-400" },
     { value: totalVotes.toLocaleString(), label: "Your Votes", icon: Heart, accent: "from-pink-500/20 to-red-500/10", iconColor: "text-pink-400" },
-    { value: "30+", label: "Categories", icon: Sparkles, accent: "from-purple-500/20 to-violet-500/10", iconColor: "text-purple-400" },
+    { value: categoryLabel, label: "Categories", icon: Sparkles, accent: "from-purple-500/20 to-violet-500/10", iconColor: "text-purple-400" },
   ];
 
   return (
