@@ -38469,6 +38469,45 @@ export type Database = {
         }
         Relationships: []
       }
+      mt_daily_quests: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string | null
+          id: string
+          label: string
+          quest_key: string
+          reward_credits: number
+          reward_xp: number
+          target_count: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          id?: string
+          label: string
+          quest_key: string
+          reward_credits?: number
+          reward_xp?: number
+          target_count?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          id?: string
+          label?: string
+          quest_key?: string
+          reward_credits?: number
+          reward_xp?: number
+          target_count?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       mt_marketplace_listings: {
         Row: {
           active: boolean
@@ -38695,6 +38734,72 @@ export type Database = {
         }
         Relationships: []
       }
+      mt_season_pass_claims: {
+        Row: {
+          claimed_at: string
+          id: string
+          reward_label: string | null
+          season_id: string
+          tier_level: number
+          user_id: string
+        }
+        Insert: {
+          claimed_at?: string
+          id?: string
+          reward_label?: string | null
+          season_id?: string
+          tier_level: number
+          user_id: string
+        }
+        Update: {
+          claimed_at?: string
+          id?: string
+          reward_label?: string | null
+          season_id?: string
+          tier_level?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mt_season_pass_rewards: {
+        Row: {
+          created_at: string
+          id: string
+          reward_icon: string | null
+          reward_label: string
+          reward_payload: Json
+          reward_type: string
+          season_id: string
+          tier_level: number
+          updated_at: string
+          xp_required: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          reward_icon?: string | null
+          reward_label: string
+          reward_payload?: Json
+          reward_type: string
+          season_id?: string
+          tier_level: number
+          updated_at?: string
+          xp_required: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          reward_icon?: string | null
+          reward_label?: string
+          reward_payload?: Json
+          reward_type?: string
+          season_id?: string
+          tier_level?: number
+          updated_at?: string
+          xp_required?: number
+        }
+        Relationships: []
+      }
       mt_streak_claims: {
         Row: {
           claimed_at: string
@@ -38715,6 +38820,42 @@ export type Database = {
           day?: number
           id?: string
           reward_label?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mt_user_quest_progress: {
+        Row: {
+          claimed_at: string | null
+          completed_at: string | null
+          created_at: string
+          id: string
+          progress: number
+          quest_date: string
+          quest_key: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          claimed_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          progress?: number
+          quest_date?: string
+          quest_key: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          claimed_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          progress?: number
+          quest_date?: string
+          quest_key?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
