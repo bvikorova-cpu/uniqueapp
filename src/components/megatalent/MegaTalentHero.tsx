@@ -67,7 +67,7 @@ export default function MegaTalentHero({ totalVotes, isSubscribed, subscriptionT
           <div className="flex flex-wrap items-center gap-2 mb-auto">
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring" }}>
               <Badge className="bg-yellow-500/90 text-black font-bold border-yellow-400/50 shadow-lg shadow-yellow-500/20 text-[10px] px-2 py-0.5">
-                <Trophy className="h-3 w-3 mr-1" /> Monthly Prize: €10,000
+                <Trophy className="h-3 w-3 mr-1" /> Monthly Prize Pool: {prizePoolLabel}
               </Badge>
             </motion.div>
             {isSubscribed && (
@@ -91,7 +91,7 @@ export default function MegaTalentHero({ totalVotes, isSubscribed, subscriptionT
               ⚡ MEGA<span className="text-yellow-400">TALENT</span> ⚡
             </h1>
             <p className="text-xs sm:text-sm text-white/80 font-semibold mt-0.5 drop-shadow">
-              Showcase your talent, compete across 30+ categories, win €10,000 every month!
+              Showcase your talent, compete across {categoryLabel} categories, win the monthly prize pool!
             </p>
           </motion.div>
         </div>
