@@ -244,3 +244,242 @@ Deno.test("idempotency: second insert with same source_invoice_id is treated as 
   assertEquals(tryInsert("in_42"), "duplicate");
   assertEquals(tryInsert("in_43"), "inserted");
 });
+
+// ── Extended: idempotency + bad email/profile across both tiers ────────────
+
+type EarningRow = {
+  referrer_id: string;
+  referred_user_id: string;
+  amount: number;
+  source_invoice_id: string;
+  source_kind: "premium" | "top_premium";
+};
+
+/**
+ * Simulates the megatalent_referral_earnings ledger with the
+ * UNIQUE(source_invoice_id) constraint that backs idempotency.
+ */
+function makeLedger() {
+  const rows: EarningRow[] = [];
+  const seenInvoices = new Set<string>();
+  return {
+    rows,
+    insert(row: EarningRow): "inserted" | "duplicate" {
+      if (seenInvoices.has(row.source_invoice_id)) return "duplicate";
+      seenInvoices.add(row.source_invoice_id);
+      rows.push(row);
+      return "inserted";
+    },
+    totalFor(referrerId: string) {
+      return rows
+        .filter((r) => r.referrer_id === referrerId)
+        .reduce((s, r) => s + r.amount, 0);
+    },
+  };
+}
+
+function processWebhook(
+  ledger: ReturnType<typeof makeLedger>,
+  args: {
+    invoiceId: string | null;
+    amountPaidCents: number;
+    email: string | null;
+    buyerProfileId: string | null;
+    attribution: Attribution;
+    tier: Tier;
+  },
+): { credited: boolean; reason?: string; result?: "inserted" | "duplicate" } {
+  const gate = referralShouldCredit(args);
+  if (!gate.credit) return { credited: false, reason: gate.reason };
+  const reward = computeReferralReward(args.amountPaidCents);
+  if (reward == null) return { credited: false, reason: "zero reward" };
+  const res = ledger.insert({
+    referrer_id: args.attribution!.referrer_id,
+    referred_user_id: args.buyerProfileId!,
+    amount: reward,
+    source_invoice_id: args.invoiceId!,
+    source_kind: args.tier,
+  });
+  return { credited: res === "inserted", result: res };
+}
+
+Deno.test("idempotency: replaying TOP Premium webhook never double-credits €5", () => {
+  const ledger = makeLedger();
+  const base = {
+    invoiceId: "in_top_1",
+    amountPaidCents: 1500,
+    email: "buyer@x.y",
+    buyerProfileId: "p1",
+    attribution: { id: "a1", referrer_id: "r1", status: "approved" } as Attribution,
+    tier: "top_premium" as Tier,
+  };
+  assertEquals(processWebhook(ledger, base).credited, true);
+  // 5 retries from Stripe — all must be duplicates.
+  for (let i = 0; i < 5; i++) {
+    const r = processWebhook(ledger, base);
+    assertEquals(r.credited, false);
+    assertEquals(r.result, "duplicate");
+  }
+  assertEquals(ledger.totalFor("r1"), 5);
+  assertEquals(ledger.rows.length, 1);
+});
+
+Deno.test("idempotency: replaying Premium webhook never double-credits €5", () => {
+  const ledger = makeLedger();
+  const base = {
+    invoiceId: "in_prem_1",
+    amountPaidCents: 1000,
+    email: "buyer@x.y",
+    buyerProfileId: "p1",
+    attribution: { id: "a1", referrer_id: "r1", status: "approved" } as Attribution,
+    tier: "premium" as Tier,
+  };
+  assertEquals(processWebhook(ledger, base).credited, true);
+  for (let i = 0; i < 3; i++) {
+    assertEquals(processWebhook(ledger, base).credited, false);
+  }
+  assertEquals(ledger.totalFor("r1"), 5);
+});
+
+Deno.test("two distinct invoices for same referee each credit €5 (monthly renewal)", () => {
+  const ledger = makeLedger();
+  const common = {
+    amountPaidCents: 1500,
+    email: "buyer@x.y",
+    buyerProfileId: "p1",
+    attribution: { id: "a1", referrer_id: "r1", status: "approved" } as Attribution,
+    tier: "top_premium" as Tier,
+  };
+  processWebhook(ledger, { ...common, invoiceId: "in_top_month1" });
+  processWebhook(ledger, { ...common, invoiceId: "in_top_month2" });
+  assertEquals(ledger.totalFor("r1"), 10);
+  assertEquals(ledger.rows.length, 2);
+});
+
+Deno.test("missing email: no credit even on replay (TOP + Premium)", () => {
+  for (const tier of ["top_premium", "premium"] as const) {
+    const ledger = makeLedger();
+    const r = processWebhook(ledger, {
+      invoiceId: `in_${tier}_noemail`,
+      amountPaidCents: tier === "top_premium" ? 1500 : 1000,
+      email: null,
+      buyerProfileId: "p1",
+      attribution: { id: "a", referrer_id: "r1", status: "approved" },
+      tier,
+    });
+    assertEquals(r.credited, false);
+    assertEquals(r.reason, "no email");
+    assertEquals(ledger.totalFor("r1"), 0);
+  }
+});
+
+Deno.test("empty-string email is treated as missing → no credit", () => {
+  const ledger = makeLedger();
+  const r = processWebhook(ledger, {
+    invoiceId: "in_empty_email",
+    amountPaidCents: 1500,
+    email: "",
+    buyerProfileId: "p1",
+    attribution: { id: "a", referrer_id: "r1", status: "approved" },
+    tier: "top_premium",
+  });
+  assertEquals(r.credited, false);
+  assertEquals(r.reason, "no email");
+});
+
+Deno.test("email present but no matching profile → no credit (TOP + Premium)", () => {
+  for (const tier of ["top_premium", "premium"] as const) {
+    const ledger = makeLedger();
+    const r = processWebhook(ledger, {
+      invoiceId: `in_${tier}_noprofile`,
+      amountPaidCents: tier === "top_premium" ? 1500 : 1000,
+      email: "ghost@x.y",
+      buyerProfileId: null,
+      attribution: { id: "a", referrer_id: "r1", status: "approved" },
+      tier,
+    });
+    assertEquals(r.credited, false);
+    assertEquals(r.reason, "no profile for email");
+    assertEquals(ledger.totalFor("r1"), 0);
+  }
+});
+
+Deno.test("missing attribution → no credit even with valid email/profile", () => {
+  const ledger = makeLedger();
+  const r = processWebhook(ledger, {
+    invoiceId: "in_no_attr",
+    amountPaidCents: 1500,
+    email: "buyer@x.y",
+    buyerProfileId: "p1",
+    attribution: null,
+    tier: "top_premium",
+  });
+  assertEquals(r.credited, false);
+  assertEquals(r.reason, "no attribution");
+});
+
+Deno.test("non-approved attribution statuses are all rejected", () => {
+  for (const status of ["pending", "rejected", "fraud", "expired"]) {
+    const ledger = makeLedger();
+    const r = processWebhook(ledger, {
+      invoiceId: `in_${status}`,
+      amountPaidCents: 1500,
+      email: "buyer@x.y",
+      buyerProfileId: "p1",
+      attribution: { id: "a", referrer_id: "r1", status },
+      tier: "top_premium",
+    });
+    assertEquals(r.credited, false);
+    assertEquals(r.reason, `status=${status}`);
+  }
+});
+
+Deno.test("bad-data webhook then corrected replay: only the corrected one credits €5", () => {
+  const ledger = makeLedger();
+  // First attempt arrives with missing profile (e.g. profile row not yet created).
+  const bad = processWebhook(ledger, {
+    invoiceId: "in_race_1",
+    amountPaidCents: 1500,
+    email: "buyer@x.y",
+    buyerProfileId: null,
+    attribution: { id: "a", referrer_id: "r1", status: "approved" },
+    tier: "top_premium",
+  });
+  assertEquals(bad.credited, false);
+  // Stripe replays after the profile exists — same invoice id, now resolvable.
+  const good = processWebhook(ledger, {
+    invoiceId: "in_race_1",
+    amountPaidCents: 1500,
+    email: "buyer@x.y",
+    buyerProfileId: "p1",
+    attribution: { id: "a", referrer_id: "r1", status: "approved" },
+    tier: "top_premium",
+  });
+  assertEquals(good.credited, true);
+  // And a further replay must not double-pay.
+  assertEquals(processWebhook(ledger, {
+    invoiceId: "in_race_1",
+    amountPaidCents: 1500,
+    email: "buyer@x.y",
+    buyerProfileId: "p1",
+    attribution: { id: "a", referrer_id: "r1", status: "approved" },
+    tier: "top_premium",
+  }).result, "duplicate");
+  assertEquals(ledger.totalFor("r1"), 5);
+});
+
+Deno.test("zero-amount invoice never credits, even with valid attribution", () => {
+  const ledger = makeLedger();
+  for (const tier of ["top_premium", "premium"] as const) {
+    const r = processWebhook(ledger, {
+      invoiceId: `in_zero_${tier}`,
+      amountPaidCents: 0,
+      email: "buyer@x.y",
+      buyerProfileId: "p1",
+      attribution: { id: "a", referrer_id: "r1", status: "approved" },
+      tier,
+    });
+    assertEquals(r.credited, false);
+  }
+  assertEquals(ledger.totalFor("r1"), 0);
+});
