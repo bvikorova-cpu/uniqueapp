@@ -11,7 +11,6 @@ interface ContestStatsSidebarProps {
 
 export default function ContestStatsSidebar({ subscriptionTier, totalVotes }: ContestStatsSidebarProps) {
   const { data: stats } = useMegatalentContestStats();
-  const prizeLabel = stats?.prizePool ? stats.prizePoolFormatted : "TBA";
   return (
     <div className="space-y-4">
       {/* Contest Prize Card */}
