@@ -38439,6 +38439,36 @@ export type Database = {
         }
         Relationships: []
       }
+      mt_contest_settings: {
+        Row: {
+          created_at: string
+          id: string
+          period_end: string
+          period_start: string
+          prize_pool_eur: number
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          period_end: string
+          period_start: string
+          prize_pool_eur?: number
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          period_end?: string
+          period_start?: string
+          prize_pool_eur?: number
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       mt_marketplace_listings: {
         Row: {
           active: boolean
