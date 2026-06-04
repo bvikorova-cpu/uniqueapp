@@ -38439,6 +38439,211 @@ export type Database = {
         }
         Relationships: []
       }
+      mt_marketplace_listings: {
+        Row: {
+          active: boolean
+          category: string
+          created_at: string
+          description: string | null
+          eta_days: number
+          id: string
+          price_cents: number
+          seller_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          category?: string
+          created_at?: string
+          description?: string | null
+          eta_days?: number
+          id?: string
+          price_cents: number
+          seller_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          category?: string
+          created_at?: string
+          description?: string | null
+          eta_days?: number
+          id?: string
+          price_cents?: number
+          seller_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      mt_marketplace_orders: {
+        Row: {
+          buyer_id: string
+          completed_at: string | null
+          created_at: string
+          delivered_at: string | null
+          delivery_due_at: string | null
+          id: string
+          listing_id: string
+          paid_at: string | null
+          price_cents: number
+          seller_id: string
+          status: string
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string | null
+          stripe_transfer_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          buyer_id: string
+          completed_at?: string | null
+          created_at?: string
+          delivered_at?: string | null
+          delivery_due_at?: string | null
+          id?: string
+          listing_id: string
+          paid_at?: string | null
+          price_cents: number
+          seller_id: string
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          stripe_transfer_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          buyer_id?: string
+          completed_at?: string | null
+          created_at?: string
+          delivered_at?: string | null
+          delivery_due_at?: string | null
+          id?: string
+          listing_id?: string
+          paid_at?: string | null
+          price_cents?: number
+          seller_id?: string
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          stripe_transfer_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mt_marketplace_orders_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "mt_marketplace_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mt_mentors: {
+        Row: {
+          active: boolean
+          avatar_emoji: string | null
+          bio: string | null
+          created_at: string
+          display_name: string
+          expertise: string
+          hourly_price_cents: number
+          id: string
+          rating: number
+          sessions_count: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          avatar_emoji?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name: string
+          expertise: string
+          hourly_price_cents: number
+          id?: string
+          rating?: number
+          sessions_count?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          avatar_emoji?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string
+          expertise?: string
+          hourly_price_cents?: number
+          id?: string
+          rating?: number
+          sessions_count?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mt_mentorship_bookings: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          mentor_id: string
+          message: string | null
+          paid_at: string | null
+          price_cents: number
+          scheduled_at: string | null
+          status: string
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string | null
+          stripe_transfer_id: string | null
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          mentor_id: string
+          message?: string | null
+          paid_at?: string | null
+          price_cents: number
+          scheduled_at?: string | null
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          stripe_transfer_id?: string | null
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          mentor_id?: string
+          message?: string | null
+          paid_at?: string | null
+          price_cents?: number
+          scheduled_at?: string | null
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          stripe_transfer_id?: string | null
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mt_mentorship_bookings_mentor_id_fkey"
+            columns: ["mentor_id"]
+            isOneToOne: false
+            referencedRelation: "mt_mentors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       multiverse_purchases: {
         Row: {
           created_at: string | null
