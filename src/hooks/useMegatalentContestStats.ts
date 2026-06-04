@@ -2,16 +2,15 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { categoryGroups } from "@/components/megatalent/megatalentConstants";
 
-// 80/20 split: 80% of subscription revenue funds the monthly prize pool.
-const PRIZE_POOL_SPLIT = 0.8;
-const TIER_PRICE: Record<string, number> = { premium: 10, top_premium: 15 };
-
 export interface ContestStats {
   prizePool: number;
   prizePoolFormatted: string;
   categoryCount: number;
   activeTalents: number;
   lastWinnerPrize: number | null;
+  periodStart: string | null;
+  periodEnd: string | null;
+  periodTitle: string | null;
 }
 
 const totalCategories = categoryGroups.reduce(
@@ -19,22 +18,41 @@ const totalCategories = categoryGroups.reduce(
   0,
 );
 
+const fmt = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "EUR",
+  maximumFractionDigits: 0,
+});
+
 export const useMegatalentContestStats = () => {
   return useQuery<ContestStats>({
     queryKey: ["megatalent-contest-stats"],
     staleTime: 5 * 60 * 1000,
     queryFn: async () => {
-      // Active subscriptions → estimated prize pool for current cycle.
-      const { data: subs } = await supabase
-        .from("megatalent_subscriptions")
-        .select("tier")
-        .eq("status", "active");
+      const today = new Date().toISOString().slice(0, 10);
 
-      const revenue = (subs || []).reduce(
-        (sum, s: any) => sum + (TIER_PRICE[s.tier] ?? 0),
-        0,
-      );
-      const prizePool = Math.floor(revenue * PRIZE_POOL_SPLIT);
+      // Active quarterly contest period (or next upcoming one).
+      const { data: activePeriod } = await (supabase as any)
+        .from("mt_contest_settings")
+        .select("period_start, period_end, prize_pool_eur, title")
+        .lte("period_start", today)
+        .gte("period_end", today)
+        .order("period_start", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      const { data: nextPeriod } = activePeriod
+        ? { data: null }
+        : await (supabase as any)
+            .from("mt_contest_settings")
+            .select("period_start, period_end, prize_pool_eur, title")
+            .gte("period_end", today)
+            .order("period_start", { ascending: true })
+            .limit(1)
+            .maybeSingle();
+
+      const period = activePeriod || nextPeriod;
+      const prizePool = Number(period?.prize_pool_eur ?? 10000);
 
       // Distinct talents with at least one active submission.
       const { data: talents } = await supabase
@@ -44,7 +62,7 @@ export const useMegatalentContestStats = () => {
       const activeTalents = new Set((talents || []).map((t: any) => t.user_id))
         .size;
 
-      // Most recent paid-out prize (for "Hall of Fame" fallback display).
+      // Most recent paid-out prize.
       const { data: lastWinner } = await (supabase as any)
         .from("megatalent_winners")
         .select("prize_amount")
@@ -52,18 +70,15 @@ export const useMegatalentContestStats = () => {
         .limit(1)
         .maybeSingle();
 
-      const fmt = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "EUR",
-        maximumFractionDigits: 0,
-      });
-
       return {
         prizePool,
         prizePoolFormatted: fmt.format(prizePool),
         categoryCount: totalCategories,
         activeTalents,
         lastWinnerPrize: lastWinner?.prize_amount ?? null,
+        periodStart: period?.period_start ?? null,
+        periodEnd: period?.period_end ?? null,
+        periodTitle: period?.title ?? null,
       };
     },
   });
