@@ -214,9 +214,9 @@ export const MegatalentWatchParty = ({ category }: Props) => {
         category,
         title: values.title.trim(),
         description: values.description?.trim() || null,
-        thumbnail_url: thumbnailUrl,
         status: "live",
         started_at: new Date().toISOString(),
+        ...(thumbnailUrl ? { thumbnail_url: thumbnailUrl } : {}),
       })
       .select()
       .single();
