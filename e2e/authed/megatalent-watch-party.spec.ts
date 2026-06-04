@@ -84,9 +84,11 @@ test.describe("Watch Party — authed E2E", () => {
     await titleInput.fill(title);
     await page.getByRole("button", { name: /^Start$/i }).click();
 
-    // 3. CONTENT — LIVE badge + title + chat input render.
-    await expect(page.locator("text=/^LIVE$/").first()).toBeVisible({ timeout: 10_000 });
+    // 3. CONTENT — active-stream view renders (End stream + chat input).
+    const endBtn = page.getByRole("button", { name: /End stream/i });
+    await expect(endBtn).toBeVisible({ timeout: 10_000 });
     await expect(page.getByText(title, { exact: false })).toBeVisible();
+    await expect(page.locator("text=LIVE").first()).toBeVisible();
     const chatInput = page.getByPlaceholder(/Write a message/i);
     await expect(chatInput).toBeVisible();
 
