@@ -62,22 +62,30 @@ const MegatalentMentorshipBooking = ({ category }: { category?: string }) => {
       return;
     }
     setSubmitting(true);
-    const { error } = await (supabase as any).from("mt_mentorship_bookings").insert({
-      mentor_id: bookingMentor.id,
-      student_id: userId,
-      price_cents: bookingMentor.hourly_price_cents,
-      message: bookingMessage.trim() || null,
-    });
-    setSubmitting(false);
-    if (error) {
-      toast.error("Booking failed", { description: error.message });
+    const { data: booking, error } = await (supabase as any)
+      .from("mt_mentorship_bookings")
+      .insert({
+        mentor_id: bookingMentor.id,
+        student_id: userId,
+        price_cents: bookingMentor.hourly_price_cents,
+        message: bookingMessage.trim() || null,
+      })
+      .select("id")
+      .single();
+    if (error || !booking) {
+      setSubmitting(false);
+      toast.error("Booking failed", { description: error?.message });
       return;
     }
-    toast.success(`Booking request sent to ${bookingMentor.display_name}`, {
-      description: `€${(bookingMentor.hourly_price_cents / 100).toFixed(2)} reserved · 80/20 split on accept`,
+    const { data: co, error: coErr } = await supabase.functions.invoke("mt-checkout", {
+      body: { kind: "mentorship", id: booking.id },
     });
-    setBookingMentor(null);
-    setBookingMessage("");
+    setSubmitting(false);
+    if (coErr || !(co as any)?.url) {
+      toast.error("Checkout failed", { description: coErr?.message || (co as any)?.error });
+      return;
+    }
+    window.location.href = (co as any).url;
   };
 
   const apply = async () => {
