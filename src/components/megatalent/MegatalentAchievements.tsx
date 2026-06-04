@@ -45,7 +45,6 @@ const tierColor = (t: string) => {
 
 export default function MegatalentAchievements({ userId }: Props) {
   const [unlocked, setUnlocked] = useState<Set<string>>(new Set());
-  const [catalogIds, setCatalogIds] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<Stats>({ submissions: 0, totalVotes: 0, topVotes: 0 });
 
@@ -100,7 +99,6 @@ export default function MegatalentAchievements({ userId }: Props) {
         if (!cancelled) {
           setStats(newStats);
           setUnlocked(have);
-          setCatalogIds(ids);
         }
       } catch (e) {
         console.error("achievements load", e);
