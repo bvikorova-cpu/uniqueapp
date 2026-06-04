@@ -22,6 +22,14 @@ interface Mentor {
   sessions_count: number;
 }
 
+interface MyBooking {
+  id: string;
+  mentor_id: string;
+  price_cents: number;
+  status: string;
+  mentor_name?: string;
+}
+
 const MegatalentMentorshipBooking = ({ category }: { category?: string }) => {
   const [mentors, setMentors] = useState<Mentor[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,6 +40,8 @@ const MegatalentMentorshipBooking = ({ category }: { category?: string }) => {
   const [applyOpen, setApplyOpen] = useState(false);
   const [applyForm, setApplyForm] = useState({ display_name: "", expertise: "", bio: "", price: 50, emoji: "🎓" });
   const [iAmMentor, setIAmMentor] = useState(false);
+  const [myBookings, setMyBookings] = useState<MyBooking[]>([]);
+  const [releasing, setReleasing] = useState<string | null>(null);
 
   const load = async () => {
     setLoading(true);
