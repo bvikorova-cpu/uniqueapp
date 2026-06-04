@@ -143,7 +143,7 @@ export const MegaTalentGuide = () => {
                   <li>Click the ❤️ heart icon to vote for a submission</li>
                   <li>You can vote for multiple entries across categories</li>
                   <li>Votes are counted toward the creator's total score</li>
-                  <li>TOP Premium users get +100,000 bonus votes added to their total</li>
+                  <li>Vote count shown is always the real number — no fake/bonus votes</li>
                   <li>You can remove your vote by clicking the heart again</li>
                 </ul>
                 <p className="mt-2">
