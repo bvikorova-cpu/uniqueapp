@@ -66,6 +66,13 @@ export const JobApplicationDialog = ({ jobId, jobTitle, companyName }: JobApplic
 
       if (error) throw error;
 
+      // Track job challenges (Speed Applicant + weekly XP)
+      try {
+        await (supabase as any).rpc("track_challenge_action", { _action: "job_application" });
+      } catch (e) {
+        console.warn("track_challenge_action failed", e);
+      }
+
       toast({
         title: "Success",
         description: "Your application has been submitted successfully.",

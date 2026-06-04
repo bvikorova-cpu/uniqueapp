@@ -71,6 +71,20 @@ export default function JobsToolsGrid() {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       setResult(data.result);
+
+      // Log usage for achievements + track weekly Skill Sharpener challenge
+      try {
+        await (supabase as any).from("ai_usage_history").insert({
+          user_id: session.user.id,
+          usage_type: toolId,
+          credits_used: TOOLS.find((t) => t.id === toolId)?.credits ?? 0,
+          description: `Jobs AI: ${toolId}`,
+        });
+        await (supabase as any).rpc("track_challenge_action", { _action: "job_tool_use" });
+      } catch (e) {
+        console.warn("usage tracking failed", e);
+      }
+
       toast.success("AI analysis complete!");
     } catch (e: any) {
       toast.error(e.message || "Failed to generate");

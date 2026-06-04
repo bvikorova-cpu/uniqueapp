@@ -1,25 +1,38 @@
 import { motion } from "framer-motion";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Loader2 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
-const ACHIEVEMENTS = [
-  { icon: "🎯", title: "First Application", desc: "Submit your first job application", points: 10, unlocked: false },
-  { icon: "📝", title: "Resume Master", desc: "Use AI Resume Builder 3 times", points: 25, unlocked: false },
-  { icon: "🎤", title: "Interview Ready", desc: "Complete an AI interview coaching session", points: 20, unlocked: false },
-  { icon: "💰", title: "Salary Expert", desc: "Run 5 salary negotiations analyses", points: 30, unlocked: false },
-  { icon: "🗺️", title: "Career Navigator", desc: "Create your career path plan", points: 20, unlocked: false },
-  { icon: "🔥", title: "7-Day Streak", desc: "Maintain a 7-day application streak", points: 35, unlocked: false },
-  { icon: "🌍", title: "Global Explorer", desc: "Apply to jobs in 3 different countries", points: 40, unlocked: false },
-  { icon: "⭐", title: "Top Candidate", desc: "Reach the skill leaderboard top 10", points: 50, unlocked: false },
-  { icon: "🏆", title: "Challenge Champion", desc: "Win 3 weekly job challenges", points: 60, unlocked: false },
-  { icon: "👑", title: "Career Legend", desc: "Unlock all other achievements", points: 100, unlocked: false },
-  { icon: "🚀", title: "Quick Starter", desc: "Apply within 1 hour of account creation", points: 15, unlocked: false },
-  { icon: "💎", title: "Diamond Profile", desc: "Achieve 100% profile completeness score", points: 45, unlocked: false },
-];
+interface JobAchievement {
+  code: string;
+  name: string;
+  description: string;
+  icon: string;
+  points: number;
+  unlocked: boolean;
+  progress: number;
+  target: number;
+}
 
 export default function JobsCareerAchievements() {
-  const totalPoints = ACHIEVEMENTS.filter(a => a.unlocked).reduce((s, a) => s + a.points, 0);
-  const maxPoints = ACHIEVEMENTS.reduce((s, a) => s + a.points, 0);
+  const { user } = useAuth();
+
+  const { data: achievements = [], isLoading } = useQuery({
+    queryKey: ["job_achievements", user?.id],
+    enabled: !!user?.id,
+    queryFn: async (): Promise<JobAchievement[]> => {
+      const { data, error } = await (supabase as any).rpc("get_user_job_achievements");
+      if (error) throw error;
+      return (data ?? []) as JobAchievement[];
+    },
+  });
+
+  const totalPoints = achievements.filter((a) => a.unlocked).reduce((s, a) => s + a.points, 0);
+  const maxPoints = achievements.reduce((s, a) => s + a.points, 0);
 
   return (
     <div className="space-y-6">
@@ -30,18 +43,48 @@ export default function JobsCareerAchievements() {
         </Badge>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-        {ACHIEVEMENTS.map((a, i) => (
-          <motion.div key={a.title} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.03 }}>
-            <Card className={`text-center p-4 border-border/30 ${a.unlocked ? "bg-amber-500/10 border-amber-500/30" : "bg-card/50 opacity-50"}`}>
-              <div className="text-3xl mb-2">{a.icon}</div>
-              <p className="font-bold text-xs mb-1">{a.title}</p>
-              <p className="text-[10px] text-muted-foreground mb-2">{a.desc}</p>
-              <Badge variant="outline" className="text-[9px]">{a.points} pts</Badge>
-            </Card>
-          </motion.div>
-        ))}
-      </div>
+      {!user ? (
+        <p className="text-sm text-muted-foreground">Sign in to track your achievements.</p>
+      ) : isLoading ? (
+        <div className="flex items-center justify-center py-8">
+          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+          {achievements.map((a, i) => {
+            const pct = a.target > 0 ? Math.min(100, (a.progress / a.target) * 100) : 0;
+            return (
+              <motion.div
+                key={a.code}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.03 }}
+              >
+                <Card
+                  className={`text-center p-4 border-border/30 ${
+                    a.unlocked ? "bg-amber-500/10 border-amber-500/30" : "bg-card/50 opacity-70"
+                  }`}
+                >
+                  <div className="text-3xl mb-2">{a.icon}</div>
+                  <p className="font-bold text-xs mb-1">{a.name}</p>
+                  <p className="text-[10px] text-muted-foreground mb-2 line-clamp-2 min-h-[28px]">
+                    {a.description}
+                  </p>
+                  <div className="space-y-1.5">
+                    <Progress value={pct} className="h-1.5" />
+                    <p className="text-[9px] text-muted-foreground font-mono">
+                      {a.progress}/{a.target}
+                    </p>
+                    <Badge variant="outline" className="text-[9px]">
+                      {a.points} pts
+                    </Badge>
+                  </div>
+                </Card>
+              </motion.div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

@@ -125,6 +125,12 @@ export const OneClickApplyDialog = ({ jobId, jobTitle, companyName }: OneClickAp
 
       if (error) throw error;
 
+      try {
+        await (supabase as any).rpc("track_challenge_action", { _action: "job_application" });
+      } catch (e) {
+        console.warn("track_challenge_action failed", e);
+      }
+
       toast({
         title: "✅ Application Submitted!",
         description: "Your application has been sent to the employer.",
