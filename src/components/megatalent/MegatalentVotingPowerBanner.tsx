@@ -9,7 +9,8 @@ export default function MegatalentVotingPowerBanner() {
   const { tier, isSubscribed } = useMegaTalentTier();
   const navigate = useNavigate();
 
-  const multiplier = tier === "top_premium" ? 3 : tier === "premium" ? 2 : 1;
+  const boostPct = tier === "top_premium" ? 100 : 0;
+  const multiplierLabel = tier === "top_premium" ? "×2" : "×1";
 
   return (
     <Card
@@ -33,22 +34,24 @@ export default function MegatalentVotingPowerBanner() {
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <p className="text-sm font-bold">Voting Power</p>
+            <p className="text-sm font-bold">Ranking boost</p>
             <Badge
               className={
-                multiplier > 1
+                boostPct > 0
                   ? "bg-gradient-to-r from-primary to-accent text-white text-[10px]"
                   : "text-[10px]"
               }
-              variant={multiplier > 1 ? "default" : "secondary"}
+              variant={boostPct > 0 ? "default" : "secondary"}
             >
-              {multiplier}x
+              {multiplierLabel}
             </Badge>
           </div>
           <p className="text-[11px] text-muted-foreground">
-            {isSubscribed
-              ? `${tier === "top_premium" ? "TOP Premium" : "Premium"} — each vote counts as ${multiplier}x`
-              : "Upgrade to Premium for 2x votes, TOP Premium for 3x"}
+            {tier === "top_premium"
+              ? "TOP Premium — your submissions rank with score = real votes × 2 (+100%). Vote count shown stays real."
+              : tier === "premium"
+              ? "Premium — ranking score = real votes × 1. Upgrade to TOP Premium for +100% boost."
+              : "Upgrade to TOP Premium for +100% ranking boost (real votes × 2)"}
           </p>
         </div>
         {!isSubscribed && (
