@@ -472,6 +472,7 @@ const AdminCohortRetention = lazy(() => import("@/pages/admin/AdminCohortRetenti
 const AdminOpsTools = lazy(() => import("@/pages/admin/AdminOpsTools"));
 const AdminRewardsSeed = lazy(() => import("@/pages/admin/AdminRewardsSeed"));
 const AdminRewardsAudit = lazy(() => import("@/pages/admin/AdminRewardsAudit"));
+const MyProgress = lazy(() => import("@/pages/MyProgress"));
 const YearWrappedPublic = lazy(() => import("@/pages/YearWrappedPublic"));
 const AdminCreditsLedger = lazy(() => import("@/pages/admin/AdminCreditsLedger"));
 const MyCreditsLedger = lazy(() => import("@/pages/MyCreditsLedger"));
