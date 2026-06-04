@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface Props {
   submissionId: string;
@@ -16,41 +16,80 @@ const REACTIONS = [
 ];
 
 export default function MegatalentReactions({ submissionId }: Props) {
-  const storageKey = `mt_reactions_${submissionId}`;
   const [counts, setCounts] = useState<Record<string, number>>({});
-  const [picked, setPicked] = useState<string | null>(null);
+  const [mine, setMine] = useState<Set<string>>(new Set());
+  const [busy, setBusy] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(storageKey);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        setCounts(parsed.counts || {});
-        setPicked(parsed.picked || null);
-      } else {
-        // Seed pseudo-random counts so feed feels alive
-        const seed: Record<string, number> = {};
-        REACTIONS.forEach((r) => (seed[r.emoji] = Math.floor(Math.random() * 25)));
-        setCounts(seed);
-      }
-    } catch {}
-  }, [storageKey]);
+    supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
+  }, []);
 
-  const react = (emoji: string) => {
-    setCounts((prev) => {
-      const next = { ...prev };
-      if (picked === emoji) {
-        next[emoji] = Math.max(0, (next[emoji] || 1) - 1);
-        setPicked(null);
-        try { localStorage.setItem(storageKey, JSON.stringify({ counts: next, picked: null })); } catch {}
-      } else {
-        if (picked) next[picked] = Math.max(0, (next[picked] || 1) - 1);
-        next[emoji] = (next[emoji] || 0) + 1;
-        setPicked(emoji);
-        try { localStorage.setItem(storageKey, JSON.stringify({ counts: next, picked: emoji })); } catch {}
-      }
-      return next;
+  const load = async () => {
+    const { data } = await (supabase as any)
+      .from("mt_submission_reactions")
+      .select("emoji,user_id")
+      .eq("submission_id", submissionId);
+    const c: Record<string, number> = {};
+    const m = new Set<string>();
+    (data || []).forEach((r: any) => {
+      c[r.emoji] = (c[r.emoji] || 0) + 1;
+      if (userId && r.user_id === userId) m.add(r.emoji);
     });
+    setCounts(c);
+    setMine(m);
+  };
+
+  useEffect(() => {
+    load();
+    const ch = supabase
+      .channel(`mt-reactions-${submissionId}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "mt_submission_reactions", filter: `submission_id=eq.${submissionId}` },
+        () => load(),
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(ch);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [submissionId, userId]);
+
+  const react = async (emoji: string) => {
+    if (!userId) {
+      toast.error("Sign in to react");
+      return;
+    }
+    if (busy) return;
+    setBusy(emoji);
+    const had = mine.has(emoji);
+    // optimistic
+    setMine((prev) => {
+      const n = new Set(prev);
+      had ? n.delete(emoji) : n.add(emoji);
+      return n;
+    });
+    setCounts((prev) => ({ ...prev, [emoji]: Math.max(0, (prev[emoji] || 0) + (had ? -1 : 1)) }));
+    try {
+      if (had) {
+        await (supabase as any)
+          .from("mt_submission_reactions")
+          .delete()
+          .eq("submission_id", submissionId)
+          .eq("user_id", userId)
+          .eq("emoji", emoji);
+      } else {
+        await (supabase as any)
+          .from("mt_submission_reactions")
+          .insert({ submission_id: submissionId, user_id: userId, emoji });
+      }
+    } catch (e: any) {
+      toast.error("Reaction failed", { description: e?.message });
+      load();
+    } finally {
+      setBusy(null);
+    }
   };
 
   return (
@@ -61,10 +100,10 @@ export default function MegatalentReactions({ submissionId }: Props) {
           whileTap={{ scale: 0.85 }}
           whileHover={{ scale: 1.1 }}
           onClick={() => react(r.emoji)}
+          disabled={busy === r.emoji}
+          aria-label={r.label}
           className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs border transition-colors ${
-            picked === r.emoji
-              ? "bg-accent/20 border-accent/50"
-              : "bg-muted/30 border-border/30 hover:bg-muted/50"
+            mine.has(r.emoji) ? "bg-accent/20 border-accent/50" : "bg-muted/30 border-border/30 hover:bg-muted/50"
           }`}
         >
           <span className="text-base leading-none">{r.emoji}</span>

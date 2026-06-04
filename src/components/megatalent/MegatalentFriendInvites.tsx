@@ -1,19 +1,66 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { UserPlus, Copy, Check, Share2 } from "lucide-react";
+import { UserPlus, Copy, Check, Share2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function MegatalentFriendInvites({ userId }: { userId: string | null }) {
+  const [code, setCode] = useState<string | null>(null);
+  const [invited, setInvited] = useState(0);
+  const [earned, setEarned] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!userId) {
+      setLoading(false);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      // Get or create code
+      let { data: existing } = await supabase
+        .from("megatalent_referral_codes")
+        .select("code")
+        .eq("user_id", userId)
+        .maybeSingle();
+      let finalCode = existing?.code as string | undefined;
+      if (!finalCode) {
+        finalCode = `MT${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+        const { data: inserted } = await supabase
+          .from("megatalent_referral_codes")
+          .insert({ user_id: userId, code: finalCode })
+          .select("code")
+          .maybeSingle();
+        finalCode = inserted?.code || finalCode;
+      }
+      // Count unique invited users
+      const { data: earnings } = await supabase
+        .from("megatalent_referral_earnings")
+        .select("referred_user_id, amount")
+        .eq("referrer_id", userId);
+      const uniqueInvited = new Set((earnings || []).map((e: any) => e.referred_user_id)).size;
+      const totalEarned = (earnings || []).reduce((s: number, e: any) => s + Number(e.amount || 0), 0);
+
+      if (!cancelled) {
+        setCode(finalCode!);
+        setInvited(uniqueInvited);
+        setEarned(totalEarned);
+        setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
+
   if (!userId) return null;
 
-  const code = userId.slice(0, 8).toUpperCase();
-  const link = `${typeof window !== "undefined" ? window.location.origin : ""}/?ref=${code}`;
-  const invited = parseInt(localStorage.getItem(`mt_invited_${userId}`) || "0", 10);
+  const link = code ? `${typeof window !== "undefined" ? window.location.origin : ""}/?ref=${code}` : "";
 
   const copy = async () => {
     try {
@@ -21,15 +68,19 @@ export default function MegatalentFriendInvites({ userId }: { userId: string | n
       setCopied(true);
       toast.success("Invite link copied!");
       setTimeout(() => setCopied(false), 2000);
-    } catch {}
+    } catch {
+      toast.error("Copy failed");
+    }
   };
 
   const share = async () => {
-    const text = `Join me on Unique and discover amazing talents! Use my code: ${code}`;
+    const text = `Join me on Unique Megatalent and earn rewards! Use my code: ${code}`;
     try {
       if (navigator.share) await navigator.share({ text, url: link, title: "Join Unique" });
       else await copy();
-    } catch {}
+    } catch {
+      // user cancelled
+    }
   };
 
   const milestones = [
@@ -46,34 +97,38 @@ export default function MegatalentFriendInvites({ userId }: { userId: string | n
           <UserPlus className="h-5 w-5 text-emerald-500" />
           Invite Friends
           <Badge variant="secondary" className="ml-auto text-[10px]">
-            {invited} invited
+            {invited} invited · €{earned.toFixed(2)} earned
           </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         <p className="text-xs text-muted-foreground">
-          Earn rewards when friends join and upload their first talent.
+          €5 commission each month for every friend who subscribes (top €10 or top_premium €15).
         </p>
-        <div className="flex gap-2">
-          <Input value={link} readOnly className="text-xs font-mono" />
-          <Button size="icon" variant="outline" onClick={copy}>
-            {copied ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
-          </Button>
-          <Button size="icon" onClick={share}>
-            <Share2 className="h-4 w-4" />
-          </Button>
-        </div>
-        <div className="flex flex-wrap gap-1.5 pt-2 border-t border-border/30">
-          {milestones.map((m) => (
-            <Badge
-              key={m.n}
-              variant={invited >= m.n ? "default" : "outline"}
-              className="text-[10px]"
-            >
-              {m.n} friend{m.n > 1 ? "s" : ""}: {m.reward}
-            </Badge>
-          ))}
-        </div>
+        {loading ? (
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Loader2 className="h-4 w-4 animate-spin" /> Loading invite code…
+          </div>
+        ) : (
+          <>
+            <div className="flex gap-2">
+              <Input value={link} readOnly className="text-xs font-mono" />
+              <Button size="icon" variant="outline" onClick={copy}>
+                {copied ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
+              </Button>
+              <Button size="icon" onClick={share}>
+                <Share2 className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="flex flex-wrap gap-1.5 pt-2 border-t border-border/30">
+              {milestones.map((m) => (
+                <Badge key={m.n} variant={invited >= m.n ? "default" : "outline"} className="text-[10px]">
+                  {m.n} friend{m.n > 1 ? "s" : ""}: {m.reward}
+                </Badge>
+              ))}
+            </div>
+          </>
+        )}
       </CardContent>
     </Card>
   );

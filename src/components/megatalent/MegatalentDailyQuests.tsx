@@ -1,64 +1,100 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { ListChecks, Sparkles, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ListChecks, Sparkles, Loader2, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+// Server-validated quests: progress is COUNTED from real activity tables.
 const QUESTS = [
-  { id: "vote_3", label: "Vote on 3 submissions", reward: 5 },
-  { id: "comment_1", label: "Leave 1 comment", reward: 3 },
-  { id: "share_1", label: "Share a submission", reward: 4 },
-  { id: "battle_vote", label: "Vote in a battle match", reward: 6 },
-  { id: "story_watch", label: "Watch a story", reward: 2 },
+  { id: "vote_3", label: "Vote on 3 submissions", reward: 5, target: 3, source: "talent_votes" as const },
+  { id: "comment_1", label: "Leave 1 comment", reward: 3, target: 1, source: "talent_comments" as const },
+  { id: "react_1", label: "React to 1 submission", reward: 2, target: 1, source: "mt_submission_reactions" as const },
+  { id: "story_post", label: "Post a story", reward: 4, target: 1, source: "mt_stories" as const },
 ];
 
+const startOfTodayISO = () => {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  return d.toISOString();
+};
+
 const MegatalentDailyQuests = ({ userId }: { userId: string | null }) => {
-  const [done, setDone] = useState<Record<string, number>>({});
+  const [progress, setProgress] = useState<Record<string, number>>({});
+  const [claimed, setClaimed] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
 
-  useEffect(() => {
-    const load = async () => {
-      if (!userId) { setDone({}); setLoading(false); return; }
-      const today = new Date().toISOString().slice(0, 10);
-      const { data } = await supabase
-        .from("daily_quest_completions")
-        .select("quest_id, xp_awarded")
-        .eq("user_id", userId)
-        .eq("quest_date", today);
-      const map: Record<string, number> = {};
-      (data || []).forEach((r: any) => { map[r.quest_id] = r.xp_awarded; });
-      setDone(map);
+  const load = useCallback(async () => {
+    if (!userId) {
+      setProgress({});
+      setClaimed({});
       setLoading(false);
-    };
-    load();
-  }, [userId]);
-
-  const complete = async (q: typeof QUESTS[number]) => {
-    if (!userId) { toast.error("Login required"); return; }
-    if (done[q.id]) return;
-    setBusy(q.id);
-    const { error } = await supabase.from("daily_quest_completions").insert({
-      user_id: userId, quest_id: q.id, xp_awarded: q.reward,
-    });
-    setBusy(null);
-    if (error) {
-      if (error.code === "23505") {
-        setDone(prev => ({ ...prev, [q.id]: q.reward }));
-      } else {
-        toast.error("Failed", { description: error.message });
-      }
       return;
     }
-    setDone(prev => ({ ...prev, [q.id]: q.reward }));
-    toast.success(`+${q.reward} XP earned`);
+    setLoading(true);
+    const since = startOfTodayISO();
+    const today = since.slice(0, 10);
+
+    // Already claimed
+    const { data: doneRows } = await supabase
+      .from("daily_quest_completions")
+      .select("quest_id, xp_awarded")
+      .eq("user_id", userId)
+      .eq("quest_date", today);
+    const cmap: Record<string, number> = {};
+    (doneRows || []).forEach((r: any) => (cmap[r.quest_id] = r.xp_awarded));
+
+    // Real progress counts (parallel)
+    const counters = await Promise.all(
+      QUESTS.map(async (q) => {
+        const { count } = await (supabase as any)
+          .from(q.source)
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", userId)
+          .gte("created_at", since);
+        return [q.id, count ?? 0] as const;
+      }),
+    );
+    const pmap: Record<string, number> = {};
+    counters.forEach(([k, v]) => (pmap[k] = v));
+
+    setProgress(pmap);
+    setClaimed(cmap);
+    setLoading(false);
+  }, [userId]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const claim = async (q: typeof QUESTS[number]) => {
+    if (!userId) {
+      toast.error("Sign in required");
+      return;
+    }
+    if (claimed[q.id]) return;
+    if ((progress[q.id] || 0) < q.target) {
+      toast.error(`Need ${q.target - (progress[q.id] || 0)} more to claim`);
+      return;
+    }
+    setBusy(q.id);
+    const { error } = await supabase
+      .from("daily_quest_completions")
+      .insert({ user_id: userId, quest_id: q.id, xp_awarded: q.reward });
+    setBusy(null);
+    if (error && error.code !== "23505") {
+      toast.error("Claim failed", { description: error.message });
+      return;
+    }
+    setClaimed((prev) => ({ ...prev, [q.id]: q.reward }));
+    toast.success(`+${q.reward} XP claimed`);
   };
 
   const total = QUESTS.reduce((s, q) => s + q.reward, 0);
-  const earned = QUESTS.reduce((s, q) => s + (done[q.id] || 0), 0);
+  const earned = QUESTS.reduce((s, q) => s + (claimed[q.id] || 0), 0);
   const pct = Math.round((earned / total) * 100);
 
   return (
@@ -75,19 +111,57 @@ const MegatalentDailyQuests = ({ userId }: { userId: string | null }) => {
           <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} className="h-full bg-gradient-to-r from-primary to-accent" />
         </div>
         {loading ? (
-          <div className="text-sm text-muted-foreground flex items-center gap-2"><Loader2 className="h-4 w-4 animate-spin" /> Loading…</div>
+          <div className="text-sm text-muted-foreground flex items-center gap-2">
+            <Loader2 className="h-4 w-4 animate-spin" /> Loading…
+          </div>
         ) : (
           <div className="space-y-2">
-            {QUESTS.map(q => {
-              const isDone = !!done[q.id];
+            {QUESTS.map((q) => {
+              const done = !!claimed[q.id];
+              const p = progress[q.id] || 0;
+              const ready = p >= q.target && !done;
               return (
-                <label key={q.id} className="flex items-center gap-3 rounded-lg border border-border/40 bg-background/40 p-2 cursor-pointer hover:border-primary/40 transition">
-                  <Checkbox checked={isDone} disabled={isDone || busy === q.id || !userId} onCheckedChange={() => complete(q)} />
-                  <span className={`flex-1 text-sm ${isDone ? "line-through text-muted-foreground" : ""}`}>{q.label}</span>
-                  <Badge variant="outline" className="text-xs">+{q.reward}</Badge>
-                </label>
+                <div key={q.id} className="flex items-center gap-3 rounded-lg border border-border/40 bg-background/40 p-2.5">
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-sm font-medium ${done ? "line-through text-muted-foreground" : ""}`}>{q.label}</p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <div className="flex-1 h-1 rounded-full bg-muted overflow-hidden">
+                        <div
+                          className="h-full bg-primary transition-all"
+                          style={{ width: `${Math.min(100, (p / q.target) * 100)}%` }}
+                        />
+                      </div>
+                      <span className="text-[10px] text-muted-foreground tabular-nums">
+                        {Math.min(p, q.target)}/{q.target}
+                      </span>
+                    </div>
+                  </div>
+                  <Badge variant="outline" className="text-xs shrink-0">
+                    +{q.reward}
+                  </Badge>
+                  <Button
+                    size="sm"
+                    variant={done ? "outline" : ready ? "default" : "ghost"}
+                    disabled={done || !ready || busy === q.id}
+                    onClick={() => claim(q)}
+                    className="h-8 px-2 text-xs shrink-0"
+                  >
+                    {busy === q.id ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : done ? (
+                      <Check className="h-3 w-3" />
+                    ) : ready ? (
+                      "Claim"
+                    ) : (
+                      "Locked"
+                    )}
+                  </Button>
+                </div>
               );
             })}
+            <Button variant="ghost" size="sm" className="w-full text-xs h-7 mt-1" onClick={load}>
+              Refresh progress
+            </Button>
           </div>
         )}
       </CardContent>
