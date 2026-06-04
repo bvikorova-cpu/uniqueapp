@@ -84,15 +84,18 @@ const MegatalentMentorshipBooking = ({ category }: { category?: string }) => {
   }, []);
 
   const markCompleted = async (bookingId: string) => {
+    setReleaseStatus((prev) => ({ ...prev, [bookingId]: "loading" }));
     setReleasing(bookingId);
     const { data, error } = await supabase.functions.invoke("mt-release-funds", {
       body: { kind: "mentorship", id: bookingId },
     });
     setReleasing(null);
     if (error || (data as any)?.error) {
+      setReleaseStatus((prev) => ({ ...prev, [bookingId]: "error" }));
       toast.error("Release failed", { description: error?.message || (data as any)?.error });
       return;
     }
+    setReleaseStatus((prev) => ({ ...prev, [bookingId]: "success" }));
     toast.success("Session completed — 80% sent to mentor");
     if (userId) loadMyBookings(userId);
   };
