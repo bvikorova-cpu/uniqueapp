@@ -1,50 +1,36 @@
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
 import { Gift, Users, Crown, Star, Gem, Flame } from "lucide-react";
 import heroVideo from "@/assets/mystery-box-hero.mp4.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 
 /**
  * Real, cached stats from DB (no random/fake live ticking — EU consumer compliance).
- * Refreshes every 60s.
+ * Shared react-query cache: 5 min stale, dedupes across all tabs/instances.
  */
 const useLiveStats = () => {
-  const [stats, setStats] = useState({
-    boxesOpened: 0,
-    activePlayers: 0,
-    legendaryDrops: 0,
-    jackpotPool: 0,
+  const { data } = useQuery({
+    queryKey: ["mystery-box-hero-stats"],
+    staleTime: 5 * 60 * 1000,
+    refetchInterval: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    queryFn: async () => {
+      const since = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
+      const [opened, rewards, recent] = await Promise.all([
+        supabase.from("user_mystery_boxes").select("id", { count: "exact", head: true }).eq("is_opened", true),
+        supabase.from("mystery_box_rewards").select("id", { count: "exact", head: true }),
+        supabase.from("user_mystery_boxes").select("user_id", { count: "exact", head: true }).gte("purchased_at", since),
+      ]);
+      const boxesOpened = opened.count || 0;
+      return {
+        boxesOpened,
+        activePlayers: recent.count || 0,
+        legendaryDrops: rewards.count || 0,
+        jackpotPool: Math.round(boxesOpened * 0.25),
+      };
+    },
   });
-
-  useEffect(() => {
-    let cancelled = false;
-    const load = async () => {
-      try {
-        const since = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
-        const [opened, rewards, recent] = await Promise.all([
-          supabase.from("user_mystery_boxes").select("id", { count: "exact", head: true }).eq("is_opened", true),
-          supabase.from("mystery_box_rewards").select("id", { count: "exact", head: true }),
-          supabase.from("user_mystery_boxes").select("user_id", { count: "exact", head: true }).gte("purchased_at", since),
-        ]);
-        if (cancelled) return;
-        const boxesOpened = opened.count || 0;
-        setStats({
-          boxesOpened,
-          activePlayers: recent.count || 0,
-          legendaryDrops: rewards.count || 0,
-          // Deterministic symbolic jackpot pool, derived from real openings (no fake live ticking)
-          jackpotPool: Math.round(boxesOpened * 0.25),
-        });
-      } catch {
-        // keep zeros rather than fake numbers
-      }
-    };
-    load();
-    const interval = setInterval(load, 60000);
-    return () => { cancelled = true; clearInterval(interval); };
-  }, []);
-
-  return stats;
+  return data ?? { boxesOpened: 0, activePlayers: 0, legendaryDrops: 0, jackpotPool: 0 };
 };
 
 export const MysteryBoxHero = () => {

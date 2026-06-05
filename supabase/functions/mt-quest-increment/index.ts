@@ -55,7 +55,7 @@ serve(async (req) => {
     const today = new Date().toISOString().slice(0, 10);
     const { data: existing } = await admin
       .from("mt_user_quest_progress")
-      .select("id, progress, completed_at")
+      .select("progress, completed_at")
       .eq("user_id", user.id)
       .eq("quest_key", quest_key)
       .eq("quest_date", today)
@@ -63,15 +63,16 @@ serve(async (req) => {
 
     const newProgress = Math.min(quest.target_count, ((existing?.progress ?? 0) + inc));
     const completed = newProgress >= quest.target_count;
-    const completed_at = completed && !existing?.completed_at ? new Date().toISOString() : existing?.completed_at;
+    const completed_at = completed && !existing?.completed_at ? new Date().toISOString() : existing?.completed_at ?? null;
 
-    if (existing) {
-      await admin.from("mt_user_quest_progress").update({ progress: newProgress, completed_at }).eq("id", existing.id);
-    } else {
-      await admin.from("mt_user_quest_progress").insert({
-        user_id: user.id, quest_key, quest_date: today, progress: newProgress, completed_at,
-      });
-    }
+    // Atomic upsert avoids duplicate rows on concurrent inserts
+    const { error: upErr } = await admin
+      .from("mt_user_quest_progress")
+      .upsert(
+        { user_id: user.id, quest_key, quest_date: today, progress: newProgress, completed_at },
+        { onConflict: "user_id,quest_key,quest_date" },
+      );
+    if (upErr) throw upErr;
 
     return new Response(JSON.stringify({ ok: true, progress: newProgress, completed }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
