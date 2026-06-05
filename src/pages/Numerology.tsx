@@ -40,10 +40,7 @@ export default function Numerology() {
     try {
       const { data, error } = await supabase.functions.invoke("ai-text-generator", {
         body: {
-          system: "You are an expert numerologist. Give a concise mystical, encouraging reading in 4-6 sentences.",
-          prompt: `Numerology reading: "${tool}" for ${name}, born ${dob}.`,
-          credits: cost,
-          feature: `numerology-${tool.toLowerCase().replace(/\s+/g, "-")}`,
+          prompt: `You are an expert numerologist. Give a concise mystical, encouraging reading in 4-6 sentences.\n\nNumerology reading: "${tool}" for ${name}, born ${dob}.`,
         },
       });
       if (error) throw error;
