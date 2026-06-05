@@ -821,6 +821,16 @@ const Dating = () => {
                     <p className="text-xs text-emerald-500 flex items-center gap-1"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />Online</p>
                   </div>
                   <Button variant="ghost" size="icon" onClick={() => setShowGiftDialog(true)} className="h-9 w-9 text-primary"><Gift className="h-5 w-5" /></Button>
+                  {selectedMatch.profile?.user_id && (
+                    <BlockReportMenu
+                      targetUserId={selectedMatch.profile.user_id}
+                      targetName={selectedMatch.profile.display_name}
+                      onBlocked={async () => {
+                        setSelectedMatch(null);
+                        if (user) { await loadBlocked(user.id); await loadMatches(user.id); await loadProfiles(); }
+                      }}
+                    />
+                  )}
                 </div>
                 <ScrollArea className="h-[450px]">
                   <div className="p-4 space-y-3">
