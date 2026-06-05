@@ -180,19 +180,23 @@ const Dating = () => {
   };
 
   const handleBoost = async () => {
-    if (boosting || boostActive) return;
+    if (boosting || boostActive || !user) return;
     setBoosting(true);
     try {
-      const { data, error } = await supabase.functions.invoke("dating-boost");
-      if (error) throw error;
-      if (data?.error === "INSUFFICIENT_CREDITS") {
+      const { data: ok, error: deductErr } = await supabase.rpc("deduct_ai_credits", {
+        _user_id: user.id, _amount: 20, _reason: "dating_boost_30min",
+      });
+      if (deductErr || ok === false) {
         toast({ title: "Not enough credits", description: "Boost costs 20 credits.", variant: "destructive" });
         return;
       }
-      if (data?.expires_at) {
-        setBoostActive(data.expires_at);
-        toast({ title: "🔥 Boost active!", description: "You're a top profile for 30 minutes." });
-      }
+      const expiresAt = new Date(Date.now() + 30 * 60_000).toISOString();
+      const { error: insErr } = await supabase.from("dating_boosts").insert({
+        user_id: user.id, expires_at: expiresAt, credits_spent: 20,
+      });
+      if (insErr) throw insErr;
+      setBoostActive(expiresAt);
+      toast({ title: "🔥 Boost active!", description: "You're a top profile for 30 minutes." });
     } catch (e: any) {
       toast({ title: "Boost failed", description: e?.message || "Try again", variant: "destructive" });
     } finally {
