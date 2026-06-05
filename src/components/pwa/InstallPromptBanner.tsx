@@ -11,6 +11,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Download, Share, X } from "lucide-react";
 import { useInstallPrompt } from "@/hooks/useInstallPrompt";
 import { Button } from "@/components/ui/button";
+import { trackPwaInstallEvent } from "@/lib/pwaInstallAnalytics";
 
 const SHOW_DELAY_MS = 8_000;
 
@@ -26,16 +27,40 @@ export function InstallPromptBanner() {
     return () => clearTimeout(t);
   }, []);
 
-  // Hide entirely when running inside the installed app.
-  if (runningStandalone) return null;
-
   const showOpenMode = installed && !runningStandalone;
-  if (!showOpenMode && !canInstall) return null;
-  if (!visible || dismissedThisSession) return null;
+  // Hide entirely when running inside the installed app; otherwise gate on canInstall/open-mode.
+  const shouldRender =
+    !runningStandalone && (showOpenMode || canInstall) && visible && !dismissedThisSession;
+
+
+  // Fire banner_shown once per session per (mode, platform).
+  useEffect(() => {
+    if (!shouldRender) return;
+    trackPwaInstallEvent({
+      eventType: "banner_shown",
+      platform,
+      runningStandalone,
+      installed,
+      metadata: { mode: showOpenMode ? "open" : "install" },
+    });
+  }, [shouldRender, platform, runningStandalone, installed, showOpenMode]);
+
+  if (!shouldRender) return null;
 
   const isIOS = platform === "ios";
 
-  const close = () => setDismissedThisSession(true);
+  const close = () => {
+    trackPwaInstallEvent({
+      eventType: "banner_dismissed",
+      platform,
+      runningStandalone,
+      installed,
+      metadata: { mode: showOpenMode ? "open" : "install" },
+      allowRepeat: true,
+    });
+    setDismissedThisSession(true);
+  };
+
 
   return (
     <AnimatePresence>
@@ -86,8 +111,15 @@ export function InstallPromptBanner() {
                 size="sm"
                 className="flex-1"
                 onClick={() => {
+                  trackPwaInstallEvent({
+                    eventType: "open_click",
+                    platform,
+                    runningStandalone,
+                    installed,
+                    allowRepeat: true,
+                  });
                   openApp();
-                  close();
+                  setDismissedThisSession(true);
                 }}
               >
                 Open
@@ -102,8 +134,32 @@ export function InstallPromptBanner() {
                 size="sm"
                 className="flex-1"
                 onClick={async () => {
+                  trackPwaInstallEvent({
+                    eventType: "install_click",
+                    platform,
+                    runningStandalone,
+                    installed,
+                    allowRepeat: true,
+                  });
                   const outcome = await promptInstall();
-                  if (outcome !== "unsupported") close();
+                  if (outcome === "accepted") {
+                    trackPwaInstallEvent({
+                      eventType: "install_accepted",
+                      platform,
+                      runningStandalone,
+                      installed: true,
+                      allowRepeat: true,
+                    });
+                  } else if (outcome === "dismissed") {
+                    trackPwaInstallEvent({
+                      eventType: "install_dismissed",
+                      platform,
+                      runningStandalone,
+                      installed,
+                      allowRepeat: true,
+                    });
+                  }
+                  if (outcome !== "unsupported") setDismissedThisSession(true);
                 }}
               >
                 Install
@@ -113,6 +169,7 @@ export function InstallPromptBanner() {
               </Button>
             </div>
           ) : null}
+
         </div>
       </motion.div>
     </AnimatePresence>
