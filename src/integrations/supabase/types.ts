@@ -63285,6 +63285,7 @@ export type Database = {
         Args: { p_cost: number; p_label: string; p_prize: number }
         Returns: boolean
       }
+      lucky_wheel_spin_secure: { Args: never; Returns: Json }
       mark_iq_notifications_read: { Args: { _ids?: string[] }; Returns: number }
       moderate_comment: {
         Args: { _comment_id: string; _hide: boolean; _reason?: string }
