@@ -19,13 +19,9 @@ export function InstallPromptBanner() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (!canInstall) {
-      setVisible(false);
-      return;
-    }
     const t = setTimeout(() => setVisible(true), SHOW_DELAY_MS);
     return () => clearTimeout(t);
-  }, [canInstall]);
+  }, []);
 
   if (!canInstall || !visible) return null;
 
