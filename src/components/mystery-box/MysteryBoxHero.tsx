@@ -2,25 +2,44 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Gift, Users, Crown, Star, Gem, Flame } from "lucide-react";
 import heroVideo from "@/assets/mystery-box-hero.mp4.asset.json";
+import { supabase } from "@/integrations/supabase/client";
 
+/**
+ * Real, cached stats from DB (no random/fake live ticking — EU consumer compliance).
+ * Refreshes every 60s.
+ */
 const useLiveStats = () => {
   const [stats, setStats] = useState({
-    boxesOpened: 184320,
-    activePlayers: 12450,
-    legendaryDrops: 2891,
-    jackpotPool: 47580,
+    boxesOpened: 0,
+    activePlayers: 0,
+    legendaryDrops: 0,
+    jackpotPool: 0,
   });
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setStats((prev) => ({
-        boxesOpened: prev.boxesOpened + Math.floor(Math.random() * 8),
-        activePlayers: prev.activePlayers + (Math.random() > 0.5 ? 1 : -1),
-        legendaryDrops: prev.legendaryDrops + (Math.random() > 0.92 ? 1 : 0),
-        jackpotPool: prev.jackpotPool + Math.floor(Math.random() * 15),
-      }));
-    }, 2500);
-    return () => clearInterval(interval);
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const [opened, legendary, players, jackpot] = await Promise.all([
+          supabase.from("mystery_box_openings").select("id", { count: "exact", head: true }),
+          supabase.from("mystery_box_openings").select("id", { count: "exact", head: true }).eq("rarity", "legendary"),
+          supabase.from("mystery_box_openings").select("user_id", { count: "exact", head: true }).gte("created_at", new Date(Date.now() - 24 * 3600 * 1000).toISOString()),
+          supabase.from("mystery_box_jackpot").select("pool_amount").order("updated_at", { ascending: false }).limit(1).maybeSingle(),
+        ]);
+        if (cancelled) return;
+        setStats({
+          boxesOpened: opened.count || 0,
+          activePlayers: players.count || 0,
+          legendaryDrops: legendary.count || 0,
+          jackpotPool: Number((jackpot.data as any)?.pool_amount || 0),
+        });
+      } catch (e) {
+        // Silent — keep zeros rather than fake numbers
+      }
+    };
+    load();
+    const interval = setInterval(load, 60000);
+    return () => { cancelled = true; clearInterval(interval); };
   }, []);
 
   return stats;
