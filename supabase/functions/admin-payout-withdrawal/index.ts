@@ -117,6 +117,12 @@ serve(async (req) => {
     const creatorId = wd[creatorCol];
     if (!creatorId) throw new Error(`Missing ${creatorCol}`);
 
+    // Short-circuit if a previous attempt already recorded a Stripe transfer ID
+    // (e.g. transfer succeeded but DB finalize failed). Idempotent re-run.
+    if (wd[transferCol]) {
+      log("transfer already exists on row — finalizing only", { transferId: wd[transferCol] });
+    }
+
     const { data: profile, error: pErr } = await admin
       .from("profiles")
       .select("stripe_connect_account_id, stripe_connect_payouts_enabled")
@@ -135,16 +141,43 @@ serve(async (req) => {
       throw new Error(`Invalid amount: ${wd.amount}`);
     }
 
+    // Atomic claim: flip status pending → processing. If 0 rows updated,
+    // another admin (or a concurrent click) already claimed it.
+    const { data: claimed, error: claimErr } = await admin
+      .from(table)
+      .update({ status: "processing" })
+      .eq("id", withdrawalId)
+      .in("status", ["pending", "requested", "approved"])
+      .select("id");
+    if (claimErr) throw new Error(`Claim failed: ${claimErr.message}`);
+    if (!claimed || claimed.length === 0) {
+      // Not an error if our own previous run set processing — re-check row state
+      const { data: recheck } = await admin.from(table).select("status").eq("id", withdrawalId).maybeSingle();
+      if (!recheck || recheck.status === "completed" || recheck.status === "rejected") {
+        throw new Error(`Withdrawal already ${recheck?.status ?? "claimed"}`);
+      }
+      if (recheck.status !== "processing") {
+        throw new Error(`Cannot claim withdrawal in status ${recheck.status}`);
+      }
+      log("row already in processing — continuing idempotently");
+    }
+
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     log("creating transfer", { amountCents, dest: profile.stripe_connect_account_id });
 
-    const transfer = await stripe.transfers.create({
-      amount: amountCents,
-      currency: "eur",
-      destination: profile.stripe_connect_account_id,
-      description: `${kind} withdrawal ${withdrawalId}`,
-      metadata: { kind, withdrawal_id: withdrawalId, creator_id: creatorId },
-    });
+    // Idempotency key keyed on withdrawal id → Stripe collapses duplicate
+    // requests within 24h into a single transfer. Protects against double-pay
+    // on retries, network errors, and concurrent clicks.
+    const transfer = await stripe.transfers.create(
+      {
+        amount: amountCents,
+        currency: "eur",
+        destination: profile.stripe_connect_account_id,
+        description: `${kind} withdrawal ${withdrawalId}`,
+        metadata: { kind, withdrawal_id: withdrawalId, creator_id: creatorId },
+      },
+      { idempotencyKey: `payout_${kind}_${withdrawalId}` },
+    );
 
     log("transfer created", { id: transfer.id });
 
