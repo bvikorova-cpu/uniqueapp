@@ -542,6 +542,53 @@ const Admin = () => {
           </Card>
         </div>
 
+        {/* PWA Install Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <Card
+            className="cursor-pointer hover:shadow-lg transition-shadow border-2 border-cyan-500/30 bg-gradient-to-br from-cyan-500/5 to-blue-500/5"
+            onClick={() => navigate('/admin/pwa-stats')}
+          >
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 rounded-lg bg-cyan-500/20">
+                    <Download className="h-6 w-6 text-cyan-500" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-xl">PWA Install Stats</CardTitle>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Banner impressions, install clicks, and accepted installs per platform
+                    </p>
+                  </div>
+                </div>
+                <ChevronRight className="h-6 w-6 text-muted-foreground" />
+              </div>
+            </CardHeader>
+          </Card>
+
+          <Card
+            className="cursor-pointer hover:shadow-lg transition-shadow border-2 border-blue-500/30 bg-gradient-to-br from-blue-500/5 to-indigo-500/5"
+            onClick={() => navigate('/admin/engagement')}
+          >
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 rounded-lg bg-blue-500/20">
+                    <Activity className="h-6 w-6 text-blue-500" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-xl">User Engagement</CardTitle>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      DAU / WAU / MAU, stickiness, and signup velocity
+                    </p>
+                  </div>
+                </div>
+                <ChevronRight className="h-6 w-6 text-muted-foreground" />
+              </div>
+            </CardHeader>
+          </Card>
+        </div>
+
         {/* Search */}
         <div className="mb-6">
           <div className="relative">

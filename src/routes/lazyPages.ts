@@ -406,6 +406,7 @@ export const AdminPaymentDashboard = lazy(() => import("@/pages/AdminPaymentDash
 export const CampaignApprovals = lazy(() => import("@/pages/admin/CampaignApprovals"));
 export const WithdrawalRequests = lazy(() => import("@/pages/admin/WithdrawalRequests"));
 export const CampaignSuccess = lazy(() => import("@/pages/fundraising/CampaignSuccess"));
+export const AdminPwaStats = lazy(() => import("@/pages/admin/AdminPwaStats"));
 
 // Glamour World
 export const GlamourWorld = lazy(() => import("@/pages/GlamourWorld"));
