@@ -195,7 +195,7 @@ export default function RewardsLuckyWheel() {
         </Button>
 
         <p className="text-xs text-muted-foreground mt-2">
-          1 free spin daily • Credits credited instantly
+          1 spin daily • Costs 5 CR • Win up to 100 CR
         </p>
       </Card>
 
