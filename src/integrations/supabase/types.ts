@@ -39006,6 +39006,21 @@ export type Database = {
           },
         ]
       }
+      mt_user_onboarding: {
+        Row: {
+          completed_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       mt_user_quest_progress: {
         Row: {
           claimed_at: string | null
@@ -62836,6 +62851,7 @@ export type Database = {
         }[]
       }
       get_or_create_iq_referral_code: { Args: never; Returns: string }
+      get_or_create_megatalent_referral_code: { Args: never; Returns: string }
       get_or_pick_daily_deal: { Args: never; Returns: string }
       get_post_memories: {
         Args: { _limit?: number; _user_id: string }
@@ -63309,6 +63325,17 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      mt_get_duel_pair: {
+        Args: { _categories?: string[] }
+        Returns: {
+          id: string
+          media_type: string
+          media_url: string
+          title: string
+          user_id: string
+          votes_count: number
+        }[]
       }
       mt_unlock_user_achievements: { Args: never; Returns: Json }
       open_mystery_box: { Args: { p_user_box_id: string }; Returns: Json }
