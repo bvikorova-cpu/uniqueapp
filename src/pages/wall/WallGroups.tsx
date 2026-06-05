@@ -224,18 +224,20 @@ export default function WallGroups() {
                 <Button
                   variant="outline"
                   size="sm"
+                  disabled={pendingGroupId === group.id}
                   className="shrink-0 text-xs gap-1 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30 transition-colors"
                   onClick={(e) => { e.stopPropagation(); leaveGroup(group.id); }}
                 >
-                  <LogOut className="w-3 h-3" /> Leave
+                  <LogOut className="w-3 h-3" /> {pendingGroupId === group.id ? "…" : "Leave"}
                 </Button>
               ) : (
                 <Button
                   size="sm"
+                  disabled={pendingGroupId === group.id}
                   className="shrink-0 text-xs gap-1 bg-gradient-to-r from-primary to-accent text-white hover:opacity-90 shadow-lg shadow-primary/20 active:scale-95 transition-all"
                   onClick={(e) => { e.stopPropagation(); joinGroup(group.id); }}
                 >
-                  <Plus className="w-3 h-3" /> Join
+                  <Plus className="w-3 h-3" /> {pendingGroupId === group.id ? "…" : "Join"}
                 </Button>
               )}
             </div>
