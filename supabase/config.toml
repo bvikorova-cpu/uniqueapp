@@ -1355,3 +1355,9 @@ verify_jwt = false
 [functions.e2e-ensure-test-user]
 verify_jwt = false
 
+
+[functions.mt-escrow-auto-release]
+verify_jwt = false
+
+[functions.mt-stories-cleanup]
+verify_jwt = false
