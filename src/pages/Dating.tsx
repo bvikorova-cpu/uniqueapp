@@ -236,6 +236,7 @@ const Dating = () => {
     setProfiles(ranked.slice(0, 20));
   };
 
+  const loadMatches = async (userId: string) => {
     const { data } = await supabase.from("dating_matches").select("*").or(`user1_id.eq.${userId},user2_id.eq.${userId}`);
     if (data) {
       const matchesWithProfiles = await Promise.all(
