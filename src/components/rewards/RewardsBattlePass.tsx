@@ -62,8 +62,9 @@ export default function RewardsBattlePass() {
     if (user) {
       let prog = (progRes as any).data;
       if (!prog) {
+        // Upsert avoids duplicate-row races on first render across multiple tabs.
         const ins = await supabase.from("user_battle_pass")
-          .insert({ user_id: user.id, season_id: s.id })
+          .upsert({ user_id: user.id, season_id: s.id }, { onConflict: "user_id,season_id", ignoreDuplicates: false })
           .select().single();
         prog = ins.data;
       }
