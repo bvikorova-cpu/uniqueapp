@@ -142,11 +142,61 @@ const Dating = () => {
     if (data) {
       setIsSubscribed(true);
       await loadUserProfile(userId);
+      await loadFilters(userId);
+      await loadBlocked(userId);
+      await loadActiveBoost(userId);
       await loadProfiles();
       await loadMatches(userId);
       await loadGifts();
       await loadLikesYou(userId);
       await checkLastSwipe(userId);
+    }
+  };
+
+  const loadFilters = async (userId: string) => {
+    const { data } = await supabase.from("dating_filters").select("*").eq("user_id", userId).maybeSingle();
+    if (data) setFilters({
+      min_age: data.min_age, max_age: data.max_age,
+      max_distance_km: data.max_distance_km,
+      preferred_genders: data.preferred_genders,
+      verified_only: data.verified_only,
+    });
+  };
+
+  const loadBlocked = async (userId: string) => {
+    const [{ data: a }, { data: b }] = await Promise.all([
+      supabase.from("dating_blocks").select("blocked_id").eq("blocker_id", userId),
+      supabase.from("dating_blocks").select("blocker_id").eq("blocked_id", userId),
+    ]);
+    const ids = [...(a?.map(x => x.blocked_id) || []), ...(b?.map(x => x.blocker_id) || [])];
+    setBlockedIds(ids);
+  };
+
+  const loadActiveBoost = async (userId: string) => {
+    const { data } = await supabase.from("dating_boosts").select("expires_at")
+      .eq("user_id", userId).gt("expires_at", new Date().toISOString())
+      .order("expires_at", { ascending: false }).limit(1).maybeSingle();
+    setBoostActive(data?.expires_at || null);
+  };
+
+  const handleBoost = async () => {
+    if (boosting || boostActive) return;
+    setBoosting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("dating-boost");
+      if (error) throw error;
+      if (data?.error === "INSUFFICIENT_CREDITS") {
+        toast({ title: "Not enough credits", description: "Boost costs 20 credits.", variant: "destructive" });
+        return;
+      }
+      if (data?.expires_at) {
+        setBoostActive(data.expires_at);
+        toast({ title: "🔥 Boost active!", description: "You're a top profile for 30 minutes." });
+      }
+    } catch (e: any) {
+      toast({ title: "Boost failed", description: e?.message || "Try again", variant: "destructive" });
+    } finally {
+      setBoosting(false);
     }
   };
 
@@ -159,13 +209,33 @@ const Dating = () => {
   };
 
   const loadProfiles = async () => {
-    const { data: swipedProfiles } = await supabase.from("dating_swipes").select("swiped_id").eq("swiper_id", user?.id || "");
+    if (!user?.id) return;
+    const { data: swipedProfiles } = await supabase.from("dating_swipes").select("swiped_id").eq("swiper_id", user.id);
     const swipedIds = swipedProfiles?.map(s => s.swiped_id) || [];
-    const { data } = await supabase.from("dating_profiles").select("*").eq("is_active", true).neq("user_id", user?.id || "").not("user_id", "in", `(${swipedIds.join(",") || "NULL"})`).limit(20);
-    setProfiles(data || []);
+    const excludeIds = [...new Set([...swipedIds, ...blockedIds, user.id])];
+
+    let q = supabase.from("dating_profiles").select("*").eq("is_active", true);
+    if (excludeIds.length > 0) q = q.not("user_id", "in", `(${excludeIds.join(",")})`);
+    if (filters) {
+      q = q.gte("age", filters.min_age).lte("age", filters.max_age);
+      if (filters.preferred_genders.length > 0 && filters.preferred_genders.length < 3) {
+        q = q.in("gender", filters.preferred_genders);
+      }
+    }
+    const { data } = await q.limit(40);
+
+    // Rank: boosted users first
+    let ranked = data || [];
+    if (ranked.length > 0) {
+      const userIds = ranked.map(p => p.user_id);
+      const { data: boosts } = await supabase.from("dating_boosts").select("user_id")
+        .in("user_id", userIds).gt("expires_at", new Date().toISOString());
+      const boostedSet = new Set((boosts || []).map(b => b.user_id));
+      ranked = [...ranked.filter(p => boostedSet.has(p.user_id)), ...ranked.filter(p => !boostedSet.has(p.user_id))];
+    }
+    setProfiles(ranked.slice(0, 20));
   };
 
-  const loadMatches = async (userId: string) => {
     const { data } = await supabase.from("dating_matches").select("*").or(`user1_id.eq.${userId},user2_id.eq.${userId}`);
     if (data) {
       const matchesWithProfiles = await Promise.all(
