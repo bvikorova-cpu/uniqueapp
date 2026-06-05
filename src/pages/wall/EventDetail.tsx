@@ -121,7 +121,7 @@ export default function EventDetail() {
         .select("*")
         .eq("event_id", eventId)
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
       return data;
     },
     enabled: !!user && !!eventId,

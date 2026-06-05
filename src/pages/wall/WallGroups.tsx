@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,10 +17,18 @@ export default function WallGroups() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [newGroupName, setNewGroupName] = useState("");
   const [newGroupDescription, setNewGroupDescription] = useState("");
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [pendingGroupId, setPendingGroupId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"my" | "discover">("my");
+
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(searchQuery), 300);
+    return () => clearTimeout(t);
+  }, [searchQuery]);
 
   const { data: user } = useQuery({
     queryKey: ["current-user"],
@@ -50,14 +58,14 @@ export default function WallGroups() {
   });
 
   const { data: allGroups = [], refetch: refetchAllGroups } = useQuery({
-    queryKey: ["all-groups", searchQuery],
+    queryKey: ["all-groups", debouncedSearch],
     queryFn: async () => {
       let query = supabase
         .from("groups")
         .select("*")
         .order("members_count", { ascending: false });
-      if (searchQuery.trim()) {
-        query = query.ilike("name", `%${searchQuery}%`);
+      if (debouncedSearch.trim()) {
+        query = query.ilike("name", `%${debouncedSearch}%`);
       }
       const { data } = await query.limit(20);
       return data || [];
@@ -65,7 +73,8 @@ export default function WallGroups() {
   });
 
   const createGroup = async () => {
-    if (!user || !newGroupName.trim()) return;
+    if (!user || !newGroupName.trim() || isSubmitting) return;
+    setIsSubmitting(true);
     try {
       const { data: group, error: groupError } = await supabase
         .from("groups")
@@ -91,11 +100,14 @@ export default function WallGroups() {
       refetchAllGroups();
     } catch (error) {
       toast({ title: "Error", description: "An unexpected error occurred", variant: "destructive" });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const joinGroup = async (groupId: string) => {
-    if (!user) return;
+    if (!user || pendingGroupId) return;
+    setPendingGroupId(groupId);
     try {
       const { error } = await supabase
         .from("group_members")
@@ -109,11 +121,14 @@ export default function WallGroups() {
       refetchAllGroups();
     } catch (error) {
       toast({ title: "Error", description: "An unexpected error occurred", variant: "destructive" });
+    } finally {
+      setPendingGroupId(null);
     }
   };
 
   const leaveGroup = async (groupId: string) => {
-    if (!user) return;
+    if (!user || pendingGroupId) return;
+    setPendingGroupId(groupId);
     try {
       const { error } = await supabase
         .from("group_members")
@@ -129,6 +144,8 @@ export default function WallGroups() {
       refetchAllGroups();
     } catch (error) {
       toast({ title: "Error", description: "An unexpected error occurred", variant: "destructive" });
+    } finally {
+      setPendingGroupId(null);
     }
   };
 
@@ -207,18 +224,20 @@ export default function WallGroups() {
                 <Button
                   variant="outline"
                   size="sm"
+                  disabled={pendingGroupId === group.id}
                   className="shrink-0 text-xs gap-1 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30 transition-colors"
                   onClick={(e) => { e.stopPropagation(); leaveGroup(group.id); }}
                 >
-                  <LogOut className="w-3 h-3" /> Leave
+                  <LogOut className="w-3 h-3" /> {pendingGroupId === group.id ? "…" : "Leave"}
                 </Button>
               ) : (
                 <Button
                   size="sm"
+                  disabled={pendingGroupId === group.id}
                   className="shrink-0 text-xs gap-1 bg-gradient-to-r from-primary to-accent text-white hover:opacity-90 shadow-lg shadow-primary/20 active:scale-95 transition-all"
                   onClick={(e) => { e.stopPropagation(); joinGroup(group.id); }}
                 >
-                  <Plus className="w-3 h-3" /> Join
+                  <Plus className="w-3 h-3" /> {pendingGroupId === group.id ? "…" : "Join"}
                 </Button>
               )}
             </div>
@@ -277,8 +296,8 @@ export default function WallGroups() {
                   <label className="text-sm font-bold">Description</label>
                   <Textarea value={newGroupDescription} onChange={(e) => setNewGroupDescription(e.target.value)} placeholder="What's your group about?" rows={3} className="mt-1.5" />
                 </div>
-                <Button onClick={createGroup} className="w-full bg-gradient-to-r from-primary to-accent text-white shadow-lg">
-                  Create Group
+                <Button onClick={createGroup} disabled={isSubmitting || !newGroupName.trim()} className="w-full bg-gradient-to-r from-primary to-accent text-white shadow-lg">
+                  {isSubmitting ? "Creating…" : "Create Group"}
                 </Button>
               </div>
             </DialogContent>
