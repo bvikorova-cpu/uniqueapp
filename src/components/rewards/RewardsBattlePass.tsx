@@ -211,7 +211,7 @@ export default function RewardsBattlePass() {
                 {/* Premium track */}
                 <button
                   onClick={() => premium && claimReward(tier, "premium")}
-                  disabled={!premium || !reached || !progress?.has_premium || premiumClaimed}
+                  disabled={!premium || !reached || !progress?.has_premium || premiumClaimed || claimingKey === `${tier}-premium`}
                   className={`w-full aspect-square rounded-lg border-2 flex flex-col items-center justify-center text-xs p-1 transition-all ${
                     premiumClaimed ? "bg-yellow-500/20 border-yellow-500" :
                     !progress?.has_premium ? "bg-muted/40 border-yellow-500/30 opacity-60" :
