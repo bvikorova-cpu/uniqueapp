@@ -59,8 +59,13 @@ export function JobCardRedesigned({ job, onViewDetails, onApply, isLoggedIn }: J
   return (
     <div className="group relative rounded-xl sm:rounded-2xl border border-border/30 bg-card/40 backdrop-blur-sm p-3 sm:p-5 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 active:scale-[0.99]">
       {/* Badges */}
-      {(isNew || isHot) && (
+      {(isNew || isHot || job.is_featured) && (
         <div className="absolute top-2 right-2 sm:top-3 sm:right-3 flex gap-1.5">
+          {job.is_featured && (
+            <span className="inline-flex items-center gap-0.5 px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-amber-500/20 text-amber-500 border border-amber-500/30">
+              <Star className="h-2.5 w-2.5 sm:h-3 sm:w-3 fill-current" /> FEATURED
+            </span>
+          )}
           {isNew && (
             <span className="inline-flex items-center gap-0.5 px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-primary/15 text-primary border border-primary/20">
               <Sparkles className="h-2.5 w-2.5 sm:h-3 sm:w-3" /> NEW
