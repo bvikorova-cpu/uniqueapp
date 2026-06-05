@@ -63309,6 +63309,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      mt_unlock_user_achievements: { Args: never; Returns: Json }
       open_mystery_box: { Args: { p_user_box_id: string }; Returns: Json }
       payout_requires_review: {
         Args: {
