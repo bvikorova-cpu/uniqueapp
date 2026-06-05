@@ -100,11 +100,14 @@ export default function WallGroups() {
       refetchAllGroups();
     } catch (error) {
       toast({ title: "Error", description: "An unexpected error occurred", variant: "destructive" });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const joinGroup = async (groupId: string) => {
-    if (!user) return;
+    if (!user || pendingGroupId) return;
+    setPendingGroupId(groupId);
     try {
       const { error } = await supabase
         .from("group_members")
@@ -118,11 +121,14 @@ export default function WallGroups() {
       refetchAllGroups();
     } catch (error) {
       toast({ title: "Error", description: "An unexpected error occurred", variant: "destructive" });
+    } finally {
+      setPendingGroupId(null);
     }
   };
 
   const leaveGroup = async (groupId: string) => {
-    if (!user) return;
+    if (!user || pendingGroupId) return;
+    setPendingGroupId(groupId);
     try {
       const { error } = await supabase
         .from("group_members")
@@ -138,6 +144,8 @@ export default function WallGroups() {
       refetchAllGroups();
     } catch (error) {
       toast({ title: "Error", description: "An unexpected error occurred", variant: "destructive" });
+    } finally {
+      setPendingGroupId(null);
     }
   };
 
