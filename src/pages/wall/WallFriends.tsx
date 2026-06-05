@@ -108,7 +108,7 @@ export default function WallFriends() {
   });
 
   const { data: requests = [], refetch: refetchRequests } = useQuery({
-    queryKey: ["friend-requests", user?.id],
+    queryKey: ["friend-requests", user?.id, friends.map(f => f.id).join(",")],
     queryFn: async () => {
       if (!user) return [];
       const { data: friendships } = await supabase
@@ -117,44 +117,61 @@ export default function WallFriends() {
         .eq("friend_id", user.id)
         .eq("status", "pending");
       if (!friendships || friendships.length === 0) return [];
-      const userIds = friendships.map(f => f.user_id);
-      const { data: profiles } = await publicProfiles()
-        .select("id, full_name, avatar_url")
-        .in("id", userIds);
-      const requestsWithMutual = await Promise.all(friendships.map(async (f) => {
-        const { data: requesterFriends } = await supabase
+      const requesterIds = friendships.map(f => f.user_id);
+
+      // Batch: profiles + ALL accepted friendships for ALL requesters in one query each.
+      const [{ data: profiles }, { data: requesterFriendships }] = await Promise.all([
+        publicProfiles().select("id, full_name, avatar_url").in("id", requesterIds),
+        supabase
           .from("friendships")
           .select("user_id, friend_id")
-          .or(`user_id.eq.${f.user_id},friend_id.eq.${f.user_id}`)
-          .eq("status", "accepted");
-        const requesterFriendIds = requesterFriends?.map(rf =>
-          rf.user_id === f.user_id ? rf.friend_id : rf.user_id
-        ) || [];
-        const myFriendIds = friends.map(friend => friend.id);
-        const mutualCount = requesterFriendIds.filter(id => myFriendIds.includes(id)).length;
-        return { ...f, profile: profiles?.find(p => p.id === f.user_id) || null, mutual_count: mutualCount };
-      }));
-      return requestsWithMutual as FriendRequest[];
+          .or(`user_id.in.(${requesterIds.join(",")}),friend_id.in.(${requesterIds.join(",")})`)
+          .eq("status", "accepted"),
+      ]);
+
+      const myFriendIds = new Set(friends.map(friend => friend.id));
+      // Map: requesterId -> Set of their friend ids
+      const requesterFriendsMap = new Map<string, Set<string>>();
+      (requesterFriendships || []).forEach((rf: any) => {
+        const addFor = (requesterId: string, otherId: string) => {
+          if (!requesterIds.includes(requesterId)) return;
+          if (!requesterFriendsMap.has(requesterId)) requesterFriendsMap.set(requesterId, new Set());
+          requesterFriendsMap.get(requesterId)!.add(otherId);
+        };
+        addFor(rf.user_id, rf.friend_id);
+        addFor(rf.friend_id, rf.user_id);
+      });
+
+      return friendships.map(f => {
+        const theirFriends = requesterFriendsMap.get(f.user_id) || new Set();
+        let mutualCount = 0;
+        theirFriends.forEach(id => { if (myFriendIds.has(id)) mutualCount++; });
+        return { ...f, profile: profiles?.find((p: any) => p.id === f.user_id) || null, mutual_count: mutualCount };
+      }) as FriendRequest[];
     },
-    enabled: !!user && friends.length >= 0,
+    enabled: !!user,
   });
 
   const { data: suggestions = [] } = useQuery({
-    queryKey: ["friend-suggestions", user?.id, friends],
+    queryKey: ["friend-suggestions", user?.id, friends.map(f => f.id).join(",")],
     queryFn: async () => {
       if (!user || friends.length === 0) return [];
       const friendIds = friends.map(f => f.id);
-      const { data: friendsOfFriends } = await supabase
-        .from("friendships")
-        .select("user_id, friend_id")
-        .or(friendIds.map(id => `user_id.eq.${id}`).join(',') + ',' + friendIds.map(id => `friend_id.eq.${id}`).join(','))
-        .eq("status", "accepted");
-      if (!friendsOfFriends) return [];
+
+      // Replace unbounded OR-chain with two .in() queries (handles 200+ friends without
+      // blowing the PostgREST query string).
+      const [{ data: side1 }, { data: side2 }] = await Promise.all([
+        supabase.from("friendships").select("user_id, friend_id").in("user_id", friendIds).eq("status", "accepted"),
+        supabase.from("friendships").select("user_id, friend_id").in("friend_id", friendIds).eq("status", "accepted"),
+      ]);
+      const friendsOfFriends = [...(side1 || []), ...(side2 || [])];
+
       const suggestionIds = new Set<string>();
       const mutualCountMap: Record<string, number> = {};
-      friendsOfFriends.forEach(fof => {
-        const potentialFriendId = friendIds.includes(fof.user_id) ? fof.friend_id : fof.user_id;
-        if (potentialFriendId === user.id || friendIds.includes(potentialFriendId)) return;
+      const friendIdSet = new Set(friendIds);
+      friendsOfFriends.forEach((fof: any) => {
+        const potentialFriendId = friendIdSet.has(fof.user_id) ? fof.friend_id : fof.user_id;
+        if (potentialFriendId === user.id || friendIdSet.has(potentialFriendId)) return;
         suggestionIds.add(potentialFriendId);
         mutualCountMap[potentialFriendId] = (mutualCountMap[potentialFriendId] || 0) + 1;
       });
@@ -173,10 +190,10 @@ export default function WallFriends() {
         .select("id, full_name, avatar_url")
         .in("id", filteredIds)
         .limit(20);
-      return (profiles || []).map(p => ({
+      return (profiles || []).map((p: any) => ({
         ...p,
         mutual_count: mutualCountMap[p.id] || 0
-      })).sort((a, b) => b.mutual_count - a.mutual_count) as FriendSuggestion[];
+      })).sort((a: any, b: any) => b.mutual_count - a.mutual_count) as FriendSuggestion[];
     },
     enabled: !!user,
   });
