@@ -135,7 +135,7 @@ export default function RewardsLoginCalendar() {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: day * 0.01 }}
                   onClick={() => canClaim && claim(day, tpl)}
-                  disabled={!canClaim}
+                  disabled={!canClaim || claiming}
                   className={`aspect-square rounded-lg border-2 p-1.5 flex flex-col items-center justify-center transition-all ${
                     claimed ? "bg-emerald-500/20 border-emerald-500" :
                     canClaim ? "bg-gradient-to-br from-pink-500/20 to-fuchsia-500/20 border-pink-500 animate-pulse cursor-pointer hover:scale-105" :
