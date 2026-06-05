@@ -41,10 +41,7 @@ export default function BrandKits() {
     try {
       const { data, error } = await supabase.functions.invoke("ai-text-generator", {
         body: {
-          system: "You are a senior brand designer. Produce concrete, usable brand deliverables. Use clear bullet lists and HEX codes where relevant.",
-          prompt: `Deliverable: ${title}. Brand: "${brandName}". Pitch: ${pitch}`,
-          credits: cost,
-          feature: `brand-kit-${title.toLowerCase().replace(/\s+/g, "-")}`,
+          prompt: `You are a senior brand designer. Produce concrete, usable brand deliverables. Use clear bullet lists and HEX codes where relevant.\n\nDeliverable: ${title}. Brand: "${brandName}". Pitch: ${pitch}`,
         },
       });
       if (error) throw error;

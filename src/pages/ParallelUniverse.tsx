@@ -39,10 +39,7 @@ export default function ParallelUniverse() {
     try {
       const { data, error } = await supabase.functions.invoke("ai-text-generator", {
         body: {
-          system: "You are a speculative-fiction narrator. Write a vivid, hopeful 'parallel universe' scenario in 5-8 sentences, second person.",
-          prompt: `Scenario: "${title}". User context: ${seed}`,
-          credits: cost,
-          feature: `parallel-${title.toLowerCase().replace(/\s+/g, "-")}`,
+          prompt: `You are a speculative-fiction narrator. Write a vivid, hopeful 'parallel universe' scenario in 5-8 sentences, second person.\n\nScenario: "${title}". User context: ${seed}`,
         },
       });
       if (error) throw error;
