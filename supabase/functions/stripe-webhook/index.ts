@@ -159,6 +159,22 @@ serve(async (req) => {
   }
   log("event received", { type: event.type, id: event.id });
 
+  // ── Idempotency guard: skip if event.id already processed ──
+  const { error: dedupErr } = await supabase
+    .from("stripe_webhook_events")
+    .insert({ event_id: event.id, event_type: event.type, status: "processing" });
+  if (dedupErr) {
+    // 23505 = unique_violation → duplicate event
+    if ((dedupErr as any).code === "23505") {
+      log("duplicate event, skipping", { id: event.id });
+      return new Response(JSON.stringify({ received: true, duplicate: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
+    }
+    log("dedup insert failed", { err: dedupErr.message });
+  }
+
   try {
     switch (event.type) {
       // ─── PAYMENT SUCCEEDED ───────────────────────────────────────────
