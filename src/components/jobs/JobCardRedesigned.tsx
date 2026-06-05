@@ -1,4 +1,4 @@
-import { Building2, MapPin, Globe, Clock, DollarSign, Flame, Sparkles, Users } from "lucide-react";
+import { Building2, MapPin, Globe, Clock, DollarSign, Flame, Sparkles, Users, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface JobListing {
