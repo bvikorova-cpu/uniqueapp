@@ -63,10 +63,10 @@ serve(async (req) => {
       const amt = Math.floor(Number((reward.reward_payload as any)?.amount ?? 0));
       if (amt > 0) {
         const { error: addErr } = await admin.rpc("add_ai_credits", {
-          _user_id: user.id,
-          _amount: amt,
-          _description: `season_pass:${season_id}:tier_${tier_level}`,
-          _ref: `season_pass_tier:${season_id}:${tier_level}`,
+          p_user_id: user.id,
+          p_amount: amt,
+          p_reason: `season_pass:${season_id}:tier_${tier_level}`,
+          p_source: `season_pass_tier:${season_id}:${tier_level}`,
         });
         if (addErr) {
           console.error("[mt-season-claim-tier] add_ai_credits failed", addErr);
