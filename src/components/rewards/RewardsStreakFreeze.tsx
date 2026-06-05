@@ -19,6 +19,7 @@ export default function RewardsStreakFreeze() {
   const [streak, setStreak] = useState(0);
   const [history, setHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [buyingKey, setBuyingKey] = useState<string | null>(null);
 
   const refresh = async () => {
     if (!user) { setLoading(false); return; }
