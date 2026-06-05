@@ -14,13 +14,18 @@ export default function WallVideos() {
   const { data: videoPosts = [], isLoading: loadingPosts, refetch: refetchPosts } = useQuery({
     queryKey: ["video-posts"],
     queryFn: async () => {
-      const { data: posts } = await supabase.from("posts").select(`*, media (*)`).order("created_at", { ascending: false });
+      // Server-side filter: only fetch posts that have a video media item, capped at 100.
+      const { data: posts } = await supabase
+        .from("posts")
+        .select(`*, media!inner (*)`)
+        .ilike("media.file_type", "video/%")
+        .order("created_at", { ascending: false })
+        .limit(100);
       if (!posts) return [];
-      const videoPostsData = posts.filter(post => post.media?.some((m: any) => m.file_type?.startsWith("video/")));
-      const userIds = Array.from(new Set(videoPostsData.map(p => p.user_id)));
+      const userIds = Array.from(new Set(posts.map((p: any) => p.user_id)));
       const { data: profiles } = await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", userIds);
       const profilesMap = new Map<string, any>((profiles || []).map((p: any) => [p.id, p]));
-      return videoPostsData.map(post => ({
+      return posts.map((post: any) => ({
         ...post,
         profiles: profilesMap.get(post.user_id) || { id: post.user_id, full_name: null, avatar_url: null }
       }));
