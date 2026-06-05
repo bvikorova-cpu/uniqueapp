@@ -217,6 +217,7 @@ const Jobs = () => {
       const to = from + PAGE_SIZE - 1;
       let query = (supabase.from as any)("job_listings_public")
         .select("*")
+        .order("is_featured", { ascending: false })
         .order("created_at", { ascending: false })
         .range(from, to);
       if (debouncedSearch) {
