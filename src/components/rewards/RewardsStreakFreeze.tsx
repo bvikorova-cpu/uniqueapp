@@ -44,32 +44,39 @@ export default function RewardsStreakFreeze() {
 
   const buy = async (pack: typeof PACKS[number], method: "xp" | "eur") => {
     if (!user) return;
-    if (method === "eur") {
-      try {
-        const { data, error } = await supabase.functions.invoke("create-rewards-checkout", {
-          body: { kind: "streak_freeze", qty: pack.qty },
-        });
-        if (error) throw error;
-        const url = (data as any)?.url;
-        if (!url) throw new Error("No checkout URL");
-        window.location.href = url;
-      } catch (e: any) {
-        toast.error(e?.message || "Checkout failed");
+    const key = `${pack.label}-${method}`;
+    if (buyingKey) return;
+    setBuyingKey(key);
+    try {
+      if (method === "eur") {
+        try {
+          const { data, error } = await supabase.functions.invoke("create-rewards-checkout", {
+            body: { kind: "streak_freeze", qty: pack.qty },
+          });
+          if (error) throw error;
+          const url = (data as any)?.url;
+          if (!url) throw new Error("No checkout URL");
+          window.location.href = url;
+        } catch (e: any) {
+          toast.error(e?.message || "Checkout failed");
+        }
+        return;
       }
-      return;
+      const { data, error } = await supabase.rpc("buy_streak_freeze_xp" as any, {
+        _qty: pack.qty,
+        _cost_xp: pack.xp,
+      });
+      if (error) return toast.error(error.message);
+      const res = data as any;
+      if (!res?.ok) {
+        const msg = res?.error === "insufficient_xp" ? "Not enough XP" : (res?.error ?? "Purchase failed");
+        return toast.error(msg);
+      }
+      toast.success(`+${pack.qty} Streak Freeze${pack.qty > 1 ? "s" : ""}! ❄️`);
+      await refresh();
+    } finally {
+      setBuyingKey(null);
     }
-    const { data, error } = await supabase.rpc("buy_streak_freeze_xp" as any, {
-      _qty: pack.qty,
-      _cost_xp: pack.xp,
-    });
-    if (error) return toast.error(error.message);
-    const res = data as any;
-    if (!res?.ok) {
-      const msg = res?.error === "insufficient_xp" ? "Not enough XP" : (res?.error ?? "Purchase failed");
-      return toast.error(msg);
-    }
-    toast.success(`+${pack.qty} Streak Freeze${pack.qty > 1 ? "s" : ""}! ❄️`);
-    refresh();
   };
 
   if (loading) return <p className="text-sm text-muted-foreground p-4">Loading...</p>;
