@@ -62389,6 +62389,15 @@ export type Database = {
           worked: number
         }[]
       }
+      create_guild: {
+        Args: {
+          _banner_color?: string
+          _description?: string
+          _emblem?: string
+          _name: string
+        }
+        Returns: Json
+      }
       create_iq_friend_challenge: {
         Args: { _mode: string }
         Returns: {
