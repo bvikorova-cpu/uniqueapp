@@ -62250,6 +62250,7 @@ export type Database = {
         Returns: Json
       }
       claim_daily_login_reward: { Args: never; Returns: Json }
+      claim_daily_quest_secure: { Args: { _quest_id: string }; Returns: Json }
       claim_daily_reward_atomic: { Args: never; Returns: Json }
       claim_founding_member: {
         Args: never
