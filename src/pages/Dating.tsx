@@ -20,6 +20,8 @@ import { AIIcebreaker } from "@/components/dating/AIIcebreaker";
 import { AICompatibility } from "@/components/dating/AICompatibility";
 import { AIDateIdeas } from "@/components/dating/AIDateIdeas";
 import { AIProfileOptimizer } from "@/components/dating/AIProfileOptimizer";
+import { FiltersDialog, type DatingFilters } from "@/components/dating/FiltersDialog";
+import { BlockReportMenu } from "@/components/dating/BlockReportMenu";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface DatingProfile {
@@ -98,6 +100,11 @@ const Dating = () => {
   const [cancelingSubscription, setCancelingSubscription] = useState(false);
   const [subscribing, setSubscribing] = useState(false);
   const [swipeDirection, setSwipeDirection] = useState<"left" | "right" | "up" | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState<DatingFilters | null>(null);
+  const [boostActive, setBoostActive] = useState<string | null>(null);
+  const [boosting, setBoosting] = useState(false);
+  const [blockedIds, setBlockedIds] = useState<string[]>([]);
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
   const [activeView, setActiveView] = useState<string>("hub");
   const chatEndRef = useRef<HTMLDivElement>(null);
@@ -135,11 +142,65 @@ const Dating = () => {
     if (data) {
       setIsSubscribed(true);
       await loadUserProfile(userId);
+      await loadFilters(userId);
+      await loadBlocked(userId);
+      await loadActiveBoost(userId);
       await loadProfiles();
       await loadMatches(userId);
       await loadGifts();
       await loadLikesYou(userId);
       await checkLastSwipe(userId);
+    }
+  };
+
+  const loadFilters = async (userId: string) => {
+    const { data } = await supabase.from("dating_filters").select("*").eq("user_id", userId).maybeSingle();
+    if (data) setFilters({
+      min_age: data.min_age, max_age: data.max_age,
+      max_distance_km: data.max_distance_km,
+      preferred_genders: data.preferred_genders,
+      verified_only: data.verified_only,
+    });
+  };
+
+  const loadBlocked = async (userId: string) => {
+    const [{ data: a }, { data: b }] = await Promise.all([
+      supabase.from("dating_blocks").select("blocked_id").eq("blocker_id", userId),
+      supabase.from("dating_blocks").select("blocker_id").eq("blocked_id", userId),
+    ]);
+    const ids = [...(a?.map(x => x.blocked_id) || []), ...(b?.map(x => x.blocker_id) || [])];
+    setBlockedIds(ids);
+  };
+
+  const loadActiveBoost = async (userId: string) => {
+    const { data } = await supabase.from("dating_boosts").select("expires_at")
+      .eq("user_id", userId).gt("expires_at", new Date().toISOString())
+      .order("expires_at", { ascending: false }).limit(1).maybeSingle();
+    setBoostActive(data?.expires_at || null);
+  };
+
+  const handleBoost = async () => {
+    if (boosting || boostActive || !user) return;
+    setBoosting(true);
+    try {
+      const { data: ok, error: deductErr } = await supabase.rpc("deduct_ai_credits", {
+        p_user_id: user.id, p_amount: 20, p_reason: "dating_boost_30min", p_source: "dating",
+      });
+      if (deductErr || ok === false) {
+        toast({ title: "Not enough credits", description: "Boost costs 20 credits.", variant: "destructive" });
+        return;
+      }
+      const expiresAt = new Date(Date.now() + 30 * 60_000).toISOString();
+      const { error: insErr } = await supabase.from("dating_boosts").insert({
+        user_id: user.id, expires_at: expiresAt, credits_spent: 20,
+      });
+      if (insErr) throw insErr;
+      setBoostActive(expiresAt);
+      toast({ title: "🔥 Boost active!", description: "You're a top profile for 30 minutes." });
+    } catch (e: any) {
+      toast({ title: "Boost failed", description: e?.message || "Try again", variant: "destructive" });
+    } finally {
+      setBoosting(false);
     }
   };
 
@@ -152,10 +213,31 @@ const Dating = () => {
   };
 
   const loadProfiles = async () => {
-    const { data: swipedProfiles } = await supabase.from("dating_swipes").select("swiped_id").eq("swiper_id", user?.id || "");
+    if (!user?.id) return;
+    const { data: swipedProfiles } = await supabase.from("dating_swipes").select("swiped_id").eq("swiper_id", user.id);
     const swipedIds = swipedProfiles?.map(s => s.swiped_id) || [];
-    const { data } = await supabase.from("dating_profiles").select("*").eq("is_active", true).neq("user_id", user?.id || "").not("user_id", "in", `(${swipedIds.join(",") || "NULL"})`).limit(20);
-    setProfiles(data || []);
+    const excludeIds = [...new Set([...swipedIds, ...blockedIds, user.id])];
+
+    let q = supabase.from("dating_profiles").select("*").eq("is_active", true);
+    if (excludeIds.length > 0) q = q.not("user_id", "in", `(${excludeIds.join(",")})`);
+    if (filters) {
+      q = q.gte("age", filters.min_age).lte("age", filters.max_age);
+      if (filters.preferred_genders.length > 0 && filters.preferred_genders.length < 3) {
+        q = q.in("gender", filters.preferred_genders);
+      }
+    }
+    const { data } = await q.limit(40);
+
+    // Rank: boosted users first
+    let ranked = data || [];
+    if (ranked.length > 0) {
+      const userIds = ranked.map(p => p.user_id);
+      const { data: boosts } = await supabase.from("dating_boosts").select("user_id")
+        .in("user_id", userIds).gt("expires_at", new Date().toISOString());
+      const boostedSet = new Set((boosts || []).map(b => b.user_id));
+      ranked = [...ranked.filter(p => boostedSet.has(p.user_id)), ...ranked.filter(p => !boostedSet.has(p.user_id))];
+    }
+    setProfiles(ranked.slice(0, 20));
   };
 
   const loadMatches = async (userId: string) => {
@@ -696,14 +778,22 @@ const Dating = () => {
                     )}
                     <div className="p-5">
                       <div className="flex gap-3 justify-center items-center">
-                        <button disabled={!canRewind} onClick={handleRewind} className="h-11 w-11 rounded-full border border-border flex items-center justify-center hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:border-amber-400 transition-all disabled:opacity-30"><RotateCcw className="h-5 w-5 text-amber-500" /></button>
+                        <button disabled={!canRewind} onClick={handleRewind} title="Rewind last swipe" className="h-11 w-11 rounded-full border border-border flex items-center justify-center hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:border-amber-400 transition-all disabled:opacity-30"><RotateCcw className="h-5 w-5 text-amber-500" /></button>
                         <button onClick={() => handleSwipe("dislike")} className="h-14 w-14 rounded-full border-2 border-red-200 dark:border-red-800 flex items-center justify-center hover:bg-red-50 dark:hover:bg-red-950/20 hover:border-red-400 hover:scale-110 transition-all shadow-sm"><X className="h-7 w-7 text-red-500" /></button>
-                        <button onClick={() => handleSwipe("like", true)} disabled={superLikesRemaining === 0} className="h-11 w-11 rounded-full border border-border flex items-center justify-center hover:bg-blue-50 dark:hover:bg-blue-950/20 hover:border-blue-400 transition-all disabled:opacity-30"><Star className="h-5 w-5 text-blue-500" /></button>
+                        <button onClick={() => handleSwipe("like", true)} disabled={superLikesRemaining === 0} title="Super Like" className="h-11 w-11 rounded-full border border-border flex items-center justify-center hover:bg-blue-50 dark:hover:bg-blue-950/20 hover:border-blue-400 transition-all disabled:opacity-30"><Star className="h-5 w-5 text-blue-500" /></button>
                         <button onClick={() => handleSwipe("like")} className="h-14 w-14 rounded-full border-2 border-emerald-200 dark:border-emerald-800 flex items-center justify-center hover:bg-emerald-50 dark:hover:bg-emerald-950/20 hover:border-emerald-400 hover:scale-110 transition-all shadow-sm"><Heart className="h-7 w-7 text-emerald-500" /></button>
-                        <button onClick={viewLikesYou} className="h-11 w-11 rounded-full border border-border flex items-center justify-center hover:bg-purple-50 dark:hover:bg-purple-950/20 hover:border-purple-400 transition-all relative">
+                        <button onClick={handleBoost} disabled={boosting || !!boostActive} title={boostActive ? "Boost active" : "Boost profile (20 credits)"} className={`h-11 w-11 rounded-full border flex items-center justify-center transition-all disabled:opacity-50 ${boostActive ? "bg-gradient-to-br from-orange-500 to-pink-500 border-transparent text-white" : "border-border hover:bg-orange-50 dark:hover:bg-orange-950/20 hover:border-orange-400"}`}>
+                          <Flame className={`h-5 w-5 ${boostActive ? "text-white" : "text-orange-500"}`} />
+                        </button>
+                        <button onClick={viewLikesYou} title="Likes you" className="h-11 w-11 rounded-full border border-border flex items-center justify-center hover:bg-purple-50 dark:hover:bg-purple-950/20 hover:border-purple-400 transition-all relative">
                           <Eye className="h-5 w-5 text-purple-500" />
                           {likesYouCount > 0 && <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center">{likesYouCount}</span>}
                         </button>
+                      </div>
+                      <div className="flex justify-center mt-3">
+                        <Button variant="ghost" size="sm" onClick={() => setShowFilters(true)} className="text-xs gap-1.5 text-muted-foreground hover:text-foreground">
+                          <Settings className="h-3.5 w-3.5" />Filters
+                        </Button>
                       </div>
                     </div>
                   </Card>
@@ -735,6 +825,16 @@ const Dating = () => {
                     <p className="text-xs text-emerald-500 flex items-center gap-1"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />Online</p>
                   </div>
                   <Button variant="ghost" size="icon" onClick={() => setShowGiftDialog(true)} className="h-9 w-9 text-primary"><Gift className="h-5 w-5" /></Button>
+                  {selectedMatch.profile?.user_id && (
+                    <BlockReportMenu
+                      targetUserId={selectedMatch.profile.user_id}
+                      targetName={selectedMatch.profile.display_name}
+                      onBlocked={async () => {
+                        setSelectedMatch(null);
+                        if (user) { await loadBlocked(user.id); await loadMatches(user.id); await loadProfiles(); }
+                      }}
+                    />
+                  )}
                 </div>
                 <ScrollArea className="h-[450px]">
                   <div className="p-4 space-y-3">
@@ -916,6 +1016,14 @@ const Dating = () => {
           {isVideoUrl(lightboxImage) ? <video src={lightboxImage} className="max-w-full max-h-full" controls autoPlay /> : <img src={lightboxImage} alt="Full size" className="max-w-full max-h-full object-contain" />}
           <button className="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/10 backdrop-blur-sm text-white flex items-center justify-center hover:bg-white/20 transition-colors" onClick={() => setLightboxImage(null)}><X className="h-5 w-5" /></button>
         </div>
+      )}
+      {user && (
+        <FiltersDialog
+          open={showFilters}
+          onOpenChange={setShowFilters}
+          userId={user.id}
+          onSaved={async (f) => { setFilters(f); await loadProfiles(); }}
+        />
       )}
     </div>
     </>

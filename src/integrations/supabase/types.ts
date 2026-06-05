@@ -17762,6 +17762,90 @@ export type Database = {
         }
         Relationships: []
       }
+      dating_blocks: {
+        Row: {
+          blocked_id: string
+          blocker_id: string
+          created_at: string
+          id: string
+          reason: string | null
+        }
+        Insert: {
+          blocked_id: string
+          blocker_id: string
+          created_at?: string
+          id?: string
+          reason?: string | null
+        }
+        Update: {
+          blocked_id?: string
+          blocker_id?: string
+          created_at?: string
+          id?: string
+          reason?: string | null
+        }
+        Relationships: []
+      }
+      dating_boosts: {
+        Row: {
+          created_at: string
+          credits_spent: number
+          expires_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_spent?: number
+          expires_at: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_spent?: number
+          expires_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      dating_filters: {
+        Row: {
+          created_at: string
+          max_age: number
+          max_distance_km: number
+          min_age: number
+          preferred_genders: string[]
+          required_interests: string[]
+          updated_at: string
+          user_id: string
+          verified_only: boolean
+        }
+        Insert: {
+          created_at?: string
+          max_age?: number
+          max_distance_km?: number
+          min_age?: number
+          preferred_genders?: string[]
+          required_interests?: string[]
+          updated_at?: string
+          user_id: string
+          verified_only?: boolean
+        }
+        Update: {
+          created_at?: string
+          max_age?: number
+          max_distance_km?: number
+          min_age?: number
+          preferred_genders?: string[]
+          required_interests?: string[]
+          updated_at?: string
+          user_id?: string
+          verified_only?: boolean
+        }
+        Relationships: []
+      }
       dating_gifts: {
         Row: {
           created_at: string
@@ -17941,6 +18025,42 @@ export type Database = {
           profile_photo_url?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      dating_reports: {
+        Row: {
+          created_at: string
+          details: string | null
+          id: string
+          reason: string
+          reported_id: string
+          reporter_id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason: string
+          reported_id: string
+          reporter_id: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason?: string
+          reported_id?: string
+          reporter_id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
         }
         Relationships: []
       }
