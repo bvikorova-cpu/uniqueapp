@@ -43,15 +43,21 @@ export default function RewardsQuestPath() {
 
   const claim = async (nodeIndex: number) => {
     if (!user || !path) return;
-    const { data, error } = await supabase.rpc("claim_quest_node" as any, {
-      _path_id: path.id,
-      _node_index: nodeIndex,
-    });
-    if (error) return toast.error(error.message);
-    const res = data as any;
-    if (!res?.ok) return toast.error(res?.error || "Failed to claim");
-    toast.success(res.xp_awarded > 0 ? `+${res.xp_awarded} XP claimed!` : "Node claimed!");
-    load();
+    if (claimingIdx !== null) return;
+    setClaimingIdx(nodeIndex);
+    try {
+      const { data, error } = await supabase.rpc("claim_quest_node" as any, {
+        _path_id: path.id,
+        _node_index: nodeIndex,
+      });
+      if (error) return toast.error(error.message);
+      const res = data as any;
+      if (!res?.ok) return toast.error(res?.error || "Failed to claim");
+      toast.success(res.xp_awarded > 0 ? `+${res.xp_awarded} XP claimed!` : "Node claimed!");
+      await load();
+    } finally {
+      setClaimingIdx(null);
+    }
   };
 
   const completed = (progress?.completed_nodes || []) as number[];
