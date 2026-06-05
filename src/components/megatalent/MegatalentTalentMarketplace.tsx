@@ -116,9 +116,9 @@ const MegatalentTalentMarketplace = ({ category }: { category?: string }) => {
     }
     if (buying === l.id) return;
     setBuying(l.id);
-    // Single server call: validates listing, creates order (service_role), opens Stripe Checkout.
-    const { data: co, error: coErr } = await supabase.functions.invoke("mt-marketplace-order", {
-      body: { listing_id: l.id },
+    // Server creates the order (service_role) and opens Stripe Checkout in one call.
+    const { data: co, error: coErr } = await supabase.functions.invoke("mt-checkout", {
+      body: { kind: "marketplace", listing_id: l.id },
     });
     setBuying(null);
     if (coErr || !(co as any)?.url) {
