@@ -12,103 +12,34 @@ serve(async (req) => {
   }
 
   try {
-    // Autentifikuj usera pomocou spoločného helpera
-    const { supabase: supabaseClient, user } = await authenticateUser(req);
+    const { supabase: supabaseClient } = await authenticateUser(req);
 
-    // Check if already claimed today
-    const today = new Date().toISOString().split('T')[0];
-    const { data: existingClaim } = await (supabaseClient
-      .from("daily_rewards") as any)
-      .select("*")
-      .eq("user_id", user.id)
-      .gte("claimed_at", `${today}T00:00:00`)
-      .maybeSingle();
+    // Atomic single-call claim — handles streak, double-claim guard and
+    // user_points update inside one transaction. Eliminates the previous
+    // TOCTOU race that allowed double-XP under concurrent requests.
+    const { data, error } = await (supabaseClient as any).rpc("claim_daily_reward_atomic");
+    if (error) throw error;
 
-    if (existingClaim) {
+    const payload = data as { ok: boolean; error?: string; pointsEarned?: number; streak?: number };
+
+    if (!payload?.ok) {
+      const code = payload?.error ?? "unknown";
+      const status = code === "already_claimed" ? 400 : code === "unauthenticated" ? 401 : 400;
+      const msg = code === "already_claimed" ? "Already claimed today" : code;
       return new Response(
-        JSON.stringify({ error: "Already claimed today" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        JSON.stringify({ error: msg, code }),
+        { status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // Get last claim to calculate streak
-    const { data: lastClaim } = await (supabaseClient
-      .from("daily_rewards") as any)
-      .select("*")
-      .eq("user_id", user.id)
-      .order("claimed_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
-
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = yesterday.toISOString().split('T')[0];
-    
-    let newStreak = 1;
-    if (lastClaim) {
-      const lastClaimDate = new Date((lastClaim as any).claimed_at).toISOString().split('T')[0];
-      if (lastClaimDate === yesterdayStr) {
-        newStreak = ((lastClaim as any).day_streak || 0) + 1;
-      }
-    }
-
-    const pointsEarned = 10;
-
-    // Insert daily reward claim
-    const { error: claimError } = await (supabaseClient
-      .from("daily_rewards") as any)
-      .insert({
-        user_id: user.id,
-        day_streak: newStreak,
-        points_earned: pointsEarned
-      });
-
-    if (claimError) throw claimError;
-
-    // Update user points
-    const { data: userPoints } = await (supabaseClient
-      .from("user_points") as any)
-      .select("*")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    if (userPoints) {
-      const newTotal = ((userPoints as any).total_points || 0) + pointsEarned;
-      const newCurrentLevel = ((userPoints as any).current_level_points || 0) + pointsEarned;
-      
-      const { error: updateError } = await (supabaseClient
-        .from("user_points") as any)
-        .update({
-          total_points: newTotal,
-          current_level_points: newCurrentLevel,
-          updated_at: new Date().toISOString()
-        })
-        .eq("user_id", user.id);
-
-      if (updateError) throw updateError;
-    } else {
-      // Create new user_points record
-      const { error: insertError } = await (supabaseClient
-        .from("user_points") as any)
-        .insert({
-          user_id: user.id,
-          total_points: pointsEarned,
-          current_level_points: pointsEarned,
-          level: 1
-        });
-
-      if (insertError) throw insertError;
-    }
-
     return new Response(
-      JSON.stringify({ 
-        success: true, 
-        pointsEarned,
-        streak: newStreak
+      JSON.stringify({
+        success: true,
+        pointsEarned: payload.pointsEarned,
+        streak: payload.streak,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
-
   } catch (error) {
     console.error("Error claiming daily reward:", error);
     return new Response(
