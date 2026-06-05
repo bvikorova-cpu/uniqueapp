@@ -14,6 +14,7 @@ export default function RewardsQuestPath() {
   const [path, setPath] = useState<any>(null);
   const [nodes, setNodes] = useState<any[]>([]);
   const [progress, setProgress] = useState<any>(null);
+  const [claimingIdx, setClaimingIdx] = useState<number | null>(null);
 
   const load = async () => {
     const { data: p } = await supabase
