@@ -77,6 +77,9 @@ export default function RewardsBattlePass() {
 
   const claimReward = async (tier: number, track: "free" | "premium") => {
     if (!user || !season) return;
+    const key = `${tier}-${track}`;
+    if (claimingKey) return;
+    if (claims.has(key)) return;
     if (track === "premium" && !progress?.has_premium) {
       toast.error("Premium track required");
       return;
@@ -85,18 +88,24 @@ export default function RewardsBattlePass() {
       toast.error("Reach this tier first");
       return;
     }
-    const { data, error } = await supabase.rpc("claim_battle_pass_reward", {
-      _season_id: season.id, _tier: tier, _track: track,
-    });
-    if (error) { toast.error(error.message); return; }
-    const res = data as any;
-    if (!res?.ok) { toast.error(res?.error ?? "Claim failed"); return; }
-    toast.success("Reward claimed! 🎉");
-    refresh();
+    setClaimingKey(key);
+    try {
+      const { data, error } = await supabase.rpc("claim_battle_pass_reward", {
+        _season_id: season.id, _tier: tier, _track: track,
+      });
+      if (error) { toast.error(error.message); return; }
+      const res = data as any;
+      if (!res?.ok) { toast.error(res?.error ?? "Claim failed"); return; }
+      toast.success("Reward claimed! 🎉");
+      await refresh();
+    } finally {
+      setClaimingKey(null);
+    }
   };
 
   const purchasePremium = async () => {
-    if (!user || !season) return;
+    if (!user || !season || purchasingPremium) return;
+    setPurchasingPremium(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-rewards-checkout", {
         body: { kind: "battle_pass_premium" },
@@ -107,6 +116,7 @@ export default function RewardsBattlePass() {
       window.location.href = url;
     } catch (e: any) {
       toast.error(e?.message || "Checkout failed");
+      setPurchasingPremium(false);
     }
   };
 
