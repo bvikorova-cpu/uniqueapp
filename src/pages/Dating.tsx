@@ -774,14 +774,22 @@ const Dating = () => {
                     )}
                     <div className="p-5">
                       <div className="flex gap-3 justify-center items-center">
-                        <button disabled={!canRewind} onClick={handleRewind} className="h-11 w-11 rounded-full border border-border flex items-center justify-center hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:border-amber-400 transition-all disabled:opacity-30"><RotateCcw className="h-5 w-5 text-amber-500" /></button>
+                        <button disabled={!canRewind} onClick={handleRewind} title="Rewind last swipe" className="h-11 w-11 rounded-full border border-border flex items-center justify-center hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:border-amber-400 transition-all disabled:opacity-30"><RotateCcw className="h-5 w-5 text-amber-500" /></button>
                         <button onClick={() => handleSwipe("dislike")} className="h-14 w-14 rounded-full border-2 border-red-200 dark:border-red-800 flex items-center justify-center hover:bg-red-50 dark:hover:bg-red-950/20 hover:border-red-400 hover:scale-110 transition-all shadow-sm"><X className="h-7 w-7 text-red-500" /></button>
-                        <button onClick={() => handleSwipe("like", true)} disabled={superLikesRemaining === 0} className="h-11 w-11 rounded-full border border-border flex items-center justify-center hover:bg-blue-50 dark:hover:bg-blue-950/20 hover:border-blue-400 transition-all disabled:opacity-30"><Star className="h-5 w-5 text-blue-500" /></button>
+                        <button onClick={() => handleSwipe("like", true)} disabled={superLikesRemaining === 0} title="Super Like" className="h-11 w-11 rounded-full border border-border flex items-center justify-center hover:bg-blue-50 dark:hover:bg-blue-950/20 hover:border-blue-400 transition-all disabled:opacity-30"><Star className="h-5 w-5 text-blue-500" /></button>
                         <button onClick={() => handleSwipe("like")} className="h-14 w-14 rounded-full border-2 border-emerald-200 dark:border-emerald-800 flex items-center justify-center hover:bg-emerald-50 dark:hover:bg-emerald-950/20 hover:border-emerald-400 hover:scale-110 transition-all shadow-sm"><Heart className="h-7 w-7 text-emerald-500" /></button>
-                        <button onClick={viewLikesYou} className="h-11 w-11 rounded-full border border-border flex items-center justify-center hover:bg-purple-50 dark:hover:bg-purple-950/20 hover:border-purple-400 transition-all relative">
+                        <button onClick={handleBoost} disabled={boosting || !!boostActive} title={boostActive ? "Boost active" : "Boost profile (20 credits)"} className={`h-11 w-11 rounded-full border flex items-center justify-center transition-all disabled:opacity-50 ${boostActive ? "bg-gradient-to-br from-orange-500 to-pink-500 border-transparent text-white" : "border-border hover:bg-orange-50 dark:hover:bg-orange-950/20 hover:border-orange-400"}`}>
+                          <Flame className={`h-5 w-5 ${boostActive ? "text-white" : "text-orange-500"}`} />
+                        </button>
+                        <button onClick={viewLikesYou} title="Likes you" className="h-11 w-11 rounded-full border border-border flex items-center justify-center hover:bg-purple-50 dark:hover:bg-purple-950/20 hover:border-purple-400 transition-all relative">
                           <Eye className="h-5 w-5 text-purple-500" />
                           {likesYouCount > 0 && <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center">{likesYouCount}</span>}
                         </button>
+                      </div>
+                      <div className="flex justify-center mt-3">
+                        <Button variant="ghost" size="sm" onClick={() => setShowFilters(true)} className="text-xs gap-1.5 text-muted-foreground hover:text-foreground">
+                          <Settings className="h-3.5 w-3.5" />Filters
+                        </Button>
                       </div>
                     </div>
                   </Card>
