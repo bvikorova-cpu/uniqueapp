@@ -63577,6 +63577,13 @@ export type Database = {
         Returns: undefined
       }
       revoke_founder_role: { Args: { _user_id: string }; Returns: undefined }
+      rewards_xp_leaderboard: {
+        Args: { _limit?: number; _period: string }
+        Returns: {
+          total: number
+          user_id: string
+        }[]
+      }
       rotate_mystery_events: { Args: never; Returns: undefined }
       rotate_seasonal_missions: { Args: never; Returns: Json }
       search_users: {
