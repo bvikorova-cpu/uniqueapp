@@ -95,11 +95,7 @@ const Megatalent = () => {
     fetchSubmissions();
   }, [selectedCategory]);
 
-  // safety fallback: ak fetch zlyhá tak loading skončí po 8s
-  useEffect(() => {
-    const t = setTimeout(() => setLoading((cur) => cur ? false : cur), 8000);
-    return () => clearTimeout(t);
-  }, []);
+  // loading clears in checkSubscription's finally block
 
   useEffect(() => {
     if (isSubscribed) { fetchTotalVotes(); }
