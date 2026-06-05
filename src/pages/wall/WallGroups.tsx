@@ -25,11 +25,10 @@ export default function WallGroups() {
   const [pendingGroupId, setPendingGroupId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"my" | "discover">("my");
 
-  // Debounce search so we don't hit Supabase on every keystroke.
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  if (typeof window !== "undefined") {
-    // useEffect import is added implicitly via useState already? No — add separately below.
-  }
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(searchQuery), 300);
+    return () => clearTimeout(t);
+  }, [searchQuery]);
 
   const { data: user } = useQuery({
     queryKey: ["current-user"],
