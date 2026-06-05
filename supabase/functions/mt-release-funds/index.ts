@@ -77,13 +77,16 @@ serve(async (req) => {
     const sellerCents = Math.floor((grossCents * SELLER_PCT) / 100);
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
-    const transfer = await stripe.transfers.create({
-      amount: sellerCents,
-      currency: "eur",
-      destination: profile.stripe_connect_account_id,
-      description: `MT ${kind} ${id} (80%)`,
-      metadata: { mt_kind: kind, mt_row_id: id, seller_user_id: sellerUserId },
-    });
+    const transfer = await stripe.transfers.create(
+      {
+        amount: sellerCents,
+        currency: "eur",
+        destination: profile.stripe_connect_account_id,
+        description: `MT ${kind} ${id} (80%)`,
+        metadata: { mt_kind: kind, mt_row_id: id, seller_user_id: sellerUserId },
+      },
+      { idempotencyKey: `mt-release-${kind}-${id}` },
+    );
 
     const now = new Date().toISOString();
     const update: Record<string, unknown> = {

@@ -46,10 +46,16 @@ serve(async (req) => {
     if (!ua || !ua.unlocked_at) throw new Error("Achievement not unlocked");
     if (ua.claimed_at) throw new Error("Already claimed");
 
-    await admin
+    // Atomic claim: only update if still unclaimed. Prevents TOCTOU double-credit.
+    const { data: claimed, error: claimErr } = await admin
       .from("mt_user_achievements")
       .update({ claimed_at: new Date().toISOString() })
-      .eq("id", ua.id);
+      .eq("id", ua.id)
+      .is("claimed_at", null)
+      .select("id")
+      .maybeSingle();
+    if (claimErr) throw claimErr;
+    if (!claimed) throw new Error("Already claimed");
 
     // Credit reward via profiles.credits
     if (ach.reward_credits > 0) {
