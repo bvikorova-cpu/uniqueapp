@@ -66,18 +66,23 @@ export default function RewardsLoginCalendar() {
   useEffect(() => { refresh(); }, [user?.id, mKey]);
 
   const claim = async (day: number, tpl: Tpl) => {
-    if (!user) return;
+    if (!user || claiming) return;
     if (day !== todayDay) { toast.error("Only today's reward can be claimed"); return; }
     if (claims.has(day)) { toast.info("Already claimed"); return; }
 
-    const { data, error } = await supabase.rpc("claim_calendar_day", {
-      _month_key: mKey, _day_number: day,
-    });
-    if (error) { toast.error(error.message); return; }
-    const res = data as any;
-    if (!res?.ok) { toast.error(res?.error ?? "Claim failed"); return; }
-    toast.success(`Claimed ${tpl.reward_label}! 🎁`);
-    refresh();
+    setClaiming(true);
+    try {
+      const { data, error } = await supabase.rpc("claim_calendar_day", {
+        _month_key: mKey, _day_number: day,
+      });
+      if (error) { toast.error(error.message); return; }
+      const res = data as any;
+      if (!res?.ok) { toast.error(res?.error ?? "Claim failed"); return; }
+      toast.success(`Claimed ${tpl.reward_label}! 🎁`);
+      await refresh();
+    } finally {
+      setClaiming(false);
+    }
   };
 
   if (loading) return <p className="text-sm text-muted-foreground p-4">{"Loading calendar..."}</p>;
