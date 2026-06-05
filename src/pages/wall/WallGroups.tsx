@@ -58,14 +58,14 @@ export default function WallGroups() {
   });
 
   const { data: allGroups = [], refetch: refetchAllGroups } = useQuery({
-    queryKey: ["all-groups", searchQuery],
+    queryKey: ["all-groups", debouncedSearch],
     queryFn: async () => {
       let query = supabase
         .from("groups")
         .select("*")
         .order("members_count", { ascending: false });
-      if (searchQuery.trim()) {
-        query = query.ilike("name", `%${searchQuery}%`);
+      if (debouncedSearch.trim()) {
+        query = query.ilike("name", `%${debouncedSearch}%`);
       }
       const { data } = await query.limit(20);
       return data || [];
@@ -73,7 +73,8 @@ export default function WallGroups() {
   });
 
   const createGroup = async () => {
-    if (!user || !newGroupName.trim()) return;
+    if (!user || !newGroupName.trim() || isSubmitting) return;
+    setIsSubmitting(true);
     try {
       const { data: group, error: groupError } = await supabase
         .from("groups")
