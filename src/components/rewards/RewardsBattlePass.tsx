@@ -27,6 +27,8 @@ export default function RewardsBattlePass() {
   const [progress, setProgress] = useState<any>(null);
   const [claims, setClaims] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [claimingKey, setClaimingKey] = useState<string | null>(null);
+  const [purchasingPremium, setPurchasingPremium] = useState(false);
 
   const refresh = async () => {
     const { data: s } = await supabase
