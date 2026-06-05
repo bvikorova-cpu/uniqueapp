@@ -439,6 +439,7 @@ import {
   CampaignApprovals,
   WithdrawalRequests,
   CampaignSuccess,
+  AdminPwaStats,
   QuizCreator,
   QuizTaker,
 } from "@/routes/lazyPages";
