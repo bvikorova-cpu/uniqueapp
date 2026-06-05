@@ -442,6 +442,10 @@ import {
   AdminPwaStats,
   QuizCreator,
   QuizTaker,
+  Numerology,
+  ParallelUniverse,
+  MemoryAuctions,
+  BrandKits,
 } from "@/routes/lazyPages";
 
 const AdminRefunds = lazy(() => import("@/pages/admin/AdminRefunds"));
@@ -981,6 +985,10 @@ const App = () => {
                         <Route path="/kids-channel/disney-admin" element={<Navigate to="/kids-channel/fairy-admin" replace />} />
                         <Route path="/kids-channel/certificate-gallery" element={<CertificateGallery />} />
                         <Route path="/f1-racing" element={<F1RacingArena />} />
+                        <Route path="/numerology" element={<Numerology />} />
+                        <Route path="/parallel-universe" element={<ParallelUniverse />} />
+                        <Route path="/memory-auctions" element={<MemoryAuctions />} />
+                        <Route path="/brand-kits" element={<BrandKits />} />
                         <Route path="/f1-racing-old" element={
                           <SubscriptionGuard 
                             checkFunction="check-f1-subscription" 
