@@ -156,9 +156,9 @@ export default function RewardsBattlePass() {
               <p className="text-sm opacity-90">{`${daysLeft} days left · Tier ${currentTier} / ${season.total_tiers}`}</p>
             </div>
             {!progress?.has_premium && (
-              <Button onClick={purchasePremium} className="bg-white text-purple-700 hover:bg-white/90 font-bold">
+              <Button onClick={purchasePremium} disabled={purchasingPremium} className="bg-white text-purple-700 hover:bg-white/90 font-bold">
                 <Crown className="h-4 w-4 mr-1" />
-                {`Unlock Premium · €${season.premium_price_eur}`}
+                {purchasingPremium ? "Loading…" : `Unlock Premium · €${season.premium_price_eur}`}
               </Button>
             )}
             {progress?.has_premium && (
