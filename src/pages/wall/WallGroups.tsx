@@ -17,10 +17,19 @@ export default function WallGroups() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [newGroupName, setNewGroupName] = useState("");
   const [newGroupDescription, setNewGroupDescription] = useState("");
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [pendingGroupId, setPendingGroupId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"my" | "discover">("my");
+
+  // Debounce search so we don't hit Supabase on every keystroke.
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  if (typeof window !== "undefined") {
+    // useEffect import is added implicitly via useState already? No — add separately below.
+  }
 
   const { data: user } = useQuery({
     queryKey: ["current-user"],
