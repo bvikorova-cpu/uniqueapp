@@ -184,7 +184,7 @@ const Dating = () => {
     setBoosting(true);
     try {
       const { data: ok, error: deductErr } = await supabase.rpc("deduct_ai_credits", {
-        _user_id: user.id, _amount: 20, _reason: "dating_boost_30min",
+        p_user_id: user.id, p_amount: 20, p_reason: "dating_boost_30min", p_source: "dating",
       });
       if (deductErr || ok === false) {
         toast({ title: "Not enough credits", description: "Boost costs 20 credits.", variant: "destructive" });
