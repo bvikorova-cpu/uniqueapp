@@ -38779,6 +38779,27 @@ export type Database = {
         }
         Relationships: []
       }
+      mt_rate_limits: {
+        Row: {
+          action: string
+          count: number
+          user_id: string
+          window_start: string
+        }
+        Insert: {
+          action: string
+          count?: number
+          user_id: string
+          window_start: string
+        }
+        Update: {
+          action?: string
+          count?: number
+          user_id?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       mt_season_pass_claims: {
         Row: {
           claimed_at: string
@@ -63336,6 +63357,15 @@ export type Database = {
           user_id: string
           votes_count: number
         }[]
+      }
+      mt_rate_limit_check: {
+        Args: {
+          _action: string
+          _max_count: number
+          _user_id: string
+          _window_seconds: number
+        }
+        Returns: boolean
       }
       mt_unlock_user_achievements: { Args: never; Returns: Json }
       open_mystery_box: { Args: { p_user_box_id: string }; Returns: Json }
