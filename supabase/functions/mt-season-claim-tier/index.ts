@@ -21,8 +21,10 @@ serve(async (req) => {
     if (uerr || !udata.user) throw new Error("Not authenticated");
     const user = udata.user;
 
-    const { season_id, tier_level } = await req.json();
-    if (!season_id || typeof tier_level !== "number") throw new Error("season_id + tier_level required");
+    const body = await req.json();
+    const season_id = String(body?.season_id ?? "").slice(0, 64);
+    const tier_level = Number(body?.tier_level);
+    if (!season_id || !Number.isFinite(tier_level)) throw new Error("season_id + tier_level required");
 
     const admin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -38,31 +40,42 @@ serve(async (req) => {
       .maybeSingle();
     if (rerr || !reward) throw new Error("Tier not found");
 
-    // Check user xp from profiles (or fallback 0)
-    const { data: prof } = await admin.from("profiles").select("credits, xp").eq("user_id", user.id).maybeSingle();
-    const userXp = (prof as any)?.xp ?? 0;
+    // XP comes from user_xp.total_xp, not profiles
+    const { data: xpRow } = await admin
+      .from("user_xp")
+      .select("total_xp")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    const userXp = (xpRow as any)?.total_xp ?? 0;
     if (userXp < reward.xp_required) throw new Error("Not enough XP");
 
-    // Idempotency: ensure not already claimed
-    const { data: existing } = await admin
-      .from("mt_season_pass_claims")
-      .select("id")
-      .eq("user_id", user.id)
-      .eq("season_id", season_id)
-      .eq("tier_level", tier_level)
-      .maybeSingle();
-    if (existing) throw new Error("Already claimed");
-
-    await admin.from("mt_season_pass_claims").insert({
+    // Atomic claim: UNIQUE (user_id, season_id, tier_level) blocks double-claim.
+    const { error: insErr } = await admin.from("mt_season_pass_claims").insert({
       user_id: user.id, season_id, tier_level, reward_label: reward.reward_label,
     });
+    if (insErr) {
+      if ((insErr as any).code === "23505") throw new Error("Already claimed");
+      throw insErr;
+    }
 
-    // Apply credit reward if type=credits
+    // Apply credit reward atomically via SECURITY DEFINER add_ai_credits()
     if (reward.reward_type === "credits") {
-      const amt = Number((reward.reward_payload as any)?.amount ?? 0);
+      const amt = Math.floor(Number((reward.reward_payload as any)?.amount ?? 0));
       if (amt > 0) {
-        const cur = (prof as any)?.credits ?? 0;
-        await admin.from("profiles").update({ credits: cur + amt }).eq("user_id", user.id);
+        const { error: addErr } = await admin.rpc("add_ai_credits", {
+          p_user_id: user.id,
+          p_amount: amt,
+          p_reason: `season_pass:${season_id}:tier_${tier_level}`,
+          p_source: `season_pass_tier:${season_id}:${tier_level}`,
+        });
+        if (addErr) {
+          console.error("[mt-season-claim-tier] add_ai_credits failed", addErr);
+          // Roll back the claim so user can retry
+          await admin.from("mt_season_pass_claims")
+            .delete()
+            .eq("user_id", user.id).eq("season_id", season_id).eq("tier_level", tier_level);
+          throw new Error("Credit award failed");
+        }
       }
     }
 
