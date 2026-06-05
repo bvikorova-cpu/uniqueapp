@@ -22,6 +22,7 @@ export default function RewardsCosmetics() {
   const [items, setItems] = useState<any[]>([]);
   const [owned, setOwned] = useState<Record<string, any>>({});
   const [tab, setTab] = useState("avatar_frame");
+  const [busyId, setBusyId] = useState<string | null>(null);
 
   const CATS = useMemo(() => [
     { id: "avatar_frame", label: "Frames" },
