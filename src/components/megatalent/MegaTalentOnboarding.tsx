@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { Trophy, Upload, Heart, Award, ChevronRight, ChevronLeft, Check } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 const STORAGE_KEY_PREFIX = "megatalent_onboarding_done_";
 
