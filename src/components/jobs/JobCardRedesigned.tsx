@@ -18,6 +18,7 @@ interface JobListing {
   contact_email: string;
   applications_count: number;
   created_at: string;
+  is_featured?: boolean | null;
 }
 
 const CATEGORIES: Record<string, string> = {
