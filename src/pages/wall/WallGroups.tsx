@@ -296,8 +296,8 @@ export default function WallGroups() {
                   <label className="text-sm font-bold">Description</label>
                   <Textarea value={newGroupDescription} onChange={(e) => setNewGroupDescription(e.target.value)} placeholder="What's your group about?" rows={3} className="mt-1.5" />
                 </div>
-                <Button onClick={createGroup} className="w-full bg-gradient-to-r from-primary to-accent text-white shadow-lg">
-                  Create Group
+                <Button onClick={createGroup} disabled={isSubmitting || !newGroupName.trim()} className="w-full bg-gradient-to-r from-primary to-accent text-white shadow-lg">
+                  {isSubmitting ? "Creating…" : "Create Group"}
                 </Button>
               </div>
             </DialogContent>
