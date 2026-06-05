@@ -30,6 +30,23 @@ serve(async (req) => {
       { auth: { persistSession: false } },
     );
 
+    // VIP subscription guard — Megatalent rewards are paid-tier only.
+    const { data: sub } = await admin
+      .from("megatalent_subscriptions")
+      .select("status, current_period_end")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    const vipActive =
+      sub &&
+      (sub.status === "active" || sub.status === "trialing") &&
+      (!sub.current_period_end || new Date(sub.current_period_end) > new Date());
+    if (!vipActive) {
+      return new Response(JSON.stringify({ error: "vip_required" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 402,
+      });
+    }
+
     const { data: ach, error: aerr } = await admin
       .from("mt_achievements")
       .select("id, reward_xp, reward_credits, active")

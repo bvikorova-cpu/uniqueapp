@@ -12,8 +12,8 @@ prosím o preklikanie Rewards sekcie podľa nižšie uvedených údajov. **Deadl
 |---|---|
 | **URL (preview)** | https://id-preview--3ea492b4-277a-4b1d-a6dd-ca2a3efd9225.lovable.app |
 | **URL (prod)** | https://uniqueapp.fun |
-| **Email** | `beata.vikorova@yandex.com` |
-| **Heslo** | `BiankaDominik25` |
+| **Email** | _1Password vault: `Rewards QA` (ping #rewards-qa)_ |
+| **Heslo** | _1Password — nikdy v repozitári_ |
 | **Admin panel** | `/admin/rewards-audit` |
 
 ## ✅ Checklist (25+ krokov)
@@ -56,8 +56,7 @@ Vyplnený checklist pošli späť ako `REWARDS_QA_CHECKLIST_Nathalie_SIGNED.md`.
 Preview: https://id-preview--3ea492b4-277a-4b1d-a6dd-ca2a3efd9225.lovable.app
 Prod: https://uniqueapp.fun
 
-Email: beata.vikorova@yandex.com
-Heslo: BiankaDominik25
+Email + heslo: 1Password vault "Rewards QA" (ping #rewards-qa)
 
 Checklist: docs/REWARDS_QA_CHECKLIST_Nathalie.md
 Deadline: 48h
