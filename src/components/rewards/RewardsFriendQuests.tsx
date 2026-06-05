@@ -22,6 +22,8 @@ export default function RewardsFriendQuests() {
   const [friendId, setFriendId] = useState("");
   const [questIdx, setQuestIdx] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [sending, setSending] = useState(false);
+  const [busyInviteId, setBusyInviteId] = useState<string | null>(null);
 
   const load = async () => {
     if (!user) return;
@@ -44,30 +46,54 @@ export default function RewardsFriendQuests() {
   useEffect(() => { load(); }, [user?.id]);
 
   const sendInvite = async () => {
-    if (!user || !friendId.trim()) return;
-    const { error } = await supabase.from("friend_quest_invites").insert({
-      from_user: user.id,
-      to_user: friendId.trim(),
-      quest_type: QUEST_TYPES[questIdx].id,
-    });
-    if (error) return toast.error("Failed: " + error.message);
-    toast.success("Invite sent!");
-    setFriendId("");
+    if (!user || !friendId.trim() || sending) return;
+    setSending(true);
+    try {
+      const { error } = await supabase.from("friend_quest_invites").insert({
+        from_user: user.id,
+        to_user: friendId.trim(),
+        quest_type: QUEST_TYPES[questIdx].id,
+      });
+      if (error) return toast.error("Failed: " + error.message);
+      toast.success("Invite sent!");
+      setFriendId("");
+    } finally {
+      setSending(false);
+    }
   };
 
   const accept = async (inv: any) => {
-    if (!user) return;
-    const { data, error } = await supabase.rpc("accept_friend_quest_invite" as any, { _invite_id: inv.id });
-    if (error) return toast.error(error.message);
-    const res = data as any;
-    if (!res?.ok) return toast.error(res?.error ?? "Failed to accept");
-    toast.success("Quest started!");
-    load();
+    if (!user || busyInviteId) return;
+    if (inv.to_user !== user.id) return toast.error("Not authorized for this invite");
+    setBusyInviteId(inv.id);
+    setInvites(prev => prev.filter(i => i.id !== inv.id));
+    try {
+      const { data, error } = await supabase.rpc("accept_friend_quest_invite" as any, { _invite_id: inv.id });
+      if (error) { toast.error(error.message); await load(); return; }
+      const res = data as any;
+      if (!res?.ok) { toast.error(res?.error ?? "Failed to accept"); await load(); return; }
+      toast.success("Quest started!");
+      await load();
+    } finally {
+      setBusyInviteId(null);
+    }
   };
 
   const reject = async (inv: any) => {
-    await supabase.from("friend_quest_invites").update({ status: "rejected", responded_at: new Date().toISOString() }).eq("id", inv.id);
-    load();
+    if (!user || busyInviteId) return;
+    if (inv.to_user !== user.id) return toast.error("Not authorized");
+    setBusyInviteId(inv.id);
+    setInvites(prev => prev.filter(i => i.id !== inv.id));
+    try {
+      await supabase.from("friend_quest_invites")
+        .update({ status: "rejected", responded_at: new Date().toISOString() })
+        .eq("id", inv.id)
+        .eq("to_user", user.id)
+        .eq("status", "pending");
+      await load();
+    } finally {
+      setBusyInviteId(null);
+    }
   };
 
   return (
@@ -83,8 +109,8 @@ export default function RewardsFriendQuests() {
             {QUEST_TYPES.map((q, i) => <option key={q.id} value={i}>{q.title} — {q.reward} XP</option>)}
           </select>
           <div className="flex gap-2">
-            <Input placeholder="Friend's user ID" value={friendId} onChange={e => setFriendId(e.target.value)} />
-            <Button onClick={sendInvite}>Invite</Button>
+            <Input placeholder="Friend's user ID" value={friendId} onChange={e => setFriendId(e.target.value)} disabled={sending} />
+            <Button onClick={sendInvite} disabled={sending || !friendId.trim()}>{sending ? "Sending..." : "Invite"}</Button>
           </div>
         </CardContent>
       </Card>
@@ -99,8 +125,8 @@ export default function RewardsFriendQuests() {
                 <div key={inv.id} className="flex items-center gap-2 p-2 rounded-lg bg-muted/40">
                   <Heart className="h-4 w-4 text-pink-400" />
                   <p className="flex-1 text-sm">{qt?.title || inv.quest_type}</p>
-                  <Button size="sm" onClick={() => accept(inv)}><Check className="h-3 w-3" /></Button>
-                  <Button size="sm" variant="outline" onClick={() => reject(inv)}><X className="h-3 w-3" /></Button>
+                  <Button size="sm" onClick={() => accept(inv)} disabled={busyInviteId === inv.id}><Check className="h-3 w-3" /></Button>
+                  <Button size="sm" variant="outline" onClick={() => reject(inv)} disabled={busyInviteId === inv.id}><X className="h-3 w-3" /></Button>
                 </div>
               );
             })}
