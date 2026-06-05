@@ -32,12 +32,36 @@ export function InstallPromptBanner() {
   if (runningStandalone) return null;
 
   const showOpenMode = installed && !runningStandalone;
-  if (!showOpenMode && !canInstall) return null;
-  if (!visible || dismissedThisSession) return null;
+  const shouldRender = (showOpenMode || canInstall) && visible && !dismissedThisSession;
+
+  // Fire banner_shown once per session per (mode, platform).
+  useEffect(() => {
+    if (!shouldRender) return;
+    trackPwaInstallEvent({
+      eventType: "banner_shown",
+      platform,
+      runningStandalone,
+      installed,
+      metadata: { mode: showOpenMode ? "open" : "install" },
+    });
+  }, [shouldRender, platform, runningStandalone, installed, showOpenMode]);
+
+  if (!shouldRender) return null;
 
   const isIOS = platform === "ios";
 
-  const close = () => setDismissedThisSession(true);
+  const close = () => {
+    trackPwaInstallEvent({
+      eventType: "banner_dismissed",
+      platform,
+      runningStandalone,
+      installed,
+      metadata: { mode: showOpenMode ? "open" : "install" },
+      allowRepeat: true,
+    });
+    setDismissedThisSession(true);
+  };
+
 
   return (
     <AnimatePresence>
