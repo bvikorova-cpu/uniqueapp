@@ -30,6 +30,20 @@ Deno.serve(async (req) => {
     const reward = REWARDS[day];
     if (!reward) return new Response(JSON.stringify({ error: "invalid_day" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
+    // VIP guard — Megatalent streak rewards are paid-tier only.
+    const { data: sub } = await supa
+      .from("megatalent_subscriptions")
+      .select("status, current_period_end")
+      .eq("user_id", userId)
+      .maybeSingle();
+    const vipActive =
+      sub &&
+      (sub.status === "active" || sub.status === "trialing") &&
+      (!sub.current_period_end || new Date(sub.current_period_end) > new Date());
+    if (!vipActive) {
+      return new Response(JSON.stringify({ error: "vip_required" }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
     // Verify streak from last 30 days votes
     const since = new Date(Date.now() - 30 * 86400000).toISOString();
     const { data: votes } = await supa.from("talent_votes").select("created_at").eq("user_id", userId).gte("created_at", since);
