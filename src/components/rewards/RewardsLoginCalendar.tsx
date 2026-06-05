@@ -42,6 +42,7 @@ export default function RewardsLoginCalendar() {
   const [tpls, setTpls] = useState<Tpl[]>(DEFAULTS);
   const [claims, setClaims] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [claiming, setClaiming] = useState(false);
 
   const refresh = async () => {
     const { data: t } = await supabase
