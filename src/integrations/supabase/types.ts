@@ -35076,6 +35076,7 @@ export type Database = {
           item_code: string | null
           prize_kind: string
           prize_label: string
+          spin_date: string | null
           user_id: string
           xp_awarded: number
         }
@@ -35085,6 +35086,7 @@ export type Database = {
           item_code?: string | null
           prize_kind: string
           prize_label: string
+          spin_date?: string | null
           user_id: string
           xp_awarded?: number
         }
@@ -35094,6 +35096,7 @@ export type Database = {
           item_code?: string | null
           prize_kind?: string
           prize_label?: string
+          spin_date?: string | null
           user_id?: string
           xp_awarded?: number
         }
