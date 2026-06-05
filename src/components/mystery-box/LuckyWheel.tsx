@@ -35,6 +35,7 @@ export const LuckyWheel = ({ onBack }: Props) => {
   const segmentAngle = 360 / PRIZES.length;
 
   const spin = async () => {
+    if (spinning) return;
     if (credits.credits_remaining < SPIN_COST) {
       toast.error(`You need ${SPIN_COST} credits. Redirecting...`);
       setTimeout(() => navigate("/ai-credits"), 1500);
@@ -47,41 +48,47 @@ export const LuckyWheel = ({ onBack }: Props) => {
     setSpinning(true);
     setResult(null);
 
-    const rand = Math.random() * 100;
-    let cumulative = 0;
-    let prizeIndex = 0;
-    for (let i = 0; i < PRIZES.length; i++) {
-      cumulative += PRIZES[i].chance;
-      if (rand <= cumulative) { prizeIndex = i; break; }
-    }
-    const prize = PRIZES[prizeIndex];
-
-    const { error: spinError } = await supabase.rpc('lucky_wheel_spin', {
-      p_cost: SPIN_COST,
-      p_prize: prize.value,
-      p_label: prize.label,
-    });
-    if (spinError) {
+    // Server picks the prize — client cannot influence outcome.
+    const { data, error } = await supabase.rpc('lucky_wheel_spin_secure');
+    if (error || !data) {
       setSpinning(false);
-      toast.error(spinError.message || "Spin failed");
+      toast.error(error?.message || "Spin failed");
+      return;
+    }
+    const res = data as unknown as {
+      error?: string;
+      prize_index?: number;
+      prize_value?: number;
+      prize_label?: string;
+      balance_after?: number;
+    };
+    if (res.error) {
+      setSpinning(false);
+      toast.error(res.error.replace(/_/g, " "));
       return;
     }
 
+    const prizeIndex = Math.max(0, Math.min(PRIZES.length - 1, res.prize_index ?? 0));
+    const prize = PRIZES[prizeIndex];
+    const prizeLabel = res.prize_label ?? prize.label;
+    const prizeValue = res.prize_value ?? prize.value;
+
     const targetAngle = 360 - (prizeIndex * segmentAngle + segmentAngle / 2);
+    // Animation-only randomness (does not affect outcome).
     const fullSpins = 6 + Math.floor(Math.random() * 4);
     const newRotation = rotation + fullSpins * 360 + targetAngle;
     setRotation(newRotation);
 
     setTimeout(async () => {
-      setResult(prize.label);
-      if (prize.value > 0) setTotalWon(t => t + prize.value);
-      if (prize.value >= 100) {
+      setResult(prizeLabel);
+      if (prizeValue > 0) setTotalWon(t => t + prizeValue);
+      if (prizeValue >= 100) {
         confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#FFD700', '#FFA500', '#FF4500'] });
       }
       await refresh();
       setSpinsToday(s => s + 1);
       setSpinning(false);
-      toast.success(`🎰 You won: ${prize.label}!`);
+      toast.success(`🎰 You won: ${prizeLabel}!`);
     }, 4500);
   };
 
