@@ -97,8 +97,8 @@ export function useInstallPrompt() {
     setDismissed(true);
   }, []);
 
-  // iOS has no programmatic install — show banner if not standalone & not dismissed.
-  const canInstall = !installed && !dismissed && (deferredPrompt !== null || platform === "ios");
+  // Show install banner on every open regardless of prior dismissal or install state.
+  const canInstall = platform !== "unknown";
 
   return { canInstall, installed, platform, promptInstall, dismiss };
 }
