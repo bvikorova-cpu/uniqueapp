@@ -37,7 +37,7 @@ export default function ParallelUniverse() {
     setLoading(true);
     setResult(null);
     try {
-      const { data, error } = await supabase.functions.invoke("ai-text-generate", {
+      const { data, error } = await supabase.functions.invoke("ai-text-generator", {
         body: {
           system: "You are a speculative-fiction narrator. Write a vivid, hopeful 'parallel universe' scenario in 5-8 sentences, second person.",
           prompt: `Scenario: "${title}". User context: ${seed}`,

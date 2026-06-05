@@ -39,7 +39,7 @@ export default function BrandKits() {
     setLoading(true);
     setResult(null);
     try {
-      const { data, error } = await supabase.functions.invoke("ai-text-generate", {
+      const { data, error } = await supabase.functions.invoke("ai-text-generator", {
         body: {
           system: "You are a senior brand designer. Produce concrete, usable brand deliverables. Use clear bullet lists and HEX codes where relevant.",
           prompt: `Deliverable: ${title}. Brand: "${brandName}". Pitch: ${pitch}`,

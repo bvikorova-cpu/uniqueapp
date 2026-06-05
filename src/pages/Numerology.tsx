@@ -38,7 +38,7 @@ export default function Numerology() {
     setLoading(true);
     setResult(null);
     try {
-      const { data, error } = await supabase.functions.invoke("ai-text-generate", {
+      const { data, error } = await supabase.functions.invoke("ai-text-generator", {
         body: {
           system: "You are an expert numerologist. Give a concise mystical, encouraging reading in 4-6 sentences.",
           prompt: `Numerology reading: "${tool}" for ${name}, born ${dob}.`,
