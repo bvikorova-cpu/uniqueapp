@@ -20,6 +20,8 @@ import { AIIcebreaker } from "@/components/dating/AIIcebreaker";
 import { AICompatibility } from "@/components/dating/AICompatibility";
 import { AIDateIdeas } from "@/components/dating/AIDateIdeas";
 import { AIProfileOptimizer } from "@/components/dating/AIProfileOptimizer";
+import { FiltersDialog, type DatingFilters } from "@/components/dating/FiltersDialog";
+import { BlockReportMenu } from "@/components/dating/BlockReportMenu";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface DatingProfile {
