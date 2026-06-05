@@ -196,7 +196,7 @@ export default function RewardsBattlePass() {
                 {/* Free track */}
                 <button
                   onClick={() => free && claimReward(tier, "free")}
-                  disabled={!free || !reached || freeClaimed}
+                  disabled={!free || !reached || freeClaimed || claimingKey === `${tier}-free`}
                   className={`w-full aspect-square rounded-lg border-2 mb-2 flex flex-col items-center justify-center text-xs p-1 transition-all ${
                     freeClaimed ? "bg-emerald-500/20 border-emerald-500" :
                     reached ? "bg-card border-primary/40 hover:border-primary cursor-pointer" :
