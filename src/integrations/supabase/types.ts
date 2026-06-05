@@ -63347,6 +63347,29 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      mt_feed_hot: {
+        Args: { _category: string; _limit?: number }
+        Returns: {
+          category: Database["public"]["Enums"]["talent_category"]
+          created_at: string
+          description: string | null
+          dislikes_count: number
+          id: string
+          is_active: boolean | null
+          media_type: string | null
+          media_url: string | null
+          title: string
+          updated_at: string
+          user_id: string
+          votes_count: number | null
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "talent_submissions"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       mt_get_duel_pair: {
         Args: { _categories?: string[] }
         Returns: {
