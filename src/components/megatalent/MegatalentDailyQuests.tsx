@@ -68,6 +68,16 @@ const MegatalentDailyQuests = ({ userId }: { userId: string | null }) => {
 
   useEffect(() => {
     load();
+    // Detect day rollover (midnight) — reload to reset progress display
+    let lastDate = new Date().toISOString().slice(0, 10);
+    const t = setInterval(() => {
+      const today = new Date().toISOString().slice(0, 10);
+      if (today !== lastDate) {
+        lastDate = today;
+        load();
+      }
+    }, 60_000);
+    return () => clearInterval(t);
   }, [load]);
 
   const claim = async (q: typeof QUESTS[number]) => {
