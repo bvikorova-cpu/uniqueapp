@@ -27,12 +27,11 @@ export function InstallPromptBanner() {
     return () => clearTimeout(t);
   }, []);
 
-
-  // Hide entirely when running inside the installed app.
-  if (runningStandalone) return null;
-
   const showOpenMode = installed && !runningStandalone;
-  const shouldRender = (showOpenMode || canInstall) && visible && !dismissedThisSession;
+  // Hide entirely when running inside the installed app; otherwise gate on canInstall/open-mode.
+  const shouldRender =
+    !runningStandalone && (showOpenMode || canInstall) && visible && !dismissedThisSession;
+
 
   // Fire banner_shown once per session per (mode, platform).
   useEffect(() => {
