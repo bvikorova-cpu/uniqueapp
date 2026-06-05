@@ -96,6 +96,8 @@ serve(async (req) => {
             destination: profile.stripe_connect_account_id,
             description: `auto ${kind} withdrawal ${wd.id}`,
             metadata: { kind, withdrawal_id: wd.id, creator_id: creatorId, auto: "true" },
+          }, {
+            idempotencyKey: `auto-payout-${kind}-${wd.id}`,
           });
 
           const updateData: Record<string, unknown> = {
