@@ -159,6 +159,22 @@ serve(async (req) => {
   }
   log("event received", { type: event.type, id: event.id });
 
+  // ── Idempotency guard: skip if event.id already processed ──
+  const { error: dedupErr } = await supabase
+    .from("stripe_webhook_events")
+    .insert({ event_id: event.id, event_type: event.type, status: "processing" });
+  if (dedupErr) {
+    // 23505 = unique_violation → duplicate event
+    if ((dedupErr as any).code === "23505") {
+      log("duplicate event, skipping", { id: event.id });
+      return new Response(JSON.stringify({ received: true, duplicate: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
+    }
+    log("dedup insert failed", { err: dedupErr.message });
+  }
+
   try {
     switch (event.type) {
       // ─── PAYMENT SUCCEEDED ───────────────────────────────────────────
@@ -1358,6 +1374,11 @@ serve(async (req) => {
         log("ignored event type", { type: event.type });
     }
 
+    await supabase
+      .from("stripe_webhook_events")
+      .update({ status: "processed", processed_at: new Date().toISOString() })
+      .eq("event_id", event.id);
+
     return new Response(JSON.stringify({ received: true }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
@@ -1365,6 +1386,10 @@ serve(async (req) => {
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     log("handler error", { msg });
+    await supabase
+      .from("stripe_webhook_events")
+      .update({ status: "error", error: msg, processed_at: new Date().toISOString() })
+      .eq("event_id", event.id);
     // Return 200 anyway so Stripe doesn't retry forever on logic bugs.
     return new Response(JSON.stringify({ received: true, error: msg }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
