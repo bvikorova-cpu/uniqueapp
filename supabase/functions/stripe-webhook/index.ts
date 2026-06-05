@@ -1370,6 +1370,69 @@ serve(async (req) => {
         break;
       }
 
+      // ─── TRIAL ENDING SOON (3 days notice) ───────────────────────────
+      case "customer.subscription.trial_will_end": {
+        const sub = event.data.object as Stripe.Subscription;
+        try {
+          const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id;
+          if (!customerId) break;
+          const cust = await stripe.customers.retrieve(customerId);
+          if (cust.deleted) break;
+          const email = (cust as Stripe.Customer).email;
+          if (!email) break;
+          const { data: prof } = await supabase
+            .from("profiles").select("id").eq("email", email).maybeSingle();
+          if (!prof?.id) break;
+          const trialEnd = sub.trial_end ? new Date(sub.trial_end * 1000) : null;
+          await supabase.from("notifications").insert({
+            user_id: prof.id,
+            type: "subscription_trial_ending",
+            title: "Your trial ends soon ⏰",
+            message: trialEnd
+              ? `Your free trial ends on ${trialEnd.toLocaleDateString()}. Update payment to keep your subscription active.`
+              : "Your free trial ends in 3 days. Update payment to keep your subscription active.",
+            is_read: false,
+          });
+          log("trial_will_end notified", { user: prof.id, sub: sub.id });
+        } catch (e) {
+          log("trial_will_end handler error", { err: (e as Error).message });
+        }
+        break;
+      }
+
+      // ─── SUBSCRIPTION PAUSED / RESUMED ───────────────────────────────
+      case "customer.subscription.paused":
+      case "customer.subscription.resumed": {
+        const sub = event.data.object as Stripe.Subscription;
+        // Sync megatalent (other modules use check-* funcs which read Stripe live)
+        try { await syncMegatalentSubscription(supabase, stripe, sub); } catch (_) {}
+        try {
+          const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id;
+          if (!customerId) break;
+          const cust = await stripe.customers.retrieve(customerId);
+          if (cust.deleted) break;
+          const email = (cust as Stripe.Customer).email;
+          if (!email) break;
+          const { data: prof } = await supabase
+            .from("profiles").select("id").eq("email", email).maybeSingle();
+          if (!prof?.id) break;
+          const paused = event.type === "customer.subscription.paused";
+          await supabase.from("notifications").insert({
+            user_id: prof.id,
+            type: paused ? "subscription_paused" : "subscription_resumed",
+            title: paused ? "Subscription paused ⏸️" : "Subscription resumed ▶️",
+            message: paused
+              ? "Your subscription is paused — no charges until you resume it."
+              : "Welcome back! Your subscription is active again.",
+            is_read: false,
+          });
+          log("subscription pause/resume notified", { user: prof.id, type: event.type });
+        } catch (e) {
+          log("pause/resume handler error", { err: (e as Error).message });
+        }
+        break;
+      }
+
       default:
         log("ignored event type", { type: event.type });
     }
