@@ -31,6 +31,20 @@ serve(async (req) => {
       { auth: { persistSession: false } },
     );
 
+    // Rate limit: max 30 increments per 10s per user (across all quests)
+    const { data: allowed } = await admin.rpc("mt_rate_limit_check", {
+      _user_id: user.id,
+      _action: "quest_increment",
+      _window_seconds: 10,
+      _max_count: 30,
+    });
+    if (allowed === false) {
+      return new Response(JSON.stringify({ error: "rate_limited" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 429,
+      });
+    }
+
     const { data: quest, error: qerr } = await admin
       .from("mt_daily_quests")
       .select("quest_key, target_count, active")
