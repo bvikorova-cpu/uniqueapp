@@ -18,8 +18,8 @@
 
 - **URL (preview):** https://id-preview--3ea492b4-277a-4b1d-a6dd-ca2a3efd9225.lovable.app
 - **URL (prod):** https://uniqueapp.fun
-- **Test účet:** `beata.vikorova@yandex.com`
-- **Heslo:** `BiankaDominik25`
+- **Test účet:** _vyžiadaj v Slacku #rewards-qa (1Password vault: `Rewards QA`)_
+- **Heslo:** _viď 1Password — nikdy nevkladaj do repozitára_
 - **Admin panel:** `/admin/rewards-audit` (sekcia 9 v checkliste)
 
 ## Kritické flow (musia byť 100% zelené)
