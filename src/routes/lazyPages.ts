@@ -427,6 +427,10 @@ export const PaymentDocumentation = lazy(() => import("@/pages/PaymentDocumentat
 export const TeacherDashboard = lazy(() => import("@/pages/TeacherDashboard"));
 export const HealthcareProviderDashboard = lazy(() => import("@/pages/HealthcareProviderDashboard"));
 export const HealthcareContentLibrary = lazy(() => import("@/pages/HealthcareContentLibrary"));
+export const Numerology = lazy(() => import("@/pages/Numerology"));
+export const ParallelUniverse = lazy(() => import("@/pages/ParallelUniverse"));
+export const MemoryAuctions = lazy(() => import("@/pages/MemoryAuctions"));
+export const BrandKits = lazy(() => import("@/pages/BrandKits"));
 
 // Components that need lazy loading
 export const QuizCreator = lazy(() => import("@/components/education/QuizCreator"));
