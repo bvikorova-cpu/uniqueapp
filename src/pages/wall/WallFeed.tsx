@@ -59,7 +59,7 @@ export default function WallFeed({
   // handled by Wall.tsx via filteredFeedItems. This component only applies the
   // user-level mute filters on top of what the parent already filtered/sorted.
   const visibleFeedItems = useMemo(() => {
-    return filteredFeedItems.filter((item) => {
+    const filtered = filteredFeedItems.filter((item) => {
       const data: any = item.data;
       const authorId = data.user_id || data.profiles?.id;
       if (authorId && mutedIds.includes(authorId)) return false;
@@ -71,9 +71,35 @@ export default function WallFeed({
         const lower = text.toLowerCase();
         if (mutedKeywords.some((kw) => kw && lower.includes(kw))) return false;
       }
+      if (timeFilter !== "all") {
+        const created = new Date(data.created_at).getTime();
+        const now = Date.now();
+        const day = 86_400_000;
+        const cutoff =
+          timeFilter === "today" ? now - day :
+          timeFilter === "week" ? now - 7 * day :
+          timeFilter === "month" ? now - 30 * day : 0;
+        if (created < cutoff) return false;
+      }
+      if (categoryFilter !== "all" && item.type === "post") {
+        const media = data.media || data.attachments || [];
+        const hasImg = Array.isArray(media) && media.some((m: any) => /image/i.test(m?.type ?? m?.mime ?? ""));
+        const hasVid = Array.isArray(media) && media.some((m: any) => /video/i.test(m?.type ?? m?.mime ?? ""));
+        if (categoryFilter === "image" && !hasImg) return false;
+        if (categoryFilter === "video" && !hasVid) return false;
+        if (categoryFilter === "text" && (hasImg || hasVid)) return false;
+      }
       return true;
     });
-  }, [filteredFeedItems, mutedKeywords, mutedIds]);
+    return [...filtered].sort((a, b) => {
+      const da: any = a.data, db: any = b.data;
+      if (sortBy === "newest") return new Date(db.created_at).getTime() - new Date(da.created_at).getTime();
+      if (sortBy === "oldest") return new Date(da.created_at).getTime() - new Date(db.created_at).getTime();
+      if (sortBy === "popular") return (db.likes_count ?? 0) - (da.likes_count ?? 0);
+      if (sortBy === "most-comments") return (db.comments_count ?? 0) - (da.comments_count ?? 0);
+      return 0;
+    });
+  }, [filteredFeedItems, mutedKeywords, mutedIds, sortBy, timeFilter, categoryFilter]);
 
   const handleResetFilters = () => {
     setSortBy("newest");
