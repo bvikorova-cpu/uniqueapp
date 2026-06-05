@@ -22,6 +22,7 @@ export default function RewardsCosmetics() {
   const [items, setItems] = useState<any[]>([]);
   const [owned, setOwned] = useState<Record<string, any>>({});
   const [tab, setTab] = useState("avatar_frame");
+  const [busyId, setBusyId] = useState<string | null>(null);
 
   const CATS = useMemo(() => [
     { id: "avatar_frame", label: "Frames" },
@@ -69,45 +70,59 @@ export default function RewardsCosmetics() {
   }, [user?.id]);
 
   const acquire = async (item: any) => {
-    if (!user) return;
-    if (item.price_eur && Number(item.price_eur) > 0) {
-      // EUR cosmetic → Stripe checkout via universal one-off router.
-      const successPath = `/rewards?cosmetic=success&item=${encodeURIComponent(item.id)}`;
-      const { data, error } = await supabase.functions.invoke("create-one-off-payment", {
-        body: {
-          productKey: "cosmetic_purchase",
-          amount: Math.round(Number(item.price_eur) * 100),
-          name: item.name,
-          description: `${item.category} • ${item.rarity}`,
-          metadata: { itemId: item.id },
-          successPath,
-        },
-      });
-      if (error || !(data as any)?.url) {
-        return toast.error(error?.message ?? "Checkout failed");
+    if (!user || busyId) return;
+    setBusyId(item.id);
+    try {
+      if (item.price_eur && Number(item.price_eur) > 0) {
+        const successPath = `/rewards?cosmetic=success&item=${encodeURIComponent(item.id)}`;
+        const { data, error } = await supabase.functions.invoke("create-one-off-payment", {
+          body: {
+            productKey: "cosmetic_purchase",
+            amount: Math.round(Number(item.price_eur) * 100),
+            name: item.name,
+            description: `${item.category} • ${item.rarity}`,
+            metadata: { itemId: item.id },
+            successPath,
+          },
+        });
+        if (error || !(data as any)?.url) {
+          toast.error(error?.message ?? "Checkout failed");
+          return;
+        }
+        window.location.href = (data as any).url;
+        return;
       }
-      window.location.href = (data as any).url;
-      return;
+      const { data, error } = await supabase.rpc("acquire_cosmetic_item", { _item_id: item.id });
+      if (error) { toast.error(error.message); return; }
+      const res = data as any;
+      if (!res?.ok) { toast.error(res?.error ?? "Acquire failed"); return; }
+      toast.success(`Acquired ${item.name}!`);
+      await load();
+    } finally {
+      setBusyId(null);
     }
-    const { data, error } = await supabase.rpc("acquire_cosmetic_item", { _item_id: item.id });
-    if (error) return toast.error(error.message);
-    const res = data as any;
-    if (!res?.ok) return toast.error(res?.error ?? "Acquire failed");
-    toast.success(`Acquired ${item.name}!`);
-    load();
   };
 
   const equip = async (item: any) => {
-    if (!user) return;
+    if (!user || busyId) return;
     const rec = owned[item.id];
     if (!rec) return;
-    const sameCatOwned = items.filter(i => i.category === item.category).map(i => owned[i.id]).filter(Boolean);
-    for (const r of sameCatOwned) {
-      await supabase.from("user_rewards_cosmetics").update({ is_equipped: false }).eq("id", r.id);
+    setBusyId(item.id);
+    try {
+      const sameCatIds = items
+        .filter(i => i.category === item.category)
+        .map(i => owned[i.id])
+        .filter(Boolean)
+        .map((r: any) => r.id);
+      if (sameCatIds.length > 0) {
+        await supabase.from("user_rewards_cosmetics").update({ is_equipped: false }).in("id", sameCatIds);
+      }
+      await supabase.from("user_rewards_cosmetics").update({ is_equipped: true }).eq("id", rec.id);
+      toast.success(`Equipped ${item.name}`);
+      await load();
+    } finally {
+      setBusyId(null);
     }
-    await supabase.from("user_rewards_cosmetics").update({ is_equipped: true }).eq("id", rec.id);
-    toast.success(`Equipped ${item.name}`);
-    load();
   };
 
   return (
@@ -138,11 +153,11 @@ export default function RewardsCosmetics() {
                           isEquipped ? (
                             <Badge className="w-full justify-center"><Check className="h-3 w-3 mr-1" /> {"Equipped"}</Badge>
                           ) : (
-                            <Button size="sm" variant="outline" className="w-full" onClick={() => equip(i)}>{"Equip"}</Button>
+                            <Button size="sm" variant="outline" className="w-full" disabled={busyId === i.id} onClick={() => equip(i)}>{busyId === i.id ? "…" : "Equip"}</Button>
                           )
                         ) : (
-                          <Button size="sm" className="w-full text-xs" onClick={() => acquire(i)}>
-                            {i.price_xp ? `${i.price_xp} XP` : i.price_eur ? `€${i.price_eur}` : "Get"}
+                          <Button size="sm" className="w-full text-xs" disabled={busyId === i.id} onClick={() => acquire(i)}>
+                            {busyId === i.id ? "…" : (i.price_xp ? `${i.price_xp} XP` : i.price_eur ? `€${i.price_eur}` : "Get")}
                           </Button>
                         )}
                       </div>

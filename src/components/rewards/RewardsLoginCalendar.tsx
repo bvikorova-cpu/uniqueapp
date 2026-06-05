@@ -42,6 +42,7 @@ export default function RewardsLoginCalendar() {
   const [tpls, setTpls] = useState<Tpl[]>(DEFAULTS);
   const [claims, setClaims] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [claiming, setClaiming] = useState(false);
 
   const refresh = async () => {
     const { data: t } = await supabase
@@ -65,18 +66,23 @@ export default function RewardsLoginCalendar() {
   useEffect(() => { refresh(); }, [user?.id, mKey]);
 
   const claim = async (day: number, tpl: Tpl) => {
-    if (!user) return;
+    if (!user || claiming) return;
     if (day !== todayDay) { toast.error("Only today's reward can be claimed"); return; }
     if (claims.has(day)) { toast.info("Already claimed"); return; }
 
-    const { data, error } = await supabase.rpc("claim_calendar_day", {
-      _month_key: mKey, _day_number: day,
-    });
-    if (error) { toast.error(error.message); return; }
-    const res = data as any;
-    if (!res?.ok) { toast.error(res?.error ?? "Claim failed"); return; }
-    toast.success(`Claimed ${tpl.reward_label}! 🎁`);
-    refresh();
+    setClaiming(true);
+    try {
+      const { data, error } = await supabase.rpc("claim_calendar_day", {
+        _month_key: mKey, _day_number: day,
+      });
+      if (error) { toast.error(error.message); return; }
+      const res = data as any;
+      if (!res?.ok) { toast.error(res?.error ?? "Claim failed"); return; }
+      toast.success(`Claimed ${tpl.reward_label}! 🎁`);
+      await refresh();
+    } finally {
+      setClaiming(false);
+    }
   };
 
   if (loading) return <p className="text-sm text-muted-foreground p-4">{"Loading calendar..."}</p>;
@@ -129,7 +135,7 @@ export default function RewardsLoginCalendar() {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: day * 0.01 }}
                   onClick={() => canClaim && claim(day, tpl)}
-                  disabled={!canClaim}
+                  disabled={!canClaim || claiming}
                   className={`aspect-square rounded-lg border-2 p-1.5 flex flex-col items-center justify-center transition-all ${
                     claimed ? "bg-emerald-500/20 border-emerald-500" :
                     canClaim ? "bg-gradient-to-br from-pink-500/20 to-fuchsia-500/20 border-pink-500 animate-pulse cursor-pointer hover:scale-105" :

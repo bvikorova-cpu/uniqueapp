@@ -19,6 +19,7 @@ export default function RewardsStreakFreeze() {
   const [streak, setStreak] = useState(0);
   const [history, setHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [buyingKey, setBuyingKey] = useState<string | null>(null);
 
   const refresh = async () => {
     if (!user) { setLoading(false); return; }
@@ -43,32 +44,39 @@ export default function RewardsStreakFreeze() {
 
   const buy = async (pack: typeof PACKS[number], method: "xp" | "eur") => {
     if (!user) return;
-    if (method === "eur") {
-      try {
-        const { data, error } = await supabase.functions.invoke("create-rewards-checkout", {
-          body: { kind: "streak_freeze", qty: pack.qty },
-        });
-        if (error) throw error;
-        const url = (data as any)?.url;
-        if (!url) throw new Error("No checkout URL");
-        window.location.href = url;
-      } catch (e: any) {
-        toast.error(e?.message || "Checkout failed");
+    const key = `${pack.label}-${method}`;
+    if (buyingKey) return;
+    setBuyingKey(key);
+    try {
+      if (method === "eur") {
+        try {
+          const { data, error } = await supabase.functions.invoke("create-rewards-checkout", {
+            body: { kind: "streak_freeze", qty: pack.qty },
+          });
+          if (error) throw error;
+          const url = (data as any)?.url;
+          if (!url) throw new Error("No checkout URL");
+          window.location.href = url;
+        } catch (e: any) {
+          toast.error(e?.message || "Checkout failed");
+        }
+        return;
       }
-      return;
+      const { data, error } = await supabase.rpc("buy_streak_freeze_xp" as any, {
+        _qty: pack.qty,
+        _cost_xp: pack.xp,
+      });
+      if (error) return toast.error(error.message);
+      const res = data as any;
+      if (!res?.ok) {
+        const msg = res?.error === "insufficient_xp" ? "Not enough XP" : (res?.error ?? "Purchase failed");
+        return toast.error(msg);
+      }
+      toast.success(`+${pack.qty} Streak Freeze${pack.qty > 1 ? "s" : ""}! ❄️`);
+      await refresh();
+    } finally {
+      setBuyingKey(null);
     }
-    const { data, error } = await supabase.rpc("buy_streak_freeze_xp" as any, {
-      _qty: pack.qty,
-      _cost_xp: pack.xp,
-    });
-    if (error) return toast.error(error.message);
-    const res = data as any;
-    if (!res?.ok) {
-      const msg = res?.error === "insufficient_xp" ? "Not enough XP" : (res?.error ?? "Purchase failed");
-      return toast.error(msg);
-    }
-    toast.success(`+${pack.qty} Streak Freeze${pack.qty > 1 ? "s" : ""}! ❄️`);
-    refresh();
   };
 
   if (loading) return <p className="text-sm text-muted-foreground p-4">Loading...</p>;
@@ -122,11 +130,11 @@ export default function RewardsStreakFreeze() {
             </CardHeader>
             <CardContent className="space-y-2">
               <p className="text-3xl font-bold">{pack.qty} <span className="text-sm font-normal text-muted-foreground">freeze{pack.qty > 1 ? "s" : ""}</span></p>
-              <Button onClick={() => buy(pack, "xp")} variant="outline" className="w-full">
-                {pack.xp} XP
+              <Button onClick={() => buy(pack, "xp")} disabled={!!buyingKey} variant="outline" className="w-full">
+                {buyingKey === `${pack.label}-xp` ? "Buying…" : `${pack.xp} XP`}
               </Button>
-              <Button onClick={() => buy(pack, "eur")} className="w-full bg-gradient-to-r from-cyan-500 to-blue-600">
-                €{pack.eur}
+              <Button onClick={() => buy(pack, "eur")} disabled={!!buyingKey} className="w-full bg-gradient-to-r from-cyan-500 to-blue-600">
+                {buyingKey === `${pack.label}-eur` ? "Loading…" : `€${pack.eur}`}
               </Button>
 
             </CardContent>

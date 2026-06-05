@@ -27,6 +27,8 @@ export default function RewardsBattlePass() {
   const [progress, setProgress] = useState<any>(null);
   const [claims, setClaims] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [claimingKey, setClaimingKey] = useState<string | null>(null);
+  const [purchasingPremium, setPurchasingPremium] = useState(false);
 
   const refresh = async () => {
     const { data: s } = await supabase
@@ -39,20 +41,26 @@ export default function RewardsBattlePass() {
     setSeason(s);
     if (!s) { setLoading(false); return; }
 
-    const { data: r } = await supabase
+    // Parallel fetch of rewards + progress + claims
+    const rewardsP = supabase
       .from("battle_pass_rewards")
       .select("*")
       .eq("season_id", s.id)
       .order("tier", { ascending: true });
+
+    const progP = user
+      ? supabase.from("user_battle_pass").select("*").eq("user_id", user.id).eq("season_id", s.id).maybeSingle()
+      : Promise.resolve({ data: null } as any);
+
+    const claimsP = user
+      ? supabase.from("user_battle_pass_claims").select("tier, track").eq("user_id", user.id).eq("season_id", s.id)
+      : Promise.resolve({ data: [] } as any);
+
+    const [{ data: r }, progRes, { data: cl }] = await Promise.all([rewardsP, progP, claimsP]);
     setRewards((r || []) as Reward[]);
 
     if (user) {
-      let { data: prog } = await supabase
-        .from("user_battle_pass")
-        .select("*")
-        .eq("user_id", user.id)
-        .eq("season_id", s.id)
-        .maybeSingle();
+      let prog = (progRes as any).data;
       if (!prog) {
         const ins = await supabase.from("user_battle_pass")
           .insert({ user_id: user.id, season_id: s.id })
@@ -60,13 +68,7 @@ export default function RewardsBattlePass() {
         prog = ins.data;
       }
       setProgress(prog);
-
-      const { data: cl } = await supabase
-        .from("user_battle_pass_claims")
-        .select("tier, track")
-        .eq("user_id", user.id)
-        .eq("season_id", s.id);
-      setClaims(new Set((cl || []).map(c => `${c.tier}-${c.track}`)));
+      setClaims(new Set((cl || []).map((c: any) => `${c.tier}-${c.track}`)));
     }
     setLoading(false);
   };
@@ -75,6 +77,9 @@ export default function RewardsBattlePass() {
 
   const claimReward = async (tier: number, track: "free" | "premium") => {
     if (!user || !season) return;
+    const key = `${tier}-${track}`;
+    if (claimingKey) return;
+    if (claims.has(key)) return;
     if (track === "premium" && !progress?.has_premium) {
       toast.error("Premium track required");
       return;
@@ -83,18 +88,24 @@ export default function RewardsBattlePass() {
       toast.error("Reach this tier first");
       return;
     }
-    const { data, error } = await supabase.rpc("claim_battle_pass_reward", {
-      _season_id: season.id, _tier: tier, _track: track,
-    });
-    if (error) { toast.error(error.message); return; }
-    const res = data as any;
-    if (!res?.ok) { toast.error(res?.error ?? "Claim failed"); return; }
-    toast.success("Reward claimed! 🎉");
-    refresh();
+    setClaimingKey(key);
+    try {
+      const { data, error } = await supabase.rpc("claim_battle_pass_reward", {
+        _season_id: season.id, _tier: tier, _track: track,
+      });
+      if (error) { toast.error(error.message); return; }
+      const res = data as any;
+      if (!res?.ok) { toast.error(res?.error ?? "Claim failed"); return; }
+      toast.success("Reward claimed! 🎉");
+      await refresh();
+    } finally {
+      setClaimingKey(null);
+    }
   };
 
   const purchasePremium = async () => {
-    if (!user || !season) return;
+    if (!user || !season || purchasingPremium) return;
+    setPurchasingPremium(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-rewards-checkout", {
         body: { kind: "battle_pass_premium" },
@@ -105,6 +116,7 @@ export default function RewardsBattlePass() {
       window.location.href = url;
     } catch (e: any) {
       toast.error(e?.message || "Checkout failed");
+      setPurchasingPremium(false);
     }
   };
 
@@ -144,9 +156,9 @@ export default function RewardsBattlePass() {
               <p className="text-sm opacity-90">{`${daysLeft} days left · Tier ${currentTier} / ${season.total_tiers}`}</p>
             </div>
             {!progress?.has_premium && (
-              <Button onClick={purchasePremium} className="bg-white text-purple-700 hover:bg-white/90 font-bold">
+              <Button onClick={purchasePremium} disabled={purchasingPremium} className="bg-white text-purple-700 hover:bg-white/90 font-bold">
                 <Crown className="h-4 w-4 mr-1" />
-                {`Unlock Premium · €${season.premium_price_eur}`}
+                {purchasingPremium ? "Loading…" : `Unlock Premium · €${season.premium_price_eur}`}
               </Button>
             )}
             {progress?.has_premium && (
@@ -184,7 +196,7 @@ export default function RewardsBattlePass() {
                 {/* Free track */}
                 <button
                   onClick={() => free && claimReward(tier, "free")}
-                  disabled={!free || !reached || freeClaimed}
+                  disabled={!free || !reached || freeClaimed || claimingKey === `${tier}-free`}
                   className={`w-full aspect-square rounded-lg border-2 mb-2 flex flex-col items-center justify-center text-xs p-1 transition-all ${
                     freeClaimed ? "bg-emerald-500/20 border-emerald-500" :
                     reached ? "bg-card border-primary/40 hover:border-primary cursor-pointer" :
@@ -199,7 +211,7 @@ export default function RewardsBattlePass() {
                 {/* Premium track */}
                 <button
                   onClick={() => premium && claimReward(tier, "premium")}
-                  disabled={!premium || !reached || !progress?.has_premium || premiumClaimed}
+                  disabled={!premium || !reached || !progress?.has_premium || premiumClaimed || claimingKey === `${tier}-premium`}
                   className={`w-full aspect-square rounded-lg border-2 flex flex-col items-center justify-center text-xs p-1 transition-all ${
                     premiumClaimed ? "bg-yellow-500/20 border-yellow-500" :
                     !progress?.has_premium ? "bg-muted/40 border-yellow-500/30 opacity-60" :

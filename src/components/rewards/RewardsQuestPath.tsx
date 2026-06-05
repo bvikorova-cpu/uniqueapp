@@ -14,6 +14,7 @@ export default function RewardsQuestPath() {
   const [path, setPath] = useState<any>(null);
   const [nodes, setNodes] = useState<any[]>([]);
   const [progress, setProgress] = useState<any>(null);
+  const [claimingIdx, setClaimingIdx] = useState<number | null>(null);
 
   const load = async () => {
     const { data: p } = await supabase
@@ -42,15 +43,21 @@ export default function RewardsQuestPath() {
 
   const claim = async (nodeIndex: number) => {
     if (!user || !path) return;
-    const { data, error } = await supabase.rpc("claim_quest_node" as any, {
-      _path_id: path.id,
-      _node_index: nodeIndex,
-    });
-    if (error) return toast.error(error.message);
-    const res = data as any;
-    if (!res?.ok) return toast.error(res?.error || "Failed to claim");
-    toast.success(res.xp_awarded > 0 ? `+${res.xp_awarded} XP claimed!` : "Node claimed!");
-    load();
+    if (claimingIdx !== null) return;
+    setClaimingIdx(nodeIndex);
+    try {
+      const { data, error } = await supabase.rpc("claim_quest_node" as any, {
+        _path_id: path.id,
+        _node_index: nodeIndex,
+      });
+      if (error) return toast.error(error.message);
+      const res = data as any;
+      if (!res?.ok) return toast.error(res?.error || "Failed to claim");
+      toast.success(res.xp_awarded > 0 ? `+${res.xp_awarded} XP claimed!` : "Node claimed!");
+      await load();
+    } finally {
+      setClaimingIdx(null);
+    }
   };
 
   const completed = (progress?.completed_nodes || []) as number[];
@@ -93,7 +100,7 @@ export default function RewardsQuestPath() {
                      <p className="font-semibold text-sm">{n.title} {n.is_boss && <Badge variant="destructive" className="ml-1 text-[10px]">{"BOSS"}</Badge>}</p>
                      <p className="text-xs text-muted-foreground">{n.reward_label || `${n.reward_value} ${n.reward_type}`}</p>
                    </div>
-                   {!isDone && !locked && <Button size="sm" onClick={() => claim(n.node_index)}>{"Claim"}</Button>}
+                   {!isDone && !locked && <Button size="sm" disabled={claimingIdx === n.node_index} onClick={() => claim(n.node_index)}>{claimingIdx === n.node_index ? "Claiming…" : "Claim"}</Button>}
                    {isDone && <Badge variant="outline" className="text-xs">{"Done"}</Badge>}
                  </motion.div>
                );
