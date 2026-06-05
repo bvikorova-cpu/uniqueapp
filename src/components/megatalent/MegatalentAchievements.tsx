@@ -63,6 +63,11 @@ export default function MegatalentAchievements({ userId }: Props) {
           return;
         }
 
+        // Server-side unlock (idempotent): RPC computes stats from
+        // talent_submissions and inserts any newly-qualified achievements.
+        // Client can no longer self-insert (RLS blocks).
+        await (supabase as any).rpc("mt_unlock_user_achievements");
+
         const [{ data: subs }, { data: catalog }] = await Promise.all([
           supabase.from("talent_submissions").select("votes_count").eq("user_id", uid).eq("is_active", true),
           (supabase as any).from("mt_achievements").select("id, achievement_key, active").eq("active", true),
@@ -83,18 +88,6 @@ export default function MegatalentAchievements({ userId }: Props) {
           : { data: [] };
         const keyById = Object.fromEntries(Object.entries(ids).map(([key, id]) => [id, key]));
         const have = new Set<string>((already || []).map((a: any) => keyById[a.achievement_id]).filter(Boolean));
-
-        // Unlock new ones
-        const toInsert = DEFS.filter((d) => d.check(newStats) && !have.has(d.code));
-        if (toInsert.length > 0) {
-          await (supabase as any).from("mt_user_achievements").insert(
-            toInsert.map((d) => ({
-              user_id: uid,
-              achievement_id: ids[d.code],
-            })) as any,
-          );
-          toInsert.forEach((d) => have.add(d.code));
-        }
 
         if (!cancelled) {
           setStats(newStats);
