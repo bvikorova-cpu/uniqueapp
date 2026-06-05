@@ -11,6 +11,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Download, Share, X } from "lucide-react";
 import { useInstallPrompt } from "@/hooks/useInstallPrompt";
 import { Button } from "@/components/ui/button";
+import { trackPwaInstallEvent } from "@/lib/pwaInstallAnalytics";
 
 const SHOW_DELAY_MS = 8_000;
 
@@ -25,6 +26,7 @@ export function InstallPromptBanner() {
     const t = setTimeout(() => setVisible(true), SHOW_DELAY_MS);
     return () => clearTimeout(t);
   }, []);
+
 
   // Hide entirely when running inside the installed app.
   if (runningStandalone) return null;
