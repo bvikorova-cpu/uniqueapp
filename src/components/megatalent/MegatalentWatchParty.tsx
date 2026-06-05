@@ -91,7 +91,7 @@ export const MegatalentWatchParty = ({ category }: Props) => {
   const loadStreams = useCallback(async () => {
     const { data } = await (supabase as any)
       .from("megatalent_live_streams")
-      .select("*")
+      .select("id,host_user_id,category,title,description,status,scheduled_at,started_at,ended_at,viewer_count,created_at,updated_at")
       .eq("category", category)
       .in("status", ["scheduled", "live"])
       .order("started_at", { ascending: false, nullsFirst: false })
