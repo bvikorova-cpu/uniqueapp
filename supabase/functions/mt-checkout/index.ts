@@ -38,9 +38,13 @@ serve(async (req) => {
 
     const body = await req.json();
     const kind: "mentorship" | "marketplace" = body?.kind;
-    const id: string = body?.id;
-    if (!id || !["mentorship", "marketplace"].includes(kind)) {
-      throw new Error("Invalid body: { kind, id } required");
+    let id: string | undefined = body?.id;
+    const listing_id: string | undefined = body?.listing_id;
+    if (!["mentorship", "marketplace"].includes(kind)) {
+      throw new Error("Invalid body: { kind } required");
+    }
+    if (!id && !listing_id) {
+      throw new Error("id or listing_id required");
     }
 
     // Service-role client to bypass RLS for trusted lookup
@@ -54,6 +58,7 @@ serve(async (req) => {
     let title = "";
 
     if (kind === "mentorship") {
+      if (!id) throw new Error("id required for mentorship");
       const { data: row, error } = await admin
         .from("mt_mentorship_bookings")
         .select("id, student_id, price_cents, status, mt_mentors!inner(display_name)")
@@ -65,10 +70,53 @@ serve(async (req) => {
       amountCents = (row as any).price_cents;
       title = `Mentorship: ${(row as any).mt_mentors?.display_name ?? "Session"}`;
     } else {
+      // Marketplace: accept either an existing order id OR a listing_id (then create order server-side).
+      if (!id && listing_id) {
+        const { data: listing, error: lerr } = await admin
+          .from("mt_marketplace_listings")
+          .select("id, seller_id, title, price_cents, active, eta_days")
+          .eq("id", listing_id)
+          .maybeSingle();
+        if (lerr || !listing) throw new Error("Listing not found");
+        if (!listing.active) throw new Error("Listing inactive");
+        if (listing.seller_id === user.id) throw new Error("Cannot buy own listing");
+        if (!listing.price_cents || listing.price_cents < 100) throw new Error("Invalid price");
+
+        // Idempotency: reuse pending order for (buyer, listing) if present.
+        const { data: existing } = await admin
+          .from("mt_marketplace_orders")
+          .select("id")
+          .eq("buyer_id", user.id)
+          .eq("listing_id", listing_id)
+          .eq("status", "pending")
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (existing?.id) {
+          id = existing.id;
+        } else {
+          const { data: ins, error: insErr } = await admin
+            .from("mt_marketplace_orders")
+            .insert({
+              listing_id,
+              buyer_id: user.id,
+              seller_id: listing.seller_id,
+              price_cents: listing.price_cents,
+              status: "pending",
+              delivery_due_at: new Date(Date.now() + listing.eta_days * 86400000).toISOString(),
+            })
+            .select("id")
+            .single();
+          if (insErr || !ins) throw new Error(insErr?.message || "Order insert failed");
+          id = ins.id;
+        }
+      }
+
       const { data: row, error } = await admin
         .from("mt_marketplace_orders")
         .select("id, buyer_id, price_cents, status, mt_marketplace_listings!inner(title)")
-        .eq("id", id)
+        .eq("id", id!)
         .maybeSingle();
       if (error || !row) throw new Error("Order not found");
       if ((row as any).buyer_id !== user.id) throw new Error("Not your order");
@@ -76,6 +124,8 @@ serve(async (req) => {
       amountCents = (row as any).price_cents;
       title = `Marketplace: ${(row as any).mt_marketplace_listings?.title ?? "Listing"}`;
     }
+
+    if (!id) throw new Error("internal: missing row id");
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
 
