@@ -22,23 +22,11 @@ export default function MegatalentFriendInvites({ userId }: { userId: string | n
     let cancelled = false;
     (async () => {
       setLoading(true);
-      // Get or create code
-      let { data: existing } = await supabase
-        .from("megatalent_referral_codes")
-        .select("code")
-        .eq("user_id", userId)
-        .maybeSingle();
-      let finalCode = existing?.code as string | undefined;
-      if (!finalCode) {
-        finalCode = `MT${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
-        const { data: inserted } = await supabase
-          .from("megatalent_referral_codes")
-          .insert({ user_id: userId, code: finalCode })
-          .select("code")
-          .maybeSingle();
-        finalCode = inserted?.code || finalCode;
-      }
-      // Count unique invited users
+      const { data: rpcCode, error: rpcErr } = await supabase
+        .rpc("get_or_create_megatalent_referral_code");
+      if (rpcErr) console.error("[referral] code RPC", rpcErr);
+      const finalCode = (rpcCode as string | null) || null;
+
       const { data: earnings } = await supabase
         .from("megatalent_referral_earnings")
         .select("referred_user_id, amount")
@@ -47,7 +35,7 @@ export default function MegatalentFriendInvites({ userId }: { userId: string | n
       const totalEarned = (earnings || []).reduce((s: number, e: any) => s + Number(e.amount || 0), 0);
 
       if (!cancelled) {
-        setCode(finalCode!);
+        setCode(finalCode);
         setInvited(uniqueInvited);
         setEarned(totalEarned);
         setLoading(false);

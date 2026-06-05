@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { Trophy, Upload, Heart, Award, ChevronRight, ChevronLeft, Check } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 const STORAGE_KEY_PREFIX = "megatalent_onboarding_done_";
 
@@ -60,23 +61,39 @@ export const MegaTalentOnboarding = () => {
   const [step, setStep] = useState(0);
 
   useEffect(() => {
-    // Defense-in-depth: even though MegatalentGuard already blocks
-    // unauthenticated/unsubscribed users, never show onboarding without a user.
     if (!user) return;
+    let cancelled = false;
     const key = STORAGE_KEY_PREFIX + user.id;
-    const done = localStorage.getItem(key);
-    if (!done) {
-      // Small delay so it doesn't pop instantly on mount
-      const t = setTimeout(() => setOpen(true), 400);
+    (async () => {
+      // Server-side check first
+      const { data, error } = await supabase
+        .from("mt_user_onboarding")
+        .select("user_id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (cancelled) return;
+      if (!error && data) {
+        localStorage.setItem(key, "1");
+        return;
+      }
+      // Legacy localStorage fallback (one-time migration)
+      if (localStorage.getItem(key)) {
+        await supabase.from("mt_user_onboarding").insert({ user_id: user.id });
+        return;
+      }
+      const t = setTimeout(() => { if (!cancelled) setOpen(true); }, 400);
       return () => clearTimeout(t);
-    }
+    })();
+    return () => { cancelled = true; };
   }, [user]);
 
-  // Hard guard: render nothing if no user (subscription is enforced by MegatalentGuard wrapper)
   if (!user) return null;
 
-  const finish = () => {
-    if (user) localStorage.setItem(STORAGE_KEY_PREFIX + user.id, "1");
+  const finish = async () => {
+    if (user) {
+      localStorage.setItem(STORAGE_KEY_PREFIX + user.id, "1");
+      await supabase.from("mt_user_onboarding").insert({ user_id: user.id }).then(() => {}, () => {});
+    }
     setOpen(false);
   };
 

@@ -33,20 +33,15 @@ export default function MegatalentTalentDuel({ category, categories }: Props) {
     setWinnerId(null);
     try {
       const cats = categories?.length ? categories : category ? [category] : null;
-      let q = supabase
-        .from("talent_submissions")
-        .select("id,user_id,title,media_url,media_type,votes_count")
-        .order("votes_count", { ascending: false })
-        .limit(20);
-      if (cats) q = q.in("category", cats as any);
-      const { data, error } = await q;
+      const { data, error } = await supabase.rpc("mt_get_duel_pair", {
+        _categories: cats as any,
+      });
       if (error) throw error;
       const rows = (data || []) as Contender[];
       if (rows.length < 2) {
         setPair(null);
       } else {
-        const shuffled = [...rows].sort(() => Math.random() - 0.5);
-        setPair([shuffled[0], shuffled[1]]);
+        setPair([rows[0], rows[1]]);
       }
     } catch (e) {
       console.error("Duel load", e);
