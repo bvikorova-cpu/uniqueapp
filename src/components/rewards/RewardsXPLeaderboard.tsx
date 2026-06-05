@@ -20,35 +20,17 @@ interface LeaderboardEntry {
 type Period = "weekly" | "monthly" | "alltime";
 
 async function fetchLeaderboard(period: Period): Promise<LeaderboardEntry[]> {
-  let totals: { user_id: string; total: number }[] = [];
+  // Server-side aggregation via SECURITY DEFINER RPC — avoids pulling thousands of xp_events rows.
+  const { data: rows, error } = await (supabase as any).rpc("rewards_xp_leaderboard", {
+    _period: period,
+    _limit: 50,
+  });
+  if (error || !rows) return [];
+  const totals: { user_id: string; total: number }[] = (rows as any[]).map((r) => ({
+    user_id: r.user_id,
+    total: Number(r.total ?? 0),
+  }));
 
-  if (period === "alltime") {
-    const { data, error } = await supabase
-      .from("user_points")
-      .select("user_id, total_points")
-      .order("total_points", { ascending: false })
-      .limit(50);
-    if (error || !data) return [];
-    totals = data.map((r) => ({ user_id: r.user_id, total: r.total_points ?? 0 }));
-  } else {
-    const since = new Date();
-    since.setDate(since.getDate() - (period === "weekly" ? 7 : 30));
-    const { data, error } = await supabase
-      .from("xp_events")
-      .select("user_id, amount")
-      .gte("created_at", since.toISOString())
-      .gt("amount", 0)
-      .limit(5000);
-    if (error || !data) return [];
-    const agg = new Map<string, number>();
-    for (const r of data as any[]) {
-      agg.set(r.user_id, (agg.get(r.user_id) ?? 0) + (r.amount ?? 0));
-    }
-    totals = [...agg.entries()]
-      .map(([user_id, total]) => ({ user_id, total }))
-      .sort((a, b) => b.total - a.total)
-      .slice(0, 50);
-  }
 
   if (totals.length === 0) return [];
   const userIds = totals.map((t) => t.user_id);
