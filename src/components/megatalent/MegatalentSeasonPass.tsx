@@ -53,15 +53,17 @@ const MegatalentSeasonPass = ({ userId }: { userId: string | null }) => {
     }
     if (claimed.has(tier.lvl)) return;
     setBusy(tier.lvl);
-    const { error } = await (supabase as any).from("mt_season_pass_claims").insert({
-      user_id: userId,
-      season_id: SEASON_ID,
-      tier_level: tier.lvl,
-      reward_label: tier.reward,
+    const { data, error } = await (supabase as any).rpc("mt_claim_season_tier", {
+      _season_id: SEASON_ID,
+      _tier_level: tier.lvl,
     });
     setBusy(null);
-    if (error && error.code !== "23505") {
+    if (error) {
       toast.error("Claim failed", { description: error.message });
+      return;
+    }
+    if (data?.error) {
+      toast.error(data.error === "insufficient_xp" ? `Need ${data.need} more XP` : data.error);
       return;
     }
     setClaimed((prev) => new Set([...prev, tier.lvl]));

@@ -63347,6 +63347,10 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      mt_claim_season_tier: {
+        Args: { _season_id: string; _tier_level: number }
+        Returns: Json
+      }
       mt_feed_hot: {
         Args: { _category: string; _limit?: number }
         Returns: {
