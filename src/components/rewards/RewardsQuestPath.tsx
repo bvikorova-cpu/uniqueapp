@@ -100,7 +100,7 @@ export default function RewardsQuestPath() {
                      <p className="font-semibold text-sm">{n.title} {n.is_boss && <Badge variant="destructive" className="ml-1 text-[10px]">{"BOSS"}</Badge>}</p>
                      <p className="text-xs text-muted-foreground">{n.reward_label || `${n.reward_value} ${n.reward_type}`}</p>
                    </div>
-                   {!isDone && !locked && <Button size="sm" onClick={() => claim(n.node_index)}>{"Claim"}</Button>}
+                   {!isDone && !locked && <Button size="sm" disabled={claimingIdx === n.node_index} onClick={() => claim(n.node_index)}>{claimingIdx === n.node_index ? "Claiming…" : "Claim"}</Button>}
                    {isDone && <Badge variant="outline" className="text-xs">{"Done"}</Badge>}
                  </motion.div>
                );
