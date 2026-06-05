@@ -41,74 +41,34 @@ Deno.serve(async (req) => {
 
     if (escrowErr || !escrow) return jsonError("Escrow not found", 404);
 
-    // 2. Authorization: brand owner OR admin can release.
-    const { data: roleRow } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", user.id)
-      .eq("role", "admin")
-      .maybeSingle();
-    const isAdmin = !!roleRow;
-    const isBrandOwner = escrow.brand_user_id === user.id;
-    if (!isAdmin && !isBrandOwner) return jsonError("Not authorized", 403);
-
-    if (escrow.status !== "held") {
-      return jsonError(`Escrow is in status '${escrow.status}', cannot release`, 409);
+    // 2. Atomic release via SECURITY DEFINER RPC (locks row, checks status, inserts earnings, updates balance, flips status — all in one transaction).
+    const { data: rpcRes, error: rpcErr } = await supabase.rpc("release_brand_campaign_escrow", {
+      _escrow_id: escrowId,
+      _actor: user.id,
+    });
+    if (rpcErr) {
+      console.error("release_brand_campaign_escrow RPC failed:", rpcErr);
+      return jsonError("Release failed", 500);
+    }
+    if (rpcRes?.error) {
+      const map: Record<string, [string, number]> = {
+        not_found: ["Escrow not found", 404],
+        forbidden: ["Not authorized", 403],
+        invalid_status: [`Escrow is in status '${rpcRes.status}', cannot release`, 409],
+      };
+      const [msg, status] = map[rpcRes.error] ?? [rpcRes.error, 400];
+      return jsonError(msg, status);
     }
 
-    // 3. Insert influencer_earnings row (creator can withdraw this).
-    const netEur = escrow.net_cents / 100;
-    const feeEur = escrow.platform_fee_cents / 100;
+    const netEur = Number(rpcRes?.net_eur ?? escrow.net_cents / 100);
     const grossEur = escrow.amount_cents / 100;
 
-    const { error: earningsErr } = await supabase.from("influencer_earnings").insert({
-      influencer_id: escrow.influencer_id,
-      user_id: escrow.influencer_user_id,
-      amount: grossEur,
-      platform_fee: feeEur,
-      net_amount: netEur,
-      source: "brand_campaign",
-    });
-    if (earningsErr) {
-      console.error("Failed to insert earnings:", earningsErr);
-      return jsonError("Failed to credit influencer earnings", 500);
+    // Optional release note from caller (RPC stores a default; only overwrite if user provided one).
+    if (note) {
+      await supabase.from("campaign_escrow").update({ release_note: note }).eq("id", escrowId);
     }
 
-    // 4. Update influencer_balances atomically.
-    const { data: balance } = await supabase
-      .from("influencer_balances")
-      .select("total_earned")
-      .eq("influencer_id", escrow.influencer_id)
-      .maybeSingle();
 
-    if (balance) {
-      await supabase
-        .from("influencer_balances")
-        .update({
-          total_earned: Number(balance.total_earned ?? 0) + netEur,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("influencer_id", escrow.influencer_id);
-    } else {
-      await supabase.from("influencer_balances").insert({
-        influencer_id: escrow.influencer_id,
-        total_earned: netEur,
-        withdrawn: 0,
-        pending_withdrawal: 0,
-      });
-    }
-
-    // 5. Mark escrow released + application paid.
-    const nowIso = new Date().toISOString();
-    await supabase
-      .from("campaign_escrow")
-      .update({ status: "released", released_at: nowIso, release_note: note || null })
-      .eq("id", escrowId);
-
-    await supabase
-      .from("campaign_applications")
-      .update({ payment_status: "released", updated_at: nowIso })
-      .eq("id", escrow.application_id);
 
     // 6. Notify both parties.
     await supabase.from("notifications").insert([

@@ -62206,6 +62206,7 @@ export type Database = {
         Returns: undefined
       }
       auto_release_coupon_escrow: { Args: never; Returns: number }
+      auto_release_stale_brand_escrows: { Args: never; Returns: number }
       award_hub_xp: {
         Args: { _amount: number; _hub: string }
         Returns: {
@@ -63569,6 +63570,10 @@ export type Database = {
       reject_judge_application: {
         Args: { _app_id: string; _notes?: string }
         Returns: undefined
+      }
+      release_brand_campaign_escrow: {
+        Args: { _actor: string; _escrow_id: string }
+        Returns: Json
       }
       reset_best_friend_monthly_messages: { Args: never; Returns: undefined }
       reset_psychology_monthly_messages: { Args: never; Returns: undefined }
