@@ -111,8 +111,15 @@ export function InstallPromptBanner() {
                 size="sm"
                 className="flex-1"
                 onClick={() => {
+                  trackPwaInstallEvent({
+                    eventType: "open_click",
+                    platform,
+                    runningStandalone,
+                    installed,
+                    allowRepeat: true,
+                  });
                   openApp();
-                  close();
+                  setDismissedThisSession(true);
                 }}
               >
                 Open
@@ -127,8 +134,32 @@ export function InstallPromptBanner() {
                 size="sm"
                 className="flex-1"
                 onClick={async () => {
+                  trackPwaInstallEvent({
+                    eventType: "install_click",
+                    platform,
+                    runningStandalone,
+                    installed,
+                    allowRepeat: true,
+                  });
                   const outcome = await promptInstall();
-                  if (outcome !== "unsupported") close();
+                  if (outcome === "accepted") {
+                    trackPwaInstallEvent({
+                      eventType: "install_accepted",
+                      platform,
+                      runningStandalone,
+                      installed: true,
+                      allowRepeat: true,
+                    });
+                  } else if (outcome === "dismissed") {
+                    trackPwaInstallEvent({
+                      eventType: "install_dismissed",
+                      platform,
+                      runningStandalone,
+                      installed,
+                      allowRepeat: true,
+                    });
+                  }
+                  if (outcome !== "unsupported") setDismissedThisSession(true);
                 }}
               >
                 Install
@@ -138,6 +169,7 @@ export function InstallPromptBanner() {
               </Button>
             </div>
           ) : null}
+
         </div>
       </motion.div>
     </AnimatePresence>
