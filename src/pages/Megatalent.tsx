@@ -93,7 +93,7 @@ const Megatalent = () => {
 
   useEffect(() => {
     fetchSubmissions();
-  }, [selectedCategory]);
+  }, [selectedCategory, feedFilter]);
 
   // loading clears in checkSubscription's finally block
 
