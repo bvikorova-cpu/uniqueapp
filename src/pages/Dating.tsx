@@ -1013,6 +1013,14 @@ const Dating = () => {
           <button className="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/10 backdrop-blur-sm text-white flex items-center justify-center hover:bg-white/20 transition-colors" onClick={() => setLightboxImage(null)}><X className="h-5 w-5" /></button>
         </div>
       )}
+      {user && (
+        <FiltersDialog
+          open={showFilters}
+          onOpenChange={setShowFilters}
+          userId={user.id}
+          onSaved={async (f) => { setFilters(f); await loadProfiles(); }}
+        />
+      )}
     </div>
     </>
   );
