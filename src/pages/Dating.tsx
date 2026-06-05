@@ -100,6 +100,11 @@ const Dating = () => {
   const [cancelingSubscription, setCancelingSubscription] = useState(false);
   const [subscribing, setSubscribing] = useState(false);
   const [swipeDirection, setSwipeDirection] = useState<"left" | "right" | "up" | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState<DatingFilters | null>(null);
+  const [boostActive, setBoostActive] = useState<string | null>(null);
+  const [boosting, setBoosting] = useState(false);
+  const [blockedIds, setBlockedIds] = useState<string[]>([]);
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
   const [activeView, setActiveView] = useState<string>("hub");
   const chatEndRef = useRef<HTMLDivElement>(null);
