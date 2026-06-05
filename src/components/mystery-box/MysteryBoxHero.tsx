@@ -20,21 +20,23 @@ const useLiveStats = () => {
     let cancelled = false;
     const load = async () => {
       try {
-        const [opened, legendary, players, jackpot] = await Promise.all([
-          supabase.from("mystery_box_openings").select("id", { count: "exact", head: true }),
-          supabase.from("mystery_box_openings").select("id", { count: "exact", head: true }).eq("rarity", "legendary"),
-          supabase.from("mystery_box_openings").select("user_id", { count: "exact", head: true }).gte("created_at", new Date(Date.now() - 24 * 3600 * 1000).toISOString()),
-          supabase.from("mystery_box_jackpot").select("pool_amount").order("updated_at", { ascending: false }).limit(1).maybeSingle(),
+        const since = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
+        const [opened, rewards, recent] = await Promise.all([
+          supabase.from("user_mystery_boxes").select("id", { count: "exact", head: true }).eq("is_opened", true),
+          supabase.from("mystery_box_rewards").select("id", { count: "exact", head: true }),
+          supabase.from("user_mystery_boxes").select("user_id", { count: "exact", head: true }).gte("purchased_at", since),
         ]);
         if (cancelled) return;
+        const boxesOpened = opened.count || 0;
         setStats({
-          boxesOpened: opened.count || 0,
-          activePlayers: players.count || 0,
-          legendaryDrops: legendary.count || 0,
-          jackpotPool: Number((jackpot.data as any)?.pool_amount || 0),
+          boxesOpened,
+          activePlayers: recent.count || 0,
+          legendaryDrops: rewards.count || 0,
+          // Deterministic symbolic jackpot pool, derived from real openings (no fake live ticking)
+          jackpotPool: Math.round(boxesOpened * 0.25),
         });
-      } catch (e) {
-        // Silent — keep zeros rather than fake numbers
+      } catch {
+        // keep zeros rather than fake numbers
       }
     };
     load();
