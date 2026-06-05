@@ -17687,6 +17687,7 @@ export type Database = {
       daily_rewards: {
         Row: {
           claimed_at: string | null
+          claimed_date: string | null
           day_streak: number | null
           id: string
           points_earned: number | null
@@ -17694,6 +17695,7 @@ export type Database = {
         }
         Insert: {
           claimed_at?: string | null
+          claimed_date?: string | null
           day_streak?: number | null
           id?: string
           points_earned?: number | null
@@ -17701,6 +17703,7 @@ export type Database = {
         }
         Update: {
           claimed_at?: string | null
+          claimed_date?: string | null
           day_streak?: number | null
           id?: string
           points_earned?: number | null
@@ -62244,6 +62247,7 @@ export type Database = {
         Returns: Json
       }
       claim_daily_login_reward: { Args: never; Returns: Json }
+      claim_daily_reward_atomic: { Args: never; Returns: Json }
       claim_founding_member: {
         Args: never
         Returns: {
