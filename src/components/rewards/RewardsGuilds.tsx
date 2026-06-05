@@ -21,6 +21,9 @@ export default function RewardsGuilds() {
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [emblem, setEmblem] = useState("⚔️");
+  const [creating, setCreating] = useState(false);
+  const [joiningId, setJoiningId] = useState<string | null>(null);
+  const [leaving, setLeaving] = useState(false);
 
   const load = async () => {
     if (!user) return;
@@ -42,36 +45,55 @@ export default function RewardsGuilds() {
   useEffect(() => { load(); }, [user?.id]);
 
   const create = async () => {
-    if (!user || !name.trim()) return;
-    const { data: g, error } = await supabase.from("guilds").insert({
-      name: name.trim(), description: desc, emblem, created_by: user.id,
-    }).select().single();
-    if (error) return toast.error(error.message);
-    await supabase.from("guild_members").insert({ guild_id: g.id, user_id: user.id, role: "leader" });
-    toast.success("Guild created!");
-    setOpen(false); setName(""); setDesc("");
-    load();
+    if (!user || !name.trim() || creating) return;
+    setCreating(true);
+    try {
+      const { data, error } = await supabase.rpc("create_guild" as any, {
+        _name: name.trim(),
+        _description: desc || null,
+        _emblem: emblem,
+      });
+      if (error) return toast.error(error.message);
+      const res = data as any;
+      if (!res?.ok) return toast.error(res?.error ?? "Failed to create");
+      toast.success("Guild created!");
+      setOpen(false); setName(""); setDesc("");
+      await load();
+    } finally {
+      setCreating(false);
+    }
   };
 
   const join = async (guildId: string) => {
-    if (!user) return;
-    const { data, error } = await supabase.rpc("join_guild" as any, { _guild_id: guildId });
-    if (error) return toast.error(error.message);
-    const res = data as any;
-    if (!res?.ok) return toast.error(res?.error ?? "Failed to join");
-    toast.success("Joined!");
-    load();
+    if (!user || joiningId || myGuild) return;
+    setJoiningId(guildId);
+    try {
+      const { data, error } = await supabase.rpc("join_guild" as any, { _guild_id: guildId });
+      if (error) return toast.error(error.message);
+      const res = data as any;
+      if (!res?.ok) return toast.error(res?.error ?? "Failed to join");
+      toast.success("Joined!");
+      await load();
+    } finally {
+      setJoiningId(null);
+    }
   };
 
   const leave = async () => {
-    if (!user || !myGuild) return;
-    const { data, error } = await supabase.rpc("leave_guild" as any, {});
-    if (error) return toast.error(error.message);
-    const res = data as any;
-    if (!res?.ok) return toast.error(res?.error ?? "Failed to leave");
-    toast.success("Left guild");
-    setMyGuild(null);
-    load();
+    if (!user || !myGuild || leaving) return;
+    if (!confirm("Leave this guild?")) return;
+    setLeaving(true);
+    try {
+      const { data, error } = await supabase.rpc("leave_guild" as any, {});
+      if (error) return toast.error(error.message);
+      const res = data as any;
+      if (!res?.ok) return toast.error(res?.error ?? "Failed to leave");
+      toast.success("Left guild");
+      setMyGuild(null);
+      await load();
+    } finally {
+      setLeaving(false);
+    }
   };
 
   return (
@@ -98,7 +120,7 @@ export default function RewardsGuilds() {
           <CardContent className="pt-4">
             <Progress value={(myGuild.guild.total_xp % 10000) / 100} className="h-2" />
             <p className="text-xs text-muted-foreground mt-1">{(myGuild.guild.total_xp % 10000)} / 10,000 to next guild level</p>
-            <Button variant="outline" size="sm" className="mt-3" onClick={leave}>Leave guild</Button>
+            <Button variant="outline" size="sm" className="mt-3" onClick={leave} disabled={leaving}>{leaving ? "Leaving..." : "Leave guild"}</Button>
           </CardContent>
         </Card>
       ) : (
@@ -117,7 +139,7 @@ export default function RewardsGuilds() {
                       <button key={e} onClick={() => setEmblem(e)} className={`text-2xl p-2 rounded ${emblem === e ? "bg-primary/20 ring-2 ring-primary" : "bg-muted"}`}>{e}</button>
                     ))}
                   </div>
-                  <Button onClick={create} disabled={!name.trim()}>Create guild</Button>
+                  <Button onClick={create} disabled={!name.trim() || creating}>{creating ? "Creating..." : "Create guild"}</Button>
                 </DialogContent>
               </Dialog>
             </CardTitle>
@@ -138,7 +160,7 @@ export default function RewardsGuilds() {
                 <p className="text-xs text-muted-foreground">{g.member_count}/{g.max_members} · Lvl {g.level} · {g.total_xp.toLocaleString()} XP</p>
               </div>
               {!myGuild && g.is_open && g.member_count < g.max_members && (
-                <Button size="sm" variant="outline" onClick={() => join(g.id)}>Join</Button>
+                <Button size="sm" variant="outline" onClick={() => join(g.id)} disabled={joiningId === g.id}>{joiningId === g.id ? "Joining..." : "Join"}</Button>
               )}
             </div>
           ))}
