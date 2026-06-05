@@ -62880,6 +62880,10 @@ export type Database = {
         Args: { _user_id: string }
         Returns: Json
       }
+      get_megatalent_stream_key: {
+        Args: { _stream_id: string }
+        Returns: string
+      }
       get_megatalent_tip_stats: {
         Args: { _creator_id: string }
         Returns: {
