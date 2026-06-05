@@ -41,20 +41,26 @@ export default function RewardsBattlePass() {
     setSeason(s);
     if (!s) { setLoading(false); return; }
 
-    const { data: r } = await supabase
+    // Parallel fetch of rewards + progress + claims
+    const rewardsP = supabase
       .from("battle_pass_rewards")
       .select("*")
       .eq("season_id", s.id)
       .order("tier", { ascending: true });
+
+    const progP = user
+      ? supabase.from("user_battle_pass").select("*").eq("user_id", user.id).eq("season_id", s.id).maybeSingle()
+      : Promise.resolve({ data: null } as any);
+
+    const claimsP = user
+      ? supabase.from("user_battle_pass_claims").select("tier, track").eq("user_id", user.id).eq("season_id", s.id)
+      : Promise.resolve({ data: [] } as any);
+
+    const [{ data: r }, progRes, { data: cl }] = await Promise.all([rewardsP, progP, claimsP]);
     setRewards((r || []) as Reward[]);
 
     if (user) {
-      let { data: prog } = await supabase
-        .from("user_battle_pass")
-        .select("*")
-        .eq("user_id", user.id)
-        .eq("season_id", s.id)
-        .maybeSingle();
+      let prog = (progRes as any).data;
       if (!prog) {
         const ins = await supabase.from("user_battle_pass")
           .insert({ user_id: user.id, season_id: s.id })
@@ -62,13 +68,7 @@ export default function RewardsBattlePass() {
         prog = ins.data;
       }
       setProgress(prog);
-
-      const { data: cl } = await supabase
-        .from("user_battle_pass_claims")
-        .select("tier, track")
-        .eq("user_id", user.id)
-        .eq("season_id", s.id);
-      setClaims(new Set((cl || []).map(c => `${c.tier}-${c.track}`)));
+      setClaims(new Set((cl || []).map((c: any) => `${c.tier}-${c.track}`)));
     }
     setLoading(false);
   };
