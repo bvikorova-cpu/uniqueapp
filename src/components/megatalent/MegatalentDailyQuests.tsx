@@ -81,16 +81,24 @@ const MegatalentDailyQuests = ({ userId }: { userId: string | null }) => {
       return;
     }
     setBusy(q.id);
-    const { error } = await supabase
-      .from("daily_quest_completions")
-      .insert({ user_id: userId, quest_id: q.id, xp_awarded: q.reward });
+    const { data, error } = await (supabase as any).rpc("claim_daily_quest_secure", { _quest_id: q.id });
     setBusy(null);
-    if (error && error.code !== "23505") {
-      toast.error("Claim failed", { description: error.message });
+    if (error) {
+      const msg = error.message?.includes("progress_insufficient")
+        ? "Progress not yet sufficient"
+        : error.message?.includes("unknown_quest")
+        ? "Unknown quest"
+        : error.message || "Claim failed";
+      toast.error(msg);
       return;
     }
-    setClaimed((prev) => ({ ...prev, [q.id]: q.reward }));
-    toast.success(`+${q.reward} XP claimed`);
+    if (data?.ok === false && data?.reason === "already_claimed") {
+      setClaimed((prev) => ({ ...prev, [q.id]: q.reward }));
+      return;
+    }
+    const xp = (data?.xp_awarded as number) ?? q.reward;
+    setClaimed((prev) => ({ ...prev, [q.id]: xp }));
+    toast.success(`+${xp} XP claimed`);
   };
 
   const total = QUESTS.reduce((s, q) => s + q.reward, 0);
