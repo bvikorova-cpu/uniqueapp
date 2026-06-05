@@ -147,7 +147,18 @@ const Megatalent = () => {
   const fetchSubmissions = async () => {
     setFeedLoading(true);
     try {
-      const { data: submissionsData, error } = await supabase.from('talent_submissions').select('*').eq('category', selectedCategory as any).eq('is_active', true).order('created_at', { ascending: false }).limit(10);
+      let submissionsData: any[] | null = null;
+      let error: any = null;
+      if (feedFilter === "hot") {
+        const res = await (supabase as any).rpc("mt_feed_hot", { _category: selectedCategory, _limit: 10 });
+        submissionsData = res.data; error = res.error;
+      } else {
+        const orderCol = feedFilter === "top" ? "votes_count" : "created_at";
+        const res = await supabase.from('talent_submissions').select('*')
+          .eq('category', selectedCategory as any).eq('is_active', true)
+          .order(orderCol as any, { ascending: false }).limit(10);
+        submissionsData = res.data as any; error = res.error;
+      }
       if (error) throw error;
       if (submissionsData && submissionsData.length > 0) {
         const userIds = [...new Set(submissionsData.map(s => s.user_id))];
