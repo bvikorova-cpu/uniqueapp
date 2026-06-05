@@ -114,24 +114,11 @@ const MegatalentTalentMarketplace = ({ category }: { category?: string }) => {
       toast.error("Cannot buy your own listing");
       return;
     }
+    if (buying === l.id) return;
     setBuying(l.id);
-    const { data: order, error } = await (supabase as any)
-      .from("mt_marketplace_orders")
-      .insert({
-        listing_id: l.id,
-        buyer_id: userId,
-        seller_id: l.seller_id,
-        price_cents: l.price_cents,
-      })
-      .select("id")
-      .single();
-    if (error || !order) {
-      setBuying(null);
-      toast.error("Order failed", { description: error?.message });
-      return;
-    }
-    const { data: co, error: coErr } = await supabase.functions.invoke("mt-checkout", {
-      body: { kind: "marketplace", id: order.id },
+    // Single server call: validates listing, creates order (service_role), opens Stripe Checkout.
+    const { data: co, error: coErr } = await supabase.functions.invoke("mt-marketplace-order", {
+      body: { listing_id: l.id },
     });
     setBuying(null);
     if (coErr || !(co as any)?.url) {
