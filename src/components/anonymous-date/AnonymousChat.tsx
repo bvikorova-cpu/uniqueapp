@@ -427,7 +427,7 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
 
       {/* Live stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-        <CompatibilityMeter messageCount={messages.length} matchInterests={matchState.match_interests ?? []} />
+        <CompatibilityMeter messageCount={messages.length} matchInterests={Array.isArray(matchState.match_interests) ? (matchState.match_interests as string[]) : []} />
         <ConversationMilestones
           messageCount={messages.length}
           matchAgeHours={matchAgeHours}
