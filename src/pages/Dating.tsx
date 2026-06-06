@@ -807,7 +807,7 @@ const Dating = () => {
 
         {/* Main Tabs */}
         <Tabs defaultValue="swipe" className="w-full">
-          <TabsList className="grid w-full grid-cols-5 max-w-lg mx-auto mb-6 h-11 bg-muted/50">
+          <TabsList className="grid w-full grid-cols-6 max-w-2xl mx-auto mb-6 h-11 bg-muted/50">
             <TabsTrigger value="swipe" className="text-sm gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Heart className="h-4 w-4" /><span className="hidden sm:inline">Discover</span>
             </TabsTrigger>
@@ -821,6 +821,9 @@ const Dating = () => {
             </TabsTrigger>
             <TabsTrigger value="community" className="text-sm gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Sparkles className="h-4 w-4" /><span className="hidden sm:inline">Community</span>
+            </TabsTrigger>
+            <TabsTrigger value="premium" className="text-sm gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <Crown className="h-4 w-4" /><span className="hidden sm:inline">Premium</span>
             </TabsTrigger>
             <TabsTrigger value="profile" className="text-sm gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <User className="h-4 w-4" /><span className="hidden sm:inline">Profile</span>
