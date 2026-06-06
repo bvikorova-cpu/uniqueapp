@@ -262,7 +262,7 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
 
   return (
     <div className="space-y-3">
-      <Card className={`flex flex-col h-[calc(100vh-16rem)] max-h-[640px] overflow-hidden bg-gradient-to-br ${themeGradient(theme)} backdrop-blur-xl border-primary/20 shadow-2xl`}>
+      <Card className={`flex flex-col h-anon-chat overflow-hidden bg-gradient-to-br ${themeGradient(theme)} backdrop-blur-xl border-primary/20 shadow-2xl`}>
         {/* Header */}
         <div className="flex items-center justify-between p-3 border-b border-white/10 bg-black/25 backdrop-blur-md">
           <div className="flex items-center gap-2">
@@ -325,7 +325,7 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
                 <div
                   className={`max-w-[78%] px-3 py-2 rounded-2xl text-sm break-words ${
                     mine
-                      ? "bg-gradient-to-br from-primary to-pink-500 text-white rounded-br-sm shadow-lg"
+                      ? "bg-anon-date-gradient text-white rounded-br-sm shadow-lg"
                       : "bg-card/80 backdrop-blur-md border border-border/40 rounded-bl-sm"
                   }`}
                 >
@@ -417,7 +417,7 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
               userId={currentUserId}
               onUploaded={(url) => { sendMessage("🎤 Voice message", "voice", url); bumpStreak(); }}
             />
-            <Button type="submit" size="icon" disabled={!input.trim() || moderating} className="rounded-full bg-gradient-to-r from-primary to-pink-500">
+            <Button type="submit" size="icon" disabled={!input.trim() || moderating} className="rounded-full bg-anon-date-gradient">
               <Send className="h-4 w-4" />
             </Button>
           </form>

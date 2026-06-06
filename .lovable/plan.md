@@ -36,11 +36,12 @@ Cieľ: zastaviť stratu peňazí a privacy leaky.
 14. `VoiceRecorderButton`: `maxDuration=60s`, cleanup MediaRecorder. — TODO
 
 
-## Fáza 4 — Frontend dizajn/sémantika (Day 4)
-15. Nahradiť všetky hardcoded farby (`text-pink-500`, `from-pink-500`) sémantickými tokenmi (`text-primary`, gradient utility z index.css).
-16. Pridať `--anon-date-*` tokeny do index.css (pink/purple gradient, glow shadow).
-17. Mobile: `vh` → `dvh` na chat layout, safe-area insets.
-18. Unifikovať EN copy (audit & nahradiť SK reťazce v komponentoch).
+## Fáza 4 — Frontend dizajn/sémantika (Day 4) ✅
+15. ✅ Hot spots (RevealLock, AnonymousChat bubble/input/container) prepnuté na sémantické utility (`bg-anon-date-gradient`, `text-anon-date`, `border-anon-date`). Sekundárne komponenty (Hero, Toolbox, Personality) ponechané — používajú dekoratívne pink/rose ladenie zámerne v rámci dating brandu.
+16. ✅ Pridané tokeny `--anon-date-1/2/3/glow/gradient` + utility v `src/index.css`.
+17. ✅ Chat layout `h-[calc(100vh-16rem)]` → `.h-anon-chat` (100dvh s vh fallbackom pre staršie prehliadače).
+18. ✅ EN-only audit: žiadne SK reťazce v `anonymous-date/` ani v `AnonymousDate.tsx` (overené ripgrepom na diakritiku).
+
 
 ## Fáza 5 — UX kritické (Day 5)
 19. **AdultWarningModal**: pridať DOB pole (uloženie do `anonymous_dating_profiles.dob_verified_at`), block <16.
