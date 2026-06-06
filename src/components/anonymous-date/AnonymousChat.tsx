@@ -61,6 +61,29 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
   const [matchState, setMatchState] = useState(match);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // 24h countdown
+  const [timeLeft, setTimeLeft] = useState("");
+  const [urgent, setUrgent] = useState(false);
+  useEffect(() => {
+    const tick = () => {
+      if (!match.created_at) return;
+      const end = new Date(match.created_at).getTime() + 24 * 60 * 60 * 1000;
+      const diff = end - Date.now();
+      if (diff <= 0) {
+        setTimeLeft("Expired");
+        setUrgent(true);
+        return;
+      }
+      const h = Math.floor(diff / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      setTimeLeft(`${h}h ${m}m`);
+      setUrgent(diff < 6 * 3600000);
+    };
+    tick();
+    const t = setInterval(tick, 60000);
+    return () => clearInterval(t);
+  }, [match.created_at]);
+
   const safety = useChatSafety(currentUserId, partnerId);
 
   // Live match updates (reveal request, status)
