@@ -1225,6 +1225,14 @@ const Dating = () => {
                     initial={(currentProfile.compatibility_quiz as any) || {}}
                     onSaved={(q) => setCurrentProfile({ ...currentProfile, compatibility_quiz: q })}
                   />
+                  <AIBioCoach
+                    profile={currentProfile}
+                    onApply={async (newBio) => {
+                      const { error } = await supabase.from("dating_profiles").update({ bio: newBio }).eq("id", currentProfile.id);
+                      if (error) toast({ title: "Update failed", description: error.message, variant: "destructive" });
+                      else { setCurrentProfile({ ...currentProfile, bio: newBio }); setEditForm({ ...editForm, bio: newBio }); toast({ title: "Bio updated ✨" }); }
+                    }}
+                  />
                   <OpeningMoveEditor
                     userId={user.id}
                     initial={currentProfile.opening_move || ""}
