@@ -62962,6 +62962,10 @@ export type Database = {
         Returns: undefined
       }
       check_and_award_iq_badges: { Args: never; Returns: string[] }
+      check_anon_dating_rate_limit: {
+        Args: { p_action: string; p_max_per_minute?: number; p_user_id: string }
+        Returns: boolean
+      }
       check_rate_limit: {
         Args: {
           p_action_type: string
