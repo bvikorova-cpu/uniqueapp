@@ -708,3 +708,36 @@ All colors MUST be HSL.
     }
   }
 }
+
+/* ============================================================
+ * Anonymous Dating tokens & utilities (Phase 4)
+ * Centralizes the pink/rose accent gradient used across
+ * anonymous-date components so we can re-theme in one place.
+ * ============================================================ */
+:root {
+  --anon-date-1: 330 100% 60%;   /* hot pink (= accent in light) */
+  --anon-date-2: 350 90% 60%;    /* rose */
+  --anon-date-3: 290 85% 55%;    /* fuchsia bridge to primary */
+  --anon-date-glow: 0 0 30px hsl(var(--anon-date-1) / 0.45);
+  --anon-date-gradient: linear-gradient(135deg, hsl(var(--anon-date-1)), hsl(var(--anon-date-2)));
+  --anon-date-gradient-soft: linear-gradient(135deg, hsl(var(--anon-date-1) / 0.15), hsl(var(--primary) / 0.15));
+}
+.dark {
+  --anon-date-1: 330 100% 65%;
+  --anon-date-2: 350 90% 62%;
+  --anon-date-3: 290 90% 60%;
+  --anon-date-glow: 0 0 40px hsl(var(--anon-date-1) / 0.55);
+}
+
+@layer utilities {
+  .bg-anon-date-gradient { background-image: var(--anon-date-gradient); }
+  .bg-anon-date-gradient-soft { background-image: var(--anon-date-gradient-soft); }
+  .text-anon-date { color: hsl(var(--anon-date-1)); }
+  .border-anon-date { border-color: hsl(var(--anon-date-1) / 0.4); }
+  .shadow-anon-date { box-shadow: var(--anon-date-glow); }
+  /* Mobile-stable chat height: dvh handles iOS Safari URL bar collapse. */
+  .h-anon-chat { height: calc(100dvh - 16rem); max-height: 640px; }
+  @supports not (height: 100dvh) {
+    .h-anon-chat { height: calc(100vh - 16rem); }
+  }
+}
