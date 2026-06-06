@@ -227,6 +227,20 @@ serve(async (req) => {
 
     const matchedProfile = chosen.profile;
 
+    // ── Atomic credit deduction first (prevents double-spend) ──
+    const { error: deductErr } = await supabaseClient.rpc(
+      "deduct_anonymous_dating_credits",
+      { p_user_id: user.id, p_amount: MATCH_COST },
+    );
+    if (deductErr) {
+      const msg = deductErr.message || "";
+      const status = msg.includes("INSUFFICIENT_CREDITS") ? 402 : 500;
+      return new Response(
+        JSON.stringify({ error: msg.includes("INSUFFICIENT") ? "Insufficient credits" : msg, required: MATCH_COST }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status }
+      );
+    }
+
     // Create match
     const { data: newMatch, error: matchError } = await supabaseClient
       .from("anonymous_dating_matches")
@@ -242,15 +256,11 @@ serve(async (req) => {
       .select()
       .single();
 
-    if (matchError) throw matchError;
-
-    // Deduct credits
-    await supabaseClient
-      .from("anonymous_dating_credits")
-      .update({
-        credits_remaining: (creditsData?.credits_remaining ?? 0) - MATCH_COST,
-      })
-      .eq("user_id", user.id);
+    if (matchError) {
+      // Refund on failure
+      await supabaseClient.rpc("grant_anonymous_dating_credits", { p_user_id: user.id, p_amount: MATCH_COST });
+      throw matchError;
+    }
 
     return new Response(
       JSON.stringify({
