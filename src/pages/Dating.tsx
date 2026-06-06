@@ -46,6 +46,8 @@ import { FriendCirclesPanel } from "@/components/dating/FriendCirclesPanel";
 import { DatingPremiumPanel } from "@/components/dating/DatingPremiumPanel";
 import { DatingNotificationsCenter } from "@/components/dating/DatingNotificationsCenter";
 import { DatingAnalyticsPanel } from "@/components/dating/DatingAnalyticsPanel";
+import { AIStarterButton } from "@/components/dating/AIStarterButton";
+import { AIBioCoach } from "@/components/dating/AIBioCoach";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface DatingProfile {
@@ -153,6 +155,7 @@ const Dating = () => {
   const [showPassport, setShowPassport] = useState(false);
   const [discoveryMode, setDiscoveryMode] = useState<DiscoveryMode>("deck");
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const [pendingStarterExperiment, setPendingStarterExperiment] = useState<string | null>(null);
 
   useEffect(() => { checkAuth(); }, []);
   useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
