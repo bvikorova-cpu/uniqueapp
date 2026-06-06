@@ -1057,7 +1057,9 @@ const Dating = () => {
                   </div>
                 </ScrollArea>
                 <div className="border-t p-3 bg-card">
+                  <SafetyTipsBanner matchId={selectedMatch.id} partnerName={selectedMatch.profile?.display_name} />
                   <div className="flex gap-2">
+
                     <EmojiPicker onSelect={(e) => setNewMessage(newMessage + e)} />
                     {user && <VoiceNoteRecorder userId={user.id} matchId={selectedMatch.id} onSent={() => loadMessages(selectedMatch.id)} />}
                     <AIStarterButton
