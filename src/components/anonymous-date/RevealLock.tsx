@@ -141,7 +141,7 @@ export const RevealLock = ({ matchId, currentUserId, partnerName, revealRequestA
 
         {active && partnerRequested && (
           <motion.div key="confirm" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}>
-            <p className="text-[11px] font-semibold text-pink-300 mb-2">
+            <p className="text-[11px] font-semibold text-anon-date mb-2">
               {partnerName} wants to reveal! Confirm within {remaining}s
             </p>
             <div className="flex gap-2">
