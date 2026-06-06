@@ -48,6 +48,16 @@ export const ProfileExtrasDisplay = ({
         </div>
       )}
 
+      {videoPrompts?.map((vp, i) => (
+        <div key={`vp-${i}`} className="rounded-lg overflow-hidden border border-border bg-muted/40">
+          <div className="px-3 py-2 flex items-center gap-2">
+            <Video className="h-3.5 w-3.5 text-primary" />
+            <p className="text-[11px] font-medium uppercase tracking-wide">{vp.question}</p>
+          </div>
+          <video src={vp.video_url} controls playsInline className="w-full aspect-square bg-black object-cover" />
+        </div>
+      ))}
+
       {prompts?.map((p, i) => (
         <div key={i} className="rounded-lg bg-muted/40 p-3">
           <p className="text-[11px] text-muted-foreground uppercase tracking-wide">{p.q}</p>
