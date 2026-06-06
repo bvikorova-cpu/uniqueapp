@@ -22,6 +22,12 @@ import { AIDateIdeas } from "@/components/dating/AIDateIdeas";
 import { AIProfileOptimizer } from "@/components/dating/AIProfileOptimizer";
 import { FiltersDialog, type DatingFilters } from "@/components/dating/FiltersDialog";
 import { BlockReportMenu } from "@/components/dating/BlockReportMenu";
+import { PromptsEditor, type Prompt } from "@/components/dating/PromptsEditor";
+import { VoiceIntroRecorder } from "@/components/dating/VoiceIntroRecorder";
+import { SocialEmbedsCard } from "@/components/dating/SocialEmbedsCard";
+import { PhotoVerificationCard } from "@/components/dating/PhotoVerificationCard";
+import { PhotoLikeButton } from "@/components/dating/PhotoLikeButton";
+import { ProfileExtrasDisplay } from "@/components/dating/ProfileExtrasDisplay";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface DatingProfile {
