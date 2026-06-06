@@ -500,6 +500,7 @@ const AdminSecurityScan = lazy(() => import("@/pages/admin/AdminSecurityScan"));
 const AdminMegatalentModeration = lazy(() => import("@/pages/admin/AdminMegatalentModeration"));
 const AdminFundraisingModeration = lazy(() => import("@/pages/admin/AdminFundraisingModeration"));
 const AdminBattleRoyalePayouts = lazy(() => import("@/pages/admin/AdminBattleRoyalePayouts"));
+const AdminDatingModeration = lazy(() => import("@/pages/admin/AdminDatingModeration"));
 const CreatorVerification = lazy(() => import("@/pages/CreatorVerification"));
 const WinBackOffer = lazy(() => import("@/pages/WinBackOffer"));
 const CreatorPayouts = lazy(() => import("@/pages/CreatorPayouts"));
@@ -658,6 +659,7 @@ const App = () => {
                         <Route path="/admin/megatalent-moderation" element={<AdminMegatalentModeration />} />
                         <Route path="/admin/fundraising-moderation" element={<AdminFundraisingModeration />} />
                         <Route path="/admin/battle-royale-payouts" element={<AdminBattleRoyalePayouts />} />
+                        <Route path="/admin/dating-moderation" element={<AdminDatingModeration />} />
                         <Route path="/referral" element={<Referral />} />
                         <Route path="/games" element={<Games />} />
                         <Route path="/games-hub" element={<GamesHub />} />

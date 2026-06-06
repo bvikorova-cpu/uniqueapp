@@ -29,6 +29,7 @@ import { PhotoVerificationCard } from "@/components/dating/PhotoVerificationCard
 import { PhotoLikeButton } from "@/components/dating/PhotoLikeButton";
 import { ProfileExtrasDisplay } from "@/components/dating/ProfileExtrasDisplay";
 import { SafetyCenter } from "@/components/dating/SafetyCenter";
+import { SafetyTipsBanner } from "@/components/dating/SafetyTipsBanner";
 import { MessageActions } from "@/components/dating/MessageActions";
 import { EmojiPicker } from "@/components/dating/EmojiPicker";
 import { CompatibilityQuiz, computeCompatibility } from "@/components/dating/CompatibilityQuiz";
@@ -268,7 +269,7 @@ const Dating = () => {
     const swipedIds = swipedProfiles?.map(s => s.swiped_id) || [];
     const excludeIds = [...new Set([...swipedIds, ...blockedIds, user.id])];
 
-    let q = supabase.from("dating_profiles").select("*").eq("is_active", true).eq("incognito", false);
+    let q = supabase.from("dating_profiles").select("*").eq("is_active", true).eq("incognito", false).eq("is_shadow_banned", false);
     if (excludeIds.length > 0) q = q.not("user_id", "in", `(${excludeIds.join(",")})`);
     if (filters) {
       q = q.gte("age", filters.min_age).lte("age", filters.max_age);
@@ -1057,7 +1058,9 @@ const Dating = () => {
                   </div>
                 </ScrollArea>
                 <div className="border-t p-3 bg-card">
+                  <SafetyTipsBanner matchId={selectedMatch.id} partnerName={selectedMatch.profile?.display_name} />
                   <div className="flex gap-2">
+
                     <EmojiPicker onSelect={(e) => setNewMessage(newMessage + e)} />
                     {user && <VoiceNoteRecorder userId={user.id} matchId={selectedMatch.id} onSent={() => loadMessages(selectedMatch.id)} />}
                     <AIStarterButton
