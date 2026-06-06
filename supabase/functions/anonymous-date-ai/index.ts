@@ -257,11 +257,18 @@ Deno.serve(async (req) => {
       await admin.from(parityTable).insert(row);
     }
 
+    // Read current balance for response
+    const { data: bal } = await admin
+      .from("anonymous_dating_credits")
+      .select("credits_remaining")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
     return new Response(JSON.stringify({
       success: true,
       feature,
       output,
-      credits_remaining: credits.credits_remaining - cost,
+      credits_remaining: bal?.credits_remaining ?? 0,
     }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e: any) {
     console.error("anonymous-date-ai error", e);
