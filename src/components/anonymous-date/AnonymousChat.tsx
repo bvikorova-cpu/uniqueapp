@@ -303,7 +303,28 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
           </div>
         </div>
 
-        {/* Messages */}
+        {/* Expiry banner: 24h warning + post-expiry CTA */}
+        {expired ? (
+          <div className="px-3 py-2 bg-destructive/15 border-b border-destructive/30 flex items-center justify-between gap-2">
+            <p className="text-xs font-semibold text-destructive">
+              This chat has expired. Find a new match to keep dating.
+            </p>
+            <button
+              onClick={() => (window.location.href = "/anonymous-date?view=find")}
+              className="text-[10px] font-bold px-3 py-1 rounded-full bg-destructive text-destructive-foreground hover:opacity-90"
+            >
+              Find new match
+            </button>
+          </div>
+        ) : urgent ? (
+          <div className="px-3 py-2 bg-amber-500/15 border-b border-amber-500/30">
+            <p className="text-xs font-semibold text-amber-600 dark:text-amber-400">
+              ⏰ Less than 24h left — request a reveal or exchange contacts before the chat closes.
+            </p>
+          </div>
+        ) : null}
+
+
         <div ref={scrollRef} className="flex-1 overflow-y-auto p-3 space-y-2 bg-background/50 backdrop-blur-sm">
           {loading && <p className="text-center text-xs text-muted-foreground py-4">Loading conversation…</p>}
           {!loading && messages.length === 0 && (
