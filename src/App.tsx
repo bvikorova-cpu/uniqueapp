@@ -659,6 +659,7 @@ const App = () => {
                         <Route path="/admin/megatalent-moderation" element={<AdminMegatalentModeration />} />
                         <Route path="/admin/fundraising-moderation" element={<AdminFundraisingModeration />} />
                         <Route path="/admin/battle-royale-payouts" element={<AdminBattleRoyalePayouts />} />
+                        <Route path="/admin/dating-moderation" element={<AdminDatingModeration />} />
                         <Route path="/referral" element={<Referral />} />
                         <Route path="/games" element={<Games />} />
                         <Route path="/games-hub" element={<GamesHub />} />
