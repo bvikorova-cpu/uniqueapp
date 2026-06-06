@@ -94,12 +94,10 @@ export default function AdminDatingModeration() {
 
   const decideVerif = async (profileId: string, decision: "verified" | "rejected") => {
     setBusyId(profileId);
-    const patch: any = {
-      verification_status: decision,
-      verification_reviewed_at: new Date().toISOString(),
-    };
-    if (decision === "verified") patch.is_verified = true;
-    const { error } = await supabase.from("dating_profiles").update(patch).eq("id", profileId);
+    const { error } = await supabase
+      .from("dating_profiles")
+      .update({ verification_status: decision })
+      .eq("id", profileId);
     setBusyId(null);
     if (error) return toast({ title: "Failed", description: error.message, variant: "destructive" });
     toast({ title: `Profile ${decision}` });
