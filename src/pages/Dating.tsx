@@ -259,19 +259,49 @@ const Dating = () => {
         q = q.in("gender", filters.preferred_genders);
       }
     }
-    const { data } = await q.limit(40);
+    const nowIso = new Date().toISOString();
+    q = q.or(`snoozed_until.is.null,snoozed_until.lt.${nowIso}`);
+    const { data } = await q.limit(80);
 
-    // Rank: boosted users first
     let ranked = data || [];
     if (ranked.length > 0) {
       const userIds = ranked.map(p => p.user_id);
       const { data: boosts } = await supabase.from("dating_boosts").select("user_id")
         .in("user_id", userIds).gt("expires_at", new Date().toISOString());
       const boostedSet = new Set((boosts || []).map(b => b.user_id));
-      ranked = [...ranked.filter(p => boostedSet.has(p.user_id)), ...ranked.filter(p => !boostedSet.has(p.user_id))];
+
+      const myQuiz = (currentProfile?.compatibility_quiz as any) || null;
+      const myInterests = new Set(currentProfile?.interests || []);
+      const score = (p: any) => {
+        let s = 0;
+        if (boostedSet.has(p.user_id)) s += 1000;
+        if (p.photo_verified) s += 80;
+        const compat = computeCompatibility(myQuiz, p.compatibility_quiz);
+        s += compat * 2;
+        const shared = (p.interests || []).filter((i: string) => myInterests.has(i)).length;
+        s += shared * 15;
+        if (p.voice_intro_url) s += 10;
+        if (Array.isArray(p.prompts) && p.prompts.length > 0) s += 10;
+        return s;
+      };
+
+      if (discoveryMode === "most_compatible") {
+        ranked = [...ranked].sort((a, b) =>
+          computeCompatibility(myQuiz, b.compatibility_quiz) - computeCompatibility(myQuiz, a.compatibility_quiz)
+        );
+      } else if (discoveryMode === "top_picks") {
+        ranked = [...ranked].sort((a, b) => score(b) - score(a)).slice(0, 10);
+      } else if (discoveryMode === "standouts") {
+        ranked = ranked.filter(p => p.photo_verified || (Array.isArray(p.prompts) && p.prompts.length >= 2) || p.voice_intro_url);
+        ranked = [...ranked].sort((a, b) => score(b) - score(a)).slice(0, 12);
+      } else {
+        ranked = [...ranked.filter(p => boostedSet.has(p.user_id)), ...ranked.filter(p => !boostedSet.has(p.user_id))];
+      }
     }
-    setProfiles(ranked.slice(0, 20));
+    setProfiles(ranked.slice(0, 25));
   };
+
+  useEffect(() => { if (user?.id) loadProfiles(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [discoveryMode]);
 
   const loadMatches = async (userId: string) => {
     const { data } = await supabase.from("dating_matches").select("*").or(`user1_id.eq.${userId},user2_id.eq.${userId}`);
