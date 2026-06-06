@@ -147,10 +147,7 @@ serve(async (req) => {
     }
 
     if (!potentialMatches || potentialMatches.length === 0) {
-      return new Response(
-        JSON.stringify({ error: "No compatible matches found at the moment. Try again later!" }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 404 }
-      );
+      return errorResponse("NO_MATCHES", "No compatible matches found at the moment. Try again later!", 404);
     }
 
     // Multi-axis compatibility scoring (0-100)
