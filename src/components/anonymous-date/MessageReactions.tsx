@@ -41,13 +41,20 @@ export const MessageReactions = ({ messageId, reactions, currentUserId, onToggle
         </motion.button>
       ))}
 
-      <button
-        onClick={() => setOpen(o => !o)}
-        className="text-muted-foreground hover:text-primary transition p-1 rounded-full"
-        aria-label="Add reaction"
-      >
-        <Smile className="h-3.5 w-3.5" />
-      </button>
+      <TooltipProvider delayDuration={300}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              onClick={() => setOpen(o => !o)}
+              className="text-muted-foreground hover:text-primary transition p-1 rounded-full"
+              aria-label="Add reaction"
+            >
+              <Smile className="h-3.5 w-3.5" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="top" className="text-[10px]">React with an emoji</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
 
       <AnimatePresence>
         {open && (
