@@ -847,7 +847,7 @@ const Dating = () => {
         </div>
 
         {/* Main Tabs */}
-        <Tabs defaultValue="swipe" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-8 max-w-4xl mx-auto mb-6 h-11 bg-muted/50">
             <TabsTrigger value="swipe" className="text-sm gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Heart className="h-4 w-4" /><span className="hidden sm:inline">Discover</span>
