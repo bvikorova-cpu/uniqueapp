@@ -216,6 +216,7 @@ export default function AnonymousDate() {
         .eq("user_id", user.id)
         .single();
       setHasProfile(!!data);
+      if (data?.anonymous_name) setMyAnonName(data.anonymous_name);
     } catch (error) {
       console.error("Error checking profile:", error);
     } finally {
