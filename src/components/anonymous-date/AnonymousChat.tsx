@@ -379,7 +379,7 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
               Time's Up
             </h3>
             <p className="relative mt-2 text-sm font-semibold text-white">
-              Your 24-hour anonymous match has ended.
+              Your anonymous match has ended.
             </p>
             <p className="relative mt-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-pink-200">
               Messaging closed · Memories remain
