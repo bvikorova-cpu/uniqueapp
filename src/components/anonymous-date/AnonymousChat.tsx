@@ -4,8 +4,11 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Send, Check, CheckCheck, Settings2, Download, AlertOctagon, ShieldX, Timer } from "lucide-react";
+import { Send, Check, CheckCheck, Settings2, Download, AlertOctagon, ShieldX, Timer, Wand2 } from "lucide-react";
 import { ChatSafetyMenu } from "./ChatSafetyMenu";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Skeleton } from "@/components/ui/skeleton";
+import { AnonymousDateAIToolbox } from "./AnonymousDateAIToolbox";
 import { useChatSafety } from "@/hooks/useChatSafety";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -288,6 +291,21 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
             <button onClick={downloadPDF} className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white" title="Export PDF">
               <Download className="h-3.5 w-3.5" />
             </button>
+            <Sheet>
+              <SheetTrigger asChild>
+                <button className="p-1.5 rounded-full bg-anon-date-gradient text-white hover:opacity-90" title="AI Toolbox">
+                  <Wand2 className="h-3.5 w-3.5" />
+                </button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-full sm:max-w-2xl overflow-y-auto">
+                <SheetHeader>
+                  <SheetTitle>AI Dating Toolbox</SheetTitle>
+                </SheetHeader>
+                <div className="mt-4">
+                  <AnonymousDateAIToolbox credits={credits} />
+                </div>
+              </SheetContent>
+            </Sheet>
             <button onClick={() => setShowSettings(s => !s)} className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white" title="Settings">
               <Settings2 className="h-3.5 w-3.5" />
             </button>
@@ -326,10 +344,22 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
 
 
         <div ref={scrollRef} className="flex-1 overflow-y-auto p-3 space-y-2 bg-background/50 backdrop-blur-sm">
-          {loading && <p className="text-center text-xs text-muted-foreground py-4">Loading conversation…</p>}
+          {loading && (
+            <div className="space-y-3 py-2">
+              {[0, 1, 2, 3].map(i => (
+                <div key={i} className={`flex ${i % 2 ? "justify-end" : "justify-start"}`}>
+                  <Skeleton className={`h-9 rounded-2xl ${i % 2 ? "w-2/5" : "w-1/2"}`} />
+                </div>
+              ))}
+            </div>
+          )}
           {!loading && messages.length === 0 && (
-            <div className="text-center py-8 text-sm text-muted-foreground italic">
-              No messages yet. Break the ice anonymously ✨
+            <div className="text-center py-10 flex flex-col items-center gap-2">
+              <div className="text-4xl">✨</div>
+              <p className="text-sm font-semibold">Say hi anonymously</p>
+              <p className="text-xs text-muted-foreground max-w-xs">
+                Your identity stays hidden until both of you tap reveal. Start with an icebreaker from the AI Toolbox 🪄
+              </p>
             </div>
           )}
 

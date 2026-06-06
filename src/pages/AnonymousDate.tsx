@@ -575,7 +575,7 @@ export default function AnonymousDate() {
               </Button>
 
               {activeView === "matches" && !selectedMatchId && (
-                <ActiveMatches matches={activeMatches} onOpenChat={(id) => setSelectedMatchId(id)} />
+                <ActiveMatches matches={activeMatches} onOpenChat={(id) => setSelectedMatchId(id)} onFindMatch={() => setActiveView("find")} />
               )}
               {activeView === "matches" && selectedMatchId && currentUserId && (() => {
                 const m = activeMatches.find((x: any) => x.id === selectedMatchId);

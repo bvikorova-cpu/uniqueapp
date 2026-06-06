@@ -50,12 +50,12 @@ Cieľ: zastaviť stratu peňazí a privacy leaky.
 22. ✅ **ProfileSetup stats**: skryté (žiadne falošné „—" hodnoty), pripravené na neskoršie zapojenie reálnych metrík.
 23. ✅ **ChatSafetyMenu**: shield ikona presunutá z `⋮` na viditeľný emerald "Safety" badge v headeri.
 
-## Fáza 6 — UX polish (Day 6)
-24. AI Toolbox dostupný priamo z chatu (drawer).
-25. Reaction discoverability hint (tooltip pri prvom hover).
-26. Empty states pre 0 matchov / 0 kreditov s ilustráciou.
-27. Skeleton loaders namiesto spinnerov.
-28. Toast confirmácie pre block/report.
+## Fáza 6 — UX polish (Day 6) ✅
+24. ✅ AI Toolbox dostupný priamo z chatu cez Sheet drawer (Wand2 button v headeri).
+25. ✅ Reaction tooltip ("React with an emoji") na Smile ikone v MessageReactions.
+26. ✅ Empty states: ActiveMatches zero-match karta s animovaným srdcom + "Find your match" CTA wired do `setActiveView("find")`. Chat empty state s ikebreaker promptom.
+27. ✅ Skeleton loader (4 bubble skeletons) namiesto "Loading conversation…" textu.
+28. ✅ Block/report toasty už existujú v `useChatSafety` (block/unblock/report = sonner toasts).
 
 ## Fáza 7 — Testy & monitoring (Day 7)
 29. E2E test: payment → credit grant (webhook simulácia).

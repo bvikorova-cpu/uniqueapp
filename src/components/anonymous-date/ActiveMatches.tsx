@@ -1,22 +1,36 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MessageCircle, Clock, Eye, Heart } from "lucide-react";
+import { MessageCircle, Clock, Eye, Heart, Sparkles } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { motion } from "framer-motion";
 
 interface ActiveMatchesProps {
   matches: any[];
   onOpenChat: (matchId: string) => void;
+  onFindMatch?: () => void;
 }
 
-export function ActiveMatches({ matches, onOpenChat }: ActiveMatchesProps) {
+export function ActiveMatches({ matches, onOpenChat, onFindMatch }: ActiveMatchesProps) {
   if (matches.length === 0) {
     return (
-      <Card className="p-12 text-center bg-card/80 backdrop-blur-xl border-border/50">
-        <Heart className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-        <h3 className="font-bold text-lg mb-2">No Active Matches Yet</h3>
-        <p className="text-sm text-muted-foreground">Start finding your match to begin your anonymous dating journey!</p>
+      <Card className="p-10 sm:p-14 text-center bg-anon-date-gradient-soft border-anon-date relative overflow-hidden">
+        <motion.div
+          animate={{ scale: [1, 1.15, 1], rotate: [0, -8, 8, 0] }}
+          transition={{ duration: 4, repeat: Infinity }}
+          className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-anon-date-gradient shadow-2xl mb-4"
+        >
+          <Heart className="h-8 w-8 text-white" />
+        </motion.div>
+        <h3 className="font-black text-xl mb-2">No matches yet</h3>
+        <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-5">
+          Your anonymous love story is one match away. Tap below to find someone who shares your vibe.
+        </p>
+        {onFindMatch && (
+          <Button onClick={onFindMatch} className="bg-anon-date-gradient text-white hover:opacity-90">
+            <Sparkles className="h-4 w-4 mr-2" /> Find your match
+          </Button>
+        )}
       </Card>
     );
   }
