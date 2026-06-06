@@ -28,6 +28,9 @@ import { SocialEmbedsCard } from "@/components/dating/SocialEmbedsCard";
 import { PhotoVerificationCard } from "@/components/dating/PhotoVerificationCard";
 import { PhotoLikeButton } from "@/components/dating/PhotoLikeButton";
 import { ProfileExtrasDisplay } from "@/components/dating/ProfileExtrasDisplay";
+import { SafetyCenter } from "@/components/dating/SafetyCenter";
+import { MessageActions } from "@/components/dating/MessageActions";
+import { EmojiPicker } from "@/components/dating/EmojiPicker";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface DatingProfile {
@@ -49,6 +52,8 @@ interface DatingProfile {
   instagram_url?: string | null;
   photo_verified?: boolean | null;
   verification_status?: string | null;
+  incognito?: boolean | null;
+  read_receipts_enabled?: boolean | null;
 }
 
 interface Match {
@@ -64,6 +69,8 @@ interface Message {
   content: string;
   created_at: string;
   read_at: string | null;
+  edited_at?: string | null;
+  deleted_at?: string | null;
 }
 
 interface GiftType {
@@ -120,6 +127,7 @@ const Dating = () => {
   const [blockedIds, setBlockedIds] = useState<string[]>([]);
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
   const [activeView, setActiveView] = useState<string>("hub");
+  const [showSafety, setShowSafety] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { checkAuth(); }, []);
@@ -231,7 +239,7 @@ const Dating = () => {
     const swipedIds = swipedProfiles?.map(s => s.swiped_id) || [];
     const excludeIds = [...new Set([...swipedIds, ...blockedIds, user.id])];
 
-    let q = supabase.from("dating_profiles").select("*").eq("is_active", true);
+    let q = supabase.from("dating_profiles").select("*").eq("is_active", true).eq("incognito", false);
     if (excludeIds.length > 0) q = q.not("user_id", "in", `(${excludeIds.join(",")})`);
     if (filters) {
       q = q.gte("age", filters.min_age).lte("age", filters.max_age);
@@ -270,11 +278,20 @@ const Dating = () => {
   const loadMessages = async (matchId: string) => {
     const { data } = await supabase.from("dating_messages").select("*").eq("match_id", matchId).order("created_at", { ascending: true });
     setMessages(data || []);
-    if (data && data.length > 0) {
+    // Only mark as read if I have read receipts enabled (so partner can see them)
+    if (data && data.length > 0 && currentProfile?.read_receipts_enabled !== false) {
       await supabase.from("dating_messages").update({ read_at: new Date().toISOString() }).eq("match_id", matchId).neq("sender_id", user?.id || "").is("read_at", null);
     }
     const { data: gifts } = await supabase.from("dating_sent_gifts").select(`*, gift:gift_id (*)`).eq("match_id", matchId).order("created_at", { ascending: true });
     setSentGifts(gifts || []);
+  };
+
+  const handleTogglePrivacy = async (patch: { incognito?: boolean; read_receipts_enabled?: boolean }) => {
+    if (!currentProfile) return;
+    const { error } = await supabase.from("dating_profiles").update(patch).eq("id", currentProfile.id);
+    if (error) { toast({ title: "Could not update", description: error.message, variant: "destructive" }); return; }
+    setCurrentProfile({ ...currentProfile, ...patch });
+    toast({ title: "Privacy updated" });
   };
 
   const handleSubscribe = async (planType: 'monthly' | 'yearly') => {
