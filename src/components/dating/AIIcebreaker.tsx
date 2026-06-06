@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { MessageCircle, Loader2, Sparkles, ArrowLeft, Copy, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { spendDatingCredits } from "@/lib/datingAiCredits";
 
 interface Props { onBack: () => void; }
 
@@ -19,8 +20,8 @@ export const AIIcebreaker = ({ onBack }: Props) => {
     if (!form.name) { toast({ title: "Enter their name", variant: "destructive" }); return; }
     setLoading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Login required");
+      await spendDatingCredits(3, "ai_icebreaker");
+
 
       const { data, error } = await supabase.functions.invoke("generate-gift-message", {
         body: {
