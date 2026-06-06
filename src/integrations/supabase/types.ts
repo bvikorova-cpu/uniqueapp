@@ -17860,6 +17860,86 @@ export type Database = {
           },
         ]
       }
+      dating_event_participants: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dating_event_participants_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "dating_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dating_events: {
+        Row: {
+          city: string | null
+          cover_url: string | null
+          created_at: string
+          description: string | null
+          ends_at: string | null
+          host_id: string
+          id: string
+          is_public: boolean
+          max_participants: number | null
+          mode: string
+          starts_at: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          city?: string | null
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          ends_at?: string | null
+          host_id: string
+          id?: string
+          is_public?: boolean
+          max_participants?: number | null
+          mode?: string
+          starts_at: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          city?: string | null
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          ends_at?: string | null
+          host_id?: string
+          id?: string
+          is_public?: boolean
+          max_participants?: number | null
+          mode?: string
+          starts_at?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       dating_filters: {
         Row: {
           created_at: string
@@ -17896,6 +17976,56 @@ export type Database = {
         }
         Relationships: []
       }
+      dating_friend_circle_members: {
+        Row: {
+          circle_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          circle_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          circle_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dating_friend_circle_members_circle_id_fkey"
+            columns: ["circle_id"]
+            isOneToOne: false
+            referencedRelation: "dating_friend_circles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dating_friend_circles: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          owner_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          owner_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          owner_id?: string
+        }
+        Relationships: []
+      }
       dating_gifts: {
         Row: {
           created_at: string
@@ -17919,6 +18049,47 @@ export type Database = {
           price?: number
         }
         Relationships: []
+      }
+      dating_group_activities: {
+        Row: {
+          circle_id: string
+          created_at: string
+          created_by: string
+          id: string
+          location: string | null
+          scheduled_at: string | null
+          status: string
+          title: string
+        }
+        Insert: {
+          circle_id: string
+          created_at?: string
+          created_by: string
+          id?: string
+          location?: string | null
+          scheduled_at?: string | null
+          status?: string
+          title: string
+        }
+        Update: {
+          circle_id?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          location?: string | null
+          scheduled_at?: string | null
+          status?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dating_group_activities_circle_id_fkey"
+            columns: ["circle_id"]
+            isOneToOne: false
+            referencedRelation: "dating_friend_circles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       dating_last_swipe: {
         Row: {
@@ -18077,6 +18248,76 @@ export type Database = {
           to_user_id?: string
         }
         Relationships: []
+      }
+      dating_poll_votes: {
+        Row: {
+          created_at: string
+          id: string
+          option_index: number
+          poll_id: string
+          voter_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          option_index: number
+          poll_id: string
+          voter_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          option_index?: number
+          poll_id?: string
+          voter_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dating_poll_votes_poll_id_fkey"
+            columns: ["poll_id"]
+            isOneToOne: false
+            referencedRelation: "dating_polls"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dating_polls: {
+        Row: {
+          author_id: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          match_id: string
+          options: Json
+          question: string
+        }
+        Insert: {
+          author_id: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          match_id: string
+          options: Json
+          question: string
+        }
+        Update: {
+          author_id?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          match_id?: string
+          options?: Json
+          question?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dating_polls_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "dating_matches"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       dating_profiles: {
         Row: {

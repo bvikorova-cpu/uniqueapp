@@ -40,6 +40,9 @@ import { DiscoveryTabs, type DiscoveryMode } from "@/components/dating/Discovery
 import { VideoPromptRecorder, type VideoPrompt } from "@/components/dating/VideoPromptRecorder";
 import { VoiceNoteRecorder } from "@/components/dating/VoiceNoteRecorder";
 import { DatePlanCard } from "@/components/dating/DatePlanCard";
+import { MatchPollCard } from "@/components/dating/MatchPollCard";
+import { DatingEventsList } from "@/components/dating/DatingEventsList";
+import { FriendCirclesPanel } from "@/components/dating/FriendCirclesPanel";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface DatingProfile {
@@ -803,7 +806,7 @@ const Dating = () => {
 
         {/* Main Tabs */}
         <Tabs defaultValue="swipe" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 max-w-lg mx-auto mb-6 h-11 bg-muted/50">
+          <TabsList className="grid w-full grid-cols-5 max-w-lg mx-auto mb-6 h-11 bg-muted/50">
             <TabsTrigger value="swipe" className="text-sm gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Heart className="h-4 w-4" /><span className="hidden sm:inline">Discover</span>
             </TabsTrigger>
@@ -814,6 +817,9 @@ const Dating = () => {
             <TabsTrigger value="likes" className="text-sm gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground relative">
               <Eye className="h-4 w-4" /><span className="hidden sm:inline">Likes</span>
               {likesYouCount > 0 && <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center">{likesYouCount}</span>}
+            </TabsTrigger>
+            <TabsTrigger value="community" className="text-sm gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <Sparkles className="h-4 w-4" /><span className="hidden sm:inline">Community</span>
             </TabsTrigger>
             <TabsTrigger value="profile" className="text-sm gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <User className="h-4 w-4" /><span className="hidden sm:inline">Profile</span>
@@ -951,8 +957,9 @@ const Dating = () => {
                   )}
                 </div>
                 {user && (
-                  <div className="border-b p-3 bg-muted/20">
+                  <div className="border-b p-3 bg-muted/20 space-y-2">
                     <DatePlanCard matchId={selectedMatch.id} userId={user.id} />
+                    <MatchPollCard matchId={selectedMatch.id} userId={user.id} />
                   </div>
                 )}
                 <ScrollArea className="h-[450px]">
@@ -1046,6 +1053,14 @@ const Dating = () => {
               <p className="text-sm text-muted-foreground mb-6">See who's interested and make the first move</p>
               <Button onClick={viewLikesYou} className="bg-gradient-to-r from-primary to-accent hover:opacity-90 gap-2"><Eye className="h-4 w-4" />View Likes</Button>
             </Card>
+          </TabsContent>
+
+          {/* ==================== COMMUNITY TAB ==================== */}
+          <TabsContent value="community">
+            <div className="max-w-3xl mx-auto space-y-8">
+              {user && <DatingEventsList userId={user.id} />}
+              {user && <FriendCirclesPanel userId={user.id} />}
+            </div>
           </TabsContent>
 
           {/* ==================== PROFILE TAB ==================== */}
