@@ -1,26 +1,40 @@
 // Pre-send AI moderation for dating chat messages.
 // Returns { allow: boolean, reason?: string, severity?: 'low'|'medium'|'high' }
+import { createClient } from "npm:@supabase/supabase-js@2";
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const json = (b: unknown, status = 200) =>
+  new Response(JSON.stringify(b), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { content } = await req.json();
-    if (!content || typeof content !== "string") {
-      return new Response(JSON.stringify({ allow: true }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    // JWT validation
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.toLowerCase().startsWith("bearer ")) {
+      return json({ error: "Unauthorized" }, 401);
     }
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_ANON_KEY")!,
+      { global: { headers: { Authorization: authHeader } } },
+    );
+    const { data: au, error: authErr } = await supabase.auth.getUser();
+    if (authErr || !au?.user) return json({ error: "Unauthorized" }, 401);
+
+    const body = await req.json().catch(() => ({}));
+    const content = typeof body?.content === "string" ? body.content : "";
+    if (!content) return json({ allow: true });
 
     const trimmed = content.trim().slice(0, 1500);
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      // Fail open if AI gateway not configured
-      return new Response(JSON.stringify({ allow: true }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    }
+    if (!LOVABLE_API_KEY) return json({ allow: true });
 
     const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -43,9 +57,7 @@ Deno.serve(async (req) => {
       }),
     });
 
-    if (resp.status === 429 || resp.status === 402) {
-      return new Response(JSON.stringify({ allow: true }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    }
+    if (resp.status === 429 || resp.status === 402) return json({ allow: true });
     const data = await resp.json();
     const raw = data?.choices?.[0]?.message?.content ?? "{}";
     let parsed: any = {};
@@ -53,13 +65,8 @@ Deno.serve(async (req) => {
 
     const severity = parsed.severity ?? "none";
     const allow = severity !== "high";
-    return new Response(
-      JSON.stringify({ allow, severity, reason: parsed.reason, category: parsed.category }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } },
-    );
+    return json({ allow, severity, reason: parsed.reason, category: parsed.category });
   } catch (e) {
-    return new Response(JSON.stringify({ allow: true, error: String(e) }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return json({ allow: true, error: String(e) });
   }
 });
