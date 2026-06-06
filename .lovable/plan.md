@@ -57,12 +57,14 @@ Cieľ: zastaviť stratu peňazí a privacy leaky.
 27. ✅ Skeleton loader (4 bubble skeletons) namiesto "Loading conversation…" textu.
 28. ✅ Block/report toasty už existujú v `useChatSafety` (block/unblock/report = sonner toasts).
 
-## Fáza 7 — Testy & monitoring (Day 7)
-29. E2E test: payment → credit grant (webhook simulácia).
-30. E2E test: reveal flow (unilateral attack musí failnúť).
-31. E2E test: double-spend kreditov (paralelné requesty).
-32. RLS test suite pre všetky `anonymous_dating_*` tabuľky.
-33. Edge function logs review + alerting na 5xx.
+## Fáza 7 — Testy & monitoring (Day 7) ✅ (čiastočne)
+29. ✅ Deno unit testy pre `_shared/anonymous-dating.ts` (Zod schémy: max 4000 chars, max 50 msgs, UUID; PII sanitizer; errorResponse) — `supabase/functions/_shared/anonymous-dating.test.ts`.
+30. ✅ E2E RLS regression (`e2e/anonymous-dating-profiles-rls.spec.ts`) — anon nemá prístup k `anonymous_dating_profiles` ani `anonymous_dating_matches`; partner-profile columns stále existujú.
+31. ✅ E2E partner enrichment (`e2e/anonymous-date-matches.spec.ts`) — viacero partnerov, refresh persistence, swap, fallback, empty state.
+32. TODO: full payment → credit-grant webhook simulácia (vyžaduje Stripe test mode setup).
+33. TODO: reveal unilateral-attack e2e (vyžaduje 2 authed users + service-role helper) — DB trigger to už blokuje (Fáza 1).
+34. TODO: double-spend paralelný request test — RPC `deduct_anonymous_credits` už atomický cez `WHERE credits_remaining >= amount RETURNING`.
+35. TODO: edge function logs alerting na 5xx (vyžaduje externý monitoring setup).
 
 ## Technické poznámky
 - Žiadne breaking changes pre existujúce páry — migrácia `expires_at` len pre nové matche; staré nechať, ale pridať warning UI.
