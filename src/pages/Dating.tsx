@@ -40,6 +40,9 @@ import { DiscoveryTabs, type DiscoveryMode } from "@/components/dating/Discovery
 import { VideoPromptRecorder, type VideoPrompt } from "@/components/dating/VideoPromptRecorder";
 import { VoiceNoteRecorder } from "@/components/dating/VoiceNoteRecorder";
 import { DatePlanCard } from "@/components/dating/DatePlanCard";
+import { MatchPollCard } from "@/components/dating/MatchPollCard";
+import { DatingEventsList } from "@/components/dating/DatingEventsList";
+import { FriendCirclesPanel } from "@/components/dating/FriendCirclesPanel";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface DatingProfile {
