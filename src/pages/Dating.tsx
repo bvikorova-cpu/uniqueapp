@@ -138,6 +138,8 @@ const Dating = () => {
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
   const [activeView, setActiveView] = useState<string>("hub");
   const [showSafety, setShowSafety] = useState(false);
+  const [showPassport, setShowPassport] = useState(false);
+  const [discoveryMode, setDiscoveryMode] = useState<DiscoveryMode>("deck");
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { checkAuth(); }, []);
