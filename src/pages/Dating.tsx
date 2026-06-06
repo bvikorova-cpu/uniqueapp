@@ -28,6 +28,9 @@ import { SocialEmbedsCard } from "@/components/dating/SocialEmbedsCard";
 import { PhotoVerificationCard } from "@/components/dating/PhotoVerificationCard";
 import { PhotoLikeButton } from "@/components/dating/PhotoLikeButton";
 import { ProfileExtrasDisplay } from "@/components/dating/ProfileExtrasDisplay";
+import { SafetyCenter } from "@/components/dating/SafetyCenter";
+import { MessageActions } from "@/components/dating/MessageActions";
+import { EmojiPicker } from "@/components/dating/EmojiPicker";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface DatingProfile {
@@ -49,6 +52,8 @@ interface DatingProfile {
   instagram_url?: string | null;
   photo_verified?: boolean | null;
   verification_status?: string | null;
+  incognito?: boolean | null;
+  read_receipts_enabled?: boolean | null;
 }
 
 interface Match {
@@ -64,6 +69,8 @@ interface Message {
   content: string;
   created_at: string;
   read_at: string | null;
+  edited_at?: string | null;
+  deleted_at?: string | null;
 }
 
 interface GiftType {
@@ -120,6 +127,7 @@ const Dating = () => {
   const [blockedIds, setBlockedIds] = useState<string[]>([]);
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
   const [activeView, setActiveView] = useState<string>("hub");
+  const [showSafety, setShowSafety] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { checkAuth(); }, []);
@@ -231,7 +239,7 @@ const Dating = () => {
     const swipedIds = swipedProfiles?.map(s => s.swiped_id) || [];
     const excludeIds = [...new Set([...swipedIds, ...blockedIds, user.id])];
 
-    let q = supabase.from("dating_profiles").select("*").eq("is_active", true);
+    let q = supabase.from("dating_profiles").select("*").eq("is_active", true).eq("incognito", false);
     if (excludeIds.length > 0) q = q.not("user_id", "in", `(${excludeIds.join(",")})`);
     if (filters) {
       q = q.gte("age", filters.min_age).lte("age", filters.max_age);
@@ -270,11 +278,20 @@ const Dating = () => {
   const loadMessages = async (matchId: string) => {
     const { data } = await supabase.from("dating_messages").select("*").eq("match_id", matchId).order("created_at", { ascending: true });
     setMessages(data || []);
-    if (data && data.length > 0) {
+    // Only mark as read if I have read receipts enabled (so partner can see them)
+    if (data && data.length > 0 && currentProfile?.read_receipts_enabled !== false) {
       await supabase.from("dating_messages").update({ read_at: new Date().toISOString() }).eq("match_id", matchId).neq("sender_id", user?.id || "").is("read_at", null);
     }
     const { data: gifts } = await supabase.from("dating_sent_gifts").select(`*, gift:gift_id (*)`).eq("match_id", matchId).order("created_at", { ascending: true });
     setSentGifts(gifts || []);
+  };
+
+  const handleTogglePrivacy = async (patch: { incognito?: boolean; read_receipts_enabled?: boolean }) => {
+    if (!currentProfile) return;
+    const { error } = await supabase.from("dating_profiles").update(patch).eq("id", currentProfile.id);
+    if (error) { toast({ title: "Could not update", description: error.message, variant: "destructive" }); return; }
+    setCurrentProfile({ ...currentProfile, ...patch });
+    toast({ title: "Privacy updated" });
   };
 
   const handleSubscribe = async (planType: 'monthly' | 'yearly') => {
@@ -333,13 +350,34 @@ const Dating = () => {
   const handleSendMessage = async () => {
     if (!selectedMatch || !newMessage.trim()) return;
     const otherId = selectedMatch.user1_id === user.id ? selectedMatch.user2_id : selectedMatch.user1_id;
-    const { error } = await supabase.from("dating_messages").insert([{ match_id: selectedMatch.id, sender_id: user.id, content: newMessage }]);
+    const content = newMessage.trim().slice(0, 2000);
+
+    // AI moderation pre-check
+    try {
+      const { data: mod } = await supabase.functions.invoke("dating-moderate-message", { body: { content } });
+      if (mod && mod.allow === false) {
+        toast({
+          title: "Message blocked",
+          description: mod.reason || "This message violates community guidelines.",
+          variant: "destructive",
+        });
+        return;
+      }
+      if (mod?.severity === "medium") {
+        toast({ title: "Heads up", description: "This message looks intense — be respectful." });
+      }
+    } catch {
+      // moderation is best-effort
+    }
+
+    const { error } = await supabase.from("dating_messages").insert([{ match_id: selectedMatch.id, sender_id: user.id, content }]);
     if (error) { toast({ title: "Error", description: "Failed to send message", variant: "destructive" }); }
     else {
       await supabase.from("notifications").insert([{ user_id: otherId, type: "dating_message", title: "New Message 💌", message: `${currentProfile?.display_name || "Someone"} sent you a message`, related_id: selectedMatch.id }]);
       setNewMessage(""); await loadMessages(selectedMatch.id);
     }
   };
+
 
   const handleUpdateProfile = async () => {
     if (!user || !currentProfile || !editForm.display_name || !editForm.bio) { toast({ title: "Incomplete Data", description: "Fill in all fields", variant: "destructive" }); return; }
@@ -865,17 +903,26 @@ const Dating = () => {
                     {messages.length === 0 && sentGifts.length === 0 && (
                       <div className="text-center py-12"><Heart className="h-12 w-12 mx-auto text-primary/30 mb-3" /><p className="text-sm font-medium">It's a match! 🎉</p><p className="text-xs text-muted-foreground mt-1">Say something nice to start the conversation</p></div>
                     )}
-                    {messages.map((msg) => (
-                      <div key={msg.id} className={`flex ${msg.sender_id === user?.id ? "justify-end" : "justify-start"}`}>
-                        <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 ${msg.sender_id === user?.id ? "bg-gradient-to-r from-primary to-accent text-primary-foreground rounded-br-md" : "bg-muted rounded-bl-md"}`}>
-                          <p className="text-sm leading-relaxed">{msg.content}</p>
+                    {messages.map((msg) => {
+                      const mine = msg.sender_id === user?.id;
+                      const partnerReceipts = selectedMatch.profile?.read_receipts_enabled !== false;
+                      const deleted = !!msg.deleted_at;
+                      return (
+                      <div key={msg.id} className={`flex group ${mine ? "justify-end" : "justify-start"}`}>
+                        {mine && !deleted && (
+                          <MessageActions messageId={msg.id} currentContent={msg.content} createdAt={msg.created_at} onChanged={() => selectedMatch && loadMessages(selectedMatch.id)} />
+                        )}
+                        <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 ${mine ? "bg-gradient-to-r from-primary to-accent text-primary-foreground rounded-br-md" : "bg-muted rounded-bl-md"} ${deleted ? "opacity-60 italic" : ""}`}>
+                          <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">{deleted ? "🚫 Message unsent" : msg.content}</p>
                           <div className="flex items-center gap-1 mt-1 justify-end">
-                            <span className={`text-[10px] ${msg.sender_id === user?.id ? "text-primary-foreground/60" : "text-muted-foreground"}`}>{new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                            {msg.sender_id === user?.id && (msg.read_at ? <CheckCheck className="h-3 w-3 text-primary-foreground/60" /> : <Check className="h-3 w-3 text-primary-foreground/60" />)}
+                            {msg.edited_at && !deleted && <span className={`text-[10px] ${mine ? "text-primary-foreground/50" : "text-muted-foreground/70"}`}>edited</span>}
+                            <span className={`text-[10px] ${mine ? "text-primary-foreground/60" : "text-muted-foreground"}`}>{new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                            {mine && partnerReceipts && (msg.read_at ? <CheckCheck className="h-3 w-3 text-primary-foreground/60" /> : <Check className="h-3 w-3 text-primary-foreground/60" />)}
                           </div>
                         </div>
                       </div>
-                    ))}
+                      );
+                    })}
                     {sentGifts.map((gift) => (
                       <div key={gift.id} className={`flex ${gift.sender_id === user?.id ? "justify-end" : "justify-start"}`}>
                         <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl px-5 py-3 text-center border border-amber-200/50 dark:border-amber-800/50">
@@ -888,7 +935,8 @@ const Dating = () => {
                 </ScrollArea>
                 <div className="border-t p-3 bg-card">
                   <div className="flex gap-2">
-                    <Input value={newMessage} onChange={(e) => setNewMessage(e.target.value)} placeholder="Type a message..." onKeyPress={(e) => e.key === "Enter" && handleSendMessage()} className="flex-1 border-0 bg-muted/50 focus-visible:ring-1 focus-visible:ring-primary" />
+                    <EmojiPicker onSelect={(e) => setNewMessage(newMessage + e)} />
+                    <Input value={newMessage} onChange={(e) => setNewMessage(e.target.value)} maxLength={2000} placeholder="Type a message..." onKeyPress={(e) => e.key === "Enter" && handleSendMessage()} className="flex-1 border-0 bg-muted/50 focus-visible:ring-1 focus-visible:ring-primary" />
                     <Button onClick={handleSendMessage} size="icon" className="bg-gradient-to-r from-primary to-accent hover:opacity-90 h-10 w-10"><Send className="h-4 w-4" /></Button>
                   </div>
                 </div>
@@ -1010,6 +1058,7 @@ const Dating = () => {
                   />
                 </>
               )}
+              <Button variant="outline" onClick={() => setShowSafety(true)} className="w-full gap-2"><Shield className="h-4 w-4" />Safety Center</Button>
               <div className="grid grid-cols-2 gap-3">
                 <Button variant="outline" onClick={() => setShowEditDialog(true)} className="gap-2"><Settings className="h-4 w-4" />Edit Profile</Button>
                 <AlertDialog>
@@ -1025,6 +1074,19 @@ const Dating = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Edit Profile Dialog */}
+      {/* Safety Center */}
+      {currentProfile && (
+        <SafetyCenter
+          open={showSafety}
+          onOpenChange={setShowSafety}
+          incognito={!!currentProfile.incognito}
+          readReceipts={currentProfile.read_receipts_enabled !== false}
+          onTogglePrivacy={handleTogglePrivacy}
+          onOpenBlocked={() => { setShowSafety(false); navigate("/settings/blocked"); }}
+        />
+      )}
 
       {/* Edit Profile Dialog */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
