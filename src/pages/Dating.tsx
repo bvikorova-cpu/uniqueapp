@@ -1008,8 +1008,12 @@ const Dating = () => {
                   <Card className="w-full max-w-sm p-10 text-center">
                     <div className="h-20 w-20 mx-auto rounded-full bg-muted flex items-center justify-center mb-4"><Heart className="h-10 w-10 text-muted-foreground/50" /></div>
                     <h3 className="text-xl font-bold mb-2">No More Profiles</h3>
-                    <p className="text-sm text-muted-foreground mb-6">You've seen everyone nearby. Check back later.</p>
-                    <Button onClick={() => loadProfiles()} variant="outline" className="gap-2"><RotateCcw className="h-4 w-4" />Refresh</Button>
+                    <p className="text-sm text-muted-foreground mb-2">You've seen everyone matching your current filters.</p>
+                    <p className="text-xs text-muted-foreground mb-6">Try expanding your age range, distance, or turning off "Verified only" to discover more people.</p>
+                    <div className="flex flex-col gap-2">
+                      <Button onClick={() => loadProfiles()} variant="outline" className="gap-2"><RotateCcw className="h-4 w-4" />Refresh</Button>
+                      <Button onClick={() => setShowFilters(true)} variant="default" className="gap-2"><Settings className="h-4 w-4" />Adjust Filters</Button>
+                    </div>
                   </Card>
                 </motion.div>
               )}
