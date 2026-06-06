@@ -1055,6 +1055,14 @@ const Dating = () => {
             </Card>
           </TabsContent>
 
+          {/* ==================== COMMUNITY TAB ==================== */}
+          <TabsContent value="community">
+            <div className="max-w-3xl mx-auto space-y-8">
+              {user && <DatingEventsList userId={user.id} />}
+              {user && <FriendCirclesPanel userId={user.id} />}
+            </div>
+          </TabsContent>
+
           {/* ==================== PROFILE TAB ==================== */}
           <TabsContent value="profile">
             <div className="max-w-lg mx-auto space-y-4">
