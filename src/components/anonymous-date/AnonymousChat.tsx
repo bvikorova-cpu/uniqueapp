@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Send, Check, CheckCheck, Settings2, Download, AlertOctagon, ShieldX } from "lucide-react";
+import { Send, Check, CheckCheck, Settings2, Download, AlertOctagon, ShieldX, Timer } from "lucide-react";
 import { ChatSafetyMenu } from "./ChatSafetyMenu";
 import { useChatSafety } from "@/hooks/useChatSafety";
 import { supabase } from "@/integrations/supabase/client";
@@ -60,6 +60,29 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
   const [safeWord, setSafeWord] = useState<string | null>(null);
   const [matchState, setMatchState] = useState(match);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // 24h countdown
+  const [timeLeft, setTimeLeft] = useState("");
+  const [urgent, setUrgent] = useState(false);
+  useEffect(() => {
+    const tick = () => {
+      if (!match.created_at) return;
+      const end = new Date(match.created_at).getTime() + 24 * 60 * 60 * 1000;
+      const diff = end - Date.now();
+      if (diff <= 0) {
+        setTimeLeft("Expired");
+        setUrgent(true);
+        return;
+      }
+      const h = Math.floor(diff / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      setTimeLeft(`${h}h ${m}m`);
+      setUrgent(diff < 6 * 3600000);
+    };
+    tick();
+    const t = setInterval(tick, 60000);
+    return () => clearInterval(t);
+  }, [match.created_at]);
 
   const safety = useChatSafety(currentUserId, partnerId);
 
@@ -207,6 +230,13 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
             </div>
           </div>
           <div className="flex items-center gap-1.5">
+            <Badge
+              variant={urgent ? "destructive" : "outline"}
+              className={`text-[10px] gap-1 ${urgent ? "" : "border-white/30 text-white"}`}
+            >
+              <Timer className="h-3 w-3" />
+              {timeLeft || "—"}
+            </Badge>
             <StreakBadge days={sharedStreak} />
             <Badge variant="outline" className="text-[10px] border-white/30 text-white">Anon</Badge>
             <button onClick={downloadPDF} className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white" title="Export PDF">
