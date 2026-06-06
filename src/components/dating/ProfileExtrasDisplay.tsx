@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
-import { Music, Instagram, ShieldCheck, Volume2 } from "lucide-react";
+import { Music, Instagram, ShieldCheck, Volume2, Video } from "lucide-react";
 import type { Prompt } from "./PromptsEditor";
+import type { VideoPrompt } from "./VideoPromptRecorder";
 
 interface Props {
   prompts?: Prompt[] | null;
@@ -9,6 +10,7 @@ interface Props {
   spotifyUrl?: string | null;
   instagramUrl?: string | null;
   verified?: boolean;
+  videoPrompts?: VideoPrompt[] | null;
 }
 
 /**
