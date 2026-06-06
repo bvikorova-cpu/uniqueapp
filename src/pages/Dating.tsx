@@ -162,6 +162,22 @@ const Dating = () => {
 
   useEffect(() => { checkAuth(); }, []);
   useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
+
+  // Realtime chat: subscribe to new messages for the currently open match
+  useEffect(() => {
+    if (!selectedMatch?.id) return;
+    const channel = supabase
+      .channel(`dating_messages_${selectedMatch.id}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "dating_messages", filter: `match_id=eq.${selectedMatch.id}` },
+        () => { loadMessages(selectedMatch.id); }
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedMatch?.id]);
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('payment') === 'success') {
