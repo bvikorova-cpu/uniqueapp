@@ -93,8 +93,8 @@ export const CompatibilityQuiz = ({ userId, initial, onSaved }: Props) => {
   );
 };
 
-export const computeCompatibility = (a?: QuizAnswer | null, b?: QuizAnswer | null): number => {
-  if (!a || !b) return 0;
+export const computeCompatibility = (a?: any, b?: any): number => {
+  if (!a || !b || typeof a !== "object" || typeof b !== "object") return 0;
   const keys = QUESTIONS.map(q => q.id);
   const overlap = keys.filter(k => a[k] && b[k]).length;
   if (!overlap) return 0;
