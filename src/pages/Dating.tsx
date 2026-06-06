@@ -31,6 +31,12 @@ import { ProfileExtrasDisplay } from "@/components/dating/ProfileExtrasDisplay";
 import { SafetyCenter } from "@/components/dating/SafetyCenter";
 import { MessageActions } from "@/components/dating/MessageActions";
 import { EmojiPicker } from "@/components/dating/EmojiPicker";
+import { CompatibilityQuiz, computeCompatibility } from "@/components/dating/CompatibilityQuiz";
+import { OpeningMoveEditor } from "@/components/dating/OpeningMoveEditor";
+import { PassportDialog } from "@/components/dating/PassportDialog";
+import { SnoozeButton } from "@/components/dating/SnoozeButton";
+import { MatchExpiryBadge } from "@/components/dating/MatchExpiryBadge";
+import { DiscoveryTabs, type DiscoveryMode } from "@/components/dating/DiscoveryTabs";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface DatingProfile {
