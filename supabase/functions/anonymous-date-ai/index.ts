@@ -163,18 +163,22 @@ Deno.serve(async (req) => {
 
     const cost = COSTS[feature];
 
-    // Check credits
-    const { data: credits } = await admin
-      .from("anonymous_dating_credits")
-      .select("credits_remaining")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    if (!credits || (credits.credits_remaining ?? 0) < cost) {
-      return new Response(JSON.stringify({
-        error: "INSUFFICIENT_CREDITS",
-        message: `You need ${cost} credits for this feature. You have ${credits?.credits_remaining ?? 0}.`,
-      }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    // ── Atomic deduction (prevents double-spend on parallel requests) ──
+    const { error: deductErr } = await admin.rpc(
+      "deduct_anonymous_dating_credits",
+      { p_user_id: user.id, p_amount: cost },
+    );
+    if (deductErr) {
+      const msg = deductErr.message || "";
+      if (msg.includes("INSUFFICIENT_CREDITS")) {
+        return new Response(JSON.stringify({
+          error: "INSUFFICIENT_CREDITS",
+          message: `You need ${cost} credits for this feature.`,
+        }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+      return new Response(JSON.stringify({ error: "CREDIT_DEDUCTION_FAILED", message: msg }), {
+        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     // Build user message from payload
@@ -188,6 +192,8 @@ Deno.serve(async (req) => {
     try {
       aiText = await callAI(SYSTEM_PROMPTS[feature], userMsg, jsonMode);
     } catch (e: any) {
+      // Refund credits on AI failure
+      await admin.rpc("grant_anonymous_dating_credits", { p_user_id: user.id, p_amount: cost });
       const msg = e?.message ?? "AI_ERROR";
       const status = msg === "RATE_LIMITED" ? 429 : msg === "AI_CREDITS_EXHAUSTED" ? 402 : 500;
       return new Response(JSON.stringify({ error: msg }), {
@@ -200,18 +206,11 @@ Deno.serve(async (req) => {
     if (jsonMode) {
       try {
         const parsed = JSON.parse(aiText);
-        // some prompts ask for array, gateway wraps in object — accept both
         output = parsed;
       } catch {
         output = aiText;
       }
     }
-
-    // Deduct credits
-    await admin
-      .from("anonymous_dating_credits")
-      .update({ credits_remaining: credits.credits_remaining - cost, updated_at: new Date().toISOString() })
-      .eq("user_id", user.id);
 
     // Log usage
     await admin.from("anonymous_date_ai_usage").insert({
