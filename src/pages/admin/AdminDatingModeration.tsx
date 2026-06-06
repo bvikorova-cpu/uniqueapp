@@ -28,7 +28,7 @@ interface VerifReq {
   verification_selfie_url: string | null;
   verification_status: string;
   verification_submitted_at: string | null;
-  photos: string[] | null;
+  profile_photo_url: string | null; additional_photos: string[] | null;
 }
 
 export default function AdminDatingModeration() {
@@ -63,7 +63,7 @@ export default function AdminDatingModeration() {
         .limit(100),
       supabase
         .from("dating_profiles")
-        .select("id,user_id,display_name,verification_selfie_url,verification_status,verification_submitted_at,photos")
+        .select("id,user_id,display_name,verification_selfie_url,verification_status,verification_submitted_at,profile_photo_url,additional_photos")
         .eq("verification_status", "pending")
         .order("verification_submitted_at", { ascending: true })
         .limit(50),
@@ -205,7 +205,7 @@ export default function AdminDatingModeration() {
                       <img src={v.verification_selfie_url} alt="Selfie" className="h-32 w-32 object-cover rounded-lg border-2 border-primary" />
                     </a>
                   )}
-                  {v.photos?.[0] && (
+                  {v.profile_photo_url && (
                     <a href={v.photos[0]} target="_blank" rel="noreferrer">
                       <img src={v.photos[0]} alt="Profile" className="h-32 w-32 object-cover rounded-lg border" />
                     </a>
