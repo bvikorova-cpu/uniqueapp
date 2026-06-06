@@ -1,10 +1,12 @@
-// Anonymous Date AI - 7 paid AI features via OpenAI
+// Anonymous Date AI - paid AI features via OpenAI
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+import {
+  corsHeaders,
+  json,
+  errorResponse,
+  aiRequestSchema,
+  sanitizePayloadForLog,
+} from "../_shared/anonymous-dating.ts";
 
 type Feature =
   | "icebreakers"      // 3 cr
@@ -126,6 +128,7 @@ async function callAI(system: string, userMsg: string, jsonMode = false): Promis
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  if (req.method !== "POST") return errorResponse("METHOD_NOT_ALLOWED", "POST required", 405);
 
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -133,32 +136,45 @@ Deno.serve(async (req) => {
     const supabaseService = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+    if (!authHeader) return errorResponse("UNAUTHORIZED", "Missing authorization header", 401);
 
     const userClient = createClient(supabaseUrl, supabaseAnon, {
       global: { headers: { Authorization: authHeader } },
     });
     const { data: { user } } = await userClient.auth.getUser();
-    if (!user) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+    if (!user) return errorResponse("UNAUTHORIZED", "Invalid session", 401);
 
     const admin = createClient(supabaseUrl, supabaseService);
 
-    const { feature, payload, matchId } = await req.json() as {
+    // ── Zod validation (prompt-injection guard + size caps) ──
+    let rawBody: unknown;
+    try {
+      rawBody = await req.json();
+    } catch {
+      return errorResponse("INVALID_JSON", "Body must be valid JSON", 400);
+    }
+    const parsed = aiRequestSchema.safeParse(rawBody);
+    if (!parsed.success) {
+      return errorResponse("VALIDATION_ERROR", "Invalid request payload", 400, {
+        issues: parsed.error.flatten().fieldErrors,
+      });
+    }
+    const { feature, payload, matchId } = parsed.data as {
       feature: Feature; payload: any; matchId?: string;
     };
 
     if (!SYSTEM_PROMPTS[feature]) {
-      return new Response(JSON.stringify({ error: "Invalid feature" }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return errorResponse("INVALID_FEATURE", `Unknown feature: ${feature}`, 400);
+    }
+
+    // ── Rate limit: 20 AI calls per user per minute ──
+    const { data: rateOk } = await admin.rpc("check_anon_dating_rate_limit", {
+      p_user_id: user.id,
+      p_action: "anonymous_date_ai",
+      p_max_per_minute: 20,
+    });
+    if (rateOk === false) {
+      return errorResponse("RATE_LIMITED", "Too many AI requests. Please wait a minute.", 429);
     }
 
     const cost = COSTS[feature];
@@ -171,14 +187,14 @@ Deno.serve(async (req) => {
     if (deductErr) {
       const msg = deductErr.message || "";
       if (msg.includes("INSUFFICIENT_CREDITS")) {
-        return new Response(JSON.stringify({
-          error: "INSUFFICIENT_CREDITS",
-          message: `You need ${cost} credits for this feature.`,
-        }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+        return errorResponse(
+          "INSUFFICIENT_CREDITS",
+          `You need ${cost} credits for this feature.`,
+          402,
+          { required: cost },
+        );
       }
-      return new Response(JSON.stringify({ error: "CREDIT_DEDUCTION_FAILED", message: msg }), {
-        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return errorResponse("CREDIT_DEDUCTION_FAILED", msg, 500);
     }
 
     // Build user message from payload
@@ -196,9 +212,7 @@ Deno.serve(async (req) => {
       await admin.rpc("grant_anonymous_dating_credits", { p_user_id: user.id, p_amount: cost });
       const msg = e?.message ?? "AI_ERROR";
       const status = msg === "RATE_LIMITED" ? 429 : msg === "AI_CREDITS_EXHAUSTED" ? 402 : 500;
-      return new Response(JSON.stringify({ error: msg }), {
-        status, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return errorResponse(msg, "AI provider call failed; credits refunded.", status);
     }
 
     // Parse if JSON
@@ -212,13 +226,13 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Log usage
+    // Log usage — PII stripped from input_data (only structural fingerprint stored)
     await admin.from("anonymous_date_ai_usage").insert({
       user_id: user.id,
       match_id: matchId ?? null,
       feature_type: feature,
       credits_used: cost,
-      input_data: payload ?? {},
+      input_data: sanitizePayloadForLog(payload ?? {}),
       output_data: typeof output === "string" ? { text: output } : output,
     });
 
@@ -264,16 +278,14 @@ Deno.serve(async (req) => {
       .eq("user_id", user.id)
       .maybeSingle();
 
-    return new Response(JSON.stringify({
+    return json({
       success: true,
       feature,
       output,
       credits_remaining: bal?.credits_remaining ?? 0,
-    }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    });
   } catch (e: any) {
     console.error("anonymous-date-ai error", e);
-    return new Response(JSON.stringify({ error: e?.message ?? "Server error" }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return errorResponse("SERVER_ERROR", e?.message ?? "Server error", 500);
   }
 });

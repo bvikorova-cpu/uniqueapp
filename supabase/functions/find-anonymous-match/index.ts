@@ -1,12 +1,15 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+import {
+  corsHeaders,
+  json,
+  errorResponse,
+  findMatchSchema,
+} from "../_shared/anonymous-dating.ts";
 
 const MATCH_COST = 5; // Credits to start a match
+
+
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -21,41 +24,42 @@ serve(async (req) => {
   try {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
-      return new Response(JSON.stringify({ error: "Missing authorization header" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 401,
-      });
+      return errorResponse("UNAUTHORIZED", "Missing authorization header", 401);
     }
     const token = authHeader.replace("Bearer ", "");
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser(token);
 
     if (userError || !user) {
-      return new Response(JSON.stringify({ error: "User not authenticated" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 401,
-      });
+      return errorResponse("UNAUTHORIZED", "User not authenticated", 401);
     }
 
-    // Optional filters from client + mode (preview | match)
-    let filters: {
-      location?: string;
-      preferred_gender?: string;
-      relationship_goal?: string;
-      languages?: string[];
-      min_shared_interests?: number;
-    } = {};
-    let mode: "preview" | "match" = "match";
-    let targetUserId: string | undefined;
+    // ── Rate limit: 30 match requests per minute per user ──
+    const { data: rateOk } = await supabaseClient.rpc("check_anon_dating_rate_limit", {
+      p_user_id: user.id,
+      p_action: "find_anonymous_match",
+      p_max_per_minute: 30,
+    });
+    if (rateOk === false) {
+      return errorResponse("RATE_LIMITED", "Too many match requests. Please wait a minute.", 429);
+    }
+
+    // ── Zod validation ──
+    let rawBody: unknown = {};
     if (req.method === "POST") {
       try {
-        const body = await req.json();
-        filters = body?.filters ?? {};
-        if (body?.mode === "preview") mode = "preview";
-        if (typeof body?.targetUserId === "string") targetUserId = body.targetUserId;
+        rawBody = await req.json();
       } catch {
-        // no body
+        rawBody = {};
       }
     }
+    const parsedBody = findMatchSchema.safeParse(rawBody);
+    if (!parsedBody.success) {
+      return errorResponse("VALIDATION_ERROR", "Invalid request payload", 400, {
+        issues: parsedBody.error.flatten().fieldErrors,
+      });
+    }
+    const { mode, targetUserId, filters } = parsedBody.data;
+
 
     // Credit check is only required when actually creating a match
     const { data: creditsData } = await supabaseClient
@@ -65,10 +69,7 @@ serve(async (req) => {
       .single();
 
     if (mode === "match" && (!creditsData || creditsData.credits_remaining < MATCH_COST)) {
-      return new Response(
-        JSON.stringify({ error: "Insufficient credits", required: MATCH_COST }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
-      );
+      return errorResponse("INSUFFICIENT_CREDITS", "Not enough credits to start a match.", 402, { required: MATCH_COST });
     }
 
     // Get user profile
@@ -79,10 +80,7 @@ serve(async (req) => {
       .single();
 
     if (!userProfile) {
-      return new Response(
-        JSON.stringify({ error: "Profile not found. Please create a profile first." }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
-      );
+      return errorResponse("PROFILE_REQUIRED", "Profile not found. Please create a profile first.", 400);
     }
 
     // Already-matched users
@@ -149,10 +147,7 @@ serve(async (req) => {
     }
 
     if (!potentialMatches || potentialMatches.length === 0) {
-      return new Response(
-        JSON.stringify({ error: "No compatible matches found at the moment. Try again later!" }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 404 }
-      );
+      return errorResponse("NO_MATCHES", "No compatible matches found at the moment. Try again later!", 404);
     }
 
     // Multi-axis compatibility scoring (0-100)
@@ -203,10 +198,7 @@ serve(async (req) => {
         compatibility: r.compatibility,
         breakdown: r.breakdown,
       }));
-      return new Response(
-        JSON.stringify({ candidates, cost: MATCH_COST }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
-      );
+      return json({ candidates, cost: MATCH_COST });
     }
 
     // MATCH MODE — pick a specific candidate (targetUserId) or randomize top 3
@@ -214,10 +206,7 @@ serve(async (req) => {
     if (targetUserId) {
       const found = pool.find(r => r.profile.user_id === targetUserId);
       if (!found) {
-        return new Response(
-          JSON.stringify({ error: "Selected candidate is no longer available." }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 409 }
-        );
+        return errorResponse("CANDIDATE_UNAVAILABLE", "Selected candidate is no longer available.", 409);
       }
       chosen = found;
     } else {
@@ -234,11 +223,10 @@ serve(async (req) => {
     );
     if (deductErr) {
       const msg = deductErr.message || "";
-      const status = msg.includes("INSUFFICIENT_CREDITS") ? 402 : 500;
-      return new Response(
-        JSON.stringify({ error: msg.includes("INSUFFICIENT") ? "Insufficient credits" : msg, required: MATCH_COST }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status }
-      );
+      if (msg.includes("INSUFFICIENT_CREDITS")) {
+        return errorResponse("INSUFFICIENT_CREDITS", "Not enough credits to start a match.", 402, { required: MATCH_COST });
+      }
+      return errorResponse("CREDIT_DEDUCTION_FAILED", msg, 500);
     }
 
     // Create match
@@ -262,30 +250,18 @@ serve(async (req) => {
       throw matchError;
     }
 
-    return new Response(
-      JSON.stringify({
-        match: newMatch,
-        partner: {
-          anonymous_name: matchedProfile.anonymous_name,
-          age_range: matchedProfile.age_range,
-          interests: matchedProfile.interests,
-          personality_traits: matchedProfile.personality_traits,
-          compatibility: chosen.compatibility,
-        },
-      }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      }
-    );
+    return json({
+      match: newMatch,
+      partner: {
+        anonymous_name: matchedProfile.anonymous_name,
+        age_range: matchedProfile.age_range,
+        interests: matchedProfile.interests,
+        personality_traits: matchedProfile.personality_traits,
+        compatibility: chosen.compatibility,
+      },
+    });
   } catch (error) {
     console.error("Error:", error);
-    return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 500,
-      }
-    );
+    return errorResponse("SERVER_ERROR", error instanceof Error ? error.message : "Unknown error", 500);
   }
 });
