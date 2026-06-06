@@ -363,6 +363,8 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
             </Button>
           </form>
         )}
+      </Card>
+
 
       {/* Live stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
