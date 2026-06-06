@@ -93,8 +93,24 @@ export function CreditPackages({ onPurchase, currentCredits }: CreditPackagesPro
 
                   <div>
                     <h3 className="text-lg font-bold">{pkg.name}</h3>
-                    <div className="text-3xl font-black text-pink-500 mt-1">{pkg.price}</div>
+                    <div className="text-3xl font-black text-pink-500 mt-1">€{pkg.priceEur}</div>
                     <p className="text-xs text-muted-foreground">{pkg.credits} credits</p>
+                    {(() => {
+                      const perCredit = pkg.priceEur / pkg.credits;
+                      const savings = Math.round((1 - perCredit / BASE_RATE) * 100);
+                      return (
+                        <div className="mt-1.5 flex items-center justify-center gap-1.5 text-[10px]">
+                          <span className="text-muted-foreground">
+                            €{perCredit.toFixed(2)}/credit
+                          </span>
+                          {savings > 0 && (
+                            <span className="px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500 font-bold">
+                              Save {savings}%
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })()}
                   </div>
 
                   <ul className="space-y-1.5 text-left">
