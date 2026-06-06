@@ -17810,6 +17810,56 @@ export type Database = {
         }
         Relationships: []
       }
+      dating_date_plans: {
+        Row: {
+          created_at: string
+          id: string
+          location: string | null
+          match_id: string
+          mode: string
+          notes: string | null
+          proposed_by: string
+          scheduled_at: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          location?: string | null
+          match_id: string
+          mode?: string
+          notes?: string | null
+          proposed_by: string
+          scheduled_at: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          location?: string | null
+          match_id?: string
+          mode?: string
+          notes?: string | null
+          proposed_by?: string
+          scheduled_at?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dating_date_plans_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "dating_matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       dating_filters: {
         Row: {
           created_at: string
@@ -17959,6 +18009,8 @@ export type Database = {
           match_id: string
           read_at: string | null
           sender_id: string
+          voice_duration: number | null
+          voice_url: string | null
         }
         Insert: {
           content: string
@@ -17970,6 +18022,8 @@ export type Database = {
           match_id: string
           read_at?: string | null
           sender_id: string
+          voice_duration?: number | null
+          voice_url?: string | null
         }
         Update: {
           content?: string
@@ -17981,6 +18035,8 @@ export type Database = {
           match_id?: string
           read_at?: string | null
           sender_id?: string
+          voice_duration?: number | null
+          voice_url?: string | null
         }
         Relationships: [
           {
@@ -18051,6 +18107,7 @@ export type Database = {
           verification_selfie_url: string | null
           verification_status: string
           verification_submitted_at: string | null
+          video_prompts: Json | null
           voice_intro_duration: number | null
           voice_intro_url: string | null
         }
@@ -18082,6 +18139,7 @@ export type Database = {
           verification_selfie_url?: string | null
           verification_status?: string
           verification_submitted_at?: string | null
+          video_prompts?: Json | null
           voice_intro_duration?: number | null
           voice_intro_url?: string | null
         }
@@ -18113,6 +18171,7 @@ export type Database = {
           verification_selfie_url?: string | null
           verification_status?: string
           verification_submitted_at?: string | null
+          video_prompts?: Json | null
           voice_intro_duration?: number | null
           voice_intro_url?: string | null
         }
