@@ -212,9 +212,7 @@ Deno.serve(async (req) => {
       await admin.rpc("grant_anonymous_dating_credits", { p_user_id: user.id, p_amount: cost });
       const msg = e?.message ?? "AI_ERROR";
       const status = msg === "RATE_LIMITED" ? 429 : msg === "AI_CREDITS_EXHAUSTED" ? 402 : 500;
-      return new Response(JSON.stringify({ error: msg }), {
-        status, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return errorResponse(msg, "AI provider call failed; credits refunded.", status);
     }
 
     // Parse if JSON
