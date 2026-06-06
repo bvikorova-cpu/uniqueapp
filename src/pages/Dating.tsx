@@ -37,6 +37,9 @@ import { PassportDialog } from "@/components/dating/PassportDialog";
 import { SnoozeButton } from "@/components/dating/SnoozeButton";
 import { MatchExpiryBadge } from "@/components/dating/MatchExpiryBadge";
 import { DiscoveryTabs, type DiscoveryMode } from "@/components/dating/DiscoveryTabs";
+import { VideoPromptRecorder, type VideoPrompt } from "@/components/dating/VideoPromptRecorder";
+import { VoiceNoteRecorder } from "@/components/dating/VoiceNoteRecorder";
+import { DatePlanCard } from "@/components/dating/DatePlanCard";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface DatingProfile {
