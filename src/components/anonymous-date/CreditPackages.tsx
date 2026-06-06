@@ -14,7 +14,7 @@ const PACKAGES = [
     id: "basic",
     name: "Basic",
     credits: 10,
-    price: "€5",
+    priceEur: 5,
     icon: Sparkles,
     gradient: "from-blue-500 to-cyan-500",
     features: ["1-2 matches", "Text messages", "Perfect to start"],
@@ -23,7 +23,7 @@ const PACKAGES = [
     id: "standard",
     name: "Standard",
     credits: 30,
-    price: "€12",
+    priceEur: 12,
     icon: Star,
     gradient: "from-pink-500 to-rose-500",
     popular: true,
@@ -33,7 +33,7 @@ const PACKAGES = [
     id: "premium",
     name: "Premium",
     credits: 100,
-    price: "€25",
+    priceEur: 25,
     icon: Crown,
     gradient: "from-amber-500 to-orange-500",
     features: ["20+ matches", "All features", "Early reveal", "Priority matching"],
@@ -42,12 +42,14 @@ const PACKAGES = [
     id: "ultimate",
     name: "Ultimate",
     credits: 300,
-    price: "€60",
+    priceEur: 60,
     icon: Zap,
     gradient: "from-primary to-accent",
     features: ["Unlimited matches", "Premium features", "VIP support", "Max freedom"],
   },
 ];
+
+const BASE_RATE = PACKAGES[0].priceEur / PACKAGES[0].credits; // €/credit baseline (Basic)
 
 export function CreditPackages({ onPurchase, currentCredits }: CreditPackagesProps) {
   return (
