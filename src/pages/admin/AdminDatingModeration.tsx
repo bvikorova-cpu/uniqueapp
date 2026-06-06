@@ -206,8 +206,8 @@ export default function AdminDatingModeration() {
                     </a>
                   )}
                   {v.profile_photo_url && (
-                    <a href={v.photos[0]} target="_blank" rel="noreferrer">
-                      <img src={v.photos[0]} alt="Profile" className="h-32 w-32 object-cover rounded-lg border" />
+                    <a href={v.profile_photo_url} target="_blank" rel="noreferrer">
+                      <img src={v.profile_photo_url} alt="Profile" className="h-32 w-32 object-cover rounded-lg border" />
                     </a>
                   )}
                 </div>
