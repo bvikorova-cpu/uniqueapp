@@ -340,12 +340,48 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
 
         {/* Input or Expired notice */}
         {expired ? (
-          <div className="p-3 border-t border-white/10 bg-destructive/15 backdrop-blur-md flex items-center justify-center gap-2 text-center">
-            <Timer className="h-4 w-4 text-destructive" />
-            <p className="text-xs font-semibold text-destructive">
-              This anonymous match ended after 24 hours. Messaging is closed.
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="relative overflow-hidden border-t border-white/10 bg-gradient-to-br from-rose-950/90 via-fuchsia-950/80 to-purple-950/90 backdrop-blur-md p-6 text-center"
+          >
+            {/* Floating hearts */}
+            <div className="pointer-events-none absolute inset-0 overflow-hidden">
+              {[...Array(6)].map((_, i) => (
+                <motion.span
+                  key={i}
+                  initial={{ y: 60, opacity: 0 }}
+                  animate={{ y: -80, opacity: [0, 0.7, 0] }}
+                  transition={{ duration: 3 + i * 0.4, repeat: Infinity, delay: i * 0.5, ease: "easeOut" }}
+                  className="absolute text-pink-400/40 text-xl"
+                  style={{ left: `${10 + i * 15}%`, bottom: 0 }}
+                >
+                  💔
+                </motion.span>
+              ))}
+            </div>
+
+            <motion.div
+              animate={{ scale: [1, 1.08, 1] }}
+              transition={{ duration: 2.5, repeat: Infinity }}
+              className="relative mx-auto mb-2 inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-rose-500 to-fuchsia-600 shadow-[0_0_30px_rgba(244,63,94,0.6)]"
+            >
+              <Timer className="h-6 w-6 text-white" />
+            </motion.div>
+
+            <h3
+              className="relative text-2xl font-black tracking-tight bg-gradient-to-r from-rose-300 via-pink-200 to-fuchsia-300 bg-clip-text text-transparent"
+              style={{ fontFamily: "'Lobster Two', cursive" }}
+            >
+              Time's Up
+            </h3>
+            <p className="relative mt-1 text-xs font-medium text-pink-100/80">
+              Your 24-hour anonymous match has ended.
             </p>
-          </div>
+            <p className="relative mt-0.5 text-[10px] uppercase tracking-widest text-pink-200/50">
+              Messaging closed · Memories remain
+            </p>
+          </motion.div>
         ) : (
           <form onSubmit={handleSend} className="p-2 border-t border-white/10 bg-black/25 backdrop-blur-md flex items-center gap-1">
             <Input
