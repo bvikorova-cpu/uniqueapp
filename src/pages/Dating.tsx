@@ -1080,6 +1080,12 @@ const Dating = () => {
             <DatingNotificationsCenter />
           </TabsContent>
 
+          <TabsContent value="insights">
+            <DatingAnalyticsPanel />
+          </TabsContent>
+
+
+
           <TabsContent value="premium">
             {user && (
               <DatingPremiumPanel
