@@ -344,10 +344,22 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
 
 
         <div ref={scrollRef} className="flex-1 overflow-y-auto p-3 space-y-2 bg-background/50 backdrop-blur-sm">
-          {loading && <p className="text-center text-xs text-muted-foreground py-4">Loading conversation…</p>}
+          {loading && (
+            <div className="space-y-3 py-2">
+              {[0, 1, 2, 3].map(i => (
+                <div key={i} className={`flex ${i % 2 ? "justify-end" : "justify-start"}`}>
+                  <Skeleton className={`h-9 rounded-2xl ${i % 2 ? "w-2/5" : "w-1/2"}`} />
+                </div>
+              ))}
+            </div>
+          )}
           {!loading && messages.length === 0 && (
-            <div className="text-center py-8 text-sm text-muted-foreground italic">
-              No messages yet. Break the ice anonymously ✨
+            <div className="text-center py-10 flex flex-col items-center gap-2">
+              <div className="text-4xl">✨</div>
+              <p className="text-sm font-semibold">Say hi anonymously</p>
+              <p className="text-xs text-muted-foreground max-w-xs">
+                Your identity stays hidden until both of you tap reveal. Start with an icebreaker from the AI Toolbox 🪄
+              </p>
             </div>
           )}
 
