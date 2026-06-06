@@ -1101,6 +1101,34 @@ const Dating = () => {
                     instagramUrl={currentProfile.instagram_url || null}
                     onChange={(sp, ig) => setCurrentProfile({ ...currentProfile, spotify_url: sp, instagram_url: ig })}
                   />
+                  <CompatibilityQuiz
+                    userId={user.id}
+                    initial={(currentProfile.compatibility_quiz as any) || {}}
+                    onSaved={(q) => setCurrentProfile({ ...currentProfile, compatibility_quiz: q })}
+                  />
+                  <OpeningMoveEditor
+                    userId={user.id}
+                    initial={currentProfile.opening_move || ""}
+                    onSaved={(v) => setCurrentProfile({ ...currentProfile, opening_move: v })}
+                  />
+                  <Card className="p-4 flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium flex items-center gap-2">Passport {currentProfile.passport_location && <Badge variant="secondary" className="text-[10px]">{currentProfile.passport_location}</Badge>}</p>
+                      <p className="text-xs text-muted-foreground">Match anywhere in the world.</p>
+                    </div>
+                    <Button variant="outline" size="sm" onClick={() => setShowPassport(true)}>Change</Button>
+                  </Card>
+                  <Card className="p-4 flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium">Snooze profile</p>
+                      <p className="text-xs text-muted-foreground">Hide yourself from the deck temporarily.</p>
+                    </div>
+                    <SnoozeButton
+                      userId={user.id}
+                      snoozedUntil={currentProfile.snoozed_until || null}
+                      onChange={(v) => setCurrentProfile({ ...currentProfile, snoozed_until: v })}
+                    />
+                  </Card>
                 </>
               )}
               <Button variant="outline" onClick={() => setShowSafety(true)} className="w-full gap-2"><Shield className="h-4 w-4" />Safety Center</Button>
