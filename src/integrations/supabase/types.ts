@@ -17943,6 +17943,8 @@ export type Database = {
         Row: {
           content: string
           created_at: string
+          deleted_at: string | null
+          edited_at: string | null
           id: string
           is_read: boolean | null
           match_id: string
@@ -17952,6 +17954,8 @@ export type Database = {
         Insert: {
           content: string
           created_at?: string
+          deleted_at?: string | null
+          edited_at?: string | null
           id?: string
           is_read?: boolean | null
           match_id: string
@@ -17961,6 +17965,8 @@ export type Database = {
         Update: {
           content?: string
           created_at?: string
+          deleted_at?: string | null
+          edited_at?: string | null
           id?: string
           is_read?: boolean | null
           match_id?: string
@@ -18016,6 +18022,7 @@ export type Database = {
           display_name: string
           gender: string
           id: string
+          incognito: boolean
           instagram_url: string | null
           interests: string[] | null
           is_active: boolean | null
@@ -18024,6 +18031,7 @@ export type Database = {
           photo_verified: boolean
           profile_photo_url: string | null
           prompts: Json
+          read_receipts_enabled: boolean
           spotify_url: string | null
           updated_at: string
           user_id: string
@@ -18041,6 +18049,7 @@ export type Database = {
           display_name: string
           gender: string
           id?: string
+          incognito?: boolean
           instagram_url?: string | null
           interests?: string[] | null
           is_active?: boolean | null
@@ -18049,6 +18058,7 @@ export type Database = {
           photo_verified?: boolean
           profile_photo_url?: string | null
           prompts?: Json
+          read_receipts_enabled?: boolean
           spotify_url?: string | null
           updated_at?: string
           user_id: string
@@ -18066,6 +18076,7 @@ export type Database = {
           display_name?: string
           gender?: string
           id?: string
+          incognito?: boolean
           instagram_url?: string | null
           interests?: string[] | null
           is_active?: boolean | null
@@ -18074,6 +18085,7 @@ export type Database = {
           photo_verified?: boolean
           profile_photo_url?: string | null
           prompts?: Json
+          read_receipts_enabled?: boolean
           spotify_url?: string | null
           updated_at?: string
           user_id?: string
