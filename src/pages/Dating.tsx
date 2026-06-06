@@ -1408,14 +1408,22 @@ const Dating = () => {
         theirPhoto={matchCelebration?.partner.profile_photo_url}
         theirName={matchCelebration?.partner.display_name}
         location={matchCelebration?.partner.location}
-        onSendMessage={() => {
+        onStartChat={() => {
           if (matchCelebration) {
             setSelectedMatch(matchCelebration.match);
             setActiveTab("matches");
           }
           setMatchCelebration(null);
         }}
-        onKeepSwiping={() => setMatchCelebration(null)}
+        onFindAnother={() => setMatchCelebration(null)}
+        onViewMatches={() => {
+          setMatchCelebration(null);
+          setActiveTab("matches");
+        }}
+        onBrowseHub={() => {
+          setMatchCelebration(null);
+          setActiveTab("discover");
+        }}
       />
     </div>
     </>
