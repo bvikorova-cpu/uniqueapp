@@ -46,6 +46,8 @@ import { FriendCirclesPanel } from "@/components/dating/FriendCirclesPanel";
 import { DatingPremiumPanel } from "@/components/dating/DatingPremiumPanel";
 import { DatingNotificationsCenter } from "@/components/dating/DatingNotificationsCenter";
 import { DatingAnalyticsPanel } from "@/components/dating/DatingAnalyticsPanel";
+import { AIStarterButton } from "@/components/dating/AIStarterButton";
+import { AIBioCoach } from "@/components/dating/AIBioCoach";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface DatingProfile {
@@ -153,6 +155,7 @@ const Dating = () => {
   const [showPassport, setShowPassport] = useState(false);
   const [discoveryMode, setDiscoveryMode] = useState<DiscoveryMode>("deck");
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const [pendingStarterExperiment, setPendingStarterExperiment] = useState<string | null>(null);
 
   useEffect(() => { checkAuth(); }, []);
   useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
@@ -306,6 +309,18 @@ const Dating = () => {
       } else if (discoveryMode === "standouts") {
         ranked = ranked.filter(p => p.photo_verified || (Array.isArray(p.prompts) && p.prompts.length >= 2) || p.voice_intro_url);
         ranked = [...ranked].sort((a, b) => score(b) - score(a)).slice(0, 12);
+      } else if (discoveryMode === "ai_smart") {
+        try {
+          const { data: rerank } = await supabase.functions.invoke("dating-ai-coach", {
+            body: { action: "rerank_discovery", me: currentProfile, candidates: ranked.slice(0, 40) },
+          });
+          const scoreMap = new Map<string, number>();
+          (rerank?.scores || []).forEach((s: any) => scoreMap.set(s.id, s.p));
+          ranked = [...ranked].sort((a, b) => (scoreMap.get(b.user_id) ?? -1) - (scoreMap.get(a.user_id) ?? -1));
+        } catch (e) {
+          console.warn("AI rerank failed, fallback to heuristic", e);
+          ranked = [...ranked].sort((a, b) => score(b) - score(a));
+        }
       } else {
         ranked = [...ranked.filter(p => boostedSet.has(p.user_id)), ...ranked.filter(p => !boostedSet.has(p.user_id))];
       }
@@ -338,6 +353,22 @@ const Dating = () => {
     }
     const { data: gifts } = await supabase.from("dating_sent_gifts").select(`*, gift:gift_id (*)`).eq("match_id", matchId).order("created_at", { ascending: true });
     setSentGifts(gifts || []);
+
+    // A/B conversion: if a previously-used starter for this match got a reply from partner, mark led_to_reply
+    if (user?.id && data && data.length > 1) {
+      const { data: exps } = await supabase
+        .from("dating_ai_experiments")
+        .select("id, created_at, led_to_reply")
+        .eq("user_id", user.id).eq("match_id", matchId).eq("used", true).eq("led_to_reply", false);
+      if (exps && exps.length > 0) {
+        const partnerReplied = data.some(m => m.sender_id !== user.id);
+        if (partnerReplied) {
+          await supabase.from("dating_ai_experiments")
+            .update({ led_to_reply: true, updated_at: new Date().toISOString() })
+            .in("id", exps.map(e => e.id));
+        }
+      }
+    }
   };
 
   const handleTogglePrivacy = async (patch: { incognito?: boolean; read_receipts_enabled?: boolean }) => {
@@ -428,6 +459,13 @@ const Dating = () => {
     if (error) { toast({ title: "Error", description: "Failed to send message", variant: "destructive" }); }
     else {
       await supabase.from("notifications").insert([{ user_id: otherId, type: "dating_message", title: "New Message 💌", message: `${currentProfile?.display_name || "Someone"} sent you a message`, related_id: selectedMatch.id }]);
+      // A/B conversion tracking: mark experiment as used + led_to_message
+      if (pendingStarterExperiment) {
+        supabase.functions.invoke("dating-ai-coach", {
+          body: { action: "mark_experiment", experiment_id: pendingStarterExperiment, used: true, led_to_message: true },
+        }).catch(() => {});
+        setPendingStarterExperiment(null);
+      }
       setNewMessage(""); await loadMessages(selectedMatch.id);
     }
   };
@@ -1020,6 +1058,12 @@ const Dating = () => {
                   <div className="flex gap-2">
                     <EmojiPicker onSelect={(e) => setNewMessage(newMessage + e)} />
                     {user && <VoiceNoteRecorder userId={user.id} matchId={selectedMatch.id} onSent={() => loadMessages(selectedMatch.id)} />}
+                    <AIStarterButton
+                      matchId={selectedMatch.id}
+                      matchProfile={selectedMatch.profile}
+                      recentMessages={messages.slice(-6).map(m => ({ content: m.content || "", mine: m.sender_id === user?.id }))}
+                      onPick={(text, expId) => { setNewMessage(text); setPendingStarterExperiment(expId); }}
+                    />
                     <Input value={newMessage} onChange={(e) => setNewMessage(e.target.value)} maxLength={2000} placeholder="Type a message..." onKeyPress={(e) => e.key === "Enter" && handleSendMessage()} className="flex-1 border-0 bg-muted/50 focus-visible:ring-1 focus-visible:ring-primary" />
                     <Button onClick={handleSendMessage} size="icon" className="bg-gradient-to-r from-primary to-accent hover:opacity-90 h-10 w-10"><Send className="h-4 w-4" /></Button>
                   </div>
@@ -1180,6 +1224,14 @@ const Dating = () => {
                     userId={user.id}
                     initial={(currentProfile.compatibility_quiz as any) || {}}
                     onSaved={(q) => setCurrentProfile({ ...currentProfile, compatibility_quiz: q })}
+                  />
+                  <AIBioCoach
+                    profile={currentProfile}
+                    onApply={async (newBio) => {
+                      const { error } = await supabase.from("dating_profiles").update({ bio: newBio }).eq("id", currentProfile.id);
+                      if (error) toast({ title: "Update failed", description: error.message, variant: "destructive" });
+                      else { setCurrentProfile({ ...currentProfile, bio: newBio }); setEditForm({ ...editForm, bio: newBio }); toast({ title: "Bio updated ✨" }); }
+                    }}
                   />
                   <OpeningMoveEditor
                     userId={user.id}

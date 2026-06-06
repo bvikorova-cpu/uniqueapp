@@ -17762,6 +17762,78 @@ export type Database = {
         }
         Relationships: []
       }
+      dating_ai_experiments: {
+        Row: {
+          created_at: string
+          feature: string
+          id: string
+          led_to_message: boolean
+          led_to_reply: boolean
+          match_id: string | null
+          metadata: Json
+          updated_at: string
+          used: boolean
+          user_id: string
+          variant_key: string
+        }
+        Insert: {
+          created_at?: string
+          feature: string
+          id?: string
+          led_to_message?: boolean
+          led_to_reply?: boolean
+          match_id?: string | null
+          metadata?: Json
+          updated_at?: string
+          used?: boolean
+          user_id: string
+          variant_key: string
+        }
+        Update: {
+          created_at?: string
+          feature?: string
+          id?: string
+          led_to_message?: boolean
+          led_to_reply?: boolean
+          match_id?: string | null
+          metadata?: Json
+          updated_at?: string
+          used?: boolean
+          user_id?: string
+          variant_key?: string
+        }
+        Relationships: []
+      }
+      dating_ai_prompt_variants: {
+        Row: {
+          active: boolean
+          created_at: string
+          feature: string
+          id: string
+          prompt: string
+          variant_key: string
+          weight: number
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          feature: string
+          id?: string
+          prompt: string
+          variant_key: string
+          weight?: number
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          feature?: string
+          id?: string
+          prompt?: string
+          variant_key?: string
+          weight?: number
+        }
+        Relationships: []
+      }
       dating_blocks: {
         Row: {
           blocked_id: string

@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { Flame, Star, Sparkles, Crown } from "lucide-react";
+import { Flame, Star, Sparkles, Crown, Brain } from "lucide-react";
 
-export type DiscoveryMode = "deck" | "top_picks" | "standouts" | "most_compatible";
+export type DiscoveryMode = "deck" | "top_picks" | "standouts" | "most_compatible" | "ai_smart";
 
 const TABS: { id: DiscoveryMode; label: string; icon: any }[] = [
   { id: "deck", label: "Deck", icon: Flame },
+  { id: "ai_smart", label: "AI Smart", icon: Brain },
   { id: "most_compatible", label: "Compatible", icon: Sparkles },
   { id: "top_picks", label: "Top Picks", icon: Crown },
   { id: "standouts", label: "Standouts", icon: Star },
