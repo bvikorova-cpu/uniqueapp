@@ -63173,6 +63173,10 @@ export type Database = {
             }
             Returns: boolean
           }
+      deduct_anonymous_dating_credits: {
+        Args: { p_amount: number; p_user_id: string }
+        Returns: number
+      }
       deduct_comedian_balance: {
         Args: { p_amount: number; p_comedian_id: string }
         Returns: undefined
@@ -63859,6 +63863,10 @@ export type Database = {
         Returns: undefined
       }
       give_starter_balance: { Args: { p_user_id: string }; Returns: undefined }
+      grant_anonymous_dating_credits: {
+        Args: { p_amount: number; p_user_id: string }
+        Returns: number
+      }
       grant_founder_role: { Args: { _user_id: string }; Returns: undefined }
       has_active_megatalent_subscription: {
         Args: { _user_id: string }
