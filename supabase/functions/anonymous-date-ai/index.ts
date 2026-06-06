@@ -1,10 +1,12 @@
-// Anonymous Date AI - 7 paid AI features via OpenAI
+// Anonymous Date AI - paid AI features via OpenAI
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+import {
+  corsHeaders,
+  json,
+  errorResponse,
+  aiRequestSchema,
+  sanitizePayloadForLog,
+} from "../_shared/anonymous-dating.ts";
 
 type Feature =
   | "icebreakers"      // 3 cr
