@@ -964,7 +964,14 @@ const Dating = () => {
                           <MessageActions messageId={msg.id} currentContent={msg.content} createdAt={msg.created_at} onChanged={() => selectedMatch && loadMessages(selectedMatch.id)} />
                         )}
                         <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 ${mine ? "bg-gradient-to-r from-primary to-accent text-primary-foreground rounded-br-md" : "bg-muted rounded-bl-md"} ${deleted ? "opacity-60 italic" : ""}`}>
-                          <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">{deleted ? "🚫 Message unsent" : msg.content}</p>
+                          {msg.voice_url && !deleted ? (
+                            <div className="flex items-center gap-2 min-w-[180px]">
+                              <audio src={msg.voice_url} controls preload="metadata" className="h-8 max-w-full" />
+                              {msg.voice_duration && <span className={`text-[10px] ${mine ? "text-primary-foreground/70" : "text-muted-foreground"}`}>{msg.voice_duration}s</span>}
+                            </div>
+                          ) : (
+                            <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">{deleted ? "🚫 Message unsent" : msg.content}</p>
+                          )}
                           <div className="flex items-center gap-1 mt-1 justify-end">
                             {msg.edited_at && !deleted && <span className={`text-[10px] ${mine ? "text-primary-foreground/50" : "text-muted-foreground/70"}`}>edited</span>}
                             <span className={`text-[10px] ${mine ? "text-primary-foreground/60" : "text-muted-foreground"}`}>{new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
