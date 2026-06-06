@@ -61,14 +61,16 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
   const [matchState, setMatchState] = useState(match);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // 24h countdown
+  // Countdown — reads expires_at from DB (default 7 days, see migration)
   const [timeLeft, setTimeLeft] = useState("");
   const [urgent, setUrgent] = useState(false);
   const [expired, setExpired] = useState(false);
   useEffect(() => {
     const tick = () => {
-      if (!match.created_at) return;
-      const end = new Date(match.created_at).getTime() + 24 * 60 * 60 * 1000;
+      const expiresAt = (matchState as any).expires_at
+        ?? (match.created_at ? new Date(new Date(match.created_at).getTime() + 7 * 24 * 60 * 60 * 1000).toISOString() : null);
+      if (!expiresAt) return;
+      const end = new Date(expiresAt).getTime();
       const diff = end - Date.now();
       if (diff <= 0) {
         setTimeLeft("Expired");
@@ -76,16 +78,17 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
         setExpired(true);
         return;
       }
-      const h = Math.floor(diff / 3600000);
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
       const m = Math.floor((diff % 3600000) / 60000);
-      setTimeLeft(`${h}h ${m}m`);
-      setUrgent(diff < 6 * 3600000);
+      setTimeLeft(d > 0 ? `${d}d ${h}h` : `${h}h ${m}m`);
+      setUrgent(diff < 24 * 3600000);
       setExpired(false);
     };
     tick();
     const t = setInterval(tick, 30000);
     return () => clearInterval(t);
-  }, [match.created_at]);
+  }, [match.created_at, (matchState as any).expires_at]);
 
   // Mark match expired in DB once countdown hits zero
   useEffect(() => {
@@ -138,7 +141,7 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
     if (expired) {
       toast({
         title: "Match expired",
-        description: "This anonymous match ended after 24 hours.",
+        description: "This anonymous match has ended.",
         variant: "destructive",
       });
       return;
@@ -376,7 +379,7 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
               Time's Up
             </h3>
             <p className="relative mt-2 text-sm font-semibold text-white">
-              Your 24-hour anonymous match has ended.
+              Your anonymous match has ended.
             </p>
             <p className="relative mt-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-pink-200">
               Messaging closed · Memories remain

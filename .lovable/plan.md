@@ -1,68 +1,72 @@
-# Megatalent: Oprava mock/stub komponentov
+# Plán: oprava 52 nálezov — Anonymous Dating
 
-Cieľ: nahradiť mock dáta a localStorage skutočným backendom (Supabase tabuľky, RLS, real-time, edge functions) a opraviť polobroken funkcie. Žiadne fake hardcoded zoznamy.
+Postup po fázach. Každá fáza = 1 commit/migration set, otestuje sa pred ďalšou.
 
-## A. Critical (7)
+## Fáza 1 — Kritické backend bugs (Day 1)
+Cieľ: zastaviť stratu peňazí a privacy leaky.
 
-### 1. MentorshipBooking
-- Tabuľky: `mt_mentors` (profile, expertise, hourly_price, rating cached), `mt_mentorship_bookings` (mentor_id, student_id, status: pending/accepted/declined/completed, price, escrow_ref).
-- UI: load mentorov z DB, „Apply as mentor" formulár. `book()` → insert booking + Stripe escrow hold (reuse `process-sale-transaction` pattern, 80/20 split).
-- Mentor dostane notifikáciu (`notifications` insert) + realtime.
+1. **Migration: anonymous_dating hardening**
+   - `UNIQUE(user_id)` na `anonymous_dating_credits`
+   - DB trigger na `anonymous_dating_matches`: blokuje `UPDATE status='revealed'` ak nie sú `user1_revealed=true AND user2_revealed=true`
+   - Audit + tightening RLS INSERT policy na `anonymous_dating_matches` (povolené len edge functions cez service role; klient nesmie insertovať)
+   - RPC `deduct_anonymous_credits(user_id, amount)` — atomický `UPDATE ... WHERE credits_remaining >= amount RETURNING` (rieši double-spend)
+   - `WITH CHECK` na `daily_questions` RLS
+   - Server enforcement expirácie matchu: cron alebo trigger nastaví `status='expired'` po `expires_at`
 
-### 2. TalentMarketplace
-- Tabuľky: `mt_marketplace_listings` (seller_id, title, price, eta_days, category, status), `mt_marketplace_orders` (listing_id, buyer_id, escrow_ref, status, delivery_at).
-- UI: zoznam z DB + „Create listing" CTA. `buy()` → edge function `mt-marketplace-order` (escrow, 80/20).
+2. **Edge `stripe-webhook`**: pridať handler pre `type:"anonymous_date_credits"` v `checkout.session.completed` → kredituje `anonymous_dating_credits` + zápis do `payment_records`.
 
-### 3. Reactions (🔥😍🎉)
-- Tabuľka `mt_submission_reactions` (submission_id, user_id, emoji) UNIQUE(submission_id,user_id,emoji).
-- Hook s real-time subscription, agregované counts. Zrušiť localStorage.
+3. **Edge `find-anonymous-match` + `anonymous-date-ai`**: nahradiť SELECT→UPDATE pattern volaním nového RPC `deduct_anonymous_credits`. Pridať blocked_users check pred AI volaním.
 
-### 4. Stories
-- Tabuľka `mt_stories` (user_id, media_url, media_type, expires_at = now()+24h), bucket `mt-stories` (signed uploads).
-- UI: real upload (image/video ≤30s), grid len neexpirovaných, viewer modal s progress barom. Zrušiť 6 fake postáv.
+4. **Edge `check-access`**: odstrániť DB mutáciu cez email lookup (read-only).
 
-### 5. FriendInvites
-- Zlúčiť s existujúcim `ReferralProgram` → odstrániť duplicitný komponent ALEBO ho refactor-nuť tak, aby čítal `referral_code` z `profiles` a `invited` count zo `referrals` tabuľky (server truth, nie localStorage).
-- Milestone rewards spárovať s reálnymi `referral_rewards`.
+5. **Fix 24h vs 7d**: zjednotiť na 7 dní (DB `expires_at = now()+7d`, frontend countdown číta z DB).
 
-### 6. DailyLoginBonus
-- Použiť existujúci `useDailyLoginReward` hook + `user_login_streaks` tabuľku + RPC `claim_daily_login_reward` (už existujú).
-- Prepísať `MegatalentDailyLoginBonus` aby používal tento hook namiesto localStorage.
+## Fáza 2 — Backend medium + bezpečnosť (Day 2)
+6. Zod validácia v `anonymous-date-ai` payloade (prompt-injection ochrana, max lengths).
+7. Odstrániť PII z `anonymous_date_ai_usage.input_data` (ukladať len hash/feature, nie raw text).
+8. CORS: explicit allowed origins namiesto `*`.
+9. Rate limiting (per-user) na AI endpointoch cez `mt_rate_limits` pattern.
 
-### 7. SponsorShowcase
-- Tabuľka `mt_sponsors` (name, logo_url, cta_url, tier, active, starts_at, ends_at).
-- Admin-only insert (cez role check). UI: query active sponsors, žiadne `url:"#"`. Ak prázdne → „Become a sponsor" CTA.
+## Fáza 3 — Frontend stabilita (Day 3)
+10. `AnonymousChat`: `isMounted` ref, AbortController, cleanup subscriptions, debounce `broadcastTyping` (300ms).
+11. `useAnonymousDate`: cache `supabase.auth.getUser()` (1× na mount), typed `ActiveMatch[]` namiesto `any[]`.
+12. `RevealLock`: optimistic lock cez podmienený UPDATE (`WHERE reveal_request_at IS NULL`), eliminuje race.
+13. `ProfileSetup`: Zod schema + react-hook-form, stepper UI, error messages.
+14. `VoiceRecorderButton`: `maxDuration=60s`, cleanup MediaRecorder.
 
-## B. Polobroken (4)
+## Fáza 4 — Frontend dizajn/sémantika (Day 4)
+15. Nahradiť všetky hardcoded farby (`text-pink-500`, `from-pink-500`) sémantickými tokenmi (`text-primary`, gradient utility z index.css).
+16. Pridať `--anon-date-*` tokeny do index.css (pink/purple gradient, glow shadow).
+17. Mobile: `vh` → `dvh` na chat layout, safe-area insets.
+18. Unifikovať EN copy (audit & nahradiť SK reťazce v komponentoch).
 
-### 8. DailyQuests
-- Tabuľka `mt_daily_quests` (quest_key, label, xp, target_count) + `mt_user_quest_progress` (user_id, quest_key, date, progress, completed_at).
-- Server-side increment cez existujúce eventy (vote, comment, watch_party_join…) → trigger/edge. Zrušiť manuálny checkbox; tlačidlo „Claim" len keď `progress >= target`.
+## Fáza 5 — UX kritické (Day 5)
+19. **AdultWarningModal**: pridať DOB pole (uloženie do `anonymous_dating_profiles.dob_verified_at`), block <16.
+20. **Chat expirácia**: banner 24h pred expiráciou + push notifikácia + post-expiry CTA „Find new match".
+21. **CreditPackages**: zobraziť €/credit a savings %.
+22. **ProfileSetup stats**: nahradiť `—` reálnymi metrikami (matches, AI uses) alebo skryť.
+23. **ChatSafetyMenu**: presunúť shield icon mimo `⋮` menu, viditeľný v headeri.
 
-### 9. FeedFilter (hot/new/top)
-- Upraviť query v feed komponente: `new` → `created_at desc`, `top` → `votes desc`, `hot` → score `(votes / (age_hours+2)^1.5)` cez SQL view alebo client-side po načítaní.
+## Fáza 6 — UX polish (Day 6)
+24. AI Toolbox dostupný priamo z chatu (drawer).
+25. Reaction discoverability hint (tooltip pri prvom hover).
+26. Empty states pre 0 matchov / 0 kreditov s ilustráciou.
+27. Skeleton loaders namiesto spinnerov.
+28. Toast confirmácie pre block/report.
 
-### 10. SeasonPass rewards
-- Tabuľka `mt_season_pass_rewards` (tier_level, reward_type, payload) + `mt_user_season_progress` (user_id, season_id, xp, claimed_tiers[]).
-- Edge `mt-season-claim-tier` → vyplatí credit/boost/badge, zapíše do `claimed_tiers`.
+## Fáza 7 — Testy & monitoring (Day 7)
+29. E2E test: payment → credit grant (webhook simulácia).
+30. E2E test: reveal flow (unilateral attack musí failnúť).
+31. E2E test: double-spend kreditov (paralelné requesty).
+32. RLS test suite pre všetky `anonymous_dating_*` tabuľky.
+33. Edge function logs review + alerting na 5xx.
 
-### 11. VotingStreak/Achievements
-- Tabuľky `mt_voting_streaks` (user_id, current, longest, last_vote_date), `mt_achievements` (key, label, criteria_json, reward), `mt_user_achievements` (user_id, achievement_key, unlocked_at, claimed).
-- Trigger pri vote insert → update streak + check achievements. Claim cez RPC `mt_claim_achievement`.
+## Technické poznámky
+- Žiadne breaking changes pre existujúce páry — migrácia `expires_at` len pre nové matche; staré nechať, ale pridať warning UI.
+- Všetky migrácie idempotentné (`IF NOT EXISTS`, `CREATE OR REPLACE`).
+- Po každej fáze: `bunx vitest run` + manuálny smoke v preview.
 
-## C. Bug fix
-- `src/pages/Megatalent.tsx:89`: odstrániť bezpodmienečný `setTimeout(()=>setLoading(false), 4000)` → set loading false po skutočnom načítaní dát (alebo `Promise.all`).
+## Odhad
+~7 pracovných dní. Najdôležitejšie sú Fázy 1–2 (peniaze + privacy). Fázy 3–7 možno robiť paralelne ak treba.
 
-## D. Technický postup (poradie migrácií / kódu)
-1. Migration 1: tabuľky + RLS + GRANT pre #3 (reactions), #4 (stories+bucket), #7 (sponsors), #11 (streaks/achievements).
-2. Migration 2: tabuľky + RLS pre #1 (mentorship), #2 (marketplace), #8 (quests), #10 (season pass).
-3. Edge functions: `mt-mentorship-book`, `mt-marketplace-order`, `mt-season-claim-tier`, `mt-claim-achievement`, `mt-quest-increment`.
-4. Frontend refactor 11 komponentov + bug fix Megatalent.tsx.
-5. E2E smoke test pre reactions + stories + booking flow.
-
-## E. Otvorené rozhodnutia
-- Mentorship/Marketplace: použiť **credits** (interná mena) alebo **Stripe EUR escrow**? Plán predpokladá Stripe EUR (konzistencia s `brand-collaboration-escrow` 80/20 pravidlom).
-- Stories retention: 24h hard delete cron, alebo len `expires_at` filter? Plán: filter + nočný cleanup cron.
-- Sponsors admin UI: zatiaľ iba SQL insert (admin dashboard mimo scope), front-end len read.
-
-Po schválení začnem migráciami v poradí D1 → D2 → edge functions → frontend.
+Po schválení začínam **Fázou 1** (1 migrácia + 3 edge function úpravy).
