@@ -21,11 +21,11 @@ Cieľ: zastaviť stratu peňazí a privacy leaky.
 
 5. **Fix 24h vs 7d**: zjednotiť na 7 dní (DB `expires_at = now()+7d`, frontend countdown číta z DB).
 
-## Fáza 2 — Backend medium + bezpečnosť (Day 2)
-6. Zod validácia v `anonymous-date-ai` payloade (prompt-injection ochrana, max lengths).
-7. Odstrániť PII z `anonymous_date_ai_usage.input_data` (ukladať len hash/feature, nie raw text).
-8. CORS: explicit allowed origins namiesto `*`.
-9. Rate limiting (per-user) na AI endpointoch cez `mt_rate_limits` pattern.
+## Fáza 2 — Backend medium + bezpečnosť (Day 2) ✅
+6. ✅ Zod validácia v `anonymous-date-ai` aj `find-anonymous-match` (max lengths 4000, max 50 msgs).
+7. ✅ PII sanitizácia v `anonymous_date_ai_usage.input_data` (len structural fingerprint).
+8. ✅ Jednotný error handling cez `errorResponse(code, message, status)` helper v `_shared/anonymous-dating.ts`.
+9. ✅ Rate limiting cez `check_anon_dating_rate_limit` RPC (AI 20/min, match 30/min) + `mt_rate_limits` unique index.
 
 ## Fáza 3 — Frontend stabilita (Day 3)
 10. `AnonymousChat`: `isMounted` ref, AbortController, cleanup subscriptions, debounce `broadcastTyping` (300ms).
