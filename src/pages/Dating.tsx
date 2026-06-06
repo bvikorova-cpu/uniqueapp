@@ -85,6 +85,8 @@ interface Message {
   read_at: string | null;
   edited_at?: string | null;
   deleted_at?: string | null;
+  voice_url?: string | null;
+  voice_duration?: number | null;
 }
 
 interface GiftType {
