@@ -81,8 +81,27 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!anonymousName || !ageRange || selectedInterests.length < 3) {
-      toast({ title: "Missing Information", description: "Please fill in all required fields and select at least 3 interests", variant: "destructive" });
+
+    const parsed = anonymousDatingProfileSchema.safeParse({
+      anonymous_name: anonymousName,
+      age_range: ageRange,
+      looking_for: lookingFor,
+      location,
+      gender,
+      preferred_gender: preferredGender,
+      relationship_goal: relationshipGoal,
+      languages: selectedLanguages,
+      interests: selectedInterests,
+      personality_traits: selectedTraits,
+    });
+
+    if (!parsed.success) {
+      const first = parsed.error.issues[0];
+      toast({
+        title: "Check your profile",
+        description: first?.message ?? "Some fields are invalid.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -91,33 +110,35 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
+      const v = parsed.data;
       const { error } = await supabase
         .from("anonymous_dating_profiles")
         .upsert({
           user_id: user.id,
-          anonymous_name: anonymousName,
-          age_range: ageRange,
-          interests: selectedInterests,
-          personality_traits: selectedTraits,
-          looking_for: lookingFor,
-          location: location || null,
-          gender: gender || null,
-          preferred_gender: preferredGender || null,
-          relationship_goal: relationshipGoal || null,
-          languages: selectedLanguages.length ? selectedLanguages : null,
+          anonymous_name: v.anonymous_name,
+          age_range: v.age_range,
+          interests: v.interests,
+          personality_traits: v.personality_traits,
+          looking_for: v.looking_for || "",
+          location: v.location || null,
+          gender: v.gender || null,
+          preferred_gender: v.preferred_gender || null,
+          relationship_goal: v.relationship_goal || null,
+          languages: v.languages.length ? v.languages : null,
           is_active: true,
         });
 
       if (error) throw error;
       toast({ title: "Profile Created!", description: "You can now start finding matches" });
       onComplete();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating profile:", error);
-      toast({ title: "Error", description: "Failed to create profile", variant: "destructive" });
+      toast({ title: "Error", description: error?.message ?? "Failed to create profile", variant: "destructive" });
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="space-y-8 max-w-5xl mx-auto">
