@@ -1067,6 +1067,19 @@ const Dating = () => {
             </div>
           </TabsContent>
 
+          {/* ==================== PREMIUM TAB ==================== */}
+          <TabsContent value="premium">
+            {user && (
+              <DatingPremiumPanel
+                userId={user.id}
+                isSubscribed={isSubscribed}
+                likesYouCount={likesYouCount}
+                onSubscribe={() => handleSubscribe('monthly')}
+              />
+            )}
+          </TabsContent>
+
+
           {/* ==================== PROFILE TAB ==================== */}
           <TabsContent value="profile">
             <div className="max-w-lg mx-auto space-y-4">
