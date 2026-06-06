@@ -17921,18 +17921,27 @@ export type Database = {
       dating_matches: {
         Row: {
           created_at: string
+          expires_at: string | null
+          extended_once: boolean | null
+          first_message_at: string | null
           id: string
           user1_id: string
           user2_id: string
         }
         Insert: {
           created_at?: string
+          expires_at?: string | null
+          extended_once?: boolean | null
+          first_message_at?: string | null
           id?: string
           user1_id: string
           user2_id: string
         }
         Update: {
           created_at?: string
+          expires_at?: string | null
+          extended_once?: boolean | null
+          first_message_at?: string | null
           id?: string
           user1_id?: string
           user2_id?: string
@@ -18018,6 +18027,7 @@ export type Database = {
           additional_photos: string[] | null
           age: number
           bio: string | null
+          compatibility_quiz: Json | null
           created_at: string
           display_name: string
           gender: string
@@ -18028,10 +18038,13 @@ export type Database = {
           is_active: boolean | null
           location: string | null
           looking_for: string
+          opening_move: string | null
+          passport_location: string | null
           photo_verified: boolean
           profile_photo_url: string | null
           prompts: Json
           read_receipts_enabled: boolean
+          snoozed_until: string | null
           spotify_url: string | null
           updated_at: string
           user_id: string
@@ -18045,6 +18058,7 @@ export type Database = {
           additional_photos?: string[] | null
           age: number
           bio?: string | null
+          compatibility_quiz?: Json | null
           created_at?: string
           display_name: string
           gender: string
@@ -18055,10 +18069,13 @@ export type Database = {
           is_active?: boolean | null
           location?: string | null
           looking_for: string
+          opening_move?: string | null
+          passport_location?: string | null
           photo_verified?: boolean
           profile_photo_url?: string | null
           prompts?: Json
           read_receipts_enabled?: boolean
+          snoozed_until?: string | null
           spotify_url?: string | null
           updated_at?: string
           user_id: string
@@ -18072,6 +18089,7 @@ export type Database = {
           additional_photos?: string[] | null
           age?: number
           bio?: string | null
+          compatibility_quiz?: Json | null
           created_at?: string
           display_name?: string
           gender?: string
@@ -18082,10 +18100,13 @@ export type Database = {
           is_active?: boolean | null
           location?: string | null
           looking_for?: string
+          opening_move?: string | null
+          passport_location?: string | null
           photo_verified?: boolean
           profile_photo_url?: string | null
           prompts?: Json
           read_receipts_enabled?: boolean
+          snoozed_until?: string | null
           spotify_url?: string | null
           updated_at?: string
           user_id?: string

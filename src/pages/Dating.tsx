@@ -31,6 +31,12 @@ import { ProfileExtrasDisplay } from "@/components/dating/ProfileExtrasDisplay";
 import { SafetyCenter } from "@/components/dating/SafetyCenter";
 import { MessageActions } from "@/components/dating/MessageActions";
 import { EmojiPicker } from "@/components/dating/EmojiPicker";
+import { CompatibilityQuiz, computeCompatibility } from "@/components/dating/CompatibilityQuiz";
+import { OpeningMoveEditor } from "@/components/dating/OpeningMoveEditor";
+import { PassportDialog } from "@/components/dating/PassportDialog";
+import { SnoozeButton } from "@/components/dating/SnoozeButton";
+import { MatchExpiryBadge } from "@/components/dating/MatchExpiryBadge";
+import { DiscoveryTabs, type DiscoveryMode } from "@/components/dating/DiscoveryTabs";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface DatingProfile {
@@ -54,6 +60,10 @@ interface DatingProfile {
   verification_status?: string | null;
   incognito?: boolean | null;
   read_receipts_enabled?: boolean | null;
+  compatibility_quiz?: any;
+  opening_move?: string | null;
+  passport_location?: string | null;
+  snoozed_until?: string | null;
 }
 
 interface Match {
@@ -128,6 +138,8 @@ const Dating = () => {
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
   const [activeView, setActiveView] = useState<string>("hub");
   const [showSafety, setShowSafety] = useState(false);
+  const [showPassport, setShowPassport] = useState(false);
+  const [discoveryMode, setDiscoveryMode] = useState<DiscoveryMode>("deck");
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { checkAuth(); }, []);
@@ -247,19 +259,49 @@ const Dating = () => {
         q = q.in("gender", filters.preferred_genders);
       }
     }
-    const { data } = await q.limit(40);
+    const nowIso = new Date().toISOString();
+    q = q.or(`snoozed_until.is.null,snoozed_until.lt.${nowIso}`);
+    const { data } = await q.limit(80);
 
-    // Rank: boosted users first
     let ranked = data || [];
     if (ranked.length > 0) {
       const userIds = ranked.map(p => p.user_id);
       const { data: boosts } = await supabase.from("dating_boosts").select("user_id")
         .in("user_id", userIds).gt("expires_at", new Date().toISOString());
       const boostedSet = new Set((boosts || []).map(b => b.user_id));
-      ranked = [...ranked.filter(p => boostedSet.has(p.user_id)), ...ranked.filter(p => !boostedSet.has(p.user_id))];
+
+      const myQuiz = (currentProfile?.compatibility_quiz as any) || null;
+      const myInterests = new Set(currentProfile?.interests || []);
+      const score = (p: any) => {
+        let s = 0;
+        if (boostedSet.has(p.user_id)) s += 1000;
+        if (p.photo_verified) s += 80;
+        const compat = computeCompatibility(myQuiz, p.compatibility_quiz);
+        s += compat * 2;
+        const shared = (p.interests || []).filter((i: string) => myInterests.has(i)).length;
+        s += shared * 15;
+        if (p.voice_intro_url) s += 10;
+        if (Array.isArray(p.prompts) && p.prompts.length > 0) s += 10;
+        return s;
+      };
+
+      if (discoveryMode === "most_compatible") {
+        ranked = [...ranked].sort((a, b) =>
+          computeCompatibility(myQuiz, b.compatibility_quiz) - computeCompatibility(myQuiz, a.compatibility_quiz)
+        );
+      } else if (discoveryMode === "top_picks") {
+        ranked = [...ranked].sort((a, b) => score(b) - score(a)).slice(0, 10);
+      } else if (discoveryMode === "standouts") {
+        ranked = ranked.filter(p => p.photo_verified || (Array.isArray(p.prompts) && p.prompts.length >= 2) || p.voice_intro_url);
+        ranked = [...ranked].sort((a, b) => score(b) - score(a)).slice(0, 12);
+      } else {
+        ranked = [...ranked.filter(p => boostedSet.has(p.user_id)), ...ranked.filter(p => !boostedSet.has(p.user_id))];
+      }
     }
-    setProfiles(ranked.slice(0, 20));
+    setProfiles(ranked.slice(0, 25));
   };
+
+  useEffect(() => { if (user?.id) loadProfiles(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [discoveryMode]);
 
   const loadMatches = async (userId: string) => {
     const { data } = await supabase.from("dating_matches").select("*").or(`user1_id.eq.${userId},user2_id.eq.${userId}`);
@@ -773,7 +815,9 @@ const Dating = () => {
           </TabsList>
 
           {/* ==================== DISCOVER TAB ==================== */}
-          <TabsContent value="swipe" className="flex justify-center">
+          <TabsContent value="swipe" className="flex flex-col items-center gap-3">
+            <div className="w-full max-w-sm"><DiscoveryTabs mode={discoveryMode} onChange={setDiscoveryMode} /></div>
+            <div className="w-full flex justify-center">
             <AnimatePresence mode="wait">
               {currentCard ? (
                 <motion.div key={currentCard.id}
@@ -871,6 +915,7 @@ const Dating = () => {
                 </motion.div>
               )}
             </AnimatePresence>
+            </div>
           </TabsContent>
 
           {/* ==================== MATCHES TAB ==================== */}
@@ -952,7 +997,7 @@ const Dating = () => {
                             {match.profile?.profile_photo_url ? <img src={match.profile.profile_photo_url} alt="" className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-white font-bold text-lg">{match.profile?.display_name?.charAt(0) || "?"}</div>}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2"><h3 className="font-semibold truncate">{match.profile?.display_name}</h3><span className="text-xs text-muted-foreground">{match.profile?.age}</span></div>
+                            <div className="flex items-center gap-2 flex-wrap"><h3 className="font-semibold truncate">{match.profile?.display_name}</h3><span className="text-xs text-muted-foreground">{match.profile?.age}</span><MatchExpiryBadge expiresAt={(match as any).expires_at ?? null} /></div>
                             <p className="text-sm text-muted-foreground truncate">{match.profile?.location || "Tap to start chatting"}</p>
                           </div>
                           <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0" />
@@ -1056,6 +1101,34 @@ const Dating = () => {
                     instagramUrl={currentProfile.instagram_url || null}
                     onChange={(sp, ig) => setCurrentProfile({ ...currentProfile, spotify_url: sp, instagram_url: ig })}
                   />
+                  <CompatibilityQuiz
+                    userId={user.id}
+                    initial={(currentProfile.compatibility_quiz as any) || {}}
+                    onSaved={(q) => setCurrentProfile({ ...currentProfile, compatibility_quiz: q })}
+                  />
+                  <OpeningMoveEditor
+                    userId={user.id}
+                    initial={currentProfile.opening_move || ""}
+                    onSaved={(v) => setCurrentProfile({ ...currentProfile, opening_move: v })}
+                  />
+                  <Card className="p-4 flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium flex items-center gap-2">Passport {currentProfile.passport_location && <Badge variant="secondary" className="text-[10px]">{currentProfile.passport_location}</Badge>}</p>
+                      <p className="text-xs text-muted-foreground">Match anywhere in the world.</p>
+                    </div>
+                    <Button variant="outline" size="sm" onClick={() => setShowPassport(true)}>Change</Button>
+                  </Card>
+                  <Card className="p-4 flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium">Snooze profile</p>
+                      <p className="text-xs text-muted-foreground">Hide yourself from the deck temporarily.</p>
+                    </div>
+                    <SnoozeButton
+                      userId={user.id}
+                      snoozedUntil={currentProfile.snoozed_until || null}
+                      onChange={(v) => setCurrentProfile({ ...currentProfile, snoozed_until: v })}
+                    />
+                  </Card>
                 </>
               )}
               <Button variant="outline" onClick={() => setShowSafety(true)} className="w-full gap-2"><Shield className="h-4 w-4" />Safety Center</Button>
@@ -1085,6 +1158,15 @@ const Dating = () => {
           readReceipts={currentProfile.read_receipts_enabled !== false}
           onTogglePrivacy={handleTogglePrivacy}
           onOpenBlocked={() => { setShowSafety(false); navigate("/settings/blocked"); }}
+        />
+      )}
+      {user && currentProfile && (
+        <PassportDialog
+          open={showPassport}
+          onOpenChange={setShowPassport}
+          userId={user.id}
+          current={currentProfile.passport_location || null}
+          onSaved={(v) => setCurrentProfile({ ...currentProfile, passport_location: v })}
         />
       )}
 
