@@ -48,6 +48,7 @@ import { DatingPremiumPanel } from "@/components/dating/DatingPremiumPanel";
 import { DatingNotificationsCenter } from "@/components/dating/DatingNotificationsCenter";
 import { DatingAnalyticsPanel } from "@/components/dating/DatingAnalyticsPanel";
 import { WeeklyInsightsCard } from "@/components/dating/WeeklyInsightsCard";
+import { MatchCelebrationModal } from "@/components/dating/MatchCelebrationModal";
 import { AIStarterButton } from "@/components/dating/AIStarterButton";
 import { AIBioCoach } from "@/components/dating/AIBioCoach";
 
@@ -159,6 +160,7 @@ const Dating = () => {
   const [discoveryMode, setDiscoveryMode] = useState<DiscoveryMode>("deck");
   const chatEndRef = useRef<HTMLDivElement>(null);
   const [pendingStarterExperiment, setPendingStarterExperiment] = useState<string | null>(null);
+  const [matchCelebration, setMatchCelebration] = useState<{ match: Match; partner: DatingProfile } | null>(null);
 
   useEffect(() => { checkAuth(); }, []);
   useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
@@ -461,8 +463,8 @@ const Dating = () => {
           { user_id: currentCard.user_id, type: "dating_match", title: "🎉 New Match!", message: `You matched with ${currentProfile?.display_name || "someone"}!`, related_id: data.id },
           { user_id: user.id, type: "dating_match", title: "🎉 New Match!", message: `You matched with ${currentCard.display_name}!`, related_id: data.id }
         ]);
-        toast({ title: "🎉 It's a Match!", description: `You matched with ${currentCard.display_name}!` });
         await loadMatches(user.id);
+        setMatchCelebration({ match: { ...(data as any), profile: currentCard } as Match, partner: currentCard });
       }
     }
     setTimeout(() => { setCurrentIndex(currentIndex + 1); setSwipeDirection(null); setActivePhotoIndex(0); }, 300);
