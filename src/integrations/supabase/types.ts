@@ -17977,6 +17977,36 @@ export type Database = {
           },
         ]
       }
+      dating_photo_likes: {
+        Row: {
+          comment: string | null
+          created_at: string
+          from_user_id: string
+          id: string
+          photo_url: string
+          prompt_index: number | null
+          to_user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          from_user_id: string
+          id?: string
+          photo_url: string
+          prompt_index?: number | null
+          to_user_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          from_user_id?: string
+          id?: string
+          photo_url?: string
+          prompt_index?: number | null
+          to_user_id?: string
+        }
+        Relationships: []
+      }
       dating_profiles: {
         Row: {
           additional_photos: string[] | null
@@ -17986,13 +18016,22 @@ export type Database = {
           display_name: string
           gender: string
           id: string
+          instagram_url: string | null
           interests: string[] | null
           is_active: boolean | null
           location: string | null
           looking_for: string
+          photo_verified: boolean
           profile_photo_url: string | null
+          prompts: Json
+          spotify_url: string | null
           updated_at: string
           user_id: string
+          verification_selfie_url: string | null
+          verification_status: string
+          verification_submitted_at: string | null
+          voice_intro_duration: number | null
+          voice_intro_url: string | null
         }
         Insert: {
           additional_photos?: string[] | null
@@ -18002,13 +18041,22 @@ export type Database = {
           display_name: string
           gender: string
           id?: string
+          instagram_url?: string | null
           interests?: string[] | null
           is_active?: boolean | null
           location?: string | null
           looking_for: string
+          photo_verified?: boolean
           profile_photo_url?: string | null
+          prompts?: Json
+          spotify_url?: string | null
           updated_at?: string
           user_id: string
+          verification_selfie_url?: string | null
+          verification_status?: string
+          verification_submitted_at?: string | null
+          voice_intro_duration?: number | null
+          voice_intro_url?: string | null
         }
         Update: {
           additional_photos?: string[] | null
@@ -18018,13 +18066,22 @@ export type Database = {
           display_name?: string
           gender?: string
           id?: string
+          instagram_url?: string | null
           interests?: string[] | null
           is_active?: boolean | null
           location?: string | null
           looking_for?: string
+          photo_verified?: boolean
           profile_photo_url?: string | null
+          prompts?: Json
+          spotify_url?: string | null
           updated_at?: string
           user_id?: string
+          verification_selfie_url?: string | null
+          verification_status?: string
+          verification_submitted_at?: string | null
+          voice_intro_duration?: number | null
+          voice_intro_url?: string | null
         }
         Relationships: []
       }
