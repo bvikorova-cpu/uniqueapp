@@ -18405,6 +18405,7 @@ export type Database = {
           instagram_url: string | null
           interests: string[] | null
           is_active: boolean | null
+          is_shadow_banned: boolean
           location: string | null
           looking_for: string
           opening_move: string | null
@@ -18413,6 +18414,7 @@ export type Database = {
           profile_photo_url: string | null
           prompts: Json
           read_receipts_enabled: boolean
+          shadow_banned_at: string | null
           snoozed_until: string | null
           spotify_url: string | null
           updated_at: string
@@ -18437,6 +18439,7 @@ export type Database = {
           instagram_url?: string | null
           interests?: string[] | null
           is_active?: boolean | null
+          is_shadow_banned?: boolean
           location?: string | null
           looking_for: string
           opening_move?: string | null
@@ -18445,6 +18448,7 @@ export type Database = {
           profile_photo_url?: string | null
           prompts?: Json
           read_receipts_enabled?: boolean
+          shadow_banned_at?: string | null
           snoozed_until?: string | null
           spotify_url?: string | null
           updated_at?: string
@@ -18469,6 +18473,7 @@ export type Database = {
           instagram_url?: string | null
           interests?: string[] | null
           is_active?: boolean | null
+          is_shadow_banned?: boolean
           location?: string | null
           looking_for?: string
           opening_move?: string | null
@@ -18477,6 +18482,7 @@ export type Database = {
           profile_photo_url?: string | null
           prompts?: Json
           read_receipts_enabled?: boolean
+          shadow_banned_at?: string | null
           snoozed_until?: string | null
           spotify_url?: string | null
           updated_at?: string
@@ -18495,9 +18501,11 @@ export type Database = {
           created_at: string
           details: string | null
           id: string
+          moderator_notes: string | null
           reason: string
           reported_id: string
           reporter_id: string
+          resolved_at: string | null
           reviewed_at: string | null
           reviewed_by: string | null
           status: string
@@ -18506,9 +18514,11 @@ export type Database = {
           created_at?: string
           details?: string | null
           id?: string
+          moderator_notes?: string | null
           reason: string
           reported_id: string
           reporter_id: string
+          resolved_at?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           status?: string
@@ -18517,9 +18527,11 @@ export type Database = {
           created_at?: string
           details?: string | null
           id?: string
+          moderator_notes?: string | null
           reason?: string
           reported_id?: string
           reporter_id?: string
+          resolved_at?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           status?: string
