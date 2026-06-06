@@ -29,6 +29,7 @@ import { PhotoVerificationCard } from "@/components/dating/PhotoVerificationCard
 import { PhotoLikeButton } from "@/components/dating/PhotoLikeButton";
 import { ProfileExtrasDisplay } from "@/components/dating/ProfileExtrasDisplay";
 import { SafetyCenter } from "@/components/dating/SafetyCenter";
+import { SafetyTipsBanner } from "@/components/dating/SafetyTipsBanner";
 import { MessageActions } from "@/components/dating/MessageActions";
 import { EmojiPicker } from "@/components/dating/EmojiPicker";
 import { CompatibilityQuiz, computeCompatibility } from "@/components/dating/CompatibilityQuiz";
