@@ -1058,6 +1058,12 @@ const Dating = () => {
                   <div className="flex gap-2">
                     <EmojiPicker onSelect={(e) => setNewMessage(newMessage + e)} />
                     {user && <VoiceNoteRecorder userId={user.id} matchId={selectedMatch.id} onSent={() => loadMessages(selectedMatch.id)} />}
+                    <AIStarterButton
+                      matchId={selectedMatch.id}
+                      matchProfile={selectedMatch.profile}
+                      recentMessages={messages.slice(-6).map(m => ({ content: m.content || "", mine: m.sender_id === user?.id }))}
+                      onPick={(text, expId) => { setNewMessage(text); setPendingStarterExperiment(expId); }}
+                    />
                     <Input value={newMessage} onChange={(e) => setNewMessage(e.target.value)} maxLength={2000} placeholder="Type a message..." onKeyPress={(e) => e.key === "Enter" && handleSendMessage()} className="flex-1 border-0 bg-muted/50 focus-visible:ring-1 focus-visible:ring-primary" />
                     <Button onClick={handleSendMessage} size="icon" className="bg-gradient-to-r from-primary to-accent hover:opacity-90 h-10 w-10"><Send className="h-4 w-4" /></Button>
                   </div>
