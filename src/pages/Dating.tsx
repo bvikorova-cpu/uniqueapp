@@ -981,6 +981,35 @@ const Dating = () => {
                   </label>
                 </div>
               </Card>
+              {user && (
+                <>
+                  <PhotoVerificationCard
+                    profileId={currentProfile.id}
+                    userId={user.id}
+                    status={currentProfile.verification_status || "unverified"}
+                    verified={!!currentProfile.photo_verified}
+                    onChange={(status) => setCurrentProfile({ ...currentProfile, verification_status: status })}
+                  />
+                  <PromptsEditor
+                    profileId={currentProfile.id}
+                    value={((currentProfile.prompts as Prompt[] | null) || [])}
+                    onChange={(next) => setCurrentProfile({ ...currentProfile, prompts: next })}
+                  />
+                  <VoiceIntroRecorder
+                    profileId={currentProfile.id}
+                    userId={user.id}
+                    url={currentProfile.voice_intro_url || null}
+                    duration={currentProfile.voice_intro_duration || null}
+                    onChange={(url, dur) => setCurrentProfile({ ...currentProfile, voice_intro_url: url, voice_intro_duration: dur })}
+                  />
+                  <SocialEmbedsCard
+                    profileId={currentProfile.id}
+                    spotifyUrl={currentProfile.spotify_url || null}
+                    instagramUrl={currentProfile.instagram_url || null}
+                    onChange={(sp, ig) => setCurrentProfile({ ...currentProfile, spotify_url: sp, instagram_url: ig })}
+                  />
+                </>
+              )}
               <div className="grid grid-cols-2 gap-3">
                 <Button variant="outline" onClick={() => setShowEditDialog(true)} className="gap-2"><Settings className="h-4 w-4" />Edit Profile</Button>
                 <AlertDialog>
