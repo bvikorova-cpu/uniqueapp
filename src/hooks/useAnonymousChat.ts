@@ -31,6 +31,9 @@ export function useAnonymousChat(matchId: string | null, currentUserId: string |
   const [loading, setLoading] = useState(true);
   const channelRef = useRef<RealtimeChannel | null>(null);
   const typingTimeoutRef = useRef<number | null>(null);
+  const lastTypingSentRef = useRef<number>(0);
+  const typingDebounceRef = useRef<number | null>(null);
+
 
   // Fetch messages + reactions
   useEffect(() => {
