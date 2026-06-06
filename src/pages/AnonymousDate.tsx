@@ -615,6 +615,24 @@ export default function AnonymousDate() {
           )}
         </AnimatePresence>
       </div>
+
+      <MatchCelebrationModal
+        open={!!matchCelebration}
+        myName={myAnonName}
+        theirName={matchCelebration?.partnerName}
+        location={matchCelebration?.location ?? null}
+        onSendMessage={() => {
+          if (matchCelebration) {
+            setSelectedMatchId(matchCelebration.matchId);
+            setActiveView("matches");
+          }
+          setMatchCelebration(null);
+        }}
+        onKeepSwiping={async () => {
+          setMatchCelebration(null);
+          await loadCandidates(lastFilters);
+        }}
+      />
     </div>
   );
 }
