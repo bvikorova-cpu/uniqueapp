@@ -325,7 +325,7 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
                 <div
                   className={`max-w-[78%] px-3 py-2 rounded-2xl text-sm break-words ${
                     mine
-                      ? "bg-gradient-to-br from-primary to-pink-500 text-white rounded-br-sm shadow-lg"
+                      ? "bg-anon-date-gradient text-white rounded-br-sm shadow-lg"
                       : "bg-card/80 backdrop-blur-md border border-border/40 rounded-bl-sm"
                   }`}
                 >
