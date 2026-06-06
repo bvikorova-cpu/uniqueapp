@@ -1160,6 +1160,15 @@ const Dating = () => {
           onOpenBlocked={() => { setShowSafety(false); navigate("/settings/blocked"); }}
         />
       )}
+      {user && currentProfile && (
+        <PassportDialog
+          open={showPassport}
+          onOpenChange={setShowPassport}
+          userId={user.id}
+          current={currentProfile.passport_location || null}
+          onSaved={(v) => setCurrentProfile({ ...currentProfile, passport_location: v })}
+        />
+      )}
 
       {/* Edit Profile Dialog */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
