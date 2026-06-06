@@ -66,6 +66,7 @@ interface DatingProfile {
   compatibility_quiz?: any;
   opening_move?: string | null;
   passport_location?: string | null;
+  video_prompts?: any;
   snoozed_until?: string | null;
 }
 
