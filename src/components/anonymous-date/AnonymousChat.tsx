@@ -177,12 +177,16 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
       return;
     }
 
-    // AI pre-send moderation
+    // AI pre-send moderation (abortable on unmount)
     setModerating(true);
+    moderationAbortRef.current?.abort();
+    const abort = new AbortController();
+    moderationAbortRef.current = abort;
     try {
       const { data: mod } = await supabase.functions.invoke("dating-moderate-message", {
         body: { content: text },
       });
+      if (!isMountedRef.current || abort.signal.aborted) return;
       if (mod && mod.allow === false) {
         toast({
           title: "Message blocked",
@@ -192,15 +196,18 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
         return;
       }
     } catch (err) {
+      if (abort.signal.aborted) return;
       console.warn("moderation failed, allowing", err);
     } finally {
-      setModerating(false);
+      if (isMountedRef.current) setModerating(false);
     }
 
+    if (!isMountedRef.current) return;
     setInput("");
     await sendMessage(text);
     bumpStreak();
   };
+
 
   const downloadPDF = () => {
     exportChatToPDF({ messages, currentUserId, myName, partnerName, matchCreatedAt: match.created_at ?? undefined });
