@@ -1400,6 +1400,23 @@ const Dating = () => {
           onSaved={async (f) => { setFilters(f); await loadProfiles(); }}
         />
       )}
+
+      <MatchCelebrationModal
+        open={!!matchCelebration}
+        myPhoto={currentProfile?.profile_photo_url}
+        myName={currentProfile?.display_name}
+        theirPhoto={matchCelebration?.partner.profile_photo_url}
+        theirName={matchCelebration?.partner.display_name}
+        location={matchCelebration?.partner.location}
+        onSendMessage={() => {
+          if (matchCelebration) {
+            setSelectedMatch(matchCelebration.match);
+            setActiveTab("matches");
+          }
+          setMatchCelebration(null);
+        }}
+        onKeepSwiping={() => setMatchCelebration(null)}
+      />
     </div>
     </>
   );
