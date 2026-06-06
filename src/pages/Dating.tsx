@@ -1072,6 +1072,10 @@ const Dating = () => {
           </TabsContent>
 
           {/* ==================== PREMIUM TAB ==================== */}
+          <TabsContent value="notifs">
+            <DatingNotificationsCenter />
+          </TabsContent>
+
           <TabsContent value="premium">
             {user && (
               <DatingPremiumPanel
