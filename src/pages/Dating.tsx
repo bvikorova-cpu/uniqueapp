@@ -1058,6 +1058,7 @@ const Dating = () => {
                   />
                 </>
               )}
+              <Button variant="outline" onClick={() => setShowSafety(true)} className="w-full gap-2"><Shield className="h-4 w-4" />Safety Center</Button>
               <div className="grid grid-cols-2 gap-3">
                 <Button variant="outline" onClick={() => setShowEditDialog(true)} className="gap-2"><Settings className="h-4 w-4" />Edit Profile</Button>
                 <AlertDialog>
