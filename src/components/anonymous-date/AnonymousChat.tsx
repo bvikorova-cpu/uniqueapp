@@ -64,6 +64,7 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
   // 24h countdown
   const [timeLeft, setTimeLeft] = useState("");
   const [urgent, setUrgent] = useState(false);
+  const [expired, setExpired] = useState(false);
   useEffect(() => {
     const tick = () => {
       if (!match.created_at) return;
@@ -72,17 +73,30 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
       if (diff <= 0) {
         setTimeLeft("Expired");
         setUrgent(true);
+        setExpired(true);
         return;
       }
       const h = Math.floor(diff / 3600000);
       const m = Math.floor((diff % 3600000) / 60000);
       setTimeLeft(`${h}h ${m}m`);
       setUrgent(diff < 6 * 3600000);
+      setExpired(false);
     };
     tick();
-    const t = setInterval(tick, 60000);
+    const t = setInterval(tick, 30000);
     return () => clearInterval(t);
   }, [match.created_at]);
+
+  // Mark match expired in DB once countdown hits zero
+  useEffect(() => {
+    if (!expired) return;
+    if (matchState.status === "expired") return;
+    supabase
+      .from("anonymous_dating_matches")
+      .update({ status: "expired" })
+      .eq("id", match.id)
+      .then(() => {});
+  }, [expired, match.id, matchState.status]);
 
   const safety = useChatSafety(currentUserId, partnerId);
 
