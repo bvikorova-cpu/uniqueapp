@@ -24,41 +24,42 @@ serve(async (req) => {
   try {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
-      return new Response(JSON.stringify({ error: "Missing authorization header" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 401,
-      });
+      return errorResponse("UNAUTHORIZED", "Missing authorization header", 401);
     }
     const token = authHeader.replace("Bearer ", "");
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser(token);
 
     if (userError || !user) {
-      return new Response(JSON.stringify({ error: "User not authenticated" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 401,
-      });
+      return errorResponse("UNAUTHORIZED", "User not authenticated", 401);
     }
 
-    // Optional filters from client + mode (preview | match)
-    let filters: {
-      location?: string;
-      preferred_gender?: string;
-      relationship_goal?: string;
-      languages?: string[];
-      min_shared_interests?: number;
-    } = {};
-    let mode: "preview" | "match" = "match";
-    let targetUserId: string | undefined;
+    // ── Rate limit: 30 match requests per minute per user ──
+    const { data: rateOk } = await supabaseClient.rpc("check_anon_dating_rate_limit", {
+      p_user_id: user.id,
+      p_action: "find_anonymous_match",
+      p_max_per_minute: 30,
+    });
+    if (rateOk === false) {
+      return errorResponse("RATE_LIMITED", "Too many match requests. Please wait a minute.", 429);
+    }
+
+    // ── Zod validation ──
+    let rawBody: unknown = {};
     if (req.method === "POST") {
       try {
-        const body = await req.json();
-        filters = body?.filters ?? {};
-        if (body?.mode === "preview") mode = "preview";
-        if (typeof body?.targetUserId === "string") targetUserId = body.targetUserId;
+        rawBody = await req.json();
       } catch {
-        // no body
+        rawBody = {};
       }
     }
+    const parsedBody = findMatchSchema.safeParse(rawBody);
+    if (!parsedBody.success) {
+      return errorResponse("VALIDATION_ERROR", "Invalid request payload", 400, {
+        issues: parsedBody.error.flatten().fieldErrors,
+      });
+    }
+    const { mode, targetUserId, filters } = parsedBody.data;
+
 
     // Credit check is only required when actually creating a match
     const { data: creditsData } = await supabaseClient
