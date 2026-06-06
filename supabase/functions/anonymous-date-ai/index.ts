@@ -226,13 +226,13 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Log usage
+    // Log usage — PII stripped from input_data (only structural fingerprint stored)
     await admin.from("anonymous_date_ai_usage").insert({
       user_id: user.id,
       match_id: matchId ?? null,
       feature_type: feature,
       credits_used: cost,
-      input_data: payload ?? {},
+      input_data: sanitizePayloadForLog(payload ?? {}),
       output_data: typeof output === "string" ? { text: output } : output,
     });
 
