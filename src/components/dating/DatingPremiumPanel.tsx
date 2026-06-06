@@ -107,18 +107,18 @@ export const DatingPremiumPanel = ({ userId, isSubscribed, likesYouCount, onSubs
           <h2 className="text-xl font-bold mb-3 flex items-center gap-2"><Crown className="h-5 w-5 text-yellow-500" /> Unique+ Membership</h2>
           <div className="grid sm:grid-cols-2 gap-3">
             <TierCard
-              name="Unique+"
-              price="€9.99"
+              name="Unique+ Monthly"
+              price="€2"
               gradient="from-primary to-pink-500"
-              features={["See who likes you", "Unlimited likes", "5 Super Likes / day", "Rewind last swipe", "Advanced filters"]}
+              features={["See who likes you", "Unlimited likes", "5 Super Likes / day", "Rewind last swipe", "AI Tools (3 credits each)"]}
               onClick={onSubscribe}
             />
             <TierCard
-              name="Unique Gold"
-              price="€19.99"
+              name="Unique+ Yearly"
+              price="€20"
               gradient="from-yellow-500 to-orange-500"
               highlight
-              features={["Everything in Unique+", "Priority in discovery", "10 Super Likes / day", "Read receipts", "Weekly boost", "Premium badge", "2× AI credits"]}
+              features={["Everything in Monthly", "Priority in discovery", "10 Super Likes / day", "Advanced filters", "Read receipts", "Weekly boost", "Premium badge", "2× AI credits"]}
               onClick={onSubscribe}
             />
           </div>
@@ -172,7 +172,7 @@ const TierCard = ({ name, price, features, gradient, highlight, onClick }: {
     {highlight && <Badge className="absolute -top-2 right-3 bg-yellow-500 text-yellow-950"><Sparkles className="h-3 w-3 mr-1" /> Popular</Badge>}
     <CardHeader>
       <CardTitle className={`text-2xl bg-gradient-to-r ${gradient} bg-clip-text text-transparent`}>{name}</CardTitle>
-      <p className="text-3xl font-bold">{price}<span className="text-sm font-normal text-muted-foreground">/mo</span></p>
+      <p className="text-3xl font-bold">{price}<span className="text-sm font-normal text-muted-foreground">{price === "€20" ? "/year" : "/month"}</span></p>
     </CardHeader>
     <CardContent className="space-y-2">
       {features.map(f => (

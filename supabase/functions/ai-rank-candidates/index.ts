@@ -34,10 +34,18 @@ Deno.serve(async (req) => {
     const { data: u } = await userClient.auth.getUser();
     if (!u.user) throw new Error("Unauthorized");
 
-    const { jobId, jobTitle, jobDescription, candidates } = await req.json();
-    if (!jobId || !Array.isArray(candidates) || candidates.length === 0) {
+    const { jobId, jobTitle, jobDescription, candidates: rawCandidates } = await req.json();
+    if (!jobId || !Array.isArray(rawCandidates) || rawCandidates.length === 0) {
       throw new Error("Invalid input");
     }
+    // DoS protection: cap candidates and field sizes
+    const candidates = rawCandidates.slice(0, 50).map((c: any) => ({
+      candidate_id: String(c.candidate_id ?? c.id ?? "").slice(0, 64),
+      name: String(c.name ?? "").slice(0, 120),
+      headline: String(c.headline ?? "").slice(0, 200),
+      skills: Array.isArray(c.skills) ? c.skills.slice(0, 30) : [],
+      experience: String(c.experience ?? "").slice(0, 1000),
+    }));
 
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
     if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY missing");

@@ -116,7 +116,7 @@ interface SentGift {
 const Dating = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<{ id: string; email?: string } | null>(null);
   const [activeTab, setActiveTab] = useState<string>("swipe");
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [currentProfile, setCurrentProfile] = useState<DatingProfile | null>(null);
@@ -162,6 +162,22 @@ const Dating = () => {
 
   useEffect(() => { checkAuth(); }, []);
   useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
+
+  // Realtime chat: subscribe to new messages for the currently open match
+  useEffect(() => {
+    if (!selectedMatch?.id) return;
+    const channel = supabase
+      .channel(`dating_messages_${selectedMatch.id}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "dating_messages", filter: `match_id=eq.${selectedMatch.id}` },
+        () => { loadMessages(selectedMatch.id); }
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedMatch?.id]);
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('payment') === 'success') {
@@ -201,6 +217,7 @@ const Dating = () => {
       await loadGifts();
       await loadLikesYou(userId);
       await checkLastSwipe(userId);
+      await loadSuperLikesRemaining(userId);
     }
   };
 
@@ -212,6 +229,17 @@ const Dating = () => {
       preferred_genders: data.preferred_genders,
       verified_only: data.verified_only,
     });
+  };
+
+  const loadSuperLikesRemaining = async (userId: string) => {
+    const startOfDay = new Date(); startOfDay.setHours(0, 0, 0, 0);
+    const { count } = await supabase.from("dating_super_likes")
+      .select("id", { count: "exact", head: true })
+      .eq("swiper_id", userId)
+      .gte("created_at", startOfDay.toISOString());
+    // Default cap 5/day; yearly plan = 10. We do not have plan tier locally, so default to 5 — server enforces.
+    const used = count || 0;
+    setSuperLikesRemaining(Math.max(0, 5 - used));
   };
 
   const loadBlocked = async (userId: string) => {
@@ -276,6 +304,9 @@ const Dating = () => {
       if (filters.preferred_genders.length > 0 && filters.preferred_genders.length < 3) {
         q = q.in("gender", filters.preferred_genders);
       }
+      if (filters.verified_only) {
+        q = q.eq("photo_verified", true);
+      }
     }
     const nowIso = new Date().toISOString();
     q = q.or(`snoozed_until.is.null,snoozed_until.lt.${nowIso}`);
@@ -335,16 +366,18 @@ const Dating = () => {
 
   const loadMatches = async (userId: string) => {
     const { data } = await supabase.from("dating_matches").select("*").or(`user1_id.eq.${userId},user2_id.eq.${userId}`);
-    if (data) {
-      const matchesWithProfiles = await Promise.all(
-        data.map(async (match) => {
-          const otherId = match.user1_id === userId ? match.user2_id : match.user1_id;
-          const { data: profile } = await supabase.from("dating_profiles").select("*").eq("user_id", otherId).single();
-          return { ...match, profile };
-        })
-      );
-      setMatches(matchesWithProfiles);
-    }
+    if (!data || data.length === 0) { setMatches([]); return; }
+    // Batch-load all partner profiles in ONE query instead of N
+    const partnerIds = data.map(m => m.user1_id === userId ? m.user2_id : m.user1_id);
+    const { data: profiles } = await supabase
+      .from("dating_profiles")
+      .select("*")
+      .in("user_id", partnerIds);
+    const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
+    setMatches(data.map(m => ({
+      ...m,
+      profile: profileMap.get(m.user1_id === userId ? m.user2_id : m.user1_id),
+    })));
   };
 
   const loadMessages = async (matchId: string) => {
@@ -422,7 +455,7 @@ const Dating = () => {
     if (error) { toast({ title: "Error", description: "Failed to save swipe", variant: "destructive" }); setSwipeDirection(null); return; }
     if (action === "like" || isSuper) {
       await supabase.from("dating_likes_you").insert([{ liker_id: user.id, liked_id: currentCard.user_id }]);
-      const { data } = await supabase.from("dating_matches").select("*").or(`user1_id.eq.${user.id},user2_id.eq.${user.id}`).or(`user1_id.eq.${currentCard.user_id},user2_id.eq.${currentCard.user_id}`).maybeSingle();
+      const { data } = await supabase.from("dating_matches").select("*").or(`and(user1_id.eq.${user.id},user2_id.eq.${currentCard.user_id}),and(user1_id.eq.${currentCard.user_id},user2_id.eq.${user.id})`).maybeSingle();
       if (data) {
         await supabase.from("notifications").insert([
           { user_id: currentCard.user_id, type: "dating_match", title: "🎉 New Match!", message: `You matched with ${currentProfile?.display_name || "someone"}!`, related_id: data.id },
@@ -995,7 +1028,7 @@ const Dating = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-sm truncate">{selectedMatch.profile?.display_name}</h3>
-                    <p className="text-xs text-emerald-500 flex items-center gap-1"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />Online</p>
+                    {selectedMatch.profile?.location && <p className="text-xs text-muted-foreground truncate">{selectedMatch.profile.location}</p>}
                   </div>
                   <Button variant="ghost" size="icon" onClick={() => setShowGiftDialog(true)} className="h-9 w-9 text-primary"><Gift className="h-5 w-5" /></Button>
                   {selectedMatch.profile?.user_id && (

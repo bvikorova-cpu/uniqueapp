@@ -49,7 +49,7 @@ Deno.serve(async (req) => {
         supabase.from("dating_swipes").select("id", { count: "exact", head: true })
           .eq("swiper_id", user.id).eq("direction", "like").gte("created_at", from).lt("created_at", to),
         supabase.from("dating_matches").select("id", { count: "exact", head: true })
-          .or(`user_a.eq.${user.id},user_b.eq.${user.id}`).gte("created_at", from).lt("created_at", to),
+          .or(`user1_id.eq.${user.id},user2_id.eq.${user.id}`).gte("created_at", from).lt("created_at", to),
         supabase.from("dating_messages").select("id", { count: "exact", head: true })
           .eq("sender_id", user.id).gte("created_at", from).lt("created_at", to),
         supabase.from("dating_swipes").select("id", { count: "exact", head: true })
