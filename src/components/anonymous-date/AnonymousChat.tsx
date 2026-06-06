@@ -297,7 +297,7 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
             userId={currentUserId}
             onUploaded={(url) => { sendMessage("🎤 Voice message", "voice", url); bumpStreak(); }}
           />
-          <Button type="submit" size="icon" disabled={!input.trim()} className="rounded-full bg-gradient-to-r from-primary to-pink-500">
+          <Button type="submit" size="icon" disabled={!input.trim() || moderating} className="rounded-full bg-gradient-to-r from-primary to-pink-500">
             <Send className="h-4 w-4" />
           </Button>
         </form>
