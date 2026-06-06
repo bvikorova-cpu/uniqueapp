@@ -278,16 +278,14 @@ Deno.serve(async (req) => {
       .eq("user_id", user.id)
       .maybeSingle();
 
-    return new Response(JSON.stringify({
+    return json({
       success: true,
       feature,
       output,
       credits_remaining: bal?.credits_remaining ?? 0,
-    }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    });
   } catch (e: any) {
     console.error("anonymous-date-ai error", e);
-    return new Response(JSON.stringify({ error: e?.message ?? "Server error" }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return errorResponse("SERVER_ERROR", e?.message ?? "Server error", 500);
   }
 });
