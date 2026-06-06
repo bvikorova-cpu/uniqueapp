@@ -24,9 +24,10 @@ export const ProfileExtrasDisplay = ({
   spotifyUrl,
   instagramUrl,
   verified,
+  videoPrompts,
 }: Props) => {
   const hasAnything =
-    (prompts && prompts.length) || voiceUrl || spotifyUrl || instagramUrl || verified;
+    (prompts && prompts.length) || voiceUrl || spotifyUrl || instagramUrl || verified || (videoPrompts && videoPrompts.length);
   if (!hasAnything) return null;
 
   return (
