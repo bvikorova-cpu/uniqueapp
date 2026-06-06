@@ -997,7 +997,7 @@ const Dating = () => {
                             {match.profile?.profile_photo_url ? <img src={match.profile.profile_photo_url} alt="" className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-white font-bold text-lg">{match.profile?.display_name?.charAt(0) || "?"}</div>}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2"><h3 className="font-semibold truncate">{match.profile?.display_name}</h3><span className="text-xs text-muted-foreground">{match.profile?.age}</span></div>
+                            <div className="flex items-center gap-2 flex-wrap"><h3 className="font-semibold truncate">{match.profile?.display_name}</h3><span className="text-xs text-muted-foreground">{match.profile?.age}</span><MatchExpiryBadge expiresAt={(match as any).expires_at ?? null} /></div>
                             <p className="text-sm text-muted-foreground truncate">{match.profile?.location || "Tap to start chatting"}</p>
                           </div>
                           <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0" />
