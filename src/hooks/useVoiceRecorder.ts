@@ -1,12 +1,13 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 /**
  * Voice recorder hook.
  * - useVoiceRecorder() → returns blob via stop()
- * - useVoiceRecorder(userId) → also exposes stopAndUpload() to upload to "media" bucket and return public URL
+ * - useVoiceRecorder(userId) → also exposes stopAndUpload() to upload to "media" bucket
+ * - Hard cap: maxDuration seconds (default 60). Recorder auto-stops at the cap.
  */
-export const useVoiceRecorder = (userId?: string | null) => {
+export const useVoiceRecorder = (userId?: string | null, maxDuration = 60) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -14,15 +15,40 @@ export const useVoiceRecorder = (userId?: string | null) => {
   const chunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<number | null>(null);
   const resolveRef = useRef<((blob: Blob | null) => void) | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+
+  const cleanup = useCallback(() => {
+    if (timerRef.current) {
+      window.clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current = null;
+  }, []);
+
+  // Cleanup on unmount — release mic + timers even if user navigates away mid-record.
+  useEffect(() => {
+    return () => {
+      try {
+        if (recorderRef.current && recorderRef.current.state !== "inactive") {
+          resolveRef.current = null;
+          recorderRef.current.stop();
+        }
+      } catch { /* noop */ }
+      cleanup();
+    };
+  }, [cleanup]);
 
   const start = useCallback(async () => {
     if (isRecording) return;
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    streamRef.current = stream;
     const mr = new MediaRecorder(stream, { mimeType: "audio/webm" });
     chunksRef.current = [];
     mr.ondataavailable = (e) => e.data.size && chunksRef.current.push(e.data);
     mr.onstop = () => {
       stream.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
       const blob = new Blob(chunksRef.current, { type: "audio/webm" });
       resolveRef.current?.(blob);
       resolveRef.current = null;
@@ -31,14 +57,26 @@ export const useVoiceRecorder = (userId?: string | null) => {
     mr.start();
     setIsRecording(true);
     setDuration(0);
-    timerRef.current = window.setInterval(() => setDuration((d) => d + 1), 1000);
-  }, [isRecording]);
+    timerRef.current = window.setInterval(() => {
+      setDuration((d) => {
+        const next = d + 1;
+        if (next >= maxDuration && recorderRef.current?.state === "recording") {
+          // Auto-stop at cap — resolves any pending stop() promise.
+          try { recorderRef.current.stop(); } catch { /* noop */ }
+          if (timerRef.current) window.clearInterval(timerRef.current);
+          timerRef.current = null;
+          setIsRecording(false);
+        }
+        return next;
+      });
+    }, 1000);
+  }, [isRecording, maxDuration]);
 
   const stop = useCallback((): Promise<Blob | null> => {
     return new Promise((resolve) => {
       if (!recorderRef.current || !isRecording) return resolve(null);
       resolveRef.current = resolve;
-      recorderRef.current.stop();
+      try { recorderRef.current.stop(); } catch { /* noop */ }
       if (timerRef.current) window.clearInterval(timerRef.current);
       timerRef.current = null;
       setIsRecording(false);
@@ -48,13 +86,12 @@ export const useVoiceRecorder = (userId?: string | null) => {
   const cancel = useCallback(() => {
     if (recorderRef.current && isRecording) {
       resolveRef.current = null;
-      recorderRef.current.stop();
-      if (timerRef.current) window.clearInterval(timerRef.current);
-      timerRef.current = null;
+      try { recorderRef.current.stop(); } catch { /* noop */ }
+      cleanup();
       setIsRecording(false);
       setDuration(0);
     }
-  }, [isRecording]);
+  }, [isRecording, cleanup]);
 
   const stopAndUpload = useCallback(async (): Promise<string | null> => {
     const blob = await stop();
@@ -73,5 +110,5 @@ export const useVoiceRecorder = (userId?: string | null) => {
     }
   }, [stop, userId]);
 
-  return { isRecording, isUploading, duration, start, stop, stopAndUpload, cancel };
+  return { isRecording, isUploading, duration, maxDuration, start, stop, stopAndUpload, cancel };
 };
