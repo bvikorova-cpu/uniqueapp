@@ -60,6 +60,17 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
   const [safeWord, setSafeWord] = useState<string | null>(null);
   const [matchState, setMatchState] = useState(match);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const isMountedRef = useRef(true);
+  const moderationAbortRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+      moderationAbortRef.current?.abort();
+    };
+  }, []);
+
 
   // Countdown — reads expires_at from DB (default 7 days, see migration)
   const [timeLeft, setTimeLeft] = useState("");
