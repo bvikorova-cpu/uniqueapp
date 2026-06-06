@@ -105,10 +105,12 @@ export function useAnonymousChat(matchId: string | null, currentUserId: string |
 
     return () => {
       if (typingTimeoutRef.current) window.clearTimeout(typingTimeoutRef.current);
+      if (typingDebounceRef.current) window.clearTimeout(typingDebounceRef.current);
       supabase.removeChannel(channel);
       channelRef.current = null;
     };
   }, [matchId, currentUserId, partnerId]);
+
 
   // Mark partner messages as read
   useEffect(() => {
