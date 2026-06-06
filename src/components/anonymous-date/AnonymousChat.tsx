@@ -262,7 +262,7 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
 
   return (
     <div className="space-y-3">
-      <Card className={`flex flex-col h-[calc(100vh-16rem)] max-h-[640px] overflow-hidden bg-gradient-to-br ${themeGradient(theme)} backdrop-blur-xl border-primary/20 shadow-2xl`}>
+      <Card className={`flex flex-col h-anon-chat overflow-hidden bg-gradient-to-br ${themeGradient(theme)} backdrop-blur-xl border-primary/20 shadow-2xl`}>
         {/* Header */}
         <div className="flex items-center justify-between p-3 border-b border-white/10 bg-black/25 backdrop-blur-md">
           <div className="flex items-center gap-2">
