@@ -291,6 +291,21 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
             <button onClick={downloadPDF} className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white" title="Export PDF">
               <Download className="h-3.5 w-3.5" />
             </button>
+            <Sheet>
+              <SheetTrigger asChild>
+                <button className="p-1.5 rounded-full bg-anon-date-gradient text-white hover:opacity-90" title="AI Toolbox">
+                  <Wand2 className="h-3.5 w-3.5" />
+                </button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-full sm:max-w-2xl overflow-y-auto">
+                <SheetHeader>
+                  <SheetTitle>AI Dating Toolbox</SheetTitle>
+                </SheetHeader>
+                <div className="mt-4">
+                  <AnonymousDateAIToolbox credits={credits} />
+                </div>
+              </SheetContent>
+            </Sheet>
             <button onClick={() => setShowSettings(s => !s)} className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white" title="Settings">
               <Settings2 className="h-3.5 w-3.5" />
             </button>
