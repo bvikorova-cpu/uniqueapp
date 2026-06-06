@@ -61,9 +61,9 @@ Cieľ: zastaviť stratu peňazí a privacy leaky.
 29. ✅ Deno unit testy pre `_shared/anonymous-dating.ts` (Zod schémy: max 4000 chars, max 50 msgs, UUID; PII sanitizer; errorResponse) — `supabase/functions/_shared/anonymous-dating.test.ts`.
 30. ✅ E2E RLS regression (`e2e/anonymous-dating-profiles-rls.spec.ts`) — anon nemá prístup k `anonymous_dating_profiles` ani `anonymous_dating_matches`; partner-profile columns stále existujú.
 31. ✅ E2E partner enrichment (`e2e/anonymous-date-matches.spec.ts`) — viacero partnerov, refresh persistence, swap, fallback, empty state.
-32. **SKIP** — full payment → credit-grant webhook simulácia (vyžaduje Stripe test mode setup + webhook infra). Pokrytá manuálne a existujúcou `stripe-webhook` edge function auditom.
-33. **SKIP** — reveal unilateral-attack e2e (vyžaduje 2 authed users + service-role helper). DB trigger to už blokuje (Fáza 1), stačí unit test trigger logiky ak bude potrebné.
-34. **SKIP** — double-spend paralelný request test. RPC `deduct_anonymous_credits` je atomický cez `WHERE credits_remaining >= amount RETURNING`; integrita garantovaná na DB úrovni.
+32. ✅ Webhook signature enforcement e2e (`e2e/authed/anonymous-dating-security.spec.ts`) — missing-sig + invalid-sig → 4xx, žiadne fake kredity sa nepriznajú. Pozitívna credit-grant cesta zostáva pokrytá manuálnym Stripe test mode (vyžaduje webhook secret v test env).
+33. ✅ Reveal-attack guard e2e (single-user) — authed user sa pokúsi PATCHnúť vlastný match na `status='revealed'` + oba `*_revealed=true`; RLS/trigger to musí odmietnuť. Auto-skip ak QA user nemá match.
+34. ✅ Double-spend e2e — 10 paralelných `anonymous-date-ai` volaní, asserty: `endBalance ≥ 0`, `debited == successes * cost`, konzistentný integer cost. Auto-skip ak má QA user 0 kreditov.
 35. **SKIP** — edge function logs alerting na 5xx (vyžaduje externý monitoring setup — Sentry/DataDog/PagerDuty). Mimo rozsahu tohto projektu.
 
 ## Technické poznámky
