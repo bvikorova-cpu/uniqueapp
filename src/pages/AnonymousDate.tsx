@@ -194,9 +194,21 @@ export default function AnonymousDate() {
     }
   };
 
-  const handleAcceptAdultWarning = () => {
+  const handleAcceptAdultWarning = async (dob: string) => {
     sessionStorage.setItem("adult_warning_accepted", "true");
     setShowAdultWarning(false);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user && dob) {
+        await supabase
+          .from("profiles")
+          .update({ birth_date: dob })
+          .eq("user_id", user.id);
+      }
+    } catch (e) {
+      // non-blocking — proceed with access check
+      console.warn("Failed to persist DOB", e);
+    }
     checkAccess();
   };
 
