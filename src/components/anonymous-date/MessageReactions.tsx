@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Smile } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import type { MessageReaction } from "@/hooks/useAnonymousChat";
 
 const EMOJIS = ["❤️", "🔥", "😂", "😍", "🤯", "👀"];
