@@ -203,7 +203,7 @@ export default function AnonymousDate() {
         await supabase
           .from("profiles")
           .update({ birth_date: dob })
-          .eq("user_id", user.id);
+          .eq("id", user.id);
       }
     } catch (e) {
       // non-blocking — proceed with access check
