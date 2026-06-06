@@ -782,7 +782,18 @@ const Dating = () => {
                       {swipeDirection === "right" && <div className="absolute top-8 left-6 rotate-[-20deg]"><Badge className="bg-emerald-500 text-white text-2xl px-6 py-2 border-4 border-emerald-400">LIKE</Badge></div>}
                       {swipeDirection === "left" && <div className="absolute top-8 right-6 rotate-[20deg]"><Badge className="bg-red-500 text-white text-2xl px-6 py-2 border-4 border-red-400">NOPE</Badge></div>}
                       {swipeDirection === "up" && <div className="absolute top-8 left-1/2 -translate-x-1/2"><Badge className="bg-blue-500 text-white text-2xl px-6 py-2 border-4 border-blue-400">SUPER LIKE</Badge></div>}
+                      {user && cardPhotos[activePhotoIndex] && !isVideoUrl(cardPhotos[activePhotoIndex]) && (
+                        <PhotoLikeButton fromUserId={user.id} toUserId={currentCard.user_id} photoUrl={cardPhotos[activePhotoIndex]} />
+                      )}
                     </div>
+                    <ProfileExtrasDisplay
+                      prompts={(currentCard.prompts as Prompt[] | null) || null}
+                      voiceUrl={currentCard.voice_intro_url}
+                      voiceDuration={currentCard.voice_intro_duration}
+                      spotifyUrl={currentCard.spotify_url}
+                      instagramUrl={currentCard.instagram_url}
+                      verified={!!currentCard.photo_verified}
+                    />
                     {currentCard.bio && <div className="px-5 py-3 border-b border-border/50"><p className="text-sm text-muted-foreground line-clamp-2">{currentCard.bio}</p></div>}
                     {currentCard.interests && currentCard.interests.length > 0 && (
                       <div className="px-5 py-3 border-b border-border/50">
