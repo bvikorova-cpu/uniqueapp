@@ -22,6 +22,12 @@ import { AIDateIdeas } from "@/components/dating/AIDateIdeas";
 import { AIProfileOptimizer } from "@/components/dating/AIProfileOptimizer";
 import { FiltersDialog, type DatingFilters } from "@/components/dating/FiltersDialog";
 import { BlockReportMenu } from "@/components/dating/BlockReportMenu";
+import { PromptsEditor, type Prompt } from "@/components/dating/PromptsEditor";
+import { VoiceIntroRecorder } from "@/components/dating/VoiceIntroRecorder";
+import { SocialEmbedsCard } from "@/components/dating/SocialEmbedsCard";
+import { PhotoVerificationCard } from "@/components/dating/PhotoVerificationCard";
+import { PhotoLikeButton } from "@/components/dating/PhotoLikeButton";
+import { ProfileExtrasDisplay } from "@/components/dating/ProfileExtrasDisplay";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface DatingProfile {
@@ -36,6 +42,13 @@ interface DatingProfile {
   profile_photo_url: string | null;
   additional_photos: string[] | null;
   interests: string[] | null;
+  prompts?: any;
+  voice_intro_url?: string | null;
+  voice_intro_duration?: number | null;
+  spotify_url?: string | null;
+  instagram_url?: string | null;
+  photo_verified?: boolean | null;
+  verification_status?: string | null;
 }
 
 interface Match {
@@ -769,7 +782,18 @@ const Dating = () => {
                       {swipeDirection === "right" && <div className="absolute top-8 left-6 rotate-[-20deg]"><Badge className="bg-emerald-500 text-white text-2xl px-6 py-2 border-4 border-emerald-400">LIKE</Badge></div>}
                       {swipeDirection === "left" && <div className="absolute top-8 right-6 rotate-[20deg]"><Badge className="bg-red-500 text-white text-2xl px-6 py-2 border-4 border-red-400">NOPE</Badge></div>}
                       {swipeDirection === "up" && <div className="absolute top-8 left-1/2 -translate-x-1/2"><Badge className="bg-blue-500 text-white text-2xl px-6 py-2 border-4 border-blue-400">SUPER LIKE</Badge></div>}
+                      {user && cardPhotos[activePhotoIndex] && !isVideoUrl(cardPhotos[activePhotoIndex]) && (
+                        <PhotoLikeButton fromUserId={user.id} toUserId={currentCard.user_id} photoUrl={cardPhotos[activePhotoIndex]} />
+                      )}
                     </div>
+                    <ProfileExtrasDisplay
+                      prompts={(currentCard.prompts as Prompt[] | null) || null}
+                      voiceUrl={currentCard.voice_intro_url}
+                      voiceDuration={currentCard.voice_intro_duration}
+                      spotifyUrl={currentCard.spotify_url}
+                      instagramUrl={currentCard.instagram_url}
+                      verified={!!currentCard.photo_verified}
+                    />
                     {currentCard.bio && <div className="px-5 py-3 border-b border-border/50"><p className="text-sm text-muted-foreground line-clamp-2">{currentCard.bio}</p></div>}
                     {currentCard.interests && currentCard.interests.length > 0 && (
                       <div className="px-5 py-3 border-b border-border/50">
@@ -957,6 +981,35 @@ const Dating = () => {
                   </label>
                 </div>
               </Card>
+              {user && (
+                <>
+                  <PhotoVerificationCard
+                    profileId={currentProfile.id}
+                    userId={user.id}
+                    status={currentProfile.verification_status || "unverified"}
+                    verified={!!currentProfile.photo_verified}
+                    onChange={(status) => setCurrentProfile({ ...currentProfile, verification_status: status })}
+                  />
+                  <PromptsEditor
+                    profileId={currentProfile.id}
+                    value={((currentProfile.prompts as Prompt[] | null) || [])}
+                    onChange={(next) => setCurrentProfile({ ...currentProfile, prompts: next })}
+                  />
+                  <VoiceIntroRecorder
+                    profileId={currentProfile.id}
+                    userId={user.id}
+                    url={currentProfile.voice_intro_url || null}
+                    duration={currentProfile.voice_intro_duration || null}
+                    onChange={(url, dur) => setCurrentProfile({ ...currentProfile, voice_intro_url: url, voice_intro_duration: dur })}
+                  />
+                  <SocialEmbedsCard
+                    profileId={currentProfile.id}
+                    spotifyUrl={currentProfile.spotify_url || null}
+                    instagramUrl={currentProfile.instagram_url || null}
+                    onChange={(sp, ig) => setCurrentProfile({ ...currentProfile, spotify_url: sp, instagram_url: ig })}
+                  />
+                </>
+              )}
               <div className="grid grid-cols-2 gap-3">
                 <Button variant="outline" onClick={() => setShowEditDialog(true)} className="gap-2"><Settings className="h-4 w-4" />Edit Profile</Button>
                 <AlertDialog>
