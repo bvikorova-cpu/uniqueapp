@@ -46,6 +46,7 @@ import { FriendCirclesPanel } from "@/components/dating/FriendCirclesPanel";
 import { DatingPremiumPanel } from "@/components/dating/DatingPremiumPanel";
 import { DatingNotificationsCenter } from "@/components/dating/DatingNotificationsCenter";
 import { DatingAnalyticsPanel } from "@/components/dating/DatingAnalyticsPanel";
+import { WeeklyInsightsCard } from "@/components/dating/WeeklyInsightsCard";
 import { AIStarterButton } from "@/components/dating/AIStarterButton";
 import { AIBioCoach } from "@/components/dating/AIBioCoach";
 
@@ -1124,7 +1125,14 @@ const Dating = () => {
             <DatingNotificationsCenter />
           </TabsContent>
 
-          <TabsContent value="insights">
+          <TabsContent value="insights" className="space-y-4">
+            <WeeklyInsightsCard onAction={(a) => {
+              if (a === "bio_coach" || a === "add_photo" || a === "update_prompts" || a === "try_video") {
+                setActiveTab("profile");
+              } else if (a === "send_openers") {
+                setActiveTab("matches");
+              }
+            }} />
             <DatingAnalyticsPanel />
           </TabsContent>
 
