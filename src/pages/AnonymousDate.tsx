@@ -107,6 +107,8 @@ export default function AnonymousDate() {
   const [previewLoading, setPreviewLoading] = useState(false);
   const [matchingUserId, setMatchingUserId] = useState<string | null>(null);
   const [lastFilters, setLastFilters] = useState<MatchFilters>({});
+  const [matchCelebration, setMatchCelebration] = useState<{ matchId: string; partnerName: string; location?: string | null } | null>(null);
+  const [myAnonName, setMyAnonName] = useState<string>("You");
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id ?? null));
