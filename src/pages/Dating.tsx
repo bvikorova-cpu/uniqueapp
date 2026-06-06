@@ -60,6 +60,10 @@ interface DatingProfile {
   verification_status?: string | null;
   incognito?: boolean | null;
   read_receipts_enabled?: boolean | null;
+  compatibility_quiz?: any;
+  opening_move?: string | null;
+  passport_location?: string | null;
+  snoozed_until?: string | null;
 }
 
 interface Match {
