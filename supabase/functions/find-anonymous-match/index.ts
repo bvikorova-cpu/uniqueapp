@@ -223,11 +223,10 @@ serve(async (req) => {
     );
     if (deductErr) {
       const msg = deductErr.message || "";
-      const status = msg.includes("INSUFFICIENT_CREDITS") ? 402 : 500;
-      return new Response(
-        JSON.stringify({ error: msg.includes("INSUFFICIENT") ? "Insufficient credits" : msg, required: MATCH_COST }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status }
-      );
+      if (msg.includes("INSUFFICIENT_CREDITS")) {
+        return errorResponse("INSUFFICIENT_CREDITS", "Not enough credits to start a match.", 402, { required: MATCH_COST });
+      }
+      return errorResponse("CREDIT_DEDUCTION_FAILED", msg, 500);
     }
 
     // Create match
@@ -251,30 +250,18 @@ serve(async (req) => {
       throw matchError;
     }
 
-    return new Response(
-      JSON.stringify({
-        match: newMatch,
-        partner: {
-          anonymous_name: matchedProfile.anonymous_name,
-          age_range: matchedProfile.age_range,
-          interests: matchedProfile.interests,
-          personality_traits: matchedProfile.personality_traits,
-          compatibility: chosen.compatibility,
-        },
-      }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      }
-    );
+    return json({
+      match: newMatch,
+      partner: {
+        anonymous_name: matchedProfile.anonymous_name,
+        age_range: matchedProfile.age_range,
+        interests: matchedProfile.interests,
+        personality_traits: matchedProfile.personality_traits,
+        compatibility: chosen.compatibility,
+      },
+    });
   } catch (error) {
     console.error("Error:", error);
-    return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 500,
-      }
-    );
+    return errorResponse("SERVER_ERROR", error instanceof Error ? error.message : "Unknown error", 500);
   }
 });
