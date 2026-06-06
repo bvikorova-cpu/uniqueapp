@@ -43,12 +43,12 @@ Cieľ: zastaviť stratu peňazí a privacy leaky.
 18. ✅ EN-only audit: žiadne SK reťazce v `anonymous-date/` ani v `AnonymousDate.tsx` (overené ripgrepom na diakritiku).
 
 
-## Fáza 5 — UX kritické (Day 5)
-19. **AdultWarningModal**: pridať DOB pole (uloženie do `anonymous_dating_profiles.dob_verified_at`), block <16.
-20. **Chat expirácia**: banner 24h pred expiráciou + push notifikácia + post-expiry CTA „Find new match".
-21. **CreditPackages**: zobraziť €/credit a savings %.
-22. **ProfileSetup stats**: nahradiť `—` reálnymi metrikami (matches, AI uses) alebo skryť.
-23. **ChatSafetyMenu**: presunúť shield icon mimo `⋮` menu, viditeľný v headeri.
+## Fáza 5 — UX kritické (Day 5) ✅
+19. ✅ **AdultWarningModal**: DOB pole s validáciou ≥16, persist do `profiles.birth_date`.
+20. ✅ **Chat expirácia**: banner 24h pred expiráciou (amber warning) + post-expiry CTA „Find new match" v header AnonymousChat.
+21. ✅ **CreditPackages**: zobrazené €/credit + Save % (vs. Basic 0.5€/credit baseline).
+22. ✅ **ProfileSetup stats**: skryté (žiadne falošné „—" hodnoty), pripravené na neskoršie zapojenie reálnych metrík.
+23. ✅ **ChatSafetyMenu**: shield ikona presunutá z `⋮` na viditeľný emerald "Safety" badge v headeri.
 
 ## Fáza 6 — UX polish (Day 6)
 24. AI Toolbox dostupný priamo z chatu (drawer).

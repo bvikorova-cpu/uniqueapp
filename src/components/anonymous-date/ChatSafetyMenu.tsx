@@ -29,7 +29,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Flag, Shield, MoreVertical, Loader2, UserX } from "lucide-react";
+import { Flag, Shield, Loader2, UserX } from "lucide-react";
 
 const REPORT_REASONS = [
   { value: "harassment", label: "Harassment or bullying" },
@@ -88,11 +88,12 @@ export function ChatSafetyMenu({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
-            className={`p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white ${className ?? ""}`}
-            title="Safety"
+            className={`inline-flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-100 border border-emerald-400/40 text-[10px] font-semibold uppercase tracking-wide ${className ?? ""}`}
+            title="Safety tools"
             aria-label="Open safety menu"
           >
-            <MoreVertical className="h-3.5 w-3.5" />
+            <Shield className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Safety</span>
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-52">

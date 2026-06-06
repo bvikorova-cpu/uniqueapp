@@ -14,7 +14,7 @@ const PACKAGES = [
     id: "basic",
     name: "Basic",
     credits: 10,
-    price: "€5",
+    priceEur: 5,
     icon: Sparkles,
     gradient: "from-blue-500 to-cyan-500",
     features: ["1-2 matches", "Text messages", "Perfect to start"],
@@ -23,7 +23,7 @@ const PACKAGES = [
     id: "standard",
     name: "Standard",
     credits: 30,
-    price: "€12",
+    priceEur: 12,
     icon: Star,
     gradient: "from-pink-500 to-rose-500",
     popular: true,
@@ -33,7 +33,7 @@ const PACKAGES = [
     id: "premium",
     name: "Premium",
     credits: 100,
-    price: "€25",
+    priceEur: 25,
     icon: Crown,
     gradient: "from-amber-500 to-orange-500",
     features: ["20+ matches", "All features", "Early reveal", "Priority matching"],
@@ -42,12 +42,14 @@ const PACKAGES = [
     id: "ultimate",
     name: "Ultimate",
     credits: 300,
-    price: "€60",
+    priceEur: 60,
     icon: Zap,
     gradient: "from-primary to-accent",
     features: ["Unlimited matches", "Premium features", "VIP support", "Max freedom"],
   },
 ];
+
+const BASE_RATE = PACKAGES[0].priceEur / PACKAGES[0].credits; // €/credit baseline (Basic)
 
 export function CreditPackages({ onPurchase, currentCredits }: CreditPackagesProps) {
   return (
@@ -91,8 +93,24 @@ export function CreditPackages({ onPurchase, currentCredits }: CreditPackagesPro
 
                   <div>
                     <h3 className="text-lg font-bold">{pkg.name}</h3>
-                    <div className="text-3xl font-black text-pink-500 mt-1">{pkg.price}</div>
+                    <div className="text-3xl font-black text-pink-500 mt-1">€{pkg.priceEur}</div>
                     <p className="text-xs text-muted-foreground">{pkg.credits} credits</p>
+                    {(() => {
+                      const perCredit = pkg.priceEur / pkg.credits;
+                      const savings = Math.round((1 - perCredit / BASE_RATE) * 100);
+                      return (
+                        <div className="mt-1.5 flex items-center justify-center gap-1.5 text-[10px]">
+                          <span className="text-muted-foreground">
+                            €{perCredit.toFixed(2)}/credit
+                          </span>
+                          {savings > 0 && (
+                            <span className="px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500 font-bold">
+                              Save {savings}%
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })()}
                   </div>
 
                   <ul className="space-y-1.5 text-left">
