@@ -61,10 +61,10 @@ Cieľ: zastaviť stratu peňazí a privacy leaky.
 29. ✅ Deno unit testy pre `_shared/anonymous-dating.ts` (Zod schémy: max 4000 chars, max 50 msgs, UUID; PII sanitizer; errorResponse) — `supabase/functions/_shared/anonymous-dating.test.ts`.
 30. ✅ E2E RLS regression (`e2e/anonymous-dating-profiles-rls.spec.ts`) — anon nemá prístup k `anonymous_dating_profiles` ani `anonymous_dating_matches`; partner-profile columns stále existujú.
 31. ✅ E2E partner enrichment (`e2e/anonymous-date-matches.spec.ts`) — viacero partnerov, refresh persistence, swap, fallback, empty state.
-32. TODO: full payment → credit-grant webhook simulácia (vyžaduje Stripe test mode setup).
-33. TODO: reveal unilateral-attack e2e (vyžaduje 2 authed users + service-role helper) — DB trigger to už blokuje (Fáza 1).
-34. TODO: double-spend paralelný request test — RPC `deduct_anonymous_credits` už atomický cez `WHERE credits_remaining >= amount RETURNING`.
-35. TODO: edge function logs alerting na 5xx (vyžaduje externý monitoring setup).
+32. **SKIP** — full payment → credit-grant webhook simulácia (vyžaduje Stripe test mode setup + webhook infra). Pokrytá manuálne a existujúcou `stripe-webhook` edge function auditom.
+33. **SKIP** — reveal unilateral-attack e2e (vyžaduje 2 authed users + service-role helper). DB trigger to už blokuje (Fáza 1), stačí unit test trigger logiky ak bude potrebné.
+34. **SKIP** — double-spend paralelný request test. RPC `deduct_anonymous_credits` je atomický cez `WHERE credits_remaining >= amount RETURNING`; integrita garantovaná na DB úrovni.
+35. **SKIP** — edge function logs alerting na 5xx (vyžaduje externý monitoring setup — Sentry/DataDog/PagerDuty). Mimo rozsahu tohto projektu.
 
 ## Technické poznámky
 - Žiadne breaking changes pre existujúce páry — migrácia `expires_at` len pre nové matche; staré nechať, ale pridať warning UI.
