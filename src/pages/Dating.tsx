@@ -1076,6 +1076,19 @@ const Dating = () => {
       </div>
 
       {/* Edit Profile Dialog */}
+      {/* Safety Center */}
+      {currentProfile && (
+        <SafetyCenter
+          open={showSafety}
+          onOpenChange={setShowSafety}
+          incognito={!!currentProfile.incognito}
+          readReceipts={currentProfile.read_receipts_enabled !== false}
+          onTogglePrivacy={handleTogglePrivacy}
+          onOpenBlocked={() => { setShowSafety(false); navigate("/settings/blocked"); }}
+        />
+      )}
+
+      {/* Edit Profile Dialog */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
         <DialogContent className="max-w-lg">
           <DialogHeader><DialogTitle className="flex items-center gap-2"><Settings className="h-5 w-5" />Edit Profile</DialogTitle></DialogHeader>
