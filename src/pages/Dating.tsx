@@ -217,6 +217,7 @@ const Dating = () => {
       await loadGifts();
       await loadLikesYou(userId);
       await checkLastSwipe(userId);
+      await loadSuperLikesRemaining(userId);
     }
   };
 
@@ -228,6 +229,17 @@ const Dating = () => {
       preferred_genders: data.preferred_genders,
       verified_only: data.verified_only,
     });
+  };
+
+  const loadSuperLikesRemaining = async (userId: string) => {
+    const startOfDay = new Date(); startOfDay.setHours(0, 0, 0, 0);
+    const { count } = await supabase.from("dating_super_likes")
+      .select("id", { count: "exact", head: true })
+      .eq("swiper_id", userId)
+      .gte("created_at", startOfDay.toISOString());
+    // Default cap 5/day; yearly plan = 10. We do not have plan tier locally, so default to 5 — server enforces.
+    const used = count || 0;
+    setSuperLikesRemaining(Math.max(0, 5 - used));
   };
 
   const loadBlocked = async (userId: string) => {
