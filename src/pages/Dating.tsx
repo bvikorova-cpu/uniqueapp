@@ -116,6 +116,7 @@ const Dating = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState<string>("swipe");
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [currentProfile, setCurrentProfile] = useState<DatingProfile | null>(null);
   const [profiles, setProfiles] = useState<DatingProfile[]>([]);
