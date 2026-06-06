@@ -333,6 +333,48 @@ serve(async (req) => {
             log("horse currency webhook error", { err: (hcErr as Error).message });
           }
 
+          // ── Anonymous Dating credits fulfillment ──
+          try {
+            if (session.metadata?.type === "anonymous_date_credits") {
+              const userId = session.metadata.user_id as string | undefined;
+              const credits = parseInt(session.metadata.credits || "0", 10);
+              if (userId && credits > 0) {
+                // Idempotency guard via payment_records (stripe_session_id is unique-ish)
+                const { data: existingPay } = await supabase
+                  .from("payment_records")
+                  .select("id,status")
+                  .eq("stripe_session_id", session.id)
+                  .maybeSingle();
+                if (!existingPay || existingPay.status !== "paid") {
+                  const { error: grantErr } = await supabase.rpc(
+                    "grant_anonymous_dating_credits",
+                    { p_user_id: userId, p_amount: credits },
+                  );
+                  if (grantErr) {
+                    log("anon-date credit grant failed", { err: grantErr.message });
+                  } else {
+                    log("anon-date credits granted", { userId, credits, sessionId: session.id });
+                    // Record payment (ledger row for reconciliation)
+                    await supabase.from("payment_records").upsert({
+                      user_id: userId,
+                      stripe_session_id: session.id,
+                      stripe_payment_intent_id: typeof session.payment_intent === "string" ? session.payment_intent : null,
+                      stripe_customer_id: typeof session.customer === "string" ? session.customer : null,
+                      amount_cents: session.amount_total ?? 0,
+                      currency: session.currency ?? "eur",
+                      status: "paid",
+                      product_type: "anonymous_date_credits",
+                      metadata: { credits, package_type: session.metadata.package_type ?? null },
+                      verified_at: new Date().toISOString(),
+                    }, { onConflict: "stripe_session_id" });
+                  }
+                }
+              }
+            }
+          } catch (anErr) {
+            log("anon-date credits webhook error", { err: (anErr as Error).message });
+          }
+
           const { error } = await supabase
             .from("payment_records")
             .update({
