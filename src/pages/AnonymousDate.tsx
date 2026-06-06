@@ -30,6 +30,7 @@ import { AnonymousDateParityPack } from "@/components/anonymous-date/AnonymousDa
 import { CompatibilityMatchFinder } from "@/components/anonymous-date/CompatibilityMatchFinder";
 import { MatchResults, type MatchCandidate } from "@/components/anonymous-date/MatchResults";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
+import { MatchCelebrationModal } from "@/components/dating/MatchCelebrationModal";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ViewType = "hub" | "matches" | "find" | "find-results" | "credits" | "profile";
@@ -106,6 +107,8 @@ export default function AnonymousDate() {
   const [previewLoading, setPreviewLoading] = useState(false);
   const [matchingUserId, setMatchingUserId] = useState<string | null>(null);
   const [lastFilters, setLastFilters] = useState<MatchFilters>({});
+  const [matchCelebration, setMatchCelebration] = useState<{ matchId: string; partnerName: string; location?: string | null } | null>(null);
+  const [myAnonName, setMyAnonName] = useState<string>("You");
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id ?? null));
@@ -213,6 +216,7 @@ export default function AnonymousDate() {
         .eq("user_id", user.id)
         .single();
       setHasProfile(!!data);
+      if (data?.anonymous_name) setMyAnonName(data.anonymous_name);
     } catch (error) {
       console.error("Error checking profile:", error);
     } finally {
@@ -258,8 +262,11 @@ export default function AnonymousDate() {
     try {
       const result = await findMatch(lastFilters, userId);
       if (result?.match) {
-        setSelectedMatchId(result.match.id);
-        setActiveView("matches");
+        setMatchCelebration({
+          matchId: result.match.id,
+          partnerName: result.partner?.anonymous_name ?? "Match",
+          location: result.partner?.location ?? null,
+        });
       } else {
         // Candidate became unavailable — refresh the list
         await loadCandidates(lastFilters);
@@ -608,6 +615,24 @@ export default function AnonymousDate() {
           )}
         </AnimatePresence>
       </div>
+
+      <MatchCelebrationModal
+        open={!!matchCelebration}
+        myName={myAnonName}
+        theirName={matchCelebration?.partnerName}
+        location={matchCelebration?.location ?? null}
+        onSendMessage={() => {
+          if (matchCelebration) {
+            setSelectedMatchId(matchCelebration.matchId);
+            setActiveView("matches");
+          }
+          setMatchCelebration(null);
+        }}
+        onKeepSwiping={async () => {
+          setMatchCelebration(null);
+          await loadCandidates(lastFilters);
+        }}
+      />
     </div>
   );
 }

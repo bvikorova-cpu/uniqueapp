@@ -91,6 +91,8 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, partnerTyping]);
 
+  const [moderating, setModerating] = useState(false);
+
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     const text = input.trim();
@@ -113,6 +115,26 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
       setChatLocked(true);
       toast({ title: "Safe word triggered", description: "Chat closed for your safety.", variant: "destructive" });
       return;
+    }
+
+    // AI pre-send moderation
+    setModerating(true);
+    try {
+      const { data: mod } = await supabase.functions.invoke("dating-moderate-message", {
+        body: { content: text },
+      });
+      if (mod && mod.allow === false) {
+        toast({
+          title: "Message blocked",
+          description: mod.reason || "This message violates our safety policy.",
+          variant: "destructive",
+        });
+        return;
+      }
+    } catch (err) {
+      console.warn("moderation failed, allowing", err);
+    } finally {
+      setModerating(false);
     }
 
     setInput("");
@@ -275,7 +297,7 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
             userId={currentUserId}
             onUploaded={(url) => { sendMessage("🎤 Voice message", "voice", url); bumpStreak(); }}
           />
-          <Button type="submit" size="icon" disabled={!input.trim()} className="rounded-full bg-gradient-to-r from-primary to-pink-500">
+          <Button type="submit" size="icon" disabled={!input.trim() || moderating} className="rounded-full bg-gradient-to-r from-primary to-pink-500">
             <Send className="h-4 w-4" />
           </Button>
         </form>
