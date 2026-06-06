@@ -45,6 +45,7 @@ import { DatingEventsList } from "@/components/dating/DatingEventsList";
 import { FriendCirclesPanel } from "@/components/dating/FriendCirclesPanel";
 import { DatingPremiumPanel } from "@/components/dating/DatingPremiumPanel";
 import { DatingNotificationsCenter } from "@/components/dating/DatingNotificationsCenter";
+import { DatingAnalyticsPanel } from "@/components/dating/DatingAnalyticsPanel";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface DatingProfile {
