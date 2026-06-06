@@ -42,6 +42,13 @@ interface DatingProfile {
   profile_photo_url: string | null;
   additional_photos: string[] | null;
   interests: string[] | null;
+  prompts?: Prompt[] | null;
+  voice_intro_url?: string | null;
+  voice_intro_duration?: number | null;
+  spotify_url?: string | null;
+  instagram_url?: string | null;
+  photo_verified?: boolean | null;
+  verification_status?: string | null;
 }
 
 interface Match {
