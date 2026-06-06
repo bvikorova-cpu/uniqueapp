@@ -353,6 +353,22 @@ const Dating = () => {
     }
     const { data: gifts } = await supabase.from("dating_sent_gifts").select(`*, gift:gift_id (*)`).eq("match_id", matchId).order("created_at", { ascending: true });
     setSentGifts(gifts || []);
+
+    // A/B conversion: if a previously-used starter for this match got a reply from partner, mark led_to_reply
+    if (user?.id && data && data.length > 1) {
+      const { data: exps } = await supabase
+        .from("dating_ai_experiments")
+        .select("id, created_at, led_to_reply")
+        .eq("user_id", user.id).eq("match_id", matchId).eq("used", true).eq("led_to_reply", false);
+      if (exps && exps.length > 0) {
+        const partnerReplied = data.some(m => m.sender_id !== user.id);
+        if (partnerReplied) {
+          await supabase.from("dating_ai_experiments")
+            .update({ led_to_reply: true, updated_at: new Date().toISOString() })
+            .in("id", exps.map(e => e.id));
+        }
+      }
+    }
   };
 
   const handleTogglePrivacy = async (patch: { incognito?: boolean; read_receipts_enabled?: boolean }) => {
