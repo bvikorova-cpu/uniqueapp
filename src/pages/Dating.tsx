@@ -881,6 +881,7 @@ const Dating = () => {
                       spotifyUrl={currentCard.spotify_url}
                       instagramUrl={currentCard.instagram_url}
                       verified={!!currentCard.photo_verified}
+                      videoPrompts={(currentCard.video_prompts as VideoPrompt[] | null) || null}
                     />
                     {currentCard.bio && <div className="px-5 py-3 border-b border-border/50"><p className="text-sm text-muted-foreground line-clamp-2">{currentCard.bio}</p></div>}
                     {currentCard.interests && currentCard.interests.length > 0 && (
