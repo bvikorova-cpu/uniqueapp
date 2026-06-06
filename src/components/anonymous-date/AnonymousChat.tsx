@@ -64,6 +64,7 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
   // 24h countdown
   const [timeLeft, setTimeLeft] = useState("");
   const [urgent, setUrgent] = useState(false);
+  const [expired, setExpired] = useState(false);
   useEffect(() => {
     const tick = () => {
       if (!match.created_at) return;
@@ -72,17 +73,30 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
       if (diff <= 0) {
         setTimeLeft("Expired");
         setUrgent(true);
+        setExpired(true);
         return;
       }
       const h = Math.floor(diff / 3600000);
       const m = Math.floor((diff % 3600000) / 60000);
       setTimeLeft(`${h}h ${m}m`);
       setUrgent(diff < 6 * 3600000);
+      setExpired(false);
     };
     tick();
-    const t = setInterval(tick, 60000);
+    const t = setInterval(tick, 30000);
     return () => clearInterval(t);
   }, [match.created_at]);
+
+  // Mark match expired in DB once countdown hits zero
+  useEffect(() => {
+    if (!expired) return;
+    if (matchState.status === "expired") return;
+    supabase
+      .from("anonymous_dating_matches")
+      .update({ status: "expired" })
+      .eq("id", match.id)
+      .then(() => {});
+  }, [expired, match.id, matchState.status]);
 
   const safety = useChatSafety(currentUserId, partnerId);
 
@@ -120,6 +134,15 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
     e.preventDefault();
     const text = input.trim();
     if (!text) return;
+
+    if (expired) {
+      toast({
+        title: "Match expired",
+        description: "This anonymous match ended after 24 hours.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     if (safety.isBlocked) {
       toast({
@@ -315,23 +338,33 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
           </AnimatePresence>
         </div>
 
-        {/* Input */}
-        <form onSubmit={handleSend} className="p-2 border-t border-white/10 bg-black/25 backdrop-blur-md flex items-center gap-1">
-          <Input
-            value={input}
-            onChange={(e) => { setInput(e.target.value); broadcastTyping(); }}
-            placeholder={safeWord ? `Type… (safe word active)` : "Type anonymously…"}
-            className="flex-1 bg-background/70 border-border/50"
-          />
-          <VoiceRecorderButton
-            userId={currentUserId}
-            onUploaded={(url) => { sendMessage("🎤 Voice message", "voice", url); bumpStreak(); }}
-          />
-          <Button type="submit" size="icon" disabled={!input.trim() || moderating} className="rounded-full bg-gradient-to-r from-primary to-pink-500">
-            <Send className="h-4 w-4" />
-          </Button>
-        </form>
+        {/* Input or Expired notice */}
+        {expired ? (
+          <div className="p-3 border-t border-white/10 bg-destructive/15 backdrop-blur-md flex items-center justify-center gap-2 text-center">
+            <Timer className="h-4 w-4 text-destructive" />
+            <p className="text-xs font-semibold text-destructive">
+              This anonymous match ended after 24 hours. Messaging is closed.
+            </p>
+          </div>
+        ) : (
+          <form onSubmit={handleSend} className="p-2 border-t border-white/10 bg-black/25 backdrop-blur-md flex items-center gap-1">
+            <Input
+              value={input}
+              onChange={(e) => { setInput(e.target.value); broadcastTyping(); }}
+              placeholder={safeWord ? `Type… (safe word active)` : "Type anonymously…"}
+              className="flex-1 bg-background/70 border-border/50"
+            />
+            <VoiceRecorderButton
+              userId={currentUserId}
+              onUploaded={(url) => { sendMessage("🎤 Voice message", "voice", url); bumpStreak(); }}
+            />
+            <Button type="submit" size="icon" disabled={!input.trim() || moderating} className="rounded-full bg-gradient-to-r from-primary to-pink-500">
+              <Send className="h-4 w-4" />
+            </Button>
+          </form>
+        )}
       </Card>
+
 
       {/* Live stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
