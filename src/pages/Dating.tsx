@@ -350,13 +350,34 @@ const Dating = () => {
   const handleSendMessage = async () => {
     if (!selectedMatch || !newMessage.trim()) return;
     const otherId = selectedMatch.user1_id === user.id ? selectedMatch.user2_id : selectedMatch.user1_id;
-    const { error } = await supabase.from("dating_messages").insert([{ match_id: selectedMatch.id, sender_id: user.id, content: newMessage }]);
+    const content = newMessage.trim().slice(0, 2000);
+
+    // AI moderation pre-check
+    try {
+      const { data: mod } = await supabase.functions.invoke("dating-moderate-message", { body: { content } });
+      if (mod && mod.allow === false) {
+        toast({
+          title: "Message blocked",
+          description: mod.reason || "This message violates community guidelines.",
+          variant: "destructive",
+        });
+        return;
+      }
+      if (mod?.severity === "medium") {
+        toast({ title: "Heads up", description: "This message looks intense — be respectful." });
+      }
+    } catch {
+      // moderation is best-effort
+    }
+
+    const { error } = await supabase.from("dating_messages").insert([{ match_id: selectedMatch.id, sender_id: user.id, content }]);
     if (error) { toast({ title: "Error", description: "Failed to send message", variant: "destructive" }); }
     else {
       await supabase.from("notifications").insert([{ user_id: otherId, type: "dating_message", title: "New Message 💌", message: `${currentProfile?.display_name || "Someone"} sent you a message`, related_id: selectedMatch.id }]);
       setNewMessage(""); await loadMessages(selectedMatch.id);
     }
   };
+
 
   const handleUpdateProfile = async () => {
     if (!user || !currentProfile || !editForm.display_name || !editForm.bio) { toast({ title: "Incomplete Data", description: "Fill in all fields", variant: "destructive" }); return; }
