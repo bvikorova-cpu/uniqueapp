@@ -309,6 +309,18 @@ const Dating = () => {
       } else if (discoveryMode === "standouts") {
         ranked = ranked.filter(p => p.photo_verified || (Array.isArray(p.prompts) && p.prompts.length >= 2) || p.voice_intro_url);
         ranked = [...ranked].sort((a, b) => score(b) - score(a)).slice(0, 12);
+      } else if (discoveryMode === "ai_smart") {
+        try {
+          const { data: rerank } = await supabase.functions.invoke("dating-ai-coach", {
+            body: { action: "rerank_discovery", me: currentProfile, candidates: ranked.slice(0, 40) },
+          });
+          const scoreMap = new Map<string, number>();
+          (rerank?.scores || []).forEach((s: any) => scoreMap.set(s.id, s.p));
+          ranked = [...ranked].sort((a, b) => (scoreMap.get(b.user_id) ?? -1) - (scoreMap.get(a.user_id) ?? -1));
+        } catch (e) {
+          console.warn("AI rerank failed, fallback to heuristic", e);
+          ranked = [...ranked].sort((a, b) => score(b) - score(a));
+        }
       } else {
         ranked = [...ranked.filter(p => boostedSet.has(p.user_id)), ...ranked.filter(p => !boostedSet.has(p.user_id))];
       }
@@ -431,6 +443,13 @@ const Dating = () => {
     if (error) { toast({ title: "Error", description: "Failed to send message", variant: "destructive" }); }
     else {
       await supabase.from("notifications").insert([{ user_id: otherId, type: "dating_message", title: "New Message 💌", message: `${currentProfile?.display_name || "Someone"} sent you a message`, related_id: selectedMatch.id }]);
+      // A/B conversion tracking: mark experiment as used + led_to_message
+      if (pendingStarterExperiment) {
+        supabase.functions.invoke("dating-ai-coach", {
+          body: { action: "mark_experiment", experiment_id: pendingStarterExperiment, used: true, led_to_message: true },
+        }).catch(() => {});
+        setPendingStarterExperiment(null);
+      }
       setNewMessage(""); await loadMessages(selectedMatch.id);
     }
   };
