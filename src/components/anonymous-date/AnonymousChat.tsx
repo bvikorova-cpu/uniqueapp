@@ -34,8 +34,10 @@ interface MatchInfo {
   created_at: string | null;
   reveal_request_at: string | null;
   reveal_request_by: string | null;
-  match_interests?: string[] | null;
+  // Postgres jsonb column — accept the raw shape and narrow at use sites.
+  match_interests?: unknown;
 }
+
 
 interface Props {
   match: MatchInfo;
