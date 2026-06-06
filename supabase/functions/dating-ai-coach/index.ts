@@ -103,10 +103,12 @@ Deno.serve(async (req) => {
 
     // ============ BIO COACH ============
     if (action === "bio_coach") {
-      const { bio, profile } = payload;
-      if (!bio) throw new Error("bio required");
+      const { bio: rawBio, profile } = payload;
+      if (!rawBio || typeof rawBio !== "string") throw new Error("bio required");
+      // DoS guard: cap bio length sent to the model
+      const bio = rawBio.slice(0, 800);
       const ctx = profile
-        ? `Profile type: age ${profile.age}, gender ${profile.gender}, looking for ${profile.looking_for}, interests: ${(profile.interests || []).join(", ")}, location ${profile.location || "?"}.`
+        ? `Profile type: age ${profile.age}, gender ${profile.gender}, looking for ${profile.looking_for}, interests: ${(profile.interests || []).slice(0, 20).join(", ")}, location ${(profile.location || "?").toString().slice(0, 80)}.`
         : "";
       const raw = await callAI([
         { role: "system", content: `You are an elite dating profile coach. Analyze the bio and return STRICT JSON:
