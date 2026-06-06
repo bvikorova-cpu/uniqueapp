@@ -268,7 +268,7 @@ const Dating = () => {
     const swipedIds = swipedProfiles?.map(s => s.swiped_id) || [];
     const excludeIds = [...new Set([...swipedIds, ...blockedIds, user.id])];
 
-    let q = supabase.from("dating_profiles").select("*").eq("is_active", true).eq("incognito", false);
+    let q = supabase.from("dating_profiles").select("*").eq("is_active", true).eq("incognito", false).eq("is_shadow_banned", false);
     if (excludeIds.length > 0) q = q.not("user_id", "in", `(${excludeIds.join(",")})`);
     if (filters) {
       q = q.gte("age", filters.min_age).lte("age", filters.max_age);
