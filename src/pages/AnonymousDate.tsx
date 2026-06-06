@@ -261,8 +261,11 @@ export default function AnonymousDate() {
     try {
       const result = await findMatch(lastFilters, userId);
       if (result?.match) {
-        setSelectedMatchId(result.match.id);
-        setActiveView("matches");
+        setMatchCelebration({
+          matchId: result.match.id,
+          partnerName: result.partner?.anonymous_name ?? "Match",
+          location: result.partner?.location ?? null,
+        });
       } else {
         // Candidate became unavailable — refresh the list
         await loadCandidates(lastFilters);
