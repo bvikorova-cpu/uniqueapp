@@ -141,7 +141,7 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
     if (expired) {
       toast({
         title: "Match expired",
-        description: "This anonymous match ended after 24 hours.",
+        description: "This anonymous match has ended.",
         variant: "destructive",
       });
       return;
