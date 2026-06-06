@@ -621,16 +621,25 @@ export default function AnonymousDate() {
         myName={myAnonName}
         theirName={matchCelebration?.partnerName}
         location={matchCelebration?.location ?? null}
-        onSendMessage={() => {
+        onStartChat={() => {
           if (matchCelebration) {
             setSelectedMatchId(matchCelebration.matchId);
             setActiveView("matches");
           }
           setMatchCelebration(null);
         }}
-        onKeepSwiping={async () => {
+        onFindAnother={async () => {
           setMatchCelebration(null);
           await loadCandidates(lastFilters);
+        }}
+        onViewMatches={() => {
+          setMatchCelebration(null);
+          setActiveView("matches");
+          setSelectedMatchId(null);
+        }}
+        onBrowseHub={() => {
+          setMatchCelebration(null);
+          setActiveView("hub");
         }}
       />
     </div>
