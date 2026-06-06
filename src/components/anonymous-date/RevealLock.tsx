@@ -102,17 +102,17 @@ export const RevealLock = ({ matchId, currentUserId, partnerName, revealRequestA
 
 
   return (
-    <Card className="p-3 bg-gradient-to-br from-pink-500/10 via-card/80 to-primary/10 border-pink-500/30">
+    <Card className="p-3 bg-anon-date-gradient-soft border-anon-date">
       <div className="flex items-center justify-between mb-2">
         <p className="text-sm font-bold flex items-center gap-1.5">
-          <Lock className="h-4 w-4 text-pink-400" /> Mutual Reveal
+          <Lock className="h-4 w-4 text-anon-date" /> Mutual Reveal
         </p>
         {active && (
           <motion.span
             key={remaining}
             initial={{ scale: 1.3 }}
             animate={{ scale: 1 }}
-            className="text-xs font-mono font-bold text-pink-400"
+            className="text-xs font-mono font-bold text-anon-date"
           >
             {remaining}s
           </motion.span>
@@ -125,7 +125,8 @@ export const RevealLock = ({ matchId, currentUserId, partnerName, revealRequestA
             <p className="text-[11px] text-muted-foreground mb-2">
               Both must confirm within 60 seconds for identities to reveal.
             </p>
-            <Button onClick={requestReveal} disabled={busy} size="sm" className="w-full bg-gradient-to-r from-pink-500 to-primary">
+            <Button onClick={requestReveal} disabled={busy} size="sm" className="w-full bg-anon-date-gradient">
+
               {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Eye className="h-4 w-4 mr-2" /> Request reveal</>}
             </Button>
           </motion.div>
