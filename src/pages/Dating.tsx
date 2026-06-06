@@ -903,17 +903,26 @@ const Dating = () => {
                     {messages.length === 0 && sentGifts.length === 0 && (
                       <div className="text-center py-12"><Heart className="h-12 w-12 mx-auto text-primary/30 mb-3" /><p className="text-sm font-medium">It's a match! 🎉</p><p className="text-xs text-muted-foreground mt-1">Say something nice to start the conversation</p></div>
                     )}
-                    {messages.map((msg) => (
-                      <div key={msg.id} className={`flex ${msg.sender_id === user?.id ? "justify-end" : "justify-start"}`}>
-                        <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 ${msg.sender_id === user?.id ? "bg-gradient-to-r from-primary to-accent text-primary-foreground rounded-br-md" : "bg-muted rounded-bl-md"}`}>
-                          <p className="text-sm leading-relaxed">{msg.content}</p>
+                    {messages.map((msg) => {
+                      const mine = msg.sender_id === user?.id;
+                      const partnerReceipts = selectedMatch.profile?.read_receipts_enabled !== false;
+                      const deleted = !!msg.deleted_at;
+                      return (
+                      <div key={msg.id} className={`flex group ${mine ? "justify-end" : "justify-start"}`}>
+                        {mine && !deleted && (
+                          <MessageActions messageId={msg.id} currentContent={msg.content} createdAt={msg.created_at} onChanged={() => selectedMatch && loadMessages(selectedMatch.id)} />
+                        )}
+                        <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 ${mine ? "bg-gradient-to-r from-primary to-accent text-primary-foreground rounded-br-md" : "bg-muted rounded-bl-md"} ${deleted ? "opacity-60 italic" : ""}`}>
+                          <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">{deleted ? "🚫 Message unsent" : msg.content}</p>
                           <div className="flex items-center gap-1 mt-1 justify-end">
-                            <span className={`text-[10px] ${msg.sender_id === user?.id ? "text-primary-foreground/60" : "text-muted-foreground"}`}>{new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                            {msg.sender_id === user?.id && (msg.read_at ? <CheckCheck className="h-3 w-3 text-primary-foreground/60" /> : <Check className="h-3 w-3 text-primary-foreground/60" />)}
+                            {msg.edited_at && !deleted && <span className={`text-[10px] ${mine ? "text-primary-foreground/50" : "text-muted-foreground/70"}`}>edited</span>}
+                            <span className={`text-[10px] ${mine ? "text-primary-foreground/60" : "text-muted-foreground"}`}>{new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                            {mine && partnerReceipts && (msg.read_at ? <CheckCheck className="h-3 w-3 text-primary-foreground/60" /> : <Check className="h-3 w-3 text-primary-foreground/60" />)}
                           </div>
                         </div>
                       </div>
-                    ))}
+                      );
+                    })}
                     {sentGifts.map((gift) => (
                       <div key={gift.id} className={`flex ${gift.sender_id === user?.id ? "justify-end" : "justify-start"}`}>
                         <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl px-5 py-3 text-center border border-amber-200/50 dark:border-amber-800/50">
