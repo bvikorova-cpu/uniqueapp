@@ -1120,6 +1120,11 @@ const Dating = () => {
                     instagramUrl={currentProfile.instagram_url || null}
                     onChange={(sp, ig) => setCurrentProfile({ ...currentProfile, spotify_url: sp, instagram_url: ig })}
                   />
+                  <VideoPromptRecorder
+                    userId={user.id}
+                    value={(currentProfile.video_prompts as VideoPrompt[] | null) || []}
+                    onChange={(next) => setCurrentProfile({ ...currentProfile, video_prompts: next })}
+                  />
                   <CompatibilityQuiz
                     userId={user.id}
                     initial={(currentProfile.compatibility_quiz as any) || {}}
