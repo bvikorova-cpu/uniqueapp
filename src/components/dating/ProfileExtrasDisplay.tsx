@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
-import { Music, Instagram, ShieldCheck, Volume2 } from "lucide-react";
+import { Music, Instagram, ShieldCheck, Volume2, Video } from "lucide-react";
 import type { Prompt } from "./PromptsEditor";
+import type { VideoPrompt } from "./VideoPromptRecorder";
 
 interface Props {
   prompts?: Prompt[] | null;
@@ -9,6 +10,7 @@ interface Props {
   spotifyUrl?: string | null;
   instagramUrl?: string | null;
   verified?: boolean;
+  videoPrompts?: VideoPrompt[] | null;
 }
 
 /**
@@ -22,9 +24,10 @@ export const ProfileExtrasDisplay = ({
   spotifyUrl,
   instagramUrl,
   verified,
+  videoPrompts,
 }: Props) => {
   const hasAnything =
-    (prompts && prompts.length) || voiceUrl || spotifyUrl || instagramUrl || verified;
+    (prompts && prompts.length) || voiceUrl || spotifyUrl || instagramUrl || verified || (videoPrompts && videoPrompts.length);
   if (!hasAnything) return null;
 
   return (
@@ -44,6 +47,16 @@ export const ProfileExtrasDisplay = ({
           <audio src={voiceUrl} controls className="w-full h-9" />
         </div>
       )}
+
+      {videoPrompts?.map((vp, i) => (
+        <div key={`vp-${i}`} className="rounded-lg overflow-hidden border border-border bg-muted/40">
+          <div className="px-3 py-2 flex items-center gap-2">
+            <Video className="h-3.5 w-3.5 text-primary" />
+            <p className="text-[11px] font-medium uppercase tracking-wide">{vp.question}</p>
+          </div>
+          <video src={vp.video_url} controls playsInline className="w-full aspect-square bg-black object-cover" />
+        </div>
+      ))}
 
       {prompts?.map((p, i) => (
         <div key={i} className="rounded-lg bg-muted/40 p-3">

@@ -37,6 +37,9 @@ import { PassportDialog } from "@/components/dating/PassportDialog";
 import { SnoozeButton } from "@/components/dating/SnoozeButton";
 import { MatchExpiryBadge } from "@/components/dating/MatchExpiryBadge";
 import { DiscoveryTabs, type DiscoveryMode } from "@/components/dating/DiscoveryTabs";
+import { VideoPromptRecorder, type VideoPrompt } from "@/components/dating/VideoPromptRecorder";
+import { VoiceNoteRecorder } from "@/components/dating/VoiceNoteRecorder";
+import { DatePlanCard } from "@/components/dating/DatePlanCard";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface DatingProfile {
@@ -63,6 +66,7 @@ interface DatingProfile {
   compatibility_quiz?: any;
   opening_move?: string | null;
   passport_location?: string | null;
+  video_prompts?: any;
   snoozed_until?: string | null;
 }
 
@@ -81,6 +85,8 @@ interface Message {
   read_at: string | null;
   edited_at?: string | null;
   deleted_at?: string | null;
+  voice_url?: string | null;
+  voice_duration?: number | null;
 }
 
 interface GiftType {
@@ -875,6 +881,7 @@ const Dating = () => {
                       spotifyUrl={currentCard.spotify_url}
                       instagramUrl={currentCard.instagram_url}
                       verified={!!currentCard.photo_verified}
+                      videoPrompts={(currentCard.video_prompts as VideoPrompt[] | null) || null}
                     />
                     {currentCard.bio && <div className="px-5 py-3 border-b border-border/50"><p className="text-sm text-muted-foreground line-clamp-2">{currentCard.bio}</p></div>}
                     {currentCard.interests && currentCard.interests.length > 0 && (
@@ -943,6 +950,11 @@ const Dating = () => {
                     />
                   )}
                 </div>
+                {user && (
+                  <div className="border-b p-3 bg-muted/20">
+                    <DatePlanCard matchId={selectedMatch.id} userId={user.id} />
+                  </div>
+                )}
                 <ScrollArea className="h-[450px]">
                   <div className="p-4 space-y-3">
                     {messages.length === 0 && sentGifts.length === 0 && (
@@ -958,7 +970,14 @@ const Dating = () => {
                           <MessageActions messageId={msg.id} currentContent={msg.content} createdAt={msg.created_at} onChanged={() => selectedMatch && loadMessages(selectedMatch.id)} />
                         )}
                         <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 ${mine ? "bg-gradient-to-r from-primary to-accent text-primary-foreground rounded-br-md" : "bg-muted rounded-bl-md"} ${deleted ? "opacity-60 italic" : ""}`}>
-                          <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">{deleted ? "🚫 Message unsent" : msg.content}</p>
+                          {msg.voice_url && !deleted ? (
+                            <div className="flex items-center gap-2 min-w-[180px]">
+                              <audio src={msg.voice_url} controls preload="metadata" className="h-8 max-w-full" />
+                              {msg.voice_duration && <span className={`text-[10px] ${mine ? "text-primary-foreground/70" : "text-muted-foreground"}`}>{msg.voice_duration}s</span>}
+                            </div>
+                          ) : (
+                            <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">{deleted ? "🚫 Message unsent" : msg.content}</p>
+                          )}
                           <div className="flex items-center gap-1 mt-1 justify-end">
                             {msg.edited_at && !deleted && <span className={`text-[10px] ${mine ? "text-primary-foreground/50" : "text-muted-foreground/70"}`}>edited</span>}
                             <span className={`text-[10px] ${mine ? "text-primary-foreground/60" : "text-muted-foreground"}`}>{new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
@@ -981,6 +1000,7 @@ const Dating = () => {
                 <div className="border-t p-3 bg-card">
                   <div className="flex gap-2">
                     <EmojiPicker onSelect={(e) => setNewMessage(newMessage + e)} />
+                    {user && <VoiceNoteRecorder userId={user.id} matchId={selectedMatch.id} onSent={() => loadMessages(selectedMatch.id)} />}
                     <Input value={newMessage} onChange={(e) => setNewMessage(e.target.value)} maxLength={2000} placeholder="Type a message..." onKeyPress={(e) => e.key === "Enter" && handleSendMessage()} className="flex-1 border-0 bg-muted/50 focus-visible:ring-1 focus-visible:ring-primary" />
                     <Button onClick={handleSendMessage} size="icon" className="bg-gradient-to-r from-primary to-accent hover:opacity-90 h-10 w-10"><Send className="h-4 w-4" /></Button>
                   </div>
@@ -1100,6 +1120,11 @@ const Dating = () => {
                     spotifyUrl={currentProfile.spotify_url || null}
                     instagramUrl={currentProfile.instagram_url || null}
                     onChange={(sp, ig) => setCurrentProfile({ ...currentProfile, spotify_url: sp, instagram_url: ig })}
+                  />
+                  <VideoPromptRecorder
+                    userId={user.id}
+                    value={(currentProfile.video_prompts as VideoPrompt[] | null) || []}
+                    onChange={(next) => setCurrentProfile({ ...currentProfile, video_prompts: next })}
                   />
                   <CompatibilityQuiz
                     userId={user.id}
