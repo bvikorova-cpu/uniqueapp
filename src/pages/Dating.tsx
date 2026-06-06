@@ -1028,7 +1028,7 @@ const Dating = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-sm truncate">{selectedMatch.profile?.display_name}</h3>
-                    <p className="text-xs text-emerald-500 flex items-center gap-1"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />Online</p>
+                    {selectedMatch.profile?.location && <p className="text-xs text-muted-foreground truncate">{selectedMatch.profile.location}</p>}
                   </div>
                   <Button variant="ghost" size="icon" onClick={() => setShowGiftDialog(true)} className="h-9 w-9 text-primary"><Gift className="h-5 w-5" /></Button>
                   {selectedMatch.profile?.user_id && (
