@@ -46,6 +46,7 @@ import { FriendCirclesPanel } from "@/components/dating/FriendCirclesPanel";
 import { DatingPremiumPanel } from "@/components/dating/DatingPremiumPanel";
 import { DatingNotificationsCenter } from "@/components/dating/DatingNotificationsCenter";
 import { DatingAnalyticsPanel } from "@/components/dating/DatingAnalyticsPanel";
+import { WeeklyInsightsCard } from "@/components/dating/WeeklyInsightsCard";
 import { AIStarterButton } from "@/components/dating/AIStarterButton";
 import { AIBioCoach } from "@/components/dating/AIBioCoach";
 
@@ -115,6 +116,7 @@ const Dating = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState<string>("swipe");
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [currentProfile, setCurrentProfile] = useState<DatingProfile | null>(null);
   const [profiles, setProfiles] = useState<DatingProfile[]>([]);
@@ -846,7 +848,7 @@ const Dating = () => {
         </div>
 
         {/* Main Tabs */}
-        <Tabs defaultValue="swipe" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-8 max-w-4xl mx-auto mb-6 h-11 bg-muted/50">
             <TabsTrigger value="swipe" className="text-sm gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Heart className="h-4 w-4" /><span className="hidden sm:inline">Discover</span>
@@ -1124,7 +1126,14 @@ const Dating = () => {
             <DatingNotificationsCenter />
           </TabsContent>
 
-          <TabsContent value="insights">
+          <TabsContent value="insights" className="space-y-4">
+            <WeeklyInsightsCard onAction={(a) => {
+              if (a === "bio_coach" || a === "add_photo" || a === "update_prompts" || a === "try_video") {
+                setActiveTab("profile");
+              } else if (a === "send_openers") {
+                setActiveTab("matches");
+              }
+            }} />
             <DatingAnalyticsPanel />
           </TabsContent>
 
