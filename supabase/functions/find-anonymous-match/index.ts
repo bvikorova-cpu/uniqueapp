@@ -198,10 +198,7 @@ serve(async (req) => {
         compatibility: r.compatibility,
         breakdown: r.breakdown,
       }));
-      return new Response(
-        JSON.stringify({ candidates, cost: MATCH_COST }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
-      );
+      return json({ candidates, cost: MATCH_COST });
     }
 
     // MATCH MODE — pick a specific candidate (targetUserId) or randomize top 3
@@ -209,10 +206,7 @@ serve(async (req) => {
     if (targetUserId) {
       const found = pool.find(r => r.profile.user_id === targetUserId);
       if (!found) {
-        return new Response(
-          JSON.stringify({ error: "Selected candidate is no longer available." }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 409 }
-        );
+        return errorResponse("CANDIDATE_UNAVAILABLE", "Selected candidate is no longer available.", 409);
       }
       chosen = found;
     } else {
