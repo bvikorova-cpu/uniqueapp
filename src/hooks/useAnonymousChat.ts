@@ -31,6 +31,9 @@ export function useAnonymousChat(matchId: string | null, currentUserId: string |
   const [loading, setLoading] = useState(true);
   const channelRef = useRef<RealtimeChannel | null>(null);
   const typingTimeoutRef = useRef<number | null>(null);
+  const lastTypingSentRef = useRef<number>(0);
+  const typingDebounceRef = useRef<number | null>(null);
+
 
   // Fetch messages + reactions
   useEffect(() => {
@@ -102,10 +105,12 @@ export function useAnonymousChat(matchId: string | null, currentUserId: string |
 
     return () => {
       if (typingTimeoutRef.current) window.clearTimeout(typingTimeoutRef.current);
+      if (typingDebounceRef.current) window.clearTimeout(typingDebounceRef.current);
       supabase.removeChannel(channel);
       channelRef.current = null;
     };
   }, [matchId, currentUserId, partnerId]);
+
 
   // Mark partner messages as read
   useEffect(() => {
@@ -131,8 +136,20 @@ export function useAnonymousChat(matchId: string | null, currentUserId: string |
   }, [matchId, currentUserId, toast]);
 
   const broadcastTyping = useCallback(() => {
-    channelRef.current?.send({ type: "broadcast", event: "typing", payload: { user_id: currentUserId } });
+    // Throttle: max 1 broadcast / 1500 ms. Debounce: also batch fast keystrokes
+    // within a 300 ms window into a single send to avoid channel flooding.
+    if (!channelRef.current || !currentUserId) return;
+    const now = Date.now();
+    const fire = () => {
+      lastTypingSentRef.current = Date.now();
+      channelRef.current?.send({ type: "broadcast", event: "typing", payload: { user_id: currentUserId } });
+    };
+    if (now - lastTypingSentRef.current >= 1500) {
+      if (typingDebounceRef.current) window.clearTimeout(typingDebounceRef.current);
+      typingDebounceRef.current = window.setTimeout(fire, 300);
+    }
   }, [currentUserId]);
+
 
   const toggleReaction = useCallback(async (messageId: string, emoji: string) => {
     if (!currentUserId) return;

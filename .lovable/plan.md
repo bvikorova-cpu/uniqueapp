@@ -27,12 +27,14 @@ Cieľ: zastaviť stratu peňazí a privacy leaky.
 8. ✅ Jednotný error handling cez `errorResponse(code, message, status)` helper v `_shared/anonymous-dating.ts`.
 9. ✅ Rate limiting cez `check_anon_dating_rate_limit` RPC (AI 20/min, match 30/min) + `mt_rate_limits` unique index.
 
-## Fáza 3 — Frontend stabilita (Day 3)
-10. `AnonymousChat`: `isMounted` ref, AbortController, cleanup subscriptions, debounce `broadcastTyping` (300ms).
-11. `useAnonymousDate`: cache `supabase.auth.getUser()` (1× na mount), typed `ActiveMatch[]` namiesto `any[]`.
-12. `RevealLock`: optimistic lock cez podmienený UPDATE (`WHERE reveal_request_at IS NULL`), eliminuje race.
-13. `ProfileSetup`: Zod schema + react-hook-form, stepper UI, error messages.
-14. `VoiceRecorderButton`: `maxDuration=60s`, cleanup MediaRecorder.
+## Fáza 3 — Frontend stabilita (Day 3) ✅ (čiastočne)
+10. ✅ `AnonymousChat`: `isMountedRef` + `AbortController` pre moderation invoke, cleanup on unmount.
+11. `useAnonymousDate`: cache `supabase.auth.getUser()` (1× na mount), typed `ActiveMatch[]` namiesto `any[]`. — TODO
+12. ✅ `RevealLock`: optimistic conditional UPDATE (`reveal_request_at IS NULL` alebo stale >60s, `status='active'`), self-accept guard, requester-only cancel.
+13. ✅ `ProfileSetup`: Zod schema (`src/lib/anonymousDatingSchema.ts`) validuje pred submitom, jednotná error message.
+13a. ✅ `useAnonymousChat.broadcastTyping`: throttle 1500ms + debounce 300ms (zabráni floodu kanála).
+14. `VoiceRecorderButton`: `maxDuration=60s`, cleanup MediaRecorder. — TODO
+
 
 ## Fáza 4 — Frontend dizajn/sémantika (Day 4)
 15. Nahradiť všetky hardcoded farby (`text-pink-500`, `from-pink-500`) sémantickými tokenmi (`text-primary`, gradient utility z index.css).
