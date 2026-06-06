@@ -915,6 +915,7 @@ const Dating = () => {
                 </motion.div>
               )}
             </AnimatePresence>
+            </div>
           </TabsContent>
 
           {/* ==================== MATCHES TAB ==================== */}
