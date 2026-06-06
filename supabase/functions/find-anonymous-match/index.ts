@@ -69,10 +69,7 @@ serve(async (req) => {
       .single();
 
     if (mode === "match" && (!creditsData || creditsData.credits_remaining < MATCH_COST)) {
-      return new Response(
-        JSON.stringify({ error: "Insufficient credits", required: MATCH_COST }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
-      );
+      return errorResponse("INSUFFICIENT_CREDITS", "Not enough credits to start a match.", 402, { required: MATCH_COST });
     }
 
     // Get user profile
@@ -83,10 +80,7 @@ serve(async (req) => {
       .single();
 
     if (!userProfile) {
-      return new Response(
-        JSON.stringify({ error: "Profile not found. Please create a profile first." }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
-      );
+      return errorResponse("PROFILE_REQUIRED", "Profile not found. Please create a profile first.", 400);
     }
 
     // Already-matched users
