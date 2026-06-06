@@ -1,32 +1,64 @@
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import type { Database } from "@/integrations/supabase/types";
+
+type AnonMatchRow = Database["public"]["Tables"]["anonymous_dating_matches"]["Row"];
+type AnonProfileRow = Database["public"]["Tables"]["anonymous_dating_profiles"]["Row"];
+
+export interface PartnerProfile {
+  user_id: string;
+  anonymous_name: AnonProfileRow["anonymous_name"];
+  age_range: AnonProfileRow["age_range"];
+  interests: AnonProfileRow["interests"];
+  personality_traits: AnonProfileRow["personality_traits"];
+}
+
+export interface ActiveMatch extends AnonMatchRow {
+  current_user_id: string;
+  partner_profile: PartnerProfile | null;
+}
+
+interface MatchFilters {
+  location?: string;
+  preferred_gender?: string;
+  relationship_goal?: string;
+  languages?: string[];
+  min_shared_interests?: number;
+}
 
 export function useAnonymousDate() {
   const [credits, setCredits] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [activeMatches, setActiveMatches] = useState<any[]>([]);
+  const [activeMatches, setActiveMatches] = useState<ActiveMatch[]>([]);
   const { toast } = useToast();
+  // Cache auth user — `supabase.auth.getUser()` hits the network each call.
+  const userIdRef = useRef<string | null>(null);
 
-  const fetchCredits = async () => {
+  const getUserId = useCallback(async (): Promise<string | null> => {
+    if (userIdRef.current) return userIdRef.current;
+    const { data: { user } } = await supabase.auth.getUser();
+    userIdRef.current = user?.id ?? null;
+    return userIdRef.current;
+  }, []);
+
+  const fetchCredits = useCallback(async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      const userId = await getUserId();
+      if (!userId) return;
 
       const { data, error } = await supabase
         .from("anonymous_dating_credits")
         .select("*")
-        .eq("user_id", user.id)
-        .single();
+        .eq("user_id", userId)
+        .maybeSingle();
 
-      if (error && error.code !== "PGRST116") {
-        throw error;
-      }
+      if (error && error.code !== "PGRST116") throw error;
 
       if (!data) {
         const { data: newCredits, error: insertError } = await supabase
           .from("anonymous_dating_credits")
-          .insert({ user_id: user.id, credits_remaining: 0 })
+          .insert({ user_id: userId, credits_remaining: 0 })
           .select()
           .single();
 
@@ -45,17 +77,17 @@ export function useAnonymousDate() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [getUserId, toast]);
 
-  const fetchActiveMatches = async () => {
+  const fetchActiveMatches = useCallback(async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      const userId = await getUserId();
+      if (!userId) return;
 
       const { data, error } = await supabase
         .from("anonymous_dating_matches")
         .select("*")
-        .or(`user1_id.eq.${user.id},user2_id.eq.${user.id}`)
+        .or(`user1_id.eq.${userId},user2_id.eq.${userId}`)
         .in("status", ["active", "revealed"])
         .order("created_at", { ascending: false });
 
@@ -65,36 +97,38 @@ export function useAnonymousDate() {
       const { data: myBlocks } = await supabase
         .from("blocked_users")
         .select("blocked_user_id")
-        .eq("user_id", user.id);
-      const blockedIds = new Set((myBlocks ?? []).map((b: any) => b.blocked_user_id));
+        .eq("user_id", userId);
+      const blockedIds = new Set((myBlocks ?? []).map((b) => b.blocked_user_id));
 
-      const visibleMatches = (data || []).filter((m: any) => {
-        const partnerId = m.user1_id === user.id ? m.user2_id : m.user1_id;
+      const visibleMatches = (data ?? []).filter((m) => {
+        const partnerId = m.user1_id === userId ? m.user2_id : m.user1_id;
         return !blockedIds.has(partnerId);
       });
 
       const partnerIds = Array.from(
         new Set(
-          visibleMatches.flatMap((m: any) =>
-            [m.user1_id, m.user2_id].filter((id) => id && id !== user.id)
+          visibleMatches.flatMap((m) =>
+            [m.user1_id, m.user2_id].filter((id): id is string => Boolean(id) && id !== userId)
           )
         )
       );
 
-      let profilesById: Record<string, any> = {};
+      let profilesById: Record<string, PartnerProfile> = {};
       if (partnerIds.length > 0) {
         const { data: profiles } = await supabase
           .from("anonymous_dating_profiles")
           .select("user_id, anonymous_name, age_range, interests, personality_traits")
           .in("user_id", partnerIds);
-        profilesById = Object.fromEntries((profiles ?? []).map((p: any) => [p.user_id, p]));
+        profilesById = Object.fromEntries(
+          (profiles ?? []).map((p) => [p.user_id, p as PartnerProfile])
+        );
       }
 
-      const enriched = visibleMatches.map((m: any) => {
-        const partnerId = m.user1_id === user.id ? m.user2_id : m.user1_id;
+      const enriched: ActiveMatch[] = visibleMatches.map((m) => {
+        const partnerId = m.user1_id === userId ? m.user2_id : m.user1_id;
         return {
           ...m,
-          current_user_id: user.id,
+          current_user_id: userId,
           partner_profile: profilesById[partnerId] ?? null,
         };
       });
@@ -103,9 +137,9 @@ export function useAnonymousDate() {
     } catch (error) {
       console.error("Error fetching matches:", error);
     }
-  };
+  }, [getUserId]);
 
-  const purchaseCredits = async (packageType: string) => {
+  const purchaseCredits = useCallback(async (packageType: string) => {
     try {
       const { data, error } = await supabase.functions.invoke(
         "create-anonymous-date-payment",
@@ -125,15 +159,9 @@ export function useAnonymousDate() {
         variant: "destructive",
       });
     }
-  };
+  }, [toast]);
 
-  const previewMatches = async (filters?: {
-    location?: string;
-    preferred_gender?: string;
-    relationship_goal?: string;
-    languages?: string[];
-    min_shared_interests?: number;
-  }) => {
+  const previewMatches = useCallback(async (filters?: MatchFilters) => {
     try {
       const { data, error } = await supabase.functions.invoke("find-anonymous-match", {
         body: { mode: "preview", filters: filters ?? {} },
@@ -149,18 +177,9 @@ export function useAnonymousDate() {
       });
       return [];
     }
-  };
+  }, [toast]);
 
-  const findMatch = async (
-    filters?: {
-      location?: string;
-      preferred_gender?: string;
-      relationship_goal?: string;
-      languages?: string[];
-      min_shared_interests?: number;
-    },
-    targetUserId?: string,
-  ) => {
+  const findMatch = useCallback(async (filters?: MatchFilters, targetUserId?: string) => {
     try {
       setLoading(true);
       const { data, error } = await supabase.functions.invoke("find-anonymous-match", {
@@ -188,12 +207,17 @@ export function useAnonymousDate() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast, fetchCredits, fetchActiveMatches]);
 
   useEffect(() => {
     fetchCredits();
     fetchActiveMatches();
-  }, []);
+    // Reset cached user when auth changes so a fresh sign-in is picked up.
+    const { data: sub } = supabase.auth.onAuthStateChange(() => {
+      userIdRef.current = null;
+    });
+    return () => { sub.subscription.unsubscribe(); };
+  }, [fetchCredits, fetchActiveMatches]);
 
   return {
     credits,
