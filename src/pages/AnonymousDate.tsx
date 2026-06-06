@@ -30,6 +30,7 @@ import { AnonymousDateParityPack } from "@/components/anonymous-date/AnonymousDa
 import { CompatibilityMatchFinder } from "@/components/anonymous-date/CompatibilityMatchFinder";
 import { MatchResults, type MatchCandidate } from "@/components/anonymous-date/MatchResults";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
+import { MatchCelebrationModal } from "@/components/dating/MatchCelebrationModal";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ViewType = "hub" | "matches" | "find" | "find-results" | "credits" | "profile";
