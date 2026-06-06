@@ -18657,6 +18657,42 @@ export type Database = {
         }
         Relationships: []
       }
+      dating_weekly_insights: {
+        Row: {
+          ai_summary: string | null
+          created_at: string
+          id: string
+          metrics: Json
+          prev_metrics: Json
+          seen_at: string | null
+          tips: Json
+          user_id: string
+          week_start: string
+        }
+        Insert: {
+          ai_summary?: string | null
+          created_at?: string
+          id?: string
+          metrics?: Json
+          prev_metrics?: Json
+          seen_at?: string | null
+          tips?: Json
+          user_id: string
+          week_start: string
+        }
+        Update: {
+          ai_summary?: string | null
+          created_at?: string
+          id?: string
+          metrics?: Json
+          prev_metrics?: Json
+          seen_at?: string | null
+          tips?: Json
+          user_id?: string
+          week_start?: string
+        }
+        Relationships: []
+      }
       decor_products: {
         Row: {
           category: string
