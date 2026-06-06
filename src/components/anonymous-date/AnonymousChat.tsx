@@ -338,23 +338,31 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
           </AnimatePresence>
         </div>
 
-        {/* Input */}
-        <form onSubmit={handleSend} className="p-2 border-t border-white/10 bg-black/25 backdrop-blur-md flex items-center gap-1">
-          <Input
-            value={input}
-            onChange={(e) => { setInput(e.target.value); broadcastTyping(); }}
-            placeholder={safeWord ? `Type… (safe word active)` : "Type anonymously…"}
-            className="flex-1 bg-background/70 border-border/50"
-          />
-          <VoiceRecorderButton
-            userId={currentUserId}
-            onUploaded={(url) => { sendMessage("🎤 Voice message", "voice", url); bumpStreak(); }}
-          />
-          <Button type="submit" size="icon" disabled={!input.trim() || moderating} className="rounded-full bg-gradient-to-r from-primary to-pink-500">
-            <Send className="h-4 w-4" />
-          </Button>
-        </form>
-      </Card>
+        {/* Input or Expired notice */}
+        {expired ? (
+          <div className="p-3 border-t border-white/10 bg-destructive/15 backdrop-blur-md flex items-center justify-center gap-2 text-center">
+            <Timer className="h-4 w-4 text-destructive" />
+            <p className="text-xs font-semibold text-destructive">
+              This anonymous match ended after 24 hours. Messaging is closed.
+            </p>
+          </div>
+        ) : (
+          <form onSubmit={handleSend} className="p-2 border-t border-white/10 bg-black/25 backdrop-blur-md flex items-center gap-1">
+            <Input
+              value={input}
+              onChange={(e) => { setInput(e.target.value); broadcastTyping(); }}
+              placeholder={safeWord ? `Type… (safe word active)` : "Type anonymously…"}
+              className="flex-1 bg-background/70 border-border/50"
+            />
+            <VoiceRecorderButton
+              userId={currentUserId}
+              onUploaded={(url) => { sendMessage("🎤 Voice message", "voice", url); bumpStreak(); }}
+            />
+            <Button type="submit" size="icon" disabled={!input.trim() || moderating} className="rounded-full bg-gradient-to-r from-primary to-pink-500">
+              <Send className="h-4 w-4" />
+            </Button>
+          </form>
+        )}
 
       {/* Live stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
