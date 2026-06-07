@@ -61,45 +61,7 @@ import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import WallFeed from "@/components/wall/WallFeed";
 import WallComposer from "@/components/wall/WallComposer";
 import type { FeedItem as WallFeedItem, Post, Repost } from "@/components/wall/WallPost";
-interface Post {
-  id: string;
-  content: string;
-  created_at: string;
-  user_id: string;
-  likes_count: number;
-  comments_count: number;
-  shares_count: number;
-  reposts_count: number;
-  feeling?: string | null;
-  location?: string | null;
-  media: Array<{
-    id: string;
-    file_url: string;
-    file_type: string;
-  }>;
-  profiles: {
-    id: string;
-    full_name: string | null;
-    avatar_url: string | null;
-  };
-}
-
-interface Repost {
-  id: string;
-  user_id: string;
-  comment: string;
-  created_at: string;
-  original_post: Post;
-  profiles: {
-    id: string;
-    full_name: string | null;
-    avatar_url: string | null;
-  };
-}
-
-type FeedItem = 
-  | { type: 'post'; data: Post }
-  | { type: 'repost'; data: Repost };
+type FeedItem = WallFeedItem;
 
 const Feed = () => {
   const navigate = useNavigate();
