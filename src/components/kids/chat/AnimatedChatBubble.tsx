@@ -40,10 +40,14 @@ export function AnimatedChatBubble({ message, character, index, onReaction }: An
         {/* Avatar */}
         {!isUser && (
           <motion.div 
-            className={`w-10 h-10 rounded-full bg-gradient-to-br ${character.color} flex items-center justify-center text-lg shadow-lg flex-shrink-0`}
+            className={`w-10 h-10 rounded-full bg-gradient-to-br ${character.color} flex items-center justify-center text-lg shadow-lg flex-shrink-0 overflow-hidden`}
             whileHover={{ scale: 1.2, rotate: 10 }}
           >
-            {character.emoji}
+            {avatarImage ? (
+              <img src={avatarImage} alt={character.name} className="w-full h-full object-cover" />
+            ) : (
+              character.emoji
+            )}
           </motion.div>
         )}
 
