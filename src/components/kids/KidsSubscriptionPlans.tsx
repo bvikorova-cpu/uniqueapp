@@ -291,7 +291,7 @@ export default function KidsSubscriptionPlans() {
             size="lg"
             className="text-lg px-12 py-6 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-xl"
           >
-            <Crown className="mr-2 h-5 w-5" /> Get Gold Pass — €30/mo
+            <Crown className="mr-2 h-5 w-5" /> Get Gold Pass — €79/mo
           </Button>
           <p className="text-sm text-muted-foreground">
             ✓ No hidden fees · ✓ Cancel anytime · ✓ 14-day money-back guarantee
