@@ -122,6 +122,7 @@ const Feed = () => {
 
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [feedError, setFeedError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
   // pagination uses lastCursor ref (keyset), no page state needed
   const [showBackToTop, setShowBackToTop] = useState(false);
@@ -167,6 +168,7 @@ const Feed = () => {
         setLoadingMore(true);
       } else {
         setLoading(true);
+        setFeedError(null);
         lastCursor.current = null;
         setHasMore(true);
       }
@@ -248,6 +250,7 @@ const Feed = () => {
         lastCursor.current = newItems[newItems.length - 1].data.created_at;
       }
     } catch (error: any) {
+      setFeedError(error?.message || "Failed to load posts");
       toast({
         title: "Error loading posts",
         description: error.message,
@@ -696,6 +699,16 @@ const Feed = () => {
                     {loading ? (
                       <Card className="p-6 sm:p-8 flex items-center justify-center">
                         <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin text-primary" />
+                      </Card>
+                    ) : feedError ? (
+                      <Card className="p-6 sm:p-8 text-center space-y-3">
+                        <p className="text-sm sm:text-base text-destructive font-medium">
+                          Couldn't load posts
+                        </p>
+                        <p className="text-xs sm:text-sm text-muted-foreground">{feedError}</p>
+                        <Button variant="outline" size="sm" onClick={() => fetchPosts(false)}>
+                          Try again
+                        </Button>
                       </Card>
                     ) : filteredFeedItems.length === 0 ? (
                       <Card className="p-6 sm:p-8 text-center text-sm sm:text-base text-muted-foreground">
