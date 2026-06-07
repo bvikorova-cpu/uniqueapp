@@ -652,67 +652,16 @@ const Feed = () => {
                       </div>
                     )}
 
-                    {loading ? (
-                      <Card className="p-6 sm:p-8 flex items-center justify-center">
-                        <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin text-primary" />
-                      </Card>
-                    ) : feedError ? (
-                      <Card className="p-6 sm:p-8 text-center space-y-3">
-                        <p className="text-sm sm:text-base text-destructive font-medium">
-                          Couldn't load posts
-                        </p>
-                        <p className="text-xs sm:text-sm text-muted-foreground">{feedError}</p>
-                        <Button variant="outline" size="sm" onClick={() => fetchPosts(false)}>
-                          Try again
-                        </Button>
-                      </Card>
-                    ) : filteredFeedItems.length === 0 ? (
-                      <Card className="p-6 sm:p-8 text-center text-sm sm:text-base text-muted-foreground">
-                        No posts found. Try adjusting your filters.
-                      </Card>
-                    ) : (
-                      <Virtuoso
-                        useWindowScroll
-                        data={filteredFeedItems}
-                        computeItemKey={(_, item) => `${item.type}-${item.data.id}`}
-                        endReached={() => {
-                          if (hasMore && !loadingMore) fetchPosts(true);
-                        }}
-                        overscan={800}
-                        increaseViewportBy={{ top: 400, bottom: 800 }}
-                        itemContent={(index, item) => (
-                          <div className="pb-3 sm:pb-4">
-                            {item.type === 'post' ? (
-                              <PostCard post={item.data} onDelete={fetchPosts} />
-                            ) : (
-                              <RepostCard repost={item.data} onDelete={fetchPosts} />
-                            )}
-                            {(index + 1) % 20 === 0 && (
-                              <div className="mt-3 sm:mt-4">
-                                <MonetagInFeedAd slotIndex={Math.floor((index + 1) / 20)} />
-                              </div>
-                            )}
-                          </div>
-                        )}
-                        components={{
-                          Footer: () => (
-                            <>
-                              {loadingMore && (
-                                <Card className="p-3 sm:p-4 flex items-center justify-center">
-                                  <Loader2 className="h-5 w-5 sm:h-6 sm:w-6 animate-spin text-primary mr-2" />
-                                  <span className="text-xs sm:text-sm text-muted-foreground">Loading more posts...</span>
-                                </Card>
-                              )}
-                              {!loading && !loadingMore && !hasMore && filteredFeedItems.length > 0 && (
-                                <Card className="p-3 sm:p-4 text-center text-muted-foreground text-xs sm:text-sm">
-                                  You've reached the end! 🎉
-                                </Card>
-                              )}
-                            </>
-                          ),
-                        }}
-                      />
-                    )}
+                    <WallFeed
+                      items={filteredFeedItems}
+                      loading={loading}
+                      loadingMore={loadingMore}
+                      hasMore={hasMore}
+                      feedError={feedError}
+                      onRetry={() => fetchPosts(false)}
+                      onLoadMore={() => fetchPosts(true)}
+                      onDelete={fetchPosts}
+                    />
 
                   </div>
                 </>
