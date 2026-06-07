@@ -25,6 +25,7 @@ const REACTIONS = [
 
 export const ReactionPicker = ({ postId }: ReactionPickerProps) => {
   const [open, setOpen] = useState(false);
+  const [listOpen, setListOpen] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const { reactions, getReactionCounts, toggleReaction } = useReactions(postId);
   const counts = getReactionCounts();
