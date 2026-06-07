@@ -608,7 +608,7 @@ const Jobs = () => {
 
         {/* Job Details Dialog */}
         <Dialog open={showJobDetailsDialog} onOpenChange={setShowJobDetailsDialog}>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto w-[calc(100%-1rem)] p-4 sm:p-6">
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto overflow-x-hidden w-[calc(100vw-1rem)] sm:w-[calc(100%-2rem)] p-4 sm:p-6">
             {selectedJob && (
               <script
                 type="application/ld+json"
