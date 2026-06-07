@@ -6,7 +6,10 @@ const fromMock = vi.fn();
 
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: {
-    auth: { getUser: () => getUserMock() },
+    auth: {
+      getUser: () => getUserMock(),
+      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+    },
     from: (t: string) => fromMock(t),
     functions: { invoke: vi.fn() },
   },
@@ -69,10 +72,10 @@ function buildFromMock(opts: {
       return {
         select: () => ({
           eq: () => ({
-            single: () =>
+            maybeSingle: () =>
               Promise.resolve({
                 data: credits,
-                error: credits ? null : { code: "PGRST116" },
+                error: null,
               }),
           }),
         }),
