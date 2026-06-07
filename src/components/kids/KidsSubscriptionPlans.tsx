@@ -164,8 +164,8 @@ export default function KidsSubscriptionPlans() {
               </CardTitle>
               <div className="text-center space-y-1">
                 <div className="flex items-center justify-center gap-2">
-                  <span className="text-lg text-muted-foreground line-through">€38</span>
-                  <span className="text-4xl font-bold text-amber-600 dark:text-amber-400">€30</span>
+                  <span className="text-lg text-muted-foreground line-through">€99</span>
+                  <span className="text-4xl font-bold text-amber-600 dark:text-amber-400">€79</span>
                 </div>
                 <div className="text-sm text-muted-foreground">/month</div>
                 <p className="text-xs text-amber-600 dark:text-amber-400 font-medium mt-2">
@@ -183,7 +183,7 @@ export default function KidsSubscriptionPlans() {
                   '🔬 Science Lab - Unlimited',
                   '📚 Reading Companion - Unlimited',
                   '🎨 Coloring Pages - Unlimited',
-                  '🏰 Disney Castles - Full Access',
+                  '🏰 Fairy Castles - Full Access',
                   '💬 Character Chat - Unlimited',
                   '🌙 Bedtime Stories - All Content',
                   '👨‍👩‍👧 Up to 5 child profiles',
@@ -291,7 +291,7 @@ export default function KidsSubscriptionPlans() {
             size="lg"
             className="text-lg px-12 py-6 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-xl"
           >
-            <Crown className="mr-2 h-5 w-5" /> Get Gold Pass — €30/mo
+            <Crown className="mr-2 h-5 w-5" /> Get Gold Pass — €79/mo
           </Button>
           <p className="text-sm text-muted-foreground">
             ✓ No hidden fees · ✓ Cancel anytime · ✓ 14-day money-back guarantee

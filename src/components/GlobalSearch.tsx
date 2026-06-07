@@ -170,7 +170,7 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   { id: "117", title: "Educational Stories", category: "Kids", path: "/educational-stories" },
   { id: "118", title: "Bedtime Stories", category: "Kids", path: "/bedtime-stories" },
   { id: "119", title: "Story Games", category: "Kids", path: "/story-games" },
-  { id: "120", title: "Disney Castles", category: "Kids", path: "/kids-channel/disney-castles" },
+  { id: "120", title: "Fairy Castles", category: "Kids", path: "/kids-channel/fairy-castles" },
   
   // Mystical
   { id: "121", title: "Astrology", category: "Mystical", path: "/astrology" },
