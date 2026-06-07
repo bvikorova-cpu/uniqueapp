@@ -37,7 +37,6 @@ const Footer = () => {
                 <span className="text-primary-foreground font-bold text-lg">U</span>
               </div>
               <span className="font-bold text-xl">UNIQUE</span>
-              <Age16Badge size="xs" withLabel={false} withLink />
             </div>
             <p className="text-sm text-muted-foreground">
               Premium AI-powered platform with 50+ modules for creativity, entertainment, education, and commerce.
