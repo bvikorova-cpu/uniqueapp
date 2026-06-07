@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Brain, Sparkles, Calendar, Coins, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { sanitizeHtml } from "@/lib/sanitizeHtml";
 
 export const AIWeeklyRecap = () => {
   const queryClient = useQueryClient();

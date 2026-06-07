@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Mic, MicOff, Square, Play, Pause, Send, Clock, Volume2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { escapeWithLineBreaks } from "@/lib/sanitizeHtml";
 
 interface VoiceEntry {
   id: string;
