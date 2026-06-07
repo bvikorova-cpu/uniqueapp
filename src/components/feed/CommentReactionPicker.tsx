@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/popover";
 import { supabase } from "@/integrations/supabase/client";
 import { Smile, X } from "lucide-react";
+import { ReactionsDialog } from "@/components/wall/ReactionsDialog";
 
 interface CommentReactionPickerProps {
   commentId: string;
@@ -23,6 +24,7 @@ const REACTIONS = [
 
 export const CommentReactionPicker = ({ commentId }: CommentReactionPickerProps) => {
   const [open, setOpen] = useState(false);
+  const [listOpen, setListOpen] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [reactions, setReactions] = useState<any[]>([]);
   const [userReaction, setUserReaction] = useState<string | null>(null);
@@ -110,7 +112,16 @@ export const CommentReactionPicker = ({ commentId }: CommentReactionPickerProps)
       </Popover>
       
       {totalReactions > 0 && (
-        <div className="flex gap-0.5 text-[10px]">
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setListOpen(true);
+          }}
+          className="flex gap-0.5 text-[10px] hover:bg-accent rounded px-1 py-0.5 transition-colors"
+          aria-label="View who reacted"
+        >
           {Object.entries(counts).slice(0, 3).map(([type, count]) => {
             const reaction = REACTIONS.find(r => r.type === type);
             if (!reaction) return null;
@@ -120,8 +131,18 @@ export const CommentReactionPicker = ({ commentId }: CommentReactionPickerProps)
               </span>
             );
           })}
-        </div>
+        </button>
       )}
+
+      <ReactionsDialog
+        open={listOpen}
+        onOpenChange={setListOpen}
+        reactions={reactions.map((r) => ({
+          user_id: r.user_id,
+          reaction_type: r.reaction_type,
+        }))}
+        reactionMeta={REACTIONS}
+      />
     </div>
   );
 };
