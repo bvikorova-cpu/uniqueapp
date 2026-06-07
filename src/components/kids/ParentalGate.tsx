@@ -72,7 +72,11 @@ export function ParentalGate({
     return () => document.removeEventListener("keydown", handleKeyDown, true);
   }, [isOpen]);
 
+  const [submitting, setSubmitting] = useState(false);
+
   const handleSubmit = async () => {
+    if (submitting || success) return; // double-click guard
+    setSubmitting(true);
     const numAnswer = parseInt(userAnswer, 10);
     if (numAnswer === mathQuestion.answer) {
       setSuccess(true);
@@ -104,6 +108,7 @@ export function ParentalGate({
         setMathQuestion(generateMathQuestion());
         setUserAnswer("");
         setError(false);
+        setSubmitting(false);
       }, 1500);
     }
   };
