@@ -9,7 +9,7 @@ const features = [
   { name: "Science Lab", free: false, gold: true },
   { name: "Reading Companion", free: false, gold: true },
   { name: "Coloring Pages", free: "5 templates", gold: "All templates" },
-  { name: "Disney Castles", free: false, gold: true },
+  { name: "Fairy Castles", free: false, gold: true },
   { name: "Character Chat", free: "3 msgs/day", gold: "Unlimited" },
   { name: "Child Profiles", free: "1", gold: "Up to 5" },
   { name: "Progress Reports", free: false, gold: true },
