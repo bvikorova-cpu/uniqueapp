@@ -168,6 +168,7 @@ const Feed = () => {
         setLoadingMore(true);
       } else {
         setLoading(true);
+        setFeedError(null);
         lastCursor.current = null;
         setHasMore(true);
       }
