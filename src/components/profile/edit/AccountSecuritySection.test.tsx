@@ -93,4 +93,35 @@ describe("AccountSecuritySection step-up auth", () => {
     );
     expect(updateUser).not.toHaveBeenCalled();
   });
+
+  it("logs audit events for successful email change (fresh session)", async () => {
+    setLastSignIn(1);
+    render(<AccountSecuritySection currentEmail="old@x.com" />);
+    fireEvent.change(screen.getByLabelText(/Change email/i), { target: { value: "new@x.com" } });
+    fireEvent.click(screen.getAllByRole("button", { name: /Update$/i })[0]);
+    await waitFor(() => expect(updateUser).toHaveBeenCalled());
+    await waitFor(() =>
+      expect(rpc).toHaveBeenCalledWith(
+        "log_security_event",
+        expect.objectContaining({ _event_type: "email_change_requested" })
+      )
+    );
+  });
+
+  it("logs reauth_failed when re-auth password is wrong", async () => {
+    setLastSignIn(10);
+    signInWithPassword.mockResolvedValue({ error: { message: "bad" } });
+    render(<AccountSecuritySection currentEmail="old@x.com" />);
+    fireEvent.change(screen.getByLabelText(/Change email/i), { target: { value: "new@x.com" } });
+    fireEvent.click(screen.getAllByRole("button", { name: /Update$/i })[0]);
+    await screen.findByText(/Confirm your password/i);
+    fireEvent.change(screen.getByPlaceholderText(/Current password/i), { target: { value: "wrong" } });
+    fireEvent.click(screen.getByRole("button", { name: /^Confirm$/i }));
+    await waitFor(() =>
+      expect(rpc).toHaveBeenCalledWith(
+        "log_security_event",
+        expect.objectContaining({ _event_type: "reauth_failed", _resource: "email" })
+      )
+    );
+  });
 });
