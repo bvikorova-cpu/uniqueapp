@@ -1,5 +1,4 @@
-import { useEffect, useState, useMemo, useRef, useCallback, Fragment } from "react";
-import { Virtuoso } from "react-virtuoso";
+import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { useWallRealtime } from "@/hooks/useWallRealtime";
 import { Sparkles } from "lucide-react";
 
@@ -8,25 +7,15 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
-import CreatePost from "@/components/feed/CreatePost";
-import PostCard from "@/components/feed/PostCard";
-import RepostCard from "@/components/feed/RepostCard";
 import UserSearch from "@/components/feed/UserSearch";
 
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, TrendingUp, Home, Users, ArrowUp, Search, X, Bookmark, Wand2, Flame, Trophy, Award, Target } from "lucide-react";
+import { Loader2, Home, ArrowUp, Wand2, Flame, Trophy, Award, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { WallSidebar } from "@/components/wall/WallSidebar";
 import { WallRightbar } from "@/components/wall/WallRightbar";
 import { MobileWallMenu } from "@/components/wall/MobileWallMenu";
-import { MobileCreditsPill } from "@/components/wall/MobileCreditsPill";
-import { EnhancedCreatePost } from "@/components/wall/EnhancedCreatePost";
 import { AchievementsBadge } from "@/components/wall/AchievementsBadge";
 import { SearchBar } from "@/components/wall/SearchBar";
-import { GlobalSearch } from "@/components/wall/GlobalSearch";
 import { SmartSuggestionsCard } from "@/components/wall/SmartSuggestionsCard";
 import { WallTopNav } from "@/components/wall/WallTopNav";
 import { WallBackground } from "@/components/wall/WallBackground";
@@ -50,7 +39,6 @@ import { AccessibilityFieldsDialog } from "@/components/wall/AccessibilityFields
 import { OfflineStatusIndicator } from "@/components/wall/OfflineStatusIndicator";
 
 import { useQuery } from "@tanstack/react-query";
-import { useTrendingPosts } from "@/hooks/useTrends";
 import WallMessages from "./wall/WallMessages";
 import WallFriends from "./wall/WallFriends";
 import WallGroups from "./wall/WallGroups";
@@ -70,7 +58,9 @@ import WallCreatorBadges from "@/components/wall/WallCreatorBadges";
 import { StreaksAndChallenges } from "@/components/wall/StreaksAndChallenges";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
-import MonetagInFeedAd from "@/components/ads/MonetagInFeedAd";
+import WallFeed from "@/components/wall/WallFeed";
+import WallComposer from "@/components/wall/WallComposer";
+import type { FeedItem as WallFeedItem, Post, Repost } from "@/components/wall/WallPost";
 interface Post {
   id: string;
   content: string;
