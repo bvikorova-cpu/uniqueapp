@@ -37,8 +37,16 @@ serve(async (req) => {
     if (!user) return new Response(JSON.stringify({ error: "auth" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
     const { jobId } = await req.json();
-    const { data: job } = await admin.from("job_listings").select("title, description, requirements").eq("id", jobId).maybeSingle();
-    if (!job) return new Response(JSON.stringify({ error: "Job not found" }), { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    if (!jobId) return new Response(JSON.stringify({ error: "jobId required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    let { data: job, error: jobErr } = await admin.from("job_listings").select("title, description, requirements").eq("id", jobId).maybeSingle();
+    if (!job) {
+      const fallback = await admin.from("job_listings_public").select("title, description, requirements").eq("id", jobId).maybeSingle();
+      job = fallback.data as any;
+    }
+    if (!job) {
+      console.error("Job not found", { jobId, jobErr });
+      return new Response(JSON.stringify({ error: "Job not found", jobId, dbError: jobErr?.message }), { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
 
     const { data: resume } = await admin.from("candidate_resumes").select("parsed_skills").eq("user_id", user.id).order("is_primary", { ascending: false }).limit(1).maybeSingle();
     const skills = (resume?.parsed_skills as string[] | null) || [];
