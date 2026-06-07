@@ -51,7 +51,11 @@ export function AccountSecuritySection({ currentEmail }: AccountSecuritySectionP
   const applyAction = async (action: NonNullable<PendingAction>) => {
     if (action.kind === "email") {
       const { error } = await supabase.auth.updateUser({ email: action.value });
-      if (error) throw error;
+      if (error) {
+        logSecurityEvent("email_change_failed", { metadata: { reason: error.message } });
+        throw error;
+      }
+      logSecurityEvent("email_change_requested");
       toast({
         title: "Check your inbox",
         description: "We sent a confirmation link to the new email address.",
@@ -59,7 +63,11 @@ export function AccountSecuritySection({ currentEmail }: AccountSecuritySectionP
       setNewEmail("");
     } else {
       const { error } = await supabase.auth.updateUser({ password: action.value });
-      if (error) throw error;
+      if (error) {
+        logSecurityEvent("password_change_failed", { metadata: { reason: error.message } });
+        throw error;
+      }
+      logSecurityEvent("password_change_succeeded");
       toast({ title: "Password updated", description: "Use your new password next time you sign in." });
       setNewPassword("");
       setConfirmPassword("");
