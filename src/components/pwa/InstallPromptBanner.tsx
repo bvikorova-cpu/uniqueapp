@@ -8,7 +8,6 @@
  */
 
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Download, ExternalLink, Share, X } from "lucide-react";
 import { useInstallPrompt } from "@/hooks/useInstallPrompt";
@@ -17,12 +16,39 @@ import { trackPwaInstallEvent } from "@/lib/pwaInstallAnalytics";
 
 const SHOW_DELAY_MS = 8_000;
 
+function getIsHome() {
+  if (typeof window === "undefined") return false;
+  return window.location.pathname === "/";
+}
+
 export function InstallPromptBanner() {
   const { canInstall, installed, runningStandalone, platform, promptInstall, openApp } = useInstallPrompt();
-  const location = useLocation();
-  const isHome = location.pathname === "/";
+  const [isHome, setIsHome] = useState(getIsHome);
   const [visible, setVisible] = useState(false);
   const [dismissedThisSession, setDismissedThisSession] = useState(false);
+
+  // Track route changes without depending on Router context (component mounts outside <Router>).
+  useEffect(() => {
+    const update = () => setIsHome(getIsHome());
+    window.addEventListener("popstate", update);
+    const origPush = history.pushState;
+    const origReplace = history.replaceState;
+    history.pushState = function (...args) {
+      const r = origPush.apply(this, args as never);
+      update();
+      return r;
+    };
+    history.replaceState = function (...args) {
+      const r = origReplace.apply(this, args as never);
+      update();
+      return r;
+    };
+    return () => {
+      window.removeEventListener("popstate", update);
+      history.pushState = origPush;
+      history.replaceState = origReplace;
+    };
+  }, []);
 
   useEffect(() => {
     if (!isHome) {
