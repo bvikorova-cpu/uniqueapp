@@ -18,6 +18,7 @@ import {
   requireRecentAuth,
   reauthenticateWithPassword,
 } from "@/lib/requireRecentAuth";
+import { logSecurityEvent } from "@/lib/securityAudit";
 
 /**
  * P4 step-up auth: changing email or password requires a recent sign-in
