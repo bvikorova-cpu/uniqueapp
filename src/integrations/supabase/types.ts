@@ -6250,6 +6250,7 @@ export type Database = {
           category: string
           created_at: string
           current_question_index: number
+          elo_reported: boolean
           entry_cost: number | null
           finished_at: string | null
           game_mode: string | null
@@ -6272,6 +6273,7 @@ export type Database = {
           category: string
           created_at?: string
           current_question_index?: number
+          elo_reported?: boolean
           entry_cost?: number | null
           finished_at?: string | null
           game_mode?: string | null
@@ -6294,6 +6296,7 @@ export type Database = {
           category?: string
           created_at?: string
           current_question_index?: number
+          elo_reported?: boolean
           entry_cost?: number | null
           finished_at?: string | null
           game_mode?: string | null
