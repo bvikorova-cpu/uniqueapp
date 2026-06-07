@@ -61,7 +61,7 @@ export function JobsHeroSection({ totalJobs, totalCompanies, totalApplications }
             <TrendingUp className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
             Job Market is Growing
           </div>
-          <h1 className="text-2xl sm:text-4xl md:text-5xl font-black mb-2 sm:mb-3 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent leading-tight">
+          <h1 className="text-xl sm:text-4xl md:text-5xl font-black mb-2 sm:mb-3 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent leading-tight break-words [overflow-wrap:anywhere]">
             Find Your Dream Career
           </h1>
           <p className="text-xs sm:text-base text-muted-foreground max-w-xl">
