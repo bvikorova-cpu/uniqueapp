@@ -183,7 +183,7 @@ export default function KidsSubscriptionPlans() {
                   '🔬 Science Lab - Unlimited',
                   '📚 Reading Companion - Unlimited',
                   '🎨 Coloring Pages - Unlimited',
-                  '🏰 Disney Castles - Full Access',
+                  '🏰 Fairy Castles - Full Access',
                   '💬 Character Chat - Unlimited',
                   '🌙 Bedtime Stories - All Content',
                   '👨‍👩‍👧 Up to 5 child profiles',
