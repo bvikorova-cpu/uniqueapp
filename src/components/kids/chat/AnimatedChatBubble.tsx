@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { characterImages } from "@/data/characterImages";
 import { useState } from "react";
 import type { Character } from "@/data/kidsCharacters";
 
