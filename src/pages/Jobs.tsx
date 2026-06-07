@@ -718,13 +718,18 @@ const Jobs = () => {
                 </div>
               </div>
               {selectedJob && user && (
-                <div className="flex flex-wrap gap-2 items-center">
-                  <MatchScoreBadge jobId={selectedJob.id} />
-                  <SaveJobButton jobId={selectedJob.id} />
-                  <CoverLetterDialog jobId={selectedJob.id} jobTitle={selectedJob.title} jobDescription={selectedJob.description} companyName={selectedJob.company_name} />
-                  <OneClickApplyDialog jobId={selectedJob.id} jobTitle={selectedJob.title} companyName={selectedJob.company_name} />
-                </div>
-              )}
+                 <div className="space-y-2">
+                   <div className="flex flex-wrap gap-2 items-center">
+                     <MatchScoreBadge jobId={selectedJob.id} />
+                     <SaveJobButton jobId={selectedJob.id} />
+                     <CoverLetterDialog jobId={selectedJob.id} jobTitle={selectedJob.title} jobDescription={selectedJob.description} companyName={selectedJob.company_name} />
+                     <OneClickApplyDialog jobId={selectedJob.id} jobTitle={selectedJob.title} companyName={selectedJob.company_name} />
+                   </div>
+                   <Button className="w-full" size="lg" onClick={() => handleApply(selectedJob)}>
+                     <Briefcase className="h-4 w-4 mr-2" /> Apply
+                   </Button>
+                 </div>
+               )}
               {!user && (
                 <Button className="w-full py-6 text-lg" onClick={() => { toast({ title: "Sign In Required" }); window.location.href = "/auth"; }}>
                   <Search className="h-5 w-5 mr-2" /> Sign In to Apply
