@@ -608,7 +608,7 @@ const Jobs = () => {
 
         {/* Job Details Dialog */}
         <Dialog open={showJobDetailsDialog} onOpenChange={setShowJobDetailsDialog}>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto overflow-x-hidden w-[calc(100vw-1rem)] sm:w-[calc(100%-2rem)] p-4 sm:p-6">
+          <DialogContent className="w-[min(calc(100vw-1rem),56rem)] max-w-[calc(100vw-1rem)] max-h-[90dvh] min-w-0 overflow-y-auto overflow-x-hidden box-border p-3 sm:p-6">
             {selectedJob && (
               <script
                 type="application/ld+json"
@@ -650,32 +650,32 @@ const Jobs = () => {
                 }}
               />
             )}
-            <DialogHeader>
-              <DialogTitle className="text-xl sm:text-3xl font-bold break-words pr-8 leading-tight">{selectedJob?.title}</DialogTitle>
+            <DialogHeader className="min-w-0 text-left">
+              <DialogTitle className="max-w-full text-left text-lg sm:text-3xl font-bold whitespace-normal break-words [overflow-wrap:anywhere] pr-10 leading-tight">{selectedJob?.title}</DialogTitle>
               <DialogDescription asChild>
-                <div className="flex flex-col gap-2 mt-3">
+                <div className="flex min-w-0 max-w-full flex-col gap-2 mt-3">
                   <div className="flex items-center gap-2 text-sm sm:text-base min-w-0">
                     <Building2 className="h-4 w-4 sm:h-5 sm:w-5 text-primary shrink-0" />
-                    <span className="font-semibold truncate">{selectedJob?.company_name}</span>
+                    <span className="font-semibold truncate min-w-0">{selectedJob?.company_name}</span>
                   </div>
-                  <div className="flex items-center gap-3 text-xs sm:text-sm flex-wrap">
-                    <div className="flex items-center gap-1 min-w-0"><MapPin className="h-4 w-4 shrink-0" /><span className="truncate">{selectedJob?.location}</span></div>
-                    <div className="flex items-center gap-1"><Globe className="h-4 w-4 shrink-0" />{selectedJob?.country}</div>
-                    <div className="flex items-center gap-1"><Clock className="h-4 w-4 shrink-0" />Posted: {selectedJob && new Date(selectedJob.created_at).toLocaleDateString('en-US')}</div>
+                  <div className="flex min-w-0 max-w-full items-center gap-x-3 gap-y-2 text-xs sm:text-sm flex-wrap">
+                    <div className="flex min-w-0 max-w-full items-center gap-1"><MapPin className="h-4 w-4 shrink-0" /><span className="truncate min-w-0">{selectedJob?.location}</span></div>
+                    <div className="flex min-w-0 max-w-full items-center gap-1"><Globe className="h-4 w-4 shrink-0" /><span className="break-words [overflow-wrap:anywhere]">{selectedJob?.country}</span></div>
+                    <div className="flex min-w-0 max-w-full items-center gap-1"><Clock className="h-4 w-4 shrink-0" /><span className="break-words [overflow-wrap:anywhere]">Posted: {selectedJob && new Date(selectedJob.created_at).toLocaleDateString('en-US')}</span></div>
                   </div>
                 </div>
               </DialogDescription>
             </DialogHeader>
-            <div className="space-y-4 sm:space-y-6 mt-4">
-              <div className="flex gap-2 flex-wrap">
-                <span className="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium bg-primary/10 text-primary border border-primary/20">
+            <div className="min-w-0 max-w-full space-y-4 sm:space-y-6 mt-4">
+              <div className="flex min-w-0 max-w-full gap-2 flex-wrap">
+                <span className="inline-flex max-w-full min-w-0 items-center whitespace-normal break-words [overflow-wrap:anywhere] px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium bg-primary/10 text-primary border border-primary/20">
                   {selectedJob && CATEGORIES[selectedJob.category as keyof typeof CATEGORIES]}
                 </span>
-                <span className="inline-flex items-center gap-1 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium bg-secondary border border-secondary-foreground/20">
+                <span className="inline-flex max-w-full min-w-0 items-center gap-1 whitespace-normal break-words [overflow-wrap:anywhere] px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium bg-secondary border border-secondary-foreground/20">
                   <Clock className="h-3 w-3 sm:h-4 sm:w-4" />{selectedJob && JOB_TYPES[selectedJob.job_type as keyof typeof JOB_TYPES]}
                 </span>
                 {selectedJob?.salary_min && selectedJob?.salary_max && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium bg-green-100 text-green-800 border border-green-200 max-w-full break-all">
+                  <span className="inline-flex max-w-full min-w-0 items-center gap-1 whitespace-normal break-words [overflow-wrap:anywhere] px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium bg-green-100 text-green-800 border border-green-200">
                     <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />{selectedJob.salary_min}-{selectedJob.salary_max} {selectedJob.salary_currency}
                   </span>
                 )}
