@@ -108,12 +108,17 @@ const AIMentor = () => {
   };
 
   const loadSubscriptions = async (userId: string) => {
-    const { data } = await supabase
-      .from('mentor_subscriptions')
-      .select('*')
-      .eq('user_id', userId)
-      .eq('status', 'active');
-    setSubscriptions(data || []);
+    // FIX: mentor-router writes to mentor_premium_subs (column `area`); previously this read only
+    // mentor_subscriptions (column `mentor_area`) which is never written -> paid users saw no unlock.
+    const [legacy, premium] = await Promise.all([
+      supabase.from('mentor_subscriptions').select('mentor_area, status').eq('user_id', userId).eq('status', 'active'),
+      supabase.from('mentor_premium_subs').select('area, status').eq('user_id', userId).eq('status', 'active'),
+    ]);
+    const merged = [
+      ...((legacy.data || []).map((s: any) => ({ mentor_area: s.mentor_area }))),
+      ...((premium.data || []).map((s: any) => ({ mentor_area: s.area }))),
+    ];
+    setSubscriptions(merged);
   };
 
   const handleSelectMentor = async (areaId: string) => {
