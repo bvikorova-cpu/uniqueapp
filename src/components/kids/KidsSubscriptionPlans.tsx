@@ -164,8 +164,8 @@ export default function KidsSubscriptionPlans() {
               </CardTitle>
               <div className="text-center space-y-1">
                 <div className="flex items-center justify-center gap-2">
-                  <span className="text-lg text-muted-foreground line-through">€38</span>
-                  <span className="text-4xl font-bold text-amber-600 dark:text-amber-400">€30</span>
+                  <span className="text-lg text-muted-foreground line-through">€99</span>
+                  <span className="text-4xl font-bold text-amber-600 dark:text-amber-400">€79</span>
                 </div>
                 <div className="text-sm text-muted-foreground">/month</div>
                 <p className="text-xs text-amber-600 dark:text-amber-400 font-medium mt-2">
