@@ -16600,6 +16600,36 @@ export type Database = {
         }
         Relationships: []
       }
+      credit_audit_log: {
+        Row: {
+          context: Json
+          created_at: string
+          delta: number
+          id: string
+          reason: string
+          source: string
+          user_id: string
+        }
+        Insert: {
+          context?: Json
+          created_at?: string
+          delta: number
+          id?: string
+          reason: string
+          source: string
+          user_id: string
+        }
+        Update: {
+          context?: Json
+          created_at?: string
+          delta?: number
+          id?: string
+          reason?: string
+          source?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       credit_payments: {
         Row: {
           amount: number

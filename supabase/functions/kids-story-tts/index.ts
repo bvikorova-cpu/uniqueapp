@@ -56,6 +56,21 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Rate limit: 30 TTS requests / 5 min per user
+    const { data: allowed } = await admin.rpc("check_rate_limit", {
+      p_identifier: userData.user.id,
+      p_action_type: "kids_story_tts",
+      p_max_requests: 30,
+      p_window_seconds: 300,
+    });
+    if (allowed === false) {
+      return new Response(
+        JSON.stringify({ error: "Rate limit exceeded. Try again in a few minutes." }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+
     const apiKey = Deno.env.get("OPENAI_API_KEY");
     if (!apiKey) {
       console.error("OPENAI_API_KEY not configured");
