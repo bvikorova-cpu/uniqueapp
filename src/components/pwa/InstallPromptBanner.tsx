@@ -14,6 +14,21 @@ import { Button } from "@/components/ui/button";
 import { trackPwaInstallEvent } from "@/lib/pwaInstallAnalytics";
 
 const SHOW_DELAY_MS = 8_000;
+const SEEN_KEY = "pwa_install_banner_seen_at";
+const DISMISSED_KEY = "pwa_install_banner_dismissed_at";
+const RESHOW_AFTER_MS = 14 * 24 * 60 * 60 * 1000; // 14 days
+
+function readTimestamp(key: string): number {
+  try {
+    const v = localStorage.getItem(key);
+    return v ? parseInt(v, 10) || 0 : 0;
+  } catch {
+    return 0;
+  }
+}
+function writeTimestamp(key: string) {
+  try { localStorage.setItem(key, String(Date.now())); } catch { /* ignore */ }
+}
 
 import { ExternalLink } from "lucide-react";
 
@@ -22,20 +37,34 @@ export function InstallPromptBanner() {
   const [visible, setVisible] = useState(false);
   const [dismissedThisSession, setDismissedThisSession] = useState(false);
 
+  // Suppress if shown or dismissed recently (across navigations / sessions).
+  const suppressedByHistory = (() => {
+    const now = Date.now();
+    const seenAt = readTimestamp(SEEN_KEY);
+    const dismissedAt = readTimestamp(DISMISSED_KEY);
+    // Once shown, do not re-show until RESHOW_AFTER_MS has passed.
+    if (seenAt && now - seenAt < RESHOW_AFTER_MS) return true;
+    if (dismissedAt && now - dismissedAt < RESHOW_AFTER_MS) return true;
+    return false;
+  })();
+
   useEffect(() => {
+    if (suppressedByHistory) return;
     const t = setTimeout(() => setVisible(true), SHOW_DELAY_MS);
     return () => clearTimeout(t);
-  }, []);
+  }, [suppressedByHistory]);
 
   const showOpenMode = installed && !runningStandalone;
   // Hide entirely when running inside the installed app; otherwise gate on canInstall/open-mode.
   const shouldRender =
-    !runningStandalone && (showOpenMode || canInstall) && visible && !dismissedThisSession;
+    !suppressedByHistory && !runningStandalone && (showOpenMode || canInstall) && visible && !dismissedThisSession;
 
 
-  // Fire banner_shown once per session per (mode, platform).
+  // Fire banner_shown once per session per (mode, platform). Persist a "seen" timestamp
+  // so subsequent route changes within the 14-day window do not re-show the banner.
   useEffect(() => {
     if (!shouldRender) return;
+    writeTimestamp(SEEN_KEY);
     trackPwaInstallEvent({
       eventType: "banner_shown",
       platform,
@@ -50,6 +79,7 @@ export function InstallPromptBanner() {
   const isIOS = platform === "ios";
 
   const close = () => {
+    writeTimestamp(DISMISSED_KEY);
     trackPwaInstallEvent({
       eventType: "banner_dismissed",
       platform,
