@@ -612,21 +612,25 @@ const Feed = () => {
 
 
               {/* Hub Tabs */}
-              <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-                {WALL_TABS.map(tab => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveView(tab.id)}
-                    className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
-                      activeView === tab.id
-                        ? "bg-gradient-to-r from-orange-500 to-coral-500 text-white shadow-lg shadow-orange-500/20"
-                        : "bg-card/60 text-muted-foreground hover:bg-card/80 border border-border/30"
-                    }`}
-                  >
-                    <tab.icon className="h-3.5 w-3.5" />
-                    {tab.label}
-                  </button>
-                ))}
+              <div className="relative">
+                <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                  {WALL_TABS.map(tab => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveView(tab.id)}
+                      className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+                        activeView === tab.id
+                          ? "bg-gradient-to-r from-orange-500 to-coral-500 text-white shadow-lg shadow-orange-500/20"
+                          : "bg-card/60 text-muted-foreground hover:bg-card/80 border border-border/30"
+                      }`}
+                    >
+                      <tab.icon className="h-3.5 w-3.5" />
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+                {/* Right-edge fade hint for horizontal overflow */}
+                <div className="md:hidden pointer-events-none absolute top-0 right-0 h-full w-8 bg-gradient-to-l from-background to-transparent" />
               </div>
 
               {activeView === "feed" && (
