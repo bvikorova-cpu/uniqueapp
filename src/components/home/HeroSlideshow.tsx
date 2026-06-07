@@ -47,7 +47,7 @@ export function HeroSlideshow() {
             height={1080}
             loading={i === 0 ? "eager" : "lazy"}
             decoding="async"
-            fetchPriority={i === 0 ? "high" : "low"}
+            {...({ fetchpriority: i === 0 ? "high" : "low" } as any)}
             className={[
               "absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none",
               "transition-opacity duration-[1400ms] ease-in-out will-change-[opacity,transform]",
