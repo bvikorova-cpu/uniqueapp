@@ -103,6 +103,20 @@ Deno.serve(async (req) => {
     const action: string = body.action;
     if (!action) throw new Error("Missing action");
 
+    // Rate limit: 120 router calls / min per user (covers AI-heavy paths).
+    const { data: allowed } = await admin.rpc("check_rate_limit", {
+      p_identifier: user.id,
+      p_action_type: "brain_duel_router",
+      p_max_requests: 120,
+      p_window_seconds: 60,
+    });
+    if (allowed === false) {
+      return new Response(JSON.stringify({ error: "Rate limit exceeded" }), {
+        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+
     const cost = CREDIT_COSTS[action] ?? 0;
     if (cost > 0) await spendBrainDuelCredits(admin, user.id, cost);
 
