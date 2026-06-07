@@ -164,8 +164,6 @@ const Footer = () => {
             <span>Bratislava, Slovak Republic</span>
             <span className="hidden md:inline">•</span>
             <span className="text-xs">GDPR & PCI-DSS Compliant</span>
-            <span className="hidden md:inline">•</span>
-            <Age16Badge size="xs" withLabel={false} variant="subtle" />
           </div>
         </div>
 
