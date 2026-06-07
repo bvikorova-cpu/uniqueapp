@@ -64,6 +64,11 @@ export const MegaTalentOnboarding = () => {
     if (!user) return;
     let cancelled = false;
     const key = STORAGE_KEY_PREFIX + user.id;
+    // Chain after the global WelcomeOnboarding: only show the Megatalent
+    // tour once the global onboarding key exists, so users aren't hit by two
+    // modals back-to-back.
+    const globalKey = `unique_onboarding_v1_${user.id}`;
+    const globalDone = !!localStorage.getItem(globalKey);
     (async () => {
       // Server-side check first
       const { data, error } = await supabase
@@ -81,7 +86,14 @@ export const MegaTalentOnboarding = () => {
         await supabase.from("mt_user_onboarding").insert({ user_id: user.id });
         return;
       }
-      const t = setTimeout(() => { if (!cancelled) setOpen(true); }, 400);
+      // Delay so the page is rendered and global onboarding (if firing) shows first
+      const delay = globalDone ? 600 : 4500;
+      const t = setTimeout(() => {
+        if (cancelled) return;
+        // Re-check: if global is still open (key not set yet), skip this round.
+        if (!localStorage.getItem(globalKey) && !globalDone) return;
+        setOpen(true);
+      }, delay);
       return () => clearTimeout(t);
     })();
     return () => { cancelled = true; };
