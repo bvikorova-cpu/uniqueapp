@@ -1,11 +1,15 @@
 // Kids Story TTS — converts story text to speech using OpenAI TTS
 // Returns base64 MP3 audio for client playback
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
+
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
 const MAX_TEXT_LENGTH = 4000; // OpenAI TTS hard limit is 4096 chars
 const ALLOWED_VOICES = new Set([
