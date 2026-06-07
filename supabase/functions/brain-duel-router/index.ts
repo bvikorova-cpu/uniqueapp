@@ -238,7 +238,43 @@ Deno.serve(async (req) => {
         break;
       }
       case "elo.report": {
-        const { opponentId, won } = body;
+        // SECURITY: client used to pass `won` + `opponentId` directly, allowing arbitrary rating manipulation.
+        // Now requires a real finished match; server derives winner and ensures one-time reporting.
+        const { matchId } = body;
+        if (!matchId) {
+          return new Response(JSON.stringify({ error: "matchId required" }), {
+            status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+        const { data: match } = await admin
+          .from("brain_duel_matches")
+          .select("id,player1_id,player2_id,winner_id,finished_at,elo_reported")
+          .eq("id", matchId)
+          .maybeSingle();
+        if (!match) {
+          return new Response(JSON.stringify({ error: "match_not_found" }), {
+            status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+        if (match.player1_id !== user.id && match.player2_id !== user.id) {
+          return new Response(JSON.stringify({ error: "not_a_participant" }), {
+            status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+        if (!match.finished_at || !match.winner_id) {
+          return new Response(JSON.stringify({ error: "match_not_finished" }), {
+            status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+        if (match.elo_reported) {
+          // Idempotent: already applied, just return current rating.
+          const { data: mine } = await admin.from("brain_duel_elo").select("*").eq("user_id", user.id).maybeSingle();
+          result = { newRating: mine?.rating, newTier: mine ? tierFor(mine.rating) : null, alreadyReported: true };
+          break;
+        }
+        const opponentId = match.player1_id === user.id ? match.player2_id : match.player1_id;
+        const won = match.winner_id === user.id;
+
         const ensure = async (uid: string) => {
           const { data } = await admin.from("brain_duel_elo").select("*").eq("user_id", uid).maybeSingle();
           if (data) return data;
@@ -259,7 +295,11 @@ Deno.serve(async (req) => {
           wins: opp.wins + (won ? 0 : 1), losses: opp.losses + (won ? 1 : 0),
           peak_rating: Math.max(opp.peak_rating, newOpp),
         }).eq("user_id", opponentId);
-        result = { newRating: newMe, newTier: tierFor(newMe) };
+
+        // Mark idempotent flag; if race, second caller will hit alreadyReported branch.
+        await admin.from("brain_duel_matches").update({ elo_reported: true }).eq("id", matchId).eq("elo_reported", false);
+
+        result = { newRating: newMe, newTier: tierFor(newMe), won };
         break;
       }
 
