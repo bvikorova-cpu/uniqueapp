@@ -213,15 +213,11 @@ export function ParentalGate({
 }
 
 // Hook to check if parental gate has been verified recently
-export function useParentalGate() {
+export function useParentalGate(storageKey: string = 'parental_gate_verified') {
   const [isVerified, setIsVerified] = useState(false);
 
-  useEffect(() => {
-    checkVerification();
-  }, []);
-
   const checkVerification = () => {
-    const stored = sessionStorage.getItem('parental_gate_verified');
+    const stored = sessionStorage.getItem(storageKey);
     if (stored) {
       try {
         const { expiresAt } = JSON.parse(stored);
@@ -229,18 +225,23 @@ export function useParentalGate() {
           setIsVerified(true);
           return true;
         } else {
-          sessionStorage.removeItem('parental_gate_verified');
+          sessionStorage.removeItem(storageKey);
         }
       } catch {
-        sessionStorage.removeItem('parental_gate_verified');
+        sessionStorage.removeItem(storageKey);
       }
     }
     setIsVerified(false);
     return false;
   };
 
+  useEffect(() => {
+    checkVerification();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storageKey]);
+
   const resetVerification = () => {
-    sessionStorage.removeItem('parental_gate_verified');
+    sessionStorage.removeItem(storageKey);
     setIsVerified(false);
   };
 
