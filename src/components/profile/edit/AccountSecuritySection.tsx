@@ -123,9 +123,11 @@ export function AccountSecuritySection({ currentEmail }: AccountSecuritySectionP
     try {
       const ok = await reauthenticateWithPassword(reauthPassword);
       if (!ok) {
+        logSecurityEvent("reauth_failed", { resource: pending.kind });
         toast({ title: "Incorrect password", variant: "destructive" });
         return;
       }
+      logSecurityEvent("reauth_succeeded", { resource: pending.kind });
       await applyAction(pending);
       setPending(null);
       setReauthPassword("");
