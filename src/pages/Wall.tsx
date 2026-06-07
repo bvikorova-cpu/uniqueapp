@@ -1,5 +1,4 @@
-import { useEffect, useState, useMemo, useRef, useCallback, Fragment } from "react";
-import { Virtuoso } from "react-virtuoso";
+import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { useWallRealtime } from "@/hooks/useWallRealtime";
 import { Sparkles } from "lucide-react";
 
@@ -8,25 +7,15 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
-import CreatePost from "@/components/feed/CreatePost";
-import PostCard from "@/components/feed/PostCard";
-import RepostCard from "@/components/feed/RepostCard";
 import UserSearch from "@/components/feed/UserSearch";
 
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, TrendingUp, Home, Users, ArrowUp, Search, X, Bookmark, Wand2, Flame, Trophy, Award, Target } from "lucide-react";
+import { Loader2, Home, ArrowUp, Wand2, Flame, Trophy, Award, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { WallSidebar } from "@/components/wall/WallSidebar";
 import { WallRightbar } from "@/components/wall/WallRightbar";
 import { MobileWallMenu } from "@/components/wall/MobileWallMenu";
-import { MobileCreditsPill } from "@/components/wall/MobileCreditsPill";
-import { EnhancedCreatePost } from "@/components/wall/EnhancedCreatePost";
 import { AchievementsBadge } from "@/components/wall/AchievementsBadge";
 import { SearchBar } from "@/components/wall/SearchBar";
-import { GlobalSearch } from "@/components/wall/GlobalSearch";
 import { SmartSuggestionsCard } from "@/components/wall/SmartSuggestionsCard";
 import { WallTopNav } from "@/components/wall/WallTopNav";
 import { WallBackground } from "@/components/wall/WallBackground";
@@ -50,7 +39,6 @@ import { AccessibilityFieldsDialog } from "@/components/wall/AccessibilityFields
 import { OfflineStatusIndicator } from "@/components/wall/OfflineStatusIndicator";
 
 import { useQuery } from "@tanstack/react-query";
-import { useTrendingPosts } from "@/hooks/useTrends";
 import WallMessages from "./wall/WallMessages";
 import WallFriends from "./wall/WallFriends";
 import WallGroups from "./wall/WallGroups";
@@ -70,46 +58,10 @@ import WallCreatorBadges from "@/components/wall/WallCreatorBadges";
 import { StreaksAndChallenges } from "@/components/wall/StreaksAndChallenges";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
-import MonetagInFeedAd from "@/components/ads/MonetagInFeedAd";
-interface Post {
-  id: string;
-  content: string;
-  created_at: string;
-  user_id: string;
-  likes_count: number;
-  comments_count: number;
-  shares_count: number;
-  reposts_count: number;
-  feeling?: string | null;
-  location?: string | null;
-  media: Array<{
-    id: string;
-    file_url: string;
-    file_type: string;
-  }>;
-  profiles: {
-    id: string;
-    full_name: string | null;
-    avatar_url: string | null;
-  };
-}
-
-interface Repost {
-  id: string;
-  user_id: string;
-  comment: string;
-  created_at: string;
-  original_post: Post;
-  profiles: {
-    id: string;
-    full_name: string | null;
-    avatar_url: string | null;
-  };
-}
-
-type FeedItem = 
-  | { type: 'post'; data: Post }
-  | { type: 'repost'; data: Repost };
+import WallFeed from "@/components/wall/WallFeed";
+import WallComposer from "@/components/wall/WallComposer";
+import type { FeedItem as WallFeedItem, Post, Repost } from "@/components/wall/WallPost";
+type FeedItem = WallFeedItem;
 
 const Feed = () => {
   const navigate = useNavigate();
@@ -140,7 +92,7 @@ const Feed = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [savedPosts, setSavedPosts] = useState<Post[]>([]);
   const [loadingSaved, setLoadingSaved] = useState(false);
-  const [createPostOpen, setCreatePostOpen] = useState(false);
+  
 
   const { data: userProfile } = useQuery({
     queryKey: ["profile", user?.id],
@@ -700,67 +652,16 @@ const Feed = () => {
                       </div>
                     )}
 
-                    {loading ? (
-                      <Card className="p-6 sm:p-8 flex items-center justify-center">
-                        <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin text-primary" />
-                      </Card>
-                    ) : feedError ? (
-                      <Card className="p-6 sm:p-8 text-center space-y-3">
-                        <p className="text-sm sm:text-base text-destructive font-medium">
-                          Couldn't load posts
-                        </p>
-                        <p className="text-xs sm:text-sm text-muted-foreground">{feedError}</p>
-                        <Button variant="outline" size="sm" onClick={() => fetchPosts(false)}>
-                          Try again
-                        </Button>
-                      </Card>
-                    ) : filteredFeedItems.length === 0 ? (
-                      <Card className="p-6 sm:p-8 text-center text-sm sm:text-base text-muted-foreground">
-                        No posts found. Try adjusting your filters.
-                      </Card>
-                    ) : (
-                      <Virtuoso
-                        useWindowScroll
-                        data={filteredFeedItems}
-                        computeItemKey={(_, item) => `${item.type}-${item.data.id}`}
-                        endReached={() => {
-                          if (hasMore && !loadingMore) fetchPosts(true);
-                        }}
-                        overscan={800}
-                        increaseViewportBy={{ top: 400, bottom: 800 }}
-                        itemContent={(index, item) => (
-                          <div className="pb-3 sm:pb-4">
-                            {item.type === 'post' ? (
-                              <PostCard post={item.data} onDelete={fetchPosts} />
-                            ) : (
-                              <RepostCard repost={item.data} onDelete={fetchPosts} />
-                            )}
-                            {(index + 1) % 20 === 0 && (
-                              <div className="mt-3 sm:mt-4">
-                                <MonetagInFeedAd slotIndex={Math.floor((index + 1) / 20)} />
-                              </div>
-                            )}
-                          </div>
-                        )}
-                        components={{
-                          Footer: () => (
-                            <>
-                              {loadingMore && (
-                                <Card className="p-3 sm:p-4 flex items-center justify-center">
-                                  <Loader2 className="h-5 w-5 sm:h-6 sm:w-6 animate-spin text-primary mr-2" />
-                                  <span className="text-xs sm:text-sm text-muted-foreground">Loading more posts...</span>
-                                </Card>
-                              )}
-                              {!loading && !loadingMore && !hasMore && filteredFeedItems.length > 0 && (
-                                <Card className="p-3 sm:p-4 text-center text-muted-foreground text-xs sm:text-sm">
-                                  You've reached the end! 🎉
-                                </Card>
-                              )}
-                            </>
-                          ),
-                        }}
-                      />
-                    )}
+                    <WallFeed
+                      items={filteredFeedItems}
+                      loading={loading}
+                      loadingMore={loadingMore}
+                      hasMore={hasMore}
+                      feedError={feedError}
+                      onRetry={() => fetchPosts(false)}
+                      onLoadMore={() => fetchPosts(true)}
+                      onDelete={fetchPosts}
+                    />
 
                   </div>
                 </>
@@ -792,27 +693,7 @@ const Feed = () => {
         <MobileWallMenu onPostCreated={fetchPosts} />
         
         {/* Mobile FAB for creating posts */}
-        <Sheet open={createPostOpen} onOpenChange={setCreatePostOpen}>
-          <SheetTrigger asChild>
-            <Button
-              size="icon"
-              className="lg:hidden fixed bottom-[calc(14rem+env(safe-area-inset-bottom))] right-4 z-50 h-14 w-14 rounded-full shadow-lg bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white"
-            >
-              <span className="text-2xl font-bold">+</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="bottom" className="h-auto max-h-[80vh] rounded-t-3xl overflow-y-auto">
-            <div className="py-4">
-              <EnhancedCreatePost
-                onPostCreated={() => {
-                  fetchPosts();
-                  setCreatePostOpen(false);
-                }}
-                userProfile={userProfile}
-              />
-            </div>
-          </SheetContent>
-        </Sheet>
+        <WallComposer onPostCreated={fetchPosts} userProfile={userProfile} />
         
         {/* Main Layout Container - starts below fixed nav */}
         <div className="flex flex-col lg:flex-row pt-[112px]">
