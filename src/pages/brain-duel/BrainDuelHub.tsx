@@ -110,7 +110,8 @@ export default function BrainDuelHub() {
           const due = await brainDuelCall<any>("srs.due"); setSrsDue(due.cards ?? []);
         }
       } else if (active.id === "elo") {
-        const r = await brainDuelCall<any>("elo.report", { opponentId: input.opponentId, won: input.won === "true" });
+        // SECURITY: elo.report now requires a verified matchId; server derives won/opponent.
+        const r = await brainDuelCall<any>("elo.report", { matchId: input.matchId });
         setOutput(r); toast.success(`New rating: ${r.newRating} (${r.newTier})`);
         const mine = await brainDuelCall<any>("elo.getMine"); setElo(mine.elo);
       } else if (active.id === "topics") {
