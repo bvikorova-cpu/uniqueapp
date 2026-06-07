@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { characterImages } from "@/data/characterImages";
 import { useState } from "react";
 import type { Character } from "@/data/kidsCharacters";
 
@@ -12,6 +13,7 @@ interface AnimatedChatBubbleProps {
 const REACTION_EMOJIS = ["😂", "❤️", "🤩", "👏", "🎉", "💡"];
 
 export function AnimatedChatBubble({ message, character, index, onReaction }: AnimatedChatBubbleProps) {
+  const avatarImage = characterImages[character.id];
   const [showReactions, setShowReactions] = useState(false);
   const [selectedReaction, setSelectedReaction] = useState<string | null>(null);
   const isUser = message.role === "user";
@@ -38,10 +40,14 @@ export function AnimatedChatBubble({ message, character, index, onReaction }: An
         {/* Avatar */}
         {!isUser && (
           <motion.div 
-            className={`w-10 h-10 rounded-full bg-gradient-to-br ${character.color} flex items-center justify-center text-lg shadow-lg flex-shrink-0`}
+            className={`w-10 h-10 rounded-full bg-gradient-to-br ${character.color} flex items-center justify-center text-lg shadow-lg flex-shrink-0 overflow-hidden`}
             whileHover={{ scale: 1.2, rotate: 10 }}
           >
-            {character.emoji}
+            {avatarImage ? (
+              <img src={avatarImage} alt={character.name} className="w-full h-full object-cover" />
+            ) : (
+              character.emoji
+            )}
           </motion.div>
         )}
 
