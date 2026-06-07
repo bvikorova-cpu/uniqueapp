@@ -22,3 +22,15 @@
 # Vite hashes /assets/* filenames, so they are also safe to cache forever.
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
+
+# Security headers applied to every HTML response.
+# CSP is intentionally permissive on script-src (Vite + many third-party SDKs:
+# Stripe, YouTube, Monetag ads, Cloudflare). Tightening further requires a
+# migration pass on each third-party embed.
+/*
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(self), microphone=(self), geolocation=(self), payment=(self "https://js.stripe.com"), interest-cohort=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  Content-Security-Policy: default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: blob:; style-src 'self' 'unsafe-inline' https: data:; img-src 'self' https: data: blob:; media-src 'self' https: data: blob:; font-src 'self' https: data:; connect-src 'self' https: wss: blob:; frame-src 'self' https:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self' https:; frame-ancestors 'self'; upgrade-insecure-requests
