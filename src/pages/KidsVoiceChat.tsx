@@ -266,17 +266,27 @@ export default function KidsVoiceChat() {
                 <Card className="bg-white/85 backdrop-blur-md border-white/50 shadow-xl overflow-hidden">
                   {/* Chat Header */}
                   <div className={`bg-gradient-to-r ${selectedCharacter.color} p-4`}>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <motion.span
-                          className="text-4xl"
-                          animate={{ rotate: [0, -10, 10, 0] }}
-                          transition={{ repeat: Infinity, duration: 3 }}
-                        >
-                          {selectedCharacter.emoji}
-                        </motion.span>
-                        <div>
-                          <h2 className="text-xl font-bold text-white">{selectedCharacter.name}</h2>
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-3 min-w-0">
+                        {characterImages[selectedCharacter.id] ? (
+                          <motion.img
+                            src={characterImages[selectedCharacter.id]}
+                            alt={selectedCharacter.name}
+                            className="w-14 h-14 rounded-full object-cover border-2 border-white/60 shadow-lg flex-shrink-0"
+                            animate={{ y: [0, -3, 0] }}
+                            transition={{ repeat: Infinity, duration: 3 }}
+                          />
+                        ) : (
+                          <motion.span
+                            className="text-4xl"
+                            animate={{ rotate: [0, -10, 10, 0] }}
+                            transition={{ repeat: Infinity, duration: 3 }}
+                          >
+                            {selectedCharacter.emoji}
+                          </motion.span>
+                        )}
+                        <div className="min-w-0">
+                          <h2 className="text-xl font-bold text-white truncate">{selectedCharacter.name}</h2>
                           <CharacterMoodIndicator
                             character={selectedCharacter}
                             messageCount={messages.length}
@@ -284,22 +294,26 @@ export default function KidsVoiceChat() {
                           />
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1.5 flex-shrink-0">
                         <Button
                           variant="secondary"
                           size="sm"
                           onClick={() => setShowStoryMode(!showStoryMode)}
-                          className="bg-white/20 text-white hover:bg-white/30 border-0"
+                          className="bg-white/20 text-white hover:bg-white/30 border-0 px-2 sm:px-3"
+                          aria-label="Story Mode"
                         >
-                          <Sparkles className="h-4 w-4 mr-1" /> Story Mode
+                          <Sparkles className="h-4 w-4 sm:mr-1" />
+                          <span className="hidden sm:inline">Story Mode</span>
                         </Button>
                         <Button
                           variant="secondary"
                           size="sm"
                           onClick={() => { setSelectedCharacter(null); setMessages([]); setShowStoryMode(false); }}
-                          className="bg-white/20 text-white hover:bg-white/30 border-0"
+                          className="bg-white/20 text-white hover:bg-white/30 border-0 px-2 sm:px-3"
+                          aria-label="Change Character"
                         >
-                          Change Character
+                          <ArrowLeft className="h-4 w-4 sm:mr-1" />
+                          <span className="hidden sm:inline">Change</span>
                         </Button>
                       </div>
                     </div>
