@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { logSecurityEvent } from "@/lib/securityAudit";
 
 /**
  * P4: Idle session timeout — auto sign-out after `timeoutMs` of inactivity.
