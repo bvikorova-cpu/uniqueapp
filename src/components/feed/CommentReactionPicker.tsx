@@ -24,6 +24,7 @@ const REACTIONS = [
 
 export const CommentReactionPicker = ({ commentId }: CommentReactionPickerProps) => {
   const [open, setOpen] = useState(false);
+  const [listOpen, setListOpen] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [reactions, setReactions] = useState<any[]>([]);
   const [userReaction, setUserReaction] = useState<string | null>(null);
