@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Mic, MicOff, Square, Play, Pause, Send, Clock, Volume2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { escapeWithLineBreaks } from "@/lib/sanitizeHtml";
 
 interface VoiceEntry {
   id: string;
@@ -281,7 +282,7 @@ Respond in markdown format, be compassionate and brief.`,
               <div className="border-t border-border/30 pt-3">
                 <p className="text-xs font-bold text-primary mb-1">AI Analysis:</p>
                 <div className="prose prose-sm dark:prose-invert max-w-none text-xs">
-                  <div dangerouslySetInnerHTML={{ __html: entry.aiTranscription.replace(/\n/g, "<br/>") }} />
+                  <div dangerouslySetInnerHTML={{ __html: escapeWithLineBreaks(entry.aiTranscription) }} />
                 </div>
               </div>
             )}
