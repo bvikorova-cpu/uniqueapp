@@ -26,16 +26,18 @@ serve(async (req) => {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) return new Response(JSON.stringify({ error: "auth required" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    const url = Deno.env.get("SUPABASE_URL")!;
+    const userClient = createClient(
+      url,
+      Deno.env.get("SUPABASE_ANON_KEY")!,
       { global: { headers: { Authorization: authHeader } } }
     );
-    const { data: { user } } = await supabase.auth.getUser();
+    const admin = createClient(url, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    const { data: { user } } = await userClient.auth.getUser();
     if (!user) return new Response(JSON.stringify({ error: "auth" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
     const { jobId } = await req.json();
-    const { data: job } = await supabase.from("job_listings").select("title, description, requirements").eq("id", jobId).maybeSingle();
+    const { data: job } = await admin.from("job_listings").select("title, description, requirements").eq("id", jobId).maybeSingle();
     if (!job) return new Response(JSON.stringify({ error: "Job not found" }), { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
     const { data: resume } = await supabase.from("candidate_resumes").select("parsed_skills").eq("user_id", user.id).order("is_primary", { ascending: false }).limit(1).maybeSingle();
