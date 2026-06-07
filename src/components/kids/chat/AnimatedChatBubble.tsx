@@ -13,6 +13,7 @@ interface AnimatedChatBubbleProps {
 const REACTION_EMOJIS = ["😂", "❤️", "🤩", "👏", "🎉", "💡"];
 
 export function AnimatedChatBubble({ message, character, index, onReaction }: AnimatedChatBubbleProps) {
+  const avatarImage = characterImages[character.id];
   const [showReactions, setShowReactions] = useState(false);
   const [selectedReaction, setSelectedReaction] = useState<string | null>(null);
   const isUser = message.role === "user";
