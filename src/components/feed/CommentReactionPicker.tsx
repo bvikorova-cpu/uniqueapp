@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/popover";
 import { supabase } from "@/integrations/supabase/client";
 import { Smile, X } from "lucide-react";
+import { ReactionsDialog } from "@/components/wall/ReactionsDialog";
 
 interface CommentReactionPickerProps {
   commentId: string;
