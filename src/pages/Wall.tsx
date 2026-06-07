@@ -700,6 +700,16 @@ const Feed = () => {
                       <Card className="p-6 sm:p-8 flex items-center justify-center">
                         <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin text-primary" />
                       </Card>
+                    ) : feedError ? (
+                      <Card className="p-6 sm:p-8 text-center space-y-3">
+                        <p className="text-sm sm:text-base text-destructive font-medium">
+                          Couldn't load posts
+                        </p>
+                        <p className="text-xs sm:text-sm text-muted-foreground">{feedError}</p>
+                        <Button variant="outline" size="sm" onClick={() => fetchPosts(false)}>
+                          Try again
+                        </Button>
+                      </Card>
                     ) : filteredFeedItems.length === 0 ? (
                       <Card className="p-6 sm:p-8 text-center text-sm sm:text-base text-muted-foreground">
                         No posts found. Try adjusting your filters.
