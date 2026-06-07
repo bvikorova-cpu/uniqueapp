@@ -122,6 +122,7 @@ const Feed = () => {
 
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [feedError, setFeedError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
   // pagination uses lastCursor ref (keyset), no page state needed
   const [showBackToTop, setShowBackToTop] = useState(false);
