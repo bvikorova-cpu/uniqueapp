@@ -309,6 +309,9 @@ verify_jwt = false
 [functions.kids-story-creator]
 verify_jwt = false
 
+[functions.kids-story-tts]
+verify_jwt = false
+
 [functions.kids-science-lab]
 verify_jwt = false
 

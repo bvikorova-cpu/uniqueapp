@@ -26,7 +26,10 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+
+
   try {
+    console.log("kids-story-tts request received, method:", req.method);
     if (req.method !== "POST") {
       return new Response(
         JSON.stringify({ error: "Method not allowed" }),
@@ -44,8 +47,9 @@ Deno.serve(async (req) => {
       );
     }
     const admin = createClient(SUPABASE_URL, SERVICE_ROLE, { auth: { persistSession: false } });
-    const { data: userData } = await admin.auth.getUser(token);
-    if (!userData?.user) {
+    const { data: userData, error: authError } = await admin.auth.getUser(token);
+    if (authError || !userData?.user?.id) {
+      console.warn("kids-story-tts auth rejected:", authError?.message, "user:", userData?.user?.id);
       return new Response(
         JSON.stringify({ error: "Unauthorized" }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } },
