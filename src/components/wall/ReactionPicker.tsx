@@ -8,6 +8,7 @@ import {
 import { useReactions } from "@/hooks/useReactions";
 import { supabase } from "@/integrations/supabase/client";
 import { X } from "lucide-react";
+import { ReactionsDialog } from "@/components/wall/ReactionsDialog";
 
 interface ReactionPickerProps {
   postId: string;
@@ -24,6 +25,7 @@ const REACTIONS = [
 
 export const ReactionPicker = ({ postId }: ReactionPickerProps) => {
   const [open, setOpen] = useState(false);
+  const [listOpen, setListOpen] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const { reactions, getReactionCounts, toggleReaction } = useReactions(postId);
   const counts = getReactionCounts();
@@ -67,7 +69,18 @@ export const ReactionPicker = ({ postId }: ReactionPickerProps) => {
             <span className="text-xl mr-2">{userReactionEmoji || "👍"}</span>
             {userReactionType ? "Reacted" : "React"}
             {totalReactions > 0 && (
-              <span className="ml-2 text-muted-foreground">({totalReactions})</span>
+              <span
+                role="button"
+                tabIndex={0}
+                className="ml-2 text-muted-foreground hover:underline cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setListOpen(true);
+                }}
+              >
+                ({totalReactions})
+              </span>
             )}
           </Button>
         </PopoverTrigger>
@@ -115,7 +128,16 @@ export const ReactionPicker = ({ postId }: ReactionPickerProps) => {
       
       {/* Display reaction breakdown only when multiple different reaction types exist */}
       {Object.values(counts).filter((c) => c > 0).length > 1 && (
-        <div className="flex gap-1">
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setListOpen(true);
+          }}
+          className="flex gap-1 hover:bg-accent rounded-md px-2 py-1 transition-colors"
+          aria-label="View who reacted"
+        >
           {Object.entries(counts).map(([type, count]) => {
             const reaction = REACTIONS.find((r) => r.type === type);
             if (!reaction || count === 0) return null;
@@ -125,8 +147,18 @@ export const ReactionPicker = ({ postId }: ReactionPickerProps) => {
               </span>
             );
           })}
-        </div>
+        </button>
       )}
+
+      <ReactionsDialog
+        open={listOpen}
+        onOpenChange={setListOpen}
+        reactions={reactions.map((r: any) => ({
+          user_id: r.user_id,
+          reaction_type: r.reaction_type,
+        }))}
+        reactionMeta={REACTIONS}
+      />
     </div>
   );
 };
