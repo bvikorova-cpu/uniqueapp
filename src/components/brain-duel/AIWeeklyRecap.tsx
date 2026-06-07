@@ -53,12 +53,18 @@ export const AIWeeklyRecap = () => {
   });
 
   const renderMarkdown = (text: string) => {
-    return text
+    // Escape HTML first so AI prompt-injection can't ship raw tags, then apply markdown.
+    const escaped = text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+    const html = escaped
       .replace(/## (.*)/g, '<h3 class="text-sm font-bold text-primary mt-3 mb-1">$1</h3>')
       .replace(/### (.*)/g, '<h4 class="text-xs font-semibold text-foreground mt-2 mb-1">$1</h4>')
       .replace(/\*\*(.*?)\*\*/g, '<strong class="text-foreground">$1</strong>')
       .replace(/- (.*)/g, '<li class="text-xs text-muted-foreground ml-3">• $1</li>')
       .replace(/\n/g, "<br/>");
+    return sanitizeHtml(html);
   };
 
   return (
