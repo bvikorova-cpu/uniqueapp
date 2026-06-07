@@ -27,6 +27,7 @@ Deno.serve(async (req) => {
   }
 
   try {
+    console.log("kids-story-tts request received, method:", req.method);
     if (req.method !== "POST") {
       return new Response(
         JSON.stringify({ error: "Method not allowed" }),
