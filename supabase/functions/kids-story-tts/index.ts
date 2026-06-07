@@ -25,6 +25,8 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
+  return new Response(JSON.stringify({ debug: "v2-marker", method: req.method }), { status: 418, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
 
   try {
     console.log("kids-story-tts request received, method:", req.method);
