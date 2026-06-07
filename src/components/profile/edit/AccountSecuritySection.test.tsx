@@ -65,7 +65,7 @@ describe("AccountSecuritySection step-up auth", () => {
   it("stale session: password change opens re-auth dialog, defers update", async () => {
     setLastSignIn(10);
     render(<AccountSecuritySection currentEmail="old@x.com" />);
-    fireEvent.change(screen.getByPlaceholderText(/New password/i), { target: { value: "longenoughpw" } });
+    fireEvent.change(screen.getByPlaceholderText(/^New password/i), { target: { value: "longenoughpw" } });
     fireEvent.change(screen.getByPlaceholderText(/Confirm new password/i), { target: { value: "longenoughpw" } });
     fireEvent.click(screen.getByRole("button", { name: /Update password/i }));
     await screen.findByText(/Confirm your password/i);
