@@ -18,12 +18,22 @@ interface ParentalGateProps {
 }
 
 function generateMathQuestion(): { question: string; answer: number } {
-  const num1 = Math.floor(Math.random() * 20) + 10; // 10-29
-  const num2 = Math.floor(Math.random() * 20) + 5;  // 5-24
-  return {
-    question: `What is ${num1} + ${num2}?`,
-    answer: num1 + num2,
-  };
+  // Harder problems — beyond typical pre-teen mental math range.
+  // Mix of 2-digit × 1-digit multiplication and 3-digit addition/subtraction.
+  const variant = Math.floor(Math.random() * 3);
+  if (variant === 0) {
+    const a = Math.floor(Math.random() * 90) + 11; // 11-100
+    const b = Math.floor(Math.random() * 8) + 4;   // 4-11
+    return { question: `What is ${a} × ${b}?`, answer: a * b };
+  }
+  if (variant === 1) {
+    const a = Math.floor(Math.random() * 400) + 200; // 200-599
+    const b = Math.floor(Math.random() * 300) + 150; // 150-449
+    return { question: `What is ${a} + ${b}?`, answer: a + b };
+  }
+  const a = Math.floor(Math.random() * 400) + 500; // 500-899
+  const b = Math.floor(Math.random() * 300) + 100; // 100-399
+  return { question: `What is ${a} − ${b}?`, answer: a - b };
 }
 
 export function ParentalGate({
@@ -62,7 +72,11 @@ export function ParentalGate({
     return () => document.removeEventListener("keydown", handleKeyDown, true);
   }, [isOpen]);
 
+  const [submitting, setSubmitting] = useState(false);
+
   const handleSubmit = async () => {
+    if (submitting || success) return; // double-click guard
+    setSubmitting(true);
     const numAnswer = parseInt(userAnswer, 10);
     if (numAnswer === mathQuestion.answer) {
       setSuccess(true);
@@ -94,6 +108,7 @@ export function ParentalGate({
         setMathQuestion(generateMathQuestion());
         setUserAnswer("");
         setError(false);
+        setSubmitting(false);
       }, 1500);
     }
   };
@@ -198,15 +213,11 @@ export function ParentalGate({
 }
 
 // Hook to check if parental gate has been verified recently
-export function useParentalGate() {
+export function useParentalGate(storageKey: string = 'parental_gate_verified') {
   const [isVerified, setIsVerified] = useState(false);
 
-  useEffect(() => {
-    checkVerification();
-  }, []);
-
   const checkVerification = () => {
-    const stored = sessionStorage.getItem('parental_gate_verified');
+    const stored = sessionStorage.getItem(storageKey);
     if (stored) {
       try {
         const { expiresAt } = JSON.parse(stored);
@@ -214,18 +225,23 @@ export function useParentalGate() {
           setIsVerified(true);
           return true;
         } else {
-          sessionStorage.removeItem('parental_gate_verified');
+          sessionStorage.removeItem(storageKey);
         }
       } catch {
-        sessionStorage.removeItem('parental_gate_verified');
+        sessionStorage.removeItem(storageKey);
       }
     }
     setIsVerified(false);
     return false;
   };
 
+  useEffect(() => {
+    checkVerification();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storageKey]);
+
   const resetVerification = () => {
-    sessionStorage.removeItem('parental_gate_verified');
+    sessionStorage.removeItem(storageKey);
     setIsVerified(false);
   };
 

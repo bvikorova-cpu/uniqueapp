@@ -41,33 +41,25 @@ export const useBrainDuelCredits = () => {
 
   const spendCredits = useMutation({
     mutationFn: async (amount: number) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
+      // SECURITY: client-side sanity check; RPC re-validates atomically.
+      if (!Number.isFinite(amount) || amount <= 0) throw new Error('invalid_amount');
 
-      // SECURITY: guard against negative amount which would otherwise inflate balance.
-      if (!Number.isFinite(amount) || amount <= 0) throw new Error('Invalid amount');
-
-      const currentCredits = credits || 0;
-      if (currentCredits < amount) {
-        throw new Error('Insufficient credits');
-      }
-
-      // DB trigger `brain_duel_credits_guard_trg` enforces no-increase + no-negative
-      // even if a client tampered with the value sent here.
-      const { error } = await supabase
-        .from('brain_duel_credits')
-        .update({ credits: currentCredits - amount })
-        .eq('user_id', user.id);
-
+      // Atomic decrement with row lock (race-condition safe).
+      // RPC throws 'insufficient_credits' / 'not_authenticated' / 'invalid_amount'.
+      const { data, error } = await supabase.rpc('brain_duel_spend_credits', {
+        _amount: Math.floor(amount),
+      });
       if (error) throw error;
+      return data as number;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
     },
-    onError: (error: Error) => {
+    onError: (error: any) => {
+      const msg = (error?.message || '').toString();
       toast({
         title: 'Error',
-        description: error.message === 'Insufficient credits'
+        description: msg.includes('insufficient_credits')
           ? 'Not enough credits to start this game'
           : 'Failed to spend credits',
         variant: 'destructive',
