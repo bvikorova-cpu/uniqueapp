@@ -13,8 +13,13 @@ export function MatchScoreBadge({ jobId }: { jobId: string }) {
       if (!user) return;
       const { data: cached } = await supabase.from("job_match_scores").select("score").eq("user_id", user.id).eq("job_id", jobId).maybeSingle();
       if (cached && mounted) { setScore(cached.score); return; }
-      const { data } = await supabase.functions.invoke("compute-job-match", { body: { jobId } });
-      if (data?.score !== undefined && mounted) setScore(data.score);
+      try {
+        const { data, error } = await supabase.functions.invoke("compute-job-match", { body: { jobId } });
+        if (error) return; // silent — badge is non-critical
+        if (data?.score !== undefined && mounted) setScore(data.score);
+      } catch {
+        // silent fail — badge is decorative
+      }
     })();
     return () => { mounted = false; };
   }, [jobId]);
