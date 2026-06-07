@@ -85,9 +85,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider value={{ user, session, signUp, signIn, signOut, loading }}>
+      <IdleLogoutMount />
       {children}
     </AuthContext.Provider>
   );
+}
+
+function IdleLogoutMount() {
+  // P4: enforce 30 min idle auto sign-out when a session is active.
+  // Hook is a no-op for anonymous users.
+  // Lazy import avoids cycles since the hook reads useAuth().
+  // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+  const { useIdleLogout } = require("@/hooks/useIdleLogout");
+  useIdleLogout();
+  return null;
 }
 
 export function useAuth() {

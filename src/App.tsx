@@ -90,6 +90,7 @@ import {
   Profile,
   EditProfile,
   Settings,
+  SecuritySettings,
   Wall,
   SearchResults,
   Groups,
@@ -738,6 +739,7 @@ const App = () => {
                         <Route path="/u/:username" element={<UsernameRedirect />} />
                         <Route path="/edit-profile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
                         <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+                        <Route path="/settings/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
                         <Route path="/subscription" element={<Subscription />} />
                         <Route path="/pricing" element={<Navigate to="/subscription" replace />} />
                         <Route path="/plans" element={<Navigate to="/subscription" replace />} />
