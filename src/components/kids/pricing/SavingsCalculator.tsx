@@ -4,17 +4,17 @@ import { Calculator, TrendingDown } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 
 const modules = [
-  { name: "Story Creator", monthlyPrice: 5 },
-  { name: "Homework Helper", monthlyPrice: 7 },
-  { name: "Drawing Buddy", monthlyPrice: 4 },
-  { name: "Science Lab", monthlyPrice: 6 },
-  { name: "Reading Companion", monthlyPrice: 5 },
-  { name: "Character Chat", monthlyPrice: 4 },
-  { name: "Bedtime Stories", monthlyPrice: 4 },
-  { name: "Coloring Pages", monthlyPrice: 3 },
+  { name: "Story Creator", monthlyPrice: 12 },
+  { name: "Homework Helper", monthlyPrice: 16 },
+  { name: "Drawing Buddy", monthlyPrice: 10 },
+  { name: "Science Lab", monthlyPrice: 14 },
+  { name: "Reading Companion", monthlyPrice: 12 },
+  { name: "Character Chat", monthlyPrice: 10 },
+  { name: "Bedtime Stories", monthlyPrice: 10 },
+  { name: "Coloring Pages", monthlyPrice: 8 },
 ];
 
-const GOLD_PASS_PRICE = 30;
+const GOLD_PASS_PRICE = 79;
 
 export function SavingsCalculator() {
   const [selectedCount, setSelectedCount] = useState([5]);
