@@ -53,6 +53,11 @@ import tideKing from "@/assets/characters/tide-king.png";
 import veraBrains from "@/assets/characters/vera-brains.png";
 import waveTurtle from "@/assets/characters/wave-turtle.png";
 import zipHedgehog from "@/assets/characters/zip-hedgehog.png";
+import kitoPanther from "@/assets/characters/kito-panther.png";
+import nightGuardian from "@/assets/characters/night-guardian.png";
+import streakRunner from "@/assets/characters/streak-runner.png";
+import valorShield from "@/assets/characters/valor-shield.png";
+import zaraWish from "@/assets/characters/zara-wish.png";
 
 export const characterImages: Record<string, string> = {
   "alice-wonderland": aliceWonderland,
@@ -104,8 +109,9 @@ export const characterImages: Record<string, string> = {
   "vera-brains": veraBrains,
   "wave-turtle": waveTurtle,
   "zip-hedgehog": zipHedgehog,
-  // Excluded (still too IP-similar after regen, falls back to emoji):
-  //   kito-panther, night-guardian, streak-runner, valor-shield
-  // Failed moderation, no image yet (falls back to emoji):
-  //   zara-wish
+  "kito-panther": kitoPanther,
+  "night-guardian": nightGuardian,
+  "streak-runner": streakRunner,
+  "valor-shield": valorShield,
+  "zara-wish": zaraWish,
 };
