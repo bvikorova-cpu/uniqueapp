@@ -693,27 +693,7 @@ const Feed = () => {
         <MobileWallMenu onPostCreated={fetchPosts} />
         
         {/* Mobile FAB for creating posts */}
-        <Sheet open={createPostOpen} onOpenChange={setCreatePostOpen}>
-          <SheetTrigger asChild>
-            <Button
-              size="icon"
-              className="lg:hidden fixed bottom-[calc(14rem+env(safe-area-inset-bottom))] right-4 z-50 h-14 w-14 rounded-full shadow-lg bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white"
-            >
-              <span className="text-2xl font-bold">+</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="bottom" className="h-auto max-h-[80vh] rounded-t-3xl overflow-y-auto">
-            <div className="py-4">
-              <EnhancedCreatePost
-                onPostCreated={() => {
-                  fetchPosts();
-                  setCreatePostOpen(false);
-                }}
-                userProfile={userProfile}
-              />
-            </div>
-          </SheetContent>
-        </Sheet>
+        <WallComposer onPostCreated={fetchPosts} userProfile={userProfile} />
         
         {/* Main Layout Container - starts below fixed nav */}
         <div className="flex flex-col lg:flex-row pt-[112px]">
