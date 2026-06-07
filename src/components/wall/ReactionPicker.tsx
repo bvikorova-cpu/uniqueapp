@@ -8,6 +8,7 @@ import {
 import { useReactions } from "@/hooks/useReactions";
 import { supabase } from "@/integrations/supabase/client";
 import { X } from "lucide-react";
+import { ReactionsDialog } from "@/components/wall/ReactionsDialog";
 
 interface ReactionPickerProps {
   postId: string;
