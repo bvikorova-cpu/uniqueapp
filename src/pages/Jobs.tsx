@@ -355,7 +355,13 @@ const Jobs = () => {
               variant={activeTab === tab.id ? "default" : "ghost"}
               size="sm"
               className={`text-xs gap-1.5 ${activeTab === tab.id ? "bg-amber-500/90 hover:bg-amber-600 text-white" : ""}`}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => {
+                if (tab.route) {
+                  navigate(tab.route);
+                } else {
+                  setActiveTab(tab.id);
+                }
+              }}
             >
               <tab.icon className="h-3.5 w-3.5" />
               {tab.label}
