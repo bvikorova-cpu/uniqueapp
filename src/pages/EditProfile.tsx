@@ -566,6 +566,7 @@ const EditProfile = () => {
                     <Label htmlFor="email">Email</Label>
                     <Input id="email" type="email" value={profile.email || ""} disabled className="bg-muted" />
                   </div>
+                  <AccountSecuritySection currentEmail={profile.email || ""} />
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <Label htmlFor="occupation">Occupation</Label>
