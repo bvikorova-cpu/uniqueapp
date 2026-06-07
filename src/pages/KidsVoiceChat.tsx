@@ -190,7 +190,7 @@ export default function KidsVoiceChat() {
     setCharactersUsed(prev => new Set(prev).add(character.id));
     setShowStoryMode(true);
     setMessages([
-      { role: "assistant", content: `Hi! I'm ${character.name}! ${character.emoji} What would you like to talk about? We can chat, or try Story Mode for an interactive adventure!` },
+      { role: "assistant", content: `Hi! I'm ${character.name}! 👋 What would you like to talk about? We can chat, or try Story Mode for an interactive adventure!` },
     ]);
   };
 
