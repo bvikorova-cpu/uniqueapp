@@ -685,33 +685,33 @@ const Jobs = () => {
                 <p className="text-sm sm:text-base text-muted-foreground whitespace-pre-wrap leading-relaxed break-words">{selectedJob?.description}</p>
               </div>
               {selectedJob?.requirements && (
-                <div className="bg-muted/50 p-6 rounded-lg border border-border">
-                  <h3 className="font-bold text-xl mb-3">Requirements and Qualifications</h3>
-                  <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">{selectedJob.requirements}</p>
+                <div className="bg-muted/50 p-4 sm:p-6 rounded-lg border border-border">
+                  <h3 className="font-bold text-base sm:text-xl mb-3">Requirements and Qualifications</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground whitespace-pre-wrap leading-relaxed break-words">{selectedJob.requirements}</p>
                 </div>
               )}
               {selectedJob?.benefits && (
-                <div className="bg-muted/50 p-6 rounded-lg border border-border">
-                  <h3 className="font-bold text-xl mb-3">Benefits and Perks</h3>
-                  <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">{selectedJob.benefits}</p>
+                <div className="bg-muted/50 p-4 sm:p-6 rounded-lg border border-border">
+                  <h3 className="font-bold text-base sm:text-xl mb-3">Benefits and Perks</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground whitespace-pre-wrap leading-relaxed break-words">{selectedJob.benefits}</p>
                 </div>
               )}
               {selectedJob?.salary_min && selectedJob?.salary_max && (
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 p-6 rounded-lg border border-green-200 dark:border-green-800">
-                  <h3 className="font-bold text-xl mb-3 flex items-center gap-2"><DollarSign className="h-5 w-5 text-green-700 dark:text-green-400" />Salary Range</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    <div><p className="text-sm text-muted-foreground mb-1">Minimum</p><p className="text-lg font-semibold">{selectedJob.salary_min} {selectedJob.salary_currency}</p></div>
-                    <div><p className="text-sm text-muted-foreground mb-1">Maximum</p><p className="text-lg font-semibold">{selectedJob.salary_max} {selectedJob.salary_currency}</p></div>
-                    <div><p className="text-sm text-muted-foreground mb-1">Currency</p><p className="text-lg font-semibold">{selectedJob.salary_currency}</p></div>
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 p-4 sm:p-6 rounded-lg border border-green-200 dark:border-green-800">
+                  <h3 className="font-bold text-base sm:text-xl mb-3 flex items-center gap-2"><DollarSign className="h-5 w-5 text-green-700 dark:text-green-400 shrink-0" />Salary Range</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+                    <div><p className="text-xs sm:text-sm text-muted-foreground mb-1">Minimum</p><p className="text-base sm:text-lg font-semibold break-words">{selectedJob.salary_min} {selectedJob.salary_currency}</p></div>
+                    <div><p className="text-xs sm:text-sm text-muted-foreground mb-1">Maximum</p><p className="text-base sm:text-lg font-semibold break-words">{selectedJob.salary_max} {selectedJob.salary_currency}</p></div>
+                    <div><p className="text-xs sm:text-sm text-muted-foreground mb-1">Currency</p><p className="text-base sm:text-lg font-semibold">{selectedJob.salary_currency}</p></div>
                   </div>
                 </div>
               )}
-              <div className="bg-primary/5 p-6 rounded-lg border border-primary/20">
-                <h3 className="font-bold text-xl mb-4">Contact Information</h3>
+              <div className="bg-primary/5 p-4 sm:p-6 rounded-lg border border-primary/20">
+                <h3 className="font-bold text-base sm:text-xl mb-4">Contact Information</h3>
                 <div className="space-y-3">
-                  <div><p className="text-sm text-muted-foreground mb-1">Application Email</p><p className="font-semibold text-lg">{selectedJob?.contact_email}</p></div>
-                  <div className="flex items-center gap-6 text-sm pt-2 border-t border-border">
-                    <div><p className="text-muted-foreground">Applications</p><p className="font-semibold text-lg">{selectedJob?.applications_count}</p></div>
+                  <div><p className="text-xs sm:text-sm text-muted-foreground mb-1">Application Email</p><p className="font-semibold text-sm sm:text-lg break-all">{selectedJob?.contact_email}</p></div>
+                  <div className="flex items-center gap-4 sm:gap-6 text-xs sm:text-sm pt-2 border-t border-border flex-wrap">
+                    <div><p className="text-muted-foreground">Applications</p><p className="font-semibold text-base sm:text-lg">{selectedJob?.applications_count}</p></div>
                     <div><p className="text-muted-foreground">Type</p><p className="font-semibold">{selectedJob && JOB_TYPES[selectedJob.job_type as keyof typeof JOB_TYPES]}</p></div>
                     <div><p className="text-muted-foreground">Category</p><p className="font-semibold">{selectedJob && CATEGORIES[selectedJob.category as keyof typeof CATEGORIES]}</p></div>
                   </div>
