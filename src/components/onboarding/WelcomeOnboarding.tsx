@@ -33,8 +33,23 @@ export function WelcomeOnboarding() {
     if (!user) return;
     const key = `${STORAGE_KEY}_${user.id}`;
     if (localStorage.getItem(key)) return;
-    const t = setTimeout(() => setOpen(true), 800);
-    return () => clearTimeout(t);
+    // Wait for the page to be fully loaded (hero/feed rendered) before showing
+    // the welcome modal so it doesn't overlap skeleton screens.
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const schedule = () => {
+      timer = setTimeout(() => setOpen(true), 2500);
+    };
+    if (document.readyState === "complete") {
+      schedule();
+    } else {
+      const onLoad = () => schedule();
+      window.addEventListener("load", onLoad, { once: true });
+      return () => {
+        window.removeEventListener("load", onLoad);
+        if (timer) clearTimeout(timer);
+      };
+    }
+    return () => { if (timer) clearTimeout(timer); };
   }, [user?.id]);
 
   const finish = () => {
