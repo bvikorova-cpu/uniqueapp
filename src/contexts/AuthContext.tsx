@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
+import { useIdleLogout } from '@/hooks/useIdleLogout';
 // WelcomeCreditsDialog removed — paid-only model (no free tier)
 
 
@@ -85,9 +86,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider value={{ user, session, signUp, signIn, signOut, loading }}>
+      <IdleLogoutMount />
       {children}
     </AuthContext.Provider>
   );
+}
+
+function IdleLogoutMount() {
+  // P4: enforce 30 min idle auto sign-out when a session is active.
+  // Hook is a no-op for anonymous users.
+  useIdleLogout();
+  return null;
 }
 
 export function useAuth() {

@@ -12,6 +12,7 @@ export const Wall = lazy(() => import("@/pages/Wall"));
 export const Profile = lazy(() => import("@/pages/Profile"));
 export const EditProfile = lazy(() => import("@/pages/EditProfile"));
 export const Settings = lazy(() => import("@/pages/Settings"));
+export const SecuritySettings = lazy(() => import("@/pages/SecuritySettings"));
 export const SearchResults = lazy(() => import("@/pages/SearchResults"));
 export const Messenger = lazy(() => import("@/pages/Messenger"));
 export const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
