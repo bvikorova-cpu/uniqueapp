@@ -33,7 +33,7 @@ Cieľ: zastaviť stratu peňazí a privacy leaky.
 12. ✅ `RevealLock`: optimistic conditional UPDATE (`reveal_request_at IS NULL` alebo stale >60s, `status='active'`), self-accept guard, requester-only cancel.
 13. ✅ `ProfileSetup`: Zod schema (`src/lib/anonymousDatingSchema.ts`) validuje pred submitom, jednotná error message.
 13a. ✅ `useAnonymousChat.broadcastTyping`: throttle 1500ms + debounce 300ms (zabráni floodu kanála).
-14. `VoiceRecorderButton`: `maxDuration=60s`, cleanup MediaRecorder. — TODO
+14. ✅ `VoiceRecorderButton` + `useVoiceRecorder`: hard cap 60s s auto-stop pri dosiahnutí limitu, unmount cleanup (MediaRecorder.stop + tracks.stop + interval clear), `cancel()` releases mic.
 
 
 ## Fáza 4 — Frontend dizajn/sémantika (Day 4) ✅
