@@ -72,10 +72,10 @@ function buildFromMock(opts: {
       return {
         select: () => ({
           eq: () => ({
-            single: () =>
+            maybeSingle: () =>
               Promise.resolve({
                 data: credits,
-                error: credits ? null : { code: "PGRST116" },
+                error: null,
               }),
           }),
         }),
