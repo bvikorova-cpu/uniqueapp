@@ -35,6 +35,7 @@ function setLastSignIn(minutesAgo: number, email = "u@x.com") {
 beforeEach(() => {
   updateUser.mockReset().mockResolvedValue({ error: null });
   signInWithPassword.mockReset().mockResolvedValue({ error: null });
+  rpc.mockReset().mockResolvedValue({ data: "log-id", error: null });
   toast.mockReset();
 });
 
