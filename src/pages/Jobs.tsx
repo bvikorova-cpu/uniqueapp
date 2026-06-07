@@ -608,7 +608,7 @@ const Jobs = () => {
 
         {/* Job Details Dialog */}
         <Dialog open={showJobDetailsDialog} onOpenChange={setShowJobDetailsDialog}>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto w-[calc(100%-1rem)] p-4 sm:p-6">
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto overflow-x-hidden w-[calc(100vw-1rem)] sm:w-[calc(100%-2rem)] p-4 sm:p-6">
             {selectedJob && (
               <script
                 type="application/ld+json"
@@ -675,8 +675,8 @@ const Jobs = () => {
                   <Clock className="h-3 w-3 sm:h-4 sm:w-4" />{selectedJob && JOB_TYPES[selectedJob.job_type as keyof typeof JOB_TYPES]}
                 </span>
                 {selectedJob?.salary_min && selectedJob?.salary_max && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium bg-green-100 text-green-800 border border-green-200 whitespace-nowrap">
-                    <DollarSign className="h-3 w-3 sm:h-4 sm:w-4" />{selectedJob.salary_min}-{selectedJob.salary_max} {selectedJob.salary_currency}
+                  <span className="inline-flex items-center gap-1 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium bg-green-100 text-green-800 border border-green-200 max-w-full break-all">
+                    <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />{selectedJob.salary_min}-{selectedJob.salary_max} {selectedJob.salary_currency}
                   </span>
                 )}
               </div>
