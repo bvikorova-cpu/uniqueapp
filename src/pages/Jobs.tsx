@@ -117,10 +117,14 @@ const JOB_TYPES = {
   remote: "Remote",
 };
 
-type ActiveTab = "jobs" | "tools" | "streaks" | "leaderboard" | "achievements" | "challenges";
+type ActiveTab = "jobs" | "companies" | "map" | "saved" | "applications" | "tools" | "streaks" | "leaderboard" | "achievements" | "challenges";
 
-const TABS: { id: ActiveTab; label: string; icon: typeof Briefcase }[] = [
+const TABS: { id: ActiveTab; label: string; icon: typeof Briefcase; route?: string }[] = [
   { id: "jobs", label: "Jobs", icon: Briefcase },
+  { id: "companies", label: "Companies", icon: Building2, route: "/jobs/companies" },
+  { id: "map", label: "Map", icon: MapIcon, route: "/jobs/map" },
+  { id: "saved", label: "Saved", icon: Bookmark, route: "/jobs/saved" },
+  { id: "applications", label: "Applications", icon: ListChecks, route: "/jobs/applications" },
   { id: "tools", label: "AI Tools", icon: Wrench },
   { id: "streaks", label: "Streaks", icon: Flame },
   { id: "leaderboard", label: "Ranks", icon: Trophy },
