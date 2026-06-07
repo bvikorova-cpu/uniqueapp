@@ -201,34 +201,38 @@ export default function Rewards() {
 
         <HeroRewardedAd sectionKey="page_rewards" />
 
-        <div
-          role="tablist"
-          aria-label="Rewards sections"
-          className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide mb-6"
-        >
-          {TABS.map((tab) => {
-            const selected = activeView === tab.id;
-            return (
-              <button
-                key={tab.id}
-                ref={(el) => { tabRefs.current[tab.id] = el; }}
-                type="button"
-                role="tab"
-                aria-selected={selected}
-                aria-controls={`rewards-panel-${tab.id}`}
-                id={`rewards-tab-${tab.id}`}
-                onClick={() => setActiveView(tab.id)}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
-                  selected
-                    ? "bg-gradient-to-r from-amber-500 to-yellow-500 text-white shadow-lg shadow-amber-500/20"
-                    : "bg-card/60 text-muted-foreground hover:bg-card/80 border border-amber-400/15"
-                }`}
-              >
-                <tab.icon className="h-3.5 w-3.5" />
-                {tab.label}
-              </button>
-            );
-          })}
+        <div className="relative mb-6">
+          <div
+            role="tablist"
+            aria-label="Rewards sections"
+            className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide"
+          >
+            {TABS.map((tab) => {
+              const selected = activeView === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  ref={(el) => { tabRefs.current[tab.id] = el; }}
+                  type="button"
+                  role="tab"
+                  aria-selected={selected}
+                  aria-controls={`rewards-panel-${tab.id}`}
+                  id={`rewards-tab-${tab.id}`}
+                  onClick={() => setActiveView(tab.id)}
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+                    selected
+                      ? "bg-gradient-to-r from-amber-500 to-yellow-500 text-white shadow-lg shadow-amber-500/20"
+                      : "bg-card/60 text-muted-foreground hover:bg-card/80 border border-amber-400/15"
+                  }`}
+                >
+                  <tab.icon className="h-3.5 w-3.5" />
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+          {/* Right-edge fade hint for horizontal overflow on mobile */}
+          <div className="md:hidden pointer-events-none absolute top-0 right-0 h-full w-8 bg-gradient-to-l from-background to-transparent" />
         </div>
 
         <div
