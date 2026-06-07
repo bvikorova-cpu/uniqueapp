@@ -118,7 +118,7 @@ export function CookieConsentBanner() {
                 <Button onClick={acceptAll} size="sm" className="gap-2 flex-1 sm:flex-none min-w-0">
                   Accept all
                 </Button>
-                <Button variant="outline" size="sm" onClick={rejectAll} className="flex-1 sm:flex-none min-w-0">
+                <Button variant="secondary" size="sm" onClick={rejectAll} className="flex-1 sm:flex-none min-w-0 border border-border">
                   Only necessary
                 </Button>
                 <Dialog open={showSettings} onOpenChange={setShowSettings}>
