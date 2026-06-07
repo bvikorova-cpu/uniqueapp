@@ -40,13 +40,13 @@ serve(async (req) => {
     const { data: job } = await admin.from("job_listings").select("title, description, requirements").eq("id", jobId).maybeSingle();
     if (!job) return new Response(JSON.stringify({ error: "Job not found" }), { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-    const { data: resume } = await supabase.from("candidate_resumes").select("parsed_skills").eq("user_id", user.id).order("is_primary", { ascending: false }).limit(1).maybeSingle();
+    const { data: resume } = await admin.from("candidate_resumes").select("parsed_skills").eq("user_id", user.id).order("is_primary", { ascending: false }).limit(1).maybeSingle();
     const skills = (resume?.parsed_skills as string[] | null) || [];
 
     const jobText = `${job.title} ${job.description || ""} ${job.requirements || ""}`;
     const result = score(jobText, skills);
 
-    await supabase.from("job_match_scores").upsert({
+    await admin.from("job_match_scores").upsert({
       user_id: user.id,
       job_id: jobId,
       score: result.score,
