@@ -92,7 +92,7 @@ const Feed = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [savedPosts, setSavedPosts] = useState<Post[]>([]);
   const [loadingSaved, setLoadingSaved] = useState(false);
-  const [createPostOpen, setCreatePostOpen] = useState(false);
+  
 
   const { data: userProfile } = useQuery({
     queryKey: ["profile", user?.id],
