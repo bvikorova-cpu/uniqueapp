@@ -94,7 +94,7 @@ const GameCard = ({ game, onClick }: { game: GDGame; onClick: () => void }) => (
       className="group relative overflow-hidden cursor-pointer border border-border hover:border-primary/50 transition-all hover:shadow-[0_8px_30px_hsl(var(--primary)/0.2)]"
       onClick={onClick}
     >
-      <div className="aspect-video bg-muted overflow-hidden">
+      <div className="relative aspect-video bg-muted overflow-hidden">
         {game.thumbnail ? (
           <img
             src={game.thumbnail}
@@ -107,6 +107,12 @@ const GameCard = ({ game, onClick }: { game: GDGame; onClick: () => void }) => (
             <Gamepad2 className="w-10 h-10 text-primary/60" />
           </div>
         )}
+        {/* Hover Play CTA */}
+        <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary text-primary-foreground text-xs font-bold shadow-lg">
+            <Gamepad2 className="h-3.5 w-3.5" /> Play
+          </div>
+        </div>
       </div>
       <div className="p-2 sm:p-3">
         <p className="text-sm font-semibold truncate">{game.title}</p>
