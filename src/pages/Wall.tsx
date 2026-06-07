@@ -250,6 +250,7 @@ const Feed = () => {
         lastCursor.current = newItems[newItems.length - 1].data.created_at;
       }
     } catch (error: any) {
+      setFeedError(error?.message || "Failed to load posts");
       toast({
         title: "Error loading posts",
         description: error.message,
