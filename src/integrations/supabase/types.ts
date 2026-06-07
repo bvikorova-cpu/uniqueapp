@@ -50374,6 +50374,39 @@ export type Database = {
         }
         Relationships: []
       }
+      security_audit_log: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          ip_address: string | null
+          metadata: Json
+          resource: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json
+          resource?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json
+          resource?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       security_scan_snapshots: {
         Row: {
           created_at: string
@@ -64060,6 +64093,15 @@ export type Database = {
           _details?: Json
           _target_id?: string
           _target_type?: string
+        }
+        Returns: string
+      }
+      log_security_event: {
+        Args: {
+          _event_type: string
+          _metadata?: Json
+          _resource?: string
+          _user_agent?: string
         }
         Returns: string
       }

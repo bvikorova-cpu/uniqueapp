@@ -5,6 +5,7 @@ import { AccountSecuritySection } from "./AccountSecuritySection";
 const updateUser = vi.fn();
 const getUser = vi.fn();
 const signInWithPassword = vi.fn();
+const rpc = vi.fn();
 
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: {
@@ -13,6 +14,7 @@ vi.mock("@/integrations/supabase/client", () => ({
       getUser: (...a: any[]) => getUser(...a),
       signInWithPassword: (...a: any[]) => signInWithPassword(...a),
     },
+    rpc: (...a: any[]) => rpc(...a),
   },
 }));
 
@@ -33,6 +35,7 @@ function setLastSignIn(minutesAgo: number, email = "u@x.com") {
 beforeEach(() => {
   updateUser.mockReset().mockResolvedValue({ error: null });
   signInWithPassword.mockReset().mockResolvedValue({ error: null });
+  rpc.mockReset().mockResolvedValue({ data: "log-id", error: null });
   toast.mockReset();
 });
 
@@ -89,5 +92,36 @@ describe("AccountSecuritySection step-up auth", () => {
       expect(toast).toHaveBeenCalledWith(expect.objectContaining({ title: "Incorrect password" }))
     );
     expect(updateUser).not.toHaveBeenCalled();
+  });
+
+  it("logs audit events for successful email change (fresh session)", async () => {
+    setLastSignIn(1);
+    render(<AccountSecuritySection currentEmail="old@x.com" />);
+    fireEvent.change(screen.getByLabelText(/Change email/i), { target: { value: "new@x.com" } });
+    fireEvent.click(screen.getAllByRole("button", { name: /Update$/i })[0]);
+    await waitFor(() => expect(updateUser).toHaveBeenCalled());
+    await waitFor(() =>
+      expect(rpc).toHaveBeenCalledWith(
+        "log_security_event",
+        expect.objectContaining({ _event_type: "email_change_requested" })
+      )
+    );
+  });
+
+  it("logs reauth_failed when re-auth password is wrong", async () => {
+    setLastSignIn(10);
+    signInWithPassword.mockResolvedValue({ error: { message: "bad" } });
+    render(<AccountSecuritySection currentEmail="old@x.com" />);
+    fireEvent.change(screen.getByLabelText(/Change email/i), { target: { value: "new@x.com" } });
+    fireEvent.click(screen.getAllByRole("button", { name: /Update$/i })[0]);
+    await screen.findByText(/Confirm your password/i);
+    fireEvent.change(screen.getByPlaceholderText(/Current password/i), { target: { value: "wrong" } });
+    fireEvent.click(screen.getByRole("button", { name: /^Confirm$/i }));
+    await waitFor(() =>
+      expect(rpc).toHaveBeenCalledWith(
+        "log_security_event",
+        expect.objectContaining({ _event_type: "reauth_failed", _resource: "email" })
+      )
+    );
   });
 });

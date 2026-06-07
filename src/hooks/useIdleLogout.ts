@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { logSecurityEvent } from "@/lib/securityAudit";
 
 /**
  * P4: Idle session timeout — auto sign-out after `timeoutMs` of inactivity.
@@ -45,6 +46,10 @@ export function useIdleLogout(timeoutMs: number = DEFAULT_TIMEOUT_MS) {
 
       if (idle >= timeoutMs) {
         try {
+          // P5: log BEFORE signOut while session still valid
+          await logSecurityEvent("idle_logout", {
+            metadata: { idle_ms: idle, timeout_ms: timeoutMs },
+          });
           await supabase.auth.signOut();
           toast({
             title: "Signed out",

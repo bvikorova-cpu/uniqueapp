@@ -18,6 +18,7 @@ import {
   requireRecentAuth,
   reauthenticateWithPassword,
 } from "@/lib/requireRecentAuth";
+import { logSecurityEvent } from "@/lib/securityAudit";
 
 /**
  * P4 step-up auth: changing email or password requires a recent sign-in
@@ -50,7 +51,11 @@ export function AccountSecuritySection({ currentEmail }: AccountSecuritySectionP
   const applyAction = async (action: NonNullable<PendingAction>) => {
     if (action.kind === "email") {
       const { error } = await supabase.auth.updateUser({ email: action.value });
-      if (error) throw error;
+      if (error) {
+        logSecurityEvent("email_change_failed", { metadata: { reason: error.message } });
+        throw error;
+      }
+      logSecurityEvent("email_change_requested");
       toast({
         title: "Check your inbox",
         description: "We sent a confirmation link to the new email address.",
@@ -58,7 +63,11 @@ export function AccountSecuritySection({ currentEmail }: AccountSecuritySectionP
       setNewEmail("");
     } else {
       const { error } = await supabase.auth.updateUser({ password: action.value });
-      if (error) throw error;
+      if (error) {
+        logSecurityEvent("password_change_failed", { metadata: { reason: error.message } });
+        throw error;
+      }
+      logSecurityEvent("password_change_succeeded");
       toast({ title: "Password updated", description: "Use your new password next time you sign in." });
       setNewPassword("");
       setConfirmPassword("");
@@ -114,9 +123,11 @@ export function AccountSecuritySection({ currentEmail }: AccountSecuritySectionP
     try {
       const ok = await reauthenticateWithPassword(reauthPassword);
       if (!ok) {
+        logSecurityEvent("reauth_failed", { resource: pending.kind });
         toast({ title: "Incorrect password", variant: "destructive" });
         return;
       }
+      logSecurityEvent("reauth_succeeded", { resource: pending.kind });
       await applyAction(pending);
       setPending(null);
       setReauthPassword("");
