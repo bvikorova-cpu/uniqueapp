@@ -5,6 +5,7 @@ import { AccountSecuritySection } from "./AccountSecuritySection";
 const updateUser = vi.fn();
 const getUser = vi.fn();
 const signInWithPassword = vi.fn();
+const rpc = vi.fn();
 
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: {
@@ -13,6 +14,7 @@ vi.mock("@/integrations/supabase/client", () => ({
       getUser: (...a: any[]) => getUser(...a),
       signInWithPassword: (...a: any[]) => signInWithPassword(...a),
     },
+    rpc: (...a: any[]) => rpc(...a),
   },
 }));
 
