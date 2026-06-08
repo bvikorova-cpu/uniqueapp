@@ -197,10 +197,7 @@ export default function FundraisingDashboard() {
             <h1 className="text-4xl font-black mb-2">Dashboard - My Campaigns</h1>
             <p className="text-muted-foreground">Manage your fundraising campaigns</p>
           </div>
-          <Button onClick={() => navigate('/fundraising/medical/create')} size="lg">
-            <Plus className="mr-2 h-5 w-5" />
-            New Campaign
-          </Button>
+          <NewCampaignPicker triggerLabel="New Campaign" size="lg" />
         </div>
 
         {/* Stats Cards */}
@@ -282,10 +279,7 @@ export default function FundraisingDashboard() {
                   <div className="text-center py-12">
                     <Heart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                     <p className="text-muted-foreground mb-4">You don't have any campaigns yet</p>
-                    <Button onClick={() => navigate('/fundraising/medical/create')}>
-                      <Plus className="mr-2 h-4 w-4" />
-                      Create First Campaign
-                    </Button>
+                    <NewCampaignPicker triggerLabel="Create First Campaign" size="default" />
                   </div>
                 ) : (
                   campaigns.map((campaign) => (
@@ -300,9 +294,18 @@ export default function FundraisingDashboard() {
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => navigate(`/fundraising/medical/${campaign.id}`)}
+                              onClick={() => navigate(campaignDetailRoute(campaign.campaign_type, campaign.id))}
+                              title="View campaign"
                             >
                               <Eye className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => navigate(campaignDashboardRoute(campaign.campaign_type, campaign.id))}
+                              title="Manage finances"
+                            >
+                              <LayoutDashboard className="h-4 w-4" />
                             </Button>
                           </div>
                         </div>
