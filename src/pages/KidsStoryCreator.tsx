@@ -103,6 +103,7 @@ const KidsStoryCreator = () => {
 
       setStory({ ...result, characters: data.characters, illustrationStyle: data.illustrationStyle, category: data.category });
       refreshCredits();
+      refreshUsage();
       toast.success("Your story is ready! 📖");
     } catch (error: any) {
       console.error('Error:', error);
