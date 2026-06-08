@@ -76,6 +76,23 @@ const TIERS = [
     color: "from-purple-500 to-pink-600",
     features: ["Top priority placement", "Full customization", "Dedicated support", "Exclusive features"],
   },
+  {
+    id: "enterprise",
+    name: "Enterprise",
+    price: "Custom",
+    period: "by agreement",
+    icon: Building2,
+    color: "from-amber-400 via-yellow-500 to-amber-600",
+    custom: true,
+    features: [
+      "Custom packages tailored to your brand",
+      "Negotiated pricing (6-figure deals welcome)",
+      "Global campaigns & exclusive partnerships",
+      "Dedicated account manager & white-label",
+      "Direct API access & co-branded events",
+      "Designed for Pepsi, Gucci, LVMH-scale brands",
+    ],
+  },
 ];
 
 const CATEGORIES = [
