@@ -6,19 +6,20 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
-import { 
-  Heart, 
-  TrendingUp, 
-  Users, 
+import {
+  Heart,
+  TrendingUp,
+  Users,
   Euro,
-  Plus,
   Eye,
-  Edit,
   Clock,
   CheckCircle,
-  XCircle
+  XCircle,
+  LayoutDashboard,
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { campaignDetailRoute, campaignDashboardRoute, tableToCategory } from '@/lib/fundraisingRoutes';
+import { NewCampaignPicker } from '@/components/fundraising/NewCampaignPicker';
 
 interface Campaign {
   id: string;
