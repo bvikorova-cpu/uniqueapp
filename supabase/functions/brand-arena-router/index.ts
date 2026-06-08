@@ -67,9 +67,64 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
+    const admin = createClient(SUPABASE_URL, SERVICE_ROLE, { auth: { persistSession: false } });
+
+    // ── Enterprise public REST API (X-API-Key auth, no JWT) ─────────────
+    const apiKey =
+      req.headers.get("x-api-key") ||
+      req.headers.get("X-API-Key") ||
+      new URL(req.url).searchParams.get("api_key");
+
+    if (apiKey && apiKey.startsWith("ba_live_")) {
+      const url = new URL(req.url);
+      const { data: keyRow } = await admin
+        .from("brand_sponsor_api_keys")
+        .select("sponsor_id")
+        .eq("api_key", apiKey)
+        .maybeSingle();
+      if (!keyRow) {
+        return new Response(JSON.stringify({ error: "invalid_api_key" }), {
+          status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const { data: sponsor } = await admin
+        .from("brand_sponsors").select("*").eq("id", keyRow.sponsor_id).maybeSingle();
+      if (!sponsor) return new Response(JSON.stringify({ error: "sponsor_not_found" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      if (sponsor.subscription_status !== "active") return new Response(JSON.stringify({ error: "subscription_not_active" }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      if (sponsor.tier !== "enterprise") return new Response(JSON.stringify({ error: "api_access_requires_enterprise_tier" }), { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+      const apiAction = url.searchParams.get("action") || "me";
+      let payload: any = { error: "unknown_action" };
+      let status = 400;
+      if (apiAction === "me") { payload = { sponsor }; status = 200; }
+      else if (apiAction === "votes") {
+        const days = Math.min(90, Math.max(1, Number(url.searchParams.get("days") ?? 30)));
+        const since = new Date(Date.now() - days * 86400_000).toISOString();
+        const { data } = await admin.from("brand_votes").select("created_at").eq("brand_id", sponsor.id).gte("created_at", since);
+        const byDate: Record<string, number> = {};
+        (data ?? []).forEach((v: any) => { const d = new Date(v.created_at).toISOString().slice(0,10); byDate[d] = (byDate[d]||0)+1; });
+        payload = { brand_id: sponsor.id, days, total: data?.length ?? 0,
+          series: Object.entries(byDate).sort(([a],[b])=>a.localeCompare(b)).map(([date,votes])=>({date,votes})) };
+        status = 200;
+      } else if (apiAction === "rank") {
+        const { data } = await admin.from("brand_sponsors").select("id,total_votes")
+          .eq("subscription_status","active").eq("moderation_status","approved").order("total_votes",{ascending:false});
+        const rank = (data ?? []).findIndex((s:any)=>s.id===sponsor.id)+1;
+        payload = { rank: rank || null, total: data?.length ?? 0, total_votes: sponsor.total_votes };
+        status = 200;
+      } else if (apiAction === "competitors") {
+        const { data } = await admin.from("brand_sponsors").select("id,name,logo,tier,total_votes,category")
+          .eq("category", sponsor.category).eq("subscription_status","active").eq("moderation_status","approved")
+          .neq("id", sponsor.id).order("total_votes",{ascending:false}).limit(10);
+        payload = { category: sponsor.category, competitors: data ?? [] };
+        status = 200;
+      }
+      return new Response(JSON.stringify(payload), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    // ── Authenticated JWT flow (existing internal actions) ──────────────
     const authHeader = req.headers.get("Authorization") ?? "";
     const token = authHeader.replace("Bearer ", "");
-    const admin = createClient(SUPABASE_URL, SERVICE_ROLE, { auth: { persistSession: false } });
     const { data: userData } = await admin.auth.getUser(token);
     const user = userData?.user;
     if (!user) {
