@@ -307,6 +307,39 @@ const Navbar = () => {
                 })}
               </DropdownMenuContent>
             </DropdownMenu>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant={isBrandArenaActive ? "premium" : "ghost"}
+                  className="relative bg-gradient-to-r from-amber-500/10 via-pink-500/10 to-purple-500/10 hover:from-amber-500/20 hover:via-pink-500/20 hover:to-purple-500/20"
+                >
+                  <Trophy className="h-4 w-4 text-amber-500" />
+                  Brand Arena
+                  <Badge variant="secondary" className="ml-1 bg-gradient-to-r from-amber-400 to-pink-500 text-white text-[10px] px-1.5">
+                    HOT
+                  </Badge>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-64 max-h-96 overflow-y-auto bg-popover/95 backdrop-blur-xl border-border/50 shadow-[0_8px_40px_hsl(var(--primary)/0.08)]">
+                <DropdownMenuLabel className="text-xs uppercase tracking-wide text-muted-foreground">
+                  Brand Battle Arena
+                </DropdownMenuLabel>
+                {brandArenaServices.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <DropdownMenuItem key={item.path} asChild>
+                      <Link to={item.path} className="w-full cursor-pointer">
+                        <Icon className="h-4 w-4 mr-2" />
+                        {item.label}
+                      </Link>
+                    </DropdownMenuItem>
+                  );
+                })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+
             
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
