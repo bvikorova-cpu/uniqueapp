@@ -293,18 +293,45 @@ export default function BrandArenaHub() {
                 </Card>
               )}
 
-              {records.length > 0 && (
+              {!active.ai && active.id !== "embed" && active.id !== "profiles" && (
                 <div>
                   <h3 className="text-sm font-semibold mb-2">Recent</h3>
-                  <div className="space-y-2">
-                    {records.map((r) => (
-                      <div key={r.id} className="text-xs p-2 bg-muted/30 rounded border border-border/30">
-                        <pre className="whitespace-pre-wrap">{JSON.stringify(r.payload, null, 2)}</pre>
-                      </div>
-                    ))}
-                  </div>
+                  {recordsLoading && (
+                    <div className="space-y-2">
+                      <Skeleton className="h-12 w-full" />
+                      <Skeleton className="h-12 w-full" />
+                      <Skeleton className="h-12 w-full" />
+                    </div>
+                  )}
+                  {!recordsLoading && recordsError && (
+                    <div className="text-xs p-3 bg-destructive/10 text-destructive rounded border border-destructive/30 flex items-center justify-between gap-2">
+                      <span>{recordsError}</span>
+                      <Button size="sm" variant="outline" onClick={() => loadRecords(active)}>
+                        Retry
+                      </Button>
+                    </div>
+                  )}
+                  {!recordsLoading && !recordsError && records.length === 0 && (
+                    <p className="text-xs text-muted-foreground">No records yet — be the first to submit.</p>
+                  )}
+                  {!recordsLoading && !recordsError && records.length > 0 && (
+                    <div className="space-y-2">
+                      {records.map((r) => (
+                        <div key={r.id} className="text-xs p-2 bg-muted/30 rounded border border-border/30">
+                          <pre className="whitespace-pre-wrap">{JSON.stringify(r.payload, null, 2)}</pre>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
+            </CardContent>
+          </Card>
+        )}
+      </main>
+    </div>
+  );
+}
             </CardContent>
           </Card>
         )}
