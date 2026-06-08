@@ -981,14 +981,28 @@ serve(async (req) => {
         // ── Megatalent: instantly sync subscription state so premium unlocks ──
         await syncMegatalentSubscription(supabase, stripe, sub);
 
-        // ── Brand sponsorship cancellation ──
+        // ── Brand sponsorship status sync (active / past_due / paused) ──
         try {
+          const targetStatus =
+            sub.status === "active" || sub.status === "trialing"
+              ? "active"
+              : sub.status === "past_due" || sub.status === "unpaid"
+              ? "past_due"
+              : sub.status === "paused"
+              ? "paused"
+              : sub.status;
+          const endIso = (sub as any).current_period_end
+            ? new Date((sub as any).current_period_end * 1000).toISOString()
+            : null;
           await supabase
             .from("brand_sponsors")
-            .update({ subscription_status: "cancelled" })
+            .update({
+              subscription_status: targetStatus,
+              ...(endIso ? { subscription_end: endIso } : {}),
+            })
             .eq("stripe_subscription_id", sub.id);
         } catch (e) {
-          log("brand sponsor cancel error", { err: (e as Error).message });
+          log("brand sponsor status sync error", { err: (e as Error).message });
         }
 
         if (sub.status !== "active" && sub.status !== "trialing") break;
