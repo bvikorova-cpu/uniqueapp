@@ -94,7 +94,7 @@ export default function CampaignDashboard() {
       // and rely on RLS to ensure only campaign owner / admin reads it.
       const { data: donationsData, error: donationsError } = await supabase
         .from('campaign_donations' as any)
-        .select('id, amount, is_monthly, is_anonymous, donor_name, message, status, created_at, subscription_status, next_billing_at')
+        .select('id, amount, net_amount, is_monthly, is_anonymous, donor_name, message, status, created_at, subscription_status, next_billing_at')
         .eq('campaign_id', campaignId)
         .eq('campaign_type', campaignType)
         .eq('status', 'completed')
@@ -600,7 +600,7 @@ export default function CampaignDashboard() {
                 <div key={donation.id} className="flex items-center justify-between border-b pb-4">
                   <div>
                     <p className="font-medium">
-                      {donation.is_anonymous ? 'Anonymous' : donation.donor_name || donation.donor_email}
+                      {donation.is_anonymous ? 'Anonymous' : (donation.donor_name || 'Supporter')}
                     </p>
                     <p className="text-sm text-muted-foreground">
                       {new Date(donation.created_at).toLocaleDateString()}
@@ -611,9 +611,9 @@ export default function CampaignDashboard() {
                     )}
                   </div>
                   <div className="text-right">
-                    <p className="font-bold text-green-600">+€{donation.amount.toFixed(2)}</p>
+                    <p className="font-bold text-green-600">+€{Number(donation.amount ?? 0).toFixed(2)}</p>
                     <p className="text-xs text-muted-foreground">
-                      Net: €{donation.net_amount.toFixed(2)}
+                      Net: €{Number(donation.net_amount ?? donation.amount ?? 0).toFixed(2)}
                     </p>
                   </div>
                 </div>
