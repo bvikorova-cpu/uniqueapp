@@ -9,7 +9,7 @@ import {
   Trophy, TrendingUp, Star, Award, Crown, Zap, ArrowLeft, 
   Calendar, Users, BarChart3, Settings, ExternalLink, Loader2,
   AlertCircle, CheckCircle2, XCircle, Target, Building2, Key, Copy, Eye, EyeOff,
-  Palette, UserCheck, CalendarRange
+  Palette, LifeBuoy, CalendarRange
 } from "lucide-react";
 import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
@@ -573,8 +573,8 @@ export default function SponsorDashboard() {
             )}
             {isEnterprise && (
               <TabsTrigger value="account-manager">
-                <UserCheck className="h-4 w-4 mr-2" />
-                Account Manager
+                <LifeBuoy className="h-4 w-4 mr-2" />
+                Priority Support
               </TabsTrigger>
             )}
             {isEnterprise && (
