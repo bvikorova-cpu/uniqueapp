@@ -157,6 +157,12 @@ const CREDIT_PACKS: Record<string, { prices: Record<number, string>; successPath
     successPath: "/teen-career-counselor?payment=success&session_id={CHECKOUT_SESSION_ID}",
     cancelPath: "/teen-career-counselor?payment=canceled",
   },
+  // Teen Hub — unified credits for all Teen AI modules (€0.50/credit, dynamic)
+  teen_hub: {
+    prices: {},
+    successPath: "/teen-hub?payment=success&session_id={CHECKOUT_SESSION_ID}",
+    cancelPath: "/teen-hub?payment=canceled",
+  },
   // Coloring Pages credits — dynamic price_data (€0.50/credit) — 5 credits per page
   coloring: {
     prices: {},
@@ -1041,6 +1047,7 @@ serve(async (req) => {
             : creditType === "kids_story" ? "kids_story_credits"
             : creditType === "kids_academy" ? "kids_academy_credits"
             : creditType === "teen_career" ? "teen_career_credits"
+            : creditType === "teen_hub" ? "teen_credits"
             : creditType === "coloring" ? "coloring_credits"
             : creditType === "creative_forge" ? "creative_forge_credits"
             : creditType === "shadow_arena" ? "shadow_arena_credits"

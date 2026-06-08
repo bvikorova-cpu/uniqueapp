@@ -142,6 +142,13 @@ import {
   ColoringHub,
   TeenCareerCounselor,
   TeenCareerPricing,
+  TeenHub,
+  TeenHomeworkPro,
+  TeenEssayCoach,
+  TeenMentalWellness,
+  TeenStudyPlanner,
+  TeenSkillBuilder,
+  TeenSocialCoach,
   KidsChannel,
   KidsHub,
   KidsFeature,
@@ -832,6 +839,14 @@ const App = () => {
                         <Route path="/antique-appraisal" element={<AntiqueAppraisal />} />
                         <Route path="/teen-career-counselor" element={<TeenCareerCounselor />} />
                         <Route path="/teen-career-pricing" element={<TeenCareerPricing />} />
+                        <Route path="/teen" element={<Navigate to="/teen-hub" replace />} />
+                        <Route path="/teen-hub" element={<TeenHub />} />
+                        <Route path="/teen-homework-pro" element={<TeenHomeworkPro />} />
+                        <Route path="/teen-essay-coach" element={<TeenEssayCoach />} />
+                        <Route path="/teen-mental-wellness" element={<TeenMentalWellness />} />
+                        <Route path="/teen-study-planner" element={<TeenStudyPlanner />} />
+                        <Route path="/teen-skill-builder" element={<TeenSkillBuilder />} />
+                        <Route path="/teen-social-coach" element={<TeenSocialCoach />} />
                         <Route path="/premium-courses" element={<PremiumCourses />} />
                         <Route path="/masterclasses" element={<Masterclasses />} />
                         <Route path="/masterclass/:masterclassId" element={<MasterclassLearning />} />

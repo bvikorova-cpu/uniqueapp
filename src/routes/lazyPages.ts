@@ -122,6 +122,13 @@ export const BrandArenaHub = lazy(() => import("@/pages/brand-arena/BrandArenaHu
 export const BrainDuelHub = lazy(() => import("@/pages/brain-duel/BrainDuelHub"));
 export const TeenCareerCounselor = lazy(() => import("@/pages/TeenCareerCounselor"));
 export const TeenCareerPricing = lazy(() => import("@/pages/TeenCareerPricing"));
+export const TeenHub = lazy(() => import("@/pages/TeenHub"));
+export const TeenHomeworkPro = lazy(() => import("@/pages/TeenHomeworkPro"));
+export const TeenEssayCoach = lazy(() => import("@/pages/TeenEssayCoach"));
+export const TeenMentalWellness = lazy(() => import("@/pages/TeenMentalWellness"));
+export const TeenStudyPlanner = lazy(() => import("@/pages/TeenStudyPlanner"));
+export const TeenSkillBuilder = lazy(() => import("@/pages/TeenSkillBuilder"));
+export const TeenSocialCoach = lazy(() => import("@/pages/TeenSocialCoach"));
 export const KidsChannel = lazy(() => import("@/pages/KidsChannel"));
 export const KidsHub = lazy(() => import("@/pages/kids/KidsHub"));
 export const KidsFeature = lazy(() => import("@/pages/kids/KidsFeature"));
