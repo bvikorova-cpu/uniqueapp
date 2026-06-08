@@ -135,7 +135,7 @@ const KidsDrawingBuddy = () => {
         <ParentalGate
           isOpen={true}
           storageKey={PARENTAL_GATE_KEY}
-          onSuccess={() => setIsVerified(true)}
+          onSuccess={() => checkVerification()}
           onCancel={() => navigate("/")}
           featureName="AI Drawing Buddy"
         />
