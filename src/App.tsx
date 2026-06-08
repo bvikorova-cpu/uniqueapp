@@ -787,6 +787,7 @@ const App = () => {
                         <Route path="/virtual-pet" element={<VirtualPet />} />
                         <Route path="/astrology" element={<Astrology />} />
                         <Route path="/character-arena" element={<CharacterArena />} />
+                        <Route path="/arena-hub" element={<Navigate to="/character-arena" replace />} />
                         <Route path="/mystery-box" element={<MysteryBox />} />
                        <Route path="/pet-translator" element={<PetTranslator />} />
                        <Route path="/pet-translator-pricing" element={<PetTranslatorPricing />} />
