@@ -26,6 +26,7 @@ export default function CreateStudentCampaign() {
   const [creating, setCreating] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [consentChecked, setConsentChecked] = useState(false);
+  const [ageConfirmed, setAgeConfirmed] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -111,6 +112,15 @@ export default function CreateStudentCampaign() {
       toast({
         title: 'Error',
         description: 'You must confirm the consent checkbox',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!ageConfirmed) {
+      toast({
+        title: 'Age verification required',
+        description: 'You must be 18+ or have verified parental consent on file.',
         variant: 'destructive',
       });
       return;
@@ -343,6 +353,21 @@ export default function CreateStudentCampaign() {
                 />
                 <Label htmlFor="consent" className="text-sm leading-relaxed cursor-pointer">
                   I confirm that all provided information is true and accurate. I consent to the processing of personal data for verification purposes.
+                </Label>
+              </div>
+
+              {/* Age verification - MANDATORY */}
+              <div className="flex items-start space-x-3 border-2 border-amber-500/30 p-4 rounded-lg bg-amber-500/5">
+                <Checkbox
+                  id="age"
+                  checked={ageConfirmed}
+                  onCheckedChange={(checked) => setAgeConfirmed(checked as boolean)}
+                  className="mt-1"
+                />
+                <Label htmlFor="age" className="text-sm leading-relaxed cursor-pointer">
+                  I confirm that I am at least 18 years old, or that I have written
+                  parental/guardian consent on file. Campaigns by minors without
+                  verified consent will be removed.
                 </Label>
               </div>
 
