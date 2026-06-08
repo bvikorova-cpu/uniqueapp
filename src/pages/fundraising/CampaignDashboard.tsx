@@ -224,11 +224,11 @@ export default function CampaignDashboard() {
         return;
       }
 
-      const { data, error } = await supabase.functions.invoke('stripe-connect-payout', {
+      const { data, error } = await supabase.functions.invoke('request-campaign-payout', {
         body: {
-          campaignId,
-          campaignType,
-          amount,
+          campaign_id: campaignId,
+          campaign_type: campaignType,
+          amount_cents: Math.round(amount * 100),
         },
       });
 
