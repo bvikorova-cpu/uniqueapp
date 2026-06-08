@@ -332,10 +332,3 @@ export default function BrandArenaHub() {
     </div>
   );
 }
-            </CardContent>
-          </Card>
-        )}
-      </main>
-    </div>
-  );
-}
