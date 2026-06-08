@@ -114,13 +114,11 @@ const KidsStoryCreator = () => {
     if (!story) return;
     setContinuingStory(true);
     try {
-      const { data: result, error } = await supabase.functions.invoke('kids-story-creator', {
+      const continuationPrompt = `Continue this story: ${story.story.slice(-500)}. Keep characters: ${story.characters || "same"}. Category: ${story.category || "adventure"}. Write the next chapter with a satisfying mini-arc.`;
+      const { data: result, error } = await supabase.functions.invoke('kids-story-generate', {
         body: {
           title: story.title + " — Part 2",
-          characters: story.characters || "same characters",
-          theme: "Continue the story: " + story.story.slice(-300),
-          category: story.category || "adventure",
-          continueFrom: story.story.slice(-500),
+          prompt: continuationPrompt,
         }
       });
 
