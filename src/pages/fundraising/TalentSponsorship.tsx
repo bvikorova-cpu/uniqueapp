@@ -99,7 +99,10 @@ export default function TalentSponsorship() {
             {loading ? (
               <div className="col-span-full text-center py-12"><p className="text-muted-foreground">Loading talents...</p></div>
             ) : filteredCampaigns.length === 0 ? (
-              <div className="col-span-full text-center py-12"><p className="text-muted-foreground">No active talent campaigns found</p></div>
+              <div className="col-span-full text-center py-12 space-y-3">
+                <p className="text-muted-foreground">No active talent campaigns found</p>
+                <a href="/fundraising/talent/create" className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90">+ Apply as Talent</a>
+              </div>
             ) : (
               filteredCampaigns.map((campaign) => <TalentCampaignCard key={campaign.id} campaign={campaign} />)
             )}
