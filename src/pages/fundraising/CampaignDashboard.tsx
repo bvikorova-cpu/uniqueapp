@@ -87,10 +87,13 @@ export default function CampaignDashboard() {
       if (balanceError) throw balanceError;
       setBalance(balanceData);
 
-      // Load donations
+      // Load donations — only public-safe columns; donor_email is masked
+      // through get_public_campaign_donations for the public-facing detail
+      // view, but here the campaign owner does need a list. Restrict columns
+      // and rely on RLS to ensure only campaign owner / admin reads it.
       const { data: donationsData, error: donationsError } = await supabase
         .from('campaign_donations' as any)
-        .select('*')
+        .select('id, amount, is_monthly, is_anonymous, donor_name, message, status, created_at, subscription_status, next_billing_at')
         .eq('campaign_id', campaignId)
         .eq('campaign_type', campaignType)
         .eq('status', 'completed')
@@ -265,7 +268,10 @@ export default function CampaignDashboard() {
     <div className="container mx-auto p-6 max-w-7xl">
       <Button
         variant="ghost"
-        onClick={() => navigate(-1)}
+        onClick={() => {
+          if (window.history.length > 1) navigate(-1);
+          else navigate('/fundraising/dashboard');
+        }}
         className="mb-6"
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
