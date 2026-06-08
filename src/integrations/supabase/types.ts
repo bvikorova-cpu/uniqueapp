@@ -7525,56 +7525,6 @@ export type Database = {
         }
         Relationships: []
       }
-      brand_sponsor_account_managers: {
-        Row: {
-          assigned_at: string
-          calendar_url: string | null
-          created_at: string
-          id: string
-          manager_email: string
-          manager_name: string
-          manager_phone: string | null
-          manager_user_id: string | null
-          notes: string | null
-          sponsor_id: string
-          updated_at: string
-        }
-        Insert: {
-          assigned_at?: string
-          calendar_url?: string | null
-          created_at?: string
-          id?: string
-          manager_email: string
-          manager_name: string
-          manager_phone?: string | null
-          manager_user_id?: string | null
-          notes?: string | null
-          sponsor_id: string
-          updated_at?: string
-        }
-        Update: {
-          assigned_at?: string
-          calendar_url?: string | null
-          created_at?: string
-          id?: string
-          manager_email?: string
-          manager_name?: string
-          manager_phone?: string | null
-          manager_user_id?: string | null
-          notes?: string | null
-          sponsor_id?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "brand_sponsor_account_managers_sponsor_id_fkey"
-            columns: ["sponsor_id"]
-            isOneToOne: true
-            referencedRelation: "brand_sponsors"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       brand_sponsor_api_keys: {
         Row: {
           api_key: string
@@ -55452,7 +55402,9 @@ export type Database = {
           category: string
           created_at: string
           email: string
+          first_response_at: string | null
           id: string
+          is_priority_support: boolean
           language: string | null
           message: string
           name: string
@@ -55462,6 +55414,8 @@ export type Database = {
           satisfaction_rating: number | null
           screen_recording_url: string | null
           sentiment: string | null
+          sla_breached_at: string | null
+          sla_response_due_at: string | null
           status: string
           subject: string
           ticket_number: string | null
@@ -55477,7 +55431,9 @@ export type Database = {
           category?: string
           created_at?: string
           email: string
+          first_response_at?: string | null
           id?: string
+          is_priority_support?: boolean
           language?: string | null
           message: string
           name: string
@@ -55487,6 +55443,8 @@ export type Database = {
           satisfaction_rating?: number | null
           screen_recording_url?: string | null
           sentiment?: string | null
+          sla_breached_at?: string | null
+          sla_response_due_at?: string | null
           status?: string
           subject: string
           ticket_number?: string | null
@@ -55502,7 +55460,9 @@ export type Database = {
           category?: string
           created_at?: string
           email?: string
+          first_response_at?: string | null
           id?: string
+          is_priority_support?: boolean
           language?: string | null
           message?: string
           name?: string
@@ -55512,6 +55472,8 @@ export type Database = {
           satisfaction_rating?: number | null
           screen_recording_url?: string | null
           sentiment?: string | null
+          sla_breached_at?: string | null
+          sla_response_due_at?: string | null
           status?: string
           subject?: string
           ticket_number?: string | null
