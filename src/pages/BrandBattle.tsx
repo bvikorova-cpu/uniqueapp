@@ -111,9 +111,6 @@ export default function BrandBattle() {
     const sessionId = searchParams.get("session_id");
     if (payment === "success" && sessionId) {
       handlePaymentSuccess(sessionId);
-      searchParams.delete("payment");
-      searchParams.delete("session_id");
-      setSearchParams(searchParams);
     } else if (payment === "canceled") {
       toast.error("Payment was cancelled");
       searchParams.delete("payment");
@@ -130,10 +127,17 @@ export default function BrandBattle() {
       if (data?.success) {
         toast.success(`Success! We've added ${data.votesAdded} votes to your account.`);
         refetchVotes();
+        const next = new URLSearchParams(searchParams);
+        next.delete("payment"); next.delete("session_id");
+        setSearchParams(next, { replace: true });
       }
     } catch (error: any) {
       console.error("Error verifying payment:", error);
-      toast.error("Error verifying payment");
+      toast.error("Could not verify payment", {
+        description: "We were unable to confirm your vote purchase. Tap retry or contact support if you were charged.",
+        action: { label: "Retry", onClick: () => handlePaymentSuccess(sessionId) },
+        duration: 15000,
+      });
     }
   };
 
