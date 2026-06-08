@@ -56419,6 +56419,90 @@ export type Database = {
         }
         Relationships: []
       }
+      teen_credits: {
+        Row: {
+          created_at: string
+          credits_remaining: number
+          id: string
+          total_credits_purchased: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      teen_module_usage: {
+        Row: {
+          action: string
+          created_at: string
+          credits_used: number
+          id: string
+          metadata: Json | null
+          module: string
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          credits_used?: number
+          id?: string
+          metadata?: Json | null
+          module: string
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          credits_used?: number
+          id?: string
+          metadata?: Json | null
+          module?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      teen_module_visits: {
+        Row: {
+          created_at: string
+          id: string
+          last_visit: string
+          module: string
+          user_id: string
+          visit_count: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_visit?: string
+          module: string
+          user_id: string
+          visit_count?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_visit?: string
+          module?: string
+          user_id?: string
+          visit_count?: number
+        }
+        Relationships: []
+      }
       tennis_coins: {
         Row: {
           balance: number
