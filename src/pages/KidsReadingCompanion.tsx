@@ -11,6 +11,7 @@ import { useKidsReadingCredits, KIDS_READING_CREDIT_COST } from "@/hooks/useKids
 import { CreditBanner } from "@/components/kids/CreditBanner";
 import { ParentalGate } from "@/components/kids/ParentalGate";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import { ReadingHero } from "@/components/kids-reading/ReadingHero";
 import { ReadingLevelSelector } from "@/components/kids-reading/ReadingLevelSelector";
 import { ReadingStreakDashboard } from "@/components/kids-reading/ReadingStreakDashboard";
