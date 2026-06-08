@@ -39,11 +39,13 @@ interface BrandSponsor {
   id: string;
   name: string;
   logo: string;
-  tier: "bronze" | "silver" | "gold" | "platinum";
+  tier: "bronze" | "silver" | "gold" | "platinum" | "enterprise";
   category: string;
   total_votes: number;
   description: string;
   website: string;
+  featured?: boolean;
+  tier_priority?: number;
 }
 
 const SPONSOR_TIERS = {
@@ -58,22 +60,29 @@ const SPONSOR_TIERS = {
     name: "Silver Sponsor",
     price: 500,
     color: "from-gray-400 to-gray-600",
-    features: ["Sidebar banner placement", "Vote count display", "Advanced analytics", "Social media mentions"],
+    features: ["Sidebar banner placement", "Vote count display", "Advanced analytics", "Featured badge"],
     icon: Star,
   },
   gold: {
     name: "Gold Sponsor",
     price: 1500,
     color: "from-yellow-400 to-yellow-600",
-    features: ["Homepage hero placement", "Featured article", "Full analytics dashboard", "Custom landing page", "Priority support"],
+    features: ["Homepage hero placement", "Featured article", "Full analytics dashboard", "Priority placement", "Priority support"],
     icon: Crown,
   },
   platinum: {
     name: "Platinum Sponsor",
     price: 3000,
     color: "from-purple-400 to-purple-600",
-    features: ["All Gold features", "Custom landing page", "API access", "Dedicated account manager", "White-label options"],
+    features: ["All Gold features", "Top priority placement", "Dedicated support", "Exclusive features"],
     icon: Zap,
+  },
+  enterprise: {
+    name: "Enterprise Sponsor",
+    price: 10000,
+    color: "from-amber-400 via-yellow-500 to-amber-600",
+    features: ["Highest priority placement", "Full REST API access", "Dedicated account manager", "Co-branded events", "White-label options"],
+    icon: Building2,
   },
 };
 
@@ -206,7 +215,15 @@ export default function BrandBattle() {
   const filteredSponsors = selectedCategory === "All"
     ? sponsors
     : sponsors.filter(s => s.category === selectedCategory);
-  const sortedSponsors = [...filteredSponsors].sort((a, b) => b.total_votes - a.total_votes);
+  // Sort: tier priority (Enterprise→Platinum→Gold→Silver→Bronze) DESC, then total_votes DESC.
+  // Server already sets tier_priority via trigger; fall back to local map if absent.
+  const TIER_RANK: Record<string, number> = { enterprise: 100, platinum: 80, gold: 60, silver: 40, bronze: 20 };
+  const sortedSponsors = [...filteredSponsors].sort((a, b) => {
+    const pa = a.tier_priority ?? TIER_RANK[a.tier] ?? 0;
+    const pb = b.tier_priority ?? TIER_RANK[b.tier] ?? 0;
+    if (pb !== pa) return pb - pa;
+    return b.total_votes - a.total_votes;
+  });
 
   if (sponsorsLoading) {
     return (
@@ -415,7 +432,15 @@ export default function BrandBattle() {
                               )}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <div className="font-medium text-sm sm:text-base text-amber-100 truncate">{sponsor.name}</div>
+                              <div className="font-medium text-sm sm:text-base text-amber-100 truncate flex items-center gap-2">
+                                {sponsor.name}
+                                {(sponsor.featured || ["silver","gold","platinum","enterprise"].includes(sponsor.tier)) && (
+                                  <Badge className="text-[9px] uppercase tracking-wider bg-amber-500/20 text-amber-200 border border-amber-400/40">Featured</Badge>
+                                )}
+                                {sponsor.tier === "enterprise" && (
+                                  <Badge className="text-[9px] uppercase tracking-wider bg-gradient-to-r from-amber-400 to-yellow-600 text-black border-0">Enterprise</Badge>
+                                )}
+                              </div>
                               <div className="text-xs sm:text-sm text-amber-100/40 line-clamp-2 font-light">{sponsor.description}</div>
                               <Badge className="mt-1.5 text-[10px] uppercase tracking-wider bg-amber-500/10 text-amber-300 border border-amber-500/30 hover:bg-amber-500/15">{sponsor.category}</Badge>
                             </div>

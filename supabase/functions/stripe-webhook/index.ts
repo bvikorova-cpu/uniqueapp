@@ -470,7 +470,7 @@ serve(async (req) => {
                 const endIso = sub.current_period_end
                   ? new Date(sub.current_period_end * 1000).toISOString()
                   : null;
-                const { error: spErr } = await supabase
+                const { data: spRow, error: spErr } = await supabase
                   .from("brand_sponsors")
                   .update({
                     subscription_status: "active",
@@ -479,9 +479,29 @@ serve(async (req) => {
                     subscription_end: endIso,
                     ...(tier ? { tier } : {}),
                   })
-                  .eq("user_id", ownerId);
+                  .eq("user_id", ownerId)
+                  .select("id")
+                  .maybeSingle();
                 if (spErr) log("brand sponsor activate failed", { err: spErr.message });
                 else log("brand sponsor activated", { user: ownerId, sub: subId, tier });
+
+                // Enterprise tier: provision API key in the private key store (idempotent).
+                if (tier === "enterprise" && spRow?.id) {
+                  const { data: existingKey } = await supabase
+                    .from("brand_sponsor_api_keys")
+                    .select("api_key")
+                    .eq("sponsor_id", spRow.id)
+                    .maybeSingle();
+                  if (!existingKey) {
+                    const key = `ba_live_${crypto.randomUUID().replace(/-/g, "")}`;
+                    await supabase.from("brand_sponsor_api_keys").insert({
+                      sponsor_id: spRow.id,
+                      user_id: ownerId,
+                      api_key: key,
+                    });
+                    log("enterprise api key provisioned", { sponsor: spRow.id });
+                  }
+                }
               }
             } catch (e) {
               log("brand sponsor activation error", { err: (e as Error).message });

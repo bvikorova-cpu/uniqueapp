@@ -7525,11 +7525,41 @@ export type Database = {
         }
         Relationships: []
       }
+      brand_sponsor_api_keys: {
+        Row: {
+          api_key: string
+          created_at: string
+          sponsor_id: string
+          user_id: string
+        }
+        Insert: {
+          api_key: string
+          created_at?: string
+          sponsor_id: string
+          user_id: string
+        }
+        Update: {
+          api_key?: string
+          created_at?: string
+          sponsor_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brand_sponsor_api_keys_sponsor_id_fkey"
+            columns: ["sponsor_id"]
+            isOneToOne: true
+            referencedRelation: "brand_sponsors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       brand_sponsors: {
         Row: {
           category: string
           created_at: string | null
           description: string
+          featured: boolean
           id: string
           logo: string
           moderated_at: string | null
@@ -7543,6 +7573,7 @@ export type Database = {
           subscription_start: string | null
           subscription_status: string | null
           tier: string
+          tier_priority: number
           total_votes: number | null
           updated_at: string | null
           user_id: string
@@ -7552,6 +7583,7 @@ export type Database = {
           category: string
           created_at?: string | null
           description: string
+          featured?: boolean
           id?: string
           logo: string
           moderated_at?: string | null
@@ -7565,6 +7597,7 @@ export type Database = {
           subscription_start?: string | null
           subscription_status?: string | null
           tier: string
+          tier_priority?: number
           total_votes?: number | null
           updated_at?: string | null
           user_id: string
@@ -7574,6 +7607,7 @@ export type Database = {
           category?: string
           created_at?: string | null
           description?: string
+          featured?: boolean
           id?: string
           logo?: string
           moderated_at?: string | null
@@ -7587,6 +7621,7 @@ export type Database = {
           subscription_start?: string | null
           subscription_status?: string | null
           tier?: string
+          tier_priority?: number
           total_votes?: number | null
           updated_at?: string | null
           user_id?: string
@@ -63597,6 +63632,13 @@ export type Database = {
           total_tips: number
         }[]
       }
+      get_my_brand_api_key: {
+        Args: never
+        Returns: {
+          api_key: string
+          api_key_created_at: string
+        }[]
+      }
       get_my_clones: {
         Args: never
         Returns: {
@@ -64374,6 +64416,7 @@ export type Database = {
           user_id: string
         }[]
       }
+      rotate_my_brand_api_key: { Args: never; Returns: string }
       rotate_mystery_events: { Args: never; Returns: undefined }
       rotate_seasonal_missions: { Args: never; Returns: Json }
       search_users: {
