@@ -48,47 +48,87 @@ export function ParentalGate({
 }: ParentalGateProps) {
   const [mathQuestion, setMathQuestion] = useState(generateMathQuestion());
   const [userAnswer, setUserAnswer] = useState("");
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [attempts, setAttempts] = useState(0);
+  const [lockedUntil, setLockedUntil] = useState<number | null>(null);
+  const [now, setNow] = useState(Date.now());
+  const [submitting, setSubmitting] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const isLocked = lockedUntil !== null && now < lockedUntil;
+  const remainingLockSec = isLocked ? Math.ceil((lockedUntil! - now) / 1000) : 0;
+  const attemptsLeft = Math.max(0, MAX_ATTEMPTS - attempts);
+
+  const refreshQuestion = () => {
+    setMathQuestion(generateMathQuestion());
+    setUserAnswer("");
+    setError(null);
+    setTimeout(() => inputRef.current?.focus(), 0);
+  };
 
   useEffect(() => {
     if (isOpen) {
       setMathQuestion(generateMathQuestion());
       setUserAnswer("");
-      setError(false);
+      setError(null);
       setSuccess(false);
+      setAttempts(0);
+      setLockedUntil(null);
+      setSubmitting(false);
     }
   }, [isOpen]);
+
+  // Tick for lockout countdown
+  useEffect(() => {
+    if (!isLocked) return;
+    const id = setInterval(() => setNow(Date.now()), 500);
+    return () => clearInterval(id);
+  }, [isLocked]);
+
+  // Auto-clear lock when expired
+  useEffect(() => {
+    if (lockedUntil && now >= lockedUntil) {
+      setLockedUntil(null);
+      setAttempts(0);
+      refreshQuestion();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [now, lockedUntil]);
 
   // Block ESC key completely when dialog is open
   useEffect(() => {
     if (!isOpen) return;
-    
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
         e.stopPropagation();
       }
     };
-    
     document.addEventListener("keydown", handleKeyDown, true);
     return () => document.removeEventListener("keydown", handleKeyDown, true);
   }, [isOpen]);
 
-  const [submitting, setSubmitting] = useState(false);
-
   const handleSubmit = async () => {
-    if (submitting || success) return; // double-click guard
-    setSubmitting(true);
+    if (submitting || success || isLocked) return;
+    if (!userAnswer.trim()) {
+      setError("Please enter an answer first.");
+      return;
+    }
     const numAnswer = parseInt(userAnswer, 10);
+    if (Number.isNaN(numAnswer)) {
+      setError("Please enter a valid number.");
+      return;
+    }
+
+    setSubmitting(true);
+
     if (numAnswer === mathQuestion.answer) {
       setSuccess(true);
-      setError(false);
-      // Store in sessionStorage for 30 minutes
+      setError(null);
       const expiresAt = Date.now() + 30 * 60 * 1000;
       sessionStorage.setItem(storageKey, JSON.stringify({ expiresAt }));
 
-      // Server-side audit log (fire-and-forget)
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
@@ -101,29 +141,33 @@ export function ParentalGate({
         console.warn("Could not log parental gate verification:", e);
       }
 
-      setTimeout(() => {
-        onSuccess();
-      }, 800);
+      setTimeout(() => onSuccess(), 800);
     } else {
-      setError(true);
-      setSuccess(false);
-      setTimeout(() => {
-        setMathQuestion(generateMathQuestion());
-        setUserAnswer("");
-        setError(false);
-        setSubmitting(false);
-      }, 1500);
+      const newAttempts = attempts + 1;
+      setAttempts(newAttempts);
+
+      if (newAttempts >= MAX_ATTEMPTS) {
+        const until = Date.now() + LOCKOUT_MS;
+        setLockedUntil(until);
+        setNow(Date.now());
+        setError(`Too many incorrect answers. Please wait before trying again.`);
+      } else {
+        const left = MAX_ATTEMPTS - newAttempts;
+        setError(
+          `That's not right. ${left} ${left === 1 ? "attempt" : "attempts"} left. Try a new question or check the math.`
+        );
+      }
+      setUserAnswer("");
+      setSubmitting(false);
+      setTimeout(() => inputRef.current?.focus(), 0);
     }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleSubmit();
-    }
+    if (e.key === "Enter") handleSubmit();
   };
 
   const handleCancel = () => {
-    // Hard redirect to Home page to guarantee a clean navigation (no bypass)
     onCancel?.();
     window.location.assign("/");
   };
@@ -151,36 +195,74 @@ export function ParentalGate({
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-6 py-4">
+          <div className="space-y-4 py-2">
             <div className="bg-white/80 rounded-xl p-6 text-center shadow-inner border-2 border-purple-100">
-              <p className="text-sm text-purple-600 mb-2 font-medium">Ask your parent: 🧮</p>
-              <p className="text-3xl font-bold text-purple-800 mb-4">{mathQuestion.question}</p>
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-sm text-purple-600 font-medium">Ask your parent: 🧮</p>
+                <button
+                  type="button"
+                  onClick={refreshQuestion}
+                  disabled={success || isLocked}
+                  className="text-xs flex items-center gap-1 text-purple-600 hover:text-purple-800 disabled:opacity-40"
+                  aria-label="Get a new question"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" /> New question
+                </button>
+              </div>
+              <p className="text-3xl font-bold text-purple-800 mb-4" aria-live="polite">
+                {mathQuestion.question}
+              </p>
 
               <Input
+                ref={inputRef}
                 type="number"
+                inputMode="numeric"
                 value={userAnswer}
-                onChange={(e) => setUserAnswer(e.target.value)}
+                onChange={(e) => {
+                  setUserAnswer(e.target.value);
+                  if (error) setError(null);
+                }}
                 onKeyPress={handleKeyPress}
                 placeholder="Enter the answer"
                 className="text-center text-xl font-semibold h-14 border-2 border-purple-200 focus:border-purple-400"
-                disabled={success}
+                disabled={success || isLocked}
                 autoFocus
+                aria-invalid={!!error}
+                aria-describedby="parental-gate-status"
               />
+
+              {!error && !success && attempts > 0 && (
+                <p className="text-xs text-purple-500 mt-2">
+                  Attempts left: <strong>{attemptsLeft}</strong>
+                </p>
+              )}
             </div>
 
-            {error && (
-              <div className="flex items-center gap-2 text-red-500 bg-red-50 p-3 rounded-lg animate-shake">
-                <AlertCircle className="w-5 h-5" />
-                <span className="font-medium">That's not right. Try again!</span>
-              </div>
-            )}
+            <div id="parental-gate-status" aria-live="assertive" className="min-h-[3rem]">
+              {error && !isLocked && (
+                <div className="flex items-start gap-2 text-red-600 bg-red-50 border border-red-200 p-3 rounded-lg animate-shake">
+                  <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm font-medium">{error}</span>
+                </div>
+              )}
 
-            {success && (
-              <div className="flex items-center gap-2 text-green-600 bg-green-50 p-3 rounded-lg">
-                <CheckCircle className="w-5 h-5" />
-                <span className="font-medium">Correct! Opening {featureName}...</span>
-              </div>
-            )}
+              {isLocked && (
+                <div className="flex items-start gap-2 text-amber-700 bg-amber-50 border border-amber-200 p-3 rounded-lg">
+                  <Lock className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                  <div className="text-sm">
+                    <p className="font-semibold">Temporarily locked</p>
+                    <p>Try again in <strong>{remainingLockSec}s</strong>.</p>
+                  </div>
+                </div>
+              )}
+
+              {success && (
+                <div className="flex items-center gap-2 text-green-700 bg-green-50 border border-green-200 p-3 rounded-lg">
+                  <CheckCircle className="w-5 h-5" />
+                  <span className="font-medium">Correct! Opening {featureName}…</span>
+                </div>
+              )}
+            </div>
 
             <div className="flex gap-3">
               <Button
@@ -189,14 +271,14 @@ export function ParentalGate({
                 className="flex-1 border-2 border-purple-200 hover:bg-purple-50"
                 disabled={success}
               >
-                Cancel (Go Back)
+                Cancel & go home
               </Button>
               <Button
                 onClick={handleSubmit}
                 className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
-                disabled={!userAnswer || success}
+                disabled={!userAnswer || success || isLocked || submitting}
               >
-                {success ? "Opening..." : "Verify ✓"}
+                {success ? "Opening…" : submitting ? "Checking…" : "Verify answer ✓"}
               </Button>
             </div>
 
@@ -205,7 +287,7 @@ export function ParentalGate({
                 🔒 This safety check ensures adult supervision for AI-interactive features.
               </p>
               <p className="text-xs text-center text-purple-600 mt-1">
-                Clicking "Cancel" will take you back to the Home page.
+                Use <strong>New question</strong> if the math feels too tricky.
               </p>
             </div>
           </div>
