@@ -167,7 +167,7 @@ const KidsStoryCreator = () => {
           isOpen={true}
           storageKey={PARENTAL_GATE_KEY}
           onSuccess={handleVerificationSuccess}
-          onCancel={() => {}}
+          onCancel={() => navigate("/")}
           featureName="AI Story Creator"
         />
       </div>
