@@ -279,11 +279,16 @@ export default function CampaignDashboard() {
         Back
       </Button>
 
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold">Campaign Dashboard</h1>
-        <p className="text-muted-foreground mt-2">
-          Manage your {campaignType} campaign finances
-        </p>
+      <div className="mb-6 flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <h1 className="text-3xl font-bold">Campaign Dashboard</h1>
+          <p className="text-muted-foreground mt-2">
+            Manage your {campaignType} campaign finances
+          </p>
+        </div>
+        <Button variant="outline" onClick={() => navigate(`/fundraising/${campaignType}/${campaignId}/edit`)}>
+          <Pencil className="h-4 w-4 mr-2" /> Edit campaign
+        </Button>
       </div>
 
       {/* Stripe Connect Payout Settings */}
