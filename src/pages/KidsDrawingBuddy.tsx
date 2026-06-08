@@ -18,7 +18,7 @@ import { DrawingAchievements } from "@/components/kids-drawing/DrawingAchievemen
 import { useKidsDrawingCredits, KIDS_DRAWING_CREDIT_COST } from "@/hooks/useKidsDrawingCredits";
 import { useKidsDrawingCount } from "@/hooks/useKidsDrawingCount";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ParentalGate } from "@/components/kids/ParentalGate";
+import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const PARENTAL_GATE_KEY = "parental_gate_verified_kids_drawing_buddy";
