@@ -18,12 +18,14 @@ import { StoryQuickTemplates } from "@/components/kids-story/StoryQuickTemplates
 import { StoryWizardFlow } from "@/components/kids-story/StoryWizardFlow";
 import { StorybookDisplay } from "@/components/kids-story/StorybookDisplay";
 import { useNavigate } from "react-router-dom";
+import { useKidsStoryCreator } from "@/hooks/useKidsStoryCreator";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const KidsStoryCreator = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { balance, canUse, isLoading: creditsLoading, purchase, refresh: refreshCredits, costPerUse } = useKidsStoryCredits();
+  const { storiesCreatedThisMonth, isPremium, refreshUsage } = useKidsStoryCreator();
   const handleBuyCredits = async () => {
     const url = await purchase(50);
     if (url) { const __w = window.open(url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = url; }
