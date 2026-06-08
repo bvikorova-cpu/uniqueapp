@@ -84,12 +84,14 @@ const KidsStoryCreator = () => {
 
     setLoading(true);
     try {
-      const { data: result, error } = await supabase.functions.invoke('kids-story-creator', {
-        body: { title: data.title, characters: data.characters, theme: data.theme, category: data.category, illustrationStyle: data.illustrationStyle }
+      const prompt = `Characters: ${data.characters}. Theme: ${data.theme}. Category: ${data.category}. Illustration style: ${data.illustrationStyle}. Write a warm, age-appropriate story (ages 4-10) with a clear beginning, middle, and happy ending.`;
+      const { data: result, error } = await supabase.functions.invoke('kids-story-generate', {
+        body: { title: data.title, prompt }
       });
 
       if (error) {
-        if (error.message?.toLowerCase().includes('insufficient credits') || error.message?.toLowerCase().includes('limit')) {
+        const msg = (error.message || "").toLowerCase();
+        if (msg.includes('insufficient credits') || msg.includes('limit') || msg.includes('402')) {
           toast.error(`You need ${costPerUse} Story credits. Buy more to continue!`, { duration: 5000 });
           refreshCredits();
           return;
