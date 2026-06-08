@@ -41,13 +41,18 @@ const KidsReadingCompanion = () => {
     if (url) { const __w = window.open(url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = url; }
   };
 
-  // Stats (local for now)
-  const [stats, setStats] = useState({
-    textsAnalyzed: 0,
-    wordsLearned: 0,
-    quizzesTaken: 0,
-    currentStreak: 0,
+  // Stats (persisted in localStorage per user)
+  const statsKey = `kids-reading-stats:${user?.id || "guest"}`;
+  const [stats, setStats] = useState(() => {
+    try {
+      const raw = localStorage.getItem(statsKey);
+      if (raw) return JSON.parse(raw);
+    } catch {}
+    return { textsAnalyzed: 0, wordsLearned: 0, quizzesTaken: 0, currentStreak: 0 };
   });
+  useEffect(() => {
+    try { localStorage.setItem(statsKey, JSON.stringify(stats)); } catch {}
+  }, [stats, statsKey]);
 
   // Parental gate
   const [isVerified, setIsVerified] = useState<boolean>(() => {
