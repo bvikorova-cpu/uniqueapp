@@ -449,6 +449,45 @@ serve(async (req) => {
             }
           }
 
+          // ── Brand Battle Arena sponsorship activation ──
+          // Flips brand_sponsors.subscription_status from 'pending' → 'active'
+          // and stamps subscription id + period dates from Stripe.
+          if (
+            session.mode === "subscription" &&
+            session.metadata?.type === "brand_sponsorship"
+          ) {
+            try {
+              const ownerId = session.metadata?.user_id;
+              const tier = session.metadata?.tier;
+              const subId = typeof session.subscription === "string"
+                ? session.subscription
+                : session.subscription?.id;
+              if (ownerId && subId) {
+                const sub = await stripe.subscriptions.retrieve(subId);
+                const startIso = sub.current_period_start
+                  ? new Date(sub.current_period_start * 1000).toISOString()
+                  : new Date().toISOString();
+                const endIso = sub.current_period_end
+                  ? new Date(sub.current_period_end * 1000).toISOString()
+                  : null;
+                const { error: spErr } = await supabase
+                  .from("brand_sponsors")
+                  .update({
+                    subscription_status: "active",
+                    stripe_subscription_id: subId,
+                    subscription_start: startIso,
+                    subscription_end: endIso,
+                    ...(tier ? { tier } : {}),
+                  })
+                  .eq("user_id", ownerId);
+                if (spErr) log("brand sponsor activate failed", { err: spErr.message });
+                else log("brand sponsor activated", { user: ownerId, sub: subId, tier });
+              }
+            } catch (e) {
+              log("brand sponsor activation error", { err: (e as Error).message });
+            }
+          }
+
           // ── Job listing activation fallback (in case verify-job-listing-payment
           //    never fires — e.g. user closed tab before redirect). Idempotent via
           //    job_listing_payments.stripe_session_id. Mirrors verify-job-listing-payment.
