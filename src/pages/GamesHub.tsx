@@ -239,6 +239,47 @@ const GamesHub = () => {
             )}
           </div>
 
+          {!filteredGames && (favoriteGames.length > 0 || recentGames.length > 0) && (
+            <div className="space-y-6 mb-8">
+              {favoriteGames.length > 0 && (
+                <section>
+                  <h2 className="text-lg font-bold mb-3 flex items-center gap-2">
+                    <Heart className="h-5 w-5 fill-primary text-primary" /> Your Favorites
+                  </h2>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+                    {favoriteGames.slice(0, 10).map((g) => (
+                      <GameCard
+                        key={g.id}
+                        game={g}
+                        onClick={() => handleOpen(g)}
+                        isFavorite
+                        onToggleFavorite={() => toggleFavorite({ id: g.id, title: g.title, category: gdCategories[g.category] })}
+                      />
+                    ))}
+                  </div>
+                </section>
+              )}
+              {recentGames.length > 0 && (
+                <section>
+                  <h2 className="text-lg font-bold mb-3 flex items-center gap-2">
+                    <Clock className="h-5 w-5 text-primary" /> Recently Played
+                  </h2>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+                    {recentGames.slice(0, 10).map((g) => (
+                      <GameCard
+                        key={g.id}
+                        game={g}
+                        onClick={() => handleOpen(g)}
+                        isFavorite={isFavorite(g.id)}
+                        onToggleFavorite={() => toggleFavorite({ id: g.id, title: g.title, category: gdCategories[g.category] })}
+                      />
+                    ))}
+                  </div>
+                </section>
+              )}
+            </div>
+          )}
+
           {filteredGames ? (
             /* Search results */
             <motion.div
