@@ -93,6 +93,18 @@ export default function SponsorDashboard() {
         }
         throw error;
       }
+      // Server-side gate: only active paid sponsors get dashboard access.
+      // 'pending' (checkout opened but not paid), 'past_due', 'paused',
+      // 'cancelled' all redirect back to registration / pricing.
+      if (data && data.subscription_status !== "active") {
+        toast.error(
+          data.subscription_status === "pending"
+            ? "Complete payment to unlock your sponsor dashboard"
+            : `Subscription ${data.subscription_status} — renew to regain access`,
+        );
+        navigate("/sponsor-registration");
+        return null;
+      }
       return data as BrandSponsor;
     },
     enabled: !!user,
