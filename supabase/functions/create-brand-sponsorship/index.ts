@@ -12,6 +12,7 @@ const TIER_PRICES = {
   silver: "price_1SSD8C0QTWhd4oRpvFe7cP4z",
   gold: "price_1SSD8O0QTWhd4oRpihR2CucC",
   platinum: "price_1SSD8O0QTWhd4oRpD269KcUs",
+  enterprise: "price_1TfxBOGaXSfGtYFtgWu0U3QY",
 };
 
 serve(async (req) => {

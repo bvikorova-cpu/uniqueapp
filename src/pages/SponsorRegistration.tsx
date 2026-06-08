@@ -79,17 +79,16 @@ const TIERS = [
   {
     id: "enterprise",
     name: "Enterprise",
-    price: "Custom",
-    period: "by agreement",
+    price: "€10,000",
+    period: "month",
     icon: Building2,
     color: "from-amber-400 via-yellow-500 to-amber-600",
-    custom: true,
     features: [
-      "Custom packages tailored to your brand",
-      "Negotiated pricing (6-figure deals welcome)",
       "Global campaigns & exclusive partnerships",
       "Dedicated account manager & white-label",
       "Direct API access & co-branded events",
+      "Priority placement across all hubs",
+      "Custom brand activations & events",
       "Designed for Pepsi, Gucci, LVMH-scale brands",
     ],
   },
@@ -178,16 +177,8 @@ export default function SponsorRegistration() {
       return;
     }
 
-    // Enterprise tier: custom deal, no Stripe checkout — open contact email
-    if (selectedTier === "enterprise") {
-      const subject = encodeURIComponent(`Enterprise sponsorship inquiry — ${data.name}`);
-      const body = encodeURIComponent(
-        `Brand: ${data.name}\nCategory: ${data.category}\nWebsite: ${data.website}\nLogo: ${data.logo}\n\nDescription:\n${data.description}\n\n— Please contact us to discuss a custom Enterprise package and pricing.`
-      );
-      window.location.href = `mailto:sales@uniqueapp.fun?subject=${subject}&body=${body}`;
-      toast.success("Opening your email client — our team will reply within 24h.");
-      return;
-    }
+    
+
 
     setSubmitting(true);
     try {
@@ -445,7 +436,7 @@ export default function SponsorRegistration() {
                       </>
                     ) : (
                       <>
-                        {selectedTier === "enterprise" ? "Contact Sales" : "Proceed to Checkout"}
+                        Proceed to Checkout
                         <ArrowLeft className="ml-2 h-5 w-5 rotate-180" />
                       </>
                     )}
