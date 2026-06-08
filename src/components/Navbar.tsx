@@ -73,8 +73,14 @@ const Navbar = () => {
     { path: "/ai-mentor", label: "AI Personal Mentor", icon: UserCircle },
     { path: "/kids-channel", label: "Kids Channel", icon: Video },
     { path: "/coloring-pages", label: "Coloring Pages", icon: Palette },
-    { path: "/brand-battle", label: "Brand Battle Arena", icon: Trophy },
     { path: "/brain-duel", label: "BrainDuel - Knowledge Battle", icon: Trophy },
+  ];
+
+  const brandArenaServices = [
+    { path: "/brand-battle", label: "Brand Battle Arena", icon: Trophy },
+    { path: "/brand-battle/hub", label: "Arena Hub — 20 Features", icon: Sparkles },
+    { path: "/sponsor-registration", label: "Become a Sponsor", icon: Crown },
+    { path: "/sponsor-dashboard", label: "Sponsor Dashboard", icon: Building2 },
   ];
 
   const kidsAcademyServices = [
