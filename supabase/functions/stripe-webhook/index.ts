@@ -375,6 +375,53 @@ serve(async (req) => {
             log("anon-date credits webhook error", { err: (anErr as Error).message });
           }
 
+          // ── Campaign donation fallback (one-off) ────────────────────────
+          // Normal path: frontend redirect calls verify-donation → verify-payment
+          // which inserts the campaign_donations row. If the user closes the
+          // tab before the redirect lands we record the donation here so the
+          // campaign total still bumps. Idempotent via _stripe_payment_id.
+          try {
+            const md = session.metadata ?? {};
+            const isDonation = md.type === "campaign_donation" || md.product === "campaign_donation";
+            const isOneOff = session.mode === "payment"; // subscriptions handled via invoice.payment_succeeded
+            if (isDonation && isOneOff && md.campaign_id && md.campaign_type) {
+              const amountEur = (session.amount_total ?? 0) / 100;
+              const piId = typeof session.payment_intent === "string"
+                ? session.payment_intent
+                : session.payment_intent?.id;
+              const paymentId = piId || session.id;
+
+              const { data: existingDon } = await supabase
+                .from("campaign_donations")
+                .select("id")
+                .eq("stripe_payment_id", paymentId)
+                .maybeSingle();
+
+              if (!existingDon && amountEur > 0) {
+                const { error: donErr } = await supabase.rpc(
+                  "process_campaign_donation",
+                  {
+                    _campaign_id: md.campaign_id,
+                    _campaign_type: md.campaign_type,
+                    _donor_id: md.user_id || null,
+                    _donor_email: md.donor_email || session.customer_details?.email || null,
+                    _donor_name: md.donor_name || null,
+                    _amount: amountEur,
+                    _is_monthly: false,
+                    _is_anonymous: md.is_anonymous === "true",
+                    _message: md.donation_message || null,
+                    _stripe_payment_id: paymentId,
+                  },
+                );
+                if (donErr) log("donation fallback RPC failed", { err: donErr.message });
+                else log("donation fallback recorded via webhook", { paymentId, amountEur });
+              }
+            }
+          } catch (dErr) {
+            log("donation webhook fallback error", { err: (dErr as Error).message });
+          }
+
+
           const { error } = await supabase
             .from("payment_records")
             .update({
