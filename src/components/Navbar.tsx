@@ -604,7 +604,32 @@ const Navbar = () => {
                 );
               })}
             </div>
-            
+
+            {/* Brand Arena Section */}
+            <div className="pt-2 pb-1">
+              <div className="px-3 py-1.5 text-xs font-semibold bg-gradient-to-r from-amber-500 via-pink-500 to-purple-500 bg-clip-text text-transparent flex items-center gap-2">
+                <Trophy className="h-3.5 w-3.5 text-amber-500" />
+                Brand Arena
+                <Badge variant="secondary" className="bg-gradient-to-r from-amber-400 to-pink-500 text-white text-[9px] px-1.5">HOT</Badge>
+              </div>
+              {brandArenaServices.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.path;
+                return (
+                  <Link key={item.path} to={item.path} onClick={() => setIsMenuOpen(false)}>
+                    <Button
+                      variant={isActive ? "premium" : "ghost"}
+                      className="w-full justify-start text-sm py-2"
+                      size="sm"
+                    >
+                      <Icon className="h-4 w-4" />
+                      {item.label}
+                    </Button>
+                  </Link>
+                );
+              })}
+            </div>
+
             {/* Kids Academy Section */}
             <div className="pt-2 pb-1">
               <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground">
