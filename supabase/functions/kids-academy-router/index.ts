@@ -27,6 +27,17 @@ const COSTS: Record<string, number> = {
   "hub.parentDigest": 3,
 };
 
+// Simple in-memory per-user rate limiter for free read actions to prevent abuse.
+const rateMap = new Map<string, number[]>();
+function rateLimit(key: string, max: number, windowMs: number): boolean {
+  const now = Date.now();
+  const arr = (rateMap.get(key) ?? []).filter(t => now - t < windowMs);
+  if (arr.length >= max) { rateMap.set(key, arr); return false; }
+  arr.push(now);
+  rateMap.set(key, arr);
+  return true;
+}
+
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY") ?? "";
 
 async function callAI(messages: any[], json = true): Promise<any> {
@@ -103,6 +114,9 @@ serve(async (req) => {
       }
 
       case "hub.familyLeaderboard": {
+        if (!rateLimit(`fl:${userId}`, 20, 60_000)) {
+          return ok({ error: "Rate limit exceeded. Try again in a minute." }, 429);
+        }
         const { data } = await supabase.from("kids_academy_xp").select("child_id, total_xp, level, current_streak").eq("parent_id", userId).order("total_xp", { ascending: false });
         return ok({ leaderboard: data ?? [] });
       }

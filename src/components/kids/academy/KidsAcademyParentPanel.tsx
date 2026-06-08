@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { Bell, BarChart3, Clock, Mail, Shield, CheckCircle } from "lucide-react";
+import { Bell, BarChart3, Clock, Mail, Shield, CheckCircle, Download } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { getXP, getModuleVisits } from "@/lib/kidsAcademyEconomy";
 
@@ -78,6 +79,27 @@ export const KidsAcademyParentPanel = () => {
     { label: "Badges Won", value: String(badgesWon), emoji: "🏅" },
   ];
 
+  const exportCsv = () => {
+    const rows = [
+      ["metric", "value"],
+      ["total_xp", String(xp)],
+      ["badges_won", String(badgesWon)],
+      ["modules_visited", String(modulesVisited)],
+      ["total_minutes", String(totalMinutes)],
+      [],
+      ["module", "visits", "minutes"],
+      ...moduleRows.map(m => [m.name, String(m.visits), String(m.visits * MINUTES_PER_VISIT)]),
+    ];
+    const csv = rows.map(r => r.map(c => `"${String(c ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `kids-academy-report-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-4">
       <Card className="border-2 border-blue-500/20">
@@ -85,10 +107,15 @@ export const KidsAcademyParentPanel = () => {
           <CardTitle className="flex items-center gap-2 text-lg">
             <Shield className="w-5 h-5 text-blue-500" />
             Parent Dashboard
-            <Badge variant="outline" className="ml-auto text-xs">
-              <Bell className="w-3 h-3 mr-1" />
-              Parental Controls
-            </Badge>
+            <Button
+              variant="outline"
+              size="sm"
+              className="ml-auto h-7 text-xs gap-1"
+              onClick={exportCsv}
+            >
+              <Download className="w-3 h-3" />
+              Export CSV
+            </Button>
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">

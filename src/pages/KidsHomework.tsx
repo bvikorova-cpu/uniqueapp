@@ -43,13 +43,24 @@ const KidsHomework = () => {
     purchaseCredits,
   } = useHomeworkCredits();
 
-  const [subject, setSubject] = useState("");
+  const [subject, setSubject] = useState<string>(() => {
+    try { return localStorage.getItem("kids_homework_subject") || ""; } catch { return ""; }
+  });
   const [question, setQuestion] = useState("");
-  const [difficulty, setDifficulty] = useState("");
+  const [difficulty, setDifficulty] = useState<string>(() => {
+    try { return localStorage.getItem("kids_homework_difficulty") || ""; } catch { return ""; }
+  });
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [lastQuestion, setLastQuestion] = useState("");
   const [photo, setPhoto] = useState<string | null>(null);
+
+  useEffect(() => {
+    try { if (subject) localStorage.setItem("kids_homework_subject", subject); } catch {}
+  }, [subject]);
+  useEffect(() => {
+    try { if (difficulty) localStorage.setItem("kids_homework_difficulty", difficulty); } catch {}
+  }, [difficulty]);
 
   const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];

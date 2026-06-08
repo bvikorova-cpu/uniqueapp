@@ -27,6 +27,8 @@ import { MagicalParticles } from "@/components/kids/chat/MagicalParticles";
 import { characterImages } from "@/data/characterImages";
 import Navbar from "@/components/Navbar";
 
+const HISTORY_PREFIX = "kids_voicechat_history_v1:";
+
 export default function KidsVoiceChat() {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -51,6 +53,27 @@ export default function KidsVoiceChat() {
       setShowParentalGate(true);
     }
   }, []);
+
+  // Persist messages per character so conversation survives refresh.
+  useEffect(() => {
+    if (!selectedCharacter) return;
+    try {
+      const raw = localStorage.getItem(HISTORY_PREFIX + selectedCharacter.id);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) setMessages(parsed);
+      }
+    } catch {}
+  }, [selectedCharacter?.id]);
+
+  useEffect(() => {
+    if (!selectedCharacter || messages.length === 0) return;
+    try {
+      // Keep last 50 messages to bound storage.
+      const trimmed = messages.slice(-50);
+      localStorage.setItem(HISTORY_PREFIX + selectedCharacter.id, JSON.stringify(trimmed));
+    } catch {}
+  }, [messages, selectedCharacter?.id]);
 
   // Verify Stripe checkout return (?payment=success&session_id=...)
   useEffect(() => {
