@@ -355,7 +355,7 @@ export default function FundraisingDashboard() {
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => navigate(`/fundraising/medical/${campaign.id}`)}
+                          onClick={() => navigate(campaignDetailRoute(campaign.campaign_type, campaign.id))}
                         >
                           <Eye className="h-4 w-4" />
                         </Button>
