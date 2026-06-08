@@ -27,6 +27,17 @@ const COSTS: Record<string, number> = {
   "hub.parentDigest": 3,
 };
 
+// Simple in-memory per-user rate limiter for free read actions to prevent abuse.
+const rateMap = new Map<string, number[]>();
+function rateLimit(key: string, max: number, windowMs: number): boolean {
+  const now = Date.now();
+  const arr = (rateMap.get(key) ?? []).filter(t => now - t < windowMs);
+  if (arr.length >= max) { rateMap.set(key, arr); return false; }
+  arr.push(now);
+  rateMap.set(key, arr);
+  return true;
+}
+
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY") ?? "";
 
 async function callAI(messages: any[], json = true): Promise<any> {
