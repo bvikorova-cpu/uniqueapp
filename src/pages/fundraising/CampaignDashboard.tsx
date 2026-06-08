@@ -600,7 +600,7 @@ export default function CampaignDashboard() {
                 <div key={donation.id} className="flex items-center justify-between border-b pb-4">
                   <div>
                     <p className="font-medium">
-                      {donation.is_anonymous ? 'Anonymous' : donation.donor_name || donation.donor_email}
+                      {donation.is_anonymous ? 'Anonymous' : (donation.donor_name || 'Supporter')}
                     </p>
                     <p className="text-sm text-muted-foreground">
                       {new Date(donation.created_at).toLocaleDateString()}
@@ -611,9 +611,9 @@ export default function CampaignDashboard() {
                     )}
                   </div>
                   <div className="text-right">
-                    <p className="font-bold text-green-600">+€{donation.amount.toFixed(2)}</p>
+                    <p className="font-bold text-green-600">+€{Number(donation.amount ?? 0).toFixed(2)}</p>
                     <p className="text-xs text-muted-foreground">
-                      Net: €{donation.net_amount.toFixed(2)}
+                      Net: €{Number(donation.net_amount ?? donation.amount ?? 0).toFixed(2)}
                     </p>
                   </div>
                 </div>
