@@ -8,7 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Trophy, TrendingUp, Star, Award, Crown, Zap, ArrowLeft, 
   Calendar, Users, BarChart3, Settings, ExternalLink, Loader2,
-  AlertCircle, CheckCircle2, XCircle, Target, Building2, Key, Copy, Eye, EyeOff
+  AlertCircle, CheckCircle2, XCircle, Target, Building2, Key, Copy, Eye, EyeOff,
+  Palette, UserCheck, CalendarRange
 } from "lucide-react";
 import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
