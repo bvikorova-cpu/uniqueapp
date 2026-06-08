@@ -40,39 +40,8 @@ const KidsDrawingBuddy = () => {
   const { balance, canUse, refresh, costPerUse } = useKidsDrawingCredits();
   const { count: drawingsCount } = useKidsDrawingCount();
 
-  // Parental gate
-  const [isVerified, setIsVerified] = useState<boolean>(() => {
-    const stored = sessionStorage.getItem(PARENTAL_GATE_KEY);
-    if (!stored) return false;
-    try {
-      const { expiresAt } = JSON.parse(stored);
-      if (Date.now() < expiresAt) return true;
-      sessionStorage.removeItem(PARENTAL_GATE_KEY);
-      return false;
-    } catch {
-      sessionStorage.removeItem(PARENTAL_GATE_KEY);
-      return false;
-    }
-  });
-
-  useEffect(() => {
-    const tick = () => {
-      const stored = sessionStorage.getItem(PARENTAL_GATE_KEY);
-      if (!stored) { if (isVerified) setIsVerified(false); return; }
-      try {
-        const { expiresAt } = JSON.parse(stored);
-        if (Date.now() >= expiresAt) {
-          sessionStorage.removeItem(PARENTAL_GATE_KEY);
-          if (isVerified) setIsVerified(false);
-        }
-      } catch {
-        sessionStorage.removeItem(PARENTAL_GATE_KEY);
-        if (isVerified) setIsVerified(false);
-      }
-    };
-    const interval = setInterval(tick, 30_000);
-    return () => clearInterval(interval);
-  }, [isVerified]);
+  // Parental gate (shared hook)
+  const { isVerified, checkVerification } = useParentalGate(PARENTAL_GATE_KEY);
 
   useEffect(() => {
     const checkAuth = async () => {
