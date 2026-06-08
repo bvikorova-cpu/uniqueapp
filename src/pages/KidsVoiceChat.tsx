@@ -25,6 +25,7 @@ import { StoryModePrompt } from "@/components/kids/chat/StoryModePrompt";
 import { ImmersiveCharacterCard } from "@/components/kids/chat/ImmersiveCharacterCard";
 import { MagicalParticles } from "@/components/kids/chat/MagicalParticles";
 import { characterImages } from "@/data/characterImages";
+import Navbar from "@/components/Navbar";
 
 export default function KidsVoiceChat() {
   const navigate = useNavigate();
@@ -101,14 +102,16 @@ export default function KidsVoiceChat() {
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
+      const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
+      const SUPABASE_ANON = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
       const response = await fetch(
-        'https://jufrdzeonywluwutvyxz.supabase.co/functions/v1/character-chat',
+        `${SUPABASE_URL}/functions/v1/character-chat`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${session?.access_token ?? ''}`,
-            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1ZnJkemVvbnl3bHV3dXR2eXh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMzU0MTgsImV4cCI6MjA3NDcxMTQxOH0.UOe-_WQoTeBGFmnezRHRcjFJaJd71a7rYlurDkI6h4Q',
+            'Authorization': `Bearer ${session?.access_token ?? SUPABASE_ANON}`,
+            'apikey': SUPABASE_ANON,
           },
           body: JSON.stringify({
             messages: newMessages,
@@ -203,7 +206,9 @@ export default function KidsVoiceChat() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-violet-100 via-pink-50 to-cyan-100 relative overflow-hidden">
+      <Navbar />
       <MagicalParticles count={10} />
+
 
       <div className="container mx-auto px-4 pt-24 pb-12 relative z-10">
         <Button variant="ghost" onClick={() => navigate("/kids-channel")} className="mb-6 hover:bg-white/50">

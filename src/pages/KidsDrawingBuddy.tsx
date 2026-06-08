@@ -127,8 +127,8 @@ const KidsDrawingBuddy = () => {
 
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("kids-drawing-tutorial", {
-        body: { topic: t, difficulty: d }
+      const { data, error } = await supabase.functions.invoke("kids-drawing-enhance", {
+        body: { mode: "tutorial", topic: t, difficulty: d }
       });
       if (error) throw error;
       setTutorial(data);

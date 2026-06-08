@@ -58,6 +58,67 @@ Deno.serve(async (req) => {
     const user = userData.user;
 
     const body = await req.json().catch(() => ({}));
+    const mode = String(body.mode || body.action || "enhance").toLowerCase();
+
+    // ============ TUTORIAL MODE ============
+    if (mode === "tutorial") {
+      const topic = String(body.topic || "").trim().slice(0, 100);
+      const difficulty = String(body.difficulty || "easy").toLowerCase();
+      if (!topic) return json({ error: "topic required" }, 400);
+
+      const adminT = createClient(SUPABASE_URL, SERVICE_KEY);
+      const { data: credRowT } = await adminT
+        .from("kids_drawing_credits")
+        .select("credits_remaining")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (!credRowT) {
+        await adminT.from("kids_drawing_credits").insert({
+          user_id: user.id, credits_remaining: 0, total_credits_purchased: 0,
+        });
+        return json({ error: "Insufficient credits", credits_remaining: 0, cost: COST }, 402);
+      }
+      const balanceT = credRowT.credits_remaining ?? 0;
+      if (balanceT < COST) {
+        return json({ error: "Insufficient credits", credits_remaining: balanceT, cost: COST }, 402);
+      }
+
+      const stepCount = difficulty === "hard" ? 6 : difficulty === "medium" ? 5 : 4;
+      const tRes = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          response_format: { type: "json_object" },
+          messages: [
+            { role: "system", content: `You create kid-friendly step-by-step drawing tutorials for ages 4-12. Return STRICT JSON: {"title": string, "steps": [{"instruction": string}]}. Each instruction <20 words, encouraging, simple shapes (circle, oval, line, curve, triangle). No scary content.` },
+            { role: "user", content: `Create a ${difficulty} ${stepCount}-step drawing tutorial for: ${topic}.` },
+          ],
+          max_completion_tokens: 800,
+        }),
+      });
+      if (!tRes.ok) {
+        console.error("OpenAI tutorial error:", await tRes.text());
+        return json({ error: "AI tutorial generation failed" }, 502);
+      }
+      const tData = await tRes.json();
+      const content = tData.choices?.[0]?.message?.content || "{}";
+      let parsed: any = {};
+      try { parsed = JSON.parse(content); } catch { parsed = {}; }
+      const title = String(parsed.title || `How to draw ${topic}`).slice(0, 80);
+      const steps = Array.isArray(parsed.steps) && parsed.steps.length > 0
+        ? parsed.steps.map((s: any) => ({ instruction: String(s?.instruction || "").slice(0, 200) })).filter((s: any) => s.instruction)
+        : [{ instruction: `Start by drawing the outline of a ${topic}.` }];
+
+      await adminT.from("kids_drawing_credits")
+        .update({ credits_remaining: balanceT - COST })
+        .eq("user_id", user.id);
+
+      return json({ title, steps, topic, difficulty });
+    }
+
+    // ============ ENHANCE MODE (default) ============
     const sketchBase64 = String(body.sketchBase64 || "").trim();
     const description = String(body.description || "").trim().slice(0, 240);
     const style = String(body.style || "cartoon").toLowerCase();
