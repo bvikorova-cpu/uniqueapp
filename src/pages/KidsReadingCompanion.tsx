@@ -11,6 +11,7 @@ import { useKidsReadingCredits, KIDS_READING_CREDIT_COST } from "@/hooks/useKids
 import { CreditBanner } from "@/components/kids/CreditBanner";
 import { ParentalGate } from "@/components/kids/ParentalGate";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import { ReadingHero } from "@/components/kids-reading/ReadingHero";
 import { ReadingLevelSelector } from "@/components/kids-reading/ReadingLevelSelector";
 import { ReadingStreakDashboard } from "@/components/kids-reading/ReadingStreakDashboard";
@@ -26,6 +27,7 @@ const PARENTAL_GATE_KEY = "parental_gate_verified_kids_reading_companion";
 
 const KidsReadingCompanion = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [bookText, setBookText] = useState("");
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState<any>(null);
@@ -41,13 +43,18 @@ const KidsReadingCompanion = () => {
     if (url) { const __w = window.open(url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = url; }
   };
 
-  // Stats (local for now)
-  const [stats, setStats] = useState({
-    textsAnalyzed: 0,
-    wordsLearned: 0,
-    quizzesTaken: 0,
-    currentStreak: 0,
+  // Stats (persisted in localStorage per user)
+  const statsKey = `kids-reading-stats:${user?.id || "guest"}`;
+  const [stats, setStats] = useState(() => {
+    try {
+      const raw = localStorage.getItem(statsKey);
+      if (raw) return JSON.parse(raw);
+    } catch {}
+    return { textsAnalyzed: 0, wordsLearned: 0, quizzesTaken: 0, currentStreak: 0 };
   });
+  useEffect(() => {
+    try { localStorage.setItem(statsKey, JSON.stringify(stats)); } catch {}
+  }, [stats, statsKey]);
 
   // Parental gate
   const [isVerified, setIsVerified] = useState<boolean>(() => {

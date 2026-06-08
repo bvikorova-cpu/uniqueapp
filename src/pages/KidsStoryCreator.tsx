@@ -18,12 +18,14 @@ import { StoryQuickTemplates } from "@/components/kids-story/StoryQuickTemplates
 import { StoryWizardFlow } from "@/components/kids-story/StoryWizardFlow";
 import { StorybookDisplay } from "@/components/kids-story/StorybookDisplay";
 import { useNavigate } from "react-router-dom";
+import { useKidsStoryCreator } from "@/hooks/useKidsStoryCreator";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const KidsStoryCreator = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { balance, canUse, isLoading: creditsLoading, purchase, refresh: refreshCredits, costPerUse } = useKidsStoryCredits();
+  const { storiesCreatedThisMonth, isPremium, refreshUsage } = useKidsStoryCreator();
   const handleBuyCredits = async () => {
     const url = await purchase(50);
     if (url) { const __w = window.open(url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = url; }
@@ -101,6 +103,7 @@ const KidsStoryCreator = () => {
 
       setStory({ ...result, characters: data.characters, illustrationStyle: data.illustrationStyle, category: data.category });
       refreshCredits();
+      refreshUsage();
       toast.success("Your story is ready! 📖");
     } catch (error: any) {
       console.error('Error:', error);
@@ -187,7 +190,7 @@ const KidsStoryCreator = () => {
 
           {user && !creditsLoading && (
             <div className="mb-6 space-y-4">
-              <StoryLimitBanner storiesCreatedThisMonth={0} isPremium={balance > 0} />
+              <StoryLimitBanner storiesCreatedThisMonth={storiesCreatedThisMonth} isPremium={isPremium || balance > 0} />
               <CreditBanner
                 label="Story"
                 creditsRemaining={balance}

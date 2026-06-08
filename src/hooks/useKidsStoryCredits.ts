@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
-export const KIDS_STORY_CREDIT_COST = 3; // Story generation costs more
+export const KIDS_STORY_CREDIT_COST = 5; // Story generation (matrix: 5 credits)
 
 export function useKidsStoryCredits() {
   const { user } = useAuth();
