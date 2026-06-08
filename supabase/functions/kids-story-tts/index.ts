@@ -11,6 +11,7 @@ const corsHeaders = {
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
+const TTS_COST = 1; // per page, per credit matrix
 const MAX_TEXT_LENGTH = 4000; // OpenAI TTS hard limit is 4096 chars
 const ALLOWED_VOICES = new Set([
   "alloy",
