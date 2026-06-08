@@ -7525,6 +7525,56 @@ export type Database = {
         }
         Relationships: []
       }
+      brand_sponsor_account_managers: {
+        Row: {
+          assigned_at: string
+          calendar_url: string | null
+          created_at: string
+          id: string
+          manager_email: string
+          manager_name: string
+          manager_phone: string | null
+          manager_user_id: string | null
+          notes: string | null
+          sponsor_id: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_at?: string
+          calendar_url?: string | null
+          created_at?: string
+          id?: string
+          manager_email: string
+          manager_name: string
+          manager_phone?: string | null
+          manager_user_id?: string | null
+          notes?: string | null
+          sponsor_id: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_at?: string
+          calendar_url?: string | null
+          created_at?: string
+          id?: string
+          manager_email?: string
+          manager_name?: string
+          manager_phone?: string | null
+          manager_user_id?: string | null
+          notes?: string | null
+          sponsor_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brand_sponsor_account_managers_sponsor_id_fkey"
+            columns: ["sponsor_id"]
+            isOneToOne: true
+            referencedRelation: "brand_sponsors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       brand_sponsor_api_keys: {
         Row: {
           api_key: string
@@ -7549,6 +7599,112 @@ export type Database = {
             foreignKeyName: "brand_sponsor_api_keys_sponsor_id_fkey"
             columns: ["sponsor_id"]
             isOneToOne: true
+            referencedRelation: "brand_sponsors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      brand_sponsor_branding: {
+        Row: {
+          accent_color: string | null
+          background_color: string | null
+          banner_url: string | null
+          created_at: string
+          custom_css: string | null
+          custom_domain: string | null
+          id: string
+          logo_url: string | null
+          primary_color: string | null
+          sponsor_id: string
+          tagline: string | null
+          updated_at: string
+        }
+        Insert: {
+          accent_color?: string | null
+          background_color?: string | null
+          banner_url?: string | null
+          created_at?: string
+          custom_css?: string | null
+          custom_domain?: string | null
+          id?: string
+          logo_url?: string | null
+          primary_color?: string | null
+          sponsor_id: string
+          tagline?: string | null
+          updated_at?: string
+        }
+        Update: {
+          accent_color?: string | null
+          background_color?: string | null
+          banner_url?: string | null
+          created_at?: string
+          custom_css?: string | null
+          custom_domain?: string | null
+          id?: string
+          logo_url?: string | null
+          primary_color?: string | null
+          sponsor_id?: string
+          tagline?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brand_sponsor_branding_sponsor_id_fkey"
+            columns: ["sponsor_id"]
+            isOneToOne: true
+            referencedRelation: "brand_sponsors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      brand_sponsor_events: {
+        Row: {
+          budget_cents: number | null
+          created_at: string
+          created_by: string | null
+          deliverables: Json
+          description: string | null
+          event_type: string
+          id: string
+          scheduled_for: string | null
+          sponsor_id: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          budget_cents?: number | null
+          created_at?: string
+          created_by?: string | null
+          deliverables?: Json
+          description?: string | null
+          event_type?: string
+          id?: string
+          scheduled_for?: string | null
+          sponsor_id: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          budget_cents?: number | null
+          created_at?: string
+          created_by?: string | null
+          deliverables?: Json
+          description?: string | null
+          event_type?: string
+          id?: string
+          scheduled_for?: string | null
+          sponsor_id?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brand_sponsor_events_sponsor_id_fkey"
+            columns: ["sponsor_id"]
+            isOneToOne: false
             referencedRelation: "brand_sponsors"
             referencedColumns: ["id"]
           },

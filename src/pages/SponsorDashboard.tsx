@@ -8,7 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Trophy, TrendingUp, Star, Award, Crown, Zap, ArrowLeft, 
   Calendar, Users, BarChart3, Settings, ExternalLink, Loader2,
-  AlertCircle, CheckCircle2, XCircle, Target, Building2, Key, Copy, Eye, EyeOff
+  AlertCircle, CheckCircle2, XCircle, Target, Building2, Key, Copy, Eye, EyeOff,
+  Palette, UserCheck, CalendarRange
 } from "lucide-react";
 import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
@@ -17,6 +18,9 @@ import { GoalSettingDialog } from "@/components/sponsor/GoalSettingDialog";
 import { GoalProgressCard } from "@/components/sponsor/GoalProgressCard";
 import { BrandAppealForm } from "@/components/sponsor/BrandAppealForm";
 import { EnterpriseApiPanel } from "@/components/sponsor/EnterpriseApiPanel";
+import { BrandingPanel } from "@/components/sponsor/BrandingPanel";
+import { AccountManagerPanel } from "@/components/sponsor/AccountManagerPanel";
+import { EventsPanel } from "@/components/sponsor/EventsPanel";
 import { 
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, 
   Tooltip, Legend, ResponsiveContainer, Area, AreaChart 
@@ -359,6 +363,7 @@ export default function SponsorDashboard() {
   const tierInfo = TIER_INFO[sponsor.tier] ?? TIER_INFO.bronze;
   const TierIcon = tierInfo.icon;
   const isEnterprise = sponsor.tier === "enterprise";
+  const isPlatinumPlus = sponsor.tier === "platinum" || sponsor.tier === "enterprise";
   const isFeatured = !!sponsor.featured || ["silver","gold","platinum","enterprise"].includes(sponsor.tier);
   const subscriptionEndDate = new Date(sponsor.subscription_end);
   const daysUntilRenewal = Math.ceil((subscriptionEndDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
@@ -554,6 +559,24 @@ export default function SponsorDashboard() {
               <Settings className="h-4 w-4 mr-2" />
               Subscription
             </TabsTrigger>
+            {isPlatinumPlus && (
+              <TabsTrigger value="branding">
+                <Palette className="h-4 w-4 mr-2" />
+                Branding
+              </TabsTrigger>
+            )}
+            {isPlatinumPlus && (
+              <TabsTrigger value="events">
+                <CalendarRange className="h-4 w-4 mr-2" />
+                Events
+              </TabsTrigger>
+            )}
+            {isEnterprise && (
+              <TabsTrigger value="account-manager">
+                <UserCheck className="h-4 w-4 mr-2" />
+                Account Manager
+              </TabsTrigger>
+            )}
             {isEnterprise && (
               <TabsTrigger value="api">
                 <Key className="h-4 w-4 mr-2" />
@@ -1329,6 +1352,24 @@ export default function SponsorDashboard() {
               </CardContent>
             </Card>
           </TabsContent>
+
+          {isPlatinumPlus && (
+            <TabsContent value="branding" className="space-y-6">
+              <BrandingPanel sponsorId={sponsor.id} tier={sponsor.tier} />
+            </TabsContent>
+          )}
+
+          {isPlatinumPlus && (
+            <TabsContent value="events" className="space-y-6">
+              <EventsPanel sponsorId={sponsor.id} />
+            </TabsContent>
+          )}
+
+          {isEnterprise && (
+            <TabsContent value="account-manager" className="space-y-6">
+              <AccountManagerPanel sponsorId={sponsor.id} />
+            </TabsContent>
+          )}
 
           {isEnterprise && (
             <TabsContent value="api" className="space-y-6">
