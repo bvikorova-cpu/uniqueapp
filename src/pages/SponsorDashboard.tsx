@@ -1353,6 +1353,24 @@ export default function SponsorDashboard() {
             </Card>
           </TabsContent>
 
+          {isPlatinumPlus && (
+            <TabsContent value="branding" className="space-y-6">
+              <BrandingPanel sponsorId={sponsor.id} tier={sponsor.tier} />
+            </TabsContent>
+          )}
+
+          {isPlatinumPlus && (
+            <TabsContent value="events" className="space-y-6">
+              <EventsPanel sponsorId={sponsor.id} />
+            </TabsContent>
+          )}
+
+          {isEnterprise && (
+            <TabsContent value="account-manager" className="space-y-6">
+              <AccountManagerPanel sponsorId={sponsor.id} />
+            </TabsContent>
+          )}
+
           {isEnterprise && (
             <TabsContent value="api" className="space-y-6">
               <EnterpriseApiPanel sponsor={sponsor} />
