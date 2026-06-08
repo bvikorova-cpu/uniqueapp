@@ -1,10 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Shield, AlertCircle, CheckCircle } from "lucide-react";
+import { Shield, AlertCircle, CheckCircle, RefreshCw, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+
+const MAX_ATTEMPTS = 5;
+const LOCKOUT_MS = 60 * 1000; // 60s cooldown after too many failed attempts
 
 
 interface ParentalGateProps {
