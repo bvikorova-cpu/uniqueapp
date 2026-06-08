@@ -16,6 +16,7 @@ import { DrawingWizardStepper } from "@/components/kids-drawing/DrawingWizardSte
 import { QuickDrawTemplates } from "@/components/kids-drawing/QuickDrawTemplates";
 import { DrawingAchievements } from "@/components/kids-drawing/DrawingAchievements";
 import { useKidsDrawingCredits, KIDS_DRAWING_CREDIT_COST } from "@/hooks/useKidsDrawingCredits";
+import { useKidsDrawingCount } from "@/hooks/useKidsDrawingCount";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ParentalGate } from "@/components/kids/ParentalGate";
 
