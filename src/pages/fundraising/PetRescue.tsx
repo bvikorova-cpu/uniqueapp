@@ -102,7 +102,10 @@ export default function PetRescue() {
             {loading ? (
               <div className="col-span-full text-center py-12"><p className="text-muted-foreground">Loading campaigns...</p></div>
             ) : filteredCampaigns.length === 0 ? (
-              <div className="col-span-full text-center py-12"><p className="text-muted-foreground">No active campaigns found</p></div>
+              <div className="col-span-full text-center py-12 space-y-3">
+                <p className="text-muted-foreground">No active campaigns found</p>
+                <a href="/fundraising/pet/create" className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90">+ Rescue a Pet</a>
+              </div>
             ) : (
               filteredCampaigns.map((campaign) => <PetCampaignCard key={campaign.id} campaign={campaign} />)
             )}
