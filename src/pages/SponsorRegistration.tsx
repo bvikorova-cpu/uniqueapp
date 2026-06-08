@@ -445,7 +445,7 @@ export default function SponsorRegistration() {
                       </>
                     ) : (
                       <>
-                        Proceed to Checkout
+                        {selectedTier === "enterprise" ? "Contact Sales" : "Proceed to Checkout"}
                         <ArrowLeft className="ml-2 h-5 w-5 rotate-180" />
                       </>
                     )}
