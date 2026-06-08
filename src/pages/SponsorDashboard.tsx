@@ -559,6 +559,24 @@ export default function SponsorDashboard() {
               <Settings className="h-4 w-4 mr-2" />
               Subscription
             </TabsTrigger>
+            {isPlatinumPlus && (
+              <TabsTrigger value="branding">
+                <Palette className="h-4 w-4 mr-2" />
+                Branding
+              </TabsTrigger>
+            )}
+            {isPlatinumPlus && (
+              <TabsTrigger value="events">
+                <CalendarRange className="h-4 w-4 mr-2" />
+                Events
+              </TabsTrigger>
+            )}
+            {isEnterprise && (
+              <TabsTrigger value="account-manager">
+                <UserCheck className="h-4 w-4 mr-2" />
+                Account Manager
+              </TabsTrigger>
+            )}
             {isEnterprise && (
               <TabsTrigger value="api">
                 <Key className="h-4 w-4 mr-2" />
