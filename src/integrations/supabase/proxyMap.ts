@@ -74,11 +74,11 @@ export const AI_PROXY_MAP: Record<string, string> = {
   "identify-antique": "identify_antique",
   "identify-plant": "identify_plant",
   "join-shadow-battle": "join_shadow_battle",
-  "kids-drawing-tutorial": "kids_drawing_tutorial",
+  // "kids-drawing-tutorial": real edge function, not proxied
   "kids-homework-helper": "kids_homework_helper",
   "kids-reading-companion": "kids_reading_companion",
   "kids-science-lab": "kids_science_lab",
-  "kids-story-creator": "kids_story_creator",
+  // "kids-story-creator": removed — frontend now calls kids-story-generate directly
   "legal-ai": "legal_ai",
   "mystery-box-ai": "mystery_box_ai",
   "notify-admin-auction-withdrawal": "notify_admin_auction_withdrawal",
