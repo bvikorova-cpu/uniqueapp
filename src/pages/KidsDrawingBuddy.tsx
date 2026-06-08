@@ -16,6 +16,7 @@ import { DrawingWizardStepper } from "@/components/kids-drawing/DrawingWizardSte
 import { QuickDrawTemplates } from "@/components/kids-drawing/QuickDrawTemplates";
 import { DrawingAchievements } from "@/components/kids-drawing/DrawingAchievements";
 import { useKidsDrawingCredits, KIDS_DRAWING_CREDIT_COST } from "@/hooks/useKidsDrawingCredits";
+import { useKidsDrawingCount } from "@/hooks/useKidsDrawingCount";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ParentalGate } from "@/components/kids/ParentalGate";
 
@@ -37,6 +38,7 @@ const KidsDrawingBuddy = () => {
   const [activeTab, setActiveTab] = useState("tutorial");
 
   const { balance, canUse, refresh, costPerUse } = useKidsDrawingCredits();
+  const { count: drawingsCount } = useKidsDrawingCount();
 
   // Parental gate
   const [isVerified, setIsVerified] = useState<boolean>(() => {
@@ -368,7 +370,7 @@ const KidsDrawingBuddy = () => {
             </TabsContent>
 
             <TabsContent value="achievements" className="space-y-4">
-              <DrawingAchievements completedCount={0} />
+              <DrawingAchievements completedCount={drawingsCount} />
             </TabsContent>
           </Tabs>
 
