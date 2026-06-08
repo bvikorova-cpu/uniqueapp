@@ -1047,6 +1047,7 @@ serve(async (req) => {
             : creditType === "kids_story" ? "kids_story_credits"
             : creditType === "kids_academy" ? "kids_academy_credits"
             : creditType === "teen_career" ? "teen_career_credits"
+            : creditType === "teen_hub" ? "teen_credits"
             : creditType === "coloring" ? "coloring_credits"
             : creditType === "creative_forge" ? "creative_forge_credits"
             : creditType === "shadow_arena" ? "shadow_arena_credits"
