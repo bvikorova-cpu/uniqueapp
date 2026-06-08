@@ -124,9 +124,12 @@ export default function MedicalFundraising() {
             <div className="col-span-full text-center py-12">
               <span className="text-4xl block mb-3">🏥</span>
               <p className="text-muted-foreground mb-4">No active campaigns found</p>
-              <Button variant="outline" onClick={() => { setSearch(''); setDiagnosis('all'); }}>
-                Clear Filters
-              </Button>
+              <div className="flex gap-2 justify-center flex-wrap">
+                <Button variant="outline" onClick={() => { setSearch(''); setDiagnosis('all'); }}>
+                  Clear Filters
+                </Button>
+                <Button onClick={() => navigate('/fundraising/medical/create')}>+ Start Medical Campaign</Button>
+              </div>
             </div>
           ) : (
             filtered.map((campaign, i) => (
