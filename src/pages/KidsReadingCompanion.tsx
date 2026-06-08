@@ -27,6 +27,7 @@ const PARENTAL_GATE_KEY = "parental_gate_verified_kids_reading_companion";
 
 const KidsReadingCompanion = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [bookText, setBookText] = useState("");
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState<any>(null);
