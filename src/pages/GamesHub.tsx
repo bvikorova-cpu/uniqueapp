@@ -5,9 +5,10 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Gamepad2, ArrowLeft, Sparkles, Search, X, ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
+import { Gamepad2, ArrowLeft, Sparkles, Search, X, ChevronLeft, ChevronRight, ExternalLink, Heart, Clock } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { gdGames, gdCategories, getGDGamesByCategory, type GDCategory, type GDGame } from "@/data/gdGames";
+import { useGamesHub } from "@/hooks/useGamesHub";
 
 const PAGE_SIZE = 30;
 
