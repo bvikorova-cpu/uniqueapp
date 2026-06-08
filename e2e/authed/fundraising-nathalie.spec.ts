@@ -20,12 +20,12 @@ const CATEGORIES = ["medical", "dream", "hero", "pet", "student", "crisis", "tal
 
 const HUB_PATHS: Record<(typeof CATEGORIES)[number], string> = {
   medical: "/fundraising/medical",
-  dream: "/fundraising/dream-maker",
-  hero: "/fundraising/community-hero",
-  pet: "/fundraising/pet-rescue",
-  student: "/fundraising/student-support",
-  crisis: "/fundraising/crisis-relief",
-  talent: "/fundraising/talent-sponsorship",
+  dream:   "/fundraising/dream",
+  hero:    "/fundraising/hero",
+  pet:     "/fundraising/pet",
+  student: "/fundraising/student",
+  crisis:  "/fundraising/crisis",
+  talent:  "/fundraising/talent",
 };
 
 async function stubDonationCheckout(page: Page) {
