@@ -3,7 +3,7 @@ import { useWallRealtime } from "@/hooks/useWallRealtime";
 import { Sparkles } from "lucide-react";
 
 // preview-sync: 2026-01-05a (touch file to ensure consistent preview refresh)
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
@@ -79,7 +79,16 @@ const Feed = () => {
   // pagination uses lastCursor ref (keyset), no page state needed
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [feedTab, setFeedTab] = useState<FeedTab>("for-you");
-  const [activeView, setActiveView] = useState("feed");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const VALID_VIEWS = ["feed", "ai-tools", "streaks", "ranks", "badges", "challenges"] as const;
+  const urlTab = searchParams.get("tab") ?? "feed";
+  const activeView = (VALID_VIEWS as readonly string[]).includes(urlTab) ? urlTab : "feed";
+  const setActiveView = useCallback((view: string) => {
+    const next = new URLSearchParams(searchParams);
+    if (view === "feed") next.delete("tab");
+    else next.set("tab", view);
+    setSearchParams(next, { replace: true });
+  }, [searchParams, setSearchParams]);
   const [pullToRefresh, setPullToRefresh] = useState({
     pulling: false,
     pullDistance: 0,
