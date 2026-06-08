@@ -224,6 +224,25 @@ const KidsScienceLab = () => {
               {result && <LabNotebookResult result={result} category={category} />}
 
               {result && (
+                <div className="flex justify-center">
+                  <Button
+                    onClick={() => {
+                      setResult(null);
+                      setShowQuiz(false);
+                      setHypothesis("");
+                      setObservations("");
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    variant="outline"
+                    size="lg"
+                    className="gap-2"
+                  >
+                    <RotateCcw className="h-4 w-4" /> Try another experiment
+                  </Button>
+                </div>
+              )}
+
+              {result && (
                 <AskTheScientist
                   context={`Category: ${category}. Hypothesis: ${hypothesis}. Observations: ${observations}. Conclusion: ${result.conclusion}`}
                   onCreditsChanged={() => credits.refresh()}
