@@ -84,7 +84,17 @@ const GameFrame = ({ game, onBack }: { game: GDGame; onBack: () => void }) => {
   );
 };
 
-const GameCard = ({ game, onClick }: { game: GDGame; onClick: () => void }) => (
+const GameCard = ({
+  game,
+  onClick,
+  isFavorite,
+  onToggleFavorite,
+}: {
+  game: GDGame;
+  onClick: () => void;
+  isFavorite: boolean;
+  onToggleFavorite: () => void;
+}) => (
   <motion.div
     initial={{ opacity: 0, scale: 0.95 }}
     animate={{ opacity: 1, scale: 1 }}
@@ -95,6 +105,19 @@ const GameCard = ({ game, onClick }: { game: GDGame; onClick: () => void }) => (
       className="group relative overflow-hidden cursor-pointer border border-border hover:border-primary/50 transition-all hover:shadow-[0_8px_30px_hsl(var(--primary)/0.2)]"
       onClick={onClick}
     >
+      <button
+        type="button"
+        aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggleFavorite();
+        }}
+        className="absolute top-2 right-2 z-10 p-1.5 rounded-full bg-background/80 backdrop-blur-sm border border-border hover:bg-background transition"
+      >
+        <Heart
+          className={`h-4 w-4 ${isFavorite ? "fill-primary text-primary" : "text-muted-foreground"}`}
+        />
+      </button>
       <div className="relative aspect-video bg-muted overflow-hidden">
         {game.thumbnail ? (
           <img
