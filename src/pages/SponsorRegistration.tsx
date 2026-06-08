@@ -178,6 +178,17 @@ export default function SponsorRegistration() {
       return;
     }
 
+    // Enterprise tier: custom deal, no Stripe checkout — open contact email
+    if (selectedTier === "enterprise") {
+      const subject = encodeURIComponent(`Enterprise sponsorship inquiry — ${data.name}`);
+      const body = encodeURIComponent(
+        `Brand: ${data.name}\nCategory: ${data.category}\nWebsite: ${data.website}\nLogo: ${data.logo}\n\nDescription:\n${data.description}\n\n— Please contact us to discuss a custom Enterprise package and pricing.`
+      );
+      window.location.href = `mailto:sales@uniqueapp.fun?subject=${subject}&body=${body}`;
+      toast.success("Opening your email client — our team will reply within 24h.");
+      return;
+    }
+
     setSubmitting(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
