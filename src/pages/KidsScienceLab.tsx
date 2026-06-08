@@ -263,7 +263,7 @@ const KidsScienceLab = () => {
                 />
               )}
 
-              {showQuiz && result && result.quiz.length === 5 && (
+              {showQuiz && result && result.quiz.length >= 3 && (
                 <ScienceComprehensionQuiz
                   category={category}
                   difficulty={difficulty}
