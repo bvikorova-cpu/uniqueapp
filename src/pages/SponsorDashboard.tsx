@@ -17,6 +17,9 @@ import { GoalSettingDialog } from "@/components/sponsor/GoalSettingDialog";
 import { GoalProgressCard } from "@/components/sponsor/GoalProgressCard";
 import { BrandAppealForm } from "@/components/sponsor/BrandAppealForm";
 import { EnterpriseApiPanel } from "@/components/sponsor/EnterpriseApiPanel";
+import { BrandingPanel } from "@/components/sponsor/BrandingPanel";
+import { AccountManagerPanel } from "@/components/sponsor/AccountManagerPanel";
+import { EventsPanel } from "@/components/sponsor/EventsPanel";
 import { 
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, 
   Tooltip, Legend, ResponsiveContainer, Area, AreaChart 
