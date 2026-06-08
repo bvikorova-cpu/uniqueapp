@@ -23,6 +23,7 @@ import { NewCampaignPicker } from '@/components/fundraising/NewCampaignPicker';
 
 interface Campaign {
   id: string;
+  campaign_type: string;
   title: string;
   target_amount: number;
   current_amount: number;
@@ -69,10 +70,8 @@ export default function FundraisingDashboard() {
         return;
       }
 
-      await Promise.all([
-        fetchCampaigns(session.user.id),
-        fetchStats(session.user.id),
-      ]);
+      const fetched = await fetchCampaigns(session.user.id);
+      await fetchStats(fetched);
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -80,55 +79,57 @@ export default function FundraisingDashboard() {
     }
   };
 
-  const fetchCampaigns = async (userId: string) => {
-    try {
-      // Fetch from all campaign tables
-      const tables = [
-        'medical_campaigns',
-        'dream_campaigns',
-        'hero_campaigns',
-        'pet_rescue_campaigns',
-        'student_campaigns',
-        'crisis_campaigns',
-        'talent_campaigns',
-      ];
+  const fetchCampaigns = async (userId: string): Promise<Campaign[]> => {
+    const tables = [
+      'medical_campaigns',
+      'dream_campaigns',
+      'hero_campaigns',
+      'pet_rescue_campaigns',
+      'student_campaigns',
+      'crisis_campaigns',
+      'talent_campaigns',
+    ];
 
-      const allCampaigns: Campaign[] = [];
+    const allCampaigns: Campaign[] = [];
 
-      for (const table of tables) {
-        try {
-          const { data, error } = await supabase
-            .from(table as any)
-            .select('id, title, target_amount, current_amount, status, verified, rejection_reason, monthly_donors_count, one_time_donors_count, supporters_count, created_at')
-            .eq('user_id', userId)
-            .order('created_at', { ascending: false });
+    for (const table of tables) {
+      try {
+        const { data, error } = await supabase
+          .from(table as any)
+          .select('id, title, target_amount, current_amount, status, verified, rejection_reason, monthly_donors_count, one_time_donors_count, supporters_count, created_at')
+          .eq('user_id', userId)
+          .order('created_at', { ascending: false });
 
-          if (error) {
-            console.error(`Error fetching ${table}:`, error);
-            continue;
-          }
-
-          if (data && Array.isArray(data)) {
-            allCampaigns.push(...(data as any[]));
-          }
-        } catch (err) {
-          console.error(`Error in ${table}:`, err);
+        if (error) {
+          console.error(`Error fetching ${table}:`, error);
+          continue;
         }
-      }
 
-      setCampaigns(allCampaigns);
-    } catch (error) {
-      console.error('Error fetching campaigns:', error);
+        if (data && Array.isArray(data)) {
+          const campaignType = tableToCategory(table);
+          for (const row of data as any[]) {
+            allCampaigns.push({ ...row, campaign_type: campaignType });
+          }
+        }
+      } catch (err) {
+        console.error(`Error in ${table}:`, err);
+      }
     }
+
+    setCampaigns(allCampaigns);
+    return allCampaigns;
   };
 
-  const fetchStats = async (userId: string) => {
+  const fetchStats = async (campaignsList: Campaign[]) => {
     try {
-      // Get all campaign IDs for this user
-      const campaignIds = campaigns.map(c => c.id);
+      const campaignIds = campaignsList.map(c => c.id);
 
-      if (campaignIds.length === 0) return;
+      if (campaignIds.length === 0) {
+        setStats({ total_donations: 0, total_amount: 0, monthly_amount: 0 });
+        return;
+      }
 
+      // Scoped column list — never expose donor_email on the dashboard query.
       const { data, error } = await supabase
         .from('campaign_donations')
         .select('amount, is_monthly')
@@ -138,10 +139,10 @@ export default function FundraisingDashboard() {
       if (error) throw error;
 
       if (data) {
-        const totalAmount = data.reduce((sum, d) => sum + d.amount, 0);
+        const totalAmount = data.reduce((sum, d) => sum + Number(d.amount || 0), 0);
         const monthlyAmount = data
           .filter(d => d.is_monthly)
-          .reduce((sum, d) => sum + d.amount, 0);
+          .reduce((sum, d) => sum + Number(d.amount || 0), 0);
 
         setStats({
           total_donations: data.length,
