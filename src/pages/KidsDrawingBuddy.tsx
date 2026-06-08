@@ -38,6 +38,7 @@ const KidsDrawingBuddy = () => {
   const [activeTab, setActiveTab] = useState("tutorial");
 
   const { balance, canUse, refresh, costPerUse } = useKidsDrawingCredits();
+  const { count: drawingsCount } = useKidsDrawingCount();
 
   // Parental gate
   const [isVerified, setIsVerified] = useState<boolean>(() => {
