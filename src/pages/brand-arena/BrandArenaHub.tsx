@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import { Skeleton } from "@/components/ui/skeleton";
 import { brandArenaCall } from "@/hooks/useBrandArenaRouter";
 import { useBrandBattleCredits } from "@/hooks/useBrandBattleCredits";
 import { handleEdgeError } from "@/lib/handleEdgeError";
