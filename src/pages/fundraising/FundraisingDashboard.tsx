@@ -6,22 +6,24 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
-import { 
-  Heart, 
-  TrendingUp, 
-  Users, 
+import {
+  Heart,
+  TrendingUp,
+  Users,
   Euro,
-  Plus,
   Eye,
-  Edit,
   Clock,
   CheckCircle,
-  XCircle
+  XCircle,
+  LayoutDashboard,
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { campaignDetailRoute, campaignDashboardRoute, tableToCategory } from '@/lib/fundraisingRoutes';
+import { NewCampaignPicker } from '@/components/fundraising/NewCampaignPicker';
 
 interface Campaign {
   id: string;
+  campaign_type: string;
   title: string;
   target_amount: number;
   current_amount: number;
@@ -68,10 +70,8 @@ export default function FundraisingDashboard() {
         return;
       }
 
-      await Promise.all([
-        fetchCampaigns(session.user.id),
-        fetchStats(session.user.id),
-      ]);
+      const fetched = await fetchCampaigns(session.user.id);
+      await fetchStats(fetched);
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -79,55 +79,57 @@ export default function FundraisingDashboard() {
     }
   };
 
-  const fetchCampaigns = async (userId: string) => {
-    try {
-      // Fetch from all campaign tables
-      const tables = [
-        'medical_campaigns',
-        'dream_campaigns',
-        'hero_campaigns',
-        'pet_rescue_campaigns',
-        'student_campaigns',
-        'crisis_campaigns',
-        'talent_campaigns',
-      ];
+  const fetchCampaigns = async (userId: string): Promise<Campaign[]> => {
+    const tables = [
+      'medical_campaigns',
+      'dream_campaigns',
+      'hero_campaigns',
+      'pet_rescue_campaigns',
+      'student_campaigns',
+      'crisis_campaigns',
+      'talent_campaigns',
+    ];
 
-      const allCampaigns: Campaign[] = [];
+    const allCampaigns: Campaign[] = [];
 
-      for (const table of tables) {
-        try {
-          const { data, error } = await supabase
-            .from(table as any)
-            .select('id, title, target_amount, current_amount, status, verified, rejection_reason, monthly_donors_count, one_time_donors_count, supporters_count, created_at')
-            .eq('user_id', userId)
-            .order('created_at', { ascending: false });
+    for (const table of tables) {
+      try {
+        const { data, error } = await supabase
+          .from(table as any)
+          .select('id, title, target_amount, current_amount, status, verified, rejection_reason, monthly_donors_count, one_time_donors_count, supporters_count, created_at')
+          .eq('user_id', userId)
+          .order('created_at', { ascending: false });
 
-          if (error) {
-            console.error(`Error fetching ${table}:`, error);
-            continue;
-          }
-
-          if (data && Array.isArray(data)) {
-            allCampaigns.push(...(data as any[]));
-          }
-        } catch (err) {
-          console.error(`Error in ${table}:`, err);
+        if (error) {
+          console.error(`Error fetching ${table}:`, error);
+          continue;
         }
-      }
 
-      setCampaigns(allCampaigns);
-    } catch (error) {
-      console.error('Error fetching campaigns:', error);
+        if (data && Array.isArray(data)) {
+          const campaignType = tableToCategory(table);
+          for (const row of data as any[]) {
+            allCampaigns.push({ ...row, campaign_type: campaignType });
+          }
+        }
+      } catch (err) {
+        console.error(`Error in ${table}:`, err);
+      }
     }
+
+    setCampaigns(allCampaigns);
+    return allCampaigns;
   };
 
-  const fetchStats = async (userId: string) => {
+  const fetchStats = async (campaignsList: Campaign[]) => {
     try {
-      // Get all campaign IDs for this user
-      const campaignIds = campaigns.map(c => c.id);
+      const campaignIds = campaignsList.map(c => c.id);
 
-      if (campaignIds.length === 0) return;
+      if (campaignIds.length === 0) {
+        setStats({ total_donations: 0, total_amount: 0, monthly_amount: 0 });
+        return;
+      }
 
+      // Scoped column list — never expose donor_email on the dashboard query.
       const { data, error } = await supabase
         .from('campaign_donations')
         .select('amount, is_monthly')
@@ -137,10 +139,10 @@ export default function FundraisingDashboard() {
       if (error) throw error;
 
       if (data) {
-        const totalAmount = data.reduce((sum, d) => sum + d.amount, 0);
+        const totalAmount = data.reduce((sum, d) => sum + Number(d.amount || 0), 0);
         const monthlyAmount = data
           .filter(d => d.is_monthly)
-          .reduce((sum, d) => sum + d.amount, 0);
+          .reduce((sum, d) => sum + Number(d.amount || 0), 0);
 
         setStats({
           total_donations: data.length,
@@ -195,10 +197,7 @@ export default function FundraisingDashboard() {
             <h1 className="text-4xl font-black mb-2">Dashboard - My Campaigns</h1>
             <p className="text-muted-foreground">Manage your fundraising campaigns</p>
           </div>
-          <Button onClick={() => navigate('/fundraising/medical/create')} size="lg">
-            <Plus className="mr-2 h-5 w-5" />
-            New Campaign
-          </Button>
+          <NewCampaignPicker triggerLabel="New Campaign" size="lg" />
         </div>
 
         {/* Stats Cards */}
@@ -280,10 +279,7 @@ export default function FundraisingDashboard() {
                   <div className="text-center py-12">
                     <Heart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                     <p className="text-muted-foreground mb-4">You don't have any campaigns yet</p>
-                    <Button onClick={() => navigate('/fundraising/medical/create')}>
-                      <Plus className="mr-2 h-4 w-4" />
-                      Create First Campaign
-                    </Button>
+                    <NewCampaignPicker triggerLabel="Create First Campaign" size="default" />
                   </div>
                 ) : (
                   campaigns.map((campaign) => (
@@ -298,9 +294,18 @@ export default function FundraisingDashboard() {
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => navigate(`/fundraising/medical/${campaign.id}`)}
+                              onClick={() => navigate(campaignDetailRoute(campaign.campaign_type, campaign.id))}
+                              title="View campaign"
                             >
                               <Eye className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => navigate(campaignDashboardRoute(campaign.campaign_type, campaign.id))}
+                              title="Manage finances"
+                            >
+                              <LayoutDashboard className="h-4 w-4" />
                             </Button>
                           </div>
                         </div>
@@ -350,7 +355,7 @@ export default function FundraisingDashboard() {
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => navigate(`/fundraising/medical/${campaign.id}`)}
+                          onClick={() => navigate(campaignDetailRoute(campaign.campaign_type, campaign.id))}
                         >
                           <Eye className="h-4 w-4" />
                         </Button>

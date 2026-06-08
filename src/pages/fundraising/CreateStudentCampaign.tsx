@@ -26,6 +26,7 @@ export default function CreateStudentCampaign() {
   const [creating, setCreating] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [consentChecked, setConsentChecked] = useState(false);
+  const [ageConfirmed, setAgeConfirmed] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -111,6 +112,15 @@ export default function CreateStudentCampaign() {
       toast({
         title: 'Error',
         description: 'You must confirm the consent checkbox',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!ageConfirmed) {
+      toast({
+        title: 'Age verification required',
+        description: 'You must be 18+ or have verified parental consent on file.',
         variant: 'destructive',
       });
       return;
@@ -346,6 +356,21 @@ export default function CreateStudentCampaign() {
                 </Label>
               </div>
 
+              {/* Age verification - MANDATORY */}
+              <div className="flex items-start space-x-3 border-2 border-amber-500/30 p-4 rounded-lg bg-amber-500/5">
+                <Checkbox
+                  id="age"
+                  checked={ageConfirmed}
+                  onCheckedChange={(checked) => setAgeConfirmed(checked as boolean)}
+                  className="mt-1"
+                />
+                <Label htmlFor="age" className="text-sm leading-relaxed cursor-pointer">
+                  I confirm that I am at least 18 years old, or that I have written
+                  parental/guardian consent on file. Campaigns by minors without
+                  verified consent will be removed.
+                </Label>
+              </div>
+
               <div className="bg-muted p-4 rounded-lg">
                 <h3 className="font-semibold mb-2">Before You Submit:</h3>
                 <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
@@ -365,7 +390,7 @@ export default function CreateStudentCampaign() {
                 >
                   Cancel
                 </Button>
-                <Button type="submit" className="flex-1" size="lg" disabled={creating || uploading || !consentChecked}>
+                <Button type="submit" className="flex-1" size="lg" disabled={creating || uploading || !consentChecked || !ageConfirmed}>
                   <GraduationCap className="mr-2 h-5 w-5" />
                   {creating ? 'Submitting...' : 'Submit Student Campaign'}
                 </Button>

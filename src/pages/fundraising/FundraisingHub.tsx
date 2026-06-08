@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Heart, Sparkles, Wand2 } from "lucide-react";
+import { Heart, Wand2 } from "lucide-react";
 import { FundraisingHero } from "@/components/fundraising/FundraisingHero";
 import { LiveImpactTicker } from "@/components/fundraising/LiveImpactTicker";
 import { FeaturedCampaignSpotlight } from "@/components/fundraising/FeaturedCampaignSpotlight";
@@ -11,7 +11,7 @@ import { ImpactCalculator } from "@/components/fundraising/ImpactCalculator";
 import { DonorLeaderboard } from "@/components/fundraising/DonorLeaderboard";
 import { TrustSection } from "@/components/fundraising/TrustSection";
 import { AIStoryGenerator } from "@/components/fundraising/AIStoryGenerator";
-import { toast } from "sonner";
+import { NewCampaignPicker } from "@/components/fundraising/NewCampaignPicker";
 
 export default function FundraisingHub() {
   const navigate = useNavigate();
@@ -83,9 +83,7 @@ export default function FundraisingHub() {
             Create your campaign today and get support from the community
           </p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <Button size="lg" variant="secondary" onClick={() => navigate("/fundraising/medical/create")}>
-              <Sparkles className="mr-2 h-4 w-4" /> Create Campaign
-            </Button>
+            <NewCampaignPicker triggerLabel="Create Campaign" variant="outline" />
             <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white/10" onClick={() => document.getElementById("categories")?.scrollIntoView({ behavior: "smooth" })}>
               <Heart className="mr-2 h-4 w-4" /> Browse All Campaigns
             </Button>
