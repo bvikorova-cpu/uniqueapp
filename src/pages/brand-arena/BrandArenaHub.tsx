@@ -57,15 +57,25 @@ export default function BrandArenaHub() {
   const [busy, setBusy] = useState(false);
   const [output, setOutput] = useState<any>(null);
   const [records, setRecords] = useState<any[]>([]);
+  const [recordsLoading, setRecordsLoading] = useState(false);
+  const [recordsError, setRecordsError] = useState<string | null>(null);
+
+  const loadRecords = (f: Feature) => {
+    setRecordsLoading(true);
+    setRecordsError(null);
+    brandArenaCall("records.list", { kind: f.id, limit: 12 })
+      .then((r: any) => setRecords(r.records ?? []))
+      .catch((e: any) => setRecordsError(e?.message || "Failed to load recent items"))
+      .finally(() => setRecordsLoading(false));
+  };
 
   useEffect(() => {
     if (!active) return;
     setOutput(null);
     setRecords([]);
+    setRecordsError(null);
     if (!active.ai && active.id !== "embed" && active.id !== "profiles") {
-      brandArenaCall("records.list", { kind: active.id, limit: 12 })
-        .then((r: any) => setRecords(r.records ?? []))
-        .catch(() => {});
+      loadRecords(active);
     }
   }, [active]);
 
