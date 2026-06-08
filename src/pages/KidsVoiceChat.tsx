@@ -25,6 +25,7 @@ import { StoryModePrompt } from "@/components/kids/chat/StoryModePrompt";
 import { ImmersiveCharacterCard } from "@/components/kids/chat/ImmersiveCharacterCard";
 import { MagicalParticles } from "@/components/kids/chat/MagicalParticles";
 import { characterImages } from "@/data/characterImages";
+import Navbar from "@/components/Navbar";
 
 export default function KidsVoiceChat() {
   const navigate = useNavigate();
