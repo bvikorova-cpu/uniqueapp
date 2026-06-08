@@ -114,6 +114,9 @@ serve(async (req) => {
       }
 
       case "hub.familyLeaderboard": {
+        if (!rateLimit(`fl:${userId}`, 20, 60_000)) {
+          return ok({ error: "Rate limit exceeded. Try again in a minute." }, 429);
+        }
         const { data } = await supabase.from("kids_academy_xp").select("child_id, total_xp, level, current_streak").eq("parent_id", userId).order("total_xp", { ascending: false });
         return ok({ leaderboard: data ?? [] });
       }
