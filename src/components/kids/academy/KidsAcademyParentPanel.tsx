@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { Bell, BarChart3, Clock, Mail, Shield, CheckCircle } from "lucide-react";
+import { Bell, BarChart3, Clock, Mail, Shield, CheckCircle, Download } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { getXP, getModuleVisits } from "@/lib/kidsAcademyEconomy";
 
