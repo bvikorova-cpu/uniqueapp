@@ -390,7 +390,7 @@ export default function CreateStudentCampaign() {
                 >
                   Cancel
                 </Button>
-                <Button type="submit" className="flex-1" size="lg" disabled={creating || uploading || !consentChecked}>
+                <Button type="submit" className="flex-1" size="lg" disabled={creating || uploading || !consentChecked || !ageConfirmed}>
                   <GraduationCap className="mr-2 h-5 w-5" />
                   {creating ? 'Submitting...' : 'Submit Student Campaign'}
                 </Button>
