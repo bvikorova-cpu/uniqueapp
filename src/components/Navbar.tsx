@@ -235,6 +235,7 @@ const Navbar = () => {
   const otherServices = otherServiceGroups.flatMap((g) => g.items);
 
   const isLearningServiceActive = learningServices.some(item => location.pathname === item.path);
+  const isBrandArenaActive = brandArenaServices.some(item => location.pathname === item.path) || location.pathname.startsWith('/brand-battle');
   const isKidsAcademyServiceActive = kidsAcademyServices.some(item => location.pathname === item.path) || location.pathname.startsWith('/kids');
   const isFundraisingServiceActive = fundraisingServices.some(item => location.pathname === item.path) || location.pathname.startsWith('/fundraising');
   const isOtherServiceActive = otherServices.some(item => location.pathname === item.path);
