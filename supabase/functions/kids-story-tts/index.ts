@@ -104,6 +104,26 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Credit pre-check (deduction happens AFTER successful TTS, so failures don't burn credits).
+    const userId = userData.user.id;
+    const { data: credRow } = await admin
+      .from("kids_story_credits")
+      .select("credits_remaining")
+      .eq("user_id", userId)
+      .maybeSingle();
+    const balance = credRow?.credits_remaining ?? 0;
+    if (!credRow) {
+      await admin.from("kids_story_credits").insert({
+        user_id: userId, credits_remaining: 0, total_credits_purchased: 0,
+      });
+    }
+    if (balance < TTS_COST) {
+      return new Response(
+        JSON.stringify({ error: "Insufficient credits", credits_remaining: balance, cost: TTS_COST }),
+        { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
     const truncated = text.slice(0, MAX_TEXT_LENGTH);
 
     const ttsResponse = await fetch("https://api.openai.com/v1/audio/speech", {
@@ -141,8 +161,15 @@ Deno.serve(async (req) => {
     }
     const audioBase64 = btoa(binary);
 
+    // Deduct credit only after successful audio synthesis
+    const newBalance = balance - TTS_COST;
+    await admin
+      .from("kids_story_credits")
+      .update({ credits_remaining: newBalance, last_used_at: new Date().toISOString() })
+      .eq("user_id", userId);
+
     return new Response(
-      JSON.stringify({ audioContent: audioBase64, mimeType: "audio/mpeg" }),
+      JSON.stringify({ audioContent: audioBase64, mimeType: "audio/mpeg", credits_remaining: newBalance, cost: TTS_COST }),
       {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
