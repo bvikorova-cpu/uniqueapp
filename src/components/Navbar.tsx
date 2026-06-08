@@ -73,8 +73,14 @@ const Navbar = () => {
     { path: "/ai-mentor", label: "AI Personal Mentor", icon: UserCircle },
     { path: "/kids-channel", label: "Kids Channel", icon: Video },
     { path: "/coloring-pages", label: "Coloring Pages", icon: Palette },
-    { path: "/brand-battle", label: "Brand Battle Arena", icon: Trophy },
     { path: "/brain-duel", label: "BrainDuel - Knowledge Battle", icon: Trophy },
+  ];
+
+  const brandArenaServices = [
+    { path: "/brand-battle", label: "Brand Battle Arena", icon: Trophy },
+    { path: "/brand-battle/hub", label: "Arena Hub — 20 Features", icon: Sparkles },
+    { path: "/sponsor-registration", label: "Become a Sponsor", icon: Crown },
+    { path: "/sponsor-dashboard", label: "Sponsor Dashboard", icon: Building2 },
   ];
 
   const kidsAcademyServices = [
@@ -229,6 +235,7 @@ const Navbar = () => {
   const otherServices = otherServiceGroups.flatMap((g) => g.items);
 
   const isLearningServiceActive = learningServices.some(item => location.pathname === item.path);
+  const isBrandArenaActive = brandArenaServices.some(item => location.pathname === item.path) || location.pathname.startsWith('/brand-battle');
   const isKidsAcademyServiceActive = kidsAcademyServices.some(item => location.pathname === item.path) || location.pathname.startsWith('/kids');
   const isFundraisingServiceActive = fundraisingServices.some(item => location.pathname === item.path) || location.pathname.startsWith('/fundraising');
   const isOtherServiceActive = otherServices.some(item => location.pathname === item.path);
@@ -300,6 +307,39 @@ const Navbar = () => {
                 })}
               </DropdownMenuContent>
             </DropdownMenu>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant={isBrandArenaActive ? "premium" : "ghost"}
+                  className="relative bg-gradient-to-r from-amber-500/10 via-pink-500/10 to-purple-500/10 hover:from-amber-500/20 hover:via-pink-500/20 hover:to-purple-500/20"
+                >
+                  <Trophy className="h-4 w-4 text-amber-500" />
+                  Brand Arena
+                  <Badge variant="secondary" className="ml-1 bg-gradient-to-r from-amber-400 to-pink-500 text-white text-[10px] px-1.5">
+                    HOT
+                  </Badge>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-64 max-h-96 overflow-y-auto bg-popover/95 backdrop-blur-xl border-border/50 shadow-[0_8px_40px_hsl(var(--primary)/0.08)]">
+                <DropdownMenuLabel className="text-xs uppercase tracking-wide text-muted-foreground">
+                  Brand Battle Arena
+                </DropdownMenuLabel>
+                {brandArenaServices.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <DropdownMenuItem key={item.path} asChild>
+                      <Link to={item.path} className="w-full cursor-pointer">
+                        <Icon className="h-4 w-4 mr-2" />
+                        {item.label}
+                      </Link>
+                    </DropdownMenuItem>
+                  );
+                })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+
             
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -564,7 +604,32 @@ const Navbar = () => {
                 );
               })}
             </div>
-            
+
+            {/* Brand Arena Section */}
+            <div className="pt-2 pb-1">
+              <div className="px-3 py-1.5 text-xs font-semibold bg-gradient-to-r from-amber-500 via-pink-500 to-purple-500 bg-clip-text text-transparent flex items-center gap-2">
+                <Trophy className="h-3.5 w-3.5 text-amber-500" />
+                Brand Arena
+                <Badge variant="secondary" className="bg-gradient-to-r from-amber-400 to-pink-500 text-white text-[9px] px-1.5">HOT</Badge>
+              </div>
+              {brandArenaServices.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.path;
+                return (
+                  <Link key={item.path} to={item.path} onClick={() => setIsMenuOpen(false)}>
+                    <Button
+                      variant={isActive ? "premium" : "ghost"}
+                      className="w-full justify-start text-sm py-2"
+                      size="sm"
+                    >
+                      <Icon className="h-4 w-4" />
+                      {item.label}
+                    </Button>
+                  </Link>
+                );
+              })}
+            </div>
+
             {/* Kids Academy Section */}
             <div className="pt-2 pb-1">
               <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground">
