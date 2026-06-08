@@ -22,6 +22,7 @@ import { WeeklyXPLeaderboard } from "@/components/gamification/WeeklyXPLeaderboa
 import { LastWeekWinners } from "@/components/gamification/LastWeekWinners";
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { useRewardsStats } from "@/hooks/useRewardsStats";
+import { toast } from "sonner";
 import {
   Crown, Home, Wand2, Trophy, Layers, Disc3, Target, Award, Medal, Flame,
   Gift, Eye, Sword, HelpCircle, ShoppingBag, Shield, Snowflake, CalendarDays,
