@@ -59,14 +59,14 @@ const KidsAcademy = () => {
           </Card>
 
           <Tabs defaultValue="today" className="w-full">
-            <TabsList className="grid grid-cols-3 sm:grid-cols-7 gap-1 h-auto bg-muted p-1.5">
-              <TabsTrigger value="today" className="text-xs">✨ Today</TabsTrigger>
-              <TabsTrigger value="explore" className="text-xs">🗺️ Explore</TabsTrigger>
-              <TabsTrigger value="progress" className="text-xs">⭐ Progress</TabsTrigger>
-              <TabsTrigger value="streaks" className="text-xs">🔥 Streaks</TabsTrigger>
-              <TabsTrigger value="quiz" className="text-xs">⚔️ Quiz</TabsTrigger>
-              <TabsTrigger value="shop" className="text-xs">🛒 Shop</TabsTrigger>
-              <TabsTrigger value="parents" className="text-xs">👨‍👩‍👧 Parents</TabsTrigger>
+            <TabsList className="grid grid-cols-4 sm:grid-cols-7 gap-1 h-auto bg-muted p-1.5">
+              <TabsTrigger value="today" className="text-[11px] sm:text-xs px-1">✨ Today</TabsTrigger>
+              <TabsTrigger value="explore" className="text-[11px] sm:text-xs px-1">🗺️ Explore</TabsTrigger>
+              <TabsTrigger value="progress" className="text-[11px] sm:text-xs px-1">⭐ Progress</TabsTrigger>
+              <TabsTrigger value="streaks" className="text-[11px] sm:text-xs px-1">🔥 Streaks</TabsTrigger>
+              <TabsTrigger value="quiz" className="text-[11px] sm:text-xs px-1">⚔️ Quiz</TabsTrigger>
+              <TabsTrigger value="shop" className="text-[11px] sm:text-xs px-1">🛒 Shop</TabsTrigger>
+              <TabsTrigger value="parents" className="text-[11px] sm:text-xs px-1 col-span-2 sm:col-span-1">👨‍👩‍👧 Parents</TabsTrigger>
             </TabsList>
 
             <div className="mt-6">
