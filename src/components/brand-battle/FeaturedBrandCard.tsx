@@ -8,11 +8,12 @@ interface BrandSponsor {
   id: string;
   name: string;
   logo: string;
-  tier: "bronze" | "silver" | "gold" | "platinum";
+  tier: "bronze" | "silver" | "gold" | "platinum" | "enterprise";
   category: string;
   total_votes: number;
   description: string;
   website: string;
+  featured?: boolean;
 }
 
 interface FeaturedBrandCardProps {
@@ -24,11 +25,12 @@ interface FeaturedBrandCardProps {
   isAuthenticated: boolean;
 }
 
-const TIER_COLORS = {
+const TIER_COLORS: Record<string, string> = {
   bronze: "from-amber-600 to-amber-800",
   silver: "from-gray-400 to-gray-600",
   gold: "from-yellow-400 to-yellow-600",
   platinum: "from-purple-400 to-purple-600",
+  enterprise: "from-amber-400 via-yellow-500 to-amber-600",
 };
 
 const RANK_STYLES = {
@@ -130,6 +132,11 @@ export const FeaturedBrandCard = ({
             <Badge className={`bg-gradient-to-r ${tierColor} text-white border-0 shadow-sm`}>
               {sponsor.tier.charAt(0).toUpperCase() + sponsor.tier.slice(1)}
             </Badge>
+            {(sponsor.featured || ["silver","gold","platinum","enterprise"].includes(sponsor.tier)) && (
+              <Badge className="bg-amber-500/20 text-amber-300 border border-amber-400/40 gap-1">
+                <Flame className="h-3 w-3" /> Featured
+              </Badge>
+            )}
           </div>
         </CardHeader>
 

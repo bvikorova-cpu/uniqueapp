@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Trophy, TrendingUp, Star, Award, Crown, Zap, ArrowLeft, 
   Calendar, Users, BarChart3, Settings, ExternalLink, Loader2,
-  AlertCircle, CheckCircle2, XCircle, Target
+  AlertCircle, CheckCircle2, XCircle, Target, Building2, Key, Copy, Eye, EyeOff
 } from "lucide-react";
 import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
@@ -16,6 +16,7 @@ import Navbar from "@/components/Navbar";
 import { GoalSettingDialog } from "@/components/sponsor/GoalSettingDialog";
 import { GoalProgressCard } from "@/components/sponsor/GoalProgressCard";
 import { BrandAppealForm } from "@/components/sponsor/BrandAppealForm";
+import { EnterpriseApiPanel } from "@/components/sponsor/EnterpriseApiPanel";
 import { 
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, 
   Tooltip, Legend, ResponsiveContainer, Area, AreaChart 
@@ -36,7 +37,7 @@ interface BrandSponsor {
   id: string;
   name: string;
   logo: string;
-  tier: "bronze" | "silver" | "gold" | "platinum";
+  tier: "bronze" | "silver" | "gold" | "platinum" | "enterprise";
   category: string;
   total_votes: number;
   description: string;
@@ -49,6 +50,7 @@ interface BrandSponsor {
   moderation_status?: "pending" | "approved" | "rejected";
   moderation_reason?: string | null;
   user_id?: string;
+  featured?: boolean;
 }
 
 const TIER_INFO = {
@@ -56,6 +58,7 @@ const TIER_INFO = {
   silver: { name: "Silver", icon: Star, color: "from-gray-400 to-gray-600", price: "€500" },
   gold: { name: "Gold", icon: Crown, color: "from-yellow-400 to-yellow-600", price: "€1,500" },
   platinum: { name: "Platinum", icon: Zap, color: "from-purple-400 to-purple-600", price: "€3,000" },
+  enterprise: { name: "Enterprise", icon: Building2, color: "from-amber-400 via-yellow-500 to-amber-600", price: "€10,000" },
 };
 
 export default function SponsorDashboard() {
@@ -353,8 +356,10 @@ export default function SponsorDashboard() {
     return null;
   }
 
-  const tierInfo = TIER_INFO[sponsor.tier];
+  const tierInfo = TIER_INFO[sponsor.tier] ?? TIER_INFO.bronze;
   const TierIcon = tierInfo.icon;
+  const isEnterprise = sponsor.tier === "enterprise";
+  const isFeatured = !!sponsor.featured || ["silver","gold","platinum","enterprise"].includes(sponsor.tier);
   const subscriptionEndDate = new Date(sponsor.subscription_end);
   const daysUntilRenewal = Math.ceil((subscriptionEndDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
 
@@ -549,6 +554,12 @@ export default function SponsorDashboard() {
               <Settings className="h-4 w-4 mr-2" />
               Subscription
             </TabsTrigger>
+            {isEnterprise && (
+              <TabsTrigger value="api">
+                <Key className="h-4 w-4 mr-2" />
+                API Access
+              </TabsTrigger>
+            )}
           </TabsList>
 
           {/* Analytics Tab */}
@@ -1318,6 +1329,12 @@ export default function SponsorDashboard() {
               </CardContent>
             </Card>
           </TabsContent>
+
+          {isEnterprise && (
+            <TabsContent value="api" className="space-y-6">
+              <EnterpriseApiPanel sponsor={sponsor} />
+            </TabsContent>
+          )}
         </Tabs>
       </div>
     </div>
