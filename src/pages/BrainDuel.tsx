@@ -71,9 +71,6 @@ const BrainDuel = () => {
     const sessionId = searchParams.get('session_id');
     if (payment === 'success' && sessionId) {
       handlePaymentSuccess(sessionId);
-      searchParams.delete('payment');
-      searchParams.delete('session_id');
-      setSearchParams(searchParams);
     } else if (payment === 'cancelled') {
       toast.error('Payment was cancelled');
       searchParams.delete('payment');
@@ -90,10 +87,17 @@ const BrainDuel = () => {
       if (data?.success) {
         toast.success(`Success! Added ${data.added} credits. Total: ${data.credits}`);
         queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
+        const next = new URLSearchParams(searchParams);
+        next.delete('payment'); next.delete('session_id');
+        setSearchParams(next, { replace: true });
       }
     } catch (error) {
       console.error('Error verifying payment:', error);
-      toast.error('Error verifying payment');
+      toast.error('Could not verify payment', {
+        description: 'We were unable to confirm your purchase. Tap retry or contact support if you were charged.',
+        action: { label: 'Retry', onClick: () => handlePaymentSuccess(sessionId) },
+        duration: 15000,
+      });
     }
   };
 

@@ -22,6 +22,7 @@ import { WeeklyXPLeaderboard } from "@/components/gamification/WeeklyXPLeaderboa
 import { LastWeekWinners } from "@/components/gamification/LastWeekWinners";
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { useRewardsStats } from "@/hooks/useRewardsStats";
+import { toast } from "sonner";
 import {
   Crown, Home, Wand2, Trophy, Layers, Disc3, Target, Award, Medal, Flame,
   Gift, Eye, Sword, HelpCircle, ShoppingBag, Shield, Snowflake, CalendarDays,
@@ -144,24 +145,30 @@ export default function Rewards() {
   useEffect(() => {
     const sid = searchParams.get("session_id");
     if (!sid || verifiedRef.current) return;
-    verifiedRef.current = true;
-    (async () => {
+    const verify = async (sessionId: string) => {
       try {
         const { data, error } = await supabase.functions.invoke("verify-rewards-payment", {
-          body: { sessionId: sid },
+          body: { sessionId },
         });
         if (error) throw error;
         if ((data as any)?.ok) {
+          toast.success("Purchase confirmed!");
           window.dispatchEvent(new CustomEvent("rewards-purchase-completed"));
         }
-      } catch (e) {
-        console.error("[rewards verify]", e);
-      } finally {
         const next = new URLSearchParams(searchParams);
         next.delete("session_id"); next.delete("payment"); next.delete("success");
         setSearchParams(next, { replace: true });
+      } catch (e) {
+        console.error("[rewards verify]", e);
+        toast.error("Could not verify payment", {
+          description: "We couldn't confirm your purchase. Tap retry or contact support if you were charged.",
+          action: { label: "Retry", onClick: () => verify(sessionId) },
+          duration: 15000,
+        });
       }
-    })();
+    };
+    verifiedRef.current = true;
+    verify(sid);
   }, [searchParams, setSearchParams]);
 
   // Scroll active tab into view (mobile UX — 24 tabs in horizontal scroller).
