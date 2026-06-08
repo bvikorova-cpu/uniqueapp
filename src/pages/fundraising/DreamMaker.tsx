@@ -108,8 +108,9 @@ export default function DreamMaker() {
                 <p className="text-muted-foreground">Loading dreams...</p>
               </div>
             ) : filteredCampaigns.length === 0 ? (
-              <div className="col-span-full text-center py-12">
+              <div className="col-span-full text-center py-12 space-y-3">
                 <p className="text-muted-foreground">No active campaigns found</p>
+                <a href="/fundraising/dream/create" className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90">+ Start your Dream</a>
               </div>
             ) : (
               filteredCampaigns.map((campaign) => (
