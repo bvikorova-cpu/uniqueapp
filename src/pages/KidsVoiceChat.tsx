@@ -206,7 +206,9 @@ export default function KidsVoiceChat() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-violet-100 via-pink-50 to-cyan-100 relative overflow-hidden">
+      <Navbar />
       <MagicalParticles count={10} />
+
 
       <div className="container mx-auto px-4 pt-24 pb-12 relative z-10">
         <Button variant="ghost" onClick={() => navigate("/kids-channel")} className="mb-6 hover:bg-white/50">
