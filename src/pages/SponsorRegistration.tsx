@@ -254,7 +254,7 @@ export default function SponsorRegistration() {
             <h2 className="text-2xl font-bold text-white mb-6 text-center">
               Choose Your Sponsorship Tier
             </h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
               {TIERS.map((tier) => {
                 const Icon = tier.icon;
                 const isSelected = selectedTier === tier.id;
