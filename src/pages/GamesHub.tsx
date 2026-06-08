@@ -5,9 +5,10 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Gamepad2, ArrowLeft, Sparkles, Search, X, ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
+import { Gamepad2, ArrowLeft, Sparkles, Search, X, ChevronLeft, ChevronRight, ExternalLink, Heart, Clock } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { gdGames, gdCategories, getGDGamesByCategory, type GDCategory, type GDGame } from "@/data/gdGames";
+import { useGamesHub } from "@/hooks/useGamesHub";
 
 const PAGE_SIZE = 30;
 
@@ -83,7 +84,17 @@ const GameFrame = ({ game, onBack }: { game: GDGame; onBack: () => void }) => {
   );
 };
 
-const GameCard = ({ game, onClick }: { game: GDGame; onClick: () => void }) => (
+const GameCard = ({
+  game,
+  onClick,
+  isFavorite,
+  onToggleFavorite,
+}: {
+  game: GDGame;
+  onClick: () => void;
+  isFavorite: boolean;
+  onToggleFavorite: () => void;
+}) => (
   <motion.div
     initial={{ opacity: 0, scale: 0.95 }}
     animate={{ opacity: 1, scale: 1 }}
@@ -94,6 +105,19 @@ const GameCard = ({ game, onClick }: { game: GDGame; onClick: () => void }) => (
       className="group relative overflow-hidden cursor-pointer border border-border hover:border-primary/50 transition-all hover:shadow-[0_8px_30px_hsl(var(--primary)/0.2)]"
       onClick={onClick}
     >
+      <button
+        type="button"
+        aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggleFavorite();
+        }}
+        className="absolute top-2 right-2 z-10 p-1.5 rounded-full bg-background/80 backdrop-blur-sm border border-border hover:bg-background transition"
+      >
+        <Heart
+          className={`h-4 w-4 ${isFavorite ? "fill-primary text-primary" : "text-muted-foreground"}`}
+        />
+      </button>
       <div className="relative aspect-video bg-muted overflow-hidden">
         {game.thumbnail ? (
           <img
@@ -127,12 +151,27 @@ const GamesHub = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchPage, setSearchPage] = useState(1);
   const [catPage, setCatPage] = useState<Record<string, number>>({});
+  const { isFavorite, toggleFavorite, trackPlay, recent, favorites } = useGamesHub();
   const categories = Object.keys(gdCategories) as GDCategory[];
   const usedCategories = useMemo(
     () => categories.filter((c) => getGDGamesByCategory(c).length > 0),
     [categories]
   );
   const tabCats = usedCategories.length > 0 ? usedCategories : categories;
+
+  const handleOpen = (game: GDGame) => {
+    setActive(game.id);
+    trackPlay({ id: game.id, title: game.title, category: gdCategories[game.category] });
+  };
+
+  const recentGames = useMemo(
+    () => recent.map((id) => gdGames.find((g) => g.id === id)).filter(Boolean) as GDGame[],
+    [recent]
+  );
+  const favoriteGames = useMemo(
+    () => gdGames.filter((g) => favorites.has(g.id)),
+    [favorites]
+  );
 
   const getCatPage = (cat: string) => catPage[cat] ?? 1;
   const setCatPageFor = (cat: string, page: number) =>
@@ -200,6 +239,47 @@ const GamesHub = () => {
             )}
           </div>
 
+          {!filteredGames && (favoriteGames.length > 0 || recentGames.length > 0) && (
+            <div className="space-y-6 mb-8">
+              {favoriteGames.length > 0 && (
+                <section>
+                  <h2 className="text-lg font-bold mb-3 flex items-center gap-2">
+                    <Heart className="h-5 w-5 fill-primary text-primary" /> Your Favorites
+                  </h2>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+                    {favoriteGames.slice(0, 10).map((g) => (
+                      <GameCard
+                        key={g.id}
+                        game={g}
+                        onClick={() => handleOpen(g)}
+                        isFavorite
+                        onToggleFavorite={() => toggleFavorite({ id: g.id, title: g.title, category: gdCategories[g.category] })}
+                      />
+                    ))}
+                  </div>
+                </section>
+              )}
+              {recentGames.length > 0 && (
+                <section>
+                  <h2 className="text-lg font-bold mb-3 flex items-center gap-2">
+                    <Clock className="h-5 w-5 text-primary" /> Recently Played
+                  </h2>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+                    {recentGames.slice(0, 10).map((g) => (
+                      <GameCard
+                        key={g.id}
+                        game={g}
+                        onClick={() => handleOpen(g)}
+                        isFavorite={isFavorite(g.id)}
+                        onToggleFavorite={() => toggleFavorite({ id: g.id, title: g.title, category: gdCategories[g.category] })}
+                      />
+                    ))}
+                  </div>
+                </section>
+              )}
+            </div>
+          )}
+
           {filteredGames ? (
             /* Search results */
             <motion.div
@@ -227,7 +307,8 @@ const GamesHub = () => {
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
                           <AnimatePresence>
                             {pageItems.map((g) => (
-                              <GameCard key={g.id} game={g} onClick={() => setActive(g.id)} />
+                              <GameCard key={g.id} game={g} onClick={() => handleOpen(g)} isFavorite={isFavorite(g.id)} onToggleFavorite={() => toggleFavorite({ id: g.id, title: g.title, category: gdCategories[g.category] })} />
+
                             ))}
                           </AnimatePresence>
                         </div>
@@ -277,7 +358,7 @@ const GamesHub = () => {
                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
                               <AnimatePresence>
                                 {pageItems.map((g) => (
-                                  <GameCard key={g.id} game={g} onClick={() => setActive(g.id)} />
+                                  <GameCard key={g.id} game={g} onClick={() => handleOpen(g)} isFavorite={isFavorite(g.id)} onToggleFavorite={() => toggleFavorite({ id: g.id, title: g.title, category: gdCategories[g.category] })} />
                                 ))}
                               </AnimatePresence>
                             </div>

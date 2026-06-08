@@ -24930,6 +24930,54 @@ export type Database = {
         }
         Relationships: []
       }
+      games_favorites: {
+        Row: {
+          created_at: string
+          game_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          game_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          game_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      games_plays: {
+        Row: {
+          game_category: string | null
+          game_id: string
+          game_title: string | null
+          id: string
+          played_at: string
+          user_id: string
+        }
+        Insert: {
+          game_category?: string | null
+          game_id: string
+          game_title?: string | null
+          id?: string
+          played_at?: string
+          user_id: string
+        }
+        Update: {
+          game_category?: string | null
+          game_id?: string
+          game_title?: string | null
+          id?: string
+          played_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       gdpr_consent_audit: {
         Row: {
           consent_type: string
