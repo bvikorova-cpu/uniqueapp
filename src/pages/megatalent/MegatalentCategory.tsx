@@ -92,15 +92,28 @@ const MegatalentCategory = () => {
     fetchActiveBoosts();
     // Verify boost return
     const params = new URLSearchParams(window.location.search);
-    if (params.get("boost") === "success" && params.get("session_id")) {
-      supabase.functions
-        .invoke("verify-megatalent-boost", { body: { session_id: params.get("session_id") } })
-        .then(() => {
-          toast({ title: "🚀 Boost active!", description: "Your submission is spotlighted for 24h." });
-          fetchActiveBoosts();
-          fetchSubmissions();
-          window.history.replaceState({}, "", window.location.pathname);
-        });
+    const sid = params.get("session_id");
+    if (params.get("boost") === "success" && sid) {
+      const verifyBoost = (sessionId: string) => {
+        supabase.functions
+          .invoke("verify-megatalent-boost", { body: { session_id: sessionId } })
+          .then(({ error }) => {
+            if (error) throw error;
+            toast({ title: "🚀 Boost active!", description: "Your submission is spotlighted for 24h." });
+            fetchActiveBoosts();
+            fetchSubmissions();
+            window.history.replaceState({}, "", window.location.pathname);
+          })
+          .catch((e) => {
+            console.error("[verify-megatalent-boost]", e);
+            sonnerToast.error("Could not verify boost", {
+              description: "We couldn't confirm your boost purchase. Tap retry or contact support if you were charged.",
+              action: { label: "Retry", onClick: () => verifyBoost(sessionId) },
+              duration: 15000,
+            });
+          });
+      };
+      verifyBoost(sid);
     }
   }, [category]);
 
