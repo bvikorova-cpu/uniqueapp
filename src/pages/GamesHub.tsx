@@ -266,7 +266,8 @@ const GamesHub = () => {
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
                           <AnimatePresence>
                             {pageItems.map((g) => (
-                              <GameCard key={g.id} game={g} onClick={() => setActive(g.id)} />
+                              <GameCard key={g.id} game={g} onClick={() => handleOpen(g)} isFavorite={isFavorite(g.id)} onToggleFavorite={() => toggleFavorite({ id: g.id, title: g.title, category: gdCategories[g.category] })} />
+
                             ))}
                           </AnimatePresence>
                         </div>
