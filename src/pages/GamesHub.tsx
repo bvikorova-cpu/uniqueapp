@@ -151,12 +151,27 @@ const GamesHub = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchPage, setSearchPage] = useState(1);
   const [catPage, setCatPage] = useState<Record<string, number>>({});
+  const { isFavorite, toggleFavorite, trackPlay, recent, favorites } = useGamesHub();
   const categories = Object.keys(gdCategories) as GDCategory[];
   const usedCategories = useMemo(
     () => categories.filter((c) => getGDGamesByCategory(c).length > 0),
     [categories]
   );
   const tabCats = usedCategories.length > 0 ? usedCategories : categories;
+
+  const handleOpen = (game: GDGame) => {
+    setActive(game.id);
+    trackPlay({ id: game.id, title: game.title, category: gdCategories[game.category] });
+  };
+
+  const recentGames = useMemo(
+    () => recent.map((id) => gdGames.find((g) => g.id === id)).filter(Boolean) as GDGame[],
+    [recent]
+  );
+  const favoriteGames = useMemo(
+    () => gdGames.filter((g) => favorites.has(g.id)),
+    [favorites]
+  );
 
   const getCatPage = (cat: string) => catPage[cat] ?? 1;
   const setCatPageFor = (cat: string, page: number) =>
