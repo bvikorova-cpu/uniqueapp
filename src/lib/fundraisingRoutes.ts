@@ -30,6 +30,20 @@ export function tableToCategory(table: string): FundraisingCategory {
   return CAMPAIGN_TABLE_TO_TYPE[table] ?? "medical";
 }
 
+const TYPE_TO_TABLE: Record<FundraisingCategory, string> = {
+  medical: "medical_campaigns",
+  dream:   "dream_campaigns",
+  hero:    "hero_campaigns",
+  pet:     "pet_rescue_campaigns",
+  student: "student_campaigns",
+  crisis:  "crisis_campaigns",
+  talent:  "talent_campaigns",
+};
+
+export function categoryToTable(type: string): string {
+  return TYPE_TO_TABLE[(type as FundraisingCategory)] ?? "medical_campaigns";
+}
+
 export function campaignDetailRoute(type: string, id: string): string {
   return `/fundraising/${type}/${id}`;
 }
@@ -38,6 +52,11 @@ export function campaignDashboardRoute(type: string, id: string): string {
   return `/fundraising/${type}/${id}/dashboard`;
 }
 
+export function campaignEditRoute(type: string, id: string): string {
+  return `/fundraising/${type}/${id}/edit`;
+}
+
 export function campaignCreateRoute(type: string): string {
   return `/fundraising/${type}/create`;
 }
+
