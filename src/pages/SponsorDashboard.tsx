@@ -359,6 +359,7 @@ export default function SponsorDashboard() {
   const tierInfo = TIER_INFO[sponsor.tier] ?? TIER_INFO.bronze;
   const TierIcon = tierInfo.icon;
   const isEnterprise = sponsor.tier === "enterprise";
+  const isPlatinumPlus = sponsor.tier === "platinum" || sponsor.tier === "enterprise";
   const isFeatured = !!sponsor.featured || ["silver","gold","platinum","enterprise"].includes(sponsor.tier);
   const subscriptionEndDate = new Date(sponsor.subscription_end);
   const daysUntilRenewal = Math.ceil((subscriptionEndDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
