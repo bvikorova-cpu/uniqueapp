@@ -66,7 +66,7 @@ Deno.serve(async (req) => {
     }
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
-      apiVersion: "2024-06-20",
+      apiVersion: "2025-08-27.basil",
     });
 
     let updates: Record<string, unknown> = {};
