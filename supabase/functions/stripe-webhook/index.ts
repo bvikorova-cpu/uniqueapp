@@ -981,6 +981,16 @@ serve(async (req) => {
         // ── Megatalent: instantly sync subscription state so premium unlocks ──
         await syncMegatalentSubscription(supabase, stripe, sub);
 
+        // ── Brand sponsorship cancellation ──
+        try {
+          await supabase
+            .from("brand_sponsors")
+            .update({ subscription_status: "cancelled" })
+            .eq("stripe_subscription_id", sub.id);
+        } catch (e) {
+          log("brand sponsor cancel error", { err: (e as Error).message });
+        }
+
         if (sub.status !== "active" && sub.status !== "trialing") break;
 
         // Win-back claim detection via metadata
