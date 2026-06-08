@@ -189,7 +189,7 @@ const KidsStoryCreator = () => {
 
           {user && !creditsLoading && (
             <div className="mb-6 space-y-4">
-              <StoryLimitBanner storiesCreatedThisMonth={0} isPremium={balance > 0} />
+              <StoryLimitBanner storiesCreatedThisMonth={storiesCreatedThisMonth} isPremium={isPremium || balance > 0} />
               <CreditBanner
                 label="Story"
                 creditsRemaining={balance}
