@@ -10,7 +10,7 @@ interface Props {
   sponsor: { id: string };
 }
 
-const BASE_URL = `${import.meta.env.VITE_SUPABASE_URL ?? "https://jufrdzeonywluwutvyxz.supabase.co"}/functions/v1/brand-sponsor-api`;
+const BASE_URL = `${import.meta.env.VITE_SUPABASE_URL ?? "https://jufrdzeonywluwutvyxz.supabase.co"}/functions/v1/brand-arena-router`;
 
 export function EnterpriseApiPanel({ sponsor }: Props) {
   const [revealed, setRevealed] = useState(false);
