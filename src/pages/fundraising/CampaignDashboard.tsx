@@ -16,7 +16,8 @@ import {
   ExternalLink,
   CreditCard,
   Settings,
-  RefreshCw
+  RefreshCw,
+  Pencil
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
