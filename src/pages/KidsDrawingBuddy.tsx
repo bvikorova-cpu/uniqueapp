@@ -370,7 +370,7 @@ const KidsDrawingBuddy = () => {
             </TabsContent>
 
             <TabsContent value="achievements" className="space-y-4">
-              <DrawingAchievements completedCount={0} />
+              <DrawingAchievements completedCount={drawingsCount} />
             </TabsContent>
           </Tabs>
 
