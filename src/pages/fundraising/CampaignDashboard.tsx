@@ -94,7 +94,7 @@ export default function CampaignDashboard() {
       // and rely on RLS to ensure only campaign owner / admin reads it.
       const { data: donationsData, error: donationsError } = await supabase
         .from('campaign_donations' as any)
-        .select('id, amount, is_monthly, is_anonymous, donor_name, message, status, created_at, subscription_status, next_billing_at')
+        .select('id, amount, net_amount, is_monthly, is_anonymous, donor_name, message, status, created_at, subscription_status, next_billing_at')
         .eq('campaign_id', campaignId)
         .eq('campaign_type', campaignType)
         .eq('status', 'completed')
