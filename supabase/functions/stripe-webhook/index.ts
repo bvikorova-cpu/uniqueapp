@@ -1092,6 +1092,16 @@ serve(async (req) => {
           log("donation cancel handler error", { err: (e as Error).message });
         }
 
+        // ── Brand sponsorship: hard cancel ──
+        try {
+          await supabase
+            .from("brand_sponsors")
+            .update({ subscription_status: "cancelled" })
+            .eq("stripe_subscription_id", sub.id);
+        } catch (e) {
+          log("brand sponsor delete handler error", { err: (e as Error).message });
+        }
+
         const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id;
         if (!customerId) break;
         let email: string | null = null;
