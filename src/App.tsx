@@ -408,6 +408,7 @@ import {
   RecurringDonationsHub,
   EmbedCampaignWidget,
   CampaignDashboard,
+  EditCampaign,
   DreamMaker,
   CreateDreamCampaign,
   DreamDetail,
