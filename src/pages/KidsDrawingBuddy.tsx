@@ -18,7 +18,7 @@ import { DrawingAchievements } from "@/components/kids-drawing/DrawingAchievemen
 import { useKidsDrawingCredits, KIDS_DRAWING_CREDIT_COST } from "@/hooks/useKidsDrawingCredits";
 import { useKidsDrawingCount } from "@/hooks/useKidsDrawingCount";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ParentalGate } from "@/components/kids/ParentalGate";
+import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 const PARENTAL_GATE_KEY = "parental_gate_verified_kids_drawing_buddy";
@@ -40,39 +40,8 @@ const KidsDrawingBuddy = () => {
   const { balance, canUse, refresh, costPerUse } = useKidsDrawingCredits();
   const { count: drawingsCount } = useKidsDrawingCount();
 
-  // Parental gate
-  const [isVerified, setIsVerified] = useState<boolean>(() => {
-    const stored = sessionStorage.getItem(PARENTAL_GATE_KEY);
-    if (!stored) return false;
-    try {
-      const { expiresAt } = JSON.parse(stored);
-      if (Date.now() < expiresAt) return true;
-      sessionStorage.removeItem(PARENTAL_GATE_KEY);
-      return false;
-    } catch {
-      sessionStorage.removeItem(PARENTAL_GATE_KEY);
-      return false;
-    }
-  });
-
-  useEffect(() => {
-    const tick = () => {
-      const stored = sessionStorage.getItem(PARENTAL_GATE_KEY);
-      if (!stored) { if (isVerified) setIsVerified(false); return; }
-      try {
-        const { expiresAt } = JSON.parse(stored);
-        if (Date.now() >= expiresAt) {
-          sessionStorage.removeItem(PARENTAL_GATE_KEY);
-          if (isVerified) setIsVerified(false);
-        }
-      } catch {
-        sessionStorage.removeItem(PARENTAL_GATE_KEY);
-        if (isVerified) setIsVerified(false);
-      }
-    };
-    const interval = setInterval(tick, 30_000);
-    return () => clearInterval(interval);
-  }, [isVerified]);
+  // Parental gate (shared hook)
+  const { isVerified, checkVerification } = useParentalGate(PARENTAL_GATE_KEY);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -166,7 +135,7 @@ const KidsDrawingBuddy = () => {
         <ParentalGate
           isOpen={true}
           storageKey={PARENTAL_GATE_KEY}
-          onSuccess={() => setIsVerified(true)}
+          onSuccess={() => checkVerification()}
           onCancel={() => navigate("/")}
           featureName="AI Drawing Buddy"
         />

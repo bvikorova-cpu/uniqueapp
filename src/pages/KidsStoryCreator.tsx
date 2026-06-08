@@ -11,7 +11,7 @@ import { StoryLibrary } from "@/components/kids-story/StoryLibrary";
 import { StoryLimitBanner } from "@/components/kids-story/StoryLimitBanner";
 import { StorySubscriptionManagement } from "@/components/kids-story/StorySubscriptionManagement";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ParentalGate } from "@/components/kids/ParentalGate";
+import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
 import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
 import { StoryCreatorHero } from "@/components/kids-story/StoryCreatorHero";
 import { StoryQuickTemplates } from "@/components/kids-story/StoryQuickTemplates";
@@ -35,43 +35,10 @@ const KidsStoryCreator = () => {
   const [story, setStory] = useState<any>(null);
   const [templateData, setTemplateData] = useState<{ title: string; characters: string; theme: string; category: string } | undefined>();
 
-  // PARENTAL GATE STATE
+  // PARENTAL GATE (shared hook)
   const PARENTAL_GATE_KEY = "parental_gate_verified_kids_story_creator";
-
-  const [isVerified, setIsVerified] = useState<boolean>(() => {
-    const stored = sessionStorage.getItem(PARENTAL_GATE_KEY);
-    if (!stored) return false;
-    try {
-      const { expiresAt } = JSON.parse(stored);
-      if (Date.now() < expiresAt) return true;
-      sessionStorage.removeItem(PARENTAL_GATE_KEY);
-      return false;
-    } catch {
-      sessionStorage.removeItem(PARENTAL_GATE_KEY);
-      return false;
-    }
-  });
-
-  useEffect(() => {
-    const tick = () => {
-      const stored = sessionStorage.getItem(PARENTAL_GATE_KEY);
-      if (!stored) { if (isVerified) setIsVerified(false); return; }
-      try {
-        const { expiresAt } = JSON.parse(stored);
-        if (Date.now() >= expiresAt) {
-          sessionStorage.removeItem(PARENTAL_GATE_KEY);
-          if (isVerified) setIsVerified(false);
-        }
-      } catch {
-        sessionStorage.removeItem(PARENTAL_GATE_KEY);
-        if (isVerified) setIsVerified(false);
-      }
-    };
-    const interval = setInterval(tick, 30_000);
-    return () => clearInterval(interval);
-  }, [isVerified]);
-
-  const handleVerificationSuccess = () => setIsVerified(true);
+  const { isVerified, checkVerification } = useParentalGate(PARENTAL_GATE_KEY);
+  const handleVerificationSuccess = () => checkVerification();
 
   const handleGenerate = async (data: { title: string; characters: string; theme: string; category: string; illustrationStyle: string }) => {
     if (!data.title.trim() || !data.characters.trim() || !data.theme.trim()) {

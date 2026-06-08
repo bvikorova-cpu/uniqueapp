@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import { useKidsReadingCredits, KIDS_READING_CREDIT_COST } from "@/hooks/useKidsReadingCredits";
 import { CreditBanner } from "@/components/kids/CreditBanner";
-import { ParentalGate } from "@/components/kids/ParentalGate";
+import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { ReadingHero } from "@/components/kids-reading/ReadingHero";
@@ -56,39 +56,8 @@ const KidsReadingCompanion = () => {
     try { localStorage.setItem(statsKey, JSON.stringify(stats)); } catch {}
   }, [stats, statsKey]);
 
-  // Parental gate
-  const [isVerified, setIsVerified] = useState<boolean>(() => {
-    const stored = sessionStorage.getItem(PARENTAL_GATE_KEY);
-    if (!stored) return false;
-    try {
-      const { expiresAt } = JSON.parse(stored);
-      if (Date.now() < expiresAt) return true;
-      sessionStorage.removeItem(PARENTAL_GATE_KEY);
-      return false;
-    } catch {
-      sessionStorage.removeItem(PARENTAL_GATE_KEY);
-      return false;
-    }
-  });
-
-  useEffect(() => {
-    const tick = () => {
-      const stored = sessionStorage.getItem(PARENTAL_GATE_KEY);
-      if (!stored) { if (isVerified) setIsVerified(false); return; }
-      try {
-        const { expiresAt } = JSON.parse(stored);
-        if (Date.now() >= expiresAt) {
-          sessionStorage.removeItem(PARENTAL_GATE_KEY);
-          if (isVerified) setIsVerified(false);
-        }
-      } catch {
-        sessionStorage.removeItem(PARENTAL_GATE_KEY);
-        if (isVerified) setIsVerified(false);
-      }
-    };
-    const interval = setInterval(tick, 30_000);
-    return () => clearInterval(interval);
-  }, [isVerified]);
+  // Parental gate (shared hook)
+  const { isVerified, checkVerification } = useParentalGate(PARENTAL_GATE_KEY);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -162,7 +131,7 @@ const KidsReadingCompanion = () => {
         <ParentalGate
           isOpen={true}
           storageKey={PARENTAL_GATE_KEY}
-          onSuccess={() => setIsVerified(true)}
+          onSuccess={() => checkVerification()}
           onCancel={() => navigate("/")}
           featureName="AI Reading Companion"
         />

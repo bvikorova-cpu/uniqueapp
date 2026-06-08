@@ -7,7 +7,7 @@ import Navbar from "@/components/Navbar";
 import { useScienceCredits, SCIENCE_CREDITS_PER_RUN } from "@/hooks/useScienceCredits";
 import { ScienceLimitBanner } from "@/components/kids-science/ScienceLimitBanner";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ParentalGate } from "@/components/kids/ParentalGate";
+import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { ScienceLabHero } from "@/components/kids-science/ScienceLabHero";
@@ -41,42 +41,8 @@ const KidsScienceLab = () => {
   const [analysesCompleted, setAnalysesCompleted] = useState(0);
   const credits = useScienceCredits();
 
-  // Parental gate state
-  const [isVerified, setIsVerified] = useState<boolean>(() => {
-    const stored = sessionStorage.getItem(PARENTAL_GATE_KEY);
-    if (!stored) return false;
-    try {
-      const { expiresAt } = JSON.parse(stored);
-      if (Date.now() < expiresAt) return true;
-      sessionStorage.removeItem(PARENTAL_GATE_KEY);
-      return false;
-    } catch {
-      sessionStorage.removeItem(PARENTAL_GATE_KEY);
-      return false;
-    }
-  });
-
-  useEffect(() => {
-    const tick = () => {
-      const stored = sessionStorage.getItem(PARENTAL_GATE_KEY);
-      if (!stored) {
-        if (isVerified) setIsVerified(false);
-        return;
-      }
-      try {
-        const { expiresAt } = JSON.parse(stored);
-        if (Date.now() >= expiresAt) {
-          sessionStorage.removeItem(PARENTAL_GATE_KEY);
-          if (isVerified) setIsVerified(false);
-        }
-      } catch {
-        sessionStorage.removeItem(PARENTAL_GATE_KEY);
-        if (isVerified) setIsVerified(false);
-      }
-    };
-    const interval = setInterval(tick, 30_000);
-    return () => clearInterval(interval);
-  }, [isVerified]);
+  // Parental gate (shared hook)
+  const { isVerified, checkVerification } = useParentalGate(PARENTAL_GATE_KEY);
 
   // Handle Stripe redirect: ?payment=success&session_id=…
   useEffect(() => {
@@ -109,7 +75,7 @@ const KidsScienceLab = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
-  const handleVerificationSuccess = () => setIsVerified(true);
+  const handleVerificationSuccess = () => checkVerification();
 
   const handleTemplateSelect = (template: { category: string; hypothesis: string; observations: string }) => {
     setCategory(template.category);
