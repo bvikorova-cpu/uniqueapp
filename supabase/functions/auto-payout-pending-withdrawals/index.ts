@@ -90,6 +90,19 @@ serve(async (req) => {
         }
 
         try {
+          // ATOMIC CLAIM: pending -> processing. Skip if another sweep grabbed it.
+          const { data: claimed, error: claimErr } = await admin
+            .from(cfg.table)
+            .update({ status: "processing" })
+            .eq("id", wd.id)
+            .eq("status", "pending")
+            .select("id");
+          if (claimErr) throw claimErr;
+          if (!claimed || claimed.length === 0) {
+            totalSkipped++;
+            continue;
+          }
+
           const transfer = await stripe.transfers.create({
             amount: amountCents,
             currency: "eur",
@@ -145,6 +158,9 @@ serve(async (req) => {
           totalFailed++;
           const msg = e instanceof Error ? e.message : String(e);
           log(`transfer failed for ${kind}/${wd.id}`, { msg });
+          // revert claim so the row can be retried (only if we don't already have a transfer id)
+          await admin.from(cfg.table).update({ status: "pending" })
+            .eq("id", wd.id).eq("status", "processing").is(cfg.transferCol, null);
           results.push({ kind, id: wd.id, error: msg });
         }
       }

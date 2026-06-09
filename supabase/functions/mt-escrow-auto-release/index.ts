@@ -33,8 +33,21 @@ serve(async (req) => {
     const results = { marketplace_released: 0, mentorship_released: 0, mentorship_cancelled: 0, errors: [] as string[] };
 
     const releaseRow = async (kind: "marketplace" | "mentorship", row: any) => {
+      const table = kind === "mentorship" ? "mt_mentorship_bookings" : "mt_marketplace_orders";
       try {
         if (row.stripe_transfer_id) return;
+
+        // ATOMIC CLAIM: flip paid -> processing. If 0 rows updated, another worker grabbed it.
+        const { data: claimed, error: claimErr } = await admin
+          .from(table)
+          .update({ status: "processing" })
+          .eq("id", row.id)
+          .eq("status", "paid")
+          .is("stripe_transfer_id", null)
+          .select("id");
+        if (claimErr) throw new Error(`claim failed: ${claimErr.message}`);
+        if (!claimed || claimed.length === 0) return; // already claimed by another run
+
         let sellerUserId: string;
         if (kind === "mentorship") {
           const { data: mentor } = await admin.from("mt_mentors").select("user_id").eq("id", row.mentor_id).maybeSingle();
@@ -49,6 +62,8 @@ serve(async (req) => {
           .eq("id", sellerUserId)
           .maybeSingle();
         if (!profile?.stripe_connect_account_id || !profile.stripe_connect_payouts_enabled) {
+          // revert claim so it can be retried after creator onboards
+          await admin.from(table).update({ status: "paid" }).eq("id", row.id).eq("status", "processing");
           throw new Error(`seller ${sellerUserId} not Connect-enabled`);
         }
         const gross = Number(row.price_cents);
@@ -66,7 +81,7 @@ serve(async (req) => {
         const now = new Date().toISOString();
         const upd: Record<string, unknown> = { status: "completed", stripe_transfer_id: transfer.id, completed_at: now };
         if (kind === "marketplace") upd.delivered_at = now;
-        await admin.from(kind === "mentorship" ? "mt_mentorship_bookings" : "mt_marketplace_orders").update(upd).eq("id", row.id);
+        await admin.from(table).update(upd).eq("id", row.id);
         if (kind === "mentorship") results.mentorship_released++;
         else results.marketplace_released++;
       } catch (e) {
