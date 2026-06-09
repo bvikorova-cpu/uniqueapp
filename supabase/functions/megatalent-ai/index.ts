@@ -127,11 +127,10 @@ serve(async (req) => {
 
     // Atomic deduction AFTER successful AI call (race-safe; throws INSUFFICIENT_CREDITS)
     const { error: deductErr } = await supabase.rpc("deduct_ai_credits_atomic", {
-      p_user_id: user.id,
-      p_amount: creditCost,
-      p_reason: `megatalent_ai:${action}`,
-      p_source: "megatalent",
+      _user_id: user.id,
+      _amount: creditCost,
     });
+
     if (deductErr) {
       const msg = deductErr.message || "";
       const status = msg.includes("INSUFFICIENT_CREDITS") ? 402 : 500;
