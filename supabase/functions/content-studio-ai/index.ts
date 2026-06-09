@@ -37,19 +37,14 @@ Deno.serve(async (req) => {
     const { action, topic, content, context, details, prompt, sourceContent, targetKeyword, count, contentType, platform, postCount, guidelines, systemPrompt, ...params } = await req.json();
     const apiKey = Deno.env.get("OPENAI_API_KEY");
     if (!apiKey) throw new Error("API key not configured");
-    
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("Unauthorized");
-    
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      { global: { headers: { Authorization: authHeader } } }
-    );
-    
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error("Unauthorized");
-    
+
+    if (!action || !(action in ACTION_COST)) {
+      return new Response(JSON.stringify({ error: `Unknown action: ${action}` }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+    const cost = ACTION_COST[action];
+    const auth = await requireAiCredits(req, corsHeaders, { credits: cost, usageType: `content_studio_${action}` });
+    if (auth.errorResponse) return auth.errorResponse;
+
     let result: any;
     switch (action) {
       case "ab-test":
