@@ -23,7 +23,7 @@ export function InstantPayoutButton({ amount, enabled, onPaid }: Props) {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("stripe-connect-payout", {
-        body: { amount_cents: Math.floor(net * 100), currency: "eur", method: "instant" },
+        body: { amount_cents: Math.floor(amount * 100), currency: "eur", method: "instant" },
       });
       if (error) throw error;
       toast({ title: "Instant payout sent", description: `€${net.toFixed(2)} on its way (€${fee} fee)` });
