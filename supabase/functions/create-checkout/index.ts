@@ -359,6 +359,39 @@ serve(async (req) => {
     }
     const customerId = await getStripeCustomer(stripe, email);
 
+    // ─── PET TRANSLATOR CHECKOUT ROUTER ───
+    // Handles both subscription plans and one-off purchases via priceId.
+    // Body: { product: "pet", priceId: "price_..." }
+    if (body.product === "pet" && body.priceId) {
+      const PET_PRICES = new Set<string>([
+        "price_1SQDNZ0QTWhd4oRpHRPIDTTW", // Pet Parent €4.99/mo
+        "price_1SQDNuGaXSfGtYFt9o91SK2J", // Multi-Pet €8.99/mo
+        "price_1SQDOFGaXSfGtYFtDQsh6HlL", // Pet Psychologist €24.99/mo
+        "price_1SQDRRGaXSfGtYFts87Q1N9y", // Single translation €2
+        "price_1TWBEFGaXSfGtYFtKH2ut18T", // Premium voice €14.99
+      ]);
+      const priceId = String(body.priceId);
+      if (!PET_PRICES.has(priceId)) {
+        return errorResponse("Invalid pet priceId", 400);
+      }
+      const price = await stripe.prices.retrieve(priceId);
+      const mode: "subscription" | "payment" = price.recurring ? "subscription" : "payment";
+      const successPath = mode === "subscription"
+        ? `/pet-translator?subscription=success&session_id={CHECKOUT_SESSION_ID}`
+        : `/pet-translator?payment=success&session_id={CHECKOUT_SESSION_ID}`;
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId,
+        customer_email: customerId ? undefined : email!,
+        line_items: [{ price: priceId, quantity: 1 }],
+        mode,
+        success_url: `${origin}${successPath}`,
+        cancel_url: `${origin}/pet-translator-pricing?payment=canceled`,
+        allow_promotion_codes: true,
+        metadata: { user_id: userId ?? "", module: "pet_translator", price_id: priceId },
+      });
+      return successResponse({ url: session.url, mode });
+    }
+
     // ─── AI CREDITS AUTO-RECHARGE ROUTER ───
     // Consolidates the previous ai-auto-recharge edge function to avoid hitting
     // the Supabase Edge Functions limit. Body: { product: "ai_auto_recharge", action }
