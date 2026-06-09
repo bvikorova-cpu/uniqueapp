@@ -74,11 +74,11 @@ export function usePetSubscription() {
         return;
       }
 
-      const { data, error } = await supabase.functions.invoke('create-pet-checkout', {
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
         headers: {
           Authorization: `Bearer ${session.access_token}`,
         },
-        body: { priceId },
+        body: { product: 'pet', priceId },
       });
 
       if (error) throw error;
