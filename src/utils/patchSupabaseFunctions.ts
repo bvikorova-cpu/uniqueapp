@@ -160,13 +160,14 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   "photo-damage-detection":             { target: "universal-vision-analyzer", bodyExtras: { task: "photo_damage" } },
 
   // ─────────────────────────────────────────────────────────────────────
-  // PHOTO PROCESSING → universal-vision-analyzer (image gen tasks)
+  // PHOTO PROCESSING → remove-background (REAL image edit via OpenAI gpt-image-1)
+  // Returns actual processed image URLs under all legacy aliases.
   // ─────────────────────────────────────────────────────────────────────
-  "photo-ai-upscaling":                 { target: "universal-vision-analyzer", bodyExtras: { task: "photo_upscale" } },
-  "photo-background-removal":           { target: "universal-vision-analyzer", bodyExtras: { task: "photo_bg_remove" } },
-  "photo-colorization-pro":             { target: "universal-vision-analyzer", bodyExtras: { task: "photo_colorize" } },
-  "photo-face-enhancement":             { target: "universal-vision-analyzer", bodyExtras: { task: "photo_face_enhance" } },
-  "restore-old-photo":                  { target: "universal-vision-analyzer", bodyExtras: { task: "photo_restore" } },
+  "photo-ai-upscaling":                 { target: "remove-background", bodyExtras: { operation: "upscale" } },
+  "photo-background-removal":           { target: "remove-background", bodyExtras: { operation: "bg-remove" } },
+  "photo-colorization-pro":             { target: "remove-background", bodyExtras: { operation: "colorize-pro" } },
+  "photo-face-enhancement":             { target: "remove-background", bodyExtras: { operation: "face-enhance" } },
+  "restore-old-photo":                  { target: "remove-background", bodyExtras: {} }, // operation taken from body.restorationType
   "virtual-tryon":                      { target: "universal-vision-analyzer", bodyExtras: { task: "virtual_tryon" } },
   "beauty-transformation":              { target: "universal-vision-analyzer", bodyExtras: { task: "beauty_transform" } },
   "beauty-celebrity-match":             { target: "universal-vision-analyzer", bodyExtras: { task: "beauty_celebrity" } },
