@@ -1,0 +1,1 @@
+UPDATE public.photo_credits SET credits_remaining = credits_remaining + 50 WHERE user_id = 'a8f98c5c-3ce8-4928-bfaf-061a700411c6';
