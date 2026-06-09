@@ -91,6 +91,25 @@ serve(async (req) => {
       }, 400);
     }
 
+    // 2b. Block if there's already an in-flight payout (race-condition guard)
+    const { data: inFlight, error: inFlightErr } = await supabase
+      .from("campaign_payouts")
+      .select("id, status")
+      .eq("campaign_id", campaign_id)
+      .eq("campaign_type", campaign_type)
+      .in("status", ["pending", "pending_review", "processing"])
+      .limit(1);
+    if (inFlightErr) {
+      console.error("in-flight check failed", inFlightErr);
+      return json({ error: "Payout state check failed" }, 500);
+    }
+    if (inFlight && inFlight.length > 0) {
+      return json({
+        error: "A payout request is already in progress for this campaign. Wait until it completes or is reviewed.",
+        code: "PAYOUT_IN_FLIGHT",
+      }, 409);
+    }
+
     // 3. Verify available balance covers requested amount
     const { data: bal, error: balErr } = await supabase.rpc(
       "get_campaign_available_balance",
