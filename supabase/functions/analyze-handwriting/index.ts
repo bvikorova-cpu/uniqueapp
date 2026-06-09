@@ -182,7 +182,7 @@ serve(async (req) => {
       JSON.stringify({
         success: true,
         analysis: savedAnalysis,
-        creditsRemaining: creditsData.credits_remaining - creditsRequired,
+        creditsRemaining: newRemaining,
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
