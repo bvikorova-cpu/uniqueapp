@@ -291,6 +291,52 @@ export default function CampaignDashboard() {
         </Button>
       </div>
 
+      {/* Prominent onboarding banner — only when Connect not fully ready */}
+      {!loadingConnect && !(connectStatus?.connected && connectStatus?.payoutsEnabled) && (
+        <Alert className="mb-6 border-2 border-primary/40 bg-primary/5">
+          <CreditCard className="h-4 w-4" />
+          <AlertTitle className="flex items-center gap-2">
+            {connectStatus?.connected ? "Finish your Stripe Connect setup" : "Activate payouts — Stripe Connect onboarding"}
+          </AlertTitle>
+          <AlertDescription className="mt-2 space-y-3">
+            <p className="text-sm">
+              Beneficiaries must complete a one-time Stripe Connect onboarding before any payout can be released.
+              Funds raised before onboarding are held on the platform balance and released after admin review.
+            </p>
+            <ol className="text-sm space-y-1 list-none">
+              <li className="flex items-center gap-2">
+                {connectStatus?.connected ? <CheckCircle2 className="h-4 w-4 text-green-600" /> : <span className="h-4 w-4 rounded-full border border-muted-foreground/40 inline-block" />}
+                <span>1. Create Stripe Connect account</span>
+              </li>
+              <li className="flex items-center gap-2">
+                {connectStatus?.detailsSubmitted ? <CheckCircle2 className="h-4 w-4 text-green-600" /> : <span className="h-4 w-4 rounded-full border border-muted-foreground/40 inline-block" />}
+                <span>2. Submit identity & business details</span>
+              </li>
+              <li className="flex items-center gap-2">
+                {connectStatus?.chargesEnabled ? <CheckCircle2 className="h-4 w-4 text-green-600" /> : <span className="h-4 w-4 rounded-full border border-muted-foreground/40 inline-block" />}
+                <span>3. Verify bank account (charges enabled)</span>
+              </li>
+              <li className="flex items-center gap-2">
+                {connectStatus?.payoutsEnabled ? <CheckCircle2 className="h-4 w-4 text-green-600" /> : <span className="h-4 w-4 rounded-full border border-muted-foreground/40 inline-block" />}
+                <span>4. Payouts enabled — ready to withdraw</span>
+              </li>
+            </ol>
+            <Button
+              onClick={handleSetupStripeConnect}
+              disabled={connectingStripe}
+              size="sm"
+              className="mt-2"
+            >
+              {connectingStripe ? (
+                <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Opening Stripe…</>
+              ) : (
+                <><ExternalLink className="mr-2 h-4 w-4" />{connectStatus?.connected ? "Continue onboarding" : "Start Stripe Connect onboarding"}</>
+              )}
+            </Button>
+          </AlertDescription>
+        </Alert>
+      )}
+
       {/* Stripe Connect Payout Settings */}
       <Card className="mb-6 border-2">
         <CardHeader>
