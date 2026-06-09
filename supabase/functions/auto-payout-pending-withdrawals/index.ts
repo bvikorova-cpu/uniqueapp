@@ -90,6 +90,19 @@ serve(async (req) => {
         }
 
         try {
+          // ATOMIC CLAIM: pending -> processing. Skip if another sweep grabbed it.
+          const { data: claimed, error: claimErr } = await admin
+            .from(cfg.table)
+            .update({ status: "processing" })
+            .eq("id", wd.id)
+            .eq("status", "pending")
+            .select("id");
+          if (claimErr) throw claimErr;
+          if (!claimed || claimed.length === 0) {
+            totalSkipped++;
+            continue;
+          }
+
           const transfer = await stripe.transfers.create({
             amount: amountCents,
             currency: "eur",
