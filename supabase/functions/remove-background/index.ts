@@ -161,7 +161,8 @@ serve(async (req) => {
     form.append("model", "gpt-image-1");
     form.append("image", srcBlob, "input.png");
     form.append("prompt", prompt);
-    form.append("size", operation === "upscale" ? "1536x1536" : "1024x1024");
+    // gpt-image-1 supports 1024x1024, 1024x1536, 1536x1024 (no 1536x1536)
+    form.append("size", operation === "upscale" ? "1536x1024" : "1024x1024");
     if (operation === "bg-remove" && (!body.bgColor || body.bgColor === "transparent")) {
       form.append("background", "transparent");
     }
