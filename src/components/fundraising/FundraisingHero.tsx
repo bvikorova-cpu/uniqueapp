@@ -89,9 +89,9 @@ export function FundraisingHero({ onMyCampaigns, onExplore }: FundraisingHeroPro
       {/* Content */}
       <div className="relative z-10 h-full flex flex-col justify-end pb-10 px-6 sm:px-10">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mb-4">
-          <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-black/60 backdrop-blur-xl text-white text-sm font-semibold border border-amber-400/40 drop-shadow-md shadow-[0_0_30px_rgba(251,191,36,0.3)]">
+          <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-black/80 backdrop-blur-xl text-white text-sm font-semibold border border-amber-400/60 shadow-[0_0_40px_rgba(251,191,36,0.45)]">
             <Heart className="w-4 h-4 text-rose-400" fill="currentColor" />
-            <span style={{ color: "#fde68a" }}>Premium Fundraising Hub</span>
+            <span className="text-amber-100">Premium Fundraising Hub</span>
             <Sparkles className="w-4 h-4 text-amber-300" />
           </span>
         </motion.div>
