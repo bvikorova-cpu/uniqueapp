@@ -80,7 +80,8 @@ serve(async (req) => {
     }
 
     if (action === "reject") {
-      await supabase
+      // Atomic claim: only succeeds if row is still pending_review.
+      const { data: rejClaim, error: rejClaimErr } = await supabase
         .from("campaign_payouts")
         .update({
           status: "rejected",
@@ -88,7 +89,13 @@ serve(async (req) => {
           reviewed_by: adminUser.id,
           reviewed_at: new Date().toISOString(),
         })
-        .eq("id", payout_id);
+        .eq("id", payout_id)
+        .eq("status", "pending_review")
+        .select("id")
+        .maybeSingle();
+      if (rejClaimErr || !rejClaim) {
+        return json({ error: "Payout was already processed by another admin", code: "ALREADY_PROCESSED" }, 409);
+      }
 
       await supabase.from("notifications").insert({
         user_id: payout.owner_user_id,
@@ -101,7 +108,22 @@ serve(async (req) => {
       return json({ success: true, status: "rejected", payout_id });
     }
 
-    // ===== APPROVE → execute Stripe transfer =====
+    // ===== APPROVE → atomically claim row to 'processing' BEFORE Stripe call =====
+    const { data: appClaim, error: appClaimErr } = await supabase
+      .from("campaign_payouts")
+      .update({
+        status: "processing",
+        reviewed_by: adminUser.id,
+        reviewed_at: new Date().toISOString(),
+      })
+      .eq("id", payout_id)
+      .eq("status", "pending_review")
+      .select("id")
+      .maybeSingle();
+    if (appClaimErr || !appClaim) {
+      return json({ error: "Payout was already processed by another admin", code: "ALREADY_PROCESSED" }, 409);
+    }
+
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     try {
       const transfer = await stripe.transfers.create({
