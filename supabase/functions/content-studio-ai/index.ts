@@ -94,7 +94,8 @@ Deno.serve(async (req) => {
         break;
       default: throw new Error(`Unknown action: ${action}`);
     }
-    return new Response(JSON.stringify(result), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    try { await auth.deduct!(); } catch (e) { console.error("[content-studio-ai] deduct-failed", e); }
+    return new Response(JSON.stringify({ ...result, creditsCharged: cost }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e: any) {
     return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
