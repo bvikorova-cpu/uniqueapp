@@ -64335,6 +64335,10 @@ export type Database = {
         Args: { p_service_type: string; p_user_id: string }
         Returns: boolean
       }
+      increment_ai_credits: {
+        Args: { p_amount: number; p_user_id: string }
+        Returns: number
+      }
       increment_collection_pages: {
         Args: { p_collection_id: string }
         Returns: undefined
