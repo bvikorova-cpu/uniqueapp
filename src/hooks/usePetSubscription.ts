@@ -40,7 +40,8 @@ export function usePetSubscription() {
         return;
       }
 
-      const { data, error } = await supabase.functions.invoke('check-pet-subscription', {
+      const { data, error } = await supabase.functions.invoke('check-subscription', {
+        body: { tier: 'pet' },
         headers: {
           Authorization: `Bearer ${session.access_token}`,
         },
