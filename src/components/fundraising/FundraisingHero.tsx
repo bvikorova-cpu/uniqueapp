@@ -71,7 +71,7 @@ export function FundraisingHero({ onMyCampaigns, onExplore }: FundraisingHeroPro
   ];
 
   return (
-    <div className="relative h-[78vh] min-h-[560px] w-full overflow-hidden rounded-3xl border border-amber-500/20 mb-8 shadow-[0_0_80px_-20px_rgba(251,191,36,0.4)]">
+    <div className="relative min-h-[640px] sm:h-[78vh] sm:min-h-[560px] w-full overflow-hidden rounded-3xl border border-amber-500/20 mb-8 shadow-[0_0_80px_-20px_rgba(251,191,36,0.4)]">
       {/* Black fallback + video */}
       <div className="absolute inset-0 bg-black" />
       <video
@@ -87,8 +87,8 @@ export function FundraisingHero({ onMyCampaigns, onExplore }: FundraisingHeroPro
       <div className="absolute inset-0 bg-gradient-to-r from-amber-950/20 via-transparent to-purple-950/25" />
 
       {/* Content */}
-      <div className="relative z-10 h-full flex flex-col justify-end pt-20 pb-10 px-6 sm:px-10">
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mb-4 mt-4">
+      <div className="relative z-10 min-h-[640px] sm:h-full flex flex-col justify-center pt-24 sm:pt-20 pb-10 px-6 sm:px-10">
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mb-4">
           <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-black/80 backdrop-blur-xl text-white text-sm font-semibold border border-amber-400/60 shadow-[0_0_40px_rgba(251,191,36,0.45)]">
             <Heart className="w-4 h-4 text-rose-400" fill="currentColor" />
             <span className="text-amber-100">Premium Fundraising Hub</span>
