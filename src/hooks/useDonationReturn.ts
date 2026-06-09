@@ -2,6 +2,8 @@ import { useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { triggerBadgeConfetti } from "@/utils/confetti";
+
 
 /**
  * Detects ?donation=success&session_id=... or ?donation=canceled in the URL
