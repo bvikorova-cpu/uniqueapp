@@ -1,8 +1,14 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { requireAiCredits } from "../_shared/credit-check.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+};
+
+const ACTION_COST: Record<string, number> = {
+  "ab-test": 4, "brand-voice": 3, "bulk-generate": 5, "plagiarism": 3,
+  "repurpose": 4, "seo-analyze": 4, "templates": 3,
 };
 
 async function callAI(apiKey: string, messages: any[]) {
@@ -31,19 +37,14 @@ Deno.serve(async (req) => {
     const { action, topic, content, context, details, prompt, sourceContent, targetKeyword, count, contentType, platform, postCount, guidelines, systemPrompt, ...params } = await req.json();
     const apiKey = Deno.env.get("OPENAI_API_KEY");
     if (!apiKey) throw new Error("API key not configured");
-    
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("Unauthorized");
-    
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      { global: { headers: { Authorization: authHeader } } }
-    );
-    
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error("Unauthorized");
-    
+
+    if (!action || !(action in ACTION_COST)) {
+      return new Response(JSON.stringify({ error: `Unknown action: ${action}` }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+    const cost = ACTION_COST[action];
+    const auth = await requireAiCredits(req, corsHeaders, { credits: cost, usageType: `content_studio_${action}` });
+    if (auth.errorResponse) return auth.errorResponse;
+
     let result: any;
     switch (action) {
       case "ab-test":
@@ -93,7 +94,8 @@ Deno.serve(async (req) => {
         break;
       default: throw new Error(`Unknown action: ${action}`);
     }
-    return new Response(JSON.stringify(result), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    try { await auth.deduct!(); } catch (e) { console.error("[content-studio-ai] deduct-failed", e); }
+    return new Response(JSON.stringify({ ...result, creditsCharged: cost }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e: any) {
     return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
