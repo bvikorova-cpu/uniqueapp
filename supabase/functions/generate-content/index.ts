@@ -113,6 +113,24 @@ serve(async (req) => {
       throw new Error("No content generated");
     }
 
+    // ✅ Deduct credits only after successful AI generation
+    await supabaseClient
+      .from("ai_credits")
+      .update({
+        credits_remaining: creditData.credits_remaining - creditsNeeded,
+        last_used_at: new Date().toISOString(),
+      })
+      .eq("user_id", user.id);
+
+    await supabaseClient.from("ai_usage_history").insert({
+      user_id: user.id,
+      usage_type: `content_${contentType}`,
+      credits_used: creditsNeeded,
+      description: `Generated ${contentType}: ${title}`,
+    });
+
+
+
     // Save generated content
     const { data: savedContent, error: saveError } = await supabaseClient
       .from("ai_generated_content")
