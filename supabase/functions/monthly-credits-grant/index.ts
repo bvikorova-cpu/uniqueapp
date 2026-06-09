@@ -73,51 +73,19 @@ Deno.serve(async (req) => {
         return;
       }
 
-      // 2) credit the user
-      const { data: row, error: selErr } = await supabase
-        .from("ai_credits")
-        .select("id, credits_remaining")
-        .eq("user_id", userId)
-        .maybeSingle();
-
-      if (selErr) {
+      // 2) atomic credit grant (race-safe against concurrent user spend)
+      const { error: rpcErr } = await supabase.rpc("increment_ai_credits", {
+        p_user_id: userId,
+        p_amount: MONTHLY_AMOUNT,
+      });
+      if (rpcErr) {
         failed++;
-        failures.push({ user_id: userId, stage: "credits_select", error: selErr.message });
-        console.error(`[monthly-credits-grant] select failed user=${userId}`, selErr);
+        failures.push({ user_id: userId, stage: "credits_rpc", error: rpcErr.message });
+        console.error(`[monthly-credits-grant] rpc failed user=${userId}`, rpcErr);
+        // compensating action: remove the log row so a retry can re-grant
+        await supabase.from("monthly_credit_grants").delete()
+          .eq("user_id", userId).eq("grant_month", grantMonth);
         return;
-      }
-
-      if (row) {
-        const { error: updErr } = await supabase
-          .from("ai_credits")
-          .update({
-            credits_remaining: (row.credits_remaining ?? 0) + MONTHLY_AMOUNT,
-            updated_at: new Date().toISOString(),
-          })
-          .eq("id", row.id);
-        if (updErr) {
-          failed++;
-          failures.push({ user_id: userId, stage: "credits_update", error: updErr.message });
-          console.error(`[monthly-credits-grant] update failed user=${userId}`, updErr);
-          // compensating action: remove the log row so a retry can re-grant
-          await supabase.from("monthly_credit_grants").delete()
-            .eq("user_id", userId).eq("grant_month", grantMonth);
-          return;
-        }
-      } else {
-        const { error: insErr } = await supabase.from("ai_credits").insert({
-          user_id: userId,
-          credits_remaining: MONTHLY_AMOUNT,
-          total_credits_purchased: 0,
-        });
-        if (insErr) {
-          failed++;
-          failures.push({ user_id: userId, stage: "credits_insert", error: insErr.message });
-          console.error(`[monthly-credits-grant] insert failed user=${userId}`, insErr);
-          await supabase.from("monthly_credit_grants").delete()
-            .eq("user_id", userId).eq("grant_month", grantMonth);
-          return;
-        }
       }
 
       // 3) in-app notification (best-effort, do not fail the grant on notify error)
