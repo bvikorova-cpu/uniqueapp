@@ -60,24 +60,9 @@ serve(async (req) => {
       );
     }
 
-    // Deduct credits
-    await supabaseClient
-      .from("ai_credits")
-      .update({ 
-        credits_remaining: creditData.credits_remaining - creditsNeeded,
-        last_used_at: new Date().toISOString()
-      })
-      .eq("user_id", user.id);
+    // NOTE: credits are deducted AFTER successful AI response (see below) so
+    // upstream OpenAI/save failures do not consume the user's balance.
 
-    // Log usage
-    await supabaseClient
-      .from("ai_usage_history")
-      .insert({
-        user_id: user.id,
-        usage_type: `content_${contentType}`,
-        credits_used: creditsNeeded,
-        description: `Generated ${contentType}: ${title}`,
-      });
 
     // Generate content based on type
     const systemPrompts = {
