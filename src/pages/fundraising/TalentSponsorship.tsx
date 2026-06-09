@@ -109,6 +109,8 @@ export default function TalentSponsorship() {
             )}
           </div>
         </div>
+
+        <TalentSuccessStories />
       </div>
     </div>
   );
