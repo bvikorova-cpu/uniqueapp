@@ -5,6 +5,7 @@ import { TalentHero } from '@/components/fundraising/talent/TalentHero';
 import { TalentStepsWizard } from '@/components/fundraising/talent/TalentStepsWizard';
 import { TalentFilters } from '@/components/fundraising/talent/TalentFilters';
 import { TalentCampaignCard } from '@/components/fundraising/talent/TalentCampaignCard';
+import { TalentSuccessStories } from '@/components/fundraising/talent/TalentSuccessStories';
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface TalentCampaign {
@@ -108,6 +109,8 @@ export default function TalentSponsorship() {
             )}
           </div>
         </div>
+
+        <TalentSuccessStories />
       </div>
     </div>
   );

@@ -20,8 +20,7 @@ export function MedicalHero({ onCreateCampaign }: MedicalHeroProps) {
       stats={[
         { icon: Heart, label: "Campaigns", value: "—" },
         { icon: Users, label: "Donors", value: "—" },
-        { icon: TrendingUp, label: "Raised", value: "—" },
-        { icon: ShieldCheck, label: "Verified", value: "100%" },
+        { icon: TrendingUp, label: "Platform Fee", value: "6%" },
       ]}
     />
   );

@@ -18,7 +18,7 @@ export const DreamHero = () => {
       stats={[
         { icon: Rocket, label: "Dreams Funded", value: "—" },
         { icon: TrendingUp, label: "Total Raised", value: "—" },
-        { icon: Sparkles, label: "Success Rate", value: "—" },
+        { icon: Sparkles, label: "Platform Fee", value: "7%" },
       ]}
     />
   );

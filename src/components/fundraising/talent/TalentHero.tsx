@@ -18,7 +18,7 @@ export function TalentHero() {
       stats={[
         { icon: Star, label: "Talents Supported", value: "—" },
         { icon: Users, label: "Sponsors", value: "—" },
-        { icon: TrendingUp, label: "Funds Raised", value: "—" },
+        { icon: TrendingUp, label: "Platform Fee", value: "10%" },
       ]}
     />
   );

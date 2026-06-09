@@ -18,7 +18,7 @@ export function CrisisHero() {
       stats={[
         { icon: Zap, label: "Active Crises", value: "—" },
         { icon: Users, label: "People Helped", value: "—" },
-        { icon: TrendingUp, label: "Deployed", value: "—" },
+        { icon: TrendingUp, label: "Platform Fee", value: "8%" },
       ]}
     />
   );
