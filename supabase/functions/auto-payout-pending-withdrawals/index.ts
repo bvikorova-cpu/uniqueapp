@@ -158,6 +158,9 @@ serve(async (req) => {
           totalFailed++;
           const msg = e instanceof Error ? e.message : String(e);
           log(`transfer failed for ${kind}/${wd.id}`, { msg });
+          // revert claim so the row can be retried (only if we don't already have a transfer id)
+          await admin.from(cfg.table).update({ status: "pending" })
+            .eq("id", wd.id).eq("status", "processing").is(cfg.transferCol, null);
           results.push({ kind, id: wd.id, error: msg });
         }
       }
