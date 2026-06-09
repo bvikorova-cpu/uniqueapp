@@ -71,7 +71,7 @@ export function FundraisingHero({ onMyCampaigns, onExplore }: FundraisingHeroPro
   ];
 
   return (
-    <div className="relative h-[78vh] min-h-[560px] w-full overflow-hidden rounded-3xl border border-amber-500/20 mb-8 shadow-[0_0_80px_-20px_rgba(251,191,36,0.4)]">
+    <div className="relative min-h-[640px] sm:h-[78vh] sm:min-h-[560px] w-full overflow-hidden rounded-3xl border border-amber-500/20 mb-8 shadow-[0_0_80px_-20px_rgba(251,191,36,0.4)]">
       {/* Black fallback + video */}
       <div className="absolute inset-0 bg-black" />
       <video
