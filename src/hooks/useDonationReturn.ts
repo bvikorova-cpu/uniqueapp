@@ -2,6 +2,8 @@ import { useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { triggerBadgeConfetti } from "@/utils/confetti";
+
 
 /**
  * Detects ?donation=success&session_id=... or ?donation=canceled in the URL
@@ -40,12 +42,14 @@ export function useDonationReturn(onVerified?: () => void) {
           if (error) throw error;
           if (data?.verified) {
             const eur = ((data?.amount_cents ?? 0) / 100).toFixed(2);
+            triggerBadgeConfetti();
             toast({
-              title: "Thank you for your donation!",
-              description: `Your contribution of €${eur} was received.`,
+              title: "🎉 Thank you for your donation!",
+              description: `Your contribution of €${eur} was received. You're a hero!`,
             });
             onVerified?.();
           } else {
+
             toast({
               title: "Payment pending",
               description: "We could not confirm the payment yet. It may take a moment.",
