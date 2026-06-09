@@ -16537,6 +16537,51 @@ export type Database = {
         }
         Relationships: []
       }
+      creator_payouts: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          currency: string
+          error_message: string | null
+          fee_cents: number
+          id: string
+          method: string
+          status: string
+          stripe_connect_account_id: string | null
+          stripe_payout_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_cents: number
+          created_at?: string
+          currency?: string
+          error_message?: string | null
+          fee_cents?: number
+          id?: string
+          method?: string
+          status?: string
+          stripe_connect_account_id?: string | null
+          stripe_payout_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          currency?: string
+          error_message?: string | null
+          fee_cents?: number
+          id?: string
+          method?: string
+          status?: string
+          stripe_connect_account_id?: string | null
+          stripe_payout_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       creator_post_likes: {
         Row: {
           created_at: string | null
@@ -63662,6 +63707,10 @@ export type Database = {
       get_coupon_discount_code: {
         Args: { _listing_id: string }
         Returns: string
+      }
+      get_creator_available_cents: {
+        Args: { _user_id: string }
+        Returns: number
       }
       get_current_user_id: { Args: never; Returns: string }
       get_dau_series: {
