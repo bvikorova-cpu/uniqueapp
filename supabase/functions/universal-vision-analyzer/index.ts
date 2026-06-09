@@ -95,10 +95,14 @@ serve(async (req) => {
     if (!cfg) return json({ error: `Unknown task: ${task}` }, 400);
     if (cfg.visionRequired && !imageUrl) return json({ error: `Task '${task}' requires imageUrl` }, 400);
 
+    const cost = TASK_COST[task] ?? DEFAULT_TASK_COST;
+    const auth = await requireAiCredits(req, corsHeaders, { credits: cost, usageType: `vision_${task}` });
+    if (auth.errorResponse) return auth.errorResponse;
+
     const apiKey = Deno.env.get("OPENAI_API_KEY");
     if (!apiKey) return json({ error: "AI service not configured" }, 503);
 
-    log("invoke", { task, hasImage: !!imageUrl });
+    log("invoke", { task, userId: auth.user!.id, cost, hasImage: !!imageUrl });
 
     const userContent: any[] = [];
     if (userPrompt) userContent.push({ type: "text", text: userPrompt });
@@ -125,7 +129,11 @@ serve(async (req) => {
 
     const data = await aiRes.json();
     const result = data?.choices?.[0]?.message?.content ?? "";
-    return json({ result, text: result, task });
+
+    // Deduct only after successful AI response. Don't fail the user response if deduct logging fails.
+    try { await auth.deduct!(); } catch (e) { log("deduct-failed", { err: String(e) }); }
+
+    return json({ result, text: result, task, creditsCharged: cost });
   } catch (e: any) {
     log("error", { msg: e?.message });
     return json({ error: e?.message ?? "Unknown error" }, 500);
