@@ -64347,6 +64347,10 @@ export type Database = {
         Args: { p_collection_id: string }
         Returns: undefined
       }
+      increment_megatalent_bracket_vote: {
+        Args: { p_match_id: string; p_side: string }
+        Returns: undefined
+      }
       iq_award_badge: {
         Args: { _code: string; _user: string }
         Returns: undefined
