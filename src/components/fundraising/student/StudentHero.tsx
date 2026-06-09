@@ -18,7 +18,7 @@ export function StudentHero() {
       stats={[
         { icon: GraduationCap, label: "Students Helped", value: "—" },
         { icon: Users, label: "Supporters", value: "—" },
-        { icon: TrendingUp, label: "Total Raised", value: "—" },
+        { icon: TrendingUp, label: "Platform Fee", value: "5%" },
       ]}
     />
   );
