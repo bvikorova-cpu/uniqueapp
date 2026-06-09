@@ -108,8 +108,8 @@ export function FundraisingHero({ onMyCampaigns, onExplore }: FundraisingHeroPro
           Change a Life.
           <br />
           <span
-            className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-300 bg-clip-text text-transparent"
-            style={{ WebkitTextStroke: "1px rgba(0,0,0,0.55)" }}
+            className="text-amber-300"
+            style={{ textShadow: "0 0 20px rgba(251,191,36,0.6), 0 2px 8px rgba(0,0,0,0.9)" }}
           >
             Today.
           </span>
