@@ -1,11 +1,23 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { authenticateUser } from "../_shared/supabaseClient.ts";
+import { authenticateUser, createSupabaseAdminClient } from "../_shared/supabaseClient.ts";
 import { createLogger } from "../_shared/logger.ts";
 import { errorResponse, handleCors, successResponse } from "../_shared/response.ts";
 import { createStripeClient, getStripeCustomer } from "../_shared/stripe.ts";
 import { RATE_LIMITS, withRateLimit } from "../_shared/rateLimit.ts";
 
 const log = createLogger("CREATE-CHECKOUT");
+
+// Per-category platform fee percentages — mirror process_campaign_donation RPC
+const CAMPAIGN_FEE_PCT: Record<string, number> = {
+  medical: 0.06, dream: 0.07, hero: 0.05, pet: 0.06,
+  student: 0.05, crisis: 0.08, talent: 0.10,
+};
+const CAMPAIGN_TABLE: Record<string, string> = {
+  medical: "medical_campaigns", dream: "dream_campaigns", hero: "hero_campaigns",
+  pet: "pet_rescue_campaigns", student: "student_campaigns",
+  crisis: "crisis_campaigns", talent: "talent_campaigns",
+};
+
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -749,13 +761,45 @@ serve(async (req) => {
       const successUrl = `${origin}/fundraising/${campaignType}/${campaignId}?donation=success&session_id={CHECKOUT_SESSION_ID}`;
       const cancelUrl = `${origin}/fundraising/${campaignType}/${campaignId}?donation=canceled`;
 
-      const session = await stripe.checkout.sessions.create({
+      // ── Stripe Connect: route funds to campaign owner, take platform fee
+      let connectAccountId: string | null = null;
+      let ownerUserId: string | null = null;
+      try {
+        const admin = createSupabaseAdminClient();
+        const ownerTable = CAMPAIGN_TABLE[campaignType];
+        if (ownerTable) {
+          const { data: camp } = await admin
+            .from(ownerTable)
+            .select("user_id")
+            .eq("id", campaignId)
+            .maybeSingle();
+          ownerUserId = (camp as any)?.user_id ?? null;
+          if (ownerUserId) {
+            const { data: prof } = await admin
+              .from("profiles")
+              .select("stripe_connect_account_id, stripe_connect_charges_enabled")
+              .eq("id", ownerUserId)
+              .maybeSingle();
+            if (prof?.stripe_connect_account_id && prof.stripe_connect_charges_enabled) {
+              connectAccountId = String(prof.stripe_connect_account_id);
+            }
+          }
+        }
+      } catch (e) {
+        log.error("connect lookup failed", { error: e instanceof Error ? e.message : String(e) });
+      }
+
+      const feePct = CAMPAIGN_FEE_PCT[campaignType] ?? 0.05;
+      const amountCents = Math.round(donationAmount * 100);
+      const feeCents = Math.round(amountCents * feePct);
+
+      const sessionParams: Record<string, unknown> = {
         customer: customerId || undefined,
         customer_email: customerId ? undefined : (donorEmail || email),
         line_items: [{
           price_data: {
             currency: "eur",
-            unit_amount: Math.round(donationAmount * 100),
+            unit_amount: amountCents,
             product_data: {
               name: isMonthly ? `Monthly donation – ${campaignType} campaign` : `Donation – ${campaignType} campaign`,
             },
@@ -778,11 +822,32 @@ serve(async (req) => {
           is_anonymous: String(isAnonymous),
           donation_message: donationMessage.slice(0, 450),
           user_id: userId || "",
+          owner_user_id: ownerUserId || "",
+          platform_fee_pct: String(feePct),
+          platform_fee_cents: String(feeCents),
+          connect_account_id: connectAccountId || "",
         },
-      });
+      };
+
+      if (connectAccountId) {
+        if (isMonthly) {
+          sessionParams.subscription_data = {
+            application_fee_percent: Math.round(feePct * 100),
+            transfer_data: { destination: connectAccountId },
+          };
+        } else {
+          sessionParams.payment_intent_data = {
+            application_fee_amount: feeCents,
+            transfer_data: { destination: connectAccountId },
+          };
+        }
+      }
+
+      const session = await stripe.checkout.sessions.create(sessionParams as any);
 
       return successResponse({ url: session.url, session_id: session.id });
     }
+
 
     // ─── PRODUCT-PARAM PATH (used by all create-*-checkout aliases) ───
     // Body: { product: "pet" | "kids" | ..., amount?, productName?, mode?, metadata?, free? }
