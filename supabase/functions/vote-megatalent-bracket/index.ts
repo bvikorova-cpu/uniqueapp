@@ -49,10 +49,13 @@ Deno.serve(async (req) => {
       throw voteErr;
     }
 
-    const update = voted_for === "a"
-      ? { votes_a: (match.votes_a ?? 0) + 1 }
-      : { votes_b: (match.votes_b ?? 0) + 1 };
-    await admin.from("megatalent_bracket_matches").update(update).eq("id", match_id);
+    // Atomic increment via SECURITY DEFINER RPC (prevents lost updates from parallel votes)
+    const { error: incErr } = await admin.rpc("increment_megatalent_bracket_vote", {
+      p_match_id: match_id,
+      p_side: voted_for,
+    });
+    if (incErr) throw incErr;
+
 
     return json({ success: true });
   } catch (e: any) {
