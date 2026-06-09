@@ -1,11 +1,23 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { authenticateUser } from "../_shared/supabaseClient.ts";
+import { authenticateUser, createSupabaseAdminClient } from "../_shared/supabaseClient.ts";
 import { createLogger } from "../_shared/logger.ts";
 import { errorResponse, handleCors, successResponse } from "../_shared/response.ts";
 import { createStripeClient, getStripeCustomer } from "../_shared/stripe.ts";
 import { RATE_LIMITS, withRateLimit } from "../_shared/rateLimit.ts";
 
 const log = createLogger("CREATE-CHECKOUT");
+
+// Per-category platform fee percentages — mirror process_campaign_donation RPC
+const CAMPAIGN_FEE_PCT: Record<string, number> = {
+  medical: 0.06, dream: 0.07, hero: 0.05, pet: 0.06,
+  student: 0.05, crisis: 0.08, talent: 0.10,
+};
+const CAMPAIGN_TABLE: Record<string, string> = {
+  medical: "medical_campaigns", dream: "dream_campaigns", hero: "hero_campaigns",
+  pet: "pet_rescue_campaigns", student: "student_campaigns",
+  crisis: "crisis_campaigns", talent: "talent_campaigns",
+};
+
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
