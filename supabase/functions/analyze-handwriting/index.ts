@@ -129,21 +129,23 @@ serve(async (req) => {
 
     console.log("[HANDWRITING] Analysis complete");
 
-    // Deduct credits
-    const { error: updateError } = await supabaseClient
-      .from("handwriting_credits")
-      .update({
-        credits_remaining: creditsData.credits_remaining - creditsRequired,
-      })
-      .eq("user_id", user.id);
-
-    if (updateError) {
-      throw new Error(`Failed to update credits: ${updateError.message}`);
+    // Atomic credit deduction (race-safe, after AI success)
+    const { data: newRemaining, error: dedErr } = await supabaseClient.rpc(
+      "deduct_handwriting_credits",
+      { _user_id: user.id, _amount: creditsRequired },
+    );
+    if (dedErr) {
+      if (dedErr.message?.includes("INSUFFICIENT_CREDITS")) {
+        return new Response(JSON.stringify({ error: "Insufficient credits" }), {
+          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      throw new Error(`Failed to update credits: ${dedErr.message}`);
     }
 
     console.log("[HANDWRITING] Credits deducted:", creditsRequired);
 
-    // Save analysis to database
+    // Save analysis to database (refund on failure)
     const { data: savedAnalysis, error: insertError } = await supabaseClient
       .from("handwriting_analyses")
       .insert({
@@ -169,8 +171,10 @@ serve(async (req) => {
       .single();
 
     if (insertError) {
+      await supabaseClient.rpc("refund_handwriting_credits", { _user_id: user.id, _amount: creditsRequired });
       throw new Error(`Failed to save analysis: ${insertError.message}`);
     }
+
 
     console.log("[HANDWRITING] Analysis saved:", savedAnalysis.id);
 
