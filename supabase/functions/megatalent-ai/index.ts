@@ -52,6 +52,7 @@ serve(async (req) => {
       });
     }
 
+
     let systemPrompt = "";
     let userPrompt = "";
 
@@ -124,14 +125,27 @@ serve(async (req) => {
     const content = aiData.choices[0]?.message?.content;
     const parsed = JSON.parse(content);
 
-    await supabase
-      .from("ai_credits")
-      .update({ credits_remaining: remaining - creditCost })
-      .eq("user_id", user.id);
+    // Atomic deduction AFTER successful AI call (race-safe; throws INSUFFICIENT_CREDITS)
+    const { error: deductErr } = await supabase.rpc("deduct_ai_credits_atomic", {
+      _user_id: user.id,
+      _amount: creditCost,
+    });
 
-    return new Response(JSON.stringify({ ...parsed, credits_used: creditCost, credits_remaining: remaining - creditCost }), {
+    if (deductErr) {
+      const msg = deductErr.message || "";
+      const status = msg.includes("INSUFFICIENT_CREDITS") ? 402 : 500;
+      return new Response(JSON.stringify({ error: msg }), {
+        status, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const { data: bal } = await supabase
+      .from("ai_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
+
+    return new Response(JSON.stringify({ ...parsed, credits_used: creditCost, credits_remaining: bal?.credits_remaining ?? 0 }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
+
   } catch (error) {
     console.error("megatalent-ai error:", error);
     return new Response(JSON.stringify({ error: error.message }), {

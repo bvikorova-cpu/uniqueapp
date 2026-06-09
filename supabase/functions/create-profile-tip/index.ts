@@ -1,6 +1,6 @@
 // Profile Tip — creates Stripe Checkout session. Uses Stripe Connect destination
 // charges when the recipient has completed onboarding; otherwise platform keeps funds.
-import { corsHeaders } from 'https://esm.sh/@supabase/supabase-js@2/src/lib/constants';
+import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import Stripe from 'https://esm.sh/stripe@17?target=deno';
 
