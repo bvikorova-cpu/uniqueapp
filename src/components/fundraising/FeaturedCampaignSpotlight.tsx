@@ -19,7 +19,7 @@ export function FeaturedCampaignSpotlight() {
           className="relative rounded-2xl border border-border/50 bg-card/80 backdrop-blur-sm p-6 shadow-lg overflow-hidden"
         >
           {/* Urgent badge */}
-          <div className="absolute top-4 right-4">
+          <div className="mb-3 flex justify-end sm:absolute sm:top-4 sm:right-4 sm:mb-0">
             <span className="px-3 py-1 text-xs font-bold rounded-full bg-destructive/10 text-destructive border border-destructive/20">
               Urgent
             </span>
