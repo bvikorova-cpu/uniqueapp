@@ -379,16 +379,17 @@ serve(async (req) => {
       const successPath = mode === "subscription"
         ? `/pet-translator?subscription=success&session_id={CHECKOUT_SESSION_ID}`
         : `/pet-translator?payment=success&session_id={CHECKOUT_SESSION_ID}`;
-      const session = await stripe.checkout.sessions.create({
-        customer: customerId,
-        customer_email: customerId ? undefined : email!,
+      const sessionParams: Stripe.Checkout.SessionCreateParams = {
         line_items: [{ price: priceId, quantity: 1 }],
         mode,
         success_url: `${origin}${successPath}`,
         cancel_url: `${origin}/pet-translator-pricing?payment=canceled`,
         allow_promotion_codes: true,
         metadata: { user_id: userId ?? "", module: "pet_translator", price_id: priceId },
-      });
+      };
+      if (customerId) sessionParams.customer = customerId;
+      else if (email) sessionParams.customer_email = email;
+      const session = await stripe.checkout.sessions.create(sessionParams);
       return successResponse({ url: session.url, mode });
     }
 
