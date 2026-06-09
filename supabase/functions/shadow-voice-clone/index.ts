@@ -49,17 +49,33 @@ serve(async (req) => {
     }
     const cloneJson = await cloneRes.json();
 
-    await admin.from("shadow_voice_clones").upsert({
+    // Atomic deduction AFTER successful ElevenLabs clone (race-safe)
+    const { data: newRemaining, error: dedErr } = await admin.rpc(
+      "deduct_shadow_arena_credits",
+      { _user_id: user.id, _amount: CLONE_COST },
+    );
+    if (dedErr) {
+      if (dedErr.message?.includes("INSUFFICIENT_CREDITS")) {
+        return new Response(JSON.stringify({ error: `Need ${CLONE_COST} credits.` }), {
+          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      throw dedErr;
+    }
+
+    const { error: upsertErr } = await admin.from("shadow_voice_clones").upsert({
       user_id: user.id,
       voice_id: cloneJson.voice_id,
       voice_name: voiceName,
       status: "active",
       credits_spent: CLONE_COST,
     });
+    if (upsertErr) {
+      // Refund: clone was created on ElevenLabs but DB save failed
+      await admin.rpc("refund_shadow_arena_credits", { _user_id: user.id, _amount: CLONE_COST });
+      throw upsertErr;
+    }
 
-    await admin.from("shadow_arena_credits").update({
-      credits_remaining: cur.credits_remaining - CLONE_COST,
-    }).eq("user_id", user.id);
 
     return new Response(JSON.stringify({ voice_id: cloneJson.voice_id, voice_name: voiceName }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

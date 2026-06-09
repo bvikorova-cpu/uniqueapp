@@ -63574,6 +63574,10 @@ export type Database = {
             }
             Returns: boolean
           }
+      deduct_ai_credits_atomic: {
+        Args: { _amount: number; _user_id: string }
+        Returns: number
+      }
       deduct_anonymous_dating_credits: {
         Args: { p_amount: number; p_user_id: string }
         Returns: number
@@ -63582,10 +63586,22 @@ export type Database = {
         Args: { p_amount: number; p_comedian_id: string }
         Returns: undefined
       }
+      deduct_creative_forge_credits: {
+        Args: { _amount: number; _user_id: string }
+        Returns: number
+      }
       deduct_emotion_credits: { Args: { amount: number }; Returns: boolean }
+      deduct_handwriting_credits: {
+        Args: { _amount: number; _user_id: string }
+        Returns: number
+      }
       deduct_secret_santa_credits: {
         Args: { p_amount: number; p_user_id: string }
         Returns: boolean
+      }
+      deduct_shadow_arena_credits: {
+        Args: { _amount: number; _user_id: string }
+        Returns: number
       }
       dispatch_push: {
         Args: { _payload: Json; _user_ids: string[] }
@@ -64685,6 +64701,10 @@ export type Database = {
         }
       }
       redeem_shop_item: { Args: { _item_code: string }; Returns: Json }
+      refund_ai_credits_atomic: {
+        Args: { _amount: number; _user_id: string }
+        Returns: undefined
+      }
       refund_campaign_donation: {
         Args: {
           _refund_amount: number
@@ -64692,6 +64712,18 @@ export type Database = {
           _stripe_refund_id: string
         }
         Returns: Json
+      }
+      refund_creative_forge_credits: {
+        Args: { _amount: number; _user_id: string }
+        Returns: undefined
+      }
+      refund_handwriting_credits: {
+        Args: { _amount: number; _user_id: string }
+        Returns: undefined
+      }
+      refund_shadow_arena_credits: {
+        Args: { _amount: number; _user_id: string }
+        Returns: undefined
       }
       reject_judge_application: {
         Args: { _app_id: string; _notes?: string }

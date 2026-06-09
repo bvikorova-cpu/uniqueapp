@@ -170,7 +170,21 @@ Format as JSON with keys: slogan, tagline, colors (array), socialStrategy (objec
       console.error('Logo generation error:', logoError);
     }
 
-    // Save brand kit to database
+    // Atomic credit deduction FIRST (race-safe), then save with refund on failure
+    const { data: newRemaining, error: dedErr } = await supabase.rpc(
+      "deduct_ai_credits_atomic",
+      { _user_id: user.id, _amount: creditsNeeded },
+    );
+    if (dedErr) {
+      if (dedErr.message?.includes("INSUFFICIENT_CREDITS")) {
+        return new Response(JSON.stringify({ error: "Insufficient credits" }), {
+          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      throw dedErr;
+    }
+
+    // Save brand kit to database (refund on failure)
     const { data: brandKit, error: brandError } = await supabase
       .from('brand_kits')
       .insert({
@@ -190,15 +204,10 @@ Format as JSON with keys: slogan, tagline, colors (array), socialStrategy (objec
       .select()
       .single();
 
-    if (brandError) throw brandError;
-
-    // Deduct credits
-    await supabase
-      .from('ai_credits')
-      .update({ 
-        credits_remaining: creditsData.credits_remaining - creditsNeeded 
-      })
-      .eq('user_id', user.id);
+    if (brandError) {
+      await supabase.rpc("refund_ai_credits_atomic", { _user_id: user.id, _amount: creditsNeeded });
+      throw brandError;
+    }
 
     await supabase
       .from('ai_usage_history')
@@ -208,6 +217,7 @@ Format as JSON with keys: slogan, tagline, colors (array), socialStrategy (objec
         credits_used: creditsNeeded,
         description: `Brand kit for ${businessName}`
       });
+
 
     return new Response(
       JSON.stringify({ success: true, brandKit }),

@@ -67,7 +67,7 @@ serve(async (req) => {
     if (!SYSTEM_PROMPTS[action]) throw new Error(`Unknown action: ${action}`);
     if (!text.trim() && action !== "brainstorm") throw new Error("Text is required");
 
-    // Credit check
+    // Credit check (read-only pre-flight for nice 402 UX)
     const { data: credits } = await supabase
       .from("creative_forge_credits")
       .select("credits_remaining")
@@ -135,16 +135,21 @@ serve(async (req) => {
       } catch (_) { parsed = null; }
     }
 
-    // Deduct credit
-    await supabase
-      .from("creative_forge_credits")
-      .update({ credits_remaining: current - CREDIT_COST, updated_at: new Date().toISOString() })
-      .eq("user_id", user.id);
+    // Atomic credit deduction AFTER successful AI call (race-safe)
+    const { data: newRemaining, error: dedErr } = await supabase.rpc("deduct_creative_forge_credits", {
+      _user_id: user.id, _amount: CREDIT_COST,
+    });
+    if (dedErr) {
+      if (dedErr.message?.includes("INSUFFICIENT_CREDITS")) {
+        return new Response(JSON.stringify({ error: "INSUFFICIENT_CREDITS" }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+      throw dedErr;
+    }
 
-    // Persist score-type results
+    // Persist score-type results (refund on failure)
     if (parsed && ["seo_optimize", "plagiarism_check", "score_content"].includes(action)) {
       const scoreType = action === "seo_optimize" ? "seo" : action === "plagiarism_check" ? "plagiarism" : "quality";
-      await supabase.from("creative_forge_content_scores").insert({
+      const { error: insErr } = await supabase.from("creative_forge_content_scores").insert({
         user_id: user.id,
         project_id: extra.project_id ?? null,
         score_type: scoreType,
@@ -153,6 +158,7 @@ serve(async (req) => {
         suggestions: Array.isArray(parsed.suggestions) ? parsed.suggestions : [],
         source_excerpt: text.slice(0, 500),
       });
+      if (insErr) console.error("Score persist failed (non-fatal):", insErr);
     }
 
     return new Response(
@@ -161,10 +167,11 @@ serve(async (req) => {
         content,
         parsed,
         creditsUsed: CREDIT_COST,
-        creditsRemaining: current - CREDIT_COST,
+        creditsRemaining: newRemaining,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
+
   } catch (e: any) {
     console.error("forge-ai-tools error", e);
     return new Response(

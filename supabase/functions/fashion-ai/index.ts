@@ -341,16 +341,23 @@ Deno.serve(async (req) => {
         return jsonResponse({ error: `Unknown action: ${action}` }, 400);
     }
 
-    // ── 5. Atomic credit deduction (only on success) ───────
-    await adminClient
-      .from("ai_credits")
-      .update({
-        credits_remaining: remaining - cost,
-        last_used_at: new Date().toISOString(),
-      })
+    // ── 5. Atomic credit deduction (race-safe, only on AI success) ──
+    const { data: newRemaining, error: dedErr } = await adminClient.rpc(
+      "deduct_ai_credits_atomic",
+      { _user_id: user.id, _amount: cost },
+    );
+    if (dedErr) {
+      if (dedErr.message?.includes("INSUFFICIENT_CREDITS")) {
+        return jsonResponse({ error: "Insufficient credits", required: cost }, 402);
+      }
+      throw dedErr;
+    }
+    await adminClient.from("ai_credits")
+      .update({ last_used_at: new Date().toISOString() })
       .eq("user_id", user.id);
 
-    return jsonResponse({ ...result, credits_remaining: remaining - cost });
+    return jsonResponse({ ...result, credits_remaining: newRemaining });
+
 
   } catch (e: any) {
     const status = typeof e?.status === "number" ? e.status : 500;
