@@ -82,14 +82,14 @@ export function FundraisingHero({ onMyCampaigns, onExplore }: FundraisingHeroPro
         <source src={heroVideo.url} type="video/mp4" />
       </video>
 
-      {/* Premium gradient overlay - lighter top so video is visible, darker bottom for text */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/30 to-black/85" />
-      <div className="absolute inset-0 bg-gradient-to-r from-amber-950/10 via-transparent to-purple-950/15" />
+      {/* Premium gradient overlay - darker for legibility */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/55 to-black/90" />
+      <div className="absolute inset-0 bg-gradient-to-r from-amber-950/20 via-transparent to-purple-950/25" />
 
       {/* Content */}
       <div className="relative z-10 h-full flex flex-col justify-end pb-10 px-6 sm:px-10">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center mb-4">
-          <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-black/50 backdrop-blur-xl text-white text-sm font-semibold border border-amber-400/40 drop-shadow-md shadow-[0_0_30px_rgba(251,191,36,0.3)]">
+          <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-black/60 backdrop-blur-xl text-white text-sm font-semibold border border-amber-400/40 drop-shadow-md shadow-[0_0_30px_rgba(251,191,36,0.3)]">
             <Heart className="w-4 h-4 text-rose-400" fill="currentColor" />
             <span style={{ color: "#fde68a" }}>Premium Fundraising Hub</span>
             <Sparkles className="w-4 h-4 text-amber-300" />
@@ -100,24 +100,25 @@ export function FundraisingHero({ onMyCampaigns, onExplore }: FundraisingHeroPro
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="text-4xl md:text-6xl lg:text-7xl font-black text-center mb-4 drop-shadow-lg"
+          className="text-4xl md:text-6xl lg:text-7xl font-black text-center mb-4 text-white"
           style={{
-            WebkitTextStroke: "1.5px rgba(0,0,0,0.4)",
-            textShadow: "0 0 60px rgba(251,191,36,0.45), 0 0 120px rgba(168,85,247,0.3), 0 4px 20px rgba(0,0,0,0.6)",
+            textShadow: "0 2px 4px rgba(0,0,0,0.95), 0 4px 24px rgba(0,0,0,0.85), 0 0 60px rgba(251,191,36,0.35)",
           }}
         >
-          <span className="bg-gradient-to-r from-amber-200 via-rose-200 to-purple-200 bg-clip-text text-transparent">
-            Change a Life.
-          </span>
+          Change a Life.
           <br />
-          <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-300 bg-clip-text text-transparent">
+          <span
+            className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-300 bg-clip-text text-transparent"
+            style={{ WebkitTextStroke: "1px rgba(0,0,0,0.55)" }}
+          >
             Today.
           </span>
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
-          className="text-base sm:text-lg md:text-xl text-white/90 text-center mb-6 max-w-3xl mx-auto drop-shadow-md font-light"
+          className="text-base sm:text-lg md:text-xl text-white text-center mb-6 max-w-3xl mx-auto font-semibold"
+          style={{ textShadow: "0 2px 6px rgba(0,0,0,0.95), 0 1px 2px rgba(0,0,0,1)" }}
         >
           Transparent, verified campaigns. AI-powered storytelling. Match donations & milestone celebrations — fundraising done beautifully.
         </motion.p>
