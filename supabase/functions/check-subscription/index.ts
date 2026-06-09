@@ -42,7 +42,7 @@ const TIER_PRODUCTS: Record<string, string[]> = {
     "prod_TOifzd5SCtIiJ2", "prod_TOigeiVz7ZtHdr",
   ],
   teen_career:    ["prod_TPpSLmFyniEytR"],
-  pet:            ["prod_TMxIAIiKlSWTef"],
+  pet:            ["prod_Ufmdb3lcGFyQ58", "prod_TMxI5ZbjB28R6Z", "prod_TMxIMYFcwmvzvV"],
   future_face:    ["prod_TN6N3EoTKAulED", "prod_TN6cn9F2NV3vo5"],
 
   // Tiers gated by the universal "UniqueApp Premium – All Modules" subscription
