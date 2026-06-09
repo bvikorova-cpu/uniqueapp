@@ -379,7 +379,7 @@ serve(async (req) => {
       const successPath = mode === "subscription"
         ? `/pet-translator?subscription=success&session_id={CHECKOUT_SESSION_ID}`
         : `/pet-translator?payment=success&session_id={CHECKOUT_SESSION_ID}`;
-      const sessionParams: Stripe.Checkout.SessionCreateParams = {
+      const sessionParams: Record<string, unknown> = {
         line_items: [{ price: priceId, quantity: 1 }],
         mode,
         success_url: `${origin}${successPath}`,
