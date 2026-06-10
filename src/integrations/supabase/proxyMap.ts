@@ -486,6 +486,22 @@ export function resolveProxy(
     return { target: "create-checkout", body: { ...b, product: "stream_access" } };
   }
 
+  // ─── B18a — Megatalent (subscription, boost, tip, vip) merged into create-checkout ───
+  if (functionName === "create-megatalent-checkout") {
+    return { target: "create-checkout", body: { ...b, product: "megatalent_subscription" } };
+  }
+  if (functionName === "create-megatalent-boost") {
+    return { target: "create-checkout", body: { ...b, product: "megatalent_boost" } };
+  }
+  if (functionName === "create-megatalent-tip") {
+    return { target: "create-checkout", body: { ...b, product: "megatalent_tip" } };
+  }
+  if (functionName === "create-megatalent-vip-checkout") {
+    return { target: "create-checkout", body: { ...b, product: "megatalent_vip" } };
+  }
+
+
+
 
 
   // Horse router consolidation (6 functions -> 1).
