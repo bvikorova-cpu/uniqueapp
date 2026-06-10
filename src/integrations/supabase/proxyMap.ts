@@ -313,6 +313,14 @@ export function resolveProxy(
     return { target: "coupon-ai", body: { ...b, action: "receipt-cashback" } };
   }
 
+  // Batch 12 — shadow specialized functions merged into shadow-arena-router.
+  if (functionName === "shadow-curse-wheel-spin") {
+    return { target: "shadow-arena-router", body: { ...b, action: "curse_wheel_spin" } };
+  }
+  if (functionName === "shadow-horror-reel") {
+    return { target: "shadow-arena-router", body: { ...b, action: "horror_reel" } };
+  }
+
 
   // Nutrition router consolidation (9 functions -> 1).
   const nutrition = NUTRITION_ROUTER_MAP[functionName];

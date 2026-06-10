@@ -179,6 +179,84 @@ Deno.serve(async (req) => {
         return json({ ok: true });
       }
 
+      // ---- Curse Wheel (one free spin/day) ----
+      case "curse_wheel_spin": {
+        const PRIZES = [
+          { type: "credits", value: 5, label: "+5 Cursed Credits", weight: 30 },
+          { type: "credits", value: 10, label: "+10 Cursed Credits", weight: 20 },
+          { type: "credits", value: 20, label: "+20 Cursed Credits", weight: 10 },
+          { type: "credits", value: 50, label: "+50 Cursed Credits — JACKPOT!", weight: 2 },
+          { type: "multiplier", value: 2, label: "2x Vote Multiplier (24h)", weight: 15 },
+          { type: "badge", value: 1, label: "Lucky Spirit Badge", weight: 8 },
+          { type: "nothing", value: 0, label: "The shadows took your luck...", weight: 15 },
+        ];
+        const total = PRIZES.reduce((s, pp) => s + pp.weight, 0);
+        let r = Math.random() * total;
+        let prize = PRIZES[0];
+        for (const pp of PRIZES) { if ((r -= pp.weight) <= 0) { prize = pp; break; } }
+        const today = new Date(); today.setUTCHours(0, 0, 0, 0);
+        const { data: existing } = await supabase
+          .from("shadow_curse_wheel_spins").select("id")
+          .eq("user_id", user.id).gte("spun_at", today.toISOString()).limit(1);
+        if (existing && existing.length > 0) {
+          return json({ error: "Already spun today. Come back tomorrow." }, 400);
+        }
+        await supabase.from("shadow_curse_wheel_spins").insert({
+          user_id: user.id, prize_type: prize.type, prize_value: prize.value, prize_label: prize.label,
+        });
+        if (prize.type === "credits" && prize.value > 0) {
+          const { data: cur } = await supabase.from("shadow_arena_credits")
+            .select("credits_remaining").eq("user_id", user.id).maybeSingle();
+          const newBalance = (cur?.credits_remaining || 0) + prize.value;
+          await supabase.from("shadow_arena_credits").upsert({ user_id: user.id, credits_remaining: newBalance });
+        }
+        if (prize.type === "badge") {
+          await supabase.from("shadow_cursed_achievements").insert({
+            user_id: user.id, achievement_code: "lucky_spirit",
+            achievement_name: "Lucky Spirit", rarity: "rare",
+          }).then(() => {}, () => {});
+        }
+        return json({ prize });
+      }
+
+      // ---- Horror Reel (15 credits, gpt-4o-mini script gen) ----
+      case "horror_reel": {
+        const REEL_COST = 15;
+        const { prompt, storyId, title } = p;
+        if (!prompt) return json({ error: "Missing prompt" }, 400);
+        const { data: cur } = await supabase.from("shadow_arena_credits")
+          .select("credits_remaining").eq("user_id", user.id).maybeSingle();
+        if (!cur || cur.credits_remaining < REEL_COST) {
+          return json({ error: `Need ${REEL_COST} credits.` }, 402);
+        }
+        const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+        if (!OPENAI_API_KEY) return json({ error: "OPENAI_API_KEY not configured" }, 500);
+        const scriptRes = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${OPENAI_API_KEY}` },
+          body: JSON.stringify({
+            model: "gpt-4o-mini",
+            messages: [
+              { role: "system", content: "You write 30-second horror reel scripts: 5 short cinematic scenes with timestamps, visual descriptions, and a chilling voiceover line each. Output JSON: {scenes:[{time, visual, voiceover}], hook}." },
+              { role: "user", content: prompt },
+            ],
+            response_format: { type: "json_object" },
+          }),
+        });
+        const scriptJson = await scriptRes.json();
+        const reelScript = JSON.parse(scriptJson.choices[0].message.content);
+        const { data: reel, error: rErr } = await supabase.from("shadow_horror_reels").insert({
+          user_id: user.id, story_id: storyId || null, title: title || "Untitled Horror Reel",
+          prompt, status: "ready", thumbnail_url: null, video_url: null,
+          duration_seconds: 30, credits_used: REEL_COST,
+        }).select().single();
+        if (rErr) throw rErr;
+        await supabase.from("shadow_arena_credits").update({
+          credits_remaining: cur.credits_remaining - REEL_COST,
+        }).eq("user_id", user.id);
+        return json({ reel, script: reelScript });
+      }
+
       default:
         return json({ error: "unknown_action" }, 400);
     }
