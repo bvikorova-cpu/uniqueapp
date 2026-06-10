@@ -186,7 +186,7 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   "ai-mentor-chat":                     { target: "generate-gift-message", bodyExtras: { type: "mentor_chat" } },
   "ai-stock-content-generator":         { target: "generate-gift-message", bodyExtras: { type: "stock_content" } },
   "chat-with-chef":                     { target: "generate-gift-message", bodyExtras: { type: "chef_chat" } },
-  "chat-with-offspring":                { target: "generate-gift-message", bodyExtras: { type: "offspring_chat" } },
+  // "chat-with-offspring": real edge function (Mystical audit fix)
   "legal-ai":                           { target: "generate-gift-message", bodyExtras: { type: "legal" } },
   "mystery-box-ai":                     { target: "generate-gift-message", bodyExtras: { type: "mystery_box" } },
   "teen-career-counselor":              { target: "generate-gift-message", bodyExtras: { type: "teen_career" } },
@@ -231,9 +231,8 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   "enhance-shadow-story":               { target: "generate-gift-message", bodyExtras: { type: "shadow_story" } },
 
   // ─── Niche AI helpers → generate-gift-message ───
-  "calculate-karmic-debt":              { target: "generate-gift-message", bodyExtras: { type: "karmic_debt" } },
-  "find-genetic-matches":               { target: "generate-gift-message", bodyExtras: { type: "genetic_matches" } },
-  "find-soul-matches":                  { target: "generate-gift-message", bodyExtras: { type: "soul_matches" } },
+  // "calculate-karmic-debt", "find-genetic-matches", "find-soul-matches": real edge functions (Mystical audit fix)
+
   "brain-duel-friend-match":            { target: "generate-gift-message", bodyExtras: { type: "brain_duel_match" } },
 
   // ─────────────────────────────────────────────────────────────────────
@@ -262,7 +261,7 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   // ─────────────────────────────────────────────────────────────────────
   "get-my-stock-purchases":             { target: "check-subscription", bodyExtras: { tier: "stock_purchases", action: "list" } },
   "get-user-phobias":                   { target: "check-subscription", bodyExtras: { tier: "phobias", action: "list" } },
-  "get-user-universes":                 { target: "check-subscription", bodyExtras: { tier: "universes", action: "list" } },
+  // "get-user-universes": real edge function (Mystical audit fix)
   "check-expired-listings":             { target: "check-subscription", bodyExtras: { tier: "expired_listings", action: "list" } },
 
   // ─────────────────────────────────────────────────────────────────────
@@ -270,7 +269,7 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   // ─────────────────────────────────────────────────────────────────────
   "create-character":                   { target: "create-checkout", bodyExtras: { product: "character_create", free: true } },
   "create-universe":                    { target: "create-checkout", bodyExtras: { product: "universe_create", free: true } },
-  "create-digital-offspring":           { target: "create-checkout", bodyExtras: { product: "offspring_create", free: true } },
+  // "create-digital-offspring": real edge function (Mystical audit fix)
 
   // ─────────────────────────────────────────────────────────────────────
   // STREAMING & WITHDRAWALS → check-connect-status (Stripe Connect ops)
@@ -288,7 +287,7 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   // ─────────────────────────────────────────────────────────────────────
   // LEGACY NAME REMAPS → existing edge functions (prevents 404/500)
   // ─────────────────────────────────────────────────────────────────────
-  "analyze-past-life":                  { target: "generate-past-life-regression" },
+  // "analyze-past-life": real edge function (Mystical audit fix)
 };
 
 const originalInvoke = supabase.functions.invoke.bind(supabase.functions);
