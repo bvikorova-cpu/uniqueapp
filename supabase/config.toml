@@ -1359,8 +1359,6 @@ verify_jwt = false
 verify_jwt = false
 
 
-[functions.mt-escrow-auto-release]
+[functions.mt-router]
 verify_jwt = false
 
-[functions.mt-stories-cleanup]
-verify_jwt = false
