@@ -478,6 +478,56 @@ serve(async (req) => {
             }
           }
 
+          // ── Holographic Avatars fulfillment ─────────────────────────────
+          // Inserts a row in `holographic_purchases` so the page can detect
+          // the active feature after Stripe redirect. Idempotent via
+          // stripe_session_id.
+          if (session.metadata?.type === "holographic_avatar") {
+            try {
+              const md = session.metadata ?? {};
+              const userId = md.user_id;
+              const featureRaw = String(md.feature || "Holographic Avatar");
+              const serviceSlug = featureRaw
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "_")
+                .replace(/^_+|_+$/g, "")
+                .slice(0, 60) || "holographic_avatar";
+              const isSubscription = session.mode === "subscription";
+              const subId = typeof session.subscription === "string"
+                ? session.subscription
+                : session.subscription?.id ?? null;
+              const expiresAt = isSubscription
+                ? new Date(Date.now() + 31 * 24 * 60 * 60 * 1000).toISOString()
+                : null;
+
+              if (userId) {
+                const { data: existing } = await supabase
+                  .from("holographic_purchases")
+                  .select("id")
+                  .eq("stripe_session_id", session.id)
+                  .maybeSingle();
+                if (!existing) {
+                  const { error: hErr } = await supabase
+                    .from("holographic_purchases")
+                    .insert({
+                      user_id: userId,
+                      service_type: serviceSlug,
+                      stripe_session_id: session.id,
+                      stripe_subscription_id: subId,
+                      status: "active",
+                      expires_at: expiresAt,
+                    });
+                  if (hErr) log("holographic insert failed", { error: hErr.message });
+                  else log("holographic purchase recorded", { userId, serviceSlug, isSubscription });
+                }
+              } else {
+                log("holographic webhook missing user_id", { sessionId: session.id });
+              }
+            } catch (hErr) {
+              log("holographic webhook error", { err: (hErr as Error).message });
+            }
+          }
+
           // ── Megatalent: instantly fetch & sync subscription on checkout ──
           // This is the fastest possible unlock — fires within seconds of payment,
           // before customer.subscription.created may even arrive.
