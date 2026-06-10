@@ -522,8 +522,73 @@ Return JSON: {
         });
       }
 
+      // ---- Batch 14: shadow-arena-credits-init ----
+      case "credits_init": {
+        const { data: existing } = await supabase
+          .from("shadow_arena_credits")
+          .select("*").eq("user_id", user.id).maybeSingle();
+        if (!existing) {
+          const { data: created } = await supabase
+            .from("shadow_arena_credits")
+            .insert({ user_id: user.id, credits_remaining: 5, total_credits_purchased: 5 })
+            .select().single();
+          return json({ credits: created });
+        }
+        return json({ credits: existing });
+      }
+
+      // ---- Batch 14: shadow-voice-clone ----
+      case "voice_clone": {
+        const CLONE_COST = 25;
+        const { audioBase64, voiceName } = p;
+        if (!audioBase64 || !voiceName) return json({ error: "missing_audio_or_name" }, 400);
+
+        const { data: cur } = await supabase.from("shadow_arena_credits")
+          .select("credits_remaining").eq("user_id", user.id).maybeSingle();
+        if (!cur || cur.credits_remaining < CLONE_COST) {
+          return json({ error: `Need ${CLONE_COST} credits.` }, 402);
+        }
+        const ELEVEN = Deno.env.get("ELEVENLABS_API_KEY");
+        if (!ELEVEN) return json({ error: "ELEVENLABS_API_KEY not configured" }, 500);
+
+        const audioBytes = Uint8Array.from(atob(audioBase64), (c) => c.charCodeAt(0));
+        const formData = new FormData();
+        formData.append("name", voiceName);
+        formData.append("files", new Blob([audioBytes], { type: "audio/mpeg" }), "sample.mp3");
+        formData.append("description", `Shadow Arena cloned voice for user ${user.id}`);
+        const cloneRes = await fetch("https://api.elevenlabs.io/v1/voices/add", {
+          method: "POST", headers: { "xi-api-key": ELEVEN }, body: formData,
+        });
+        if (!cloneRes.ok) {
+          const errTxt = await cloneRes.text();
+          return json({ error: `ElevenLabs error: ${errTxt.slice(0, 300)}` }, 502);
+        }
+        const cloneJson = await cloneRes.json();
+
+        const { error: dedErr } = await supabase.rpc(
+          "deduct_shadow_arena_credits",
+          { _user_id: user.id, _amount: CLONE_COST },
+        );
+        if (dedErr) {
+          if (dedErr.message?.includes("INSUFFICIENT_CREDITS")) {
+            return json({ error: `Need ${CLONE_COST} credits.` }, 402);
+          }
+          throw dedErr;
+        }
+        const { error: upsertErr } = await supabase.from("shadow_voice_clones").upsert({
+          user_id: user.id, voice_id: cloneJson.voice_id, voice_name: voiceName,
+          status: "active", credits_spent: CLONE_COST,
+        });
+        if (upsertErr) {
+          await supabase.rpc("refund_shadow_arena_credits", { _user_id: user.id, _amount: CLONE_COST });
+          throw upsertErr;
+        }
+        return json({ voice_id: cloneJson.voice_id, voice_name: voiceName });
+      }
+
       default:
         return json({ error: "unknown_action" }, 400);
+
     }
   } catch (e) {
     console.error("shadow-arena-router:", e);
