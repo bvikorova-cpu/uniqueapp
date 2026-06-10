@@ -952,7 +952,7 @@ serve(async (req) => {
       },
       holographic_avatar: {
         mode: "payment",
-        successPath: "/holographic-avatars?success=true",
+        successPath: "/holographic-avatars?success=true&session_id={CHECKOUT_SESSION_ID}",
         cancelPath: "/holographic-avatars?canceled=true",
         type: "holographic_avatar",
       },
