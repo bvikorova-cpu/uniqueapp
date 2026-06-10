@@ -926,6 +926,72 @@ serve(async (req) => {
       }
     }
 
+    // ─── B18f PHASE 1 — priceId passthrough for migrated checkouts ───
+    // Body: { product: "masterchef" | "time_reversal" | "time_capsule" | "holographic_avatar", priceId, ... }
+    const PRICEID_PASSTHROUGH: Record<
+      string,
+      { mode: "subscription" | "payment"; successPath: string; cancelPath: string; type: string }
+    > = {
+      masterchef: {
+        mode: "subscription",
+        successPath: "/masterchef/dashboard?success=true",
+        cancelPath: "/masterchef-subscription?canceled=true",
+        type: "masterchef_subscription",
+      },
+      time_reversal: {
+        mode: "subscription",
+        successPath: "/time-reversal/timeline?success=true",
+        cancelPath: "/time-reversal-subscription?canceled=true",
+        type: "time_reversal_subscription",
+      },
+      time_capsule: {
+        mode: "payment",
+        successPath: "/time-capsule?success=true&session_id={CHECKOUT_SESSION_ID}",
+        cancelPath: "/time-capsule-subscription?canceled=true",
+        type: "time_capsule",
+      },
+      holographic_avatar: {
+        mode: "payment",
+        successPath: "/holographic-avatars?success=true",
+        cancelPath: "/holographic-avatars?canceled=true",
+        type: "holographic_avatar",
+      },
+    };
+    if (body.product && body.priceId && PRICEID_PASSTHROUGH[String(body.product)]) {
+      const cfg = PRICEID_PASSTHROUGH[String(body.product)];
+      // holographic_avatar: only the Premium AI Avatar price is a subscription
+      let mode: "payment" | "subscription" = cfg.mode;
+      if (body.product === "holographic_avatar" && body.priceId === "price_1SPjFEGaXSfGtYFtBjeXRVkk") {
+        mode = "subscription";
+      }
+      const isSubscription = mode === "subscription";
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        line_items: [{ price: String(body.priceId), quantity: 1 }],
+        mode,
+        success_url: `${origin}${cfg.successPath}`,
+        cancel_url: `${origin}${cfg.cancelPath}`,
+        ...(isSubscription
+          ? {
+              tax_id_collection: { enabled: true },
+              billing_address_collection: "required" as const,
+              customer_update: customerId ? { address: "auto" as const, name: "auto" as const } : undefined,
+            }
+          : {}),
+        metadata: {
+          user_id: userId ?? "",
+          type: cfg.type,
+          product: String(body.product),
+          ...(body.tier ? { tier: String(body.tier) } : {}),
+          ...(body.featureName ? { feature: String(body.featureName) } : {}),
+          ...(body.durationYears ? { duration_years: String(body.durationYears) } : {}),
+          ...stringifyMetadata(body.metadata || {}),
+        },
+      });
+      return successResponse({ url: session.url, session_id: session.id });
+    }
+
     if (body.product && !body.priceId && !body.productKey && !body.credits) {
       // Free actions (e.g. create-character, create-universe) just return ok
       if (body.free === true) {
