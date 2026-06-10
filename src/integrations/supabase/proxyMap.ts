@@ -528,6 +528,20 @@ export function resolveProxy(
     return { target: "create-checkout", body: { ...b, product: "service_order" } };
   }
 
+  // ─── B18e — Brand/Campaign (escrow, sponsorship, votes, campaign payment) merged into create-checkout ───
+  if (functionName === "brand-campaign-checkout") {
+    return { target: "create-checkout", body: { ...b, product: "brand_campaign_escrow" } };
+  }
+  if (functionName === "create-brand-sponsorship") {
+    return { target: "create-checkout", body: { ...b, product: "brand_sponsorship" } };
+  }
+  if (functionName === "create-brand-votes-payment") {
+    return { target: "create-checkout", body: { ...b, product: "brand_votes" } };
+  }
+  if (functionName === "create-campaign-payment-checkout") {
+    return { target: "create-checkout", body: { ...b, product: "campaign_payment" } };
+  }
+
 
 
 
