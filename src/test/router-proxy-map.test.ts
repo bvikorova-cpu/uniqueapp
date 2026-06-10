@@ -161,6 +161,26 @@ describe("proxyMap router consolidation", () => {
       },
     );
   });
+
+  describe("B18f other consolidation", () => {
+    const OTHER_EXPECTED: Record<string, string> = {
+      "create-bazaar-order-checkout": "bazaar_order",
+      "shadow-patron-checkout": "shadow_patron",
+      "purchase-shadow-gift": "shadow_gift",
+    };
+
+    it.each(Object.entries(OTHER_EXPECTED))(
+      "%s -> create-checkout product=%s",
+      (legacyName, expectedProduct) => {
+        const r = resolveProxy(legacyName, { foo: "bar" });
+        expect(r).not.toBeNull();
+        expect(r!.target).toBe("create-checkout");
+        expect(r!.body.product).toBe(expectedProduct);
+        expect(r!.body.foo).toBe("bar");
+      },
+    );
+  });
 });
 });
+
 
