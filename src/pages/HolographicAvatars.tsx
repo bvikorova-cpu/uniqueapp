@@ -41,6 +41,8 @@ export default function HolographicAvatars() {
   const [checkingAuth, setCheckingAuth] = useState(true);
   const navigate = useNavigate();
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
   useEffect(() => {
     const check = async () => {
       try {
@@ -52,6 +54,26 @@ export default function HolographicAvatars() {
     };
     check();
   }, []);
+
+  // Detect Stripe redirect (success/cancel) and surface toast + cleanup URL.
+  useEffect(() => {
+    const success = searchParams.get("success");
+    const canceled = searchParams.get("canceled");
+    const sessionId = searchParams.get("session_id");
+    if (success === "true") {
+      toast.success("Payment successful — your holographic feature is unlocked!", {
+        description: sessionId ? `Reference: ${sessionId.slice(-8)}` : undefined,
+      });
+      const next = new URLSearchParams(searchParams);
+      ["success", "session_id"].forEach((k) => next.delete(k));
+      setSearchParams(next, { replace: true });
+    } else if (canceled === "true") {
+      toast.info("Payment canceled");
+      const next = new URLSearchParams(searchParams);
+      next.delete("canceled");
+      setSearchParams(next, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   if (checkingAuth) {
     return <div className="min-h-screen bg-background flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
