@@ -19,7 +19,7 @@ import { test, expect, Page } from "@playwright/test";
 
 const SUPABASE_HOST = "jufrdzeonywluwutvyxz.supabase.co";
 const REST_SUB = `https://${SUPABASE_HOST}/rest/v1/megatalent_subscriptions*`;
-const FN_CHECKOUT = `https://${SUPABASE_HOST}/functions/v1/create-megatalent-checkout`;
+const FN_CHECKOUT = `https://${SUPABASE_HOST}/functions/v1/create-checkout`;
 const FN_CHECK = `https://${SUPABASE_HOST}/functions/v1/check-megatalent-subscription`;
 
 async function installUnsubscribedStubs(page: Page) {
@@ -44,6 +44,10 @@ for (const query of ["canceled=true", "payment=failed"]) {
 
     await installUnsubscribedStubs(page);
     await page.route(FN_CHECKOUT, async (route) => {
+      const body = route.request().postDataJSON?.() ?? {};
+      if (body?.product !== "megatalent_subscription") {
+        return route.fallback();
+      }
       checkoutCalled = true;
       await route.fulfill({
         status: 200,
