@@ -560,6 +560,12 @@ export function resolveProxy(
 
 
 
+  // Nutrition router consolidation (9 functions -> 1).
+  const nutrition = NUTRITION_ROUTER_MAP[functionName];
+  if (nutrition) {
+    return { target: "nutrition-router", body: { ...b, action: nutrition } };
+  }
+
   // Horse router consolidation (6 functions -> 1).
   const horse = HORSE_ROUTER_MAP[functionName];
   if (horse) {
