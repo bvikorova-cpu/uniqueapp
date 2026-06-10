@@ -360,16 +360,29 @@ export function resolveProxy(
   }
 
   // Batch 16 — check-* subscription/credit checks merged into check-router.
+  // Batch 17 — anonymous-date-access, dunning, sca also merged.
   const CHECK_ROUTER_MAP: Record<string, string> = {
     "check-lottery-subscription": "lottery",
     "check-phobia-subscription": "phobia",
     "check-tipster-subscription": "tipster",
     "check-megatalent-subscription": "megatalent_sub",
     "check-megatalent-vip": "megatalent_vip",
+    "check-anonymous-date-access": "anonymous_date_access",
+    "check-dunning": "dunning",
+    "check-sca": "sca",
   };
   const chk2 = CHECK_ROUTER_MAP[functionName];
   if (chk2) {
     return { target: "check-router", body: { ...b, action: chk2 } };
+  }
+
+  // Batch 17 — check-connect-status merged into check-router.
+  // Preserve caller's own action (status/live_status/connect_login/customer_portal/...).
+  if (functionName === "check-connect-status") {
+    return {
+      target: "check-router",
+      body: { ...b, action: (b as any).action ?? "connect_status" },
+    };
   }
 
 
