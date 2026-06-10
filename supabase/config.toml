@@ -21,9 +21,6 @@ verify_jwt = true
 [functions.create-paid-message-checkout]
 verify_jwt = true
 
-[functions.create-stream-access-checkout]
-verify_jwt = true
-
 [functions.create-merch-checkout]
 verify_jwt = true
 
@@ -417,9 +414,6 @@ verify_jwt = false
 [functions.generate-character-story]
 verify_jwt = false
 
-[functions.create-school-subscription]
-verify_jwt = true
-
 [functions.check-school-subscription]
 verify_jwt = true
 
@@ -449,9 +443,6 @@ verify_jwt = true
 [functions.send-concert-gift]
 verify_jwt = true
 
-[functions.create-decor-subscription]
-verify_jwt = true
-
 [functions.check-decor-subscription]
 verify_jwt = true
 
@@ -460,9 +451,6 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.create-time-capsule-payment]
-verify_jwt = true
-
-[functions.create-time-capsule-premium-subscription]
 verify_jwt = true
 
 [functions.save-time-capsule]
@@ -561,9 +549,6 @@ verify_jwt = true
 [functions.generate-lottery-numbers]
 verify_jwt = true
 
-[functions.create-lottery-subscription]
-verify_jwt = true
-
 [functions.check-router]
 verify_jwt = false
 
@@ -649,9 +634,6 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.create-time-capsule-payment]
-verify_jwt = true
-
-[functions.create-time-capsule-premium-subscription]
 verify_jwt = true
 
 [functions.generate-artist-image]
