@@ -1125,6 +1125,256 @@ serve(async (req) => {
       return successResponse({ url: session.url, session_id: session.id });
     }
 
+    // ─── B18f PHASE 3 — DB side-effect heavy checkouts merged into create-checkout ───
+    // Bodies:
+    //   fitslim:          { product: "fitslim", planType, profileData }
+    //   horse_currency:   { product: "horse_currency", packageType }
+    //   ar_preview:       { product: "ar_preview", productId }
+    //   crystal_purchase: { product: "crystal_purchase", itemId, shippingAddress }
+    //   auction_buyout:   { product: "auction_buyout", auction_id }
+    const SIDE_EFFECT_PRODUCTS = new Set([
+      "fitslim",
+      "horse_currency",
+      "ar_preview",
+      "crystal_purchase",
+      "auction_buyout",
+    ]);
+    if (body.product && SIDE_EFFECT_PRODUCTS.has(String(body.product))) {
+      const admin = createSupabaseAdminClient();
+      const uid = userId ?? "";
+
+      // ── FITSLIM ──
+      if (body.product === "fitslim") {
+        const FITSLIM_PLANS: Record<string, string> = {
+          weekly: "price_1T279R0QTWhd4oRpQKxVJFQe",
+          monthly: "price_1T279R0QTWhd4oRpH4sC3gb9",
+        };
+        const planType = String(body.planType || "");
+        const priceId = FITSLIM_PLANS[planType];
+        if (!priceId) return errorResponse("Invalid fitslim planType", 400);
+        const pd = body.profileData || {};
+        const { data: planRecord, error: planError } = await admin
+          .from("fitness_plans")
+          .insert({
+            user_id: uid,
+            plan_type: planType,
+            status: "pending",
+            payment_status: "unpaid",
+            age: pd.age,
+            gender: pd.gender,
+            height_cm: pd.height_cm,
+            weight_kg: pd.weight_kg,
+            target_weight_kg: pd.target_weight_kg,
+            activity_level: pd.activity_level,
+            fitness_goal: pd.fitness_goal,
+            dietary_restrictions: pd.dietary_restrictions || [],
+            health_conditions: pd.health_conditions || [],
+          })
+          .select()
+          .single();
+        if (planError) throw planError;
+        const session = await stripe.checkout.sessions.create({
+          customer: customerId || undefined,
+          customer_email: customerId ? undefined : email,
+          line_items: [{ price: priceId, quantity: 1 }],
+          mode: "payment",
+          success_url: `${origin}/fit-slim?success=true&plan_id=${planRecord.id}`,
+          cancel_url: `${origin}/fit-slim?canceled=true`,
+          metadata: {
+            type: "fitslim_plan",
+            plan_id: planRecord.id,
+            plan_type: planType,
+            user_id: uid,
+            product: "fitslim",
+          },
+        });
+        await admin.from("fitness_plans").update({ stripe_session_id: session.id }).eq("id", planRecord.id);
+        return successResponse({ url: session.url, session_id: session.id, plan_id: planRecord.id });
+      }
+
+      // ── HORSE CURRENCY ──
+      if (body.product === "horse_currency") {
+        const HORSE_PACKS: Record<string, { coins: number; gems: number; price: number; name: string }> = {
+          coins_100: { coins: 100, gems: 0, price: 1.99, name: "100 Horse Coins" },
+          coins_500: { coins: 500, gems: 0, price: 8.99, name: "500 Horse Coins (Bonus)" },
+          gems_50: { coins: 0, gems: 50, price: 4.99, name: "50 Horse Gems" },
+          gems_200: { coins: 0, gems: 200, price: 18.99, name: "200 Horse Gems (Bonus)" },
+        };
+        const pkgKey = String(body.packageType || "");
+        const pkg = HORSE_PACKS[pkgKey];
+        if (!pkg) return errorResponse("Invalid horse_currency package", 400);
+        const session = await stripe.checkout.sessions.create({
+          customer: customerId || undefined,
+          customer_email: customerId ? undefined : email,
+          mode: "payment",
+          line_items: [{
+            quantity: 1,
+            price_data: {
+              currency: "eur",
+              product_data: { name: pkg.name, description: "Horse Racing Arena currency" },
+              unit_amount: Math.round(pkg.price * 100),
+            },
+          }],
+          success_url: `${origin}/horse-racing?currency_purchased=true`,
+          cancel_url: `${origin}/horse-racing?currency_canceled=true`,
+          metadata: {
+            user_id: uid,
+            package_type: pkgKey,
+            coins: String(pkg.coins),
+            gems: String(pkg.gems),
+            feature: "horse_racing_currency",
+            type: "horse_currency",
+            product: "horse_currency",
+          },
+        });
+        await admin.from("horse_currency_purchases").insert({
+          user_id: uid,
+          package_type: pkgKey,
+          coins_added: pkg.coins,
+          gems_added: pkg.gems,
+          amount_eur: pkg.price,
+          stripe_session_id: session.id,
+          status: "pending",
+        });
+        return successResponse({ url: session.url, session_id: session.id });
+      }
+
+      // ── AR PREVIEW ──
+      if (body.product === "ar_preview") {
+        const productId = String(body.productId || "");
+        if (!productId) return errorResponse("productId required", 400);
+        const session = await stripe.checkout.sessions.create({
+          customer: customerId || undefined,
+          customer_email: customerId ? undefined : email,
+          mode: "payment",
+          line_items: [{
+            quantity: 1,
+            price_data: {
+              currency: "eur",
+              product_data: { name: "AR Product Preview", description: "AR preview session" },
+              unit_amount: 99,
+            },
+          }],
+          success_url: `${origin}/home-decor?ar_success=true&product_id=${productId}`,
+          cancel_url: `${origin}/home-decor?ar_canceled=true`,
+          metadata: { user_id: uid, product_id: productId, type: "ar_preview", product: "ar_preview" },
+        });
+        await admin.from("ar_preview_sessions").insert({
+          user_id: uid,
+          product_id: productId,
+          payment_status: "pending",
+          amount: 0.99,
+        });
+        return successResponse({ url: session.url, session_id: session.id });
+      }
+
+      // ── CRYSTAL PURCHASE ──
+      if (body.product === "crystal_purchase") {
+        const itemId = String(body.itemId || "");
+        if (!itemId) return errorResponse("itemId required", 400);
+        const { data: item, error: itemError } = await admin
+          .from("crystal_marketplace_items")
+          .select("*")
+          .eq("id", itemId)
+          .single();
+        if (itemError || !item) return errorResponse("Item not found", 404);
+        if (!item.is_available) return errorResponse("Item no longer available", 400);
+        const platformCommission = Number((item.price * 0.15).toFixed(2));
+        const sellerAmount = Number((item.price - platformCommission).toFixed(2));
+        const { data: order, error: orderError } = await admin
+          .from("crystal_marketplace_orders")
+          .insert({
+            item_id: itemId,
+            buyer_id: uid,
+            seller_id: item.seller_id,
+            amount: item.price,
+            platform_commission: platformCommission,
+            seller_amount: sellerAmount,
+            shipping_address: body.shippingAddress,
+            status: "pending",
+          })
+          .select()
+          .single();
+        if (orderError) throw orderError;
+        const session = await stripe.checkout.sessions.create({
+          customer: customerId || undefined,
+          customer_email: customerId ? undefined : email,
+          mode: "payment",
+          line_items: [{
+            quantity: 1,
+            price_data: {
+              currency: "eur",
+              product_data: {
+                name: item.title,
+                description: `${item.crystal_type} - ${item.weight_grams}g`,
+                ...(item.image_url ? { images: [item.image_url] } : {}),
+              },
+              unit_amount: Math.round(Number(item.price) * 100),
+            },
+          }],
+          success_url: `${origin}/crystal-marketplace?success=true&order_id=${order.id}`,
+          cancel_url: `${origin}/crystal-marketplace?canceled=true`,
+          metadata: {
+            type: "crystal_purchase",
+            product: "crystal_purchase",
+            order_id: order.id,
+            item_id: itemId,
+            buyer_id: uid,
+            user_id: uid,
+          },
+        });
+        await admin
+          .from("crystal_marketplace_orders")
+          .update({ stripe_payment_id: session.id })
+          .eq("id", order.id);
+        return successResponse({ url: session.url, session_id: session.id });
+      }
+
+      // ── AUCTION BUYOUT ──
+      if (body.product === "auction_buyout") {
+        const auctionId = String(body.auction_id || "");
+        if (!auctionId) return errorResponse("auction_id required", 400);
+        const { data: auction, error: aErr } = await admin
+          .from("auction_items")
+          .select("id, title, buyout_price, is_active, ends_at, user_id")
+          .eq("id", auctionId)
+          .maybeSingle();
+        if (aErr) throw aErr;
+        if (!auction) return errorResponse("auction not found", 404);
+        if (!auction.is_active) return errorResponse("auction inactive", 400);
+        if (new Date(auction.ends_at).getTime() <= Date.now()) return errorResponse("auction ended", 400);
+        if (!auction.buyout_price) return errorResponse("no buyout price", 400);
+        if (auction.user_id === uid) return errorResponse("cannot buy own auction", 400);
+        const session = await stripe.checkout.sessions.create({
+          customer: customerId || undefined,
+          customer_email: customerId ? undefined : email,
+          mode: "payment",
+          line_items: [{
+            quantity: 1,
+            price_data: {
+              currency: "eur",
+              unit_amount: Math.round(Number(auction.buyout_price) * 100),
+              product_data: { name: `Auction buyout: ${auction.title}`.slice(0, 250) },
+            },
+          }],
+          success_url: `${origin}/auction?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: `${origin}/auction?payment=canceled`,
+          metadata: {
+            product_type: "auction_buyout",
+            product: "auction_buyout",
+            type: "auction_buyout",
+            auction_id: auction.id,
+            winner_id: uid,
+            seller_id: auction.user_id,
+            user_id: uid,
+          },
+        });
+        return successResponse({ url: session.url, session_id: session.id });
+      }
+    }
+
+
+
 
 
     if (body.product && !body.priceId && !body.productKey && !body.credits) {
