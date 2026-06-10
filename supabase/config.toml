@@ -1110,8 +1110,7 @@ verify_jwt = false
 [functions.pay-anonymous-date-access]
 verify_jwt = true
 
-[functions.check-anonymous-date-access]
-verify_jwt = true
+# [functions.check-anonymous-date-access] — merged into check-router (Batch 17)
 
 [functions.customer-portal-anonymous-date]
 verify_jwt = true
@@ -1203,8 +1202,7 @@ verify_jwt = true
 [functions.create-connect-account]
 verify_jwt = true
 
-[functions.check-connect-status]
-verify_jwt = true
+# [functions.check-connect-status] — merged into check-router (Batch 17)
 
 [functions.create-connect-login-link]
 verify_jwt = true
