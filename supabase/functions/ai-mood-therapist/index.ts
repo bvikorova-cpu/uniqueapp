@@ -65,6 +65,9 @@ Keep responses concise, engaging, and use emoji. Format advice with markdown. Be
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
+  } catch (error) {
+    console.error('AI Mood Therapist error:', error)
+    return new Response(JSON.stringify({ error: 'Failed to process request' }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
