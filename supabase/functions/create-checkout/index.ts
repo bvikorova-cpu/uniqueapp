@@ -992,6 +992,141 @@ serve(async (req) => {
       return successResponse({ url: session.url, session_id: session.id });
     }
 
+    // ─── B18f PHASE 2 — dynamic price_data packs (no fixed Stripe priceIds) ───
+    // Body: { product: "messenger_ai" | "coloring_pay_per_use" | "anonymous_date"
+    //                  | "secret_santa" | "emotion_insurance", packKey }
+    type DynPkg = { amount: number; credits: number; name: string };
+    const DYNAMIC_PACKS: Record<string, {
+      packages: Record<string, DynPkg>;
+      mode: "payment" | "subscription";
+      successPath: string;
+      cancelPath: string;
+      type: string;
+    }> = {
+      messenger_ai: {
+        packages: {
+          "20":  { amount: 500,  credits: 20,  name: "20 Messenger AI Credits" },
+          "50":  { amount: 1000, credits: 50,  name: "50 Messenger AI Credits" },
+          "150": { amount: 2500, credits: 150, name: "150 Messenger AI Credits" },
+        },
+        mode: "payment",
+        successPath: "/messenger?payment=success&credits={CREDITS}",
+        cancelPath: "/messenger?payment=cancelled",
+        type: "messenger_ai_credits",
+      },
+      coloring_pay_per_use: {
+        packages: {
+          "1": { amount: 200, credits: 1, name: "1 Coloring Page Credit" },
+        },
+        mode: "payment",
+        successPath: "/coloring-pages?success=true&session_id={CHECKOUT_SESSION_ID}",
+        cancelPath: "/coloring-pages?canceled=true",
+        type: "coloring_pay_per_use",
+      },
+      anonymous_date: {
+        packages: {
+          basic:    { amount: 500,  credits: 10,  name: "Anonymous Date — Basic (10 credits)" },
+          standard: { amount: 1200, credits: 30,  name: "Anonymous Date — Standard (30 credits)" },
+          premium:  { amount: 2500, credits: 100, name: "Anonymous Date — Premium (100 credits)" },
+          ultimate: { amount: 6000, credits: 300, name: "Anonymous Date — Ultimate (300 credits)" },
+        },
+        mode: "payment",
+        successPath: "/anonymous-date?success=true&session_id={CHECKOUT_SESSION_ID}",
+        cancelPath: "/anonymous-date?canceled=true",
+        type: "anonymous_date_credits",
+      },
+      secret_santa: {
+        packages: {
+          "15":   { amount: 500,   credits: 15,   name: "Secret Santa 365 - 15 Credits" },
+          "30":   { amount: 800,   credits: 30,   name: "Secret Santa 365 - 30 Credits" },
+          "50":   { amount: 1200,  credits: 50,   name: "Secret Santa 365 - 50 Credits" },
+          "100":  { amount: 2000,  credits: 100,  name: "Secret Santa 365 - 100 Credits" },
+          "200":  { amount: 3500,  credits: 200,  name: "Secret Santa 365 - 200 Credits" },
+          "350":  { amount: 5500,  credits: 350,  name: "Secret Santa 365 - 350 Credits" },
+          "500":  { amount: 7500,  credits: 500,  name: "Secret Santa 365 - 500 Credits" },
+          "750":  { amount: 10000, credits: 750,  name: "Secret Santa 365 - 750 Credits" },
+          "1000": { amount: 13000, credits: 1000, name: "Secret Santa 365 - 1000 Credits" },
+          "1500": { amount: 18000, credits: 1500, name: "Secret Santa 365 - 1500 Credits" },
+        },
+        mode: "payment",
+        successPath: "/secret-santa?success=true&credits={CREDITS}",
+        cancelPath: "/secret-santa?canceled=true",
+        type: "secret_santa_credits",
+      },
+      emotion_insurance: {
+        packages: {
+          basic:    { amount: 999,  credits: 5,    name: "Emotion Insurance — Basic Protection" },
+          standard: { amount: 1499, credits: 10,   name: "Emotion Insurance — Standard Protection" },
+          premium:  { amount: 2499, credits: 9999, name: "Emotion Insurance — Premium Protection" },
+        },
+        mode: "subscription",
+        successPath: "/emotion-economy?insurance=success&level={KEY}&session_id={CHECKOUT_SESSION_ID}",
+        cancelPath: "/emotion-economy?insurance=canceled",
+        type: "emotion_insurance",
+      },
+    };
+    if (body.product && DYNAMIC_PACKS[String(body.product)]) {
+      const def = DYNAMIC_PACKS[String(body.product)];
+      const rawKey =
+        body.packKey ?? body.credits ?? body.packageType ?? body.level ?? body.tier ?? "";
+      const key = String(rawKey);
+      const pkg = def.packages[key];
+      if (!pkg) {
+        return errorResponse(
+          `Invalid package "${key}" for ${body.product}. Available: ${Object.keys(def.packages).join(", ")}`,
+          400,
+        );
+      }
+      const isSub = def.mode === "subscription";
+      const successPath = def.successPath
+        .replace("{CREDITS}", String(pkg.credits))
+        .replace("{KEY}", key);
+      const metadata: Record<string, string> = {
+        user_id: userId ?? "",
+        credits: String(pkg.credits),
+        type: def.type,
+        product: String(body.product),
+        ...(isSub
+          ? {
+              coverage_level: key,
+              max_claims: String(pkg.credits),
+              monthly_price: String(pkg.amount / 100),
+            }
+          : { package_type: key }),
+        ...stringifyMetadata(body.metadata || {}),
+      };
+      const sessionParams: Record<string, unknown> = {
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        line_items: [{
+          price_data: {
+            currency: "eur",
+            product_data: { name: pkg.name },
+            unit_amount: pkg.amount,
+            ...(isSub ? { recurring: { interval: "month" } } : {}),
+          },
+          quantity: 1,
+        }],
+        mode: def.mode,
+        success_url: `${origin}${successPath}`,
+        cancel_url: `${origin}${def.cancelPath}`,
+        metadata,
+      };
+      if (isSub) {
+        (sessionParams as any).subscription_data = {
+          metadata: {
+            product_type: def.type,
+            coverage_level: key,
+            user_id: userId ?? "",
+          },
+        };
+      }
+      const session = await stripe.checkout.sessions.create(sessionParams as any);
+      return successResponse({ url: session.url, session_id: session.id });
+    }
+
+
+
     if (body.product && !body.priceId && !body.productKey && !body.credits) {
       // Free actions (e.g. create-character, create-universe) just return ok
       if (body.free === true) {
