@@ -689,8 +689,8 @@ verify_jwt = false
 [functions.join-shadow-battle]
 verify_jwt = true
 
-[functions.purchase-shadow-gift]
-verify_jwt = true
+
+
 
 [functions.start-stream]
 verify_jwt = true
