@@ -514,6 +514,20 @@ export function resolveProxy(
     return { target: "create-checkout", body: { ...b, product: "kitchen_battle_create" } };
   }
 
+  // ─── B18d — Creator Economy (paid message, profile tip, merch, service order) merged into create-checkout ───
+  if (functionName === "create-paid-message-checkout") {
+    return { target: "create-checkout", body: { ...b, product: "paid_message" } };
+  }
+  if (functionName === "create-profile-tip") {
+    return { target: "create-checkout", body: { ...b, product: "profile_tip" } };
+  }
+  if (functionName === "create-merch-checkout") {
+    return { target: "create-checkout", body: { ...b, product: "merch_purchase" } };
+  }
+  if (functionName === "create-service-order-checkout") {
+    return { target: "create-checkout", body: { ...b, product: "service_order" } };
+  }
+
 
 
 
