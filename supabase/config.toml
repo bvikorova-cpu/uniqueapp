@@ -1,33 +1,12 @@
 project_id = "jufrdzeonywluwutvyxz"
 
-[functions.auction-stripe-webhook]
-verify_jwt = false
-
 [functions.stripe-webhook]
 verify_jwt = false
-
-[functions.auction-mark-shipped]
-verify_jwt = true
-
-[functions.auction-confirm-delivery]
-verify_jwt = true
-
-[functions.auction-auto-release-escrow]
-verify_jwt = false
-
-[functions.create-astrology-checkout]
-verify_jwt = true
 
 [functions.generate-creative-content]
 verify_jwt = true
 
-[functions.create-creative-forge-payment]
-verify_jwt = true
-
 [functions.verify-creative-forge-payment]
-verify_jwt = true
-
-[functions.creative-cowriter]
 verify_jwt = true
 
 [functions.creative-style-transfer]
@@ -39,103 +18,19 @@ verify_jwt = true
 [functions.creative-room-ai]
 verify_jwt = true
 
-[functions.shadow-arena-credits-init]
-verify_jwt = true
-
-[functions.shadow-ai-story-generator]
-verify_jwt = true
-
-[functions.shadow-ai-narrator]
-verify_jwt = true
-
-[functions.shadow-battle-predictor]
-verify_jwt = true
-
-[functions.shadow-nightmare-avatar]
-verify_jwt = true
-
-[functions.shadow-credits-checkout]
-verify_jwt = true
-
 [functions.generate-gift-message]
-verify_jwt = true
-
-[functions.analyze-message]
-verify_jwt = true
-
-[functions.analyze-thread]
-verify_jwt = true
-
-[functions.analyze-profile]
-verify_jwt = true
-
-[functions.create-lie-detector-payment]
-verify_jwt = true
-
-[functions.analyze-past-life]
-verify_jwt = true
-
-[functions.create-past-life-credits-payment]
-verify_jwt = true
-
-[functions.create-fashion-marketplace-payment]
-verify_jwt = true
-
-[functions.submit-fashion-challenge]
-verify_jwt = true
-
-[functions.vote-fashion-challenge]
 verify_jwt = true
 
 [functions.astrology-reading]
 verify_jwt = true
 
-[functions.create-astrology-credits-payment]
-verify_jwt = true
-
 [functions.astrology-chat]
 verify_jwt = false
-
-[functions.create-character]
-verify_jwt = true
 
 [functions.battle-characters]
 verify_jwt = true
 
-[functions.create-character-credits-payment]
-verify_jwt = true
-
-[functions.teen-debate-partner]
-verify_jwt = false
-
 [functions.teen-career-counselor]
-verify_jwt = false
-
-[functions.outfit-recommender]
-verify_jwt = true
-
-[functions.virtual-tryon]
-verify_jwt = true
-
-[functions.ai-music-curator]
-verify_jwt = true
-
-[functions.open-mystery-box]
-verify_jwt = true
-
-[functions.generate-collectible]
-verify_jwt = true
-
-[functions.create-collectibles-payment]
-verify_jwt = true
-
-[functions.optimize-routine]
-verify_jwt = true
-
-[functions.capsule-wardrobe]
-verify_jwt = true
-
-[functions.psychology-chat]
 verify_jwt = false
 
 [functions.tutoring-chat]
@@ -147,40 +42,7 @@ verify_jwt = true
 [functions.tutoring-add-credits]
 verify_jwt = true
 
-[functions.import-recipes]
-verify_jwt = true
-
-[functions.import-jobs]
-verify_jwt = true
-
-[functions.import-jobs-sk]
-verify_jwt = true
-
 [functions.generate-avatar]
-verify_jwt = false
-
-[functions.apply-ai-effect]
-verify_jwt = false
-
-[functions.generate-course-content]
-verify_jwt = false
-
-[functions.best-friend-chat]
-verify_jwt = true
-
-[functions.check-best-friend-subscription]
-verify_jwt = true
-
-[functions.create-best-friend-checkout]
-verify_jwt = true
-
-[functions.best-friend-customer-portal]
-verify_jwt = true
-
-[functions.process-auction-withdrawal]
-verify_jwt = true
-
-[functions.notify-admin-auction-withdrawal]
 verify_jwt = false
 
 [functions.process-referral-withdrawal]
@@ -192,23 +54,8 @@ verify_jwt = true
 [functions.ai-image-generation]
 verify_jwt = false
 
-[functions.convert-to-mp3]
-verify_jwt = false
-
 [functions.verify-payment]
 verify_jwt = false
-
-[functions.create-featured-payment]
-verify_jwt = true
-
-[functions.create-certificate-payment]
-verify_jwt = true
-
-[functions.create-job-listing-payment]
-verify_jwt = true
-
-[functions.activate-job-listing]
-verify_jwt = true
 
 [functions.create-one-off-payment]
 verify_jwt = true
@@ -216,49 +63,13 @@ verify_jwt = true
 [functions.verify-job-listing-payment]
 verify_jwt = true
 
-[functions.check-employer-payment]
-verify_jwt = true
-
-[functions.expire-job-listings]
-verify_jwt = false
-
-[functions.notify-expiring-job-listings]
-verify_jwt = false
-
-[functions.create-influencer-tip-payment]
-verify_jwt = true
-
 [functions.send-influencer-gift]
-verify_jwt = true
-
-[functions.send-platform-gift]
-verify_jwt = true
-
-[functions.create-subscription-checkout]
-verify_jwt = true
-
-[functions.process-sale-transaction]
 verify_jwt = true
 
 [functions.check-subscription]
 verify_jwt = false
 
 [functions.cancel-subscription]
-verify_jwt = true
-
-[functions.create-credits-payment]
-verify_jwt = true
-
-[functions.career-interview]
-verify_jwt = true
-
-[functions.career-cv-optimizer]
-verify_jwt = true
-
-[functions.career-linkedin]
-verify_jwt = true
-
-[functions.career-negotiation]
 verify_jwt = true
 
 [functions.analyze-dream]
@@ -270,95 +81,26 @@ verify_jwt = true
 [functions.mood-trends]
 verify_jwt = true
 
-[functions.identify-plant]
-verify_jwt = true
-
-[functions.diagnose-plant]
-verify_jwt = true
-
-[functions.generate-music]
-verify_jwt = true
-
-[functions.create-learning-payment]
-verify_jwt = true
-
-[functions.verify-learning-payment]
-verify_jwt = false
-
-[functions.generate-certificate]
-verify_jwt = true
-
-[functions.kids-math-game]
-verify_jwt = false
-
 [functions.kids-homework-helper]
-verify_jwt = false
-
-[functions.kids-story-creator]
 verify_jwt = false
 
 [functions.kids-story-tts]
 verify_jwt = false
 
-[functions.kids-science-lab]
-verify_jwt = false
-
-[functions.check-science-subscription]
-verify_jwt = true
-
-[functions.create-science-checkout]
-verify_jwt = true
-
-[functions.kids-drawing-tutorial]
-verify_jwt = false
-
-[functions.check-kids-drawing-subscription]
-verify_jwt = true
-
-[functions.create-kids-drawing-checkout]
-verify_jwt = true
-
 [functions.kids-reading-companion]
-verify_jwt = false
-
-[functions.check-kids-reading-subscription]
-verify_jwt = true
-
-[functions.create-kids-reading-checkout]
-verify_jwt = true
-
-[functions.teen-study-planner]
 verify_jwt = false
 
 [functions.generate-coloring-page]
 verify_jwt = true
 
-[functions.create-coloring-subscription]
-verify_jwt = true
-
-[functions.check-coloring-subscription]
-verify_jwt = true
-
 [functions.remove-text-from-image]
 verify_jwt = false
-
-[functions.restore-old-photo]
-verify_jwt = true
-
-[functions.create-photo-credits-payment]
-verify_jwt = true
-
-[functions.identify-antique]
-verify_jwt = true
 
 [functions.create-checkout]
 verify_jwt = true
 
 [functions.stripe-webhook]
 verify_jwt = false
-
-[functions.generate-fashion-design]
-verify_jwt = true
 
 [functions.generate-meal-plan]
 verify_jwt = true
@@ -372,150 +114,20 @@ verify_jwt = true
 [functions.universal-vision-analyzer]
 verify_jwt = true
 
-[functions.generate-video-ad]
-verify_jwt = false
-
-[functions.generate-recipe-from-ingredients]
-verify_jwt = true
-
-[functions.generate-weekly-meal-plan]
-verify_jwt = true
-
-[functions.scan-food-ai]
-verify_jwt = true
-
-[functions.analyze-restaurant-menu-ai]
-verify_jwt = true
-
-[functions.chat-with-chef]
-verify_jwt = true
-
-[functions.suggest-wine-pairing]
-verify_jwt = true
-
-[functions.create-vip-checkout]
-verify_jwt = true
-
-[functions.check-vip-subscription]
-verify_jwt = true
-
-[functions.kids-character-chat]
-verify_jwt = false
-
 [functions.generate-character-image]
 verify_jwt = false
 
 [functions.generate-character-story]
 verify_jwt = false
 
-[functions.check-school-subscription]
-verify_jwt = true
-
-[functions.generate-teacher-coloring]
-verify_jwt = true
-
 [functions.verify-comedy-payment]
 verify_jwt = true
-
-[functions.create-f1-checkout]
-verify_jwt = true
-
-[functions.check-f1-subscription]
-verify_jwt = true
-
-[functions.f1-customer-portal]
-verify_jwt = true
-
-
-
-[functions.send-concert-gift]
-verify_jwt = true
-
-[functions.check-decor-subscription]
-verify_jwt = true
-
 
 [functions.generate-room-design]
 verify_jwt = true
 
-[functions.create-time-capsule-payment]
-verify_jwt = true
-
 [functions.save-time-capsule]
 verify_jwt = true
-
-[functions.check-pet-subscription]
-verify_jwt = true
-
-[functions.create-pet-checkout]
-verify_jwt = true
-
-[functions.analyze-pet-sound]
-verify_jwt = true
-
-[functions.generate-future-face]
-verify_jwt = true
-
-[functions.create-future-face-checkout]
-verify_jwt = true
-
-[functions.check-future-face-subscription]
-verify_jwt = true
-
-[functions.find-historical-match]
-verify_jwt = true
-
-[functions.create-ancestor-twin-checkout]
-verify_jwt = true
-
-[functions.check-ancestor-twin-subscription]
-verify_jwt = true
-
-[functions.translate-and-generate-audio]
-verify_jwt = false
-
-[functions.generate-castle-panorama]
-verify_jwt = true
-
-[functions.bulk-generate-panoramas]
-verify_jwt = true
-
-[functions.princess-speech]
-verify_jwt = false
-
-[functions.generate-room-panorama]
-verify_jwt = true
-
-[functions.check-employer-subscription]
-verify_jwt = true
-
-[functions.create-employer-subscription-checkout]
-verify_jwt = true
-
-[functions.employer-customer-portal]
-verify_jwt = true
-
-[functions.create-kids-subscription-checkout]
-verify_jwt = true
-
-[functions.check-kids-subscription]
-verify_jwt = true
-
-[functions.kids-customer-portal]
-verify_jwt = true
-
-[functions.create-story-payment]
-verify_jwt = true
-
-[functions.create-healthcare-subscription]
-verify_jwt = true
-
-[functions.check-healthcare-subscription]
-verify_jwt = true
-
-[functions.healthcare-customer-portal]
-verify_jwt = true
-
 
 [functions.verify-brand-votes-payment]
 verify_jwt = true
@@ -523,35 +135,8 @@ verify_jwt = true
 [functions.vote-for-brand]
 verify_jwt = true
 
-[functions.generate-daily-challenge]
-verify_jwt = false
-
-[functions.check-wellness-subscription]
-verify_jwt = true
-
-[functions.create-wellness-checkout]
-verify_jwt = true
-
-[functions.generate-lottery-numbers]
-verify_jwt = true
-
 [functions.check-router]
 verify_jwt = false
-
-[functions.generate-sports-prediction]
-verify_jwt = true
-
-[functions.create-campaign-donation]
-verify_jwt = false
-
-[functions.stripe-campaign-webhook]
-verify_jwt = false
-
-[functions.request-campaign-withdrawal]
-verify_jwt = true
-
-[functions.process-withdrawal-request]
-verify_jwt = true
 
 [functions.verify-confession-payment]
 verify_jwt = true
@@ -571,24 +156,6 @@ verify_jwt = true
 [functions.verify-phobia-payment]
 verify_jwt = false
 
-[functions.detect-phobia]
-verify_jwt = true
-
-[functions.generate-phobia-cure]
-verify_jwt = true
-
-[functions.trade-phobia]
-verify_jwt = true
-
-[functions.get-user-phobias]
-verify_jwt = true
-
-[functions.verify-multiverse-payment]
-verify_jwt = false
-
-[functions.create-universe]
-verify_jwt = true
-
 [functions.reality-jump]
 verify_jwt = true
 
@@ -598,69 +165,11 @@ verify_jwt = true
 [functions.find-best-self]
 verify_jwt = true
 
-[functions.check-holographic-access]
-verify_jwt = true
-
-[functions.create-holographic-avatar-checkout]
-verify_jwt = true
-
-[functions.create-holographic-concert-checkout]
-verify_jwt = true
-
-[functions.verify-holographic-payment]
-verify_jwt = false
-
-[functions.get-user-concerts]
-verify_jwt = true
-
-[functions.check-time-capsule-access]
-verify_jwt = true
-
-[functions.create-time-capsule-checkout]
-verify_jwt = true
-
-[functions.create-time-capsule-payment]
-verify_jwt = true
-
-[functions.generate-artist-image]
-verify_jwt = false
-
-[functions.generate-ai-dedication]
-verify_jwt = true
-
-[functions.book-meet-greet]
-verify_jwt = true
-
-[functions.get-user-universes]
-verify_jwt = true
-
-[functions.create-time-reversal-checkout]
-verify_jwt = true
-
-[functions.check-time-reversal-subscription]
-verify_jwt = true
-
-[functions.check-masterchef-subscription]
-verify_jwt = true
-
 [functions.character-chat]
 verify_jwt = true
 
-[functions.generate-virtual-tour]
-verify_jwt = true
-
-[functions.generate-age-progression]
-verify_jwt = true
-
-[functions.send-dating-gift]
-verify_jwt = true
-
-[functions.dating-payment-webhook]
-verify_jwt = false
-
 [functions.approve-campaign-application]
 verify_jwt = true
-
 
 [functions.verify-campaign-payment]
 verify_jwt = true
@@ -668,44 +177,11 @@ verify_jwt = true
 [functions.request-influencer-withdrawal]
 verify_jwt = true
 
-[functions.process-influencer-withdrawal]
-verify_jwt = true
-
 [functions.generate-monetization-ideas]
 verify_jwt = false
 
-[functions.create-shadow-subscription]
-verify_jwt = true
-
-[functions.check-shadow-subscription]
-verify_jwt = true
-
-[functions.enhance-shadow-story]
-verify_jwt = true
-
 [functions.create-shadow-battle]
 verify_jwt = false
-
-[functions.join-shadow-battle]
-verify_jwt = true
-
-
-
-
-[functions.start-stream]
-verify_jwt = true
-
-[functions.stop-stream]
-verify_jwt = true
-
-[functions.create-analyzer-credits-payment]
-verify_jwt = true
-
-[functions.create-cooking-credits-payment]
-verify_jwt = true
-
-[functions.create-video-ad-credits-payment]
-verify_jwt = true
 
 [functions.verify-credits-payment]
 verify_jwt = false
@@ -717,15 +193,6 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.claim-daily-reward]
-verify_jwt = true
-
-[functions.ai-studio-transform]
-verify_jwt = true
-
-[functions.ai-studio-purchase]
-verify_jwt = true
-
-[functions.ai-studio-add-credits]
 verify_jwt = true
 
 [functions.safety-prevention-chat]
@@ -743,80 +210,16 @@ verify_jwt = true
 [functions.brain-duel-finish-match]
 verify_jwt = true
 
-[functions.brain-duel-friend-match]
-verify_jwt = true
-
-[functions.verify-brain-duel-payment]
-verify_jwt = false
-
-[functions.beauty-transformation]
-verify_jwt = true
-
-[functions.beauty-tutorial]
-verify_jwt = true
-
-[functions.beauty-recommendations]
-verify_jwt = true
-
-[functions.ai-mentor-chat]
-verify_jwt = true
-
-[functions.wellness-mindfulness-chat]
-verify_jwt = true
-
 [functions.generate-workout-plan]
-verify_jwt = true
-
-[functions.create-digital-offspring]
-verify_jwt = true
-
-[functions.chat-with-offspring]
 verify_jwt = true
 
 [functions.create-reincarnation-plan]
 verify_jwt = true
 
-[functions.calculate-karmic-debt]
-verify_jwt = true
-
-[functions.find-soul-matches]
-verify_jwt = true
-
-[functions.create-reincarnation-checkout]
-verify_jwt = true
-
 [functions.verify-reincarnation-payment]
 verify_jwt = false
 
-[functions.find-genetic-matches]
-verify_jwt = true
-
 [functions.process-dna-analysis]
-verify_jwt = true
-
-[functions.create-dna-memory-checkout]
-verify_jwt = true
-
-[functions.analyze-crystal-energy]
-verify_jwt = true
-
-
-[functions.create-crystal-energy-checkout]
-verify_jwt = true
-
-[functions.generate-home-design]
-verify_jwt = true
-
-[functions.generate-ai-room-design]
-verify_jwt = true
-
-[functions.create-decor-checkout]
-verify_jwt = true
-
-[functions.create-ar-preview-checkout]
-verify_jwt = true
-
-[functions.decor-customer-portal]
 verify_jwt = true
 
 [functions.generate-content]
@@ -825,20 +228,8 @@ verify_jwt = true
 [functions.generate-content-image]
 verify_jwt = true
 
-[functions.purchase-content-pack]
-verify_jwt = true
-
-[functions.generate-custom-image]
-verify_jwt = true
-
-[functions.purchase-stock-content]
-verify_jwt = true
-
 [functions.purchase-course]
 verify_jwt = true
-
-[functions.verify-course-purchase]
-verify_jwt = false
 
 [functions.generate-course-certificate]
 verify_jwt = true
@@ -846,35 +237,10 @@ verify_jwt = true
 [functions.job-ai-matcher]
 verify_jwt = true
 
-[functions.check-expired-listings]
-verify_jwt = false
-
 [functions.calculate-race-results]
 verify_jwt = true
 
 [functions.calculate-f1-race-results]
-verify_jwt = true
-
-[functions.f1-stripe-webhook]
-verify_jwt = false
-
-[functions.create-f1-currency-checkout]
-verify_jwt = true
-
-[functions.generate-f1-background]
-verify_jwt = true
-
-[functions.stripe-webhook-horse-racing]
-verify_jwt = false
-
-
-[functions.horse-create]
-verify_jwt = true
-
-[functions.horse-join-race]
-verify_jwt = true
-
-[functions.horse-train]
 verify_jwt = true
 
 [functions.send-gift-payment]
@@ -886,176 +252,13 @@ verify_jwt = true
 [functions.send-masterchef-gift]
 verify_jwt = true
 
-[functions.create-masterchef-checkout]
-verify_jwt = true
-
-
-[functions.create-tipster-checkout]
-verify_jwt = true
-
-[functions.purchase-tip]
-verify_jwt = true
-
-[functions.verify-tip-purchase]
-verify_jwt = false
-
-[functions.create-sports-checkout]
-verify_jwt = true
-
-[functions.check-sports-subscription]
-verify_jwt = true
-
-[functions.notify-admin-comedy-payout]
-verify_jwt = false
-
-[functions.process-comedy-transaction]
-verify_jwt = true
-
-[functions.create-property-listing-checkout]
-verify_jwt = true
-
-[functions.create-property-listing-payment]
-verify_jwt = true
-
-[functions.create-skill-swap-checkout]
-verify_jwt = true
-
-[functions.check-skill-swap-subscription]
-verify_jwt = true
-
-[functions.create-phobia-checkout]
-verify_jwt = true
-
-[functions.create-multiverse-checkout]
-verify_jwt = true
-
-[functions.take-iq-test]
-verify_jwt = true
-
 [functions.join-iq-competition]
-verify_jwt = true
-
-[functions.create-iq-payment]
-verify_jwt = true
-
-[functions.purchase-iq-credits]
-verify_jwt = true
-
-[functions.verify-iq-payment]
-verify_jwt = false
-
-[functions.create-lead-boost-payment]
-verify_jwt = true
-
-[functions.process-lead-boost]
-verify_jwt = true
-
-[functions.verify-lead-boost-payment]
-verify_jwt = false
-
-[functions.customer-portal]
-verify_jwt = true
-
-[functions.process-scheduled-payouts]
-verify_jwt = false
-
-[functions.check-creator-subscription]
-verify_jwt = true
-
-[functions.create-creator-subscription]
-verify_jwt = true
-
-[functions.create-marketplace-item-checkout]
-verify_jwt = true
-
-[functions.create-confession-checkout]
-verify_jwt = true
-
-[functions.create-consultation-checkout]
-verify_jwt = true
-
-[functions.get-ai-analysis]
-verify_jwt = true
-
-[functions.generate-paint-by-numbers]
-verify_jwt = true
-
-[functions.generate-paint-image]
-verify_jwt = true
-
-[functions.generate-video-thumbnail]
-verify_jwt = false
-
-[functions.add-teen-career-generation]
-verify_jwt = true
-
-[functions.check-teen-career-usage]
-verify_jwt = true
-
-[functions.create-teen-career-payment]
-verify_jwt = true
-
-[functions.create-kids-story-subscription-checkout]
-verify_jwt = true
-
-[functions.check-kids-story-subscription]
-verify_jwt = true
-
-[functions.kids-story-customer-portal]
-verify_jwt = true
-
-[functions.clone-voice]
-verify_jwt = true
-
-[functions.list-voice-clones]
-verify_jwt = true
-
-[functions.update-voice-clone]
-verify_jwt = true
-
-[functions.delete-voice-clone]
-verify_jwt = true
-
-[functions.create-voice-clone-checkout]
-verify_jwt = true
-
-[functions.create-voice-subscription-checkout]
-verify_jwt = true
-
-[functions.check-voice-subscription]
-verify_jwt = true
-
-[functions.voice-customer-portal]
-verify_jwt = true
-
-[functions.notify-admin-new-gift]
-verify_jwt = false
-
-[functions.verify-donation]
-verify_jwt = false
-
-[functions.generate-tattoo]
 verify_jwt = true
 
 [functions.analyze-handwriting]
 verify_jwt = true
 
-[functions.create-handwriting-credits-payment]
-verify_jwt = true
-
-[functions.analyze-past-life]
-verify_jwt = false
-
-[functions.create-past-life-credits-payment]
-verify_jwt = false
-
 [functions.find-anonymous-match]
-verify_jwt = false
-
-[functions.send-anonymous-message]
-verify_jwt = false
-
-[functions.reveal-anonymous-identity]
 verify_jwt = false
 
 [functions.pay-anonymous-date-access]
@@ -1063,88 +266,7 @@ verify_jwt = true
 
 # [functions.check-anonymous-date-access] — merged into check-router (Batch 17)
 
-[functions.customer-portal-anonymous-date]
-verify_jwt = true
-
-[functions.messenger-ai-translate]
-verify_jwt = true
-
-[functions.messenger-ai-summarize]
-verify_jwt = true
-
-[functions.messenger-ai-smart-reply]
-verify_jwt = true
-
-[functions.messenger-ai-time-capsule]
-verify_jwt = true
-
-[functions.messenger-ai-emotional-weather]
-verify_jwt = true
-
-[functions.messenger-ai-quantum-message]
-verify_jwt = true
-
-[functions.messenger-ai-anonymous-compliment]
-verify_jwt = true
-
-[functions.messenger-ai-what-if]
-verify_jwt = true
-
-[functions.check-psychology-subscription]
-verify_jwt = true
-
-[functions.create-psychology-checkout]
-verify_jwt = true
-
-[functions.psychology-customer-portal]
-verify_jwt = true
-
-[functions.psychology-chat]
-verify_jwt = false
-
-[functions.check-companions-subscription]
-verify_jwt = true
-
-[functions.create-companions-checkout]
-verify_jwt = true
-
-[functions.companions-customer-portal]
-verify_jwt = true
-
-[functions.battle-pets]
-verify_jwt = true
-
 [functions.clone-chat]
-verify_jwt = true
-
-[functions.analyze-emotion]
-verify_jwt = true
-
-[functions.create-emotion-credits-payment]
-verify_jwt = true
-
-[functions.verify-emotion-credits-payment]
-verify_jwt = true
-
-[functions.create-emotion-market-checkout]
-verify_jwt = true
-
-[functions.stock-content-webhook]
-verify_jwt = false
-
-[functions.verify-stock-purchase]
-verify_jwt = true
-
-[functions.get-my-stock-purchases]
-verify_jwt = true
-
-[functions.purchase-stock-content]
-verify_jwt = false
-
-[functions.request-stock-withdrawal]
-verify_jwt = true
-
-[functions.request-instructor-withdrawal]
 verify_jwt = true
 
 [functions.create-connect-account]
@@ -1152,49 +274,14 @@ verify_jwt = true
 
 # [functions.check-connect-status] — merged into check-router (Batch 17)
 
-[functions.create-connect-login-link]
-verify_jwt = true
-
-[functions.generate-escape-room-panorama]
-verify_jwt = false
-
-
-
 [functions.verify-bazaar-order-payment]
-verify_jwt = true
-
-[functions.create-bazaar-checkout]
-verify_jwt = true
-
-[functions.bazaar-stripe-webhook]
-verify_jwt = false
-
-[functions.bazaar-auto-release-escrow]
-verify_jwt = false
-
-[functions.bazaar-notify-escrow]
-verify_jwt = false
-
-[functions.bazaar-mark-shipped]
-verify_jwt = true
-
-[functions.bazaar-confirm-delivery]
 verify_jwt = true
 
 [functions.escrow-release]
 verify_jwt = true
 
-[functions.escrow-refund]
-verify_jwt = true
-
 [functions.open-dispute]
 verify_jwt = true
-
-[functions.resolve-dispute]
-verify_jwt = true
-
-[functions.analyze-resume-ai]
-verify_jwt = false
 
 [functions.stripe-connect-onboarding]
 verify_jwt = true
@@ -1210,10 +297,6 @@ verify_jwt = true
 
 [functions.verify-crystal-payment]
 verify_jwt = true
-
-[functions.generate-chakra-day]
-verify_jwt = true
-
 
 [functions.generate-fitness-plan]
 verify_jwt = true
@@ -1235,7 +318,6 @@ verify_jwt = true
 
 [functions.contact-ai-triage]
 verify_jwt = false
-
 
 [functions.security-scan-edge-functions]
 verify_jwt = false
@@ -1288,17 +370,14 @@ verify_jwt = false
 [functions.auth-email-hook]
 verify_jwt = false
 
-
 [functions.monetag-postback]
 verify_jwt = false
 
 [functions.monthly-credits-grant]
 verify_jwt = false
 
-
 [functions.e2e-ensure-test-user]
 verify_jwt = false
-
 
 [functions.mt-router]
 verify_jwt = false
