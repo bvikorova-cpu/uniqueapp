@@ -542,6 +542,18 @@ export function resolveProxy(
     return { target: "create-checkout", body: { ...b, product: "campaign_payment" } };
   }
 
+  // ─── B18f — Other (bazaar order, shadow patron sub, shadow gift) merged into create-checkout ───
+  if (functionName === "create-bazaar-order-checkout") {
+    return { target: "create-checkout", body: { ...b, product: "bazaar_order" } };
+  }
+  if (functionName === "shadow-patron-checkout") {
+    return { target: "create-checkout", body: { ...b, product: "shadow_patron" } };
+  }
+  if (functionName === "purchase-shadow-gift") {
+    return { target: "create-checkout", body: { ...b, product: "shadow_gift" } };
+  }
+
+
 
 
 
