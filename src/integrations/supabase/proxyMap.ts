@@ -359,16 +359,20 @@ export function resolveProxy(
     return { target: "mt-router", body: { ...b, action: mt } };
   }
 
-
-
-
-
-
-  // Nutrition router consolidation (9 functions -> 1).
-  const nutrition = NUTRITION_ROUTER_MAP[functionName];
-  if (nutrition) {
-    return { target: "nutrition-router", body: { ...b, action: nutrition } };
+  // Batch 16 — check-* subscription/credit checks merged into check-router.
+  const CHECK_ROUTER_MAP: Record<string, string> = {
+    "check-lottery-subscription": "lottery",
+    "check-phobia-subscription": "phobia",
+    "check-tipster-subscription": "tipster",
+    "check-megatalent-subscription": "megatalent_sub",
+    "check-megatalent-vip": "megatalent_vip",
+  };
+  const chk2 = CHECK_ROUTER_MAP[functionName];
+  if (chk2) {
+    return { target: "check-router", body: { ...b, action: chk2 } };
   }
+
+
 
   // Horse router consolidation (6 functions -> 1).
   const horse = HORSE_ROUTER_MAP[functionName];

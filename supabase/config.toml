@@ -572,8 +572,8 @@ verify_jwt = true
 [functions.create-lottery-subscription]
 verify_jwt = true
 
-[functions.check-lottery-subscription]
-verify_jwt = true
+[functions.check-router]
+verify_jwt = false
 
 [functions.generate-sports-prediction]
 verify_jwt = true
@@ -935,8 +935,6 @@ verify_jwt = true
 [functions.create-masterchef-checkout]
 verify_jwt = true
 
-[functions.check-tipster-subscription]
-verify_jwt = true
 
 [functions.create-tipster-checkout]
 verify_jwt = true
