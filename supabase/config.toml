@@ -420,11 +420,6 @@ verify_jwt = true
 [functions.generate-teacher-coloring]
 verify_jwt = true
 
-[functions.create-comedy-payment]
-verify_jwt = true
-[functions.create-comedy-payment]
-verify_jwt = true
-
 [functions.verify-comedy-payment]
 verify_jwt = true
 
@@ -437,8 +432,7 @@ verify_jwt = true
 [functions.f1-customer-portal]
 verify_jwt = true
 
-[functions.create-concert-ticket-checkout]
-verify_jwt = true
+
 
 [functions.send-concert-gift]
 verify_jwt = true

@@ -1750,6 +1750,155 @@ serve(async (req) => {
       return successResponse({ url: session.url, session_id: session.id });
     }
 
+    // ─── B18c Events: concert_payment (song_request | collectible_ticket) ───
+    if (body.product === "concert_payment") {
+      const type = String(body.type || "");
+      const amount = Number(body.amount);
+      const metadata = (body.metadata && typeof body.metadata === "object") ? body.metadata : {};
+      if (type !== "song_request" && type !== "collectible_ticket") {
+        return errorResponse(`Unsupported concert type: ${type}`, 400);
+      }
+      if (!Number.isFinite(amount) || amount < 50) return errorResponse("Invalid amount", 400);
+      const name = type === "song_request"
+        ? `Song Request (${(metadata as any)?.tier || "standard"}) — ${(metadata as any)?.song || ""}`
+        : `Collectible Ticket — ${(metadata as any)?.artist || ""} ${(metadata as any)?.edition || ""} Edition`;
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        mode: "payment",
+        line_items: [{
+          price_data: {
+            currency: "eur",
+            product_data: { name },
+            unit_amount: amount,
+          },
+          quantity: 1,
+        }],
+        success_url: `${origin}/live-concerts?purchase=success&type=${type}&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/live-concerts?purchase=canceled`,
+        metadata: {
+          user_id: userId ?? "",
+          type,
+          product: "concert_payment",
+          ...(Object.fromEntries(Object.entries(metadata).map(([k, v]) => [k, String(v)]))),
+        },
+      });
+      return successResponse({ url: session.url, session_id: session.id });
+    }
+
+    // ─── B18c Events: concert_ticket (live concert ticket purchase, 80/20 split) ───
+    if (body.product === "concert_ticket") {
+      const admin = createSupabaseAdminClient();
+      const concertId = String(body.concertId || "");
+      const ticketTypeId = String(body.ticketTypeId || "");
+      if (!concertId || !ticketTypeId) return errorResponse("Missing concertId/ticketTypeId", 400);
+
+      const { data: ticketType, error: ticketError } = await admin
+        .from("concert_ticket_types")
+        .select("*, live_concert_streams(title, musician_id)")
+        .eq("id", ticketTypeId)
+        .single();
+      if (ticketError || !ticketType) return errorResponse("Ticket type not found", 400);
+
+      const { data: musician } = await admin
+        .from("musician_profiles")
+        .select("stage_name")
+        .eq("id", (ticketType as any).live_concert_streams.musician_id)
+        .single();
+
+      const { data: existing } = await admin
+        .from("concert_ticket_purchases")
+        .select("id")
+        .eq("user_id", userId)
+        .eq("concert_id", concertId)
+        .eq("payment_status", "completed")
+        .maybeSingle();
+      if (existing) return errorResponse("You already have a ticket for this concert", 400);
+
+      const priceEur = Number((ticketType as any).price);
+      const unit = Math.round(priceEur * 100);
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        mode: "payment",
+        line_items: [{
+          price_data: {
+            currency: "eur",
+            product_data: {
+              name: `${String((ticketType as any).name).toUpperCase()} Ticket - ${(ticketType as any).live_concert_streams.title}`,
+              description: `Live concert by ${musician?.stage_name || "Artist"}`,
+            },
+            unit_amount: unit,
+          },
+          quantity: 1,
+        }],
+        success_url: `${origin}/live-concerts?success=true&type=ticket&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/live-concerts?canceled=true`,
+        metadata: {
+          user_id: userId ?? "",
+          concert_id: concertId,
+          ticket_type_id: ticketTypeId,
+          musician_id: (ticketType as any).live_concert_streams.musician_id,
+          type: "concert_ticket",
+          product: "concert_ticket",
+        },
+      });
+
+      await admin.from("concert_ticket_purchases").insert({
+        user_id: userId,
+        concert_id: concertId,
+        ticket_type_id: ticketTypeId,
+        amount: priceEur,
+        musician_amount: Number((priceEur * 0.8).toFixed(2)),
+        platform_commission: Number((priceEur * 0.2).toFixed(2)),
+        commission_rate: 0.2,
+        payment_status: "pending",
+        stripe_session_id: session.id,
+      });
+
+      return successResponse({ url: session.url, session_id: session.id });
+    }
+
+    // ─── B18c Events: comedy_coins (fixed 100 coins for €5) ───
+    if (body.product === "comedy_coins") {
+      const coins = Number(body.coins || 100);
+      const priceId = "price_1SVehXGaXSfGtYFtgUbBfnFe";
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        line_items: [{ price: priceId, quantity: 1 }],
+        mode: "payment",
+        success_url: `${origin}/comedy-club?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/comedy-club?payment=canceled`,
+        metadata: {
+          user_id: userId ?? "",
+          type: "comedy_coins",
+          product: "comedy_coins",
+          coins: String(coins),
+        },
+      });
+      return successResponse({ url: session.url, session_id: session.id });
+    }
+
+    // ─── B18c Events: kitchen_battle_create (no Stripe — DB insert only) ───
+    if (body.product === "kitchen_battle_create") {
+      const admin = createSupabaseAdminClient();
+      const THEMES = [
+        "Street Food Showdown", "Fine Dining Fusion", "Mystery Box Madness",
+        "Dessert Wars", "One-Pan Wonders", "Spice It Up", "Plant-Based Battle",
+        "Comfort Food Classics", "Breakfast Reinvented", "Midnight Snack Duel",
+      ];
+      const theme = String(body.theme || THEMES[Math.floor(Math.random() * THEMES.length)]);
+      const description = String(body.description || `Compete with your best dish around: ${theme}`);
+      const { data, error } = await admin.from("kitchen_battles").insert({
+        theme, description, created_by: userId,
+      }).select().single();
+      if (error) return errorResponse(error.message, 400);
+      return successResponse({ battle: data });
+    }
+
+
+
 
     if (body.product && !body.priceId && !body.productKey && !body.credits) {
       // Free actions (e.g. create-character, create-universe) just return ok
