@@ -460,6 +460,34 @@ export function resolveProxy(
   }
 
 
+  // ─── B18b — 8 subscription/checkout functions merged into create-checkout ───
+  if (functionName === "create-decor-subscription") {
+    return { target: "create-checkout", body: { ...b, product: "decor_pro_sub" } };
+  }
+  if (functionName === "create-phobia-subscription") {
+    return { target: "create-checkout", body: { ...b, product: "phobia_subscription" } };
+  }
+  if (functionName === "create-premium-subscription") {
+    return { target: "create-checkout", body: { ...b, product: "premium_all_modules" } };
+  }
+  if (functionName === "create-time-capsule-premium-subscription") {
+    return { target: "create-checkout", body: { ...b, product: "time_capsule_premium" } };
+  }
+  if (functionName === "create-school-subscription") {
+    return { target: "create-checkout", body: { ...b, product: "school_subscription" } };
+  }
+  if (functionName === "create-lottery-subscription") {
+    return { target: "create-checkout", body: { ...b, product: "lottery_subscription" } };
+  }
+  if (functionName === "create-rewards-checkout") {
+    return { target: "create-checkout", body: { ...b, product: "rewards_checkout" } };
+  }
+  if (functionName === "create-stream-access-checkout") {
+    return { target: "create-checkout", body: { ...b, product: "stream_access" } };
+  }
+
+
+
   // Horse router consolidation (6 functions -> 1).
   const horse = HORSE_ROUTER_MAP[functionName];
   if (horse) {
