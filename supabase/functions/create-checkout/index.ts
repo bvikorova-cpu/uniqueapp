@@ -1897,6 +1897,269 @@ serve(async (req) => {
       return successResponse({ battle: data });
     }
 
+    // ─── B18d Creator Economy: paid_message (10% platform fee) ───
+    if (body.product === "paid_message") {
+      const creatorId = String(body.creatorId || "");
+      const message = String(body.message || "");
+      if (!creatorId || !message) return errorResponse("Missing creatorId or message", 400);
+      const admin = createSupabaseAdminClient();
+      const { data: settings } = await admin
+        .from("creator_message_settings")
+        .select("price_per_message")
+        .eq("creator_id", creatorId)
+        .maybeSingle();
+      const pricePerMessage = Number(settings?.price_per_message ?? 5);
+      const platformFee = Number((pricePerMessage * 0.1).toFixed(2));
+      const creatorPayout = Number((pricePerMessage - platformFee).toFixed(2));
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        line_items: [{
+          price_data: {
+            currency: "eur",
+            product_data: {
+              name: "Paid Message to Creator",
+              description: `Direct message to the creator (${message.substring(0, 50)}...)`,
+            },
+            unit_amount: Math.round(pricePerMessage * 100),
+          },
+          quantity: 1,
+        }],
+        mode: "payment",
+        success_url: `${origin}/creator/${creatorId}?message=success`,
+        cancel_url: `${origin}/creator/${creatorId}?message=canceled`,
+        metadata: {
+          type: "paid_message",
+          product: "paid_message",
+          sender_id: userId ?? "",
+          creator_id: creatorId,
+          message: message.substring(0, 500),
+          platform_fee: String(platformFee),
+          creator_payout: String(creatorPayout),
+        },
+      });
+      await admin.from("creator_paid_messages").insert({
+        sender_id: userId,
+        creator_id: creatorId,
+        content: message,
+        amount_paid: pricePerMessage,
+        platform_fee: platformFee,
+        creator_payout: creatorPayout,
+        stripe_session_id: session.id,
+        status: "pending",
+      });
+      return successResponse({ url: session.url });
+    }
+
+    // ─── B18d Creator Economy: profile_tip (10% fee, Stripe Connect destination charges when available) ───
+    if (body.product === "profile_tip") {
+      const recipientId = String(body.recipientId || "");
+      const amt = Number(body.amountCents);
+      if (!recipientId) return errorResponse("recipientId required", 400);
+      if (recipientId === userId) return errorResponse("Cannot tip yourself", 400);
+      if (!Number.isFinite(amt) || amt < 100 || amt > 10_000) {
+        return errorResponse("Amount must be between €1 and €100", 400);
+      }
+      const safeMessage = typeof body.message === "string" ? body.message.slice(0, 280) : null;
+      const platformFee = Math.round((amt * 1000) / 10000);
+      const admin = createSupabaseAdminClient();
+      const { data: recipient } = await admin
+        .from("profiles")
+        .select("id, full_name, username, stripe_connect_account_id, stripe_connect_charges_enabled")
+        .eq("id", recipientId)
+        .maybeSingle();
+      if (!recipient) return errorResponse("Recipient not found", 404);
+      const useConnect = !!(recipient.stripe_connect_account_id && recipient.stripe_connect_charges_enabled);
+      const sessionParams: Record<string, unknown> = {
+        mode: "payment",
+        payment_method_types: ["card"],
+        line_items: [{
+          price_data: {
+            currency: "eur",
+            product_data: {
+              name: `Tip for ${recipient.full_name ?? recipient.username ?? "creator"}`,
+              description: safeMessage ?? "Profile tip",
+            },
+            unit_amount: amt,
+          },
+          quantity: 1,
+        }],
+        success_url: `${origin}/profile/${recipientId}?tip=success&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/profile/${recipientId}?tip=cancel`,
+        metadata: {
+          type: "profile_tip",
+          product: "profile_tip",
+          recipientId,
+          senderId: userId ?? "",
+        },
+      };
+      if (customerId) sessionParams.customer = customerId;
+      else if (email) sessionParams.customer_email = email;
+      if (useConnect) {
+        sessionParams.payment_intent_data = {
+          application_fee_amount: platformFee,
+          transfer_data: { destination: recipient.stripe_connect_account_id! },
+          description: `Tip from ${email ?? userId} → ${recipientId}`,
+        };
+      }
+      const session = await stripe.checkout.sessions.create(sessionParams as any);
+      const { error: insertErr } = await admin.from("profile_tips").insert({
+        sender_id: userId,
+        recipient_id: recipientId,
+        amount_cents: amt,
+        platform_fee_cents: platformFee,
+        recipient_amount_cents: amt - platformFee,
+        message: safeMessage,
+        stripe_session_id: session.id,
+        destination_account_id: useConnect ? recipient.stripe_connect_account_id : null,
+        status: "pending",
+        currency: "eur",
+      });
+      if (insertErr) log.error("profile_tip insert error", insertErr);
+      return successResponse({ url: session.url, sessionId: session.id, connectEnabled: useConnect });
+    }
+
+    // ─── B18d Creator Economy: merch_purchase (10% platform fee, optional shipping for physical) ───
+    if (body.product === "merch_purchase") {
+      const merchId = String(body.merchId || "");
+      const quantity = Math.max(1, Number(body.quantity || 1));
+      if (!merchId) return errorResponse("Missing merchId", 400);
+      const admin = createSupabaseAdminClient();
+      const { data: merch, error: merchError } = await admin
+        .from("creator_merch")
+        .select("*")
+        .eq("id", merchId)
+        .eq("is_active", true)
+        .single();
+      if (merchError || !merch) return errorResponse("Merch item not found", 404);
+      if (merch.stock_quantity !== null && merch.stock_quantity < quantity) {
+        return errorResponse("Insufficient stock", 400);
+      }
+      const totalAmount = Number((merch.price * quantity).toFixed(2));
+      const platformFee = Number((totalAmount * 0.1).toFixed(2));
+      const creatorPayout = Number((totalAmount - platformFee).toFixed(2));
+      const sessionConfig: Record<string, unknown> = {
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        line_items: [{
+          price_data: {
+            currency: "eur",
+            product_data: {
+              name: merch.name,
+              description: merch.description || undefined,
+              images: merch.image_url ? [merch.image_url] : undefined,
+            },
+            unit_amount: Math.round(merch.price * 100),
+          },
+          quantity,
+        }],
+        mode: "payment",
+        success_url: `${origin}/creator/${merch.creator_id}?merch=success`,
+        cancel_url: `${origin}/creator/${merch.creator_id}?merch=canceled`,
+        metadata: {
+          type: "merch_purchase",
+          product: "merch_purchase",
+          buyer_id: userId ?? "",
+          merch_id: merchId,
+          creator_id: merch.creator_id,
+          quantity: String(quantity),
+          platform_fee: String(platformFee),
+          creator_payout: String(creatorPayout),
+        },
+      };
+      if (!merch.is_digital) {
+        sessionConfig.shipping_address_collection = {
+          allowed_countries: ["AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","GR","HU","IE","IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE"],
+        };
+      }
+      const session = await stripe.checkout.sessions.create(sessionConfig as any);
+      await admin.from("creator_merch_orders").insert({
+        buyer_id: userId,
+        creator_id: merch.creator_id,
+        merch_id: merchId,
+        quantity,
+        amount: totalAmount,
+        platform_fee: platformFee,
+        creator_payout: creatorPayout,
+        stripe_session_id: session.id,
+        status: "pending",
+      });
+      return successResponse({ url: session.url });
+    }
+
+    // ─── B18d Creator Economy: service_order (15% commission, pre-creates order with delivery deadline) ───
+    if (body.product === "service_order") {
+      const offeringId = String(body.offeringId || "");
+      const requirements = String(body.requirements || "");
+      const deliveryDays = Number(body.deliveryDays || 0);
+      const totalAmount = Number(body.totalAmount || 0);
+      if (!offeringId || !requirements || !deliveryDays || !totalAmount) {
+        return errorResponse("Missing offeringId, requirements, deliveryDays or totalAmount", 400);
+      }
+      const COMMISSION_RATE = 0.15;
+      const admin = createSupabaseAdminClient();
+      const { data: offering, error: offeringError } = await admin
+        .from("skill_offerings")
+        .select("*")
+        .eq("id", offeringId)
+        .single();
+      if (offeringError || !offering) return errorResponse("Offering not found", 404);
+      const commissionAmount = Number((totalAmount * COMMISSION_RATE).toFixed(2));
+      const sellerPayout = Number((totalAmount - commissionAmount).toFixed(2));
+      const deliveryDeadline = new Date();
+      deliveryDeadline.setDate(deliveryDeadline.getDate() + deliveryDays);
+      const { data: order, error: orderError } = await admin
+        .from("service_orders")
+        .insert({
+          offering_id: offeringId,
+          buyer_id: userId,
+          seller_id: offering.user_id,
+          requirements,
+          total_amount: totalAmount,
+          commission_rate: COMMISSION_RATE,
+          commission_amount: commissionAmount,
+          seller_payout: sellerPayout,
+          delivery_deadline: deliveryDeadline.toISOString(),
+          status: "pending",
+        })
+        .select()
+        .single();
+      if (orderError || !order) {
+        log.error("service_order insert error", orderError);
+        return errorResponse("Failed to create order", 500);
+      }
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        line_items: [{
+          price_data: {
+            currency: "eur",
+            product_data: {
+              name: offering.title,
+              description: `Service order: ${requirements.substring(0, 100)}...`,
+            },
+            unit_amount: Math.round(totalAmount * 100),
+          },
+          quantity: 1,
+        }],
+        mode: "payment",
+        success_url: `${origin}/marketplace?order_success=${order.id}`,
+        cancel_url: `${origin}/marketplace?order_cancelled=${order.id}`,
+        metadata: {
+          type: "service_order",
+          product: "service_order",
+          order_id: order.id,
+          seller_id: offering.user_id,
+          commission_amount: String(commissionAmount),
+          seller_payout: String(sellerPayout),
+        },
+      });
+      await admin.from("service_orders").update({ stripe_session_id: session.id }).eq("id", order.id);
+      return successResponse({ url: session.url, orderId: order.id });
+    }
+
+
+
 
 
 
