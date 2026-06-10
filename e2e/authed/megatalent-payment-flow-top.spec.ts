@@ -57,8 +57,11 @@ test.describe("Megatalent payment flow — €15 Top Premium (authed)", () => {
     await installGateStubs(page, () => subscribed);
 
     await page.route(FN_CHECKOUT, async (route) => {
-      checkoutCalled = true;
       const body = route.request().postDataJSON?.() ?? {};
+      if (body?.product !== "megatalent_subscription") {
+        return route.fallback();
+      }
+      checkoutCalled = true;
       expect(body?.tier).toBe("top_premium");
       await route.fulfill({
         status: 200,
