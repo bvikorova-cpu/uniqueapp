@@ -321,6 +321,20 @@ export function resolveProxy(
     return { target: "shadow-arena-router", body: { ...b, action: "horror_reel" } };
   }
 
+  // Batch 13 — shadow AI tools merged into shadow-arena-router.
+  if (functionName === "shadow-ai-narrator") {
+    return { target: "shadow-arena-router", body: { ...b, action: "ai_narrate" } };
+  }
+  if (functionName === "shadow-ai-story-generator") {
+    return { target: "shadow-arena-router", body: { ...b, action: "ai_story_generate" } };
+  }
+  if (functionName === "shadow-battle-predictor") {
+    return { target: "shadow-arena-router", body: { ...b, action: "battle_predict" } };
+  }
+  if (functionName === "shadow-nightmare-avatar") {
+    return { target: "shadow-arena-router", body: { ...b, action: "nightmare_avatar" } };
+  }
+
 
   // Nutrition router consolidation (9 functions -> 1).
   const nutrition = NUTRITION_ROUTER_MAP[functionName];
