@@ -81,8 +81,11 @@ test.describe("Megatalent payment flow — authed", () => {
 
     // Stub the checkout edge function — capture the body, return a fake URL.
     await page.route(FN_CHECKOUT, async (route) => {
-      checkoutCalled = true;
       const body = route.request().postDataJSON?.() ?? {};
+      if (body?.product !== "megatalent_subscription") {
+        return route.fallback();
+      }
+      checkoutCalled = true;
       expect(body?.tier).toBe("premium");
       await route.fulfill({
         status: 200,
