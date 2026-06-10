@@ -33,6 +33,8 @@ serve(async (req) => {
       "price-history": 3,
       "negotiation-bot": 4,
       "wishlist-alerts": 3,
+      "stacking-calc": 3,
+      "receipt-cashback": 5,
     };
 
     const cost = creditCosts[action];
@@ -44,6 +46,70 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: "Insufficient credits", credits_remaining: remaining, credits_needed: cost }), {
         status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
+    }
+
+    // ============ Specialized actions with custom response shapes ============
+    if (action === "stacking-calc") {
+      const { coupon_ids, cart_total } = params;
+      if (!Array.isArray(coupon_ids) || coupon_ids.length === 0) {
+        return new Response(JSON.stringify({ error: "coupon_ids required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+      const { data: coupons } = await supabase.rpc("coupon_stacking_check", { _ids: coupon_ids });
+      const prompt = `You are a coupon stacking expert. Given these coupons: ${JSON.stringify(coupons)} and cart total ${cart_total ?? "unknown"} EUR, compute final price, identify conflicts (e.g. only one % discount allowed per order, gift cards stack with codes, BOGO can't combine with %), and return JSON: { final_price, total_savings, order: [coupon_id...], warnings: [string] }. Use EUR.`;
+      const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${OPENAI_API_KEY}` },
+        body: JSON.stringify({ model: "gpt-4o", messages: [{ role: "user", content: prompt }], response_format: { type: "json_object" } }),
+      });
+      if (aiRes.status === 429) return new Response(JSON.stringify({ error: "rate_limited" }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      if (aiRes.status === 401 || aiRes.status === 402) return new Response(JSON.stringify({ error: "ai_credits_exhausted" }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      const j = await aiRes.json();
+      const content = j.choices?.[0]?.message?.content ?? "{}";
+      let parsed: any = {};
+      try { parsed = JSON.parse(content); } catch { parsed = { raw: content }; }
+      await supabase.from("ai_credits").update({ credits_remaining: remaining - cost, last_used_at: new Date().toISOString() }).eq("user_id", user.id);
+      await supabase.from("ai_usage_history").insert({ user_id: user.id, usage_type: `coupon_${action}`, credits_used: cost, description: `Coupon AI: ${action}` });
+      return new Response(JSON.stringify({ result: parsed, coupons }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    if (action === "receipt-cashback") {
+      const { receipt_url, coupon_id } = params;
+      if (!receipt_url) return new Response(JSON.stringify({ error: "receipt_url required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${OPENAI_API_KEY}` },
+        body: JSON.stringify({
+          model: "gpt-4o",
+          messages: [{ role: "user", content: [
+            { type: "text", text: "Extract from this receipt: store_name, total_amount (EUR), date, item_count. Return JSON only." },
+            { type: "image_url", image_url: { url: receipt_url } },
+          ] }],
+          response_format: { type: "json_object" },
+        }),
+      });
+      if (aiRes.status === 429) return new Response(JSON.stringify({ error: "rate_limited" }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      if (aiRes.status === 401 || aiRes.status === 402) return new Response(JSON.stringify({ error: "ai_credits_exhausted" }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      const j = await aiRes.json();
+      let extracted: any = {};
+      try { extracted = JSON.parse(j.choices?.[0]?.message?.content ?? "{}"); } catch {}
+      const total = Number(extracted.total_amount ?? 0);
+      const rate = 0.02;
+      const cashback = +(total * rate).toFixed(2);
+      const { data: row, error } = await supabase.from("coupon_cashback_ledger").insert({
+        user_id: user.id,
+        coupon_id: coupon_id ?? null,
+        receipt_url,
+        store_name: extracted.store_name ?? null,
+        receipt_total: total,
+        cashback_amount: cashback,
+        cashback_rate: rate,
+        status: "pending",
+        ai_extracted: extracted,
+      }).select().single();
+      if (error) throw error;
+      await supabase.from("ai_credits").update({ credits_remaining: remaining - cost, last_used_at: new Date().toISOString() }).eq("user_id", user.id);
+      await supabase.from("ai_usage_history").insert({ user_id: user.id, usage_type: `coupon_${action}`, credits_used: cost, description: `Coupon AI: ${action}` });
+      return new Response(JSON.stringify({ row, extracted, cashback }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     let systemPrompt = "";
