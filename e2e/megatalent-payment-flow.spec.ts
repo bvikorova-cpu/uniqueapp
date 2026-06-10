@@ -21,7 +21,11 @@ test.describe("Megatalent paywall — anonymous", () => {
     let checkoutInvoked = false;
     let stripeOpened = false;
 
-    await page.route(`https://${SUPABASE_HOST}/functions/v1/create-megatalent-checkout`, async (route) => {
+    await page.route(`https://${SUPABASE_HOST}/functions/v1/create-checkout`, async (route) => {
+      const body = route.request().postDataJSON?.() ?? {};
+      if (body?.product !== "megatalent_subscription") {
+        return route.fallback();
+      }
       checkoutInvoked = true;
       await route.fulfill({
         status: 401,
