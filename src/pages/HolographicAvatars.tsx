@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import {
   Crown, Palette, Swords, Heart, Sparkles, Eye, ShoppingBag,
   Camera, TrendingUp, Info, Loader2, Brain, Cpu
