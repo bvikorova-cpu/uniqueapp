@@ -2159,8 +2159,250 @@ serve(async (req) => {
     }
 
 
+    // ─── B18e — Brand campaign escrow (legacy: brand-campaign-checkout) ───
+    if (body.product === "brand_campaign_escrow") {
+      if (!userId || !email) return errorResponse("Login required", 401);
+      const applicationId = String(body.applicationId || "");
+      const agreedEur = Number(body.agreedEur);
+      if (!applicationId || !Number.isFinite(agreedEur) || agreedEur < 1 || agreedEur > 100000) {
+        return errorResponse("applicationId and agreedEur (1–100000) required", 400);
+      }
+      const PLATFORM_FEE_PCT = 0.20;
+      const admin = createSupabaseAdminClient();
+      const { data: app, error: appErr } = await admin
+        .from("campaign_applications")
+        .select(`
+          id, status, payment_status, user_id, campaign_id,
+          brand_campaigns ( id, user_id, brand_name, campaign_name ),
+          virtual_influencers!inner ( id, user_id, name )
+        `)
+        .eq("id", applicationId)
+        .maybeSingle();
+      if (appErr || !app) return errorResponse("Application not found", 404);
+      const campaign = (app as any).brand_campaigns;
+      const influencer = (app as any).virtual_influencers;
+      if (!campaign || !influencer) return errorResponse("Campaign or influencer missing", 404);
+      if (campaign.user_id !== userId) return errorResponse("Only the campaign owner can pay", 403);
+      if (app.payment_status === "paid" || app.payment_status === "released") {
+        return errorResponse("This application is already paid", 409);
+      }
+      const amountCents = Math.round(agreedEur * 100);
+      const platformFeeCents = Math.round(amountCents * PLATFORM_FEE_PCT);
+      const netCents = amountCents - platformFeeCents;
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        mode: "payment",
+        line_items: [{
+          price_data: {
+            currency: "eur",
+            product_data: {
+              name: `Brand campaign: ${campaign.campaign_name}`,
+              description: `Escrow for influencer ${influencer.name}. Released after work is marked completed.`,
+            },
+            unit_amount: amountCents,
+          },
+          quantity: 1,
+        }],
+        payment_intent_data: {
+          description: `Brand Campaign Escrow — ${campaign.campaign_name}`,
+          metadata: {
+            type: "brand_campaign_escrow",
+            application_id: applicationId,
+            campaign_id: campaign.id,
+            brand_user_id: userId,
+            influencer_id: influencer.id,
+            influencer_user_id: influencer.user_id,
+            platform_fee_cents: String(platformFeeCents),
+            net_cents: String(netCents),
+          },
+        },
+        metadata: {
+          type: "brand_campaign_escrow",
+          product: "brand_campaign_escrow",
+          application_id: applicationId,
+        },
+        success_url: `${origin}/brand-collaboration?escrow=success&app=${applicationId}`,
+        cancel_url: `${origin}/brand-collaboration?escrow=cancelled&app=${applicationId}`,
+      });
+      const { error: escrowErr } = await admin
+        .from("campaign_escrow")
+        .insert({
+          application_id: applicationId,
+          campaign_id: campaign.id,
+          brand_user_id: userId,
+          influencer_id: influencer.id,
+          influencer_user_id: influencer.user_id,
+          amount_cents: amountCents,
+          platform_fee_cents: platformFeeCents,
+          net_cents: netCents,
+          currency: "eur",
+          status: "awaiting_payment",
+          stripe_session_id: session.id,
+        });
+      if (escrowErr) log.error("Failed to insert escrow row", escrowErr);
+      await admin
+        .from("campaign_applications")
+        .update({
+          status: "approved",
+          approved_by: userId,
+          approved_at: new Date().toISOString(),
+          agreed_amount: agreedEur,
+          payment_status: "pending",
+        })
+        .eq("id", applicationId);
+      return successResponse({ url: session.url, sessionId: session.id });
+    }
 
+    // ─── B18e — Brand sponsorship subscription (legacy: create-brand-sponsorship) ───
+    if (body.product === "brand_sponsorship") {
+      if (!userId || !email) return errorResponse("Login required", 401);
+      const TIER_PRICES: Record<string, string> = {
+        bronze: "price_1SSD7e0QTWhd4oRpbo9399Fq",
+        silver: "price_1SSD8C0QTWhd4oRpvFe7cP4z",
+        gold: "price_1SSD8O0QTWhd4oRpihR2CucC",
+        platinum: "price_1SSD8O0QTWhd4oRpD269KcUs",
+        enterprise: "price_1TfxBOGaXSfGtYFtgWu0U3QY",
+      };
+      const tier = String(body.tier || "");
+      if (!tier || !TIER_PRICES[tier]) return errorResponse("Invalid tier", 400);
+      const admin = createSupabaseAdminClient();
+      const { data: existingSponsor } = await admin
+        .from("brand_sponsors")
+        .select("id")
+        .eq("user_id", userId)
+        .maybeSingle();
+      if (!existingSponsor && body.brandData) {
+        await admin.from("brand_sponsors").insert({
+          user_id: userId,
+          name: body.brandData.name,
+          logo: body.brandData.logo,
+          tier,
+          category: body.brandData.category,
+          description: body.brandData.description,
+          website: body.brandData.website,
+          subscription_status: "pending",
+        });
+      }
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        line_items: [{ price: TIER_PRICES[tier], quantity: 1 }],
+        mode: "subscription",
+        success_url: `${origin}/brand-battle?success=true`,
+        cancel_url: `${origin}/brand-battle?canceled=true`,
+        metadata: {
+          user_id: userId,
+          type: "brand_sponsorship",
+          product: "brand_sponsorship",
+          tier,
+        },
+      });
+      return successResponse({ url: session.url });
+    }
 
+    // ─── B18e — Brand votes payment (legacy: create-brand-votes-payment) ───
+    if (body.product === "brand_votes") {
+      if (!userId || !email) return errorResponse("Login required", 401);
+      const priceId = String(body.priceId || "");
+      if (!priceId) return errorResponse("priceId is required", 400);
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        line_items: [{ price: priceId, quantity: 1 }],
+        mode: "payment",
+        success_url: `${origin}/brand-battle?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/brand-battle?payment=canceled`,
+        metadata: {
+          user_id: userId,
+          type: "brand_votes",
+          product: "brand_votes",
+          price_id: priceId,
+        },
+      });
+      return successResponse({ url: session.url });
+    }
+
+    // ─── B18e — Campaign payment checkout (legacy: create-campaign-payment-checkout) ───
+    if (body.product === "campaign_payment") {
+      if (!userId || !email) return errorResponse("Login required", 401);
+      const applicationId = String(body.applicationId || "");
+      const amount = Number(body.amount);
+      if (!applicationId || !Number.isFinite(amount) || amount <= 0) {
+        return errorResponse("applicationId and positive amount required", 400);
+      }
+      const admin = createSupabaseAdminClient();
+      const { data: application, error: appError } = await admin
+        .from("campaign_applications")
+        .select(`*, brand_campaigns ( id, user_id, brand_name, campaign_name, budget_min, budget_max )`)
+        .eq("id", applicationId)
+        .eq("status", "approved")
+        .single();
+      if (appError || !application) return errorResponse("Application not found or not approved", 404);
+      const campaign = (application as any).brand_campaigns;
+      if (!campaign || campaign.user_id !== userId) {
+        return errorResponse("Only campaign owner can make payment", 403);
+      }
+      if (amount < campaign.budget_min || amount > campaign.budget_max) {
+        return errorResponse(`Amount must be between ${campaign.budget_min} and ${campaign.budget_max}`, 400);
+      }
+      const { data: influencer } = await admin
+        .from("virtual_influencers")
+        .select("id, name, user_id")
+        .eq("user_id", application.user_id)
+        .maybeSingle();
+      const influencerName = influencer?.name || "the influencer";
+      const platformFee = Math.round(amount * 0.20 * 100) / 100;
+      const influencerAmount = Math.round(amount * 0.80 * 100) / 100;
+      const { data: payment, error: paymentError } = await admin
+        .from("campaign_payments")
+        .insert({
+          campaign_id: campaign.id,
+          application_id: applicationId,
+          brand_user_id: userId,
+          influencer_user_id: application.user_id,
+          amount,
+          platform_fee: platformFee,
+          influencer_amount: influencerAmount,
+          status: "pending",
+        })
+        .select()
+        .single();
+      if (paymentError || !payment) {
+        log.error("campaign_payment insert error", paymentError);
+        return errorResponse("Failed to create payment record", 500);
+      }
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        line_items: [{
+          price_data: {
+            currency: "eur",
+            product_data: {
+              name: `Campaign: ${campaign.campaign_name}`,
+              description: `Payment to ${influencerName} for brand collaboration`,
+            },
+            unit_amount: Math.round(amount * 100),
+          },
+          quantity: 1,
+        }],
+        mode: "payment",
+        success_url: `${origin}/brand-collaboration?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/brand-collaboration?payment=canceled`,
+        metadata: {
+          type: "campaign_payment",
+          product: "campaign_payment",
+          payment_id: payment.id,
+          application_id: applicationId,
+          campaign_id: campaign.id,
+        },
+      });
+      await admin
+        .from("campaign_payments")
+        .update({ stripe_session_id: session.id })
+        .eq("id", payment.id);
+      return successResponse({ url: session.url, paymentId: payment.id });
+    }
 
 
     if (body.product && !body.priceId && !body.productKey && !body.credits) {

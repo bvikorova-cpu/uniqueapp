@@ -141,6 +141,26 @@ describe("proxyMap router consolidation", () => {
         expect(r!.body.foo).toBe("bar");
       },
     );
+
+  describe("B18e brand/campaign consolidation", () => {
+    const BRAND_EXPECTED: Record<string, string> = {
+      "brand-campaign-checkout": "brand_campaign_escrow",
+      "create-brand-sponsorship": "brand_sponsorship",
+      "create-brand-votes-payment": "brand_votes",
+      "create-campaign-payment-checkout": "campaign_payment",
+    };
+
+    it.each(Object.entries(BRAND_EXPECTED))(
+      "%s -> create-checkout product=%s",
+      (legacyName, expectedProduct) => {
+        const r = resolveProxy(legacyName, { foo: "bar" });
+        expect(r).not.toBeNull();
+        expect(r!.target).toBe("create-checkout");
+        expect(r!.body.product).toBe(expectedProduct);
+        expect(r!.body.foo).toBe("bar");
+      },
+    );
   });
+});
 });
 
