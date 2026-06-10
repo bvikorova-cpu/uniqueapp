@@ -455,8 +455,6 @@ verify_jwt = true
 [functions.check-decor-subscription]
 verify_jwt = true
 
-[functions.create-ar-preview-payment]
-verify_jwt = true
 
 [functions.generate-room-design]
 verify_jwt = true
@@ -836,8 +834,6 @@ verify_jwt = true
 [functions.analyze-crystal-energy]
 verify_jwt = true
 
-[functions.create-crystal-purchase]
-verify_jwt = true
 
 [functions.create-crystal-energy-checkout]
 verify_jwt = true
@@ -905,8 +901,6 @@ verify_jwt = true
 [functions.stripe-webhook-horse-racing]
 verify_jwt = false
 
-[functions.create-horse-currency-checkout]
-verify_jwt = true
 
 [functions.horse-create]
 verify_jwt = true
@@ -1255,8 +1249,6 @@ verify_jwt = true
 [functions.generate-chakra-day]
 verify_jwt = true
 
-[functions.create-fitslim-checkout]
-verify_jwt = true
 
 [functions.generate-fitness-plan]
 verify_jwt = true
