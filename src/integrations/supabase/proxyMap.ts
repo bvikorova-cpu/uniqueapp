@@ -304,6 +304,16 @@ export function resolveProxy(
     };
   }
 
+  // Batch 11 — coupon specialized functions merged into coupon-ai with action switch.
+  // Original response shapes preserved (stacking: { result, coupons }; receipt: { row, extracted, cashback }).
+  if (functionName === "coupon-stacking-calc") {
+    return { target: "coupon-ai", body: { ...b, action: "stacking-calc" } };
+  }
+  if (functionName === "coupon-receipt-cashback") {
+    return { target: "coupon-ai", body: { ...b, action: "receipt-cashback" } };
+  }
+
+
   // Nutrition router consolidation (9 functions -> 1).
   const nutrition = NUTRITION_ROUTER_MAP[functionName];
   if (nutrition) {
