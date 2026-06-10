@@ -59,12 +59,12 @@ Keep responses concise, engaging, and use emoji. Format advice with markdown. Be
     const reply = data.choices?.[0]?.message?.content || 'I apologize, I could not process that. Please try again.'
 
     await __deduct().catch((e) => console.error("deduct failed:", e));
-    return new Response(JSON.stringify({ reply }), {
+    return new Response(JSON.stringify({
+      reply,
+      choices: [{ message: { role: 'assistant', content: reply } }],
+    }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
-  } catch (error) {
-    console.error('AI Mood Therapist error:', error)
-    return new Response(JSON.stringify({ error: 'Failed to process request' }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
