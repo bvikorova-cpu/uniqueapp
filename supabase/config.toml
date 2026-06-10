@@ -66,9 +66,6 @@ verify_jwt = true
 [functions.shadow-credits-checkout]
 verify_jwt = true
 
-[functions.create-secret-santa-payment]
-verify_jwt = true
-
 [functions.generate-gift-message]
 verify_jwt = true
 
@@ -346,9 +343,6 @@ verify_jwt = false
 verify_jwt = true
 
 [functions.create-coloring-subscription]
-verify_jwt = true
-
-[functions.create-coloring-payment]
 verify_jwt = true
 
 [functions.check-coloring-subscription]
@@ -1095,9 +1089,6 @@ verify_jwt = false
 [functions.create-past-life-credits-payment]
 verify_jwt = false
 
-[functions.create-anonymous-date-payment]
-verify_jwt = false
-
 [functions.find-anonymous-match]
 verify_jwt = false
 
@@ -1122,9 +1113,6 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.messenger-ai-smart-reply]
-verify_jwt = true
-
-[functions.create-messenger-ai-credits-payment]
 verify_jwt = true
 
 [functions.messenger-ai-time-capsule]
