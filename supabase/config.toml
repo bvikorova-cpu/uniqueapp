@@ -689,8 +689,8 @@ verify_jwt = false
 [functions.join-shadow-battle]
 verify_jwt = true
 
-[functions.purchase-shadow-gift]
-verify_jwt = true
+
+
 
 [functions.start-stream]
 verify_jwt = true
@@ -1158,8 +1158,7 @@ verify_jwt = true
 [functions.generate-escape-room-panorama]
 verify_jwt = false
 
-[functions.create-bazaar-order-checkout]
-verify_jwt = true
+
 
 [functions.verify-bazaar-order-payment]
 verify_jwt = true

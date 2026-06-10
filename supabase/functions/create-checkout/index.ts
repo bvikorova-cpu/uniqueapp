@@ -2405,6 +2405,205 @@ serve(async (req) => {
     }
 
 
+    // ─── B18f — Bazaar order (Stripe Connect auto-split, configurable commission) ───
+    if (body.product === "bazaar_order") {
+      if (!userId || !email) return errorResponse("Login required", 401);
+      const itemId: string | undefined = (body as any).itemId || (body as any).item_id;
+      const shippingAddress: string | undefined = (body as any).shippingAddress || (body as any).shipping_address;
+      const buyerNotes: string | null = (body as any).buyerNotes || (body as any).buyer_notes || null;
+      if (!itemId) return errorResponse("Missing itemId", 400);
+      if (!shippingAddress || !String(shippingAddress).trim()) return errorResponse("Missing shipping address", 400);
+
+      const admin = createSupabaseAdminClient();
+      const { data: item, error: itemErr } = await admin
+        .from("bazaar_items")
+        .select("id, user_id, title, price, is_sold, is_active")
+        .eq("id", itemId)
+        .maybeSingle();
+      if (itemErr || !item) return errorResponse("Item not found", 404);
+      if (item.is_sold) return errorResponse("Item already sold", 400);
+      if (!item.is_active) return errorResponse("Item not available", 400);
+      if (item.user_id === userId) return errorResponse("You cannot buy your own item", 400);
+
+      let sellerConnectId: string | null = null;
+      const { data: sellerProfile } = await admin
+        .from("profiles")
+        .select("stripe_connect_account_id, stripe_connect_charges_enabled, stripe_connect_payouts_enabled")
+        .eq("id", item.user_id)
+        .maybeSingle();
+      if (
+        sellerProfile?.stripe_connect_account_id &&
+        sellerProfile?.stripe_connect_charges_enabled &&
+        sellerProfile?.stripe_connect_payouts_enabled
+      ) {
+        sellerConnectId = sellerProfile.stripe_connect_account_id as string;
+      }
+
+      let commissionRate = 10;
+      const { data: setting } = await admin
+        .from("platform_commission_settings")
+        .select("commission_rate")
+        .eq("service_type", "bazaar")
+        .eq("is_active", true)
+        .maybeSingle();
+      if (setting?.commission_rate != null) commissionRate = Number(setting.commission_rate);
+
+      const amount = Number(item.price);
+      const commissionAmount = +(amount * (commissionRate / 100)).toFixed(2);
+      const sellerPayout = +(amount - commissionAmount).toFixed(2);
+
+      const { data: order, error: orderErr } = await admin
+        .from("bazaar_orders")
+        .insert({
+          item_id: item.id,
+          buyer_id: userId,
+          seller_id: item.user_id,
+          amount,
+          commission_amount: commissionAmount,
+          seller_payout: sellerPayout,
+          status: "pending",
+          shipping_address: String(shippingAddress).trim(),
+          buyer_notes: buyerNotes,
+        })
+        .select()
+        .single();
+      if (orderErr || !order) {
+        log.error("bazaar_order insert error", orderErr);
+        return errorResponse("Failed to create order", 500);
+      }
+
+      const sessionParams: Record<string, unknown> = {
+        customer_email: email,
+        line_items: [{
+          price_data: {
+            currency: "eur",
+            unit_amount: Math.round(amount * 100),
+            product_data: {
+              name: `Bazaar: ${item.title}`.slice(0, 250),
+              description: `Order ${order.id.slice(0, 8)}`,
+            },
+          },
+          quantity: 1,
+        }],
+        mode: "payment",
+        success_url: `${origin}/bazaar?payment=success&session_id={CHECKOUT_SESSION_ID}&order_id=${order.id}`,
+        cancel_url: `${origin}/bazaar?payment=cancelled&order_id=${order.id}`,
+        metadata: {
+          type: "bazaar_order",
+          product: "bazaar_order",
+          order_id: order.id,
+          item_id: item.id,
+          buyer_id: userId,
+          seller_id: item.user_id,
+          auto_split: sellerConnectId ? "true" : "false",
+        },
+      };
+      if (sellerConnectId) {
+        (sessionParams as any).payment_intent_data = {
+          application_fee_amount: Math.round(commissionAmount * 100),
+          transfer_data: { destination: sellerConnectId },
+        };
+      }
+      const session = await stripe.checkout.sessions.create(sessionParams as any);
+      await admin.from("bazaar_orders").update({ stripe_session_id: session.id }).eq("id", order.id);
+      return successResponse({ url: session.url, session_id: session.id, order_id: order.id, auto_split: !!sellerConnectId });
+    }
+
+    // ─── B18f — Shadow Patron subscription (bronze/silver/gold) ───
+    if (body.product === "shadow_patron") {
+      if (!userId || !email) return errorResponse("Login required", 401);
+      const TIERS: Record<string, { amount: number; label: string }> = {
+        bronze: { amount: 499, label: "Bronze Patron — €4.99/mo" },
+        silver: { amount: 999, label: "Silver Patron — €9.99/mo" },
+        gold: { amount: 1999, label: "Gold Patron — €19.99/mo" },
+      };
+      const tier = String((body as any).tier || "");
+      const authorUserId = String((body as any).authorUserId || "");
+      if (!authorUserId || !TIERS[tier]) return errorResponse("Invalid tier or authorUserId", 400);
+      const t = TIERS[tier];
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        mode: "subscription",
+        line_items: [{
+          price_data: {
+            currency: "eur",
+            recurring: { interval: "month" },
+            product_data: { name: `Patron — ${tier.toUpperCase()}` },
+            unit_amount: t.amount,
+          },
+          quantity: 1,
+        }],
+        metadata: {
+          type: "shadow_patron",
+          product: "shadow_patron",
+          patron_user_id: userId,
+          author_user_id: authorUserId,
+          tier,
+        },
+        success_url: `${origin}/shadow-arena/dashboard?patron=success`,
+        cancel_url: `${origin}/shadow-arena/dashboard?patron=cancel`,
+      });
+      return successResponse({ url: session.url });
+    }
+
+    // ─── B18f — Shadow gift (pre-insert pending shadow_gifts row) ───
+    if (body.product === "shadow_gift") {
+      if (!userId || !email) return errorResponse("Login required", 401);
+      const GIFT_PRICES: Record<string, number> = {
+        rose: 199, candle: 299, skull: 499, raven: 999, pact: 1999,
+      };
+      const battleId = String((body as any).battleId || "");
+      const participantId = String((body as any).participantId || "");
+      const giftType = String((body as any).giftType || "");
+      if (!battleId || !participantId || !giftType) {
+        return errorResponse("battleId, participantId, giftType required", 400);
+      }
+      const amount = GIFT_PRICES[giftType] ?? 299;
+      const admin = createSupabaseAdminClient();
+      const { data: gift, error: gErr } = await admin
+        .from("shadow_gifts")
+        .insert({
+          battle_id: battleId,
+          participant_id: participantId,
+          sender_id: userId,
+          gift_type: giftType,
+          gift_amount: amount,
+          status: "pending",
+        })
+        .select()
+        .single();
+      if (gErr || !gift) {
+        log.error("shadow_gift insert error", gErr);
+        return errorResponse("Failed to create gift", 500);
+      }
+      const session = await stripe.checkout.sessions.create({
+        customer_email: email,
+        line_items: [{
+          price_data: {
+            currency: "eur",
+            unit_amount: amount,
+            product_data: { name: `Shadow Arena gift: ${giftType}` },
+          },
+          quantity: 1,
+        }],
+        mode: "payment",
+        success_url: `${origin}/shadow-arena/battle/${battleId}?gift=success`,
+        cancel_url: `${origin}/shadow-arena/battle/${battleId}?gift=canceled`,
+        metadata: {
+          type: "shadow_gift",
+          product: "shadow_gift",
+          user_id: userId,
+          gift_id: gift.id,
+          battle_id: battleId,
+          participant_id: participantId,
+        },
+      });
+      await admin.from("shadow_gifts").update({ stripe_payment_id: session.id }).eq("id", gift.id);
+      return successResponse({ url: session.url, session_id: session.id });
+    }
+
+
     if (body.product && !body.priceId && !body.productKey && !body.credits) {
       // Free actions (e.g. create-character, create-universe) just return ok
       if (body.free === true) {

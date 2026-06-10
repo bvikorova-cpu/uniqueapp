@@ -119,7 +119,7 @@ export const CHECKOUT_PROXY_MAP: Record<string, { product: string; module: strin
   "create-analyzer-subscription": { product: "analyzer_subscription", module: "analyzer_subscription" },
   "create-ar-preview-checkout": { product: "ar_preview", module: "ar_preview" },
   "create-astrology-checkout": { product: "astrology", module: "astrology" },
-  // "create-bazaar-order-checkout": REAL edge function — do not proxy
+  // "create-bazaar-order-checkout": B18f — merged into create-checkout (see resolveProxy)
   "create-best-friend-checkout": { product: "best_friend", module: "best_friend" },
   "create-brain-duel-payment": { product: "brain_duel", module: "brain_duel" },
   "create-campaign-donation": { product: "campaign_donation", module: "campaign_donation" },
@@ -171,7 +171,7 @@ export const CHECKOUT_PROXY_MAP: Record<string, { product: string; module: strin
   "purchase-content-pack": { product: "content_pack", module: "content_pack" },
   "purchase-premium-course": { product: "premium_course", module: "premium_course" },
   "purchase-psychology-messages": { product: "psychology_messages", module: "psychology_messages" },
-  // "purchase-shadow-gift": REAL edge function — do not proxy
+  // "purchase-shadow-gift": B18f — merged into create-checkout (see resolveProxy)
   "purchase-stock-content": { product: "stock_content", module: "stock_content" },
   "purchase-tip": { product: "tip", module: "tip" },
 };
@@ -541,6 +541,18 @@ export function resolveProxy(
   if (functionName === "create-campaign-payment-checkout") {
     return { target: "create-checkout", body: { ...b, product: "campaign_payment" } };
   }
+
+  // ─── B18f — Other (bazaar order, shadow patron sub, shadow gift) merged into create-checkout ───
+  if (functionName === "create-bazaar-order-checkout") {
+    return { target: "create-checkout", body: { ...b, product: "bazaar_order" } };
+  }
+  if (functionName === "shadow-patron-checkout") {
+    return { target: "create-checkout", body: { ...b, product: "shadow_patron" } };
+  }
+  if (functionName === "purchase-shadow-gift") {
+    return { target: "create-checkout", body: { ...b, product: "shadow_gift" } };
+  }
+
 
 
 
