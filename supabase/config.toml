@@ -935,8 +935,6 @@ verify_jwt = true
 [functions.create-masterchef-checkout]
 verify_jwt = true
 
-[functions.check-tipster-subscription]
-verify_jwt = true
 
 [functions.create-tipster-checkout]
 verify_jwt = true
