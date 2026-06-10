@@ -1218,6 +1218,9 @@ serve(async (req) => {
             : creditType === "shadow_arena" ? "shadow_arena_credits"
             : creditType === "collectibles" ? "collectibles_credits"
             : creditType === "character_arena" ? "character_credits"
+            : creditType === "iq" ? "iq_credits"
+            : creditType === "handwriting" ? "handwriting_credits"
+            : creditType === "creative_forge" ? "creative_forge_credits"
             : creditType,
         },
       });
