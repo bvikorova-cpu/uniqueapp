@@ -500,6 +500,22 @@ export function resolveProxy(
     return { target: "create-checkout", body: { ...b, product: "megatalent_vip" } };
   }
 
+  // ─── B18c — Events (concert payment, concert ticket, comedy coins, kitchen battle) merged into create-checkout ───
+  if (functionName === "create-concert-payment") {
+    return { target: "create-checkout", body: { ...b, product: "concert_payment" } };
+  }
+  if (functionName === "create-concert-ticket-checkout") {
+    return { target: "create-checkout", body: { ...b, product: "concert_ticket" } };
+  }
+  if (functionName === "create-comedy-payment") {
+    return { target: "create-checkout", body: { ...b, product: "comedy_coins" } };
+  }
+  if (functionName === "create-kitchen-battle") {
+    return { target: "create-checkout", body: { ...b, product: "kitchen_battle_create" } };
+  }
+
+
+
 
 
 
