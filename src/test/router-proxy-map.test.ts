@@ -122,5 +122,25 @@ describe("proxyMap router consolidation", () => {
       },
     );
   });
+
+  describe("B18d creator economy consolidation", () => {
+    const CREATOR_EXPECTED: Record<string, string> = {
+      "create-paid-message-checkout": "paid_message",
+      "create-profile-tip": "profile_tip",
+      "create-merch-checkout": "merch_purchase",
+      "create-service-order-checkout": "service_order",
+    };
+
+    it.each(Object.entries(CREATOR_EXPECTED))(
+      "%s -> create-checkout product=%s",
+      (legacyName, expectedProduct) => {
+        const r = resolveProxy(legacyName, { foo: "bar" });
+        expect(r).not.toBeNull();
+        expect(r!.target).toBe("create-checkout");
+        expect(r!.body.product).toBe(expectedProduct);
+        expect(r!.body.foo).toBe("bar");
+      },
+    );
+  });
 });
 
