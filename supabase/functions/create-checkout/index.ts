@@ -1374,7 +1374,225 @@ serve(async (req) => {
     }
 
 
+    // ─── B18b — 8 subscription/checkout functions merged into create-checkout ───
+    // Fixed-price subscriptions + tier-map subscription + lottery passthrough
+    // + rewards (battle_pass_premium / streak_freeze) + stream_access with DB side-effects.
+    const B18B_FIXED_SUB: Record<
+      string,
+      { priceId: string; successPath: string; cancelPath: string; type: string; allowPromo?: boolean }
+    > = {
+      decor_pro_sub: {
+        priceId: "price_1SVAKhGaXSfGtYFtK1yiOMde",
+        successPath: "/home-decor?success=true",
+        cancelPath: "/home-decor?canceled=true",
+        type: "decor_pro_subscription",
+      },
+      phobia_subscription: {
+        priceId: "price_1TG6WjGaXSfGtYFtV33gzF2d",
+        successPath: "/phobia-trading?payment=success&session_id={CHECKOUT_SESSION_ID}&type=subscription",
+        cancelPath: "/phobia-trading?payment=canceled",
+        type: "phobia_subscription",
+      },
+      premium_all_modules: {
+        priceId: "price_1TPJMBGaXSfGtYFtkhWbCu4V",
+        successPath: "/premium?status=success&session_id={CHECKOUT_SESSION_ID}",
+        cancelPath: "/premium?status=canceled",
+        type: "premium_all_modules",
+        allowPromo: true,
+      },
+      time_capsule_premium: {
+        priceId: "price_1SQAPtGaXSfGtYFtuhuiyuUV",
+        successPath: "/time-capsule?premium_success=true",
+        cancelPath: "/time-capsule-subscription?canceled=true",
+        type: "time_capsule_premium",
+      },
+    };
+    if (body.product && B18B_FIXED_SUB[String(body.product)]) {
+      const cfg = B18B_FIXED_SUB[String(body.product)];
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        line_items: [{ price: cfg.priceId, quantity: 1 }],
+        mode: "subscription",
+        success_url: `${origin}${cfg.successPath}`,
+        cancel_url: `${origin}${cfg.cancelPath}`,
+        allow_promotion_codes: cfg.allowPromo,
+        metadata: {
+          user_id: userId ?? "",
+          type: cfg.type,
+          product: String(body.product),
+          ...stringifyMetadata(body.metadata || {}),
+        },
+      });
+      return successResponse({ url: session.url, session_id: session.id });
+    }
 
+    // School subscription — 3 tiers
+    if (body.product === "school_subscription") {
+      const SCHOOL_TIERS: Record<string, string> = {
+        kindergarten: "price_1SMprw0QTWhd4oRpQWjUkKA2",
+        elementary:   "price_1SMpsK0QTWhd4oRp7oXQpFXh",
+        premium:      "price_1SMpsg0QTWhd4oRpAIDNGOvv",
+      };
+      const tier = String(body.tier || "");
+      const priceId = SCHOOL_TIERS[tier];
+      if (!priceId) return errorResponse(`Invalid school tier: ${tier}. Valid: ${Object.keys(SCHOOL_TIERS).join(", ")}`, 400);
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        line_items: [{ price: priceId, quantity: 1 }],
+        mode: "subscription",
+        success_url: `${origin}/schools?success=true&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/schools?canceled=true`,
+        metadata: {
+          user_id: userId ?? "",
+          tier,
+          type: "school_subscription",
+          product: "school_subscription",
+        },
+      });
+      return successResponse({ url: session.url, session_id: session.id });
+    }
+
+    // Lottery — flexible priceId passthrough (subscription by default, payment if isLifetime)
+    if (body.product === "lottery_subscription" && body.priceId) {
+      const isLifetime = body.isLifetime === true;
+      const mode: "payment" | "subscription" = isLifetime ? "payment" : "subscription";
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        line_items: [{ price: String(body.priceId), quantity: 1 }],
+        mode,
+        success_url: `${origin}/lottery-ai?success=true&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/lottery-ai?canceled=true`,
+        metadata: {
+          user_id: userId ?? "",
+          type: "lottery_subscription",
+          product: "lottery_subscription",
+          ...(body.tier ? { tier: String(body.tier) } : {}),
+          is_lifetime: String(isLifetime),
+        },
+      });
+      return successResponse({ url: session.url, session_id: session.id });
+    }
+
+    // Rewards checkout — battle_pass_premium (DB-driven price) or streak_freeze (static packs)
+    if (body.product === "rewards_checkout") {
+      const admin = createSupabaseAdminClient();
+      const uid = userId ?? "";
+      const kind = String(body.kind || "");
+      const cancelPath = "/rewards?payment=canceled";
+      const successPath = "/rewards?payment=success&session_id={CHECKOUT_SESSION_ID}";
+      let line_items: Array<{ price_data: { currency: string; product_data: { name: string }; unit_amount: number }; quantity: number }> = [];
+      const metadata: Record<string, string> = { user_id: uid, kind, type: "rewards_checkout", product: "rewards_checkout" };
+
+      if (kind === "battle_pass_premium") {
+        const { data: season, error: sErr } = await admin
+          .from("battle_pass_seasons")
+          .select("id, name, premium_price_eur, is_active")
+          .eq("is_active", true)
+          .order("starts_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (sErr || !season) return errorResponse("No active Battle Pass season", 400);
+        const eur = Number(season.premium_price_eur || 0);
+        if (eur <= 0) return errorResponse("Invalid premium price", 400);
+        metadata.season_id = String(season.id);
+        line_items = [{
+          price_data: {
+            currency: "eur",
+            product_data: { name: `Battle Pass Premium · ${season.name}` },
+            unit_amount: Math.round(eur * 100),
+          },
+          quantity: 1,
+        }];
+      } else if (kind === "streak_freeze") {
+        const FREEZE_PACKS: Record<number, { eur: number; label: string }> = {
+          1: { eur: 0.99, label: "Single Freeze" },
+          3: { eur: 2.49, label: "Triple Pack" },
+          7: { eur: 4.99, label: "Week Shield" },
+        };
+        const qty = Number(body.qty || 0);
+        const pack = FREEZE_PACKS[qty];
+        if (!pack) return errorResponse("Invalid streak freeze pack", 400);
+        metadata.qty = String(qty);
+        line_items = [{
+          price_data: {
+            currency: "eur",
+            product_data: { name: `Streak Freeze · ${pack.label} (×${qty})` },
+            unit_amount: Math.round(pack.eur * 100),
+          },
+          quantity: 1,
+        }];
+      } else {
+        return errorResponse(`Unknown rewards kind: ${kind}`, 400);
+      }
+
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        line_items,
+        mode: "payment",
+        success_url: `${origin}${successPath}`,
+        cancel_url: `${origin}${cancelPath}`,
+        metadata,
+        payment_intent_data: { metadata },
+      });
+      return successResponse({ url: session.url, session_id: session.id });
+    }
+
+    // Stream access — DB-driven price + creator_live_stream_access pending insert
+    if (body.product === "stream_access") {
+      const admin = createSupabaseAdminClient();
+      const uid = userId ?? "";
+      const streamId = String(body.streamId || "");
+      if (!streamId) return errorResponse("Missing streamId", 400);
+      const { data: stream, error: streamError } = await admin
+        .from("creator_live_streams")
+        .select("*")
+        .eq("id", streamId)
+        .single();
+      if (streamError || !stream) return errorResponse("Stream not found", 404);
+      if (stream.is_free) return errorResponse("This stream is free", 400);
+      const platformFee = Number(stream.access_price) * 0.1;
+      const creatorPayout = Number(stream.access_price) - platformFee;
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        mode: "payment",
+        line_items: [{
+          price_data: {
+            currency: "eur",
+            product_data: {
+              name: `Live Stream Access: ${stream.title}`,
+              description: stream.description || "Exclusive live stream access",
+            },
+            unit_amount: Math.round(Number(stream.access_price) * 100),
+          },
+          quantity: 1,
+        }],
+        success_url: `${origin}/creator/${stream.creator_id}?stream=success`,
+        cancel_url: `${origin}/creator/${stream.creator_id}?stream=canceled`,
+        metadata: {
+          type: "stream_access",
+          product: "stream_access",
+          user_id: uid,
+          stream_id: streamId,
+          creator_id: stream.creator_id,
+          platform_fee: platformFee.toString(),
+          creator_payout: creatorPayout.toString(),
+        },
+      });
+      await admin.from("creator_live_stream_access").insert({
+        stream_id: streamId,
+        user_id: uid,
+        amount_paid: stream.access_price,
+        platform_fee: platformFee,
+        creator_payout: creatorPayout,
+        stripe_session_id: session.id,
+      });
+      return successResponse({ url: session.url, session_id: session.id });
+    }
 
 
     if (body.product && !body.priceId && !body.productKey && !body.credits) {
