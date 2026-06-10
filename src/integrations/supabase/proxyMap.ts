@@ -271,11 +271,37 @@ export function resolveProxy(
     return { target: "check-subscription", body: { ...b, tier: "time_reversal" } };
   }
 
-  // Batch 9 — module-specific Stripe Billing Portal routed to universal
+  // Batch 9–10 — module-specific Stripe Billing Portal routed to universal
   // check-connect-status (action=customer_portal). Same session, default
-  // return_url=/account.
+  // return_url=/account; module aliases inject return_url to preserve the
+  // original landing page (e.g. /megatalent).
   if (functionName === "decor-customer-portal") {
     return { target: "check-connect-status", body: { ...b, action: "customer_portal" } };
+  }
+  if (functionName === "customer-portal") {
+    return { target: "check-connect-status", body: { ...b, action: "customer_portal" } };
+  }
+  if (functionName === "megatalent-customer-portal") {
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    return {
+      target: "check-connect-status",
+      body: {
+        ...b,
+        action: "customer_portal",
+        return_url: (b as any).return_url ?? `${origin}/megatalent`,
+      },
+    };
+  }
+  if (functionName === "customer-portal-anonymous-date") {
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    return {
+      target: "check-connect-status",
+      body: {
+        ...b,
+        action: "customer_portal",
+        return_url: (b as any).return_url ?? `${origin}/anonymous-date`,
+      },
+    };
   }
 
   // Nutrition router consolidation (9 functions -> 1).
