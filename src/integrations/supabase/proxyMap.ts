@@ -385,6 +385,33 @@ export function resolveProxy(
     };
   }
 
+  // ─── B18f Phase 1 — credit-pack legacy functions merged into create-checkout ───
+  if (functionName === "create-iq-payment") {
+    return { target: "create-checkout", body: { ...b, creditType: "iq" } };
+  }
+  if (functionName === "create-handwriting-credits-payment") {
+    return { target: "create-checkout", body: { ...b, creditType: "handwriting" } };
+  }
+  if (functionName === "create-creative-forge-payment") {
+    return { target: "create-checkout", body: { ...b, creditType: "creative_forge" } };
+  }
+
+  // ─── B18f Phase 1 — priceId-passthrough subscriptions/payments ───
+  if (functionName === "create-masterchef-checkout") {
+    return { target: "create-checkout", body: { ...b, product: "masterchef" } };
+  }
+  if (functionName === "create-time-reversal-checkout") {
+    return { target: "create-checkout", body: { ...b, product: "time_reversal" } };
+  }
+  if (functionName === "create-time-capsule-payment") {
+    return { target: "create-checkout", body: { ...b, product: "time_capsule" } };
+  }
+  if (functionName === "create-holographic-avatar-checkout") {
+    return { target: "create-checkout", body: { ...b, product: "holographic_avatar" } };
+  }
+
+
+
 
 
   // Horse router consolidation (6 functions -> 1).
