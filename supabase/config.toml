@@ -382,3 +382,27 @@ verify_jwt = false
 [functions.mt-router]
 verify_jwt = false
 
+
+[functions.analyze-past-life]
+verify_jwt = true
+
+[functions.calculate-karmic-debt]
+verify_jwt = true
+
+[functions.find-soul-matches]
+verify_jwt = true
+
+[functions.find-genetic-matches]
+verify_jwt = true
+
+[functions.get-user-universes]
+verify_jwt = true
+
+[functions.create-digital-offspring]
+verify_jwt = true
+
+[functions.chat-with-offspring]
+verify_jwt = true
+
+[functions.create-past-life-credits-payment]
+verify_jwt = true
