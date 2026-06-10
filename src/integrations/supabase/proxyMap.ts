@@ -410,6 +410,39 @@ export function resolveProxy(
     return { target: "create-checkout", body: { ...b, product: "holographic_avatar" } };
   }
 
+  // ─── B18f Phase 2 — dynamic price_data packs merged into create-checkout ───
+  if (functionName === "create-messenger-ai-credits-payment") {
+    return {
+      target: "create-checkout",
+      body: { ...b, product: "messenger_ai", packKey: String((b as any).credits ?? "") },
+    };
+  }
+  if (functionName === "create-coloring-payment") {
+    return {
+      target: "create-checkout",
+      body: { ...b, product: "coloring_pay_per_use", packKey: "1" },
+    };
+  }
+  if (functionName === "create-anonymous-date-payment") {
+    return {
+      target: "create-checkout",
+      body: { ...b, product: "anonymous_date", packKey: String((b as any).packageType ?? "") },
+    };
+  }
+  if (functionName === "create-secret-santa-payment") {
+    return {
+      target: "create-checkout",
+      body: { ...b, product: "secret_santa", packKey: String((b as any).credits ?? "") },
+    };
+  }
+  if (functionName === "create-emotion-insurance-checkout") {
+    return {
+      target: "create-checkout",
+      body: { ...b, product: "emotion_insurance", packKey: String((b as any).level ?? "").toLowerCase() },
+    };
+  }
+
+
 
 
 
