@@ -257,6 +257,27 @@ export function resolveProxy(
     return { target: "check-connect-status", body: { ...b, action: "customer_portal" } };
   }
 
+  // Batch 9 consolidation — additional check-*-subscription tiers routed to
+  // universal check-subscription. Frontend callers only read
+  // { subscribed, product_id, subscription_end, tier } plus optional fields
+  // that fall back to defaults, so the universal shape is compatible.
+  if (functionName === "check-decor-subscription") {
+    return { target: "check-subscription", body: { ...b, tier: "decor" } };
+  }
+  if (functionName === "check-masterchef-subscription") {
+    return { target: "check-subscription", body: { ...b, tier: "masterchef" } };
+  }
+  if (functionName === "check-time-reversal-subscription") {
+    return { target: "check-subscription", body: { ...b, tier: "time_reversal" } };
+  }
+
+  // Batch 9 — module-specific Stripe Billing Portal routed to universal
+  // check-connect-status (action=customer_portal). Same session, default
+  // return_url=/account.
+  if (functionName === "decor-customer-portal") {
+    return { target: "check-connect-status", body: { ...b, action: "customer_portal" } };
+  }
+
   // Nutrition router consolidation (9 functions -> 1).
   const nutrition = NUTRITION_ROUTER_MAP[functionName];
   if (nutrition) {
