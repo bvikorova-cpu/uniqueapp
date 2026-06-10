@@ -171,7 +171,7 @@ export const CHECKOUT_PROXY_MAP: Record<string, { product: string; module: strin
   "purchase-content-pack": { product: "content_pack", module: "content_pack" },
   "purchase-premium-course": { product: "premium_course", module: "premium_course" },
   "purchase-psychology-messages": { product: "psychology_messages", module: "psychology_messages" },
-  // "purchase-shadow-gift": REAL edge function — do not proxy
+  // "purchase-shadow-gift": B18f — merged into create-checkout (see resolveProxy)
   "purchase-stock-content": { product: "stock_content", module: "stock_content" },
   "purchase-tip": { product: "tip", module: "tip" },
 };
