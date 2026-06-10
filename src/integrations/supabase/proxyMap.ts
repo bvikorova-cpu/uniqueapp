@@ -335,6 +335,16 @@ export function resolveProxy(
     return { target: "shadow-arena-router", body: { ...b, action: "nightmare_avatar" } };
   }
 
+  // Batch 14 — shadow credits init + voice clone merged into shadow-arena-router.
+  if (functionName === "shadow-arena-credits-init") {
+    return { target: "shadow-arena-router", body: { ...b, action: "credits_init" } };
+  }
+  if (functionName === "shadow-voice-clone") {
+    return { target: "shadow-arena-router", body: { ...b, action: "voice_clone" } };
+  }
+
+
+
 
   // Nutrition router consolidation (9 functions -> 1).
   const nutrition = NUTRITION_ROUTER_MAP[functionName];
