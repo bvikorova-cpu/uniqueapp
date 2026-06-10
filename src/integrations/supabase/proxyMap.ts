@@ -442,9 +442,22 @@ export function resolveProxy(
     };
   }
 
-
-
-
+  // ─── B18f Phase 3 — DB side-effect heavy checkouts merged into create-checkout ───
+  if (functionName === "create-fitslim-checkout") {
+    return { target: "create-checkout", body: { ...b, product: "fitslim" } };
+  }
+  if (functionName === "create-horse-currency-checkout") {
+    return { target: "create-checkout", body: { ...b, product: "horse_currency" } };
+  }
+  if (functionName === "create-ar-preview-payment") {
+    return { target: "create-checkout", body: { ...b, product: "ar_preview" } };
+  }
+  if (functionName === "create-crystal-purchase") {
+    return { target: "create-checkout", body: { ...b, product: "crystal_purchase" } };
+  }
+  if (functionName === "create-auction-buyout") {
+    return { target: "create-checkout", body: { ...b, product: "auction_buyout" } };
+  }
 
 
   // Horse router consolidation (6 functions -> 1).
