@@ -102,4 +102,25 @@ describe("proxyMap router consolidation", () => {
       },
     );
   });
+
+  describe("B18c events consolidation", () => {
+    const EVENTS_EXPECTED: Record<string, string> = {
+      "create-concert-payment": "concert_payment",
+      "create-concert-ticket-checkout": "concert_ticket",
+      "create-comedy-payment": "comedy_coins",
+      "create-kitchen-battle": "kitchen_battle_create",
+    };
+
+    it.each(Object.entries(EVENTS_EXPECTED))(
+      "%s -> create-checkout product=%s",
+      (legacyName, expectedProduct) => {
+        const r = resolveProxy(legacyName, { foo: "bar" });
+        expect(r).not.toBeNull();
+        expect(r!.target).toBe("create-checkout");
+        expect(r!.body.product).toBe(expectedProduct);
+        expect(r!.body.foo).toBe("bar");
+      },
+    );
+  });
 });
+
