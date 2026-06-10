@@ -33,17 +33,17 @@ export const AI_PROXY_MAP: Record<string, string> = {
   "beauty-tutorial": "beauty_tutorial",
   "brain-duel-friend-match": "brain_duel_friend_match",
   "bulk-generate-panoramas": "bulk_generate_panoramas",
-  "calculate-karmic-debt": "calculate_karmic_debt",
+  // "calculate-karmic-debt": real edge function, not proxied
   "capsule-wardrobe": "capsule_wardrobe",
   "chat-with-chef": "chat_with_chef",
-  "chat-with-offspring": "chat_with_offspring",
+  // "chat-with-offspring": real edge function, not proxied
   "coupon-marketplace-access": "coupon_marketplace_access",
   "detect-phobia": "detect_phobia",
   "diagnose-plant": "diagnose_plant",
   "enhance-shadow-story": "enhance_shadow_story",
   "enroll-premium-course": "enroll_premium_course",
-  "find-genetic-matches": "find_genetic_matches",
-  "find-soul-matches": "find_soul_matches",
+  // "find-genetic-matches": real edge function, not proxied
+  // "find-soul-matches": real edge function, not proxied
   "generate-age-progression": "generate_age_progression",
   "generate-ai-room-design": "generate_ai_room_design",
   "generate-castle-panorama": "generate_castle_panorama",
@@ -67,7 +67,7 @@ export const AI_PROXY_MAP: Record<string, string> = {
   "generate-weekly-meal-plan": "generate_weekly_meal_plan",
   "get-my-stock-purchases": "get_my_stock_purchases",
   "get-user-phobias": "get_user_phobias",
-  "get-user-universes": "get_user_universes",
+  // "get-user-universes": real edge function, not proxied
   "home-color-palette": "home_color_palette",
   "home-furniture-recommender": "home_furniture_recommender",
   "home-virtual-staging": "home_virtual_staging",

@@ -34,6 +34,20 @@ const PAGES = [
   "/brand-battle/hub",
   "/kids-channel",
   "/coloring-pages",
+  // Mystical & Spiritual hub (public landing surfaces)
+  "/past-life",
+  "/lottery-ai",
+  "/astrology",
+  "/dream-journal",
+  "/crystal-energy-network",
+  "/dna-memory-network",
+  "/reincarnation-social",
+  "/blockchain-confessions",
+  "/multiverse-network",
+  "/quantum-social",
+  "/time-capsule",
+  "/time-reversal",
+  "/holographic-avatars",
 ];
 
 test.describe("Mobile 360px smoke", () => {
