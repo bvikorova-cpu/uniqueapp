@@ -343,6 +343,24 @@ export function resolveProxy(
     return { target: "shadow-arena-router", body: { ...b, action: "voice_clone" } };
   }
 
+  // Batch 15 — all mt-* functions merged into mt-router via action switch.
+  const MT_ROUTER_MAP: Record<string, string> = {
+    "mt-checkout": "checkout",
+    "mt-release-funds": "release_funds",
+    "mt-claim-streak": "claim_streak",
+    "mt-claim-achievement": "claim_achievement",
+    "mt-quest-increment": "quest_increment",
+    "mt-season-claim-tier": "season_claim_tier",
+    "mt-stories-cleanup": "stories_cleanup",
+    "mt-escrow-auto-release": "escrow_auto_release",
+  };
+  const mt = MT_ROUTER_MAP[functionName];
+  if (mt) {
+    return { target: "mt-router", body: { ...b, action: mt } };
+  }
+
+
+
 
 
 
