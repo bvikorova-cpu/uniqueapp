@@ -80,4 +80,26 @@ describe("proxyMap router consolidation", () => {
     const r = resolveProxy("nutrition-coach-chat", { action: "hacker" });
     expect(r!.body.action).toBe("coach_chat");
   });
+
+  describe("B18a megatalent consolidation", () => {
+    const MEGATALENT_EXPECTED: Record<string, string> = {
+      "create-megatalent-checkout": "megatalent_subscription",
+      "create-megatalent-boost": "megatalent_boost",
+      "create-megatalent-tip": "megatalent_tip",
+      "create-megatalent-vip-checkout": "megatalent_vip",
+    };
+
+    it.each(Object.entries(MEGATALENT_EXPECTED))(
+      "%s -> create-checkout product=%s",
+      (legacyName, expectedProduct) => {
+        const r = resolveProxy(legacyName, { tier: "premium", amount: 5 });
+        expect(r).not.toBeNull();
+        expect(r!.target).toBe("create-checkout");
+        expect(r!.body.product).toBe(expectedProduct);
+        // Body fields from caller are preserved alongside the product tag.
+        expect(r!.body.tier).toBe("premium");
+        expect(r!.body.amount).toBe(5);
+      },
+    );
+  });
 });
