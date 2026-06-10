@@ -44,6 +44,10 @@ for (const query of ["canceled=true", "payment=failed"]) {
 
     await installUnsubscribedStubs(page);
     await page.route(FN_CHECKOUT, async (route) => {
+      const body = route.request().postDataJSON?.() ?? {};
+      if (body?.product !== "megatalent_subscription") {
+        return route.fallback();
+      }
       checkoutCalled = true;
       await route.fulfill({
         status: 200,
