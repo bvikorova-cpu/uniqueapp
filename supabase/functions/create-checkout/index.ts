@@ -1594,6 +1594,162 @@ serve(async (req) => {
       return successResponse({ url: session.url, session_id: session.id });
     }
 
+    // ─── B18a — Megatalent (subscription, boost, tip, vip) ───
+    if (body.product === "megatalent_subscription") {
+      const PRICE_IDS: Record<string, string> = {
+        premium: "price_1TOvuRGaXSfGtYFt6sfpt2Dy",
+        top_premium: "price_1TOvuTGaXSfGtYFtIheCgIzQ",
+      };
+      const tier = String(body.tier || "");
+      const priceId = PRICE_IDS[tier];
+      if (!priceId) return errorResponse(`Invalid tier: ${tier}. Use 'premium' or 'top_premium'.`, 400);
+      const referralCode = (body.referralCode ? String(body.referralCode).trim().toUpperCase() : "") || "";
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        line_items: [{ price: priceId, quantity: 1 }],
+        mode: "subscription",
+        success_url: `${origin}/megatalent/success?session_id={CHECKOUT_SESSION_ID}&tier=${tier}`,
+        cancel_url: `${origin}/megatalent?canceled=true`,
+        metadata: {
+          user_id: userId ?? "",
+          tier,
+          referral_code: referralCode,
+          module: "megatalent",
+          product: "megatalent_subscription",
+        },
+        subscription_data: {
+          metadata: {
+            user_id: userId ?? "",
+            tier,
+            referral_code: referralCode,
+            module: "megatalent",
+          },
+        },
+      });
+      return successResponse({ url: session.url, session_id: session.id });
+    }
+
+    if (body.product === "megatalent_boost") {
+      const admin = createSupabaseAdminClient();
+      const submission_id = String(body.submission_id || "");
+      const category = String(body.category || "");
+      if (!submission_id || !category) return errorResponse("Missing submission_id/category", 400);
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        mode: "payment",
+        payment_method_types: ["card"],
+        line_items: [{
+          price_data: {
+            currency: "eur",
+            product_data: { name: "Megatalent Spotlight Boost (24h)" },
+            unit_amount: 499,
+          },
+          quantity: 1,
+        }],
+        success_url: `${origin}/megatalent/${category}?boost=success&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/megatalent/${category}?boost=cancel`,
+        metadata: {
+          user_id: userId ?? "",
+          submission_id,
+          category,
+          kind: "megatalent_boost",
+          product: "megatalent_boost",
+        },
+      });
+      await admin.from("megatalent_boosts").insert({
+        user_id: userId,
+        submission_id,
+        category,
+        amount_cents: 499,
+        stripe_session_id: session.id,
+        status: "pending",
+      });
+      return successResponse({ url: session.url, session_id: session.id });
+    }
+
+    if (body.product === "megatalent_tip") {
+      const admin = createSupabaseAdminClient();
+      const creatorId = String(body.creatorId || "");
+      if (!creatorId) return errorResponse("creatorId required", 400);
+      if (creatorId === userId) return errorResponse("Cannot tip yourself", 400);
+      const amt = Number(body.amountCents);
+      if (!Number.isFinite(amt) || amt < 100 || amt > 50000) {
+        return errorResponse("amountCents must be 100..50000", 400);
+      }
+      const safeMessage = typeof body.message === "string" ? body.message.slice(0, 280) : null;
+      const categorySlug = body.categorySlug ? String(body.categorySlug) : "";
+      const platformFee = Math.round((amt * 2000) / 10000); // 20% platform fee
+      const creatorAmount = amt - platformFee;
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        mode: "payment",
+        payment_method_types: ["card"],
+        line_items: [{
+          price_data: {
+            currency: "eur",
+            product_data: {
+              name: "Megatalent Tip",
+              description: safeMessage ?? `Support for talent ${creatorId.slice(0, 8)}`,
+            },
+            unit_amount: amt,
+          },
+          quantity: 1,
+        }],
+        success_url: `${origin}/megatalent?tip=success&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/megatalent?tip=cancel`,
+        metadata: {
+          type: "megatalent_tip",
+          product: "megatalent_tip",
+          creatorId,
+          tipperId: userId ?? "",
+          categorySlug,
+        },
+      });
+      await admin.from("megatalent_tips").insert({
+        creator_id: creatorId,
+        tipper_id: userId,
+        category_slug: categorySlug || null,
+        amount_cents: amt,
+        platform_fee_cents: platformFee,
+        creator_amount_cents: creatorAmount,
+        message: safeMessage,
+        stripe_session_id: session.id,
+        status: "pending",
+      });
+      return successResponse({ url: session.url, session_id: session.id });
+    }
+
+    if (body.product === "megatalent_vip") {
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        mode: "subscription",
+        line_items: [{
+          price_data: {
+            currency: "eur",
+            recurring: { interval: "month" },
+            product_data: {
+              name: "Megatalent VIP Viewer Pass",
+              description: "Ad-free viewing, early voting access, exclusive behind-the-scenes content, VIP badge.",
+            },
+            unit_amount: 499,
+          },
+          quantity: 1,
+        }],
+        success_url: `${origin}/megatalent?vip=success&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/megatalent?vip=cancel`,
+        metadata: {
+          user_id: userId ?? "",
+          kind: "megatalent_vip_viewer",
+          product: "megatalent_vip",
+        },
+      });
+      return successResponse({ url: session.url, session_id: session.id });
+    }
+
 
     if (body.product && !body.priceId && !body.productKey && !body.credits) {
       // Free actions (e.g. create-character, create-universe) just return ok
