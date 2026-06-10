@@ -1,5 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+import { encode as base64Encode } from "https://deno.land/std@0.168.0/encoding/base64.ts";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -255,6 +256,270 @@ Deno.serve(async (req) => {
           credits_remaining: cur.credits_remaining - REEL_COST,
         }).eq("user_id", user.id);
         return json({ reel, script: reelScript });
+      }
+
+      // ---- AI Narrator (ElevenLabs TTS, 6 credits) ----
+      case "ai_narrate": {
+        const NARRATOR_COST = 6;
+        const MAX_CHARS = 2000;
+        const apiKey = Deno.env.get("ELEVENLABS_API_KEY");
+        if (!apiKey) return json({ error: "ELEVENLABS_API_KEY not configured" }, 500);
+        const { text, voiceId = "kPtEHAvRnjUJFv7SK9WI", voiceLabel = "Glitch", storyId = null } = p;
+        if (!text || typeof text !== "string") return json({ error: "Missing text" }, 400);
+        if (text.length > MAX_CHARS) return json({ error: `Text too long (max ${MAX_CHARS} chars)` }, 400);
+        const { data: credits } = await supabase.from("shadow_arena_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
+        if (!credits || credits.credits_remaining < NARRATOR_COST) {
+          return json({ error: "Insufficient credits", required: NARRATOR_COST }, 402);
+        }
+        const ttsResponse = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?output_format=mp3_44100_128`, {
+          method: "POST",
+          headers: { "xi-api-key": apiKey, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            text,
+            model_id: "eleven_multilingual_v2",
+            voice_settings: { stability: 0.6, similarity_boost: 0.8, style: 0.6, use_speaker_boost: true, speed: 0.92 },
+          }),
+        });
+        if (!ttsResponse.ok) {
+          const errText = await ttsResponse.text();
+          console.error("ElevenLabs error:", ttsResponse.status, errText);
+          if (ttsResponse.status === 429) return json({ error: "ElevenLabs rate limited" }, 429);
+          throw new Error("ElevenLabs TTS error");
+        }
+        const audioBuffer = await ttsResponse.arrayBuffer();
+        const audioBase64 = base64Encode(new Uint8Array(audioBuffer));
+        const { data: saved } = await supabase.from("shadow_narrations").insert({
+          user_id: user.id, story_id: storyId, story_text: text, audio_base64: audioBase64,
+          voice_id: voiceId, voice_label: voiceLabel, credits_used: NARRATOR_COST,
+        }).select("id").single();
+        await supabase.from("shadow_arena_credits").update({
+          credits_remaining: credits.credits_remaining - NARRATOR_COST,
+          last_used_at: new Date().toISOString(),
+        }).eq("user_id", user.id);
+        return json({ audioBase64, narrationId: saved?.id, creditsRemaining: credits.credits_remaining - NARRATOR_COST });
+      }
+
+      // ---- AI Story Generator (OpenAI gpt-4o + optional image, 4 credits) ----
+      case "ai_story_generate": {
+        const STORY_COST = 4;
+        const openaiKey = Deno.env.get("OPENAI_API_KEY");
+        if (!openaiKey) return json({ error: "OPENAI_API_KEY not configured" }, 500);
+        const { prompt, tone = "gothic", length = "medium", generateImage = true } = p;
+        if (!prompt) return json({ error: "Missing prompt" }, 400);
+        const { data: credits } = await supabase.from("shadow_arena_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
+        if (!credits || credits.credits_remaining < STORY_COST) {
+          return json({ error: "Insufficient credits", required: STORY_COST }, 402);
+        }
+        const lengthMap: Record<string, string> = {
+          short: "exactly 150-200 words",
+          medium: "exactly 350-450 words",
+          long: "exactly 700-900 words",
+        };
+        const toneMap: Record<string, string> = {
+          gothic: "Victorian gothic horror with elegant prose, candlelight, decaying mansions",
+          psychological: "psychological horror with unreliable narrator and creeping dread",
+          cosmic: "cosmic Lovecraftian horror with incomprehensible entities",
+          slasher: "fast-paced visceral slasher with chase scenes",
+          supernatural: "haunting supernatural ghost story",
+          folk: "folk horror with rural rituals and ancient evil",
+        };
+        const systemPrompt = `You are a master horror author writing in the style of ${toneMap[tone] || toneMap.gothic}.
+Generate a complete, polished horror story (${lengthMap[length] || lengthMap.medium}).
+Return JSON with: { "title": "evocative title", "story": "full story text" }.
+The story must have a strong opening hook, atmospheric build-up, and chilling ending.`;
+        const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "gpt-4o",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: prompt },
+            ],
+            response_format: { type: "json_object" },
+          }),
+        });
+        if (!aiResponse.ok) {
+          if (aiResponse.status === 429) return json({ error: "OpenAI rate limited" }, 429);
+          const t = await aiResponse.text();
+          console.error("OpenAI error:", aiResponse.status, t);
+          throw new Error("OpenAI API error");
+        }
+        const data = await aiResponse.json();
+        const parsed = JSON.parse(data.choices[0].message.content);
+        const generatedTitle = parsed.title;
+        const generatedStory = parsed.story;
+        let illustrationUrl: string | null = null;
+        if (generateImage) {
+          try {
+            const imgPrompt = `Cinematic gothic horror illustration for: "${generatedTitle}". ${prompt.slice(0, 200)}. Dark moody atmospheric, deep shadows, crimson accents, painterly oil texture, no text, no watermark.`;
+            const imgResp = await fetch("https://api.openai.com/v1/images/generations", {
+              method: "POST",
+              headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
+              body: JSON.stringify({ model: "gpt-image-1", prompt: imgPrompt, n: 1, size: "1024x1024" }),
+            });
+            if (imgResp.ok) {
+              const imgData = await imgResp.json();
+              illustrationUrl = imgData.data?.[0]?.b64_json
+                ? `data:image/png;base64,${imgData.data[0].b64_json}`
+                : null;
+            } else {
+              console.warn("Image gen failed", imgResp.status);
+            }
+          } catch (e) {
+            console.warn("Image gen exception", e);
+          }
+        }
+        const { data: saved } = await supabase.from("shadow_ai_stories").insert({
+          user_id: user.id, prompt, generated_title: generatedTitle, generated_story: generatedStory,
+          illustration_url: illustrationUrl, tone, length, credits_used: STORY_COST,
+        }).select().single();
+        await supabase.from("shadow_arena_credits").update({
+          credits_remaining: credits.credits_remaining - STORY_COST,
+          last_used_at: new Date().toISOString(),
+        }).eq("user_id", user.id);
+        return json({ story: saved, creditsRemaining: credits.credits_remaining - STORY_COST });
+      }
+
+      // ---- Battle Predictor (OpenAI gpt-4o-mini, 5 credits) ----
+      case "battle_predict": {
+        const PREDICT_COST = 5;
+        const openaiKey = Deno.env.get("OPENAI_API_KEY");
+        if (!openaiKey) return json({ error: "OPENAI_API_KEY not configured" }, 500);
+        const { battleId } = p;
+        if (!battleId) return json({ error: "Missing battleId" }, 400);
+        const { data: credits } = await supabase.from("shadow_arena_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
+        if (!credits || credits.credits_remaining < PREDICT_COST) {
+          return json({ error: "Insufficient credits", required: PREDICT_COST }, 402);
+        }
+        let battleInfo: any = null;
+        let participants: any[] = [];
+        try {
+          const { data: b } = await supabase.from("shadow_battles").select("*").eq("id", battleId).maybeSingle();
+          battleInfo = b;
+        } catch (_) { /* ignore */ }
+        try {
+          const { data: parts } = await supabase.from("shadow_battle_participants").select("*").eq("battle_id", battleId).limit(20);
+          participants = parts || [];
+        } catch (_) { /* ignore */ }
+        let totalVotes = 0;
+        try {
+          const { count } = await supabase.from("shadow_battle_votes").select("*", { count: "exact", head: true }).eq("battle_id", battleId);
+          totalVotes = count || 0;
+        } catch (_) { /* ignore */ }
+        const context = {
+          theme: battleInfo?.challenge_theme || "Unknown horror theme",
+          status: battleInfo?.status || "unknown",
+          prizePool: battleInfo?.total_prize_pool || 0,
+          participantCount: participants.length,
+          participantNames: participants.map((pp: any) => pp.username || pp.user_id?.slice(0, 8) || "Anonymous").slice(0, 10),
+          totalVoteSignals: totalVotes,
+        };
+        const systemPrompt = `You are an AI horror battle analyst. Analyze the battle context and predict the most likely winner.
+Use storytelling craft, audience engagement signals, theme fit, and momentum.
+Return JSON: {
+  "predicted_winner_name": "name or 'Unknown contender'",
+  "confidence_score": 0-100,
+  "reasoning": "2-3 sentence analysis with dramatic flair",
+  "factors": { "theme_fit": 0-100, "momentum": 0-100, "audience_pull": 0-100, "narrative_skill": 0-100 }
+}`;
+        const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "gpt-4o-mini",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: `Battle context: ${JSON.stringify(context)}` },
+            ],
+            response_format: { type: "json_object" },
+          }),
+        });
+        if (!aiResponse.ok) {
+          if (aiResponse.status === 429) return json({ error: "OpenAI rate limited" }, 429);
+          throw new Error("OpenAI API error");
+        }
+        const data = await aiResponse.json();
+        const parsed = JSON.parse(data.choices[0].message.content);
+        const { data: saved } = await supabase.from("shadow_battle_predictions").insert({
+          user_id: user.id, battle_id: battleId,
+          predicted_winner_name: parsed.predicted_winner_name,
+          confidence_score: parsed.confidence_score,
+          reasoning: parsed.reasoning, factors: parsed.factors,
+          credits_used: PREDICT_COST,
+        }).select().single();
+        await supabase.from("shadow_arena_credits").update({
+          credits_remaining: credits.credits_remaining - PREDICT_COST,
+          last_used_at: new Date().toISOString(),
+        }).eq("user_id", user.id);
+        return json({ prediction: saved, creditsRemaining: credits.credits_remaining - PREDICT_COST });
+      }
+
+      // ---- Nightmare Avatar (OpenAI gpt-image-1 edit, 8 credits) ----
+      case "nightmare_avatar": {
+        const AVATAR_COST = 8;
+        const STYLE_PROMPTS: Record<string, string> = {
+          vampire: "Transform this person into an elegant Victorian vampire: pale skin, deep red eyes, fangs subtly visible, gothic clothing, candlelit background, painterly portrait, no text",
+          ghost: "Transform this person into an ethereal ghost: translucent skin, hollow glowing eyes, wisps of fog around shoulders, faded edges, moonlight, no text",
+          zombie: "Transform this person into a movie-quality zombie: decaying skin with cracks, milky eyes, dirt and blood smudges, atmospheric lighting, cinematic horror, no text",
+          demon: "Transform this person into a horned demon: red-burnished skin, glowing amber eyes, ornate horns, dark fantasy portrait, dramatic shadow lighting, no text",
+          witch: "Transform this person into a gothic witch: dark hood, glowing rune marks on cheek, mysterious smoke, candlelit eerie portrait, painterly, no text",
+          cursed_doll: "Transform this person into a cursed porcelain doll: cracked porcelain skin, button-style eyes, Victorian dress collar, eerie smile, dim attic lighting, no text",
+          shadow_being: "Transform this person into a shadow being: face fades into living darkness, glowing red eyes, smoke for hair, void background, no text",
+          werewolf: "Transform this person mid-transformation into a werewolf: partial fur on face, glowing yellow eyes, sharp teeth visible, full moon backlight, cinematic, no text",
+        };
+        const openaiKey = Deno.env.get("OPENAI_API_KEY");
+        if (!openaiKey) return json({ error: "OPENAI_API_KEY not configured" }, 500);
+        const { sourceImageUrl, style = "vampire" } = p;
+        if (!sourceImageUrl) return json({ error: "Missing sourceImageUrl" }, 400);
+        const stylePrompt = STYLE_PROMPTS[style] || STYLE_PROMPTS.vampire;
+        const { data: credits } = await supabase.from("shadow_arena_credits").select("credits_remaining").eq("user_id", user.id).maybeSingle();
+        if (!credits || credits.credits_remaining < AVATAR_COST) {
+          return json({ error: "Insufficient credits", required: AVATAR_COST }, 402);
+        }
+        const aiResponse = await fetch("https://api.openai.com/v1/images/generations", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "gpt-image-1",
+            prompt: `${stylePrompt}\n\nReference image: ${sourceImageUrl}`,
+            n: 1,
+            size: "1024x1024",
+          }),
+        });
+        if (!aiResponse.ok) {
+          const t = await aiResponse.text();
+          console.error("OpenAI error:", aiResponse.status, t);
+          if (aiResponse.status === 429) return json({ error: "AI rate limited" }, 429);
+          if (aiResponse.status === 402) return json({ error: "AI credits depleted in workspace" }, 402);
+          throw new Error("AI image error");
+        }
+        const data = await aiResponse.json();
+        const nightmareImageDataUrl = data.data?.[0]?.b64_json ? `data:image/png;base64,${data.data[0].b64_json}` : null;
+        if (!nightmareImageDataUrl) throw new Error("No image returned");
+        const base64Data = nightmareImageDataUrl.split(",")[1];
+        const binaryData = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
+        const fileName = `${user.id}/nightmare-${Date.now()}.png`;
+        const { error: uploadError } = await supabase.storage
+          .from("shadow-nightmare-avatars")
+          .upload(fileName, binaryData, { contentType: "image/png", upsert: false });
+        if (uploadError) {
+          console.error("Upload error:", uploadError);
+          throw new Error("Failed to store nightmare avatar");
+        }
+        const { data: pub } = supabase.storage.from("shadow-nightmare-avatars").getPublicUrl(fileName);
+        const { data: saved } = await supabase.from("shadow_nightmare_avatars").insert({
+          user_id: user.id, source_image_url: sourceImageUrl,
+          nightmare_image_url: pub.publicUrl, style, credits_used: AVATAR_COST,
+        }).select().single();
+        await supabase.from("shadow_arena_credits").update({
+          credits_remaining: credits.credits_remaining - AVATAR_COST,
+          last_used_at: new Date().toISOString(),
+        }).eq("user_id", user.id);
+        return json({
+          avatar: saved, nightmareImageUrl: pub.publicUrl,
+          creditsRemaining: credits.credits_remaining - AVATAR_COST,
+        });
       }
 
       default:
