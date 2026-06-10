@@ -516,8 +516,6 @@ verify_jwt = true
 [functions.healthcare-customer-portal]
 verify_jwt = true
 
-[functions.create-brand-votes-payment]
-verify_jwt = true
 
 [functions.verify-brand-votes-payment]
 verify_jwt = true
