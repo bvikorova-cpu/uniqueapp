@@ -61,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Only navigate when a session is established (email confirmation NOT required).
     // Otherwise the caller should show a "check your email" message and stay on /auth.
     if (!error && data?.session) {
-      navigate('/');
+      navigate(getPendingReturnTo() || '/');
     }
 
     return { error };
