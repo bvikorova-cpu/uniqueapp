@@ -331,6 +331,7 @@ import {
   CreatorStudio,
   VirtualInfluencerAgency,
   MembershipCommunity,
+  CommunityDetail,
   CreatorDashboard,
   CreatorProfile,
   DiscoverCreators,
