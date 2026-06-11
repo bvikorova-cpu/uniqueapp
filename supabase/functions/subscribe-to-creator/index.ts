@@ -8,6 +8,9 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
+// 85% creator / 15% platform — mirror src/lib/feeRates.ts
+const PLATFORM_FEE_PCT = 15;
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -38,6 +41,19 @@ serve(async (req) => {
     if (!tier.is_active) throw new Error("Tier inactive");
     if (tier.creator_id === user.id) throw new Error("Cannot subscribe to yourself");
 
+    // Look up creator's Stripe Connect account for destination charges.
+    const { data: creatorProfile } = await supabase
+      .from("profiles")
+      .select("stripe_connect_account_id, stripe_connect_charges_enabled")
+      .eq("id", tier.creator_id)
+      .maybeSingle();
+
+    const destinationAccount =
+      creatorProfile?.stripe_connect_charges_enabled &&
+      creatorProfile?.stripe_connect_account_id
+        ? (creatorProfile.stripe_connect_account_id as string)
+        : null;
+
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
       apiVersion: "2025-08-27.basil",
     });
@@ -59,6 +75,21 @@ serve(async (req) => {
           quantity: 1,
         };
 
+    const subscriptionData: Stripe.Checkout.SessionCreateParams.SubscriptionData = {
+      metadata: {
+        kind: "creator_subscription",
+        tier_id: tier.id,
+        creator_id: tier.creator_id,
+        subscriber_id: user.id,
+        platform_fee_pct: String(PLATFORM_FEE_PCT),
+      },
+    };
+
+    if (destinationAccount) {
+      subscriptionData.application_fee_percent = PLATFORM_FEE_PCT;
+      subscriptionData.transfer_data = { destination: destinationAccount };
+    }
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
@@ -66,11 +97,13 @@ serve(async (req) => {
       line_items: [lineItem],
       success_url: `${origin}/wall?creator_sub=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/wall?creator_sub=cancel`,
+      subscription_data: subscriptionData,
       metadata: {
         kind: "creator_subscription",
         tier_id: tier.id,
         creator_id: tier.creator_id,
         subscriber_id: user.id,
+        platform_fee_pct: String(PLATFORM_FEE_PCT),
       },
     });
 
