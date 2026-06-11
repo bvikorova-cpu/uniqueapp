@@ -1,5 +1,8 @@
 // Deterministic PvP battle simulation for Holographic Avatars.
-// Called after a successful Stripe checkout on the battle entry product.
+// Server-side outcome is unlocked ONLY after a verified purchase
+// (holographic_purchases row with matching stripe_session_id OR an active
+// 'battle'-tier subscription for this user). Identical (user, session, mode)
+// inputs always yield the same result — no client-side RNG.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
@@ -24,6 +27,27 @@ function json(body: unknown, status = 200) {
   });
 }
 
+// Deterministic RNG seeded by SHA-256 of the inputs. Returns a stream of
+// uniform floats in [0,1) by walking 32-bit chunks of repeated hash output.
+async function makeSeededRng(seed: string) {
+  let counter = 0;
+  let buf = new Uint8Array(0);
+  let offset = 0;
+  const refill = async () => {
+    const enc = new TextEncoder().encode(`${seed}|${counter++}`);
+    const digest = await crypto.subtle.digest("SHA-256", enc);
+    buf = new Uint8Array(digest);
+    offset = 0;
+  };
+  return async () => {
+    if (offset + 4 > buf.length) await refill();
+    const n =
+      (buf[offset] << 24) | (buf[offset + 1] << 16) | (buf[offset + 2] << 8) | buf[offset + 3];
+    offset += 4;
+    return ((n >>> 0) % 1_000_000) / 1_000_000;
+  };
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
@@ -41,27 +65,59 @@ Deno.serve(async (req) => {
     if (!user) return json({ error: "Not authenticated" }, 401);
 
     const body = await req.json().catch(() => ({}));
-    const mode = (body?.mode ?? "1v1").toString();
-    const sessionId = body?.sessionId ?? null;
+    const mode = String(body?.mode ?? "1v1");
+    const sessionId = body?.sessionId ? String(body.sessionId) : null;
 
     const admin = createClient(supabaseUrl, serviceKey);
 
+    // 1) Cache: same session → same result, never re-simulate.
     if (sessionId) {
       const { data: existing } = await admin
         .from("holographic_battle_results")
         .select("*")
         .eq("stripe_session_id", sessionId)
+        .eq("user_id", user.id)
         .maybeSingle();
       if (existing) return json({ result: existing, cached: true });
     }
 
-    const userPower = 180 + Math.floor(Math.random() * 100);
-    const opponent = OPPONENTS[Math.floor(Math.random() * OPPONENTS.length)];
+    // 2) Verify purchase / subscription before unlocking outcome.
+    let purchaseOk = false;
+    if (sessionId) {
+      const { data: purchase } = await admin
+        .from("holographic_purchases")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("stripe_session_id", sessionId)
+        .eq("status", "active")
+        .maybeSingle();
+      purchaseOk = !!purchase;
+    }
+    if (!purchaseOk) {
+      const { data: sub } = await admin
+        .from("holographic_purchases")
+        .select("id, expires_at")
+        .eq("user_id", user.id)
+        .eq("service_type", "battle")
+        .eq("status", "active")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      purchaseOk = !!sub && (!sub.expires_at || new Date(sub.expires_at) > new Date());
+    }
+    if (!purchaseOk) {
+      return json({ error: "purchase_required", message: "Active battle purchase required." }, 402);
+    }
+
+    // 3) Deterministic outcome from (user, session, mode).
+    const rng = await makeSeededRng(`battle|${user.id}|${sessionId ?? "no-session"}|${mode}`);
+    const userPower = 180 + Math.floor((await rng()) * 100);
+    const opponent = OPPONENTS[Math.floor((await rng()) * OPPONENTS.length)];
     const diff = userPower - opponent.power;
-    let outcome: "win" | "loss" | "draw" = "draw";
+    let outcome: "win" | "loss" | "draw";
     if (diff > 10) outcome = "win";
     else if (diff < -10) outcome = "loss";
-    else outcome = Math.random() > 0.5 ? "win" : "loss";
+    else outcome = (await rng()) > 0.5 ? "win" : "loss";
 
     const rewards = outcome === "win" ? PRIZES[mode] ?? 0 : 0;
 
