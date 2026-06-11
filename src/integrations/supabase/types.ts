@@ -16683,6 +16683,60 @@ export type Database = {
         }
         Relationships: []
       }
+      creator_subscription_earnings: {
+        Row: {
+          created_at: string
+          creator_id: string
+          currency: string
+          gross_cents: number
+          id: string
+          net_cents: number
+          payout_state: string
+          period_end: string | null
+          period_start: string | null
+          platform_fee_cents: number
+          platform_fee_pct: number
+          stripe_invoice_id: string | null
+          stripe_subscription_id: string | null
+          subscriber_id: string | null
+          tier_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          creator_id: string
+          currency?: string
+          gross_cents: number
+          id?: string
+          net_cents: number
+          payout_state?: string
+          period_end?: string | null
+          period_start?: string | null
+          platform_fee_cents: number
+          platform_fee_pct?: number
+          stripe_invoice_id?: string | null
+          stripe_subscription_id?: string | null
+          subscriber_id?: string | null
+          tier_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          creator_id?: string
+          currency?: string
+          gross_cents?: number
+          id?: string
+          net_cents?: number
+          payout_state?: string
+          period_end?: string | null
+          period_start?: string | null
+          platform_fee_cents?: number
+          platform_fee_pct?: number
+          stripe_invoice_id?: string | null
+          stripe_subscription_id?: string | null
+          subscriber_id?: string | null
+          tier_id?: string | null
+        }
+        Relationships: []
+      }
       creator_subscription_tiers: {
         Row: {
           benefits: string[] | null
