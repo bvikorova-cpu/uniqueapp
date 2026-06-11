@@ -3,6 +3,7 @@ import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useIdleLogout } from '@/hooks/useIdleLogout';
+import { getPendingReturnTo } from '@/lib/pendingAction';
 // WelcomeCreditsDialog removed — paid-only model (no free tier)
 
 
