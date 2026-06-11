@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -34,6 +35,28 @@ export const useNotifications = () => {
       return data;
     },
   });
+
+  // P1 — realtime subscription so unread badge updates without polling.
+  useEffect(() => {
+    let cancelled = false;
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || cancelled) return;
+      channel = supabase
+        .channel(`notifications:${user.id}`)
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` },
+          () => queryClient.invalidateQueries({ queryKey: ["notifications"] }),
+        )
+        .subscribe();
+    })();
+    return () => {
+      cancelled = true;
+      if (channel) supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
 
   const unreadCount = notifications?.filter(n => !n.is_read).length || 0;
 
