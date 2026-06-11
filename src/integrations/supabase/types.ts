@@ -27705,6 +27705,87 @@ export type Database = {
           },
         ]
       }
+      holographic_battle_results: {
+        Row: {
+          created_at: string
+          id: string
+          mode: string
+          opponent_name: string
+          opponent_power: number
+          outcome: string
+          rewards_eur: number
+          stripe_session_id: string | null
+          user_id: string
+          user_power: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          mode: string
+          opponent_name: string
+          opponent_power: number
+          outcome: string
+          rewards_eur?: number
+          stripe_session_id?: string | null
+          user_id: string
+          user_power: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          mode?: string
+          opponent_name?: string
+          opponent_power?: number
+          outcome?: string
+          rewards_eur?: number
+          stripe_session_id?: string | null
+          user_id?: string
+          user_power?: number
+        }
+        Relationships: []
+      }
+      holographic_breeding_results: {
+        Row: {
+          created_at: string
+          id: string
+          offspring_level: number
+          offspring_name: string
+          offspring_style: string
+          offspring_traits: Json
+          parent1_id: number
+          parent2_id: number
+          rarity: string
+          stripe_session_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          offspring_level?: number
+          offspring_name: string
+          offspring_style: string
+          offspring_traits?: Json
+          parent1_id: number
+          parent2_id: number
+          rarity: string
+          stripe_session_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          offspring_level?: number
+          offspring_name?: string
+          offspring_style?: string
+          offspring_traits?: Json
+          parent1_id?: number
+          parent2_id?: number
+          rarity?: string
+          stripe_session_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       holographic_concerts: {
         Row: {
           artist_name: string
