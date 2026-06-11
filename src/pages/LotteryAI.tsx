@@ -360,7 +360,7 @@ export default function LotteryAI() {
                 <CardDescription>Please sign in to access AI-powered lottery predictions</CardDescription>
               </CardHeader>
               <CardContent>
-                <Button onClick={() => navigate("/auth")} className="w-full" size="lg">
+                <Button onClick={() => { savePendingAction({ key: "lottery-ai:open", returnTo: "/lottery-ai" }); navigate("/auth"); }} className="w-full" size="lg">
                   Sign In to Continue
                 </Button>
               </CardContent>
