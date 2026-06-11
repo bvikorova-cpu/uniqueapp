@@ -96,6 +96,7 @@ const AIMentor = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
+        savePendingAction({ key: "ai-mentor:open", returnTo: "/mentor" });
         navigate('/auth');
         return;
       }
