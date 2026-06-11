@@ -96,7 +96,11 @@ const AICompanions = () => {
   const startConversation = async (characterId: string, isPremium: boolean) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { navigate("/auth"); return; }
+      if (!user) {
+        savePendingAction({ key: "ai-companions:start", data: { characterId, isPremium }, returnTo: "/companions" });
+        navigate("/auth");
+        return;
+      }
 
       if (!isPremium) {
         const freeRemaining = subscription.freeMessagesLimit - subscription.freeMessagesUsed;
