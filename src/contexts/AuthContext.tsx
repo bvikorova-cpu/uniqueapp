@@ -74,7 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     if (!error && data?.session) {
-      navigate('/');
+      navigate(getPendingReturnTo() || '/');
     }
 
     return { error };
