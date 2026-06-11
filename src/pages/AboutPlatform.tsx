@@ -537,12 +537,32 @@ export default function AboutPlatform() {
                             </li>
                           ))}
                         </ul>
-                        <Link to={section.path}>
-                          <Button variant="outline" size="sm" className="w-full mt-auto hover:bg-primary/10 hover:border-primary/40">
-                            Open
-                            <ArrowRight className="w-3 h-3 ml-1" />
+                        <div className="flex items-center gap-2 mt-auto">
+                          <Link to={section.path} className="flex-1">
+                            <Button variant="outline" size="sm" className="w-full hover:bg-primary/10 hover:border-primary/40">
+                              Open
+                              <ArrowRight className="w-3 h-3 ml-1" />
+                            </Button>
+                          </Link>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className={`h-9 w-9 shrink-0 ${isFavorite(section.path) ? "bg-primary/15 border-primary/50 text-primary" : "hover:bg-primary/10 hover:border-primary/40"}`}
+                            aria-label={isFavorite(section.path) ? "Remove from favorites" : "Add to favorites"}
+                            title={user ? (isFavorite(section.path) ? "Remove from favorites" : "Save to favorites") : "Sign in to save favorites"}
+                            disabled={!user}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              toggleFavorite({ path: section.path, title: section.title, category: cat.id });
+                            }}
+                          >
+                            {isFavorite(section.path) ? (
+                              <BookmarkCheck className="w-4 h-4" />
+                            ) : (
+                              <Bookmark className="w-4 h-4" />
+                            )}
                           </Button>
-                        </Link>
+                        </div>
                       </CardContent>
                     </Card>
                   </motion.div>
