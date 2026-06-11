@@ -380,6 +380,7 @@ import {
   EmotionEconomy,
   QuantumSocial,
   HolographicAvatars,
+  AboutPlatform,
   HolographicHistory,
   DigitalOffspring,
   CrystalEnergyNetwork,
@@ -1097,7 +1098,9 @@ const App = () => {
                         <Route path="/time-capsule-subscription" element={<Navigate to="/time-capsule" replace />} />
                         <Route path="/time-capsule" element={<TimeCapsule />} />
                         <Route path="/home-decor-subscription" element={<HomeDecorSubscription />} />
-                        <Route path="/holographic-avatars" element={<HolographicAvatars />} />
+                       <Route path="/holographic-avatars" element={<HolographicAvatars />} />
+                       <Route path="/about-platform" element={<AboutPlatform />} />
+                       <Route path="/about" element={<Navigate to="/about-platform" replace />} />
                         <Route path="/holographic-history" element={<HolographicHistory />} />
                         <Route path="/digital-offspring" element={<DigitalOffspring />} />
                         {/* Crystal Energy Network */}

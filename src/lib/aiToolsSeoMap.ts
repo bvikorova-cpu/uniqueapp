@@ -17,6 +17,11 @@ export interface AIToolSeo {
 }
 
 export const AI_TOOLS_SEO: Record<string, AIToolSeo> = {
+  "/about-platform": {
+    key: "aiToolsSeo.aboutPlatform",
+    title: "About the Platform — full tour of every section on Unique",
+    description: "A complete itinerary of every hub on Unique: AI tools, mystical, dating, sports, marketplaces, learning, fundraising and more.",
+  },
   "/ai-mentor": {
     key: "aiToolsSeo.aiMentor",
     title: "AI Mentor — personal coach for career, skills & life",
