@@ -295,6 +295,18 @@ export default function AboutPlatform() {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
   const [query, setQuery] = useState("");
+  const { user } = useAuth();
+  const { favorites, isFavorite, toggleFavorite } = useFavoriteSections();
+
+  const favoriteSections = useMemo(() => {
+    const map = new Map<string, { section: Section; category: Category }>();
+    for (const cat of CATEGORIES) {
+      for (const s of cat.sections) map.set(s.path, { section: s, category: cat });
+    }
+    return favorites
+      .map((f) => map.get(f.path))
+      .filter((x): x is { section: Section; category: Category } => !!x);
+  }, [favorites]);
 
   useEffect(() => {
     videoRef.current?.play().catch(() => setIsPlaying(false));
