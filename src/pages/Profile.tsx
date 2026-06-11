@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -603,6 +603,25 @@ const Profile = () => {
             <DailyXPVideoReward userId={userId} />
           </div>
         )}
+
+        {/* Holographic history quick link - own profile only */}
+        {currentUserId === userId && (
+          <Link to="/holographic-history" className="block mb-6">
+            <Card className="p-4 bg-gradient-to-r from-violet-500/10 to-pink-500/10 border-violet-500/30 hover:border-violet-400/60 transition-colors">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <Sparkles className="h-5 w-5 text-violet-400" />
+                  <div>
+                    <p className="font-bold text-sm">Holographic History</p>
+                    <p className="text-[11px] text-muted-foreground">Battle & breeding archive</p>
+                  </div>
+                </div>
+                <Badge variant="outline" className="border-violet-500/40 text-violet-300 text-[10px]">View</Badge>
+              </div>
+            </Card>
+          </Link>
+        )}
+
 
         {/* Tabs Section - Central Hub */}
         <Tabs defaultValue={defaultTab} className="w-full">
