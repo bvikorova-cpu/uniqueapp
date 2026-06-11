@@ -8,12 +8,14 @@ import {
   Lock, Gift, Plane, Coffee, PawPrint, Building2, Store, Ticket,
   Gavel, Activity, Apple, Shield, Ghost, Bot, PenTool, Image as ImageIcon,
   Clock, Palette, Scale, Dna, Zap, Video, MessageSquare, Mail,
-  MessageCircle, BookOpen, FlaskConical, Car, Home, AlertTriangle,
+  MessageCircle, BookOpen, FlaskConical, Car, Home, AlertTriangle, Bookmark, BookmarkCheck,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useFavoriteSections } from "@/hooks/useFavoriteSections";
+import { useAuth } from "@/contexts/AuthContext";
 import heroAsset from "@/assets/about-platform-hero.mp4.asset.json";
 
 type Section = {
@@ -293,6 +295,18 @@ export default function AboutPlatform() {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
   const [query, setQuery] = useState("");
+  const { user } = useAuth();
+  const { favorites, isFavorite, toggleFavorite } = useFavoriteSections();
+
+  const favoriteSections = useMemo(() => {
+    const map = new Map<string, { section: Section; category: Category }>();
+    for (const cat of CATEGORIES) {
+      for (const s of cat.sections) map.set(s.path, { section: s, category: cat });
+    }
+    return favorites
+      .map((f) => map.get(f.path))
+      .filter((x): x is { section: Section; category: Category } => !!x);
+  }, [favorites]);
 
   useEffect(() => {
     videoRef.current?.play().catch(() => setIsPlaying(false));
@@ -453,6 +467,31 @@ export default function AboutPlatform() {
           </div>
         </div>
 
+        {/* My Favorites quick-access */}
+        {user && favoriteSections.length > 0 && (
+          <section className="mb-10">
+            <div className="flex items-center gap-2 mb-3">
+              <BookmarkCheck className="w-5 h-5 text-primary" />
+              <h2 className="text-lg md:text-xl font-black">My Favorites</h2>
+              <Badge variant="outline" className="text-[10px]">{favoriteSections.length}</Badge>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5">
+              {favoriteSections.map(({ section, category }) => (
+                <Link
+                  key={section.path}
+                  to={section.path}
+                  className="group flex flex-col items-center gap-1.5 p-3 rounded-xl border border-primary/30 bg-card/60 backdrop-blur-sm hover:bg-primary/10 hover:border-primary/60 transition-all"
+                >
+                  <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary/15 to-accent/15 border border-border/40 flex items-center justify-center">
+                    <section.icon className={`w-4 h-4 ${category.accent}`} />
+                  </div>
+                  <span className="text-[11px] font-semibold text-center line-clamp-2 leading-tight">{section.title}</span>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Categories */}
         <div className="space-y-12">
           {filteredCategories.map((cat) => (
@@ -498,12 +537,32 @@ export default function AboutPlatform() {
                             </li>
                           ))}
                         </ul>
-                        <Link to={section.path}>
-                          <Button variant="outline" size="sm" className="w-full mt-auto hover:bg-primary/10 hover:border-primary/40">
-                            Open
-                            <ArrowRight className="w-3 h-3 ml-1" />
+                        <div className="flex items-center gap-2 mt-auto">
+                          <Link to={section.path} className="flex-1">
+                            <Button variant="outline" size="sm" className="w-full hover:bg-primary/10 hover:border-primary/40">
+                              Open
+                              <ArrowRight className="w-3 h-3 ml-1" />
+                            </Button>
+                          </Link>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className={`h-9 w-9 shrink-0 ${isFavorite(section.path) ? "bg-primary/15 border-primary/50 text-primary" : "hover:bg-primary/10 hover:border-primary/40"}`}
+                            aria-label={isFavorite(section.path) ? "Remove from favorites" : "Add to favorites"}
+                            title={user ? (isFavorite(section.path) ? "Remove from favorites" : "Save to favorites") : "Sign in to save favorites"}
+                            disabled={!user}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              toggleFavorite({ path: section.path, title: section.title, category: cat.id });
+                            }}
+                          >
+                            {isFavorite(section.path) ? (
+                              <BookmarkCheck className="w-4 h-4" />
+                            ) : (
+                              <Bookmark className="w-4 h-4" />
+                            )}
                           </Button>
-                        </Link>
+                        </div>
                       </CardContent>
                     </Card>
                   </motion.div>
