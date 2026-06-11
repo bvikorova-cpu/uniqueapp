@@ -78,7 +78,7 @@ const AICompanions = () => {
   const loadCharacters = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { navigate("/auth"); return; }
+      if (!user) { savePendingAction({ key: "ai-companions:open", returnTo: "/companions" }); navigate("/auth"); return; }
 
       const { data: chars } = await supabase.from("ai_characters").select("*").order("is_premium", { ascending: true });
       const { data: access } = await supabase.from("user_character_access").select("character_id").eq("user_id", user.id);
