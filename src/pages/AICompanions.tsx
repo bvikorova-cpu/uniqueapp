@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
+import { savePendingAction, consumePendingAction } from "@/lib/pendingAction";
 import { useToast } from "@/hooks/use-toast";
 import { useCompanionsSubscription } from "@/hooks/useCompanionsSubscription";
 import { motion } from "framer-motion";
