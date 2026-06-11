@@ -45,6 +45,10 @@ const AICompanions = () => {
   useEffect(() => {
     loadCharacters();
     loadStats();
+    const pending = consumePendingAction<{ characterId: string; isPremium: boolean }>("ai-companions:start");
+    if (pending?.data) {
+      setTimeout(() => startConversation(pending.data!.characterId, pending.data!.isPremium), 600);
+    }
   }, []);
 
   useEffect(() => {
