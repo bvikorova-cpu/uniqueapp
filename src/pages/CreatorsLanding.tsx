@@ -10,7 +10,6 @@ import {
   Video,
   Sparkles,
   TrendingUp,
-  Heart,
   ArrowRight,
   Star,
 } from "lucide-react";
@@ -38,14 +37,6 @@ const benefits = [
   },
 ];
 
-const featuredCreators = [
-  { name: "Luna Star", category: "Lifestyle", subs: "12.4k", emoji: "✨" },
-  { name: "Max Power", category: "Fitness", subs: "8.7k", emoji: "💪" },
-  { name: "Aria Moon", category: "Art & Design", subs: "15.2k", emoji: "🎨" },
-  { name: "Neo Beat", category: "Music", subs: "9.1k", emoji: "🎧" },
-  { name: "Zoe Vibe", category: "Fashion", subs: "11.8k", emoji: "👗" },
-  { name: "Ryo Sky", category: "Gaming", subs: "20.3k", emoji: "🎮" },
-];
 
 const CreatorsLanding = () => {
   return (
@@ -111,48 +102,6 @@ const CreatorsLanding = () => {
                   </div>
                   <h3 className="font-semibold mb-2">{b.title}</h3>
                   <p className="text-sm text-muted-foreground">{b.desc}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-
-        {/* Featured creators */}
-        <section className="container mx-auto px-4 py-16 md:py-20">
-          <div className="flex items-end justify-between mb-10 flex-wrap gap-4">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-2">
-                Featured Creators
-              </h2>
-              <p className="text-muted-foreground">
-                A glimpse of creators already building on Unique.
-              </p>
-            </div>
-            <Button asChild variant="ghost">
-              <Link to="/discover-creators">
-                View all
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {featuredCreators.map((c) => (
-              <Card
-                key={c.name}
-                className="bg-card/50 backdrop-blur border-border/50 hover:border-primary/50 hover:-translate-y-1 transition-all"
-              >
-                <CardContent className="p-4 text-center">
-                  <div className="h-16 w-16 mx-auto rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-2xl mb-3">
-                    {c.emoji}
-                  </div>
-                  <h3 className="font-semibold text-sm truncate">{c.name}</h3>
-                  <p className="text-xs text-muted-foreground mb-2">
-                    {c.category}
-                  </p>
-                  <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground">
-                    <Heart className="h-3 w-3 text-accent" />
-                    {c.subs}
-                  </div>
                 </CardContent>
               </Card>
             ))}
