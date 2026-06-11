@@ -111,6 +111,40 @@ export default function CommunityDetail() {
     },
   });
 
+  // Community-scoped bazaar listings
+  const { data: bazaarItems = [] } = useQuery({
+    queryKey: ["community-bazaar", communityId],
+    enabled: !!communityId,
+    queryFn: async () => {
+      const { data, error } = await (supabase as any)
+        .from("bazaar_items")
+        .select("id, title, price, image_url, image_urls, listing_type, is_sold, created_at")
+        .eq("community_id", communityId!)
+        .eq("is_active", true)
+        .order("created_at", { ascending: false })
+        .limit(12);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  // Community-scoped AI gallery
+  const { data: galleryItems = [] } = useQuery({
+    queryKey: ["community-gallery", communityId],
+    enabled: !!communityId,
+    queryFn: async () => {
+      const { data, error } = await (supabase as any)
+        .from("ai_community_gallery")
+        .select("id, title, image_url, prompt, likes_count, created_at")
+        .eq("community_id", communityId!)
+        .eq("is_public", true)
+        .order("created_at", { ascending: false })
+        .limit(12);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
   // Realtime: any change to community / members / rules / mods → refetch the
   // affected query so member_count, join/leave state, and rules update live.
   useEffect(() => {
