@@ -184,7 +184,7 @@ export default function LotteryAI() {
   const handleSubscribe = async (tier: "basic" | "pro") => {
     if (!user) {
       toast({ title: "Sign-in Required", description: "Please sign in to subscribe.", variant: "destructive" });
-      navigate("/auth");
+      savePendingAction({ key: "lottery-ai:open", returnTo: "/lottery-ai" }); navigate("/auth");
       return;
     }
     if (!tier || !SUBSCRIPTION_TIERS[tier]) {
@@ -210,7 +210,7 @@ export default function LotteryAI() {
   const handleManageSubscription = async () => {
     if (!user) {
       toast({ title: "Sign-in Required", description: "Please sign in to manage your subscription.", variant: "destructive" });
-      navigate("/auth");
+      savePendingAction({ key: "lottery-ai:open", returnTo: "/lottery-ai" }); navigate("/auth");
       return;
     }
     try {
@@ -230,7 +230,7 @@ export default function LotteryAI() {
   const generateNumbers = async () => {
     if (!user) {
       toast({ title: "Sign-in Required", description: "Please sign in to generate numbers.", variant: "destructive" });
-      navigate("/auth");
+      savePendingAction({ key: "lottery-ai:open", returnTo: "/lottery-ai" }); navigate("/auth");
       return;
     }
     if (!subscription?.subscribed) {
@@ -302,7 +302,7 @@ export default function LotteryAI() {
   const saveCombination = async () => {
     if (!user) {
       toast({ title: "Sign-in Required", description: "Please sign in to save combinations.", variant: "destructive" });
-      navigate("/auth");
+      savePendingAction({ key: "lottery-ai:open", returnTo: "/lottery-ai" }); navigate("/auth");
       return;
     }
     if (generatedNumbers.length === 0) {
