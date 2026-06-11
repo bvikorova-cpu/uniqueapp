@@ -12,6 +12,7 @@ import { MembershipToolView } from "@/components/membership/MembershipToolView";
 import { MembershipAbout } from "@/components/membership/MembershipAbout";
 import { MembershipFeaturedCreators } from "@/components/membership/MembershipFeaturedCreators";
 import { MembershipParityPack } from "@/components/membership/MembershipParityPack";
+import { MembershipRevenueSplit } from "@/components/membership/MembershipRevenueSplit";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface Creator {
@@ -118,6 +119,7 @@ export default function MembershipCommunity() {
           <>
             <MembershipToolCards onSelectTool={setSelectedTool} />
             <MembershipFeaturedCreators onViewAll={() => setSelectedTool("Discover Creators")} />
+            <MembershipRevenueSplit />
             <MembershipAbout />
 
             {/* CTA */}
