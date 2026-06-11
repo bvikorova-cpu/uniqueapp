@@ -80,6 +80,15 @@ export default function CreatorProfile() {
   }, [creator?.id]);
 
   useEffect(() => {
+    if (userSubscription.tier_id && tiers.length > 0) {
+      const tierName = tiers.find((t) => t.id === userSubscription.tier_id)?.name;
+      if (tierName && tierName !== userSubscription.tier_name) {
+        setUserSubscription((prev) => ({ ...prev, tier_name: tierName }));
+      }
+    }
+  }, [userSubscription.tier_id, tiers]);
+
+  useEffect(() => {
     const subscription = searchParams.get('subscription');
     const purchase = searchParams.get('purchase');
     const giftParam = searchParams.get('gift');
