@@ -180,6 +180,26 @@ const Dating = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedMatch?.id]);
 
+  // P1 — realtime for new dating_matches so the list refreshes without manual reload.
+  useEffect(() => {
+    if (!user?.id) return;
+    const channel = supabase
+      .channel(`dating_matches_${user.id}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "dating_matches", filter: `user1_id=eq.${user.id}` },
+        () => { loadMatches(user.id); }
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "dating_matches", filter: `user2_id=eq.${user.id}` },
+        () => { loadMatches(user.id); }
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('payment') === 'success') {

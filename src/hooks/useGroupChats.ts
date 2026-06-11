@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -82,6 +83,20 @@ export const useGroupMessages = (conversationId?: string) => {
     },
     enabled: !!conversationId,
   });
+
+  // P1 — realtime so new messages appear instantly.
+  useEffect(() => {
+    if (!conversationId) return;
+    const channel = supabase
+      .channel(`conversation:${conversationId}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "conversation_messages", filter: `conversation_id=eq.${conversationId}` },
+        () => queryClient.invalidateQueries({ queryKey: ["group-messages", conversationId] }),
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [conversationId, queryClient]);
 
   const send = useMutation({
     mutationFn: async ({ content, sharedPostId }: { content: string; sharedPostId?: string }) => {

@@ -64450,6 +64450,10 @@ export type Database = {
         Args: { p_amount: number; p_user_id: string }
         Returns: number
       }
+      increment_ai_gallery_likes: {
+        Args: { p_delta: number; p_item_id: string }
+        Returns: number
+      }
       increment_collection_pages: {
         Args: { p_collection_id: string }
         Returns: undefined
@@ -64457,6 +64461,10 @@ export type Database = {
       increment_crystal_stat: {
         Args: { p_stat: string; p_user_id: string; p_value?: number }
         Returns: undefined
+      }
+      increment_emotion_post_likes: {
+        Args: { p_delta: number; p_post_id: string }
+        Returns: number
       }
       increment_healthcare_collection_pages: {
         Args: { p_collection_id: string }

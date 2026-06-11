@@ -39,10 +39,10 @@ export const CommunityGalleryView = () => {
 
       if (existing) {
         await supabase.from("ai_gallery_likes").delete().eq("id", existing.id);
-        await supabase.from("ai_community_gallery").update({ likes_count: Math.max(0, (items.find(i => i.id === itemId)?.likes_count || 1) - 1) }).eq("id", itemId);
+        await supabase.rpc("increment_ai_gallery_likes", { p_item_id: itemId, p_delta: -1 });
       } else {
         await supabase.from("ai_gallery_likes").insert({ user_id: user.id, gallery_item_id: itemId });
-        await supabase.from("ai_community_gallery").update({ likes_count: (items.find(i => i.id === itemId)?.likes_count || 0) + 1 }).eq("id", itemId);
+        await supabase.rpc("increment_ai_gallery_likes", { p_item_id: itemId, p_delta: 1 });
       }
       queryClient.invalidateQueries({ queryKey: ["community-gallery"] });
     } catch (e: any) {
