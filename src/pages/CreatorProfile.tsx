@@ -199,9 +199,13 @@ export default function CreatorProfile() {
 
       if (error) throw error;
 
+      const tierId = data?.tier_id;
+      const tierName = tierId ? tiers.find((t) => t.id === tierId)?.name : undefined;
+
       setUserSubscription({
         subscribed: data?.subscribed || false,
-        tier_id: data?.tier_id,
+        tier_id: tierId,
+        tier_name: tierName,
         subscription_end: data?.subscription_end,
       });
     } catch (error: any) {
