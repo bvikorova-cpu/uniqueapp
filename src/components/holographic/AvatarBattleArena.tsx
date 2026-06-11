@@ -35,7 +35,11 @@ export const AvatarBattleArena = ({ onBack }: Props) => {
         body: { priceId: "price_1SPjGQGaXSfGtYFtDYtm4aC2", featureName: `Battle Entry: ${mode.name}`, metadata: { mode: mode.id } },
       });
       if (error) throw error;
-      if (data?.url) { window.open(data.url, "_blank"); toast({ title: "Battle Entry!", description: `Joining ${mode.name} arena...` }); }
+      if (data?.url) {
+        try { localStorage.setItem("pendingHoloAction", JSON.stringify({ kind: "battle", mode: mode.id })); } catch {}
+        window.open(data.url, "_blank");
+        toast({ title: "Battle Entry!", description: `Joining ${mode.name} arena...` });
+      }
     } catch { toast({ title: "Error", description: "Failed to join battle", variant: "destructive" }); }
     finally { setIsJoining(false); }
   };
