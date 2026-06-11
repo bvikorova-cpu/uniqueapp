@@ -16,6 +16,7 @@ import { CreatorProfileEditForm } from "@/components/creator/CreatorProfileEditF
 import { PaidMessageDialog } from "@/components/creator/PaidMessageDialog";
 import { CreatorLiveStreams } from "@/components/creator/CreatorLiveStreams";
 import { CreatorMerchStore } from "@/components/creator/CreatorMerchStore";
+import { SubscriptionStatusBadge } from "@/components/creator/SubscriptionStatusBadge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Users, CheckCircle2, Crown, ShieldAlert, Instagram, Twitter, Gift, MessageCircle, Camera, ImagePlus, UserPlus, UserMinus } from "lucide-react";
 import { useIsFollowing, useFollowMutation, useUnfollowMutation } from "@/hooks/useFollow";
@@ -53,6 +54,7 @@ export default function CreatorProfile() {
   const [userSubscription, setUserSubscription] = useState<{
     subscribed: boolean;
     tier_id?: string;
+    tier_name?: string;
     subscription_end?: string;
   }>({ subscribed: false });
   const [giftDialogOpen, setGiftDialogOpen] = useState(false);
@@ -76,6 +78,15 @@ export default function CreatorProfile() {
       checkSubscription();
     }
   }, [creator?.id]);
+
+  useEffect(() => {
+    if (userSubscription.tier_id && tiers.length > 0) {
+      const tierName = tiers.find((t) => t.id === userSubscription.tier_id)?.name;
+      if (tierName && tierName !== userSubscription.tier_name) {
+        setUserSubscription((prev) => ({ ...prev, tier_name: tierName }));
+      }
+    }
+  }, [userSubscription.tier_id, tiers]);
 
   useEffect(() => {
     const subscription = searchParams.get('subscription');
@@ -197,9 +208,13 @@ export default function CreatorProfile() {
 
       if (error) throw error;
 
+      const tierId = data?.tier_id;
+      const tierName = tierId ? tiers.find((t) => t.id === tierId)?.name : undefined;
+
       setUserSubscription({
         subscribed: data?.subscribed || false,
-        tier_id: data?.tier_id,
+        tier_id: tierId,
+        tier_name: tierName,
         subscription_end: data?.subscription_end,
       });
     } catch (error: any) {
@@ -439,10 +454,11 @@ export default function CreatorProfile() {
                 {/* Subscribe Badge & Action Buttons */}
                 <div className="flex items-center gap-2 flex-wrap">
                   {userSubscription.subscribed && !isOwnProfile && (
-                    <Badge variant="secondary" className="flex items-center gap-1 text-lg px-4 py-2">
-                      <Crown className="h-5 w-5" />
-                      Subscribed
-                    </Badge>
+                    <SubscriptionStatusBadge
+                      subscribed={userSubscription.subscribed}
+                      subscriptionEnd={userSubscription.subscription_end}
+                      tierName={userSubscription.tier_name}
+                    />
                   )}
                   {!isOwnProfile && currentUserId && currentUserId !== creator.user_id && (
                     <Button

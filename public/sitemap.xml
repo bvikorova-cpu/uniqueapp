@@ -2,6 +2,8 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://uniqueapp.fun/</loc><lastmod>2026-06-11</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
   <url><loc>https://uniqueapp.fun/__e2e/anonymous-date-matches</loc><lastmod>2026-06-11</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://uniqueapp.fun/about</loc><lastmod>2026-06-11</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://uniqueapp.fun/about-platform</loc><lastmod>2026-06-11</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://uniqueapp.fun/account/subscriptions</loc><lastmod>2026-06-11</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://uniqueapp.fun/account/verification</loc><lastmod>2026-06-11</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://uniqueapp.fun/ai-clone</loc><lastmod>2026-06-11</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
