@@ -8,12 +8,14 @@ import {
   Lock, Gift, Plane, Coffee, PawPrint, Building2, Store, Ticket,
   Gavel, Activity, Apple, Shield, Ghost, Bot, PenTool, Image as ImageIcon,
   Clock, Palette, Scale, Dna, Zap, Video, MessageSquare, Mail,
-  MessageCircle, BookOpen, FlaskConical, Car, Home, AlertTriangle,
+  MessageCircle, BookOpen, FlaskConical, Car, Home, AlertTriangle, Bookmark, BookmarkCheck,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useFavoriteSections } from "@/hooks/useFavoriteSections";
+import { useAuth } from "@/contexts/AuthContext";
 import heroAsset from "@/assets/about-platform-hero.mp4.asset.json";
 
 type Section = {
