@@ -380,6 +380,7 @@ import {
   EmotionEconomy,
   QuantumSocial,
   HolographicAvatars,
+  AboutPlatform,
   HolographicHistory,
   DigitalOffspring,
   CrystalEnergyNetwork,
