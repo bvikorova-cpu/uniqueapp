@@ -445,10 +445,11 @@ export default function CreatorProfile() {
                 {/* Subscribe Badge & Action Buttons */}
                 <div className="flex items-center gap-2 flex-wrap">
                   {userSubscription.subscribed && !isOwnProfile && (
-                    <Badge variant="secondary" className="flex items-center gap-1 text-lg px-4 py-2">
-                      <Crown className="h-5 w-5" />
-                      Subscribed
-                    </Badge>
+                    <SubscriptionStatusBadge
+                      subscribed={userSubscription.subscribed}
+                      subscriptionEnd={userSubscription.subscription_end}
+                      tierName={userSubscription.tier_name}
+                    />
                   )}
                   {!isOwnProfile && currentUserId && currentUserId !== creator.user_id && (
                     <Button
