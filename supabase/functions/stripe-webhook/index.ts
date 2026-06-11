@@ -1374,6 +1374,71 @@ serve(async (req) => {
           .in("kind", ["failed", "requires_action"]);
         if (rErr) log("dunning recover failed", { err: rErr.message });
 
+        // ─── CREATOR SUBSCRIPTION: 85/15 earnings ledger ─────────────
+        // Triggered on initial payment + every renewal. Idempotent via
+        // unique stripe_invoice_id. Reads kind/metadata from the parent
+        // Stripe Subscription (set in subscribe-to-creator).
+        try {
+          const subObj = await stripe.subscriptions.retrieve(subId);
+          const meta = (subObj.metadata ?? {}) as Record<string, string>;
+          if (meta.kind === "creator_subscription") {
+            const grossCents = (inv as any).amount_paid ?? 0;
+            if (grossCents > 0 && inv.id) {
+              const feePct = Number(meta.platform_fee_pct ?? "15");
+              const platformFeeCents = Math.round((grossCents * feePct) / 100);
+              const netCents = grossCents - platformFeeCents;
+              const period = (inv as any).lines?.data?.[0]?.period;
+              const periodStart = period?.start
+                ? new Date(period.start * 1000).toISOString() : null;
+              const periodEnd = period?.end
+                ? new Date(period.end * 1000).toISOString() : null;
+
+              const { error: earnErr } = await supabase
+                .from("creator_subscription_earnings")
+                .insert({
+                  creator_id: meta.creator_id,
+                  subscriber_id: meta.subscriber_id,
+                  tier_id: meta.tier_id,
+                  stripe_subscription_id: subId,
+                  stripe_invoice_id: inv.id,
+                  gross_cents: grossCents,
+                  platform_fee_cents: platformFeeCents,
+                  net_cents: netCents,
+                  platform_fee_pct: feePct,
+                  currency: (inv.currency ?? "eur").toLowerCase(),
+                  period_start: periodStart,
+                  period_end: periodEnd,
+                  payout_state: "available",
+                });
+              if (earnErr) {
+                if (!earnErr.message?.toLowerCase().includes("duplicate")) {
+                  log("creator earnings insert failed", { err: earnErr.message });
+                }
+              } else {
+                log("creator subscription earning recorded", {
+                  invoice: inv.id, creator: meta.creator_id,
+                  gross: grossCents, net: netCents, fee: platformFeeCents,
+                });
+              }
+
+              // Upsert active creator_subscriptions row (period end refresh)
+              await supabase
+                .from("creator_subscriptions")
+                .upsert({
+                  subscriber_id: meta.subscriber_id,
+                  creator_id: meta.creator_id,
+                  tier_id: meta.tier_id,
+                  stripe_subscription_id: subId,
+                  status: "active",
+                  current_period_end: periodEnd,
+                }, { onConflict: "subscriber_id,tier_id" });
+            }
+          }
+        } catch (e) {
+          log("creator subscription earnings handler error", { err: (e as Error).message });
+        }
+
+
         // ─── CAMPAIGN DONATION: record monthly renewal + bump campaign total ──
         try {
           const { data: parent } = await supabase

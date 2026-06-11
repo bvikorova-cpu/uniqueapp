@@ -34,7 +34,7 @@ export const MembershipHero = () => {
     { icon: Users, label: "Active Creators", value: stats.creators || 0, suffix: "+" },
     { icon: Heart, label: "Memberships", value: stats.memberships || 0, suffix: "+" },
     { icon: TrendingUp, label: "Exclusive Posts", value: stats.content || 0, suffix: "+" },
-    { icon: DollarSign, label: "Platform Fee", value: 0, suffix: "", staticLabel: "10%" },
+    { icon: DollarSign, label: "Platform Fee", value: 0, suffix: "", staticLabel: "15%" },
   ];
 
   useEffect(() => {
