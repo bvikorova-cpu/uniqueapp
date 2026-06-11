@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,11 +41,11 @@ export const CommunitiesDialog = () => {
             <div className="space-y-2 max-h-80 overflow-y-auto">
               {communities.map((c: any) => (
                 <div key={c.id} className="flex items-center justify-between p-3 rounded-lg border border-border/40">
-                  <div>
+                  <Link to={`/community/${c.slug}`} onClick={() => setOpen(false)} className="flex-1 min-w-0 hover:opacity-80">
                     <p className="font-medium text-sm">u/{c.slug}</p>
                     <p className="text-xs text-muted-foreground line-clamp-1">{c.description || c.name}</p>
                     <p className="text-xs text-muted-foreground">{c.member_count} members</p>
-                  </div>
+                  </Link>
                   <Button size="sm" variant="outline" onClick={() => join(c.id)}>Join</Button>
                 </div>
               ))}
