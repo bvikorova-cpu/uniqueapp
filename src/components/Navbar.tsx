@@ -225,6 +225,12 @@ const Navbar = () => {
       ],
     },
     {
+      category: "About",
+      items: [
+        { path: "/about-platform", label: "About the Platform — Full Tour", icon: Info },
+      ],
+    },
+    {
       category: "Legal",
       items: [
         { path: "/terms", label: "Terms", icon: FileText },
