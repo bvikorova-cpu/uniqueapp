@@ -467,6 +467,31 @@ export default function AboutPlatform() {
           </div>
         </div>
 
+        {/* My Favorites quick-access */}
+        {user && favoriteSections.length > 0 && (
+          <section className="mb-10">
+            <div className="flex items-center gap-2 mb-3">
+              <BookmarkCheck className="w-5 h-5 text-primary" />
+              <h2 className="text-lg md:text-xl font-black">My Favorites</h2>
+              <Badge variant="outline" className="text-[10px]">{favoriteSections.length}</Badge>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5">
+              {favoriteSections.map(({ section, category }) => (
+                <Link
+                  key={section.path}
+                  to={section.path}
+                  className="group flex flex-col items-center gap-1.5 p-3 rounded-xl border border-primary/30 bg-card/60 backdrop-blur-sm hover:bg-primary/10 hover:border-primary/60 transition-all"
+                >
+                  <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary/15 to-accent/15 border border-border/40 flex items-center justify-center">
+                    <section.icon className={`w-4 h-4 ${category.accent}`} />
+                  </div>
+                  <span className="text-[11px] font-semibold text-center line-clamp-2 leading-tight">{section.title}</span>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Categories */}
         <div className="space-y-12">
           {filteredCategories.map((cat) => (
