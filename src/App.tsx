@@ -611,6 +611,8 @@ const App = () => {
 
                     <ErrorBoundary>
                       <Suspense fallback={<PageLoader />}>
+                        {/* Router-level SEO injection for AI Tools & Studios category */}
+                        <RouteSEO />
                         {/* All routes render inside this Suspense boundary */}
                         <Routes>
                         <Route path="/" element={<Index />} />
