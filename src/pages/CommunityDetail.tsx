@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, Users, Shield, ScrollText, Lock, Eye, Loader2 } from "lucide-react";
+import { ArrowLeft, Users, Shield, ScrollText, Lock, Loader2, ShoppingBag, Image as ImageIcon, Heart } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -111,6 +111,40 @@ export default function CommunityDetail() {
     },
   });
 
+  // Community-scoped bazaar listings
+  const { data: bazaarItems = [] } = useQuery({
+    queryKey: ["community-bazaar", communityId],
+    enabled: !!communityId,
+    queryFn: async () => {
+      const { data, error } = await (supabase as any)
+        .from("bazaar_items")
+        .select("id, title, price, image_url, image_urls, listing_type, is_sold, created_at")
+        .eq("community_id", communityId!)
+        .eq("is_active", true)
+        .order("created_at", { ascending: false })
+        .limit(12);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  // Community-scoped AI gallery
+  const { data: galleryItems = [] } = useQuery({
+    queryKey: ["community-gallery", communityId],
+    enabled: !!communityId,
+    queryFn: async () => {
+      const { data, error } = await (supabase as any)
+        .from("ai_community_gallery")
+        .select("id, title, image_url, prompt, likes_count, created_at")
+        .eq("community_id", communityId!)
+        .eq("is_public", true)
+        .order("created_at", { ascending: false })
+        .limit(12);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
   // Realtime: any change to community / members / rules / mods → refetch the
   // affected query so member_count, join/leave state, and rules update live.
   useEffect(() => {
@@ -140,6 +174,16 @@ export default function CommunityDetail() {
         "postgres_changes",
         { event: "*", schema: "public", table: "community_moderators", filter: `community_id=eq.${communityId}` },
         () => qc.invalidateQueries({ queryKey: ["community-mods", communityId] }),
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "bazaar_items", filter: `community_id=eq.${communityId}` },
+        () => qc.invalidateQueries({ queryKey: ["community-bazaar", communityId] }),
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "ai_community_gallery", filter: `community_id=eq.${communityId}` },
+        () => qc.invalidateQueries({ queryKey: ["community-gallery", communityId] }),
       )
       .subscribe();
     return () => { supabase.removeChannel(channel); };
@@ -250,12 +294,58 @@ export default function CommunityDetail() {
         <div className="grid md:grid-cols-3 gap-6">
           {/* Main column — placeholder for future community feed */}
           <div className="md:col-span-2 space-y-4">
+            {/* Bazaar */}
             <Card className="p-6">
-              <h2 className="font-semibold mb-2 flex items-center gap-2"><Eye className="h-4 w-4" /> Activity</h2>
-              <p className="text-sm text-muted-foreground">
-                Community-scoped posts, bazaar listings and gallery are coming soon. Membership
-                and rules are live and update in real time.
-              </p>
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="font-semibold flex items-center gap-2"><ShoppingBag className="h-4 w-4" /> Community Bazaar</h2>
+                <Button asChild variant="ghost" size="sm"><Link to={`/bazaar?community=${community.id}`}>View all</Link></Button>
+              </div>
+              {bazaarItems.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No listings yet in this community.</p>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {bazaarItems.map((item: any) => {
+                    const img = item.image_url ?? item.image_urls?.[0];
+                    return (
+                      <Link key={item.id} to={`/bazaar/${item.id}`} className="group rounded-lg overflow-hidden border hover:border-primary/50 transition-colors">
+                        <div className="aspect-square bg-muted relative">
+                          {img ? <img src={img} alt={item.title} loading="lazy" className="h-full w-full object-cover" /> : <div className="h-full w-full grid place-items-center text-muted-foreground"><ImageIcon className="h-6 w-6" /></div>}
+                          {item.is_sold && <Badge variant="secondary" className="absolute top-1 right-1">Sold</Badge>}
+                        </div>
+                        <div className="p-2">
+                          <p className="text-xs font-medium truncate">{item.title}</p>
+                          <p className="text-xs text-muted-foreground">€{Number(item.price).toFixed(2)}</p>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </Card>
+
+            {/* AI Gallery */}
+            <Card className="p-6">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="font-semibold flex items-center gap-2"><ImageIcon className="h-4 w-4" /> AI Gallery</h2>
+                <Button asChild variant="ghost" size="sm"><Link to={`/ai-generation?community=${community.id}`}>View all</Link></Button>
+              </div>
+              {galleryItems.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No gallery entries yet.</p>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {galleryItems.map((g: any) => (
+                    <div key={g.id} className="rounded-lg overflow-hidden border">
+                      <div className="aspect-square bg-muted">
+                        {g.image_url && <img src={g.image_url} alt={g.title ?? g.prompt?.slice(0, 60)} loading="lazy" className="h-full w-full object-cover" />}
+                      </div>
+                      <div className="p-2 flex items-center justify-between">
+                        <p className="text-xs truncate flex-1">{g.title ?? g.prompt?.slice(0, 40)}</p>
+                        <span className="text-xs text-muted-foreground flex items-center gap-1"><Heart className="h-3 w-3" /> {g.likes_count ?? 0}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </Card>
 
             {/* Recent members */}
