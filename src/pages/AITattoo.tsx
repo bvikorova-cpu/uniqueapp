@@ -97,10 +97,19 @@ const AITattoo = () => {
 
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('generate-tattoo', {
-        body: { prompt, style, colorScheme, placement, size }
+      const { data, error } = await supabase.functions.invoke('tattoo-ai-tools', {
+        body: { type: 'design', prompt, style, colorScheme, placement, size }
       });
-      if (error) throw error;
+      if (error) {
+        const ctx: any = (error as any).context;
+        if (ctx?.status === 402) {
+          toast.error("Insufficient credits. Redirecting...");
+          setTimeout(() => navigate('/ai-credits'), 1500);
+          return;
+        }
+        if (ctx?.status === 429) { toast.error("Rate limit. Try again shortly."); return; }
+        throw error;
+      }
       setGeneratedImage(data.imageUrl);
       
       const { data: { user } } = await supabase.auth.getUser();
