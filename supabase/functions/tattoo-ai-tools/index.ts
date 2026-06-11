@@ -73,7 +73,13 @@ serve(async (req) => {
 
     let payload: Record<string, unknown> = {};
 
-    if (type === 'style_mix') {
+    if (type === 'design') {
+      const { prompt, style, colorScheme, placement, size } = params;
+      const imageUrl = await generateImage(
+        `Professional tattoo design. Concept: ${prompt}. Style: ${style || 'traditional'}. Color scheme: ${colorScheme || 'black & grey'}. Intended placement: ${placement || 'arm'}. Size: ${size || 'medium'}. Clean lines, high detail, professional tattoo art quality. Pure white background. Ultra high resolution.`
+      );
+      payload = { imageUrl };
+    } else if (type === 'style_mix') {
       const { style1, style2, description } = params;
       const imageUrl = await generateImage(
         `Create a professional tattoo design that is a creative fusion of ${style1} and ${style2} styles. The design: ${description}. Seamlessly blend the characteristics of both styles. High detail, clean lines, professional tattoo art quality. White background. Ultra high resolution.`
