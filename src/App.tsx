@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { lazyWithRetry as lazy } from "@/utils/lazyWithRetry";
+import RouteSEO from "@/components/RouteSEO";
 const CouponSeasonalHub = lazy(() => import("@/pages/CouponSeasonalHub"));
 const LiveChatWidget = lazy(() => import("@/components/contact/LiveChatWidget").then(m => ({ default: m.LiveChatWidget })));
 
@@ -610,6 +611,8 @@ const App = () => {
 
                     <ErrorBoundary>
                       <Suspense fallback={<PageLoader />}>
+                        {/* Router-level SEO injection for AI Tools & Studios category */}
+                        <RouteSEO />
                         {/* All routes render inside this Suspense boundary */}
                         <Routes>
                         <Route path="/" element={<Index />} />
