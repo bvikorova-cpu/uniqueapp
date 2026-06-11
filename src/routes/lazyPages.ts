@@ -253,6 +253,7 @@ export const CreatorDashboard = lazy(() => import("@/pages/CreatorDashboard"));
 export const CreatorProfile = lazy(() => import("@/pages/CreatorProfile"));
 export const DiscoverCreators = lazy(() => import("@/pages/DiscoverCreators"));
 export const BecomeCreator = lazy(() => import("@/pages/BecomeCreator"));
+export const CreatorsLanding = lazy(() => import("@/pages/CreatorsLanding"));
 export const BrandDashboard = lazy(() => import("@/pages/BrandDashboard"));
 export const VirtualInfluencerAgency = lazy(() => import("@/pages/VirtualInfluencerAgency"));
 export const InfluencerEarnings = lazy(() => import("@/pages/InfluencerEarnings"));
