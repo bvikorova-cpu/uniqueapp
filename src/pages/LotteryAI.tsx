@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { savePendingAction } from "@/lib/pendingAction";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles, TrendingUp, Star, Save, Zap, BarChart3, Coins, Check,
