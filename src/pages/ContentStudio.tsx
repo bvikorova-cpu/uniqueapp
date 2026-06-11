@@ -70,7 +70,7 @@ const ContentStudio = () => {
 
   const checkUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { navigate("/auth"); return; }
+    if (!user) { savePendingAction({ key: "content-studio:open", returnTo: "/content-studio" }); navigate("/auth"); return; }
     setUser(user);
     await loadCredits(user.id);
     await loadSavedContent(user.id);
