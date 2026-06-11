@@ -938,6 +938,7 @@ const App = () => {
                         <Route path="/virtual-influencer-agency" element={<VirtualInfluencerAgency />} />
                         <Route path="/membership-community" element={<MembershipCommunity />} />
                         <Route path="/community/:id" element={<CommunityDetail />} />
+                        <Route path="/creators" element={<CreatorsLanding />} />
                         <Route path="/discover-creators" element={<DiscoverCreators />} />
                         <Route path="/creator-dashboard" element={<ProtectedRoute><CreatorDashboard /></ProtectedRoute>} />
                         <Route path="/creator/:creatorId" element={<CreatorProfile />} />
