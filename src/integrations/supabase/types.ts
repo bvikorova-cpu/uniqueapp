@@ -470,6 +470,7 @@ export type Database = {
       }
       ai_community_gallery: {
         Row: {
+          community_id: string | null
           created_at: string
           id: string
           image_url: string
@@ -482,6 +483,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          community_id?: string | null
           created_at?: string
           id?: string
           image_url: string
@@ -494,6 +496,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          community_id?: string | null
           created_at?: string
           id?: string
           image_url?: string
@@ -505,7 +508,15 @@ export type Database = {
           tool_used?: string | null
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "ai_community_gallery_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       ai_credit_gifts: {
         Row: {
@@ -4534,6 +4545,7 @@ export type Database = {
           brand: string | null
           bumped_until: string | null
           category: string
+          community_id: string | null
           condition: string
           created_at: string | null
           description: string | null
@@ -4558,6 +4570,7 @@ export type Database = {
           brand?: string | null
           bumped_until?: string | null
           category: string
+          community_id?: string | null
           condition: string
           created_at?: string | null
           description?: string | null
@@ -4582,6 +4595,7 @@ export type Database = {
           brand?: string | null
           bumped_until?: string | null
           category?: string
+          community_id?: string | null
           condition?: string
           created_at?: string | null
           description?: string | null
@@ -4603,6 +4617,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "bazaar_items_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "bazaar_items_user_id_fkey"
             columns: ["user_id"]
@@ -44525,6 +44546,7 @@ export type Database = {
           branded_partner_name: string | null
           captions_url: string | null
           comments_count: number | null
+          community_id: string | null
           content: string | null
           created_at: string
           edited_at: string | null
@@ -44550,6 +44572,7 @@ export type Database = {
           branded_partner_name?: string | null
           captions_url?: string | null
           comments_count?: number | null
+          community_id?: string | null
           content?: string | null
           created_at?: string
           edited_at?: string | null
@@ -44575,6 +44598,7 @@ export type Database = {
           branded_partner_name?: string | null
           captions_url?: string | null
           comments_count?: number | null
+          community_id?: string | null
           content?: string | null
           created_at?: string
           edited_at?: string | null
@@ -44591,7 +44615,15 @@ export type Database = {
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "posts_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       premium_avatars: {
         Row: {
@@ -63460,6 +63492,7 @@ export type Database = {
         Returns: number
       }
       calculate_level: { Args: { points: number }; Returns: number }
+      can_view_community: { Args: { _community_id: string }; Returns: boolean }
       can_view_post: {
         Args: { _author: string; _privacy: string; _viewer: string }
         Returns: boolean
@@ -64126,6 +64159,7 @@ export type Database = {
           branded_partner_name: string | null
           captions_url: string | null
           comments_count: number | null
+          community_id: string | null
           content: string | null
           created_at: string
           edited_at: string | null
