@@ -16,6 +16,7 @@ import { CreatorProfileEditForm } from "@/components/creator/CreatorProfileEditF
 import { PaidMessageDialog } from "@/components/creator/PaidMessageDialog";
 import { CreatorLiveStreams } from "@/components/creator/CreatorLiveStreams";
 import { CreatorMerchStore } from "@/components/creator/CreatorMerchStore";
+import { SubscriptionStatusBadge } from "@/components/creator/SubscriptionStatusBadge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Users, CheckCircle2, Crown, ShieldAlert, Instagram, Twitter, Gift, MessageCircle, Camera, ImagePlus, UserPlus, UserMinus } from "lucide-react";
 import { useIsFollowing, useFollowMutation, useUnfollowMutation } from "@/hooks/useFollow";
