@@ -175,6 +175,16 @@ export default function CommunityDetail() {
         { event: "*", schema: "public", table: "community_moderators", filter: `community_id=eq.${communityId}` },
         () => qc.invalidateQueries({ queryKey: ["community-mods", communityId] }),
       )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "bazaar_items", filter: `community_id=eq.${communityId}` },
+        () => qc.invalidateQueries({ queryKey: ["community-bazaar", communityId] }),
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "ai_community_gallery", filter: `community_id=eq.${communityId}` },
+        () => qc.invalidateQueries({ queryKey: ["community-gallery", communityId] }),
+      )
       .subscribe();
     return () => { supabase.removeChannel(channel); };
   }, [communityId, id, userId, qc]);
