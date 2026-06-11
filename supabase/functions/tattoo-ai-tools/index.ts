@@ -8,6 +8,7 @@ const corsHeaders = {
 
 // Per-tool credit cost (must match the UI badges)
 const CREDIT_COSTS: Record<string, number> = {
+  design: 8,
   style_mix: 8,
   aging_simulation: 5,
   color_palette: 6,
