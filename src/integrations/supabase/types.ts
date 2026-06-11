@@ -23353,6 +23353,36 @@ export type Database = {
         }
         Relationships: []
       }
+      favorite_sections: {
+        Row: {
+          category: string | null
+          created_at: string
+          id: string
+          path: string
+          position: number
+          title: string | null
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          path: string
+          position?: number
+          title?: string | null
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          path?: string
+          position?: number
+          title?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       feature_flags: {
         Row: {
           created_at: string
