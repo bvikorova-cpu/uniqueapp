@@ -54,6 +54,7 @@ export default function CreatorProfile() {
   const [userSubscription, setUserSubscription] = useState<{
     subscribed: boolean;
     tier_id?: string;
+    tier_name?: string;
     subscription_end?: string;
   }>({ subscribed: false });
   const [giftDialogOpen, setGiftDialogOpen] = useState(false);
