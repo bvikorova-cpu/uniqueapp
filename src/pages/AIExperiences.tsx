@@ -158,7 +158,10 @@ const AIExperiences = () => {
 
   const checkAuth = async () => {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) navigate("/auth");
+    if (!user) {
+      savePendingAction({ key: "ai-experiences:open", returnTo: "/ai-experiences" });
+      navigate("/auth");
+    }
   };
 
   const loadTours = async () => {
