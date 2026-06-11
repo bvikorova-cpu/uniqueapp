@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { savePendingAction } from "@/lib/pendingAction";
 import { useToast } from "@/hooks/use-toast";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Briefcase, Dumbbell, Brain, Heart } from "lucide-react";
@@ -95,6 +96,7 @@ const AIMentor = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
+        savePendingAction({ key: "ai-mentor:open", returnTo: "/mentor" });
         navigate('/auth');
         return;
       }

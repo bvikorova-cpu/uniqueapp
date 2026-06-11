@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { savePendingAction } from "@/lib/pendingAction";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -157,7 +158,10 @@ const AIExperiences = () => {
 
   const checkAuth = async () => {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) navigate("/auth");
+    if (!user) {
+      savePendingAction({ key: "ai-experiences:open", returnTo: "/ai-experiences" });
+      navigate("/auth");
+    }
   };
 
   const loadTours = async () => {

@@ -3,6 +3,7 @@ import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useIdleLogout } from '@/hooks/useIdleLogout';
+import { getPendingReturnTo } from '@/lib/pendingAction';
 // WelcomeCreditsDialog removed — paid-only model (no free tier)
 
 
@@ -60,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Only navigate when a session is established (email confirmation NOT required).
     // Otherwise the caller should show a "check your email" message and stay on /auth.
     if (!error && data?.session) {
-      navigate('/');
+      navigate(getPendingReturnTo() || '/');
     }
 
     return { error };
@@ -73,7 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     if (!error && data?.session) {
-      navigate('/');
+      navigate(getPendingReturnTo() || '/');
     }
 
     return { error };

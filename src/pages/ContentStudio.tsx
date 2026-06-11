@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
+import { savePendingAction } from "@/lib/pendingAction";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import {
@@ -69,7 +70,7 @@ const ContentStudio = () => {
 
   const checkUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { navigate("/auth"); return; }
+    if (!user) { savePendingAction({ key: "content-studio:open", returnTo: "/content-studio" }); navigate("/auth"); return; }
     setUser(user);
     await loadCredits(user.id);
     await loadSavedContent(user.id);

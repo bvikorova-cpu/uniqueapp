@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
+import { savePendingAction, consumePendingAction } from "@/lib/pendingAction";
 import { useToast } from "@/hooks/use-toast";
 import { useCompanionsSubscription } from "@/hooks/useCompanionsSubscription";
 import { motion } from "framer-motion";
@@ -44,6 +45,10 @@ const AICompanions = () => {
   useEffect(() => {
     loadCharacters();
     loadStats();
+    const pending = consumePendingAction<{ characterId: string; isPremium: boolean }>("ai-companions:start");
+    if (pending?.data) {
+      setTimeout(() => startConversation(pending.data!.characterId, pending.data!.isPremium), 600);
+    }
   }, []);
 
   useEffect(() => {
@@ -77,7 +82,7 @@ const AICompanions = () => {
   const loadCharacters = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { navigate("/auth"); return; }
+      if (!user) { savePendingAction({ key: "ai-companions:open", returnTo: "/companions" }); navigate("/auth"); return; }
 
       const { data: chars } = await supabase.from("ai_characters").select("*").order("is_premium", { ascending: true });
       const { data: access } = await supabase.from("user_character_access").select("character_id").eq("user_id", user.id);
@@ -95,7 +100,11 @@ const AICompanions = () => {
   const startConversation = async (characterId: string, isPremium: boolean) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { navigate("/auth"); return; }
+      if (!user) {
+        savePendingAction({ key: "ai-companions:start", data: { characterId, isPremium }, returnTo: "/companions" });
+        navigate("/auth");
+        return;
+      }
 
       if (!isPremium) {
         const freeRemaining = subscription.freeMessagesLimit - subscription.freeMessagesUsed;

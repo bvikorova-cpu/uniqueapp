@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { savePendingAction } from "@/lib/pendingAction";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles, TrendingUp, Star, Save, Zap, BarChart3, Coins, Check,
@@ -183,7 +184,7 @@ export default function LotteryAI() {
   const handleSubscribe = async (tier: "basic" | "pro") => {
     if (!user) {
       toast({ title: "Sign-in Required", description: "Please sign in to subscribe.", variant: "destructive" });
-      navigate("/auth");
+      savePendingAction({ key: "lottery-ai:open", returnTo: "/lottery-ai" }); navigate("/auth");
       return;
     }
     if (!tier || !SUBSCRIPTION_TIERS[tier]) {
@@ -209,7 +210,7 @@ export default function LotteryAI() {
   const handleManageSubscription = async () => {
     if (!user) {
       toast({ title: "Sign-in Required", description: "Please sign in to manage your subscription.", variant: "destructive" });
-      navigate("/auth");
+      savePendingAction({ key: "lottery-ai:open", returnTo: "/lottery-ai" }); navigate("/auth");
       return;
     }
     try {
@@ -229,7 +230,7 @@ export default function LotteryAI() {
   const generateNumbers = async () => {
     if (!user) {
       toast({ title: "Sign-in Required", description: "Please sign in to generate numbers.", variant: "destructive" });
-      navigate("/auth");
+      savePendingAction({ key: "lottery-ai:open", returnTo: "/lottery-ai" }); navigate("/auth");
       return;
     }
     if (!subscription?.subscribed) {
@@ -301,7 +302,7 @@ export default function LotteryAI() {
   const saveCombination = async () => {
     if (!user) {
       toast({ title: "Sign-in Required", description: "Please sign in to save combinations.", variant: "destructive" });
-      navigate("/auth");
+      savePendingAction({ key: "lottery-ai:open", returnTo: "/lottery-ai" }); navigate("/auth");
       return;
     }
     if (generatedNumbers.length === 0) {
@@ -359,7 +360,7 @@ export default function LotteryAI() {
                 <CardDescription>Please sign in to access AI-powered lottery predictions</CardDescription>
               </CardHeader>
               <CardContent>
-                <Button onClick={() => navigate("/auth")} className="w-full" size="lg">
+                <Button onClick={() => { savePendingAction({ key: "lottery-ai:open", returnTo: "/lottery-ai" }); navigate("/auth"); }} className="w-full" size="lg">
                   Sign In to Continue
                 </Button>
               </CardContent>
