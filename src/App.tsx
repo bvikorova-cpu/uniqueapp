@@ -379,6 +379,7 @@ import {
   EmotionEconomy,
   QuantumSocial,
   HolographicAvatars,
+  DigitalOffspring,
   CrystalEnergyNetwork,
   CrystalMarketplace,
   DNAMemoryNetwork,
