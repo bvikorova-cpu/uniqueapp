@@ -186,8 +186,13 @@ const AIExperiences = () => {
         setTimeout(() => navigate("/ai-credits-store"), 2000);
         return;
       }
-      const { data, error } = await supabase.functions.invoke('generate-virtual-tour', { body: { destination: dest } });
-      if (error) throw error;
+      const { data, error } = await supabase.functions.invoke('experience-ai', { body: { action: 'virtual-tour', destination: dest } });
+      if (error) {
+        const status = (error as any).context?.status;
+        if (status === 402) { toast({ title: "Insufficient Credits", description: "Redirecting...", variant: "destructive" }); setTimeout(() => navigate("/ai-credits-store"), 1500); return; }
+        if (status === 429) { toast({ title: "Rate limit", description: "Try again shortly.", variant: "destructive" }); return; }
+        throw error;
+      }
       toast({ title: "✨ Virtual Tour Created!", description: `Enjoy your journey to ${dest}` });
       await loadTours();
       await refreshCredits();
