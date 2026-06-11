@@ -18,23 +18,23 @@ import {
 const benefits = [
   {
     icon: Crown,
-    title: "Exkluzívne tiers",
-    desc: "Mesačné predplatné s prístupom k obsahu pre fanúšikov.",
+    title: "Exclusive tiers",
+    desc: "Monthly subscriptions with access to creator-only content.",
   },
   {
     icon: Lock,
-    title: "Pay-per-view obsah",
-    desc: "Odomkni jednotlivé videá, fotky a príbehy podľa záujmu.",
+    title: "Pay-per-view content",
+    desc: "Unlock individual videos, photos and stories on demand.",
   },
   {
     icon: MessageCircle,
-    title: "Priame DM + tipy",
-    desc: "Napíš svojmu obľúbenému creatorovi a podpor ho tipom.",
+    title: "Direct DMs + tips",
+    desc: "Message your favorite creator and support them with tips.",
   },
   {
     icon: Video,
-    title: "Live stream prístup",
-    desc: "Pripoj sa k súkromným live vysielaniam len pre predplatiteľov.",
+    title: "Live stream access",
+    desc: "Join private live broadcasts reserved for subscribers.",
   },
 ];
 
@@ -51,10 +51,10 @@ const CreatorsLanding = () => {
   return (
     <>
       <Helmet>
-        <title>Creators – Exkluzívny obsah a predplatné | Unique</title>
+        <title>Creators – Exclusive content & subscriptions | Unique</title>
         <meta
           name="description"
-          content="Objav Unique Creators: mesačné predplatné, pay-per-view obsah, priame DM, tipy a live streamy od tvojich obľúbených tvorcov."
+          content="Discover Unique Creators: monthly subscriptions, pay-per-view content, direct DMs, tips and live streams from your favorite creators."
         />
         <link rel="canonical" href="/creators" />
       </Helmet>
@@ -68,24 +68,24 @@ const CreatorsLanding = () => {
           <div className="relative container mx-auto px-4 py-20 md:py-28 text-center">
             <Badge variant="secondary" className="mb-6 gap-1.5">
               <Sparkles className="h-3.5 w-3.5" />
-              Nová sekcia na Unique
+              New section on Unique
             </Badge>
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6 bg-gradient-to-br from-foreground via-primary to-accent bg-clip-text text-transparent">
-              Podpor svojich obľúbených Creatorov
+              Support your favorite Creators
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
-              Predplať si exkluzívny obsah, odomkni súkromné videá, posielaj tipy
-              a komunikuj priamo so svojimi obľúbenými tvorcami.
+              Subscribe to exclusive content, unlock private videos, send tips
+              and chat directly with your favorite creators.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button asChild size="lg" className="text-base">
                 <Link to="/discover-creators">
-                  Preskúmaj Creators
+                  Explore Creators
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="text-base">
-                <Link to="/become-creator">Staň sa Creatorom</Link>
+                <Link to="/become-creator">Become a Creator</Link>
               </Button>
             </div>
           </div>
@@ -94,9 +94,9 @@ const CreatorsLanding = () => {
         {/* Benefits */}
         <section className="container mx-auto px-4 py-16 md:py-20">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-3">Čo získaš</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-3">What you get</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
-              Štyri spôsoby, ako sa priblížiť ku svojim obľúbeným tvorcom.
+              Four ways to get closer to your favorite creators.
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -122,15 +122,15 @@ const CreatorsLanding = () => {
           <div className="flex items-end justify-between mb-10 flex-wrap gap-4">
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-2">
-                Vybraní Creators
+                Featured Creators
               </h2>
               <p className="text-muted-foreground">
-                Ukážka tvorcov, ktorí už začali na Unique.
+                A glimpse of creators already building on Unique.
               </p>
             </div>
             <Button asChild variant="ghost">
               <Link to="/discover-creators">
-                Zobraziť všetkých
+                View all
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
@@ -168,21 +168,21 @@ const CreatorsLanding = () => {
                   <TrendingUp className="h-8 w-8 mx-auto text-primary mb-2" />
                   <div className="text-3xl font-bold">85%</div>
                   <div className="text-sm text-muted-foreground">
-                    Podiel pre creatorov
+                    Creator revenue share
                   </div>
                 </div>
                 <div>
                   <Star className="h-8 w-8 mx-auto text-accent mb-2" />
-                  <div className="text-3xl font-bold">4 kanály</div>
+                  <div className="text-3xl font-bold">4 channels</div>
                   <div className="text-sm text-muted-foreground">
-                    Monetizácie v jednej platforme
+                    Monetization in one platform
                   </div>
                 </div>
                 <div>
                   <Sparkles className="h-8 w-8 mx-auto text-primary mb-2" />
                   <div className="text-3xl font-bold">∞</div>
                   <div className="text-sm text-muted-foreground">
-                    Možnosti pre tvojich fanúšikov
+                    Possibilities for your fans
                   </div>
                 </div>
               </div>
@@ -193,14 +193,14 @@ const CreatorsLanding = () => {
         {/* Final CTA */}
         <section className="container mx-auto px-4 py-20 text-center">
           <h2 className="text-3xl md:text-5xl font-bold mb-4">
-            Pripravený začať?
+            Ready to start?
           </h2>
           <p className="text-muted-foreground max-w-xl mx-auto mb-8">
-            Objav tisíce tvorcov a podpor ich tvorbu už dnes.
+            Discover thousands of creators and support their work today.
           </p>
           <Button asChild size="lg" className="text-base">
             <Link to="/discover-creators">
-              Preskúmaj Creators
+              Explore Creators
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
