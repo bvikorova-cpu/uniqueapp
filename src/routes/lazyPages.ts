@@ -351,6 +351,7 @@ export const TimeCapsule = lazy(() => import("@/pages/TimeCapsule"));
 export const EmotionEconomy = lazy(() => import("@/pages/EmotionEconomy"));
 export const QuantumSocial = lazy(() => import("@/pages/QuantumSocial"));
 export const HolographicAvatars = lazy(() => import("@/pages/HolographicAvatars"));
+export const DigitalOffspring = lazy(() => import("@/pages/DigitalOffspring"));
 export const CrystalEnergyNetwork = lazy(() => import("@/pages/CrystalEnergyNetwork"));
 export const CrystalMarketplace = lazy(() => import("@/pages/CrystalMarketplace"));
 export const DNAMemoryNetwork = lazy(() => import("@/pages/DNAMemoryNetwork"));

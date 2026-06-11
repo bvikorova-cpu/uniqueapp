@@ -33,7 +33,11 @@ export const AvatarBreeding = ({ onBack }: Props) => {
         body: { priceId: "price_1SPjGzGaXSfGtYFtTGxQm0hM", featureName: "Avatar Breeding", metadata: { parent1, parent2 } },
       });
       if (error) throw error;
-      if (data?.url) { window.open(data.url, "_blank"); toast({ title: "Breeding Started!", description: "Complete payment to breed your avatars" }); }
+      if (data?.url) {
+        try { localStorage.setItem("pendingHoloAction", JSON.stringify({ kind: "breeding", parent1, parent2 })); } catch {}
+        window.open(data.url, "_blank");
+        toast({ title: "Breeding Started!", description: "Complete payment to breed your avatars" });
+      }
     } catch { toast({ title: "Error", description: "Failed to start breeding", variant: "destructive" }); }
     finally { setIsBreeding(false); }
   };

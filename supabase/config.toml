@@ -406,3 +406,9 @@ verify_jwt = true
 
 [functions.create-past-life-credits-payment]
 verify_jwt = true
+
+[functions.holographic-battle-simulate]
+verify_jwt = true
+
+[functions.holographic-breeding-simulate]
+verify_jwt = true
