@@ -64,11 +64,44 @@ export default function HolographicAvatars() {
       toast.success("Payment successful — your holographic feature is unlocked!", {
         description: sessionId ? `Reference: ${sessionId.slice(-8)}` : undefined,
       });
+      // Consume any pending gameplay action stored before redirect.
+      try {
+        const raw = localStorage.getItem("pendingHoloAction");
+        if (raw) {
+          const action = JSON.parse(raw);
+          localStorage.removeItem("pendingHoloAction");
+          if (action?.kind === "battle") {
+            supabase.functions
+              .invoke("holographic-battle-simulate", { body: { mode: action.mode, sessionId } })
+              .then(({ data, error }) => {
+                if (error || !data?.result) return;
+                const r = data.result;
+                const emoji = r.outcome === "win" ? "🏆" : r.outcome === "loss" ? "💀" : "🤝";
+                toast(`${emoji} Battle vs ${r.opponent_name}: ${r.outcome.toUpperCase()}`, {
+                  description: `Power ${r.user_power} vs ${r.opponent_power}${r.rewards_eur > 0 ? ` · +€${r.rewards_eur}` : ""}`,
+                });
+              });
+          } else if (action?.kind === "breeding") {
+            supabase.functions
+              .invoke("holographic-breeding-simulate", {
+                body: { parent1: action.parent1, parent2: action.parent2, sessionId },
+              })
+              .then(({ data, error }) => {
+                if (error || !data?.result) return;
+                const r = data.result;
+                toast.success(`👶 New offspring: ${r.offspring_name}`, {
+                  description: `${r.offspring_style} · ${r.rarity} · traits: ${(r.offspring_traits ?? []).join(", ")}`,
+                });
+              });
+          }
+        }
+      } catch (e) { console.warn("pendingHoloAction parse failed", e); }
       const next = new URLSearchParams(searchParams);
       ["success", "session_id"].forEach((k) => next.delete(k));
       setSearchParams(next, { replace: true });
     } else if (canceled === "true") {
       toast.info("Payment canceled");
+      try { localStorage.removeItem("pendingHoloAction"); } catch {}
       const next = new URLSearchParams(searchParams);
       next.delete("canceled");
       setSearchParams(next, { replace: true });
