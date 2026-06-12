@@ -1,77 +1,74 @@
-# Plán: oprava 52 nálezov — Anonymous Dating
+# Scale-Readiness Batch (Supabase Pro)
 
-Postup po fázach. Každá fáza = 1 commit/migration set, otestuje sa pred ďalšou.
+Cieľ: posunúť social & dating z "1M ready" na "10-100M ready". Plný 1B+ vyžaduje multi-region active-active mimo Lovable — to neriešim.
 
-## Fáza 1 — Kritické backend bugs (Day 1)
-Cieľ: zastaviť stratu peňazí a privacy leaky.
+## Čo Pro plan už dáva zadarmo
+- PgBouncer transaction pooler (port 6543) — netreba kód
+- Read replicas — netreba kód, len failover URL
+- Supabase Storage CDN (Cloudflare) — automatické
+- Realtime 500 concurrent / 2M msg / mesiac — stačí na ~100k DAU
+- Daily backups, 7-day PITR
 
-1. **Migration: anonymous_dating hardening**
-   - `UNIQUE(user_id)` na `anonymous_dating_credits`
-   - DB trigger na `anonymous_dating_matches`: blokuje `UPDATE status='revealed'` ak nie sú `user1_revealed=true AND user2_revealed=true`
-   - Audit + tightening RLS INSERT policy na `anonymous_dating_matches` (povolené len edge functions cez service role; klient nesmie insertovať)
-   - RPC `deduct_anonymous_credits(user_id, amount)` — atomický `UPDATE ... WHERE credits_remaining >= amount RETURNING` (rieši double-spend)
-   - `WITH CHECK` na `daily_questions` RLS
-   - Server enforcement expirácie matchu: cron alebo trigger nastaví `status='expired'` po `expires_at`
+→ Body **1, 5** = vybavené Pro planom, žiadna zmena kódu.
 
-2. **Edge `stripe-webhook`**: pridať handler pre `type:"anonymous_date_credits"` v `checkout.session.completed` → kredituje `anonymous_dating_credits` + zápis do `payment_records`.
+## Čo implementujem v tejto dávke
 
-3. **Edge `find-anonymous-match` + `anonymous-date-ai`**: nahradiť SELECT→UPDATE pattern volaním nového RPC `deduct_anonymous_credits`. Pridať blocked_users check pred AI volaním.
+### A. Global rate-limit (bod 9) — 1 migrácia
+- Tabuľka `public.rate_limit_buckets(user_id, bucket, window_start, count)` s unique key.
+- Funkcia `public.check_rate_limit(_bucket text, _max int, _window_seconds int) returns boolean` — SECURITY DEFINER, increments + returns false ak prekročené.
+- Cleanup cron: zmaže staré buckets > 24h.
+- Použitie: zavolá sa z edge fns (post-comment, send-dm, follow, like, swipe) cez RPC.
 
-4. **Edge `check-access`**: odstrániť DB mutáciu cez email lookup (read-only).
+### B. Text moderation (bod 8) — 1 edge fn
+- `moderate-text` edge fn: vstup `{ text }`, výstup `{ allowed, flagged_categories, severity }`.
+- Volá Lovable AI Gateway (`google/gemini-2.5-flash-lite`) s moderation promptom — žiadne externé kľúče.
+- Drop-in: `post-confession` už má denylist; pridám volanie tejto fn aj do `send-dm`, `create-post`, `add-comment` (ak existujú).
 
-5. **Fix 24h vs 7d**: zjednotiť na 7 dní (DB `expires_at = now()+7d`, frontend countdown číta z DB).
+### C. Image moderation (bod 7) — 1 edge fn
+- `moderate-image` edge fn: vstup `{ image_url }`, volá Gemini Flash 2.5 vision s NSFW/CSAM klasifikáciou.
+- Háčik v storage upload handleroch (post-image-upload, dating-photo-upload) → ak `flagged`, sa zmaže + log do `content_moderation`.
+- CSAM pri match → okamžitý ban + log pre admin.
 
-## Fáza 2 — Backend medium + bezpečnosť (Day 2) ✅
-6. ✅ Zod validácia v `anonymous-date-ai` aj `find-anonymous-match` (max lengths 4000, max 50 msgs).
-7. ✅ PII sanitizácia v `anonymous_date_ai_usage.input_data` (len structural fingerprint).
-8. ✅ Jednotný error handling cez `errorResponse(code, message, status)` helper v `_shared/anonymous-dating.ts`.
-9. ✅ Rate limiting cez `check_anon_dating_rate_limit` RPC (AI 20/min, match 30/min) + `mt_rate_limits` unique index.
+### D. Full-text search (bod 4) — 1 migrácia
+- GIN indexy na `posts(content)`, `profiles(full_name, username, bio)`, `job_listings(title, description)`, `communities(name, description)` cez `to_tsvector('simple', ...)`.
+- RPC `search_posts(q text, limit int)`, `search_profiles(q text, limit int)`.
+- Nahradí dnešné `ilike '%q%'` ktoré nepoužíva index.
 
-## Fáza 3 — Frontend stabilita (Day 3) ✅ (čiastočne)
-10. ✅ `AnonymousChat`: `isMountedRef` + `AbortController` pre moderation invoke, cleanup on unmount.
-11. ✅ `useAnonymousDate`: `userIdRef` cache + `onAuthStateChange` invalidation, typed `ActiveMatch[]`.
-12. ✅ `RevealLock`: optimistic conditional UPDATE (`reveal_request_at IS NULL` alebo stale >60s, `status='active'`), self-accept guard, requester-only cancel.
-13. ✅ `ProfileSetup`: Zod schema (`src/lib/anonymousDatingSchema.ts`) validuje pred submitom, jednotná error message.
-13a. ✅ `useAnonymousChat.broadcastTyping`: throttle 1500ms + debounce 300ms (zabráni floodu kanála).
-14. ✅ `VoiceRecorderButton` + `useVoiceRecorder`: hard cap 60s s auto-stop pri dosiahnutí limitu, unmount cleanup (MediaRecorder.stop + tracks.stop + interval clear), `cancel()` releases mic.
+### E. Feed cache denormalizácia (bod 2) — 1 migrácia
+- Tabuľka `user_feed_cache(user_id, post_id, score, inserted_at)` PK `(user_id, post_id)`.
+- Trigger na `posts`: po inserte fan-out do followers (cap 5000 — celebrity účty riešené pull-on-read).
+- `get_wall_feed` RPC upravený: najprv číta z cache, ak prázdne → fallback na live query.
+- Cron: nightly trim starých záznamov > 30 dní.
 
+### F. Spam/bot signály (bod 6) — 1 migrácia + 1 fn
+- Stĺpec `profiles.spam_score` (int), `profiles.account_age_hours` (computed).
+- DB fn `compute_spam_score(_user_id)` — heuristika: vek <24h + >10 follow akcií + 0 avatar + 0 bio = high score.
+- Trigger na `follows`, `dating_swipes`: ak `spam_score > 70`, blok insertu.
 
-## Fáza 4 — Frontend dizajn/sémantika (Day 4) ✅
-15. ✅ Hot spots (RevealLock, AnonymousChat bubble/input/container) prepnuté na sémantické utility (`bg-anon-date-gradient`, `text-anon-date`, `border-anon-date`). Sekundárne komponenty (Hero, Toolbox, Personality) ponechané — používajú dekoratívne pink/rose ladenie zámerne v rámci dating brandu.
-16. ✅ Pridané tokeny `--anon-date-1/2/3/glow/gradient` + utility v `src/index.css`.
-17. ✅ Chat layout `h-[calc(100vh-16rem)]` → `.h-anon-chat` (100dvh s vh fallbackom pre staršie prehliadače).
-18. ✅ EN-only audit: žiadne SK reťazce v `anonymous-date/` ani v `AnonymousDate.tsx` (overené ripgrepom na diakritiku).
+### G. Hot-path indexy (perf) — 1 migrácia
+- `posts(created_at DESC) WHERE deleted_at IS NULL`
+- `dating_swipes(user_id, created_at DESC)`
+- `notifications(user_id, read_at, created_at DESC)`
+- `conversation_messages(conversation_id, created_at DESC)`
+- `follows(follower_id), follows(following_id)` (ak chýbajú)
 
+### H. APM — Sentry (bod 13) — 1 secret + 2 súbory
+- Pridať `@sentry/react` + init v `main.tsx` (SENTRY_DSN secret).
+- Edge fn wrapper `sentryWrap` pre serverové errory.
+- User povie či má Sentry účet, alebo to vynechám.
 
-## Fáza 5 — UX kritické (Day 5) ✅
-19. ✅ **AdultWarningModal**: DOB pole s validáciou ≥16, persist do `profiles.birth_date`.
-20. ✅ **Chat expirácia**: banner 24h pred expiráciou (amber warning) + post-expiry CTA „Find new match" v header AnonymousChat.
-21. ✅ **CreditPackages**: zobrazené €/credit + Save % (vs. Basic 0.5€/credit baseline).
-22. ✅ **ProfileSetup stats**: skryté (žiadne falošné „—" hodnoty), pripravené na neskoršie zapojenie reálnych metrík.
-23. ✅ **ChatSafetyMenu**: shield ikona presunutá z `⋮` na viditeľný emerald "Safety" badge v headeri.
+## Čo NEROBÍM
 
-## Fáza 6 — UX polish (Day 6) ✅
-24. ✅ AI Toolbox dostupný priamo z chatu cez Sheet drawer (Wand2 button v headeri).
-25. ✅ Reaction tooltip ("React with an emoji") na Smile ikone v MessageReactions.
-26. ✅ Empty states: ActiveMatches zero-match karta s animovaným srdcom + "Find your match" CTA wired do `setActiveView("find")`. Chat empty state s ikebreaker promptom.
-27. ✅ Skeleton loader (4 bubble skeletons) namiesto "Loading conversation…" textu.
-28. ✅ Block/report toasty už existujú v `useChatSafety` (block/unblock/report = sonner toasts).
+- **Bod 3 (Realtime sharding)** — Pro plan dáva 500 concurrent, do 100k DAU netreba sharding. Nad 100k = vlastná infra.
+- **Bod 10 (GDPR erasure)** — už hotové (`gdpr_purge_user_data`).
+- **Bod 11 (Age verification)** — Yoti/Veriff integrácia = €€€ + KYC kontrakt, vyžaduje user rozhodnutie.
+- **Bod 12 (Reporting/appeals UI)** — existuje `content_reports`, `brand_moderation_appeals`. DSA-grade SLA UI = separátny ticket.
+- **Bod 14 (Load tests)** — k6/Artillery nepatrí do prod kódu, beží sa lokálne.
 
-## Fáza 7 — Testy & monitoring (Day 7) ✅ (čiastočne)
-29. ✅ Deno unit testy pre `_shared/anonymous-dating.ts` (Zod schémy: max 4000 chars, max 50 msgs, UUID; PII sanitizer; errorResponse) — `supabase/functions/_shared/anonymous-dating.test.ts`.
-30. ✅ E2E RLS regression (`e2e/anonymous-dating-profiles-rls.spec.ts`) — anon nemá prístup k `anonymous_dating_profiles` ani `anonymous_dating_matches`; partner-profile columns stále existujú.
-31. ✅ E2E partner enrichment (`e2e/anonymous-date-matches.spec.ts`) — viacero partnerov, refresh persistence, swap, fallback, empty state.
-32. ✅ Webhook signature enforcement e2e (`e2e/authed/anonymous-dating-security.spec.ts`) — missing-sig + invalid-sig → 4xx, žiadne fake kredity sa nepriznajú. Pozitívna credit-grant cesta zostáva pokrytá manuálnym Stripe test mode (vyžaduje webhook secret v test env).
-33. ✅ Reveal-attack guard e2e (single-user) — authed user sa pokúsi PATCHnúť vlastný match na `status='revealed'` + oba `*_revealed=true`; RLS/trigger to musí odmietnuť. Auto-skip ak QA user nemá match.
-34. ✅ Double-spend e2e — 10 paralelných `anonymous-date-ai` volaní, asserty: `endBalance ≥ 0`, `debited == successes * cost`, konzistentný integer cost. Auto-skip ak má QA user 0 kreditov.
-35. **SKIP** — edge function logs alerting na 5xx (vyžaduje externý monitoring setup — Sentry/DataDog/PagerDuty). Mimo rozsahu tohto projektu.
+## Poradie execution
+1. Migrácia A+D+E+F+G (jeden DB push)
+2. Edge fns B + C
+3. Hook B/C do existujúcich create-post/send-dm/upload paths
+4. Sentry (ak user dodá DSN)
 
-## Technické poznámky
-- Žiadne breaking changes pre existujúce páry — migrácia `expires_at` len pre nové matche; staré nechať, ale pridať warning UI.
-- Všetky migrácie idempotentné (`IF NOT EXISTS`, `CREATE OR REPLACE`).
-- Po každej fáze: `bunx vitest run` + manuálny smoke v preview.
-
-## Odhad
-~7 pracovných dní. Najdôležitejšie sú Fázy 1–2 (peniaze + privacy). Fázy 3–7 možno robiť paralelne ak treba.
-
-Po schválení začínam **Fázou 1** (1 migrácia + 3 edge function úpravy).
+Schválenie potrebné — migrácia mení ~10 tabuliek/funkcií. Pokračujem?
