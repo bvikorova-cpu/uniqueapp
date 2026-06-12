@@ -148,6 +148,9 @@ export function WallPostActions({
     setLikesCount((c) => c + (next ? 1 : -1));
     try {
       if (next) {
+        const { rateLimit } = await import("@/lib/scaleGuards");
+        const ok = await rateLimit("like.toggle", 120, 60);
+        if (!ok) throw new Error("Too many likes. Slow down.");
         const { error } = await supabase
           .from("post_likes")
           .insert({ post_id: postId, user_id: userId! });
@@ -161,6 +164,7 @@ export function WallPostActions({
           .eq("user_id", userId!);
         if (error) throw error;
       }
+
     } catch (err: any) {
       // revert on failure
       setLiked(!next);
