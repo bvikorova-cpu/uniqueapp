@@ -22,7 +22,7 @@ export default function WallTrending() {
       const { data: posts } = await supabase.from("posts").select(`*, media (*)`).gte("created_at", sevenDaysAgo.toISOString()).order("likes_count", { ascending: false }).limit(20);
       if (!posts) return [];
       const userIds = Array.from(new Set(posts.map(p => p.user_id)));
-      const { data: profiles } = await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", userIds);
+      const { data: profiles } = await (supabase as any).from("public_profiles").select("id, full_name, avatar_url").in("id", userIds);
       const profilesMap = new Map<string, any>((profiles || []).map((p: any) => [p.id, p]));
       return posts.map(post => {
         const baseScore = (post.likes_count || 0) + (post.comments_count || 0) * 2 + (post.shares_count || 0) * 3 + (post.reposts_count || 0) * 2;

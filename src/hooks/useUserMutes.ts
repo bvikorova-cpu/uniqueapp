@@ -23,7 +23,7 @@ export const useUserMutes = () => {
       const ids = active.map((m: any) => m.muted_user_id);
       if (ids.length === 0) return active;
       const { data: profs } = await (supabase as any)
-        .from("profiles_public")
+        .from("public_profiles")
         .select("id, full_name, avatar_url")
         .in("id", ids);
       const map = new Map((profs || []).map((p: any) => [p.id, p]));
