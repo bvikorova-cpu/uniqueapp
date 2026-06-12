@@ -1,7 +1,18 @@
+import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
 
+/**
+ * Direct Messages — 1:1 thin layer over the unified `conversations` schema.
+ *
+ * The legacy `direct_messages` table is deprecated. Reads/writes go through
+ * `conversations` + `conversation_participants` + `conversation_messages`
+ * via the `get_or_create_dm_conversation(uuid)` RPC, which lazily creates
+ * a 1:1 conversation between the current user and the counterpart.
+ *
+ * External hook API is preserved so existing callers (SharePostToDM,
+ * MessageButton, DirectMessagesDialog) keep working without changes.
+ */
 export interface DirectMessage {
   id: string;
   sender_id: string;
@@ -11,58 +22,136 @@ export interface DirectMessage {
   created_at: string;
 }
 
+const KEY_THREAD = (otherUserId?: string) => ["direct-messages", otherUserId];
+const KEY_LIST = ["conversations-list"] as const;
+
+async function ensureDmConversation(otherUserId: string): Promise<string> {
+  const { data, error } = await (supabase as any).rpc("get_or_create_dm_conversation", {
+    _other_user: otherUserId,
+  });
+  if (error) throw error;
+  return data as string;
+}
+
 export const useDirectMessages = (otherUserId?: string) => {
-  const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const { data: messages, isLoading } = useQuery({
-    queryKey: ["direct-messages", otherUserId],
-    queryFn: async () => {
+    queryKey: KEY_THREAD(otherUserId),
+    queryFn: async (): Promise<DirectMessage[]> => {
       if (!otherUserId) return [];
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return [];
 
-      const { data, error } = await supabase
-        .from("direct_messages")
-        .select("*")
-        .or(`and(sender_id.eq.${user.id},receiver_id.eq.${otherUserId}),and(sender_id.eq.${otherUserId},receiver_id.eq.${user.id})`)
-        .order("created_at", { ascending: true });
+      const convId = await ensureDmConversation(otherUserId);
 
+      const { data, error } = await (supabase as any)
+        .from("conversation_messages")
+        .select("id, sender_id, content, created_at, is_read")
+        .eq("conversation_id", convId)
+        .order("created_at", { ascending: true });
       if (error) throw error;
-      return data;
+
+      return (data ?? []).map((m: any): DirectMessage => ({
+        id: m.id,
+        sender_id: m.sender_id,
+        receiver_id: m.sender_id === user.id ? otherUserId : user.id,
+        content: m.content,
+        is_read: !!m.is_read,
+        created_at: m.created_at,
+      }));
     },
     enabled: !!otherUserId,
   });
 
+  // Realtime: refresh when new messages arrive in the resolved conversation.
+  useEffect(() => {
+    if (!otherUserId) return;
+    let active = true;
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+
+    (async () => {
+      try {
+        const convId = await ensureDmConversation(otherUserId);
+        if (!active) return;
+        channel = supabase
+          .channel(`dm:${convId}`)
+          .on(
+            "postgres_changes",
+            {
+              event: "*",
+              schema: "public",
+              table: "conversation_messages",
+              filter: `conversation_id=eq.${convId}`,
+            },
+            () => {
+              queryClient.invalidateQueries({ queryKey: KEY_THREAD(otherUserId) });
+              queryClient.invalidateQueries({ queryKey: KEY_LIST });
+            },
+          )
+          .subscribe();
+      } catch {
+        /* no-op */
+      }
+    })();
+
+    return () => {
+      active = false;
+      if (channel) supabase.removeChannel(channel);
+    };
+  }, [otherUserId, queryClient]);
+
   const { data: conversations } = useQuery({
-    queryKey: ["conversations-list"],
+    queryKey: KEY_LIST,
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return [];
 
-      // Get all unique conversation partners
-      const { data, error } = await supabase
-        .from("direct_messages")
-        .select("sender_id, receiver_id, content, created_at")
-        .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
-        .order("created_at", { ascending: false });
+      // My non-group conversations + their other participant
+      const { data: parts } = await supabase
+        .from("conversation_participants")
+        .select("conversation_id")
+        .eq("user_id", user.id);
+      const ids = (parts ?? []).map((p: any) => p.conversation_id);
+      if (!ids.length) return [];
 
-      if (error) throw error;
+      const { data: convs } = await (supabase as any)
+        .from("conversations")
+        .select("id, is_group, updated_at")
+        .in("id", ids)
+        .eq("is_group", false);
 
-      // Extract unique users and their last message
-      const conversationsMap = new Map();
-      data?.forEach((msg) => {
-        const otherUser = msg.sender_id === user.id ? msg.receiver_id : msg.sender_id;
-        if (!conversationsMap.has(otherUser)) {
-          conversationsMap.set(otherUser, {
-            userId: otherUser,
-            lastMessage: msg.content,
-            lastMessageAt: msg.created_at,
-          });
-        }
-      });
+      const dmIds = (convs ?? []).map((c: any) => c.id);
+      if (!dmIds.length) return [];
 
-      return Array.from(conversationsMap.values());
+      // Other participants
+      const { data: others } = await supabase
+        .from("conversation_participants")
+        .select("conversation_id, user_id")
+        .in("conversation_id", dmIds)
+        .neq("user_id", user.id);
+
+      // Latest message per conversation (simple per-conv query; fine for typical list sizes)
+      const list = await Promise.all(
+        (others ?? []).map(async (row: any) => {
+          const { data: last } = await (supabase as any)
+            .from("conversation_messages")
+            .select("content, created_at")
+            .eq("conversation_id", row.conversation_id)
+            .order("created_at", { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          return {
+            userId: row.user_id as string,
+            lastMessage: last?.content ?? "",
+            lastMessageAt: last?.created_at ?? null,
+          };
+        }),
+      );
+
+      return list
+        .filter((x) => x.lastMessageAt)
+        .sort((a, b) => (a.lastMessageAt! < b.lastMessageAt! ? 1 : -1));
     },
   });
 
@@ -71,36 +160,36 @@ export const useDirectMessages = (otherUserId?: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { data, error } = await supabase
-        .from("direct_messages")
+      const convId = await ensureDmConversation(receiverId);
+
+      const { data, error } = await (supabase as any)
+        .from("conversation_messages")
         .insert({
+          conversation_id: convId,
           sender_id: user.id,
-          receiver_id: receiverId,
           content,
         })
         .select()
         .single();
-
       if (error) throw error;
       return data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["direct-messages"] });
-      queryClient.invalidateQueries({ queryKey: ["conversations-list"] });
+    onSuccess: (_d, vars) => {
+      queryClient.invalidateQueries({ queryKey: KEY_THREAD(vars.receiverId) });
+      queryClient.invalidateQueries({ queryKey: KEY_LIST });
     },
   });
 
   const markAsRead = useMutation({
     mutationFn: async (messageId: string) => {
-      const { error } = await supabase
-        .from("direct_messages")
+      const { error } = await (supabase as any)
+        .from("conversation_messages")
         .update({ is_read: true })
         .eq("id", messageId);
-
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["direct-messages"] });
+      queryClient.invalidateQueries({ queryKey: KEY_THREAD(otherUserId) });
     },
   });
 

@@ -25,9 +25,17 @@ export const useVoiceMessages = () => {
 
       const { data: { publicUrl } } = supabase.storage.from("media").getPublicUrl(path);
 
-      const { error } = await (supabase as any).from("direct_messages").insert({
+      // Resolve / create the 1:1 conversation via RPC, then insert the voice
+      // message into the unified `conversation_messages` table.
+      const { data: convId, error: convErr } = await (supabase as any).rpc(
+        "get_or_create_dm_conversation",
+        { _other_user: receiverId },
+      );
+      if (convErr) throw convErr;
+
+      const { error } = await (supabase as any).from("conversation_messages").insert({
+        conversation_id: convId,
         sender_id: user.id,
-        receiver_id: receiverId,
         content: "[voice message]",
         message_type: "voice",
         audio_url: publicUrl,
