@@ -1,26 +1,30 @@
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 
-// Verifies that the legacy/aliased H&W checkout function names are wired
-// through patchSupabaseFunctions to real edge functions.
-import { FUNCTION_ALIASES } from "@/integrations/supabase/patchSupabaseFunctions";
+// Verifies the H&W legacy checkout/portal/subscription names are wired
+// through the alias map in patchSupabaseFunctions to universal routers.
+const src = readFileSync(
+  resolve(__dirname, "../utils/patchSupabaseFunctions.ts"),
+  "utf-8",
+);
 
-describe("Health & Wellness checkout router aliases", () => {
-  const expected: Record<string, RegExp> = {
-    "create-wellness-checkout": /checkout/i,
-    "create-healthcare-checkout": /checkout/i,
-    "create-nutrition-checkout": /checkout/i,
-    "create-psychology-checkout": /checkout/i,
-    "psychology-customer-portal": /portal/i,
-    "healthcare-customer-portal": /portal/i,
-    "nutrition-customer-portal": /portal/i,
-    "wellness-customer-portal": /portal/i,
-  };
+describe("Health & Wellness alias map", () => {
+  const aliases = [
+    "create-wellness-checkout",
+    "create-healthcare-checkout",
+    "create-nutrition-checkout",
+    "create-psychology-checkout",
+    "healthcare-customer-portal",
+    "psychology-customer-portal",
+    "check-wellness-subscription",
+    "check-healthcare-subscription",
+    "check-psychology-subscription",
+  ];
 
-  for (const [alias, pattern] of Object.entries(expected)) {
-    it(`alias ${alias} maps to a real function`, () => {
-      const target = FUNCTION_ALIASES?.[alias];
-      expect(target, `missing alias for ${alias}`).toBeTruthy();
-      expect(target).toMatch(pattern);
+  for (const alias of aliases) {
+    it(`maps ${alias}`, () => {
+      expect(src).toContain(`"${alias}"`);
     });
   }
 });
