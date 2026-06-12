@@ -233,6 +233,13 @@ export function WallPostActions({
     if (!content) return;
     setSubmittingComment(true);
     try {
+      const { rateLimit, moderateText } = await import("@/lib/scaleGuards");
+      const okRate = await rateLimit("comment.create", 30, 60);
+      if (!okRate) throw new Error("Too many comments. Slow down.");
+      const mod = await moderateText(content);
+      if (!mod.allowed && mod.severity === "high") {
+        throw new Error("Comment violates community guidelines.");
+      }
       const { error } = await supabase
         .from("post_comments")
         .insert({ post_id: postId, user_id: userId!, content });
@@ -241,6 +248,7 @@ export function WallPostActions({
       setCommentsCount((c) => c + 1);
       trackChallengeAction("comment", 10);
       await fetchComments();
+
     } catch (err: any) {
       toast({
         title: "Error",
