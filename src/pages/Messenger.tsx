@@ -187,6 +187,7 @@ const Messenger = () => {
 
   // Online status hook
   const { isUserOnline } = useOnlineStatus(user?.id || null);
+  const { isMuted: isDmMuted, toggle: toggleDmMute } = useDmMutes();
 
   // Real "friends online" = unique conversation partners currently online
   useEffect(() => {
