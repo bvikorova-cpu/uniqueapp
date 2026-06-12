@@ -1265,6 +1265,25 @@ const Messenger = () => {
                           </div>
                         )}
                       </div>
+                      {conv.otherUser && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7 flex-shrink-0 opacity-70 hover:opacity-100"
+                          aria-label={isDmMuted(conv.otherUser.id) ? "Unmute conversation" : "Mute conversation"}
+                          title={isDmMuted(conv.otherUser.id) ? "Unmute conversation" : "Mute conversation"}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleDmMute(conv.otherUser!.id);
+                          }}
+                        >
+                          {isDmMuted(conv.otherUser.id) ? (
+                            <BellOff className="h-4 w-4" />
+                          ) : (
+                            <Bell className="h-4 w-4" />
+                          )}
+                        </Button>
+                      )}
                     </div>
                   ))}
                 </div>
