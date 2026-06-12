@@ -137,17 +137,22 @@ const Feed = () => {
       const cursor = loadMore ? lastCursor.current : null;
 
       // Single-RPC fetch: posts + reposts + profiles + media + original_posts in 1 round-trip.
-      const { data: feedData, error: feedErr } = await supabase.rpc("get_wall_feed", {
-        _cursor: cursor,
-        _limit: POSTS_PER_PAGE,
-      });
+      // P2 — 1 auto-retry on transient network/RPC error so a single fail doesn't kill the feed.
+      const fetchFeed = async () => supabase.rpc("get_wall_feed", { _cursor: cursor, _limit: POSTS_PER_PAGE });
+      let { data: feedData, error: feedErr } = await fetchFeed();
+      if (feedErr) {
+        await new Promise(r => setTimeout(r, 400));
+        ({ data: feedData, error: feedErr } = await fetchFeed());
+      }
       if (feedErr) throw feedErr;
 
       const payload = (feedData as any) || { posts: [], reposts: [] };
       const postsData: any[] = payload.posts || [];
       const repostsData: any[] = payload.reposts || [];
 
-      setHasMore(postsData.length >= POSTS_PER_PAGE || repostsData.length >= POSTS_PER_PAGE);
+      // Audit fix: pagination must compare TOTAL items vs page size (sum, not OR).
+      setHasMore(postsData.length + repostsData.length >= POSTS_PER_PAGE);
+
 
       const fallback = (id: string) => ({ id, full_name: null, avatar_url: null });
 
