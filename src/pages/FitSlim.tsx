@@ -181,9 +181,17 @@ const FitSlim = () => {
   };
 
   const openExistingPlan = async (plan: any) => {
-    if (plan.status === "completed") { setViewingPlan(plan); setViewingPlanDetails(null); }
-    else if (plan.status === "pending" && plan.payment_status === "unpaid") verifyAndGenerate(plan.id);
-    else if (plan.status === "generating") toast({ title: "Plan is being generated..." });
+    if (plan.status === "completed") {
+      setViewingPlan(plan);
+      setViewingPlanDetails(null);
+    } else if (plan.status === "generating") {
+      toast({ title: "Plan is being generated...", description: "Please check back in a moment." });
+    } else if (plan.payment_status === "paid" && plan.status !== "completed") {
+      // Paid but not yet generated – try to regenerate
+      verifyAndGenerate(plan.id);
+    } else {
+      toast({ title: "Payment incomplete", description: "Finish checkout to receive this plan.", variant: "destructive" });
+    }
   };
 
   // ===== DATA =====
