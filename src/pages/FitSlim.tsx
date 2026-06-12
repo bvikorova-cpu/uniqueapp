@@ -446,7 +446,7 @@ const FitSlim = () => {
 
         {/* Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 mb-8 bg-card/80 backdrop-blur-xl border-2 border-primary/20 p-1.5 rounded-2xl shadow-lg shadow-primary/5">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 gap-1.5 h-auto mb-8 bg-card/80 backdrop-blur-xl border-2 border-primary/20 p-1.5 rounded-2xl shadow-lg shadow-primary/5">
             <TabsTrigger value="personalized-plans" className="rounded-xl font-bold text-xs data-[state=active]:bg-gradient-to-r data-[state=active]:from-yellow-500/20 data-[state=active]:to-amber-500/20 data-[state=active]:text-yellow-400 data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-yellow-500/30 transition-all"><Crown className="h-4 w-4 mr-1" /> My Plan</TabsTrigger>
             <TabsTrigger value="weight-loss-videos" className="rounded-xl font-bold text-xs data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-500/20 data-[state=active]:to-orange-500/20 data-[state=active]:text-red-400 data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-red-500/30 transition-all"><Play className="h-4 w-4 mr-1" /> Weight Loss</TabsTrigger>
             <TabsTrigger value="health-videos" className="rounded-xl font-bold text-xs data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500/20 data-[state=active]:to-green-500/20 data-[state=active]:text-emerald-400 data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-emerald-500/30 transition-all"><Heart className="h-4 w-4 mr-1" /> Health</TabsTrigger>
