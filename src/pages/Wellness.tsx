@@ -126,9 +126,15 @@ export default function Wellness() {
   useEffect(() => { checkSubscription(); }, []);
 
   const handleCheckout = async (planKey: keyof typeof WELLNESS_PLANS) => {
+    // Pre-open a window synchronously to keep user gesture → avoids popup blocker
+    const checkoutWindow = window.open('', '_blank');
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { toast({ title: "Authentication Required", description: "Please sign in to subscribe", variant: "destructive" }); return; }
+      if (!session) {
+        checkoutWindow?.close();
+        toast({ title: "Authentication Required", description: "Please sign in to subscribe", variant: "destructive" });
+        return;
+      }
       setCheckoutLoading(planKey);
       const plan = WELLNESS_PLANS[planKey];
       const { data, error } = await supabase.functions.invoke('create-wellness-checkout', {
@@ -136,8 +142,15 @@ export default function Wellness() {
         headers: { Authorization: `Bearer ${session.access_token}` },
       });
       if (error) throw error;
-      if (data?.url) window.open(data.url, '_blank');
+      if (data?.url && checkoutWindow) {
+        checkoutWindow.location.href = data.url;
+      } else if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        checkoutWindow?.close();
+      }
     } catch (error) {
+      checkoutWindow?.close();
       console.error('Checkout error:', error);
       toast({ title: "Error", description: "Failed to start checkout", variant: "destructive" });
     } finally { setCheckoutLoading(null); }
