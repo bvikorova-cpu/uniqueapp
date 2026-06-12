@@ -10654,6 +10654,33 @@ export type Database = {
         }
         Relationships: []
       }
+      coffee_no_shows: {
+        Row: {
+          created_at: string
+          id: string
+          match_id: string
+          no_show_user_id: string
+          note: string | null
+          reporter_user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          match_id: string
+          no_show_user_id: string
+          note?: string | null
+          reporter_user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          match_id?: string
+          no_show_user_id?: string
+          note?: string | null
+          reporter_user_id?: string
+        }
+        Relationships: []
+      }
       coffee_profiles: {
         Row: {
           budget_preference: string | null
@@ -10661,6 +10688,7 @@ export type Database = {
           favorite_coffee_types: string[] | null
           id: string
           matches_remaining: number | null
+          no_show_strikes: number
           preferred_atmosphere: string[] | null
           subscription_expires_at: string | null
           subscription_tier: string | null
@@ -10676,6 +10704,7 @@ export type Database = {
           favorite_coffee_types?: string[] | null
           id?: string
           matches_remaining?: number | null
+          no_show_strikes?: number
           preferred_atmosphere?: string[] | null
           subscription_expires_at?: string | null
           subscription_tier?: string | null
@@ -10691,6 +10720,7 @@ export type Database = {
           favorite_coffee_types?: string[] | null
           id?: string
           matches_remaining?: number | null
+          no_show_strikes?: number
           preferred_atmosphere?: string[] | null
           subscription_expires_at?: string | null
           subscription_tier?: string | null
@@ -19535,6 +19565,27 @@ export type Database = {
           updated_at?: string
           user_id?: string
           veteran_status?: string | null
+        }
+        Relationships: []
+      }
+      dm_mutes: {
+        Row: {
+          created_at: string
+          id: string
+          muted_user_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          muted_user_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          muted_user_id?: string
+          user_id?: string
         }
         Relationships: []
       }

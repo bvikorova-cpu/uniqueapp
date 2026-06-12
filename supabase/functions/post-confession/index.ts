@@ -40,9 +40,39 @@ serve(async (req) => {
       });
     }
 
-    const { confessionText, isAnonymous } = await req.json();
+    const body = await req.json();
+    const rawText = typeof body?.confessionText === "string" ? body.confessionText : "";
+    const isAnonymous = !!body?.isAnonymous;
 
-    // AI categorization and severity assessment using OpenAI
+    // Sanitize: strip control/zero-width chars, collapse newlines, cap length
+    const stripped = rawText.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F\u200B-\u200F\u202A-\u202E\uFEFF]/g, "");
+    const collapsed = stripped.replace(/\n{3,}/g, "\n\n").trim();
+    const confessionText = collapsed.slice(0, 4000);
+    if (confessionText.length < 10) {
+      return new Response(JSON.stringify({ error: "Confession too short (min 10 chars)" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const BANNED = ["nigger","faggot","kike","tranny","retard"];
+    const lower = confessionText.toLowerCase();
+    if (BANNED.some(w => lower.includes(w))) {
+      return new Response(JSON.stringify({ error: "Content violates community guidelines" }), {
+        status: 422, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Rate-limit: max 5 confessions / 10 min per user
+    const since = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+    const { count } = await supabaseClient
+      .from("confessions").select("id", { count: "exact", head: true })
+      .eq("user_id", user.id).gte("created_at", since);
+    if ((count ?? 0) >= 5) {
+      return new Response(JSON.stringify({ error: "Rate limit exceeded. Try again later." }), {
+        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
     if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
 

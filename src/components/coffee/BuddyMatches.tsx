@@ -4,7 +4,7 @@ import { CoffeeChat } from './CoffeeChat';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Heart, X, MessageCircle } from 'lucide-react';
+import { Heart, X, MessageCircle, UserX } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export const BuddyMatches = () => {
@@ -53,6 +53,20 @@ export const BuddyMatches = () => {
 
   const openChat = (match: any) => {
     setChatMatchId(match.id);
+  };
+
+  const reportNoShow = async (match: any) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const otherId = match.user1_id === user.id ? match.user2_id : match.user1_id;
+    const { error } = await (supabase as any)
+      .from('coffee_no_shows')
+      .insert({ match_id: match.id, reporter_user_id: user.id, no_show_user_id: otherId });
+    if (error) {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+      return;
+    }
+    toast({ title: 'No-show reported', description: 'Your buddy received a strike.' });
   };
 
   return (
@@ -107,10 +121,16 @@ export const BuddyMatches = () => {
                   <p className="font-semibold">Coffee Buddy</p>
                   <p className="text-sm text-muted-foreground">Matched recently</p>
                 </div>
-                <Button size="sm" onClick={() => openChat(match)}>
-                  <MessageCircle className="mr-2 h-4 w-4" />
-                  Chat
-                </Button>
+                <div className="flex gap-2">
+                  <Button size="sm" variant="outline" onClick={() => reportNoShow(match)}>
+                    <UserX className="mr-1.5 h-4 w-4" />
+                    No-show
+                  </Button>
+                  <Button size="sm" onClick={() => openChat(match)}>
+                    <MessageCircle className="mr-2 h-4 w-4" />
+                    Chat
+                  </Button>
+                </div>
               </div>
             </div>
           ))}

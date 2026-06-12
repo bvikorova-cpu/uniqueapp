@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, Pause, Play, X, CreditCard, RefreshCw, ExternalLink, FileText, Download, ArrowUpRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import PauseLimitCard from "@/components/billing/PauseLimitCard";
+import RefundButton from "@/components/billing/RefundButton";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -341,6 +342,8 @@ export default function MySubscriptions() {
                         Preview plan change
                       </Button>
                     )}
+
+                    {isActive && <RefundButton subscriptionId={s.id} onDone={load} />}
 
                     {busy === s.id && <Loader2 className="h-4 w-4 animate-spin self-center ml-1" />}
                   </div>
