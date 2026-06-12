@@ -71,6 +71,11 @@ export const useFollows = () => {
         if (error) throw error;
         return { action: "unfollowed" };
       } else {
+        // Scale guard: 60 follow actions / min (block spam-follow bots)
+        const { rateLimit } = await import("@/lib/scaleGuards");
+        const ok = await rateLimit("follow.create", 60, 60);
+        if (!ok) throw new Error("Too many follow actions. Slow down.");
+
         const { error } = await supabase.from("follows").insert({
           follower_id: user.id,
           following_id: userId,
@@ -78,6 +83,7 @@ export const useFollows = () => {
         if (error) throw error;
         return { action: "followed" };
       }
+
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["following"] });

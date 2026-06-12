@@ -160,6 +160,15 @@ export const useDirectMessages = (otherUserId?: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
+      // Scale guard: server-authoritative rate limit (30 DMs / 60s)
+      const { rateLimit, moderateText } = await import("@/lib/scaleGuards");
+      const ok = await rateLimit("dm.send", 30, 60);
+      if (!ok) throw new Error("Too many messages. Slow down.");
+
+      // Soft moderation — block only high severity
+      const mod = await moderateText(content);
+      if (!mod.allowed) throw new Error(mod.reason || "Message blocked by safety filter.");
+
       const convId = await ensureDmConversation(receiverId);
 
       const { data, error } = await (supabase as any)
@@ -174,6 +183,7 @@ export const useDirectMessages = (otherUserId?: string) => {
       if (error) throw error;
       return data;
     },
+
     onSuccess: (_d, vars) => {
       queryClient.invalidateQueries({ queryKey: KEY_THREAD(vars.receiverId) });
       queryClient.invalidateQueries({ queryKey: KEY_LIST });
