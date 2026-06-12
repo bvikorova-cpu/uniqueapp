@@ -37,6 +37,27 @@ export const MyConcertsManager = ({ musicianId }: Props) => {
     },
   });
 
+  const { data: earnings } = useQuery({
+    queryKey: ["my-concerts-earnings", musicianId],
+    enabled: !!musicianId,
+    queryFn: async () => {
+      const concertIds = (concerts ?? []).map((c: any) => c.id);
+      if (!concertIds.length) return { tickets: 0, gifts: 0 };
+      const [{ data: tix }, { data: gfts }] = await Promise.all([
+        supabase.from("concert_ticket_purchases")
+          .select("amount_paid, concert_id, status")
+          .in("concert_id", concertIds).eq("status", "completed"),
+        supabase.from("sent_platform_gifts")
+          .select("amount, context_id, status")
+          .eq("context_type", "concert")
+          .in("context_id", concertIds).eq("status", "completed"),
+      ]);
+      const tickets = (tix ?? []).reduce((s: number, r: any) => s + Number(r.amount_paid || 0), 0);
+      const gifts = (gfts ?? []).reduce((s: number, r: any) => s + Number(r.amount || 0), 0);
+      return { tickets, gifts };
+    },
+  });
+
   const goLive = async (concertId: string) => {
     setSubmitting(true);
     try {
@@ -82,6 +103,22 @@ export const MyConcertsManager = ({ musicianId }: Props) => {
         <CardTitle>My Concerts</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
+        {earnings && (
+          <div className="grid grid-cols-3 gap-2 p-3 rounded-lg border bg-gradient-to-br from-primary/5 to-accent/5">
+            <div>
+              <p className="text-[10px] uppercase text-muted-foreground">Gross (tickets+gifts)</p>
+              <p className="font-bold">€{(earnings.tickets + earnings.gifts).toFixed(2)}</p>
+            </div>
+            <div>
+              <p className="text-[10px] uppercase text-muted-foreground">Platform fee (15%)</p>
+              <p className="font-bold text-destructive">−€{((earnings.tickets + earnings.gifts) * 0.15).toFixed(2)}</p>
+            </div>
+            <div>
+              <p className="text-[10px] uppercase text-muted-foreground">Your earnings (85%)</p>
+              <p className="font-bold text-emerald-500">€{((earnings.tickets + earnings.gifts) * 0.85).toFixed(2)}</p>
+            </div>
+          </div>
+        )}
         {!concerts?.length && (
           <p className="text-sm text-muted-foreground">No concerts yet. Schedule one above.</p>
         )}
