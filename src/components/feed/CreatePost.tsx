@@ -117,6 +117,17 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
         return;
       }
 
+      // Scale guards
+      const { rateLimit, moderateText } = await import("@/lib/scaleGuards");
+      const okRate = await rateLimit("post.create", 10, 60);
+      if (!okRate) throw new Error("Too many posts. Slow down.");
+      if (trimmed) {
+        const mod = await moderateText(trimmed);
+        if (!mod.allowed && mod.severity === "high") {
+          throw new Error("Post violates community guidelines.");
+        }
+      }
+
       const { data: post, error: postError } = await supabase
         .from("posts")
         .insert({ user_id: user.id, content: trimmed })
@@ -124,6 +135,7 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
         .single();
       if (postError) throw postError;
       createdPostId = post.id;
+
 
       for (const file of files) {
         const ext = (file.name.split(".").pop() || "").toLowerCase();
