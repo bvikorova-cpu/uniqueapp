@@ -13732,26 +13732,44 @@ export type Database = {
       }
       conversation_messages: {
         Row: {
+          audio_duration: number | null
+          audio_url: string | null
           content: string
           conversation_id: string
           created_at: string
+          edited_at: string | null
           id: string
+          is_read: boolean
+          message_type: string
+          reply_to_id: string | null
           sender_id: string
           shared_post_id: string | null
         }
         Insert: {
+          audio_duration?: number | null
+          audio_url?: string | null
           content: string
           conversation_id: string
           created_at?: string
+          edited_at?: string | null
           id?: string
+          is_read?: boolean
+          message_type?: string
+          reply_to_id?: string | null
           sender_id: string
           shared_post_id?: string | null
         }
         Update: {
+          audio_duration?: number | null
+          audio_url?: string | null
           content?: string
           conversation_id?: string
           created_at?: string
+          edited_at?: string | null
           id?: string
+          is_read?: boolean
+          message_type?: string
+          reply_to_id?: string | null
           sender_id?: string
           shared_post_id?: string | null
         }
@@ -13761,6 +13779,13 @@ export type Database = {
             columns: ["conversation_id"]
             isOneToOne: false
             referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversation_messages_reply_to_id_fkey"
+            columns: ["reply_to_id"]
+            isOneToOne: false
+            referencedRelation: "conversation_messages"
             referencedColumns: ["id"]
           },
         ]
@@ -64249,6 +64274,10 @@ export type Database = {
           job_type: string
           payload: Json
         }[]
+      }
+      get_or_create_dm_conversation: {
+        Args: { _other_user: string }
+        Returns: string
       }
       get_or_create_iq_referral_code: { Args: never; Returns: string }
       get_or_create_megatalent_referral_code: { Args: never; Returns: string }
