@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@/contexts/AuthContext";
 
 export interface MeditationSession {
   id: string;
@@ -38,15 +38,8 @@ export interface UsageStats {
 export const useWellnessProgress = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [userId, setUserId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const getUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUserId(session?.user?.id || null);
-    };
-    getUser();
-  }, []);
+  const { user } = useAuth();
+  const userId = user?.id || null;
 
   // Fetch meditation sessions
   const { data: sessions = [], isLoading: sessionsLoading } = useQuery({
