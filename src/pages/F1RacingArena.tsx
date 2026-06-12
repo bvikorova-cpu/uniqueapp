@@ -285,7 +285,7 @@ export default function F1RacingArena() {
         </div>
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto space-y-6 p-4 sm:p-6 pt-20 sm:pt-24">
+      <div className="relative z-10 max-w-7xl mx-auto space-y-6 p-4 sm:p-6 pt-20 sm:pt-24 pb-28 md:pb-8">
         {/* Cinematic Video Hero */}
         <GPRacingHero onNavigate={(view) => setActiveView(view === "garage" ? "hub" : view)} />
         <HeroRewardedAd sectionKey="page_f1racingarena" />
