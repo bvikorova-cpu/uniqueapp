@@ -62,6 +62,7 @@ import { getPostBackground } from "@/lib/postBackgrounds";
 interface PostCardProps {
   post: Post;
   onDelete: () => void;
+  defaultShowComments?: boolean;
 }
 
 const MAX_POST_CONTENT = 5000;
@@ -74,13 +75,14 @@ const ALLOWED_VID = ["video/mp4", "video/webm", "video/quicktime"];
 const ALLOWED_EXT = new Set(["jpg","jpeg","png","webp","gif","mp4","webm","mov"]);
 
 
-const PostCard = ({ post, onDelete }: PostCardProps) => {
+const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps) => {
   const navigate = useNavigate();
   const [deleting, setDeleting] = useState(false);
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(post.likes_count || 0);
   const [commentsCount, setCommentsCount] = useState(post.comments_count || 0);
-  const [showComments, setShowComments] = useState(false);
+  const [showComments, setShowComments] = useState(defaultShowComments);
+
   
   // Provide default values for optional fields
   const postMedia = post.media || [];
