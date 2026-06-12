@@ -234,7 +234,7 @@ const ConcertWatch = () => {
           <div className="lg:col-span-1">
             <Card className="h-[500px] lg:h-[600px] flex flex-col">
               <CardContent className="p-0 flex-1 overflow-hidden">
-                <ConcertChat onBack={() => navigate("/live-concerts")} concertId={id} />
+                <ConcertChat onBack={() => navigate("/live-concerts")} />
               </CardContent>
             </Card>
           </div>
