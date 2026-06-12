@@ -62,7 +62,7 @@ export function CorporateTab() {
       </motion.div>
 
       <Tabs defaultValue="corporate" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4">
+        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 gap-1 h-auto p-1">
           <TabsTrigger value="corporate">Corporate Events</TabsTrigger>
           <TabsTrigger value="restaurants">Restaurants</TabsTrigger>
           <TabsTrigger value="weddings">Weddings</TabsTrigger>
