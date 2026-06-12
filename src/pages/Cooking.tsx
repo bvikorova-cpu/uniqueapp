@@ -13,7 +13,6 @@ import { AddRecipeDialog } from "@/components/cooking/AddRecipeDialog";
 import { useUserRecipes, UserRecipe } from "@/hooks/useUserRecipes";
 import { useAICredits } from "@/hooks/useAICredits";
 import { motion } from "framer-motion";
-import Navbar from "@/components/Navbar";
 import CookingHero from "@/components/cooking/CookingHero";
 import AIIngredientSubstitution from "@/components/cooking/AIIngredientSubstitution";
 import AINutritionCalculator from "@/components/cooking/AINutritionCalculator";
@@ -1133,7 +1132,6 @@ const Cooking = () => {
     const back = () => setActiveView("hub");
     return (
       <div className="min-h-screen flex flex-col bg-background">
-        <Navbar />
         <main className="flex-1 container mx-auto px-4 py-20">
           {activeView === "substitution" && <AIIngredientSubstitution onBack={back} />}
           {activeView === "nutrition-calc" && <AINutritionCalculator onBack={back} />}
@@ -1153,7 +1151,6 @@ const Cooking = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <Navbar />
       <main className="flex-1 container mx-auto px-4 py-20">
         <CookingHero />
 

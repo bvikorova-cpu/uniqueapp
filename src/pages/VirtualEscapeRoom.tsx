@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import Navbar from "@/components/Navbar";
 import { useToast } from "@/hooks/use-toast";
 import { EscapeRoomHero } from "@/components/escape-room/EscapeRoomHero";
 import { EscapeRoomEngagement } from "@/components/escape-room/EscapeRoomEngagement";
@@ -155,7 +154,6 @@ const VirtualEscapeRoom = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
       <main className="container mx-auto px-4 py-8 pt-24">
         {renderView()}
       </main>
