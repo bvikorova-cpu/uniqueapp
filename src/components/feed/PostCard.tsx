@@ -489,7 +489,16 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
     }
   };
 
+  // Auto-fetch comments on mount when defaultShowComments=true (used by PostDetail).
+  useEffect(() => {
+    if (defaultShowComments && comments.length === 0) {
+      fetchComments();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [defaultShowComments]);
+
   const fetchComments = async () => {
+
     setLoadingComments(true);
     try {
       const { data: commentsData, error } = await supabase
