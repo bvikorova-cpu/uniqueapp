@@ -63,7 +63,7 @@ const Games = () => {
 
         <Tabs defaultValue="action" className="w-full">
           <div className="overflow-x-auto scrollbar-hide mb-6">
-            <TabsList className="inline-flex w-max min-w-full sm:w-full sm:grid sm:grid-cols-4 lg:grid-cols-8 bg-card/80 backdrop-blur-sm border">
+            <TabsList className="inline-flex w-max min-w-full sm:w-full sm:grid sm:grid-cols-4 lg:grid-cols-8 sm:gap-1 sm:h-auto sm:p-1 bg-card/80 backdrop-blur-sm border">
               {(Object.keys(gameCategories) as GameCategory[]).map((category) => {
                 const Icon = getCategoryIcon(category);
                 return (
