@@ -155,6 +155,15 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
           .from("media")
           .getPublicUrl(safeName);
 
+        if (fileType === "image") {
+          const { moderateImage } = await import("@/lib/scaleGuards");
+          const mod = await moderateImage(publicUrl);
+          if (!mod.allowed) {
+            try { await supabase.storage.from("media").remove([safeName]); } catch {}
+            throw new Error(`Image blocked: ${mod.reason || mod.categories.join(", ") || "policy violation"}`);
+          }
+        }
+
         const { error: mediaError } = await supabase.from("media").insert({
           post_id: post.id,
           file_url: publicUrl,
