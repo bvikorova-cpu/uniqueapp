@@ -62747,6 +62747,7 @@ export type Database = {
           banner_url: string | null
           bio: string | null
           company: string | null
+          company_name: string | null
           completed_exchanges: number | null
           cover_url: string | null
           created_at: string | null
@@ -62759,16 +62760,22 @@ export type Database = {
           location: string | null
           occupation: string | null
           open_to_work: boolean | null
+          open_to_work_details: Json | null
+          profile_music_title: string | null
+          profile_music_url: string | null
           profile_theme: string | null
           rating_average: number | null
           seo_description: string | null
           seo_title: string | null
+          skills: Json | null
           skills_offered: string[] | null
           skills_wanted: string[] | null
+          social_links: Json | null
           theme_color: string | null
           total_reviews: number | null
           user_type: string | null
           username: string | null
+          website: string | null
         }
         Insert: {
           accent_color?: string | null
@@ -62778,6 +62785,7 @@ export type Database = {
           banner_url?: string | null
           bio?: string | null
           company?: string | null
+          company_name?: string | null
           completed_exchanges?: number | null
           cover_url?: string | null
           created_at?: string | null
@@ -62790,16 +62798,22 @@ export type Database = {
           location?: string | null
           occupation?: string | null
           open_to_work?: boolean | null
+          open_to_work_details?: Json | null
+          profile_music_title?: string | null
+          profile_music_url?: string | null
           profile_theme?: string | null
           rating_average?: number | null
           seo_description?: string | null
           seo_title?: string | null
+          skills?: Json | null
           skills_offered?: string[] | null
           skills_wanted?: string[] | null
+          social_links?: Json | null
           theme_color?: string | null
           total_reviews?: number | null
           user_type?: string | null
           username?: string | null
+          website?: string | null
         }
         Update: {
           accent_color?: string | null
@@ -62809,6 +62823,7 @@ export type Database = {
           banner_url?: string | null
           bio?: string | null
           company?: string | null
+          company_name?: string | null
           completed_exchanges?: number | null
           cover_url?: string | null
           created_at?: string | null
@@ -62821,16 +62836,22 @@ export type Database = {
           location?: string | null
           occupation?: string | null
           open_to_work?: boolean | null
+          open_to_work_details?: Json | null
+          profile_music_title?: string | null
+          profile_music_url?: string | null
           profile_theme?: string | null
           rating_average?: number | null
           seo_description?: string | null
           seo_title?: string | null
+          skills?: Json | null
           skills_offered?: string[] | null
           skills_wanted?: string[] | null
+          social_links?: Json | null
           theme_color?: string | null
           total_reviews?: number | null
           user_type?: string | null
           username?: string | null
+          website?: string | null
         }
         Relationships: []
       }
