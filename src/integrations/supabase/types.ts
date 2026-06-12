@@ -13250,6 +13250,63 @@ export type Database = {
           },
         ]
       }
+      concert_reports: {
+        Row: {
+          action_taken: string | null
+          category: string
+          concert_id: string
+          created_at: string
+          details: string | null
+          id: string
+          reason: string
+          reporter_id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+        }
+        Insert: {
+          action_taken?: string | null
+          category?: string
+          concert_id: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason: string
+          reporter_id: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Update: {
+          action_taken?: string | null
+          category?: string
+          concert_id?: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason?: string
+          reporter_id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "concert_reports_concert_id_fkey"
+            columns: ["concert_id"]
+            isOneToOne: false
+            referencedRelation: "live_concert_streams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "concert_reports_concert_id_fkey"
+            columns: ["concert_id"]
+            isOneToOne: false
+            referencedRelation: "live_concert_streams_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       concert_song_requests: {
         Row: {
           amount: number
@@ -40313,14 +40370,25 @@ export type Database = {
           created_at: string | null
           genre: string | null
           id: string
+          id_document_url: string | null
+          legal_name: string | null
           lifetime_earnings: number | null
           pending_balance: number | null
+          social_proof_url: string | null
           stage_name: string
+          suspended: boolean
+          suspended_reason: string | null
           total_concerts: number | null
           total_earnings: number | null
           total_withdrawn: number | null
           updated_at: string | null
           user_id: string
+          verification_notes: string | null
+          verification_requested_at: string | null
+          verification_reviewed_at: string | null
+          verification_reviewed_by: string | null
+          verification_status: string
+          verified: boolean
         }
         Insert: {
           avatar_url?: string | null
@@ -40328,14 +40396,25 @@ export type Database = {
           created_at?: string | null
           genre?: string | null
           id?: string
+          id_document_url?: string | null
+          legal_name?: string | null
           lifetime_earnings?: number | null
           pending_balance?: number | null
+          social_proof_url?: string | null
           stage_name: string
+          suspended?: boolean
+          suspended_reason?: string | null
           total_concerts?: number | null
           total_earnings?: number | null
           total_withdrawn?: number | null
           updated_at?: string | null
           user_id: string
+          verification_notes?: string | null
+          verification_requested_at?: string | null
+          verification_reviewed_at?: string | null
+          verification_reviewed_by?: string | null
+          verification_status?: string
+          verified?: boolean
         }
         Update: {
           avatar_url?: string | null
@@ -40343,14 +40422,25 @@ export type Database = {
           created_at?: string | null
           genre?: string | null
           id?: string
+          id_document_url?: string | null
+          legal_name?: string | null
           lifetime_earnings?: number | null
           pending_balance?: number | null
+          social_proof_url?: string | null
           stage_name?: string
+          suspended?: boolean
+          suspended_reason?: string | null
           total_concerts?: number | null
           total_earnings?: number | null
           total_withdrawn?: number | null
           updated_at?: string | null
           user_id?: string
+          verification_notes?: string | null
+          verification_requested_at?: string | null
+          verification_reviewed_at?: string | null
+          verification_reviewed_by?: string | null
+          verification_status?: string
+          verified?: boolean
         }
         Relationships: []
       }
@@ -48919,6 +49009,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      reserved_artist_names: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          display_name: string
+          id: string
+          name_normalized: string
+          reason: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          display_name: string
+          id?: string
+          name_normalized: string
+          reason?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          display_name?: string
+          id?: string
+          name_normalized?: string
+          reason?: string | null
+        }
+        Relationships: []
       }
       restaurant_analyses: {
         Row: {
