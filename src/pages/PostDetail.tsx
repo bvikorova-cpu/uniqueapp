@@ -127,7 +127,9 @@ const PostDetail = () => {
         <PostCard
           post={post}
           onDelete={() => navigate("/wall")}
+          defaultShowComments
         />
+
       </div>
     </div>
   );
