@@ -181,9 +181,17 @@ const FitSlim = () => {
   };
 
   const openExistingPlan = async (plan: any) => {
-    if (plan.status === "completed") { setViewingPlan(plan); setViewingPlanDetails(null); }
-    else if (plan.status === "pending" && plan.payment_status === "unpaid") verifyAndGenerate(plan.id);
-    else if (plan.status === "generating") toast({ title: "Plan is being generated..." });
+    if (plan.status === "completed") {
+      setViewingPlan(plan);
+      setViewingPlanDetails(null);
+    } else if (plan.status === "generating") {
+      toast({ title: "Plan is being generated...", description: "Please check back in a moment." });
+    } else if (plan.payment_status === "paid" && plan.status !== "completed") {
+      // Paid but not yet generated – try to regenerate
+      verifyAndGenerate(plan.id);
+    } else {
+      toast({ title: "Payment incomplete", description: "Finish checkout to receive this plan.", variant: "destructive" });
+    }
   };
 
   // ===== DATA =====
@@ -584,7 +592,7 @@ const FitSlim = () => {
                         </div>
                         <p className="text-sm text-muted-foreground">{plan.fitness_goal?.replace(/_/g, " ")} • {plan.activity_level}</p>
                         <p className="text-xs text-muted-foreground">{new Date(plan.created_at).toLocaleDateString()}</p>
-                        {plan.status === "completed" && <Button variant="outline" size="sm" className="w-full mt-2 border-green-500/30 text-green-400 hover:bg-green-500/10" onClick={() => { window.location.href = `/fit-slim?plan=${plan.id}`; }}>View Plan</Button>}
+                        {plan.status === "completed" && <Button variant="outline" size="sm" className="w-full mt-2 border-green-500/30 text-green-400 hover:bg-green-500/10" onClick={(e) => { e.stopPropagation(); openExistingPlan(plan); }}>View Plan</Button>}
                       </CardContent>
                     </Card>
                   ))}
