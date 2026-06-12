@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { TicketPricingManager } from "@/components/musician/TicketPricingManager";
 import { EarningsDashboard } from "@/components/musician/EarningsDashboard";
+import { MyConcertsManager } from "@/components/musician/MyConcertsManager";
 
 const MusicianDashboard = () => {
   const [profile, setProfile] = useState<any>(null);
@@ -267,6 +268,9 @@ const MusicianDashboard = () => {
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
+            {/* My concerts with Go Live */}
+            <MyConcertsManager musicianId={profile.id} />
+
             {/* Profile Info */}
             <Card>
               <CardHeader>
