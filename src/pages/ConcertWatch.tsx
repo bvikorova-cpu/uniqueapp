@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import Hls from "hls.js";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Loader2, Radio, Users, AlertTriangle } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { ArrowLeft, Loader2, Radio, Users, AlertTriangle, MessageCircle, Gift } from "lucide-react";
 import { ConcertChat } from "@/components/concerts/ConcertChat";
+import { ConcertGiftsPanel } from "@/components/concerts/ConcertGiftsPanel";
 import { toast } from "sonner";
 
 type Concert = {
@@ -25,6 +27,7 @@ type Concert = {
 const ConcertWatch = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<Hls | null>(null);
 
@@ -147,6 +150,26 @@ const ConcertWatch = () => {
     return () => { removed = true; };
   }, [id, allowed]);
 
+  // Verify gift checkout when redirected back from Stripe
+  useEffect(() => {
+    const giftStatus = searchParams.get("gift");
+    const sid = searchParams.get("session_id");
+    if (!giftStatus) return;
+    if (giftStatus === "success" && sid) {
+      supabase.functions.invoke("verify-concert-gift", { body: { sessionId: sid } })
+        .then(({ data, error }) => {
+          if (error) toast.error("Gift verification failed");
+          else if ((data as any)?.paid) toast.success("🎁 Gift sent to the artist!");
+          else toast.error("Payment not completed");
+        });
+    } else if (giftStatus === "canceled") {
+      toast.info("Gift purchase canceled");
+    }
+    searchParams.delete("gift");
+    searchParams.delete("session_id");
+    setSearchParams(searchParams, { replace: true });
+  }, [searchParams, setSearchParams]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center pt-20">
@@ -234,7 +257,18 @@ const ConcertWatch = () => {
           <div className="lg:col-span-1">
             <Card className="h-[500px] lg:h-[600px] flex flex-col">
               <CardContent className="p-0 flex-1 overflow-hidden">
-                <ConcertChat onBack={() => navigate("/live-concerts")} />
+                <Tabs defaultValue="chat" className="h-full flex flex-col">
+                  <TabsList className="grid grid-cols-2 m-2">
+                    <TabsTrigger value="chat" className="gap-1"><MessageCircle className="h-3 w-3" />Chat</TabsTrigger>
+                    <TabsTrigger value="gifts" className="gap-1"><Gift className="h-3 w-3" />Gifts</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="chat" className="flex-1 overflow-hidden m-0">
+                    <ConcertChat onBack={() => navigate("/live-concerts")} />
+                  </TabsContent>
+                  <TabsContent value="gifts" className="flex-1 overflow-y-auto m-0">
+                    {id && <ConcertGiftsPanel concertId={id} />}
+                  </TabsContent>
+                </Tabs>
               </CardContent>
             </Card>
           </div>
