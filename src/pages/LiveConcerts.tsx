@@ -78,6 +78,9 @@ const LiveConcerts = () => {
         const { data: { session } } = await supabase.auth.getSession();
         setUser(session?.user || null);
         if (!session) window.location.href = '/auth';
+        const params = new URLSearchParams(window.location.search);
+        const v = params.get('view') as ViewType | null;
+        if (v) setActiveView(v);
       } catch (e) { console.error(e); }
       finally { setCheckingAuth(false); }
     };
