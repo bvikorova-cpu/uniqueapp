@@ -9,6 +9,8 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ArrowLeft, Loader2, Radio, Users, AlertTriangle, MessageCircle, Gift } from "lucide-react";
 import { ConcertChat } from "@/components/concerts/ConcertChat";
 import { ConcertGiftsPanel } from "@/components/concerts/ConcertGiftsPanel";
+import { ReportConcertButton } from "@/components/concerts/ReportConcertButton";
+import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
 import { toast } from "sonner";
 
 type Concert = {
@@ -21,7 +23,7 @@ type Concert = {
   scheduled_at: string;
   musician_id: string;
   viewer_count: number;
-  musician_profiles?: { stage_name: string; user_id: string; avatar_url: string | null };
+  musician_profiles?: { stage_name: string; user_id: string; avatar_url: string | null; verified?: boolean };
 };
 
 const ConcertWatch = () => {
@@ -248,9 +250,26 @@ const ConcertWatch = () => {
             </div>
 
             <div>
-              <h1 className="text-2xl font-black">{concert?.title}</h1>
-              <p className="text-muted-foreground">by {concert?.musician_profiles?.stage_name}</p>
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <h1 className="text-2xl font-black">{concert?.title}</h1>
+                  <p className="text-muted-foreground inline-flex items-center gap-1">
+                    by {concert?.musician_profiles?.stage_name}
+                    {concert?.musician_profiles?.verified ? (
+                      <VerifiedBadge level="creator" size="sm" />
+                    ) : (
+                      <Badge variant="outline" className="ml-2 text-amber-400 border-amber-500/40 text-[10px]">Unverified artist</Badge>
+                    )}
+                  </p>
+                </div>
+                {id && <ReportConcertButton concertId={id} />}
+              </div>
               {concert?.description && <p className="mt-2 text-sm">{concert.description}</p>}
+              {!concert?.musician_profiles?.verified && (
+                <div className="mt-3 text-xs rounded-md bg-amber-500/10 border border-amber-500/30 p-2 text-amber-300">
+                  ⚠ This artist is not yet verified. If you believe this is an impersonation, please use the Report button.
+                </div>
+              )}
             </div>
           </div>
 
