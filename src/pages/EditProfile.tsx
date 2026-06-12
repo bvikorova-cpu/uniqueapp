@@ -249,6 +249,17 @@ const EditProfile = () => {
       throw uploadError;
     }
     const { data: { publicUrl } } = supabase.storage.from(bucket).getPublicUrl(fileName);
+    try {
+      const { moderateImage } = await import("@/lib/scaleGuards");
+      const mod = await moderateImage(publicUrl);
+      if (!mod.allowed) {
+        try { await supabase.storage.from(bucket).remove([fileName]); } catch {}
+        throw new Error(`Image blocked: ${mod.reason || mod.categories.join(", ") || "policy violation"}`);
+      }
+    } catch (e: any) {
+      if (e?.message?.startsWith("Image blocked")) throw e;
+      // moderation invoke failed — fail-open
+    }
     return publicUrl;
   };
 
