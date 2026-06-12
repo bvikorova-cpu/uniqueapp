@@ -152,6 +152,17 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
+      // Scale guards: 10 posts/min + AI text moderation
+      const { rateLimit, moderateText } = await import("@/lib/scaleGuards");
+      const okRate = await rateLimit("post.create", 10, 60);
+      if (!okRate) throw new Error("Too many posts. Slow down.");
+      if (content.trim()) {
+        const mod = await moderateText(content.trim());
+        if (!mod.allowed && mod.severity === "high") {
+          throw new Error("Post violates community guidelines.");
+        }
+      }
+
       const { data: post, error: postError } = await supabase
         .from("posts")
         .insert({
@@ -169,6 +180,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
         .single();
 
       if (postError) throw postError;
+
 
       // Create hashtags
       await createHashtagsForPost(post.id, content);

@@ -413,10 +413,16 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
+      if (!wasLiked) {
+        const { rateLimit } = await import("@/lib/scaleGuards");
+        const ok = await rateLimit("like.toggle", 120, 60);
+        if (!ok) throw new Error("Too many likes. Slow down.");
+      }
       const { error } = wasLiked
         ? await supabase.from("post_likes").delete().eq("post_id", post.id).eq("user_id", user.id)
         : await supabase.from("post_likes").insert({ post_id: post.id, user_id: user.id });
       if (error) throw error;
+
     } catch (error: any) {
       // Rollback
       setLiked(wasLiked);
@@ -523,10 +529,19 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
+      const { rateLimit, moderateText } = await import("@/lib/scaleGuards");
+      const okRate = await rateLimit("comment.create", 30, 60);
+      if (!okRate) throw new Error("Too many comments. Slow down.");
+      const mod = await moderateText(trimmed);
+      if (!mod.allowed && mod.severity === "high") {
+        throw new Error("Comment violates community guidelines.");
+      }
+
       const { error } = await supabase
         .from("post_comments")
         .insert({ post_id: post.id, user_id: user.id, content: trimmed });
       if (error) throw error;
+
 
       setNewComment("");
       setCommentsCount((prev) => prev + 1);

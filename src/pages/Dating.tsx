@@ -473,8 +473,12 @@ const Dating = () => {
       toast({ title: "⭐ Super Like!", description: `${currentCard.display_name} will be notified!` });
       setSuperLikesRemaining(superLikesRemaining - 1);
     }
+    const { rateLimit } = await import("@/lib/scaleGuards");
+    const okSwipe = await rateLimit("swipe.dating", 200, 60);
+    if (!okSwipe) { toast({ title: "Slow down", description: "Too many swipes. Try again in a minute.", variant: "destructive" }); setSwipeDirection(null); return; }
     const { error } = await supabase.from("dating_swipes").insert([{ swiper_id: user.id, swiped_id: currentCard.user_id, action: isSuper ? "like" : action }]);
     if (error) { toast({ title: "Error", description: "Failed to save swipe", variant: "destructive" }); setSwipeDirection(null); return; }
+
     if (action === "like" || isSuper) {
       await supabase.from("dating_likes_you").insert([{ liker_id: user.id, liked_id: currentCard.user_id }]);
       const { data } = await supabase.from("dating_matches").select("*").or(`and(user1_id.eq.${user.id},user2_id.eq.${currentCard.user_id}),and(user1_id.eq.${currentCard.user_id},user2_id.eq.${user.id})`).maybeSingle();
