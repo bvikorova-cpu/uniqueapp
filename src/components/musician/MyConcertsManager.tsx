@@ -45,16 +45,17 @@ export const MyConcertsManager = ({ musicianId }: Props) => {
       if (!concertIds.length) return { tickets: 0, gifts: 0 };
       const [{ data: tix }, { data: gfts }] = await Promise.all([
         supabase.from("concert_ticket_purchases")
-          .select("amount_paid, concert_id, status")
-          .in("concert_id", concertIds).eq("status", "completed"),
+          .select("amount, musician_amount, concert_id, payment_status")
+          .in("concert_id", concertIds).eq("payment_status", "completed"),
         supabase.from("sent_platform_gifts")
           .select("amount, context_id, status")
           .eq("context_type", "concert")
           .in("context_id", concertIds).eq("status", "completed"),
       ]);
-      const tickets = (tix ?? []).reduce((s: number, r: any) => s + Number(r.amount_paid || 0), 0);
+      const tickets = (tix ?? []).reduce((s: number, r: any) => s + Number(r.amount || 0), 0);
+      const ticketsNet = (tix ?? []).reduce((s: number, r: any) => s + Number(r.musician_amount || 0), 0);
       const gifts = (gfts ?? []).reduce((s: number, r: any) => s + Number(r.amount || 0), 0);
-      return { tickets, gifts };
+      return { tickets, gifts, ticketsNet };
     },
   });
 
