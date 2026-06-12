@@ -551,7 +551,7 @@ export default function GroupDetail() {
       {/* Main Content */}
       <div className="max-w-2xl mx-auto px-4 py-4">
         <Tabs defaultValue="posts" className="w-full">
-          <TabsList className="w-full grid grid-cols-4 md:grid-cols-5 mb-4">
+          <TabsList className="w-full grid grid-cols-4 md:grid-cols-5 gap-1 h-auto p-1 mb-4">
             <TabsTrigger value="posts" className="text-xs">Posts</TabsTrigger>
             <TabsTrigger value="members" className="text-xs">Members</TabsTrigger>
             <TabsTrigger value="media" className="text-xs">Media</TabsTrigger>

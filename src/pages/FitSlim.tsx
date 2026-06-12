@@ -446,7 +446,7 @@ const FitSlim = () => {
 
         {/* Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 mb-8 bg-card/80 backdrop-blur-xl border-2 border-primary/20 p-1.5 rounded-2xl shadow-lg shadow-primary/5">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 gap-1.5 h-auto mb-8 bg-card/80 backdrop-blur-xl border-2 border-primary/20 p-1.5 rounded-2xl shadow-lg shadow-primary/5">
             <TabsTrigger value="personalized-plans" className="rounded-xl font-bold text-xs data-[state=active]:bg-gradient-to-r data-[state=active]:from-yellow-500/20 data-[state=active]:to-amber-500/20 data-[state=active]:text-yellow-400 data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-yellow-500/30 transition-all"><Crown className="h-4 w-4 mr-1" /> My Plan</TabsTrigger>
             <TabsTrigger value="weight-loss-videos" className="rounded-xl font-bold text-xs data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-500/20 data-[state=active]:to-orange-500/20 data-[state=active]:text-red-400 data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-red-500/30 transition-all"><Play className="h-4 w-4 mr-1" /> Weight Loss</TabsTrigger>
             <TabsTrigger value="health-videos" className="rounded-xl font-bold text-xs data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500/20 data-[state=active]:to-green-500/20 data-[state=active]:text-emerald-400 data-[state=active]:shadow-md data-[state=active]:border data-[state=active]:border-emerald-500/30 transition-all"><Heart className="h-4 w-4 mr-1" /> Health</TabsTrigger>
@@ -595,7 +595,7 @@ const FitSlim = () => {
 
           {/* Weight Loss Videos */}
           <TabsContent value="weight-loss-videos" className="space-y-6">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
               <div><h2 className="text-2xl font-bold">Weight Loss Workouts</h2><p className="text-muted-foreground">High-intensity training for maximum calorie burn</p></div>
               <Badge className="bg-red-500/20 text-red-400 border-red-500/30">🔥 Fat Burning</Badge>
             </div>
@@ -624,7 +624,7 @@ const FitSlim = () => {
 
           {/* Health Videos */}
           <TabsContent value="health-videos" className="space-y-6">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
               <div><h2 className="text-2xl font-bold">Health & Wellness</h2><p className="text-muted-foreground">Yoga, stretching, and mindfulness for better health</p></div>
               <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">💚 Wellness</Badge>
             </div>
@@ -653,7 +653,7 @@ const FitSlim = () => {
 
           {/* Slimming Recipes */}
           <TabsContent value="weight-loss-recipes" className="space-y-6">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
               <div><h2 className="text-2xl font-bold">Slimming Recipes</h2><p className="text-muted-foreground">Low-calorie, high-protein meals for weight loss</p></div>
               <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30">🥗 Low Calorie</Badge>
             </div>
@@ -680,7 +680,7 @@ const FitSlim = () => {
 
           {/* Healthy Recipes */}
           <TabsContent value="healthy-recipes" className="space-y-6">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
               <div><h2 className="text-2xl font-bold">Healthy Living Recipes</h2><p className="text-muted-foreground">Nutritious meals for a balanced lifestyle</p></div>
               <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30">🌿 Nutritious</Badge>
             </div>

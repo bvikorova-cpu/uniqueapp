@@ -101,7 +101,7 @@ export default function HandwritingParityPack() {
       </div>
 
       <Tabs defaultValue="zone" className="w-full">
-        <TabsList className="grid grid-cols-4 md:grid-cols-8 w-full">
+        <TabsList className="grid grid-cols-4 md:grid-cols-8 gap-1 h-auto p-1 w-full">
           <TabsTrigger value="zone">Zones</TabsTrigger>
           <TabsTrigger value="letter">Letters</TabsTrigger>
           <TabsTrigger value="career">Career</TabsTrigger>
