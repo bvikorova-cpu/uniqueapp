@@ -45414,6 +45414,7 @@ export type Database = {
           skills_offered: string[] | null
           skills_wanted: string[] | null
           social_links: Json | null
+          spam_score: number
           stripe_connect_account_id: string | null
           stripe_connect_account_type: string | null
           stripe_connect_capabilities: Json | null
@@ -45485,6 +45486,7 @@ export type Database = {
           skills_offered?: string[] | null
           skills_wanted?: string[] | null
           social_links?: Json | null
+          spam_score?: number
           stripe_connect_account_id?: string | null
           stripe_connect_account_type?: string | null
           stripe_connect_capabilities?: Json | null
@@ -45556,6 +45558,7 @@ export type Database = {
           skills_offered?: string[] | null
           skills_wanted?: string[] | null
           social_links?: Json | null
+          spam_score?: number
           stripe_connect_account_id?: string | null
           stripe_connect_account_type?: string | null
           stripe_connect_capabilities?: Json | null
@@ -47847,6 +47850,27 @@ export type Database = {
           track_condition?: string
           track_name?: string
           weather?: string
+        }
+        Relationships: []
+      }
+      rate_limit_buckets: {
+        Row: {
+          bucket: string
+          count: number
+          user_id: string
+          window_start: string
+        }
+        Insert: {
+          bucket: string
+          count?: number
+          user_id: string
+          window_start: string
+        }
+        Update: {
+          bucket?: string
+          count?: number
+          user_id?: string
+          window_start?: string
         }
         Relationships: []
       }
@@ -58638,6 +58662,30 @@ export type Database = {
         }
         Relationships: []
       }
+      user_feed_cache: {
+        Row: {
+          author_id: string
+          inserted_at: string
+          post_id: string
+          score: number
+          user_id: string
+        }
+        Insert: {
+          author_id: string
+          inserted_at?: string
+          post_id: string
+          score?: number
+          user_id: string
+        }
+        Update: {
+          author_id?: string
+          inserted_at?: string
+          post_id?: string
+          score?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_interests: {
         Row: {
           created_at: string | null
@@ -63608,15 +63656,20 @@ export type Database = {
         Args: { p_action: string; p_max_per_minute?: number; p_user_id: string }
         Returns: boolean
       }
-      check_rate_limit: {
-        Args: {
-          p_action_type: string
-          p_identifier: string
-          p_max_requests: number
-          p_window_seconds: number
-        }
-        Returns: boolean
-      }
+      check_rate_limit:
+        | {
+            Args: { _bucket: string; _max: number; _window_seconds: number }
+            Returns: boolean
+          }
+        | {
+            Args: {
+              p_action_type: string
+              p_identifier: string
+              p_max_requests: number
+              p_window_seconds: number
+            }
+            Returns: boolean
+          }
       claim_battle_pass_reward: {
         Args: { _season_id: string; _tier: number; _track: string }
         Returns: Json
@@ -63646,6 +63699,7 @@ export type Database = {
       }
       cleanup_expired_cache: { Args: never; Returns: number }
       cleanup_old_jobs: { Args: never; Returns: number }
+      cleanup_rate_limit_buckets: { Args: never; Returns: undefined }
       cleanup_rate_limits: { Args: never; Returns: undefined }
       complete_auction_buyout: {
         Args: {
@@ -63660,6 +63714,7 @@ export type Database = {
         Returns: undefined
       }
       compute_donor_badge_tier: { Args: { _total: number }; Returns: string }
+      compute_spam_score: { Args: { _user_id: string }; Returns: number }
       compute_xp_streak: { Args: { p_user_id: string }; Returns: number }
       consume_free_tier_credits: {
         Args: { p_amount: number; p_reason: string }
@@ -65016,6 +65071,27 @@ export type Database = {
       rotate_my_brand_api_key: { Args: never; Returns: string }
       rotate_mystery_events: { Args: never; Returns: undefined }
       rotate_seasonal_missions: { Args: never; Returns: Json }
+      search_posts: {
+        Args: { _limit?: number; _q: string }
+        Returns: {
+          content: string
+          created_at: string
+          id: string
+          rank: number
+          user_id: string
+        }[]
+      }
+      search_profiles_fts: {
+        Args: { _limit?: number; _q: string }
+        Returns: {
+          avatar_url: string
+          bio: string
+          full_name: string
+          id: string
+          rank: number
+          username: string
+        }[]
+      }
       search_users: {
         Args: { lim?: number; q: string }
         Returns: {
@@ -65099,6 +65175,7 @@ export type Database = {
         }[]
       }
       track_challenge_action: { Args: { _action: string }; Returns: Json }
+      trim_user_feed_cache: { Args: never; Returns: undefined }
       unaccent: { Args: { "": string }; Returns: string }
       update_battle_stats: {
         Args: { loser_id: string; winner_id: string }
