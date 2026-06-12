@@ -20,6 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useDirectMessages } from "@/hooks/useDirectMessages";
+import { useDmMutes } from "@/hooks/useDmMutes";
 import { useMessageReactions } from "@/hooks/useMessageReactions";
 import { MessageReactions } from "@/components/wall/MessageReactions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -40,7 +41,8 @@ export const DirectMessagesDialog = ({
 }: DirectMessagesDialogProps) => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
-  const [isMuted, setIsMuted] = useState(false);
+  const { isMuted: isDmMuted, toggle: toggleDmMute } = useDmMutes();
+  const isMuted = userId ? isDmMuted(userId) : false;
   const [uploadingImage, setUploadingImage] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { messages, sendMessage } = useDirectMessages(userId);
@@ -102,11 +104,13 @@ export const DirectMessagesDialog = ({
   };
 
   const handleToggleMute = () => {
-    setIsMuted(!isMuted);
+    if (!userId) return;
+    const wasMuted = isMuted;
+    toggleDmMute(userId);
     toast({
-      title: isMuted ? "Notifications enabled" : "Notifications muted",
-      description: isMuted 
-        ? `You will receive notifications from ${userName}` 
+      title: wasMuted ? "Notifications enabled" : "Notifications muted",
+      description: wasMuted
+        ? `You will receive notifications from ${userName}`
         : `You won't receive notifications from ${userName}`,
     });
   };

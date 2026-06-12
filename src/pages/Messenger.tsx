@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply, Mic, Image, Smile, Square, Play, Pause, Users, BarChart3, Palette, Radio, Clock, ArrowLeft, Download, Brain, Gamepad2, Bell, Loader2 } from "lucide-react";
+import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply, Mic, Image, Smile, Square, Play, Pause, Users, BarChart3, Palette, Radio, Clock, ArrowLeft, Download, Brain, Gamepad2, Bell, BellOff, Loader2 } from "lucide-react";
+import { useDmMutes } from "@/hooks/useDmMutes";
 import { EmojiPicker } from "@/components/messenger/EmojiPicker";
 
 import { useToast } from "@/hooks/use-toast";
@@ -186,6 +187,7 @@ const Messenger = () => {
 
   // Online status hook
   const { isUserOnline } = useOnlineStatus(user?.id || null);
+  const { isMuted: isDmMuted, toggle: toggleDmMute } = useDmMutes();
 
   // Real "friends online" = unique conversation partners currently online
   useEffect(() => {
@@ -1263,6 +1265,25 @@ const Messenger = () => {
                           </div>
                         )}
                       </div>
+                      {conv.otherUser && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7 flex-shrink-0 opacity-70 hover:opacity-100"
+                          aria-label={isDmMuted(conv.otherUser.id) ? "Unmute conversation" : "Mute conversation"}
+                          title={isDmMuted(conv.otherUser.id) ? "Unmute conversation" : "Mute conversation"}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleDmMute(conv.otherUser!.id);
+                          }}
+                        >
+                          {isDmMuted(conv.otherUser.id) ? (
+                            <BellOff className="h-4 w-4" />
+                          ) : (
+                            <Bell className="h-4 w-4" />
+                          )}
+                        </Button>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -1301,14 +1322,31 @@ const Messenger = () => {
                       </div>
                     </div>
                   </div>
-                  {otherUser && (
-                    <VideoCall
-                      conversationId={selectedConversation}
-                      userId={user.id}
-                      otherUserId={otherUser.id}
-                      otherUserName={otherUser.full_name || "User"}
-                    />
-                  )}
+                  <div className="flex items-center gap-1">
+                    {otherUser && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label={isDmMuted(otherUser.id) ? "Unmute conversation" : "Mute conversation"}
+                        title={isDmMuted(otherUser.id) ? "Unmute conversation" : "Mute conversation"}
+                        onClick={() => toggleDmMute(otherUser.id)}
+                      >
+                        {isDmMuted(otherUser.id) ? (
+                          <BellOff className="h-4 w-4" />
+                        ) : (
+                          <Bell className="h-4 w-4" />
+                        )}
+                      </Button>
+                    )}
+                    {otherUser && (
+                      <VideoCall
+                        conversationId={selectedConversation}
+                        userId={user.id}
+                        otherUserId={otherUser.id}
+                        otherUserName={otherUser.full_name || "User"}
+                      />
+                    )}
+                  </div>
                 </div>
 
                 {!isOnline && (
