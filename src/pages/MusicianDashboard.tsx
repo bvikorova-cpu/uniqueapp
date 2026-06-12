@@ -58,8 +58,8 @@ const MusicianDashboard = () => {
       if (error) throw error;
 
       if (!musicianProfile) {
-        toast.error("You don't have a musician profile");
-        navigate("/live-concerts");
+        toast.error("Musician profile required — please register first");
+        navigate("/live-concerts?view=musician");
         return;
       }
 
