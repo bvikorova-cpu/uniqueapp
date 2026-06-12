@@ -413,10 +413,16 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
+      if (!wasLiked) {
+        const { rateLimit } = await import("@/lib/scaleGuards");
+        const ok = await rateLimit("like.toggle", 120, 60);
+        if (!ok) throw new Error("Too many likes. Slow down.");
+      }
       const { error } = wasLiked
         ? await supabase.from("post_likes").delete().eq("post_id", post.id).eq("user_id", user.id)
         : await supabase.from("post_likes").insert({ post_id: post.id, user_id: user.id });
       if (error) throw error;
+
     } catch (error: any) {
       // Rollback
       setLiked(wasLiked);
