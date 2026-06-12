@@ -126,7 +126,7 @@ export default function ShadowArenaDashboard() {
 
   return (
     <SubscriptionGate>
-      <div className="container mx-auto px-4 sm:px-6 pt-6 pb-8 max-w-6xl">
+      <div className="container mx-auto px-4 sm:px-6 pt-6 pb-28 md:pb-8 max-w-6xl">
         <ShadowArenaHero
           totalPrizePool={totalActivePrizePool}
           activeBattles={activeBattlesCount}
