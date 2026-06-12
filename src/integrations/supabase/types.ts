@@ -35267,7 +35267,9 @@ export type Database = {
           description: string | null
           ended_at: string | null
           id: string
+          ingest_url: string | null
           musician_id: string
+          playback_url: string | null
           scheduled_at: string
           started_at: string | null
           status: string | null
@@ -35282,7 +35284,9 @@ export type Database = {
           description?: string | null
           ended_at?: string | null
           id?: string
+          ingest_url?: string | null
           musician_id: string
+          playback_url?: string | null
           scheduled_at: string
           started_at?: string | null
           status?: string | null
@@ -35297,7 +35301,9 @@ export type Database = {
           description?: string | null
           ended_at?: string | null
           id?: string
+          ingest_url?: string | null
           musician_id?: string
+          playback_url?: string | null
           scheduled_at?: string
           started_at?: string | null
           status?: string | null
@@ -63644,6 +63650,10 @@ export type Database = {
       can_view_community: { Args: { _community_id: string }; Returns: boolean }
       can_view_post: {
         Args: { _author: string; _privacy: string; _viewer: string }
+        Returns: boolean
+      }
+      can_watch_concert: {
+        Args: { _concert_id: string; _user_id: string }
         Returns: boolean
       }
       challenge_period_key: { Args: { _type: string }; Returns: string }
