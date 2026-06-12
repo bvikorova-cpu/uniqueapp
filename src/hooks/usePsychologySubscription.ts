@@ -93,8 +93,14 @@ export function usePsychologySubscription() {
 
   useEffect(() => {
     checkSubscription();
+    const { data: authSub } = supabase.auth.onAuthStateChange(() => {
+      checkSubscription();
+    });
     const interval = setInterval(checkSubscription, 60000);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      authSub.subscription.unsubscribe();
+    };
   }, []);
 
   return {
