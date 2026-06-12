@@ -87,12 +87,18 @@ export const useHealthcareSubscription = () => {
   useEffect(() => {
     checkSubscription();
 
-    // Set up interval to check subscription every minute
+    const { data: authSub } = supabase.auth.onAuthStateChange((_event, _session) => {
+      checkSubscription();
+    });
+
     const interval = setInterval(() => {
       checkSubscription();
     }, 60000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      authSub.subscription.unsubscribe();
+    };
   }, []);
 
   return {
