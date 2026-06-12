@@ -125,6 +125,16 @@ export function EnhancedCommentInput({ postId, onCommentAdded, parentCommentId, 
         }
       }
 
+      const { rateLimit, moderateText } = await import("@/lib/scaleGuards");
+      const okRate = await rateLimit("comment.create", 30, 60);
+      if (!okRate) throw new Error("Too many comments. Slow down.");
+      if (content.trim()) {
+        const mod = await moderateText(content.trim());
+        if (!mod.allowed && mod.severity === "high") {
+          throw new Error("Comment violates community guidelines.");
+        }
+      }
+
       const { error: commentError } = await supabase
         .from("post_comments")
         .insert({
@@ -142,6 +152,7 @@ export function EnhancedCommentInput({ postId, onCommentAdded, parentCommentId, 
         });
 
       if (commentError) throw commentError;
+
 
       toast({ title: "Success!", description: "Comment added" });
       setContent("");
