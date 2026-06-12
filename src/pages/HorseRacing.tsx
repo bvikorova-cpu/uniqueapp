@@ -243,7 +243,7 @@ export default function HorseRacing() {
 
   return (
     <div className="min-h-screen bg-slate-950">
-      <div className="max-w-7xl mx-auto px-4 py-6 pt-20 sm:pt-24">
+      <div className="max-w-7xl mx-auto px-4 py-6 pt-20 sm:pt-24 pb-28 md:pb-8">
         {activeView !== "dashboard" && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-4 flex items-center gap-3">
             <Button variant="ghost" onClick={() => setActiveView("dashboard")} className="gap-2 font-mono text-amber-400 hover:text-amber-300 drop-shadow-md">
