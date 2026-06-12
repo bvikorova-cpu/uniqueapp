@@ -72,7 +72,7 @@ const CharacterArena = () => {
 
   return (
     <div className="min-h-screen bg-background p-2 sm:p-4">
-      <div className="container mx-auto max-w-7xl pt-20">
+      <div className="container mx-auto max-w-7xl pt-20 pb-28 md:pb-8">
         {activeView !== "dashboard" && (
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
             <Button variant="ghost" onClick={() => setActiveView("dashboard")} className="mb-4 gap-2 text-muted-foreground hover:text-foreground" style={{ textShadow: "0 1px 4px rgba(0,0,0,0.3)" }}>
