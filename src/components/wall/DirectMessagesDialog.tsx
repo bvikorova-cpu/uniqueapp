@@ -104,11 +104,13 @@ export const DirectMessagesDialog = ({
   };
 
   const handleToggleMute = () => {
-    setIsMuted(!isMuted);
+    if (!userId) return;
+    const wasMuted = isMuted;
+    toggleDmMute(userId);
     toast({
-      title: isMuted ? "Notifications enabled" : "Notifications muted",
-      description: isMuted 
-        ? `You will receive notifications from ${userName}` 
+      title: wasMuted ? "Notifications enabled" : "Notifications muted",
+      description: wasMuted
+        ? `You will receive notifications from ${userName}`
         : `You won't receive notifications from ${userName}`,
     });
   };
