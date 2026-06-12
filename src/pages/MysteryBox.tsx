@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Navbar from "@/components/Navbar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -36,7 +35,6 @@ const MysteryBoxPage = () => {
 
   const wrapView = (children: React.ReactNode) => (
     <div className="min-h-screen bg-background">
-      <Navbar />
       <main className="container mx-auto px-4 py-8 mt-20">{children}</main>
     </div>
   );
@@ -49,7 +47,6 @@ const MysteryBoxPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
       <main className="container mx-auto px-4 py-8 mt-20">
         <MysteryBoxHero />
 
