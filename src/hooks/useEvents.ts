@@ -35,7 +35,7 @@ export const useEvents = () => {
       let profilesById: Record<string, any> = {};
       if (creatorIds.length > 0) {
         const { data: profs } = await (supabase as any)
-          .from("profiles_public")
+          .from("public_profiles")
           .select("id, full_name, avatar_url, username")
           .in("id", creatorIds);
         profilesById = Object.fromEntries((profs || []).map((p: any) => [p.id, p]));

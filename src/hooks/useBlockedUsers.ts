@@ -21,7 +21,7 @@ export const useBlockedUsers = () => {
       const ids = (data || []).map((b: any) => b.blocked_user_id);
       if (ids.length === 0) return [];
       const { data: profiles } = await (supabase as any)
-        .from("profiles_public")
+        .from("public_profiles")
         .select("id, full_name, avatar_url, username")
         .in("id", ids);
       const map = new Map((profiles || []).map((p: any) => [p.id, p]));

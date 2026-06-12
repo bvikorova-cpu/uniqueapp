@@ -23,7 +23,7 @@ export default function WallVideos() {
         .limit(100);
       if (!posts) return [];
       const userIds = Array.from(new Set(posts.map((p: any) => p.user_id)));
-      const { data: profiles } = await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", userIds);
+      const { data: profiles } = await (supabase as any).from("public_profiles").select("id, full_name, avatar_url").in("id", userIds);
       const profilesMap = new Map<string, any>((profiles || []).map((p: any) => [p.id, p]));
       return posts.map((post: any) => ({
         ...post,
@@ -38,7 +38,7 @@ export default function WallVideos() {
       const { data: videos } = await supabase.from("videos").select("*").order("created_at", { ascending: false });
       if (!videos?.length) return [];
       const ids = Array.from(new Set(videos.map((v: any) => v.user_id).filter(Boolean)));
-      const { data: profs } = await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", ids);
+      const { data: profs } = await (supabase as any).from("public_profiles").select("id, full_name, avatar_url").in("id", ids);
       const m = new Map((profs || []).map((p: any) => [p.id, p]));
       return videos.map((v: any) => ({ ...v, profiles: m.get(v.user_id) || { full_name: null, avatar_url: null } }));
     },
@@ -56,7 +56,7 @@ export default function WallVideos() {
         .order("created_at", { ascending: false });
       if (!stories?.length) return [];
       const userIds = Array.from(new Set(stories.map((s: any) => s.user_id)));
-      const { data: profiles } = await (supabase as any).from("profiles_public").select("id, full_name, avatar_url").in("id", userIds);
+      const { data: profiles } = await (supabase as any).from("public_profiles").select("id, full_name, avatar_url").in("id", userIds);
       const map = new Map((profiles || []).map((p: any) => [p.id, p]));
       return stories.map((s: any) => ({
         id: `story-${s.id}`,
