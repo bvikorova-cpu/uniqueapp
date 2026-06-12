@@ -96,7 +96,7 @@ const TennisArena = () => {
   if (activeView !== "hub") {
     return (
       <div className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 pt-20 pb-8">
+        <div className="container mx-auto px-4 pt-20 pb-28 md:pb-8">
           <ArenaAuthGuard onBack={() => setActiveView("hub")} sportName="Tennis Arena">
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>{renderView()}</motion.div>
           </ArenaAuthGuard>
@@ -107,7 +107,7 @@ const TennisArena = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 pt-20 pb-8 space-y-8">
+      <div className="container mx-auto px-4 pt-20 pb-28 md:pb-8 space-y-8">
         <TennisArenaHero stats={stats} onNavigate={(v) => setActiveView(v as ViewType)} />
         <HeroRewardedAd sectionKey="page_tennisarena" />
 
