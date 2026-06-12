@@ -1322,14 +1322,31 @@ const Messenger = () => {
                       </div>
                     </div>
                   </div>
-                  {otherUser && (
-                    <VideoCall
-                      conversationId={selectedConversation}
-                      userId={user.id}
-                      otherUserId={otherUser.id}
-                      otherUserName={otherUser.full_name || "User"}
-                    />
-                  )}
+                  <div className="flex items-center gap-1">
+                    {otherUser && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label={isDmMuted(otherUser.id) ? "Unmute conversation" : "Mute conversation"}
+                        title={isDmMuted(otherUser.id) ? "Unmute conversation" : "Mute conversation"}
+                        onClick={() => toggleDmMute(otherUser.id)}
+                      >
+                        {isDmMuted(otherUser.id) ? (
+                          <BellOff className="h-4 w-4" />
+                        ) : (
+                          <Bell className="h-4 w-4" />
+                        )}
+                      </Button>
+                    )}
+                    {otherUser && (
+                      <VideoCall
+                        conversationId={selectedConversation}
+                        userId={user.id}
+                        otherUserId={otherUser.id}
+                        otherUserName={otherUser.full_name || "User"}
+                      />
+                    )}
+                  </div>
                 </div>
 
                 {!isOnline && (
