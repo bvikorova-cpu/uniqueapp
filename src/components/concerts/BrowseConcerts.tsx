@@ -1,18 +1,34 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ArrowLeft, Calendar, Music, Users, Crown, Ticket, Zap, Star } from "lucide-react";
+import { ArrowLeft, Calendar, Music, Users, Crown, Ticket, Zap, Star, PlayCircle } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
 interface Props { onBack: () => void; }
 
 export const BrowseConcerts = ({ onBack }: Props) => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState<string | null>(null);
+  const [myTickets, setMyTickets] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    (async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+      const { data } = await supabase
+        .from("concert_ticket_purchases")
+        .select("concert_id")
+        .eq("user_id", session.user.id)
+        .eq("payment_status", "completed");
+      setMyTickets(new Set((data || []).map((r: any) => r.concert_id)));
+    })();
+  }, []);
 
   const { data: concerts, isLoading } = useQuery({
     queryKey: ["browse-concerts"],
@@ -108,7 +124,17 @@ export const BrowseConcerts = ({ onBack }: Props) => {
                 {concert.description && <p className="text-sm text-muted-foreground line-clamp-2">{concert.description}</p>}
               </CardHeader>
               <CardContent className="space-y-2">
-                {concert.concert_ticket_types?.map((ticket: any) => (
+                {myTickets.has(concert.id) && concert.status === "live" && (
+                  <Button onClick={() => navigate(`/concert-watch/${concert.id}`)} className="w-full bg-destructive hover:bg-destructive/90 animate-pulse">
+                    <PlayCircle className="h-4 w-4 mr-2" />Watch Live Now
+                  </Button>
+                )}
+                {myTickets.has(concert.id) && concert.status !== "live" && (
+                  <Button variant="outline" onClick={() => navigate(`/concert-watch/${concert.id}`)} className="w-full">
+                    <Ticket className="h-4 w-4 mr-2" />Your ticket (waiting room)
+                  </Button>
+                )}
+                {!myTickets.has(concert.id) && concert.concert_ticket_types?.map((ticket: any) => (
                   <div key={ticket.id} className={`p-3 rounded-xl border transition-all ${ticket.name === "vip" ? "bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border-yellow-500/30" : "bg-primary/5 border-primary/20"}`}>
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">

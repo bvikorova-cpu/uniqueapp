@@ -268,6 +268,7 @@ import {
   ComedyLiveViewer,
   LiveConcerts,
   MusicianDashboard,
+  ConcertWatch,
   
   ContentStudio,
   FashionStudio,
@@ -1127,6 +1128,7 @@ const App = () => {
                         <Route path="/multiverse" element={<MultiverseNetwork />} />
                         {/* Live Concerts */}
                         <Route path="/live-concerts" element={<LiveConcerts />} />
+                        <Route path="/concert-watch/:id" element={<ProtectedRoute><ConcertWatch /></ProtectedRoute>} />
                         <Route path="/musician-dashboard" element={<ProtectedRoute><MusicianDashboard /></ProtectedRoute>} />
                         <Route path="/coffee/leaderboard" element={<CoffeeCheckins />} />
                         <Route path="/kids-stories/adventure" element={<ChooseAdventure />} />
