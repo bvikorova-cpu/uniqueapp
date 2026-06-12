@@ -219,6 +219,15 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
 
           const { data: { publicUrl } } = supabase.storage.from("media").getPublicUrl(fileName);
 
+          if (fileType === "image") {
+            const { moderateImage } = await import("@/lib/scaleGuards");
+            const mod = await moderateImage(publicUrl);
+            if (!mod.allowed) {
+              try { await supabase.storage.from("media").remove([fileName]); } catch {}
+              throw new Error(`Image blocked: ${mod.reason || mod.categories.join(", ") || "policy violation"}`);
+            }
+          }
+
           await supabase.from("media").insert({
             post_id: post.id,
             file_url: publicUrl,
