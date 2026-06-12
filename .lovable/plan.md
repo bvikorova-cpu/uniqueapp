@@ -1,74 +1,58 @@
-# Scale-Readiness Batch (Supabase Pro)
 
-Cieľ: posunúť social & dating z "1M ready" na "10-100M ready". Plný 1B+ vyžaduje multi-region active-active mimo Lovable — to neriešim.
+## Stav modulu Live Concerts (audit)
 
-## Čo Pro plan už dáva zadarmo
-- PgBouncer transaction pooler (port 6543) — netreba kód
-- Read replicas — netreba kód, len failover URL
-- Supabase Storage CDN (Cloudflare) — automatické
-- Realtime 500 concurrent / 2M msg / mesiac — stačí na ~100k DAU
-- Daily backups, 7-day PITR
+### Čo funguje ✅
+- **Hub** `/live-concerts` — auth guard, 20 nástrojov, How-It-Works.
+- **Registrácia hudobníka** (`MusicianRegistration` → `musician_profiles`).
+- **Musician Dashboard** `/musician-dashboard` — Schedule Concert (vloží do `live_concert_streams`), TicketPricingManager (insert do `concert_ticket_types`), EarningsDashboard.
+- **Browse Concerts** — list `scheduled/live` koncertov + Buy Ticket → `create-concert-ticket-checkout` → cez `proxyMap` smerované na `create-checkout` (product=`concert_ticket`), splits 80/20, Stripe checkout v novom tabe.
+- **Verify** `verify-concert-ticket-payment` + `useOneOffPaymentVerify` na návrate.
+- Vedľajšie nástroje (gifts, setlist voting, song requests, merch, leaderboard, replays, chat, stories, collectibles, afterparty, multi-camera) — existujú ako samostatné komponenty.
 
-→ Body **1, 5** = vybavené Pro planom, žiadna zmena kódu.
+### Kritická diera ❌
+**Neexistuje žiadna stránka, kde by sa koncert dal naživo VYSIELAŤ ani SLEDOVAŤ.**
+- `MusicianDashboard` nemá tlačidlo „Go Live" pre koncert (existuje len `GoLiveButton` pre influencer `live_streams`, nie pre `live_concert_streams`).
+- `live_concert_streams` má pole `stream_key`, ale žiadny `playback_url`/`hls_url`/`ingest_url`.
+- V `App.tsx` chýba routa typu `/concert-watch/:id`. Po kúpe lístka nemá kupujúci kde sledovať.
+- `MultiCamera` je čisto mockup (žiadny video element).
 
-## Čo implementujem v tejto dávke
+### Plán opráv
 
-### A. Global rate-limit (bod 9) — 1 migrácia
-- Tabuľka `public.rate_limit_buckets(user_id, bucket, window_start, count)` s unique key.
-- Funkcia `public.check_rate_limit(_bucket text, _max int, _window_seconds int) returns boolean` — SECURITY DEFINER, increments + returns false ak prekročené.
-- Cleanup cron: zmaže staré buckets > 24h.
-- Použitie: zavolá sa z edge fns (post-comment, send-dm, follow, like, swipe) cez RPC.
+**1. DB migrácia — pridať streaming polia na `live_concert_streams`**
+- `ingest_url text` (RTMP/WHIP endpoint pre vysielateľa)
+- `playback_url text` (HLS .m3u8 pre divákov)
+- `started_at timestamptz`, `ended_at timestamptz`
+- `viewer_count int default 0`
 
-### B. Text moderation (bod 8) — 1 edge fn
-- `moderate-text` edge fn: vstup `{ text }`, výstup `{ allowed, flagged_categories, severity }`.
-- Volá Lovable AI Gateway (`google/gemini-2.5-flash-lite`) s moderation promptom — žiadne externé kľúče.
-- Drop-in: `post-confession` už má denylist; pridám volanie tejto fn aj do `send-dm`, `create-post`, `add-comment` (ak existujú).
+**2. Edge function `concert-go-live`** (verify_jwt)
+- Vstup: `concertId`. Overí, že volajúci = `musician_profiles.user_id` pre tento koncert.
+- Vygeneruje deterministický stream key (alebo prijme externe nastavený), vyplní `ingest_url` + `playback_url` (placeholder formát — používateľ si neskôr napojí Mux/Cloudflare/Livepeer; teraz schéma `rtmp://stream.uniqueapp.fun/live/<key>` a `https://stream.uniqueapp.fun/hls/<key>.m3u8`).
+- Status → `live`, `started_at = now()`.
 
-### C. Image moderation (bod 7) — 1 edge fn
-- `moderate-image` edge fn: vstup `{ image_url }`, volá Gemini Flash 2.5 vision s NSFW/CSAM klasifikáciou.
-- Háčik v storage upload handleroch (post-image-upload, dating-photo-upload) → ak `flagged`, sa zmaže + log do `content_moderation`.
-- CSAM pri match → okamžitý ban + log pre admin.
+**3. Edge function `concert-end-stream`** — status → `ended`, `ended_at = now()`.
 
-### D. Full-text search (bod 4) — 1 migrácia
-- GIN indexy na `posts(content)`, `profiles(full_name, username, bio)`, `job_listings(title, description)`, `communities(name, description)` cez `to_tsvector('simple', ...)`.
-- RPC `search_posts(q text, limit int)`, `search_profiles(q text, limit int)`.
-- Nahradí dnešné `ilike '%q%'` ktoré nepoužíva index.
+**4. Tlačidlá v `MusicianDashboard`** pri každom koncerte: **Go Live / End Stream / Copy RTMP key** (dialog s návodom: OBS → Server `ingest_url`, Stream Key).
 
-### E. Feed cache denormalizácia (bod 2) — 1 migrácia
-- Tabuľka `user_feed_cache(user_id, post_id, score, inserted_at)` PK `(user_id, post_id)`.
-- Trigger na `posts`: po inserte fan-out do followers (cap 5000 — celebrity účty riešené pull-on-read).
-- `get_wall_feed` RPC upravený: najprv číta z cache, ak prázdne → fallback na live query.
-- Cron: nightly trim starých záznamov > 30 dní.
+**5. Nová routa `/concert-watch/:id`** + stránka `ConcertWatch.tsx`
+- Server-side guard: musí mať platný `concert_ticket_purchases` riadok pre `auth.uid()` na tomto koncerte (alebo byť sám hudobník).
+- HLS player (hls.js, fallback na natívne Safari).
+- Sidebar: `ConcertChat` (už existuje), tlačidlá Send Gift / Song Request / Vote Setlist.
+- Realtime increment `viewer_count` cez Supabase channel presence.
 
-### F. Spam/bot signály (bod 6) — 1 migrácia + 1 fn
-- Stĺpec `profiles.spam_score` (int), `profiles.account_age_hours` (computed).
-- DB fn `compute_spam_score(_user_id)` — heuristika: vek <24h + >10 follow akcií + 0 avatar + 0 bio = high score.
-- Trigger na `follows`, `dating_swipes`: ak `spam_score > 70`, blok insertu.
+**6. „Watch Now" v `BrowseConcerts`** keď `status='live'` a používateľ má lístok → navigate `/concert-watch/:id`. Inak Buy Ticket.
 
-### G. Hot-path indexy (perf) — 1 migrácia
-- `posts(created_at DESC) WHERE deleted_at IS NULL`
-- `dating_swipes(user_id, created_at DESC)`
-- `notifications(user_id, read_at, created_at DESC)`
-- `conversation_messages(conversation_id, created_at DESC)`
-- `follows(follower_id), follows(following_id)` (ak chýbajú)
+**7. RLS audit**
+- `concert_ticket_purchases` SELECT len `holder = auth.uid()` alebo hudobník.
+- `live_concert_streams` SELECT public pre scheduled/live (browse), UPDATE len owner musician.
 
-### H. APM — Sentry (bod 13) — 1 secret + 2 súbory
-- Pridať `@sentry/react` + init v `main.tsx` (SENTRY_DSN secret).
-- Edge fn wrapper `sentryWrap` pre serverové errory.
-- User povie či má Sentry účet, alebo to vynechám.
+**8. Mobil + UX**
+- Hub a Watch stránka: `pt-20 pb-28 md:pb-8`.
+- Watch: video 16:9 responsive, chat collapse na mobile.
 
-## Čo NEROBÍM
+**9. Testovanie Nathalie**
+- Skript: register musician → schedule → set prices → go live → druhý user kúpi lístok (test card) → verify success → watch stránka prehrá HLS (alebo zobrazí „Stream sa pripravuje"), chat funkčný → end stream → status `ended`.
 
-- **Bod 3 (Realtime sharding)** — Pro plan dáva 500 concurrent, do 100k DAU netreba sharding. Nad 100k = vlastná infra.
-- **Bod 10 (GDPR erasure)** — už hotové (`gdpr_purge_user_data`).
-- **Bod 11 (Age verification)** — Yoti/Veriff integrácia = €€€ + KYC kontrakt, vyžaduje user rozhodnutie.
-- **Bod 12 (Reporting/appeals UI)** — existuje `content_reports`, `brand_moderation_appeals`. DSA-grade SLA UI = separátny ticket.
-- **Bod 14 (Load tests)** — k6/Artillery nepatrí do prod kódu, beží sa lokálne.
+### Otvorené otázky pred implementáciou
 
-## Poradie execution
-1. Migrácia A+D+E+F+G (jeden DB push)
-2. Edge fns B + C
-3. Hook B/C do existujúcich create-post/send-dm/upload paths
-4. Sentry (ak user dodá DSN)
-
-Schválenie potrebné — migrácia mení ~10 tabuliek/funkcií. Pokračujem?
+1. **Streamovací backend:** Postaviť na **placeholder URL** (RTMP/HLS schéma) s tým, že napojenie reálneho providera (Mux / Cloudflare Stream / Livepeer) doplníme neskôr cez secret? Alebo preferuješ rovno integrovať Mux/Cloudflare (vyžaduje API kľúč ako secret)?
+2. **Replay nahrávky:** chceš automatické ukladanie ended streamov do `ConcertReplay` (potrebuje provider podporujúci recording)?
