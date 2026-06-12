@@ -18,20 +18,21 @@ export const useStories = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      
-      // Manually fetch profiles for each story
-      const storiesWithProfiles = await Promise.all(
-        (data || []).map(async (story) => {
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("*")
-            .eq("id", story.user_id)
-            .single();
-          return { ...story, profiles: profile };
-        })
-      );
-      
-      return storiesWithProfiles;
+
+      const userIds = Array.from(new Set((data || []).map((s) => s.user_id)));
+      if (userIds.length === 0) return [];
+
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("*")
+        .in("id", userIds);
+
+      const profileMap = new Map((profiles || []).map((p: any) => [p.id, p]));
+      return (data || []).map((story) => ({
+        ...story,
+        profiles: profileMap.get(story.user_id) ?? null,
+      }));
+
     },
   });
 

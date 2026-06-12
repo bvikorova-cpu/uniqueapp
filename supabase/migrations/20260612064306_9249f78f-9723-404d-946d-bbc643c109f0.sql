@@ -1,0 +1,1 @@
+ALTER VIEW public.user_follows SET (security_invoker = true);
