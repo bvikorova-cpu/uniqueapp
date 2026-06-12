@@ -309,10 +309,11 @@ const SafetyPrevention = () => {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="Share what's on your mind..."
-                    className="flex-1 bg-background/50 border-border/40"
+                    aria-label="Message input"
+                    className="flex-1 min-h-[44px] bg-background/50 border-border/40"
                     onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); } }}
                   />
-                  <Button onClick={sendMessage} disabled={isLoading || !input.trim()} size="lg" className="bg-teal-600 hover:bg-teal-500">
+                  <Button onClick={sendMessage} disabled={isLoading || !input.trim()} size="lg" aria-label="Send message" className="min-h-[44px] min-w-[44px] bg-teal-600 hover:bg-teal-500">
                     {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                   </Button>
                 </div>

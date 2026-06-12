@@ -664,6 +664,7 @@ const App = () => {
                         <Route path="/megatalent/:category" element={<MegatalentGuard><MegatalentCategory /></MegatalentGuard>} />
                         <Route path="/megaforum" element={<Megaforum />} />
                         <Route path="/psychologist" element={<Psychology />} />
+                        <Route path="/online-psychologist" element={<OnlinePsychologist />} />
                         <Route path="/vacationer" element={<Vacationer />} />
                         <Route path="/dating" element={<Dating />} />
                         <Route path="/first-aid" element={<FirstAid />} />
@@ -887,7 +888,7 @@ const App = () => {
                         <Route path="/coloring-pages/hub" element={<ColoringHub />} />
                         <Route path="/coloring-pages/hub/:slug" element={<ColoringHub />} />
                         <Route path="/schools" element={<Navigate to="/coloring-pages" replace />} />
-                        <Route path="/healthcare" element={<Navigate to="/coloring-pages" replace />} />
+                        <Route path="/healthcare" element={<Navigate to="/wellness" replace />} />
                         <Route path="/corporate-events" element={<Navigate to="/coloring-pages" replace />} />
                         <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
                         <Route path="/healthcare-dashboard" element={<HealthcareProviderDashboard />} />

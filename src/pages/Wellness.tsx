@@ -353,7 +353,8 @@ export default function Wellness() {
                             <Button
                               onClick={() => handleCheckout(key as keyof typeof WELLNESS_PLANS)}
                               disabled={!!checkoutLoading}
-                              className={`w-full active:scale-[0.97] transition-transform ${(plan as any).popular ? 'shadow-lg shadow-primary/20' : ''}`}
+                              aria-label={`Subscribe to ${plan.name} – ${plan.price}${plan.period}`}
+                              className={`w-full min-h-[44px] active:scale-[0.97] transition-transform ${(plan as any).popular ? 'shadow-lg shadow-primary/20' : ''}`}
                               variant={(plan as any).popular ? "default" : "outline"}
                             >
                               {checkoutLoading === key ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Loading...</> : 'Subscribe'}
