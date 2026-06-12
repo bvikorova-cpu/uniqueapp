@@ -150,6 +150,26 @@ const ConcertWatch = () => {
     return () => { removed = true; };
   }, [id, allowed]);
 
+  // Verify gift checkout when redirected back from Stripe
+  useEffect(() => {
+    const giftStatus = searchParams.get("gift");
+    const sid = searchParams.get("session_id");
+    if (!giftStatus) return;
+    if (giftStatus === "success" && sid) {
+      supabase.functions.invoke("verify-concert-gift", { body: { sessionId: sid } })
+        .then(({ data, error }) => {
+          if (error) toast.error("Gift verification failed");
+          else if ((data as any)?.paid) toast.success("🎁 Gift sent to the artist!");
+          else toast.error("Payment not completed");
+        });
+    } else if (giftStatus === "canceled") {
+      toast.info("Gift purchase canceled");
+    }
+    searchParams.delete("gift");
+    searchParams.delete("session_id");
+    setSearchParams(searchParams, { replace: true });
+  }, [searchParams, setSearchParams]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center pt-20">
