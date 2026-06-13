@@ -153,6 +153,6 @@ test.describe("Anonymous Dating — partner profile rendering", () => {
 
   test("empty matches list renders the empty state", async ({ page }) => {
     await gotoHarness(page, []);
-    await expect(page.getByText(/No Active Matches Yet/i)).toBeVisible();
+    await expect(page.getByText(/No matches yet/i)).toBeVisible();
   });
 });
