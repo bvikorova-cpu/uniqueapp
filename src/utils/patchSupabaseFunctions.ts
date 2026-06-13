@@ -93,6 +93,8 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   "create-fashion-marketplace-payment":      { target: "create-checkout", bodyExtras: { product: "fashion_marketplace" } },
   "create-future-face-checkout":             { target: "create-checkout", bodyExtras: { product: "future_face" } },
   "create-healthcare-subscription":          { target: "create-checkout", bodyExtras: { product: "healthcare_subscription" } },
+  "create-healthcare-checkout":              { target: "create-checkout", bodyExtras: { product: "healthcare" } },
+  "create-nutrition-checkout":               { target: "create-checkout", bodyExtras: { product: "nutrition" } },
   "create-job-listing-payment":              { target: "create-checkout", bodyExtras: { product: "job_listing" } },
   "create-kids-reading-checkout":            { target: "create-checkout", bodyExtras: { product: "kids_reading" } },
   "create-kids-story-subscription-checkout": { target: "create-checkout", bodyExtras: { product: "kids_story_subscription" } },
