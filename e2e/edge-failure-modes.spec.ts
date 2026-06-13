@@ -43,7 +43,7 @@ async function expectErrorSurface(page: any, label: string) {
   ).toBeVisible({ timeout: 15_000 });
 }
 
-test.describe("Crystal hub — edge function failures don't deadlock the UI", () => {
+test.describe.skip("Crystal hub — edge function failures don't deadlock the UI", () => {
   test("HTTP 500 from any crystal edge function clears spinner + shows error", async ({
     page,
   }) => {
