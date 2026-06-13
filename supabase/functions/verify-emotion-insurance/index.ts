@@ -17,13 +17,17 @@ serve(async (req) => {
     if (!stripeKey) throw new Error("STRIPE_SECRET_KEY missing");
 
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("Authorization required");
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: "Authorization required" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
     const supaAuth = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? ""
     );
     const { data: { user } } = await supaAuth.auth.getUser(authHeader.replace("Bearer ", ""));
-    if (!user) throw new Error("Not authenticated");
+    if (!user) {
+      return new Response(JSON.stringify({ error: "Not authenticated" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
 
     const { sessionId } = await req.json();
     if (!sessionId) throw new Error("sessionId required");

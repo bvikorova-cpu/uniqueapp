@@ -56,7 +56,8 @@ Deno.serve(async (req) => {
           { role: "user", content: message || "" },
         ]);
         break;
-      default: throw new Error(`Unknown action: ${action}`);
+      default:
+        return new Response(JSON.stringify({ error: `Unknown action: ${action}` }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     try { result = JSON.parse(result); } catch {}
     return new Response(JSON.stringify(typeof result === "string" ? { result } : result), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
