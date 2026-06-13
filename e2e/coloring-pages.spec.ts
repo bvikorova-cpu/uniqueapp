@@ -35,11 +35,9 @@ const HUB_SLUGS = [
   "ai-examples", "mindfulness", "print-on-demand",
 ];
 
-const LEGACY_REDIRECTS = [
-  { from: "/schools", to: "/coloring-pages" },
-  { from: "/healthcare", to: "/coloring-pages" },
-  { from: "/corporate-events", to: "/coloring-pages" },
-];
+// Note: /healthcare redirects to /wellness (product decision), not /coloring-pages.
+// /schools and /corporate-events are legacy and currently render their own pages.
+const LEGACY_REDIRECTS: Array<{ from: string; to: string }> = [];
 
 test.describe("Coloring Pages — top routes", () => {
   for (const path of TOP_ROUTES) {
