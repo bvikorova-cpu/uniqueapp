@@ -95,7 +95,7 @@ test.describe("Blockchain Confessions — post flow", () => {
     page,
   }) => {
     await stubGetConfessions(page, []);
-    await page.goto(WALL_ROUTE);
+    await page.goto(POST_ROUTE);
     await page.waitForLoadState("networkidle");
 
     const textarea = page.getByPlaceholder(/I confess that/i).first();
