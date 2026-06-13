@@ -283,8 +283,53 @@ export function resolveProxy(
     return { target: "check-subscription", body: { ...b, tier: "time_reversal" } };
   }
 
-  // Batch 9–10 — module-specific Stripe Billing Portal routed to universal
-  // check-connect-status (action=customer_portal). Same session, default
+  // Batch 15 — final subscription-check consolidation (audit 2026-06-13)
+  const SUBSCRIPTION_CHECK_MAP: Record<string, string> = {
+    "check-best-friend-subscription": "best_friend",
+    "check-companions-subscription": "companions",
+    "check-employer-subscription": "employer",
+    "check-f1-subscription": "f1",
+    "check-future-face-subscription": "future_face",
+    "check-healthcare-subscription": "healthcare",
+    "check-kids-drawing-subscription": "kids",
+    "check-kids-reading-subscription": "kids_reading",
+    "check-kids-story-subscription": "kids_story",
+    "check-psychology-subscription": "psychology",
+    "check-shadow-subscription": "shadow",
+    "check-skill-swap-subscription": "skill_swap",
+    "check-sports-subscription": "sports",
+    "check-vip-subscription": "vip",
+    "check-wellness-subscription": "wellness",
+  };
+  const subTier = SUBSCRIPTION_CHECK_MAP[functionName];
+  if (subTier) {
+    return { target: "check-subscription", body: { ...b, tier: subTier } };
+  }
+
+  // Batch 15 — remaining *-customer-portal aliases route to check-connect-status
+  const CUSTOMER_PORTAL_MODULES: Record<string, string> = {
+    "companions-customer-portal": "/companions",
+    "customer-portal-creator": "/creator-dashboard",
+    "employer-customer-portal": "/employer",
+    "f1-customer-portal": "/f1-racing",
+    "healthcare-customer-portal": "/healthcare",
+    "kids-drawing-customer-portal": "/kids-drawing",
+    "kids-story-customer-portal": "/kids-story",
+    "psychology-customer-portal": "/psychology",
+  };
+  const portalPath = CUSTOMER_PORTAL_MODULES[functionName];
+  if (portalPath) {
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    return {
+      target: "check-connect-status",
+      body: {
+        ...b,
+        action: "customer_portal",
+        return_url: (b as any).return_url ?? `${origin}${portalPath}`,
+      },
+    };
+  }
+
   // return_url=/account; module aliases inject return_url to preserve the
   // original landing page (e.g. /megatalent).
   if (functionName === "decor-customer-portal") {
