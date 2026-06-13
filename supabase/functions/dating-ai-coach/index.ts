@@ -6,16 +6,16 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-const AI_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
+const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+const AI_URL = "https://api.openai.com/v1/chat/completions";
 
-async function callAI(messages: any[], json = false, model = "google/gemini-2.5-flash") {
-  if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
+async function callAI(messages: any[], json = false, model = "gpt-4o-mini") {
+  if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
   const body: any = { model, messages };
   if (json) body.response_format = { type: "json_object" };
   const r = await fetch(AI_URL, {
     method: "POST",
-    headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
   if (r.status === 429) throw new Error("Rate limit, try again shortly");
@@ -143,7 +143,7 @@ Tips MUST be concrete and tailored to the profile type. Rewrites MUST be under 2
       const raw = await callAI([
         { role: "system", content: `You predict like→match probability for a dating app. Given the viewer profile and candidate profiles, score each candidate 0-100 reflecting the probability the viewer will like AND the candidate will like back (mutual match). Reward shared interests, compatible age/orientation, profile completeness, and conversation potential. Return STRICT JSON: {"scores":[{"id":"...","p":0-100}]}.` },
         { role: "user", content: `Viewer:\n${JSON.stringify(myCtx)}\n\nCandidates:\n${JSON.stringify(slim)}` },
-      ], true, "google/gemini-2.5-flash-lite");
+      ], true, "gpt-4o-mini");
       let scores: any[] = [];
       try { scores = JSON.parse(raw).scores || []; } catch { scores = []; }
       return new Response(JSON.stringify({ scores }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
