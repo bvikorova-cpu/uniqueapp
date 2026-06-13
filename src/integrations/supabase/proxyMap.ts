@@ -174,7 +174,15 @@ export const CHECKOUT_PROXY_MAP: Record<string, { product: string; module: strin
   // "purchase-shadow-gift": B18f — merged into create-checkout (see resolveProxy)
   "purchase-stock-content": { product: "stock_content", module: "stock_content" },
   "purchase-tip": { product: "tip", module: "tip" },
+
+  // Batch 15 — final checkout consolidation (audit 2026-06-13)
+  "create-cooking-credits-payment": { product: "cooking_credits", module: "cooking_credits" },
+  "create-f1-currency-checkout": { product: "f1_currency", module: "f1_currency" },
+  "create-kids-drawing-checkout": { product: "kids_drawing", module: "kids_drawing" },
+  "create-lead-boost-payment": { product: "lead_boost", module: "lead_boost" },
+  "create-tipster-checkout": { product: "tipster", module: "tipster" },
 };
+
 
 export const VERIFY_PROXY_MAP: Record<string, string> = {
   // "verify-bazaar-order-payment": REAL edge function — do not proxy
@@ -187,7 +195,11 @@ export const VERIFY_PROXY_MAP: Record<string, string> = {
   "verify-multiverse-payment": "multiverse",
   "verify-shadow-battle-payment": "shadow-battle",
   "verify-tip-purchase": "tip",
+  // Batch 15 — final verify consolidation
+  "verify-bazaar-payment": "bazaar",
+  "verify-gift-payment": "gift",
 };
+
 
 // Nutrition router consolidation: 9 nutrition-* functions merged into nutrition-router.
 export const NUTRITION_ROUTER_MAP: Record<string, string> = {
