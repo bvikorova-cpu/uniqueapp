@@ -20,6 +20,8 @@ import { test, expect, Page } from "@playwright/test";
 
 const FN_RE = /\/functions\/v1\//;
 const ROUTE = "/blockchain-confessions";
+const WALL_ROUTE = "/blockchain-confessions?view=wall";
+const POST_ROUTE = "/blockchain-confessions?view=post";
 
 async function stubFn(
   page: Page,
@@ -68,7 +70,7 @@ const sampleConfession = {
 test.describe("Blockchain Confessions — public wall", () => {
   test("loads confession list without auth", async ({ page }) => {
     await stubGetConfessions(page, [sampleConfession]);
-    await page.goto(ROUTE);
+    await page.goto(WALL_ROUTE);
     await page.waitForLoadState("networkidle");
 
     await expect(
@@ -78,7 +80,7 @@ test.describe("Blockchain Confessions — public wall", () => {
 
   test("empty list renders gracefully (no spinner stuck)", async ({ page }) => {
     await stubGetConfessions(page, []);
-    await page.goto(ROUTE);
+    await page.goto(WALL_ROUTE);
     await page.waitForLoadState("networkidle");
 
     // Loading text should disappear
@@ -93,7 +95,7 @@ test.describe("Blockchain Confessions — post flow", () => {
     page,
   }) => {
     await stubGetConfessions(page, []);
-    await page.goto(ROUTE);
+    await page.goto(POST_ROUTE);
     await page.waitForLoadState("networkidle");
 
     const textarea = page.getByPlaceholder(/I confess that/i).first();
@@ -136,7 +138,7 @@ test.describe("Blockchain Confessions — post flow", () => {
       return route.continue();
     });
 
-    await page.goto(ROUTE);
+    await page.goto(POST_ROUTE);
     await page.waitForLoadState("networkidle");
 
     const textarea = page.getByPlaceholder(/I confess that/i).first();
@@ -181,7 +183,7 @@ test.describe("Blockchain Confessions — voting flow", () => {
       return route.continue();
     });
 
-    await page.goto(ROUTE);
+    await page.goto(WALL_ROUTE);
     await page.waitForLoadState("networkidle");
 
     // Confession visible
@@ -231,7 +233,7 @@ test.describe("Blockchain Confessions — Stripe payment flow", () => {
       return route.continue();
     });
 
-    await page.goto(ROUTE);
+    await page.goto(WALL_ROUTE);
     await page.waitForLoadState("networkidle");
 
     const buyBtn = page
@@ -269,7 +271,7 @@ test.describe("Blockchain Confessions — Stripe payment flow", () => {
       return route.continue();
     });
 
-    await page.goto(ROUTE);
+    await page.goto(WALL_ROUTE);
     await page.waitForLoadState("networkidle");
 
     const buyBtn = page

@@ -74,9 +74,12 @@ const BlockchainConfessions = () => {
   useEffect(() => {
     const payment = searchParams.get("payment");
     const sessionId = searchParams.get("session_id");
+    const view = searchParams.get("view") as ToolView | null;
+    if (view && tools.some(t => t.id === view)) setActiveView(view);
     if (payment === "success" && sessionId) verifyPayment(sessionId);
     else if (payment === "canceled") toast({ title: "Payment Canceled", description: "No charges were made.", variant: "destructive" });
   }, [searchParams]);
+
 
   const verifyPayment = async (sessionId: string) => {
     setVerifyingPayment(true);
