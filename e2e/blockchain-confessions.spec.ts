@@ -19,7 +19,9 @@ import { test, expect, Page } from "@playwright/test";
  */
 
 const FN_RE = /\/functions\/v1\//;
-const ROUTE = "/blockchain-confessions?view=wall";
+const ROUTE = "/blockchain-confessions";
+const WALL_ROUTE = "/blockchain-confessions?view=wall";
+const POST_ROUTE = "/blockchain-confessions?view=post";
 
 async function stubFn(
   page: Page,
