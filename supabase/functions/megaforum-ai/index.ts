@@ -23,7 +23,7 @@ serve(async (req) => {
       systemPrompt = "You are a discussion thread summarizer. Create a concise, well-structured summary of the provided discussion. Highlight key points, areas of agreement, areas of disagreement, and any conclusions reached.";
       userPrompt = `Summarize this discussion thread:\n\n${content}`;
     } else {
-      throw new Error("Invalid action");
+      return new Response(JSON.stringify({ error: "Invalid action" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
