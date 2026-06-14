@@ -116,53 +116,72 @@ export default function AuctionsList({ userId }: AuctionsListProps) {
   };
 
   const handlePlaceBid = async (auctionId: string) => {
-    const amount = bidAmount[auctionId];
-    if (!amount) {
-      toast.error("Please enter a bid amount");
+    if (biddingId) return;
+    const amount = parseInt(bidAmount[auctionId] || "", 10);
+    if (!Number.isFinite(amount) || amount <= 0 || amount > 100_000_000) {
+      toast.error("Enter a valid bid amount");
       return;
     }
-
+    setBiddingId(auctionId);
     try {
-      const auction = auctions.find(a => a.id === auctionId);
-      if (parseInt(amount) <= auction.current_price) {
-        toast.error("Bid must be higher than current price");
+      const { data, error } = await supabase.rpc('place_collectible_bid', {
+        p_auction_id: auctionId,
+        p_bid: amount,
+      });
+      if (error) throw error;
+      const row = Array.isArray(data) ? data[0] : data;
+      if (!row?.success) {
+        const reasonMap: Record<string, string> = {
+          not_authenticated: "You must be signed in",
+          not_found: "Auction not found",
+          not_active: "Auction is no longer active",
+          expired: "Auction has expired",
+          own_auction: "You cannot bid on your own auction",
+          bid_too_low: "Bid must be higher than current price",
+          invalid_bid: "Invalid bid amount",
+        };
+        toast.error(reasonMap[row?.reason] || "Failed to place bid");
         return;
       }
-
-      // Update auction price
-      const { error: updateError } = await supabase
-        .from('collectible_auctions')
-        .update({ current_price: parseInt(amount) })
-        .eq('id', auctionId);
-
-      if (updateError) throw updateError;
-
       toast.success("Bid placed successfully!");
       setBidAmount({ ...bidAmount, [auctionId]: "" });
       fetchAuctions();
     } catch (error) {
       console.error('Error placing bid:', error);
       toast.error("Failed to place bid");
+    } finally {
+      setBiddingId(null);
     }
   };
 
-  const handleBuyout = async (auctionId: string, buyoutPrice: number) => {
+  const handleBuyout = async (auctionId: string) => {
+    if (buyingOutId) return;
+    setBuyingOutId(auctionId);
     try {
-      const { error } = await supabase
-        .from('collectible_auctions')
-        .update({ 
-          status: 'sold',
-          current_price: buyoutPrice
-        })
-        .eq('id', auctionId);
-
+      const { data, error } = await supabase.rpc('buyout_collectible_auction', {
+        p_auction_id: auctionId,
+      });
       if (error) throw error;
-
+      const row = Array.isArray(data) ? data[0] : data;
+      if (!row?.success) {
+        const reasonMap: Record<string, string> = {
+          not_authenticated: "You must be signed in",
+          not_found: "Auction not found",
+          not_active: "Auction is no longer active",
+          expired: "Auction has expired",
+          own_auction: "You cannot buy your own auction",
+          no_buyout: "This auction has no buyout option",
+        };
+        toast.error(reasonMap[row?.reason] || "Failed to purchase item");
+        return;
+      }
       toast.success("Item purchased successfully!");
       fetchAuctions();
     } catch (error) {
       console.error('Error buying out:', error);
       toast.error("Failed to purchase item");
+    } finally {
+      setBuyingOutId(null);
     }
   };
 
