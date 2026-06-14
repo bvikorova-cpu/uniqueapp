@@ -99,13 +99,13 @@ serve(async (req) => {
     if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
 
     const auth = req.headers.get("Authorization");
-    if (!auth) throw new Error("No authorization header");
+    if (!auth) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     const { data: { user }, error: authErr } = await supabase.auth.getUser(auth.replace("Bearer ", ""));
-    if (authErr || !user) throw new Error("Unauthorized");
+    if (authErr || !user) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
     const body = await req.json();
     const action = body.action as keyof typeof COSTS;
-    if (!action || !(action in COSTS)) throw new Error("Invalid action. Use: dream | meditation | mood | sleep");
+    if (!action || !(action in COSTS)) return new Response(JSON.stringify({ error: "Invalid action" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
     const COST = COSTS[action];
     const isSafety = SAFETY_ACTIONS.has(action);

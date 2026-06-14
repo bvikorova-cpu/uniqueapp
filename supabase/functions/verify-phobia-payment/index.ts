@@ -20,16 +20,22 @@ serve(async (req) => {
 
   try {
     const authHeader = req.headers.get("Authorization");
-    let userId: string | null = null;
-    
-    if (authHeader) {
-      const token = authHeader.replace("Bearer ", "");
-      const { data: userData } = await supabase.auth.getUser(token);
-      userId = userData.user?.id || null;
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+    const token = authHeader.replace("Bearer ", "");
+    const { data: userData } = await supabase.auth.getUser(token);
+    const userId = userData.user?.id || null;
+    if (!userId) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const { sessionId } = await req.json();
-    if (!sessionId) throw new Error("Missing session ID");
+    let body: any = {};
+    try { body = await req.json(); } catch {}
+    const { sessionId } = body;
+    if (!sessionId) {
+      return new Response(JSON.stringify({ error: "Missing session ID" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
