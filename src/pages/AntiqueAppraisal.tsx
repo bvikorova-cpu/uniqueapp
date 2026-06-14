@@ -158,24 +158,19 @@ const AntiqueAppraisal = () => {
           autoPlay muted loop playsInline
           className="absolute inset-0 w-full h-full object-cover brightness-[1.3] saturate-[1.2]"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30" />
 
         <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-8">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, type: "spring" }}>
-            <p className="text-xs sm:text-sm font-semibold tracking-wider uppercase drop-shadow-md"
-              style={{ color: "#00e5ff", textShadow: "0 0 20px rgba(0,229,255,0.6)" }}>
+            <p className="text-xs sm:text-sm font-semibold tracking-wider uppercase text-cyan-300 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
               🏺 AI-Powered Antique Hub
             </p>
-            <h1 className="text-4xl sm:text-6xl md:text-7xl font-black mt-1 drop-shadow-lg"
-              style={{
-                textShadow: "0 0 80px rgba(0,229,255,0.6), 0 4px 30px rgba(0,0,0,0.9), 0 0 120px rgba(0,229,255,0.3)",
-                WebkitTextStroke: "2px rgba(0,229,255,0.6)"
-              }}>
-              <span className="bg-gradient-to-r from-cyan-300 via-teal-400 to-emerald-400 bg-clip-text text-transparent">
+            <h1 className="text-4xl sm:text-6xl md:text-7xl font-black mt-1">
+              <span className="bg-gradient-to-r from-cyan-200 via-teal-300 to-emerald-300 bg-clip-text text-transparent drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)]">
                 Antique Appraisal
               </span>
             </h1>
-            <p className="text-sm sm:text-lg text-white/80 mt-2 max-w-xl drop-shadow-md">
+            <p className="text-sm sm:text-lg text-white mt-2 max-w-xl drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
               AI identification, valuation, authenticity & provenance tracking
             </p>
           </motion.div>
@@ -198,23 +193,13 @@ const AntiqueAppraisal = () => {
       </div>
 
       <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-10 max-w-6xl">
-        {/* Engagement Row */}
+        {/* Engagement Row — single Credits balance card (other stats live in hero overlay) */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
-          className="grid grid-cols-3 gap-3 sm:gap-4 mb-8">
-          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-cyan-500/20">
+          className="flex justify-center mb-8">
+          <Card className="p-4 bg-card/80 backdrop-blur-xl text-center border-cyan-500/20 min-w-[200px]">
             <Flame className="h-6 w-6 text-orange-500 mx-auto mb-1" />
-            <p className="text-xl sm:text-2xl font-black">{credits?.credits_remaining || 0}</p>
-            <p className="text-xs text-muted-foreground">Credits</p>
-          </Card>
-          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-cyan-500/20">
-            <Trophy className="h-6 w-6 text-yellow-500 mx-auto mb-1" />
-            <p className="text-xl sm:text-2xl font-black">{stats.appraisals}</p>
-            <p className="text-xs text-muted-foreground">Total Appraisals</p>
-          </Card>
-          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-cyan-500/20">
-            <Shield className="h-6 w-6 text-emerald-500 mx-auto mb-1" />
-            <p className="text-xl sm:text-2xl font-black">{stats.authenticity}</p>
-            <p className="text-xs text-muted-foreground">Verified Items</p>
+            <p className="text-2xl font-black">{credits?.credits_remaining || 0}</p>
+            <p className="text-xs text-muted-foreground">Credits Available</p>
           </Card>
         </motion.div>
 
@@ -232,11 +217,7 @@ const AntiqueAppraisal = () => {
         </motion.div>
 
         {/* Tools Grid */}
-        <h2 className="text-2xl sm:text-3xl font-black mb-4"
-          style={{
-            textShadow: "0 0 40px rgba(0,229,255,0.4), 0 2px 15px rgba(0,0,0,0.6)",
-            WebkitTextStroke: "1.5px rgba(0,229,255,0.5)"
-          }}>
+        <h2 className="text-2xl sm:text-3xl font-black mb-4">
           <span className="bg-gradient-to-r from-cyan-400 via-teal-500 to-emerald-500 bg-clip-text text-transparent">
             Appraisal Tools
           </span>

@@ -486,7 +486,7 @@ const Bazaar = () => {
             <Alert className="w-full">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
-                Limit: {limits.bazaarListingsPerMonth} listings/month • Commission: {limits.commissionRate}%
+                Limit: {limits.bazaarListingsPerMonth} listings/month • Platform fee: 10%
                 {limits.tier === 'basic' && <Link to="/subscription" className="ml-2 text-primary hover:underline">Upgrade</Link>}
               </AlertDescription>
             </Alert>
