@@ -50,6 +50,7 @@ import { CouponSellerDashboard } from "@/components/coupon/CouponSellerDashboard
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { Link } from "react-router-dom";
+import { SellerConnectGate } from "@/components/commerce/SellerConnectGate";
 
 const brandSlug = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 interface CouponListing {
@@ -621,6 +622,7 @@ const CouponMarketplace = () => {
                 <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
                   <DialogHeader><DialogTitle>List Your Coupon</DialogTitle></DialogHeader>
                   <div className="space-y-4">
+                    <SellerConnectGate compact />
                     <div><label className="text-sm font-medium">Title *</label><Input placeholder="e.g., 20% off at Nike" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} /></div>
                     <div><label className="text-sm font-medium">Store Name *</label><Input placeholder="e.g., Nike, Amazon" value={formData.store_name} onChange={e => setFormData({ ...formData, store_name: e.target.value })} /></div>
                     <div className="grid grid-cols-2 gap-4">

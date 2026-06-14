@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Upload, ArrowLeft, Check, Building2, Camera, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
+import { SellerConnectGate } from "@/components/commerce/SellerConnectGate";
 
 const LISTING_PACKAGES = [
   { id: "basic", name: "Basic", price: 29, duration: 30, features: ["Basic presentation", "30 days active"], color: "from-sky-500/10 to-blue-500/10", border: "border-sky-500/20" },
@@ -113,6 +114,10 @@ export default function PropertySubmissionForm() {
                 <p className="text-white/70 text-sm">Fill in the details and choose a package</p>
               </div>
             </div>
+          </div>
+
+          <div className="mb-4">
+            <SellerConnectGate />
           </div>
 
           <Card className="backdrop-blur-xl bg-card/80 border-border/50">
