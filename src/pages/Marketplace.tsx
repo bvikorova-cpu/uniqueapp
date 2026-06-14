@@ -186,8 +186,14 @@ const Marketplace = () => {
   const [responseMessage, setResponseMessage] = useState("");
   const [isSendingResponse, setIsSendingResponse] = useState(false);
   const [offeringToDelete, setOfferingToDelete] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isSubscribing, setIsSubscribing] = useState(false);
   const [activeTab, setActiveTab] = useState("browse");
   const [activeView, setActiveView] = useState<string | null>(null);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const PAGE_SIZE = 48;
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -200,7 +206,9 @@ const Marketplace = () => {
 
   useEffect(() => {
     checkAuth();
-    loadOfferings();
+    loadOfferings(0, true);
+    const { data: sub } = supabase.auth.onAuthStateChange(() => checkAuth());
+    return () => sub.subscription.unsubscribe();
   }, []);
 
   const checkAuth = async () => {
@@ -209,37 +217,57 @@ const Marketplace = () => {
     if (user) {
       const { data: subscription } = await supabase
         .from("marketplace_subscriptions")
-        .select("*")
+        .select("id")
         .eq("user_id", user.id)
         .eq("status", "active")
-        .single();
+        .maybeSingle();
       setIsSubscribed(!!subscription);
+    } else {
+      setIsSubscribed(false);
     }
   };
 
-  const loadOfferings = async () => {
+  const loadOfferings = async (pageIdx = 0, reset = false) => {
+    if (!reset) setIsLoadingMore(true);
+    const from = pageIdx * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
     const { data: offeringsData, error } = await supabase
       .from("skill_offerings")
       .select("*")
       .eq("is_active", true)
-      .order("created_at", { ascending: false });
-    if (error) { console.error("Error loading offerings:", error); return; }
-    if (!offeringsData || offeringsData.length === 0) { setOfferings([]); return; }
-    const userIds = [...new Set(offeringsData.map(o => o.user_id))];
+      .order("created_at", { ascending: false })
+      .range(from, to);
+    if (error) {
+      console.error("Error loading offerings:", error);
+      setIsLoadingMore(false);
+      return;
+    }
+    const rows = offeringsData ?? [];
+    setHasMore(rows.length === PAGE_SIZE);
+    if (rows.length === 0) {
+      if (reset) setOfferings([]);
+      setIsLoadingMore(false);
+      return;
+    }
+    const userIds = [...new Set(rows.map(o => o.user_id))];
     const { data: profilesData } = await supabase
       .from("profiles")
       .select("id, full_name, avatar_url")
       .in("id", userIds);
-    const offeringsWithProfiles = offeringsData.map(offering => ({
-      ...offering,
-      profiles: profilesData?.find(p => p.id === offering.user_id) || null
+    const merged = rows.map(o => ({
+      ...o,
+      profiles: profilesData?.find(p => p.id === o.user_id) || null,
     }));
-    setOfferings(offeringsWithProfiles);
+    setOfferings(prev => reset ? merged : [...prev, ...merged]);
+    setPage(pageIdx);
+    setIsLoadingMore(false);
   };
 
   const handleSubscribe = async () => {
     if (!user) { toast({ title: "Login Required", description: "You must log in to subscribe", variant: "destructive" }); return; }
+    setIsSubscribing(true);
     const { error } = await supabase.from("marketplace_subscriptions").insert({ user_id: user.id, status: "active" });
+    setIsSubscribing(false);
     if (error) { toast({ title: "Error", description: "Failed to create subscription", variant: "destructive" }); return; }
     setIsSubscribed(true);
     toast({ title: "Success!", description: "Subscription activated" });
