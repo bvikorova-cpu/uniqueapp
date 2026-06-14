@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Briefcase, MapPin, Clock, Euro, Upload, X, Send, Trash2, ShoppingBag, Store, Wand2, DollarSign, FileText, Target, Eye, BarChart3, Compass, Flag, Video, ShieldCheck, ScrollText, Gavel } from "lucide-react";
+import { Briefcase, MapPin, Clock, Euro, Upload, X, Send, Trash2, ShoppingBag, Store, Wand2, DollarSign, FileText, Target, Eye, BarChart3, Compass, Flag, Video, ShieldCheck, ScrollText, Gavel, Loader2 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
