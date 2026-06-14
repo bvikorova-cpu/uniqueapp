@@ -217,11 +217,7 @@ const AntiqueAppraisal = () => {
         </motion.div>
 
         {/* Tools Grid */}
-        <h2 className="text-2xl sm:text-3xl font-black mb-4"
-          style={{
-            textShadow: "0 0 40px rgba(0,229,255,0.4), 0 2px 15px rgba(0,0,0,0.6)",
-            WebkitTextStroke: "1.5px rgba(0,229,255,0.5)"
-          }}>
+        <h2 className="text-2xl sm:text-3xl font-black mb-4">
           <span className="bg-gradient-to-r from-cyan-400 via-teal-500 to-emerald-500 bg-clip-text text-transparent">
             Appraisal Tools
           </span>
