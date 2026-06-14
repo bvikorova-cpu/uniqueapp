@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { getReadableUrl } from "@/lib/storageSigned";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -66,7 +67,7 @@ export default function FutureFaceLiveAR() {
       const path = `${session.user.id}/livear-${Date.now()}.jpg`;
       const { error } = await supabase.storage.from("future-face-photos").upload(path, blob, { contentType: "image/jpeg" });
       if (error) throw error;
-      const url = supabase.storage.from("future-face-photos").getPublicUrl(path).data.publicUrl;
+      const url = (await getReadableUrl("future-face-photos", path));
       const res = await supabase.functions.invoke("future-face-image", {
         body: { action: "age_progression", sourceUrl: url, params: { years: 25 } },
       });

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { getReadableUrl } from "@/lib/storageSigned";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Card } from "@/components/ui/card";
@@ -121,7 +122,7 @@ const PhotoRestoration = () => {
       const fileName = `${user.id}/${Date.now()}.${fileExt}`;
       const { error: uploadError } = await supabase.storage.from('old-photos').upload(fileName, selectedFile);
       if (uploadError) throw uploadError;
-      const { data: { publicUrl } } = supabase.storage.from('old-photos').getPublicUrl(fileName);
+      const publicUrl = await getReadableUrl('old-photos', fileName);
       restorePhoto({ imageUrl: publicUrl, restorationType: type }, {
         onSuccess: (data: any) => {
           setRestoredUrl(data.restoredImageUrl);

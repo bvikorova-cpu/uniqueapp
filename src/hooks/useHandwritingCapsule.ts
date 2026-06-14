@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getReadableUrl } from "@/lib/storageSigned";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -49,7 +50,7 @@ export function useUploadCapsuleEntry() {
         .from("handwriting-capsule")
         .upload(path, vars.file, { upsert: false });
       if (upErr) throw upErr;
-      const { data: pub } = supabase.storage.from("handwriting-capsule").getPublicUrl(path);
+      const pub = { publicUrl: await getReadableUrl("handwriting-capsule", path) };
       const { data: row, error } = await supabase
         .from("handwriting_time_capsule")
         .insert({

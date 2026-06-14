@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getReadableUrl } from "@/lib/storageSigned";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -54,7 +55,7 @@ export const BatchProcessing = ({ onBack }: Props) => {
           const fileExt = item.file.name.split('.').pop();
           const fileName = `${user.id}/batch-${Date.now()}-${i}.${fileExt}`;
           await supabase.storage.from('old-photos').upload(fileName, item.file);
-          const { data: { publicUrl } } = supabase.storage.from('old-photos').getPublicUrl(fileName);
+          const publicUrl = await getReadableUrl('old-photos', fileName);
 
           let fnName = "restore-old-photo";
           let body: any = { imageUrl: publicUrl, restorationType: operation };

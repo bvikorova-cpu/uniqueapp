@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getReadableUrl } from "@/lib/storageSigned";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,9 +23,9 @@ async function uploadSample(file: File): Promise<string> {
     // fallback bucket
     const { error: e2 } = await supabase.storage.from("handwriting-capsule").upload(path, file);
     if (e2) throw e2;
-    return supabase.storage.from("handwriting-capsule").getPublicUrl(path).data.publicUrl;
+    return (await getReadableUrl("handwriting-capsule", path));
   }
-  return supabase.storage.from("handwriting-samples").getPublicUrl(path).data.publicUrl;
+  return (await getReadableUrl("handwriting-samples", path));
 }
 
 function ToolShell({

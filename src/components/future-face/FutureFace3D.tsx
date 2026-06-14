@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { getReadableUrl } from "@/lib/storageSigned";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Upload, RotateCw } from "lucide-react";
@@ -82,7 +83,7 @@ export default function FutureFace3D() {
     const path = `${session.user.id}/3d-${Date.now()}.${f.name.split(".").pop()}`;
     const { error } = await supabase.storage.from("future-face-photos").upload(path, f, { contentType: f.type });
     if (error) { toast({ title: "Upload failed", variant: "destructive" }); return; }
-    setImgUrl(supabase.storage.from("future-face-photos").getPublicUrl(path).data.publicUrl);
+    setImgUrl((await getReadableUrl("future-face-photos", path)));
   };
 
   return (

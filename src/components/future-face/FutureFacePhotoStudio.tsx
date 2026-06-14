@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { getReadableUrl } from "@/lib/storageSigned";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -36,7 +37,7 @@ async function uploadPhoto(file: File, userId: string): Promise<string> {
     contentType: file.type, upsert: false,
   });
   if (error) throw error;
-  return supabase.storage.from("future-face-photos").getPublicUrl(path).data.publicUrl;
+  return (await getReadableUrl("future-face-photos", path));
 }
 
 export default function FutureFacePhotoStudio() {
