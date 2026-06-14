@@ -19,6 +19,8 @@ export default function AuctionsList({ userId }: AuctionsListProps) {
   const [userCollectibles, setUserCollectibles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [bidAmount, setBidAmount] = useState<{ [key: string]: string }>({});
+  const [biddingId, setBiddingId] = useState<string | null>(null);
+  const [buyingOutId, setBuyingOutId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [newAuction, setNewAuction] = useState({
     collectibleId: "",
