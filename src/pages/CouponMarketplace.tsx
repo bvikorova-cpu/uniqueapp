@@ -50,6 +50,7 @@ import { CouponSellerDashboard } from "@/components/coupon/CouponSellerDashboard
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { Link } from "react-router-dom";
+import { SellerConnectGate } from "@/components/commerce/SellerConnectGate";
 
 const brandSlug = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 interface CouponListing {
