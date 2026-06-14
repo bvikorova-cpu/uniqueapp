@@ -390,6 +390,11 @@ const Marketplace = () => {
   if (!isSubscribed) {
     return (
       <div className="min-h-screen bg-background pt-20 sm:pt-24 pb-12">
+        <SEO
+          title="Skills Marketplace – Hire freelancers & sell services"
+          description="Hire trusted freelancers or offer your services on Unique Marketplace. AI-powered pricing, proposals, contracts and matching."
+          canonical="/marketplace"
+        />
         <div className="container mx-auto px-4 max-w-6xl">
           <MarketplaceHero />
 
