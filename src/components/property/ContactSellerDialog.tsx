@@ -32,6 +32,17 @@ export function ContactSellerDialog({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return;
+    const trimmedName = name.trim();
+    const trimmedMsg = message.trim();
+    if (trimmedName.length < 2 || trimmedName.length > 100) {
+      toast({ variant: "destructive", title: "Invalid name", description: "Name must be 2-100 characters." });
+      return;
+    }
+    if (trimmedMsg.length < 10 || trimmedMsg.length > 2000) {
+      toast({ variant: "destructive", title: "Invalid message", description: "Message must be 10-2000 characters." });
+      return;
+    }
     setLoading(true);
 
     try {
@@ -51,10 +62,11 @@ export function ContactSellerDialog({
         .insert({
           property_id: propertyId,
           sender_id: user.id,
-          sender_name: name,
-          sender_email: email,
-          sender_phone: phone || null,
-          message: message,
+          sender_name: trimmedName,
+          // Always use authenticated user's verified email — prevents spoofing
+          sender_email: user.email ?? email.trim(),
+          sender_phone: phone.trim() || null,
+          message: trimmedMsg,
           inquiry_type: inquiryType,
         });
 
@@ -65,11 +77,7 @@ export function ContactSellerDialog({
         description: "The property owner will contact you soon.",
       });
 
-      // Reset form
-      setName("");
-      setEmail("");
-      setPhone("");
-      setMessage("");
+      setName(""); setEmail(""); setPhone(""); setMessage("");
       onOpenChange(false);
     } catch (error) {
       console.error('Error sending inquiry:', error);
