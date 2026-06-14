@@ -24,6 +24,8 @@ export default function BrowseListings({ userId }: BrowseListingsProps) {
   const [selectedListing, setSelectedListing] = useState<any>(null);
   const [showOfferDialog, setShowOfferDialog] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [buyingId, setBuyingId] = useState<string | null>(null);
+  const [sendingOffer, setSendingOffer] = useState(false);
   const [newListing, setNewListing] = useState({
     collectibleId: "",
     listingType: "sale",
