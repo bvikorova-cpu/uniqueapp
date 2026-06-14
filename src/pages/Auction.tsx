@@ -78,6 +78,9 @@ const Auction = () => {
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [bidding, setBidding] = useState(false);
+  const [buyingOutId, setBuyingOutId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [detailAuction, setDetailAuction] = useState<AuctionItem | null>(null);
   const [auctionPhotos, setAuctionPhotos] = useState<string[]>([]);
@@ -89,6 +92,10 @@ const Auction = () => {
     checkUser();
     fetchAuctions();
     checkPaymentStatus();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => subscription.unsubscribe();
   }, []);
 
   const checkPaymentStatus = async () => {
