@@ -39,7 +39,9 @@ export const SkillSwapMessages = () => {
   const [newMessage, setNewMessage] = useState("");
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [sending, setSending] = useState(false);
   const [showReviewDialog, setShowReviewDialog] = useState(false);
+  const [userNames, setUserNames] = useState<Record<string, string>>({});
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { getCurrentUser(); }, []);
