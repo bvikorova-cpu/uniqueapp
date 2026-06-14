@@ -193,23 +193,13 @@ const AntiqueAppraisal = () => {
       </div>
 
       <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-10 max-w-6xl">
-        {/* Engagement Row */}
+        {/* Engagement Row — single Credits balance card (other stats live in hero overlay) */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
-          className="grid grid-cols-3 gap-3 sm:gap-4 mb-8">
-          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-cyan-500/20">
+          className="flex justify-center mb-8">
+          <Card className="p-4 bg-card/80 backdrop-blur-xl text-center border-cyan-500/20 min-w-[200px]">
             <Flame className="h-6 w-6 text-orange-500 mx-auto mb-1" />
-            <p className="text-xl sm:text-2xl font-black">{credits?.credits_remaining || 0}</p>
-            <p className="text-xs text-muted-foreground">Credits</p>
-          </Card>
-          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-cyan-500/20">
-            <Trophy className="h-6 w-6 text-yellow-500 mx-auto mb-1" />
-            <p className="text-xl sm:text-2xl font-black">{stats.appraisals}</p>
-            <p className="text-xs text-muted-foreground">Total Appraisals</p>
-          </Card>
-          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-xl text-center border-cyan-500/20">
-            <Shield className="h-6 w-6 text-emerald-500 mx-auto mb-1" />
-            <p className="text-xl sm:text-2xl font-black">{stats.authenticity}</p>
-            <p className="text-xs text-muted-foreground">Verified Items</p>
+            <p className="text-2xl font-black">{credits?.credits_remaining || 0}</p>
+            <p className="text-xs text-muted-foreground">Credits Available</p>
           </Card>
         </motion.div>
 
