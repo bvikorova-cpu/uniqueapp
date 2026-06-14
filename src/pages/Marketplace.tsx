@@ -276,6 +276,10 @@ const Marketplace = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (!file.type.startsWith("image/")) {
+        toast({ title: "Invalid file", description: "Only image files are allowed", variant: "destructive" });
+        return;
+      }
       if (file.size > 5 * 1024 * 1024) { toast({ title: "File too large", description: "Maximum image size is 5 MB", variant: "destructive" }); return; }
       setImageFile(file);
       const reader = new FileReader();
@@ -287,22 +291,36 @@ const Marketplace = () => {
   const removeImage = () => { setImageFile(null); setImagePreview(null); };
 
   const handleSendResponse = async () => {
-    if (!responseMessage.trim() || !selectedOffering || !user) return;
+    if (!responseMessage.trim() || !selectedOffering || !user || isSendingResponse) return;
     setIsSendingResponse(true);
-    const { error } = await supabase.from("marketplace_responses").insert({
-      offering_id: selectedOffering.id, sender_id: user.id, receiver_id: selectedOffering.user_id, message: responseMessage.trim()
-    });
-    if (error) { toast({ title: "Error", description: "Failed to send message", variant: "destructive" }); setIsSendingResponse(false); return; }
-    toast({ title: "Message sent", description: "Your interest has been sent to the service provider" });
-    setResponseMessage(""); setSelectedOffering(null); setIsSendingResponse(false);
+    try {
+      const { error } = await supabase.from("marketplace_responses").insert({
+        offering_id: selectedOffering.id, sender_id: user.id, receiver_id: selectedOffering.user_id, message: responseMessage.trim()
+      });
+      if (error) throw error;
+      toast({ title: "Message sent", description: "Your interest has been sent to the service provider" });
+      setResponseMessage(""); setSelectedOffering(null);
+    } catch (err: any) {
+      toast({ title: "Error", description: err?.message || "Failed to send message", variant: "destructive" });
+    } finally {
+      setIsSendingResponse(false);
+    }
   };
 
   const handleDeleteOffering = async () => {
-    if (!offeringToDelete) return;
-    const { error } = await supabase.from("skill_offerings").delete().eq("id", offeringToDelete);
-    if (error) { toast({ title: "Error", description: "Failed to delete offer", variant: "destructive" }); return; }
-    toast({ title: "Success!", description: "Offer deleted" });
-    setOfferingToDelete(null); setSelectedOffering(null); loadOfferings();
+    if (!offeringToDelete || isDeleting) return;
+    setIsDeleting(true);
+    try {
+      const { error } = await supabase.from("skill_offerings").delete().eq("id", offeringToDelete);
+      if (error) throw error;
+      toast({ title: "Success!", description: "Offer deleted" });
+      setOfferingToDelete(null); setSelectedOffering(null);
+      await loadOfferings(0, true);
+    } catch (err: any) {
+      toast({ title: "Error", description: err?.message || "Failed to delete offer", variant: "destructive" });
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const uploadImage = async (): Promise<string | null> => {
