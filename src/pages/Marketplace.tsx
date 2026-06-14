@@ -580,7 +580,8 @@ const Marketplace = () => {
           <Card className="mb-8 bg-card/80 backdrop-blur-xl border-border/50">
             <CardHeader><CardTitle>Create New Offering</CardTitle></CardHeader>
             <CardContent>
-              <form onSubmit={handleCreateOffering} className="space-y-4">
+              <SellerConnectGate compact />
+              <form onSubmit={handleCreateOffering} className="space-y-4 mt-4">
                 <Input placeholder="Service Name" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} required />
                 <Textarea placeholder="Service Description" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} required rows={4} />
                 <div className="space-y-2">

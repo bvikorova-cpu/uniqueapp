@@ -115,6 +115,10 @@ export default function PropertySubmissionForm() {
             </div>
           </div>
 
+          <div className="mb-4">
+            <SellerConnectGate />
+          </div>
+
           <Card className="backdrop-blur-xl bg-card/80 border-border/50">
             <CardContent className="p-6">
               <form onSubmit={handleSubmit} className="space-y-6">

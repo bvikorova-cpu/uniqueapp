@@ -28,6 +28,7 @@ import { NegotiationCoachView } from "@/components/auction/views/NegotiationCoac
 import { MarketTrendsView } from "@/components/auction/views/MarketTrendsView";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { SellerConnectGate } from "@/components/commerce/SellerConnectGate";
 interface AuctionItem {
   id: string;
   title: string;
