@@ -675,7 +675,9 @@ const Marketplace = () => {
                   <Input type="number" step="0.01" placeholder="Price per hour (€)" value={formData.price_per_hour} onChange={(e) => setFormData({ ...formData, price_per_hour: e.target.value })} />
                   <Input placeholder="Location" value={formData.location} onChange={(e) => setFormData({ ...formData, location: e.target.value })} />
                 </div>
-                <Button type="submit" className="w-full" disabled={isUploading}>{isUploading ? "Creating..." : "Create Offering"}</Button>
+                <Button type="submit" className="w-full" disabled={isUploading}>
+                  {isUploading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Creating...</> : "Create Offering"}
+                </Button>
               </form>
             </CardContent>
           </Card>
