@@ -64030,6 +64030,7 @@ export type Database = {
         Args: { _amount: number; _user_id: string }
         Returns: number
       }
+      delete_auction_if_safe: { Args: { p_auction_id: string }; Returns: Json }
       dispatch_push: {
         Args: { _payload: Json; _user_ids: string[] }
         Returns: undefined
