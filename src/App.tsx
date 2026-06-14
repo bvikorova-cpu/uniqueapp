@@ -865,7 +865,7 @@ const App = () => {
                         <Route path="/masterclass/:masterclassId" element={<MasterclassLearning />} />
                         <Route path="/interactive-workshops" element={<InteractiveWorkshops />} />
                         <Route path="/certification-programs" element={<CertificationPrograms />} />
-                        <Route path="/course/:certificationId" element={<CourseLearning />} />
+                        <Route path="/certification-learn/:certificationId" element={<CourseLearning />} />
                         <Route path="/language-learning" element={<LanguageLearning />} />
                         <Route path="/language/:contentId" element={<GenericLearning />} />
                         <Route path="/fitness-wellness" element={<FitnessWellness />} />
