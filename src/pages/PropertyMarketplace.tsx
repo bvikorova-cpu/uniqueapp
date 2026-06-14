@@ -193,7 +193,7 @@ export default function PropertyMarketplace() {
       });
       if (error) throw error;
       if (data?.url) {
-        window.open(data.url, "_blank");
+        window.location.href = data.url;
       } else {
         toast({ title: "Payment", description: "Checkout is being set up. Please try again.", variant: "destructive" });
       }
