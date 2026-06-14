@@ -26,6 +26,7 @@ interface MyBazaarListingsProps {
 export const MyBazaarListings = ({ userId, isOwnProfile }: MyBazaarListingsProps) => {
   const [items, setItems] = useState<BazaarItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
