@@ -172,7 +172,9 @@ export const SkillSwapMessages = () => {
               <p className="text-xs text-muted-foreground text-center py-8">No conversations yet. Start by requesting an exchange!</p>
             ) : (
               <div className="space-y-2">
-                {conversations.map((conv) => (
+                {conversations.map((conv) => {
+                  const name = (conv.other_user_id && userNames[conv.other_user_id]) || 'User';
+                  return (
                   <Card key={conv.id}
                     className={`p-3 cursor-pointer transition-all border-border/30 hover:border-primary/30 ${
                       selectedConversation === conv.id ? 'bg-primary/10 border-primary/30' : 'bg-muted/10 hover:bg-muted/20'
@@ -180,16 +182,17 @@ export const SkillSwapMessages = () => {
                     onClick={() => setSelectedConversation(conv.id)}>
                     <div className="flex items-start gap-3">
                       <Avatar className="w-9 h-9">
-                        <AvatarFallback className="text-xs bg-primary/10 text-primary">U</AvatarFallback>
+                        <AvatarFallback className="text-xs bg-primary/10 text-primary">{name.charAt(0).toUpperCase()}</AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-xs truncate">User</p>
+                        <p className="font-medium text-xs truncate">{name}</p>
                         {conv.offering_title && <p className="text-[10px] text-muted-foreground truncate">{conv.offering_title}</p>}
                         <p className="text-[10px] text-muted-foreground">{formatDistanceToNow(new Date(conv.last_message_at), { addSuffix: true })}</p>
                       </div>
                     </div>
                   </Card>
-                ))}
+                  );
+                })}
               </div>
             )}
           </ScrollArea>
