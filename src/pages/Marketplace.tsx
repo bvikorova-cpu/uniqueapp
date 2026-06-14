@@ -32,6 +32,7 @@ import { SEO } from "@/components/SEO";
 import { Flame, TrendingUp, Award, Check } from "lucide-react";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { SellerConnectGate } from "@/components/commerce/SellerConnectGate";
 interface Profile {
   full_name: string | null;
   avatar_url: string | null;
