@@ -752,7 +752,7 @@ const App = () => {
                         <Route path="/education" element={<Education />} />
                         <Route path="/quiz/create" element={<QuizCreator />} />
                         <Route path="/quiz/:quizId" element={<QuizTaker />} />
-                        <Route path="/course/:courseName" element={<CourseDetail />} />
+                        <Route path="/legacy-course/:courseName" element={<CourseDetail />} />
                         <Route path="/quiz" element={<Quiz />} />
                         <Route path="/profile" element={<ProfileRedirect />} />
                         <Route path="/profile/:userId" element={<Profile />} />
