@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback, Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { getReadableUrl } from "@/lib/storageSigned";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
