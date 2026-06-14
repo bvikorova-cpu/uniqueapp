@@ -225,6 +225,7 @@ export default function CrystalMarketplace() {
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4 py-2">
+                <SellerConnectGate />
                 <div className="space-y-2">
                   <Label htmlFor="title">Title *</Label>
                   <Input
