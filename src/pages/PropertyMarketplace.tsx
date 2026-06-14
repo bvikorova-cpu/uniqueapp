@@ -32,6 +32,7 @@ import { PropertyConversationsDialog } from "@/components/property/PropertyConve
 import { usePropertyUnread } from "@/hooks/usePropertyUnread";
 import { usePropertyExpiration } from "@/hooks/usePropertyExpiration";
 import { motion } from "framer-motion";
+import { useCommissionRate } from "@/hooks/useCommissionSettings";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ViewType = "hub" | "map" | "valuator" | "analytics" | "staging" | "mortgage" | "alerts" | "neighborhood" | "photos" | "compare" | "chatbot" | "documents" | "negotiate";
@@ -88,6 +89,8 @@ export default function PropertyMarketplace() {
   const [conversationsOpen, setConversationsOpen] = useState(false);
   const { totalUnread } = usePropertyUnread();
   const [activeView, setActiveView] = useState<ViewType>("hub");
+  const [purchasingId, setPurchasingId] = useState<string | null>(null);
+  const { commissionRate: propertyCommission } = useCommissionRate('property');
   const [searchFilters, setSearchFilters] = useState({
     priceMin: "", priceMax: "", location: "", area: "", rooms: "", propertyType: "any", listingType: "any", availability: "active"
   });
@@ -116,13 +119,24 @@ export default function PropertyMarketplace() {
     setIsAuthenticated(!!session);
   };
 
+  useEffect(() => {
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      setIsAuthenticated(!!session);
+    });
+    return () => { sub.subscription.unsubscribe(); };
+  }, []);
+
   const runSearch = async () => {
     try {
       setLoading(true);
       let query = supabase.from('properties').select(`*, property_images(image_url, is_primary)`);
       const f = searchFilters;
       query = f.availability === 'any' ? query : query.eq('status', f.availability);
-      if (f.location) query = query.or(`city.ilike.%${f.location}%,location.ilike.%${f.location}%,address.ilike.%${f.location}%`);
+      if (f.location) {
+        // Sanitize for PostgREST .or() — strip commas, parens, quotes
+        const safe = f.location.replace(/[,()'"*]/g, ' ').trim().slice(0, 100);
+        if (safe) query = query.or(`city.ilike.%${safe}%,location.ilike.%${safe}%,address.ilike.%${safe}%`);
+      }
       if (f.priceMin) query = query.gte('price', parseFloat(f.priceMin));
       if (f.priceMax) query = query.lte('price', parseFloat(f.priceMax));
       if (f.area) query = query.gte('area_sqm', parseInt(f.area));
@@ -140,12 +154,13 @@ export default function PropertyMarketplace() {
   };
 
   const handleViewProperty = async (id: string) => {
+    if (!id) return;
     const { data, error } = await supabase
       .from('properties')
       .select(`*, property_images (image_url, is_primary), property_videos (video_url)`)
       .eq('id', id)
-      .single();
-    if (error) { toast({ title: "Error", description: "Failed to load property details", variant: "destructive" }); return; }
+      .maybeSingle();
+    if (error || !data) { toast({ title: "Error", description: "Failed to load property details", variant: "destructive" }); return; }
     setSelectedProperty(data);
     setShowDetailDialog(true);
   };
@@ -161,9 +176,11 @@ export default function PropertyMarketplace() {
     navigate("/property-submission");
   };
 
-  const handlePurchaseService = async (serviceId: string, price: number, link?: string) => {
+  const handlePurchaseService = async (serviceId: string, _price: number, link?: string) => {
     if (link) { navigate(link); return; }
     if (serviceId === "lead_boost") { setLeadBoostDialogOpen(true); return; }
+    if (purchasingId) return;
+    setPurchasingId(serviceId);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
@@ -171,7 +188,6 @@ export default function PropertyMarketplace() {
         navigate("/auth");
         return;
       }
-      // Map UI service id → backend product key (+ optional package).
       const isPackage = ["basic", "premium", "featured"].includes(serviceId);
       const body: Record<string, unknown> = isPackage
         ? { product: "property_listing", packageType: serviceId }
@@ -188,13 +204,15 @@ export default function PropertyMarketplace() {
       });
       if (error) throw error;
       if (data?.url) {
-        window.open(data.url, "_blank");
+        window.location.href = data.url;
       } else {
         toast({ title: "Payment", description: "Checkout is being set up. Please try again.", variant: "destructive" });
       }
     } catch (err) {
       console.error("Property checkout error:", err);
       toast({ title: "Payment unavailable", description: "Could not start checkout. Please try again.", variant: "destructive" });
+    } finally {
+      setPurchasingId(null);
     }
   };
 
@@ -476,7 +494,9 @@ export default function PropertyMarketplace() {
                       className={`w-full ${pkg.popular ? "bg-gradient-to-r from-primary to-accent text-primary-foreground" : ""}`} 
                       variant={pkg.popular ? "default" : "outline"}
                       onClick={() => handlePurchaseService(pkg.id, pkg.price)}
+                      disabled={purchasingId === pkg.id}
                     >
+                      {purchasingId === pkg.id && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                       Choose Plan
                     </Button>
                   </CardContent>
@@ -512,7 +532,8 @@ export default function PropertyMarketplace() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <Button onClick={() => handlePurchaseService(service.id, service.price, service.link)} className="w-full" variant="outline" disabled={!service.link && !service.active}>
+                    <Button onClick={() => handlePurchaseService(service.id, service.price, service.link)} className="w-full" variant="outline" disabled={(!service.link && !service.active) || purchasingId === service.id}>
+                      {purchasingId === service.id && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                       {service.link ? "Explore" : service.active ? "Learn More" : "Currently Unavailable"}
                     </Button>
                   </CardContent>
@@ -537,8 +558,8 @@ export default function PropertyMarketplace() {
             <CardContent>
               <div className="space-y-4">
                 <div className="p-4 bg-background/50 rounded-lg border border-border/30">
-                  <p className="text-2xl font-black text-green-500">1% Commission</p>
-                  <p className="text-sm text-muted-foreground mt-1">or minimum €500 per sale</p>
+                  <p className="text-2xl font-black text-green-500">{propertyCommission != null ? `${propertyCommission}% Commission` : "Loading…"}</p>
+                  <p className="text-sm text-muted-foreground mt-1">Charged only on successful sales</p>
                 </div>
                 <p className="text-sm">Only pay when your property sells successfully. No hidden fees, complete transparency.</p>
               </div>

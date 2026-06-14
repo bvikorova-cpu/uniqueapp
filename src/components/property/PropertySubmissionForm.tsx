@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Upload, ArrowLeft, Check, Building2, Camera, Sparkles } from "lucide-react";
+import { Upload, ArrowLeft, Check, Building2, Camera, Sparkles, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { SellerConnectGate } from "@/components/commerce/SellerConnectGate";
 
@@ -32,12 +32,34 @@ export default function PropertySubmissionForm() {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  const MAX_IMAGE_MB = 10;
+  const MAX_VIDEO_MB = 100;
+  const MAX_IMAGES = 20;
+  const MAX_VIDEOS = 3;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
     if (!formData.title || !formData.description || !formData.price || !formData.location) {
       toast.error("Please fill in all required fields");
       return;
     }
+    const priceNum = parseFloat(formData.price);
+    if (!Number.isFinite(priceNum) || priceNum <= 0 || priceNum > 100_000_000) {
+      toast.error("Invalid price");
+      return;
+    }
+    if (images.length > MAX_IMAGES) { toast.error(`Max ${MAX_IMAGES} photos`); return; }
+    if (videos.length > MAX_VIDEOS) { toast.error(`Max ${MAX_VIDEOS} videos`); return; }
+    for (const img of images) {
+      if (!img.type.startsWith("image/")) { toast.error(`Invalid image: ${img.name}`); return; }
+      if (img.size > MAX_IMAGE_MB * 1024 * 1024) { toast.error(`Image too large (>${MAX_IMAGE_MB}MB): ${img.name}`); return; }
+    }
+    for (const v of videos) {
+      if (!v.type.startsWith("video/")) { toast.error(`Invalid video: ${v.name}`); return; }
+      if (v.size > MAX_VIDEO_MB * 1024 * 1024) { toast.error(`Video too large (>${MAX_VIDEO_MB}MB): ${v.name}`); return; }
+    }
+
     setIsSubmitting(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -46,10 +68,14 @@ export default function PropertySubmissionForm() {
       const { data: property, error: propertyError } = await supabase
         .from("properties")
         .insert({
-          title: formData.title, description: formData.description,
-          price: parseFloat(formData.price), location: formData.location,
-          address: formData.location, city: formData.location,
-          property_type: formData.propertyType,
+          user_id: user.id,
+          title: formData.title.trim().slice(0, 200),
+          description: formData.description.trim().slice(0, 5000),
+          price: priceNum,
+          location: formData.location.trim(),
+          address: formData.location.trim(),
+          city: formData.location.trim(),
+          property_type: formData.propertyType || 'apartment',
           area_sqm: formData.area ? parseInt(formData.area) : 50,
           rooms: formData.rooms ? parseInt(formData.rooms) : undefined,
           status: 'draft',
@@ -58,23 +84,25 @@ export default function PropertySubmissionForm() {
 
       if (propertyError) throw propertyError;
 
-      for (const image of images) {
-        const fileExt = image.name.split('.').pop();
-        const fileName = `${property.id}/${Math.random()}.${fileExt}`;
-        const { error: uploadError } = await supabase.storage.from("property-images").upload(fileName, image);
+      await Promise.all(images.map(async (image, idx) => {
+        const fileExt = (image.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '');
+        const fileName = `${property.id}/${crypto.randomUUID()}.${fileExt}`;
+        const { error: uploadError } = await supabase.storage.from("property-images").upload(fileName, image, { contentType: image.type });
         if (uploadError) throw uploadError;
         const { data: { publicUrl } } = supabase.storage.from("property-images").getPublicUrl(fileName);
-        await supabase.from("property_images").insert({ property_id: property.id, image_url: publicUrl, is_primary: images.indexOf(image) === 0 });
-      }
+        const { error: imgErr } = await supabase.from("property_images").insert({ property_id: property.id, image_url: publicUrl, is_primary: idx === 0 });
+        if (imgErr) throw imgErr;
+      }));
 
-      for (const video of videos) {
-        const fileExt = video.name.split('.').pop();
-        const fileName = `${property.id}/${Math.random()}.${fileExt}`;
-        const { error: uploadError } = await supabase.storage.from("property-videos").upload(fileName, video);
+      await Promise.all(videos.map(async (video) => {
+        const fileExt = (video.name.split('.').pop() || 'mp4').toLowerCase().replace(/[^a-z0-9]/g, '');
+        const fileName = `${property.id}/${crypto.randomUUID()}.${fileExt}`;
+        const { error: uploadError } = await supabase.storage.from("property-videos").upload(fileName, video, { contentType: video.type });
         if (uploadError) throw uploadError;
         const { data: { publicUrl } } = supabase.storage.from("property-videos").getPublicUrl(fileName);
-        await supabase.from("property_videos").insert({ property_id: property.id, video_url: publicUrl });
-      }
+        const { error: vErr } = await supabase.from("property_videos").insert({ property_id: property.id, video_url: publicUrl });
+        if (vErr) throw vErr;
+      }));
 
       toast.success("Property submitted! Proceeding to payment...");
       const { data: checkoutData, error: checkoutError } = await supabase.functions.invoke('create-property-listing-checkout', {
@@ -82,9 +110,9 @@ export default function PropertySubmissionForm() {
       });
       if (checkoutError) throw checkoutError;
       if (checkoutData?.url) {
-        window.open(checkoutData.url, '_blank');
-        toast.success("Opening payment page...");
-        setTimeout(() => navigate("/property-marketplace"), 1000);
+        window.location.href = checkoutData.url;
+      } else {
+        toast.error("Checkout could not start. Please contact support.");
       }
     } catch (error: any) {
       console.error("Error:", error);
@@ -223,7 +251,7 @@ export default function PropertySubmissionForm() {
                 </div>
 
                 <Button type="submit" className="w-full bg-gradient-to-r from-sky-500 to-blue-600 text-white" size="lg" disabled={isSubmitting}>
-                  {isSubmitting ? "Creating..." : "Create Listing & Proceed to Payment"}
+                  {isSubmitting ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating...</>) : "Create Listing & Proceed to Payment"}
                 </Button>
               </form>
             </CardContent>
