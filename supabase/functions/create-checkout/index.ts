@@ -2394,8 +2394,9 @@ serve(async (req) => {
         .eq("user_id", application.user_id)
         .maybeSingle();
       const influencerName = influencer?.name || "the influencer";
-      const platformFee = Math.round(amount * 0.20 * 100) / 100;
-      const influencerAmount = Math.round(amount * 0.80 * 100) / 100;
+      const brandFeeRate = (await getFeeRate("brand_collaboration")) / 100;
+      const platformFee = Math.round(amount * brandFeeRate * 100) / 100;
+      const influencerAmount = Math.round(amount * (1 - brandFeeRate) * 100) / 100;
       const { data: payment, error: paymentError } = await admin
         .from("campaign_payments")
         .insert({
