@@ -16,10 +16,22 @@ async function callAI(apiKey: string, messages: any[]) {
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+
+  const authHeader = req.headers.get("Authorization");
+  if (!authHeader || !authHeader.toLowerCase().startsWith("bearer ")) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   try {
     const { action, prompt, collectionSummary, ...params } = await req.json();
     const apiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!apiKey) throw new Error("API key not configured");
+    if (!apiKey) {
+      return new Response(JSON.stringify({ error: "API key not configured" }), {
+        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     let result: any;
     switch (action) {
       case "advisor":
@@ -46,7 +58,10 @@ Deno.serve(async (req) => {
           { role: "user", content: prompt || "" }
         ]);
         break;
-      default: throw new Error(`Unknown action: ${action}`);
+      default:
+        return new Response(JSON.stringify({ error: `Unknown action: ${action}` }), {
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
     }
     try { result = JSON.parse(result); } catch {}
     return new Response(JSON.stringify(typeof result === "string" ? { result } : result), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
