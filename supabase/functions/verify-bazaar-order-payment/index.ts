@@ -82,7 +82,8 @@ serve(async (req) => {
         await admin
           .from("bazaar_orders")
           .update({
-            status: "refunded_unavailable",
+            status: "cancelled",
+            escrow_status: "refunded",
             stripe_session_id: sessionId,
           })
           .eq("id", orderId);
