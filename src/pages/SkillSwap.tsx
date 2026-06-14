@@ -374,19 +374,28 @@ export default function SkillSwap() {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) { toast.error("Please sign in first"); navigate('/auth'); return; }
     if (!subscription.hasSubscription) { toast.error("Premium subscription required for exchanges"); return; }
-    const { data: offering } = await supabase.from('skill_offerings').select('user_id').eq('id', offeringId).single();
-    if (!offering) { toast.error("Offering not found"); return; }
-    const { data: existingConv } = await supabase
-      .from('skill_swap_conversations').select('id')
-      .or(`and(user1_id.eq.${session.user.id},user2_id.eq.${offering.user_id}),and(user1_id.eq.${offering.user_id},user2_id.eq.${session.user.id})`)
-      .eq('offering_id', offeringId).maybeSingle();
-    if (!existingConv) {
-      await supabase.from('skill_swap_conversations').insert([{
-        user1_id: session.user.id, user2_id: offering.user_id, offering_id: offeringId,
-      }]);
+    try {
+      const { data: offering, error: offErr } = await supabase
+        .from('skill_offerings').select('user_id').eq('id', offeringId).maybeSingle();
+      if (offErr) throw offErr;
+      if (!offering) { toast.error("Offering not found"); return; }
+      if (offering.user_id === session.user.id) { toast.error("You cannot request your own offering"); return; }
+      const { data: existingConv } = await supabase
+        .from('skill_swap_conversations').select('id')
+        .or(`and(user1_id.eq.${session.user.id},user2_id.eq.${offering.user_id}),and(user1_id.eq.${offering.user_id},user2_id.eq.${session.user.id})`)
+        .eq('offering_id', offeringId).maybeSingle();
+      if (!existingConv) {
+        const { error: insErr } = await supabase.from('skill_swap_conversations').insert([{
+          user1_id: session.user.id, user2_id: offering.user_id, offering_id: offeringId,
+        }]);
+        if (insErr) throw insErr;
+      }
+      toast.success("Conversation started! Check Messages.");
+      setActiveView("messages");
+    } catch (e: any) {
+      console.error('Request exchange error:', e);
+      toast.error("Failed to start exchange");
     }
-    toast.success("Conversation started! Check Messages.");
-    setActiveView("messages");
   };
 
   const handleEditClick = (offering: SkillOffering) => {
