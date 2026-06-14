@@ -209,14 +209,30 @@ const Bazaar = () => {
     }
   };
 
-  const loadItems = async () => {
-    const { data, error } = await supabase
-      .from('bazaar_items')
-      .select('*, profiles(full_name)')
-      .eq('is_active', true)
-      .order('created_at', { ascending: false });
-    if (error) { console.error('Error loading items:', error); return; }
-    setItems(data || []);
+  const loadItems = async (reset = true) => {
+    if (reset) setInitialLoading(true); else setLoadingMore(true);
+    try {
+      const targetPage = reset ? 0 : page + 1;
+      const from = targetPage * PAGE_SIZE;
+      const to = from + PAGE_SIZE - 1;
+      const { data, error } = await supabase
+        .from('bazaar_items')
+        .select('*, profiles(full_name)')
+        .eq('is_active', true)
+        .order('created_at', { ascending: false })
+        .range(from, to);
+      if (error) {
+        console.error('Error loading items:', error);
+        toast({ title: "Failed to load listings", description: "Please check your connection and try again.", variant: "destructive" });
+        return;
+      }
+      const rows = (data ?? []) as BazaarItem[];
+      setItems(reset ? rows : [...items, ...rows]);
+      setPage(targetPage);
+      setHasMore(rows.length === PAGE_SIZE);
+    } finally {
+      if (reset) setInitialLoading(false); else setLoadingMore(false);
+    }
   };
 
   // (multi-photo handling lives in BazaarPhotoUploader)
