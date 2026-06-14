@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { AIRoomDesigner } from "@/components/home-decor/AIRoomDesigner";
 import { useDecorSubscription } from "@/hooks/useDecorSubscription";
 import { CheckCircle } from "lucide-react";
+import { SellerConnectGate } from "@/components/commerce/SellerConnectGate";
 
 interface DecorItem {
   id: string;
