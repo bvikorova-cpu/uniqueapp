@@ -26,7 +26,14 @@ export function useCommissionSettings() {
   });
 }
 
-export function useCommissionRate(serviceType: 'bazaar' | 'marketplace' | 'skill_swap' | 'job_portal') {
+export type CommissionServiceType =
+  | 'bazaar' | 'marketplace' | 'skill_swap' | 'job_portal'
+  | 'service_order' | 'creator_subscription' | 'tip_jar'
+  | 'brand_collaboration' | 'megatalent' | 'auction'
+  | 'antique' | 'collectible' | 'coupon' | 'crystal'
+  | 'home_decor' | 'property' | 'phobia';
+
+export function useCommissionRate(serviceType: CommissionServiceType) {
   const { data: settings, ...rest } = useCommissionSettings();
   
   const setting = settings?.find(s => s.service_type === serviceType);
