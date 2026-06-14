@@ -89,6 +89,8 @@ export default function PropertyMarketplace() {
   const [conversationsOpen, setConversationsOpen] = useState(false);
   const { totalUnread } = usePropertyUnread();
   const [activeView, setActiveView] = useState<ViewType>("hub");
+  const [purchasingId, setPurchasingId] = useState<string | null>(null);
+  const { commissionRate: propertyCommission } = useCommissionRate('property');
   const [searchFilters, setSearchFilters] = useState({
     priceMin: "", priceMax: "", location: "", area: "", rooms: "", propertyType: "any", listingType: "any", availability: "active"
   });
