@@ -72,18 +72,17 @@ export default function BazaarPurchaseDialog({ item, open, onOpenChange }: Bazaa
       if (error) throw error;
 
       if (data?.url) {
-        window.open(data.url, '_blank');
-        toast({
-          title: "Redirecting to payment",
-          description: "Complete your purchase in the new window."
-        });
+        // Same-tab redirect avoids popup blockers; keep dialog open until navigation triggers.
         onOpenChange(false);
+        window.location.href = data.url as string;
+        return;
       }
+      throw new Error("No checkout URL returned");
     } catch (error) {
       console.error('Purchase error:', error);
       toast({
         title: "Error",
-        description: "Failed to initialize payment. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to initialize payment. Please try again.",
         variant: "destructive"
       });
     } finally {
