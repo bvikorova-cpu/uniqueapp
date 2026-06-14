@@ -157,7 +157,7 @@ export default function BazaarPurchaseDialog({ item, open, onOpenChange }: Bazaa
               <span>€{item.price.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-muted-foreground">
-              <span>Platform Fee (10%)</span>
+              <span>Platform Fee ({commissionRate ?? 10}%)</span>
               <span>€{commissionAmount.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-muted-foreground">
