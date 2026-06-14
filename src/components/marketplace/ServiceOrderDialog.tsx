@@ -151,7 +151,7 @@ export function ServiceOrderDialog({ open, onOpenChange, offering }: ServiceOrde
                 <span>€{totalAmountNum.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-muted-foreground">
-                <span>Platform Fee (15%):</span>
+                <span>Platform Fee ({ratePct}%):</span>
                 <span>-€{commissionAmount.toFixed(2)}</span>
               </div>
               <div className="flex justify-between font-medium pt-1 border-t">
