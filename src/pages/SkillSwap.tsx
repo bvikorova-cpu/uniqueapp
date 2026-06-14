@@ -270,8 +270,8 @@ export default function SkillSwap() {
       .select('id, full_name, rating_average, total_reviews, completed_exchanges, location')
       .in('id', userIds);
 
-    const profilesMap = new Map(profilesData?.map(p => [p.id, p]) || []);
-    let offeringsWithProfiles = (data || []).map(offering => ({
+    const profilesMap = new Map<string, SkillOffering['profiles']>((profilesData || []).map((p: any) => [p.id, p]));
+    let offeringsWithProfiles: SkillOffering[] = (data || []).map(offering => ({
       ...offering,
       profiles: profilesMap.get(offering.user_id) || undefined
     }));
