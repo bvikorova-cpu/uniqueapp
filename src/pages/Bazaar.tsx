@@ -134,6 +134,14 @@ const Bazaar = () => {
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
   const [promoteItem, setPromoteItem] = useState<BazaarItem | null>(null);
   const [reportItem, setReportItem] = useState<BazaarItem | null>(null);
+  // Pagination state — scale-ready (billions of rows; never fetch all).
+  const PAGE_SIZE = 48;
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [sendingMessage, setSendingMessage] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     loadItems();
