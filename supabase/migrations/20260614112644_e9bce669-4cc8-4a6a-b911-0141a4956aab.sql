@@ -1,0 +1,2 @@
+CREATE INDEX IF NOT EXISTS idx_bazaar_orders_seller_status_created ON public.bazaar_orders(seller_id, status, created_at);
+CREATE INDEX IF NOT EXISTS idx_bazaar_orders_status_created ON public.bazaar_orders(status, created_at);
