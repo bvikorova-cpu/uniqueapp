@@ -368,7 +368,16 @@ async function applyPurchase(
         p_winner_id: winnerId,
         p_stripe_session_id: result.metadata?.session_id ?? "",
       });
-      if (error) console.log("[VERIFY-PAYMENT] auction_buyout RPC err", error.message);
+      if (error) {
+        console.log("[VERIFY-PAYMENT] auction_buyout RPC err", error.message);
+        // Race: another buyer already won. Flag this payment for refund.
+        if (/already sold to another buyer|refund_required/i.test(error.message)) {
+          await db.from("payment_records").update({
+            status: "refund_pending",
+            refund_reason: "auction_race_lost",
+          } as any).eq("stripe_session_id", result.metadata?.session_id ?? "");
+        }
+      }
     }
     return;
   }

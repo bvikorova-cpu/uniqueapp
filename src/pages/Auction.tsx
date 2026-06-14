@@ -78,6 +78,9 @@ const Auction = () => {
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [bidding, setBidding] = useState(false);
+  const [buyingOutId, setBuyingOutId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [detailAuction, setDetailAuction] = useState<AuctionItem | null>(null);
   const [auctionPhotos, setAuctionPhotos] = useState<string[]>([]);
@@ -89,6 +92,10 @@ const Auction = () => {
     checkUser();
     fetchAuctions();
     checkPaymentStatus();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => subscription.unsubscribe();
   }, []);
 
   const checkPaymentStatus = async () => {
@@ -116,7 +123,12 @@ const Auction = () => {
 
   const fetchAuctions = async () => {
     try {
-      const { data, error } = await supabase.from("auction_items").select("*").eq("is_active", true).order("created_at", { ascending: false });
+      const { data, error } = await supabase
+        .from("auction_items")
+        .select("*")
+        .eq("is_active", true)
+        .order("created_at", { ascending: false })
+        .range(0, 99);
       if (error) throw error;
       setAuctions(data || []);
     } catch { toast.error("Failed to load auctions"); }
@@ -170,6 +182,8 @@ const Auction = () => {
     if (!user) { toast.error("You must be logged in"); navigate("/auth"); return; }
     if (!auction.buyout_price) return;
     if (auction.user_id === user.id) { toast.error("Cannot buy your own auction"); return; }
+    if (buyingOutId) return;
+    setBuyingOutId(auction.id);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const { data, error } = await supabase.functions.invoke("create-auction-buyout", {
@@ -181,13 +195,17 @@ const Auction = () => {
       window.location.href = data.url;
     } catch (e: any) {
       toast.error(e?.message || "Failed to start checkout");
+      setBuyingOutId(null);
     }
   };
 
   const submitBid = async () => {
-    if (!selectedAuction || !bidAmount) return;
+    if (!selectedAuction || !bidAmount || bidding) return;
     const amount = parseFloat(bidAmount);
-    if (amount <= selectedAuction.current_price) { toast.error("Bid must be higher than current price"); return; }
+    if (!Number.isFinite(amount) || amount <= 0) { toast.error("Invalid bid amount"); return; }
+    if (amount <= Number(selectedAuction.current_price)) { toast.error("Bid must be higher than current price"); return; }
+    if (amount > 1_000_000) { toast.error("Bid too large"); return; }
+    setBidding(true);
     try {
       const { error } = await supabase.rpc("place_auction_bid" as any, {
         p_auction_id: selectedAuction.id,
@@ -196,12 +214,21 @@ const Auction = () => {
       if (error) throw error;
       toast.success("Bid placed!"); setBidDialogOpen(false); setBidAmount(""); setSelectedAuction(null); fetchAuctions();
     } catch (e: any) { toast.error(e?.message || "Failed to place bid"); }
+    finally { setBidding(false); }
   };
 
   const handleDeleteAuction = async (auctionId: string) => {
-    if (!user) return;
-    try { await supabase.from("auction_items").delete().eq("id", auctionId).eq("user_id", user.id); toast.success("Auction deleted"); fetchAuctions(); }
-    catch { toast.error("Failed to delete"); }
+    if (!user || deletingId) return;
+    if (!window.confirm("Delete this auction? This cannot be undone.")) return;
+    setDeletingId(auctionId);
+    try {
+      const { error } = await supabase.rpc("delete_auction_if_safe" as any, { p_auction_id: auctionId });
+      if (error) throw error;
+      toast.success("Auction deleted");
+      fetchAuctions();
+    } catch (e: any) {
+      toast.error(e?.message || "Failed to delete");
+    } finally { setDeletingId(null); }
   };
 
   const handleShowDetail = async (auction: AuctionItem) => {
@@ -420,15 +447,17 @@ const Auction = () => {
                         </CardContent>
                         <CardFooter className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                           {user?.id === auction.user_id ? (
-                            <Button variant="destructive" className="flex-1" onClick={() => handleDeleteAuction(auction.id)}>Delete</Button>
+                            <Button variant="destructive" className="flex-1" onClick={() => handleDeleteAuction(auction.id)} disabled={deletingId === auction.id}>
+                              {deletingId === auction.id ? "Deleting..." : "Delete"}
+                            </Button>
                           ) : (
                             <>
                               <Button className="flex-1 bg-gradient-to-r from-amber-600 to-yellow-600" onClick={() => handleBid(auction)}>
                                 <Gavel className="mr-2 h-4 w-4" /> Bid
                               </Button>
                               {auction.buyout_price && (
-                                <Button variant="outline" className="flex-1 border-amber-500/30" onClick={() => handleBuyout(auction)}>
-                                  Buy €{Number(auction.buyout_price).toFixed(2)}
+                                <Button variant="outline" className="flex-1 border-amber-500/30" onClick={() => handleBuyout(auction)} disabled={buyingOutId === auction.id}>
+                                  {buyingOutId === auction.id ? "Loading..." : `Buy €${Number(auction.buyout_price).toFixed(2)}`}
                                 </Button>
                               )}
                             </>
@@ -497,8 +526,8 @@ const Auction = () => {
                     placeholder={`Min €${(Number(selectedAuction.current_price) + 0.01).toFixed(2)}`} />
                 </div>
                 <Button onClick={submitBid} className="w-full bg-gradient-to-r from-amber-600 to-yellow-600"
-                  disabled={!bidAmount || parseFloat(bidAmount) <= Number(selectedAuction.current_price)}>
-                  <Gavel className="h-4 w-4 mr-2" /> Place Bid {bidAmount && `€${parseFloat(bidAmount).toFixed(2)}`}
+                  disabled={bidding || !bidAmount || parseFloat(bidAmount) <= Number(selectedAuction.current_price)}>
+                  <Gavel className="h-4 w-4 mr-2" /> {bidding ? "Placing..." : `Place Bid ${bidAmount ? `€${parseFloat(bidAmount).toFixed(2)}` : ""}`}
                 </Button>
               </div>
             )}
@@ -539,8 +568,8 @@ const Auction = () => {
                         <Gavel className="mr-2 h-4 w-4" /> Place Bid
                       </Button>
                       {detailAuction.buyout_price && (
-                        <Button variant="outline" className="flex-1 border-amber-500/30" onClick={() => { setDetailDialogOpen(false); handleBuyout(detailAuction); }}>
-                          Buy €{Number(detailAuction.buyout_price).toFixed(2)}
+                        <Button variant="outline" className="flex-1 border-amber-500/30" disabled={buyingOutId === detailAuction.id} onClick={() => { setDetailDialogOpen(false); handleBuyout(detailAuction); }}>
+                          {buyingOutId === detailAuction.id ? "Loading..." : `Buy €${Number(detailAuction.buyout_price).toFixed(2)}`}
                         </Button>
                       )}
                     </div>
