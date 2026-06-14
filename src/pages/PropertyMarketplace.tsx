@@ -119,6 +119,13 @@ export default function PropertyMarketplace() {
     setIsAuthenticated(!!session);
   };
 
+  useEffect(() => {
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      setIsAuthenticated(!!session);
+    });
+    return () => { sub.subscription.unsubscribe(); };
+  }, []);
+
   const runSearch = async () => {
     try {
       setLoading(true);
