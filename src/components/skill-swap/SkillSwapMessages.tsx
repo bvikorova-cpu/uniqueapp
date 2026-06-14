@@ -200,43 +200,47 @@ export const SkillSwapMessages = () => {
 
         {/* Messages Area */}
         <Card className={`md:col-span-2 flex flex-col bg-card/80 backdrop-blur-xl border-border/50 ${!selectedConversation ? 'hidden md:flex' : ''}`}>
-          {selectedConversation ? (
+          {selectedConversation ? (() => {
+            const activeConv = conversations.find(c => c.id === selectedConversation);
+            const otherId = activeConv?.other_user_id || "";
+            const otherName = (otherId && userNames[otherId]) || 'User';
+            return (
             <>
               <div className="p-4 border-b border-border/30 flex items-center gap-3">
                 <Button variant="ghost" size="icon" className="md:hidden h-8 w-8" onClick={() => setSelectedConversation(null)}>
                   <ArrowLeft className="w-4 h-4" />
                 </Button>
                 <Avatar className="w-9 h-9">
-                  <AvatarFallback className="text-xs bg-primary/10 text-primary">U</AvatarFallback>
+                  <AvatarFallback className="text-xs bg-primary/10 text-primary">{otherName.charAt(0).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
-                  <p className="font-bold text-sm">User</p>
-                  {conversations.find(c => c.id === selectedConversation)?.offering_title && (
-                    <p className="text-[10px] text-muted-foreground">{conversations.find(c => c.id === selectedConversation)?.offering_title}</p>
+                  <p className="font-bold text-sm">{otherName}</p>
+                  {activeConv?.offering_title && (
+                    <p className="text-[10px] text-muted-foreground">{activeConv.offering_title}</p>
                   )}
-                  {conversations.find(c => c.id === selectedConversation)?.status === 'completed' && (
+                  {activeConv?.status === 'completed' && (
                     <div className="flex items-center gap-1 text-[10px] text-emerald-500"><CheckCircle className="w-3 h-3" /><span>Completed</span></div>
                   )}
                 </div>
                 <div className="flex items-center gap-2">
-                  {conversations.find(c => c.id === selectedConversation)?.status === 'active' && (
+                  {activeConv?.status === 'active' && (
                     <Button onClick={handleCompleteExchange} size="sm" variant="outline" className="text-xs h-7">Mark Complete</Button>
                   )}
                   {currentUserId && (
                     <VideoCall
                       conversationId={selectedConversation} userId={currentUserId}
-                      otherUserId={conversations.find(c => c.id === selectedConversation)?.other_user_id || ""}
-                      otherUserName="User"
+                      otherUserId={otherId}
+                      otherUserName={otherName}
                     />
                   )}
                 </div>
               </div>
 
-              {showReviewDialog && selectedConversation && (
+              {showReviewDialog && (
                 <ReviewDialog open={showReviewDialog} onOpenChange={setShowReviewDialog}
                   conversationId={selectedConversation}
-                  reviewedUserId={conversations.find(c => c.id === selectedConversation)?.other_user_id || ""}
-                  reviewedUserName="User" onReviewSubmitted={() => { toast.success("Thank you for your review!"); loadConversations(); }}
+                  reviewedUserId={otherId}
+                  reviewedUserName={otherName} onReviewSubmitted={() => { toast.success("Thank you for your review!"); loadConversations(); }}
                 />
               )}
 
@@ -247,7 +251,7 @@ export const SkillSwapMessages = () => {
                       <div className={`max-w-[70%] rounded-xl p-3 ${
                         msg.sender_id === currentUserId ? 'bg-primary text-primary-foreground' : 'bg-muted/30 border border-border/30'
                       }`}>
-                        <p className="text-sm">{msg.message}</p>
+                        <p className="text-sm whitespace-pre-wrap break-words">{msg.message}</p>
                         <p className="text-[10px] opacity-70 mt-1">{formatDistanceToNow(new Date(msg.created_at), { addSuffix: true })}</p>
                       </div>
                     </div>
@@ -258,13 +262,15 @@ export const SkillSwapMessages = () => {
 
               <div className="p-4 border-t border-border/30">
                 <div className="flex gap-2">
-                  <Input value={newMessage} onChange={(e) => setNewMessage(e.target.value)} placeholder="Type a message..."
-                    onKeyPress={(e) => e.key === 'Enter' && sendMessage()} className="bg-muted/10 border-border/50" />
-                  <Button onClick={sendMessage} size="icon" className="flex-shrink-0"><Send className="w-4 h-4" /></Button>
+                  <Input value={newMessage} onChange={(e) => setNewMessage(e.target.value)} placeholder="Type a message..." maxLength={2000}
+                    disabled={sending}
+                    onKeyPress={(e) => e.key === 'Enter' && !sending && sendMessage()} className="bg-muted/10 border-border/50" />
+                  <Button onClick={sendMessage} disabled={sending || !newMessage.trim()} size="icon" className="flex-shrink-0"><Send className="w-4 h-4" /></Button>
                 </div>
               </div>
             </>
-          ) : (
+            );
+          })() : (
             <div className="hidden md:flex items-center justify-center h-full text-muted-foreground">
               <div className="text-center">
                 <MessageCircle className="w-12 h-12 mx-auto mb-4 opacity-30" />
