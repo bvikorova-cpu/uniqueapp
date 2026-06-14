@@ -182,6 +182,8 @@ const Auction = () => {
     if (!user) { toast.error("You must be logged in"); navigate("/auth"); return; }
     if (!auction.buyout_price) return;
     if (auction.user_id === user.id) { toast.error("Cannot buy your own auction"); return; }
+    if (buyingOutId) return;
+    setBuyingOutId(auction.id);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const { data, error } = await supabase.functions.invoke("create-auction-buyout", {
@@ -193,13 +195,17 @@ const Auction = () => {
       window.location.href = data.url;
     } catch (e: any) {
       toast.error(e?.message || "Failed to start checkout");
+      setBuyingOutId(null);
     }
   };
 
   const submitBid = async () => {
-    if (!selectedAuction || !bidAmount) return;
+    if (!selectedAuction || !bidAmount || bidding) return;
     const amount = parseFloat(bidAmount);
-    if (amount <= selectedAuction.current_price) { toast.error("Bid must be higher than current price"); return; }
+    if (!Number.isFinite(amount) || amount <= 0) { toast.error("Invalid bid amount"); return; }
+    if (amount <= Number(selectedAuction.current_price)) { toast.error("Bid must be higher than current price"); return; }
+    if (amount > 1_000_000) { toast.error("Bid too large"); return; }
+    setBidding(true);
     try {
       const { error } = await supabase.rpc("place_auction_bid" as any, {
         p_auction_id: selectedAuction.id,
@@ -208,12 +214,21 @@ const Auction = () => {
       if (error) throw error;
       toast.success("Bid placed!"); setBidDialogOpen(false); setBidAmount(""); setSelectedAuction(null); fetchAuctions();
     } catch (e: any) { toast.error(e?.message || "Failed to place bid"); }
+    finally { setBidding(false); }
   };
 
   const handleDeleteAuction = async (auctionId: string) => {
-    if (!user) return;
-    try { await supabase.from("auction_items").delete().eq("id", auctionId).eq("user_id", user.id); toast.success("Auction deleted"); fetchAuctions(); }
-    catch { toast.error("Failed to delete"); }
+    if (!user || deletingId) return;
+    if (!window.confirm("Delete this auction? This cannot be undone.")) return;
+    setDeletingId(auctionId);
+    try {
+      const { error } = await supabase.rpc("delete_auction_if_safe" as any, { p_auction_id: auctionId });
+      if (error) throw error;
+      toast.success("Auction deleted");
+      fetchAuctions();
+    } catch (e: any) {
+      toast.error(e?.message || "Failed to delete");
+    } finally { setDeletingId(null); }
   };
 
   const handleShowDetail = async (auction: AuctionItem) => {
