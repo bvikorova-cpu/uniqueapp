@@ -782,7 +782,8 @@ const Marketplace = () => {
                   <div className="space-y-3">
                     <Textarea placeholder="Write a message to the service provider..." value={responseMessage} onChange={(e) => setResponseMessage(e.target.value)} rows={4} />
                     <Button onClick={handleSendResponse} disabled={!responseMessage.trim() || isSendingResponse} className="w-full">
-                      <Send className="w-4 h-4 mr-2" />{isSendingResponse ? "Sending..." : "Send Message"}
+                      {isSendingResponse ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Send className="w-4 h-4 mr-2" />}
+                      {isSendingResponse ? "Sending..." : "Send Message"}
                     </Button>
                   </div>
                 </div>
