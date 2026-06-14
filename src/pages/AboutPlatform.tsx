@@ -488,6 +488,17 @@ export default function AboutPlatform() {
   const filteredCategories = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return CATEGORIES;
+    // Single-letter query = alphabetical index (match section title start)
+    if (q.length === 1) {
+      return CATEGORIES
+        .map((cat) => ({
+          ...cat,
+          sections: cat.sections.filter((s) =>
+            s.title.toLowerCase().startsWith(q)
+          ),
+        }))
+        .filter((cat) => cat.sections.length > 0);
+    }
     return CATEGORIES
       .map((cat) => ({
         ...cat,
