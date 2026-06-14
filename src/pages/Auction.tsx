@@ -447,15 +447,17 @@ const Auction = () => {
                         </CardContent>
                         <CardFooter className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                           {user?.id === auction.user_id ? (
-                            <Button variant="destructive" className="flex-1" onClick={() => handleDeleteAuction(auction.id)}>Delete</Button>
+                            <Button variant="destructive" className="flex-1" onClick={() => handleDeleteAuction(auction.id)} disabled={deletingId === auction.id}>
+                              {deletingId === auction.id ? "Deleting..." : "Delete"}
+                            </Button>
                           ) : (
                             <>
                               <Button className="flex-1 bg-gradient-to-r from-amber-600 to-yellow-600" onClick={() => handleBid(auction)}>
                                 <Gavel className="mr-2 h-4 w-4" /> Bid
                               </Button>
                               {auction.buyout_price && (
-                                <Button variant="outline" className="flex-1 border-amber-500/30" onClick={() => handleBuyout(auction)}>
-                                  Buy €{Number(auction.buyout_price).toFixed(2)}
+                                <Button variant="outline" className="flex-1 border-amber-500/30" onClick={() => handleBuyout(auction)} disabled={buyingOutId === auction.id}>
+                                  {buyingOutId === auction.id ? "Loading..." : `Buy €${Number(auction.buyout_price).toFixed(2)}`}
                                 </Button>
                               )}
                             </>
