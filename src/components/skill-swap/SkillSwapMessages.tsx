@@ -75,11 +75,26 @@ export const SkillSwapMessages = () => {
         .or(`user1_id.eq.${currentUserId},user2_id.eq.${currentUserId}`)
         .order('last_message_at', { ascending: false });
       if (error) throw error;
-      setConversations((data || []).map(conv => ({
+      const mapped = (data || []).map(conv => ({
         ...conv,
         other_user_id: conv.user1_id === currentUserId ? conv.user2_id : conv.user1_id,
         offering_title: conv.skill_offerings?.title,
-      })) as any);
+      })) as Conversation[];
+      setConversations(mapped);
+
+      const otherIds = Array.from(new Set(mapped.map(c => c.other_user_id).filter(Boolean) as string[]));
+      const missing = otherIds.filter(id => !userNames[id]);
+      if (missing.length > 0) {
+        const { data: profs } = await (supabase as any)
+          .from('profiles_public').select('id, full_name').in('id', missing);
+        if (profs?.length) {
+          setUserNames(prev => {
+            const next = { ...prev };
+            for (const p of profs as any[]) next[p.id] = p.full_name || 'User';
+            return next;
+          });
+        }
+      }
     } catch (error) { console.error('Error loading conversations:', error); }
     finally { setLoading(false); }
   };
