@@ -385,12 +385,13 @@ export default function BrowseListings({ userId }: BrowseListingsProps) {
                                       <Textarea
                                         placeholder="Add a message to your offer..."
                                         value={offer.message}
-                                        onChange={(e) => setOffer({ ...offer, message: e.target.value })}
+                                        onChange={(e) => setOffer({ ...offer, message: e.target.value.slice(0, 1000) })}
+                                        maxLength={1000}
                                       />
                                     </div>
 
-                                    <Button className="w-full" onClick={handleMakeOffer}>
-                                      Send Offer
+                                    <Button className="w-full" onClick={handleMakeOffer} disabled={sendingOffer}>
+                                      {sendingOffer ? "Sending..." : "Send Offer"}
                                     </Button>
                                   </div>
                                 </DialogContent>
