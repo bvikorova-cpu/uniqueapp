@@ -37,8 +37,8 @@ export function VerifiedSellersProvider({ sellerIds, children }: { sellerIds: st
       if (cancelled) return;
       if (error) { setReady(true); return; }
       const m = new Map<string, Status>();
-      for (const r of (data ?? []) as Array<{ user_id: string; status: Status }>) {
-        m.set(r.user_id, r.status);
+      for (const r of ((data ?? []) as unknown) as Array<{ user_id: string; status: Status }>) {
+        if (r?.user_id && r?.status) m.set(r.user_id, r.status);
       }
       setStatuses(m);
       setReady(true);
