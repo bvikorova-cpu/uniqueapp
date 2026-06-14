@@ -1884,11 +1884,6 @@ serve(async (req) => {
         },
       });
 
-      await admin.from("concert_ticket_purchases").insert({
-        user_id: userId,
-        concert_id: concertId,
-        ticket_type_id: ticketTypeId,
-        amount: priceEur,
       const concertFeePct = await getFeeRate("megatalent");
       const concertFeeRate = concertFeePct / 100;
       await admin.from("concert_ticket_purchases").insert({
