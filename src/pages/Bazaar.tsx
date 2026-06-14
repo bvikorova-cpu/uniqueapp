@@ -671,86 +671,112 @@ const Bazaar = () => {
           </div>
         )}
 
-        {/* Items Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-          {filteredItems.map((item, i) => (
-            <motion.div key={item.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05, duration: 0.3 }}>
-              <Card className="group hover:shadow-xl transition-all duration-300 hover:scale-[1.02] bg-card/80 backdrop-blur-xl border-border/50">
-                <CardHeader className="p-0">
-                  <div className="relative">
-                    <img
-                      src={(item.image_urls && item.image_urls[0]) || item.image_url || "https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?w=300&h=300&fit=crop"}
-                      alt={item.title}
-                      className="w-full h-48 object-cover rounded-t-lg"
-                    />
-                    {item.image_urls && item.image_urls.length > 1 && (
-                      <Badge className="absolute bottom-2 right-2 bg-background/90 text-foreground text-[10px]">
-                        📷 {item.image_urls.length}
-                      </Badge>
-                    )}
-                    <Badge className="absolute top-2 left-2 bg-background/90 text-foreground text-[10px]">{item.condition}</Badge>
-                    <Badge className="absolute top-2 right-2 bg-primary/90 text-primary-foreground text-[10px]">
-                      {listingTypes.find(t => t.id === item.listing_type)?.name}
-                    </Badge>
-                    {item.top_until && new Date(item.top_until).getTime() > Date.now() && (
-                      <Badge className="absolute top-9 left-2 bg-yellow-500 text-black text-[10px] gap-1">
-                        <Crown className="h-3 w-3" /> TOP
-                      </Badge>
-                    )}
-                    {!(item.top_until && new Date(item.top_until).getTime() > Date.now()) &&
-                      item.bumped_until && new Date(item.bumped_until).getTime() > Date.now() && (
-                        <Badge className="absolute top-9 left-2 bg-orange-500 text-white text-[10px] gap-1">
-                          <Flame className="h-3 w-3" /> Bumped
+        {/* Items Grid (batched seller-verification fetch eliminates N+1) */}
+        <VerifiedSellersProvider sellerIds={filteredItems.map((it) => it.user_id)}>
+          {initialLoading && items.length === 0 ? (
+            <div className="flex justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+              {filteredItems.map((item, i) => (
+                <motion.div key={item.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i, 12) * 0.04, duration: 0.3 }}>
+                  <Card className="group hover:shadow-xl transition-all duration-300 hover:scale-[1.02] bg-card/80 backdrop-blur-xl border-border/50">
+                    <CardHeader className="p-0">
+                      <div className="relative">
+                        <img
+                          src={(item.image_urls && item.image_urls[0]) || item.image_url || "https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?w=300&h=300&fit=crop"}
+                          alt={item.title}
+                          loading="lazy"
+                          decoding="async"
+                          className="w-full h-48 object-cover rounded-t-lg"
+                        />
+                        {item.image_urls && item.image_urls.length > 1 && (
+                          <Badge className="absolute bottom-2 right-2 bg-background/90 text-foreground text-[10px]">
+                            📷 {item.image_urls.length}
+                          </Badge>
+                        )}
+                        <Badge className="absolute top-2 left-2 bg-background/90 text-foreground text-[10px]">{item.condition}</Badge>
+                        <Badge className="absolute top-2 right-2 bg-primary/90 text-primary-foreground text-[10px]">
+                          {listingTypes.find(t => t.id === item.listing_type)?.name}
                         </Badge>
+                        {item.top_until && new Date(item.top_until).getTime() > Date.now() && (
+                          <Badge className="absolute top-9 left-2 bg-yellow-500 text-black text-[10px] gap-1">
+                            <Crown className="h-3 w-3" /> TOP
+                          </Badge>
+                        )}
+                        {!(item.top_until && new Date(item.top_until).getTime() > Date.now()) &&
+                          item.bumped_until && new Date(item.bumped_until).getTime() > Date.now() && (
+                            <Badge className="absolute top-9 left-2 bg-orange-500 text-white text-[10px] gap-1">
+                              <Flame className="h-3 w-3" /> Bumped
+                            </Badge>
+                          )}
+                        {currentUserId && currentUserId !== item.user_id && (
+                          <Button
+                            type="button"
+                            size="icon"
+                            variant="secondary"
+                            className="absolute bottom-2 left-2 h-8 w-8 rounded-full bg-background/80 hover:bg-background"
+                            onClick={(e) => { e.stopPropagation(); toggleFavorite(item.id); }}
+                            aria-label={isFavorite(item.id) ? "Remove favorite" : "Add favorite"}
+                          >
+                            <Heart className={`h-4 w-4 ${isFavorite(item.id) ? "fill-red-500 text-red-500" : ""}`} />
+                          </Button>
+                        )}
+                      </div>
+                    </CardHeader>
+                    <CardContent className="p-4">
+                      <h3 className="font-semibold text-sm mb-1 group-hover:text-primary transition-colors line-clamp-2 cursor-pointer" onClick={() => openDetail(item)}>
+                        {item.title}
+                      </h3>
+                      <div className="text-xl font-black text-success mb-2">€{item.price}</div>
+                      <div className="space-y-1 mb-3 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-1"><MapPin className="h-3 w-3" />{item.location}</div>
+                        <div className="flex items-center gap-1"><Clock className="h-3 w-3" />{getTimeAgo(item.created_at)}</div>
+                        <div className="flex items-center gap-1"><User className="h-3 w-3" />{item.profiles?.full_name || "Anonymous"}<VerifiedSellerBadge sellerId={item.user_id} /></div>
+                      </div>
+                      <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{item.description}</p>
+                      {currentUserId === item.user_id && (
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          className="w-full gap-2"
+                          onClick={(e) => { e.stopPropagation(); setPromoteItem(item); }}
+                        >
+                          <Flame className="h-3.5 w-3.5" /> Promote
+                        </Button>
                       )}
-                    {currentUserId && currentUserId !== item.user_id && (
-                      <Button
-                        type="button"
-                        size="icon"
-                        variant="secondary"
-                        className="absolute bottom-2 left-2 h-8 w-8 rounded-full bg-background/80 hover:bg-background"
-                        onClick={(e) => { e.stopPropagation(); toggleFavorite(item.id); }}
-                        aria-label={isFavorite(item.id) ? "Remove favorite" : "Add favorite"}
-                      >
-                        <Heart className={`h-4 w-4 ${isFavorite(item.id) ? "fill-red-500 text-red-500" : ""}`} />
-                      </Button>
-                    )}
-                  </div>
-                </CardHeader>
-                <CardContent className="p-4">
-                  <h3 className="font-semibold text-sm mb-1 group-hover:text-primary transition-colors line-clamp-2 cursor-pointer" onClick={() => openDetail(item)}>
-                    {item.title}
-                  </h3>
-                  <div className="text-xl font-black text-success mb-2">€{item.price}</div>
-                  <div className="space-y-1 mb-3 text-xs text-muted-foreground">
-                    <div className="flex items-center gap-1"><MapPin className="h-3 w-3" />{item.location}</div>
-                    <div className="flex items-center gap-1"><Clock className="h-3 w-3" />{getTimeAgo(item.created_at)}</div>
-                    <div className="flex items-center gap-1"><User className="h-3 w-3" />{item.profiles?.full_name || "Anonymous"}<VerifiedSellerBadge sellerId={item.user_id} /></div>
-                  </div>
-                  <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{item.description}</p>
-                  {currentUserId === item.user_id && (
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="outline"
-                      className="w-full gap-2"
-                      onClick={(e) => { e.stopPropagation(); setPromoteItem(item); }}
-                    >
-                      <Flame className="h-3.5 w-3.5" /> Promote
-                    </Button>
-                  )}
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </VerifiedSellersProvider>
 
-        {filteredItems.length === 0 && (
+        {!initialLoading && filteredItems.length === 0 && (
           <div className="text-center py-12">
             <p className="text-xl text-muted-foreground">No listings found</p>
             <Button variant="outline" onClick={() => setFilters(defaultFilters)} className="mt-4">Clear filters</Button>
           </div>
         )}
+
+        {hasMore && items.length > 0 && (
+          <div className="flex justify-center mt-8">
+            <Button
+              variant="outline"
+              size="lg"
+              disabled={loadingMore}
+              onClick={() => loadItems(false)}
+              className="gap-2"
+            >
+              {loadingMore && <Loader2 className="h-4 w-4 animate-spin" />}
+              {loadingMore ? "Loading…" : "Load more listings"}
+            </Button>
+          </div>
+        )}
+
 
         {/* Footer Info */}
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-4">
