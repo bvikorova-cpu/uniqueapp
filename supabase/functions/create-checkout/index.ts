@@ -2209,7 +2209,7 @@ serve(async (req) => {
       if (!applicationId || !Number.isFinite(agreedEur) || agreedEur < 1 || agreedEur > 100000) {
         return errorResponse("applicationId and agreedEur (1–100000) required", 400);
       }
-      const PLATFORM_FEE_PCT = 0.20;
+      const PLATFORM_FEE_PCT = (await getFeeRate("brand_collaboration")) / 100;
       const admin = createSupabaseAdminClient();
       const { data: app, error: appErr } = await admin
         .from("campaign_applications")
