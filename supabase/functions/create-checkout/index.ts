@@ -1889,9 +1889,16 @@ serve(async (req) => {
         concert_id: concertId,
         ticket_type_id: ticketTypeId,
         amount: priceEur,
-        musician_amount: Number((priceEur * 0.8).toFixed(2)),
-        platform_commission: Number((priceEur * 0.2).toFixed(2)),
-        commission_rate: 0.2,
+      const concertFeePct = await getFeeRate("megatalent");
+      const concertFeeRate = concertFeePct / 100;
+      await admin.from("concert_ticket_purchases").insert({
+        user_id: userId,
+        concert_id: concertId,
+        ticket_type_id: ticketTypeId,
+        amount: priceEur,
+        musician_amount: Number((priceEur * (1 - concertFeeRate)).toFixed(2)),
+        platform_commission: Number((priceEur * concertFeeRate).toFixed(2)),
+        commission_rate: concertFeeRate,
         payment_status: "pending",
         stripe_session_id: session.id,
       });
