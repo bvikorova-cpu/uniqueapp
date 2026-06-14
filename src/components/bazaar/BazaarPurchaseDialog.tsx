@@ -30,9 +30,11 @@ export default function BazaarPurchaseDialog({ item, open, onOpenChange }: Bazaa
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  const COMMISSION_RATE = 0.10; // 10%
-  const commissionAmount = item ? item.price * COMMISSION_RATE : 0;
-  const sellerPayout = item ? item.price - commissionAmount : 0;
+  // Pull the active platform fee from `platform_commission_settings` (single source of truth).
+  const { commissionRate } = useCommissionRate("bazaar");
+  const effectiveRate = (commissionRate ?? 10) / 100;
+  const commissionAmount = item ? +(item.price * effectiveRate).toFixed(2) : 0;
+  const sellerPayout = item ? +(item.price - commissionAmount).toFixed(2) : 0;
 
   const handlePurchase = async () => {
     if (!item || !shippingAddress.trim()) {
