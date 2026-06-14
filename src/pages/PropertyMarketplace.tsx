@@ -494,7 +494,9 @@ export default function PropertyMarketplace() {
                       className={`w-full ${pkg.popular ? "bg-gradient-to-r from-primary to-accent text-primary-foreground" : ""}`} 
                       variant={pkg.popular ? "default" : "outline"}
                       onClick={() => handlePurchaseService(pkg.id, pkg.price)}
+                      disabled={purchasingId === pkg.id}
                     >
+                      {purchasingId === pkg.id && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                       Choose Plan
                     </Button>
                   </CardContent>
