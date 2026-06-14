@@ -526,8 +526,8 @@ const Auction = () => {
                     placeholder={`Min €${(Number(selectedAuction.current_price) + 0.01).toFixed(2)}`} />
                 </div>
                 <Button onClick={submitBid} className="w-full bg-gradient-to-r from-amber-600 to-yellow-600"
-                  disabled={!bidAmount || parseFloat(bidAmount) <= Number(selectedAuction.current_price)}>
-                  <Gavel className="h-4 w-4 mr-2" /> Place Bid {bidAmount && `€${parseFloat(bidAmount).toFixed(2)}`}
+                  disabled={bidding || !bidAmount || parseFloat(bidAmount) <= Number(selectedAuction.current_price)}>
+                  <Gavel className="h-4 w-4 mr-2" /> {bidding ? "Placing..." : `Place Bid ${bidAmount ? `€${parseFloat(bidAmount).toFixed(2)}` : ""}`}
                 </Button>
               </div>
             )}
