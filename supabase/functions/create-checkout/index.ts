@@ -1330,7 +1330,7 @@ serve(async (req) => {
         return successResponse({ url: session.url, session_id: session.id });
       }
 
-      // ── AUCTION BUYOUT ──
+      // ── AUCTION BUYOUT (Stripe Connect destination charge, configurable commission) ──
       if (body.product === "auction_buyout") {
         const auctionId = String(body.auction_id || "");
         if (!auctionId) return errorResponse("auction_id required", 400);
@@ -1345,7 +1345,36 @@ serve(async (req) => {
         if (new Date(auction.ends_at).getTime() <= Date.now()) return errorResponse("auction ended", 400);
         if (!auction.buyout_price) return errorResponse("no buyout price", 400);
         if (auction.user_id === uid) return errorResponse("cannot buy own auction", 400);
-        const session = await stripe.checkout.sessions.create({
+
+        // Resolve seller Stripe Connect account
+        let sellerConnectId: string | null = null;
+        const { data: sellerProfile } = await admin
+          .from("profiles")
+          .select("stripe_connect_account_id, stripe_connect_charges_enabled, stripe_connect_payouts_enabled")
+          .eq("id", auction.user_id)
+          .maybeSingle();
+        if (
+          sellerProfile?.stripe_connect_account_id &&
+          sellerProfile?.stripe_connect_charges_enabled &&
+          sellerProfile?.stripe_connect_payouts_enabled
+        ) {
+          sellerConnectId = sellerProfile.stripe_connect_account_id as string;
+        }
+
+        // Lookup commission rate (defaults to 10% if no row)
+        let commissionRate = 10;
+        const { data: setting } = await admin
+          .from("platform_commission_settings")
+          .select("commission_rate")
+          .eq("service_type", "auction")
+          .eq("is_active", true)
+          .maybeSingle();
+        if (setting?.commission_rate != null) commissionRate = Number(setting.commission_rate);
+
+        const amount = Number(auction.buyout_price);
+        const commissionAmount = +(amount * (commissionRate / 100)).toFixed(2);
+
+        const sessionParams: Record<string, unknown> = {
           customer: customerId || undefined,
           customer_email: customerId ? undefined : email,
           mode: "payment",
@@ -1353,7 +1382,7 @@ serve(async (req) => {
             quantity: 1,
             price_data: {
               currency: "eur",
-              unit_amount: Math.round(Number(auction.buyout_price) * 100),
+              unit_amount: Math.round(amount * 100),
               product_data: { name: `Auction buyout: ${auction.title}`.slice(0, 250) },
             },
           }],
@@ -1367,9 +1396,18 @@ serve(async (req) => {
             winner_id: uid,
             seller_id: auction.user_id,
             user_id: uid,
+            commission_amount: String(commissionAmount),
+            auto_split: sellerConnectId ? "true" : "false",
           },
-        });
-        return successResponse({ url: session.url, session_id: session.id });
+        };
+        if (sellerConnectId) {
+          (sessionParams as any).payment_intent_data = {
+            application_fee_amount: Math.round(commissionAmount * 100),
+            transfer_data: { destination: sellerConnectId },
+          };
+        }
+        const session = await stripe.checkout.sessions.create(sessionParams as any);
+        return successResponse({ url: session.url, session_id: session.id, auto_split: !!sellerConnectId });
       }
     }
 

@@ -676,11 +676,11 @@ const App = () => {
                         <Route path="/coupon-marketplace" element={<CouponMarketplace />} />
                         <Route path="/coupons/season/:slug" element={<CouponSeasonalHub />} />
                         <Route path="/coupons/:brand" element={<CouponBrandPage />} />
-                        <Route path="/admin/coupon-disputes" element={<AdminCouponDisputes />} />
-                        <Route path="/admin/megatalent-moderation" element={<AdminMegatalentModeration />} />
-                        <Route path="/admin/fundraising-moderation" element={<AdminFundraisingModeration />} />
-                        <Route path="/admin/battle-royale-payouts" element={<AdminBattleRoyalePayouts />} />
-                        <Route path="/admin/dating-moderation" element={<AdminDatingModeration />} />
+                        <Route path="/admin/coupon-disputes" element={<ProtectedRoute requireAdmin={true}><AdminCouponDisputes /></ProtectedRoute>} />
+                        <Route path="/admin/megatalent-moderation" element={<ProtectedRoute requireAdmin={true}><AdminMegatalentModeration /></ProtectedRoute>} />
+                        <Route path="/admin/fundraising-moderation" element={<ProtectedRoute requireAdmin={true}><AdminFundraisingModeration /></ProtectedRoute>} />
+                        <Route path="/admin/battle-royale-payouts" element={<ProtectedRoute requireAdmin={true}><AdminBattleRoyalePayouts /></ProtectedRoute>} />
+                        <Route path="/admin/dating-moderation" element={<ProtectedRoute requireAdmin={true}><AdminDatingModeration /></ProtectedRoute>} />
                         <Route path="/referral" element={<Referral />} />
                         <Route path="/games" element={<Games />} />
                         <Route path="/games-hub" element={<GamesHub />} />

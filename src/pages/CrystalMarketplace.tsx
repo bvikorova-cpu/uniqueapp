@@ -25,6 +25,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { SellerConnectGate } from "@/components/commerce/SellerConnectGate";
 
 interface CrystalItem {
   id: string;
@@ -224,6 +225,7 @@ export default function CrystalMarketplace() {
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4 py-2">
+                <SellerConnectGate />
                 <div className="space-y-2">
                   <Label htmlFor="title">Title *</Label>
                   <Input

@@ -421,6 +421,30 @@ serve(async (req) => {
             log("donation webhook fallback error", { err: (dErr as Error).message });
           }
 
+          // ── Auction buyout fallback: complete sale even if buyer never returns to success URL ──
+          try {
+            const md = session.metadata ?? {};
+            const isAuctionBuyout =
+              md.type === "auction_buyout" ||
+              md.product === "auction_buyout" ||
+              md.product_type === "auction_buyout";
+            if (isAuctionBuyout && session.mode === "payment" && md.auction_id && md.winner_id) {
+              const { error: abErr } = await supabase.rpc(
+                "complete_auction_buyout" as any,
+                {
+                  p_auction_id: md.auction_id,
+                  p_winner_id: md.winner_id,
+                  p_stripe_session_id: session.id,
+                },
+              );
+              if (abErr) log("auction_buyout webhook fallback failed", { err: abErr.message });
+              else log("auction_buyout completed via webhook", { auction_id: md.auction_id });
+            }
+          } catch (abErr) {
+            log("auction_buyout webhook fallback error", { err: (abErr as Error).message });
+          }
+
+
 
           const { error } = await supabase
             .from("payment_records")

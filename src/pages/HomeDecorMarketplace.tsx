@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { AIRoomDesigner } from "@/components/home-decor/AIRoomDesigner";
 import { useDecorSubscription } from "@/hooks/useDecorSubscription";
 import { CheckCircle } from "lucide-react";
+import { SellerConnectGate } from "@/components/commerce/SellerConnectGate";
 
 interface DecorItem {
   id: string;
@@ -416,6 +417,7 @@ const HomeDecorMarketplace = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
+                <SellerConnectGate />
                 {/* Image Upload */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Photo *</label>
