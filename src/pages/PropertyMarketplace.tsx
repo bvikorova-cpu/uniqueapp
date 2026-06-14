@@ -122,7 +122,11 @@ export default function PropertyMarketplace() {
       let query = supabase.from('properties').select(`*, property_images(image_url, is_primary)`);
       const f = searchFilters;
       query = f.availability === 'any' ? query : query.eq('status', f.availability);
-      if (f.location) query = query.or(`city.ilike.%${f.location}%,location.ilike.%${f.location}%,address.ilike.%${f.location}%`);
+      if (f.location) {
+        // Sanitize for PostgREST .or() — strip commas, parens, quotes
+        const safe = f.location.replace(/[,()'"*]/g, ' ').trim().slice(0, 100);
+        if (safe) query = query.or(`city.ilike.%${safe}%,location.ilike.%${safe}%,address.ilike.%${safe}%`);
+      }
       if (f.priceMin) query = query.gte('price', parseFloat(f.priceMin));
       if (f.priceMax) query = query.lte('price', parseFloat(f.priceMax));
       if (f.area) query = query.gte('area_sqm', parseInt(f.area));
