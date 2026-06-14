@@ -315,6 +315,7 @@ const Auction = () => {
             </DialogTrigger>
             <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader><DialogTitle>Create New Auction</DialogTitle></DialogHeader>
+              <SellerConnectGate compact />
               <form onSubmit={handleCreateAuction} className="space-y-4">
                 <div><Label htmlFor="title">Title</Label><Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} required /></div>
                 <div><Label htmlFor="description">Description</Label><Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} rows={4} required /></div>
