@@ -67,6 +67,43 @@ export async function requireAiCredits(
       ),
     };
   }
+  // ---- Rate limiting (per-user, per-bucket) ----
+  if (opts.rateLimit !== false) {
+    const rl = opts.rateLimit ?? {};
+    const bucket = rl.bucket ?? `ai.${usageType}`;
+    const max = rl.max ?? 30;
+    const windowSec = rl.windowSec ?? 60;
+    try {
+      const { data: allowed, error: rlErr } = await supabase.rpc("check_rate_limit", {
+        _bucket: `${bucket}:${user.id}`,
+        _max: max,
+        _window_seconds: windowSec,
+      });
+      if (!rlErr && allowed === false) {
+        return {
+          errorResponse: new Response(
+            JSON.stringify({
+              error: "rate_limited",
+              message: `Too many requests. Try again in ${windowSec}s.`,
+              bucket,
+            }),
+            {
+              status: 429,
+              headers: {
+                ...corsHeaders,
+                "Content-Type": "application/json",
+                "Retry-After": String(windowSec),
+              },
+            }
+          ),
+        };
+      }
+    } catch (e) {
+      // Fail open on infra errors — never block a paying user because of a rate-limit infra glitch.
+      console.warn("[requireAiCredits] rate-limit rpc error:", (e as Error).message);
+    }
+  }
+
 
   // Check current credit balance
   const { data: row } = await supabase
