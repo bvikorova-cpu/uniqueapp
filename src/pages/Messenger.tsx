@@ -880,9 +880,7 @@ const Messenger = () => {
       return;
     }
 
-    const { data: urlData } = supabase.storage
-      .from('messenger-attachments')
-      .getPublicUrl(fileName);
+    const { data: urlData } = { data: { publicUrl: await getReadableUrl('messenger-attachments', fileName) } };
 
     const { error } = await supabase.from("messages").insert({
       conversation_id: selectedConversation,
