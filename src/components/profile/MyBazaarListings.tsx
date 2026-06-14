@@ -151,9 +151,10 @@ export const MyBazaarListings = ({ userId, isOwnProfile }: MyBazaarListingsProps
                     <Button
                       size="sm"
                       variant="destructive"
+                      disabled={deletingId === item.id}
                       onClick={() => handleDelete(item.id)}
                     >
-                      <Trash2 className="h-3 w-3" />
+                      {deletingId === item.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Trash2 className="h-3 w-3" />}
                     </Button>
                   </div>
                 )}
