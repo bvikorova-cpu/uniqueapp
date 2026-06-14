@@ -4,6 +4,7 @@ import { createLogger } from "../_shared/logger.ts";
 import { errorResponse, handleCors, successResponse } from "../_shared/response.ts";
 import { createStripeClient, getStripeCustomer } from "../_shared/stripe.ts";
 import { RATE_LIMITS, withRateLimit } from "../_shared/rateLimit.ts";
+import { getFeeRate } from "../_shared/feeRates.ts";
 
 const log = createLogger("CREATE-CHECKOUT");
 
@@ -1279,7 +1280,8 @@ serve(async (req) => {
           .single();
         if (itemError || !item) return errorResponse("Item not found", 404);
         if (!item.is_available) return errorResponse("Item no longer available", 400);
-        const platformCommission = Number((item.price * 0.15).toFixed(2));
+        const crystalFeePct = await getFeeRate("crystal");
+        const platformCommission = Number((item.price * crystalFeePct / 100).toFixed(2));
         const sellerAmount = Number((item.price - platformCommission).toFixed(2));
         const { data: order, error: orderError } = await admin
           .from("crystal_marketplace_orders")
@@ -1882,14 +1884,16 @@ serve(async (req) => {
         },
       });
 
+      const concertFeePct = await getFeeRate("megatalent");
+      const concertFeeRate = concertFeePct / 100;
       await admin.from("concert_ticket_purchases").insert({
         user_id: userId,
         concert_id: concertId,
         ticket_type_id: ticketTypeId,
         amount: priceEur,
-        musician_amount: Number((priceEur * 0.8).toFixed(2)),
-        platform_commission: Number((priceEur * 0.2).toFixed(2)),
-        commission_rate: 0.2,
+        musician_amount: Number((priceEur * (1 - concertFeeRate)).toFixed(2)),
+        platform_commission: Number((priceEur * concertFeeRate).toFixed(2)),
+        commission_rate: concertFeeRate,
         payment_status: "pending",
         stripe_session_id: session.id,
       });
@@ -2134,7 +2138,7 @@ serve(async (req) => {
       if (!offeringId || !requirements || !deliveryDays || !totalAmount) {
         return errorResponse("Missing offeringId, requirements, deliveryDays or totalAmount", 400);
       }
-      const COMMISSION_RATE = 0.15;
+      const COMMISSION_RATE = (await getFeeRate("service_order")) / 100;
       const admin = createSupabaseAdminClient();
       const { data: offering, error: offeringError } = await admin
         .from("skill_offerings")
@@ -2205,7 +2209,7 @@ serve(async (req) => {
       if (!applicationId || !Number.isFinite(agreedEur) || agreedEur < 1 || agreedEur > 100000) {
         return errorResponse("applicationId and agreedEur (1–100000) required", 400);
       }
-      const PLATFORM_FEE_PCT = 0.20;
+      const PLATFORM_FEE_PCT = (await getFeeRate("brand_collaboration")) / 100;
       const admin = createSupabaseAdminClient();
       const { data: app, error: appErr } = await admin
         .from("campaign_applications")
@@ -2390,8 +2394,9 @@ serve(async (req) => {
         .eq("user_id", application.user_id)
         .maybeSingle();
       const influencerName = influencer?.name || "the influencer";
-      const platformFee = Math.round(amount * 0.20 * 100) / 100;
-      const influencerAmount = Math.round(amount * 0.80 * 100) / 100;
+      const brandFeeRate = (await getFeeRate("brand_collaboration")) / 100;
+      const platformFee = Math.round(amount * brandFeeRate * 100) / 100;
+      const influencerAmount = Math.round(amount * (1 - brandFeeRate) * 100) / 100;
       const { data: payment, error: paymentError } = await admin
         .from("campaign_payments")
         .insert({
