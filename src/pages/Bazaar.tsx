@@ -537,15 +537,8 @@ const Bazaar = () => {
               <DialogContent className="max-w-md">
                 <DialogHeader><DialogTitle>New Listing</DialogTitle></DialogHeader>
                 <div className="space-y-4">
-                  {stripeConnectReady === false && (
-                    <Alert variant="destructive" className="border-amber-500/50 bg-amber-500/10">
-                      <AlertCircle className="h-4 w-4" />
-                      <AlertDescription className="text-xs">
-                        <strong>Stripe Connect required to receive payouts.</strong> You can publish listings, but buyer payments will be held by the platform until you connect Stripe.{" "}
-                        <Link to="/earnings" className="underline font-semibold">Connect Stripe →</Link>
-                      </AlertDescription>
-                    </Alert>
-                  )}
+                  <SellerConnectGate compact />
+
                   <div>
                     <label className="text-sm font-medium mb-2 block">Listing Type</label>
                     <Select value={formData.listing_type} onValueChange={(v) => setFormData({ ...formData, listing_type: v })}>
