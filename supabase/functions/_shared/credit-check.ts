@@ -17,6 +17,9 @@ export interface CreditOptions {
   credits?: number;        // credits to deduct, default 1
   usageType?: string;      // label for ai_usage_history, default "ai_generation"
   description?: string;    // optional description for the usage row
+  // Rate limit (per-user, per-bucket). Defaults: 30 req / 60 s using usageType as bucket.
+  // Set `rateLimit: false` to disable.
+  rateLimit?: false | { bucket?: string; max?: number; windowSec?: number };
 }
 
 export interface CreditAuthResult {
