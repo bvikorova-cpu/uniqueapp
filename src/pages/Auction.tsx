@@ -123,7 +123,12 @@ const Auction = () => {
 
   const fetchAuctions = async () => {
     try {
-      const { data, error } = await supabase.from("auction_items").select("*").eq("is_active", true).order("created_at", { ascending: false });
+      const { data, error } = await supabase
+        .from("auction_items")
+        .select("*")
+        .eq("is_active", true)
+        .order("created_at", { ascending: false })
+        .range(0, 99);
       if (error) throw error;
       setAuctions(data || []);
     } catch { toast.error("Failed to load auctions"); }
