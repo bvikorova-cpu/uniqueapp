@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Briefcase, MapPin, Clock, Euro, Upload, X, Send, Trash2, ShoppingBag, Store, Wand2, DollarSign, FileText, Target, Eye, BarChart3, Compass, Flag, Video, ShieldCheck, ScrollText, Gavel } from "lucide-react";
+import { Briefcase, MapPin, Clock, Euro, Upload, X, Send, Trash2, ShoppingBag, Store, Wand2, DollarSign, FileText, Target, Eye, BarChart3, Compass, Flag, Video, ShieldCheck, ScrollText, Gavel, Loader2 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
@@ -186,8 +186,14 @@ const Marketplace = () => {
   const [responseMessage, setResponseMessage] = useState("");
   const [isSendingResponse, setIsSendingResponse] = useState(false);
   const [offeringToDelete, setOfferingToDelete] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isSubscribing, setIsSubscribing] = useState(false);
   const [activeTab, setActiveTab] = useState("browse");
   const [activeView, setActiveView] = useState<string | null>(null);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const PAGE_SIZE = 48;
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -200,7 +206,9 @@ const Marketplace = () => {
 
   useEffect(() => {
     checkAuth();
-    loadOfferings();
+    loadOfferings(0, true);
+    const { data: sub } = supabase.auth.onAuthStateChange(() => checkAuth());
+    return () => sub.subscription.unsubscribe();
   }, []);
 
   const checkAuth = async () => {
@@ -209,37 +217,57 @@ const Marketplace = () => {
     if (user) {
       const { data: subscription } = await supabase
         .from("marketplace_subscriptions")
-        .select("*")
+        .select("id")
         .eq("user_id", user.id)
         .eq("status", "active")
-        .single();
+        .maybeSingle();
       setIsSubscribed(!!subscription);
+    } else {
+      setIsSubscribed(false);
     }
   };
 
-  const loadOfferings = async () => {
+  const loadOfferings = async (pageIdx = 0, reset = false) => {
+    if (!reset) setIsLoadingMore(true);
+    const from = pageIdx * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
     const { data: offeringsData, error } = await supabase
       .from("skill_offerings")
       .select("*")
       .eq("is_active", true)
-      .order("created_at", { ascending: false });
-    if (error) { console.error("Error loading offerings:", error); return; }
-    if (!offeringsData || offeringsData.length === 0) { setOfferings([]); return; }
-    const userIds = [...new Set(offeringsData.map(o => o.user_id))];
+      .order("created_at", { ascending: false })
+      .range(from, to);
+    if (error) {
+      console.error("Error loading offerings:", error);
+      setIsLoadingMore(false);
+      return;
+    }
+    const rows = offeringsData ?? [];
+    setHasMore(rows.length === PAGE_SIZE);
+    if (rows.length === 0) {
+      if (reset) setOfferings([]);
+      setIsLoadingMore(false);
+      return;
+    }
+    const userIds = [...new Set(rows.map(o => o.user_id))];
     const { data: profilesData } = await supabase
       .from("profiles")
       .select("id, full_name, avatar_url")
       .in("id", userIds);
-    const offeringsWithProfiles = offeringsData.map(offering => ({
-      ...offering,
-      profiles: profilesData?.find(p => p.id === offering.user_id) || null
+    const merged = rows.map(o => ({
+      ...o,
+      profiles: profilesData?.find(p => p.id === o.user_id) || null,
     }));
-    setOfferings(offeringsWithProfiles);
+    setOfferings(prev => reset ? merged : [...prev, ...merged]);
+    setPage(pageIdx);
+    setIsLoadingMore(false);
   };
 
   const handleSubscribe = async () => {
     if (!user) { toast({ title: "Login Required", description: "You must log in to subscribe", variant: "destructive" }); return; }
+    setIsSubscribing(true);
     const { error } = await supabase.from("marketplace_subscriptions").insert({ user_id: user.id, status: "active" });
+    setIsSubscribing(false);
     if (error) { toast({ title: "Error", description: "Failed to create subscription", variant: "destructive" }); return; }
     setIsSubscribed(true);
     toast({ title: "Success!", description: "Subscription activated" });
@@ -248,6 +276,10 @@ const Marketplace = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (!file.type.startsWith("image/")) {
+        toast({ title: "Invalid file", description: "Only image files are allowed", variant: "destructive" });
+        return;
+      }
       if (file.size > 5 * 1024 * 1024) { toast({ title: "File too large", description: "Maximum image size is 5 MB", variant: "destructive" }); return; }
       setImageFile(file);
       const reader = new FileReader();
@@ -259,22 +291,36 @@ const Marketplace = () => {
   const removeImage = () => { setImageFile(null); setImagePreview(null); };
 
   const handleSendResponse = async () => {
-    if (!responseMessage.trim() || !selectedOffering || !user) return;
+    if (!responseMessage.trim() || !selectedOffering || !user || isSendingResponse) return;
     setIsSendingResponse(true);
-    const { error } = await supabase.from("marketplace_responses").insert({
-      offering_id: selectedOffering.id, sender_id: user.id, receiver_id: selectedOffering.user_id, message: responseMessage.trim()
-    });
-    if (error) { toast({ title: "Error", description: "Failed to send message", variant: "destructive" }); setIsSendingResponse(false); return; }
-    toast({ title: "Message sent", description: "Your interest has been sent to the service provider" });
-    setResponseMessage(""); setSelectedOffering(null); setIsSendingResponse(false);
+    try {
+      const { error } = await supabase.from("marketplace_responses").insert({
+        offering_id: selectedOffering.id, sender_id: user.id, receiver_id: selectedOffering.user_id, message: responseMessage.trim()
+      });
+      if (error) throw error;
+      toast({ title: "Message sent", description: "Your interest has been sent to the service provider" });
+      setResponseMessage(""); setSelectedOffering(null);
+    } catch (err: any) {
+      toast({ title: "Error", description: err?.message || "Failed to send message", variant: "destructive" });
+    } finally {
+      setIsSendingResponse(false);
+    }
   };
 
   const handleDeleteOffering = async () => {
-    if (!offeringToDelete) return;
-    const { error } = await supabase.from("skill_offerings").delete().eq("id", offeringToDelete);
-    if (error) { toast({ title: "Error", description: "Failed to delete offer", variant: "destructive" }); return; }
-    toast({ title: "Success!", description: "Offer deleted" });
-    setOfferingToDelete(null); setSelectedOffering(null); loadOfferings();
+    if (!offeringToDelete || isDeleting) return;
+    setIsDeleting(true);
+    try {
+      const { error } = await supabase.from("skill_offerings").delete().eq("id", offeringToDelete);
+      if (error) throw error;
+      toast({ title: "Success!", description: "Offer deleted" });
+      setOfferingToDelete(null); setSelectedOffering(null);
+      await loadOfferings(0, true);
+    } catch (err: any) {
+      toast({ title: "Error", description: err?.message || "Failed to delete offer", variant: "destructive" });
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const uploadImage = async (): Promise<string | null> => {
@@ -296,19 +342,26 @@ const Marketplace = () => {
   const handleCreateOffering = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) { toast({ title: "Login Required", description: "You must log in to create an offer", variant: "destructive" }); return; }
+    if (isUploading) return;
     setIsUploading(true);
-    let imageUrl: string | null = null;
-    if (imageFile) imageUrl = await uploadImage();
-    const { error } = await supabase.from("skill_offerings").insert([{
-      user_id: user.id, title: formData.title, description: formData.description,
-      category: formData.category as any, price_per_hour: formData.price_per_hour ? parseFloat(formData.price_per_hour) : null,
-      location: formData.location || null, image_url: imageUrl
-    }]);
-    setIsUploading(false);
-    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
-    toast({ title: "Success!", description: "Your offer has been created" });
-    setFormData({ title: "", description: "", category: "", price_per_hour: "", location: "" });
-    setImageFile(null); setImagePreview(null); setShowCreateForm(false); loadOfferings();
+    try {
+      let imageUrl: string | null = null;
+      if (imageFile) imageUrl = await uploadImage();
+      const { error } = await supabase.from("skill_offerings").insert([{
+        user_id: user.id, title: formData.title, description: formData.description,
+        category: formData.category as any, price_per_hour: formData.price_per_hour ? parseFloat(formData.price_per_hour) : null,
+        location: formData.location || null, image_url: imageUrl
+      }]);
+      if (error) throw error;
+      toast({ title: "Success!", description: "Your offer has been created" });
+      setFormData({ title: "", description: "", category: "", price_per_hour: "", location: "" });
+      setImageFile(null); setImagePreview(null); setShowCreateForm(false);
+      await loadOfferings(0, true);
+    } catch (err: any) {
+      toast({ title: "Error", description: err?.message || "Failed to create offer", variant: "destructive" });
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   // View routing for AI tools
@@ -337,6 +390,11 @@ const Marketplace = () => {
   if (!isSubscribed) {
     return (
       <div className="min-h-screen bg-background pt-20 sm:pt-24 pb-12">
+        <SEO
+          title="Skills Marketplace – Hire freelancers & sell services"
+          description="Hire trusted freelancers or offer your services on Unique Marketplace. AI-powered pricing, proposals, contracts and matching."
+          canonical="/marketplace"
+        />
         <div className="container mx-auto px-4 max-w-6xl">
           <MarketplaceHero />
 
@@ -472,7 +530,7 @@ const Marketplace = () => {
                   <Card key={offering.id} className="overflow-hidden hover:shadow-lg transition-shadow bg-card/80 backdrop-blur-xl border-border/50">
                     {offering.image_url && (
                       <div className="aspect-video overflow-hidden">
-                        <img src={offering.image_url} alt={offering.title} className="w-full h-full object-cover" />
+                        <img src={offering.image_url} alt={offering.title} loading="lazy" decoding="async" className="w-full h-full object-cover" />
                       </div>
                     )}
                     <CardContent className="p-4">
@@ -520,7 +578,9 @@ const Marketplace = () => {
                 </ul>
                 <div className="text-center pt-4">
                   <p className="text-4xl font-bold text-primary mb-4">€2<span className="text-lg font-normal text-muted-foreground">/month</span></p>
-                  <Button onClick={handleSubscribe} size="lg" className="w-full">Activate Subscription</Button>
+                  <Button onClick={handleSubscribe} size="lg" className="w-full" disabled={isSubscribing}>
+                    {isSubscribing ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Activating...</> : "Activate Subscription"}
+                  </Button>
                   <p className="text-xs text-muted-foreground mt-3">Cancel anytime • Secure payment via Stripe</p>
                 </div>
               </CardContent>
@@ -615,7 +675,9 @@ const Marketplace = () => {
                   <Input type="number" step="0.01" placeholder="Price per hour (€)" value={formData.price_per_hour} onChange={(e) => setFormData({ ...formData, price_per_hour: e.target.value })} />
                   <Input placeholder="Location" value={formData.location} onChange={(e) => setFormData({ ...formData, location: e.target.value })} />
                 </div>
-                <Button type="submit" className="w-full" disabled={isUploading}>{isUploading ? "Creating..." : "Create Offering"}</Button>
+                <Button type="submit" className="w-full" disabled={isUploading}>
+                  {isUploading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Creating...</> : "Create Offering"}
+                </Button>
               </form>
             </CardContent>
           </Card>
@@ -627,7 +689,7 @@ const Marketplace = () => {
             <Card key={offering.id} className="hover:shadow-lg transition-shadow overflow-hidden bg-card/80 backdrop-blur-xl border-border/50">
               {offering.image_url && (
                 <div className="w-full h-48 overflow-hidden">
-                  <img src={offering.image_url} alt={offering.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+                  <img src={offering.image_url} alt={offering.title} loading="lazy" decoding="async" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
                 </div>
               )}
               <CardHeader>
@@ -665,6 +727,14 @@ const Marketplace = () => {
             </Card>
           ))}
         </div>
+
+        {hasMore && offerings.length > 0 && (
+          <div className="flex justify-center mt-8">
+            <Button variant="outline" onClick={() => loadOfferings(page + 1, false)} disabled={isLoadingMore}>
+              {isLoadingMore ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Loading...</> : "Load more"}
+            </Button>
+          </div>
+        )}
 
         {offerings.length === 0 && (
           <div className="text-center py-12">
@@ -712,7 +782,8 @@ const Marketplace = () => {
                   <div className="space-y-3">
                     <Textarea placeholder="Write a message to the service provider..." value={responseMessage} onChange={(e) => setResponseMessage(e.target.value)} rows={4} />
                     <Button onClick={handleSendResponse} disabled={!responseMessage.trim() || isSendingResponse} className="w-full">
-                      <Send className="w-4 h-4 mr-2" />{isSendingResponse ? "Sending..." : "Send Message"}
+                      {isSendingResponse ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Send className="w-4 h-4 mr-2" />}
+                      {isSendingResponse ? "Sending..." : "Send Message"}
                     </Button>
                   </div>
                 </div>
@@ -729,8 +800,10 @@ const Marketplace = () => {
             <AlertDialogDescription>This action is irreversible.</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteOffering} className="bg-destructive hover:bg-destructive/90">Delete</AlertDialogAction>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteOffering} disabled={isDeleting} className="bg-destructive hover:bg-destructive/90">
+              {isDeleting ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Deleting...</> : "Delete"}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

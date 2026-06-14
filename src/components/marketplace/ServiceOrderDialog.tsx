@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, Clock, Euro, AlertCircle } from "lucide-react";
+import { useCommissionRate } from "@/hooks/useCommissionSettings";
+import { FEE_DEFAULTS } from "@/lib/feeRates";
 
 interface ServiceOrderDialogProps {
   open: boolean;
@@ -28,10 +30,11 @@ export function ServiceOrderDialog({ open, onOpenChange, offering }: ServiceOrde
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const commissionRate = 0.15;
+  const { commissionRate } = useCommissionRate("service_order");
+  const ratePct = commissionRate ?? FEE_DEFAULTS.service_order;
   const totalAmountNum = parseFloat(totalAmount) || 0;
-  const commissionAmount = totalAmountNum * commissionRate;
-  const sellerPayout = totalAmountNum - commissionAmount;
+  const commissionAmount = Number(((totalAmountNum * ratePct) / 100).toFixed(2));
+  const sellerPayout = Number((totalAmountNum - commissionAmount).toFixed(2));
 
   const handleOrder = async () => {
     if (!requirements.trim()) {
@@ -67,12 +70,11 @@ export function ServiceOrderDialog({ open, onOpenChange, offering }: ServiceOrde
       if (error) throw error;
 
       if (data?.url) {
-        window.open(data.url, "_blank");
-        onOpenChange(false);
         toast({
           title: "Redirecting to payment",
           description: "Complete your payment to confirm the order"
         });
+        window.location.href = data.url;
       }
     } catch (error: any) {
       console.error("Order error:", error);
@@ -149,7 +151,7 @@ export function ServiceOrderDialog({ open, onOpenChange, offering }: ServiceOrde
                 <span>€{totalAmountNum.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-muted-foreground">
-                <span>Platform Fee (15%):</span>
+                <span>Platform Fee ({ratePct}%):</span>
                 <span>-€{commissionAmount.toFixed(2)}</span>
               </div>
               <div className="flex justify-between font-medium pt-1 border-t">
