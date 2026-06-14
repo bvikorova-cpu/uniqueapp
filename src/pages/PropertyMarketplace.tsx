@@ -32,6 +32,7 @@ import { PropertyConversationsDialog } from "@/components/property/PropertyConve
 import { usePropertyUnread } from "@/hooks/usePropertyUnread";
 import { usePropertyExpiration } from "@/hooks/usePropertyExpiration";
 import { motion } from "framer-motion";
+import { useCommissionRate } from "@/hooks/useCommissionSettings";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ViewType = "hub" | "map" | "valuator" | "analytics" | "staging" | "mortgage" | "alerts" | "neighborhood" | "photos" | "compare" | "chatbot" | "documents" | "negotiate";
