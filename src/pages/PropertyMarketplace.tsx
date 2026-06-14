@@ -558,8 +558,8 @@ export default function PropertyMarketplace() {
             <CardContent>
               <div className="space-y-4">
                 <div className="p-4 bg-background/50 rounded-lg border border-border/30">
-                  <p className="text-2xl font-black text-green-500">1% Commission</p>
-                  <p className="text-sm text-muted-foreground mt-1">or minimum €500 per sale</p>
+                  <p className="text-2xl font-black text-green-500">{propertyCommission != null ? `${propertyCommission}% Commission` : "Loading…"}</p>
+                  <p className="text-sm text-muted-foreground mt-1">Charged only on successful sales</p>
                 </div>
                 <p className="text-sm">Only pay when your property sells successfully. No hidden fees, complete transparency.</p>
               </div>
