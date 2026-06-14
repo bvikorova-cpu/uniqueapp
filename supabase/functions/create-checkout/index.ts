@@ -1280,7 +1280,8 @@ serve(async (req) => {
           .single();
         if (itemError || !item) return errorResponse("Item not found", 404);
         if (!item.is_available) return errorResponse("Item no longer available", 400);
-        const platformCommission = Number((item.price * 0.15).toFixed(2));
+        const crystalFeePct = await getFeeRate("crystal");
+        const platformCommission = Number((item.price * crystalFeePct / 100).toFixed(2));
         const sellerAmount = Number((item.price - platformCommission).toFixed(2));
         const { data: order, error: orderError } = await admin
           .from("crystal_marketplace_orders")
