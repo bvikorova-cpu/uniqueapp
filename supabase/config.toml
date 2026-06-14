@@ -1,7 +1,5 @@
 project_id = "jufrdzeonywluwutvyxz"
 
-[functions.admin-privatize-buckets]
-verify_jwt = false
 
 
 [functions.stripe-webhook]
