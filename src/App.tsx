@@ -752,7 +752,7 @@ const App = () => {
                         <Route path="/education" element={<Education />} />
                         <Route path="/quiz/create" element={<QuizCreator />} />
                         <Route path="/quiz/:quizId" element={<QuizTaker />} />
-                        <Route path="/course/:courseName" element={<CourseDetail />} />
+                        <Route path="/legacy-course/:courseName" element={<CourseDetail />} />
                         <Route path="/quiz" element={<Quiz />} />
                         <Route path="/profile" element={<ProfileRedirect />} />
                         <Route path="/profile/:userId" element={<Profile />} />
@@ -865,7 +865,7 @@ const App = () => {
                         <Route path="/masterclass/:masterclassId" element={<MasterclassLearning />} />
                         <Route path="/interactive-workshops" element={<InteractiveWorkshops />} />
                         <Route path="/certification-programs" element={<CertificationPrograms />} />
-                        <Route path="/course/:certificationId" element={<CourseLearning />} />
+                        <Route path="/certification-learn/:certificationId" element={<CourseLearning />} />
                         <Route path="/language-learning" element={<LanguageLearning />} />
                         <Route path="/language/:contentId" element={<GenericLearning />} />
                         <Route path="/fitness-wellness" element={<FitnessWellness />} />

@@ -173,7 +173,7 @@ const CertificationPrograms = () => {
 
   const handleEnroll = async (certId: string, price: number, title: string) => {
     if (isPurchased(certId, "certification")) {
-      navigate(`/course/${certId}`);
+      navigate(`/certification-learn/${certId}`);
       return;
     }
 
