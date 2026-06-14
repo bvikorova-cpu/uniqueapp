@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getReadableUrl } from "@/lib/storageSigned";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -42,7 +43,7 @@ export const DamageDetection = ({ onBack }: Props) => {
       const fileName = `${user.id}/${Date.now()}.${fileExt}`;
       const { error: uploadError } = await supabase.storage.from('old-photos').upload(fileName, file);
       if (uploadError) throw uploadError;
-      const { data: { publicUrl } } = supabase.storage.from('old-photos').getPublicUrl(fileName);
+      const publicUrl = await getReadableUrl('old-photos', fileName);
 
       const { data, error } = await supabase.functions.invoke('photo-damage-detection', {
         body: { imageUrl: publicUrl }

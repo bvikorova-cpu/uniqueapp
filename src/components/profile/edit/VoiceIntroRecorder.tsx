@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { getReadableUrl } from "@/lib/storageSigned";
 import { Loader2, Mic, Pause, Play, Sparkles, Square, Trash2, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -71,7 +72,7 @@ export const VoiceIntroRecorder = ({ userId, audioUrl, transcript, onSaved, onRe
       const path = `${userId}/voice-intro-${Date.now()}.webm`;
       const { error } = await supabase.storage.from("voice-intros").upload(path, blob, { contentType: "audio/webm", upsert: true });
       if (error) throw error;
-      const { data: pub } = supabase.storage.from("voice-intros").getPublicUrl(path);
+      const pub = { publicUrl: await getReadableUrl("voice-intros", path) };
       const dur = Math.min(seconds || 30, MAX_SECONDS);
       await supabase.from("profile_voice_intros").upsert({
         user_id: userId, audio_url: pub.publicUrl, duration_seconds: dur, transcript: null,

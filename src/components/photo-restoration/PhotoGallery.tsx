@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { getReadableUrl } from "@/lib/storageSigned";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
@@ -57,7 +58,7 @@ export const PhotoGallery = ({ onBack }: Props) => {
         const ext = file.name.split('.').pop();
         const name = `gallery/${user.id}/${prefix}-${Date.now()}.${ext}`;
         await supabase.storage.from('old-photos').upload(name, file);
-        return supabase.storage.from('old-photos').getPublicUrl(name).data.publicUrl;
+        return (await getReadableUrl('old-photos', name));
       };
 
       const [beforeUrl, afterUrl] = await Promise.all([uploadFile(beforeFile, 'before'), uploadFile(afterFile, 'after')]);

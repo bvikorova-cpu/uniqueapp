@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getReadableUrl } from "@/lib/storageSigned";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -116,7 +117,7 @@ export function useSubmitGalleryItem() {
         .from("handwriting-gallery")
         .upload(path, vars.file);
       if (upErr) throw upErr;
-      const { data: pub } = supabase.storage.from("handwriting-gallery").getPublicUrl(path);
+      const pub = { publicUrl: await getReadableUrl("handwriting-gallery", path) };
       const { data: item, error } = await supabase
         .from("handwriting_gallery_items")
         .insert({

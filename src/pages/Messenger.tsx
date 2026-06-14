@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback, Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { getReadableUrl } from "@/lib/storageSigned";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -880,9 +881,7 @@ const Messenger = () => {
       return;
     }
 
-    const { data: urlData } = supabase.storage
-      .from('messenger-attachments')
-      .getPublicUrl(fileName);
+    const { data: urlData } = { data: { publicUrl: await getReadableUrl('messenger-attachments', fileName) } };
 
     const { error } = await supabase.from("messages").insert({
       conversation_id: selectedConversation,
@@ -924,9 +923,7 @@ const Messenger = () => {
       return;
     }
 
-    const { data: urlData } = supabase.storage
-      .from('messenger-attachments')
-      .getPublicUrl(fileName);
+    const { data: urlData } = { data: { publicUrl: await getReadableUrl('messenger-attachments', fileName) } };
 
     const { error } = await supabase.from("messages").insert({
       conversation_id: selectedConversation,

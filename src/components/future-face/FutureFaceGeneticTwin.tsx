@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { getReadableUrl } from "@/lib/storageSigned";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -28,7 +29,7 @@ export default function FutureFaceGeneticTwin() {
     const path = `${session.user.id}/twin-source-${Date.now()}.${ext}`;
     const { error } = await supabase.storage.from("future-face-photos").upload(path, file, { contentType: file.type });
     if (error) { toast({ title: "Upload failed", description: error.message, variant: "destructive" }); return; }
-    setSourceUrl(supabase.storage.from("future-face-photos").getPublicUrl(path).data.publicUrl);
+    setSourceUrl((await getReadableUrl("future-face-photos", path)));
     setResultUrl(null);
   };
 

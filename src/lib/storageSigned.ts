@@ -9,8 +9,37 @@ import { supabase } from "@/integrations/supabase/client";
 const PRIVATE_BUCKETS = new Set<string>([
   "video-resumes",
   "voice-memories",
+  "voice-intros",
   "anonymous-date-voice",
+  "messenger-attachments",
+  "handwriting-capsule",
+  "handwriting-gallery",
+  "old-photos",
+  "future-face-photos",
+  "ancestor-twin-photos",
 ]);
+
+/** True if a bucket has been flipped to private. */
+export const isPrivateBucket = (bucket: string) => PRIVATE_BUCKETS.has(bucket);
+
+/**
+ * Returns a readable URL for an uploaded object:
+ * - private bucket → signed URL (TTL configurable, default 2h)
+ * - public bucket → permanent public URL
+ * Use this immediately after `supabase.storage.from(b).upload(path, file)`.
+ */
+export async function getReadableUrl(
+  bucket: string,
+  path: string,
+  expiresInSec = 7200,
+): Promise<string> {
+  if (PRIVATE_BUCKETS.has(bucket)) {
+    const url = await signedUrl(bucket, path, expiresInSec);
+    if (!url) throw new Error(`Failed to sign URL for ${bucket}/${path}`);
+    return url;
+  }
+  return supabase.storage.from(bucket).getPublicUrl(path).data.publicUrl;
+}
 
 const SIGNED_TTL_SEC = 3600; // 1h
 const cache = new Map<string, { url: string; exp: number }>();
