@@ -158,24 +158,19 @@ const AntiqueAppraisal = () => {
           autoPlay muted loop playsInline
           className="absolute inset-0 w-full h-full object-cover brightness-[1.3] saturate-[1.2]"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30" />
 
         <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-8">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, type: "spring" }}>
-            <p className="text-xs sm:text-sm font-semibold tracking-wider uppercase drop-shadow-md"
-              style={{ color: "#00e5ff", textShadow: "0 0 20px rgba(0,229,255,0.6)" }}>
+            <p className="text-xs sm:text-sm font-semibold tracking-wider uppercase text-cyan-300 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
               🏺 AI-Powered Antique Hub
             </p>
-            <h1 className="text-4xl sm:text-6xl md:text-7xl font-black mt-1 drop-shadow-lg"
-              style={{
-                textShadow: "0 0 80px rgba(0,229,255,0.6), 0 4px 30px rgba(0,0,0,0.9), 0 0 120px rgba(0,229,255,0.3)",
-                WebkitTextStroke: "2px rgba(0,229,255,0.6)"
-              }}>
-              <span className="bg-gradient-to-r from-cyan-300 via-teal-400 to-emerald-400 bg-clip-text text-transparent">
+            <h1 className="text-4xl sm:text-6xl md:text-7xl font-black mt-1">
+              <span className="bg-gradient-to-r from-cyan-200 via-teal-300 to-emerald-300 bg-clip-text text-transparent drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)]">
                 Antique Appraisal
               </span>
             </h1>
-            <p className="text-sm sm:text-lg text-white/80 mt-2 max-w-xl drop-shadow-md">
+            <p className="text-sm sm:text-lg text-white mt-2 max-w-xl drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
               AI identification, valuation, authenticity & provenance tracking
             </p>
           </motion.div>
