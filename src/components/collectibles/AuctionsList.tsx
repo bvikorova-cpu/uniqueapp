@@ -73,19 +73,30 @@ export default function AuctionsList({ userId }: AuctionsListProps) {
       return;
     }
 
+    const startPrice = parseInt(newAuction.startingPrice, 10);
+    if (!Number.isFinite(startPrice) || startPrice <= 0 || startPrice > 100_000_000) {
+      toast.error("Invalid starting price");
+      return;
+    }
+    const buyout = newAuction.buyoutPrice ? parseInt(newAuction.buyoutPrice, 10) : null;
+    if (buyout !== null && (!Number.isFinite(buyout) || buyout <= startPrice)) {
+      toast.error("Buyout must be higher than starting price");
+      return;
+    }
+
     setIsCreating(true);
     try {
       const expiresAt = new Date();
-      expiresAt.setHours(expiresAt.getHours() + parseInt(newAuction.duration));
+      expiresAt.setHours(expiresAt.getHours() + parseInt(newAuction.duration, 10));
 
       const { error } = await supabase
         .from('collectible_auctions')
         .insert({
           seller_id: userId,
           user_collectible_id: newAuction.collectibleId,
-          starting_price: parseInt(newAuction.startingPrice),
-          current_price: parseInt(newAuction.startingPrice),
-          buyout_price: newAuction.buyoutPrice ? parseInt(newAuction.buyoutPrice) : null,
+          starting_price: startPrice,
+          current_price: startPrice,
+          buyout_price: buyout,
           status: 'active',
           expires_at: expiresAt.toISOString()
         });
