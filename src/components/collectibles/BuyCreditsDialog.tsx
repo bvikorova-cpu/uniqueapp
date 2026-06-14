@@ -81,14 +81,12 @@ export default function BuyCreditsDialog({ open, onOpenChange }: BuyCreditsDialo
       if (data?.url) {
         toast({
           title: "Redirecting to Stripe",
-          description: "Payment window will open in a new tab...",
+          description: "Opening secure checkout...",
         });
-        
-        setTimeout(() => {
-          window.open(data.url, '_blank');
-          setLoading(null);
-        }, 500);
+        window.location.href = data.url;
+        return;
       }
+      setLoading(null);
       
     } catch (error: any) {
       console.error('Purchase error:', error);

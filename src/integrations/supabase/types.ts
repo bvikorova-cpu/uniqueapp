@@ -63748,6 +63748,13 @@ export type Database = {
         Args: { _cost_xp: number; _qty: number }
         Returns: Json
       }
+      buyout_collectible_auction: {
+        Args: { p_auction_id: string }
+        Returns: {
+          reason: string
+          success: boolean
+        }[]
+      }
       cache_get: { Args: { p_key: string }; Returns: Json }
       cache_invalidate_by_tag: { Args: { p_tag: string }; Returns: number }
       cache_set: {
@@ -65020,6 +65027,14 @@ export type Database = {
       place_auction_bid: {
         Args: { p_amount: number; p_auction_id: string }
         Returns: Json
+      }
+      place_collectible_bid: {
+        Args: { p_auction_id: string; p_bid: number }
+        Returns: {
+          new_price: number
+          reason: string
+          success: boolean
+        }[]
       }
       place_iq_match_bet: {
         Args: {

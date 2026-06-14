@@ -19,6 +19,8 @@ export default function AuctionsList({ userId }: AuctionsListProps) {
   const [userCollectibles, setUserCollectibles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [bidAmount, setBidAmount] = useState<{ [key: string]: string }>({});
+  const [biddingId, setBiddingId] = useState<string | null>(null);
+  const [buyingOutId, setBuyingOutId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [newAuction, setNewAuction] = useState({
     collectibleId: "",
@@ -71,19 +73,30 @@ export default function AuctionsList({ userId }: AuctionsListProps) {
       return;
     }
 
+    const startPrice = parseInt(newAuction.startingPrice, 10);
+    if (!Number.isFinite(startPrice) || startPrice <= 0 || startPrice > 100_000_000) {
+      toast.error("Invalid starting price");
+      return;
+    }
+    const buyout = newAuction.buyoutPrice ? parseInt(newAuction.buyoutPrice, 10) : null;
+    if (buyout !== null && (!Number.isFinite(buyout) || buyout <= startPrice)) {
+      toast.error("Buyout must be higher than starting price");
+      return;
+    }
+
     setIsCreating(true);
     try {
       const expiresAt = new Date();
-      expiresAt.setHours(expiresAt.getHours() + parseInt(newAuction.duration));
+      expiresAt.setHours(expiresAt.getHours() + parseInt(newAuction.duration, 10));
 
       const { error } = await supabase
         .from('collectible_auctions')
         .insert({
           seller_id: userId,
           user_collectible_id: newAuction.collectibleId,
-          starting_price: parseInt(newAuction.startingPrice),
-          current_price: parseInt(newAuction.startingPrice),
-          buyout_price: newAuction.buyoutPrice ? parseInt(newAuction.buyoutPrice) : null,
+          starting_price: startPrice,
+          current_price: startPrice,
+          buyout_price: buyout,
           status: 'active',
           expires_at: expiresAt.toISOString()
         });
@@ -103,53 +116,72 @@ export default function AuctionsList({ userId }: AuctionsListProps) {
   };
 
   const handlePlaceBid = async (auctionId: string) => {
-    const amount = bidAmount[auctionId];
-    if (!amount) {
-      toast.error("Please enter a bid amount");
+    if (biddingId) return;
+    const amount = parseInt(bidAmount[auctionId] || "", 10);
+    if (!Number.isFinite(amount) || amount <= 0 || amount > 100_000_000) {
+      toast.error("Enter a valid bid amount");
       return;
     }
-
+    setBiddingId(auctionId);
     try {
-      const auction = auctions.find(a => a.id === auctionId);
-      if (parseInt(amount) <= auction.current_price) {
-        toast.error("Bid must be higher than current price");
+      const { data, error } = await supabase.rpc('place_collectible_bid', {
+        p_auction_id: auctionId,
+        p_bid: amount,
+      });
+      if (error) throw error;
+      const row = Array.isArray(data) ? data[0] : data;
+      if (!row?.success) {
+        const reasonMap: Record<string, string> = {
+          not_authenticated: "You must be signed in",
+          not_found: "Auction not found",
+          not_active: "Auction is no longer active",
+          expired: "Auction has expired",
+          own_auction: "You cannot bid on your own auction",
+          bid_too_low: "Bid must be higher than current price",
+          invalid_bid: "Invalid bid amount",
+        };
+        toast.error(reasonMap[row?.reason] || "Failed to place bid");
         return;
       }
-
-      // Update auction price
-      const { error: updateError } = await supabase
-        .from('collectible_auctions')
-        .update({ current_price: parseInt(amount) })
-        .eq('id', auctionId);
-
-      if (updateError) throw updateError;
-
       toast.success("Bid placed successfully!");
       setBidAmount({ ...bidAmount, [auctionId]: "" });
       fetchAuctions();
     } catch (error) {
       console.error('Error placing bid:', error);
       toast.error("Failed to place bid");
+    } finally {
+      setBiddingId(null);
     }
   };
 
-  const handleBuyout = async (auctionId: string, buyoutPrice: number) => {
+  const handleBuyout = async (auctionId: string) => {
+    if (buyingOutId) return;
+    setBuyingOutId(auctionId);
     try {
-      const { error } = await supabase
-        .from('collectible_auctions')
-        .update({ 
-          status: 'sold',
-          current_price: buyoutPrice
-        })
-        .eq('id', auctionId);
-
+      const { data, error } = await supabase.rpc('buyout_collectible_auction', {
+        p_auction_id: auctionId,
+      });
       if (error) throw error;
-
+      const row = Array.isArray(data) ? data[0] : data;
+      if (!row?.success) {
+        const reasonMap: Record<string, string> = {
+          not_authenticated: "You must be signed in",
+          not_found: "Auction not found",
+          not_active: "Auction is no longer active",
+          expired: "Auction has expired",
+          own_auction: "You cannot buy your own auction",
+          no_buyout: "This auction has no buyout option",
+        };
+        toast.error(reasonMap[row?.reason] || "Failed to purchase item");
+        return;
+      }
       toast.success("Item purchased successfully!");
       fetchAuctions();
     } catch (error) {
       console.error('Error buying out:', error);
       toast.error("Failed to purchase item");
+    } finally {
+      setBuyingOutId(null);
     }
   };
 
@@ -304,8 +336,13 @@ export default function AuctionsList({ userId }: AuctionsListProps) {
                         placeholder="Your bid"
                         value={bidAmount[auction.id] || ""}
                         onChange={(e) => setBidAmount({ ...bidAmount, [auction.id]: e.target.value })}
+                        disabled={biddingId === auction.id}
                       />
-                      <Button onClick={() => handlePlaceBid(auction.id)} size="sm">
+                      <Button
+                        onClick={() => handlePlaceBid(auction.id)}
+                        size="sm"
+                        disabled={biddingId === auction.id}
+                      >
                         <TrendingUp className="h-4 w-4" />
                       </Button>
                     </div>
@@ -314,9 +351,10 @@ export default function AuctionsList({ userId }: AuctionsListProps) {
                       <Button 
                         variant="outline" 
                         className="w-full"
-                        onClick={() => handleBuyout(auction.id, auction.buyout_price)}
+                        onClick={() => handleBuyout(auction.id)}
+                        disabled={buyingOutId === auction.id}
                       >
-                        Buy Now - {auction.buyout_price} coins
+                        {buyingOutId === auction.id ? "Processing..." : `Buy Now - ${auction.buyout_price} coins`}
                       </Button>
                     )}
                   </>

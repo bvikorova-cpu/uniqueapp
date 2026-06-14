@@ -24,6 +24,8 @@ export default function BrowseListings({ userId }: BrowseListingsProps) {
   const [selectedListing, setSelectedListing] = useState<any>(null);
   const [showOfferDialog, setShowOfferDialog] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [buyingId, setBuyingId] = useState<string | null>(null);
+  const [sendingOffer, setSendingOffer] = useState(false);
   const [newListing, setNewListing] = useState({
     collectibleId: "",
     listingType: "sale",
@@ -133,23 +135,26 @@ export default function BrowseListings({ userId }: BrowseListingsProps) {
       toast.error("This listing is only for trade");
       return;
     }
-
+    if (listing.user_id === userId) {
+      toast.error("You cannot buy your own listing");
+      return;
+    }
+    if (buyingId) return;
+    setBuyingId(listing.id);
     try {
-      // Check if user has enough credits
       const { data: creditsData, error: creditsError } = await supabase
         .from('ai_credits')
         .select('credits_remaining')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
       if (creditsError) throw creditsError;
 
-      if (creditsData.credits_remaining < listing.price_credits) {
+      if (!creditsData || creditsData.credits_remaining < listing.price_credits) {
         toast.error("Not enough credits");
         return;
       }
 
-      // Create a direct purchase trade
       const { error: tradeError } = await supabase
         .from('collectible_trades')
         .insert({
@@ -168,15 +173,29 @@ export default function BrowseListings({ userId }: BrowseListingsProps) {
     } catch (error) {
       console.error('Error buying:', error);
       toast.error("Failed to buy");
+    } finally {
+      setBuyingId(null);
     }
   };
 
   const handleMakeOffer = async () => {
-    if (!offer.offeredCollectibleId && !offer.offeredCredits) {
+    if (!selectedListing) return;
+    if (selectedListing.user_id === userId) {
+      toast.error("You cannot make an offer on your own listing");
+      return;
+    }
+    const offeredCreditsNum = offer.offeredCredits ? parseInt(offer.offeredCredits, 10) : null;
+    if (!offer.offeredCollectibleId && !offeredCreditsNum) {
       toast.error("Please offer something");
       return;
     }
-
+    if (offeredCreditsNum !== null && (!Number.isFinite(offeredCreditsNum) || offeredCreditsNum <= 0 || offeredCreditsNum > 100_000_000)) {
+      toast.error("Invalid credit amount");
+      return;
+    }
+    const message = (offer.message || "").trim().slice(0, 1000);
+    if (sendingOffer) return;
+    setSendingOffer(true);
     try {
       const { error } = await supabase
         .from('collectible_trades')
@@ -184,9 +203,9 @@ export default function BrowseListings({ userId }: BrowseListingsProps) {
           sender_id: userId,
           receiver_id: selectedListing.user_id,
           offered_badge_id: offer.offeredCollectibleId || null,
-          offered_credits: offer.offeredCredits ? parseInt(offer.offeredCredits) : null,
+          offered_credits: offeredCreditsNum,
           requested_badge_id: selectedListing.user_collectible_id,
-          message: offer.message || `Trade offer for your marketplace listing`,
+          message: message || `Trade offer for your marketplace listing`,
           status: 'pending'
         });
 
@@ -199,6 +218,8 @@ export default function BrowseListings({ userId }: BrowseListingsProps) {
     } catch (error) {
       console.error('Error making offer:', error);
       toast.error("Failed to send offer");
+    } finally {
+      setSendingOffer(false);
     }
   };
 
@@ -310,9 +331,10 @@ export default function BrowseListings({ userId }: BrowseListingsProps) {
                               <Button 
                                 className="flex-1"
                                 onClick={() => handleBuyDirect(selectedListing)}
+                                disabled={buyingId === selectedListing?.id}
                               >
                                 <ShoppingBag className="mr-2 h-4 w-4" />
-                                Buy Now
+                                {buyingId === selectedListing?.id ? "Processing..." : "Buy Now"}
                               </Button>
                             )}
                             {(selectedListing.listing_type === 'trade' || selectedListing.listing_type === 'both') && (
@@ -363,12 +385,13 @@ export default function BrowseListings({ userId }: BrowseListingsProps) {
                                       <Textarea
                                         placeholder="Add a message to your offer..."
                                         value={offer.message}
-                                        onChange={(e) => setOffer({ ...offer, message: e.target.value })}
+                                        onChange={(e) => setOffer({ ...offer, message: e.target.value.slice(0, 1000) })}
+                                        maxLength={1000}
                                       />
                                     </div>
 
-                                    <Button className="w-full" onClick={handleMakeOffer}>
-                                      Send Offer
+                                    <Button className="w-full" onClick={handleMakeOffer} disabled={sendingOffer}>
+                                      {sendingOffer ? "Sending..." : "Send Offer"}
                                     </Button>
                                   </div>
                                 </DialogContent>
