@@ -336,8 +336,13 @@ export default function AuctionsList({ userId }: AuctionsListProps) {
                         placeholder="Your bid"
                         value={bidAmount[auction.id] || ""}
                         onChange={(e) => setBidAmount({ ...bidAmount, [auction.id]: e.target.value })}
+                        disabled={biddingId === auction.id}
                       />
-                      <Button onClick={() => handlePlaceBid(auction.id)} size="sm">
+                      <Button
+                        onClick={() => handlePlaceBid(auction.id)}
+                        size="sm"
+                        disabled={biddingId === auction.id}
+                      >
                         <TrendingUp className="h-4 w-4" />
                       </Button>
                     </div>
@@ -346,9 +351,10 @@ export default function AuctionsList({ userId }: AuctionsListProps) {
                       <Button 
                         variant="outline" 
                         className="w-full"
-                        onClick={() => handleBuyout(auction.id, auction.buyout_price)}
+                        onClick={() => handleBuyout(auction.id)}
+                        disabled={buyingOutId === auction.id}
                       >
-                        Buy Now - {auction.buyout_price} coins
+                        {buyingOutId === auction.id ? "Processing..." : `Buy Now - ${auction.buyout_price} coins`}
                       </Button>
                     )}
                   </>
