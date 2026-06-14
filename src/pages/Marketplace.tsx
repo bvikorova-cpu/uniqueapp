@@ -578,7 +578,9 @@ const Marketplace = () => {
                 </ul>
                 <div className="text-center pt-4">
                   <p className="text-4xl font-bold text-primary mb-4">€2<span className="text-lg font-normal text-muted-foreground">/month</span></p>
-                  <Button onClick={handleSubscribe} size="lg" className="w-full">Activate Subscription</Button>
+                  <Button onClick={handleSubscribe} size="lg" className="w-full" disabled={isSubscribing}>
+                    {isSubscribing ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Activating...</> : "Activate Subscription"}
+                  </Button>
                   <p className="text-xs text-muted-foreground mt-3">Cancel anytime • Secure payment via Stripe</p>
                 </div>
               </CardContent>
