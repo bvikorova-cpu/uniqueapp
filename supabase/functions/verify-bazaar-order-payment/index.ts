@@ -62,6 +62,47 @@ serve(async (req) => {
 
     // Idempotent: only update once
     if (order.status === "pending") {
+      // RACE-CONDITION GUARD: only mark the item sold if it is still available.
+      // If another buyer's checkout completed first, this returns 0 rows → refund the current buyer.
+      const { data: claimed, error: claimErr } = await admin
+        .from("bazaar_items")
+        .update({ is_sold: true })
+        .eq("id", order.item_id)
+        .eq("is_sold", false)
+        .select("id")
+        .maybeSingle();
+
+      if (claimErr) {
+        console.error("[verify-bazaar-order-payment] claim error", claimErr);
+        return json({ verified: false, error: "Claim failed" }, 500);
+      }
+
+      if (!claimed) {
+        // Item was already sold by a parallel purchase → cancel order and refund this buyer.
+        await admin
+          .from("bazaar_orders")
+          .update({
+            status: "refunded_unavailable",
+            stripe_session_id: sessionId,
+          })
+          .eq("id", orderId);
+        try {
+          const pi = typeof session.payment_intent === "string"
+            ? session.payment_intent
+            : session.payment_intent?.id;
+          if (pi) {
+            await stripe.refunds.create({ payment_intent: pi, reason: "duplicate" });
+          }
+        } catch (refundErr) {
+          console.error("[verify-bazaar-order-payment] refund failed", refundErr);
+        }
+        return json({
+          verified: false,
+          refunded: true,
+          error: "Item was already sold to another buyer — payment has been refunded.",
+        }, 409);
+      }
+
       await admin
         .from("bazaar_orders")
         .update({
@@ -71,12 +112,6 @@ serve(async (req) => {
           escrow_status: "held",
         })
         .eq("id", orderId);
-
-      // Mark item sold
-      await admin
-        .from("bazaar_items")
-        .update({ is_sold: true })
-        .eq("id", order.item_id);
 
       // Create escrow hold (idempotent guard via try/catch)
       try {
