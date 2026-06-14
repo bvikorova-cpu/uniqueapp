@@ -25,6 +25,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { SellerConnectGate } from "@/components/commerce/SellerConnectGate";
 
 interface CrystalItem {
   id: string;
