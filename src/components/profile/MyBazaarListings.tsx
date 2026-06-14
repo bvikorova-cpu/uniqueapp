@@ -51,6 +51,9 @@ export const MyBazaarListings = ({ userId, isOwnProfile }: MyBazaarListingsProps
   };
 
   const handleDelete = async (itemId: string) => {
+    if (deletingId) return;
+    if (!confirm("Delete this listing? This cannot be undone.")) return;
+    setDeletingId(itemId);
     try {
       const { error } = await supabase
         .from("bazaar_items")
@@ -62,6 +65,8 @@ export const MyBazaarListings = ({ userId, isOwnProfile }: MyBazaarListingsProps
       loadItems();
     } catch (error) {
       toast.error("Failed to delete item");
+    } finally {
+      setDeletingId(null);
     }
   };
 
