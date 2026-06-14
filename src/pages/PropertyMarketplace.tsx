@@ -144,12 +144,13 @@ export default function PropertyMarketplace() {
   };
 
   const handleViewProperty = async (id: string) => {
+    if (!id) return;
     const { data, error } = await supabase
       .from('properties')
       .select(`*, property_images (image_url, is_primary), property_videos (video_url)`)
       .eq('id', id)
-      .single();
-    if (error) { toast({ title: "Error", description: "Failed to load property details", variant: "destructive" }); return; }
+      .maybeSingle();
+    if (error || !data) { toast({ title: "Error", description: "Failed to load property details", variant: "destructive" }); return; }
     setSelectedProperty(data);
     setShowDetailDialog(true);
   };
