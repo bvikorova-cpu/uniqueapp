@@ -342,19 +342,26 @@ const Marketplace = () => {
   const handleCreateOffering = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) { toast({ title: "Login Required", description: "You must log in to create an offer", variant: "destructive" }); return; }
+    if (isUploading) return;
     setIsUploading(true);
-    let imageUrl: string | null = null;
-    if (imageFile) imageUrl = await uploadImage();
-    const { error } = await supabase.from("skill_offerings").insert([{
-      user_id: user.id, title: formData.title, description: formData.description,
-      category: formData.category as any, price_per_hour: formData.price_per_hour ? parseFloat(formData.price_per_hour) : null,
-      location: formData.location || null, image_url: imageUrl
-    }]);
-    setIsUploading(false);
-    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
-    toast({ title: "Success!", description: "Your offer has been created" });
-    setFormData({ title: "", description: "", category: "", price_per_hour: "", location: "" });
-    setImageFile(null); setImagePreview(null); setShowCreateForm(false); loadOfferings();
+    try {
+      let imageUrl: string | null = null;
+      if (imageFile) imageUrl = await uploadImage();
+      const { error } = await supabase.from("skill_offerings").insert([{
+        user_id: user.id, title: formData.title, description: formData.description,
+        category: formData.category as any, price_per_hour: formData.price_per_hour ? parseFloat(formData.price_per_hour) : null,
+        location: formData.location || null, image_url: imageUrl
+      }]);
+      if (error) throw error;
+      toast({ title: "Success!", description: "Your offer has been created" });
+      setFormData({ title: "", description: "", category: "", price_per_hour: "", location: "" });
+      setImageFile(null); setImagePreview(null); setShowCreateForm(false);
+      await loadOfferings(0, true);
+    } catch (err: any) {
+      toast({ title: "Error", description: err?.message || "Failed to create offer", variant: "destructive" });
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   // View routing for AI tools
