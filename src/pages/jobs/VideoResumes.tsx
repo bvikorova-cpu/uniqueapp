@@ -7,8 +7,29 @@ import { Switch } from "@/components/ui/switch";
 import { Video, Upload, Loader2, Trash2, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { useResolvedStorageUrl } from "@/lib/storageSigned";
 
 interface VR { id: string; user_id: string; video_url: string; thumbnail_url: string | null; title: string | null; duration_seconds: number | null; is_public: boolean; created_at: string; }
+
+function VideoResumeCard({ v, onToggle, onRemove }: { v: VR; onToggle: (v: VR) => void; onRemove: (v: VR) => void }) {
+  const src = useResolvedStorageUrl(v.video_url);
+  return (
+    <Card><CardContent className="p-3 space-y-2">
+      {src ? <video src={src} controls className="w-full rounded-md aspect-video bg-black" /> : <div className="w-full aspect-video rounded-md bg-muted animate-pulse" />}
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-sm font-bold truncate">{v.title}</p>
+        <span className="text-[10px] px-2 py-0.5 rounded-full bg-muted">{v.is_public ? "Public" : "Private"}</span>
+      </div>
+      <div className="flex gap-2">
+        <Button size="sm" variant="outline" className="flex-1" onClick={() => onToggle(v)}>
+          {v.is_public ? <EyeOff className="h-3 w-3 mr-1" /> : <Eye className="h-3 w-3 mr-1" />}
+          {v.is_public ? "Unpublish" : "Publish"}
+        </Button>
+        <Button size="sm" variant="destructive" onClick={() => onRemove(v)}><Trash2 className="h-3 w-3" /></Button>
+      </div>
+    </CardContent></Card>
+  );
+}
 
 export default function VideoResumes() {
   const [items, setItems] = useState<VR[]>([]);
@@ -83,20 +104,7 @@ export default function VideoResumes() {
 
       <div className="grid sm:grid-cols-2 gap-3">
         {items.map(v => (
-          <Card key={v.id}><CardContent className="p-3 space-y-2">
-            <video src={v.video_url} controls className="w-full rounded-md aspect-video bg-black" />
-            <div className="flex items-center justify-between gap-2">
-              <p className="text-sm font-bold truncate">{v.title}</p>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-muted">{v.is_public ? "Public" : "Private"}</span>
-            </div>
-            <div className="flex gap-2">
-              <Button size="sm" variant="outline" className="flex-1" onClick={() => togglePublic(v)}>
-                {v.is_public ? <EyeOff className="h-3 w-3 mr-1" /> : <Eye className="h-3 w-3 mr-1" />}
-                {v.is_public ? "Unpublish" : "Publish"}
-              </Button>
-              <Button size="sm" variant="destructive" onClick={() => remove(v)}><Trash2 className="h-3 w-3" /></Button>
-            </div>
-          </CardContent></Card>
+          <VideoResumeCard key={v.id} v={v} onToggle={togglePublic} onRemove={remove} />
         ))}
         {items.length === 0 && <p className="text-sm text-muted-foreground col-span-2 text-center py-8">No videos yet. Upload your first pitch above.</p>}
       </div>
