@@ -39,7 +39,9 @@ export const SkillSwapMessages = () => {
   const [newMessage, setNewMessage] = useState("");
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [sending, setSending] = useState(false);
   const [showReviewDialog, setShowReviewDialog] = useState(false);
+  const [userNames, setUserNames] = useState<Record<string, string>>({});
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { getCurrentUser(); }, []);
@@ -73,11 +75,26 @@ export const SkillSwapMessages = () => {
         .or(`user1_id.eq.${currentUserId},user2_id.eq.${currentUserId}`)
         .order('last_message_at', { ascending: false });
       if (error) throw error;
-      setConversations((data || []).map(conv => ({
+      const mapped = (data || []).map(conv => ({
         ...conv,
         other_user_id: conv.user1_id === currentUserId ? conv.user2_id : conv.user1_id,
         offering_title: conv.skill_offerings?.title,
-      })) as any);
+      })) as Conversation[];
+      setConversations(mapped);
+
+      const otherIds = Array.from(new Set(mapped.map(c => c.other_user_id).filter(Boolean) as string[]));
+      const missing = otherIds.filter(id => !userNames[id]);
+      if (missing.length > 0) {
+        const { data: profs } = await (supabase as any)
+          .from('profiles_public').select('id, full_name').in('id', missing);
+        if (profs?.length) {
+          setUserNames(prev => {
+            const next = { ...prev };
+            for (const p of profs as any[]) next[p.id] = p.full_name || 'User';
+            return next;
+          });
+        }
+      }
     } catch (error) { console.error('Error loading conversations:', error); }
     finally { setLoading(false); }
   };
@@ -105,17 +122,21 @@ export const SkillSwapMessages = () => {
   };
 
   const sendMessage = async () => {
-    if (!newMessage.trim() || !selectedConversation || !currentUserId) return;
+    const trimmed = newMessage.trim();
+    if (!trimmed || !selectedConversation || !currentUserId || sending) return;
+    if (trimmed.length > 2000) { toast.error("Message too long (max 2000 chars)"); return; }
     const conv = conversations.find(c => c.id === selectedConversation);
-    if (!conv) return;
+    if (!conv?.other_user_id) return;
+    setSending(true);
     try {
       const { error } = await supabase.from('skill_swap_messages').insert([{
-        sender_id: currentUserId, receiver_id: conv.other_user_id, message: newMessage, offering_id: conv.offering_id,
+        sender_id: currentUserId, receiver_id: conv.other_user_id, message: trimmed, offering_id: conv.offering_id,
       }]);
       if (error) throw error;
       await supabase.from('skill_swap_conversations').update({ last_message_at: new Date().toISOString() }).eq('id', selectedConversation);
       setNewMessage(""); loadMessages(); loadConversations();
     } catch (error) { console.error('Error sending message:', error); toast.error("Failed to send message"); }
+    finally { setSending(false); }
   };
 
   const handleCompleteExchange = async () => {
@@ -151,7 +172,9 @@ export const SkillSwapMessages = () => {
               <p className="text-xs text-muted-foreground text-center py-8">No conversations yet. Start by requesting an exchange!</p>
             ) : (
               <div className="space-y-2">
-                {conversations.map((conv) => (
+                {conversations.map((conv) => {
+                  const name = (conv.other_user_id && userNames[conv.other_user_id]) || 'User';
+                  return (
                   <Card key={conv.id}
                     className={`p-3 cursor-pointer transition-all border-border/30 hover:border-primary/30 ${
                       selectedConversation === conv.id ? 'bg-primary/10 border-primary/30' : 'bg-muted/10 hover:bg-muted/20'
@@ -159,16 +182,17 @@ export const SkillSwapMessages = () => {
                     onClick={() => setSelectedConversation(conv.id)}>
                     <div className="flex items-start gap-3">
                       <Avatar className="w-9 h-9">
-                        <AvatarFallback className="text-xs bg-primary/10 text-primary">U</AvatarFallback>
+                        <AvatarFallback className="text-xs bg-primary/10 text-primary">{name.charAt(0).toUpperCase()}</AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-xs truncate">User</p>
+                        <p className="font-medium text-xs truncate">{name}</p>
                         {conv.offering_title && <p className="text-[10px] text-muted-foreground truncate">{conv.offering_title}</p>}
                         <p className="text-[10px] text-muted-foreground">{formatDistanceToNow(new Date(conv.last_message_at), { addSuffix: true })}</p>
                       </div>
                     </div>
                   </Card>
-                ))}
+                  );
+                })}
               </div>
             )}
           </ScrollArea>
@@ -176,43 +200,47 @@ export const SkillSwapMessages = () => {
 
         {/* Messages Area */}
         <Card className={`md:col-span-2 flex flex-col bg-card/80 backdrop-blur-xl border-border/50 ${!selectedConversation ? 'hidden md:flex' : ''}`}>
-          {selectedConversation ? (
+          {selectedConversation ? (() => {
+            const activeConv = conversations.find(c => c.id === selectedConversation);
+            const otherId = activeConv?.other_user_id || "";
+            const otherName = (otherId && userNames[otherId]) || 'User';
+            return (
             <>
               <div className="p-4 border-b border-border/30 flex items-center gap-3">
                 <Button variant="ghost" size="icon" className="md:hidden h-8 w-8" onClick={() => setSelectedConversation(null)}>
                   <ArrowLeft className="w-4 h-4" />
                 </Button>
                 <Avatar className="w-9 h-9">
-                  <AvatarFallback className="text-xs bg-primary/10 text-primary">U</AvatarFallback>
+                  <AvatarFallback className="text-xs bg-primary/10 text-primary">{otherName.charAt(0).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
-                  <p className="font-bold text-sm">User</p>
-                  {conversations.find(c => c.id === selectedConversation)?.offering_title && (
-                    <p className="text-[10px] text-muted-foreground">{conversations.find(c => c.id === selectedConversation)?.offering_title}</p>
+                  <p className="font-bold text-sm">{otherName}</p>
+                  {activeConv?.offering_title && (
+                    <p className="text-[10px] text-muted-foreground">{activeConv.offering_title}</p>
                   )}
-                  {conversations.find(c => c.id === selectedConversation)?.status === 'completed' && (
+                  {activeConv?.status === 'completed' && (
                     <div className="flex items-center gap-1 text-[10px] text-emerald-500"><CheckCircle className="w-3 h-3" /><span>Completed</span></div>
                   )}
                 </div>
                 <div className="flex items-center gap-2">
-                  {conversations.find(c => c.id === selectedConversation)?.status === 'active' && (
+                  {activeConv?.status === 'active' && (
                     <Button onClick={handleCompleteExchange} size="sm" variant="outline" className="text-xs h-7">Mark Complete</Button>
                   )}
                   {currentUserId && (
                     <VideoCall
                       conversationId={selectedConversation} userId={currentUserId}
-                      otherUserId={conversations.find(c => c.id === selectedConversation)?.other_user_id || ""}
-                      otherUserName="User"
+                      otherUserId={otherId}
+                      otherUserName={otherName}
                     />
                   )}
                 </div>
               </div>
 
-              {showReviewDialog && selectedConversation && (
+              {showReviewDialog && (
                 <ReviewDialog open={showReviewDialog} onOpenChange={setShowReviewDialog}
                   conversationId={selectedConversation}
-                  reviewedUserId={conversations.find(c => c.id === selectedConversation)?.other_user_id || ""}
-                  reviewedUserName="User" onReviewSubmitted={() => { toast.success("Thank you for your review!"); loadConversations(); }}
+                  reviewedUserId={otherId}
+                  reviewedUserName={otherName} onReviewSubmitted={() => { toast.success("Thank you for your review!"); loadConversations(); }}
                 />
               )}
 
@@ -223,7 +251,7 @@ export const SkillSwapMessages = () => {
                       <div className={`max-w-[70%] rounded-xl p-3 ${
                         msg.sender_id === currentUserId ? 'bg-primary text-primary-foreground' : 'bg-muted/30 border border-border/30'
                       }`}>
-                        <p className="text-sm">{msg.message}</p>
+                        <p className="text-sm whitespace-pre-wrap break-words">{msg.message}</p>
                         <p className="text-[10px] opacity-70 mt-1">{formatDistanceToNow(new Date(msg.created_at), { addSuffix: true })}</p>
                       </div>
                     </div>
@@ -234,13 +262,15 @@ export const SkillSwapMessages = () => {
 
               <div className="p-4 border-t border-border/30">
                 <div className="flex gap-2">
-                  <Input value={newMessage} onChange={(e) => setNewMessage(e.target.value)} placeholder="Type a message..."
-                    onKeyPress={(e) => e.key === 'Enter' && sendMessage()} className="bg-muted/10 border-border/50" />
-                  <Button onClick={sendMessage} size="icon" className="flex-shrink-0"><Send className="w-4 h-4" /></Button>
+                  <Input value={newMessage} onChange={(e) => setNewMessage(e.target.value)} placeholder="Type a message..." maxLength={2000}
+                    disabled={sending}
+                    onKeyPress={(e) => e.key === 'Enter' && !sending && sendMessage()} className="bg-muted/10 border-border/50" />
+                  <Button onClick={sendMessage} disabled={sending || !newMessage.trim()} size="icon" className="flex-shrink-0"><Send className="w-4 h-4" /></Button>
                 </div>
               </div>
             </>
-          ) : (
+            );
+          })() : (
             <div className="hidden md:flex items-center justify-center h-full text-muted-foreground">
               <div className="text-center">
                 <MessageCircle className="w-12 h-12 mx-auto mb-4 opacity-30" />

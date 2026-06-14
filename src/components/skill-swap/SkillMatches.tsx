@@ -30,6 +30,7 @@ export const SkillMatches = () => {
   const [matches, setMatches] = useState<SkillMatch[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [pendingId, setPendingId] = useState<string | null>(null);
 
   useEffect(() => { loadMatches(); }, []);
 
@@ -53,32 +54,45 @@ export const SkillMatches = () => {
   };
 
   const handleConnect = async (matchId: string, matchedUserId: string) => {
+    if (pendingId) return;
+    setPendingId(matchId);
     try {
-      await supabase.from('skill_matches').update({ status: 'contacted' }).eq('id', matchId);
+      const { error } = await supabase.from('skill_matches').update({ status: 'contacted' }).eq('id', matchId);
+      if (error) throw error;
       navigate(`/skill-swap/profile/${matchedUserId}`);
     } catch (error) { console.error('Error updating match:', error); toast.error('Failed to connect'); }
+    finally { setPendingId(null); }
   };
 
   const handleIgnore = async (matchId: string) => {
+    if (pendingId) return;
+    setPendingId(matchId);
     try {
-      await supabase.from('skill_matches').update({ status: 'ignored' }).eq('id', matchId);
+      const { error } = await supabase.from('skill_matches').update({ status: 'ignored' }).eq('id', matchId);
+      if (error) throw error;
       setMatches(matches.filter(m => m.id !== matchId));
       toast.success('Match dismissed');
     } catch (error) { console.error('Error ignoring match:', error); toast.error('Failed to dismiss match'); }
+    finally { setPendingId(null); }
   };
 
   const handleStartConversation = async (matchedUserId: string) => {
-    if (!currentUserId) return;
+    if (!currentUserId || pendingId) return;
+    if (matchedUserId === currentUserId) { toast.error("You cannot chat with yourself"); return; }
+    setPendingId(matchedUserId);
     try {
       const { data: existingConv } = await supabase
         .from('skill_swap_conversations').select('id')
         .or(`and(user1_id.eq.${currentUserId},user2_id.eq.${matchedUserId}),and(user1_id.eq.${matchedUserId},user2_id.eq.${currentUserId})`)
         .maybeSingle();
       if (!existingConv) {
-        await supabase.from('skill_swap_conversations').insert([{ user1_id: currentUserId, user2_id: matchedUserId }]);
+        const { error } = await supabase.from('skill_swap_conversations').insert([{ user1_id: currentUserId, user2_id: matchedUserId }]);
+        if (error) throw error;
       }
       toast.success("Conversation started!");
+      navigate('/skill-swap?view=messages');
     } catch (error) { console.error('Error starting conversation:', error); toast.error('Failed to start conversation'); }
+    finally { setPendingId(null); }
   };
 
   if (loading) {
@@ -155,10 +169,10 @@ export const SkillMatches = () => {
               </div>
 
               <div className="flex gap-2">
-                <Button onClick={() => handleStartConversation(match.matched_user_id)} className="flex-1" size="sm">
+                <Button onClick={() => handleStartConversation(match.matched_user_id)} disabled={pendingId === match.matched_user_id} className="flex-1" size="sm">
                   <MessageSquare className="w-3.5 h-3.5 mr-1.5" /> Start Chat
                 </Button>
-                <Button onClick={() => handleConnect(match.id, match.matched_user_id)} variant="outline" size="sm">View Profile</Button>
+                <Button onClick={() => handleConnect(match.id, match.matched_user_id)} disabled={pendingId === match.id} variant="outline" size="sm">View Profile</Button>
               </div>
             </Card>
           </motion.div>
