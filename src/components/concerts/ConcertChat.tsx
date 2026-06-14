@@ -13,6 +13,7 @@ export const ConcertChat = ({ onBack }: Props) => {
   const [newMessage, setNewMessage] = useState("");
   const [sending, setSending] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
 
   useEffect(() => {
     const channel = supabase
@@ -21,8 +22,9 @@ export const ConcertChat = ({ onBack }: Props) => {
         setMessages(prev => [...prev, payload.payload]);
       })
       .subscribe();
+    channelRef.current = channel;
 
-    return () => { supabase.removeChannel(channel); };
+    return () => { supabase.removeChannel(channel); channelRef.current = null; };
   }, []);
 
   useEffect(() => {
@@ -30,7 +32,7 @@ export const ConcertChat = ({ onBack }: Props) => {
   }, [messages]);
 
   const sendMessage = async () => {
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim() || !channelRef.current) return;
     try {
       setSending(true);
       const { data: { session } } = await supabase.auth.getSession();
@@ -43,7 +45,8 @@ export const ConcertChat = ({ onBack }: Props) => {
         timestamp: new Date().toISOString(),
       };
 
-      await supabase.channel("concert-global-chat").send({
+      // Reuse subscribed channel instead of creating a new one per send (leak fix).
+      await channelRef.current.send({
         type: "broadcast",
         event: "chat_message",
         payload: msg,
@@ -54,6 +57,7 @@ export const ConcertChat = ({ onBack }: Props) => {
     } catch { toast.error("Failed to send message"); }
     finally { setSending(false); }
   };
+
 
   return (
     <div className="space-y-6">
