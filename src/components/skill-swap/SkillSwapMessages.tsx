@@ -122,17 +122,21 @@ export const SkillSwapMessages = () => {
   };
 
   const sendMessage = async () => {
-    if (!newMessage.trim() || !selectedConversation || !currentUserId) return;
+    const trimmed = newMessage.trim();
+    if (!trimmed || !selectedConversation || !currentUserId || sending) return;
+    if (trimmed.length > 2000) { toast.error("Message too long (max 2000 chars)"); return; }
     const conv = conversations.find(c => c.id === selectedConversation);
-    if (!conv) return;
+    if (!conv?.other_user_id) return;
+    setSending(true);
     try {
       const { error } = await supabase.from('skill_swap_messages').insert([{
-        sender_id: currentUserId, receiver_id: conv.other_user_id, message: newMessage, offering_id: conv.offering_id,
+        sender_id: currentUserId, receiver_id: conv.other_user_id, message: trimmed, offering_id: conv.offering_id,
       }]);
       if (error) throw error;
       await supabase.from('skill_swap_conversations').update({ last_message_at: new Date().toISOString() }).eq('id', selectedConversation);
       setNewMessage(""); loadMessages(); loadConversations();
     } catch (error) { console.error('Error sending message:', error); toast.error("Failed to send message"); }
+    finally { setSending(false); }
   };
 
   const handleCompleteExchange = async () => {
