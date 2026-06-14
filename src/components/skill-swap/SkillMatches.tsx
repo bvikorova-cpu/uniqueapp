@@ -169,10 +169,10 @@ export const SkillMatches = () => {
               </div>
 
               <div className="flex gap-2">
-                <Button onClick={() => handleStartConversation(match.matched_user_id)} className="flex-1" size="sm">
+                <Button onClick={() => handleStartConversation(match.matched_user_id)} disabled={pendingId === match.matched_user_id} className="flex-1" size="sm">
                   <MessageSquare className="w-3.5 h-3.5 mr-1.5" /> Start Chat
                 </Button>
-                <Button onClick={() => handleConnect(match.id, match.matched_user_id)} variant="outline" size="sm">View Profile</Button>
+                <Button onClick={() => handleConnect(match.id, match.matched_user_id)} disabled={pendingId === match.id} variant="outline" size="sm">View Profile</Button>
               </div>
             </Card>
           </motion.div>
