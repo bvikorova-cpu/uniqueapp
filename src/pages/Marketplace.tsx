@@ -728,6 +728,14 @@ const Marketplace = () => {
           ))}
         </div>
 
+        {hasMore && offerings.length > 0 && (
+          <div className="flex justify-center mt-8">
+            <Button variant="outline" onClick={() => loadOfferings(page + 1, false)} disabled={isLoadingMore}>
+              {isLoadingMore ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Loading...</> : "Load more"}
+            </Button>
+          </div>
+        )}
+
         {offerings.length === 0 && (
           <div className="text-center py-12">
             <Briefcase className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
