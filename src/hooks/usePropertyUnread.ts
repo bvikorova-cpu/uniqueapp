@@ -85,8 +85,9 @@ export function usePropertyUnread({ notifyToasts = true }: Options = {}) {
     refresh();
     if (!user) return;
 
+    const channelId = `property-unread-${user.id}-${typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : Math.random().toString(36).slice(2)}`;
     const channel = supabase
-      .channel(`property-unread-${user.id}`)
+      .channel(channelId)
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "property_messages" },
