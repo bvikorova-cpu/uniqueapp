@@ -265,8 +265,8 @@ export default function SkillSwap() {
     if (error) { console.error('Error fetching offerings:', error); setOfferings([]); return; }
 
     const userIds = data?.map(o => o.user_id) || [];
-    const { data: profilesData } = await supabase
-      .from('profiles')
+    const { data: profilesData } = await (supabase as any)
+      .from('profiles_public')
       .select('id, full_name, rating_average, total_reviews, completed_exchanges, location')
       .in('id', userIds);
 
