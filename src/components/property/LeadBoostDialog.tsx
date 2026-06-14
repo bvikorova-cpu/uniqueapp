@@ -40,6 +40,7 @@ export function LeadBoostDialog({ open, onOpenChange }: LeadBoostDialogProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return;
     if (!selectedProperty) return;
 
     setLoading(true);
@@ -56,21 +57,7 @@ export function LeadBoostDialog({ open, onOpenChange }: LeadBoostDialogProps) {
         return;
       }
 
-      // Create purchase record
-      const { data: purchase, error: purchaseError } = await supabase
-        .from('property_lead_boost_purchases')
-        .insert({
-          property_id: selectedProperty,
-          user_id: user.id,
-          amount_paid: 19.00,
-          status: 'pending'
-        })
-        .select()
-        .single();
-
-      if (purchaseError) throw purchaseError;
-
-      // Create Stripe checkout session
+      // Edge function creates the pending purchase record + Stripe session atomically
       const { data: checkoutData, error: checkoutError } = await supabase.functions.invoke(
         'create-lead-boost-payment',
         {
@@ -81,15 +68,12 @@ export function LeadBoostDialog({ open, onOpenChange }: LeadBoostDialogProps) {
       if (checkoutError) throw checkoutError;
 
       if (checkoutData?.url) {
-        // Redirect to Stripe checkout
-        window.open(checkoutData.url, '_blank');
-        
         toast({
           title: "Redirecting to Payment",
           description: "Complete your payment to activate Lead Boost.",
         });
-
         onOpenChange(false);
+        window.location.href = checkoutData.url;
       } else {
         throw new Error("No checkout URL received");
       }
