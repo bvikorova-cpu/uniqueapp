@@ -532,7 +532,8 @@ export default function PropertyMarketplace() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <Button onClick={() => handlePurchaseService(service.id, service.price, service.link)} className="w-full" variant="outline" disabled={!service.link && !service.active}>
+                    <Button onClick={() => handlePurchaseService(service.id, service.price, service.link)} className="w-full" variant="outline" disabled={(!service.link && !service.active) || purchasingId === service.id}>
+                      {purchasingId === service.id && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                       {service.link ? "Explore" : service.active ? "Learn More" : "Currently Unavailable"}
                     </Button>
                   </CardContent>
