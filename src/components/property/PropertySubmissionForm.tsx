@@ -251,7 +251,7 @@ export default function PropertySubmissionForm() {
                 </div>
 
                 <Button type="submit" className="w-full bg-gradient-to-r from-sky-500 to-blue-600 text-white" size="lg" disabled={isSubmitting}>
-                  {isSubmitting ? "Creating..." : "Create Listing & Proceed to Payment"}
+                  {isSubmitting ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating...</>) : "Create Listing & Proceed to Payment"}
                 </Button>
               </form>
             </CardContent>
