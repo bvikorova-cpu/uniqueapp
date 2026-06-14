@@ -34,7 +34,7 @@ export const PropertyHero = () => {
     { icon: Home, label: "Active Listings", value: stats.listings || 0, suffix: "+" },
     { icon: Users, label: "Property Listings", value: stats.agents || 0, suffix: "+" },
     { icon: TrendingUp, label: "Virtual Tours", value: stats.tours || 0, suffix: "+" },
-    { icon: MapPin, label: "Platform Fee", value: 0, suffix: "", staticLabel: "5%" },
+    { icon: MapPin, label: "Commission", value: 0, suffix: "", staticLabel: "1%" },
   ];
 
   useEffect(() => {
