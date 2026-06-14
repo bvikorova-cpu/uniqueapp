@@ -26,6 +26,7 @@ interface MyBazaarListingsProps {
 export const MyBazaarListings = ({ userId, isOwnProfile }: MyBazaarListingsProps) => {
   const [items, setItems] = useState<BazaarItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -50,6 +51,9 @@ export const MyBazaarListings = ({ userId, isOwnProfile }: MyBazaarListingsProps
   };
 
   const handleDelete = async (itemId: string) => {
+    if (deletingId) return;
+    if (!confirm("Delete this listing? This cannot be undone.")) return;
+    setDeletingId(itemId);
     try {
       const { error } = await supabase
         .from("bazaar_items")
@@ -61,6 +65,8 @@ export const MyBazaarListings = ({ userId, isOwnProfile }: MyBazaarListingsProps
       loadItems();
     } catch (error) {
       toast.error("Failed to delete item");
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -145,9 +151,10 @@ export const MyBazaarListings = ({ userId, isOwnProfile }: MyBazaarListingsProps
                     <Button
                       size="sm"
                       variant="destructive"
+                      disabled={deletingId === item.id}
                       onClick={() => handleDelete(item.id)}
                     >
-                      <Trash2 className="h-3 w-3" />
+                      {deletingId === item.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Trash2 className="h-3 w-3" />}
                     </Button>
                   </div>
                 )}

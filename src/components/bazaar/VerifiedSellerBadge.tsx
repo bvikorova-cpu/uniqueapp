@@ -3,17 +3,24 @@ import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { BadgeCheck, Clock } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useVerifiedSellerStatus } from "./VerifiedSellersContext";
 
 interface Props {
   sellerId: string;
   showPending?: boolean;
 }
 
-/** Shows a "Verified Seller" badge if the seller has KYC-verified status. */
+type Status = "verified" | "pending" | "rejected";
+
+/** Shows a "Verified Seller" badge if the seller has KYC-verified status.
+ *  Uses VerifiedSellersProvider (batched) when present; falls back to a single fetch otherwise. */
 export const VerifiedSellerBadge = ({ sellerId, showPending = false }: Props) => {
-  const [status, setStatus] = useState<"verified" | "pending" | "rejected" | null>(null);
+  const contextStatus = useVerifiedSellerStatus(sellerId);
+  const [fallback, setFallback] = useState<Status | null>(null);
+  const useFallback = contextStatus === null && fallback === null;
 
   useEffect(() => {
+    if (contextStatus !== null) return; // batched provider supplied it
     let cancelled = false;
     (async () => {
       const { data } = await supabase
@@ -21,10 +28,13 @@ export const VerifiedSellerBadge = ({ sellerId, showPending = false }: Props) =>
         .select("status")
         .eq("user_id", sellerId)
         .maybeSingle();
-      if (!cancelled && data) setStatus((data as any).status);
+      if (!cancelled && data) setFallback(((data as any).status) as Status);
     })();
     return () => { cancelled = true; };
-  }, [sellerId]);
+  }, [sellerId, contextStatus]);
+
+  const status: Status | null = contextStatus ?? fallback;
+  if (useFallback && !status) return null;
 
   if (status === "verified") {
     return (
