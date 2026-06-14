@@ -689,7 +689,7 @@ const Marketplace = () => {
             <Card key={offering.id} className="hover:shadow-lg transition-shadow overflow-hidden bg-card/80 backdrop-blur-xl border-border/50">
               {offering.image_url && (
                 <div className="w-full h-48 overflow-hidden">
-                  <img src={offering.image_url} alt={offering.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+                  <img src={offering.image_url} alt={offering.title} loading="lazy" decoding="async" className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
                 </div>
               )}
               <CardHeader>
