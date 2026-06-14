@@ -176,9 +176,11 @@ export default function PropertyMarketplace() {
     navigate("/property-submission");
   };
 
-  const handlePurchaseService = async (serviceId: string, price: number, link?: string) => {
+  const handlePurchaseService = async (serviceId: string, _price: number, link?: string) => {
     if (link) { navigate(link); return; }
     if (serviceId === "lead_boost") { setLeadBoostDialogOpen(true); return; }
+    if (purchasingId) return;
+    setPurchasingId(serviceId);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
@@ -186,7 +188,6 @@ export default function PropertyMarketplace() {
         navigate("/auth");
         return;
       }
-      // Map UI service id → backend product key (+ optional package).
       const isPackage = ["basic", "premium", "featured"].includes(serviceId);
       const body: Record<string, unknown> = isPackage
         ? { product: "property_listing", packageType: serviceId }
@@ -210,6 +211,8 @@ export default function PropertyMarketplace() {
     } catch (err) {
       console.error("Property checkout error:", err);
       toast({ title: "Payment unavailable", description: "Could not start checkout. Please try again.", variant: "destructive" });
+    } finally {
+      setPurchasingId(null);
     }
   };
 
