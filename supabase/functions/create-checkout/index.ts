@@ -2138,7 +2138,7 @@ serve(async (req) => {
       if (!offeringId || !requirements || !deliveryDays || !totalAmount) {
         return errorResponse("Missing offeringId, requirements, deliveryDays or totalAmount", 400);
       }
-      const COMMISSION_RATE = 0.15;
+      const COMMISSION_RATE = (await getFeeRate("service_order")) / 100;
       const admin = createSupabaseAdminClient();
       const { data: offering, error: offeringError } = await admin
         .from("skill_offerings")
