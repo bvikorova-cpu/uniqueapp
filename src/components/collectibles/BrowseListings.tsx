@@ -331,9 +331,10 @@ export default function BrowseListings({ userId }: BrowseListingsProps) {
                               <Button 
                                 className="flex-1"
                                 onClick={() => handleBuyDirect(selectedListing)}
+                                disabled={buyingId === selectedListing?.id}
                               >
                                 <ShoppingBag className="mr-2 h-4 w-4" />
-                                Buy Now
+                                {buyingId === selectedListing?.id ? "Processing..." : "Buy Now"}
                               </Button>
                             )}
                             {(selectedListing.listing_type === 'trade' || selectedListing.listing_type === 'both') && (
