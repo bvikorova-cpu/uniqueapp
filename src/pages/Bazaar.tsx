@@ -365,9 +365,11 @@ const Bazaar = () => {
   const handleDeleteClick = () => setIsDeleteDialogOpen(true);
 
   const handleSendMessage = async () => {
+    if (sendingMessage) return;
     if (!selectedItem || !currentUserId || !contactMessage.trim()) {
       toast({ title: "Error", description: "Fill in message", variant: "destructive" }); return;
     }
+    setSendingMessage(true);
     try {
       const { error } = await supabase.from('bazaar_messages').insert({
         item_id: selectedItem.id, sender_id: currentUserId, receiver_id: selectedItem.user_id, message: contactMessage,
@@ -378,11 +380,14 @@ const Bazaar = () => {
     } catch (error) {
       console.error('Error sending message:', error);
       toast({ title: "Error", description: "Failed to send message", variant: "destructive" });
+    } finally {
+      setSendingMessage(false);
     }
   };
 
   const handleDeleteConfirm = async () => {
-    if (!selectedItem) return;
+    if (deleting || !selectedItem) return;
+    setDeleting(true);
     try {
       const { error } = await supabase.from('bazaar_items').delete().eq('id', selectedItem.id);
       if (error) throw error;
@@ -391,6 +396,8 @@ const Bazaar = () => {
     } catch (error) {
       console.error('Error deleting item:', error);
       toast({ title: "Error", description: "Failed to delete listing", variant: "destructive" });
+    } finally {
+      setDeleting(false);
     }
   };
 
