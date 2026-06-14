@@ -206,12 +206,12 @@ export default function Collectibles() {
               className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3"
             >
               {stats.map((stat) => (
-                <div key={stat.label} className="bg-white/10 backdrop-blur-xl rounded-xl p-3 border border-white/10">
+                <div key={stat.label} className="bg-black/55 backdrop-blur-xl rounded-xl p-3 border border-white/20 shadow-lg">
                   <div className="flex items-center gap-2">
                     <stat.icon className="h-4 w-4 text-purple-300" />
-                    <span className="text-xs text-white/60">{stat.label}</span>
+                    <span className="text-xs text-white/80">{stat.label}</span>
                   </div>
-                  <p className="text-lg sm:text-xl font-bold text-white mt-1">{stat.value}</p>
+                  <p className="text-lg sm:text-xl font-bold text-white mt-1 drop-shadow-md">{stat.value}</p>
                 </div>
               ))}
             </motion.div>
