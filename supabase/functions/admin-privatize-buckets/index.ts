@@ -1,10 +1,10 @@
 // One-shot admin: flips listed storage buckets to private via Storage Admin API.
-// Auth: requires caller to be ADMIN_USER_ID (Bearer JWT).
+// Auth: requires x-admin-secret header matching ADMIN_USER_ID env (verify_jwt=false).
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-admin-secret",
 };
 
 const BUCKETS = [
@@ -25,14 +25,10 @@ Deno.serve(async (req) => {
   try {
     const url = Deno.env.get("SUPABASE_URL")!;
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const adminId = Deno.env.get("ADMIN_USER_ID");
+    const adminSecret = Deno.env.get("ADMIN_USER_ID") ?? "";
 
-    const authHeader = req.headers.get("Authorization") ?? "";
-    const anon = createClient(url, Deno.env.get("SUPABASE_ANON_KEY")!, {
-      global: { headers: { Authorization: authHeader } },
-    });
-    const { data: u } = await anon.auth.getUser();
-    if (!u?.user || (adminId && u.user.id !== adminId)) {
+    const provided = req.headers.get("x-admin-secret") ?? "";
+    if (!adminSecret || provided !== adminSecret) {
       return new Response(JSON.stringify({ error: "forbidden" }), {
         status: 403,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -45,7 +41,6 @@ Deno.serve(async (req) => {
       const { data, error } = await admin.storage.updateBucket(id, { public: false });
       results[id] = error ? { error: error.message } : { ok: true, data };
     }
-
     return new Response(JSON.stringify({ results }, null, 2), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
