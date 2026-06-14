@@ -568,8 +568,8 @@ const Auction = () => {
                         <Gavel className="mr-2 h-4 w-4" /> Place Bid
                       </Button>
                       {detailAuction.buyout_price && (
-                        <Button variant="outline" className="flex-1 border-amber-500/30" onClick={() => { setDetailDialogOpen(false); handleBuyout(detailAuction); }}>
-                          Buy €{Number(detailAuction.buyout_price).toFixed(2)}
+                        <Button variant="outline" className="flex-1 border-amber-500/30" disabled={buyingOutId === detailAuction.id} onClick={() => { setDetailDialogOpen(false); handleBuyout(detailAuction); }}>
+                          {buyingOutId === detailAuction.id ? "Loading..." : `Buy €${Number(detailAuction.buyout_price).toFixed(2)}`}
                         </Button>
                       )}
                     </div>
