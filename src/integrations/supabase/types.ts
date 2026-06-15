@@ -40363,6 +40363,42 @@ export type Database = {
           },
         ]
       }
+      musician_kyc: {
+        Row: {
+          created_at: string
+          id: string
+          id_document_url: string | null
+          legal_name: string | null
+          social_proof_url: string | null
+          suspended_reason: string | null
+          updated_at: string
+          user_id: string
+          verification_notes: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          id_document_url?: string | null
+          legal_name?: string | null
+          social_proof_url?: string | null
+          suspended_reason?: string | null
+          updated_at?: string
+          user_id: string
+          verification_notes?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          id_document_url?: string | null
+          legal_name?: string | null
+          social_proof_url?: string | null
+          suspended_reason?: string | null
+          updated_at?: string
+          user_id?: string
+          verification_notes?: string | null
+        }
+        Relationships: []
+      }
       musician_profiles: {
         Row: {
           avatar_url: string | null
@@ -40370,20 +40406,15 @@ export type Database = {
           created_at: string | null
           genre: string | null
           id: string
-          id_document_url: string | null
-          legal_name: string | null
           lifetime_earnings: number | null
           pending_balance: number | null
-          social_proof_url: string | null
           stage_name: string
           suspended: boolean
-          suspended_reason: string | null
           total_concerts: number | null
           total_earnings: number | null
           total_withdrawn: number | null
           updated_at: string | null
           user_id: string
-          verification_notes: string | null
           verification_requested_at: string | null
           verification_reviewed_at: string | null
           verification_reviewed_by: string | null
@@ -40396,20 +40427,15 @@ export type Database = {
           created_at?: string | null
           genre?: string | null
           id?: string
-          id_document_url?: string | null
-          legal_name?: string | null
           lifetime_earnings?: number | null
           pending_balance?: number | null
-          social_proof_url?: string | null
           stage_name: string
           suspended?: boolean
-          suspended_reason?: string | null
           total_concerts?: number | null
           total_earnings?: number | null
           total_withdrawn?: number | null
           updated_at?: string | null
           user_id: string
-          verification_notes?: string | null
           verification_requested_at?: string | null
           verification_reviewed_at?: string | null
           verification_reviewed_by?: string | null
@@ -40422,20 +40448,15 @@ export type Database = {
           created_at?: string | null
           genre?: string | null
           id?: string
-          id_document_url?: string | null
-          legal_name?: string | null
           lifetime_earnings?: number | null
           pending_balance?: number | null
-          social_proof_url?: string | null
           stage_name?: string
           suspended?: boolean
-          suspended_reason?: string | null
           total_concerts?: number | null
           total_earnings?: number | null
           total_withdrawn?: number | null
           updated_at?: string | null
           user_id?: string
-          verification_notes?: string | null
           verification_requested_at?: string | null
           verification_reviewed_at?: string | null
           verification_reviewed_by?: string | null
@@ -62582,6 +62603,90 @@ export type Database = {
           avg_rating: number | null
           review_count: number | null
           seller_id: string | null
+        }
+        Relationships: []
+      }
+      dating_profiles_browse: {
+        Row: {
+          additional_photos: string[] | null
+          age: number | null
+          bio: string | null
+          compatibility_quiz: Json | null
+          created_at: string | null
+          display_name: string | null
+          gender: string | null
+          id: string | null
+          instagram_url: string | null
+          interests: string[] | null
+          is_active: boolean | null
+          location: string | null
+          looking_for: string | null
+          opening_move: string | null
+          passport_location: string | null
+          photo_verified: boolean | null
+          profile_photo_url: string | null
+          prompts: Json | null
+          read_receipts_enabled: boolean | null
+          spotify_url: string | null
+          updated_at: string | null
+          user_id: string | null
+          video_prompts: Json | null
+          voice_intro_duration: number | null
+          voice_intro_url: string | null
+        }
+        Insert: {
+          additional_photos?: string[] | null
+          age?: number | null
+          bio?: string | null
+          compatibility_quiz?: Json | null
+          created_at?: string | null
+          display_name?: string | null
+          gender?: string | null
+          id?: string | null
+          instagram_url?: string | null
+          interests?: string[] | null
+          is_active?: boolean | null
+          location?: string | null
+          looking_for?: string | null
+          opening_move?: string | null
+          passport_location?: string | null
+          photo_verified?: boolean | null
+          profile_photo_url?: string | null
+          prompts?: Json | null
+          read_receipts_enabled?: boolean | null
+          spotify_url?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          video_prompts?: Json | null
+          voice_intro_duration?: number | null
+          voice_intro_url?: string | null
+        }
+        Update: {
+          additional_photos?: string[] | null
+          age?: number | null
+          bio?: string | null
+          compatibility_quiz?: Json | null
+          created_at?: string | null
+          display_name?: string | null
+          gender?: string | null
+          id?: string | null
+          instagram_url?: string | null
+          interests?: string[] | null
+          is_active?: boolean | null
+          location?: string | null
+          looking_for?: string | null
+          opening_move?: string | null
+          passport_location?: string | null
+          photo_verified?: boolean | null
+          profile_photo_url?: string | null
+          prompts?: Json | null
+          read_receipts_enabled?: boolean | null
+          spotify_url?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          video_prompts?: Json | null
+          voice_intro_duration?: number | null
+          voice_intro_url?: string | null
         }
         Relationships: []
       }
