@@ -53420,6 +53420,89 @@ export type Database = {
         }
         Relationships: []
       }
+      smoke_test_route_results: {
+        Row: {
+          console_errors: Json | null
+          created_at: string
+          duration_ms: number | null
+          http_status: number | null
+          id: string
+          route: string
+          run_id: string
+          status: string
+        }
+        Insert: {
+          console_errors?: Json | null
+          created_at?: string
+          duration_ms?: number | null
+          http_status?: number | null
+          id?: string
+          route: string
+          run_id: string
+          status: string
+        }
+        Update: {
+          console_errors?: Json | null
+          created_at?: string
+          duration_ms?: number | null
+          http_status?: number | null
+          id?: string
+          route?: string
+          run_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "smoke_test_route_results_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "smoke_test_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      smoke_test_runs: {
+        Row: {
+          blank: number
+          created_at: string
+          failed: number
+          finished_at: string | null
+          id: string
+          notes: string | null
+          passed: number
+          run_type: string
+          started_at: string
+          started_by: string | null
+          total_routes: number
+        }
+        Insert: {
+          blank?: number
+          created_at?: string
+          failed?: number
+          finished_at?: string | null
+          id?: string
+          notes?: string | null
+          passed?: number
+          run_type?: string
+          started_at?: string
+          started_by?: string | null
+          total_routes?: number
+        }
+        Update: {
+          blank?: number
+          created_at?: string
+          failed?: number
+          finished_at?: string | null
+          id?: string
+          notes?: string | null
+          passed?: number
+          run_type?: string
+          started_at?: string
+          started_by?: string | null
+          total_routes?: number
+        }
+        Relationships: []
+      }
       social_gifts_ai_messages: {
         Row: {
           created_at: string | null
