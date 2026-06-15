@@ -17071,6 +17071,8 @@ export type Database = {
           id: string
           images: string[] | null
           location: string | null
+          monthly_donors_count: number
+          one_time_donors_count: number
           rejection_reason: string | null
           status: string | null
           story: string
@@ -17097,6 +17099,8 @@ export type Database = {
           id?: string
           images?: string[] | null
           location?: string | null
+          monthly_donors_count?: number
+          one_time_donors_count?: number
           rejection_reason?: string | null
           status?: string | null
           story: string
@@ -17123,6 +17127,8 @@ export type Database = {
           id?: string
           images?: string[] | null
           location?: string | null
+          monthly_donors_count?: number
+          one_time_donors_count?: number
           rejection_reason?: string | null
           status?: string | null
           story?: string
@@ -20142,6 +20148,8 @@ export type Database = {
           id: string
           image_url: string | null
           milestones: Json | null
+          monthly_donors_count: number
+          one_time_donors_count: number
           rejection_reason: string | null
           reward_tiers: Json
           status: string | null
@@ -20172,6 +20180,8 @@ export type Database = {
           id?: string
           image_url?: string | null
           milestones?: Json | null
+          monthly_donors_count?: number
+          one_time_donors_count?: number
           rejection_reason?: string | null
           reward_tiers?: Json
           status?: string | null
@@ -20202,6 +20212,8 @@ export type Database = {
           id?: string
           image_url?: string | null
           milestones?: Json | null
+          monthly_donors_count?: number
+          one_time_donors_count?: number
           rejection_reason?: string | null
           reward_tiers?: Json
           status?: string | null
@@ -27285,10 +27297,12 @@ export type Database = {
           hero_type: string
           id: string
           image_url: string | null
+          monthly_donors_count: number
           nominated_by_email: string | null
           nominated_by_name: string | null
           nomination_story: string | null
           nominee_consent_status: string
+          one_time_donors_count: number
           organization_name: string | null
           rejection_reason: string | null
           sponsors: Json | null
@@ -27320,10 +27334,12 @@ export type Database = {
           hero_type: string
           id?: string
           image_url?: string | null
+          monthly_donors_count?: number
           nominated_by_email?: string | null
           nominated_by_name?: string | null
           nomination_story?: string | null
           nominee_consent_status?: string
+          one_time_donors_count?: number
           organization_name?: string | null
           rejection_reason?: string | null
           sponsors?: Json | null
@@ -27355,10 +27371,12 @@ export type Database = {
           hero_type?: string
           id?: string
           image_url?: string | null
+          monthly_donors_count?: number
           nominated_by_email?: string | null
           nominated_by_name?: string | null
           nomination_story?: string | null
           nominee_consent_status?: string
+          one_time_donors_count?: number
           organization_name?: string | null
           rejection_reason?: string | null
           sponsors?: Json | null
@@ -36974,6 +36992,7 @@ export type Database = {
           rejection_reason: string | null
           status: string | null
           story: string
+          supporters_count: number
           target_amount: number
           title: string
           treatment_total_cost: number | null
@@ -37009,6 +37028,7 @@ export type Database = {
           rejection_reason?: string | null
           status?: string | null
           story: string
+          supporters_count?: number
           target_amount: number
           title: string
           treatment_total_cost?: number | null
@@ -37044,6 +37064,7 @@ export type Database = {
           rejection_reason?: string | null
           status?: string | null
           story?: string
+          supporters_count?: number
           target_amount?: number
           title?: string
           treatment_total_cost?: number | null
@@ -42552,6 +42573,8 @@ export type Database = {
           images: string[] | null
           intake_date: string | null
           medical_condition: string | null
+          monthly_donors_count: number
+          one_time_donors_count: number
           pet_name: string
           pet_type: string
           rejection_reason: string | null
@@ -42587,6 +42610,8 @@ export type Database = {
           images?: string[] | null
           intake_date?: string | null
           medical_condition?: string | null
+          monthly_donors_count?: number
+          one_time_donors_count?: number
           pet_name: string
           pet_type: string
           rejection_reason?: string | null
@@ -42622,6 +42647,8 @@ export type Database = {
           images?: string[] | null
           intake_date?: string | null
           medical_condition?: string | null
+          monthly_donors_count?: number
+          one_time_donors_count?: number
           pet_name?: string
           pet_type?: string
           rejection_reason?: string | null
@@ -54089,6 +54116,7 @@ export type Database = {
           created_at: string
           id: string
           prediction_id: string
+          purchased_at: string
           stripe_payment_id: string | null
           user_id: string
         }
@@ -54097,6 +54125,7 @@ export type Database = {
           created_at?: string
           id?: string
           prediction_id: string
+          purchased_at?: string
           stripe_payment_id?: string | null
           user_id: string
         }
@@ -54105,6 +54134,7 @@ export type Database = {
           created_at?: string
           id?: string
           prediction_id?: string
+          purchased_at?: string
           stripe_payment_id?: string | null
           user_id?: string
         }
@@ -55539,6 +55569,8 @@ export type Database = {
           id: string
           image_url: string | null
           institution_verified: boolean
+          monthly_donors_count: number
+          one_time_donors_count: number
           open_to_scholarship_match: boolean
           pay_it_forward: boolean | null
           rejection_reason: string | null
@@ -55574,6 +55606,8 @@ export type Database = {
           id?: string
           image_url?: string | null
           institution_verified?: boolean
+          monthly_donors_count?: number
+          one_time_donors_count?: number
           open_to_scholarship_match?: boolean
           pay_it_forward?: boolean | null
           rejection_reason?: string | null
@@ -55609,6 +55643,8 @@ export type Database = {
           id?: string
           image_url?: string | null
           institution_verified?: boolean
+          monthly_donors_count?: number
+          one_time_donors_count?: number
           open_to_scholarship_match?: boolean
           pay_it_forward?: boolean | null
           rejection_reason?: string | null
@@ -56237,6 +56273,8 @@ export type Database = {
           goals: string[] | null
           id: string
           images: string[] | null
+          monthly_donors_count: number
+          one_time_donors_count: number
           portfolio_url: string | null
           premium_subscriber: boolean | null
           rejection_reason: string | null
@@ -56244,6 +56282,7 @@ export type Database = {
           sponsors_count: number | null
           status: string | null
           story: string
+          supporters_count: number
           talent_type: string
           target_amount: number
           title: string
@@ -56266,6 +56305,8 @@ export type Database = {
           goals?: string[] | null
           id?: string
           images?: string[] | null
+          monthly_donors_count?: number
+          one_time_donors_count?: number
           portfolio_url?: string | null
           premium_subscriber?: boolean | null
           rejection_reason?: string | null
@@ -56273,6 +56314,7 @@ export type Database = {
           sponsors_count?: number | null
           status?: string | null
           story: string
+          supporters_count?: number
           talent_type: string
           target_amount: number
           title: string
@@ -56295,6 +56337,8 @@ export type Database = {
           goals?: string[] | null
           id?: string
           images?: string[] | null
+          monthly_donors_count?: number
+          one_time_donors_count?: number
           portfolio_url?: string | null
           premium_subscriber?: boolean | null
           rejection_reason?: string | null
@@ -56302,6 +56346,7 @@ export type Database = {
           sponsors_count?: number | null
           status?: string | null
           story?: string
+          supporters_count?: number
           talent_type?: string
           target_amount?: number
           title?: string
