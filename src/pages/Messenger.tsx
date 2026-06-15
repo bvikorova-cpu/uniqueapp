@@ -945,6 +945,7 @@ const Messenger = () => {
     }
     setReplyingTo(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
+    if (cameraInputRef.current) cameraInputRef.current.value = '';
   };
 
 
