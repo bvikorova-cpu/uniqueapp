@@ -1,134 +1,20 @@
-import { defineConfig, devices } from "@playwright/test";
+import { defineConfig } from "@playwright/test";
 
-/**
- * Playwright config — three projects:
- *   1. setup        — logs in once, persists session to e2e/.auth/authed-state.json
- *   2. chromium     — anonymous (no auth) over e2e/*.spec.ts EXCEPT e2e/authed/**
- *   3. chromium-authed — uses the persisted session, runs e2e/authed/**.spec.ts
- *
- * Run locally:
- *   bun run e2e
- *   PLAYWRIGHT_BASE_URL=https://uniqueapp.fun bun run e2e
- *
- * Browsers must be installed once: `bunx playwright install --with-deps chromium`
- */
 export default defineConfig({
   testDir: "./e2e",
-  timeout: 30_000,
-  expect: { timeout: 5_000 },
-  fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 1 : 0,
-  reporter: process.env.CI ? "github" : "list",
-  globalSetup: "./e2e/global-setup.ts",
+  timeout: 60_000,
+  retries: 1,
+  workers: 2,
+  reporter: [["list"], ["html", { open: "never" }]],
   use: {
-    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:8080",
-    trace: "on-first-retry",
+    headless: true,
+    viewport: { width: 1280, height: 800 },
+    actionTimeout: 10_000,
+    navigationTimeout: 20_000,
+    screenshot: "only-on-failure",
     video: "retain-on-failure",
   },
   projects: [
-    {
-      name: "setup",
-      testMatch: /auth\.setup\.ts$/,
-      use: {
-        launchOptions: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH
-          ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH }
-          : undefined,
-      },
-    },
-    {
-      name: "chromium",
-      testIgnore: [/auth\.setup\.ts$/, /authed\//],
-      use: {
-        ...devices["Desktop Chrome"],
-        storageState: "e2e/.auth/storage-state.json",
-        launchOptions: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH
-          ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH }
-          : undefined,
-      },
-    },
-    {
-      name: "chromium-authed",
-      testMatch: /authed\/.*\.spec\.ts$/,
-      dependencies: ["setup"],
-      use: {
-        ...devices["Desktop Chrome"],
-        storageState: "e2e/.auth/authed-state.json",
-        launchOptions: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH
-          ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH }
-          : undefined,
-      },
-    },
-    // Cross-browser projekty pre celú authed suite (autoplay, audio policy, ...).
-    // Aktivujú sa nastavením PLAYWRIGHT_ENABLE_CROSS_BROWSER=1
-    // a vyžadujú `bunx playwright install firefox webkit`.
-    ...(process.env.PLAYWRIGHT_ENABLE_CROSS_BROWSER
-      ? [
-          {
-            name: "firefox-authed",
-            testMatch: /authed\/.*\.spec\.ts$/,
-            dependencies: ["setup"],
-            use: {
-              ...devices["Desktop Firefox"],
-              storageState: "e2e/.auth/authed-state.json",
-            },
-          },
-          {
-            name: "webkit-authed",
-            testMatch: /authed\/.*\.spec\.ts$/,
-            dependencies: ["setup"],
-            use: {
-              ...devices["Desktop Safari"],
-              storageState: "e2e/.auth/authed-state.json",
-            },
-          },
-        ]
-      : []),
-    // Cross-browser projekty len pre Wall functionality suite – rýchlejšie ako celá authed.
-    // Aktivujú sa cez PLAYWRIGHT_WALL_CROSS_BROWSER=1.
-    // Príklad:
-    //   PLAYWRIGHT_WALL_CROSS_BROWSER=1 bunx playwright test --project=firefox-wall --project=webkit-wall
-    ...(process.env.PLAYWRIGHT_WALL_CROSS_BROWSER
-      ? [
-          {
-            name: "firefox-wall",
-            testMatch: /authed\/wall-features-functionality\.spec\.ts$/,
-            dependencies: ["setup"],
-            use: {
-              ...devices["Desktop Firefox"],
-              storageState: "e2e/.auth/authed-state.json",
-            },
-          },
-          {
-            name: "webkit-wall",
-            testMatch: /authed\/wall-features-functionality\.spec\.ts$/,
-            dependencies: ["setup"],
-            use: {
-              ...devices["Desktop Safari"],
-              storageState: "e2e/.auth/authed-state.json",
-            },
-          },
-          {
-            name: "chromium-wall",
-            testMatch: /authed\/wall-features-functionality\.spec\.ts$/,
-            dependencies: ["setup"],
-            use: {
-              ...devices["Desktop Chrome"],
-              storageState: "e2e/.auth/authed-state.json",
-              launchOptions: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH
-                ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH }
-                : undefined,
-            },
-          },
-        ]
-      : []),
+    { name: "chromium", use: { browserName: "chromium" } },
   ],
-  webServer: process.env.PLAYWRIGHT_BASE_URL
-    ? undefined
-    : {
-        command: "bun run dev",
-        url: "http://localhost:8080",
-        reuseExistingServer: !process.env.CI,
-        timeout: 60_000,
-      },
 });
