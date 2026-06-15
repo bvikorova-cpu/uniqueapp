@@ -1219,7 +1219,7 @@ const App = () => {
               </TooltipProvider>
               </CurrencyProvider>
             </AnimationProvider>
-            </BetaGate>
+            
           </AuthProvider>
         </BrowserRouter>
       </ThemeProvider>
