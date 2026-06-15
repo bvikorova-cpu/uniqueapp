@@ -577,6 +577,8 @@ const App = () => {
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <AuthProvider>
+            <BetaGate>
+            
             
             <Suspense fallback={null}>
               <ReferralCaptureMount />
