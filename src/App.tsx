@@ -956,6 +956,7 @@ const App = () => {
                         <Route path="/admin/error-logs" element={<ProtectedRoute requireAdmin={true}><AdminErrorLogs /></ProtectedRoute>} />
                         <Route path="/admin/audit-log" element={<ProtectedRoute requireAdmin={true}><AdminAuditLog /></ProtectedRoute>} />
                         <Route path="/admin/security-scan" element={<ProtectedRoute requireAdmin={true}><AdminSecurityScan /></ProtectedRoute>} />
+                        <Route path="/admin/smoke-test" element={<ProtectedRoute requireAdmin={true}><AdminSmokeTest /></ProtectedRoute>} />
                         <Route path="/admin/influencer-payouts" element={<ProtectedRoute requireAdmin={true}><AdminInfluencerPayouts /></ProtectedRoute>} />
                         <Route path="/admin/platform-earnings" element={<ProtectedRoute requireAdmin={true}><AdminPlatformEarnings /></ProtectedRoute>} />
                         <Route path="/admin/iq" element={<ProtectedRoute requireAdmin={true}><AdminIQDashboard /></ProtectedRoute>} />
