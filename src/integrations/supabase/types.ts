@@ -5664,6 +5664,27 @@ export type Database = {
           },
         ]
       }
+      beta_whitelist: {
+        Row: {
+          added_by: string | null
+          created_at: string
+          email: string
+          note: string | null
+        }
+        Insert: {
+          added_by?: string | null
+          created_at?: string
+          email: string
+          note?: string | null
+        }
+        Update: {
+          added_by?: string | null
+          created_at?: string
+          email?: string
+          note?: string | null
+        }
+        Relationships: []
+      }
       birth_charts: {
         Row: {
           birth_date: string
@@ -64940,6 +64961,7 @@ export type Database = {
         Args: { _room_id: string; _user_id: string }
         Returns: boolean
       }
+      is_current_user_whitelisted: { Args: never; Returns: boolean }
       is_following: {
         Args: { _follower: string; _target: string }
         Returns: boolean
