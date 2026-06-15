@@ -319,7 +319,7 @@ const Dating = () => {
     const swipedIds = swipedProfiles?.map(s => s.swiped_id) || [];
     const excludeIds = [...new Set([...swipedIds, ...blockedIds, user.id])];
 
-    let q = supabase.from("dating_profiles").select("*").eq("is_active", true).eq("incognito", false).eq("is_shadow_banned", false);
+    let q = supabase.from("dating_profiles_browse").select("*");
     if (excludeIds.length > 0) q = q.not("user_id", "in", `(${excludeIds.join(",")})`);
     if (filters) {
       q = q.gte("age", filters.min_age).lte("age", filters.max_age);
@@ -330,9 +330,8 @@ const Dating = () => {
         q = q.eq("photo_verified", true);
       }
     }
-    const nowIso = new Date().toISOString();
-    q = q.or(`snoozed_until.is.null,snoozed_until.lt.${nowIso}`);
     const { data } = await q.limit(80);
+
 
     let ranked = data || [];
     if (ranked.length > 0) {
@@ -392,10 +391,11 @@ const Dating = () => {
     // Batch-load all partner profiles in ONE query instead of N
     const partnerIds = data.map(m => m.user1_id === userId ? m.user2_id : m.user1_id);
     const { data: profiles } = await supabase
-      .from("dating_profiles")
+      .from("dating_profiles_browse")
       .select("*")
       .in("user_id", partnerIds);
     const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
+
     setMatches(data.map(m => ({
       ...m,
       profile: profileMap.get(m.user1_id === userId ? m.user2_id : m.user1_id),

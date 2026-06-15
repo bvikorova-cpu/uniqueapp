@@ -26,7 +26,20 @@ const AdminMusicianVerifications = () => {
       supabase.from("concert_reports").select("*, live_concert_streams(title, musician_id, status, musician_profiles(stage_name, user_id, verified))").eq("status", "pending").order("created_at", { ascending: false }),
       supabase.from("reserved_artist_names").select("*").order("display_name"),
     ]);
-    setPending(p.data || []);
+    const pendingList = p.data || [];
+    // Join KYC data for pending musicians
+    if (pendingList.length > 0) {
+      const userIds = pendingList.map((m: any) => m.user_id);
+      const { data: kycRows } = await supabase.from("musician_kyc").select("user_id, legal_name, social_proof_url, verification_notes").in("user_id", userIds);
+      const kycMap = new Map((kycRows || []).map((k: any) => [k.user_id, k]));
+      pendingList.forEach((m: any) => {
+        const k: any = kycMap.get(m.user_id);
+        m.legal_name = k?.legal_name || null;
+        m.social_proof_url = k?.social_proof_url || null;
+        m.verification_notes = k?.verification_notes || null;
+      });
+    }
+    setPending(pendingList);
     setReports(r.data || []);
     setReserved(res.data || []);
     setLoading(false);
@@ -36,32 +49,46 @@ const AdminMusicianVerifications = () => {
 
   const reviewMusician = async (id: string, approve: boolean) => {
     const { data: { session } } = await supabase.auth.getSession();
+    const target = pending.find((m: any) => m.id === id);
+    if (target?.user_id && notes[id]) {
+      await supabase.from("musician_kyc").upsert({
+        user_id: target.user_id,
+        verification_notes: notes[id],
+      }, { onConflict: "user_id" });
+    }
     const { error } = await supabase.from("musician_profiles").update({
       verified: approve,
       verification_status: approve ? "verified" : "rejected",
       verification_reviewed_at: new Date().toISOString(),
       verification_reviewed_by: session?.user.id,
-      verification_notes: notes[id] || null,
     }).eq("id", id);
     if (error) return toast.error(error.message);
     toast.success(approve ? "Musician verified ✓" : "Verification rejected");
     load();
   };
 
+
   const reviewReport = async (reportId: string, action: "dismissed" | "suspended_musician") => {
     const { data: { session } } = await supabase.auth.getSession();
     const report = reports.find((r) => r.id === reportId);
     if (action === "suspended_musician" && report) {
       const musicianId = report.live_concert_streams?.musician_id;
+      const musicianUserId = report.live_concert_streams?.musician_profiles?.user_id;
       if (musicianId) {
         await supabase.from("musician_profiles").update({
           suspended: true,
-          suspended_reason: `Suspended after report: ${report.category}`,
         }).eq("id", musicianId);
+        if (musicianUserId) {
+          await supabase.from("musician_kyc").upsert({
+            user_id: musicianUserId,
+            suspended_reason: `Suspended after report: ${report.category}`,
+          }, { onConflict: "user_id" });
+        }
       }
       // also end the stream
       await supabase.from("live_concert_streams").update({ status: "ended" }).eq("id", report.concert_id);
     }
+
     const { error } = await supabase.from("concert_reports").update({
       status: "reviewed",
       action_taken: action,

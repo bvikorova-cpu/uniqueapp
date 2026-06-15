@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,13 +15,30 @@ interface Props {
 }
 
 export const MusicianVerificationCard = ({ profile, onUpdated }: Props) => {
-  const [legalName, setLegalName] = useState(profile?.legal_name || "");
-  const [socialProof, setSocialProof] = useState(profile?.social_proof_url || "");
+  const [legalName, setLegalName] = useState("");
+  const [socialProof, setSocialProof] = useState("");
   const [notes, setNotes] = useState("");
+  const [adminNotes, setAdminNotes] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   const status = profile?.verification_status || "unverified";
   const verified = !!profile?.verified;
+
+  useEffect(() => {
+    (async () => {
+      if (!profile?.user_id) return;
+      const { data } = await supabase
+        .from("musician_kyc")
+        .select("legal_name, social_proof_url, verification_notes")
+        .eq("user_id", profile.user_id)
+        .maybeSingle();
+      if (data) {
+        setLegalName(data.legal_name || "");
+        setSocialProof(data.social_proof_url || "");
+        setAdminNotes(data.verification_notes);
+      }
+    })();
+  }, [profile?.user_id]);
 
   const submit = async () => {
     if (!legalName.trim() || !socialProof.trim()) {
@@ -30,12 +47,19 @@ export const MusicianVerificationCard = ({ profile, onUpdated }: Props) => {
     }
     setSubmitting(true);
     try {
-      const { error } = await supabase
-        .from("musician_profiles")
-        .update({
+      const { error: kycErr } = await supabase
+        .from("musician_kyc")
+        .upsert({
+          user_id: profile.user_id,
           legal_name: legalName.trim(),
           social_proof_url: socialProof.trim(),
           verification_notes: notes.trim() || null,
+        }, { onConflict: "user_id" });
+      if (kycErr) throw kycErr;
+
+      const { error } = await supabase
+        .from("musician_profiles")
+        .update({
           verification_status: "pending",
           verification_requested_at: new Date().toISOString(),
         })
@@ -73,9 +97,9 @@ export const MusicianVerificationCard = ({ profile, onUpdated }: Props) => {
       </CardHeader>
       {!verified && (
         <CardContent className="space-y-3">
-          {status === "rejected" && profile?.verification_notes && (
+          {status === "rejected" && adminNotes && (
             <div className="text-sm rounded-md bg-destructive/10 border border-destructive/30 p-3">
-              <strong>Admin notes:</strong> {profile.verification_notes}
+              <strong>Admin notes:</strong> {adminNotes}
             </div>
           )}
           <div className="space-y-2">
