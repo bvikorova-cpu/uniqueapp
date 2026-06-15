@@ -33,7 +33,7 @@ const DisneyCastleRedirect = () => {
 };
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { BetaGate } from "@/components/BetaGate";
+
 import { RealTimeNotificationsMount } from "@/components/notifications/RealTimeNotificationsMount";
 import PushNotificationsMount from "@/components/notifications/PushNotificationsMount";
 import { GlobalMessageChimeMount } from "@/components/notifications/GlobalMessageChimeMount";
