@@ -572,15 +572,10 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                 <TooltipContent>Voice Note</TooltipContent>
               </Tooltip>
 
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <AIContentAssistant
-                    content={content}
-                    onInsertContent={(text) => setContent((prev) => prev + " " + text)}
-                  />
-                </TooltipTrigger>
-                <TooltipContent>AI Asistent</TooltipContent>
-              </Tooltip>
+              <AIContentAssistant
+                content={content}
+                onInsertContent={(text) => setContent((prev) => prev + " " + text)}
+              />
             </div>
           </TooltipProvider>
 
