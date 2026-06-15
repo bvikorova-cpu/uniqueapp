@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react-swc";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { visualizer } from "rollup-plugin-visualizer";
 import { execSync } from "node:child_process";
+import path from "node:path";
 
 const ANALYZE = process.env.ANALYZE === "true";
 
@@ -49,7 +50,7 @@ export default defineConfig(() => ({
   ].filter(Boolean),
   resolve: {
     alias: {
-      "@": "/dev-server/src",
+      "@": path.resolve(__dirname, "./src"),
     },
   },
   build: {
