@@ -50,7 +50,7 @@ export default defineConfig(() => ({
   ].filter(Boolean),
   resolve: {
     alias: {
-      "@": "/dev-server/src",
+      "@": path.resolve(__dirname, "./src"),
     },
   },
   build: {
