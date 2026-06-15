@@ -178,6 +178,38 @@ window.addEventListener("unhandledrejection", (e) => {
 window.__UNIQUE_MAIN_EXECUTED__ = true;
 console.log("[Boot] main.tsx executing");
 
+// Smoke-test reporter: when iframe is loaded with ?smoke=1, post errors and ready
+// signal back to parent window so the smoke-test page can record route health.
+try {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("smoke") === "1" && window.parent !== window) {
+    const route = window.location.pathname + window.location.search.replace(/[?&]smoke=1/, "");
+    const errors: string[] = [];
+    const send = (type: string, payload: any) => {
+      try { window.parent.postMessage({ __smoke: true, type, route, payload }, "*"); } catch { /* noop */ }
+    };
+    window.addEventListener("error", (e) => {
+      errors.push(String(e.message || e.error));
+      send("error", { message: String(e.message), stack: String((e.error as Error)?.stack || "") });
+    });
+    window.addEventListener("unhandledrejection", (e: any) => {
+      errors.push(String(e.reason));
+      send("error", { message: String(e.reason?.message || e.reason), stack: String(e.reason?.stack || "") });
+    });
+    const origError = console.error;
+    console.error = (...args: any[]) => {
+      try { send("console_error", { message: args.map(a => typeof a === "string" ? a : JSON.stringify(a)).join(" ").slice(0, 500) }); } catch {}
+      origError.apply(console, args);
+    };
+    window.setTimeout(() => {
+      const root = document.getElementById("root");
+      const text = (root?.textContent ?? "").replace(/\s+/g, "");
+      const hasCrash = !!root?.querySelector("[data-unique-crash-overlay]");
+      send("ready", { textLength: text.length, hasCrash, errorCount: errors.length });
+    }, 3500);
+  }
+} catch { /* noop */ }
+
 function boot() {
   const rootEl = document.getElementById("root");
   if (!rootEl) {

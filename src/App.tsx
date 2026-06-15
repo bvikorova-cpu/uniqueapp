@@ -516,6 +516,7 @@ const AdminPauseOverview = lazy(() => import("@/pages/admin/AdminPauseOverview")
 const AdminErrorLogs = lazy(() => import("@/pages/admin/AdminErrorLogs"));
 const AdminAuditLog = lazy(() => import("@/pages/admin/AdminAuditLog"));
 const AdminSecurityScan = lazy(() => import("@/pages/admin/AdminSecurityScan"));
+const AdminSmokeTest = lazy(() => import("@/pages/admin/AdminSmokeTest"));
 const AdminMegatalentModeration = lazy(() => import("@/pages/admin/AdminMegatalentModeration"));
 const AdminFundraisingModeration = lazy(() => import("@/pages/admin/AdminFundraisingModeration"));
 const AdminBattleRoyalePayouts = lazy(() => import("@/pages/admin/AdminBattleRoyalePayouts"));
@@ -955,6 +956,7 @@ const App = () => {
                         <Route path="/admin/error-logs" element={<ProtectedRoute requireAdmin={true}><AdminErrorLogs /></ProtectedRoute>} />
                         <Route path="/admin/audit-log" element={<ProtectedRoute requireAdmin={true}><AdminAuditLog /></ProtectedRoute>} />
                         <Route path="/admin/security-scan" element={<ProtectedRoute requireAdmin={true}><AdminSecurityScan /></ProtectedRoute>} />
+                        <Route path="/admin/smoke-test" element={<ProtectedRoute requireAdmin={true}><AdminSmokeTest /></ProtectedRoute>} />
                         <Route path="/admin/influencer-payouts" element={<ProtectedRoute requireAdmin={true}><AdminInfluencerPayouts /></ProtectedRoute>} />
                         <Route path="/admin/platform-earnings" element={<ProtectedRoute requireAdmin={true}><AdminPlatformEarnings /></ProtectedRoute>} />
                         <Route path="/admin/iq" element={<ProtectedRoute requireAdmin={true}><AdminIQDashboard /></ProtectedRoute>} />
