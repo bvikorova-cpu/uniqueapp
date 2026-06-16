@@ -130,7 +130,7 @@ const Profile = () => {
     const tipStatus = searchParams.get('tip');
     const sessionId = searchParams.get('session_id');
     if (tipStatus === 'cancel') {
-      toast({ title: 'Tip zrušený', description: 'Platba bola zrušená.' });
+      toast({ title: 'Tip cancelled', description: 'The payment was cancelled.' });
       searchParams.delete('tip');
       setSearchParams(searchParams, { replace: true });
       return;
@@ -144,14 +144,15 @@ const Profile = () => {
           if (error) throw error;
           if (data?.verified) {
             toast({
-              title: '🎉 Tip úspešne odoslaný!',
-              description: `Vďaka za podporu (€${((data.tip?.amount_cents ?? 0) / 100).toFixed(2)}).`,
+              title: '🎉 Tip sent successfully!',
+              description: `Thanks for the support (€${((data.tip?.amount_cents ?? 0) / 100).toFixed(2)}).`,
             });
           } else {
-            toast({ title: 'Tip čaká na spracovanie', description: 'Skúste obnoviť za chvíľu.' });
+            toast({ title: 'Tip is being processed', description: 'Please refresh in a moment.' });
           }
         } catch (e: any) {
-          toast({ title: 'Overenie zlyhalo', description: e.message, variant: 'destructive' });
+          toast({ title: 'Verification failed', description: e.message, variant: 'destructive' });
+
         } finally {
           searchParams.delete('tip');
           searchParams.delete('session_id');
@@ -239,9 +240,10 @@ const Profile = () => {
           );
 
           const { data: friendProfiles } = await supabase
-            .from("profiles")
+            .from("public_profiles")
             .select("*")
             .in("id", friendIds);
+
 
           setFriends(friendProfiles || []);
         }
