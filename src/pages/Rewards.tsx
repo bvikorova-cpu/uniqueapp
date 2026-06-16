@@ -114,15 +114,24 @@ export default function Rewards() {
   useEffect(() => {
     let cancelled = false;
 
-    supabase.auth.getUser().then(({ data }) => {
-      if (cancelled) return;
-      if (!data.user) {
-        navigate("/auth", { replace: true });
-      } else {
-        setUser(data.user);
-      }
-      setAuthLoading(false);
-    });
+    // Use getSession() (synchronous, cached) instead of getUser() (network call)
+    // to avoid hung loading state on slow / failed network requests.
+    supabase.auth.getSession()
+      .then(({ data }) => {
+        if (cancelled) return;
+        if (!data.session?.user) {
+          navigate("/auth", { replace: true });
+        } else {
+          setUser(data.session.user);
+        }
+      })
+      .catch((e) => {
+        console.error("[rewards auth]", e);
+        if (!cancelled) navigate("/auth", { replace: true });
+      })
+      .finally(() => {
+        if (!cancelled) setAuthLoading(false);
+      });
 
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
       if (cancelled) return;
@@ -139,6 +148,7 @@ export default function Rewards() {
       sub.subscription.unsubscribe();
     };
   }, [navigate]);
+
 
   // Stripe return: verify rewards purchase once, then notify components to refresh.
   const verifiedRef = useRef(false);
