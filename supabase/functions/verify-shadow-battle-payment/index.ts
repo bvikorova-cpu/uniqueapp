@@ -5,6 +5,6 @@ const corsHeaders = {
 };
 serve((req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
-  return new Response(JSON.stringify({ error: "Shadow Arena battles are temporarily unavailable." }),
+  return new Response(JSON.stringify({ error: "Shadow Arena payments are temporarily unavailable." }),
     { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 503 });
 });
