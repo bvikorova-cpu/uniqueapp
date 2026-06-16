@@ -1,6 +1,6 @@
-// Univerzálna check-subscription funkcia
-// Nahrádza 17 check-*-subscription funkcií
-// Použitie: supabase.functions.invoke('check-subscription', { body: { tier: 'pet' } })
+// Universal check-subscription function
+// Replaces 17 check-*-subscription functions
+// Usage: supabase.functions.invoke('check-subscription', { body: { tier: 'pet' } })
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";

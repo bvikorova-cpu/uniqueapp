@@ -46,11 +46,11 @@ export default function AdminContestPeriods() {
 
   const create = async () => {
     if (!draft.period_start || !draft.period_end) {
-      toast.error("Vyplň oba dátumy");
+      toast.error("Fill in both dates");
       return;
     }
     if (draft.period_end < draft.period_start) {
-      toast.error("End date musí byť po start date");
+      toast.error("End date must be after start date");
       return;
     }
     setSaving(true);
@@ -62,7 +62,7 @@ export default function AdminContestPeriods() {
     });
     setSaving(false);
     if (error) return toast.error(error.message);
-    toast.success("Obdobie pridané");
+    toast.success("Period added");
     setDraft(empty);
     load();
   };
@@ -78,18 +78,18 @@ export default function AdminContestPeriods() {
       })
       .eq("id", row.id);
     if (error) return toast.error(error.message);
-    toast.success("Uložené");
+    toast.success("Saved");
     load();
   };
 
   const remove = async (id: string) => {
-    if (!confirm("Naozaj zmazať toto obdobie?")) return;
+    if (!confirm("Really delete this period?")) return;
     const { error } = await (supabase as any)
       .from("mt_contest_settings")
       .delete()
       .eq("id", id);
     if (error) return toast.error(error.message);
-    toast.success("Zmazané");
+    toast.success("Deleted");
     load();
   };
 
@@ -115,14 +115,14 @@ export default function AdminContestPeriods() {
             Megatalent Contest Periods
           </h1>
           <p className="text-muted-foreground text-sm mt-1">
-            Kvartálne obdobia a fixný prize pool zobrazený v UI (MegaTalentHero,
+            Quarterly periods and a fixed prize pool shown in the UI (MegaTalentHero,
             ContestStatsSidebar, EngagementRow).
           </p>
         </div>
 
         <Card className="p-4 bg-card/50 backdrop-blur space-y-3">
           <div className="font-semibold flex items-center gap-2">
-            <Plus className="h-4 w-4" /> Nové obdobie
+            <Plus className="h-4 w-4" /> New period
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
             <div>
@@ -173,7 +173,7 @@ export default function AdminContestPeriods() {
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <>
-                    <Plus className="h-4 w-4 mr-1" /> Pridať
+                    <Plus className="h-4 w-4 mr-1" /> Add
                   </>
                 )}
               </Button>
@@ -183,7 +183,7 @@ export default function AdminContestPeriods() {
 
         <Card className="p-0 overflow-hidden">
           <div className="px-4 py-3 border-b border-border/50 font-semibold flex items-center gap-2">
-            <CalendarRange className="h-4 w-4" /> Existujúce obdobia
+            <CalendarRange className="h-4 w-4" /> Existing periods
           </div>
           {loading ? (
             <div className="p-10 flex justify-center">

@@ -1,6 +1,6 @@
-// Univerzálna verify-payment funkcia
-// Nahrádza 25+ verify-*-payment funkcií
-// Použitie: supabase.functions.invoke('verify-payment', { body: { session_id, product_type } })
+// Universal verify-payment function
+// Replaces 25+ verify-*-payment functions
+// Usage: supabase.functions.invoke('verify-payment', { body: { session_id, product_type } })
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";

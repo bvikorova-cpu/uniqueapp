@@ -1,4 +1,4 @@
-// Konsolidovaný Stripe Connect payout pre kreátorov (Earnings + InstantPayoutButton).
+// Consolidated Stripe Connect payout for creators (Earnings + InstantPayoutButton).
 // - Server-side balance check (get_creator_available_cents)
 // - Race-condition guard (no other pending/processing payout)
 // - Audit log do public.creator_payouts

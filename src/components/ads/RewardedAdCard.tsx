@@ -229,7 +229,7 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
 
         {phase === "watching" && (
           <div className="rounded-md border border-border/50 bg-muted/30 p-3 text-center text-xs text-muted-foreground">
-            Video reklama beží v bezpečnom okne. Počkaj {secondsLeft}s a potom si vyzdvihni XP.
+            Video ad is playing in a safe window. Wait {secondsLeft}s and then claim your XP.
           </div>
         )}
       </CardContent>
