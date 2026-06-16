@@ -55,22 +55,22 @@ const STATUS_META: Record<
   { label: string; icon: any; cls: string }
 > = {
   completed: {
-    label: "Prijaté",
+    label: "Received",
     icon: CheckCircle2,
     cls: "bg-emerald-500/15 text-emerald-300 border-emerald-400/30",
   },
   pending: {
-    label: "Spracúva sa",
+    label: "Processing",
     icon: Clock,
     cls: "bg-amber-500/15 text-amber-300 border-amber-400/30",
   },
   failed: {
-    label: "Neúspešné",
+    label: "Failed",
     icon: XCircle,
     cls: "bg-rose-500/15 text-rose-300 border-rose-400/30",
   },
   refunded: {
-    label: "Vrátené",
+    label: "Refunded",
     icon: Undo2,
     cls: "bg-slate-500/20 text-slate-300 border-slate-400/30",
   },
@@ -135,13 +135,13 @@ export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
       });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
-      toast({ title: "Tip vrátený", description: "Prevod bol stornovaný cez Stripe." });
+      toast({ title: "Tip refunded", description: "The transfer was cancelled via Stripe." });
       setConfirmId(null);
       await load();
     } catch (e: any) {
       toast({
         title: "Refund zlyhal",
-        description: e?.message || "Skús neskôr",
+        description: e?.message || "Try again later",
         variant: "destructive",
       });
       setConfirmId(null);
@@ -165,7 +165,7 @@ export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
 
       <div className="grid grid-cols-3 gap-2 mb-3">
         <div className="rounded-lg bg-violet-500/10 border border-violet-400/20 p-2 text-center">
-          <div className="text-[10px] text-muted-foreground uppercase">Počet</div>
+          <div className="text-[10px] text-muted-foreground uppercase">Count</div>
           <div className="font-black text-lg">{stats?.total_count ?? 0}</div>
         </div>
         <div className="rounded-lg bg-violet-500/10 border border-violet-400/20 p-2 text-center">
@@ -179,7 +179,7 @@ export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
       </div>
 
       {loading ? (
-        <p className="text-xs text-muted-foreground text-center py-4">Načítavam…</p>
+        <p className="text-xs text-muted-foreground text-center py-4">Loading…</p>
       ) : tips.length === 0 ? (
         <p className="text-xs text-muted-foreground text-center py-4">
           No tips yet. Be the first to send support!
@@ -202,7 +202,7 @@ export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-sm font-semibold truncate">
                       {isOwnProfile
-                        ? t.sender?.full_name || t.sender?.username || "Anonymný darca"
+                        ? t.sender?.full_name || t.sender?.username || "Anonymous donor"
                         : "Tipper"}
                     </span>
                     <span
@@ -246,13 +246,13 @@ export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>Vrátiť tip €{(t.amount_cents / 100).toFixed(2)}?</AlertDialogTitle>
+                            <AlertDialogTitle>Refund tip €{(t.amount_cents / 100).toFixed(2)}?</AlertDialogTitle>
                             <AlertDialogDescription>
-                              Suma bude cez Stripe vrátená darcovi. Túto akciu nie je možné vrátiť späť.
+                              The amount will be refunded to the donor via Stripe. This action cannot be undone.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel disabled={refundingId === t.id}>Zrušiť</AlertDialogCancel>
+                            <AlertDialogCancel disabled={refundingId === t.id}>Cancel</AlertDialogCancel>
                             <AlertDialogAction
                               onClick={() => handleRefund(t.id)}
                               disabled={refundingId === t.id}
