@@ -56,7 +56,7 @@ serve(async (req) => {
       productKey: "stream_gift",
       amount: Math.round(Number(gift.price) * 100),
       name: `${gift.icon} ${gift.name}`,
-      description: message || "Virtuálny darček pre streamera",
+      description: message || "Virtual gift for the streamer",
       userId: user.id,
       userEmail: user.email,
       origin,

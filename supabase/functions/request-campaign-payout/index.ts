@@ -214,8 +214,8 @@ serve(async (req) => {
       await supabase.from("notifications").insert({
         user_id: user.id,
         type: "campaign_payout_completed",
-        title: "Výplata úspešne odoslaná",
-        message: `€${(amount_cents / 100).toFixed(2)} bolo prevedených na tvoj Stripe účet.`,
+        title: "Payout successfully sent",
+        message: `€${(amount_cents / 100).toFixed(2)} has been transferred to your Stripe account.`,
         related_id: payoutRow.id,
       });
 
