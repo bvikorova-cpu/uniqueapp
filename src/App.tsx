@@ -118,8 +118,6 @@ import {
   Premium,
   AICreditsStore,
   MysteryBox,
-  Shop,
-  ProductDetail,
   AIGeneration,
   BestFriend,
   AICompanions,
