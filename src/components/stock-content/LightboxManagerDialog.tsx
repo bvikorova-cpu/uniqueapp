@@ -75,7 +75,7 @@ export function LightboxManagerDialog({ open, onOpenChange, contentItemId }: Lig
       .select()
       .single();
     setCreating(false);
-    if (error) { toast({ title: "Chyba", description: error.message, variant: "destructive" }); return; }
+    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
     toast({ title: "Lightbox created" });
     setName(""); setDescription(""); setIsPublic(false);
     if (contentItemId && data) await addToLightbox(data.id);
@@ -88,7 +88,7 @@ export function LightboxManagerDialog({ open, onOpenChange, contentItemId }: Lig
       .from("stock_lightbox_items")
       .insert({ lightbox_id: lightboxId, content_item_id: contentItemId });
     if (error && !error.message.includes("duplicate")) {
-      toast({ title: "Chyba", description: error.message, variant: "destructive" }); return;
+      toast({ title: "Error", description: error.message, variant: "destructive" }); return;
     }
     toast({ title: "Added to lightbox" });
     load();

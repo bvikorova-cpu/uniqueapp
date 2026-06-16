@@ -174,7 +174,7 @@ export const NotificationsDropdown = () => {
       });
     } catch (error: any) {
       toast({
-        title: "Chyba",
+        title: "Error",
         description: error.message,
         variant: "destructive",
       });

@@ -81,7 +81,7 @@ export default function MyCreditsLedger() {
     const uid = userData.user?.id;
     if (!uid) {
       setLoading(false);
-      toast.error("Musíš byť prihlásený.");
+      toast.error("You must be signed in.");
       return;
     }
 
@@ -100,7 +100,7 @@ export default function MyCreditsLedger() {
 
     const { data, error } = await q;
     if (error) {
-      toast.error("Nepodarilo sa načítať: " + error.message);
+      toast.error("Failed to load: " + error.message);
     } else {
       setRows(data ?? []);
     }

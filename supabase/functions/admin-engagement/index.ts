@@ -1,5 +1,5 @@
-// Admin engagement metrics — DAU/MAU/WAU + denný časový rad
-// Volá SQL funkcie get_engagement_metrics + get_dau_series (admin-only).
+// Admin engagement metrics — DAU/MAU/WAU + daily time series
+// Calls SQL functions get_engagement_metrics + get_dau_series (admin-only).
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 

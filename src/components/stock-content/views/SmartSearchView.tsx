@@ -39,7 +39,7 @@ export function SmartSearchView({ onBack }: Props) {
       setResults(data.results || []);
       if (!data.results?.length) toast({ title: "No similar results", description: "Try a different image or query." });
     } catch (e: any) {
-      toast({ title: "Chyba", description: e.message, variant: "destructive" });
+      toast({ title: "Error", description: e.message, variant: "destructive" });
     } finally { setLoading(false); }
   };
 

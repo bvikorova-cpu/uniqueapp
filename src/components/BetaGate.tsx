@@ -51,16 +51,16 @@ export function BetaGate({ children }: { children: ReactNode }) {
         <div className="space-y-2">
           <h1 className="text-2xl font-bold">Closed Beta</h1>
           <p className="text-muted-foreground text-sm">
-            Unique je momentálne v uzavretej bete. Prístup má len pozvaný okruh
-            testerov.
+            Unique is currently in closed beta. Access is limited to an invited
+            circle of testers.
           </p>
           <p className="text-xs text-muted-foreground/80 pt-2">
-            Si prihlásený(á) ako <span className="font-medium">{user.email}</span>,
-            ale tento e-mail nie je na whitelist.
+            You are signed in as <span className="font-medium">{user.email}</span>,
+            but this email is not on the whitelist.
           </p>
         </div>
         <Button variant="outline" onClick={signOut} className="w-full">
-          Odhlásiť sa
+          Sign out
         </Button>
       </div>
     </div>

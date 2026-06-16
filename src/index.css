@@ -1,7 +1,7 @@
 /*
- * Niche fonts (Dancing Script, Cinzel, Creepster, Crimson Pro) sa už nenačítajú
- * cez render-blocking @import. Injektujú sa dynamicky cez src/utils/lazyFonts.ts,
- * volané v komponentoch, ktoré ich naozaj používajú (Shadow Arena, signature).
+ * Niche fonts (Dancing Script, Cinzel, Creepster, Crimson Pro) are no longer loaded
+ * via render-blocking @import. They are injected dynamically via src/utils/lazyFonts.ts,
+ * called only in components that actually use them (Shadow Arena, signature).
  */
 
 /* ===== Shadow Arena — Gothic Horror Theme ===== */

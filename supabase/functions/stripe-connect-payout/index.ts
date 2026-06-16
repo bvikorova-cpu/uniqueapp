@@ -1,6 +1,6 @@
-// Konsolidovaný Stripe Connect payout pre kreátorov (Earnings + InstantPayoutButton).
+// Consolidated Stripe Connect payout for creators (Earnings + InstantPayoutButton).
 // - Server-side balance check (get_creator_available_cents)
-// - Race-condition guard (žiadny iný pending/processing payout)
+// - Race-condition guard (no other pending/processing payout)
 // - Audit log do public.creator_payouts
 // - Podporuje method = 'standard' | 'instant' (1% fee pre instant)
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";

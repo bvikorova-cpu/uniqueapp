@@ -54,11 +54,11 @@ interface Props {
 const goLiveSchema = z.object({
   title: z
     .string()
-    .min(3, "Názov musí mať aspoň 3 znaky")
-    .max(100, "Názov môže mať najviac 100 znakov"),
+    .min(3, "Title must be at least 3 characters")
+    .max(100, "Title can be at most 100 characters"),
   description: z
     .string()
-    .max(500, "Popis môže mať najviac 500 znakov")
+    .max(500, "Description can be at most 500 characters")
     .optional()
     .or(z.literal("")),
 });
@@ -154,13 +154,13 @@ export const MegatalentWatchParty = ({ category }: Props) => {
       return;
     }
     if (file.size > MAX_FILE_SIZE) {
-      setThumbnailError("Obrázok môže mať najviac 5 MB");
+      setThumbnailError("Image can be at most 5 MB");
       setThumbnailPreview(null);
       setThumbnailFile(null);
       return;
     }
     if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
-      setThumbnailError("Podporované formáty: JPG, PNG, WebP");
+      setThumbnailError("Supported formats: JPG, PNG, WebP");
       setThumbnailPreview(null);
       setThumbnailFile(null);
       return;
@@ -180,7 +180,7 @@ export const MegatalentWatchParty = ({ category }: Props) => {
       .from("megatalent-thumbnails")
       .upload(path, file, { upsert: true });
     if (upError) {
-      toast({ title: "Chyba nahrávania", description: upError.message, variant: "destructive" });
+      toast({ title: "Upload error", description: upError.message, variant: "destructive" });
       return null;
     }
     const { data: urlData } = supabase.storage
@@ -222,7 +222,7 @@ export const MegatalentWatchParty = ({ category }: Props) => {
       .single();
 
     if (error) {
-      toast({ title: "Chyba", description: error.message, variant: "destructive" });
+      toast({ title: "Error", description: error.message, variant: "destructive" });
       setIsStarting(false);
       return;
     }
@@ -293,7 +293,7 @@ export const MegatalentWatchParty = ({ category }: Props) => {
           <div className="p-4 rounded-xl bg-card/60 border border-border/50 space-y-4">
             <h4 className="text-sm font-semibold flex items-center gap-2">
               <Radio className="h-4 w-4 text-rose-500" />
-              Spustiť nový stream
+              Start a new stream
             </h4>
 
             <Form {...form}>
@@ -303,7 +303,7 @@ export const MegatalentWatchParty = ({ category }: Props) => {
                   name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Názov streamu *</FormLabel>
+                      <FormLabel>Stream title *</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Stream title…"
@@ -324,7 +324,7 @@ export const MegatalentWatchParty = ({ category }: Props) => {
                       <FormLabel>Popis</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Krátky popis streamu…"
+                          placeholder="Short stream description…"
                           maxLength={500}
                           rows={3}
                           {...field}
@@ -359,7 +359,7 @@ export const MegatalentWatchParty = ({ category }: Props) => {
                     <label className="flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border/60 bg-muted/30 hover:bg-muted/50 hover:border-primary/40 transition cursor-pointer py-6 aspect-video max-h-40">
                       <ImagePlus className="h-8 w-8 text-muted-foreground" />
                       <span className="text-xs text-muted-foreground">
-                        Klikni pre výber obrázka (JPG, PNG, WebP, max 5 MB)
+                        Click to choose an image (JPG, PNG, WebP, max 5 MB)
                       </span>
                       <input
                         ref={fileInputRef}
@@ -387,7 +387,7 @@ export const MegatalentWatchParty = ({ category }: Props) => {
                     ) : (
                       <Radio className="h-3.5 w-3.5 mr-1" />
                     )}
-                    {isStarting ? "Spúšťam…" : "Start"}
+                    {isStarting ? "Starting…" : "Start"}
                   </Button>
                   <Button
                     type="button"
@@ -400,7 +400,7 @@ export const MegatalentWatchParty = ({ category }: Props) => {
                       clearThumbnail();
                     }}
                   >
-                    Zrušiť
+                    Cancel
                   </Button>
                 </div>
               </form>

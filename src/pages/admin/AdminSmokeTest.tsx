@@ -251,26 +251,26 @@ export default function AdminSmokeTest() {
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">🤖 Smoke Test – všetky routes</h1>
+        <h1 className="text-3xl font-bold">🤖 Smoke Test – all routes</h1>
         <p className="text-muted-foreground mt-1">
-          Automaticky otestuje {routes.length} routes a označí tie, ktoré padajú (crash, biela obrazovka, JS chyby).
+          Automatically tests {routes.length} routes and flags the ones that fail (crash, blank screen, JS errors).
         </p>
         {IS_MOBILE && (
           <p className="text-xs text-amber-500 mt-2">
-            ⚠️ Si na mobile – test beží pomalšie (1 route naraz) aby nevyčerpal pamäť. Pre rýchlejší beh otvor v desktope.
+            ⚠️ You're on mobile – the test runs slower (1 route at a time) to avoid running out of memory. Open on desktop for a faster run.
           </p>
         )}
       </div>
 
       {resumeAvailable && !running && (
         <Card className="p-4 border-amber-500/50 bg-amber-500/5">
-          <h2 className="font-semibold mb-2">🔄 Nedokončený test nájdený</h2>
+          <h2 className="font-semibold mb-2">🔄 Unfinished test found</h2>
           <p className="text-sm text-muted-foreground mb-3">
-            Predchádzajúci beh sa prerušil. Môžeš pokračovať tam, kde si skončil.
+            The previous run was interrupted. You can resume where you left off.
           </p>
           <div className="flex gap-2">
-            <Button onClick={resume} size="sm">▶ Pokračovať</Button>
-            <Button onClick={discardResume} variant="outline" size="sm">Zahodiť</Button>
+            <Button onClick={resume} size="sm">▶ Resume</Button>
+            <Button onClick={discardResume} variant="outline" size="sm">Discard</Button>
           </div>
         </Card>
       )}
@@ -278,21 +278,21 @@ export default function AdminSmokeTest() {
       <Card className="p-4 space-y-3">
         <div className="flex gap-2 flex-wrap">
           <Button variant={scope === "public" ? "default" : "outline"} size="sm" onClick={() => setScope("public")} disabled={running}>
-            Verejné routes ({ALL_ROUTES.filter((r) => !r.startsWith("/admin") && !r.startsWith("/__e2e")).length})
+            Public routes ({ALL_ROUTES.filter((r) => !r.startsWith("/admin") && !r.startsWith("/__e2e")).length})
           </Button>
           <Button variant={scope === "all" ? "default" : "outline"} size="sm" onClick={() => setScope("all")} disabled={running}>
-            Všetky vrátane /admin ({ALL_ROUTES.length})
+            All including /admin ({ALL_ROUTES.length})
           </Button>
         </div>
 
         <div className="flex gap-2">
           {!running ? (
-            <Button onClick={run} size="lg">▶ Spustiť smoke test</Button>
+            <Button onClick={run} size="lg">▶ Start smoke test</Button>
           ) : (
-            <Button onClick={stop} variant="destructive" size="lg">⏹ Zastaviť</Button>
+            <Button onClick={stop} variant="destructive" size="lg">⏹ Stop</Button>
           )}
           {Object.keys(results).length > 0 && (
-            <Button onClick={exportCSV} variant="outline">Exportovať CSV</Button>
+            <Button onClick={exportCSV} variant="outline">Export CSV</Button>
           )}
         </div>
 
@@ -300,7 +300,8 @@ export default function AdminSmokeTest() {
           <div className="space-y-2">
             <Progress value={progress} />
             <div className="flex gap-4 text-sm flex-wrap">
-              <span>Hotovo: <strong>{done}/{routes.length}</strong></span>
+              <span>Done: <strong>{done}/{routes.length}</strong></span>
+
               <Badge variant="default">✓ Pass: {summary.pass}</Badge>
               <Badge variant="destructive">✗ Fail: {summary.fail}</Badge>
               <Badge variant="secondary">⬜ Blank: {summary.blank}</Badge>
@@ -312,7 +313,7 @@ export default function AdminSmokeTest() {
 
       {failedRoutes.length > 0 && (
         <Card className="p-4">
-          <h2 className="text-xl font-semibold mb-3">🔴 Routes s problémom ({failedRoutes.length})</h2>
+          <h2 className="text-xl font-semibold mb-3">🔴 Routes with problems ({failedRoutes.length})</h2>
           <ScrollArea className="h-[400px]">
             <div className="space-y-2">
               {failedRoutes.map((r) => (

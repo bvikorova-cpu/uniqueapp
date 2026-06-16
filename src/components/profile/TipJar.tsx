@@ -43,7 +43,7 @@ export const TipJar = ({ recipientId, recipientName, currentUserId }: TipJarProp
 
   const startCheckout = async () => {
     if (!currentUserId) {
-      toast({ title: "Prihláste sa", description: "Pre poslanie tipu sa najprv prihláste.", variant: "destructive" });
+      toast({ title: "Sign in", description: "Sign in first to send a tip.", variant: "destructive" });
       return;
     }
     if (!valid) return;
@@ -56,7 +56,7 @@ export const TipJar = ({ recipientId, recipientName, currentUserId }: TipJarProp
       if (data?.url) {
         window.location.href = data.url as string;
       } else {
-        throw new Error("Nepodarilo sa získať odkaz na platbu.");
+        throw new Error("Failed to get the payment link.");
       }
     } catch (e: any) {
       toast({ title: "Tip zlyhal", description: e.message ?? String(e), variant: "destructive" });
@@ -87,7 +87,7 @@ export const TipJar = ({ recipientId, recipientName, currentUserId }: TipJarProp
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Heart className="h-5 w-5 text-violet-400" />
-            {step === "select" ? `Pošli tip pre ${recipientName}` : "Potvrdiť platbu"}
+            {step === "select" ? `Send a tip to ${recipientName}` : "Confirm payment"}
           </DialogTitle>
         </DialogHeader>
 
@@ -112,7 +112,7 @@ export const TipJar = ({ recipientId, recipientName, currentUserId }: TipJarProp
             </div>
 
             <div>
-              <label className="text-xs text-muted-foreground">Vlastná suma (€{MIN}–€{MAX})</label>
+              <label className="text-xs text-muted-foreground">Custom amount (€{MIN}–€{MAX})</label>
               <Input
                 type="number"
                 min={MIN}
@@ -122,12 +122,12 @@ export const TipJar = ({ recipientId, recipientName, currentUserId }: TipJarProp
                 onChange={(e) => setAmount(Number(e.target.value))}
               />
               {!valid && (
-                <p className="text-xs text-destructive mt-1">Suma musí byť €{MIN}–€{MAX}.</p>
+                <p className="text-xs text-destructive mt-1">Amount must be €{MIN}–€{MAX}.</p>
               )}
             </div>
 
             <Textarea
-              placeholder="Voliteľná správa (max 280 znakov)…"
+              placeholder="Optional message (max 280 characters)…"
               value={message}
               onChange={(e) => setMessage(e.target.value.slice(0, 280))}
               rows={3}
@@ -138,17 +138,17 @@ export const TipJar = ({ recipientId, recipientName, currentUserId }: TipJarProp
               disabled={!valid}
               className="w-full bg-gradient-to-r from-violet-600 to-purple-600 text-white font-black"
             >
-              Pokračovať
+              Continue
             </Button>
             <p className="text-[10px] text-muted-foreground text-center">
-              Bezpečná platba cez Stripe. Platformový poplatok {FEE_PCT}%.
+              Secure payment via Stripe. Platform fee {FEE_PCT}%.
             </p>
           </div>
         ) : (
           <div className="space-y-3">
             <div className="rounded-lg border border-violet-400/30 bg-violet-500/5 p-3 space-y-1.5 text-sm">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Príjemca</span>
+                <span className="text-muted-foreground">Recipient</span>
                 <span className="font-semibold">{recipientName}</span>
               </div>
               <div className="flex justify-between">
@@ -156,7 +156,7 @@ export const TipJar = ({ recipientId, recipientName, currentUserId }: TipJarProp
                 <span className="font-semibold">€{amount.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-xs">
-                <span className="text-muted-foreground">Platformový poplatok ({FEE_PCT}%)</span>
+                <span className="text-muted-foreground">Platform fee ({FEE_PCT}%)</span>
                 <span>-€{fee.toFixed(2)}</span>
               </div>
               <div className="flex justify-between border-t border-violet-400/20 pt-1.5 text-base">
@@ -165,7 +165,7 @@ export const TipJar = ({ recipientId, recipientName, currentUserId }: TipJarProp
               </div>
               {message && (
                 <div className="border-t border-violet-400/20 pt-1.5">
-                  <p className="text-xs text-muted-foreground">Tvoja správa:</p>
+                  <p className="text-xs text-muted-foreground">Your message:</p>
                   <p className="italic text-sm">"{message}"</p>
                 </div>
               )}
@@ -178,7 +178,7 @@ export const TipJar = ({ recipientId, recipientName, currentUserId }: TipJarProp
                 disabled={loading}
                 className="flex-1"
               >
-                Späť
+                Back
               </Button>
               <Button
                 onClick={startCheckout}
@@ -188,18 +188,18 @@ export const TipJar = ({ recipientId, recipientName, currentUserId }: TipJarProp
                 {loading ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-1 animate-spin" />
-                    Presmerovávam…
+                    Redirecting…
                   </>
                 ) : (
                   <>
                     <Sparkles className="h-4 w-4 mr-1" />
-                    Zaplatiť €{amount.toFixed(2)}
+                    Pay €{amount.toFixed(2)}
                   </>
                 )}
               </Button>
             </div>
             <p className="text-[10px] text-muted-foreground text-center">
-              Budeš presmerovaný na zabezpečenú stránku Stripe Checkout.
+              You will be redirected to the secure Stripe Checkout page.
             </p>
           </div>
         )}

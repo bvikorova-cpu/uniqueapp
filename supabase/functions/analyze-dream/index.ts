@@ -66,19 +66,19 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: "Si odborník na analýzu snov a symboliku. Analyzuj sny a poskytni hlbokú interpretáciu. Odpovedaj v slovenčine ako JSON."
+            content: "You are an expert in dream analysis and symbolism. Analyze dreams and provide deep interpretations. Respond in English as JSON."
           },
           {
             role: "user",
-            content: `Analyzuj tento sen a poskytni detailnú interpretáciu:
+            content: `Analyze this dream and provide a detailed interpretation:
 
 "${dreamContent}"
 
-Odpovedaj ako JSON s týmito kľúčmi:
-- analysis: celková analýza sna (text)
-- themes: pole hlavných tém (pole stringov)
-- emotions: pole identifikovaných emócií (pole stringov)
-- symbols: pole objektov s kľúčmi "symbol" a "meaning"`
+Respond as JSON with the following keys:
+- analysis: overall dream analysis (text)
+- themes: array of main themes (array of strings)
+- emotions: array of identified emotions (array of strings)
+- symbols: array of objects with keys "symbol" and "meaning"`
           }
         ],
         max_completion_tokens: 1000,
@@ -108,9 +108,9 @@ Odpovedaj ako JSON s týmito kľúčmi:
     } catch {
       analysisData = {
         analysis: content,
-        themes: ["Každodenné zážitky", "Emočné spracovanie"],
-        emotions: ["Zvedavosť", "Sebaobjavovanie"],
-        symbols: [{ symbol: "Sen", meaning: content }]
+        themes: ["Daily experiences", "Emotional processing"],
+        emotions: ["Curiosity", "Self-discovery"],
+        symbols: [{ symbol: "Dream", meaning: content }]
       };
     }
 
