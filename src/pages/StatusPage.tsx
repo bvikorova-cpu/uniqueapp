@@ -39,15 +39,21 @@ const StatusPage = () => {
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase
-        .from("status_incidents")
-        .select("*")
-        .order("started_at", { ascending: false })
-        .limit(30);
-      setIncidents((data as Incident[]) || []);
-      setLoading(false);
+      try {
+        const { data } = await supabase
+          .from("status_incidents")
+          .select("*")
+          .order("started_at", { ascending: false })
+          .limit(30);
+        setIncidents((data as Incident[]) || []);
+      } catch (e) {
+        console.error("[status] failed to load incidents", e);
+      } finally {
+        setLoading(false);
+      }
     })();
   }, []);
+
 
   const active = incidents.filter((i) => !i.resolved_at);
   const allOk = active.length === 0;
