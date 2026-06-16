@@ -619,6 +619,72 @@ export default function AboutPlatform() {
           </div>
         </div>
 
+        {/* Why Unique over standalone AI */}
+        <motion.section
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-10"
+        >
+          <Card className="border-primary/20 bg-gradient-to-br from-primary/5 via-background to-accent/5 overflow-hidden">
+            <CardContent className="p-6 sm:p-8">
+              <div className="flex items-center gap-2 mb-4">
+                <Cpu className="w-5 h-5 text-primary" />
+                <h2 className="text-xl sm:text-2xl font-black">Why Unique Beats Standalone AI</h2>
+              </div>
+              <p className="text-sm text-muted-foreground mb-6 max-w-3xl">
+                Google Gemini, ChatGPT and other AI chats are powerful — but they are just a blank conversation box.
+                Unique wraps cutting-edge AI inside a complete social ecosystem, so you get intelligence <em>and</em> community, earnings, memory and purpose-built tools.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {[
+                  {
+                    icon: Brain,
+                    title: "Persistent Memory",
+                    desc: "Our AI companions, mentors and clones remember your name, goals and story across months — not just the current chat thread."
+                  },
+                  {
+                    icon: Users,
+                    title: "Built-In Social Layer",
+                    desc: "Share AI-generated art, astrology readings or dream analyses to your Wall, compete in AI-voted contests and build a follower economy."
+                  },
+                  {
+                    icon: Zap,
+                    title: "40+ Specialized Tools",
+                    desc: "From tattoo design and pet translation to handwriting analysis and video-ad generation — each tool is tuned for a single job, not generic prompts."
+                  },
+                  {
+                    icon: Coins,
+                    title: "Earn While You Create",
+                    desc: "Sell memberships, offer paid DMs, win contest prizes and collect tips. The platform pays you back; a chatbot never does."
+                  },
+                  {
+                    icon: Globe,
+                    title: "One Passport, 60+ Worlds",
+                    desc: "Dating, jobs, education, spirituality, gaming, fundraising and creator studios — all linked to one profile and one credit wallet."
+                  },
+                  {
+                    icon: Wallet,
+                    title: "Fair Pay-Per-Use Pricing",
+                    desc: "Buy credits once and spend them only on what you use. No €20/month subscription for features you never touch."
+                  },
+                ].map((item) => (
+                  <div key={item.title} className="rounded-xl border border-border/50 bg-card/40 backdrop-blur-sm p-4 hover:border-primary/40 transition-colors">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <item.icon className="w-4 h-4 text-primary" />
+                      </div>
+                      <h3 className="font-bold text-sm">{item.title}</h3>
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.section>
+
         {/* Search + jump nav */}
         <div className="mb-8 space-y-4">
           <div className="relative max-w-2xl mx-auto">
