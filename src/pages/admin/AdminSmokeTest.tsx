@@ -313,7 +313,7 @@ export default function AdminSmokeTest() {
 
       {failedRoutes.length > 0 && (
         <Card className="p-4">
-          <h2 className="text-xl font-semibold mb-3">🔴 Routes s problémom ({failedRoutes.length})</h2>
+          <h2 className="text-xl font-semibold mb-3">🔴 Routes with problems ({failedRoutes.length})</h2>
           <ScrollArea className="h-[400px]">
             <div className="space-y-2">
               {failedRoutes.map((r) => (
