@@ -59,7 +59,7 @@ export function HeroSlideshow() {
         );
       })}
 
-      {/* Indikátory */}
+      {/* Indicators */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-1.5">
         {SLIDES.map((_, i) => (
           <button

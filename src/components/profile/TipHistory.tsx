@@ -158,7 +158,7 @@ export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-bold flex items-center gap-2">
           <Coffee className="h-4 w-4 text-violet-400" />
-          Prijaté tipy
+          Received tips
         </h3>
         <TrendingUp className="h-4 w-4 text-violet-400" />
       </div>
@@ -169,11 +169,11 @@ export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
           <div className="font-black text-lg">{stats?.total_count ?? 0}</div>
         </div>
         <div className="rounded-lg bg-violet-500/10 border border-violet-400/20 p-2 text-center">
-          <div className="text-[10px] text-muted-foreground uppercase">Suma</div>
+          <div className="text-[10px] text-muted-foreground uppercase">Amount</div>
           <div className="font-black text-lg">€{totalEur.toFixed(2)}</div>
         </div>
         <div className="rounded-lg bg-violet-500/10 border border-violet-400/20 p-2 text-center">
-          <div className="text-[10px] text-muted-foreground uppercase">Netto</div>
+          <div className="text-[10px] text-muted-foreground uppercase">Net</div>
           <div className="font-black text-lg text-violet-300">€{netEur.toFixed(2)}</div>
         </div>
       </div>
@@ -241,7 +241,7 @@ export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
                             ) : (
                               <Undo2 className="h-3 w-3" />
                             )}
-                            Vrátiť
+                            Refund
                           </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
@@ -260,7 +260,7 @@ export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
                               {refundingId === t.id ? (
                                 <Loader2 className="h-3 w-3 animate-spin mr-1" />
                               ) : null}
-                              Vrátiť
+                              Refund
                             </AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>

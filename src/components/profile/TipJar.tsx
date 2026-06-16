@@ -178,7 +178,7 @@ export const TipJar = ({ recipientId, recipientName, currentUserId }: TipJarProp
                 disabled={loading}
                 className="flex-1"
               >
-                Späť
+                Back
               </Button>
               <Button
                 onClick={startCheckout}

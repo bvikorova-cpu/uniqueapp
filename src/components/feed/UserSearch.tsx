@@ -96,7 +96,7 @@ const UserSearch = () => {
 
         {!searching && debounced.trim() && searchResults.length === 0 && (
           <p className="text-center text-muted-foreground py-4">
-            Nenašli sa žiadni používatelia
+            No users found
           </p>
         )}
       </Card>
