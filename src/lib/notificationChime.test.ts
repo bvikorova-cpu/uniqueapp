@@ -37,7 +37,7 @@ describe("notificationChime", () => {
     delete (window as any).AudioContext;
   });
 
-  it("zahrá zostupný triad (5 tónov) pri prvom volaní", async () => {
+  it("plays a descending triad (5 tones) on first call", async () => {
     const mod = await import("./notificationChime");
     const acInstances: FakeAudioContext[] = [];
     (window as any).AudioContext = class extends FakeAudioContext {
@@ -48,11 +48,11 @@ describe("notificationChime", () => {
     };
     mod.playNotificationChime();
     expect(acInstances.length).toBe(1);
-    // E5, C5, G4, G3 pad, sparkle = 5 oscilátorov
+    // E5, C5, G4, G3 pad, sparkle = 5 oscillators
     expect(acInstances[0].createOscillator).toHaveBeenCalledTimes(5);
   });
 
-  it("debounce: druhé volanie do 400 ms preskočí", async () => {
+  it("debounce: second call within 400 ms is skipped", async () => {
     const mod = await import("./notificationChime");
     const acInstances: FakeAudioContext[] = [];
     (window as any).AudioContext = class extends FakeAudioContext {
@@ -67,7 +67,8 @@ describe("notificationChime", () => {
     expect(acInstances[0].createOscillator.mock.calls.length).toBe(callsAfterFirst);
   });
 
-  it("bez AudioContext API tichý fallback (žiadny throw)", async () => {
+  it("silent fallback without AudioContext API (no throw)", async () => {
+
     delete (window as any).AudioContext;
     delete (window as any).webkitAudioContext;
     const mod = await import("./notificationChime");

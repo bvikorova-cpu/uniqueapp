@@ -1,12 +1,13 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 /**
- * Overuje:
- *  1) Keď je AudioContext v stave "suspended" (autoplay policy), playNotificationChime
- *     nespadne a po user-gesture (pointerdown) sa context resume-ne.
- *  2) Keď AudioContext konštruktor hodí (napr. permission denied / no API),
- *     volanie playNotificationChime sa potichu vráti bez throw.
+ * Verifies:
+ *  1) When AudioContext is in the "suspended" state (autoplay policy),
+ *     playNotificationChime does not crash and the context resumes after a user gesture (pointerdown).
+ *  2) When the AudioContext constructor throws (e.g. permission denied / no API),
+ *     calling playNotificationChime returns silently without throwing.
  */
+
 
 class SuspendedOsc {
   type = "sine";
@@ -34,7 +35,7 @@ describe("notificationChime — autoplay / permissions", () => {
     delete (window as any).webkitAudioContext;
   });
 
-  it("suspended AudioContext: nespadne a resume sa zavolá (raz pri play, raz pri user gesture)", async () => {
+  it("suspended AudioContext: does not crash and resume is called (once on play, once on user gesture)", async () => {
     const resume = vi.fn(() => Promise.resolve());
     class SuspendedAC {
       state = "suspended";
@@ -48,17 +49,17 @@ describe("notificationChime — autoplay / permissions", () => {
 
     const mod = await import("./notificationChime");
     expect(() => mod.playNotificationChime()).not.toThrow();
-    // resume volaný počas getCtx()
+    // resume called during getCtx()
     expect(resume).toHaveBeenCalled();
 
     const before = resume.mock.calls.length;
-    // simulácia user-gesture odomknutia
+    // simulate user-gesture unlock
     window.dispatchEvent(new Event("pointerdown"));
     await Promise.resolve();
     expect(resume.mock.calls.length).toBeGreaterThanOrEqual(before);
   });
 
-  it("AudioContext konštruktor throws → tichý fallback, žiadny crash", async () => {
+  it("AudioContext constructor throws → silent fallback, no crash", async () => {
     (window as any).AudioContext = class {
       constructor() {
         throw new Error("NotAllowedError: permission denied");
@@ -68,7 +69,7 @@ describe("notificationChime — autoplay / permissions", () => {
     expect(() => mod.playNotificationChime()).not.toThrow();
   });
 
-  it("createOscillator hodí výnimku → nešíri sa von z playNotificationChime", async () => {
+  it("createOscillator throws → does not propagate out of playNotificationChime", async () => {
     class ThrowingAC {
       state = "running";
       currentTime = 0;
@@ -81,17 +82,18 @@ describe("notificationChime — autoplay / permissions", () => {
     }
     (window as any).AudioContext = ThrowingAC;
     const mod = await import("./notificationChime");
-    // V súčasnej implementácii sa výnimka môže propagovať — overujeme, že nezhodí proces
-    // a buď je odchytená, alebo je deterministická (Error). Tolerujeme oboje.
+    // In the current implementation the exception may propagate — we verify it does not crash the process
+    // and is either caught or deterministic (Error). Both are tolerated.
     let threw: unknown = null;
     try {
       mod.playNotificationChime();
     } catch (e) {
       threw = e;
     }
-    // Ak hodí, musí to byť normálna Error inštancia (nie undefined / nezachytiteľná)
+    // If it throws, it must be a normal Error instance (not undefined / uncatchable)
     if (threw !== null) {
       expect(threw).toBeInstanceOf(Error);
     }
   });
 });
+
