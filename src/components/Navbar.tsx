@@ -250,18 +250,17 @@ const Navbar = () => {
     <nav className="fixed top-0 w-full bg-white dark:bg-background backdrop-blur-xl border-b border-border/50 z-50 shadow-[0_1px_20px_rgba(0,0,0,0.06)]">
       <div className="container mx-auto px-4">
         <div className="flex items-baseline justify-between h-16 pt-4">
-          <Link to="/" className="flex items-center group lg:mr-8 xl:mr-12">
-            <img src={uniqueLogo} alt="Unique Logo" className="h-8 w-8 object-contain transition-transform duration-300 group-hover:scale-110" />
-            {/* Brand wordmark — fixed colors, independent of theme switcher */}
+          <Link to="/" className="flex items-baseline group lg:mr-8 xl:mr-12">
+            {/* Brand wordmark — fully text-based so U matches nique */}
             <span
-              className="text-3xl font-extrabold bg-clip-text text-transparent -ml-1 transition-all duration-500"
+              className="text-3xl font-extrabold bg-clip-text text-transparent transition-all duration-500 group-hover:scale-110"
               style={{
                 backgroundImage:
                   "linear-gradient(90deg, hsl(270 91% 60%), hsl(330 100% 60%), hsl(270 91% 60%))",
                 backgroundSize: "200% auto",
               }}
             >
-              nique
+              Unique
             </span>
             <Age16Badge size="xs" withLabel={false} className="ml-2 self-center" />
           </Link>
