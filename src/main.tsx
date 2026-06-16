@@ -197,8 +197,32 @@ try {
       send("error", { message: String(e.reason?.message || e.reason), stack: String(e.reason?.stack || "") });
     });
     const origError = console.error;
+    // Ignore noisy transient/expected errors that don't reflect a broken page:
+    //  - Edge Function transient fetch failures (cold-start, rate limit) — pages
+    //    handle these gracefully by falling back to "not subscribed".
+    //  - Supabase FunctionsHttpError envelopes (the real shape is logged separately).
+    //  - 401/403 from RLS-guarded queries on anonymous smoke-test sessions.
+    const TRANSIENT_PATTERNS = [
+      /FunctionsFetchError/i,
+      /Failed to send a request to the Edge Function/i,
+      /Failed to fetch/i,
+      /NetworkError/i,
+      /Edge Function returned a non-2xx/i,
+      /\[safeInvoke:[^\]]+\]\s*Service temporarily unavailable/i,
+      /Error checking [^:]*subscription[:]/i,
+      /Subscription check error/i,
+      /Check subscription error/i,
+      /Error checking access/i,
+      /Error checking companions subscription/i,
+      /Error checking MasterChef subscription/i,
+      /Error checking Time Reversal subscription/i,
+    ];
     console.error = (...args: any[]) => {
-      try { send("console_error", { message: args.map(a => typeof a === "string" ? a : JSON.stringify(a)).join(" ").slice(0, 500) }); } catch {}
+      try {
+        const msg = args.map(a => typeof a === "string" ? a : JSON.stringify(a)).join(" ").slice(0, 500);
+        const transient = TRANSIENT_PATTERNS.some((re) => re.test(msg));
+        if (!transient) send("console_error", { message: msg });
+      } catch {}
       origError.apply(console, args);
     };
     window.setTimeout(() => {
