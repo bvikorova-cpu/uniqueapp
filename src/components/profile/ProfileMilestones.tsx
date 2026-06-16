@@ -27,17 +27,19 @@ const LEVELS = [
 
 export function ProfileMilestones({ userId }: ProfileMilestonesProps) {
   const [stats, setStats] = useState<Stats | null>(null);
+  const [realXp, setRealXp] = useState<number | null>(null);
 
   useEffect(() => {
     if (!userId) return;
     (async () => {
       try {
-        const [votes, comments, uploads, followers, profile] = await Promise.all([
+        const [votes, comments, uploads, followers, profile, points] = await Promise.all([
           (supabase as any).from("megatalent_votes").select("*", { count: "exact", head: true }).eq("user_id", userId),
           (supabase as any).from("post_comments").select("*", { count: "exact", head: true }).eq("user_id", userId),
           (supabase as any).from("megatalent_entries").select("*", { count: "exact", head: true }).eq("user_id", userId),
           (supabase as any).from("follows").select("*", { count: "exact", head: true }).eq("following_id", userId),
           (supabase as any).from("profiles_public").select("created_at").eq("id", userId).maybeSingle(),
+          (supabase as any).from("user_points").select("total_points").eq("user_id", userId).maybeSingle(),
         ]);
         const created = (profile.data as any)?.created_at;
         const days = created ? Math.max(1, Math.floor((Date.now() - new Date(created).getTime()) / 86400000)) : 0;
@@ -48,6 +50,7 @@ export function ProfileMilestones({ userId }: ProfileMilestonesProps) {
           followers: followers.count || 0,
           joinedDays: days,
         });
+        setRealXp((points.data as any)?.total_points ?? null);
       } catch {
         setStats({ votes: 0, comments: 0, uploads: 0, followers: 0, joinedDays: 0 });
       }
@@ -56,7 +59,7 @@ export function ProfileMilestones({ userId }: ProfileMilestonesProps) {
 
   if (!stats) return null;
 
-  const xp = stats.votes * 2 + stats.comments * 3 + stats.uploads * 25 + stats.followers * 10;
+  const xp = realXp ?? (stats.votes * 2 + stats.comments * 3 + stats.uploads * 25 + stats.followers * 10);
   const currentLevel = [...LEVELS].reverse().find((l) => xp >= l.min) ?? LEVELS[0];
   const nextLevel = LEVELS.find((l) => l.min > xp);
   const progress = nextLevel
