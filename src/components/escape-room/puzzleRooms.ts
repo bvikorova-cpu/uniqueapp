@@ -328,7 +328,7 @@ export const horrorRooms: RoomData[] = [
         position: angleToPosition(-60, 15),
         type: "clue",
         label: "Writing in blood",
-        description: "On the wall is written: 'BEŽI' - but the last letter is smudged. Was it I or U?"
+        description: "On the wall is written: 'RU_' - but the last letter is smudged. Was it N or M?"
       },
       {
         id: "corpse-hand",
