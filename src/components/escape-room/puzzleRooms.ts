@@ -317,7 +317,7 @@ export const horrorRooms: RoomData[] = [
           answer: "32",
           reward: {
             id: "flashlight",
-            name: "Baterka",
+            name: "Flashlight",
             icon: "🔦",
             description: "Weak flashlight. It illuminates dark places."
           }
@@ -328,13 +328,13 @@ export const horrorRooms: RoomData[] = [
         position: angleToPosition(-60, 15),
         type: "clue",
         label: "Writing in blood",
-        description: "On the wall is written: 'BEŽI' - but the last letter is smudged. Was it I or U?"
+        description: "On the wall is written: 'RU_' - but the last letter is smudged. Was it N or M?"
       },
       {
         id: "corpse-hand",
         position: angleToPosition(90, -25),
         type: "puzzle",
-        label: "Mŕtva ruka",
+        label: "Dead Hand",
         puzzle: {
           type: "riddle",
           question: "A dead hand holds a paper: 'I am alive without breath, cold but hot with fears. What am I?'",
