@@ -49,21 +49,37 @@ const AdminTransactions = () => {
     try {
       let query = supabase
         .from("transactions")
-        .select(`
-          *,
-          seller_profile:profiles!transactions_seller_id_fkey(full_name, email, iban),
-          buyer_profile:profiles!transactions_buyer_id_fkey(full_name, email)
-        `)
+        .select("*")
         .order("created_at", { ascending: false });
 
       if (filter !== "all") {
         query = query.eq("status", filter);
       }
 
-      const { data, error } = await query;
-
+      const { data: txData, error } = await query;
       if (error) throw error;
-      setTransactions((data as any) || []);
+
+      const txs = (txData as any[]) || [];
+      const userIds = Array.from(
+        new Set(txs.flatMap((t) => [t.seller_id, t.buyer_id]).filter(Boolean))
+      );
+
+      let profilesById: Record<string, any> = {};
+      if (userIds.length > 0) {
+        const { data: profiles } = await supabase
+          .from("profiles")
+          .select("id, full_name, email, iban")
+          .in("id", userIds);
+        profilesById = Object.fromEntries((profiles || []).map((p: any) => [p.id, p]));
+      }
+
+      const enriched = txs.map((t) => ({
+        ...t,
+        seller_profile: profilesById[t.seller_id] || null,
+        buyer_profile: profilesById[t.buyer_id] || null,
+      }));
+
+      setTransactions(enriched as any);
     } catch (error) {
       console.error("Error loading transactions:", error);
       toast.error("Failed to load transactions");
