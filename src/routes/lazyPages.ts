@@ -64,8 +64,6 @@ export const Marketplace = lazy(() => import("@/pages/Marketplace"));
 export const Bazaar = lazy(() => import("@/pages/Bazaar"));
 export const Auction = lazy(() => import("@/pages/Auction"));
 export const MyAuctions = lazy(() => import("@/pages/MyAuctions"));
-export const Shop = lazy(() => import("@/pages/Shop"));
-export const ProductDetail = lazy(() => import("@/pages/ProductDetail"));
 export const PropertyMarketplace = lazy(() => import("@/pages/PropertyMarketplace"));
 export const PropertySubmission = lazy(() => import("@/pages/PropertySubmission"));
 export const MyProperties = lazy(() => import("@/pages/MyProperties"));

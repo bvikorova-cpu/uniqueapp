@@ -1147,8 +1147,6 @@ const App = () => {
                         <Route path="/kids-stories/bedtime" element={<BedtimeStories />} />
                         <Route path="/kids-stories/games" element={<StoryGames />} />
                         <Route path="/admin/image-editor" element={<ProtectedRoute requireAdmin={true}><AdminImageEditor /></ProtectedRoute>} />
-                        <Route path="/shop" element={<Shop />} />
-                        <Route path="/product/:handle" element={<ProductDetail />} />
                         <Route path="/iq-platform" element={<IQPlatform />} />
                         <Route path="/iq-platform/lab" element={<IQBrainLab />} />
                         <Route path="/iq/lab" element={<IQBrainLab />} />
