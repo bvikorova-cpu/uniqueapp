@@ -279,6 +279,12 @@ export function resolveProxy(
   if (functionName === "check-masterchef-subscription") {
     return { target: "check-subscription", body: { ...b, tier: "masterchef" } };
   }
+  if (functionName === "check-megatalent-subscription") {
+    return { target: "check-subscription", body: { ...b, tier: "megatalent" } };
+  }
+  if (functionName === "check-lottery-subscription") {
+    return { target: "check-subscription", body: { ...b, tier: "lottery" } };
+  }
   if (functionName === "check-time-reversal-subscription") {
     return { target: "check-subscription", body: { ...b, tier: "time_reversal" } };
   }
