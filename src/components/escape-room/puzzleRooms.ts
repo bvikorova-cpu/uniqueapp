@@ -334,7 +334,7 @@ export const horrorRooms: RoomData[] = [
         id: "corpse-hand",
         position: angleToPosition(90, -25),
         type: "puzzle",
-        label: "Mŕtva ruka",
+        label: "Dead Hand",
         puzzle: {
           type: "riddle",
           question: "A dead hand holds a paper: 'I am alive without breath, cold but hot with fears. What am I?'",
