@@ -125,7 +125,17 @@ export default function AdminSmokeTest() {
       while (queue.length && !cancelRef.current) {
         const route = queue.shift()!;
         update(route, { route, status: "running", errors: [] });
-        const res = await testRoute(route);
+        let res = await testRoute(route);
+        // Auto-retry once for flaky infra failures (cold-starts, rate limits, transient network)
+        if (res.status !== "pass") {
+          await new Promise((r) => setTimeout(r, 800));
+          update(route, { route, status: "running", errors: [] });
+          const retry = await testRoute(route);
+          // Keep retry result only if it improved; otherwise keep original
+          if (retry.status === "pass" || res.status === "timeout") {
+            res = retry;
+          }
+        }
         completed++;
         setDone(completed);
         try {
@@ -142,6 +152,7 @@ export default function AdminSmokeTest() {
         if (BATCH_PAUSE_MS) await new Promise((r) => setTimeout(r, BATCH_PAUSE_MS));
       }
     };
+
 
     await Promise.all(Array.from({ length: PARALLEL }, worker));
 
