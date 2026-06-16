@@ -180,7 +180,7 @@ export const MegatalentWatchParty = ({ category }: Props) => {
       .from("megatalent-thumbnails")
       .upload(path, file, { upsert: true });
     if (upError) {
-      toast({ title: "Chyba nahrávania", description: upError.message, variant: "destructive" });
+      toast({ title: "Upload error", description: upError.message, variant: "destructive" });
       return null;
     }
     const { data: urlData } = supabase.storage
@@ -222,7 +222,7 @@ export const MegatalentWatchParty = ({ category }: Props) => {
       .single();
 
     if (error) {
-      toast({ title: "Chyba", description: error.message, variant: "destructive" });
+      toast({ title: "Error", description: error.message, variant: "destructive" });
       setIsStarting(false);
       return;
     }
@@ -293,7 +293,7 @@ export const MegatalentWatchParty = ({ category }: Props) => {
           <div className="p-4 rounded-xl bg-card/60 border border-border/50 space-y-4">
             <h4 className="text-sm font-semibold flex items-center gap-2">
               <Radio className="h-4 w-4 text-rose-500" />
-              Spustiť nový stream
+              Start a new stream
             </h4>
 
             <Form {...form}>

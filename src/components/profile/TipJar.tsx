@@ -56,7 +56,7 @@ export const TipJar = ({ recipientId, recipientName, currentUserId }: TipJarProp
       if (data?.url) {
         window.location.href = data.url as string;
       } else {
-        throw new Error("Nepodarilo sa získať odkaz na platbu.");
+        throw new Error("Failed to get the payment link.");
       }
     } catch (e: any) {
       toast({ title: "Tip zlyhal", description: e.message ?? String(e), variant: "destructive" });
@@ -138,7 +138,7 @@ export const TipJar = ({ recipientId, recipientName, currentUserId }: TipJarProp
               disabled={!valid}
               className="w-full bg-gradient-to-r from-violet-600 to-purple-600 text-white font-black"
             >
-              Pokračovať
+              Continue
             </Button>
             <p className="text-[10px] text-muted-foreground text-center">
               Bezpečná platba cez Stripe. Platformový poplatok {FEE_PCT}%.

@@ -48,7 +48,7 @@ async function handleSubscribe(tierToBuy: "premium" | "top_premium") {
     }
   } catch (err: any) {
     toast({
-      title: "Chyba pri checkoute",
+      title: "Checkout error",
       description: err?.message || "Failed to initiate payment.",
       variant: "destructive",
     });
@@ -101,7 +101,7 @@ describe("Megatalent subscribe buttons", () => {
     invoke.mockResolvedValue({ data: null, error: new Error("Stripe key missing") });
     await handleSubscribe("premium");
     expect(toast).toHaveBeenCalledWith(expect.objectContaining({
-      title: "Chyba pri checkoute",
+      title: "Checkout error",
       description: "Stripe key missing",
       variant: "destructive",
     }));
@@ -113,7 +113,7 @@ describe("Megatalent subscribe buttons", () => {
     invoke.mockResolvedValue({ data: {}, error: null });
     await handleSubscribe("top_premium");
     expect(toast).toHaveBeenCalledWith(expect.objectContaining({
-      title: "Chyba pri checkoute",
+      title: "Checkout error",
       description: "Checkout URL was not returned",
       variant: "destructive",
     }));

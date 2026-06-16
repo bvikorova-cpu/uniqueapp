@@ -98,7 +98,7 @@ export const useReferralProgram = () => {
     } catch (error: any) {
       console.error("Error fetching referral stats:", error);
       toast({
-        title: "Chyba",
+        title: "Error",
         description: "Failed to load referral data",
         variant: "destructive",
       });

@@ -182,7 +182,7 @@ export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
         <p className="text-xs text-muted-foreground text-center py-4">Načítavam…</p>
       ) : tips.length === 0 ? (
         <p className="text-xs text-muted-foreground text-center py-4">
-          Zatiaľ žiadne tipy. Buď prvý kto pošle podporu!
+          No tips yet. Be the first to send support!
         </p>
       ) : (
         <ul className="space-y-2 max-h-[28rem] overflow-y-auto">

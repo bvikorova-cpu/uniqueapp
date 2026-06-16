@@ -239,7 +239,7 @@ export const PayoutMethodsManager = ({ onChange }: Props) => {
                         if (data?.url) window.open(data.url, "_blank");
                         else toast({ title: "Onboarding started" });
                       } catch (e: any) {
-                        toast({ title: "Chyba", description: e.message || "Stripe Connect zlyhal", variant: "destructive" });
+                        toast({ title: "Error", description: e.message || "Stripe Connect failed", variant: "destructive" });
                       }
                     }}
                     className="w-full bg-gradient-to-r from-violet-500 to-purple-500 text-white font-bold"

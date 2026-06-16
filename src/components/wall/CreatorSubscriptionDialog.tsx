@@ -41,7 +41,7 @@ export function CreatorSubscriptionDialog({ creatorId }: Props) {
     });
     setCreating(false);
     if (err) {
-      toast({ title: "Chyba", description: err.message, variant: "destructive" });
+      toast({ title: "Error", description: err.message, variant: "destructive" });
     } else {
       setForm({ name: "", description: "", price: 4.99, benefits: "" });
       toast({ title: "Tier created" });
@@ -52,7 +52,7 @@ export function CreatorSubscriptionDialog({ creatorId }: Props) {
     try {
       await subscribe(id);
     } catch (e: any) {
-      toast({ title: "Chyba", description: e.message, variant: "destructive" });
+      toast({ title: "Error", description: e.message, variant: "destructive" });
     }
   };
 

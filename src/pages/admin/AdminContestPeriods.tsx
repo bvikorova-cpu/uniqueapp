@@ -191,7 +191,7 @@ export default function AdminContestPeriods() {
             </div>
           ) : !rows.length ? (
             <div className="p-10 text-center text-muted-foreground text-sm">
-              Žiadne obdobia. Pridaj prvé vyššie.
+              No periods. Add the first one above.
             </div>
           ) : (
             <div className="overflow-x-auto">
