@@ -317,7 +317,7 @@ export const horrorRooms: RoomData[] = [
           answer: "32",
           reward: {
             id: "flashlight",
-            name: "Baterka",
+            name: "Flashlight",
             icon: "🔦",
             description: "Weak flashlight. It illuminates dark places."
           }
