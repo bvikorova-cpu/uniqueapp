@@ -69,7 +69,7 @@ const F1Leaderboard = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-red-900 via-black to-gray-900 flex items-center justify-center">
-        <div className="text-white text-2xl">Loading...</div>
+        <div className="text-white text-2xl">Loading the F1 Global Leaderboard — please wait...</div>
       </div>
     );
   }
