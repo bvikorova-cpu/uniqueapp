@@ -19,11 +19,16 @@ const HomeDecorSubscription = () => {
   useEffect(() => { loadSubscription(); }, []);
 
   const loadSubscription = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { navigate("/auth"); return; }
-    const { data } = await supabase.from('decor_subscriptions').select('*').eq('user_id', user.id).single();
-    setCurrentSubscription(data);
-    setInitialLoading(false);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { setInitialLoading(false); return; }
+      const { data } = await supabase.from('decor_subscriptions').select('*').eq('user_id', user.id).maybeSingle();
+      setCurrentSubscription(data);
+    } catch (e) {
+      console.warn('loadSubscription failed', e);
+    } finally {
+      setInitialLoading(false);
+    }
   };
 
   const handleSubscribe = async () => {
