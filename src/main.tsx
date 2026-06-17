@@ -183,11 +183,16 @@ console.log("[Boot] main.tsx executing");
 try {
   const params = new URLSearchParams(window.location.search);
   if (params.get("smoke") === "1" && window.parent !== window) {
+    // Capture the ORIGINAL pathname before any client-side redirect (e.g. ProtectedRoute → "/").
+    // Parent matches messages by this route, so it must remain stable.
     const route = window.location.pathname + window.location.search.replace(/[?&]smoke=1/, "");
     const errors: string[] = [];
     const send = (type: string, payload: any) => {
       try { window.parent.postMessage({ __smoke: true, type, route, payload }, "*"); } catch { /* noop */ }
     };
+    // Also expose globally so any in-app code (e.g. ProtectedRoute) can opt out of redirects.
+    (window as any).__SMOKE_TEST__ = true;
+    (window as any).__SMOKE_ROUTE__ = route;
     window.addEventListener("error", (e) => {
       errors.push(String(e.message || e.error));
       send("error", { message: String(e.message), stack: String((e.error as Error)?.stack || "") });
