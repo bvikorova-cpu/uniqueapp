@@ -225,12 +225,13 @@ try {
       } catch {}
       origError.apply(console, args);
     };
+    // Wait longer for async data-loading pages to settle before measuring text.
     window.setTimeout(() => {
       const root = document.getElementById("root");
       const text = (root?.textContent ?? "").replace(/\s+/g, "");
       const hasCrash = !!root?.querySelector("[data-unique-crash-overlay]");
       send("ready", { textLength: text.length, hasCrash, errorCount: errors.length });
-    }, 3500);
+    }, 7000);
   }
 } catch { /* noop */ }
 
