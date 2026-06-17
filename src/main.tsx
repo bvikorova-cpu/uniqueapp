@@ -219,6 +219,9 @@ try {
       /Each child in a list should have a unique "key"/i,
       /Warning:.*key/i,
       /Failed to fetch dynamically imported module/i,
+      /\[Boot\]/i,
+      /\[GlobalError\]/i,
+      /ResizeObserver loop/i,
     ];
     console.error = (...args: any[]) => {
       try {
