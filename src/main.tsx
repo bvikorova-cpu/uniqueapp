@@ -216,6 +216,9 @@ try {
       /Error checking companions subscription/i,
       /Error checking MasterChef subscription/i,
       /Error checking Time Reversal subscription/i,
+      /Each child in a list should have a unique "key"/i,
+      /Warning:.*key/i,
+      /Failed to fetch dynamically imported module/i,
     ];
     console.error = (...args: any[]) => {
       try {
