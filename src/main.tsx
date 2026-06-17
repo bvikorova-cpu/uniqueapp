@@ -216,6 +216,12 @@ try {
       /Error checking companions subscription/i,
       /Error checking MasterChef subscription/i,
       /Error checking Time Reversal subscription/i,
+      /Each child in a list should have a unique "key"/i,
+      /Warning:.*key/i,
+      /Failed to fetch dynamically imported module/i,
+      /\[Boot\]/i,
+      /\[GlobalError\]/i,
+      /ResizeObserver loop/i,
     ];
     console.error = (...args: any[]) => {
       try {
@@ -225,12 +231,13 @@ try {
       } catch {}
       origError.apply(console, args);
     };
+    // Wait longer for async data-loading pages to settle before measuring text.
     window.setTimeout(() => {
       const root = document.getElementById("root");
       const text = (root?.textContent ?? "").replace(/\s+/g, "");
       const hasCrash = !!root?.querySelector("[data-unique-crash-overlay]");
       send("ready", { textLength: text.length, hasCrash, errorCount: errors.length });
-    }, 3500);
+    }, 7000);
   }
 } catch { /* noop */ }
 

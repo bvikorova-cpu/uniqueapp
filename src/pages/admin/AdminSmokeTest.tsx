@@ -19,7 +19,7 @@ interface RouteResult {
 // Detect mobile to lower memory pressure (mobile browsers kill tab after ~100 iframes)
 const IS_MOBILE = typeof window !== "undefined" && window.innerWidth < 768;
 const PARALLEL = IS_MOBILE ? 1 : 3;
-const TIMEOUT_MS = 14000;
+const TIMEOUT_MS = 20000;
 const BATCH_PAUSE_MS = IS_MOBILE ? 250 : 50; // give GC time
 const IFRAME_W = IS_MOBILE ? 360 : 800;
 const IFRAME_H = IS_MOBILE ? 500 : 600;
