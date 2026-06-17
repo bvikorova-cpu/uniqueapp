@@ -6,13 +6,13 @@ import de from "@/i18n/locales/de/translation.json";
 import es from "@/i18n/locales/es/translation.json";
 import fr from "@/i18n/locales/fr/translation.json";
 import hu from "@/i18n/locales/hu/translation.json";
-import it from "@/i18n/locales/it/translation.json";
+import itLocale from "@/i18n/locales/it/translation.json";
 import ja from "@/i18n/locales/ja/translation.json";
 import ko from "@/i18n/locales/ko/translation.json";
 import ru from "@/i18n/locales/ru/translation.json";
 import zh from "@/i18n/locales/zh/translation.json";
 
-const locales: Record<string, any> = { en, sk, cs, de, es, fr, hu, it, ja, ko, ru, zh };
+const locales: Record<string, any> = { en, sk, cs, de, es, fr, hu, it: itLocale, ja, ko, ru, zh };
 
 function flatten(obj: any, prefix = ""): string[] {
   const keys: string[] = [];
