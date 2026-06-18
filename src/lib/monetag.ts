@@ -26,12 +26,9 @@ export const MONETAG_ZONE_IDS = Array.from(
   new Set(Object.values(MONETAG_ZONES).filter((z) => z !== "safe-video-reward"))
 );
 
-// Minimum time the ad must be on screen before we count it as a valid view.
-// Monetag SDKs settle their promise at different points (open / close / skip)
-// depending on the zone format, so we measure wall-clock time as the source of
-// truth. Anti-abuse is enforced by the `ref_id` dedup in `award_xp`
-// (1 XP per slot per day per user) — bots cannot spam-claim.
-const MIN_VALID_VIEW_MS = 1500;
+// Anti-abuse is enforced at the RPC layer via `ref_id` dedup, not via timing
+// gates here. Monetag SDKs settle their promise at unpredictable points and
+// timing-based gates produced false negatives (missed XP credits).
 const SDK_WAIT_MS = 10_000; // wait up to 10s for the SDK function to mount
 const POLL_INTERVAL_MS = 250;
 
