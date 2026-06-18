@@ -21,12 +21,6 @@ const MonetagInFeedAd = ({ slotIndex }: { slotIndex: number }) => {
     if (loading || claimed) return;
     setLoading(true);
     try {
-      const shown = await showMonetagRewarded(MONETAG_ZONES.REWARDED_INTERSTITIAL);
-      if (!shown) {
-        toast.error("Ad couldn't load or was closed too early. Try again.");
-        return;
-      }
-
       const { data: auth } = await supabase.auth.getUser();
       const uid = auth?.user?.id;
       if (!uid) {
@@ -35,21 +29,38 @@ const MonetagInFeedAd = ({ slotIndex }: { slotIndex: number }) => {
       }
 
       const today = new Date().toISOString().slice(0, 10);
+      const refId = `${today}:${slotIndex}`;
+
+      // Pre-check dedup: award_xp silently swallows conflicts, so we need to
+      // know upfront whether XP will actually be credited.
+      const { data: existing } = await supabase
+        .from("xp_events")
+        .select("id")
+        .eq("user_id", uid)
+        .eq("source", "feed_ad_view")
+        .eq("ref_id", refId)
+        .maybeSingle();
+
+      if (existing) {
+        setClaimed(true);
+        toast.info("Already claimed today — come back tomorrow for more XP.");
+        return;
+      }
+
+      const shown = await showMonetagRewarded(MONETAG_ZONES.REWARDED_INTERSTITIAL);
+      if (!shown) {
+        toast.error("Ad couldn't load or was closed too early. Try again.");
+        return;
+      }
+
       const { error } = await supabase.rpc("award_xp", {
         _user_id: uid,
         _amount: XP_REWARD,
         _source: "feed_ad_view",
-        _ref_id: `${today}:${slotIndex}`,
+        _ref_id: refId,
       });
 
       if (error) {
-        // Dedup hit (already claimed today) is not a real error from the user's POV.
-        const msg = String(error.message ?? "").toLowerCase();
-        if (msg.includes("duplicate") || msg.includes("unique") || msg.includes("already")) {
-          setClaimed(true);
-          toast.info("Already claimed today — come back tomorrow for more XP.");
-          return;
-        }
         toast.error("Couldn't credit XP. Please retry.");
         return;
       }
@@ -62,6 +73,7 @@ const MonetagInFeedAd = ({ slotIndex }: { slotIndex: number }) => {
       setLoading(false);
     }
   };
+
 
 
   return (
