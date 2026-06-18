@@ -79,7 +79,7 @@ export function showMonetagRewarded(
     const maxAttempts = Math.ceil(SDK_WAIT_MS / POLL_INTERVAL_MS);
 
     const tryShow = (attempt = 0) => {
-      const fn = (window as { [k: string]: unknown })[fnName] as
+      const fn = (window as unknown as Record<string, unknown>)[fnName] as
         | ((...args: unknown[]) => unknown)
         | undefined;
 
