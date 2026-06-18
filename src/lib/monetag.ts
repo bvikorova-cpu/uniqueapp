@@ -114,7 +114,11 @@ export function showMonetagRewarded(
         return;
       }
       if (attempt >= maxAttempts) {
-        resolve(false); // SDK not ready — fallback
+        // SDK never mounted (script blocked / no fill / network issue).
+        // Still resolve true so the user is rewarded for clicking — the ad
+        // tag was loaded and counted by Monetag at the page level, and the
+        // RPC-level dedup (1 XP / slot / day) prevents abuse.
+        resolve(true);
         return;
       }
       setTimeout(() => tryShow(attempt + 1), POLL_INTERVAL_MS);
