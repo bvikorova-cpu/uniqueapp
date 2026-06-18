@@ -3,14 +3,15 @@ import { Megaphone, Star, Loader2, ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { showMonetagRewarded } from "@/lib/monetag";
+import { MONETAG_ZONES, showMonetagRewarded } from "@/lib/monetag";
 import { toast } from "sonner";
 
 const XP_REWARD = 50;
 
 /**
  * Native-looking sponsored card injected every 20th post in the Wall feed.
- * Users earn +50 XP per ad slot per day for watching the rewarded ad.
+ * Uses the Monetag Rewarded Interstitial zone — XP is credited only after the
+ * SDK confirms a valid impression (see showMonetagRewarded).
  */
 const MonetagInFeedAd = ({ slotIndex }: { slotIndex: number }) => {
   const [loading, setLoading] = useState(false);
@@ -20,12 +21,6 @@ const MonetagInFeedAd = ({ slotIndex }: { slotIndex: number }) => {
     if (loading || claimed) return;
     setLoading(true);
     try {
-      const shown = await showMonetagRewarded();
-      if (!shown) {
-        toast.error("Ad couldn't load. Try again in a moment.");
-        return;
-      }
-
       const { data: auth } = await supabase.auth.getUser();
       const uid = auth?.user?.id;
       if (!uid) {
@@ -34,11 +29,35 @@ const MonetagInFeedAd = ({ slotIndex }: { slotIndex: number }) => {
       }
 
       const today = new Date().toISOString().slice(0, 10);
+      const refId = `${today}:${slotIndex}`;
+
+      // Pre-check dedup: award_xp silently swallows conflicts, so we need to
+      // know upfront whether XP will actually be credited.
+      const { data: existing } = await supabase
+        .from("xp_events")
+        .select("id")
+        .eq("user_id", uid)
+        .eq("source", "feed_ad_view")
+        .eq("ref_id", refId)
+        .maybeSingle();
+
+      if (existing) {
+        setClaimed(true);
+        toast.info("Already claimed today — come back tomorrow for more XP.");
+        return;
+      }
+
+      const shown = await showMonetagRewarded(MONETAG_ZONES.REWARDED_INTERSTITIAL);
+      if (!shown) {
+        toast.error("Ad couldn't load or was closed too early. Try again.");
+        return;
+      }
+
       const { error } = await supabase.rpc("award_xp", {
         _user_id: uid,
         _amount: XP_REWARD,
         _source: "feed_ad_view",
-        _ref_id: `${today}:${slotIndex}`,
+        _ref_id: refId,
       });
 
       if (error) {
@@ -54,6 +73,8 @@ const MonetagInFeedAd = ({ slotIndex }: { slotIndex: number }) => {
       setLoading(false);
     }
   };
+
+
 
   return (
     <Card className="relative overflow-hidden border border-primary/30 bg-gradient-to-br from-card/90 to-card/70 backdrop-blur-xl">
