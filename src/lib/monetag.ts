@@ -87,24 +87,33 @@ export function showMonetagRewarded(
 
       if (typeof fn === "function") {
         const startedAt = Date.now();
+        // Once the SDK function is called, Monetag will serve an impression
+        // (vignette opens, rewarded popup shows, etc.). The returned Promise
+        // settles at different points depending on the zone format:
+        //   - Rewarded:  resolve = full view, reject = user skipped
+        //   - Vignette:  may resolve at open OR reject on close
+        //   - Popunder:  may never settle (background tab)
+        // We therefore treat ANY settlement after MIN_VALID_VIEW_MS as a valid
+        // view. If neither settles within 30s, we still credit (anti-stall),
+        // because the ad iframe is already in the DOM. Dedup at the RPC layer
+        // prevents abuse.
+        const settle = (ok: boolean) => {
+          const elapsed = Date.now() - startedAt;
+          resolve(ok && elapsed >= MIN_VALID_VIEW_MS);
+        };
         try {
-          // For rewarded zones, Monetag accepts an options arg; passing none
-          // is the standard rewarded call. Vignette ignores extra args.
           const result = fn();
           if (result && typeof (result as Promise<unknown>).then === "function") {
             (result as Promise<unknown>)
-              .then(() => resolve(true))
-              .catch(() => {
-                // Vignette and some popunder formats reject on user-close even
-                // though an impression was served. Treat as success if the ad
-                // was visible for at least MIN_VALID_VIEW_MS.
-                const elapsed = Date.now() - startedAt;
-                resolve(elapsed >= MIN_VALID_VIEW_MS);
-              });
+              .then(() => settle(true))
+              .catch(() => settle(true));
           } else {
             // Non-promise SDKs (legacy vignette): impression assumed served.
-            resolve(true);
+            // Wait MIN_VALID_VIEW_MS so the user actually sees the ad.
+            setTimeout(() => resolve(true), MIN_VALID_VIEW_MS);
           }
+          // Anti-stall: if SDK never settles, still resolve after 30s.
+          setTimeout(() => resolve(true), 30_000);
         } catch {
           resolve(false);
         }
