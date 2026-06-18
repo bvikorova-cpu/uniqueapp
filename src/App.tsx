@@ -76,6 +76,7 @@ const UsernameRedirect = lazy(() => import("./pages/UsernameRedirect"));
 const ProfileRedirect = lazy(() => import("./pages/ProfileRedirect"));
 const PropertyFavorites = lazy(() => import("./pages/PropertyFavorites"));
 const Roadmap = lazy(() => import("./pages/Roadmap"));
+const AdPreview = lazy(() => import("./pages/AdPreview"));
 const MobileBottomNav = lazy(() => import("@/components/mobile/MobileBottomNav"));
 const ComebackBonusModal = lazy(() => import("@/components/retention/ComebackBonusModal"));
 
