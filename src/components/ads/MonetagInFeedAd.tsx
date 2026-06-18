@@ -3,14 +3,15 @@ import { Megaphone, Star, Loader2, ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { showMonetagRewarded } from "@/lib/monetag";
+import { MONETAG_ZONES, showMonetagRewarded } from "@/lib/monetag";
 import { toast } from "sonner";
 
 const XP_REWARD = 50;
 
 /**
  * Native-looking sponsored card injected every 20th post in the Wall feed.
- * Users earn +50 XP per ad slot per day for watching the rewarded ad.
+ * Uses the Monetag Rewarded Interstitial zone — XP is credited only after the
+ * SDK confirms a valid impression (see showMonetagRewarded).
  */
 const MonetagInFeedAd = ({ slotIndex }: { slotIndex: number }) => {
   const [loading, setLoading] = useState(false);
@@ -20,9 +21,9 @@ const MonetagInFeedAd = ({ slotIndex }: { slotIndex: number }) => {
     if (loading || claimed) return;
     setLoading(true);
     try {
-      const shown = await showMonetagRewarded();
+      const shown = await showMonetagRewarded(MONETAG_ZONES.REWARDED_INTERSTITIAL);
       if (!shown) {
-        toast.error("Ad couldn't load. Try again in a moment.");
+        toast.error("Ad couldn't load or was closed too early. Try again.");
         return;
       }
 
@@ -42,6 +43,13 @@ const MonetagInFeedAd = ({ slotIndex }: { slotIndex: number }) => {
       });
 
       if (error) {
+        // Dedup hit (already claimed today) is not a real error from the user's POV.
+        const msg = String(error.message ?? "").toLowerCase();
+        if (msg.includes("duplicate") || msg.includes("unique") || msg.includes("already")) {
+          setClaimed(true);
+          toast.info("Already claimed today — come back tomorrow for more XP.");
+          return;
+        }
         toast.error("Couldn't credit XP. Please retry.");
         return;
       }
@@ -54,6 +62,7 @@ const MonetagInFeedAd = ({ slotIndex }: { slotIndex: number }) => {
       setLoading(false);
     }
   };
+
 
   return (
     <Card className="relative overflow-hidden border border-primary/30 bg-gradient-to-br from-card/90 to-card/70 backdrop-blur-xl">
