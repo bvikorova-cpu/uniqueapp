@@ -86,20 +86,17 @@ export function showMonetagRewarded(
         | undefined;
 
       if (typeof fn === "function") {
-        const startedAt = Date.now();
-        // Once the SDK function is called, Monetag will serve an impression
-        // (vignette opens, rewarded popup shows, etc.). The returned Promise
-        // settles at different points depending on the zone format:
-        //   - Rewarded:  resolve = full view, reject = user skipped
-        //   - Vignette:  may resolve at open OR reject on close
-        //   - Popunder:  may never settle (background tab)
-        // We therefore treat ANY settlement after MIN_VALID_VIEW_MS as a valid
-        // view. If neither settles within 30s, we still credit (anti-stall),
-        // because the ad iframe is already in the DOM. Dedup at the RPC layer
-        // prevents abuse.
+        // Once the SDK function is called, Monetag will serve an impression.
+        // The returned Promise settles at different points depending on zone
+        // format (open / close / skip / never), so we treat ANY settlement —
+        // and a non-promise return — as a successful impression. Dedup at the
+        // RPC layer (`ref_id` UNIQUE on award_xp) prevents abuse: each ad slot
+        // can only credit 1 XP per user per day regardless of clicks.
+        let settled = false;
         const settle = (ok: boolean) => {
-          const elapsed = Date.now() - startedAt;
-          resolve(ok && elapsed >= MIN_VALID_VIEW_MS);
+          if (settled) return;
+          settled = true;
+          resolve(ok);
         };
         try {
           const result = fn();
@@ -108,14 +105,14 @@ export function showMonetagRewarded(
               .then(() => settle(true))
               .catch(() => settle(true));
           } else {
-            // Non-promise SDKs (legacy vignette): impression assumed served.
-            // Wait MIN_VALID_VIEW_MS so the user actually sees the ad.
-            setTimeout(() => resolve(true), MIN_VALID_VIEW_MS);
+            // Non-promise SDKs (legacy vignette): impression already served.
+            settle(true);
           }
-          // Anti-stall: if SDK never settles, still resolve after 30s.
-          setTimeout(() => resolve(true), 30_000);
+          // Anti-stall: if SDK never settles (popunder, blocked iframe, etc.)
+          // still resolve after 30s so the user is not left hanging.
+          setTimeout(() => settle(true), 30_000);
         } catch {
-          resolve(false);
+          settle(false);
         }
         return;
       }
