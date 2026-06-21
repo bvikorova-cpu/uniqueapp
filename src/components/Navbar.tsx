@@ -18,6 +18,8 @@ import MessagesBell from "@/components/messenger/MessagesBell";
 import { AICreditsBalanceWidget } from "@/components/ai-credits/AICreditsBalanceWidget";
 // FreeTierBalanceWidget import removed — paid-only model
 import { GlobalCurrencySwitcher } from "@/components/GlobalCurrencySwitcher";
+import { ThemeToggle } from "@/components/ThemeToggle";
+
 
 import megatalentLogo from "@/assets/megatalent-logo.png";
 import uniqueLogo from "@/assets/unique-logo.webp";
