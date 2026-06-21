@@ -41,14 +41,28 @@ export function useAnonymousChat(matchId: string | null, currentUserId: string |
     let cancelled = false;
     setLoading(true);
     (async () => {
-      const [{ data: msgs }, { data: rxs }] = await Promise.all([
-        supabase.from("anonymous_dating_messages").select("*").eq("match_id", matchId).order("created_at", { ascending: true }),
-        supabase.from("anonymous_dating_message_reactions").select("*"),
-      ]);
+      const { data: msgs } = await supabase
+        .from("anonymous_dating_messages")
+        .select("*")
+        .eq("match_id", matchId)
+        .order("created_at", { ascending: true });
       if (cancelled) return;
+      const messageIds = (msgs ?? []).map((m: any) => m.id);
       setMessages((msgs as ChatMessage[]) ?? []);
-      const msgIds = new Set((msgs ?? []).map((m: any) => m.id));
-      setReactions(((rxs as MessageReaction[]) ?? []).filter(r => msgIds.has(r.message_id)));
+
+      // SCALE: scope reactions to this chat's messages only. Previously we
+      // fetched the entire reactions table and filtered client-side, which
+      // grew unbounded with platform usage.
+      if (messageIds.length > 0) {
+        const { data: rxs } = await supabase
+          .from("anonymous_dating_message_reactions")
+          .select("*")
+          .in("message_id", messageIds);
+        if (cancelled) return;
+        setReactions((rxs as MessageReaction[]) ?? []);
+      } else {
+        setReactions([]);
+      }
       setLoading(false);
     })();
     return () => { cancelled = true; };
@@ -76,7 +90,13 @@ export function useAnonymousChat(matchId: string | null, currentUserId: string |
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "anonymous_dating_message_reactions" },
         (payload) => {
           const r = payload.new as MessageReaction;
-          setReactions(prev => prev.some(p => p.id === r.id) ? prev : [...prev, r]);
+          // SCALE: filter client-side to this match's messages — the realtime
+          // server doesn't support `IN` filters, so a session-local guard
+          // prevents every reaction on the platform from re-rendering this chat.
+          setReactions(prev => {
+            if (!messages.some(m => m.id === r.message_id)) return prev;
+            return prev.some(p => p.id === r.id) ? prev : [...prev, r];
+          });
         })
       .on("postgres_changes", { event: "DELETE", schema: "public", table: "anonymous_dating_message_reactions" },
         (payload) => {

@@ -29,18 +29,30 @@ export function useFreeTierCredits() {
     }
     setLoading(true);
     try {
-      // Ensure monthly top-up applied (RPC is idempotent per month)
-      const { data: ensured } = await (supabase as any).rpc("ensure_free_tier_credits");
-      if (ensured) {
-        setData(ensured as FreeTierCredits);
-      } else {
-        const { data: row } = await (supabase as any)
-          .from("free_tier_credits")
-          .select("*")
-          .eq("user_id", user.id)
-          .maybeSingle();
-        setData((row as FreeTierCredits) ?? null);
+      // SCALE: ensure_free_tier_credits RPC was top DB hotspot (9.7k calls,
+      // 633s total). The monthly top-up only changes once per UTC month, so
+      // we gate the RPC behind a per-session cache and fall back to a cheap
+      // read of the row on subsequent mounts in the same session.
+      const cacheKey = `ftc_ensured:${user.id}:${new Date().toISOString().slice(0, 7)}`;
+      const alreadyEnsured = (() => {
+        try { return sessionStorage.getItem(cacheKey) === "1"; } catch { return false; }
+      })();
+
+      if (!alreadyEnsured) {
+        const { data: ensured } = await (supabase as any).rpc("ensure_free_tier_credits");
+        try { sessionStorage.setItem(cacheKey, "1"); } catch { /* noop */ }
+        if (ensured) {
+          setData(ensured as FreeTierCredits);
+          return;
+        }
       }
+
+      const { data: row } = await (supabase as any)
+        .from("free_tier_credits")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      setData((row as FreeTierCredits) ?? null);
     } finally {
       setLoading(false);
     }

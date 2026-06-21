@@ -66,17 +66,27 @@ serve(async (req) => {
 
       log(`${kind}: ${rows.length} pending candidates`);
 
+      // SCALE: batch-fetch all creator profiles in one query instead of
+      // N sequential round-trips inside the loop.
+      const creatorIds = Array.from(new Set(rows.map((r: any) => r[cfg.creatorCol]).filter(Boolean)));
+      const profilesMap = new Map<string, { stripe_connect_account_id: string | null; stripe_connect_payouts_enabled: boolean | null }>();
+      if (creatorIds.length > 0) {
+        const { data: profs } = await admin
+          .from("profiles")
+          .select("id, stripe_connect_account_id, stripe_connect_payouts_enabled")
+          .in("id", creatorIds);
+        for (const p of profs ?? []) {
+          profilesMap.set((p as any).id, p as any);
+        }
+      }
+
       for (const wd of rows) {
         const creatorId = (wd as any)[cfg.creatorCol];
         if (!creatorId) {
           totalSkipped++;
           continue;
         }
-        const { data: profile } = await admin
-          .from("profiles")
-          .select("stripe_connect_account_id, stripe_connect_payouts_enabled")
-          .eq("id", creatorId)
-          .maybeSingle();
+        const profile = profilesMap.get(creatorId);
 
         if (!profile?.stripe_connect_account_id || !profile.stripe_connect_payouts_enabled) {
           totalSkipped++;
@@ -88,6 +98,7 @@ serve(async (req) => {
           totalSkipped++;
           continue;
         }
+
 
         try {
           // ATOMIC CLAIM: pending -> processing. Skip if another sweep grabbed it.

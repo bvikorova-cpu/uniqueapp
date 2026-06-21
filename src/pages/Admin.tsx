@@ -122,6 +122,10 @@ const Admin = () => {
 
   const loadData = async () => {
     try {
+      // SCALE: cap admin dashboard fetches. Full tables would OOM the tab at
+      // millions of rows. Pagination/search lives in dedicated admin pages.
+      const ADMIN_PAGE_SIZE = 200;
+
       // Load subscriptions
       const { data: subs } = await supabase
         .from('subscriptions')
@@ -133,7 +137,8 @@ const Admin = () => {
             full_name
           )
         `)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(ADMIN_PAGE_SIZE);
 
       setSubscriptions(subs || []);
 
@@ -158,15 +163,17 @@ const Admin = () => {
             full_name
           )
         `)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(ADMIN_PAGE_SIZE);
 
       setTransactions(trans || []);
 
       // Load contact messages from BOTH tables (legacy contact_messages + new support_tickets)
       const [legacyMsgs, ticketMsgs] = await Promise.all([
-        supabase.from('contact_messages').select('*').order('created_at', { ascending: false }),
-        supabase.from('support_tickets').select('*').order('created_at', { ascending: false }),
+        supabase.from('contact_messages').select('*').order('created_at', { ascending: false }).limit(ADMIN_PAGE_SIZE),
+        supabase.from('support_tickets').select('*').order('created_at', { ascending: false }).limit(ADMIN_PAGE_SIZE),
       ]);
+
 
       const merged = [
         ...((legacyMsgs.data as any[]) || []).map((m) => ({ ...m, _source: 'contact_messages' as const })),
