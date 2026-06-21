@@ -4,37 +4,42 @@ import Navbar from "@/components/Navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Loader2, Crown } from "lucide-react";
 import { SEO } from "@/components/SEO";
 
-interface Payout {
+interface Winner {
   id: string;
   user_id: string;
-  amount_eur: number;
-  status: string;
+  category: string;
+  month: number;
+  year: number;
+  total_votes: number;
+  prize_amount: number;
+  paid_at: string | null;
+  payout_reference: string | null;
   created_at: string;
-  display_name?: string | null;
 }
 
 export default function AdminMegatalentPayouts() {
-  const [rows, setRows] = useState<Payout[]>([]);
+  const [rows, setRows] = useState<Winner[]>([]);
   const [loading, setLoading] = useState(true);
-  const [releasingId, setReleasingId] = useState<string | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [refs, setRefs] = useState<Record<string, string>>({});
 
   const load = async () => {
     setLoading(true);
     try {
       const { data, error } = await (supabase as any)
-        .from("megatalent_escrow")
-        .select("id, user_id, amount_eur, status, created_at")
-        .in("status", ["pending", "held"])
+        .from("megatalent_winners")
+        .select("id, user_id, category, month, year, total_votes, prize_amount, paid_at, payout_reference, created_at")
         .order("created_at", { ascending: false })
         .limit(200);
       if (error) throw error;
-      setRows((data as Payout[]) || []);
+      setRows((data as Winner[]) || []);
     } catch (e: any) {
-      toast.error(e?.message ?? "Failed to load payouts");
+      toast.error(e?.message ?? "Failed to load winners");
       setRows([]);
     } finally {
       setLoading(false);
@@ -43,61 +48,95 @@ export default function AdminMegatalentPayouts() {
 
   useEffect(() => { load(); }, []);
 
-  const release = async (id: string) => {
-    setReleasingId(id);
+  const markPaid = async (id: string) => {
+    setBusyId(id);
     try {
-      const { error } = await supabase.functions.invoke("escrow-release", {
-        body: { escrow_id: id },
+      const { error } = await (supabase as any).rpc("admin_mark_megatalent_paid", {
+        _winner_id: id,
+        _reference: refs[id] || null,
       });
       if (error) throw error;
-      toast.success("Payout released (80/20 split)");
+      toast.success("Marked as paid (80% to creator, 20% platform)");
       await load();
     } catch (e: any) {
-      toast.error(e?.message ?? "Release failed");
+      toast.error(e?.message ?? "Update failed");
     } finally {
-      setReleasingId(null);
+      setBusyId(null);
     }
   };
 
+  const pending = rows.filter((r) => !r.paid_at);
+  const paid = rows.filter((r) => r.paid_at);
+
   return (
     <>
-      <SEO title="Megatalent Payouts — Admin" description="Release escrow funds for Megatalent winners (80/20 split)." />
+      <SEO title="Megatalent Payouts — Admin" description="Release prize payouts for Megatalent winners (80/20 split)." />
       <Navbar />
       <main className="container mx-auto max-w-5xl px-4 py-8">
         <h1 className="text-2xl font-bold mb-6 flex items-center gap-2">
           <Crown className="h-6 w-6 text-primary" /> Megatalent Payouts
         </h1>
-        <Card>
+
+        <Card className="mb-6">
           <CardHeader>
-            <CardTitle>Pending escrow ({rows.length})</CardTitle>
+            <CardTitle>Pending winners ({pending.length})</CardTitle>
           </CardHeader>
           <CardContent>
             {loading ? (
               <div className="flex items-center justify-center py-12">
                 <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
               </div>
-            ) : rows.length === 0 ? (
+            ) : pending.length === 0 ? (
               <p className="text-muted-foreground text-sm py-8 text-center">No pending payouts.</p>
             ) : (
               <ul className="space-y-3">
-                {rows.map((r) => (
-                  <li key={r.id} className="flex items-center justify-between gap-3 rounded-lg border border-border/60 p-3">
-                    <div className="min-w-0">
-                      <p className="font-medium truncate">€{Number(r.amount_eur).toFixed(2)}</p>
-                      <p className="text-xs text-muted-foreground truncate">
-                        user {r.user_id.slice(0, 8)} · {new Date(r.created_at).toLocaleString()}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <Badge variant="secondary">{r.status}</Badge>
-                      <Button
-                        size="sm"
-                        onClick={() => release(r.id)}
-                        disabled={releasingId === r.id}
-                      >
-                        {releasingId === r.id ? <Loader2 className="h-4 w-4 animate-spin" /> : "Release 80/20"}
-                      </Button>
-                    </div>
+                {pending.map((r) => {
+                  const creator = +(Number(r.prize_amount) * 0.8).toFixed(2);
+                  const platform = +(Number(r.prize_amount) - creator).toFixed(2);
+                  return (
+                    <li key={r.id} className="flex flex-col gap-2 rounded-lg border border-border/60 p-3 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="min-w-0">
+                        <p className="font-medium truncate">
+                          €{Number(r.prize_amount).toFixed(2)} <span className="text-xs text-muted-foreground">→ creator €{creator} · platform €{platform}</span>
+                        </p>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {r.category} · {r.month}/{r.year} · {r.total_votes} votes · user {r.user_id.slice(0, 8)}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <Input
+                          placeholder="Stripe ref (optional)"
+                          value={refs[r.id] || ""}
+                          onChange={(e) => setRefs((p) => ({ ...p, [r.id]: e.target.value }))}
+                          className="h-8 w-48 text-xs"
+                        />
+                        <Button size="sm" onClick={() => markPaid(r.id)} disabled={busyId === r.id}>
+                          {busyId === r.id ? <Loader2 className="h-4 w-4 animate-spin" /> : "Mark paid"}
+                        </Button>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Paid ({paid.length})</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {paid.length === 0 ? (
+              <p className="text-muted-foreground text-sm py-4 text-center">None yet.</p>
+            ) : (
+              <ul className="space-y-2 text-sm">
+                {paid.slice(0, 50).map((r) => (
+                  <li key={r.id} className="flex items-center justify-between gap-2 rounded border border-border/40 p-2">
+                    <span className="truncate">
+                      €{Number(r.prize_amount).toFixed(2)} · {r.category} · user {r.user_id.slice(0, 8)}
+                    </span>
+                    <Badge variant="secondary">{r.payout_reference || "paid"}</Badge>
                   </li>
                 ))}
               </ul>

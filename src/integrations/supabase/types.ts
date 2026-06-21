@@ -37675,6 +37675,8 @@ export type Database = {
           created_at: string
           id: string
           month: number
+          paid_at: string | null
+          payout_reference: string | null
           prize_amount: number
           submission_id: string | null
           total_votes: number
@@ -37686,6 +37688,8 @@ export type Database = {
           created_at?: string
           id?: string
           month: number
+          paid_at?: string | null
+          payout_reference?: string | null
           prize_amount?: number
           submission_id?: string | null
           total_votes?: number
@@ -37697,6 +37701,8 @@ export type Database = {
           created_at?: string
           id?: string
           month?: number
+          paid_at?: string | null
+          payout_reference?: string | null
           prize_amount?: number
           submission_id?: string | null
           total_votes?: number
@@ -64093,6 +64099,10 @@ export type Database = {
           user_id: string
           user_points_total: number
         }[]
+      }
+      admin_mark_megatalent_paid: {
+        Args: { _reference?: string; _winner_id: string }
+        Returns: undefined
       }
       admin_search_users_for_xp_audit: {
         Args: { _query: string }
