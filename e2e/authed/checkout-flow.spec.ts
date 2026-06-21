@@ -77,7 +77,7 @@ test.describe("Authenticated checkout flow audit", () => {
       });
 
       await page.goto(probe.route);
-      await page.waitForLoadState("networkidle");
+      await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
 
       const cta = probe.ctaSelector(page);
       const ctaCount = await (cta as any).count();

@@ -70,7 +70,7 @@ test.describe("Watch Party — authed E2E", () => {
     const title = `E2E WP ${Date.now()}`;
 
     await page.goto(`/megatalent/${CATEGORY_SLUG}`);
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
 
     // 1. JOIN — Watch Party card must mount.
     const card = page.getByText(/Live & Watch Party/i).first();

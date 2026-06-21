@@ -60,7 +60,7 @@ for (const query of ["canceled=true", "payment=failed"]) {
 
     // 1) Paywall up.
     await page.goto("/megatalent");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
     await expect(
       page.getByText(/Unlock the MegaTalent contest|Odomkni MegaTalent/i),
     ).toBeVisible({ timeout: 15_000 });
@@ -74,7 +74,7 @@ for (const query of ["canceled=true", "payment=failed"]) {
 
     // 3) Return from Stripe with cancel/decline params.
     await page.goto(`/megatalent?${query}`);
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
 
     // 4) Paywall MUST still be visible — subscription was never activated.
     await expect(

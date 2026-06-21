@@ -40,7 +40,7 @@ test.describe("Watch Party — error states", () => {
     await stubUnsubscribed(page);
 
     await page.goto("/megatalent/music");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
 
     // Paywall must be visible.
     await expect(
@@ -76,7 +76,7 @@ test.describe("Watch Party — error states", () => {
     });
 
     await page.goto("/megatalent/music");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
 
     await expect(page.getByText(/Live & Watch Party/i).first()).toBeVisible({
       timeout: 15_000,
@@ -119,7 +119,7 @@ test.describe("Watch Party — error states", () => {
     });
 
     await page.goto("/megatalent/music");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
 
     // Need a live stream first. Reuse the real "Go Live" flow but stub the
     // stream insert to succeed with a fake row so we land on the chat view

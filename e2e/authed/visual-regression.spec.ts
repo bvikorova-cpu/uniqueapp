@@ -32,7 +32,7 @@ test.describe("Visual regression — authed", () => {
   for (const screen of SCREENS) {
     test(`screenshot: ${screen.name}`, async ({ page }) => {
       await page.goto(screen.path);
-      await page.waitForLoadState("networkidle");
+      await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
 
       // Wait briefly so lazy-loaded above-the-fold content settles, then
       // freeze animations to avoid flake.

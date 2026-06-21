@@ -27,12 +27,9 @@ test.describe("WallGroups – tvorba, validácia, join/leave", () => {
     const dialog = page.getByRole("dialog");
     await expect(dialog.getByRole("heading", { name: /create new group/i })).toBeVisible();
 
-    // Submit bez vyplnenia – createGroup() vráti hneď return
-    await dialog.getByRole("button", { name: /^create group$/i }).click();
-    await page.waitForTimeout(800);
-
-    // Dialog ostáva otvorený, žiadny success toast
-    await expect(dialog).toBeVisible();
+    // Submit je disabled kým je názov prázdny – overíme disabled stav namiesto kliku.
+    const submit = dialog.getByRole("button", { name: /^create group$/i });
+    await expect(submit).toBeDisabled();
     await expect(page.getByText(/group created successfully/i)).toHaveCount(0);
     await page.keyboard.press("Escape");
   });

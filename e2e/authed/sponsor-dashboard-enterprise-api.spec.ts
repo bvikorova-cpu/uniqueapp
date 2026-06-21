@@ -12,7 +12,7 @@ import { test, expect } from "@playwright/test";
 test.describe("Sponsor Dashboard — API Access tab (enterprise only)", () => {
   test("renders API Access tab with curl example + rotate button when enterprise", async ({ page }) => {
     const res = await page.goto("/sponsor-dashboard");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
 
     // Non-sponsor / pending users get redirected to /sponsor-registration.
     if (!/\/sponsor-dashboard/.test(page.url())) {

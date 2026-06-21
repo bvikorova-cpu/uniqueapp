@@ -73,7 +73,7 @@ test.describe("Megatalent payment flow — €15 Top Premium (authed)", () => {
     });
 
     await page.goto("/megatalent");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
     await expect(
       page.getByText(/Unlock the MegaTalent contest|Odomkni MegaTalent/i),
     ).toBeVisible({ timeout: 15_000 });
