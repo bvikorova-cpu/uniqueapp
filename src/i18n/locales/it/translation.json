@@ -808,7 +808,7 @@
   },
   "megatalent": {
     "loading": "Caricamento...",
-    "monthly_prize": "💰 Premio mensile €10.000",
+    "monthly_prize": "💰 Premio trimestrale €10.000",
     "enter_megatalent": "Entra in Megatalent",
     "subtitle": "Partecipa all'esclusivo concorso dove puoi vincere fino a €10.000 ogni mese! Condividi il tuo talento e gareggia con i migliori.",
     "referral_title": "Hai un codice unico da un amico?",
@@ -827,7 +827,7 @@
     "voting_comments": "👥 Votazioni e commenti",
     "referral_5": "🎁 Programma referral €5",
     "boost_win": "🏆 +100% boost classifica (voti reali × 2)",
-    "auto_votes": "🎯 +100.000 voti automaticamente",
+    "auto_votes": "🎯 TOP Premium: ranking score = real votes × 2 (+100%)",
     "priority_display": "⭐ Visualizzazione prioritaria",
     "exclusive_badge_item": "💎 Badge esclusivo",
     "monthly_renews": "L'abbonamento mensile si rinnova automaticamente",
