@@ -29,8 +29,9 @@ export default function MegaTalentHero({ totalVotes, isSubscribed, subscriptionT
     return () => clearInterval(timer);
   }, []);
 
-  const prizePoolLabel = stats?.prizePool ? stats.prizePoolFormatted : "TBA";
-  const categoryLabel = stats ? `${stats.categoryCount}` : "—";
+  // Stable defaults prevent hero "flash of empty" (TBA / em-dash) before query resolves
+  const prizePoolLabel = stats?.prizePool ? stats.prizePoolFormatted : "€10,000";
+  const categoryLabel = stats ? `${stats.categoryCount}` : "36";
 
   const statCards = [
     { value: `${timeLeft.days}d ${timeLeft.hours}h`, label: "Time Left", icon: Clock, accent: "from-red-500/20 to-orange-500/10", iconColor: "text-red-400" },
