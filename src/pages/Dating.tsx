@@ -51,6 +51,7 @@ import { WeeklyInsightsCard } from "@/components/dating/WeeklyInsightsCard";
 import { MatchCelebrationModal } from "@/components/dating/MatchCelebrationModal";
 import { AIStarterButton } from "@/components/dating/AIStarterButton";
 import { AIBioCoach } from "@/components/dating/AIBioCoach";
+import { Dating16Gate } from "@/components/dating/Dating16Gate";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface DatingProfile {
@@ -852,6 +853,7 @@ const Dating = () => {
 
   return (
     <>
+      <Dating16Gate />
       <SEO
         title="Dating - Meet your match on Unique"
         description="Find meaningful connections with smart matching, voice intros and verified profiles. Unique Dating — the safer way to date."
