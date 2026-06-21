@@ -28,7 +28,7 @@ export const useVotingStreak = () => {
         .from("voting_streaks")
         .select("*")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
 
       if (error || !data) {
         return {
