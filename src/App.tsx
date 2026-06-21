@@ -48,6 +48,7 @@ import { CurrencyProvider } from "@/contexts/CurrencyContext";
 import { useEffect } from "react";
 import "@/i18n/config";
 import SkipLink from "./components/SkipLink";
+import { KidsParentalGateGuard } from "@/components/kids/KidsParentalGateGuard";
 import { PageLoader } from "@/components/ui/PageLoader";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { installGlobalErrorHandlers } from "@/utils/logger";
@@ -934,9 +935,9 @@ const App = () => {
                         <Route path="/creative-writing" element={<CreativeWriting />} />
                         <Route path="/writing/:contentId" element={<GenericLearning />} />
                         <Route path="/creative-forge" element={<ProtectedRoute><CreativeForge /></ProtectedRoute>} />
-                        <Route path="/coloring-pages" element={<ColoringPages />} />
-                        <Route path="/coloring-pages/hub" element={<ColoringHub />} />
-                        <Route path="/coloring-pages/hub/:slug" element={<ColoringHub />} />
+                        <Route path="/coloring-pages" element={<KidsParentalGateGuard featureName="Coloring Pages" storageKey="pg_coloring"><ColoringPages /></KidsParentalGateGuard>} />
+                        <Route path="/coloring-pages/hub" element={<KidsParentalGateGuard featureName="Coloring Pages" storageKey="pg_coloring"><ColoringHub /></KidsParentalGateGuard>} />
+                        <Route path="/coloring-pages/hub/:slug" element={<KidsParentalGateGuard featureName="Coloring Pages" storageKey="pg_coloring"><ColoringHub /></KidsParentalGateGuard>} />
                         <Route path="/schools" element={<Navigate to="/coloring-pages" replace />} />
                         <Route path="/healthcare" element={<Navigate to="/wellness" replace />} />
                         <Route path="/corporate-events" element={<Navigate to="/coloring-pages" replace />} />
@@ -969,13 +970,13 @@ const App = () => {
                         <Route path="/kids-voice-chat-pricing" element={<KidsVoiceChatPricing />} />
                         <Route path="/create-character" element={<CreateCharacter />} />
                         <Route path="/educational-stories" element={<EducationalStories />} />
-                        <Route path="/bedtime-stories" element={<BedtimeStories />} />
+                        <Route path="/bedtime-stories" element={<KidsParentalGateGuard featureName="Bedtime Stories" storageKey="pg_bedtime"><BedtimeStories /></KidsParentalGateGuard>} />
                         <Route path="/story-games" element={<StoryGames />} />
                         <Route path="/kids-pricing" element={<KidsPricing />} />
                         <Route path="/story-video-demo" element={<StoryVideoDemo />} />
                         <Route path="/story-gallery" element={<StoryGallery />} />
                         <Route path="/shared/:shareCode" element={<SharedStory />} />
-                        <Route path="/kids-channel/my-gallery" element={<ProtectedRoute><KidsMagicLibrary /></ProtectedRoute>} />
+                        <Route path="/kids-channel/my-gallery" element={<ProtectedRoute><KidsParentalGateGuard featureName="Magic Library" storageKey="pg_magic_library"><KidsMagicLibrary /></KidsParentalGateGuard></ProtectedRoute>} />
                         <Route path="/kids-channel/parental-dashboard" element={<ProtectedRoute><KidsParentalDashboard /></ProtectedRoute>} />
                         <Route path="/admin-image-editor" element={<ProtectedRoute requireAdmin={true}><AdminImageEditor /></ProtectedRoute>} />
                         <Route path="/coffee" element={<Coffee />} />
@@ -1062,8 +1063,8 @@ const App = () => {
                         <Route path="/comedian-dashboard" element={<ProtectedRoute><ComedianDashboard /></ProtectedRoute>} />
                         <Route path="/comedy-live/:showId" element={<ComedyLiveShow />} />
                         <Route path="/comedy-watch/:showId" element={<ComedyLiveViewer />} />
-                        <Route path="/kids-channel/fairy-castles" element={<FairyCastles />} />
-                        <Route path="/kids-channel/fairy-castles/:castleId" element={<FairyCastleTour />} />
+                        <Route path="/kids-channel/fairy-castles" element={<KidsParentalGateGuard featureName="Fairy Castles" storageKey="pg_fairy_castles"><FairyCastles /></KidsParentalGateGuard>} />
+                        <Route path="/kids-channel/fairy-castles/:castleId" element={<KidsParentalGateGuard featureName="Fairy Castles" storageKey="pg_fairy_castles"><FairyCastleTour /></KidsParentalGateGuard>} />
                         <Route path="/kids-channel/fairy-admin" element={<ProtectedRoute requireAdmin={true}><FairyAdmin /></ProtectedRoute>} />
                         {/* Legacy Disney routes — redirect to new fairy-castles paths */}
                         <Route path="/kids-channel/disney-castles" element={<Navigate to="/kids-channel/fairy-castles" replace />} />
@@ -1189,7 +1190,7 @@ const App = () => {
                         <Route path="/kids-stories/battle" element={<CharacterBattle />} />
                         <Route path="/character-gallery" element={<CharacterGallery />} />
                         <Route path="/kids-stories/educational" element={<EducationalStories />} />
-                        <Route path="/kids-stories/bedtime" element={<BedtimeStories />} />
+                        <Route path="/kids-stories/bedtime" element={<KidsParentalGateGuard featureName="Bedtime Stories" storageKey="pg_bedtime"><BedtimeStories /></KidsParentalGateGuard>} />
                         <Route path="/kids-stories/games" element={<StoryGames />} />
                         <Route path="/admin/image-editor" element={<ProtectedRoute requireAdmin={true}><AdminImageEditor /></ProtectedRoute>} />
                         <Route path="/iq-platform" element={<IQPlatform />} />
