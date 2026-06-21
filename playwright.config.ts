@@ -2,7 +2,7 @@ import { defineConfig } from "@playwright/test";
 
 const baseURL =
   process.env.PLAYWRIGHT_BASE_URL ??
-  "https://id-preview--3ea492b4-277a-4b1d-a6dd-ca2a3efd9225.lovable.app";
+  "https://www.uniqueapp.fun";
 
 export default defineConfig({
   testDir: "./e2e",
