@@ -748,7 +748,9 @@ const App = () => {
                         <Route path="/auth" element={<Auth />} />
                         <Route path="/reset-password" element={<ResetPassword />} />
                         <Route path="/terms" element={<Terms />} />
+                        <Route path="/legal/terms" element={<Navigate to="/terms" replace />} />
                         <Route path="/legal/privacy" element={<LegalPrivacy />} />
+                        <Route path="/legal/cookies" element={<Navigate to="/legal/privacy" replace />} />
                         <Route path="/legal/refund" element={<LegalRefund />} />
                         <Route path="/legal/creator" element={<LegalCreator />} />
                         <Route path="/legal/community" element={<LegalCommunity />} />
