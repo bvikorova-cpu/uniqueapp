@@ -856,6 +856,14 @@ const App = () => {
                         <Route path="/account/billing" element={<Navigate to="/subscription" replace />} />
                         <Route path="/account/credits" element={<Navigate to="/credits/history" replace />} />
                         <Route path="/account/parental" element={<Navigate to="/kids-channel/parental-dashboard" replace />} />
+                        <Route path="/megatalent/go-live" element={<Navigate to="/megatalent" replace />} />
+                        <Route path="/megatalent/my-submissions" element={<Navigate to="/creator-dashboard" replace />} />
+                        <Route path="/megatalent/watch-party/:id" element={<Navigate to="/megatalent" replace />} />
+                        <Route path="/teen/confessions" element={<Navigate to="/teen-hub" replace />} />
+                        <Route path="/kitchenstars/recipes" element={<Navigate to="/masterchef/recipe-feed" replace />} />
+                        <Route path="/kitchenstars/my-cookbook" element={<Navigate to="/masterchef" replace />} />
+                        <Route path="/bazaar/create" element={<Navigate to="/bazaar" replace />} />
+                        <Route path="/bazaar/saved-searches" element={<Navigate to="/bazaar" replace />} />
                         <Route path="/lie-detector" element={<LieDetector />} />
                         <Route path="/verify-report" element={<VerifyReport />} />
                         <Route path="/secret-santa" element={<SecretSanta />} />
