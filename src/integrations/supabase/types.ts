@@ -40361,6 +40361,116 @@ export type Database = {
         }
         Relationships: []
       }
+      music_royalties: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          creator_id: string
+          id: string
+          period_end: string
+          period_start: string
+          status: string
+          track_id: string
+        }
+        Insert: {
+          amount_cents: number
+          created_at?: string
+          creator_id: string
+          id?: string
+          period_end: string
+          period_start: string
+          status?: string
+          track_id: string
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          creator_id?: string
+          id?: string
+          period_end?: string
+          period_start?: string
+          status?: string
+          track_id?: string
+        }
+        Relationships: []
+      }
+      music_streams: {
+        Row: {
+          created_at: string
+          duration_ms: number
+          id: string
+          listener_id: string | null
+          track_id: string
+        }
+        Insert: {
+          created_at?: string
+          duration_ms?: number
+          id?: string
+          listener_id?: string | null
+          track_id: string
+        }
+        Update: {
+          created_at?: string
+          duration_ms?: number
+          id?: string
+          listener_id?: string | null
+          track_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "music_streams_track_id_fkey"
+            columns: ["track_id"]
+            isOneToOne: false
+            referencedRelation: "music_tracks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      music_tracks: {
+        Row: {
+          audio_url: string
+          cover_url: string | null
+          created_at: string
+          creator_id: string
+          currency: string
+          description: string | null
+          id: string
+          price_cents: number
+          status: string
+          stream_count: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          audio_url: string
+          cover_url?: string | null
+          created_at?: string
+          creator_id: string
+          currency?: string
+          description?: string | null
+          id?: string
+          price_cents?: number
+          status?: string
+          stream_count?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          audio_url?: string
+          cover_url?: string | null
+          created_at?: string
+          creator_id?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          price_cents?: number
+          status?: string
+          stream_count?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       musician_earnings: {
         Row: {
           commission_rate: number
@@ -53833,6 +53943,48 @@ export type Database = {
           soul_age?: string | null
           spiritual_level?: number | null
           updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      spa_deposits: {
+        Row: {
+          amount_cents: number
+          booking_id: string | null
+          created_at: string
+          currency: string
+          id: string
+          salon_id: string | null
+          status: string
+          stripe_payment_intent: string | null
+          stripe_session_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_cents: number
+          booking_id?: string | null
+          created_at?: string
+          currency?: string
+          id?: string
+          salon_id?: string | null
+          status?: string
+          stripe_payment_intent?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_cents?: number
+          booking_id?: string | null
+          created_at?: string
+          currency?: string
+          id?: string
+          salon_id?: string | null
+          status?: string
+          stripe_payment_intent?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
