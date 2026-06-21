@@ -14,7 +14,7 @@ const HOT_FUNCTIONS = [
   "ai-chat",
   "ai-text-generator",
   "ai-image-generation",
-  "wall-feed",
+  "rank-feed",
   "messenger-send",
   "notifications-fanout",
   "credits-deduct",
