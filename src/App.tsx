@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useParams } from "react-router-dom";
 import { lazyWithRetry as lazy } from "@/utils/lazyWithRetry";
 import RouteSEO from "@/components/RouteSEO";
 const CouponSeasonalHub = lazy(() => import("@/pages/CouponSeasonalHub"));
@@ -525,9 +525,8 @@ const CouponsMy = lazy(() => import("@/pages/CouponsMy"));
 
 // Tiny redirect helper for /education/course/:courseId → /course/:courseId
 const EducationCourseRedirect = () => {
-  const params = (require("react-router-dom") as typeof import("react-router-dom")).useParams<{ courseId: string }>();
-  const Nav = (require("react-router-dom") as typeof import("react-router-dom")).Navigate;
-  return <Nav to={`/course/${params.courseId ?? ""}`} replace />;
+  const { courseId } = useParams<{ courseId: string }>();
+  return <Navigate to={`/course/${courseId ?? ""}`} replace />;
 };
 const CreatorVerification = lazy(() => import("@/pages/CreatorVerification"));
 const WinBackOffer = lazy(() => import("@/pages/WinBackOffer"));
