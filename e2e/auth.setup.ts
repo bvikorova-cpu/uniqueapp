@@ -83,6 +83,13 @@ setup("authenticate", async ({ request }) => {
     { name: `unique_onboarding_v1_${session.user.id}`, value: onboardingPayload },
     // MegaTalentOnboarding gates on `megatalent_onboarding_done_{userId}` = "1".
     { name: `megatalent_onboarding_done_${session.user.id}`, value: "1" },
+    // Dismiss GDPR cookie banner — otherwise its fixed bottom container
+    // intercepts pointer events for buttons / cards on every page.
+    { name: "gdpr_cookie_consent", value: new Date().toISOString() },
+    {
+      name: "gdpr_cookie_preferences",
+      value: JSON.stringify({ necessary: true, analytics: true, marketing: false, personalization: true }),
+    },
   ];
 
   const state = {
