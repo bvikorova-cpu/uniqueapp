@@ -64086,6 +64086,7 @@ export type Database = {
         Returns: Json
       }
       cleanup_expired_cache: { Args: never; Returns: number }
+      cleanup_log_tables: { Args: never; Returns: undefined }
       cleanup_old_jobs: { Args: never; Returns: number }
       cleanup_rate_limit_buckets: { Args: never; Returns: undefined }
       cleanup_rate_limits: { Args: never; Returns: undefined }
