@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useParams } from "react-router-dom";
 import { lazyWithRetry as lazy } from "@/utils/lazyWithRetry";
 import RouteSEO from "@/components/RouteSEO";
 const CouponSeasonalHub = lazy(() => import("@/pages/CouponSeasonalHub"));
@@ -520,6 +520,14 @@ const AdminMegatalentModeration = lazy(() => import("@/pages/admin/AdminMegatale
 const AdminFundraisingModeration = lazy(() => import("@/pages/admin/AdminFundraisingModeration"));
 const AdminBattleRoyalePayouts = lazy(() => import("@/pages/admin/AdminBattleRoyalePayouts"));
 const AdminDatingModeration = lazy(() => import("@/pages/admin/AdminDatingModeration"));
+const AdminMegatalentPayouts = lazy(() => import("@/pages/admin/AdminMegatalentPayouts"));
+const CouponsMy = lazy(() => import("@/pages/CouponsMy"));
+
+// Tiny redirect helper for /education/course/:courseId → /course/:courseId
+const EducationCourseRedirect = () => {
+  const { courseId } = useParams<{ courseId: string }>();
+  return <Navigate to={`/course/${courseId ?? ""}`} replace />;
+};
 const CreatorVerification = lazy(() => import("@/pages/CreatorVerification"));
 const WinBackOffer = lazy(() => import("@/pages/WinBackOffer"));
 const CreatorPayouts = lazy(() => import("@/pages/CreatorPayouts"));
@@ -575,7 +583,7 @@ const App = () => {
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <AuthProvider>
             
@@ -679,8 +687,10 @@ const App = () => {
                         <Route path="/coupon-marketplace" element={<CouponMarketplace />} />
                         <Route path="/coupons/season/:slug" element={<CouponSeasonalHub />} />
                         <Route path="/coupons/:brand" element={<CouponBrandPage />} />
+                        <Route path="/coupons/my" element={<ProtectedRoute><CouponsMy /></ProtectedRoute>} />
                         <Route path="/admin/coupon-disputes" element={<ProtectedRoute requireAdmin={true}><AdminCouponDisputes /></ProtectedRoute>} />
                         <Route path="/admin/megatalent-moderation" element={<ProtectedRoute requireAdmin={true}><AdminMegatalentModeration /></ProtectedRoute>} />
+                        <Route path="/admin/megatalent-payouts" element={<ProtectedRoute requireAdmin={true}><AdminMegatalentPayouts /></ProtectedRoute>} />
                         <Route path="/admin/fundraising-moderation" element={<ProtectedRoute requireAdmin={true}><AdminFundraisingModeration /></ProtectedRoute>} />
                         <Route path="/admin/battle-royale-payouts" element={<ProtectedRoute requireAdmin={true}><AdminBattleRoyalePayouts /></ProtectedRoute>} />
                         <Route path="/admin/dating-moderation" element={<ProtectedRoute requireAdmin={true}><AdminDatingModeration /></ProtectedRoute>} />
@@ -796,7 +806,7 @@ const App = () => {
                         <Route path="/my-progress" element={<ProtectedRoute><MyProgress /></ProtectedRoute>} />
                         <Route path="/wrapped/:slug" element={<YearWrappedPublic />} />
                         <Route path="/admin/xp-audit" element={<ProtectedRoute><AdminXPAudit /></ProtectedRoute>} />
-                        <Route path="/admin/xp-audit/reconciliation" element={<ProtectedRoute><AdminXPReconciliation /></ProtectedRoute>} />
+                        <Route path="/admin/xp-audit/reconciliation" element={<ProtectedRoute requireAdmin={true}><AdminXPReconciliation /></ProtectedRoute>} />
                         <Route path="/admin/rewards-audit" element={<ProtectedRoute><AdminRewardsAudit /></ProtectedRoute>} />
                         <Route path="/admin/credits-ledger" element={<ProtectedRoute requireAdmin={true}><AdminCreditsLedger /></ProtectedRoute>} />
                         <Route path="/generate-courses" element={<GenerateCourses />} />
@@ -833,6 +843,19 @@ const App = () => {
                         <Route path="/past-life" element={<PastLife />} />
                         <Route path="/anonymous-date" element={<AnonymousDate />} />
                         <Route path="/anonymous-dating" element={<Navigate to="/anonymous-date" replace />} />
+                        <Route path="/dating/anonymous" element={<Navigate to="/anonymous-date" replace />} />
+                        <Route path="/beauty" element={<Navigate to="/beauty-studio" replace />} />
+                        <Route path="/music" element={<Navigate to="/music-production" replace />} />
+                        <Route path="/sports" element={<Navigate to="/sports-predictor" replace />} />
+                        <Route path="/investment" element={<Navigate to="/financial-investment" replace />} />
+                        <Route path="/ai" element={<Navigate to="/ai-credits-store" replace />} />
+                        <Route path="/jobs/employer" element={<Navigate to="/employer-dashboard" replace />} />
+                        <Route path="/education/course/:courseId" element={<EducationCourseRedirect />} />
+                        <Route path="/education/my-courses" element={<Navigate to="/my-learning" replace />} />
+                        <Route path="/education/teach" element={<Navigate to="/teacher-dashboard" replace />} />
+                        <Route path="/account/billing" element={<Navigate to="/subscription" replace />} />
+                        <Route path="/account/credits" element={<Navigate to="/credits/history" replace />} />
+                        <Route path="/account/parental" element={<Navigate to="/kids-channel/parental-dashboard" replace />} />
                         <Route path="/lie-detector" element={<LieDetector />} />
                         <Route path="/verify-report" element={<VerifyReport />} />
                         <Route path="/secret-santa" element={<SecretSanta />} />
