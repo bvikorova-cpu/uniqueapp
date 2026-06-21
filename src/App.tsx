@@ -806,7 +806,7 @@ const App = () => {
                         <Route path="/my-progress" element={<ProtectedRoute><MyProgress /></ProtectedRoute>} />
                         <Route path="/wrapped/:slug" element={<YearWrappedPublic />} />
                         <Route path="/admin/xp-audit" element={<ProtectedRoute><AdminXPAudit /></ProtectedRoute>} />
-                        <Route path="/admin/xp-audit/reconciliation" element={<ProtectedRoute><AdminXPReconciliation /></ProtectedRoute>} />
+                        <Route path="/admin/xp-audit/reconciliation" element={<ProtectedRoute requireAdmin={true}><AdminXPReconciliation /></ProtectedRoute>} />
                         <Route path="/admin/rewards-audit" element={<ProtectedRoute><AdminRewardsAudit /></ProtectedRoute>} />
                         <Route path="/admin/credits-ledger" element={<ProtectedRoute requireAdmin={true}><AdminCreditsLedger /></ProtectedRoute>} />
                         <Route path="/generate-courses" element={<GenerateCourses />} />
