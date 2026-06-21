@@ -777,6 +777,8 @@ const App = () => {
                         <Route path="/premium-plans" element={<Navigate to="/premium" replace />} />
                         <Route path="/ai-credits-store" element={<AICreditsStore />} />
                         <Route path="/ai-credits" element={<AICreditsStore />} />
+                        <Route path="/credits" element={<Navigate to="/ai-credits" replace />} />
+                        <Route path="/credits/buy" element={<Navigate to="/ai-credits" replace />} />
                         <Route path="/credits/history" element={<ProtectedRoute><MyCreditsLedger /></ProtectedRoute>} />
                         <Route path="/my-credits-history" element={<ProtectedRoute><MyCreditsLedger /></ProtectedRoute>} />
                         <Route path="/lucky-wheel" element={<ProtectedRoute><LuckyWheel /></ProtectedRoute>} />
