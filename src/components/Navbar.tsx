@@ -441,9 +441,6 @@ const Navbar = () => {
               <>
                 {/* Global Currency Switcher */}
                 <GlobalCurrencySwitcher />
-                
-                {/* Global Currency Switcher */}
-                <GlobalCurrencySwitcher />
 
                 {/* AI Credits */}
                 <div className="hidden sm:block">
