@@ -13,9 +13,9 @@
 
 import { onLCP, onCLS, onINP, onFCP, onTTFB, type Metric } from "web-vitals";
 
-// Reduced from 1.0 → 0.1 to prevent vitals_log INSERT pressure at scale
-// (was ~14k inserts/day causing 388s total DB time, max 7.2s).
-const SAMPLE_RATE = 0.1; // 0..1 — sample 10% of sessions
+// Wave 5: dropped from 0.1 → 0.01 (1%) for billion-user readiness.
+// At 1M DAU and 5 metrics/session that's still ~50k inserts/day.
+const SAMPLE_RATE = 0.01; // 0..1 — sample 1% of sessions
 const ENDPOINT = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/vitals-ingest`;
 const ANON_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
 

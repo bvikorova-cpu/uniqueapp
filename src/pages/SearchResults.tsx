@@ -82,12 +82,13 @@ export default function SearchResults() {
         postsResult = await postsQuery.limit(50);
       }
 
-      // Search users
+      // Search users — use public_profiles view (safe columns only) and restrict to full_name
+      // ILIKE on bio is too expensive at scale and exposes private data.
       if (activeFilter === "all" || activeFilter === "people") {
         usersResult = await supabase
-          .from("profiles")
-          .select("*")
-          .or(`full_name.ilike.%${searchTerm}%,bio.ilike.%${searchTerm}%`)
+          .from("public_profiles")
+          .select("id, full_name, avatar_url, username")
+          .ilike("full_name", `%${searchTerm}%`)
           .limit(50);
       }
 
