@@ -970,7 +970,7 @@ const App = () => {
                         <Route path="/kids-voice-chat-pricing" element={<KidsVoiceChatPricing />} />
                         <Route path="/create-character" element={<CreateCharacter />} />
                         <Route path="/educational-stories" element={<EducationalStories />} />
-                        <Route path="/bedtime-stories" element={<BedtimeStories />} />
+                        <Route path="/bedtime-stories" element={<KidsParentalGateGuard featureName="Bedtime Stories" storageKey="pg_bedtime"><BedtimeStories /></KidsParentalGateGuard>} />
                         <Route path="/story-games" element={<StoryGames />} />
                         <Route path="/kids-pricing" element={<KidsPricing />} />
                         <Route path="/story-video-demo" element={<StoryVideoDemo />} />
