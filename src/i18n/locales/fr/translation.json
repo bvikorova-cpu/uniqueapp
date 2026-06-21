@@ -808,7 +808,7 @@
   },
   "megatalent": {
     "loading": "Chargement...",
-    "monthly_prize": "💰 Prix mensuel 10 000 €",
+    "monthly_prize": "💰 Prix trimestriel 10 000 €",
     "enter_megatalent": "Participer à Megatalent",
     "subtitle": "Participez au concours exclusif où vous pouvez gagner jusqu'à 10 000 € chaque mois ! Partagez votre talent et rivalisez avec les meilleurs.",
     "referral_title": "Avez-vous un code unique d'un ami ?",
@@ -827,7 +827,7 @@
     "voting_comments": "👥 Votes et commentaires",
     "referral_5": "🎁 Programme de parrainage 5 €",
     "boost_win": "🏆 +100% boost de classement (votes réels × 2)",
-    "auto_votes": "🎯 +100 000 votes automatiquement",
+    "auto_votes": "🎯 TOP Premium: ranking score = real votes × 2 (+100%)",
     "priority_display": "⭐ Affichage prioritaire",
     "exclusive_badge_item": "💎 Badge exclusif",
     "monthly_renews": "L'abonnement mensuel se renouvelle automatiquement",
