@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { RealtimeChannel } from "@supabase/supabase-js";
+import { shardedChannel, shouldShard } from "@/lib/realtimeSharding";
+
 
 /**
  * PresenceUser — minimal payload tracked per user in a presence channel.
@@ -38,7 +40,11 @@ export function usePresenceChannel({
   useEffect(() => {
     if (!enabled || !channelKey) return;
 
-    const channel = supabase.channel(`presence:${channelKey}`, {
+    const baseTopic = `presence:${channelKey}`;
+    // Auto-shard hot topics (live streams, megatalent, brand-battle) to stay
+    // under Supabase's ~500 clients-per-channel soft cap.
+    const topic = shouldShard(baseTopic) ? shardedChannel(baseTopic, user?.id) : baseTopic;
+    const channel = supabase.channel(topic, {
       config: { presence: { key: user?.id ?? `anon-${crypto.randomUUID()}` } },
     });
 
