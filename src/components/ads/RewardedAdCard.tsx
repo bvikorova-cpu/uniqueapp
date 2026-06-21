@@ -83,14 +83,13 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
     });
 
     if (!isKidSafe) {
-      // Open Monetag Direct Link in a new tab — only on adult surfaces.
-      try {
-        window.open(MONETAG_DIRECT_LINK, "_blank", "noopener,noreferrer");
-      } catch { /* ignore popup blocker */ }
-
-      // Also fire the Vignette fullscreen ad as a bonus (non-blocking).
+      // Fire the Monetag Vignette fullscreen ad (non-blocking, in-page overlay).
+      // Note: we previously also opened MONETAG_DIRECT_LINK via window.open, but
+      // popup blockers (and the Lovable preview sandbox) convert that to a
+      // top-level navigation, hijacking the user's page. Vignette only.
       void showMonetagRewarded(MONETAG_ZONES.REWARDED_VIGNETTE);
     }
+
 
     setPhase("watching");
     setSecondsLeft(WATCH_SECONDS);
