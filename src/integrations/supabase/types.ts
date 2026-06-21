@@ -40400,6 +40400,7 @@ export type Database = {
           duration_ms: number
           id: string
           listener_id: string | null
+          royalty_id: string | null
           track_id: string
         }
         Insert: {
@@ -40407,6 +40408,7 @@ export type Database = {
           duration_ms?: number
           id?: string
           listener_id?: string | null
+          royalty_id?: string | null
           track_id: string
         }
         Update: {
@@ -40414,9 +40416,17 @@ export type Database = {
           duration_ms?: number
           id?: string
           listener_id?: string | null
+          royalty_id?: string | null
           track_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "music_streams_royalty_id_fkey"
+            columns: ["royalty_id"]
+            isOneToOne: false
+            referencedRelation: "music_royalties"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "music_streams_track_id_fkey"
             columns: ["track_id"]
