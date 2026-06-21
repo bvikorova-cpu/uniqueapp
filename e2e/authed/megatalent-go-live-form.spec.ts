@@ -44,7 +44,7 @@ const CREATED_STREAM_IDS: string[] = [];
 
 async function openGoLiveForm(page: Page) {
   await page.goto(`/megatalent/${CATEGORY_SLUG}`);
-  await page.waitForLoadState("networkidle");
+  await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
   await expect(page.getByText(/Live & Watch Party/i).first()).toBeVisible({ timeout: 15_000 });
   // If a prior test left an active stream visible, force the lobby.
   const goLive = page.getByRole("button", { name: /Go Live/i });

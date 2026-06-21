@@ -18,7 +18,7 @@ test.describe("MegaTalent — paid user unlock", () => {
     page,
   }) => {
     await page.goto("/megatalent");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
 
     // Paywall must be GONE.
     await expect(page.getByText(/Odomkni MegaTalent súťaž/i)).toHaveCount(0, {

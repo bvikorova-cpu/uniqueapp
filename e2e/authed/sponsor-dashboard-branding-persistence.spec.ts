@@ -22,7 +22,7 @@ const TINY_PNG = Buffer.from(
 
 async function openBrandingTab(page: Page): Promise<"ok" | "skip"> {
   await page.goto("/sponsor-dashboard");
-  await page.waitForLoadState("networkidle");
+  await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
   if (!/\/sponsor-dashboard/.test(page.url())) return "skip";
 
   const tab = page.getByRole("tab", { name: /branding/i });
@@ -65,7 +65,7 @@ test.describe("Sponsor Dashboard — Branding persistence", () => {
 
     // --- Reload and verify persistence ---
     await page.reload();
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
     await page.getByRole("tab", { name: /branding/i }).click();
     await expect(page.getByTestId("branding-panel")).toBeVisible();
 
@@ -116,7 +116,7 @@ test.describe("Sponsor Dashboard — Branding persistence", () => {
     // Reload + verify the logo URL is the same one we just uploaded and the
     // preview <img> renders it.
     await page.reload();
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
     await page.getByRole("tab", { name: /branding/i }).click();
 
     await expect(page.getByTestId("branding-logo-url")).toHaveValue(uploadedUrl);

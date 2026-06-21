@@ -28,7 +28,7 @@ const TINY_PNG = Buffer.from(
 
 async function openBrandingTab(page: any) {
   await page.goto("/sponsor-dashboard");
-  await page.waitForLoadState("networkidle");
+  await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
 
   if (!/\/sponsor-dashboard/.test(page.url())) {
     test.skip(true, "Logged-in user is not an active sponsor.");
@@ -130,7 +130,7 @@ test.describe("Sponsor Dashboard — Branding tab", () => {
 test.describe("Sponsor Dashboard — Branding tab (gated)", () => {
   test("non-Platinum sponsors see disabled inputs and gate copy", async ({ page }) => {
     await page.goto("/sponsor-dashboard");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
 
     if (!/\/sponsor-dashboard/.test(page.url())) {
       test.skip(true, "Not a sponsor.");

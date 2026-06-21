@@ -62,7 +62,7 @@ test.describe("Rewards · Lucky Wheel real spin + cooldown", () => {
 
     // --- 2) Open Rewards → Lucky Wheel tab and spin.
     await page.goto("/rewards");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
 
     // Try to reveal Lucky Wheel section (tabs may use either text).
     const wheelTab = page.getByRole("tab", { name: /lucky\s*(wheel|spin)/i }).first();
@@ -84,7 +84,7 @@ test.describe("Rewards · Lucky Wheel real spin + cooldown", () => {
 
     // --- 4) Reload → button must reflect cooldown.
     await page.reload();
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
     if (await wheelTab.count()) await wheelTab.click().catch(() => {});
     const cooldownBtn = page.getByRole("button", { name: /come back tomorrow/i });
     await expect(cooldownBtn).toBeVisible({ timeout: 10_000 });

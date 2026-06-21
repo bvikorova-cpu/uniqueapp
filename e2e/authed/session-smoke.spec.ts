@@ -10,7 +10,7 @@ import { test, expect } from "@playwright/test";
 test.describe("authed session smoke", () => {
   test("homepage exposes a logged-in user (no Sign In CTA)", async ({ page }) => {
     await page.goto("/");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
 
     // The avatar / account menu should be reachable; the prominent "Sign in"
     // CTA that anonymous users see in the header MUST NOT be the only entry.

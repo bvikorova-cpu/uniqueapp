@@ -19,7 +19,7 @@ test.describe("Megatalent D5 — refactored surfaces smoke", () => {
     page.on("pageerror", (e) => errors.push(e.message));
 
     await page.goto("/megatalent");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
 
     // Filter out known non-fatal noise (3rd-party SDKs, ResizeObserver).
     const fatal = errors.filter(
