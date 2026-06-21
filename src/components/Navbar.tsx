@@ -426,18 +426,19 @@ const Navbar = () => {
 
           <div className="hidden lg:flex items-center space-x-2">
 
+            {/* Theme Toggle — visible for all users */}
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Toggle theme"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            >
+              <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+              <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+            </Button>
+
             {user ? (
               <>
-                {/* Dark Mode Toggle */}
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                >
-                  <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                  <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                </Button>
-                
                 {/* Global Currency Switcher */}
                 <GlobalCurrencySwitcher />
 
@@ -544,6 +545,18 @@ const Navbar = () => {
               <NotificationBell />
             </div>
           )}
+
+          {/* Mobile: Theme Toggle */}
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Toggle theme"
+            className="lg:hidden"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          >
+            <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+            <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          </Button>
 
           {/* Mobile Menu Button */}
           <Button
