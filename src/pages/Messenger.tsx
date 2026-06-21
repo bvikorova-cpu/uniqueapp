@@ -400,10 +400,14 @@ const Messenger = () => {
   };
 
   const fetchAllUsers = async () => {
+    // Scale-safety: cap at 500 profiles to avoid full-table scans at scale.
+    // For new-conversation flows, use the search UI which queries by name.
     const { data, error } = await supabase
       .from("public_profiles")
       .select("id, full_name, avatar_url")
-      .neq("id", user.id);
+      .neq("id", user.id)
+      .order("id", { ascending: false })
+      .limit(500);
 
     if (error) {
       console.error("Error fetching users:", error);
