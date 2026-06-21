@@ -28,11 +28,22 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    const authHeader = req.headers.get("Authorization")!;
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: "Missing authorization header" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 },
+      );
+    }
     const token = authHeader.replace("Bearer ", "");
     const { data: userData } = await supabase.auth.getUser(token);
     const user = userData.user;
-    if (!user) throw new Error("Not authenticated");
+    if (!user) {
+      return new Response(
+        JSON.stringify({ error: "Not authenticated" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 },
+      );
+    }
 
     const { sessionId } = await req.json();
     if (!sessionId) throw new Error("Missing session ID");

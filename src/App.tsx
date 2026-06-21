@@ -989,6 +989,8 @@ const App = () => {
                         <Route path="/quantum-social" element={<QuantumSocial />} />
                         <Route path="/virtual-influencer-agency" element={<VirtualInfluencerAgency />} />
                         <Route path="/membership-community" element={<MembershipCommunity />} />
+                        <Route path="/communities" element={<MembershipCommunity />} />
+                        <Route path="/close-friends" element={<Friends />} />
                         <Route path="/community/:id" element={<CommunityDetail />} />
                         <Route path="/creators" element={<CreatorsLanding />} />
                         <Route path="/discover-creators" element={<DiscoverCreators />} />
