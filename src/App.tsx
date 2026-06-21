@@ -8,6 +8,9 @@ import { lazyWithRetry as lazy } from "@/utils/lazyWithRetry";
 import RouteSEO from "@/components/RouteSEO";
 const CouponSeasonalHub = lazy(() => import("@/pages/CouponSeasonalHub"));
 const LiveChatWidget = lazy(() => import("@/components/contact/LiveChatWidget").then(m => ({ default: m.LiveChatWidget })));
+const BazaarCreate = lazy(() => import("@/pages/BazaarCreate"));
+const MusicUpload = lazy(() => import("@/pages/MusicUpload"));
+const InvestmentPortfolio = lazy(() => import("@/pages/InvestmentPortfolio"));
 
 // Redirect /kitchenstars/<sub-path> -> /masterchef/<sub-path> for brand aliases
 const KitchenStarsRedirect = () => {
@@ -862,8 +865,10 @@ const App = () => {
                         <Route path="/teen/confessions" element={<Navigate to="/teen-hub" replace />} />
                         <Route path="/kitchenstars/recipes" element={<Navigate to="/masterchef/recipe-feed" replace />} />
                         <Route path="/kitchenstars/my-cookbook" element={<Navigate to="/masterchef" replace />} />
-                        <Route path="/bazaar/create" element={<Navigate to="/bazaar" replace />} />
+                        <Route path="/bazaar/create" element={<BazaarCreate />} />
                         <Route path="/bazaar/saved-searches" element={<Navigate to="/bazaar" replace />} />
+                        <Route path="/music/upload" element={<MusicUpload />} />
+                        <Route path="/investment/portfolio" element={<InvestmentPortfolio />} />
                         <Route path="/lie-detector" element={<LieDetector />} />
                         <Route path="/verify-report" element={<VerifyReport />} />
                         <Route path="/secret-santa" element={<SecretSanta />} />
