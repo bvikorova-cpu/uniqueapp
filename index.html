@@ -40,8 +40,8 @@
       // Apply theme class ASAP to avoid FOUC. Keep in sync with src/components/ThemeToggle.tsx.
       (function () {
         try {
-          var t = localStorage.getItem('unique-theme-v2');
-          if (t !== 'dark' && t !== 'light') t = 'dark';
+          localStorage.setItem('unique-theme-v2','dark');
+          var t = 'dark';
           document.documentElement.classList.add(t);
           document.documentElement.style.colorScheme = t;
         } catch (e) {
