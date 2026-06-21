@@ -1190,7 +1190,7 @@ const App = () => {
                         <Route path="/kids-stories/battle" element={<CharacterBattle />} />
                         <Route path="/character-gallery" element={<CharacterGallery />} />
                         <Route path="/kids-stories/educational" element={<EducationalStories />} />
-                        <Route path="/kids-stories/bedtime" element={<BedtimeStories />} />
+                        <Route path="/kids-stories/bedtime" element={<KidsParentalGateGuard featureName="Bedtime Stories" storageKey="pg_bedtime"><BedtimeStories /></KidsParentalGateGuard>} />
                         <Route path="/kids-stories/games" element={<StoryGames />} />
                         <Route path="/admin/image-editor" element={<ProtectedRoute requireAdmin={true}><AdminImageEditor /></ProtectedRoute>} />
                         <Route path="/iq-platform" element={<IQPlatform />} />
