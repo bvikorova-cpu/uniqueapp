@@ -35,7 +35,7 @@ export function useWallStats(userId?: string | null) {
 
       let streak = 0;
       if (userId) {
-        const { data } = await supabase.rpc("compute_xp_streak", { _user_id: userId } as any);
+        const { data } = await supabase.rpc("compute_xp_streak", { p_user_id: userId });
         if (typeof data === "number") streak = data;
       }
 
