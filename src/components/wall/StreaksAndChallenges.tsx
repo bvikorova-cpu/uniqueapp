@@ -88,8 +88,10 @@ export function StreaksAndChallenges() {
   const { data: week } = useQuery({
     queryKey: ["streak-week", user?.id],
     enabled: !!user?.id,
+    retry: 1,
     queryFn: async () => {
-      const { data } = await supabase.rpc("get_streak_week");
+      const { data, error } = await supabase.rpc("get_streak_week");
+      if (error) return [];
       return (data ?? []) as Array<{ day_date: string; is_active: boolean; xp_earned: number }>;
     },
   });
