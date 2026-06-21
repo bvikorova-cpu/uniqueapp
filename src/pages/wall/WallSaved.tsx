@@ -16,7 +16,15 @@ export default function WallSaved() {
     queryKey: ["saved-posts", user?.id],
     queryFn: async () => {
       if (!user) return [];
-      const { data: savedData } = await supabase.from("saved_posts").select("post_id").eq("user_id", user.id).order("created_at", { ascending: false });
+      // SCALE: paginate saved_posts first (50 most-recent). Without this,
+      // a power user with 10k saves would build a 10k-id IN(...) URL that
+      // exceeds the PostgREST URL length limit and crashes the request.
+      const { data: savedData } = await supabase
+        .from("saved_posts")
+        .select("post_id")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .range(0, 49);
       if (!savedData || savedData.length === 0) return [];
       const postIds = savedData.map(s => s.post_id);
       const { data: posts } = await supabase.from("posts").select(`*, media (*)`).in("id", postIds);
@@ -24,10 +32,14 @@ export default function WallSaved() {
       const userIds = Array.from(new Set(posts.map(p => p.user_id)));
       const { data: profiles } = await (supabase as any).from("public_profiles").select("id, full_name, avatar_url").in("id", userIds);
       const profilesMap = new Map<string, any>((profiles || []).map((p: any) => [p.id, p]));
-      return posts.map(post => ({
-        ...post,
-        profiles: profilesMap.get(post.user_id) || { id: post.user_id, full_name: null, avatar_url: null }
-      }));
+      // Preserve saved_posts ordering (most recently saved first).
+      const order = new Map(postIds.map((id, i) => [id, i]));
+      return posts
+        .map(post => ({
+          ...post,
+          profiles: profilesMap.get(post.user_id) || { id: post.user_id, full_name: null, avatar_url: null }
+        }))
+        .sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0));
     },
     enabled: !!user,
   });

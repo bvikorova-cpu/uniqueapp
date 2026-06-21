@@ -35,7 +35,8 @@ export default function WallVideos() {
   const { data: standaloneVideos = [], isLoading: loadingVideos, refetch: refetchVideos } = useQuery({
     queryKey: ["standalone-videos"],
     queryFn: async () => {
-      const { data: videos } = await supabase.from("videos").select("*").order("created_at", { ascending: false });
+      // SCALE: cap at 100; full table fetch would OOM the tab as the platform grows.
+      const { data: videos } = await supabase.from("videos").select("*").order("created_at", { ascending: false }).limit(100);
       if (!videos?.length) return [];
       const ids = Array.from(new Set(videos.map((v: any) => v.user_id).filter(Boolean)));
       const { data: profs } = await (supabase as any).from("public_profiles").select("id, full_name, avatar_url").in("id", ids);

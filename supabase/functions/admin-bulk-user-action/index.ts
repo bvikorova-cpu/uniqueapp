@@ -43,31 +43,61 @@ Deno.serve(async (req) => {
     let succeeded = 0, failed = 0;
     const errors: string[] = [];
 
-    for (const uid of userIds) {
-      try {
-        if (action === "shadow_ban") {
-          await supabase.from("profiles").update({ is_shadow_banned: true }).eq("id", uid);
-        } else if (action === "unshadow_ban") {
-          await supabase.from("profiles").update({ is_shadow_banned: false }).eq("id", uid);
-        } else if (action === "grant_credits") {
-          const amount = Number(params.amount ?? 0);
-          if (amount <= 0) throw new Error("amount required");
-          await supabase.from("ai_credit_transactions").insert({
-            user_id: uid, amount, type: "admin_grant",
-            description: params.note ?? "Admin bulk grant",
-          });
-        } else if (action === "delete_user") {
-          await supabase.auth.admin.deleteUser(uid);
-        } else if (action === "send_email") {
-          // Placeholder — wired into your email provider later
-          console.log("send_email", uid, params.subject);
+    // SCALE: batch DB ops so 500-user actions don't fan out to 1500+ serial
+    // round-trips and time out the edge function.
+    try {
+      if (action === "shadow_ban" || action === "unshadow_ban") {
+        const value = action === "shadow_ban";
+        const { error } = await supabase
+          .from("profiles")
+          .update({ is_shadow_banned: value })
+          .in("id", userIds);
+        if (error) throw error;
+        succeeded = userIds.length;
+      } else if (action === "grant_credits") {
+        const amount = Number(params.amount ?? 0);
+        if (amount <= 0) throw new Error("amount required");
+        const rows = userIds.map(uid => ({
+          user_id: uid,
+          amount,
+          type: "admin_grant",
+          description: params.note ?? "Admin bulk grant",
+        }));
+        const { error } = await supabase.from("ai_credit_transactions").insert(rows);
+        if (error) throw error;
+        succeeded = userIds.length;
+      } else if (action === "delete_user") {
+        // auth.admin.deleteUser cannot be batched. Run with bounded concurrency
+        // so we don't hammer the GoTrue admin API.
+        const CONCURRENCY = 5;
+        for (let i = 0; i < userIds.length; i += CONCURRENCY) {
+          const slice = userIds.slice(i, i + CONCURRENCY);
+          const results = await Promise.allSettled(
+            slice.map(uid => supabase.auth.admin.deleteUser(uid))
+          );
+          for (let j = 0; j < results.length; j++) {
+            const r = results[j];
+            if (r.status === "fulfilled" && !(r.value as any)?.error) {
+              succeeded++;
+            } else {
+              failed++;
+              const msg = r.status === "rejected"
+                ? (r.reason?.message || "err")
+                : ((r.value as any)?.error?.message || "err");
+              errors.push(`${slice[j]}: ${msg}`);
+            }
+          }
         }
-        succeeded++;
-      } catch (e: any) {
-        failed++;
-        errors.push(`${uid}: ${e?.message || "err"}`);
+      } else if (action === "send_email") {
+        // Placeholder — wired into your email provider later
+        console.log("send_email", userIds.length, params.subject);
+        succeeded = userIds.length;
       }
+    } catch (e: any) {
+      failed = userIds.length - succeeded;
+      errors.push(e?.message || "batch failed");
     }
+
 
     await supabase.from("bulk_user_action_log").insert({
       action, target_user_ids: userIds, params, performed_by: user.id,
