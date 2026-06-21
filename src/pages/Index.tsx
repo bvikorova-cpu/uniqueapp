@@ -321,7 +321,7 @@ const Index = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row justify-center items-center gap-3 w-full px-4">
-            <Button size="lg" onClick={() => handleNavigate('/wall')} className="bg-white text-foreground hover:bg-white/90 shadow-2xl font-bold rounded-xl px-8 w-full sm:w-auto">
+            <Button size="lg" onClick={() => handleNavigate('/wall')} className="bg-white text-slate-900 hover:bg-white/90 shadow-2xl font-bold rounded-xl px-8 w-full sm:w-auto">
               <Zap className="w-4 h-4" /> Explore Now
             </Button>
             <Button size="lg" onClick={() => handleNavigate('/ai-experiences')} className="bg-gradient-to-r from-primary to-accent text-white hover:opacity-90 shadow-[0_8px_30px_-5px_hsl(var(--accent)/0.6)] font-bold rounded-xl px-8 w-full sm:w-auto border-2 border-white/30">

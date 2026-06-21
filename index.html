@@ -36,6 +36,19 @@
         box-shadow: 0 8px 24px hsl(270 91% 58% / 0.12);
       }
     </style>
+    <script>
+      // Apply theme class ASAP to avoid FOUC. Keep in sync with src/components/ThemeToggle.tsx.
+      (function () {
+        try {
+          var t = localStorage.getItem('unique-theme-v2');
+          if (t !== 'dark' && t !== 'light') t = 'light';
+          document.documentElement.classList.add(t);
+          document.documentElement.style.colorScheme = t;
+        } catch (e) {
+          document.documentElement.classList.add('light');
+        }
+      })();
+    </script>
 
     <!-- Primary SEO -->
     <title>Unique - All-in-one social platform with AI, marketplace &amp; games</title>
