@@ -8,10 +8,12 @@
          the real request and Lighthouse flags it as "unused preconnect". -->
     <link rel="preconnect" href="https://jufrdzeonywluwutvyxz.supabase.co" />
     <link rel="dns-prefetch" href="https://jufrdzeonywluwutvyxz.supabase.co" />
-    <!-- Note: fonts.googleapis.com/fonts.gstatic.com preconnects removed — niche
-         fonts are now lazy-injected via src/utils/lazyFonts.ts only on pages
-         that need them. Adding them back would waste a TCP/TLS handshake on
-         every cold page load. -->
+    <!-- Lobster Two is the brand wordmark font used across Unique (logo, hero, dating modal).
+         Loaded globally because it is part of the brand identity. Other niche fonts
+         remain lazy-injected via src/utils/lazyFonts.ts. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lobster+Two:wght@400;700&display=swap" />
     <!-- AdSense fully removed — monetization runs through Monetag (src/lib/monetag.ts). -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     <meta http-equiv="content-language" content="en" />
