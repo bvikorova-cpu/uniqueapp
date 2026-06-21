@@ -522,6 +522,13 @@ const AdminBattleRoyalePayouts = lazy(() => import("@/pages/admin/AdminBattleRoy
 const AdminDatingModeration = lazy(() => import("@/pages/admin/AdminDatingModeration"));
 const AdminMegatalentPayouts = lazy(() => import("@/pages/admin/AdminMegatalentPayouts"));
 const CouponsMy = lazy(() => import("@/pages/CouponsMy"));
+
+// Tiny redirect helper for /education/course/:courseId → /course/:courseId
+const EducationCourseRedirect = () => {
+  const params = (require("react-router-dom") as typeof import("react-router-dom")).useParams<{ courseId: string }>();
+  const Nav = (require("react-router-dom") as typeof import("react-router-dom")).Navigate;
+  return <Nav to={`/course/${params.courseId ?? ""}`} replace />;
+};
 const CreatorVerification = lazy(() => import("@/pages/CreatorVerification"));
 const WinBackOffer = lazy(() => import("@/pages/WinBackOffer"));
 const CreatorPayouts = lazy(() => import("@/pages/CreatorPayouts"));
