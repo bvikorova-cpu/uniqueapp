@@ -121,8 +121,14 @@
         } catch (e) { /* noop */ }
       })();
     </script>
-    <!-- Preload LCP poster image for faster homepage hero render -->
-    <link rel="preload" as="image" href="/unique-hero-poster-hd.webp" type="image/webp" fetchpriority="high" />
+    <!-- Preload LCP poster image only on homepage where hero is rendered -->
+    <script>
+      (function(){ try { if (location.pathname === '/' || location.pathname === '/index') {
+        var l = document.createElement('link'); l.rel='preload'; l.as='image';
+        l.href='/unique-hero-poster-hd.webp'; l.type='image/webp'; l.setAttribute('fetchpriority','high');
+        document.head.appendChild(l);
+      } } catch(e) {} })();
+    </script>
     <meta property="og:title" content="Unique - All-in-one social platform with AI, marketplace &amp; games">
   <meta name="twitter:title" content="Unique - All-in-one social platform with AI, marketplace &amp; games">
   <meta property="og:description" content="Unique is a next-gen social platform combining community, AI tools, marketplace, dating, jobs, gaming and creator monetization — all in one place.">

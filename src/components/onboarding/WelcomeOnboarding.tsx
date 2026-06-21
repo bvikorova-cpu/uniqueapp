@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, Trophy, Gift, ArrowRight, Check } from "lucide-react";
@@ -67,6 +67,7 @@ export function WelcomeOnboarding() {
     <Dialog open={open} onOpenChange={(v) => { if (!v) finish(); }}>
       <DialogContent className="max-w-lg p-0 overflow-hidden border-primary/30 bg-gradient-to-br from-background via-background to-primary/5">
         <DialogTitle className="sr-only">Welcome to Unique</DialogTitle>
+        <DialogDescription className="sr-only">Personalize your experience in 30 seconds.</DialogDescription>
         <div className="relative">
           {/* progress */}
           <div className="absolute top-0 left-0 right-0 h-1 bg-muted">

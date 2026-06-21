@@ -290,6 +290,10 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   // LEGACY NAME REMAPS → existing edge functions (prevents 404/500)
   // ─────────────────────────────────────────────────────────────────────
   // "analyze-past-life": real edge function (Mystical audit fix)
+
+  // SCA / Dunning user-scoped checks → check-router (Batch 17 consolidation)
+  "check-sca":                          { target: "check-router", action: "sca" },
+  "check-dunning":                      { target: "check-router", action: "dunning" },
 };
 
 const originalInvoke = supabase.functions.invoke.bind(supabase.functions);
