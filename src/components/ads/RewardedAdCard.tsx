@@ -77,18 +77,15 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
   const isKidSafe = /kids|homework|academy|story|reading|drawing|science|family/i.test(sectionKey);
 
   const startWatch = () => {
+    // Track click only (no SDK trigger). Monetag's vignette/direct-link
+    // SDK does a top-level navigation in sandboxed/popup-blocked environments
+    // (e.g. Lovable preview), hijacking the user's page. We rely on the
+    // local 15s in-page video ad below + the server-side XP claim instead.
     MONETAG_ZONE_IDS.forEach((zoneId) => {
       trackMonetagEvent("click", zoneId, sectionKey);
       trackMonetagEvent("impression", zoneId, sectionKey);
     });
 
-    if (!isKidSafe) {
-      // Fire the Monetag Vignette fullscreen ad (non-blocking, in-page overlay).
-      // Note: we previously also opened MONETAG_DIRECT_LINK via window.open, but
-      // popup blockers (and the Lovable preview sandbox) convert that to a
-      // top-level navigation, hijacking the user's page. Vignette only.
-      void showMonetagRewarded(MONETAG_ZONES.REWARDED_VIGNETTE);
-    }
 
 
     setPhase("watching");
