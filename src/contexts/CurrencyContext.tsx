@@ -38,9 +38,9 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
     setCurrencyState(detectInitial());
   }, []);
 
-  const setCurrency = (c: Currency) => {
-    setCurrencyState(c);
-    try { localStorage.setItem(STORAGE_KEY, c.code); } catch {}
+  const setCurrency = (_c: Currency) => {
+    // EUR-only: ignore — the platform rule does not allow switching.
+    setCurrencyState(CURRENCIES[0]);
   };
 
   return (
