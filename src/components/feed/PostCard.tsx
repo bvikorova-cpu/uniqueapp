@@ -882,7 +882,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
         </div>
 
         {/* Additional Actions */}
-        <div className="flex items-center gap-2 pt-2 border-t mt-2">
+        <div className="flex items-center gap-2 pt-2 border-t mt-2" onClick={(e) => e.stopPropagation()}>
           {currentUserId !== post.user_id && (
             <>
               <FollowButton userId={post.user_id} variant="ghost" size="sm" />
@@ -893,6 +893,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
             <PinButton postId={post.id} userId={post.user_id} />
           )}
         </div>
+
       </div>
 
       {showComments && (
