@@ -748,7 +748,9 @@ const App = () => {
                         <Route path="/auth" element={<Auth />} />
                         <Route path="/reset-password" element={<ResetPassword />} />
                         <Route path="/terms" element={<Terms />} />
+                        <Route path="/legal/terms" element={<Navigate to="/terms" replace />} />
                         <Route path="/legal/privacy" element={<LegalPrivacy />} />
+                        <Route path="/legal/cookies" element={<Navigate to="/legal/privacy" replace />} />
                         <Route path="/legal/refund" element={<LegalRefund />} />
                         <Route path="/legal/creator" element={<LegalCreator />} />
                         <Route path="/legal/community" element={<LegalCommunity />} />
@@ -758,6 +760,7 @@ const App = () => {
                         <Route path="/legacy-course/:courseName" element={<CourseDetail />} />
                         <Route path="/quiz" element={<Quiz />} />
                         <Route path="/profile" element={<ProfileRedirect />} />
+                        <Route path="/profile/edit" element={<Navigate to="/edit-profile" replace />} />
                         <Route path="/profile/:userId" element={<Profile />} />
                         <Route path="/u/:username" element={<UsernameRedirect />} />
                         <Route path="/edit-profile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
@@ -774,6 +777,8 @@ const App = () => {
                         <Route path="/premium-plans" element={<Navigate to="/premium" replace />} />
                         <Route path="/ai-credits-store" element={<AICreditsStore />} />
                         <Route path="/ai-credits" element={<AICreditsStore />} />
+                        <Route path="/credits" element={<Navigate to="/ai-credits" replace />} />
+                        <Route path="/credits/buy" element={<Navigate to="/ai-credits" replace />} />
                         <Route path="/credits/history" element={<ProtectedRoute><MyCreditsLedger /></ProtectedRoute>} />
                         <Route path="/my-credits-history" element={<ProtectedRoute><MyCreditsLedger /></ProtectedRoute>} />
                         <Route path="/lucky-wheel" element={<ProtectedRoute><LuckyWheel /></ProtectedRoute>} />

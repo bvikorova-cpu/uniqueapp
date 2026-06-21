@@ -57,13 +57,17 @@ export const AdminInfluencerWithdrawals = () => {
 
       if (error) throw error;
 
-      // Get user emails
+      // Get user emails (skip when no rows — PostgREST rejects `in.()`)
       const userIds = [...new Set(data?.map(r => r.influencer_profiles.user_id) || [])];
-      const { data: profiles } = await (supabase as any)
-        .from("profiles_public").select("id, email")
-        .in("id", userIds);
+      let profiles: any[] = [];
+      if (userIds.length > 0) {
+        const { data: profilesData } = await (supabase as any)
+          .from("profiles_public").select("id, email")
+          .in("id", userIds);
+        profiles = profilesData || [];
+      }
 
-      const profilesMap = new Map<string, any>((profiles || []).map((p: any) => [p.id, p]));
+      const profilesMap = new Map<string, any>(profiles.map((p: any) => [p.id, p]));
 
       const enrichedRequests = (data || []).map(req => ({
         ...req,
