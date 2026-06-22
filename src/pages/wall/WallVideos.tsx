@@ -1,144 +1,35 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent } from "@/components/ui/card";
-import { Video, Loader2, Play, Film, Clapperboard } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import PostCard from "@/components/feed/PostCard";
+import { Helmet } from "react-helmet-async";
+import TikTokFeed from "@/components/feed/TikTokFeed";
 import VideoUploadDialog from "@/components/wall/VideoUploadDialog";
-import VideoCard from "@/components/wall/VideoCard";
-import MonetagInFeedAd from "@/components/ads/MonetagInFeedAd";
-import { Fragment } from "react";
-import { motion } from "framer-motion";
+import { useQueryClient } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 export default function WallVideos() {
-  const { data: videoPosts = [], isLoading: loadingPosts, refetch: refetchPosts } = useQuery({
-    queryKey: ["video-posts"],
-    queryFn: async () => {
-      // Server-side filter: only fetch posts that have a video media item, capped at 100.
-      const { data: posts } = await supabase
-        .from("posts")
-        .select(`*, media!inner (*)`)
-        .ilike("media.file_type", "video/%")
-        .order("created_at", { ascending: false })
-        .limit(100);
-      if (!posts) return [];
-      const userIds = Array.from(new Set(posts.map((p: any) => p.user_id)));
-      const { data: profiles } = await (supabase as any).from("public_profiles").select("id, full_name, avatar_url").in("id", userIds);
-      const profilesMap = new Map<string, any>((profiles || []).map((p: any) => [p.id, p]));
-      return posts.map((post: any) => ({
-        ...post,
-        profiles: profilesMap.get(post.user_id) || { id: post.user_id, full_name: null, avatar_url: null }
-      }));
-    },
-  });
-
-  const { data: standaloneVideos = [], isLoading: loadingVideos, refetch: refetchVideos } = useQuery({
-    queryKey: ["standalone-videos"],
-    queryFn: async () => {
-      // SCALE: cap at 100; full table fetch would OOM the tab as the platform grows.
-      const { data: videos } = await supabase.from("videos").select("*").order("created_at", { ascending: false }).limit(100);
-      if (!videos?.length) return [];
-      const ids = Array.from(new Set(videos.map((v: any) => v.user_id).filter(Boolean)));
-      const { data: profs } = await (supabase as any).from("public_profiles").select("id, full_name, avatar_url").in("id", ids);
-      const m = new Map((profs || []).map((p: any) => [p.id, p]));
-      return videos.map((v: any) => ({ ...v, profiles: m.get(v.user_id) || { full_name: null, avatar_url: null } }));
-    },
-  });
-
-  const { data: storyVideos = [], isLoading: loadingStories, refetch: refetchStories } = useQuery({
-    queryKey: ["story-videos-in-wall"],
-    queryFn: async () => {
-      const now = new Date().toISOString();
-      const { data: stories } = await supabase
-        .from("stories")
-        .select("*")
-        .eq("media_type", "video")
-        .gt("expires_at", now)
-        .order("created_at", { ascending: false });
-      if (!stories?.length) return [];
-      const userIds = Array.from(new Set(stories.map((s: any) => s.user_id)));
-      const { data: profiles } = await (supabase as any).from("public_profiles").select("id, full_name, avatar_url").in("id", userIds);
-      const map = new Map((profiles || []).map((p: any) => [p.id, p]));
-      return stories.map((s: any) => ({
-        id: `story-${s.id}`,
-        title: s.caption || "Story",
-        description: null,
-        video_url: s.media_url,
-        thumbnail_url: null,
-        views_count: 0,
-        likes_count: 0,
-        created_at: s.created_at,
-        profiles: map.get(s.user_id) || { full_name: null, avatar_url: null },
-      }));
-    },
-  });
-
-  const isLoading = loadingPosts || loadingVideos || loadingStories;
-  const refetch = () => { refetchPosts(); refetchVideos(); refetchStories(); };
-  const totalVideos = standaloneVideos.length + videoPosts.length + storyVideos.length;
-
+  const qc = useQueryClient();
   return (
-    <div className="max-w-4xl mx-auto px-4 pt-12 sm:pt-6 pb-8 space-y-6">
-      {/* Hero Banner */}
-      <motion.div 
-        initial={{ opacity: 0, y: -20 }} 
-        animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-rose-500/15 via-primary/10 to-purple-500/5 border border-rose-500/20 p-6 sm:p-8"
-      >
-        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-rose-500/15 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
-        <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <motion.div 
-              className="p-4 rounded-2xl bg-gradient-to-br from-rose-500 to-purple-600 shadow-xl shadow-rose-500/30"
-              whileHover={{ rotate: -5, scale: 1.05 }}
-            >
-              <Play className="h-7 w-7 text-white" />
-            </motion.div>
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-foreground via-rose-500 to-purple-500 bg-clip-text text-transparent">Videos</h1>
-              <p className="text-sm text-muted-foreground mt-0.5">
-                {totalVideos > 0 ? `${totalVideos} videos in your feed` : "Watch & share video content"}
-              </p>
-            </div>
+    <>
+      <Helmet>
+        <title>Videos — Unique</title>
+        <meta name="description" content="TikTok-style vertikálny video feed od kreatorov Unique." />
+      </Helmet>
+      <TikTokFeed
+        topOverlay={
+          <div className="flex items-center gap-6 text-white text-base font-semibold drop-shadow-lg">
+            <Link to="/wall" className="absolute left-4 top-3"><ArrowLeft className="w-6 h-6" /></Link>
+            <span className="opacity-60">Sleduješ</span>
+            <span className="relative">
+              Pre teba
+              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-white" />
+            </span>
           </div>
-          <VideoUploadDialog onUploadSuccess={refetch} />
-        </div>
-      </motion.div>
-
-      {isLoading ? (
-        <div className="flex flex-col items-center justify-center py-20 gap-3">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-sm text-muted-foreground">Loading videos...</p>
-        </div>
-      ) : totalVideos === 0 ? (
-        <Card className="border-dashed border-2 border-primary/20 bg-gradient-to-br from-rose-500/5 via-background to-purple-500/5 overflow-hidden relative">
-          <div className="absolute top-0 right-0 w-40 h-40 bg-rose-500/10 rounded-full blur-3xl" />
-          <CardContent className="py-16 text-center relative">
-            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }} className="w-20 h-20 rounded-2xl bg-gradient-to-br from-rose-500/20 to-purple-500/20 flex items-center justify-center mx-auto mb-5">
-              <Clapperboard className="h-10 w-10 text-rose-500" />
-            </motion.div>
-            <h3 className="text-xl font-black mb-2">No videos yet</h3>
-            <p className="text-sm text-muted-foreground mb-5">Upload a video to get started and share with the community</p>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="space-y-4">
-          {[...storyVideos.map((v: any) => ({ kind: "video" as const, data: v })),
-            ...standaloneVideos.map((v: any) => ({ kind: "video" as const, data: v })),
-            ...videoPosts.map((p: any) => ({ kind: "post" as const, data: p }))
-          ].map((item, i) => {
-            const showAd = (i + 1) % 20 === 0;
-            return (
-              <Fragment key={item.kind === "video" ? `v-${item.data.id}` : `p-${item.data.id}`}>
-                <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06, type: "spring", stiffness: 200 }}>
-                  {item.kind === "video" ? <VideoCard video={item.data} /> : <PostCard post={item.data} onDelete={refetch} />}
-                </motion.div>
-                {showAd && <MonetagInFeedAd slotIndex={Math.floor((i + 1) / 20)} />}
-              </Fragment>
-            );
-          })}
-        </div>
-      )}
-    </div>
+        }
+        fabOverlay={
+          <div className="[&_button]:bg-pink-500 [&_button]:hover:bg-pink-600 [&_button]:text-white [&_button]:rounded-full [&_button]:shadow-2xl">
+            <VideoUploadDialog onUploadSuccess={() => qc.invalidateQueries({ queryKey: ["tiktok-feed"] })} />
+          </div>
+        }
+      />
+    </>
   );
 }
