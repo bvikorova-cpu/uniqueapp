@@ -22,11 +22,31 @@ export default function GoogleTranslateWidget() {
     const style = document.createElement("style");
     style.id = "google-translate-style";
     style.innerHTML = `
+      .goog-te-banner-frame,
       .goog-te-banner-frame.skiptranslate,
       .goog-te-gadget-icon,
       .goog-logo-link,
-      .goog-te-gadget > span > a { display: none !important; }
-      body { top: 0 !important; }
+      .goog-te-gadget > span > a,
+      .goog-te-ftab,
+      .goog-te-balloon-frame,
+      #goog-gt-tt,
+      .goog-te-spinner-pos,
+      .goog-te-menu,
+      .VIpgJd-ZVi9od-ORHb-OEVmcd {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        width: 0 !important;
+        pointer-events: none !important;
+      }
+      body, html {
+        top: 0 !important;
+        position: static !important;
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+      }
+      .skiptranslate { display: none !important; }
       #google_translate_element .goog-te-gadget {
         color: transparent !important;
         font-size: 0 !important;
