@@ -40,12 +40,11 @@ export default function GoogleTranslateWidget() {
         width: 0 !important;
         pointer-events: none !important;
       }
-      body, html {
+      body {
         top: 0 !important;
-        position: static !important;
         margin-top: 0 !important;
-        padding-top: 0 !important;
       }
+
       #google_translate_element .goog-te-gadget {
         color: transparent !important;
         font-size: 0 !important;
@@ -138,16 +137,10 @@ export default function GoogleTranslateWidget() {
         bottomPanel.style.visibility = "hidden";
         bottomPanel.remove();
       }
-      if (document.body) {
+      if (document.body && document.body.style.top) {
         document.body.style.top = "0px";
-        document.body.style.position = "static";
-        document.body.style.marginTop = "0px";
-        document.body.style.paddingTop = "0px";
       }
-      if (document.documentElement) {
-        document.documentElement.style.top = "0px";
-        document.documentElement.style.position = "static";
-      }
+
     };
 
     killTranslateUI();
