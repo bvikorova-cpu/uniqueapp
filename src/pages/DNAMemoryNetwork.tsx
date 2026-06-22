@@ -210,7 +210,7 @@ const DNAMemoryNetwork = () => {
               {[
                 { label: "Heritage Map", pct: 45 },
                 { label: "Health Profile", pct: 20 },
-                { label: "Family Tree", pct: 10 },
+                { label: "Family Tree Discovery", pct: 10 },
               ].map((p, i) => (
                 <div key={i}>
                   <div className="flex justify-between text-[10px] mb-0.5">
