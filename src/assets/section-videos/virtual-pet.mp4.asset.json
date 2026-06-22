@@ -1,11 +1,9 @@
 {
   "version": 1,
-  "asset_id": "f45894b5-5339-47c5-824a-6a92373b8b4a",
+  "asset_id": "55463912-5805-4060-816f-21a809a84b0d",
   "project_id": "3ea492b4-277a-4b1d-a6dd-ca2a3efd9225",
-  "url": "/__l5e/assets-v1/f45894b5-5339-47c5-824a-6a92373b8b4a/virtual-pet.mp4",
-  "r2_key": "a/v1/3ea492b4-277a-4b1d-a6dd-ca2a3efd9225/f45894b5-5339-47c5-824a-6a92373b8b4a/virtual-pet.mp4",
+  "url": "/__l5e/assets-v1/55463912-5805-4060-816f-21a809a84b0d/virtual-pet.mp4",
   "original_filename": "virtual-pet.mp4",
-  "size": 11038534,
-  "content_type": "video/mp4",
-  "created_at": "2026-06-22T14:10:38Z"
+  "size": 3855587,
+  "created_at": "2026-06-22T14:39:28Z"
 }
