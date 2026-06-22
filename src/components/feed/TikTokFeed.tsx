@@ -54,7 +54,7 @@ function VideoCard({ short, active, muted, onToggleMute }: {
 
   const handleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!user) { toast.error("Prihlás sa pre lajkovanie"); return; }
+    if (!user) { toast.error("Sign in to like"); return; }
     setLiked(!liked);
     setLikes((n) => n + (liked ? -1 : 1));
   };
@@ -64,7 +64,7 @@ function VideoCard({ short, active, muted, onToggleMute }: {
     const url = `${window.location.origin}/shorts#${short.id}`;
     try {
       if (navigator.share) await navigator.share({ url, title: short.title || "Unique" });
-      else { await navigator.clipboard.writeText(url); toast.success("Link skopírovaný"); }
+      else { await navigator.clipboard.writeText(url); toast.success("Link copied"); }
     } catch {}
   };
 
@@ -250,8 +250,8 @@ export default function TikTokFeed({ topOverlay, fabOverlay }: { topOverlay?: Re
         )}
         {!isLoading && shorts.length === 0 && (
           <div className="h-[100dvh] flex flex-col items-center justify-center text-white gap-4 px-6 text-center">
-            <h1 className="text-2xl font-bold">Ešte žiadne videá</h1>
-            <p className="opacity-80">Buď prvý kto nahrá krátke video.</p>
+            <h1 className="text-2xl font-bold">No videos yet</h1>
+            <p className="opacity-80">Be the first to upload a short video.</p>
             {fabOverlay}
           </div>
         )}
