@@ -1,74 +1,33 @@
 /// <reference types="npm:@types/react@18.3.1" />
-
 import * as React from 'npm:react@18.3.1'
-import {
-  Body, Button, Container, Head, Heading, Html, Preview, Section, Text,
-} from 'npm:@react-email/components@0.0.22'
-import { getEmailStrings, HTML_LANG_BY_CODE } from './i18n.ts'
+import { Body, Button, Container, Head, Heading, Html, Link, Preview, Section, Text } from 'npm:@react-email/components@0.0.22'
+import { styles } from './_brand.ts'
 
-interface EmailChangeEmailProps {
-  siteName: string
-  confirmationUrl: string
-  email?: string
-  oldEmail?: string
-  newEmail?: string
-  lang?: string
-}
+interface Props { siteName: string; siteUrl: string; recipient: string; confirmationUrl: string; email?: string; newEmail?: string }
 
-export const EmailChangeEmail = ({
-  confirmationUrl, oldEmail, newEmail, email, lang,
-}: EmailChangeEmailProps) => {
-  const t = getEmailStrings(lang, 'email_change')
-  const htmlLang = HTML_LANG_BY_CODE[(lang as keyof typeof HTML_LANG_BY_CODE)] || 'en'
-  const fromAddr = oldEmail || email || ''
-  const toAddr = newEmail || ''
-  const changeLine = (t.emailChangeIntro || '')
-    .replace('{oldEmail}', fromAddr)
-    .replace('{newEmail}', toAddr)
-  return (
-    <Html lang={htmlLang} dir="ltr">
-      <Head />
-      <Preview>{t.preview}</Preview>
-      <Body style={main}>
-        <Container style={container}>
-          <Section style={brandHeader}>
-            <Text style={wordmark}>Unique</Text>
+export const EmailChangeEmail = ({ siteName, siteUrl, recipient, confirmationUrl, email, newEmail }: Props) => (
+  <Html lang="en" dir="ltr">
+    <Head />
+    <Preview>Confirm your new email on Unique</Preview>
+    <Body style={styles.main}>
+      <Container style={styles.container}>
+        <Section style={styles.header}>
+          <Heading style={styles.brandName}>Unique</Heading>
+          <Text style={styles.tagline}>Connect · Create · Earn</Text>
+        </Section>
+        <Section style={styles.body}>
+          <Heading style={styles.h1}>Confirm your new email</Heading>
+          <Text style={styles.text}>You requested to change your <strong>{siteName}</strong> email{email ? <> from <strong>{email}</strong></> : null}{newEmail ? <> to <strong>{newEmail}</strong></> : <> to <strong>{recipient}</strong></>}.</Text>
+          <Section style={styles.buttonWrap}>
+            <Button style={styles.button} href={confirmationUrl}>Confirm New Email →</Button>
           </Section>
-          <Heading style={h1}>{t.heading}</Heading>
-          <Text style={text}>{t.intro}</Text>
-          {(fromAddr || toAddr) && <Text style={text}>{changeLine}</Text>}
-          <Text style={text}>{t.emailChangeClick}</Text>
-          <Section style={{ textAlign: 'center' as const, margin: '32px 0' }}>
-            <Button style={button} href={confirmationUrl}>{t.button}</Button>
-          </Section>
-          <Text style={footer}>{t.footer}</Text>
-          <Text style={signature}>{t.signature}</Text>
-        </Container>
-      </Body>
-    </Html>
-  )
-}
-
+          <Text style={styles.muted}>If you didn't request this change, contact support immediately.</Text>
+        </Section>
+        <Section style={styles.footer}>
+          Unique — Connect. Create. Earn. · <Link href={siteUrl} style={styles.link}>uniqueapp.fun</Link>
+        </Section>
+      </Container>
+    </Body>
+  </Html>
+)
 export default EmailChangeEmail
-
-const main = { backgroundColor: '#ffffff', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }
-const container = { padding: '32px 24px', maxWidth: '560px' }
-const brandHeader = { textAlign: 'center' as const, margin: '0 0 24px' }
-const wordmark = {
-  fontFamily: '"Lobster Two", "Brush Script MT", cursive',
-  fontSize: '36px', fontWeight: 'bold' as const,
-  background: 'linear-gradient(135deg, hsl(270, 91%, 65%), hsl(330, 100%, 65%))',
-  WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-  color: 'hsl(270, 91%, 55%)', margin: '0',
-}
-const h1 = { fontSize: '24px', fontWeight: 'bold' as const, color: '#0f0f1a', margin: '0 0 20px' }
-const text = { fontSize: '15px', color: '#4a4a55', lineHeight: '1.6', margin: '0 0 16px' }
-const button = {
-  background: 'linear-gradient(135deg, hsl(270, 91%, 55%), hsl(330, 100%, 60%))',
-  backgroundColor: 'hsl(270, 91%, 55%)', color: '#ffffff',
-  fontSize: '15px', fontWeight: 'bold' as const,
-  borderRadius: '12px', padding: '14px 28px',
-  textDecoration: 'none', display: 'inline-block',
-}
-const footer = { fontSize: '13px', color: '#8a8a95', margin: '24px 0 8px', lineHeight: '1.5' }
-const signature = { fontSize: '13px', color: '#8a8a95', margin: '16px 0 0' }

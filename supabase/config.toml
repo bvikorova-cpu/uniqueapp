@@ -414,3 +414,6 @@ verify_jwt = true
 
 [functions.holographic-breeding-simulate]
 verify_jwt = true
+
+[functions.auth-email-hook]
+verify_jwt = false
