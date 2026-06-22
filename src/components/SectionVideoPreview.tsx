@@ -33,6 +33,7 @@ export function SectionVideoPreview({
   useEffect(() => {
     const target = figureRef.current;
     if (!target) return;
+    const rootMargin = window.matchMedia("(max-width: 640px)").matches ? "320px 0px" : "700px 0px";
 
     const loadObserver = new IntersectionObserver(
       ([entry]) => {
@@ -41,7 +42,7 @@ export function SectionVideoPreview({
           loadObserver.disconnect();
         }
       },
-      { rootMargin: "1200px 0px", threshold: 0.01 },
+      { rootMargin, threshold: 0.01 },
     );
 
     loadObserver.observe(target);
