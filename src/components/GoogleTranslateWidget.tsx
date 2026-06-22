@@ -115,6 +115,55 @@ export default function GoogleTranslateWidget() {
     setLoaded(true);
   }, [open, loaded]);
 
+  // Aggressively remove Google Translate banners / panels and reset body
+  // styles so the top app header is never pushed down.
+  useEffect(() => {
+    if (!loaded) return;
+
+    const killTranslateUI = () => {
+      const banner = document.querySelector(
+        ".goog-te-banner-frame, .goog-te-banner-frame.skiptranslate"
+      ) as HTMLElement | null;
+      if (banner) {
+        banner.style.display = "none";
+        banner.style.visibility = "hidden";
+        banner.style.height = "0";
+        banner.style.width = "0";
+        banner.remove();
+      }
+      const bottomPanel = document.querySelector(
+        ".goog-te-ftab, .goog-te-balloon-frame, #goog-gt-tt, .VIpgJd-ZVi9od-ORHb-OEVmcd"
+      ) as HTMLElement | null;
+      if (bottomPanel) {
+        bottomPanel.style.display = "none";
+        bottomPanel.style.visibility = "hidden";
+        bottomPanel.remove();
+      }
+      if (document.body) {
+        document.body.style.top = "0px";
+        document.body.style.position = "static";
+        document.body.style.marginTop = "0px";
+        document.body.style.paddingTop = "0px";
+      }
+      if (document.documentElement) {
+        document.documentElement.style.top = "0px";
+        document.documentElement.style.position = "static";
+      }
+    };
+
+    killTranslateUI();
+
+    const observer = new MutationObserver(() => killTranslateUI());
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    const interval = window.setInterval(killTranslateUI, 500);
+
+    return () => {
+      observer.disconnect();
+      window.clearInterval(interval);
+    };
+  }, [loaded]);
+
   return (
     <div className="fixed bottom-[calc(9rem+env(safe-area-inset-bottom))] right-3 md:bottom-24 md:right-6 z-[9999] flex items-center gap-2">
       <div
