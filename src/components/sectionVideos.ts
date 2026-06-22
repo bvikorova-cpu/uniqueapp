@@ -17,6 +17,11 @@ import livestream from "@/assets/section-videos/livestream.mp4.asset.json";
 import fashion from "@/assets/section-videos/fashion.mp4.asset.json";
 import fitness from "@/assets/section-videos/fitness.mp4.asset.json";
 import property from "@/assets/section-videos/property.mp4.asset.json";
+import holographicAvatars from "@/assets/section-videos/holographic-avatars.mp4.asset.json";
+import timeCapsule from "@/assets/section-videos/time-capsule.mp4.asset.json";
+import kitchenStars from "@/assets/section-videos/kitchen-stars.mp4.asset.json";
+import comedyClub from "@/assets/section-videos/comedy-club.mp4.asset.json";
+import marketplace from "@/assets/section-videos/marketplace.mp4.asset.json";
 
 export const sectionVideos = {
   hero: hero.url,
@@ -34,6 +39,11 @@ export const sectionVideos = {
   fashion: fashion.url,
   fitness: fitness.url,
   property: property.url,
+  holographicAvatars: holographicAvatars.url,
+  timeCapsule: timeCapsule.url,
+  kitchenStars: kitchenStars.url,
+  comedyClub: comedyClub.url,
+  marketplace: marketplace.url,
 } as const;
 
 export type SectionVideoKey = keyof typeof sectionVideos;
