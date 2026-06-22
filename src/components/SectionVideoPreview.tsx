@@ -24,46 +24,81 @@ export function SectionVideoPreview({
   aspectRatio = "16 / 9",
   className = "",
 }: Props) {
+  const figureRef = useRef<HTMLElement>(null);
   const ref = useRef<HTMLVideoElement>(null);
-  const [load, setLoad] = useState(false);
+  const [shouldLoad, setShouldLoad] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
+    const target = figureRef.current;
+    if (!target) return;
+    const rootMargin = window.matchMedia("(max-width: 640px)").matches ? "320px 0px" : "700px 0px";
+
+    const loadObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoad(true);
+          loadObserver.disconnect();
+        }
+      },
+      { rootMargin, threshold: 0.01 },
+    );
+
+    loadObserver.observe(target);
+    return () => loadObserver.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const target = figureRef.current;
+    if (!target) return;
+
     const io = new IntersectionObserver(
       (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) {
-            setLoad(true);
-            el.play().catch(() => {});
-          } else {
-            el.pause();
-          }
-        }
+        const entry = entries[0];
+        const visible = entry.isIntersecting;
+        setIsVisible(visible);
+
+        const el = ref.current;
+        if (!el) return;
+        if (visible && shouldLoad) el.play().catch(() => {});
+        else el.pause();
       },
       { threshold: 0.25 },
     );
-    io.observe(el);
+    io.observe(target);
     return () => io.disconnect();
-  }, []);
+  }, [shouldLoad]);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (shouldLoad && el) el.load();
+  }, [shouldLoad, src]);
 
   return (
     <figure
+      ref={figureRef}
       className={`my-8 mx-auto max-w-3xl rounded-2xl overflow-hidden border border-primary/20 shadow-lg shadow-primary/10 bg-card ${className}`}
     >
-      <video
-        ref={ref}
-        src={load ? src : undefined}
-        poster={undefined}
-        muted
-        loop
-        playsInline
-        autoPlay
-        preload="none"
-        aria-label={label}
-        className="w-full h-auto block"
-        style={{ aspectRatio }}
-      />
+      <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-card to-accent/10" style={{ aspectRatio }}>
+        {!isReady && <div className="absolute inset-0 animate-pulse bg-muted/40" aria-hidden="true" />}
+        <video
+          ref={ref}
+          src={shouldLoad ? src : undefined}
+          poster={undefined}
+          muted
+          loop
+          playsInline
+          autoPlay={isVisible}
+          preload={shouldLoad ? "auto" : "none"}
+          aria-label={label}
+          onCanPlay={() => {
+            setIsReady(true);
+            if (isVisible) ref.current?.play().catch(() => {});
+          }}
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${isReady ? "opacity-100" : "opacity-0"}`}
+        />
+      </div>
       {caption && (
         <figcaption className="px-4 py-2 text-xs text-muted-foreground text-center bg-muted/30">
           {caption}
