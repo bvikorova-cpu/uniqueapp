@@ -24,6 +24,7 @@ export default function GoogleTranslateWidget() {
     style.innerHTML = `
       .goog-te-banner-frame,
       .goog-te-banner-frame.skiptranslate,
+      iframe.goog-te-banner-frame,
       .goog-te-gadget-icon,
       .goog-logo-link,
       .goog-te-gadget > span > a,
@@ -31,7 +32,6 @@ export default function GoogleTranslateWidget() {
       .goog-te-balloon-frame,
       #goog-gt-tt,
       .goog-te-spinner-pos,
-      .goog-te-menu,
       .VIpgJd-ZVi9od-ORHb-OEVmcd {
         display: none !important;
         visibility: hidden !important;
@@ -46,7 +46,6 @@ export default function GoogleTranslateWidget() {
         margin-top: 0 !important;
         padding-top: 0 !important;
       }
-      .skiptranslate { display: none !important; }
       #google_translate_element .goog-te-gadget {
         color: transparent !important;
         font-size: 0 !important;
