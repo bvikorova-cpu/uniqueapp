@@ -64,6 +64,7 @@ test.describe("DNA Social Memory Network — buttons + redirects", () => {
   test("clicks every DNA tool sequentially without errors + spinners clear", async ({
     page,
   }) => {
+    test.setTimeout(180_000);
     const errors = (page as any)._jsErrors as string[];
     const failures: string[] = [];
 

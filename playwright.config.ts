@@ -18,6 +18,10 @@ export default defineConfig({
     navigationTimeout: 20_000,
     screenshot: "only-on-failure",
     video: "retain-on-failure",
+    launchOptions: {
+      executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH || "/bin/chromium",
+      args: ["--no-sandbox", "--disable-gpu", "--disable-dev-shm-usage"],
+    },
   },
   projects: [
     { name: "setup", testMatch: /auth\.setup\.ts/ },

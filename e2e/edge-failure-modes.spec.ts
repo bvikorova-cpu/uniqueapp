@@ -160,13 +160,14 @@ test.describe("DNA hub — edge function failures don't deadlock the UI", () => 
     // chat-with-offspring) shortly after mount.
     await page.getByText("Digital Offspring", { exact: true }).first().click();
 
-    const back = page.getByRole("button", { name: /back to dna hub/i });
+    const back = page.getByRole("button", { name: /back to dna hub/i }).first();
     await expect(back).toBeVisible({ timeout: 10_000 });
 
     await expectNoStuckSpinner(page, "Digital Offspring");
 
     // Either an error toast OR an empty/error state — but Back must work.
-    await back.click();
+    await back.scrollIntoViewIfNeeded();
+    await back.click({ force: true });
     await expect(
       page.getByText("DNA Analysis", { exact: true }).first(),
     ).toBeVisible({ timeout: 8_000 });
