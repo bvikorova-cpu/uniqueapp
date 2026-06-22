@@ -569,6 +569,31 @@ const Index = () => {
             label="Kids Channel preview"
             caption="🎨 Kids Channel — safe & fun for ages 6–12"
           />
+          <SectionVideoPreview
+            src={sectionVideos.racing}
+            label="GP Fantasy Racing preview"
+            caption="🏎️ GP Fantasy Racing — 3D race & manage teams"
+          />
+          <SectionVideoPreview
+            src={sectionVideos.livestream}
+            label="Live Streaming preview"
+            caption="📡 Live Streaming — go live, earn gifts"
+          />
+          <SectionVideoPreview
+            src={sectionVideos.fashion}
+            label="Fashion Studio preview"
+            caption="👗 Fashion Studio — AI designs & runway"
+          />
+          <SectionVideoPreview
+            src={sectionVideos.fitness}
+            label="Fitness & Wellness preview"
+            caption="💪 Fitness & Wellness — train smarter"
+          />
+          <SectionVideoPreview
+            src={sectionVideos.property}
+            label="Property Marketplace preview"
+            caption="🏠 Property Marketplace — buy, sell, rent"
+          />
         </section>
 
         {/* ── About Unique ─────────────────────────────── */}
