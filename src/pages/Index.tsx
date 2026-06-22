@@ -15,6 +15,8 @@ import { Age16Badge } from "@/components/Age16Badge";
 import { HowItWorksTrust } from "@/components/trust/HowItWorksTrust";
 import { FoundingMembersBanner } from "@/components/founding/FoundingMembersBanner";
 import { InviteFriendsCallout } from "@/components/referral/InviteFriendsCallout";
+import { SectionVideoPreview } from "@/components/SectionVideoPreview";
+import { sectionVideos } from "@/components/sectionVideos";
 import {
   Car, Baby, GraduationCap, Briefcase, Heart, Sparkles, Trophy, Users,
   Video, Mic, ShoppingBag, Brain, TrendingUp, Ghost, Building2, Crown,
@@ -376,6 +378,11 @@ const Index = () => {
             ))}
           </div>
           <RewardedAdCard sectionKey="quick_actions" adSlot={AD_PLACEMENTS.FOOTER_BANNER} className="mt-4" />
+          <SectionVideoPreview
+            src={sectionVideos.hero}
+            label="Unique platform preview"
+            caption="✨ Unique — your creative universe"
+          />
         </section>
         <section>
           <SectionHeader icon={Star} title="Spotlight" badge="Featured" badgeClass="bg-gradient-to-r from-yellow-500/20 to-amber-500/20 text-yellow-600 border-yellow-500/30" />
@@ -431,6 +438,11 @@ const Index = () => {
             </AnimatePresence>
           </Card>
           <RewardedAdCard sectionKey="spotlight" adSlot={AD_PLACEMENTS.FOOTER_BANNER} className="mt-4" />
+          <SectionVideoPreview
+            src={sectionVideos.megatalent}
+            label="Megatalent contest preview"
+            caption="🎤 Megatalent — quarterly €10,000 prize"
+          />
         </section>
         {favoriteModules.length > 0 && (
           <section>
@@ -460,6 +472,21 @@ const Index = () => {
             ))}
           </div>
           <RewardedAdCard sectionKey="ecosystem" adSlot={AD_PLACEMENTS.FOOTER_BANNER} className="mt-4" />
+          <SectionVideoPreview
+            src={sectionVideos.music}
+            label="Music section preview"
+            caption="🎵 Music — upload, stream, earn royalties"
+          />
+          <SectionVideoPreview
+            src={sectionVideos.dating}
+            label="Dating section preview"
+            caption="💜 Dating — meet your match"
+          />
+          <SectionVideoPreview
+            src={sectionVideos.bazaar}
+            label="Bazaar marketplace preview"
+            caption="🛍️ Bazaar — buy, sell, discover"
+          />
         </section>
 
         {/* ── Core ─────────────────────────────────────── */}
