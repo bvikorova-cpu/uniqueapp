@@ -644,6 +644,16 @@ const Index = () => {
             label="Photo Restoration preview"
             caption="🖼️ Photo Restoration — bring memories back to life"
           />
+          <SectionVideoPreview
+            src={sectionVideos.virtualPet}
+            label="Virtual Pet preview"
+            caption="🐾 Virtual Pet — raise your magical companion"
+          />
+          <SectionVideoPreview
+            src={sectionVideos.influKing}
+            label="Influ King preview"
+            caption="👑 Influ King — rise to the top of influencers"
+          />
         </section>
 
         {/* ── About Unique ─────────────────────────────── */}
