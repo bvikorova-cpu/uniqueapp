@@ -145,8 +145,8 @@ export default function Shorts() {
       if (ids.length) {
         const { data: profs } = await (supabase as any)
           .from("public_profiles").select("id,full_name,avatar_url").in("id", ids);
-        const map = new Map((profs || []).map((p: any) => [p.id, p]));
-        all.forEach((s) => { const p = map.get(s.user_id); if (p) s.profile = p; });
+        const map = new Map<string, any>((profs || []).map((p: any) => [p.id, p]));
+        all.forEach((s) => { const p = map.get(s.user_id); if (p) s.profile = { full_name: p.full_name, avatar_url: p.avatar_url }; });
       }
 
       // shuffle for FYP feel
