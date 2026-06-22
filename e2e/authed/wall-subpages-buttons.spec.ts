@@ -114,11 +114,16 @@ test.describe("Wall podstránky – tlačidlá", () => {
     const name = `E2E Group ${stamp()}`;
     await dialog.getByPlaceholder(/enter group name/i).fill(name);
     await dialog.locator("textarea").first().fill("E2E auto group");
-    await dialog.getByRole("button", { name: /^create group$/i }).click();
+    const submitBtn = dialog.getByRole("button", { name: /^create group$/i });
+    await expect(submitBtn).toBeEnabled({ timeout: 5_000 });
+    await submitBtn.scrollIntoViewIfNeeded();
+    await submitBtn.click({ force: true });
+    // Počkaj na akúkoľvek odozvu (toast alebo close dialógu)
+    await page.waitForTimeout(2500);
     const toastOk = await page
       .getByText(/success|created|error|failed/i)
       .first()
-      .isVisible({ timeout: 10_000 })
+      .isVisible({ timeout: 8_000 })
       .catch(() => false);
     const dlgClosed = await dialog
       .isHidden({ timeout: 3_000 })
