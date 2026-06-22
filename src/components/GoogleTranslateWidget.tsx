@@ -137,16 +137,10 @@ export default function GoogleTranslateWidget() {
         bottomPanel.style.visibility = "hidden";
         bottomPanel.remove();
       }
-      if (document.body) {
+      if (document.body && document.body.style.top) {
         document.body.style.top = "0px";
-        document.body.style.position = "static";
-        document.body.style.marginTop = "0px";
-        document.body.style.paddingTop = "0px";
       }
-      if (document.documentElement) {
-        document.documentElement.style.top = "0px";
-        document.documentElement.style.position = "static";
-      }
+
     };
 
     killTranslateUI();
