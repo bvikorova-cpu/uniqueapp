@@ -594,6 +594,31 @@ const Index = () => {
             label="Property Marketplace preview"
             caption="🏠 Property Marketplace — buy, sell, rent"
           />
+          <SectionVideoPreview
+            src={sectionVideos.holographicAvatars}
+            label="Holographic Avatars preview"
+            caption="👤 Holographic Avatars — 3D AI breeding & battles"
+          />
+          <SectionVideoPreview
+            src={sectionVideos.timeCapsule}
+            label="Time Capsule preview"
+            caption="⏳ Time Capsule — send messages to the future"
+          />
+          <SectionVideoPreview
+            src={sectionVideos.kitchenStars}
+            label="KitchenStars preview"
+            caption="👨‍🍳 KitchenStars — online cooking competitions"
+          />
+          <SectionVideoPreview
+            src={sectionVideos.comedyClub}
+            label="Comedy Club preview"
+            caption="🎤 Comedy Club — stand-up & laughs"
+          />
+          <SectionVideoPreview
+            src={sectionVideos.marketplace}
+            label="Marketplace preview"
+            caption="🛍️ Marketplace — shop everything in one place"
+          />
         </section>
 
         {/* ── About Unique ─────────────────────────────── */}
