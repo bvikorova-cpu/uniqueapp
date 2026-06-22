@@ -22,6 +22,11 @@ import timeCapsule from "@/assets/section-videos/time-capsule.mp4.asset.json";
 import kitchenStars from "@/assets/section-videos/kitchen-stars.mp4.asset.json";
 import comedyClub from "@/assets/section-videos/comedy-club.mp4.asset.json";
 import marketplace from "@/assets/section-videos/marketplace.mp4.asset.json";
+import secretSanta from "@/assets/section-videos/secret-santa.mp4.asset.json";
+import coupons from "@/assets/section-videos/coupons.mp4.asset.json";
+import lieDetector from "@/assets/section-videos/lie-detector.mp4.asset.json";
+import emotion from "@/assets/section-videos/emotion.mp4.asset.json";
+import photoRestoration from "@/assets/section-videos/photo-restoration.mp4.asset.json";
 
 export const sectionVideos = {
   hero: hero.url,
@@ -44,6 +49,11 @@ export const sectionVideos = {
   kitchenStars: kitchenStars.url,
   comedyClub: comedyClub.url,
   marketplace: marketplace.url,
+  secretSanta: secretSanta.url,
+  coupons: coupons.url,
+  lieDetector: lieDetector.url,
+  emotion: emotion.url,
+  photoRestoration: photoRestoration.url,
 } as const;
 
 export type SectionVideoKey = keyof typeof sectionVideos;
