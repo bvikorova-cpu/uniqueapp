@@ -619,6 +619,31 @@ const Index = () => {
             label="Marketplace preview"
             caption="🛍️ Marketplace — shop everything in one place"
           />
+          <SectionVideoPreview
+            src={sectionVideos.secretSanta}
+            label="Secret Santa preview"
+            caption="🎁 Secret Santa — magical gift exchange"
+          />
+          <SectionVideoPreview
+            src={sectionVideos.coupons}
+            label="Coupons preview"
+            caption="🎟️ Coupons — exclusive deals & discounts"
+          />
+          <SectionVideoPreview
+            src={sectionVideos.lieDetector}
+            label="Lie Detector preview"
+            caption="🔍 Lie Detector — AI truth analysis"
+          />
+          <SectionVideoPreview
+            src={sectionVideos.emotion}
+            label="Emotion preview"
+            caption="💗 Emotion AI — read feelings & mood"
+          />
+          <SectionVideoPreview
+            src={sectionVideos.photoRestoration}
+            label="Photo Restoration preview"
+            caption="🖼️ Photo Restoration — bring memories back to life"
+          />
         </section>
 
         {/* ── About Unique ─────────────────────────────── */}
