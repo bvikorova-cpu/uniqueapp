@@ -255,7 +255,8 @@ const Navbar = () => {
           <Link to="/" className="flex items-baseline group lg:mr-8 xl:mr-12">
             {/* Brand wordmark — fully text-based so U matches nique */}
             <span
-              className="text-3xl font-extrabold bg-clip-text text-transparent transition-all duration-500 group-hover:scale-110"
+              className="text-3xl font-extrabold bg-clip-text text-transparent transition-all duration-500 group-hover:scale-110 notranslate"
+              translate="no"
               style={{
                 backgroundImage:
                   "linear-gradient(90deg, hsl(270 91% 60%), hsl(330 100% 60%), hsl(270 91% 60%))",
@@ -264,6 +265,7 @@ const Navbar = () => {
             >
               Unique
             </span>
+
             <Age16Badge size="xs" withLabel={false} className="ml-2 self-center" />
           </Link>
 
