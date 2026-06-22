@@ -526,6 +526,11 @@ const Index = () => {
               <ArrowRight className="w-5 h-5 text-pink-400 shrink-0 hidden sm:block" />
             </div>
           </motion.div>
+          <SectionVideoPreview
+            src={sectionVideos.beauty}
+            label="Beauty Studio preview"
+            caption="💄 Beauty Studio — AI makeup & skincare"
+          />
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
             {coreModules.map((mod, i) => (
@@ -533,6 +538,11 @@ const Index = () => {
             ))}
           </div>
           <RewardedAdCard sectionKey="core_modules" adSlot={AD_PLACEMENTS.FOOTER_BANNER} className="mt-4" />
+          <SectionVideoPreview
+            src={sectionVideos.aiTools}
+            label="AI tools preview"
+            caption="🧠 AI Tools — generate, create, automate"
+          />
         </section>
 
         {/* ── All Services ─────────────────────────────── */}
@@ -544,6 +554,21 @@ const Index = () => {
             ))}
           </div>
           <RewardedAdCard sectionKey="all_services" adSlot={AD_PLACEMENTS.FOOTER_BANNER} className="mt-4" />
+          <SectionVideoPreview
+            src={sectionVideos.jobs}
+            label="Jobs section preview"
+            caption="💼 Jobs — find work, hire talent"
+          />
+          <SectionVideoPreview
+            src={sectionVideos.education}
+            label="Education preview"
+            caption="🎓 Education — learn, grow, earn"
+          />
+          <SectionVideoPreview
+            src={sectionVideos.kids}
+            label="Kids Channel preview"
+            caption="🎨 Kids Channel — safe & fun for ages 6–12"
+          />
         </section>
 
         {/* ── About Unique ─────────────────────────────── */}
