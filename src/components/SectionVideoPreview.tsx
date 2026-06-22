@@ -13,10 +13,44 @@ interface Props {
 }
 
 /**
- * Autoplay-loop muted 5s section preview video.
- * Lazy-loads via IntersectionObserver (no LCP impact, no data waste).
- * Drop between text blocks: <p>...</p> <SectionVideoPreview .../> <p>...</p>
+ * Global registry of mounted previews. Only the preview closest to the
+ * viewport centre is allowed to download/play — the rest stay as a
+ * lightweight gradient placeholder. This keeps total network usage under
+ * ~8 MB regardless of how many previews are on the page (we had 27).
  */
+const registry = new Set<{
+  el: HTMLElement;
+  activate: (on: boolean) => void;
+}>();
+
+let rafScheduled = false;
+function scheduleArbitration() {
+  if (rafScheduled) return;
+  rafScheduled = true;
+  requestAnimationFrame(() => {
+    rafScheduled = false;
+    const vh = window.innerHeight;
+    const centre = vh / 2;
+    let best: { entry: typeof registry extends Set<infer T> ? T : never; dist: number } | null = null;
+    registry.forEach((entry) => {
+      const r = entry.el.getBoundingClientRect();
+      // ignore far-offscreen previews
+      if (r.bottom < -vh || r.top > vh * 2) return;
+      const mid = r.top + r.height / 2;
+      const dist = Math.abs(mid - centre);
+      // require at least partial visibility within 1 viewport
+      if (r.bottom < 0 || r.top > vh) return;
+      if (!best || dist < best.dist) best = { entry, dist };
+    });
+    registry.forEach((entry) => entry.activate(entry === best?.entry));
+  });
+}
+
+if (typeof window !== "undefined") {
+  window.addEventListener("scroll", scheduleArbitration, { passive: true });
+  window.addEventListener("resize", scheduleArbitration);
+}
+
 export function SectionVideoPreview({
   src,
   caption,
@@ -25,55 +59,43 @@ export function SectionVideoPreview({
   className = "",
 }: Props) {
   const figureRef = useRef<HTMLElement>(null);
-  const ref = useRef<HTMLVideoElement>(null);
-  const [shouldLoad, setShouldLoad] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [active, setActive] = useState(false);
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    const target = figureRef.current;
-    if (!target) return;
-    const rootMargin = window.matchMedia("(max-width: 640px)").matches ? "320px 0px" : "700px 0px";
-
-    const loadObserver = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShouldLoad(true);
-          loadObserver.disconnect();
-        }
+    const el = figureRef.current;
+    if (!el) return;
+    const entry = {
+      el,
+      activate: (on: boolean) => {
+        setActive((prev) => {
+          if (prev === on) return prev;
+          if (!on) setIsReady(false);
+          return on;
+        });
       },
-      { rootMargin, threshold: 0.01 },
-    );
-
-    loadObserver.observe(target);
-    return () => loadObserver.disconnect();
+    };
+    registry.add(entry);
+    scheduleArbitration();
+    return () => {
+      registry.delete(entry);
+      scheduleArbitration();
+    };
   }, []);
 
   useEffect(() => {
-    const target = figureRef.current;
-    if (!target) return;
-
-    const io = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-        const visible = entry.isIntersecting;
-        setIsVisible(visible);
-
-        const el = ref.current;
-        if (!el) return;
-        if (visible && shouldLoad) el.play().catch(() => {});
-        else el.pause();
-      },
-      { threshold: 0.25 },
-    );
-    io.observe(target);
-    return () => io.disconnect();
-  }, [shouldLoad]);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (shouldLoad && el) el.load();
-  }, [shouldLoad, src]);
+    const v = videoRef.current;
+    if (!v) return;
+    if (active) {
+      v.load();
+      v.play().catch(() => {});
+    } else {
+      v.pause();
+      v.removeAttribute("src");
+      v.load();
+    }
+  }, [active, src]);
 
   return (
     <figure
@@ -82,22 +104,23 @@ export function SectionVideoPreview({
     >
       <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-card to-accent/10" style={{ aspectRatio }}>
         {!isReady && <div className="absolute inset-0 animate-pulse bg-muted/40" aria-hidden="true" />}
-        <video
-          ref={ref}
-          src={shouldLoad ? src : undefined}
-          poster={undefined}
-          muted
-          loop
-          playsInline
-          autoPlay={isVisible}
-          preload={shouldLoad ? "auto" : "none"}
-          aria-label={label}
-          onCanPlay={() => {
-            setIsReady(true);
-            if (isVisible) ref.current?.play().catch(() => {});
-          }}
-          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${isReady ? "opacity-100" : "opacity-0"}`}
-        />
+        {active && (
+          <video
+            ref={videoRef}
+            src={src}
+            muted
+            loop
+            playsInline
+            autoPlay
+            preload="auto"
+            aria-label={label}
+            onCanPlay={() => {
+              setIsReady(true);
+              videoRef.current?.play().catch(() => {});
+            }}
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${isReady ? "opacity-100" : "opacity-0"}`}
+          />
+        )}
       </div>
       {caption && (
         <figcaption className="px-4 py-2 text-xs text-muted-foreground text-center bg-muted/30">

@@ -75,6 +75,17 @@ export default function GoogleTranslateWidget() {
         #google_translate_element .goog-te-gadget .goog-te-combo:focus {
           border-color: hsl(var(--primary));
         }
+        /* Constrain Google's language picker overlay so it fits the viewport
+           and the user can scroll horizontally inside it on mobile. */
+        iframe.VIpgJd-ZVi9od-xl07Ob-OEVmcd.skiptranslate,
+        iframe.goog-te-menu-frame {
+          max-width: 100vw !important;
+          left: 0 !important;
+          right: 0 !important;
+          overflow: auto !important;
+          box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+          border-radius: 12px;
+        }
       `;
       document.head.appendChild(style);
     }
