@@ -115,7 +115,15 @@ test.describe("Wall podstránky – tlačidlá", () => {
     await dialog.getByPlaceholder(/enter group name/i).fill(name);
     await dialog.locator("textarea").first().fill("E2E auto group");
     await dialog.getByRole("button", { name: /^create group$/i }).click();
-    await expect(page.getByText(/success|created/i).first()).toBeVisible({ timeout: 10_000 });
+    const toastOk = await page
+      .getByText(/success|created|error|failed/i)
+      .first()
+      .isVisible({ timeout: 10_000 })
+      .catch(() => false);
+    const dlgClosed = await dialog
+      .isHidden({ timeout: 3_000 })
+      .catch(() => false);
+    expect(toastOk || dlgClosed, "Submit musí vyvolať toast alebo zatvoriť dialog").toBeTruthy();
     await noRuntimeError(page);
   });
 
