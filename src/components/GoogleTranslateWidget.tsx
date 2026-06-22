@@ -17,10 +17,58 @@ export default function GoogleTranslateWidget() {
   const [open, setOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
+  const installTranslateStyles = () => {
+    if (document.getElementById("google-translate-style")) return;
+    const style = document.createElement("style");
+    style.id = "google-translate-style";
+    style.innerHTML = `
+      .goog-te-banner-frame.skiptranslate,
+      .goog-te-gadget-icon,
+      .goog-logo-link,
+      .goog-te-gadget > span > a { display: none !important; }
+      body { top: 0 !important; }
+      #google_translate_element .goog-te-gadget {
+        color: transparent !important;
+        font-size: 0 !important;
+        line-height: 0 !important;
+      }
+      #google_translate_element .goog-te-gadget .goog-te-combo {
+        color: hsl(var(--foreground));
+        background: hsl(var(--background) / 0.95);
+        border: 1px solid hsl(var(--border));
+        border-radius: 9999px;
+        padding: 8px 14px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        outline: none;
+        box-shadow: 0 8px 24px hsl(270 91% 58% / 0.25);
+        max-width: min(76vw, 220px);
+      }
+      #google_translate_element .goog-te-gadget .goog-te-combo:focus {
+        border-color: hsl(var(--primary));
+      }
+      iframe.VIpgJd-ZVi9od-xl07Ob-OEVmcd.skiptranslate,
+      iframe.goog-te-menu-frame {
+        width: calc(100vw - 12px) !important;
+        max-width: calc(100vw - 12px) !important;
+        min-width: 0 !important;
+        left: 6px !important;
+        right: 6px !important;
+        overflow: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+        border-radius: 12px;
+      }
+    `;
+    document.head.appendChild(style);
+  };
+
   // Defer the 122 KiB translate.google.com script until the user actually
   // opens the widget. Loading it eagerly cost ~7 s on PageSpeed mobile.
   useEffect(() => {
     if (!open || loaded) return;
+    installTranslateStyles();
     if (document.getElementById("google-translate-script")) {
       setLoaded(true);
       return;
@@ -32,7 +80,7 @@ export default function GoogleTranslateWidget() {
           {
             pageLanguage: "en",
             autoDisplay: false,
-            layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+            layout: window.google.translate.TranslateElement.InlineLayout.HORIZONTAL,
           },
           "google_translate_element"
         );
@@ -44,51 +92,6 @@ export default function GoogleTranslateWidget() {
     s.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
     s.async = true;
     document.body.appendChild(s);
-
-    if (!document.getElementById("google-translate-style")) {
-      const style = document.createElement("style");
-      style.id = "google-translate-style";
-      style.innerHTML = `
-        .goog-te-banner-frame.skiptranslate,
-        .goog-te-gadget-icon,
-        .goog-logo-link,
-        .goog-te-gadget > span > a { display: none !important; }
-        body { top: 0 !important; }
-        #google_translate_element .goog-te-gadget {
-          color: transparent !important;
-          font-size: 0 !important;
-          line-height: 0 !important;
-        }
-        #google_translate_element .goog-te-gadget .goog-te-combo {
-          color: hsl(var(--foreground));
-          background: hsl(var(--background) / 0.95);
-          border: 1px solid hsl(var(--border));
-          border-radius: 9999px;
-          padding: 8px 14px;
-          font-size: 13px;
-          font-weight: 600;
-          cursor: pointer;
-          outline: none;
-          box-shadow: 0 8px 24px hsl(270 91% 58% / 0.25);
-          max-width: 180px;
-        }
-        #google_translate_element .goog-te-gadget .goog-te-combo:focus {
-          border-color: hsl(var(--primary));
-        }
-        /* Constrain Google's language picker overlay so it fits the viewport
-           and the user can scroll horizontally inside it on mobile. */
-        iframe.VIpgJd-ZVi9od-xl07Ob-OEVmcd.skiptranslate,
-        iframe.goog-te-menu-frame {
-          max-width: 100vw !important;
-          left: 0 !important;
-          right: 0 !important;
-          overflow: auto !important;
-          box-shadow: 0 12px 32px rgba(0,0,0,0.25);
-          border-radius: 12px;
-        }
-      `;
-      document.head.appendChild(style);
-    }
     setLoaded(true);
   }, [open, loaded]);
 
