@@ -17,9 +17,9 @@ export default function WallVideos() {
         topOverlay={
           <div className="flex items-center gap-6 text-white text-base font-semibold drop-shadow-lg">
             <Link to="/wall" className="absolute left-4 top-3"><ArrowLeft className="w-6 h-6" /></Link>
-            <span className="opacity-60">Sleduješ</span>
+            <span className="opacity-60">Following</span>
             <span className="relative">
-              Pre teba
+              For You
               <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-white" />
             </span>
           </div>
