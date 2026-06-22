@@ -40,12 +40,11 @@ export default function GoogleTranslateWidget() {
         width: 0 !important;
         pointer-events: none !important;
       }
-      body, html {
+      body {
         top: 0 !important;
-        position: static !important;
         margin-top: 0 !important;
-        padding-top: 0 !important;
       }
+
       #google_translate_element .goog-te-gadget {
         color: transparent !important;
         font-size: 0 !important;
