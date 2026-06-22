@@ -1,62 +1,70 @@
 /// <reference types="npm:@types/react@18.3.1" />
 
 import * as React from 'npm:react@18.3.1'
+
 import {
-  Body, Button, Container, Head, Heading, Html, Preview, Section, Text,
+  Body,
+  Button,
+  Container,
+  Head,
+  Heading,
+  Html,
+  Preview,
+  Text,
 } from 'npm:@react-email/components@0.0.22'
-import { getEmailStrings, HTML_LANG_BY_CODE } from './i18n.ts'
 
 interface MagicLinkEmailProps {
   siteName: string
   confirmationUrl: string
-  lang?: string
 }
 
-export const MagicLinkEmail = ({ confirmationUrl, lang }: MagicLinkEmailProps) => {
-  const t = getEmailStrings(lang, 'magiclink')
-  const htmlLang = HTML_LANG_BY_CODE[(lang as keyof typeof HTML_LANG_BY_CODE)] || 'en'
-  return (
-    <Html lang={htmlLang} dir="ltr">
-      <Head />
-      <Preview>{t.preview}</Preview>
-      <Body style={main}>
-        <Container style={container}>
-          <Section style={brandHeader}>
-            <Text style={wordmark}>Unique</Text>
-          </Section>
-          <Heading style={h1}>{t.heading}</Heading>
-          <Text style={text}>{t.intro}</Text>
-          <Section style={{ textAlign: 'center' as const, margin: '32px 0' }}>
-            <Button style={button} href={confirmationUrl}>{t.button}</Button>
-          </Section>
-          <Text style={footer}>{t.footer}</Text>
-          <Text style={signature}>{t.signature}</Text>
-        </Container>
-      </Body>
-    </Html>
-  )
-}
+export const MagicLinkEmail = ({
+  siteName,
+  confirmationUrl,
+}: MagicLinkEmailProps) => (
+  <Html lang="en" dir="ltr">
+    <Head />
+    <Preview>Your login link for {siteName}</Preview>
+    <Body style={main}>
+      <Container style={container}>
+        <Heading style={h1}>Your login link</Heading>
+        <Text style={text}>
+          Click the button below to log in to {siteName}. This link will expire
+          shortly.
+        </Text>
+        <Button style={button} href={confirmationUrl}>
+          Log In
+        </Button>
+        <Text style={footer}>
+          If you didn't request this link, you can safely ignore this email.
+        </Text>
+      </Container>
+    </Body>
+  </Html>
+)
 
 export default MagicLinkEmail
 
-const main = { backgroundColor: '#ffffff', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }
-const container = { padding: '32px 24px', maxWidth: '560px' }
-const brandHeader = { textAlign: 'center' as const, margin: '0 0 24px' }
-const wordmark = {
-  fontFamily: '"Lobster Two", "Brush Script MT", cursive',
-  fontSize: '36px', fontWeight: 'bold' as const,
-  background: 'linear-gradient(135deg, hsl(270, 91%, 65%), hsl(330, 100%, 65%))',
-  WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-  color: 'hsl(270, 91%, 55%)', margin: '0',
+const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
+const container = { padding: '20px 25px' }
+const h1 = {
+  fontSize: '22px',
+  fontWeight: 'bold' as const,
+  color: '#000000',
+  margin: '0 0 20px',
 }
-const h1 = { fontSize: '24px', fontWeight: 'bold' as const, color: '#0f0f1a', margin: '0 0 20px' }
-const text = { fontSize: '15px', color: '#4a4a55', lineHeight: '1.6', margin: '0 0 16px' }
+const text = {
+  fontSize: '14px',
+  color: '#55575d',
+  lineHeight: '1.5',
+  margin: '0 0 25px',
+}
 const button = {
-  background: 'linear-gradient(135deg, hsl(270, 91%, 55%), hsl(330, 100%, 60%))',
-  backgroundColor: 'hsl(270, 91%, 55%)', color: '#ffffff',
-  fontSize: '15px', fontWeight: 'bold' as const,
-  borderRadius: '12px', padding: '14px 28px',
-  textDecoration: 'none', display: 'inline-block',
+  backgroundColor: '#000000',
+  color: '#ffffff',
+  fontSize: '14px',
+  borderRadius: '8px',
+  padding: '12px 20px',
+  textDecoration: 'none',
 }
-const footer = { fontSize: '13px', color: '#8a8a95', margin: '24px 0 8px', lineHeight: '1.5' }
-const signature = { fontSize: '13px', color: '#8a8a95', margin: '16px 0 0' }
+const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }
