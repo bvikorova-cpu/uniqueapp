@@ -111,6 +111,8 @@ import {
   EventDetail,
   WallSaved,
   WallVideos,
+  Shorts,
+  Pitch,
   Messenger,
   Stories,
   PostDetail,
@@ -666,6 +668,8 @@ const App = () => {
                         <Route path="/wall/pages" element={<ProtectedRoute><Pages /></ProtectedRoute>} />
                         <Route path="/wall/pages/:pageId" element={<PageDetail />} />
                        <Route path="/wall/videos" element={<WallVideos />} />
+                       <Route path="/shorts" element={<Shorts />} />
+                       <Route path="/pitch" element={<Pitch />} />
                        <Route path="/wall/events" element={<Wall />} />
                        <Route path="/wall/events/:eventId" element={<EventDetail />} />
                        <Route path="/wall/saved" element={<WallSaved />} />
