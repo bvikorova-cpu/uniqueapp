@@ -205,6 +205,7 @@ function VideoCard({ short, active, muted, onToggleMute }: {
 
   const handleLike = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (!likesTable || !fk) { toast.error("Likes not available for stories"); return; }
     if (!user) { toast.error("Sign in to like"); return; }
     if (busyLike) return;
     setBusyLike(true);
