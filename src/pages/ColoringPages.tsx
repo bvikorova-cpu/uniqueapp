@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -47,7 +47,9 @@ export default function ColoringPages() {
       return stored ? new Set(JSON.parse(stored)) : new Set();
     } catch { return new Set(); }
   });
-  const [activeTab, setActiveTab] = useState("generate");
+  const [searchParams] = useSearchParams();
+  const initialTab = searchParams.get("tab") || "generate";
+  const [activeTab, setActiveTab] = useState(initialTab);
 
   const { data: myPages, refetch: refetchPages } = useQuery({
     queryKey: ["my-coloring-pages"],
