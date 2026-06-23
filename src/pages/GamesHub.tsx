@@ -161,8 +161,15 @@ const GamesHub = () => {
   const tabCats = usedCategories.length > 0 ? usedCategories : categories;
 
   const handleOpen = (game: GDGame) => {
-    setActive(game.id);
-    trackPlay({ id: game.id, title: game.title, category: gdCategories[game.category] });
+    gateGameLaunch(() => {
+      setActive(game.id);
+      trackPlay({ id: game.id, title: game.title, category: gdCategories[game.category] });
+    });
+  };
+
+  const handleBackFromGame = async () => {
+    setActive(null);
+    await playPostRoll();
   };
 
   const recentGames = useMemo(
