@@ -657,25 +657,25 @@ const App = () => {
                         <Route path="/index" element={<Navigate to="/" replace />} />
                         <Route path="/download" element={<Download />} />
                         <Route path="/downloads" element={<Navigate to="/download" replace />} />
-                        <Route path="/wall" element={<Wall />} />
+                        <Route path="/wall" element={<ProtectedRoute><Wall /></ProtectedRoute>} />
                         <Route path="/search" element={<SearchResults />} />
-                        <Route path="/wall/messages" element={<Wall />} />
-                        <Route path="/wall/friends" element={<Wall />} />
+                        <Route path="/wall/messages" element={<ProtectedRoute><Wall /></ProtectedRoute>} />
+                        <Route path="/wall/friends" element={<ProtectedRoute><Wall /></ProtectedRoute>} />
                        <Route path="/friends" element={<ProtectedRoute><Friends /></ProtectedRoute>} />
                        <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
                         <Route path="/wall/groups" element={<ProtectedRoute><Groups /></ProtectedRoute>} />
-                        <Route path="/wall/groups/:groupId" element={<GroupDetail />} />
+                        <Route path="/wall/groups/:groupId" element={<ProtectedRoute><GroupDetail /></ProtectedRoute>} />
                         <Route path="/wall/pages" element={<ProtectedRoute><Pages /></ProtectedRoute>} />
-                        <Route path="/wall/pages/:pageId" element={<PageDetail />} />
-                       <Route path="/wall/videos" element={<WallVideos />} />
-                       <Route path="/shorts" element={<Shorts />} />
+                        <Route path="/wall/pages/:pageId" element={<ProtectedRoute><PageDetail /></ProtectedRoute>} />
+                       <Route path="/wall/videos" element={<ProtectedRoute><WallVideos /></ProtectedRoute>} />
+                       <Route path="/shorts" element={<ProtectedRoute><Shorts /></ProtectedRoute>} />
                        <Route path="/pitch" element={<Pitch />} />
-                       <Route path="/wall/events" element={<Wall />} />
-                       <Route path="/wall/events/:eventId" element={<EventDetail />} />
-                       <Route path="/wall/saved" element={<WallSaved />} />
-                        <Route path="/wall/trending" element={<Wall />} />
-                       <Route path="/wall/info" element={<Wall />} />
-                       <Route path="/wall/memories" element={<Wall />} />
+                       <Route path="/wall/events" element={<ProtectedRoute><Wall /></ProtectedRoute>} />
+                       <Route path="/wall/events/:eventId" element={<ProtectedRoute><EventDetail /></ProtectedRoute>} />
+                       <Route path="/wall/saved" element={<ProtectedRoute><WallSaved /></ProtectedRoute>} />
+                        <Route path="/wall/trending" element={<ProtectedRoute><Wall /></ProtectedRoute>} />
+                       <Route path="/wall/info" element={<ProtectedRoute><Wall /></ProtectedRoute>} />
+                       <Route path="/wall/memories" element={<ProtectedRoute><Wall /></ProtectedRoute>} />
                         <Route path="/wall/more" element={<Navigate to="/wall" replace />} />
                         <Route path="/post/:id" element={<PostDetail />} />
                         <Route path="/messenger" element={<Messenger />} />
