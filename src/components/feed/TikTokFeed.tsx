@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useRef, useState, useCallback, ReactNode } from "react";
 import { Heart, MessageCircle, Share2, Volume2, VolumeX, Loader2, Music2, Play, Send, MoreVertical, Trash2 } from "lucide-react";
