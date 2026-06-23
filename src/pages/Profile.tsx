@@ -305,6 +305,37 @@ const Profile = () => {
     if (!currentUserId || !userId) return;
 
     try {
+      // Check if a friendship row already exists in either direction
+      const { data: existing } = await supabase
+        .from("friendships")
+        .select("*")
+        .or(`and(user_id.eq.${currentUserId},friend_id.eq.${userId}),and(user_id.eq.${userId},friend_id.eq.${currentUserId})`)
+        .limit(1);
+
+      const row = existing?.[0];
+      if (row) {
+        if (row.status === "accepted") {
+          setFriendshipStatus("accepted");
+          toast({ title: "You are already friends" });
+          return;
+        }
+        if (row.user_id === currentUserId) {
+          setFriendshipStatus("pending_sent");
+          toast({ title: "Friend request already sent" });
+          return;
+        }
+        // pending request from the other user → accept it
+        const { error: accErr } = await supabase
+          .from("friendships")
+          .update({ status: "accepted" })
+          .eq("user_id", userId)
+          .eq("friend_id", currentUserId);
+        if (accErr) throw accErr;
+        setFriendshipStatus("accepted");
+        toast({ title: "Friend request accepted" });
+        return;
+      }
+
       const { error } = await supabase
         .from("friendships")
         .insert({
@@ -327,6 +358,7 @@ const Profile = () => {
       });
     }
   };
+
 
   const handleAcceptFriend = async () => {
     if (!currentUserId || !userId) return;
