@@ -65,8 +65,14 @@ export async function signedUrl(
  */
 export async function resolveStorageUrl(input: string | null | undefined): Promise<string | null> {
   if (!input) return null;
-  // Already signed? Pass through.
-  if (input.includes("/object/sign/")) return input;
+  // Signed URL pattern. Re-sign it because stored signed URLs can expire.
+  const signed = input.match(/\/storage\/v1\/object\/sign\/([^/]+)\/(.+?)(?:\?.*)?$/);
+  if (signed) {
+    const bucket = signed[1];
+    const path = decodeURIComponent(signed[2]);
+    if (PRIVATE_BUCKETS.has(bucket)) return signedUrl(bucket, path);
+    return input;
+  }
   // Public URL pattern.
   const m = input.match(/\/storage\/v1\/object\/public\/([^/]+)\/(.+?)(?:\?.*)?$/);
   if (m) {
@@ -74,6 +80,11 @@ export async function resolveStorageUrl(input: string | null | undefined): Promi
     const path = decodeURIComponent(m[2]);
     if (PRIVATE_BUCKETS.has(bucket)) return signedUrl(bucket, path);
     return input;
+  }
+  // Bucket-prefixed raw path, e.g. messenger-attachments/<user>/<file>.
+  const [bucket, ...pathParts] = input.split("/");
+  if (bucket && pathParts.length > 0 && PRIVATE_BUCKETS.has(bucket)) {
+    return signedUrl(bucket, pathParts.join("/"));
   }
   return input;
 }
