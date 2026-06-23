@@ -27,7 +27,7 @@ export const useStories = () => {
         .select("id,full_name,username,avatar_url")
         .in("id", userIds);
 
-      const profileMap = new Map((profiles || []).map((p: any) => [p.id, p]));
+      const profileMap = new Map<string, any>((profiles || []).map((p: any) => [p.id, p]));
       return (data || []).map((story) => ({
         ...story,
         profiles: profileMap.get(story.user_id) ?? null,
