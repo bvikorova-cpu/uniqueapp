@@ -112,7 +112,7 @@ const Games = () => {
                             <Badge variant="secondary" className="text-[10px]">{(game.plays / 1000000).toFixed(1)}M</Badge>
                           )}
                         </div>
-                        <Button className="w-full" size="sm" variant="premium" onClick={() => { window.open(`https://poki.com/en/g/${game.slug}`, "_blank", "noopener"); }}>
+                        <Button className="w-full" size="sm" variant="premium" onClick={(e) => { e.stopPropagation(); gateGameLaunch(() => { window.open(`https://poki.com/en/g/${game.slug}`, "_blank", "noopener"); playPostRoll(); }); }}>
                           <Gamepad2 className="h-3.5 w-3.5 mr-1.5" /> Play on Poki ↗
                         </Button>
                       </CardContent>
