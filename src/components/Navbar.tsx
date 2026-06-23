@@ -75,6 +75,9 @@ const Navbar = () => {
     { path: "/ai-mentor", label: "AI Personal Mentor", icon: UserCircle },
     { path: "/kids-channel", label: "Kids Channel", icon: Video },
     { path: "/coloring-pages", label: "Coloring Pages", icon: Palette },
+    { path: "/for-schools", label: "For Schools", icon: Building2 },
+    { path: "/for-healthcare", label: "For Healthcare", icon: Activity },
+    { path: "/for-business", label: "For Business", icon: Briefcase },
     { path: "/brain-duel", label: "BrainDuel - Knowledge Battle", icon: Trophy },
   ];
 
