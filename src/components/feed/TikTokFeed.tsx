@@ -225,22 +225,55 @@ function VideoCard({ short, active, muted, onToggleMute }: {
     }
   };
 
-  const handleShare = async (e: React.MouseEvent) => {
+  const [shareOpen, setShareOpen] = useState(false);
+  const shareUrl = `${window.location.origin}/shorts#${short.kind}-${short.id}`;
+  const shareText = short.title || short.description || "Check out this video on Unique";
+
+  const openShare = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const url = `${window.location.origin}/shorts#${short.kind}-${short.id}`;
-    try {
-      if (navigator.share) {
-        await navigator.share({ url, title: short.title || "Unique" });
-      } else {
-        await navigator.clipboard.writeText(url);
-        toast.success("Link copied");
-      }
-    } catch (err: any) {
-      if (err?.name !== "AbortError") {
-        try { await navigator.clipboard.writeText(url); toast.success("Link copied"); }
-        catch { toast.error("Could not share"); }
-      }
+    setShareOpen(true);
+  };
+
+  const shareTo = (target: "facebook" | "twitter" | "whatsapp" | "telegram" | "messenger" | "linkedin" | "reddit" | "email" | "native") => {
+    const u = encodeURIComponent(shareUrl);
+    const t = encodeURIComponent(shareText);
+    let href = "";
+    switch (target) {
+      case "facebook":  href = `https://www.facebook.com/sharer/sharer.php?u=${u}`; break;
+      case "twitter":   href = `https://twitter.com/intent/tweet?url=${u}&text=${t}`; break;
+      case "whatsapp":  href = `https://wa.me/?text=${t}%20${u}`; break;
+      case "telegram":  href = `https://t.me/share/url?url=${u}&text=${t}`; break;
+      case "messenger": href = `https://www.facebook.com/dialog/send?link=${u}&app_id=140586622674265&redirect_uri=${u}`; break;
+      case "linkedin":  href = `https://www.linkedin.com/sharing/share-offsite/?url=${u}`; break;
+      case "reddit":    href = `https://www.reddit.com/submit?url=${u}&title=${t}`; break;
+      case "email":     href = `mailto:?subject=${t}&body=${u}`; break;
+      case "native":
+        if (navigator.share) {
+          navigator.share({ url: shareUrl, title: shareText }).catch(() => {});
+        }
+        setShareOpen(false);
+        return;
     }
+    window.open(href, "_blank", "noopener,noreferrer,width=600,height=600");
+    setShareOpen(false);
+  };
+
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      toast.success("Link copied");
+    } catch {
+      toast.error("Could not copy");
+    }
+    setShareOpen(false);
+  };
+
+  const openInstagram = () => {
+    // Instagram has no web share intent. Copy link + deep-link to app.
+    navigator.clipboard.writeText(shareUrl).catch(() => {});
+    toast.success("Link copied — paste it in Instagram");
+    window.open("https://www.instagram.com/", "_blank", "noopener,noreferrer");
+    setShareOpen(false);
   };
 
   const name = short.profile.full_name || "unique";
@@ -337,7 +370,7 @@ function VideoCard({ short, active, muted, onToggleMute }: {
           <span className="text-xs font-semibold drop-shadow">{formatNum(comments)}</span>
         </button>
 
-        <button onClick={handleShare} className="flex flex-col items-center gap-1 active:scale-90 transition-transform">
+        <button onClick={openShare} className="flex flex-col items-center gap-1 active:scale-90 transition-transform">
           <Share2 className="w-10 h-10 drop-shadow-lg" strokeWidth={1.5} />
           <span className="text-xs font-semibold drop-shadow">Share</span>
         </button>
@@ -381,9 +414,45 @@ function VideoCard({ short, active, muted, onToggleMute }: {
         short={short}
         onCountChange={setComments}
       />
+
+      <Sheet open={shareOpen} onOpenChange={setShareOpen}>
+        <SheetContent side="bottom" className="rounded-t-2xl p-0">
+          <SheetHeader className="px-4 py-3 border-b">
+            <SheetTitle className="text-center text-sm font-semibold">Share to</SheetTitle>
+          </SheetHeader>
+          <div className="grid grid-cols-4 gap-3 p-4">
+            {typeof navigator !== "undefined" && (navigator as any).share && (
+              <ShareBtn label="More" emoji="📲" onClick={() => shareTo("native")} />
+            )}
+            <ShareBtn label="Facebook" emoji="📘" onClick={() => shareTo("facebook")} />
+            <ShareBtn label="Instagram" emoji="📷" onClick={openInstagram} />
+            <ShareBtn label="WhatsApp" emoji="💬" onClick={() => shareTo("whatsapp")} />
+            <ShareBtn label="Messenger" emoji="💌" onClick={() => shareTo("messenger")} />
+            <ShareBtn label="X / Twitter" emoji="🐦" onClick={() => shareTo("twitter")} />
+            <ShareBtn label="Telegram" emoji="✈️" onClick={() => shareTo("telegram")} />
+            <ShareBtn label="LinkedIn" emoji="💼" onClick={() => shareTo("linkedin")} />
+            <ShareBtn label="Reddit" emoji="👽" onClick={() => shareTo("reddit")} />
+            <ShareBtn label="Email" emoji="✉️" onClick={() => shareTo("email")} />
+            <ShareBtn label="Copy link" emoji="🔗" onClick={copyLink} />
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
+
+function ShareBtn({ label, emoji, onClick }: { label: string; emoji: string; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="flex flex-col items-center gap-1 text-center active:scale-95 transition-transform"
+    >
+      <span className="w-12 h-12 rounded-full bg-muted flex items-center justify-center text-2xl">{emoji}</span>
+      <span className="text-[11px] leading-tight">{label}</span>
+    </button>
+  );
+}
+
 
 export default function TikTokFeed({ topOverlay, fabOverlay }: { topOverlay?: ReactNode; fabOverlay?: ReactNode }) {
   const [muted, setMuted] = useState(true);
