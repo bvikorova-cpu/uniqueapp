@@ -87,7 +87,7 @@ const Games = () => {
                   <motion.div key={game.id} variants={item}>
                     <Card 
                       className="group cursor-pointer overflow-hidden border-transparent hover:border-primary/30 transition-all duration-300 hover:scale-[1.02]" 
-                      onClick={() => setActiveGame(game.id)}
+                      onClick={() => gateGameLaunch(() => setActiveGame(game.id))}
                     >
                       <div className="h-1 bg-gradient-to-r from-primary to-accent" />
                       <CardHeader className="p-3 sm:p-4">
