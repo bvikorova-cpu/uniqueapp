@@ -109,8 +109,7 @@ export const useStories = () => {
         media_type: mediaType,
         caption,
         expires_at: expiresAt.toISOString(),
-        storage_path: fileName,
-      } as any);
+      });
 
       if (error) throw error;
 
