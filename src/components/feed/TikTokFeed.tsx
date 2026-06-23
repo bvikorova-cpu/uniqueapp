@@ -16,7 +16,7 @@ import { formatDistanceToNow } from "date-fns";
 
 export interface ShortItem {
   id: string;          // raw id (uuid)
-  kind: "video" | "post";
+  kind: "video" | "post" | "story";
   video_url: string;
   title?: string | null;
   description?: string | null;
