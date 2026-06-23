@@ -473,12 +473,17 @@ export default function TikTokFeed({ topOverlay, fabOverlay }: { topOverlay?: Re
   const { data: shorts = [], isLoading } = useQuery({
     queryKey: ["tiktok-feed"],
     queryFn: async (): Promise<ShortItem[]> => {
-      const { data: vids } = await supabase
-        .from("videos").select("id,video_url,title,description,user_id,likes_count,views_count,created_at")
-        .order("created_at", { ascending: false }).limit(50);
-      const { data: posts } = await supabase
-        .from("posts").select("id,content,user_id,created_at,media!inner(file_url,file_type)")
-        .ilike("media.file_type", "video/%").order("created_at", { ascending: false }).limit(50);
+      const nowIso = new Date().toISOString();
+      const [vidsRes, postsRes, storiesRes] = await Promise.all([
+        supabase.from("videos").select("id,video_url,title,description,user_id,likes_count,views_count,created_at")
+          .order("created_at", { ascending: false }).limit(50),
+        supabase.from("posts").select("id,content,user_id,created_at,media!inner(file_url,file_type)")
+          .ilike("media.file_type", "video/%").order("created_at", { ascending: false }).limit(50),
+        (supabase as any).from("stories").select("id,media_url,media_type,caption,user_id,created_at,expires_at")
+          .eq("media_type", "video").gt("expires_at", nowIso)
+          .order("created_at", { ascending: false }).limit(50),
+      ]);
+      const vids = vidsRes.data; const posts = postsRes.data; const storyRows = storiesRes.data;
 
       const all: ShortItem[] = [];
       (vids || []).forEach((v: any) => v.video_url && all.push({
@@ -493,6 +498,10 @@ export default function TikTokFeed({ topOverlay, fabOverlay }: { topOverlay?: Re
           user_id: p.user_id, profile: { full_name: null, avatar_url: null },
         });
       });
+      (storyRows || []).forEach((s: any) => s.media_url && all.push({
+        id: s.id, kind: "story", video_url: s.media_url, title: null, description: s.caption,
+        user_id: s.user_id, profile: { full_name: null, avatar_url: null },
+      }));
 
       const ids = Array.from(new Set(all.map((s) => s.user_id).filter(Boolean)));
       if (ids.length) {
