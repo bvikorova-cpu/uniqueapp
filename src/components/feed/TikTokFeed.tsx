@@ -149,11 +149,15 @@ function VideoCard({ short, active, muted, onToggleMute }: {
   const handleDelete = async () => {
     setDeleting(true);
     try {
-      const tbl = short.kind === "video" ? "videos" : "posts";
+      const tbl =
+        short.kind === "video" ? "videos" :
+        short.kind === "post" ? "posts" :
+        "stories";
       const { error } = await (supabase as any).from(tbl).delete().eq("id", short.id);
       if (error) throw error;
-      toast.success("Video deleted");
+      toast.success("Deleted");
       qc.invalidateQueries({ queryKey: ["tiktok-feed"] });
+      qc.invalidateQueries({ queryKey: ["stories"] });
     } catch (e: any) {
       toast.error(e?.message || "Could not delete");
     } finally {
@@ -162,8 +166,9 @@ function VideoCard({ short, active, muted, onToggleMute }: {
     }
   };
 
-  // Load like state + accurate counts
+  // Load like state + accurate counts (skip for stories — they have no likes/comments tables)
   useEffect(() => {
+    if (!likesTable || !commentsTable || !fk) return;
     let cancelled = false;
     (async () => {
       const [{ count: lc }, { count: cc }] = await Promise.all([
