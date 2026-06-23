@@ -467,13 +467,15 @@ function ShareBtn({ label, emoji, onClick }: { label: string; emoji: string; onC
 }
 
 
-export default function TikTokFeed({ topOverlay, fabOverlay }: { topOverlay?: ReactNode; fabOverlay?: ReactNode }) {
+export type FeedFilter = "all" | "videos" | "stories";
+
+export default function TikTokFeed({ topOverlay, fabOverlay, filter = "all" }: { topOverlay?: ReactNode; fabOverlay?: ReactNode; filter?: FeedFilter }) {
   const [muted, setMuted] = useState(true);
   const [activeIdx, setActiveIdx] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const { data: shorts = [], isLoading } = useQuery({
-    queryKey: ["tiktok-feed"],
+    queryKey: ["tiktok-feed", filter],
     queryFn: async (): Promise<ShortItem[]> => {
       const nowIso = new Date().toISOString();
       const [vidsRes, postsRes, storiesRes] = await Promise.all([
@@ -516,8 +518,16 @@ export default function TikTokFeed({ topOverlay, fabOverlay }: { topOverlay?: Re
           if (p) s.profile = { full_name: p.full_name, avatar_url: p.avatar_url };
         });
       }
+
+      let filtered = all;
+      if (filter === "videos") {
+        filtered = all.filter((s) => s.kind === "video" || s.kind === "post");
+      } else if (filter === "stories") {
+        filtered = all.filter((s) => s.kind === "story");
+      }
+
       // Stories first (most ephemeral), then newest content
-      return all.sort((a, b) => {
+      return filtered.sort((a, b) => {
         if (a.kind === "story" && b.kind !== "story") return -1;
         if (b.kind === "story" && a.kind !== "story") return 1;
         return b._ts - a._ts;
