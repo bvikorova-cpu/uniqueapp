@@ -64991,6 +64991,17 @@ export type Database = {
           username: string
         }[]
       }
+      get_public_video_posts: {
+        Args: { _limit?: number }
+        Returns: {
+          content: string
+          created_at: string
+          file_type: string
+          file_url: string
+          id: string
+          user_id: string
+        }[]
+      }
       get_random_questions: {
         Args: { p_count: number; p_difficulty: string }
         Returns: {
