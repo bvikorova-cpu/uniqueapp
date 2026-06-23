@@ -22,9 +22,9 @@ export const useStories = () => {
       const userIds = Array.from(new Set((data || []).map((s) => s.user_id)));
       if (userIds.length === 0) return [];
 
-      const { data: profiles } = await supabase
-        .from("profiles")
-        .select("*")
+      const { data: profiles } = await (supabase as any)
+        .from("public_profiles")
+        .select("id,full_name,username,avatar_url")
         .in("id", userIds);
 
       const profileMap = new Map((profiles || []).map((p: any) => [p.id, p]));
