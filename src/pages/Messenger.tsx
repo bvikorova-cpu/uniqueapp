@@ -1436,6 +1436,21 @@ const Messenger = () => {
                   <div className="space-y-4">
                     {messages.map((msg, idx) => {
                       const attachmentUrl = resolvedAttachmentUrls[idx];
+                      // Derive real kind from URL extension to recover from mis-typed legacy rows
+                      const urlForKind = (attachmentUrl || msg.attachment_url || "").split("?")[0].toLowerCase();
+                      const ext = urlForKind.split(".").pop() || "";
+                      let effectiveType = msg.attachment_type as string | null | undefined;
+                      if (attachmentUrl) {
+                        if (["mp3","wav","ogg","m4a","aac","flac"].includes(ext)) {
+                          if (effectiveType !== "voice") effectiveType = "audio";
+                        } else if (["mp4","mov","webm","m4v"].includes(ext)) {
+                          effectiveType = "video";
+                        } else if (["jpg","jpeg","png","webp","heic","avif"].includes(ext)) {
+                          effectiveType = "image";
+                        } else if (ext === "gif") {
+                          effectiveType = "gif";
+                        }
+                      }
                       // Date separator when day changes vs previous message
                       const cur = new Date(msg.created_at);
                       const prev = idx > 0 ? new Date(messages[idx - 1].created_at) : null;
@@ -1498,7 +1513,7 @@ const Messenger = () => {
                             )}
                             
                             {/* Voice message */}
-                            {msg.attachment_type === "voice" && attachmentUrl && (
+                            {effectiveType === "voice" && attachmentUrl && (
                               <div className="flex items-center gap-2 mb-2">
                                 <Button
                                   variant="ghost"
@@ -1520,7 +1535,7 @@ const Messenger = () => {
                             )}
                             
                             {/* Image */}
-                            {msg.attachment_type === "image" && attachmentUrl && (
+                            {effectiveType === "image" && attachmentUrl && (
                               <img
                                 src={attachmentUrl}
                                 alt="Shared image"
@@ -1529,15 +1544,15 @@ const Messenger = () => {
                               />
                             )}
 
-                            {msg.attachment_type === "video" && attachmentUrl && (
+                            {effectiveType === "video" && attachmentUrl && (
                               <video src={attachmentUrl} controls playsInline className="rounded-lg max-w-full max-h-64 mb-2" />
                             )}
 
-                            {msg.attachment_type === "audio" && attachmentUrl && (
+                            {effectiveType === "audio" && attachmentUrl && (
                               <audio src={attachmentUrl} controls className="w-56 max-w-full mb-2" />
                             )}
 
-                            {msg.attachment_type === "file" && attachmentUrl && (
+                            {effectiveType === "file" && attachmentUrl && (
                               <a href={attachmentUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 underline mb-2">
                                 <FileIcon className="h-4 w-4" />
                                 <span className="truncate">{msg.content.replace(/^📎\s*/, "") || "Download file"}</span>
@@ -1545,7 +1560,7 @@ const Messenger = () => {
                             )}
                             
                             {/* GIF */}
-                            {msg.attachment_type === "gif" && attachmentUrl && (
+                            {effectiveType === "gif" && attachmentUrl && (
                               <img
                                 src={attachmentUrl}
                                 alt="GIF"
@@ -1553,8 +1568,8 @@ const Messenger = () => {
                               />
                             )}
                             
-                            {/* Text content (hide for voice-only messages) */}
-                            {!msg.attachment_type && (
+                            {/* Text content (hide for attachment-only messages) */}
+                            {!effectiveType && (
                               <p className="break-words">{msg.content}</p>
                             )}
                             
