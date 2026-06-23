@@ -33,10 +33,11 @@ function formatNum(n: number) {
   return String(n);
 }
 
-function tables(kind: "video" | "post") {
-  return kind === "video"
-    ? { likes: "video_likes", comments: "video_comments", fk: "video_id" as const }
-    : { likes: "post_likes", comments: "post_comments", fk: "post_id" as const };
+function tables(kind: "video" | "post" | "story") {
+  if (kind === "video") return { likes: "video_likes", comments: "video_comments", fk: "video_id" as const };
+  if (kind === "post") return { likes: "post_likes", comments: "post_comments", fk: "post_id" as const };
+  // Stories are ephemeral — no likes/comments tables.
+  return { likes: "", comments: "", fk: "" as const };
 }
 
 function CommentsSheet({ open, onOpenChange, short, onCountChange }: {
