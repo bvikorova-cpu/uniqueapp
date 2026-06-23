@@ -201,7 +201,7 @@ const GamesHub = () => {
 
   if (active) {
     const game = gdGames.find((g) => g.id === active);
-    if (game) return <GameFrame game={game} onBack={() => setActive(null)} />;
+    if (game) return <GameFrame game={game} onBack={handleBackFromGame} />;
   }
 
   return (
