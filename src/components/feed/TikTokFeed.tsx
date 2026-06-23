@@ -16,7 +16,7 @@ import { formatDistanceToNow } from "date-fns";
 
 export interface ShortItem {
   id: string;          // raw id (uuid)
-  kind: "video" | "post";
+  kind: "video" | "post" | "story";
   video_url: string;
   title?: string | null;
   description?: string | null;
@@ -33,10 +33,11 @@ function formatNum(n: number) {
   return String(n);
 }
 
-function tables(kind: "video" | "post") {
-  return kind === "video"
-    ? { likes: "video_likes", comments: "video_comments", fk: "video_id" as const }
-    : { likes: "post_likes", comments: "post_comments", fk: "post_id" as const };
+function tables(kind: "video" | "post" | "story") {
+  if (kind === "video") return { likes: "video_likes", comments: "video_comments", fk: "video_id" as const };
+  if (kind === "post") return { likes: "post_likes", comments: "post_comments", fk: "post_id" as const };
+  // Stories are ephemeral — no likes/comments tables.
+  return { likes: "", comments: "", fk: "" as const };
 }
 
 function CommentsSheet({ open, onOpenChange, short, onCountChange }: {
@@ -148,11 +149,15 @@ function VideoCard({ short, active, muted, onToggleMute }: {
   const handleDelete = async () => {
     setDeleting(true);
     try {
-      const tbl = short.kind === "video" ? "videos" : "posts";
+      const tbl =
+        short.kind === "video" ? "videos" :
+        short.kind === "post" ? "posts" :
+        "stories";
       const { error } = await (supabase as any).from(tbl).delete().eq("id", short.id);
       if (error) throw error;
-      toast.success("Video deleted");
+      toast.success("Deleted");
       qc.invalidateQueries({ queryKey: ["tiktok-feed"] });
+      qc.invalidateQueries({ queryKey: ["stories"] });
     } catch (e: any) {
       toast.error(e?.message || "Could not delete");
     } finally {
@@ -161,8 +166,9 @@ function VideoCard({ short, active, muted, onToggleMute }: {
     }
   };
 
-  // Load like state + accurate counts
+  // Load like state + accurate counts (skip for stories — they have no likes/comments tables)
   useEffect(() => {
+    if (!likesTable || !commentsTable || !fk) return;
     let cancelled = false;
     (async () => {
       const [{ count: lc }, { count: cc }] = await Promise.all([
@@ -199,6 +205,7 @@ function VideoCard({ short, active, muted, onToggleMute }: {
 
   const handleLike = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (!likesTable || !fk) { toast.error("Likes not available for stories"); return; }
     if (!user) { toast.error("Sign in to like"); return; }
     if (busyLike) return;
     setBusyLike(true);
@@ -466,12 +473,17 @@ export default function TikTokFeed({ topOverlay, fabOverlay }: { topOverlay?: Re
   const { data: shorts = [], isLoading } = useQuery({
     queryKey: ["tiktok-feed"],
     queryFn: async (): Promise<ShortItem[]> => {
-      const { data: vids } = await supabase
-        .from("videos").select("id,video_url,title,description,user_id,likes_count,views_count,created_at")
-        .order("created_at", { ascending: false }).limit(50);
-      const { data: posts } = await supabase
-        .from("posts").select("id,content,user_id,created_at,media!inner(file_url,file_type)")
-        .ilike("media.file_type", "video/%").order("created_at", { ascending: false }).limit(50);
+      const nowIso = new Date().toISOString();
+      const [vidsRes, postsRes, storiesRes] = await Promise.all([
+        supabase.from("videos").select("id,video_url,title,description,user_id,likes_count,views_count,created_at")
+          .order("created_at", { ascending: false }).limit(50),
+        supabase.from("posts").select("id,content,user_id,created_at,media!inner(file_url,file_type)")
+          .ilike("media.file_type", "video/%").order("created_at", { ascending: false }).limit(50),
+        (supabase as any).from("stories").select("id,media_url,media_type,caption,user_id,created_at,expires_at")
+          .eq("media_type", "video").gt("expires_at", nowIso)
+          .order("created_at", { ascending: false }).limit(50),
+      ]);
+      const vids = vidsRes.data; const posts = postsRes.data; const storyRows = storiesRes.data;
 
       const all: ShortItem[] = [];
       (vids || []).forEach((v: any) => v.video_url && all.push({
@@ -486,6 +498,10 @@ export default function TikTokFeed({ topOverlay, fabOverlay }: { topOverlay?: Re
           user_id: p.user_id, profile: { full_name: null, avatar_url: null },
         });
       });
+      (storyRows || []).forEach((s: any) => s.media_url && all.push({
+        id: s.id, kind: "story", video_url: s.media_url, title: null, description: s.caption,
+        user_id: s.user_id, profile: { full_name: null, avatar_url: null },
+      }));
 
       const ids = Array.from(new Set(all.map((s) => s.user_id).filter(Boolean)));
       if (ids.length) {
