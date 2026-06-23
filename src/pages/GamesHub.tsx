@@ -9,6 +9,7 @@ import { Gamepad2, ArrowLeft, Sparkles, Search, X, ChevronLeft, ChevronRight, Ex
 import { SEO } from "@/components/SEO";
 import { gdGames, gdCategories, getGDGamesByCategory, type GDCategory, type GDGame } from "@/data/gdGames";
 import { useGamesHub } from "@/hooks/useGamesHub";
+import { gateGameLaunch, playPostRoll } from "@/lib/gameAdGate";
 
 const PAGE_SIZE = 30;
 
