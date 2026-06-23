@@ -82,7 +82,7 @@ const UserSearch = () => {
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium truncate">
+                  <p className="font-medium truncate text-foreground">
                     {profile.full_name || profile.username || "No name"}
                   </p>
                   {profile.username && (
