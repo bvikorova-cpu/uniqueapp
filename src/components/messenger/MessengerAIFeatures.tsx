@@ -374,16 +374,34 @@ export const MessengerAIFeatures = ({
       {/* Credits display */}
       <Dialog open={showCreditsDialog} onOpenChange={setShowCreditsDialog}>
         <DialogTrigger asChild>
-          <Button variant="ghost" size="sm" className="gap-1 text-xs">
+          <Button
+            variant={credits === 0 ? "destructive" : credits < 5 ? "outline" : "ghost"}
+            size="sm"
+            className="gap-1 text-xs"
+            title={credits === 0 ? "No AI credits — click to buy" : `${credits} AI credits`}
+          >
             <Coins className="h-3 w-3" />
             {credits}
+            {credits === 0 && <span className="ml-1">Buy</span>}
           </Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Buy AI Credits</DialogTitle>
+            <DialogTitle>AI Credits</DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
+            <div className={`rounded-lg p-3 text-sm ${credits === 0 ? "bg-destructive/10 text-destructive" : credits < 10 ? "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400" : "bg-primary/5"}`}>
+              <p className="font-medium">
+                {credits === 0
+                  ? "⚠️ You have no AI credits."
+                  : credits < 10
+                  ? `⚡ Low balance: ${credits} credits left.`
+                  : `✅ Available: ${credits} credits.`}
+              </p>
+              <p className="text-xs opacity-80 mt-1">
+                AI features require credits. Buy a pack below to keep using translate, smart reply, summaries and more.
+              </p>
+            </div>
             <div className="text-sm text-muted-foreground space-y-1">
               <p className="font-medium">Credit costs:</p>
               <ul className="text-xs grid grid-cols-2 gap-1">
@@ -413,6 +431,7 @@ export const MessengerAIFeatures = ({
           </div>
         </DialogContent>
       </Dialog>
+
 
       {/* Translate */}
       <DropdownMenu>
