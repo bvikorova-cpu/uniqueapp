@@ -479,8 +479,7 @@ export default function TikTokFeed({ topOverlay, fabOverlay }: { topOverlay?: Re
       const [vidsRes, postsRes, storiesRes] = await Promise.all([
         supabase.from("videos").select("id,video_url,title,description,user_id,likes_count,views_count,created_at")
           .order("created_at", { ascending: false }).limit(50),
-        supabase.from("posts").select("id,content,user_id,created_at,media!inner(file_url,file_type)")
-          .ilike("media.file_type", "video/%").order("created_at", { ascending: false }).limit(50),
+        (supabase as any).rpc("get_public_video_posts", { _limit: 50 }),
         (supabase as any).from("stories").select("id,media_url,media_type,caption,user_id,created_at,expires_at")
           .eq("media_type", "video").gt("expires_at", nowIso)
           .order("created_at", { ascending: false }).limit(50),
