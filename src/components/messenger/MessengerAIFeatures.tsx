@@ -112,6 +112,32 @@ export const MessengerAIFeatures = ({
     setCredits(data?.credits_remaining || 0);
   };
 
+  /** Returns true if it handled the error (caller should bail). */
+  const handleAIError = (error: any, data: any, fallbackTitle = "Failed"): boolean => {
+    const msg = String(error?.message || data?.error || "");
+    const status = error?.context?.status ?? error?.status;
+    const isCredits =
+      status === 402 ||
+      /insufficient credits/i.test(msg) ||
+      /402/.test(msg);
+    if (isCredits) {
+      setCredits(0);
+      setShowCreditsDialog(true);
+      toast({
+        title: "AI credits depleted",
+        description: "Buy more credits to continue using AI features.",
+        variant: "destructive",
+      });
+      return true;
+    }
+    if (error || data?.error) {
+      toast({ title: fallbackTitle, description: msg || "Unknown error", variant: "destructive" });
+      return true;
+    }
+    return false;
+  };
+
+
   const handleTranslate = async (targetLanguage: string) => {
     if (!selectedText) {
       toast({ title: "Select text to translate", variant: "destructive" });
