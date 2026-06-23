@@ -479,8 +479,7 @@ export default function TikTokFeed({ topOverlay, fabOverlay }: { topOverlay?: Re
       const [vidsRes, postsRes, storiesRes] = await Promise.all([
         supabase.from("videos").select("id,video_url,title,description,user_id,likes_count,views_count,created_at")
           .order("created_at", { ascending: false }).limit(50),
-        supabase.from("posts").select("id,content,user_id,created_at,media!inner(file_url,file_type)")
-          .ilike("media.file_type", "video/%").order("created_at", { ascending: false }).limit(50),
+        (supabase as any).rpc("get_public_video_posts", { _limit: 50 }),
         (supabase as any).from("stories").select("id,media_url,media_type,caption,user_id,created_at,expires_at")
           .eq("media_type", "video").gt("expires_at", nowIso)
           .order("created_at", { ascending: false }).limit(50),
@@ -495,9 +494,8 @@ export default function TikTokFeed({ topOverlay, fabOverlay }: { topOverlay?: Re
         _ts: new Date(v.created_at).getTime(),
       }));
       (posts || []).forEach((p: any) => {
-        const m = Array.isArray(p.media) ? p.media[0] : p.media;
-        if (m?.file_url) all.push({
-          id: p.id, kind: "post", video_url: m.file_url, title: null, description: p.content,
+        if (p.file_url) all.push({
+          id: p.id, kind: "post", video_url: p.file_url, title: null, description: p.content,
           user_id: p.user_id, profile: { full_name: null, avatar_url: null },
           _ts: new Date(p.created_at).getTime(),
         });
