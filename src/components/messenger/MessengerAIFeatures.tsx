@@ -112,6 +112,32 @@ export const MessengerAIFeatures = ({
     setCredits(data?.credits_remaining || 0);
   };
 
+  /** Returns true if it handled the error (caller should bail). */
+  const handleAIError = (error: any, data: any, fallbackTitle = "Failed"): boolean => {
+    const msg = String(error?.message || data?.error || "");
+    const status = error?.context?.status ?? error?.status;
+    const isCredits =
+      status === 402 ||
+      /insufficient credits/i.test(msg) ||
+      /402/.test(msg);
+    if (isCredits) {
+      setCredits(0);
+      setShowCreditsDialog(true);
+      toast({
+        title: "AI credits depleted",
+        description: "Buy more credits to continue using AI features.",
+        variant: "destructive",
+      });
+      return true;
+    }
+    if (error || data?.error) {
+      toast({ title: fallbackTitle, description: msg || "Unknown error", variant: "destructive" });
+      return true;
+    }
+    return false;
+  };
+
+
   const handleTranslate = async (targetLanguage: string) => {
     if (!selectedText) {
       toast({ title: "Select text to translate", variant: "destructive" });
@@ -124,15 +150,7 @@ export const MessengerAIFeatures = ({
         body: { action: "translate", text: selectedText, targetLanguage },
       });
 
-      if (error) throw error;
-      if (data.error) {
-        if (data.error.includes("Insufficient credits")) {
-          setShowCreditsDialog(true);
-        } else {
-          throw new Error(data.error);
-        }
-        return;
-      }
+      if (handleAIError(error, data)) return;
 
       onInsertText(data.translation);
       await fetchCredits();
@@ -161,15 +179,7 @@ export const MessengerAIFeatures = ({
         body: { action: "summarize", messages: formattedMessages },
       });
 
-      if (error) throw error;
-      if (data.error) {
-        if (data.error.includes("Insufficient credits")) {
-          setShowCreditsDialog(true);
-        } else {
-          throw new Error(data.error);
-        }
-        return;
-      }
+      if (handleAIError(error, data)) return;
 
       setSummary(data.summary);
       setShowSummary(true);
@@ -199,15 +209,7 @@ export const MessengerAIFeatures = ({
         body: { action: "smart-reply", lastMessages },
       });
 
-      if (error) throw error;
-      if (data.error) {
-        if (data.error.includes("Insufficient credits")) {
-          setShowCreditsDialog(true);
-        } else {
-          throw new Error(data.error);
-        }
-        return;
-      }
+      if (handleAIError(error, data)) return;
 
       setSmartReplies(data.suggestions);
       setShowSmartReplies(true);
@@ -237,15 +239,7 @@ export const MessengerAIFeatures = ({
         },
       });
 
-      if (error) throw error;
-      if (data.error) {
-        if (data.error.includes("Insufficient credits")) {
-          setShowCreditsDialog(true);
-        } else {
-          throw new Error(data.error);
-        }
-        return;
-      }
+      if (handleAIError(error, data)) return;
 
       setShowTimeCapsule(false);
       setTimeCapsuleMessage("");
@@ -276,15 +270,7 @@ export const MessengerAIFeatures = ({
         body: { action: "emotional-weather", messages: formattedMessages },
       });
 
-      if (error) throw error;
-      if (data.error) {
-        if (data.error.includes("Insufficient credits")) {
-          setShowCreditsDialog(true);
-        } else {
-          throw new Error(data.error);
-        }
-        return;
-      }
+      if (handleAIError(error, data)) return;
 
       setEmotionalAnalysis(data.analysis);
       setShowEmotionalWeather(true);
@@ -309,15 +295,7 @@ export const MessengerAIFeatures = ({
         body: { action: "quantum-message", originalMessage: quantumOriginal, variationType: quantumType },
       });
 
-      if (error) throw error;
-      if (data.error) {
-        if (data.error.includes("Insufficient credits")) {
-          setShowCreditsDialog(true);
-        } else {
-          throw new Error(data.error);
-        }
-        return;
-      }
+      if (handleAIError(error, data)) return;
 
       setQuantumVariations(data.variations?.variations || []);
       await fetchCredits();
@@ -340,15 +318,7 @@ export const MessengerAIFeatures = ({
         },
       });
 
-      if (error) throw error;
-      if (data.error) {
-        if (data.error.includes("Insufficient credits")) {
-          setShowCreditsDialog(true);
-        } else {
-          throw new Error(data.error);
-        }
-        return;
-      }
+      if (handleAIError(error, data)) return;
 
       setGeneratedCompliment(data);
       await fetchCredits();
@@ -372,15 +342,7 @@ export const MessengerAIFeatures = ({
         body: { action: "what-if", scenario: whatIfScenario },
       });
 
-      if (error) throw error;
-      if (data.error) {
-        if (data.error.includes("Insufficient credits")) {
-          setShowCreditsDialog(true);
-        } else {
-          throw new Error(data.error);
-        }
-        return;
-      }
+      if (handleAIError(error, data)) return;
 
       setWhatIfStory(data);
       await fetchCredits();
@@ -412,16 +374,34 @@ export const MessengerAIFeatures = ({
       {/* Credits display */}
       <Dialog open={showCreditsDialog} onOpenChange={setShowCreditsDialog}>
         <DialogTrigger asChild>
-          <Button variant="ghost" size="sm" className="gap-1 text-xs">
+          <Button
+            variant={credits === 0 ? "destructive" : credits < 5 ? "outline" : "ghost"}
+            size="sm"
+            className="gap-1 text-xs"
+            title={credits === 0 ? "No AI credits — click to buy" : `${credits} AI credits`}
+          >
             <Coins className="h-3 w-3" />
             {credits}
+            {credits === 0 && <span className="ml-1">Buy</span>}
           </Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Buy AI Credits</DialogTitle>
+            <DialogTitle>AI Credits</DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
+            <div className={`rounded-lg p-3 text-sm ${credits === 0 ? "bg-destructive/10 text-destructive" : credits < 10 ? "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400" : "bg-primary/5"}`}>
+              <p className="font-medium">
+                {credits === 0
+                  ? "⚠️ You have no AI credits."
+                  : credits < 10
+                  ? `⚡ Low balance: ${credits} credits left.`
+                  : `✅ Available: ${credits} credits.`}
+              </p>
+              <p className="text-xs opacity-80 mt-1">
+                AI features require credits. Buy a pack below to keep using translate, smart reply, summaries and more.
+              </p>
+            </div>
             <div className="text-sm text-muted-foreground space-y-1">
               <p className="font-medium">Credit costs:</p>
               <ul className="text-xs grid grid-cols-2 gap-1">
@@ -451,6 +431,7 @@ export const MessengerAIFeatures = ({
           </div>
         </DialogContent>
       </Dialog>
+
 
       {/* Translate */}
       <DropdownMenu>
