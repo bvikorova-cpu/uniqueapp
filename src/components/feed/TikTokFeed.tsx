@@ -487,22 +487,25 @@ export default function TikTokFeed({ topOverlay, fabOverlay }: { topOverlay?: Re
       ]);
       const vids = vidsRes.data; const posts = postsRes.data; const storyRows = storiesRes.data;
 
-      const all: ShortItem[] = [];
+      const all: (ShortItem & { _ts: number })[] = [];
       (vids || []).forEach((v: any) => v.video_url && all.push({
         id: v.id, kind: "video", video_url: v.video_url, title: v.title, description: v.description,
         user_id: v.user_id, likes_count: v.likes_count, views_count: v.views_count,
         profile: { full_name: null, avatar_url: null },
+        _ts: new Date(v.created_at).getTime(),
       }));
       (posts || []).forEach((p: any) => {
         const m = Array.isArray(p.media) ? p.media[0] : p.media;
         if (m?.file_url) all.push({
           id: p.id, kind: "post", video_url: m.file_url, title: null, description: p.content,
           user_id: p.user_id, profile: { full_name: null, avatar_url: null },
+          _ts: new Date(p.created_at).getTime(),
         });
       });
       (storyRows || []).forEach((s: any) => s.media_url && all.push({
         id: s.id, kind: "story", video_url: s.media_url, title: null, description: s.caption,
         user_id: s.user_id, profile: { full_name: null, avatar_url: null },
+        _ts: new Date(s.created_at).getTime(),
       }));
 
       const ids = Array.from(new Set(all.map((s) => s.user_id).filter(Boolean)));
@@ -515,7 +518,12 @@ export default function TikTokFeed({ topOverlay, fabOverlay }: { topOverlay?: Re
           if (p) s.profile = { full_name: p.full_name, avatar_url: p.avatar_url };
         });
       }
-      return all.sort(() => Math.random() - 0.5);
+      // Stories first (most ephemeral), then newest content
+      return all.sort((a, b) => {
+        if (a.kind === "story" && b.kind !== "story") return -1;
+        if (b.kind === "story" && a.kind !== "story") return 1;
+        return b._ts - a._ts;
+      });
     },
   });
 
