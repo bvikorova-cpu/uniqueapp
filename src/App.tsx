@@ -150,6 +150,9 @@ import {
   KidsAcademy,
   ColoringPages,
   ColoringHub,
+  ForSchools,
+  ForHealthcare,
+  ForBusiness,
   TeenCareerCounselor,
   TeenCareerPricing,
   TeenHub,
@@ -944,6 +947,9 @@ const App = () => {
                         <Route path="/coloring-pages" element={<KidsParentalGateGuard featureName="Coloring Pages" storageKey="pg_coloring"><ColoringPages /></KidsParentalGateGuard>} />
                         <Route path="/coloring-pages/hub" element={<KidsParentalGateGuard featureName="Coloring Pages" storageKey="pg_coloring"><ColoringHub /></KidsParentalGateGuard>} />
                         <Route path="/coloring-pages/hub/:slug" element={<KidsParentalGateGuard featureName="Coloring Pages" storageKey="pg_coloring"><ColoringHub /></KidsParentalGateGuard>} />
+                        <Route path="/for-schools" element={<ForSchools />} />
+                        <Route path="/for-healthcare" element={<ForHealthcare />} />
+                        <Route path="/for-business" element={<ForBusiness />} />
                         <Route path="/schools" element={<Navigate to="/coloring-pages" replace />} />
                         <Route path="/healthcare" element={<Navigate to="/wellness" replace />} />
                         <Route path="/corporate-events" element={<Navigate to="/coloring-pages" replace />} />
