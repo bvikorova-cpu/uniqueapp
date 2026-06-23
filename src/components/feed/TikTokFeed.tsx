@@ -225,22 +225,55 @@ function VideoCard({ short, active, muted, onToggleMute }: {
     }
   };
 
-  const handleShare = async (e: React.MouseEvent) => {
+  const [shareOpen, setShareOpen] = useState(false);
+  const shareUrl = `${window.location.origin}/shorts#${short.kind}-${short.id}`;
+  const shareText = short.title || short.description || "Check out this video on Unique";
+
+  const openShare = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const url = `${window.location.origin}/shorts#${short.kind}-${short.id}`;
-    try {
-      if (navigator.share) {
-        await navigator.share({ url, title: short.title || "Unique" });
-      } else {
-        await navigator.clipboard.writeText(url);
-        toast.success("Link copied");
-      }
-    } catch (err: any) {
-      if (err?.name !== "AbortError") {
-        try { await navigator.clipboard.writeText(url); toast.success("Link copied"); }
-        catch { toast.error("Could not share"); }
-      }
+    setShareOpen(true);
+  };
+
+  const shareTo = (target: "facebook" | "twitter" | "whatsapp" | "telegram" | "messenger" | "linkedin" | "reddit" | "email" | "native") => {
+    const u = encodeURIComponent(shareUrl);
+    const t = encodeURIComponent(shareText);
+    let href = "";
+    switch (target) {
+      case "facebook":  href = `https://www.facebook.com/sharer/sharer.php?u=${u}`; break;
+      case "twitter":   href = `https://twitter.com/intent/tweet?url=${u}&text=${t}`; break;
+      case "whatsapp":  href = `https://wa.me/?text=${t}%20${u}`; break;
+      case "telegram":  href = `https://t.me/share/url?url=${u}&text=${t}`; break;
+      case "messenger": href = `https://www.facebook.com/dialog/send?link=${u}&app_id=140586622674265&redirect_uri=${u}`; break;
+      case "linkedin":  href = `https://www.linkedin.com/sharing/share-offsite/?url=${u}`; break;
+      case "reddit":    href = `https://www.reddit.com/submit?url=${u}&title=${t}`; break;
+      case "email":     href = `mailto:?subject=${t}&body=${u}`; break;
+      case "native":
+        if (navigator.share) {
+          navigator.share({ url: shareUrl, title: shareText }).catch(() => {});
+        }
+        setShareOpen(false);
+        return;
     }
+    window.open(href, "_blank", "noopener,noreferrer,width=600,height=600");
+    setShareOpen(false);
+  };
+
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      toast.success("Link copied");
+    } catch {
+      toast.error("Could not copy");
+    }
+    setShareOpen(false);
+  };
+
+  const openInstagram = () => {
+    // Instagram has no web share intent. Copy link + deep-link to app.
+    navigator.clipboard.writeText(shareUrl).catch(() => {});
+    toast.success("Link copied — paste it in Instagram");
+    window.open("https://www.instagram.com/", "_blank", "noopener,noreferrer");
+    setShareOpen(false);
   };
 
   const name = short.profile.full_name || "unique";
