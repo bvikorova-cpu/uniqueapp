@@ -20,7 +20,10 @@ const Games = () => {
   if (activeGame) {
     const game = pokiGames.find(g => g.id === activeGame);
     if (game) {
-      return <PokiGameWrapper slug={game.slug} title={game.title} onBack={() => setActiveGame(null)} />;
+      return <PokiGameWrapper slug={game.slug} title={game.title} onBack={async () => {
+        setActiveGame(null);
+        await playPostRoll();
+      }} />;
     }
   }
 
