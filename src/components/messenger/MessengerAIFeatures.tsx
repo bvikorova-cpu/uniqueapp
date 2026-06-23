@@ -150,15 +150,7 @@ export const MessengerAIFeatures = ({
         body: { action: "translate", text: selectedText, targetLanguage },
       });
 
-      if (error) throw error;
-      if (data.error) {
-        if (data.error.includes("Insufficient credits")) {
-          setShowCreditsDialog(true);
-        } else {
-          throw new Error(data.error);
-        }
-        return;
-      }
+      if (handleAIError(error, data)) return;
 
       onInsertText(data.translation);
       await fetchCredits();
@@ -187,15 +179,7 @@ export const MessengerAIFeatures = ({
         body: { action: "summarize", messages: formattedMessages },
       });
 
-      if (error) throw error;
-      if (data.error) {
-        if (data.error.includes("Insufficient credits")) {
-          setShowCreditsDialog(true);
-        } else {
-          throw new Error(data.error);
-        }
-        return;
-      }
+      if (handleAIError(error, data)) return;
 
       setSummary(data.summary);
       setShowSummary(true);
@@ -225,15 +209,7 @@ export const MessengerAIFeatures = ({
         body: { action: "smart-reply", lastMessages },
       });
 
-      if (error) throw error;
-      if (data.error) {
-        if (data.error.includes("Insufficient credits")) {
-          setShowCreditsDialog(true);
-        } else {
-          throw new Error(data.error);
-        }
-        return;
-      }
+      if (handleAIError(error, data)) return;
 
       setSmartReplies(data.suggestions);
       setShowSmartReplies(true);
@@ -263,15 +239,7 @@ export const MessengerAIFeatures = ({
         },
       });
 
-      if (error) throw error;
-      if (data.error) {
-        if (data.error.includes("Insufficient credits")) {
-          setShowCreditsDialog(true);
-        } else {
-          throw new Error(data.error);
-        }
-        return;
-      }
+      if (handleAIError(error, data)) return;
 
       setShowTimeCapsule(false);
       setTimeCapsuleMessage("");
@@ -302,15 +270,7 @@ export const MessengerAIFeatures = ({
         body: { action: "emotional-weather", messages: formattedMessages },
       });
 
-      if (error) throw error;
-      if (data.error) {
-        if (data.error.includes("Insufficient credits")) {
-          setShowCreditsDialog(true);
-        } else {
-          throw new Error(data.error);
-        }
-        return;
-      }
+      if (handleAIError(error, data)) return;
 
       setEmotionalAnalysis(data.analysis);
       setShowEmotionalWeather(true);
@@ -335,15 +295,7 @@ export const MessengerAIFeatures = ({
         body: { action: "quantum-message", originalMessage: quantumOriginal, variationType: quantumType },
       });
 
-      if (error) throw error;
-      if (data.error) {
-        if (data.error.includes("Insufficient credits")) {
-          setShowCreditsDialog(true);
-        } else {
-          throw new Error(data.error);
-        }
-        return;
-      }
+      if (handleAIError(error, data)) return;
 
       setQuantumVariations(data.variations?.variations || []);
       await fetchCredits();
@@ -366,15 +318,7 @@ export const MessengerAIFeatures = ({
         },
       });
 
-      if (error) throw error;
-      if (data.error) {
-        if (data.error.includes("Insufficient credits")) {
-          setShowCreditsDialog(true);
-        } else {
-          throw new Error(data.error);
-        }
-        return;
-      }
+      if (handleAIError(error, data)) return;
 
       setGeneratedCompliment(data);
       await fetchCredits();
@@ -398,15 +342,7 @@ export const MessengerAIFeatures = ({
         body: { action: "what-if", scenario: whatIfScenario },
       });
 
-      if (error) throw error;
-      if (data.error) {
-        if (data.error.includes("Insufficient credits")) {
-          setShowCreditsDialog(true);
-        } else {
-          throw new Error(data.error);
-        }
-        return;
-      }
+      if (handleAIError(error, data)) return;
 
       setWhatIfStory(data);
       await fetchCredits();
