@@ -138,8 +138,28 @@ function VideoCard({ short, active, muted, onToggleMute }: {
   const [progress, setProgress] = useState(0);
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [busyLike, setBusyLike] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const qc = useQueryClient();
+  const isOwner = !!user && user.id === short.user_id;
 
   const { likes: likesTable, comments: commentsTable, fk } = tables(short.kind);
+
+  const handleDelete = async () => {
+    setDeleting(true);
+    try {
+      const tbl = short.kind === "video" ? "videos" : "posts";
+      const { error } = await (supabase as any).from(tbl).delete().eq("id", short.id);
+      if (error) throw error;
+      toast.success("Video deleted");
+      qc.invalidateQueries({ queryKey: ["tiktok-feed"] });
+    } catch (e: any) {
+      toast.error(e?.message || "Could not delete");
+    } finally {
+      setDeleting(false);
+      setConfirmDelete(false);
+    }
+  };
 
   // Load like state + accurate counts
   useEffect(() => {
