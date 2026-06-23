@@ -1,15 +1,19 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useRef, useState, useCallback, ReactNode } from "react";
-import { Heart, MessageCircle, Share2, Volume2, VolumeX, Loader2, Music2, Play } from "lucide-react";
+import { Heart, MessageCircle, Share2, Volume2, VolumeX, Loader2, Music2, Play, X, Send } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
+import { formatDistanceToNow } from "date-fns";
 
 export interface ShortItem {
-  id: string;
+  id: string;          // raw id (uuid)
+  kind: "video" | "post";
   video_url: string;
   title?: string | null;
   description?: string | null;
@@ -26,6 +30,99 @@ function formatNum(n: number) {
   return String(n);
 }
 
+function tables(kind: "video" | "post") {
+  return kind === "video"
+    ? { likes: "video_likes", comments: "video_comments", fk: "video_id" as const }
+    : { likes: "post_likes", comments: "post_comments", fk: "post_id" as const };
+}
+
+function CommentsSheet({ open, onOpenChange, short, onCountChange }: {
+  open: boolean; onOpenChange: (v: boolean) => void; short: ShortItem; onCountChange: (n: number) => void;
+}) {
+  const { user } = useAuth();
+  const { comments: table, fk } = tables(short.kind);
+  const [items, setItems] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [text, setText] = useState("");
+  const [sending, setSending] = useState(false);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    const { data } = await (supabase as any)
+      .from(table).select("id,content,user_id,created_at")
+      .eq(fk, short.id).order("created_at", { ascending: false }).limit(100);
+    const rows = data || [];
+    const ids = Array.from(new Set(rows.map((r: any) => r.user_id).filter(Boolean)));
+    let map = new Map<string, any>();
+    if (ids.length) {
+      const { data: profs } = await (supabase as any)
+        .from("public_profiles").select("id,full_name,avatar_url").in("id", ids);
+      map = new Map((profs || []).map((p: any) => [p.id, p]));
+    }
+    setItems(rows.map((r: any) => ({ ...r, profile: map.get(r.user_id) })));
+    setLoading(false);
+  }, [table, fk, short.id]);
+
+  useEffect(() => { if (open) load(); }, [open, load]);
+
+  const submit = async () => {
+    if (!user) { toast.error("Sign in to comment"); return; }
+    const c = text.trim();
+    if (!c) return;
+    setSending(true);
+    const { error } = await (supabase as any)
+      .from(table).insert({ [fk]: short.id, user_id: user.id, content: c });
+    setSending(false);
+    if (error) { toast.error(error.message); return; }
+    setText("");
+    onCountChange(items.length + 1);
+    load();
+  };
+
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent side="bottom" className="h-[75dvh] p-0 flex flex-col rounded-t-2xl">
+        <SheetHeader className="px-4 py-3 border-b">
+          <SheetTitle className="text-center text-sm font-semibold">{items.length} comments</SheetTitle>
+        </SheetHeader>
+        <div className="flex-1 overflow-y-auto px-4 py-3 space-y-4">
+          {loading && <div className="flex justify-center py-8"><Loader2 className="w-5 h-5 animate-spin" /></div>}
+          {!loading && items.length === 0 && (
+            <p className="text-center text-sm text-muted-foreground py-8">Be the first to comment</p>
+          )}
+          {items.map((c) => (
+            <div key={c.id} className="flex gap-2">
+              <Avatar className="w-8 h-8">
+                <AvatarImage src={c.profile?.avatar_url || undefined} />
+                <AvatarFallback>{(c.profile?.full_name || "U")[0]?.toUpperCase()}</AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                <div className="text-xs font-semibold">{c.profile?.full_name || "user"}</div>
+                <div className="text-sm break-words">{c.content}</div>
+                <div className="text-[10px] text-muted-foreground mt-0.5">
+                  {formatDistanceToNow(new Date(c.created_at), { addSuffix: true })}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="border-t p-3 flex gap-2 items-center bg-background">
+          <Input
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder={user ? "Add a comment…" : "Sign in to comment"}
+            disabled={!user || sending}
+            onKeyDown={(e) => { if (e.key === "Enter") submit(); }}
+          />
+          <Button size="icon" onClick={submit} disabled={!user || sending || !text.trim()}>
+            <Send className="w-4 h-4" />
+          </Button>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+}
+
 function VideoCard({ short, active, muted, onToggleMute }: {
   short: ShortItem; active: boolean; muted: boolean; onToggleMute: () => void;
 }) {
@@ -33,8 +130,33 @@ function VideoCard({ short, active, muted, onToggleMute }: {
   const { user } = useAuth();
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(short.likes_count ?? 0);
+  const [comments, setComments] = useState(short.comments_count ?? 0);
   const [paused, setPaused] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [commentsOpen, setCommentsOpen] = useState(false);
+  const [busyLike, setBusyLike] = useState(false);
+
+  const { likes: likesTable, comments: commentsTable, fk } = tables(short.kind);
+
+  // Load like state + accurate counts
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const [{ count: lc }, { count: cc }] = await Promise.all([
+        (supabase as any).from(likesTable).select("id", { count: "exact", head: true }).eq(fk, short.id),
+        (supabase as any).from(commentsTable).select("id", { count: "exact", head: true }).eq(fk, short.id),
+      ]);
+      if (cancelled) return;
+      if (typeof lc === "number") setLikes(lc);
+      if (typeof cc === "number") setComments(cc);
+      if (user) {
+        const { data } = await (supabase as any)
+          .from(likesTable).select("id").eq(fk, short.id).eq("user_id", user.id).maybeSingle();
+        if (!cancelled) setLiked(!!data);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [short.id, user?.id, likesTable, commentsTable, fk]);
 
   useEffect(() => {
     const v = ref.current;
@@ -52,20 +174,50 @@ function VideoCard({ short, active, muted, onToggleMute }: {
     if (v.paused) { v.play(); setPaused(false); } else { v.pause(); setPaused(true); }
   };
 
-  const handleLike = (e: React.MouseEvent) => {
+  const handleLike = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!user) { toast.error("Sign in to like"); return; }
-    setLiked(!liked);
-    setLikes((n) => n + (liked ? -1 : 1));
+    if (busyLike) return;
+    setBusyLike(true);
+    const next = !liked;
+    setLiked(next);
+    setLikes((n) => n + (next ? 1 : -1));
+    try {
+      if (next) {
+        const { error } = await (supabase as any)
+          .from(likesTable).insert({ [fk]: short.id, user_id: user.id });
+        if (error && !String(error.message).includes("duplicate")) throw error;
+      } else {
+        const { error } = await (supabase as any)
+          .from(likesTable).delete().eq(fk, short.id).eq("user_id", user.id);
+        if (error) throw error;
+      }
+    } catch (err: any) {
+      // rollback
+      setLiked(!next);
+      setLikes((n) => n + (next ? -1 : 1));
+      toast.error(err?.message || "Could not update like");
+    } finally {
+      setBusyLike(false);
+    }
   };
 
   const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    const url = `${window.location.origin}/shorts#${short.id}`;
+    const url = `${window.location.origin}/shorts#${short.kind}-${short.id}`;
     try {
-      if (navigator.share) await navigator.share({ url, title: short.title || "Unique" });
-      else { await navigator.clipboard.writeText(url); toast.success("Link copied"); }
-    } catch {}
+      if (navigator.share) {
+        await navigator.share({ url, title: short.title || "Unique" });
+      } else {
+        await navigator.clipboard.writeText(url);
+        toast.success("Link copied");
+      }
+    } catch (err: any) {
+      if (err?.name !== "AbortError") {
+        try { await navigator.clipboard.writeText(url); toast.success("Link copied"); }
+        catch { toast.error("Could not share"); }
+      }
+    }
   };
 
   const name = short.profile.full_name || "unique";
@@ -87,14 +239,12 @@ function VideoCard({ short, active, muted, onToggleMute }: {
         }}
       />
 
-      {/* Pause overlay icon */}
       {paused && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <Play className="w-20 h-20 text-white/80 fill-white/80 drop-shadow-2xl" />
         </div>
       )}
 
-      {/* Right rail — TikTok style */}
       <div className="absolute right-2 bottom-32 flex flex-col items-center gap-6 text-white z-20">
         <Link to={`/profile/${short.user_id}`} className="relative" onClick={(e) => e.stopPropagation()}>
           <Avatar className="w-12 h-12 ring-2 ring-white">
@@ -109,9 +259,12 @@ function VideoCard({ short, active, muted, onToggleMute }: {
           <span className="text-xs font-semibold drop-shadow">{formatNum(likes)}</span>
         </button>
 
-        <button className="flex flex-col items-center gap-1 active:scale-90 transition-transform" onClick={(e) => e.stopPropagation()}>
+        <button
+          className="flex flex-col items-center gap-1 active:scale-90 transition-transform"
+          onClick={(e) => { e.stopPropagation(); setCommentsOpen(true); }}
+        >
           <MessageCircle className="w-10 h-10 drop-shadow-lg" strokeWidth={1.5} />
-          <span className="text-xs font-semibold drop-shadow">{formatNum(short.comments_count ?? 0)}</span>
+          <span className="text-xs font-semibold drop-shadow">{formatNum(comments)}</span>
         </button>
 
         <button onClick={handleShare} className="flex flex-col items-center gap-1 active:scale-90 transition-transform">
@@ -123,13 +276,11 @@ function VideoCard({ short, active, muted, onToggleMute }: {
           {muted ? <VolumeX className="w-6 h-6 drop-shadow-lg" /> : <Volume2 className="w-6 h-6 drop-shadow-lg" />}
         </button>
 
-        {/* Spinning music disc */}
         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-zinc-700 to-black border-2 border-zinc-600 flex items-center justify-center animate-spin" style={{ animationDuration: "4s" }}>
           <Music2 className="w-4 h-4 text-white" />
         </div>
       </div>
 
-      {/* Bottom info — TikTok style */}
       <div className="absolute left-0 right-20 bottom-6 px-3 text-white z-10 space-y-2">
         <Link to={`/profile/${short.user_id}`} onClick={(e) => e.stopPropagation()}>
           <span className="font-bold text-base drop-shadow-lg">@{name}</span>
@@ -147,14 +298,19 @@ function VideoCard({ short, active, muted, onToggleMute }: {
         </div>
       </div>
 
-      {/* Progress bar */}
       <div className="absolute bottom-0 inset-x-0 h-[2px] bg-white/20 z-10">
         <div className="h-full bg-white" style={{ width: `${progress}%` }} />
       </div>
 
-      {/* Gradients */}
       <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/50 to-transparent pointer-events-none" />
       <div className="absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-black/70 to-transparent pointer-events-none" />
+
+      <CommentsSheet
+        open={commentsOpen}
+        onOpenChange={setCommentsOpen}
+        short={short}
+        onCountChange={setComments}
+      />
     </div>
   );
 }
@@ -176,14 +332,14 @@ export default function TikTokFeed({ topOverlay, fabOverlay }: { topOverlay?: Re
 
       const all: ShortItem[] = [];
       (vids || []).forEach((v: any) => v.video_url && all.push({
-        id: v.id, video_url: v.video_url, title: v.title, description: v.description,
+        id: v.id, kind: "video", video_url: v.video_url, title: v.title, description: v.description,
         user_id: v.user_id, likes_count: v.likes_count, views_count: v.views_count,
         profile: { full_name: null, avatar_url: null },
       }));
       (posts || []).forEach((p: any) => {
         const m = Array.isArray(p.media) ? p.media[0] : p.media;
         if (m?.file_url) all.push({
-          id: `p-${p.id}`, video_url: m.file_url, title: null, description: p.content,
+          id: p.id, kind: "post", video_url: m.file_url, title: null, description: p.content,
           user_id: p.user_id, profile: { full_name: null, avatar_url: null },
         });
       });
@@ -256,7 +412,7 @@ export default function TikTokFeed({ topOverlay, fabOverlay }: { topOverlay?: Re
           </div>
         )}
         {shorts.map((s, i) => (
-          <div key={s.id} data-idx={i}>
+          <div key={`${s.kind}-${s.id}`} data-idx={i}>
             <VideoCard short={s} active={i === activeIdx} muted={muted} onToggleMute={toggleMute} />
           </div>
         ))}
