@@ -718,7 +718,7 @@ const Feed = () => {
 
           {/* Main Content Area - scrollable with enhanced contrast */}
           <div className="flex-1 min-w-0 px-2 sm:px-4 py-4">
-            <div className="[&_.card]:bg-white/95 [&_.card]:backdrop-blur-md [&_.card]:shadow-[0_0_30px_rgba(167,139,250,0.3)] [&_.card]:border-violet-300/30">
+            <div className="[&_.card]:bg-card/95 [&_.card]:backdrop-blur-md [&_.card]:shadow-glow [&_.card]:border-primary/20">
 
               {renderContent()}
             </div>
