@@ -451,9 +451,8 @@ function ShareBtn({ label, emoji, onClick }: { label: string; emoji: string; onC
       <span className="text-[11px] leading-tight">{label}</span>
     </button>
   );
-    </div>
-  );
 }
+
 
 export default function TikTokFeed({ topOverlay, fabOverlay }: { topOverlay?: ReactNode; fabOverlay?: ReactNode }) {
   const [muted, setMuted] = useState(true);
