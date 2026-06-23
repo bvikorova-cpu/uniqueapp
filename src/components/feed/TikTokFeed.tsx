@@ -494,9 +494,8 @@ export default function TikTokFeed({ topOverlay, fabOverlay }: { topOverlay?: Re
         _ts: new Date(v.created_at).getTime(),
       }));
       (posts || []).forEach((p: any) => {
-        const m = Array.isArray(p.media) ? p.media[0] : p.media;
-        if (m?.file_url) all.push({
-          id: p.id, kind: "post", video_url: m.file_url, title: null, description: p.content,
+        if (p.file_url) all.push({
+          id: p.id, kind: "post", video_url: p.file_url, title: null, description: p.content,
           user_id: p.user_id, profile: { full_name: null, avatar_url: null },
           _ts: new Date(p.created_at).getTime(),
         });
