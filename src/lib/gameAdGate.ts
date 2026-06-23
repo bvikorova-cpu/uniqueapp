@@ -1,40 +1,47 @@
-import { showMonetagRewarded, MONETAG_ZONES, loadMonetagZone } from "@/lib/monetag";
-import { toast } from "sonner";
+import { loadMonetagZone, MONETAG_ZONES } from "@/lib/monetag";
 
 /**
- * Show a Monetag rewarded ad as a pre-roll BEFORE launching a game.
- * - Never blocks the game on ad failure (UX > monetization).
- * - Returns true if ad actually played (informational only).
+ * Imperative ad-gate controller used by Games / GamesHub.
+ *
+ * The actual UI lives in <GameAdGateHost />, mounted once near the app root.
+ * We expose a tiny event-bus so any page can open the gate and await its close.
  */
-export async function playPreRoll(): Promise<boolean> {
-  try {
-    loadMonetagZone(MONETAG_ZONES.REWARDED_INTERSTITIAL);
-    const ok = await showMonetagRewarded();
-    return ok;
-  } catch {
-    return false;
-  }
+type Phase = "pre" | "post";
+
+type Listener = (phase: Phase, done: () => void) => void;
+
+let listener: Listener | null = null;
+
+export function _registerAdGateHost(fn: Listener | null) {
+  listener = fn;
+}
+
+function openGate(phase: Phase): Promise<void> {
+  // Pre-warm Monetag SDK so first impression is fast.
+  loadMonetagZone(MONETAG_ZONES.REWARDED_INTERSTITIAL);
+
+  return new Promise((resolve) => {
+    if (!listener) {
+      // Host not mounted — never block gameplay.
+      resolve();
+      return;
+    }
+    listener(phase, () => resolve());
+  });
+}
+
+export function playPreRoll(): Promise<void> {
+  return openGate("pre");
+}
+
+export function playPostRoll(): Promise<void> {
+  return openGate("post");
 }
 
 /**
- * Show a Monetag rewarded ad as a post-roll AFTER a game session ends.
- * Silent failure — never disrupts return-to-menu UX.
- */
-export async function playPostRoll(): Promise<boolean> {
-  try {
-    const ok = await showMonetagRewarded();
-    return ok;
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Convenience helper: shows a short toast + plays pre-roll, then runs `launch`.
- * Use it on game-card click handlers.
+ * Convenience: shows the pre-roll gate, then runs `launch` once user continues.
  */
 export async function gateGameLaunch(launch: () => void | Promise<void>): Promise<void> {
-  toast.info("Loading short ad…", { duration: 1500 });
-  await playPreRoll();
+  await openGate("pre");
   await launch();
 }
