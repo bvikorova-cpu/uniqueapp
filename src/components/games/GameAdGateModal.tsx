@@ -1,6 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { showMonetagRewarded, MONETAG_ZONES, loadMonetagZone } from "@/lib/monetag";
+import {
+  showMonetagRewarded,
+  MONETAG_ZONES,
+  loadMonetagZone,
+  trackMonetagEvent,
+} from "@/lib/monetag";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 /**
  * Fullscreen ad-break modal shown BEFORE and AFTER every game.
@@ -12,6 +19,11 @@ import { showMonetagRewarded, MONETAG_ZONES, loadMonetagZone } from "@/lib/monet
  *     user perceives a real break (otherwise empty fills look like nothing
  *     happened — the exact bug reported).
  *  4) Ad failures NEVER block the gate: countdown alone is enough to continue.
+ *
+ * Monetization side-effects:
+ *  - Logs impression into `monetag_ad_events` (sub_id: game_pre / game_post)
+ *    so the dashboard can attribute revenue to the games section.
+ *  - Credits +1 XP per phase per day via award_xp (ref_id dedup prevents abuse).
  */
 type Phase = "pre" | "post";
 
@@ -21,20 +33,51 @@ interface Props {
   minSeconds?: number;
 }
 
+const XP_PER_GAME_AD = 1;
+
 export const GameAdGateModal = ({ phase, onClose, minSeconds = 5 }: Props) => {
   const [remaining, setRemaining] = useState(minSeconds);
   const [adState, setAdState] = useState<"loading" | "playing" | "done" | "failed">("loading");
+  const [xpAwarded, setXpAwarded] = useState(false);
   const startedRef = useRef(false);
 
   useEffect(() => {
     if (startedRef.current) return;
     startedRef.current = true;
 
-    loadMonetagZone(MONETAG_ZONES.REWARDED_INTERSTITIAL);
+    const zoneId = MONETAG_ZONES.REWARDED_INTERSTITIAL;
+    const subKey = phase === "pre" ? "game_pre" : "game_post";
+
+    loadMonetagZone(zoneId);
     setAdState("playing");
 
-    showMonetagRewarded()
-      .then((ok) => setAdState(ok ? "done" : "failed"))
+    // 1) Log impression for Monetag revenue attribution.
+    trackMonetagEvent("impression", zoneId, subKey);
+
+    // 2) Trigger the rewarded ad + credit XP on completion (daily dedup).
+    showMonetagRewarded(zoneId)
+      .then(async (ok) => {
+        setAdState(ok ? "done" : "failed");
+        if (!ok) return;
+        try {
+          const { data: auth } = await supabase.auth.getUser();
+          const uid = auth?.user?.id;
+          if (!uid) return;
+          const today = new Date().toISOString().slice(0, 10);
+          const { error } = await supabase.rpc("award_xp", {
+            _user_id: uid,
+            _amount: XP_PER_GAME_AD,
+            _source: `game_ad_${phase}`,
+            _ref_id: `game_${phase}:${today}`, // 1 XP per phase per day
+          });
+          if (!error) {
+            setXpAwarded(true);
+            toast.success(`+${XP_PER_GAME_AD} XP for watching ad`);
+          }
+        } catch {
+          // XP failure must never disrupt gameplay.
+        }
+      })
       .catch(() => setAdState("failed"));
 
     const t = setInterval(() => {
@@ -47,7 +90,9 @@ export const GameAdGateModal = ({ phase, onClose, minSeconds = 5 }: Props) => {
       });
     }, 1000);
     return () => clearInterval(t);
-  }, []);
+  }, [phase]);
+
+
 
   const canContinue = remaining === 0;
 
