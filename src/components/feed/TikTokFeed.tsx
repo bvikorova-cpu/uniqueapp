@@ -51,6 +51,7 @@ function CommentsSheet({ open, onOpenChange, short, onCountChange }: {
   const [sending, setSending] = useState(false);
 
   const load = useCallback(async () => {
+    if (!table || !fk) { setItems([]); setLoading(false); return; }
     setLoading(true);
     const { data } = await (supabase as any)
       .from(table).select("id,content,user_id,created_at")
@@ -71,6 +72,7 @@ function CommentsSheet({ open, onOpenChange, short, onCountChange }: {
 
   const submit = async () => {
     if (!user) { toast.error("Sign in to comment"); return; }
+    if (!table || !fk) { toast.error("Comments are not available for stories"); return; }
     const c = text.trim();
     if (!c) return;
     setSending(true);
