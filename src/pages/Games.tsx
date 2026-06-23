@@ -9,6 +9,7 @@ import { pokiGames, getGamesByCategory, gameCategories, type GameCategory } from
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { SEO } from "@/components/SEO";
+import { gateGameLaunch, playPostRoll } from "@/lib/gameAdGate";
 
 const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.05 } } };
 const item = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.35 } } };
