@@ -83,7 +83,16 @@ export const useStories = () => {
       queryClient.invalidateQueries({ queryKey: ["stories"] });
       toast({ title: "Story created!", description: "+15 XP earned" });
     },
+    onError: (err: any) => {
+      const msg = err?.message || "Could not create story";
+      const friendly = /exceeded the maximum allowed size|413/i.test(msg)
+        ? "File too large. Try a smaller image (under 5 MB)."
+        : msg;
+      toast({ title: "Story upload failed", description: friendly, variant: "destructive" });
+    },
   });
+
+
 
   const viewStory = useMutation({
     mutationFn: async (storyId: string) => {
