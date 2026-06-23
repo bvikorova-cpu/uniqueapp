@@ -13,6 +13,7 @@ import { ArrowLeft, Shield, Users, CheckCircle, Heart } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { useDonationReturn } from "@/hooks/useDonationReturn";
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
+import { CampaignDiscussion } from '@/components/fundraising/CampaignDiscussion';
 import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPanel';
 import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGuard';
 import { HeroNominationCard } from '@/components/fundraising/hero/HeroNominationCard';
@@ -278,6 +279,7 @@ export default function HeroDetail() {
               supportersCount={campaign.supporters_count ?? 0}
               campaignType="hero"
             />
+            <CampaignDiscussion campaignId={campaign.id} campaignType="hero" ownerUserId={campaign.user_id} />
             <CampaignPayoutPanel
               campaignType="hero"
               campaignId={campaign.id}

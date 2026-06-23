@@ -15,6 +15,7 @@ import { toast } from '@/hooks/use-toast';
 import { formatDistanceToNow } from 'date-fns';
 import { sk } from 'date-fns/locale';
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
+import { CampaignDiscussion } from '@/components/fundraising/CampaignDiscussion';
 import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPanel';
 import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGuard';
 import { InsuranceGapCalculator } from '@/components/fundraising/medical/InsuranceGapCalculator';
@@ -412,6 +413,7 @@ export default function MedicalDetail() {
               campaignType="medical"
               topDonations={donations.map(d => ({ id: d.id, amount: d.amount, donor_name: d.donor_name, is_anonymous: d.is_anonymous, created_at: d.created_at }))}
             />
+            <CampaignDiscussion campaignId={campaign.id} campaignType="medical" ownerUserId={campaign.user_id} />
             <MedicalShareKit
               campaignTitle={campaign.title}
               patientName={campaign.patient_name}

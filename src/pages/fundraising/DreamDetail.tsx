@@ -13,6 +13,7 @@ import { ArrowLeft, Sparkles, Users, Target, Heart } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { useDonationReturn } from "@/hooks/useDonationReturn";
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
+import { CampaignDiscussion } from '@/components/fundraising/CampaignDiscussion';
 import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPanel';
 import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGuard';
 import { RewardTiers, type RewardTier } from '@/components/fundraising/dream/RewardTiers';
@@ -283,6 +284,7 @@ export default function DreamDetail() {
               supportersCount={campaign.supporters_count ?? 0}
               campaignType="dream"
             />
+            <CampaignDiscussion campaignId={campaign.id} campaignType="dream" ownerUserId={campaign.user_id} />
             <CampaignPayoutPanel
               campaignType="dream"
               campaignId={campaign.id}
