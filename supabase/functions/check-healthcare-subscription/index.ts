@@ -8,10 +8,10 @@ const corsHeaders = {
 };
 
 const TIER_BY_PRICE: Record<string, string> = {
-  price_1SRv390QTWhd4oRpM8xbH4hm: "pediatric_mini",
-  price_1SRv3SGaXSfGtYFtIxUFVzYa: "pediatric_standard",
-  price_1SRv4h0QTWhd4oRpv9tvXboN: "therapy_professional",
-  price_1SRvD3GaXSfGtYFtlBnIKIq8: "clinic_premium",
+  price_1TlWB3GaXSfGtYFtwmGHpzLV: "pediatric_mini",
+  price_1TlWB4GaXSfGtYFtFc4g2deu: "pediatric_standard",
+  price_1TlWB4GaXSfGtYFtNjWmwe9X: "therapy_professional",
+  price_1TlWB5GaXSfGtYFthkRtD9Jx: "clinic_premium",
 };
 
 const log = (s: string, d?: unknown) =>

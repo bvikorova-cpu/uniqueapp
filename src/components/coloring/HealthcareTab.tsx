@@ -9,10 +9,10 @@ import { useHealthcareSubscription } from "@/hooks/useHealthcareSubscription";
 import { useNavigate } from "react-router-dom";
 
 const basicPlans = [
-  { id: "pediatric_mini", name: "Pediatric Mini", price: 3, icon: Baby, description: "For small practices (1-2 doctors)", features: ["50 downloads per month", "Basic child-friendly themes", "Print-ready PDF format", "Email support"], priceId: "price_1SRv390QTWhd4oRpM8xbH4hm" },
-  { id: "pediatric_standard", name: "Pediatric Standard", price: 5, icon: Smile, description: "Perfect for pediatricians", features: ["Unlimited downloads", "All child-friendly themes", "Anxiety-reducing content", "Monthly new additions", "Basic customization"], priceId: "price_1SRv3SGaXSfGtYFtIxUFVzYa" },
-  { id: "therapy_professional", name: "Art Therapy Professional", price: 15, icon: Brain, description: "For psychologists with multiple clients", features: ["Unlimited downloads", "Trauma-informed designs", "ADHD & autism specialized", "Session tracking (unlimited)", "Custom clinic branding", "Parent portal access", "Analytics dashboard"], priceId: "price_1SRv4h0QTWhd4oRpv9tvXboN" },
-  { id: "clinic_premium", name: "Clinic Premium", price: 25, icon: Building2, description: "Complete solution for clinics", features: ["Everything in Professional", "Multi-location support", "Staff accounts (up to 10)", "API integration", "EHR integration ready", "Custom content creation", "Tablet licenses (5 devices)", "Priority support"], priceId: "price_1SRvD3GaXSfGtYFtlBnIKIq8" },
+  { id: "pediatric_mini", name: "Pediatric Mini", price: 3, icon: Baby, description: "For small practices (1-2 doctors)", features: ["50 downloads per month", "Basic child-friendly themes", "Print-ready PDF format", "Email support"], priceId: "price_1TlWB3GaXSfGtYFtwmGHpzLV" },
+  { id: "pediatric_standard", name: "Pediatric Standard", price: 5, icon: Smile, description: "Perfect for pediatricians", features: ["Unlimited downloads", "All child-friendly themes", "Anxiety-reducing content", "Monthly new additions", "Basic customization"], priceId: "price_1TlWB4GaXSfGtYFtFc4g2deu" },
+  { id: "therapy_professional", name: "Art Therapy Professional", price: 15, icon: Brain, description: "For psychologists with multiple clients", features: ["Unlimited downloads", "Trauma-informed designs", "ADHD & autism specialized", "Session tracking (unlimited)", "Custom clinic branding", "Parent portal access", "Analytics dashboard"], priceId: "price_1TlWB4GaXSfGtYFtNjWmwe9X" },
+  { id: "clinic_premium", name: "Clinic Premium", price: 25, icon: Building2, description: "Complete solution for clinics", features: ["Everything in Professional", "Multi-location support", "Staff accounts (up to 10)", "API integration", "EHR integration ready", "Custom content creation", "Tablet licenses (5 devices)", "Priority support"], priceId: "price_1TlWB5GaXSfGtYFthkRtD9Jx" },
 ];
 
 export function HealthcareTab() {
