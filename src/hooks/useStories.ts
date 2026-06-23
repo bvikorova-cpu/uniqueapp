@@ -90,6 +90,9 @@ export const useStories = () => {
         : msg;
       toast({ title: "Story upload failed", description: friendly, variant: "destructive" });
     },
+  });
+
+
 
   const viewStory = useMutation({
     mutationFn: async (storyId: string) => {
