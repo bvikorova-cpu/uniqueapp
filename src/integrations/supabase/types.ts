@@ -8776,6 +8776,33 @@ export type Database = {
         }
         Relationships: []
       }
+      campaign_comments: {
+        Row: {
+          campaign_id: string
+          campaign_type: string
+          content: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          campaign_id: string
+          campaign_type: string
+          content: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          campaign_id?: string
+          campaign_type?: string
+          content?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       campaign_donations: {
         Row: {
           amount: number
@@ -9091,6 +9118,36 @@ export type Database = {
           status?: string
           stripe_destination_account?: string
           stripe_transfer_id?: string | null
+        }
+        Relationships: []
+      }
+      campaign_updates: {
+        Row: {
+          body: string
+          campaign_id: string
+          campaign_type: string
+          created_at: string
+          id: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          campaign_id: string
+          campaign_type: string
+          created_at?: string
+          id?: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          campaign_id?: string
+          campaign_type?: string
+          created_at?: string
+          id?: string
+          title?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -64573,6 +64630,14 @@ export type Database = {
           total_paid_out_cents: number
           total_raised_cents: number
         }[]
+      }
+      get_campaign_owner: {
+        Args: { _campaign_id: string; _campaign_type: string }
+        Returns: string
+      }
+      get_campaign_title: {
+        Args: { _campaign_id: string; _campaign_type: string }
+        Returns: string
       }
       get_confessions_feed: {
         Args: { _limit?: number; _offset?: number }

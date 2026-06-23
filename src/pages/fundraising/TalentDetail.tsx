@@ -13,6 +13,7 @@ import { ArrowLeft, Star, Users, Trophy, Target, Heart, Link as LinkIcon } from 
 import { toast } from '@/hooks/use-toast';
 import { useDonationReturn } from "@/hooks/useDonationReturn";
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
+import { CampaignDiscussion } from '@/components/fundraising/CampaignDiscussion';
 import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPanel';
 import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGuard';
 import { SponsorTiers } from '@/components/fundraising/talent/SponsorTiers';
@@ -299,6 +300,7 @@ export default function TalentDetail() {
               supportersCount={campaign.sponsors_count ?? 0}
               campaignType="talent"
             />
+            <CampaignDiscussion campaignId={campaign.id} campaignType="talent" ownerUserId={campaign.user_id} />
             <CampaignPayoutPanel
               campaignType="talent"
               campaignId={campaign.id}

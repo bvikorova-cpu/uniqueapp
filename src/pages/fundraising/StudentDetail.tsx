@@ -13,6 +13,7 @@ import { ArrowLeft, GraduationCap, Users, Heart, Sparkles } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { useDonationReturn } from "@/hooks/useDonationReturn";
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
+import { CampaignDiscussion } from '@/components/fundraising/CampaignDiscussion';
 import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPanel';
 import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGuard';
 import { AcademicVerificationCard } from '@/components/fundraising/student/AcademicVerificationCard';
@@ -269,6 +270,7 @@ export default function StudentDetail() {
               supportersCount={campaign.supporters_count ?? 0}
               campaignType="student"
             />
+            <CampaignDiscussion campaignId={campaign.id} campaignType="student" ownerUserId={campaign.user_id} />
             <CampaignPayoutPanel
               campaignType="student"
               campaignId={campaign.id}

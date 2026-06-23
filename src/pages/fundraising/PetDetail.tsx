@@ -13,6 +13,7 @@ import { ArrowLeft, PawPrint, Users, AlertTriangle, Heart } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { useDonationReturn } from "@/hooks/useDonationReturn";
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
+import { CampaignDiscussion } from '@/components/fundraising/CampaignDiscussion';
 import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPanel';
 import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGuard';
 import { PetAdoptionStatus } from '@/components/fundraising/pet/PetAdoptionStatus';
@@ -290,6 +291,7 @@ export default function PetDetail() {
               supportersCount={campaign.supporters_count ?? 0}
               campaignType="pet"
             />
+            <CampaignDiscussion campaignId={campaign.id} campaignType="pet" ownerUserId={campaign.user_id} />
             <CampaignPayoutPanel
               campaignType="pet"
               campaignId={campaign.id}

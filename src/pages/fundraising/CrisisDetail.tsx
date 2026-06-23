@@ -14,6 +14,7 @@ import { toast } from '@/hooks/use-toast';
 import { useDonationReturn } from "@/hooks/useDonationReturn";
 import { formatDistanceToNow } from 'date-fns';
 import { CampaignDetailEnhancements, CampaignDetailLiveFeed } from '@/components/fundraising/CampaignDetailEnhancements';
+import { CampaignDiscussion } from '@/components/fundraising/CampaignDiscussion';
 import { CampaignPayoutPanel } from '@/components/fundraising/CampaignPayoutPanel';
 import { PendingCampaignGuard } from '@/components/fundraising/PendingCampaignGuard';
 import { CrisisUpdatesTimeline } from '@/components/fundraising/crisis/CrisisUpdatesTimeline';
@@ -284,6 +285,7 @@ export default function CrisisDetail() {
               supportersCount={campaign.supporters_count}
               campaignType="crisis"
             />
+            <CampaignDiscussion campaignId={campaign.id} campaignType="crisis" ownerUserId={campaign.user_id} />
             <CampaignPayoutPanel
               campaignType="crisis"
               campaignId={campaign.id}
