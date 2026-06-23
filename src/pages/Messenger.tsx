@@ -1513,7 +1513,7 @@ const Messenger = () => {
                             )}
                             
                             {/* Voice message */}
-                            {msg.attachment_type === "voice" && attachmentUrl && (
+                            {effectiveType === "voice" && attachmentUrl && (
                               <div className="flex items-center gap-2 mb-2">
                                 <Button
                                   variant="ghost"
@@ -1535,7 +1535,7 @@ const Messenger = () => {
                             )}
                             
                             {/* Image */}
-                            {msg.attachment_type === "image" && attachmentUrl && (
+                            {effectiveType === "image" && attachmentUrl && (
                               <img
                                 src={attachmentUrl}
                                 alt="Shared image"
@@ -1544,15 +1544,15 @@ const Messenger = () => {
                               />
                             )}
 
-                            {msg.attachment_type === "video" && attachmentUrl && (
+                            {effectiveType === "video" && attachmentUrl && (
                               <video src={attachmentUrl} controls playsInline className="rounded-lg max-w-full max-h-64 mb-2" />
                             )}
 
-                            {msg.attachment_type === "audio" && attachmentUrl && (
+                            {effectiveType === "audio" && attachmentUrl && (
                               <audio src={attachmentUrl} controls className="w-56 max-w-full mb-2" />
                             )}
 
-                            {msg.attachment_type === "file" && attachmentUrl && (
+                            {effectiveType === "file" && attachmentUrl && (
                               <a href={attachmentUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 underline mb-2">
                                 <FileIcon className="h-4 w-4" />
                                 <span className="truncate">{msg.content.replace(/^📎\s*/, "") || "Download file"}</span>
@@ -1560,7 +1560,7 @@ const Messenger = () => {
                             )}
                             
                             {/* GIF */}
-                            {msg.attachment_type === "gif" && attachmentUrl && (
+                            {effectiveType === "gif" && attachmentUrl && (
                               <img
                                 src={attachmentUrl}
                                 alt="GIF"
@@ -1568,8 +1568,8 @@ const Messenger = () => {
                               />
                             )}
                             
-                            {/* Text content (hide for voice-only messages) */}
-                            {!msg.attachment_type && (
+                            {/* Text content (hide for attachment-only messages) */}
+                            {!effectiveType && (
                               <p className="break-words">{msg.content}</p>
                             )}
                             
