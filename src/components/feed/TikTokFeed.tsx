@@ -226,7 +226,11 @@ function VideoCard({ short, active, muted, onToggleMute }: {
   };
 
   const [shareOpen, setShareOpen] = useState(false);
-  const shareUrl = `${window.location.origin}/shorts#${short.kind}-${short.id}`;
+  const PUBLIC_HOST = "https://www.uniqueapp.fun";
+  const origin = typeof window !== "undefined" && /(?:^|\.)uniqueapp\.fun$/.test(window.location.hostname)
+    ? window.location.origin
+    : PUBLIC_HOST;
+  const shareUrl = `${origin}/shorts#${short.kind}-${short.id}`;
   const shareText = short.title || short.description || "Check out this video on Unique";
 
   const openShare = (e: React.MouseEvent) => {
