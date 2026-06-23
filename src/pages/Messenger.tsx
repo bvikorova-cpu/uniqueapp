@@ -1,14 +1,14 @@
-import { useState, useEffect, useRef, useCallback, Fragment } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo, Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { getReadableUrl } from "@/lib/storageSigned";
+import { useResolvedStorageUrls } from "@/lib/storageSigned";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply, Mic, Image, Smile, Square, Play, Pause, Users, BarChart3, Palette, Radio, Clock, ArrowLeft, Download, Brain, Gamepad2, Bell, BellOff, Loader2, Plus, Camera, Upload } from "lucide-react";
+import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply, Mic, Smile, Square, Play, Pause, BarChart3, Palette, Radio, Clock, ArrowLeft, Download, Brain, Gamepad2, Bell, BellOff, Loader2, Plus, Camera, Upload, File as FileIcon } from "lucide-react";
 import { useDmMutes } from "@/hooks/useDmMutes";
 import { EmojiPicker } from "@/components/messenger/EmojiPicker";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -122,6 +122,27 @@ interface Conversation {
 }
 
 const REACTIONS = ["❤️", "👍", "😂", "😮", "😢", "🔥"];
+const MAX_MESSENGER_ATTACHMENT_BYTES = 20 * 1024 * 1024;
+
+const getAttachmentKind = (file: File) => {
+  const extension = file.name.split(".").pop()?.toLowerCase() || "";
+  if (file.type.startsWith("image/") || ["jpg", "jpeg", "png", "gif", "webp", "heic"].includes(extension)) return "image";
+  if (file.type.startsWith("video/") || ["mp4", "mov", "webm", "m4v"].includes(extension)) return "video";
+  if (file.type.startsWith("audio/") || ["mp3", "m4a", "wav", "ogg", "webm", "aac", "flac"].includes(extension)) return "audio";
+  return "file";
+};
+
+const safeAttachmentName = (name: string) =>
+  name
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9._-]+/g, "-")
+    .replace(/^-+|-+$/g, "") || "attachment";
+
+const getRecordingMimeType = () => {
+  if (typeof MediaRecorder === "undefined") return "";
+  return ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg;codecs=opus"].find((type) => MediaRecorder.isTypeSupported(type)) || "";
+};
 
 
 const Messenger = () => {
@@ -147,6 +168,7 @@ const Messenger = () => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
   const [selfDestructDuration, setSelfDestructDuration] = useState<number | null>(null);
+  const [uploadingAttachment, setUploadingAttachment] = useState(false);
   const [groupChats, setGroupChats] = useState<GroupChat[]>([]);
   const [activeTab, setActiveTab] = useState<"direct" | "groups">("direct");
   const [selectedMessageText, setSelectedMessageText] = useState<string>("");
@@ -161,9 +183,13 @@ const Messenger = () => {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const recordingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const recordingStartedAtRef = useRef<number>(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const audioRefs = useRef<Map<string, HTMLAudioElement>>(new Map());
+  const attachmentInputsDisabled = uploadingAttachment || isRecording;
+  const attachmentUrls = useMemo(() => messages.map((message) => message.attachment_url || null), [messages]);
+  const resolvedAttachmentUrls = useResolvedStorageUrls(attachmentUrls);
 
   // Track browser online/offline so we can show a banner inside the chat.
   useEffect(() => {
@@ -377,7 +403,7 @@ const Messenger = () => {
 
         const { data: messagesData } = await supabase
           .from("messages")
-          .select("id, content, sender_id, created_at, story_id, is_read")
+          .select("id, content, sender_id, created_at, story_id, is_read, attachment_type")
           .eq("conversation_id", conv.id)
           .order("created_at", { ascending: false })
           .limit(1);
@@ -427,7 +453,7 @@ const Messenger = () => {
     setMessagesError(false);
     const { data, error } = await supabase
       .from("messages")
-      .select("id, content, sender_id, created_at, story_id, reply_to_id, is_read, read_at")
+      .select("id, content, sender_id, created_at, story_id, reply_to_id, is_read, read_at, attachment_url, attachment_type, voice_duration, expires_at")
       .eq("conversation_id", convId)
       .order("created_at", { ascending: true })
       .limit(500);
@@ -827,19 +853,31 @@ const Messenger = () => {
 
   // Voice recording functions
   const startRecording = async () => {
+    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
+      toast({
+        title: "Microphone unavailable",
+        description: "This browser does not support voice recording.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream);
+      const mimeType = getRecordingMimeType();
+      const mediaRecorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
+      recordingStartedAtRef.current = Date.now();
 
       mediaRecorder.ondataavailable = (e) => {
         audioChunksRef.current.push(e.data);
       };
 
       mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-        await uploadVoiceMessage(audioBlob, recordingDuration);
+        const duration = Math.max(1, Math.round((Date.now() - recordingStartedAtRef.current) / 1000));
+        const audioBlob = new Blob(audioChunksRef.current, { type: mediaRecorder.mimeType || mimeType || "audio/webm" });
+        await uploadVoiceMessage(audioBlob, duration);
         stream.getTracks().forEach(track => track.stop());
       };
 
@@ -850,10 +888,17 @@ const Messenger = () => {
       recordingIntervalRef.current = setInterval(() => {
         setRecordingDuration(prev => prev + 1);
       }, 1000);
-    } catch (error) {
+    } catch (error: any) {
+      const description = error?.name === "NotAllowedError"
+        ? "Allow microphone access in your browser settings."
+        : error?.name === "NotFoundError"
+          ? "No microphone was found on this device."
+          : error?.name === "NotReadableError"
+            ? "The microphone is already being used by another app."
+            : "Could not access microphone.";
       toast({
-        title: "Error",
-        description: "Could not access microphone",
+        title: "Microphone not working",
+        description,
         variant: "destructive",
       });
     }
@@ -872,13 +917,16 @@ const Messenger = () => {
   const uploadVoiceMessage = async (blob: Blob, duration: number) => {
     if (!selectedConversation || !user) return;
 
-    const fileName = `${user.id}/${Date.now()}.webm`;
+    const extension = blob.type.includes("mp4") ? "m4a" : blob.type.includes("ogg") ? "ogg" : "webm";
+    const fileName = `${user.id}/${Date.now()}_voice.${extension}`;
+    setUploadingAttachment(true);
     
-    const { data: uploadData, error: uploadError } = await supabase.storage
+    const { error: uploadError } = await supabase.storage
       .from('messenger-attachments')
-      .upload(fileName, blob);
+      .upload(fileName, blob, { contentType: blob.type || "audio/webm", upsert: false });
 
     if (uploadError) {
+      setUploadingAttachment(false);
       toast({
         title: "Error",
         description: "Failed to upload voice message",
@@ -887,13 +935,11 @@ const Messenger = () => {
       return;
     }
 
-    const { data: urlData } = { data: { publicUrl: await getReadableUrl('messenger-attachments', fileName) } };
-
     const { error } = await supabase.from("messages").insert({
       conversation_id: selectedConversation,
       sender_id: user.id,
       content: "🎤 Voice message",
-      attachment_url: urlData.publicUrl,
+      attachment_url: `messenger-attachments/${fileName}`,
       attachment_type: "voice",
       voice_duration: duration,
       reply_to_id: replyingTo?.id || null,
@@ -906,47 +952,61 @@ const Messenger = () => {
         variant: "destructive",
       });
     }
+    setUploadingAttachment(false);
     setReplyingTo(null);
   };
 
-  // Image upload
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Attachment upload
+  const handleAttachmentUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !selectedConversation || !user) return;
 
-    const fileName = `${user.id}/${Date.now()}_${file.name}`;
+    if (file.size > MAX_MESSENGER_ATTACHMENT_BYTES) {
+      toast({
+        title: "File too large",
+        description: "Maximum attachment size is 20 MB.",
+        variant: "destructive",
+      });
+      e.target.value = "";
+      return;
+    }
+
+    const attachmentType = getAttachmentKind(file);
+    const label = attachmentType === "image" ? "📷 Image" : attachmentType === "video" ? "🎬 Video" : attachmentType === "audio" ? "🎵 Audio" : `📎 ${file.name}`;
+    const fileName = `${user.id}/${Date.now()}_${safeAttachmentName(file.name)}`;
+    setUploadingAttachment(true);
     
     const { error: uploadError } = await supabase.storage
       .from('messenger-attachments')
-      .upload(fileName, file);
+      .upload(fileName, file, { contentType: file.type || "application/octet-stream", upsert: false });
 
     if (uploadError) {
+      setUploadingAttachment(false);
       toast({
         title: "Error",
-        description: "Failed to upload image",
+        description: "Failed to upload attachment",
         variant: "destructive",
       });
       return;
     }
 
-    const { data: urlData } = { data: { publicUrl: await getReadableUrl('messenger-attachments', fileName) } };
-
     const { error } = await supabase.from("messages").insert({
       conversation_id: selectedConversation,
       sender_id: user.id,
-      content: "📷 Image",
-      attachment_url: urlData.publicUrl,
-      attachment_type: "image",
+      content: label,
+      attachment_url: `messenger-attachments/${fileName}`,
+      attachment_type: attachmentType,
       reply_to_id: replyingTo?.id || null,
     });
 
     if (error) {
       toast({
         title: "Error",
-        description: "Failed to send image",
+        description: "Failed to send attachment",
         variant: "destructive",
       });
     }
+    setUploadingAttachment(false);
     setReplyingTo(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
     if (cameraInputRef.current) cameraInputRef.current.value = '';
@@ -1375,6 +1435,7 @@ const Messenger = () => {
                   ) : null}
                   <div className="space-y-4">
                     {messages.map((msg, idx) => {
+                      const attachmentUrl = resolvedAttachmentUrls[idx];
                       // Date separator when day changes vs previous message
                       const cur = new Date(msg.created_at);
                       const prev = idx > 0 ? new Date(messages[idx - 1].created_at) : null;
@@ -1437,13 +1498,13 @@ const Messenger = () => {
                             )}
                             
                             {/* Voice message */}
-                            {msg.attachment_type === "voice" && msg.attachment_url && (
+                            {msg.attachment_type === "voice" && attachmentUrl && (
                               <div className="flex items-center gap-2 mb-2">
                                 <Button
                                   variant="ghost"
                                   size="icon"
                                   className="h-8 w-8"
-                                  onClick={() => toggleAudioPlayback(msg.id, msg.attachment_url!)}
+                                  onClick={() => toggleAudioPlayback(msg.id, attachmentUrl)}
                                 >
                                   {playingAudio === msg.id ? (
                                     <Pause className="h-4 w-4" />
@@ -1459,26 +1520,41 @@ const Messenger = () => {
                             )}
                             
                             {/* Image */}
-                            {msg.attachment_type === "image" && msg.attachment_url && (
+                            {msg.attachment_type === "image" && attachmentUrl && (
                               <img
-                                src={msg.attachment_url}
+                                src={attachmentUrl}
                                 alt="Shared image"
                                 className="rounded-lg max-w-full max-h-64 object-cover mb-2 cursor-pointer"
-                                onClick={() => window.open(msg.attachment_url!, '_blank')}
+                                onClick={() => window.open(attachmentUrl, '_blank')}
                               />
+                            )}
+
+                            {msg.attachment_type === "video" && attachmentUrl && (
+                              <video src={attachmentUrl} controls playsInline className="rounded-lg max-w-full max-h-64 mb-2" />
+                            )}
+
+                            {msg.attachment_type === "audio" && attachmentUrl && (
+                              <audio src={attachmentUrl} controls className="w-56 max-w-full mb-2" />
+                            )}
+
+                            {msg.attachment_type === "file" && attachmentUrl && (
+                              <a href={attachmentUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 underline mb-2">
+                                <FileIcon className="h-4 w-4" />
+                                <span className="truncate">{msg.content.replace(/^📎\s*/, "") || "Download file"}</span>
+                              </a>
                             )}
                             
                             {/* GIF */}
-                            {msg.attachment_type === "gif" && msg.attachment_url && (
+                            {msg.attachment_type === "gif" && attachmentUrl && (
                               <img
-                                src={msg.attachment_url}
+                                src={attachmentUrl}
                                 alt="GIF"
                                 className="rounded-lg max-w-full max-h-48 object-cover mb-2"
                               />
                             )}
                             
                             {/* Text content (hide for voice-only messages) */}
-                            {msg.attachment_type !== "voice" && msg.attachment_type !== "image" && msg.attachment_type !== "gif" && (
+                            {!msg.attachment_type && (
                               <p className="break-words">{msg.content}</p>
                             )}
                             
@@ -1591,9 +1667,9 @@ const Messenger = () => {
                   <input
                     type="file"
                     ref={fileInputRef}
-                    accept="image/*"
+                    accept="image/*,video/*,audio/*"
                     className="hidden"
-                    onChange={handleImageUpload}
+                    onChange={handleAttachmentUpload}
                   />
                   <input
                     type="file"
@@ -1601,7 +1677,7 @@ const Messenger = () => {
                     accept="image/*"
                     capture="environment"
                     className="hidden"
-                    onChange={handleImageUpload}
+                    onChange={handleAttachmentUpload}
                   />
 
                   {/* Tool row — scrolls horizontally on narrow screens */}
@@ -1612,10 +1688,10 @@ const Messenger = () => {
                           variant="ghost"
                           size="icon"
                           className="shrink-0"
-                          disabled={isRecording}
+                          disabled={attachmentInputsDisabled}
                           aria-label="Add attachment"
                         >
-                          <Plus className="h-4 w-4" />
+                          {uploadingAttachment ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="start" side="top">
