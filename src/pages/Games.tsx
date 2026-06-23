@@ -9,6 +9,7 @@ import { pokiGames, getGamesByCategory, gameCategories, type GameCategory } from
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { SEO } from "@/components/SEO";
+import { gateGameLaunch, playPostRoll } from "@/lib/gameAdGate";
 
 const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.05 } } };
 const item = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.35 } } };
@@ -19,7 +20,10 @@ const Games = () => {
   if (activeGame) {
     const game = pokiGames.find(g => g.id === activeGame);
     if (game) {
-      return <PokiGameWrapper slug={game.slug} title={game.title} onBack={() => setActiveGame(null)} />;
+      return <PokiGameWrapper slug={game.slug} title={game.title} onBack={async () => {
+        setActiveGame(null);
+        await playPostRoll();
+      }} />;
     }
   }
 
@@ -83,7 +87,7 @@ const Games = () => {
                   <motion.div key={game.id} variants={item}>
                     <Card 
                       className="group cursor-pointer overflow-hidden border-transparent hover:border-primary/30 transition-all duration-300 hover:scale-[1.02]" 
-                      onClick={() => setActiveGame(game.id)}
+                      onClick={() => gateGameLaunch(() => setActiveGame(game.id))}
                     >
                       <div className="h-1 bg-gradient-to-r from-primary to-accent" />
                       <CardHeader className="p-3 sm:p-4">
@@ -108,7 +112,7 @@ const Games = () => {
                             <Badge variant="secondary" className="text-[10px]">{(game.plays / 1000000).toFixed(1)}M</Badge>
                           )}
                         </div>
-                        <Button className="w-full" size="sm" variant="premium" onClick={() => { window.open(`https://poki.com/en/g/${game.slug}`, "_blank", "noopener"); }}>
+                        <Button className="w-full" size="sm" variant="premium" onClick={(e) => { e.stopPropagation(); gateGameLaunch(() => { window.open(`https://poki.com/en/g/${game.slug}`, "_blank", "noopener"); playPostRoll(); }); }}>
                           <Gamepad2 className="h-3.5 w-3.5 mr-1.5" /> Play on Poki ↗
                         </Button>
                       </CardContent>

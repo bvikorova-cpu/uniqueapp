@@ -9,6 +9,7 @@ import { Gamepad2, ArrowLeft, Sparkles, Search, X, ChevronLeft, ChevronRight, Ex
 import { SEO } from "@/components/SEO";
 import { gdGames, gdCategories, getGDGamesByCategory, type GDCategory, type GDGame } from "@/data/gdGames";
 import { useGamesHub } from "@/hooks/useGamesHub";
+import { gateGameLaunch, playPostRoll } from "@/lib/gameAdGate";
 
 const PAGE_SIZE = 30;
 
@@ -160,8 +161,15 @@ const GamesHub = () => {
   const tabCats = usedCategories.length > 0 ? usedCategories : categories;
 
   const handleOpen = (game: GDGame) => {
-    setActive(game.id);
-    trackPlay({ id: game.id, title: game.title, category: gdCategories[game.category] });
+    gateGameLaunch(() => {
+      setActive(game.id);
+      trackPlay({ id: game.id, title: game.title, category: gdCategories[game.category] });
+    });
+  };
+
+  const handleBackFromGame = async () => {
+    setActive(null);
+    await playPostRoll();
   };
 
   const recentGames = useMemo(
@@ -193,7 +201,7 @@ const GamesHub = () => {
 
   if (active) {
     const game = gdGames.find((g) => g.id === active);
-    if (game) return <GameFrame game={game} onBack={() => setActive(null)} />;
+    if (game) return <GameFrame game={game} onBack={handleBackFromGame} />;
   }
 
   return (
