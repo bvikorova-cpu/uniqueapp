@@ -1436,6 +1436,21 @@ const Messenger = () => {
                   <div className="space-y-4">
                     {messages.map((msg, idx) => {
                       const attachmentUrl = resolvedAttachmentUrls[idx];
+                      // Derive real kind from URL extension to recover from mis-typed legacy rows
+                      const urlForKind = (attachmentUrl || msg.attachment_url || "").split("?")[0].toLowerCase();
+                      const ext = urlForKind.split(".").pop() || "";
+                      let effectiveType = msg.attachment_type as string | null | undefined;
+                      if (attachmentUrl) {
+                        if (["mp3","wav","ogg","m4a","aac","flac"].includes(ext)) {
+                          if (effectiveType !== "voice") effectiveType = "audio";
+                        } else if (["mp4","mov","webm","m4v"].includes(ext)) {
+                          effectiveType = "video";
+                        } else if (["jpg","jpeg","png","webp","heic","avif"].includes(ext)) {
+                          effectiveType = "image";
+                        } else if (ext === "gif") {
+                          effectiveType = "gif";
+                        }
+                      }
                       // Date separator when day changes vs previous message
                       const cur = new Date(msg.created_at);
                       const prev = idx > 0 ? new Date(messages[idx - 1].created_at) : null;
