@@ -414,6 +414,43 @@ function VideoCard({ short, active, muted, onToggleMute }: {
         short={short}
         onCountChange={setComments}
       />
+
+      <Sheet open={shareOpen} onOpenChange={setShareOpen}>
+        <SheetContent side="bottom" className="rounded-t-2xl p-0">
+          <SheetHeader className="px-4 py-3 border-b">
+            <SheetTitle className="text-center text-sm font-semibold">Share to</SheetTitle>
+          </SheetHeader>
+          <div className="grid grid-cols-4 gap-3 p-4">
+            {typeof navigator !== "undefined" && (navigator as any).share && (
+              <ShareBtn label="More" emoji="📲" onClick={() => shareTo("native")} />
+            )}
+            <ShareBtn label="Facebook" emoji="📘" onClick={() => shareTo("facebook")} />
+            <ShareBtn label="Instagram" emoji="📷" onClick={openInstagram} />
+            <ShareBtn label="WhatsApp" emoji="💬" onClick={() => shareTo("whatsapp")} />
+            <ShareBtn label="Messenger" emoji="💌" onClick={() => shareTo("messenger")} />
+            <ShareBtn label="X / Twitter" emoji="🐦" onClick={() => shareTo("twitter")} />
+            <ShareBtn label="Telegram" emoji="✈️" onClick={() => shareTo("telegram")} />
+            <ShareBtn label="LinkedIn" emoji="💼" onClick={() => shareTo("linkedin")} />
+            <ShareBtn label="Reddit" emoji="👽" onClick={() => shareTo("reddit")} />
+            <ShareBtn label="Email" emoji="✉️" onClick={() => shareTo("email")} />
+            <ShareBtn label="Copy link" emoji="🔗" onClick={copyLink} />
+          </div>
+        </SheetContent>
+      </Sheet>
+    </div>
+  );
+}
+
+function ShareBtn({ label, emoji, onClick }: { label: string; emoji: string; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="flex flex-col items-center gap-1 text-center active:scale-95 transition-transform"
+    >
+      <span className="w-12 h-12 rounded-full bg-muted flex items-center justify-center text-2xl">{emoji}</span>
+      <span className="text-[11px] leading-tight">{label}</span>
+    </button>
+  );
     </div>
   );
 }
