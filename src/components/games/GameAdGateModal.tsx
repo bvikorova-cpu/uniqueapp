@@ -134,7 +134,9 @@ export const GameAdGateModal = ({ phase, onClose, minSeconds = 5 }: Props) => {
         </button>
 
         <p className="text-[10px] text-white/40 mt-3">
-          Ads keep Unique games free. Thank you for supporting creators.
+          {xpAwarded
+            ? `+${XP_PER_GAME_AD} XP credited · Ads keep Unique games free.`
+            : "Ads keep Unique games free. Thank you for supporting creators."}
         </p>
       </div>
     </div>,
