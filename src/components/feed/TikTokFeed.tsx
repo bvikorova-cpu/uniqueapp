@@ -370,7 +370,7 @@ function VideoCard({ short, active, muted, onToggleMute }: {
           <span className="text-xs font-semibold drop-shadow">{formatNum(comments)}</span>
         </button>
 
-        <button onClick={handleShare} className="flex flex-col items-center gap-1 active:scale-90 transition-transform">
+        <button onClick={openShare} className="flex flex-col items-center gap-1 active:scale-90 transition-transform">
           <Share2 className="w-10 h-10 drop-shadow-lg" strokeWidth={1.5} />
           <span className="text-xs font-semibold drop-shadow">Share</span>
         </button>
