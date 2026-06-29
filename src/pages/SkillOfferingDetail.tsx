@@ -36,6 +36,68 @@ export default function SkillOfferingDetail() {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
+  const [hours, setHours] = useState<number>(1);
+  const [orderNote, setOrderNote] = useState("");
+  const [ordering, setOrdering] = useState(false);
+
+  const orderAndPay = async () => {
+    if (!user) { navigate("/auth"); return; }
+    if (!offering || !offering.price_per_hour) return;
+    if (offering.user_id === user.id) {
+      toast({ title: "You cannot order your own offering", variant: "destructive" });
+      return;
+    }
+    if (hours <= 0) {
+      toast({ title: "Enter a valid number of hours", variant: "destructive" });
+      return;
+    }
+    setOrdering(true);
+    try {
+      const unit_price_cents = Math.round(offering.price_per_hour * 100);
+      const amount_cents = Math.round(unit_price_cents * hours);
+
+      const { data: order, error: insertErr } = await supabase
+        .from("skill_service_orders")
+        .insert({
+          offering_id: offering.id,
+          buyer_id: user.id,
+          seller_id: offering.user_id,
+          hours,
+          unit_price_cents,
+          amount_cents,
+          currency: "eur",
+          status: "pending",
+          buyer_message: orderNote.trim() || null,
+        })
+        .select()
+        .single();
+      if (insertErr || !order) throw insertErr ?? new Error("Could not create order");
+
+      const { data, error } = await supabase.functions.invoke("create-one-off-payment", {
+        body: {
+          productKey: "skill_service_order",
+          amount: amount_cents,
+          name: `${offering.title} – ${hours}h`,
+          description: offering.description?.slice(0, 200),
+          metadata: {
+            order_id: order.id,
+            buyer_id: user.id,
+            seller_id: offering.user_id,
+            offering_id: offering.id,
+          },
+        },
+      });
+      if (error) throw error;
+      if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error("Checkout URL missing");
+      }
+    } catch (e: any) {
+      toast({ title: "Could not start checkout", description: e.message, variant: "destructive" });
+      setOrdering(false);
+    }
+  };
 
   useEffect(() => {
     if (!id) return;
