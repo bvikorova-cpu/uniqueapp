@@ -71,6 +71,7 @@ export default function SellerReviewsList({ sellerId }: Props) {
                       <span className="text-xs text-muted-foreground">
                         {formatDistanceToNow(new Date(r.created_at), { addSuffix: true })}
                       </span>
+                      <ReportReviewButton reviewId={r.id} />
                     </div>
                     {r.comment && <p className="text-sm text-foreground/80 mt-1 whitespace-pre-wrap">{r.comment}</p>}
                   </div>
