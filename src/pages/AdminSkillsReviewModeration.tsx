@@ -32,13 +32,13 @@ export default function AdminSkillsReviewModeration() {
       .select("*")
       .order("created_at", { ascending: false })
       .limit(100);
-    const list = (rep as Report[]) || [];
+    const list = ((rep as unknown) as Report[]) || [];
     setReports(list);
     const ids = [...new Set(list.map((r) => r.review_id))];
     if (ids.length) {
       const { data: rev } = await supabase.from("seller_reviews" as any).select("*").in("id", ids);
       const map: Record<string, Review> = {};
-      ((rev as Review[]) || []).forEach((r) => (map[r.id] = r));
+      (((rev as unknown) as Review[]) || []).forEach((r) => (map[r.id] = r));
       setReviews(map);
     }
     setLoading(false);
