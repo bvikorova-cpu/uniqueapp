@@ -20,6 +20,9 @@ const SkillsMarketplaceOrders = lazy(() => import("@/pages/SkillsMarketplaceOrde
 const SkillsMarketplaceOrderSuccess = lazy(() => import("@/pages/SkillsMarketplaceOrderSuccess"));
 const SkillsMarketplaceMine = lazy(() => import("@/pages/SkillsMarketplaceMine"));
 const SkillsMarketplaceEdit = lazy(() => import("@/pages/SkillsMarketplaceEdit"));
+const SkillsMarketplaceProvider = lazy(() => import("@/pages/SkillsMarketplaceProvider"));
+const SkillsMarketplaceOrderDetail = lazy(() => import("@/pages/SkillsMarketplaceOrderDetail"));
+const AdminSkillsReviewModeration = lazy(() => import("@/pages/AdminSkillsReviewModeration"));
 
 // Redirect /kitchenstars/<sub-path> -> /masterchef/<sub-path> for brand aliases
 const KitchenStarsRedirect = () => {
