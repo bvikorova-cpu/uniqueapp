@@ -170,6 +170,15 @@ export default function SkillsMarketplaceOrders() {
         <TabsContent value="buying" className="mt-4">{renderList(buying, "buyer")}</TabsContent>
         <TabsContent value="selling" className="mt-4">{renderList(selling, "seller")}</TabsContent>
       </Tabs>
+
+      {reviewFor && (
+        <LeaveReviewDialog
+          open={!!reviewFor}
+          onOpenChange={(v) => !v && setReviewFor(null)}
+          sellerId={reviewFor.sellerId}
+          sellerName={reviewFor.sellerName}
+        />
+      )}
     </div>
   );
 }
