@@ -309,6 +309,10 @@ export default function SkillOfferingDetail() {
           </CardContent>
         </Card>
       </div>
+
+      <div className="mt-6">
+        <SellerReviewsList sellerId={offering.user_id} />
+      </div>
     </div>
   );
 }
