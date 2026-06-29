@@ -8,7 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { ArrowLeft, Euro, ShoppingBag, Inbox, CheckCircle2, X } from "lucide-react";
+import { ArrowLeft, Euro, ShoppingBag, Inbox, CheckCircle2, X, Star } from "lucide-react";
+import LeaveReviewDialog from "@/components/skills/LeaveReviewDialog";
 
 type Order = {
   id: string;
