@@ -79,7 +79,7 @@ export default function SkillsMarketplace() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <RouteSEO title="Skills Marketplace — Hire & offer microservices" description="Browse and order microservices. Offer your own skills and get paid in EUR." />
+      <SEO title="Skills Marketplace — Hire & offer microservices" description="Browse and order microservices. Offer your own skills and get paid in EUR." />
 
       <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
         <div>
