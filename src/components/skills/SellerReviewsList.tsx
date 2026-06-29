@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { useSellerReviews } from "@/hooks/useSellerReviews";
+import ReportReviewButton from "@/components/skills/ReportReviewButton";
 import { formatDistanceToNow } from "date-fns";
 
 interface Props { sellerId: string }
