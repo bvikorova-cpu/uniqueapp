@@ -16,6 +16,8 @@ const InvestmentPortfolio = lazy(() => import("@/pages/InvestmentPortfolio"));
 const SkillsMarketplace = lazy(() => import("@/pages/SkillsMarketplace"));
 const SkillsMarketplaceCreate = lazy(() => import("@/pages/SkillsMarketplaceCreate"));
 const SkillOfferingDetail = lazy(() => import("@/pages/SkillOfferingDetail"));
+const SkillsMarketplaceOrders = lazy(() => import("@/pages/SkillsMarketplaceOrders"));
+const SkillsMarketplaceOrderSuccess = lazy(() => import("@/pages/SkillsMarketplaceOrderSuccess"));
 
 // Redirect /kitchenstars/<sub-path> -> /masterchef/<sub-path> for brand aliases
 const KitchenStarsRedirect = () => {
