@@ -184,10 +184,16 @@ export default function SkillsMarketplace() {
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <p className="text-sm text-muted-foreground line-clamp-3">{o.description}</p>
-                  <div className="flex items-center justify-between text-sm pt-2">
+                  <div className="flex items-center justify-between text-sm pt-2 gap-2 flex-wrap">
                     {o.location && (
                       <span className="flex items-center gap-1 text-muted-foreground">
                         <MapPin className="h-3.5 w-3.5" /> {o.location}
+                      </span>
+                    )}
+                    {sellerStats[o.user_id] && (
+                      <span className="flex items-center gap-1 text-muted-foreground">
+                        <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
+                        {sellerStats[o.user_id].avg.toFixed(1)} ({sellerStats[o.user_id].count})
                       </span>
                     )}
                     {o.price_per_hour != null && (
