@@ -862,9 +862,12 @@ const App = () => {
                        <Route path="/skills-marketplace/new" element={<ProtectedRoute><SkillsMarketplaceCreate /></ProtectedRoute>} />
                        <Route path="/skills-marketplace/orders" element={<ProtectedRoute><SkillsMarketplaceOrders /></ProtectedRoute>} />
                        <Route path="/skills-marketplace/orders/success" element={<ProtectedRoute><SkillsMarketplaceOrderSuccess /></ProtectedRoute>} />
+                       <Route path="/skills-marketplace/orders/:id" element={<ProtectedRoute><SkillsMarketplaceOrderDetail /></ProtectedRoute>} />
                        <Route path="/skills-marketplace/mine" element={<ProtectedRoute><SkillsMarketplaceMine /></ProtectedRoute>} />
+                       <Route path="/skills-marketplace/provider/:userId" element={<SkillsMarketplaceProvider />} />
                        <Route path="/skills-marketplace/:id/edit" element={<ProtectedRoute><SkillsMarketplaceEdit /></ProtectedRoute>} />
                        <Route path="/skills-marketplace/:id" element={<SkillOfferingDetail />} />
+                       <Route path="/admin/skills-reviews" element={<ProtectedRoute><AdminSkillsReviewModeration /></ProtectedRoute>} />
                         
                         <Route path="/wellness" element={<Wellness />} />
                         <Route path="/safety-prevention" element={<SafetyPrevention />} />
