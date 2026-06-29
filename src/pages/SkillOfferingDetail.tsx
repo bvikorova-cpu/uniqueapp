@@ -10,7 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, MapPin, Euro, Trash2, Send, Calendar, ShoppingCart, ListOrdered } from "lucide-react";
+import { ArrowLeft, MapPin, Euro, Trash2, Send, Calendar, ShoppingCart, ListOrdered, Pencil } from "lucide-react";
+import SellerReviewsList from "@/components/skills/SellerReviewsList";
 
 type Offering = {
   id: string;
@@ -232,9 +233,17 @@ export default function SkillOfferingDetail() {
           </CardHeader>
           <CardContent>
             {isOwner ? (
-              <Button variant="destructive" onClick={deleteOffering} className="gap-2">
-                <Trash2 className="h-4 w-4" /> Delete offering
-              </Button>
+              <div className="flex flex-wrap gap-2">
+                <Button asChild className="gap-2">
+                  <Link to={`/skills-marketplace/${offering.id}/edit`}><Pencil className="h-4 w-4" /> Edit offering</Link>
+                </Button>
+                <Button asChild variant="outline" className="gap-2">
+                  <Link to="/skills-marketplace/mine"><ListOrdered className="h-4 w-4" /> My offerings</Link>
+                </Button>
+                <Button variant="destructive" onClick={deleteOffering} className="gap-2">
+                  <Trash2 className="h-4 w-4" /> Delete
+                </Button>
+              </div>
             ) : (
               <div className="space-y-6">
                 {offering.price_per_hour != null && offering.price_per_hour > 0 && (
@@ -299,6 +308,10 @@ export default function SkillOfferingDetail() {
             )}
           </CardContent>
         </Card>
+      </div>
+
+      <div className="mt-6">
+        <SellerReviewsList sellerId={offering.user_id} />
       </div>
     </div>
   );

@@ -8,7 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { ArrowLeft, Euro, ShoppingBag, Inbox, CheckCircle2, X } from "lucide-react";
+import { ArrowLeft, Euro, ShoppingBag, Inbox, CheckCircle2, X, Star } from "lucide-react";
+import LeaveReviewDialog from "@/components/skills/LeaveReviewDialog";
 
 type Order = {
   id: string;
@@ -37,6 +38,7 @@ export default function SkillsMarketplaceOrders() {
   const [buying, setBuying] = useState<Order[]>([]);
   const [selling, setSelling] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [reviewFor, setReviewFor] = useState<{ sellerId: string; sellerName?: string } | null>(null);
 
   const load = async () => {
     if (!user) return;
@@ -131,6 +133,11 @@ export default function SkillsMarketplaceOrders() {
                   <CheckCircle2 className="h-3.5 w-3.5" /> Confirm delivery
                 </Button>
               )}
+              {mode === "buyer" && o.status === "completed" && (
+                <Button size="sm" onClick={() => setReviewFor({ sellerId: o.seller_id, sellerName: o.offering?.title })} className="gap-1">
+                  <Star className="h-3.5 w-3.5" /> Leave review
+                </Button>
+              )}
             </CardContent>
           </Card>
         ))}
@@ -163,6 +170,15 @@ export default function SkillsMarketplaceOrders() {
         <TabsContent value="buying" className="mt-4">{renderList(buying, "buyer")}</TabsContent>
         <TabsContent value="selling" className="mt-4">{renderList(selling, "seller")}</TabsContent>
       </Tabs>
+
+      {reviewFor && (
+        <LeaveReviewDialog
+          open={!!reviewFor}
+          onOpenChange={(v) => !v && setReviewFor(null)}
+          sellerId={reviewFor.sellerId}
+          sellerName={reviewFor.sellerName}
+        />
+      )}
     </div>
   );
 }

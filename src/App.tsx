@@ -18,6 +18,8 @@ const SkillsMarketplaceCreate = lazy(() => import("@/pages/SkillsMarketplaceCrea
 const SkillOfferingDetail = lazy(() => import("@/pages/SkillOfferingDetail"));
 const SkillsMarketplaceOrders = lazy(() => import("@/pages/SkillsMarketplaceOrders"));
 const SkillsMarketplaceOrderSuccess = lazy(() => import("@/pages/SkillsMarketplaceOrderSuccess"));
+const SkillsMarketplaceMine = lazy(() => import("@/pages/SkillsMarketplaceMine"));
+const SkillsMarketplaceEdit = lazy(() => import("@/pages/SkillsMarketplaceEdit"));
 
 // Redirect /kitchenstars/<sub-path> -> /masterchef/<sub-path> for brand aliases
 const KitchenStarsRedirect = () => {
@@ -857,6 +859,8 @@ const App = () => {
                        <Route path="/skills-marketplace/new" element={<ProtectedRoute><SkillsMarketplaceCreate /></ProtectedRoute>} />
                        <Route path="/skills-marketplace/orders" element={<ProtectedRoute><SkillsMarketplaceOrders /></ProtectedRoute>} />
                        <Route path="/skills-marketplace/orders/success" element={<ProtectedRoute><SkillsMarketplaceOrderSuccess /></ProtectedRoute>} />
+                       <Route path="/skills-marketplace/mine" element={<ProtectedRoute><SkillsMarketplaceMine /></ProtectedRoute>} />
+                       <Route path="/skills-marketplace/:id/edit" element={<ProtectedRoute><SkillsMarketplaceEdit /></ProtectedRoute>} />
                        <Route path="/skills-marketplace/:id" element={<SkillOfferingDetail />} />
                         
                         <Route path="/wellness" element={<Wellness />} />

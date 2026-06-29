@@ -86,12 +86,24 @@ export default function SkillsMarketplace() {
           <h1 className="text-3xl md:text-4xl font-bold">Skills Marketplace</h1>
           <p className="text-muted-foreground mt-1">Find someone to get the job done — or offer your own skills.</p>
         </div>
-        <Button
-          onClick={() => (user ? navigate("/skills-marketplace/new") : navigate("/auth"))}
-          className="gap-2"
-        >
-          <Plus className="h-4 w-4" /> Post an offering
-        </Button>
+        <div className="flex gap-2 flex-wrap">
+          {user && (
+            <Button variant="outline" onClick={() => navigate("/skills-marketplace/mine")} className="gap-2">
+              My offerings
+            </Button>
+          )}
+          {user && (
+            <Button variant="outline" onClick={() => navigate("/skills-marketplace/orders")} className="gap-2">
+              My orders
+            </Button>
+          )}
+          <Button
+            onClick={() => (user ? navigate("/skills-marketplace/new") : navigate("/auth"))}
+            className="gap-2"
+          >
+            <Plus className="h-4 w-4" /> Post an offering
+          </Button>
+        </div>
       </header>
 
       <Card className="mb-6">
