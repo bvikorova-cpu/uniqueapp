@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Plus, Search, MapPin, Euro } from "lucide-react";
-import RouteSEO from "@/components/RouteSEO";
+import { SEO } from "@/components/SEO";
 
 const CATEGORIES = [
   { value: "all", label: "All categories" },
