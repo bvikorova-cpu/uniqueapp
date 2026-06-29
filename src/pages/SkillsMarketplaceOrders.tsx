@@ -133,6 +133,11 @@ export default function SkillsMarketplaceOrders() {
                   <CheckCircle2 className="h-3.5 w-3.5" /> Confirm delivery
                 </Button>
               )}
+              {mode === "buyer" && o.status === "completed" && (
+                <Button size="sm" onClick={() => setReviewFor({ sellerId: o.seller_id, sellerName: o.offering?.title })} className="gap-1">
+                  <Star className="h-3.5 w-3.5" /> Leave review
+                </Button>
+              )}
             </CardContent>
           </Card>
         ))}
