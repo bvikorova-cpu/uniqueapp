@@ -55,6 +55,13 @@ export function getNotificationRoute(n: NotifLike): string {
     xp_gift_sent: "/rewards?tab=gift-xp",
     achievement: "/education/achievements",
 
+    // Skills Marketplace
+    skill_marketplace_response: n.related_id ? `/skills-marketplace/${n.related_id}` : "/skills-marketplace/mine",
+    skill_order_new: "/skills-marketplace/orders",
+    skill_order_paid: "/skills-marketplace/orders",
+    skill_order_completed: "/skills-marketplace/orders",
+    skill_order_cancelled: "/skills-marketplace/orders",
+
     // Messaging
     message: "/wall/messages",
     new_message: "/wall/messages",
