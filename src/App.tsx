@@ -16,6 +16,8 @@ const InvestmentPortfolio = lazy(() => import("@/pages/InvestmentPortfolio"));
 const SkillsMarketplace = lazy(() => import("@/pages/SkillsMarketplace"));
 const SkillsMarketplaceCreate = lazy(() => import("@/pages/SkillsMarketplaceCreate"));
 const SkillOfferingDetail = lazy(() => import("@/pages/SkillOfferingDetail"));
+const SkillsMarketplaceOrders = lazy(() => import("@/pages/SkillsMarketplaceOrders"));
+const SkillsMarketplaceOrderSuccess = lazy(() => import("@/pages/SkillsMarketplaceOrderSuccess"));
 
 // Redirect /kitchenstars/<sub-path> -> /masterchef/<sub-path> for brand aliases
 const KitchenStarsRedirect = () => {
@@ -851,9 +853,11 @@ const App = () => {
                         <Route path="/skill-swap/dashboard" element={<ProtectedRoute><SkillSwapDashboard /></ProtectedRoute>} />
                         <Route path="/skill-swap/profile/:userId" element={<ProtectedRoute><SkillSwapProfile /></ProtectedRoute>} />
                         <Route path="/skill-swap/profile/edit" element={<ProtectedRoute><SkillSwapSettings /></ProtectedRoute>} />
-                        <Route path="/skills-marketplace" element={<SkillsMarketplace />} />
-                        <Route path="/skills-marketplace/new" element={<ProtectedRoute><SkillsMarketplaceCreate /></ProtectedRoute>} />
-                        <Route path="/skills-marketplace/:id" element={<SkillOfferingDetail />} />
+                       <Route path="/skills-marketplace" element={<SkillsMarketplace />} />
+                       <Route path="/skills-marketplace/new" element={<ProtectedRoute><SkillsMarketplaceCreate /></ProtectedRoute>} />
+                       <Route path="/skills-marketplace/orders" element={<ProtectedRoute><SkillsMarketplaceOrders /></ProtectedRoute>} />
+                       <Route path="/skills-marketplace/orders/success" element={<ProtectedRoute><SkillsMarketplaceOrderSuccess /></ProtectedRoute>} />
+                       <Route path="/skills-marketplace/:id" element={<SkillOfferingDetail />} />
                         
                         <Route path="/wellness" element={<Wellness />} />
                         <Route path="/safety-prevention" element={<SafetyPrevention />} />

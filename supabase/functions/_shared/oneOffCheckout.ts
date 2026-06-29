@@ -158,6 +158,14 @@ export const PRODUCTS: Record<string, ProductDef> = {
     successPath: "/rewards",
     cancelPath: "/rewards",
   },
+
+  // === Skills Marketplace: one-off service order (dynamic amount) ===
+  skill_service_order: {
+    currency: "eur",
+    name: "Skills Marketplace Order",
+    successPath: "/skills-marketplace/orders/success",
+    cancelPath: "/skills-marketplace/orders",
+  },
 };
 
 export function getStripe(): Stripe {
