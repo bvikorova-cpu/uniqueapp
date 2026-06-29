@@ -56,7 +56,7 @@ export default function SkillsMarketplaceOrderDetail() {
       .select("*")
       .eq("order_id", id)
       .order("created_at", { ascending: true });
-    setEvents((ev as Event[]) || []);
+    setEvents((((ev as unknown) as Event[]) || []));
     if (o) {
       const otherId = user?.id === (o as Order).buyer_id ? (o as Order).seller_id : (o as Order).buyer_id;
       const { data: p } = await supabase.from("profiles").select("full_name").eq("id", otherId).maybeSingle();
