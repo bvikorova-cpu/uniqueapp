@@ -138,6 +138,11 @@ export default function SkillsMarketplaceOrders() {
                   <Star className="h-3.5 w-3.5" /> Leave review
                 </Button>
               )}
+              <div className="pt-1">
+                <Button asChild size="sm" variant="link" className="px-0 h-auto">
+                  <Link to={`/skills-marketplace/orders/${o.id}`}>Open order details →</Link>
+                </Button>
+              </div>
             </CardContent>
           </Card>
         ))}

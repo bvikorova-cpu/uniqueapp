@@ -36460,6 +36460,7 @@ export type Database = {
           is_read: boolean | null
           message: string
           offering_id: string
+          order_id: string | null
           payment_amount: number | null
           receiver_id: string
           seller_payout: number | null
@@ -36475,6 +36476,7 @@ export type Database = {
           is_read?: boolean | null
           message: string
           offering_id: string
+          order_id?: string | null
           payment_amount?: number | null
           receiver_id: string
           seller_payout?: number | null
@@ -36490,6 +36492,7 @@ export type Database = {
           is_read?: boolean | null
           message?: string
           offering_id?: string
+          order_id?: string | null
           payment_amount?: number | null
           receiver_id?: string
           seller_payout?: number | null
@@ -36502,6 +36505,13 @@ export type Database = {
             columns: ["offering_id"]
             isOneToOne: false
             referencedRelation: "skill_offerings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marketplace_responses_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "skill_service_orders"
             referencedColumns: ["id"]
           },
         ]
@@ -49355,6 +49365,50 @@ export type Database = {
         }
         Relationships: []
       }
+      review_reports: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          reason: string
+          reporter_id: string
+          resolved_at: string | null
+          resolved_by: string | null
+          review_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          reason: string
+          reporter_id: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          review_id: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          reason?: string
+          reporter_id?: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          review_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_reports_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "seller_reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reward_audit_log: {
         Row: {
           created_at: string
@@ -51316,7 +51370,11 @@ export type Database = {
           buyer_id: string
           comment: string | null
           created_at: string
+          hidden_at: string | null
+          hidden_by: string | null
+          hidden_reason: string | null
           id: string
+          is_hidden: boolean
           rating: number
           seller_id: string
           updated_at: string
@@ -51325,7 +51383,11 @@ export type Database = {
           buyer_id: string
           comment?: string | null
           created_at?: string
+          hidden_at?: string | null
+          hidden_by?: string | null
+          hidden_reason?: string | null
           id?: string
+          is_hidden?: boolean
           rating: number
           seller_id: string
           updated_at?: string
@@ -51334,7 +51396,11 @@ export type Database = {
           buyer_id?: string
           comment?: string | null
           created_at?: string
+          hidden_at?: string | null
+          hidden_by?: string | null
+          hidden_reason?: string | null
           id?: string
+          is_hidden?: boolean
           rating?: number
           seller_id?: string
           updated_at?: string
@@ -53227,6 +53293,47 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "public_profiles_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      skill_order_events: {
+        Row: {
+          actor_id: string | null
+          created_at: string
+          event_type: string
+          from_status: string | null
+          id: string
+          note: string | null
+          order_id: string
+          to_status: string | null
+        }
+        Insert: {
+          actor_id?: string | null
+          created_at?: string
+          event_type: string
+          from_status?: string | null
+          id?: string
+          note?: string | null
+          order_id: string
+          to_status?: string | null
+        }
+        Update: {
+          actor_id?: string | null
+          created_at?: string
+          event_type?: string
+          from_status?: string | null
+          id?: string
+          note?: string | null
+          order_id?: string
+          to_status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "skill_order_events_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "skill_service_orders"
             referencedColumns: ["id"]
           },
         ]

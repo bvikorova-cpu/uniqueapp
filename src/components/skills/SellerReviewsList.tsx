@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { useSellerReviews } from "@/hooks/useSellerReviews";
+import ReportReviewButton from "@/components/skills/ReportReviewButton";
 import { formatDistanceToNow } from "date-fns";
 
 interface Props { sellerId: string }
@@ -71,6 +72,7 @@ export default function SellerReviewsList({ sellerId }: Props) {
                       <span className="text-xs text-muted-foreground">
                         {formatDistanceToNow(new Date(r.created_at), { addSuffix: true })}
                       </span>
+                      <ReportReviewButton reviewId={r.id} />
                     </div>
                     {r.comment && <p className="text-sm text-foreground/80 mt-1 whitespace-pre-wrap">{r.comment}</p>}
                   </div>

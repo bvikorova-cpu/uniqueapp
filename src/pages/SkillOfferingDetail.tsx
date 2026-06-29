@@ -222,7 +222,7 @@ export default function SkillOfferingDetail() {
             </Avatar>
             <div className="min-w-0">
               <p className="font-medium truncate">{seller?.full_name || "Unnamed user"}</p>
-              <Link to={`/profile/${offering.user_id}`} className="text-xs text-primary hover:underline">View profile</Link>
+              <Link to={`/skills-marketplace/provider/${offering.user_id}`} className="text-xs text-primary hover:underline">View provider profile</Link>
             </div>
           </CardContent>
         </Card>

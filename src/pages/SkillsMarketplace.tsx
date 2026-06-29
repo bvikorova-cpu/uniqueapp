@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Plus, Search, MapPin, Euro } from "lucide-react";
+import { Plus, Search, MapPin, Euro, Star } from "lucide-react";
 import { SEO } from "@/components/SEO";
 
 const CATEGORIES = [
@@ -45,6 +45,8 @@ export default function SkillsMarketplace() {
   const [location, setLocation] = useState("");
   const [sort, setSort] = useState("newest");
 
+  const [sellerStats, setSellerStats] = useState<Record<string, { avg: number; count: number }>>({});
+
   useEffect(() => {
     (async () => {
       setLoading(true);
@@ -54,7 +56,25 @@ export default function SkillsMarketplace() {
         .eq("is_active", true)
         .order("created_at", { ascending: false })
         .limit(200);
-      setOfferings((data as Offering[]) || []);
+      const list = (data as Offering[]) || [];
+      setOfferings(list);
+      const sellerIds = [...new Set(list.map((o) => o.user_id))];
+      if (sellerIds.length) {
+        const { data: reviews } = await supabase
+          .from("seller_reviews" as any)
+          .select("seller_id, rating")
+          .in("seller_id", sellerIds)
+          .eq("is_hidden", false);
+        const agg: Record<string, { sum: number; count: number }> = {};
+        (((reviews as unknown) as { seller_id: string; rating: number }[]) || []).forEach((r) => {
+          agg[r.seller_id] = agg[r.seller_id] || { sum: 0, count: 0 };
+          agg[r.seller_id].sum += r.rating;
+          agg[r.seller_id].count += 1;
+        });
+        const stats: Record<string, { avg: number; count: number }> = {};
+        Object.entries(agg).forEach(([k, v]) => (stats[k] = { avg: v.sum / v.count, count: v.count }));
+        setSellerStats(stats);
+      }
       setLoading(false);
     })();
   }, []);
@@ -74,8 +94,12 @@ export default function SkillsMarketplace() {
     }
     if (sort === "price_asc") list = [...list].sort((a, b) => (a.price_per_hour ?? 0) - (b.price_per_hour ?? 0));
     if (sort === "price_desc") list = [...list].sort((a, b) => (b.price_per_hour ?? 0) - (a.price_per_hour ?? 0));
+    if (sort === "top_rated")
+      list = [...list].sort(
+        (a, b) => (sellerStats[b.user_id]?.avg ?? 0) - (sellerStats[a.user_id]?.avg ?? 0),
+      );
     return list;
-  }, [offerings, q, category, location, sort]);
+  }, [offerings, q, category, location, sort, sellerStats]);
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -127,6 +151,7 @@ export default function SkillsMarketplace() {
                 <SelectItem value="newest">Newest</SelectItem>
                 <SelectItem value="price_asc">Price: low to high</SelectItem>
                 <SelectItem value="price_desc">Price: high to low</SelectItem>
+                <SelectItem value="top_rated">Top rated providers</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -159,10 +184,16 @@ export default function SkillsMarketplace() {
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <p className="text-sm text-muted-foreground line-clamp-3">{o.description}</p>
-                  <div className="flex items-center justify-between text-sm pt-2">
+                  <div className="flex items-center justify-between text-sm pt-2 gap-2 flex-wrap">
                     {o.location && (
                       <span className="flex items-center gap-1 text-muted-foreground">
                         <MapPin className="h-3.5 w-3.5" /> {o.location}
+                      </span>
+                    )}
+                    {sellerStats[o.user_id] && (
+                      <span className="flex items-center gap-1 text-muted-foreground">
+                        <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
+                        {sellerStats[o.user_id].avg.toFixed(1)} ({sellerStats[o.user_id].count})
                       </span>
                     )}
                     {o.price_per_hour != null && (
