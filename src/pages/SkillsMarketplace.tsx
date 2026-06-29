@@ -151,6 +151,7 @@ export default function SkillsMarketplace() {
                 <SelectItem value="newest">Newest</SelectItem>
                 <SelectItem value="price_asc">Price: low to high</SelectItem>
                 <SelectItem value="price_desc">Price: high to low</SelectItem>
+                <SelectItem value="top_rated">Top rated providers</SelectItem>
               </SelectContent>
             </Select>
           </div>
