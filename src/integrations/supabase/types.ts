@@ -53231,6 +53231,65 @@ export type Database = {
           },
         ]
       }
+      skill_service_orders: {
+        Row: {
+          amount_cents: number
+          buyer_id: string
+          buyer_message: string | null
+          created_at: string
+          currency: string
+          hours: number
+          id: string
+          offering_id: string
+          scheduled_for: string | null
+          seller_id: string
+          status: string
+          stripe_session_id: string | null
+          unit_price_cents: number
+          updated_at: string
+        }
+        Insert: {
+          amount_cents: number
+          buyer_id: string
+          buyer_message?: string | null
+          created_at?: string
+          currency?: string
+          hours?: number
+          id?: string
+          offering_id: string
+          scheduled_for?: string | null
+          seller_id: string
+          status?: string
+          stripe_session_id?: string | null
+          unit_price_cents: number
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number
+          buyer_id?: string
+          buyer_message?: string | null
+          created_at?: string
+          currency?: string
+          hours?: number
+          id?: string
+          offering_id?: string
+          scheduled_for?: string | null
+          seller_id?: string
+          status?: string
+          stripe_session_id?: string | null
+          unit_price_cents?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "skill_service_orders_offering_id_fkey"
+            columns: ["offering_id"]
+            isOneToOne: false
+            referencedRelation: "skill_offerings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       skill_swap_certification_paths: {
         Row: {
           created_at: string
