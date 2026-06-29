@@ -38,6 +38,7 @@ export default function SkillsMarketplaceOrders() {
   const [buying, setBuying] = useState<Order[]>([]);
   const [selling, setSelling] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [reviewFor, setReviewFor] = useState<{ sellerId: string; sellerName?: string } | null>(null);
 
   const load = async () => {
     if (!user) return;
