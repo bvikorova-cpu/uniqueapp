@@ -851,6 +851,9 @@ const App = () => {
                         <Route path="/skill-swap/dashboard" element={<ProtectedRoute><SkillSwapDashboard /></ProtectedRoute>} />
                         <Route path="/skill-swap/profile/:userId" element={<ProtectedRoute><SkillSwapProfile /></ProtectedRoute>} />
                         <Route path="/skill-swap/profile/edit" element={<ProtectedRoute><SkillSwapSettings /></ProtectedRoute>} />
+                        <Route path="/skills-marketplace" element={<SkillsMarketplace />} />
+                        <Route path="/skills-marketplace/new" element={<ProtectedRoute><SkillsMarketplaceCreate /></ProtectedRoute>} />
+                        <Route path="/skills-marketplace/:id" element={<SkillOfferingDetail />} />
                         
                         <Route path="/wellness" element={<Wellness />} />
                         <Route path="/safety-prevention" element={<SafetyPrevention />} />
