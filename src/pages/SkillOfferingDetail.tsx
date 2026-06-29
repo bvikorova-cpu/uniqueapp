@@ -10,7 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, MapPin, Euro, Trash2, Send, Calendar, ShoppingCart, ListOrdered } from "lucide-react";
+import { ArrowLeft, MapPin, Euro, Trash2, Send, Calendar, ShoppingCart, ListOrdered, Pencil } from "lucide-react";
+import SellerReviewsList from "@/components/skills/SellerReviewsList";
 
 type Offering = {
   id: string;
