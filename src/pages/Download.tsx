@@ -12,6 +12,13 @@ interface DownloadFile {
 
 const files: DownloadFile[] = [
   {
+    name: "Flyer — Visual Edition EN (PDF)",
+    description: "2-page visual flyer: hero backgrounds + section image cards",
+    url: "/downloads/unique-letak-visual-en-v1.pdf",
+    size: "635 KB",
+    type: "pdf",
+  },
+  {
     name: "Flyer — About the Platform EN (PDF)",
     description: "2-page A4 flyer: 14 worlds, 100+ tools",
     url: "/downloads/unique-letak-about-en-v1.pdf",
