@@ -12,7 +12,21 @@ interface DownloadFile {
   type: "pdf" | "zip";
 }
 
+const STYLE_FLYERS: DownloadFile[] = [
+  { name: "Flyer — Neon Cyber A5 EN ✨", description: "Neon grid, glow blobs, cyberpunk multiverse vibe", url: "/downloads/unique-flyer-a5-en-neon-cyber.pdf", size: "360 KB", type: "pdf" },
+  { name: "Flyer — Midnight Gold A5 EN ✨", description: "Deep purple night sky with gold typography and stars", url: "/downloads/unique-flyer-a5-en-midnight-gold.pdf", size: "130 KB", type: "pdf" },
+  { name: "Flyer — Pastel Dream A5 EN ✨", description: "Soft pink/lilac gradient, playful & light", url: "/downloads/unique-flyer-a5-en-pastel-dream.pdf", size: "115 KB", type: "pdf" },
+  { name: "Flyer — Editorial Magazine A5 EN ✨", description: "Magazine cover with hero photo, index & feature spread", url: "/downloads/unique-flyer-a5-en-editorial-mag.pdf", size: "210 KB", type: "pdf" },
+  { name: "Flyer — Retro 80s A5 EN ✨", description: "Synthwave sun, neon grid horizon, arcade energy", url: "/downloads/unique-flyer-a5-en-retro-80s.pdf", size: "600 KB", type: "pdf" },
+  { name: "Flyer — Minimal White A5 EN ✨", description: "Clean Swiss layout, tons of whitespace, purple accent", url: "/downloads/unique-flyer-a5-en-minimal-white.pdf", size: "100 KB", type: "pdf" },
+  { name: "Flyer — Comic Pop A5 EN ✨", description: "Halftone yellow, POW/BOOM headers, comic-book fun", url: "/downloads/unique-flyer-a5-en-comic-pop.pdf", size: "265 KB", type: "pdf" },
+  { name: "Flyer — Newspaper Classic A5 EN ✨", description: "\"The Unique Times\" front page, serif headlines", url: "/downloads/unique-flyer-a5-en-newspaper-classic.pdf", size: "100 KB", type: "pdf" },
+  { name: "Flyer — Blueprint Tech A5 EN ✨", description: "Engineering blueprint aesthetic, cyan on navy", url: "/downloads/unique-flyer-a5-en-blueprint-tech.pdf", size: "460 KB", type: "pdf" },
+  { name: "Flyer — Sunset Watercolor A5 EN ✨", description: "Dreamy sunset gradient, soft blurred blobs", url: "/downloads/unique-flyer-a5-en-sunset-watercolor.pdf", size: "145 KB", type: "pdf" },
+];
+
 const files: DownloadFile[] = [
+  ...STYLE_FLYERS,
   {
     name: "Flyer — Luxury A5 Gradient EN (PDF) ★ NEW",
     description:
