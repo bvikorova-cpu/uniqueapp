@@ -14,6 +14,14 @@ interface DownloadFile {
 
 const files: DownloadFile[] = [
   {
+    name: "Flyer — Luxury Edition EN (A5, PDF) ★ NEW",
+    description:
+      "2-page A5 luxury flyer in English — all 14 worlds, gold accents, Megatalent €10K quarterly",
+    url: "/downloads/unique-flyer-luxury-a5-en.pdf",
+    size: "195 KB",
+    type: "pdf",
+  },
+  {
     name: "Flyer — Visual Edition EN v2 (A4, PDF) ★ recommended",
     description:
       "4-page A4 flyer with Megatalent + Racing backgrounds and all 14 worlds",
