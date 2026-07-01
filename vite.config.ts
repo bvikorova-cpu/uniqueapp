@@ -56,6 +56,11 @@ export default defineConfig(() => ({
   build: {
     target: "es2020",
     cssCodeSplit: true,
+    // Critical mobile boot fix: Vite/Rollup's modulepreload helper was pulling
+    // lazy route chunks (pdf/three/markdown) into the entry/App startup path.
+    // Disable automatic modulepreload so the first screen can render before
+    // optional feature chunks are requested.
+    modulePreload: false,
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
