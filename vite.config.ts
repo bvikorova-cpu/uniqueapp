@@ -46,10 +46,11 @@ export default defineConfig(() => ({
       filename: "sw.js",
       manifest: false, // We ship /manifest.webmanifest manually via index.html
       workbox: {
-        // Precache the app shell + hashed built assets
-        globPatterns: ["**/*.{js,css,html,ico,svg,webp,woff2}"],
-        // Some hashed chunks (three, pdf) are large — bump threshold to 6 MB
-        maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
+        // Precache only the small critical shell (index.html + entry chunks + icons).
+        // Everything else (lazy route chunks, images) is cached at runtime on first hit —
+        // avoids downloading tens of MB on install.
+        globPatterns: ["index.html", "assets/index-*.js", "assets/index-*.css", "assets/vendor-*.js", "*.webmanifest", "pwa-*.png", "favicon.ico"],
+        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
         cleanupOutdatedCaches: true,
         clientsClaim: true,
         skipWaiting: true,
