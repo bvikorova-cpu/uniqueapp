@@ -119,18 +119,16 @@
     }
     </script>
 
-    <!-- Silently unregister any old service worker so the preview always loads fresh code. -->
+    <!-- Service worker is registered from src/utils/registerSW.ts (Workbox / vite-plugin-pwa).
+         The previous kill-switch that wiped every cache on load has been removed —
+         it was defeating the PWA cache and making the installed app slow. -->
     <script>
       (function () {
+        // Manual escape hatch: append ?sw=off to any URL to force-unregister the SW.
         try {
-          if ("serviceWorker" in navigator) {
+          if (new URLSearchParams(window.location.search).get("sw") === "off" && "serviceWorker" in navigator) {
             navigator.serviceWorker.getRegistrations().then(function (regs) {
               regs.forEach(function (r) { r.unregister().catch(function () {}); });
-            }).catch(function () {});
-          }
-          if (typeof caches !== "undefined" && caches.keys) {
-            caches.keys().then(function (keys) {
-              keys.forEach(function (k) { caches.delete(k).catch(function () {}); });
             }).catch(function () {});
           }
         } catch (e) { /* noop */ }
