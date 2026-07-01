@@ -14,14 +14,29 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
 }
 
 export function isPushSupported(): boolean {
-  // Temporarily disabled: /sw.js is currently reserved as a cache cleanup
-  // kill-switch so it must not be registered for push notifications.
-  // In-app realtime notifications and message chimes still work normally.
-  return false;
+  if (typeof window === "undefined") return false;
+  if (!("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) return false;
+  // Skip inside Lovable preview iframe
+  try {
+    if (window.self !== window.top) return false;
+  } catch {
+    return false;
+  }
+  const host = window.location.hostname;
+  if (host.includes("id-preview--") || host.includes("lovableproject.com")) return false;
+  return true;
 }
 
 export async function registerServiceWorker(): Promise<ServiceWorkerRegistration | null> {
-  return null;
+  if (!isPushSupported()) return null;
+  try {
+    const reg = await navigator.serviceWorker.register("/sw.js", { scope: "/" });
+    await navigator.serviceWorker.ready;
+    return reg;
+  } catch (e) {
+    console.warn("[push] SW register failed", e);
+    return null;
+  }
 }
 
 export async function enablePushForCurrentUser(): Promise<{ ok: boolean; reason?: string }> {

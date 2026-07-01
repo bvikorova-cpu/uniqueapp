@@ -50,6 +50,7 @@ import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
 
 import { RealTimeNotificationsMount } from "@/components/notifications/RealTimeNotificationsMount";
+import PushNotificationsMount from "@/components/notifications/PushNotificationsMount";
 import { GlobalMessageChimeMount } from "@/components/notifications/GlobalMessageChimeMount";
 import { AnimationProvider } from "@/contexts/AnimationContext";
 import { CurrencyProvider } from "@/contexts/CurrencyContext";
@@ -614,6 +615,7 @@ const App = () => {
               <SCABanner />
               <RealTimeNotificationsMount />
               <GlobalMessageChimeMount />
+              <PushNotificationsMount />
               <WelcomeOnboarding />
               <ComebackBonusModal />
             </Suspense>

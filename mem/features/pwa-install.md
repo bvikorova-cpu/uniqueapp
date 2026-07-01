@@ -1,54 +1,38 @@
 ---
 name: pwa install + offline shell
-description: vite-plugin-pwa (Workbox) config, guarded SW registration, install banner, iOS Share-sheet hint
+description: Service worker for offline shell + cache, beforeinstallprompt capture, install banner, iOS Share-sheet hint
 type: feature
 ---
 
 ## Pieces
-- `vite.config.ts` → `VitePWA({ registerType: "autoUpdate", injectRegister: null, filename: "sw.js", manifest: false })` — generates `dist/sw.js` at build time. Manifest is served manually from `public/manifest.webmanifest` (do not let the plugin emit one — we already have shortcuts + icons configured there).
-- `public/service-worker.js` — kept only as a **kill-switch** for the old hand-written SW path some clients still request. Do not remove.
-- `src/utils/registerSW.ts` — guarded registration using `workbox-window`. Registers `/sw.js` only when ALL are true:
-  - `import.meta.env.PROD`
-  - not in an iframe
-  - hostname is NOT `id-preview--*`, `preview--*`, `*.lovableproject.com`, `*.lovableproject-dev.com`, `*.beta.lovable.dev`
-  - URL does not have `?sw=off`
-  Otherwise it **unregisters** any existing `/sw.js` or `/service-worker.js` so preview always loads fresh code.
-- `src/hooks/useInstallPrompt.ts` — captures `beforeinstallprompt`, iOS returns `platform='ios'`, dismissal sticky 14 days.
-- `src/components/pwa/InstallPromptBanner.tsx` — bottom card, 8s delay, hidden when standalone/dismissed.
+- `public/sw.js` — service worker. Network-first navigations, stale-while-revalidate same-origin assets, never-cache list for Supabase / Stripe / ads / GA. Pre-caches app shell + `/offline.html`. Bump `CACHE_VERSION` when shell changes.
+- `public/offline.html` — branded offline fallback page (used when navigation request fails and no cached copy exists).
+- `src/utils/registerSW.ts` — registers `/sw.js` after `load`. Skipped on dev unless `?sw=1` is set, to avoid Vite HMR conflicts. Reloads page on `controllerchange` so users always get the latest after SW update.
+- `src/hooks/useInstallPrompt.ts` — captures `beforeinstallprompt`, exposes `promptInstall()`, detects iOS (no event there → return `canInstall=true` with `platform='ios'`). Dismissal is sticky for **14 days** via `localStorage`.
+- `src/components/pwa/InstallPromptBanner.tsx` — bottom-anchored card. Shows after 8s delay, hidden when standalone or dismissed.
 - Wired in `src/main.tsx` after `<App />`.
 
-## Cache strategy (Workbox runtimeCaching in vite.config.ts)
-| Request | Strategy | Cache |
-|---|---|---|
-| HTML navigations | NetworkFirst (4s timeout) → cached shell | unique-html-v1 (24h) |
-| Same-origin `/assets/*.{js,css,woff2}` | CacheFirst | unique-assets-v1 (30d) |
-| Same-origin images | StaleWhileRevalidate | unique-images-v1 (14d) |
-| Google Fonts | StaleWhileRevalidate | unique-fonts-v1 (1y) |
-| Supabase / Stripe / GA / /functions/* | **Bypassed** (never cached) | — |
+## Cache strategy
+| Request | Strategy |
+|---|---|
+| Navigations (HTML) | network-first → cache → `/offline.html` |
+| Same-origin static (js/css/img/font) | stale-while-revalidate |
+| Supabase / Stripe / ads / GA | bypass entirely (NEVER cache) |
+| POST/PUT/DELETE | bypass (only GET is touched) |
 
-`navigateFallbackDenylist` excludes `/~oauth`, `/functions/*`, `/api/*`, `/auth/callback` from the SPA HTML fallback so those hit the network directly.
+The "never cache" list lives in `NEVER_CACHE_HOST_PATTERNS` in `sw.js` — keep it in sync with any new auth/payment provider.
 
-## Precache — kept small
-`globPatterns: ["index.html", "assets/index-*.js", "assets/index-*.css", "assets/vendor-*.js", "*.webmanifest", "pwa-*.png", "favicon.ico"]`
-
-~10 files / ~5 MB. Lazy route chunks and images are cached at runtime on first hit — avoids downloading tens of MB when the PWA is installed. Do NOT expand this pattern to `**/*.{js,css}` again (that grew to 22 MB / 808 files and made installs slow).
-
-## Manifest — served manually
-`public/manifest.webmanifest` is the source of truth (name, short_name, icons, shortcuts). Injected by a small script in `index.html` (skipped on Lovable preview hosts to avoid install prompts in the editor). Keep `manifest: false` in VitePWA config so the plugin doesn't emit a conflicting one.
+## iOS handling
+Safari doesn't fire `beforeinstallprompt`. The hook returns `canInstall=true` + `platform='ios'` when not in standalone, and the banner shows the **Share → Add to Home Screen** instruction with a Share icon (no programmatic install button).
 
 ## Do NOT
-- Do NOT cache anything from `*.supabase.co`, `*.stripe.com`, ads, GA — breaks auth/payments/analytics.
-- Do NOT hand-write `public/sw.js` — vite-plugin-pwa owns that filename at build time; a static file there would be overwritten anyway.
-- Do NOT lower the 8s install-banner delay or 14d dismissal.
-- Do NOT re-add the sitewide `unregister + caches.delete` loop that used to live in `index.html`. It was defeating the PWA cache and making the installed app slow. The only sanctioned unregister paths are: `?sw=off` (in `index.html`) and the guarded wrapper in `registerSW.ts` (hostile contexts).
-- Do NOT change `filename` from `sw.js` without also updating the kill-switch path list in `registerSW.ts`.
-
-## Escape hatch
-Append `?sw=off` to any URL → the small inline script in `index.html` unregisters every SW registration for that origin. Useful when debugging a stuck cache without waiting for the auto-update flow.
+- Cache anything from `*.supabase.co`, `*.stripe.com`, ads, or GA — would break auth, payments and analytics.
+- Lower the 8s show delay or 14d dismissal — both were chosen to avoid nagging.
+- Register SW in Vite dev (`import.meta.env.DEV`) without the `?sw=1` query — it breaks HMR.
+- Forget to bump `CACHE_VERSION` in `sw.js` when changing shell URLs or strategy; otherwise old clients keep stale assets indefinitely.
 
 ## Testing checklist
-1. `bun run build && bun run preview` → DevTools → Application → Service Workers shows `/sw.js` activated, workbox precache holds ~10 entries.
-2. Throttle to **Offline**, hard-reload `/` → cached shell renders (blank body is OK — data calls fail, but the app boots).
-3. Chromium: install banner shows after 8s if installability criteria met.
-4. iOS Safari (real device): banner shows Share-sheet hint.
-5. Deploy new version → open installed PWA → `controlling` event fires → auto reload → user sees new code.
+1. `bun run build && bun run preview` → DevTools Application → Service Workers shows `sw.js` activated.
+2. Throttle to **Offline** in DevTools, hard-reload `/` → branded offline page appears.
+3. On Chromium, the install banner shows after 8s if site meets installability criteria.
+4. On iOS Safari (real device), banner shows the Share-sheet hint.

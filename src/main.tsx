@@ -1,8 +1,11 @@
 import { createRoot } from "react-dom/client";
 import { Component, lazy, ReactNode, Suspense } from "react";
-import App from "./App";
 import "./index.css";
 
+// Keep dynamic imports inside React.lazy. Starting them at module top-level
+// delays execution of this whole file on slow mobile networks, leaving #root
+// empty/white before React can render the fallback.
+const App = lazy(() => import("./App"));
 const CookieConsentBanner = lazy(() =>
   import("./components/gdpr/CookieConsentBanner").then((module) => ({ default: module.CookieConsentBanner }))
 );
@@ -104,6 +107,13 @@ function installBlankScreenWatchdog(rootEl: HTMLElement) {
 }
 
 let reactRendered = false;
+
+const BootFallback = () => (
+  <div className="min-h-screen flex flex-col items-center justify-center gap-3 bg-background text-foreground">
+    <div className="h-10 w-10 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
+    <p className="text-sm font-semibold text-muted-foreground">Loading Unique…</p>
+  </div>
+);
 
 class BootErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
   state = { error: null };
@@ -251,10 +261,12 @@ function boot() {
   try {
     root.render(
       <BootErrorBoundary>
-        <App />
-        <Suspense fallback={null}>
-          <CookieConsentBanner />
-          <InstallPromptBanner />
+        <Suspense fallback={<BootFallback />}>
+          <App />
+          <Suspense fallback={null}>
+            <CookieConsentBanner />
+            <InstallPromptBanner />
+          </Suspense>
         </Suspense>
       </BootErrorBoundary>
     );
@@ -264,6 +276,7 @@ function boot() {
     window.setTimeout(() => {
       import("./utils/patchSupabaseFunctions").catch((err) => console.error("[Boot] edge patch failed", err));
       import("./utils/webVitals").then(({ installWebVitals }) => installWebVitals()).catch((err) => console.error("[Boot] web vitals failed", err));
+      import("./utils/registerSW").then(({ registerServiceWorker }) => registerServiceWorker()).catch((err) => console.error("[Boot] service worker failed", err));
     }, 0);
   } catch (err) {
     console.error("[Boot] crash", err);

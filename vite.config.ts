@@ -101,30 +101,23 @@ export default defineConfig(() => ({
           if (id.includes("date-fns")) {
             return "date";
           }
-          // Radix UI and lucide-react use React.forwardRef during module
-          // initialization. Keep them in the React vendor graph; splitting them
-          // caused production-only boot crashes where React was undefined.
-          // TanStack Query — self-contained, safe to split.
-          if (id.includes("@tanstack/react-query")) {
-            return "query";
-          }
-          // React core and React-bound packages that MUST stay together to avoid
-          // production namespace interop crashes (createContext/useState undefined).
+          // React core and React-bound packages stay together to avoid namespace
+          // interop crashes in production chunks.
           if (
             id.includes("node_modules/react/") ||
             id.includes("node_modules/react-dom/") ||
             id.includes("react-router") ||
             id.includes("react-i18next") ||
             id.includes("framer-motion") ||
+            id.includes("lucide-react") ||
             id.includes("react-hook-form") ||
             id.includes("@hookform") ||
             id.includes("@react-three") ||
             id.includes("@radix-ui") ||
-            id.includes("node_modules/lucide-react")
+            id.includes("@tanstack/react-query")
           ) {
             return "vendor";
           }
-
         },
       },
     },
