@@ -14,19 +14,19 @@ interface DownloadFile {
 
 const files: DownloadFile[] = [
   {
-    name: "Flyer — Visual Edition EN v3 (A5, PDF)",
-    description:
-      "4-page A5 flyer (print-ready) with section cover images from the app and all 14 worlds",
-    url: "/downloads/unique-letak-visual-en-v3-a5.pdf",
-    size: "1.4 MB",
-    type: "pdf",
-  },
-  {
-    name: "Flyer — Visual Edition EN v2 (A4, PDF)",
+    name: "Flyer — Visual Edition EN v2 (A4, PDF) ★ recommended",
     description:
       "4-page A4 flyer with Megatalent + Racing backgrounds and all 14 worlds",
     url: "/downloads/unique-letak-visual-en-v2.pdf",
     size: "720 KB",
+    type: "pdf",
+  },
+  {
+    name: "Flyer — Visual Edition EN v3 (A5, PDF)",
+    description:
+      "4-page A5 flyer (print-ready) with section cover images from the app",
+    url: "/downloads/unique-letak-visual-en-v3-a5.pdf",
+    size: "1.4 MB",
     type: "pdf",
   },
   {
