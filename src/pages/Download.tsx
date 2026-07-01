@@ -14,10 +14,11 @@ interface DownloadFile {
 
 const files: DownloadFile[] = [
   {
-    name: "Flyer — Visual Edition EN (PDF)",
-    description: "2-page visual flyer: hero backgrounds + section image cards",
-    url: "/downloads/unique-letak-visual-en-v1.pdf",
-    size: "635 KB",
+    name: "Flyer — Visual Edition EN v2 (PDF)",
+    description:
+      "4-page A4 flyer with Megatalent + Racing backgrounds and all 14 worlds from About the Platform",
+    url: "/downloads/unique-letak-visual-en-v2.pdf",
+    size: "720 KB",
     type: "pdf",
   },
   {
