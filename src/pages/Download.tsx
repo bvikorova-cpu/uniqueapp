@@ -13,7 +13,6 @@ interface DownloadFile {
 }
 
 const STYLE_FLYERS: DownloadFile[] = [
-const STYLE_FLYERS: DownloadFile[] = [
   { name: "Flyer — Bubble Universe A5 EN 🌟 NEW", description: "Massive gradient Lobster wordmark, photo bubbles, speech-bubble quotes, star bursts — a real showstopper", url: "/downloads/unique-flyer-a5-en-bubble-universe.pdf", size: "8.5 MB", type: "pdf" },
   { name: "Flyer — Neon Cyber A5 EN ✨", description: "Neon grid, glow blobs, cyberpunk multiverse vibe", url: "/downloads/unique-flyer-a5-en-neon-cyber.pdf", size: "360 KB", type: "pdf" },
   { name: "Flyer — Midnight Gold A5 EN ✨", description: "Deep purple night sky with gold typography and stars", url: "/downloads/unique-flyer-a5-en-midnight-gold.pdf", size: "130 KB", type: "pdf" },
