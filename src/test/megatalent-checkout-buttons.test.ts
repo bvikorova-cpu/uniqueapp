@@ -19,8 +19,8 @@ vi.mock("@/integrations/supabase/client", () => ({
 
 import { supabase } from "@/integrations/supabase/client";
 
-const getSession = supabase.auth.getSession as ReturnType<typeof vi.fn>;
-const invoke = supabase.functions.invoke as ReturnType<typeof vi.fn>;
+const getSession = supabase.auth.getSession as unknown as ReturnType<typeof vi.fn> & ((...args: any[]) => any);
+const invoke = supabase.functions.invoke as unknown as ReturnType<typeof vi.fn> & ((...args: any[]) => any);
 
 // Mirror of handleSubscribe in TalentCommentsSheet.tsx
 async function handleSubscribe(tierToBuy: "premium" | "top_premium") {
