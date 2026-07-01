@@ -101,14 +101,9 @@ export default defineConfig(() => ({
           if (id.includes("date-fns")) {
             return "date";
           }
-          // Radix UI primitives — large, safe to isolate (only import React hooks at call time).
-          if (id.includes("@radix-ui")) {
-            return "radix";
-          }
-          // Icon library — tree-shaken but still sizeable when many icons used.
-          if (id.includes("node_modules/lucide-react")) {
-            return "icons";
-          }
+          // Radix UI and lucide-react use React.forwardRef during module
+          // initialization. Keep them in the React vendor graph; splitting them
+          // caused production-only boot crashes where React was undefined.
           // TanStack Query — self-contained, safe to split.
           if (id.includes("@tanstack/react-query")) {
             return "query";
@@ -123,7 +118,9 @@ export default defineConfig(() => ({
             id.includes("framer-motion") ||
             id.includes("react-hook-form") ||
             id.includes("@hookform") ||
-            id.includes("@react-three")
+            id.includes("@react-three") ||
+            id.includes("@radix-ui") ||
+            id.includes("node_modules/lucide-react")
           ) {
             return "vendor";
           }
