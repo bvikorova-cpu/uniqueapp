@@ -50,7 +50,7 @@ export default defineConfig(() => ({
         // Everything else (lazy route chunks, images) is cached at runtime on first hit —
         // avoids downloading tens of MB on install.
         globPatterns: ["index.html", "assets/index-*.js", "assets/index-*.css", "assets/vendor-*.js", "*.webmanifest", "pwa-*.png", "favicon.ico"],
-        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
+        maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
         cleanupOutdatedCaches: true,
         clientsClaim: true,
         skipWaiting: true,
