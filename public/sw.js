@@ -1,60 +1,32 @@
-/**
- * KILL-SWITCH service worker at /sw.js.
- *
- * The previous release registered a Workbox-based service worker at this path
- * via vite-plugin-pwa. That worker over-cached the app shell / precache and
- * caused installed PWAs and returning browsers to fail to load. This worker
- * replaces it at the SAME path so returning clients evict the old registration
- * on the next visit.
- *
- * Behaviour: wipe caches on install + activate, unregister self, forward all
- * navigations to the network with `cache: no-store`. No redirects, no caching.
+/** Emergency kill-switch for the old app-shell service worker at /sw.js.
+ * No fetch handler: it must never intercept navigations or keep users on the
+ * static loader. It only removes old Workbox caches, refreshes controlled tabs
+ * once, and unregisters itself.
  */
 
-self.addEventListener("install", (event) => {
+function isWorkboxCacheForThisRegistration(name) {
+  const hasWorkboxBucket = /(^|-)precache-v\d+-|(^|-)runtime-|(^|-)googleAnalytics-/.test(name);
+  return hasWorkboxBucket && name.endsWith(self.registration.scope);
+}
+
+self.addEventListener("install", () => self.skipWaiting());
+
+self.addEventListener("activate", (event) =>
   event.waitUntil(
     (async () => {
       try {
-        const keys = await caches.keys();
-        await Promise.all(keys.map((k) => caches.delete(k)));
-      } catch {
-        /* noop */
-      }
-      await self.skipWaiting();
-    })(),
-  );
-});
-
-self.addEventListener("fetch", (event) => {
-  if (event.request.mode !== "navigate") return;
-  event.respondWith(fetch(event.request, { cache: "no-store" }));
-});
-
-self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    (async () => {
-      try {
-        const keys = await caches.keys();
-        await Promise.all(keys.map((k) => caches.delete(k)));
-      } catch {
-        /* noop */
-      }
-      try {
+        const cacheNames = await caches.keys();
+        const appCacheNames = cacheNames.filter(isWorkboxCacheForThisRegistration);
+        await Promise.allSettled(appCacheNames.map((name) => caches.delete(name)));
         await self.clients.claim();
-        const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
-        await Promise.all(
-          clients.map((client) => {
-            const url = new URL(client.url);
-            url.searchParams.set("sw-cleanup", Date.now().toString());
-            return client.navigate(url.toString()).catch(() => undefined);
-          }),
-        );
+        const clients = await self.clients.matchAll({ type: "window" });
+        await Promise.allSettled(clients.map((client) => client.navigate(client.url)));
       } finally {
         await self.registration.unregister();
       }
     })(),
-  );
-});
+  ),
+);
 
 self.addEventListener("message", (event) => {
   if (event.data === "SKIP_WAITING") self.skipWaiting();

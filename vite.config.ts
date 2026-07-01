@@ -56,9 +56,18 @@ export default defineConfig(() => ({
   build: {
     target: "es2020",
     cssCodeSplit: true,
+    // Critical mobile boot fix: Vite/Rollup's modulepreload helper was pulling
+    // lazy route chunks (pdf/three/markdown) into the entry/App startup path.
+    // Disable automatic modulepreload so the first screen can render before
+    // optional feature chunks are requested.
+    modulePreload: false,
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
+        // Do not make the entry chunk import dependencies of lazy chunks.
+        // This was causing the boot bundle to wait for pdf/three/markdown on
+        // mobile, leaving users stuck on the static "Loading Unique…" screen.
+        hoistTransitiveImports: false,
         manualChunks: (id) => {
           // Heavy 3D core only. Keep @react-three packages with React vendor;
           // splitting them into this chunk caused production hook crashes.
