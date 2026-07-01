@@ -17,7 +17,7 @@ export function isPushSupported(): boolean {
   // Temporarily disabled: /sw.js is currently reserved as a cache cleanup
   // kill-switch so it must not be registered for push notifications.
   // In-app realtime notifications and message chimes still work normally.
-  return true;
+  return false;
 }
 
 export async function registerServiceWorker(): Promise<ServiceWorkerRegistration | null> {
