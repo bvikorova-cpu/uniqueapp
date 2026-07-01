@@ -157,6 +157,7 @@
       (function () {
         var retryKey = "unique_boot_retry_v2";
         var previewHost = window.location.hostname.includes("lovableproject.com") || window.location.hostname.includes("lovable.app");
+        var productionHost = !previewHost && window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1";
         var token = new URLSearchParams(window.location.search).get("__lovable_token");
         var bootRetryDone = false;
         var inactiveAt = 0;
@@ -176,6 +177,29 @@
           var openHref = 'https://uniqueapp.fun/';
           root.innerHTML = '<div style="min-height:100vh;display:grid;place-items:center;background:hsl(250 25% 97%);padding:20px;font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;color:hsl(240 15% 8%);"><div style="max-width:360px;text-align:center;background:#fff;border:1px solid hsl(250 10% 90%);border-radius:18px;padding:20px;box-shadow:0 14px 34px hsl(270 91% 58% / .14);"><strong style="display:block;font-size:16px;margin-bottom:8px;">Unique failed to load</strong><p style="margin:0 0 14px;color:hsl(240 5% 42%);font-size:13px;line-height:1.45;">The preview token may have expired after inactivity, or the network was slow. Try refreshing or opening the app in a new window.</p><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;"><button onclick="try{if(window.top&&window.top!==window){window.top.location.reload()}else{window.location.reload()}}catch(e){window.location.reload()}" style="border:0;border-radius:9999px;background:hsl(270 91% 58%);color:#fff;padding:10px 16px;font-weight:700;cursor:pointer;">Refresh</button><a href="' + openHref + '" target="_blank" rel="noopener" style="border:1px solid hsl(250 10% 88%);border-radius:9999px;background:#fff;color:hsl(240 15% 8%);padding:10px 16px;font-weight:700;text-decoration:none;">Open in a new window</a></div></div></div>';
         };
+        var recoverStuckProductionBoot = function () {
+          if (!productionHost || window.__UNIQUE_MAIN_EXECUTED__ || !("serviceWorker" in navigator)) return;
+          try {
+            var key = "unique_static_boot_recover_v1";
+            if (sessionStorage.getItem(key)) return;
+            sessionStorage.setItem(key, String(Date.now()));
+            Promise.all([
+              navigator.serviceWorker.getRegistrations().then(function (regs) {
+                return Promise.all(regs.map(function (r) { return r.unregister().catch(function () {}); }));
+              }).catch(function () {}),
+              (window.caches ? caches.keys().then(function (keys) {
+                return Promise.all(keys.filter(function (name) {
+                  return /(^|-)precache-v\d+-|(^|-)runtime-|(^|-)googleAnalytics-/.test(name);
+                }).map(function (name) { return caches.delete(name).catch(function () {}); }));
+              }).catch(function () {}) : Promise.resolve())
+            ]).then(function () {
+              var url = new URL(window.location.href);
+              url.searchParams.set("sw", "off");
+              url.searchParams.set("boot-recover", Date.now().toString());
+              window.location.replace(url.toString());
+            }).catch(function () { window.location.reload(); });
+          } catch (e) { /* noop */ }
+        };
 
         document.addEventListener("visibilitychange", function () {
           if (!previewHost) return;
@@ -190,6 +214,7 @@
         // Do NOT auto-reload or wipe caches here — that previously aborted
         // in-flight main.tsx fetches on slow networks and caused a perpetual
         // "Unique failed to load" loop. main.tsx has its own crash overlay.
+        window.setTimeout(recoverStuckProductionBoot, 15000);
         window.setTimeout(retryMainModule, 12000);
         window.setTimeout(function () {
           if (window.__UNIQUE_MAIN_EXECUTED__) return;
