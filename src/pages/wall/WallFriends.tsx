@@ -54,13 +54,17 @@ export default function WallFriends() {
   const [globalResults, setGlobalResults] = useState<Profile[]>([]);
   const [searchingGlobal, setSearchingGlobal] = useState(false);
 
+  const { user: authUser } = useAuth();
   const { data: user } = useQuery({
     queryKey: ["current-user"],
     queryFn: async () => {
+      if (authUser) return authUser;
       const { data: { user } } = await supabase.auth.getUser();
       return user;
     },
+    initialData: authUser ?? undefined,
   });
+
 
   // Global search across all profiles (debounced)
   const debouncedSearch = useDebounce(globalSearch, 300);
