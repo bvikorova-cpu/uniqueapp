@@ -15,19 +15,33 @@ const APP_SW_PATHS = ["/sw.js", "/service-worker.js"];
 export function registerServiceWorker() {
   if (typeof window === "undefined" || !("serviceWorker" in navigator)) return;
 
-  // Best-effort: force an update on any existing app SW registrations so the
-  // browser fetches the new kill-switch worker at the same path and evicts it.
+  // Best-effort: force an update/unregister on any existing app SW
+  // registrations. This is cleanup only — no new app-shell SW is registered.
   const cleanup = async () => {
     try {
       const regs = await navigator.serviceWorker.getRegistrations();
-      await Promise.all(
-        regs
-          .filter((r) => {
-            const url = r.active?.scriptURL || r.installing?.scriptURL || r.waiting?.scriptURL || "";
-            return APP_SW_PATHS.some((p) => url.endsWith(p));
-          })
-          .map((r) => r.update().catch(() => undefined)),
+      const appRegs = regs.filter((r) => {
+        const scriptUrl = r.active?.scriptURL || r.installing?.scriptURL || r.waiting?.scriptURL || "";
+        try {
+          const path = new URL(scriptUrl).pathname;
+          return APP_SW_PATHS.includes(path);
+        } catch {
+          return APP_SW_PATHS.some((p) => scriptUrl.endsWith(p));
+        }
+      });
+      await Promise.allSettled(
+        appRegs.map(async (r) => {
+          await r.update().catch(() => undefined);
+          await r.unregister().catch(() => undefined);
+        }),
       );
+      if (navigator.serviceWorker.controller && appRegs.length > 0) {
+        const key = "unique_sw_cleanup_reload_v4";
+        if (!sessionStorage.getItem(key)) {
+          sessionStorage.setItem(key, String(Date.now()));
+          window.location.reload();
+        }
+      }
     } catch {
       /* noop */
     }

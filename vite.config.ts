@@ -59,6 +59,14 @@ export default defineConfig(() => ({
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
+        // Do not make the entry chunk import dependencies of lazy chunks.
+        // This was causing the boot bundle to wait for pdf/three/markdown on
+        // mobile, leaving users stuck on the static "Loading Unique…" screen.
+        hoistTransitiveImports: false,
+        // Keep manual chunks explicit only. Otherwise Rollup can pull shared
+        // helpers into the first manual chunk (for example `pdf`), forcing the
+        // entry/App chunks to statically import that heavy chunk at startup.
+        onlyExplicitManualChunks: true,
         manualChunks: (id) => {
           // Heavy 3D core only. Keep @react-three packages with React vendor;
           // splitting them into this chunk caused production hook crashes.
