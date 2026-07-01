@@ -14,6 +14,11 @@ interface DownloadFile {
 
 const STYLE_FLYERS: DownloadFile[] = [
   { name: "Flyer — Bubble Universe A5 EN 🌟 NEW", description: "Massive gradient Lobster wordmark, photo bubbles, speech-bubble quotes, star bursts — a real showstopper", url: "/downloads/unique-flyer-a5-en-bubble-universe.pdf", size: "8.5 MB", type: "pdf" },
+  { name: "Flyer — Bubble · Orbit A5 EN 🪐 NEW", description: "Bubbles orbit a giant hero photo around the wordmark, with orbit rings and gold accents", url: "/downloads/unique-flyer-a5-en-bubble-orbit.pdf", size: "8.8 MB", type: "pdf" },
+  { name: "Flyer — Bubble · Waterfall A5 EN 💧 NEW", description: "Cascading diagonal bubble waterfall with a side quote card and gold CTA bar", url: "/downloads/unique-flyer-a5-en-bubble-waterfall.pdf", size: "8.7 MB", type: "pdf" },
+  { name: "Flyer — Bubble · Honeycomb A5 EN 🍯 NEW", description: "Dense hexagonal bubble hive of 10 photos, all-gold rings, magazine energy", url: "/downloads/unique-flyer-a5-en-bubble-honeycomb.pdf", size: "8.6 MB", type: "pdf" },
+  { name: "Flyer — Bubble · Split Screen A5 EN ⚡ NEW", description: "Photo mosaic left, giant speech-bubble testimonial right, gold divider down the middle", url: "/downloads/unique-flyer-a5-en-bubble-split.pdf", size: "8.7 MB", type: "pdf" },
+  { name: "Flyer — Bubble · Constellation A5 EN ✨ NEW", description: "Bubbles as stars connected by gold constellation lines on a deep night sky", url: "/downloads/unique-flyer-a5-en-bubble-constellation.pdf", size: "8.6 MB", type: "pdf" },
   { name: "Flyer — Neon Cyber A5 EN ✨", description: "Neon grid, glow blobs, cyberpunk multiverse vibe", url: "/downloads/unique-flyer-a5-en-neon-cyber.pdf", size: "360 KB", type: "pdf" },
   { name: "Flyer — Midnight Gold A5 EN ✨", description: "Deep purple night sky with gold typography and stars", url: "/downloads/unique-flyer-a5-en-midnight-gold.pdf", size: "130 KB", type: "pdf" },
   { name: "Flyer — Pastel Dream A5 EN ✨", description: "Soft pink/lilac gradient, playful & light", url: "/downloads/unique-flyer-a5-en-pastel-dream.pdf", size: "115 KB", type: "pdf" },
