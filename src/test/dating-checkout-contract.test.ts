@@ -26,7 +26,10 @@ vi.mock("@/integrations/supabase/client", () => ({
 }));
 
 import { supabase } from "@/integrations/supabase/client";
-const invoke = supabase.functions.invoke as ReturnType<typeof vi.fn>;
+const invoke = supabase.functions.invoke as unknown as ((name: string, options?: any) => Promise<any>) & {
+  mockReset: () => void;
+  mockResolvedValue: (value: any) => void;
+};
 
 // Mirror of Dating.handleSubscribe payload-building logic
 function buildSubscribeBody(planType: "monthly" | "yearly") {
