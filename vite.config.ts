@@ -173,23 +173,33 @@ export default defineConfig(() => ({
           if (id.includes("date-fns")) {
             return "date";
           }
-          // React core and React-bound packages stay together to avoid namespace
-          // interop crashes in production chunks.
+          // Radix UI primitives — large, safe to isolate (only import React hooks at call time).
+          if (id.includes("@radix-ui")) {
+            return "radix";
+          }
+          // Icon library — tree-shaken but still sizeable when many icons used.
+          if (id.includes("node_modules/lucide-react")) {
+            return "icons";
+          }
+          // TanStack Query — self-contained, safe to split.
+          if (id.includes("@tanstack/react-query")) {
+            return "query";
+          }
+          // React core and React-bound packages that MUST stay together to avoid
+          // production namespace interop crashes (createContext/useState undefined).
           if (
             id.includes("node_modules/react/") ||
             id.includes("node_modules/react-dom/") ||
             id.includes("react-router") ||
             id.includes("react-i18next") ||
             id.includes("framer-motion") ||
-            id.includes("lucide-react") ||
             id.includes("react-hook-form") ||
             id.includes("@hookform") ||
-            id.includes("@react-three") ||
-            id.includes("@radix-ui") ||
-            id.includes("@tanstack/react-query")
+            id.includes("@react-three")
           ) {
             return "vendor";
           }
+
         },
       },
     },
