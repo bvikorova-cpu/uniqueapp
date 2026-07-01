@@ -22,8 +22,8 @@ self.addEventListener("push", (event) => {
   const title = data.title || (isCall ? "Incoming call" : "Unique");
   const options = {
     body: data.body || "",
-    icon: "/icon-192.png",
-    badge: "/icon-192.png",
+    icon: "/unique-icon-v3-192.png",
+    badge: "/unique-icon-v3-192.png",
     tag: isCall ? `call-${data.caller_id || "x"}` : `msg-${data.conversation_id || Date.now()}`,
     renotify: true,
     requireInteraction: isCall,
