@@ -1,6 +1,8 @@
-import { Download as DownloadIcon, FileText, Archive } from "lucide-react";
+import { useState } from "react";
+import { Download as DownloadIcon, FileText, Archive, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { toast } from "sonner";
 
 interface DownloadFile {
   name: string;
@@ -63,6 +65,31 @@ const files: DownloadFile[] = [
 ];
 
 export default function Download() {
+  const [busy, setBusy] = useState<string | null>(null);
+
+  const handleDownload = async (file: DownloadFile) => {
+    const filename = file.url.split("/").pop() || "download";
+    setBusy(file.url);
+    try {
+      const res = await fetch(file.url, { cache: "no-store" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+    } catch (e) {
+      console.error("Download failed", e);
+      toast.error("Download failed. Opening in new tab as fallback.");
+      window.open(file.url, "_blank", "noopener,noreferrer");
+    } finally {
+      setBusy(null);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background py-12 px-4">
@@ -72,14 +99,14 @@ export default function Download() {
             Download files
           </h1>
           <p className="text-muted-foreground text-lg">
-            Click on "Download" for immediate download to your device
+            Click "Download" to save the file to your device
           </p>
         </div>
 
         <div className="space-y-4">
           {files.map((file) => {
-            const filename = file.url.split("/").pop() || "download";
             const Icon = file.type === "zip" ? Archive : FileText;
+            const isBusy = busy === file.url;
             return (
               <Card
                 key={file.url}
@@ -95,16 +122,18 @@ export default function Download() {
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">{file.size}</p>
                 </div>
-                <Button asChild className="shrink-0" size="sm">
-                  <a
-                    href={file.url}
-                    download={filename}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                <Button
+                  className="shrink-0"
+                  size="sm"
+                  onClick={() => handleDownload(file)}
+                  disabled={isBusy}
+                >
+                  {isBusy ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
                     <DownloadIcon className="w-4 h-4 mr-2" />
-                    Download
-                  </a>
+                  )}
+                  {isBusy ? "Downloading…" : "Download"}
                 </Button>
               </Card>
             );
@@ -112,8 +141,8 @@ export default function Download() {
         </div>
 
         <p className="text-center text-xs text-muted-foreground mt-8">
-          Tip: If the file opens instead of downloading, long-press the button
-          and select "Download link".
+          Tip: If your browser blocks the download, allow pop-ups for this site
+          and try again.
         </p>
       </div>
     </div>
