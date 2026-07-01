@@ -13,6 +13,11 @@ interface DownloadFile {
 }
 
 const STYLE_FLYERS: DownloadFile[] = [
+  { name: "Flyer — Bubble · Kaleidoscope A5 EN 🌀 NEW", description: "Radial mandala of bubbles around a 26-worlds medallion, gold spokes, full section index on the back", url: "/downloads/unique-flyer-a5-en-bubble-kaleidoscope.pdf", size: "1.8 MB", type: "pdf" },
+  { name: "Flyer — Bubble · Skyline A5 EN 🏙️ NEW", description: "Bubbles stacked as a photo skyline; 26 worlds indexed on the back", url: "/downloads/unique-flyer-a5-en-bubble-skyline.pdf", size: "3.1 MB", type: "pdf" },
+  { name: "Flyer — Bubble · Ribbon A5 EN 🎗️ NEW", description: "S-curved gold ribbon threading photo bubbles across the page + full 26-section index", url: "/downloads/unique-flyer-a5-en-bubble-ribbon.pdf", size: "1.3 MB", type: "pdf" },
+  { name: "Flyer — Bubble · Portal A5 EN 🌌 NEW", description: "One giant portal bubble with 8 orbiting satellites + 4-feature preview and full index", url: "/downloads/unique-flyer-a5-en-bubble-portal.pdf", size: "2.0 MB", type: "pdf" },
+  { name: "Flyer — Bubble · Editorial A5 EN 📖 NEW", description: "Magazine-cover layout: hero bubble, cover story, numbered TOC of all 26 worlds", url: "/downloads/unique-flyer-a5-en-bubble-editorial.pdf", size: "1.3 MB", type: "pdf" },
   { name: "Flyer — Bubble Universe A5 EN 🌟 NEW", description: "Massive gradient Lobster wordmark, photo bubbles, speech-bubble quotes, star bursts — a real showstopper", url: "/downloads/unique-flyer-a5-en-bubble-universe.pdf", size: "8.5 MB", type: "pdf" },
   { name: "Flyer — Bubble · Orbit A5 EN 🪐 NEW", description: "Bubbles orbit a giant hero photo around the wordmark, with orbit rings and gold accents", url: "/downloads/unique-flyer-a5-en-bubble-orbit.pdf", size: "8.8 MB", type: "pdf" },
   { name: "Flyer — Bubble · Waterfall A5 EN 💧 NEW", description: "Cascading diagonal bubble waterfall with a side quote card and gold CTA bar", url: "/downloads/unique-flyer-a5-en-bubble-waterfall.pdf", size: "8.7 MB", type: "pdf" },
