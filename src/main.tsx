@@ -276,7 +276,6 @@ function boot() {
     window.setTimeout(() => {
       import("./utils/patchSupabaseFunctions").catch((err) => console.error("[Boot] edge patch failed", err));
       import("./utils/webVitals").then(({ installWebVitals }) => installWebVitals()).catch((err) => console.error("[Boot] web vitals failed", err));
-      import("./utils/registerSW").then(({ registerServiceWorker }) => registerServiceWorker()).catch((err) => console.error("[Boot] service worker failed", err));
     }, 0);
   } catch (err) {
     console.error("[Boot] crash", err);
