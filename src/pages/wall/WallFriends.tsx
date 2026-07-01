@@ -13,6 +13,8 @@ import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDebounce } from "@/hooks/use-debounce";
+import { useAuth } from "@/contexts/AuthContext";
+
 
 interface Profile {
   id: string;
@@ -52,13 +54,17 @@ export default function WallFriends() {
   const [globalResults, setGlobalResults] = useState<Profile[]>([]);
   const [searchingGlobal, setSearchingGlobal] = useState(false);
 
+  const { user: authUser } = useAuth();
   const { data: user } = useQuery({
     queryKey: ["current-user"],
     queryFn: async () => {
+      if (authUser) return authUser;
       const { data: { user } } = await supabase.auth.getUser();
       return user;
     },
+    initialData: authUser ?? undefined,
   });
+
 
   // Global search across all profiles (debounced)
   const debouncedSearch = useDebounce(globalSearch, 300);
@@ -333,7 +339,61 @@ export default function WallFriends() {
         </div>
       </motion.div>
 
-      {/* Global Find People search */}
+      {/* All Friends — shown at top so users see their existing friends immediately */}
+      <section>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Heart className="w-5 h-5 text-pink-500" />
+            <h2 className="text-lg font-black">All Friends</h2>
+            <Badge variant="secondary" className="text-xs bg-primary/10 text-primary border-0">{friends.length}</Badge>
+          </div>
+        </div>
+        {friends.length > 5 && (
+          <div className="relative mb-4">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input value={friendSearch} onChange={(e) => setFriendSearch(e.target.value)} placeholder="Search friends..." className="pl-10 bg-muted/30 border-border/50" />
+          </div>
+        )}
+        {filteredFriends.length === 0 ? (
+          <Card className="border-dashed border-2 border-border/50 bg-card/50">
+            <CardContent className="py-10 text-center">
+              <Users2 className="h-10 w-10 mx-auto mb-3 text-muted-foreground/40" />
+              <p className="text-sm text-muted-foreground">{friendSearch ? "No friends match your search" : "No friends yet"}</p>
+              <p className="text-xs text-muted-foreground/60 mt-1">Start connecting with people!</p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            {filteredFriends.map((friend, i) => (
+              <motion.div
+                key={friend.id}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.03 }}
+                whileHover={{ y: -3 }}
+              >
+                <Card className="overflow-hidden border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/50 hover:shadow-xl transition-all duration-300 cursor-pointer"
+                  onClick={() => navigate(`/profile/${friend.id}`)}>
+                  <div className={`h-14 bg-gradient-to-br ${gradients[i % gradients.length]} relative`}>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                  </div>
+                  <div className="px-2.5 pb-3 -mt-5 relative">
+                    <Avatar className="h-10 w-10 border-[2px] border-card shadow-md">
+                      <AvatarImage src={friend.avatar_url || undefined} className="object-cover" />
+                      <AvatarFallback className="bg-gradient-to-br from-primary/30 to-accent/30 text-sm font-bold">
+                        {friend.full_name?.[0] || "?"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <h3 className="font-bold text-xs truncate mt-1.5">{friend.full_name || "Unknown"}</h3>
+                  </div>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </section>
+
+
       <section>
         <div className="flex items-center gap-2 mb-3">
           <Search className="w-5 h-5 text-primary" />
@@ -590,59 +650,6 @@ export default function WallFriends() {
         </section>
       )}
 
-      {/* All Friends */}
-      <section>
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <Heart className="w-5 h-5 text-pink-500" />
-            <h2 className="text-lg font-black">All Friends</h2>
-            <Badge variant="secondary" className="text-xs bg-primary/10 text-primary border-0">{friends.length}</Badge>
-          </div>
-        </div>
-        {friends.length > 5 && (
-          <div className="relative mb-4">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input value={friendSearch} onChange={(e) => setFriendSearch(e.target.value)} placeholder="Search friends..." className="pl-10 bg-muted/30 border-border/50" />
-          </div>
-        )}
-        {filteredFriends.length === 0 ? (
-          <Card className="border-dashed border-2 border-border/50 bg-card/50">
-            <CardContent className="py-10 text-center">
-              <Users2 className="h-10 w-10 mx-auto mb-3 text-muted-foreground/40" />
-              <p className="text-sm text-muted-foreground">{friendSearch ? "No friends match your search" : "No friends yet"}</p>
-              <p className="text-xs text-muted-foreground/60 mt-1">Start connecting with people!</p>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-            {filteredFriends.map((friend, i) => (
-              <motion.div
-                key={friend.id}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.03 }}
-                whileHover={{ y: -3 }}
-              >
-                <Card className="overflow-hidden border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/50 hover:shadow-xl transition-all duration-300 cursor-pointer"
-                  onClick={() => navigate(`/profile/${friend.id}`)}>
-                  <div className={`h-14 bg-gradient-to-br ${gradients[i % gradients.length]} relative`}>
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-                  </div>
-                  <div className="px-2.5 pb-3 -mt-5 relative">
-                    <Avatar className="h-10 w-10 border-[2px] border-card shadow-md">
-                      <AvatarImage src={friend.avatar_url || undefined} className="object-cover" />
-                      <AvatarFallback className="bg-gradient-to-br from-primary/30 to-accent/30 text-sm font-bold">
-                        {friend.full_name?.[0] || "?"}
-                      </AvatarFallback>
-                    </Avatar>
-                    <h3 className="font-bold text-xs truncate mt-1.5">{friend.full_name || "Unknown"}</h3>
-                  </div>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        )}
-      </section>
     </div>
   );
 }
