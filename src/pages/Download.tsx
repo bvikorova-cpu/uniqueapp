@@ -14,9 +14,25 @@ interface DownloadFile {
 
 const files: DownloadFile[] = [
   {
-    name: "Flyer — Luxury Edition EN (A5, PDF) ★ NEW",
+    name: "Flyer — Luxury A5 Gradient EN (PDF) ★ NEW",
     description:
-      "2-page A5 luxury flyer in English — all 14 worlds, gold accents, Megatalent €10K quarterly",
+      "2-page A5 luxury flyer with real section photos on purple→pink gradient + gold accents",
+    url: "/downloads/unique-flyer-luxury-a5-en-v2.pdf",
+    size: "2.1 MB",
+    type: "pdf",
+  },
+  {
+    name: "Flyer — Luxury A5 Dark Photo EN (PDF) ★ NEW",
+    description:
+      "2-page A5 luxury flyer with full-page Megatalent/Racing photo background + gold-framed cards",
+    url: "/downloads/unique-flyer-luxury-a5-en-photo.pdf",
+    size: "1.3 MB",
+    type: "pdf",
+  },
+  {
+    name: "Flyer — Luxury Edition EN v1 (A5, PDF)",
+    description:
+      "Original 2-page A5 luxury flyer (no photos)",
     url: "/downloads/unique-flyer-luxury-a5-en.pdf",
     size: "195 KB",
     type: "pdf",
