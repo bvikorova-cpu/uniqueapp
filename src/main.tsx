@@ -105,13 +105,6 @@ function installBlankScreenWatchdog(rootEl: HTMLElement) {
 
 let reactRendered = false;
 
-const BootFallback = () => (
-  <div className="min-h-screen flex flex-col items-center justify-center gap-3 bg-background text-foreground">
-    <div className="h-10 w-10 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
-    <p className="text-sm font-semibold text-muted-foreground">Loading Unique…</p>
-  </div>
-);
-
 class BootErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
   state = { error: null };
 
