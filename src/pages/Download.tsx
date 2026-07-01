@@ -12,6 +12,13 @@ interface DownloadFile {
 
 const files: DownloadFile[] = [
   {
+    name: "Flyer — About the Platform EN (PDF)",
+    description: "2-page A4 flyer: 14 worlds, 100+ tools",
+    url: "/downloads/unique-letak-about-en-v1.pdf",
+    size: "70 KB",
+    type: "pdf",
+  },
+  {
     name: "Brochure SK (PDF)",
     description: "Slovak version of the UNIQUE brochure",
     url: "/downloads/brozura-SK.pdf",
