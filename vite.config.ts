@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { visualizer } from "rollup-plugin-visualizer";
+import { VitePWA } from "vite-plugin-pwa";
 import { execSync } from "node:child_process";
 import path from "node:path";
 
@@ -39,6 +40,77 @@ export default defineConfig(() => ({
     react(),
     tsconfigPaths(),
     i18nCheckPlugin(),
+    VitePWA({
+      registerType: "autoUpdate",
+      injectRegister: null,
+      filename: "sw.js",
+      manifest: false, // We ship /manifest.webmanifest manually via index.html
+      workbox: {
+        // Precache only the small critical shell (index.html + entry chunks + icons).
+        // Everything else (lazy route chunks, images) is cached at runtime on first hit —
+        // avoids downloading tens of MB on install.
+        globPatterns: ["index.html", "assets/index-*.js", "assets/index-*.css", "assets/vendor-*.js", "*.webmanifest", "pwa-*.png", "favicon.ico"],
+        maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
+        skipWaiting: true,
+        navigateFallback: "/index.html",
+        navigateFallbackDenylist: [
+          /^\/~oauth/,
+          /^\/functions\//,
+          /^\/api\//,
+          /^\/auth\/callback/,
+        ],
+        runtimeCaching: [
+          // HTML navigations — always try network first, fall back to cached shell
+          {
+            urlPattern: ({ request }) => request.mode === "navigate",
+            handler: "NetworkFirst",
+            options: {
+              cacheName: "unique-html-v1",
+              networkTimeoutSeconds: 4,
+              expiration: { maxEntries: 40, maxAgeSeconds: 60 * 60 * 24 },
+            },
+          },
+          // Same-origin hashed built assets — cache-first
+          {
+            urlPattern: ({ url, sameOrigin }) =>
+              sameOrigin && /\/assets\/.+\.(?:js|css|woff2?)$/i.test(url.pathname),
+            handler: "CacheFirst",
+            options: {
+              cacheName: "unique-assets-v1",
+              expiration: { maxEntries: 250, maxAgeSeconds: 60 * 60 * 24 * 30 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          // Same-origin images and videos posters
+          {
+            urlPattern: ({ url, sameOrigin }) =>
+              sameOrigin && /\.(?:png|jpg|jpeg|webp|avif|svg|ico|gif)$/i.test(url.pathname),
+            handler: "StaleWhileRevalidate",
+            options: {
+              cacheName: "unique-images-v1",
+              expiration: { maxEntries: 400, maxAgeSeconds: 60 * 60 * 24 * 14 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          // Google Fonts CSS + files
+          {
+            urlPattern: ({ url }) =>
+              url.origin === "https://fonts.googleapis.com" ||
+              url.origin === "https://fonts.gstatic.com",
+            handler: "StaleWhileRevalidate",
+            options: {
+              cacheName: "unique-fonts-v1",
+              expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 * 365 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+        ],
+        // NEVER cache these — auth / payments / analytics / functions must always hit network
+        navigateFallbackAllowlist: [/^\/$/, /^\/[a-z0-9-\/]*$/i],
+      },
+    }),
     ANALYZE &&
       visualizer({
         filename: "dist/bundle-stats.html",
