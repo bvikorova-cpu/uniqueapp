@@ -65408,6 +65408,13 @@ export type Database = {
         Returns: number
       }
       grant_founder_role: { Args: { _user_id: string }; Returns: undefined }
+      grant_monthly_free_credits_all: {
+        Args: never
+        Returns: {
+          users_granted: number
+          users_seeded: number
+        }[]
+      }
       has_active_megatalent_subscription: {
         Args: { _user_id: string }
         Returns: boolean
