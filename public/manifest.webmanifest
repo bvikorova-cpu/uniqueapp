@@ -1,6 +1,7 @@
 {
   "name": "Unique - Social Network",
   "short_name": "Unique",
+  "id": "/?unique-pwa=2026-07-01-4",
   "description": "Your unique social network. Share, connect, and discover new friends.",
   "start_url": "/",
   "display": "standalone",
@@ -9,25 +10,25 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/unique-icon-v2-192.png",
+      "src": "/unique-icon-v3-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/unique-icon-v2-512.png",
+      "src": "/unique-icon-v3-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/unique-maskable-v2-192.png",
+      "src": "/unique-maskable-v3-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/unique-maskable-v2-512.png",
+      "src": "/unique-maskable-v3-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -43,28 +44,28 @@
       "short_name": "IQ Test",
       "description": "Start a new IQ test",
       "url": "/iq?action=test",
-      "icons": [{ "src": "/unique-icon-v2-192.png", "sizes": "192x192" }]
+      "icons": [{ "src": "/unique-icon-v3-192.png", "sizes": "192x192" }]
     },
     {
       "name": "Daily Challenge",
       "short_name": "Daily",
       "description": "Today's IQ challenge",
       "url": "/iq?action=daily",
-      "icons": [{ "src": "/unique-icon-v2-192.png", "sizes": "192x192" }]
+      "icons": [{ "src": "/unique-icon-v3-192.png", "sizes": "192x192" }]
     },
     {
       "name": "IQ Leaderboard",
       "short_name": "Leaderboard",
       "description": "Top IQ players",
       "url": "/iq/leaderboard",
-      "icons": [{ "src": "/unique-icon-v2-192.png", "sizes": "192x192" }]
+      "icons": [{ "src": "/unique-icon-v3-192.png", "sizes": "192x192" }]
     },
     {
       "name": "1v1 Duels",
       "short_name": "Duels",
       "description": "Challenge a friend",
       "url": "/iq?action=friends",
-      "icons": [{ "src": "/unique-icon-v2-192.png", "sizes": "192x192" }]
+      "icons": [{ "src": "/unique-icon-v3-192.png", "sizes": "192x192" }]
     }
   ]
 }
