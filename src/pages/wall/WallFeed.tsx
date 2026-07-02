@@ -21,7 +21,7 @@ import { useUserMutes } from "@/hooks/useUserMutes";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
-const WALL_HIW_STEPS = [
+export const WALL_HIW_STEPS = [
   { title: "Feed tabs (For You / Following / Trending / Latest / Friends)", desc: "Switch what you see: personalized picks, only people you follow, hottest posts right now, newest globally, or just your friends." },
   { title: "Notes bar (24h status)", desc: "The row of avatars on top are short 24-hour status notes — tap one to read, tap your own to post a mood, question or link that disappears after a day." },
   { title: "Create a post", desc: "Use the composer / plus button to post text, photos, videos, polls, or GIFs. Add hashtags and mentions with # and @." },
