@@ -425,6 +425,7 @@ export default function LotteryAI() {
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
+      <FloatingHowItWorks title="Lottery AI Predictions" steps={[{ title: "Pick a lottery", desc: "Select the game and draw you want numbers for." }, { title: "Generate numbers", desc: "AI blends numerology, statistics, and randomness (costs credits)." }, { title: "Review the set", desc: "See combos with reasoning; regenerate if you want." }, { title: "Play responsibly", desc: "For entertainment — no guaranteed wins." }]} />
       <div className="container mx-auto px-2 sm:px-4">
         {/* Hero */}
         <LotteryHero />
