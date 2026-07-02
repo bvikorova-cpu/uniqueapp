@@ -233,6 +233,13 @@ export default function TeenCareerCounselor() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <FloatingHowItWorks title="Career Counselor" intro="AI-guided career discovery for teens (13–18)." steps={[
+        { title: "Take the quiz", desc: "Answer short questions about your interests, strengths and dream lifestyle." },
+        { title: "Explore matches", desc: "See ranked career paths with day-in-the-life sims and skill gap analysis." },
+        { title: "Compare careers", desc: "Pick 2–3 paths side-by-side to see salary, education and vibe differences." },
+        { title: "Ask a mentor", desc: "Chat with the AI Career Mentor for personalised advice on next steps." },
+        { title: "Export your plan", desc: "Download a PDF roadmap you can share with parents or teachers." }
+      ]} />
       <Navbar />
       <main className="flex-1 container mx-auto px-4 pt-16 pb-8 max-w-4xl">
         <CareerHero />
