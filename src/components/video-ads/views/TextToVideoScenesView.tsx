@@ -126,5 +126,6 @@ export const TextToVideoScenesView = ({ onBack }: { onBack: () => void }) => {
         </Card>
       </div>
     </div>
+    </>
   );
 };
