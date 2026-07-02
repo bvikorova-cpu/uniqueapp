@@ -4,6 +4,15 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, MessageCircle, Sparkles, Crown } from "lucide-react";
 import { useChatCredits } from "@/hooks/useChatCredits";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_KIDSVOICECHATPRICING_STEPS = [
+  { title: 'Pick a pack', desc: 'Packs bundle minutes at a lower per-minute price.' },
+  { title: 'Pay securely', desc: 'Stripe checkout — parent-approved via parental gate.' },
+  { title: 'Minutes appear instantly', desc: 'Minutes are usable in Voice Chat right away.' }
+];
+const __HIW_KIDSVOICECHATPRICING = { title: 'Voice Chat Pricing', intro: 'Choose a pack for Kids Voice Chat.', steps: __HIW_KIDSVOICECHATPRICING_STEPS };
+
 
 interface Pack {
   credits: number;
@@ -30,6 +39,7 @@ export default function KidsVoiceChatPricing() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-violet-100 via-pink-50 to-cyan-100">
+      <FloatingHowItWorks title={__HIW_KIDSVOICECHATPRICING.title} intro={__HIW_KIDSVOICECHATPRICING.intro} steps={__HIW_KIDSVOICECHATPRICING.steps} />
       <div className="container mx-auto px-4 pt-24 pb-12 max-w-5xl">
         <Button variant="ghost" onClick={() => navigate("/kids-voice-chat")} className="mb-6">
           <ArrowLeft className="mr-2 h-4 w-4" />

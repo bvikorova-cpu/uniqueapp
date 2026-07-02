@@ -4,6 +4,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useMentorPremium, useMentorCheckout, type MentorArea } from "@/hooks/useMentorRouter";
 import { Crown, Check, Sparkles, Briefcase, Dumbbell, Brain, Heart } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_MENTORPREMIUM_STEPS = [
+  { title: 'Compare plans', desc: 'Monthly vs annual — annual saves the most.' },
+  { title: 'Pay securely', desc: 'Stripe checkout completes in seconds.' },
+  { title: 'Unlock everything', desc: 'Unlimited sessions, deeper analytics, priority voice.' },
+  { title: 'Cancel anytime', desc: 'Manage or cancel from your account settings.' }
+];
+const __HIW_MENTORPREMIUM = { title: 'Mentor Premium', intro: 'Subscribe to unlock unlimited AI coaching.', steps: __HIW_MENTORPREMIUM_STEPS };
+
 
 const AREAS: { id: MentorArea; title: string; icon: any; tagline: string; accent: string }[] = [
   { id: "career", title: "Career Coach", icon: Briefcase, tagline: "Promotions, interviews, leadership", accent: "from-blue-500/20 to-indigo-500/10" },
@@ -50,6 +60,7 @@ export default function MentorPremium() {
             const active = !!status?.subscribed;
             return (
               <Card key={a.id} className={`backdrop-blur-xl bg-gradient-to-br ${a.accent} border-border/50 relative overflow-hidden`}>
+      <FloatingHowItWorks title={__HIW_MENTORPREMIUM.title} intro={__HIW_MENTORPREMIUM.intro} steps={__HIW_MENTORPREMIUM.steps} />
                 {active && (
                   <span className="absolute top-3 right-3 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full">
                     ✓ Active · {status?.plan}

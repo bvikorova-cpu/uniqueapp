@@ -6,6 +6,15 @@ import Navbar from "@/components/Navbar";
 import { useHomeworkCredits, HOMEWORK_CREDITS_PER_QUESTION } from "@/hooks/useHomeworkCredits";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_KIDSHOMEWORKPRICING_STEPS = [
+  { title: 'Pick a pack', desc: 'Packs bundle credits at a lower per-use price.' },
+  { title: 'Pay securely', desc: 'Stripe checkout — parent-approved via parental gate.' },
+  { title: 'Credits appear instantly', desc: 'Credits are usable in Homework Helper right away.' }
+];
+const __HIW_KIDSHOMEWORKPRICING = { title: 'Homework Helper Pricing', intro: 'Choose a pack for Kids Homework Helper.', steps: __HIW_KIDSHOMEWORKPRICING_STEPS };
+
 
 const PACKS = [
   { credits: 15, label: "Starter", description: "5 questions", popular: false },
@@ -35,6 +44,7 @@ const KidsHomeworkPricing = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <FloatingHowItWorks title={__HIW_KIDSHOMEWORKPRICING.title} intro={__HIW_KIDSHOMEWORKPRICING.intro} steps={__HIW_KIDSHOMEWORKPRICING.steps} />
       <Navbar />
       <main className="container mx-auto px-4 py-8 mt-16">
         <div className="max-w-5xl mx-auto">

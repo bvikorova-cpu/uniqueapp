@@ -8,6 +8,16 @@ import { useToast } from "@/hooks/use-toast";
 import Navbar from "@/components/Navbar";
 import { Users, TrendingUp, DollarSign, Activity } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_KIDSSCIENCEADMIN_STEPS = [
+  { title: 'Review experiments', desc: 'See all uploaded experiments and their moderation status.' },
+  { title: 'Approve or reject', desc: 'Only approved experiments are visible to kids.' },
+  { title: 'Manage categories', desc: 'Organise experiments by topic and age.' },
+  { title: 'Audit safety', desc: 'Ensure every experiment is age-safe.' }
+];
+const __HIW_KIDSSCIENCEADMIN = { title: 'Science Lab Admin', intro: 'Admin view for managing Kids Science Lab content.', steps: __HIW_KIDSSCIENCEADMIN_STEPS };
+
 
 interface SubscriptionStats {
   totalSubscribers: number;
@@ -163,6 +173,7 @@ export default function KidsScienceAdmin() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <FloatingHowItWorks title={__HIW_KIDSSCIENCEADMIN.title} intro={__HIW_KIDSSCIENCEADMIN.intro} steps={__HIW_KIDSSCIENCEADMIN.steps} />
       <Navbar />
       <main className="flex-1 container mx-auto px-4 py-8 mt-20">
         <div className="mb-8">

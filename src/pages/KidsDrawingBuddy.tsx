@@ -21,6 +21,16 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_KIDSDRAWINGBUDDY_STEPS = [
+  { title: 'Draw anything', desc: 'Free-draw on the safe kids canvas.' },
+  { title: 'AI transforms it', desc: 'The buddy turns the doodle into a colorful artwork.' },
+  { title: 'Save and print', desc: 'Download to print or share via safe kids share view.' },
+  { title: 'Uses credits', desc: 'Each AI transformation costs a few credits.' }
+];
+const __HIW_KIDSDRAWINGBUDDY = { title: 'Kids Drawing Buddy', intro: 'An AI drawing companion — turns doodles into art.', steps: __HIW_KIDSDRAWINGBUDDY_STEPS };
+
 const PARENTAL_GATE_KEY = "parental_gate_verified_kids_drawing_buddy";
 const WIZARD_STEPS = ["Category", "Topic", "Difficulty", "Draw!"];
 
@@ -132,6 +142,7 @@ const KidsDrawingBuddy = () => {
   if (!isVerified) {
     return (
       <div className="min-h-screen">
+      <FloatingHowItWorks title={__HIW_KIDSDRAWINGBUDDY.title} intro={__HIW_KIDSDRAWINGBUDDY.intro} steps={__HIW_KIDSDRAWINGBUDDY.steps} />
         <ParentalGate
           isOpen={true}
           storageKey={PARENTAL_GATE_KEY}

@@ -19,6 +19,16 @@ import { useEducationalProgress } from "@/hooks/useEducationalProgress";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AnimatePresence, motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_EDUCATIONALSTORIES_STEPS = [
+  { title: 'Browse by topic', desc: 'Stories are grouped by subject and age.' },
+  { title: 'Read or listen', desc: 'Each story has audio narration.' },
+  { title: 'Answer comprehension', desc: 'Short questions turn reading into learning.' },
+  { title: 'Earn stars & badges', desc: 'Completing stories rewards progress.' }
+];
+const __HIW_EDUCATIONALSTORIES = { title: 'Educational Stories', intro: 'Stories that teach — history, science and life lessons.', steps: __HIW_EDUCATIONALSTORIES_STEPS };
+
 
 interface EducationalTopic {
   id: string;
@@ -162,6 +172,7 @@ export default function EducationalStories() {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-amber-50 via-orange-50 to-rose-50 flex items-center justify-center">
+      <FloatingHowItWorks title={__HIW_EDUCATIONALSTORIES.title} intro={__HIW_EDUCATIONALSTORIES.intro} steps={__HIW_EDUCATIONALSTORIES.steps} />
         <Card className="p-8"><CardContent><p className="text-lg text-muted-foreground">Loading...</p></CardContent></Card>
       </div>
     );

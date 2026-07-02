@@ -6,6 +6,15 @@ import { useScienceCredits, SCIENCE_CREDITS_PER_RUN } from "@/hooks/useScienceCr
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_KIDSSCIENCEPRICING_STEPS = [
+  { title: 'Pick a pack', desc: 'Packs bundle credits at a lower per-use price.' },
+  { title: 'Pay securely', desc: 'Stripe checkout — parent-approved via parental gate.' },
+  { title: 'Credits appear instantly', desc: 'Credits are usable in Science Lab right away.' }
+];
+const __HIW_KIDSSCIENCEPRICING = { title: 'Science Lab Pricing', intro: 'Choose a pack for Kids Science Lab.', steps: __HIW_KIDSSCIENCEPRICING_STEPS };
+
 
 const PACKS = [
   { credits: 10, price: 5, label: "Starter", subtitle: `~${Math.floor(10 / SCIENCE_CREDITS_PER_RUN)} analyses` },
@@ -35,6 +44,7 @@ const KidsSciencePricing = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <FloatingHowItWorks title={__HIW_KIDSSCIENCEPRICING.title} intro={__HIW_KIDSSCIENCEPRICING.intro} steps={__HIW_KIDSSCIENCEPRICING.steps} />
       <Navbar />
       <main className="container mx-auto px-4 py-8 mt-16">
         <div className="max-w-5xl mx-auto">

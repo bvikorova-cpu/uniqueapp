@@ -4,6 +4,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Brain, Layers, Flame, Trophy, Award, Calculator, FileText, Users, GraduationCap, Sparkles } from "lucide-react";
 import { useEducationStats } from "@/hooks/useEducationStats";
 import { Helmet } from "react-helmet-async";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_EDUCATIONHUB_STEPS = [
+  { title: 'Browse the tools', desc: 'AI Tutor, Math Solver, Flashcards, Notes, Skill Tree, Study Groups.' },
+  { title: 'Track streaks', desc: 'Daily Challenge and streak counter reward consistency.' },
+  { title: 'Compete in Leagues', desc: 'Weekly leaderboards move top learners into higher leagues.' },
+  { title: 'Collect achievements', desc: "Certificates and badges document what you've mastered." }
+];
+const __HIW_EDUCATIONHUB = { title: 'Education Hub', intro: 'The starting point for every learning tool.', steps: __HIW_EDUCATIONHUB_STEPS };
+
 
 const FEATURES = [
   { to: "/education/daily", icon: Flame, title: "Daily Challenge", desc: "5 questions · 50 XP" },
@@ -63,6 +73,7 @@ export default function EducationHub() {
 function Stat({ label, value }: { label: string; value: any }) {
   return (
     <Card className="backdrop-blur-xl bg-card/80">
+      <FloatingHowItWorks title={__HIW_EDUCATIONHUB.title} intro={__HIW_EDUCATIONHUB.intro} steps={__HIW_EDUCATIONHUB.steps} />
       <CardContent className="p-4 text-center">
         <div className="text-2xl font-black">{value}</div>
         <div className="text-xs text-muted-foreground">{label}</div>

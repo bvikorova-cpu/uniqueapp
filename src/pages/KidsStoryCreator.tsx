@@ -21,6 +21,16 @@ import { useNavigate } from "react-router-dom";
 import { useKidsStoryCreator } from "@/hooks/useKidsStoryCreator";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_KIDSSTORYCREATOR_STEPS = [
+  { title: 'Choose theme & hero', desc: 'Pick a setting and a main character.' },
+  { title: 'Write the story', desc: 'Type or dictate — AI suggests next sentences.' },
+  { title: 'Add illustrations', desc: 'AI generates a picture for each scene.' },
+  { title: 'Save or share safely', desc: 'Save to library or share via safe kids share view.' }
+];
+const __HIW_KIDSSTORYCREATOR = { title: 'Kids Story Creator', intro: 'Kids create their own illustrated stories with AI.', steps: __HIW_KIDSSTORYCREATOR_STEPS };
+
 const KidsStoryCreator = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -133,6 +143,7 @@ const KidsStoryCreator = () => {
   if (!isVerified) {
     return (
       <div className="min-h-screen">
+      <FloatingHowItWorks title={__HIW_KIDSSTORYCREATOR.title} intro={__HIW_KIDSSTORYCREATOR.intro} steps={__HIW_KIDSSTORYCREATOR.steps} />
         <ParentalGate
           isOpen={true}
           storageKey={PARENTAL_GATE_KEY}

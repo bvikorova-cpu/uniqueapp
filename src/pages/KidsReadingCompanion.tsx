@@ -23,6 +23,16 @@ import { ReadAloudPlayer } from "@/components/kids-reading/ReadAloudPlayer";
 import { WordDefinitionPopover } from "@/components/kids-reading/WordDefinitionPopover";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_KIDSREADINGCOMPANION_STEPS = [
+  { title: 'Choose a text', desc: 'Pick a book, story or upload a reading task.' },
+  { title: 'Read aloud', desc: 'The companion listens and gently corrects pronunciation.' },
+  { title: 'Get a fluency score', desc: 'A score tracks progress over time.' },
+  { title: 'Practice weak words', desc: 'Words missed are added to a practice list.' }
+];
+const __HIW_KIDSREADINGCOMPANION = { title: 'Kids Reading Companion', intro: 'AI companion that listens to kids read aloud.', steps: __HIW_KIDSREADINGCOMPANION_STEPS };
+
 const PARENTAL_GATE_KEY = "parental_gate_verified_kids_reading_companion";
 
 const KidsReadingCompanion = () => {
@@ -128,6 +138,7 @@ const KidsReadingCompanion = () => {
   if (!isVerified) {
     return (
       <div className="min-h-screen">
+      <FloatingHowItWorks title={__HIW_KIDSREADINGCOMPANION.title} intro={__HIW_KIDSREADINGCOMPANION.intro} steps={__HIW_KIDSREADINGCOMPANION.steps} />
         <ParentalGate
           isOpen={true}
           storageKey={PARENTAL_GATE_KEY}

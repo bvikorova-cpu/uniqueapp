@@ -25,6 +25,17 @@ import { KidsProfileBadges } from "@/components/kids/KidsProfileBadges";
 import { UnderageWelcomeBanner } from "@/components/kids/UnderageWelcomeBanner";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_KIDSCHANNEL_STEPS = [
+  { title: 'Parental gate first', desc: 'A quick math challenge protects premium and settings.' },
+  { title: 'Pick a show', desc: 'Browse curated shows — all content is age-rated and moderated.' },
+  { title: 'Earn Daily Stars', desc: 'Watching, learning and quizzes give stars, badges and streaks.' },
+  { title: 'Explore the map', desc: 'Adventure Map, Weekly Themes and Story Creator keep it fresh.' },
+  { title: 'Gold Pass perks', desc: 'Optional Gold Pass unlocks premium shows and no ads.' }
+];
+const __HIW_KIDSCHANNEL = { title: 'Kids Channel', intro: 'Safe, moderated shows and learning games for ages 6–12.', steps: __HIW_KIDSCHANNEL_STEPS };
+
 interface Show {
   id: string;
   title: string;
@@ -288,6 +299,7 @@ const KidsChannel = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-pink-500 to-blue-400">
+      <FloatingHowItWorks title={__HIW_KIDSCHANNEL.title} intro={__HIW_KIDSCHANNEL.intro} steps={__HIW_KIDSCHANNEL.steps} />
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}

@@ -15,10 +15,21 @@ import { Coins, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_KIDSACADEMY_STEPS = [
+  { title: 'Pick a subject', desc: 'Math, reading, science and more — each level-appropriate.' },
+  { title: 'Play a lesson', desc: 'Short, gamified lessons keep attention high.' },
+  { title: 'Take the quiz', desc: 'Quizzes reward stars and badges.' },
+  { title: 'Parents can review', desc: 'Progress shows in the Parental Dashboard.' }
+];
+const __HIW_KIDSACADEMY = { title: 'Kids Academy', intro: 'Fun mini-lessons and quizzes designed for ages 6–12.', steps: __HIW_KIDSACADEMY_STEPS };
+
 const KidsAcademy = () => {
   const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-background">
+      <FloatingHowItWorks title={__HIW_KIDSACADEMY.title} intro={__HIW_KIDSACADEMY.intro} steps={__HIW_KIDSACADEMY.steps} />
       <Navbar />
       <main className="container mx-auto px-4 py-8 mt-16">
         <div className="max-w-6xl mx-auto">

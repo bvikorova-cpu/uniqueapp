@@ -26,6 +26,16 @@ import { ImmersiveCharacterCard } from "@/components/kids/chat/ImmersiveCharacte
 import { MagicalParticles } from "@/components/kids/chat/MagicalParticles";
 import { characterImages } from "@/data/characterImages";
 import Navbar from "@/components/Navbar";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_KIDSVOICECHAT_STEPS = [
+  { title: 'Press to talk', desc: 'Kid holds the mic to talk to the AI companion.' },
+  { title: 'Safe by design', desc: 'Content is moderated in real time; nothing unsafe gets through.' },
+  { title: 'Learn while chatting', desc: 'The companion sneaks in learning through conversation.' },
+  { title: 'Parent transcript', desc: 'Parents can review transcripts in the dashboard.' }
+];
+const __HIW_KIDSVOICECHAT = { title: 'Kids Voice Chat', intro: 'A safe voice conversation companion for kids.', steps: __HIW_KIDSVOICECHAT_STEPS };
+
 
 const HISTORY_PREFIX = "kids_voicechat_history_v1:";
 
@@ -229,6 +239,7 @@ export default function KidsVoiceChat() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-violet-100 via-pink-50 to-cyan-100 relative overflow-hidden">
+      <FloatingHowItWorks title={__HIW_KIDSVOICECHAT.title} intro={__HIW_KIDSVOICECHAT.intro} steps={__HIW_KIDSVOICECHAT.steps} />
       <Navbar />
       <MagicalParticles count={10} />
 

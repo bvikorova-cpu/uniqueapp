@@ -5,6 +5,16 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Flame, CheckCircle2 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_DAILYCHALLENGE_STEPS = [
+  { title: 'Come back daily', desc: 'A new challenge unlocks every 24 hours.' },
+  { title: 'Answer within the time', desc: 'Faster answers give bigger XP rewards.' },
+  { title: 'Grow the streak', desc: 'Consecutive days multiply your rewards.' },
+  { title: 'Miss a day?', desc: 'Use a Streak Freeze from Rewards to protect it.' }
+];
+const __HIW_DAILYCHALLENGE = { title: 'Daily Challenge', intro: 'A fresh mini-quiz every day to keep your streak alive.', steps: __HIW_DAILYCHALLENGE_STEPS };
+
 
 export default function DailyChallenge() {
   const { data, isLoading, refetch } = useDailyChallenge();
@@ -36,6 +46,7 @@ export default function DailyChallenge() {
   if (data.completed || done) {
     return (
       <div className="container mx-auto px-4 pt-20 pb-12 max-w-xl">
+      <FloatingHowItWorks title={__HIW_DAILYCHALLENGE.title} intro={__HIW_DAILYCHALLENGE.intro} steps={__HIW_DAILYCHALLENGE.steps} />
         <Helmet><title>Daily Challenge · Education</title></Helmet>
         <Card className="backdrop-blur-xl bg-card/80">
           <CardContent className="p-10 text-center">

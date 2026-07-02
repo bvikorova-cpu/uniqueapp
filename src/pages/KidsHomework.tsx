@@ -27,6 +27,16 @@ import { SafeContentBadge } from "@/components/kids/SafeContentBadge";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_KIDSHOMEWORK_STEPS = [
+  { title: 'Type or snap homework', desc: 'Kid photographs or types the question.' },
+  { title: 'Get hints, not answers', desc: 'The helper coaches step by step, encouraging thinking.' },
+  { title: 'Practice similar problems', desc: 'Once solved, similar practice questions appear.' },
+  { title: 'Parent review mode', desc: 'Parents can review sessions in the dashboard.' }
+];
+const __HIW_KIDSHOMEWORK = { title: 'Kids Homework Helper', intro: 'A gentle homework helper that guides — never gives away the answer.', steps: __HIW_KIDSHOMEWORK_STEPS };
+
 
 const KidsHomework = () => {
   const { user } = useAuth();
@@ -151,6 +161,7 @@ const KidsHomework = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <FloatingHowItWorks title={__HIW_KIDSHOMEWORK.title} intro={__HIW_KIDSHOMEWORK.intro} steps={__HIW_KIDSHOMEWORK.steps} />
       <Navbar />
       <main className="container mx-auto px-4 py-8 mt-16">
         <div className="max-w-6xl mx-auto">

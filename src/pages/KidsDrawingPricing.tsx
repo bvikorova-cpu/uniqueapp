@@ -6,6 +6,15 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { useKidsDrawingCredits, KIDS_DRAWING_CREDIT_COST } from "@/hooks/useKidsDrawingCredits";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_KIDSDRAWINGPRICING_STEPS = [
+  { title: 'Pick a pack', desc: 'Packs bundle credits at a lower per-use price.' },
+  { title: 'Pay securely', desc: 'Stripe checkout — parent-approved via parental gate.' },
+  { title: 'Credits appear instantly', desc: 'Credits are usable in Drawing Buddy right away.' }
+];
+const __HIW_KIDSDRAWINGPRICING = { title: 'Drawing Buddy Pricing', intro: 'Choose a pack for Kids Drawing Buddy.', steps: __HIW_KIDSDRAWINGPRICING_STEPS };
+
 
 const PACKS = [
   { credits: 10, price: "€4.99", label: "Starter", description: "5 AI drawing operations" },
@@ -30,6 +39,7 @@ const KidsDrawingPricing = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <FloatingHowItWorks title={__HIW_KIDSDRAWINGPRICING.title} intro={__HIW_KIDSDRAWINGPRICING.intro} steps={__HIW_KIDSDRAWINGPRICING.steps} />
       <Navbar />
       <main className="container mx-auto px-4 py-8 mt-16">
         <div className="max-w-5xl mx-auto">
