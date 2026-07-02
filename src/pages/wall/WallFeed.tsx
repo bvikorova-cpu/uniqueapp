@@ -18,6 +18,30 @@ import { GroupChatDialog } from "@/components/wall/GroupChatDialog";
 import { ProfileCustomizationDialog } from "@/components/profile/ProfileCustomizationDialog";
 import { SpacesDialog } from "@/components/wall/SpacesDialog";
 import { useUserMutes } from "@/hooks/useUserMutes";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const WALL_HIW_STEPS = [
+  { title: "Feed tabs (For You / Following / Trending / Latest / Friends)", desc: "Switch what you see: personalized picks, only people you follow, hottest posts right now, newest globally, or just your friends." },
+  { title: "Notes bar (24h status)", desc: "The row of avatars on top are short 24-hour status notes — tap one to read, tap your own to post a mood, question or link that disappears after a day." },
+  { title: "Create a post", desc: "Use the composer / plus button to post text, photos, videos, polls, or GIFs. Add hashtags and mentions with # and @." },
+  { title: "Reactions, comments, share, repost", desc: "❤️ like, 💬 comment, 🔁 repost with your own comment, and ↗️ share externally. Long-press the like for extra reactions." },
+  { title: "Bookmark / Save", desc: "The bookmark icon saves a post to Wall → Saved so you can find it later without scrolling." },
+  { title: "Search bar", desc: "Search posts, people, hashtags and groups. Save frequent searches from the ⭐ icon so you can rerun them from Saved Searches." },
+  { title: "Filters (Sort / Time / Category)", desc: "Sort by newest, oldest, most liked or most commented. Narrow by today/week/month or to text-only, image or video posts. Reset returns to defaults." },
+  { title: "Profile Customization", desc: "Edit your banner, avatar, bio, pinned post, and theme colors that appear on your public profile." },
+  { title: "Spaces", desc: "Live audio rooms. Open Spaces to join a running room or start your own drop-in voice chat with followers." },
+  { title: "Group Chat", desc: "Create or open a multi-person chat with friends — separate from 1:1 Messages." },
+  { title: "Close Friends", desc: "A private circle. Posts marked 'Close Friends only' are shown just to people on this list." },
+  { title: "Followed Topics", desc: "Follow hashtags/topics so their posts appear in your For You feed even if you don't follow the author." },
+  { title: "Saved Searches", desc: "One-tap access to searches you saved from the search bar." },
+  { title: "Muted Users", desc: "Hide all posts from a specific user without unfollowing or blocking them." },
+  { title: "Muted Keywords", desc: "Auto-hide posts containing words or phrases you don't want to see (e.g. spoilers)." },
+  { title: "Achievements badge", desc: "Shows XP, level and unlocked Wall achievements — tap for details and next goals." },
+  { title: "Pull to refresh", desc: "On mobile, pull the feed down until the spinner spins to load the freshest posts." },
+  { title: "Wall sub-pages", desc: "Use the Wall menu to jump to Videos (TikTok-style), Stories, Trending, Friends, Groups, Pages, Events, Memories, Messages, Saved, Info." },
+  { title: "Post menu (⋯)", desc: "On any post: report, mute author, mute keyword, copy link, or delete (your own posts)." },
+  { title: "Notifications & DMs", desc: "The bell (top nav) shows likes, comments, follows, mentions. The envelope opens Messages for private 1:1 chat." },
+];
 
 import type { Post, Repost, FeedItem } from "@/types/database";
 
@@ -153,6 +177,15 @@ export default function WallFeed({
           <NotesBar />
 
           {/* Smart feed tabs are rendered by the Wall page (parent) — do not duplicate here */}
+
+          {/* Search Bar */}
+          <div className="flex justify-end">
+            <FloatingHowItWorks
+              title="Wall"
+              intro="The Wall is your social feed. Here's what every button and feature does — so nothing on this page is a mystery."
+              steps={WALL_HIW_STEPS}
+            />
+          </div>
 
           {/* Search Bar */}
           <SearchBar />
