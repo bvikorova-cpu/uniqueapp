@@ -91,6 +91,13 @@ const BeautyStudio = () => {
           className="absolute inset-0 w-full h-full object-cover brightness-[1.3] saturate-[1.2]"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+        <div className="absolute top-20 right-3 sm:right-6 z-10">
+          <HowItWorksButton
+            title="Beauty Studio"
+            intro="AI-powered beauty hub with makeup, skincare, hair, nails and celebrity matching."
+            steps={BEAUTY_HOW_IT_WORKS}
+          />
+        </div>
 
         <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-8">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, type: "spring" }}>
