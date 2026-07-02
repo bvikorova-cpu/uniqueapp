@@ -11,6 +11,7 @@ interface Props {
   onBack: () => void;
   title: string;
   desc: string;
+  description: string;
   icon: LucideIcon;
   action: string;
   credits: number;
