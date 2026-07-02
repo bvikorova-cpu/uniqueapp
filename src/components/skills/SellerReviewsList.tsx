@@ -7,6 +7,7 @@ import { useSellerReviews } from "@/hooks/useSellerReviews";
 import ReportReviewButton from "@/components/skills/ReportReviewButton";
 import { formatDistanceToNow } from "date-fns";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props { sellerId: string }
 
 type Profile = { id: string; full_name: string | null; avatar_url: string | null };
@@ -30,7 +31,14 @@ export default function SellerReviewsList({ sellerId }: Props) {
   }, [reviews]);
 
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title="How Seller Reviews List works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <Card>
       <CardHeader>
         <CardTitle className="text-base flex items-center justify-between">
           <span>Provider reviews</span>
@@ -83,5 +91,6 @@ export default function SellerReviewsList({ sellerId }: Props) {
         )}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

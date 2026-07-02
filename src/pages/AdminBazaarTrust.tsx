@@ -11,6 +11,7 @@ import { BadgeCheck, XCircle, Flag, Loader2, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Verification {
   id: string;
   user_id: string;
@@ -94,6 +95,13 @@ const AdminBazaarTrust = () => {
 
   return (
     <>
+      <FloatingHowItWorks title="How Admin Bazaar Trust works" steps={[
+          { title: 'Browse listings', desc: 'Explore items, services or offers.' },
+          { title: 'Open a detail', desc: 'Review price, seller and terms.' },
+          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
+          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+        ]} />
+      <>
       <SEO title="Admin · Bazaar Trust & Safety" description="Review KYC verifications and listing reports." canonical="/admin/bazaar-trust" />
       <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12">
         <div className="container mx-auto px-3 sm:px-4 max-w-6xl space-y-6">
@@ -211,7 +219,8 @@ const AdminBazaarTrust = () => {
         </div>
       </div>
     </>
-  );
+    </>
+    );
 };
 
 export default AdminBazaarTrust;

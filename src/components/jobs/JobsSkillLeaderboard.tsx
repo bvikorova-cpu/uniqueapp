@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Crown, TrendingUp, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Row {
   rank: number;
   user_id: string;
@@ -71,7 +72,14 @@ export default function JobsSkillLeaderboard() {
   }, []);
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Jobs Skill Leaderboard works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <div className="space-y-6">
       <h2 className="text-xl sm:text-2xl font-black">🏆 Skill Leaderboard</h2>
       <p className="text-sm text-muted-foreground">
         Top candidates ranked by skill XP and activity
@@ -129,5 +137,6 @@ export default function JobsSkillLeaderboard() {
         </div>
       )}
     </div>
-  );
+    </>
+    );
 }

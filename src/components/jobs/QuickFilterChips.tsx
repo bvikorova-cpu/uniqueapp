@@ -1,6 +1,7 @@
 import { Zap, Laptop, DollarSign, Clock, Flame, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface QuickFilter {
   label: string;
   icon: React.ReactNode;
@@ -25,7 +26,14 @@ interface QuickFilterChipsProps {
 
 export function QuickFilterChips({ activeFilter, onFilterChange }: QuickFilterChipsProps) {
   return (
-    <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide mb-4">
+    <>
+      <FloatingHowItWorks title="How Quick Filter Chips works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide mb-4">
       {QUICK_FILTERS.map((filter) => (
         <button
           key={filter.key}
@@ -42,5 +50,6 @@ export function QuickFilterChips({ activeFilter, onFilterChange }: QuickFilterCh
         </button>
       ))}
     </div>
-  );
+    </>
+    );
 }

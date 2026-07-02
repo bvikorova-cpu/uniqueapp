@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Send, Package, CheckCircle, Loader2, ArrowLeft } from "lucide-react";
 import { format } from "date-fns";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Message {
   id: string;
   sender_id: string;
@@ -168,7 +169,14 @@ export function OrderChat({ order, currentUserId, otherUser, onBack, onStatusCha
   };
 
   return (
-    <Card className="flex flex-col h-[600px]">
+    <>
+      <FloatingHowItWorks title="How Order Chat works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <Card className="flex flex-col h-[600px]">
       <CardHeader className="border-b py-3">
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="icon" onClick={onBack}>
@@ -274,5 +282,6 @@ export function OrderChat({ order, currentUserId, otherUser, onBack, onStatusCha
         )}
       </div>
     </Card>
-  );
+    </>
+    );
 }

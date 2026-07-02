@@ -7,6 +7,7 @@ import { useSellerReviews } from "@/hooks/useSellerReviews";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props {
   sellerId: string;
 }
@@ -39,7 +40,14 @@ export const SellerReviewsPanel = ({ sellerId }: Props) => {
   };
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title="How Seller Reviews Panel works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <div className="space-y-4">
       <Card className="p-4 flex items-center gap-4">
         <div className="text-4xl font-black bg-gradient-to-br from-amber-400 to-pink-500 bg-clip-text text-transparent">
           {avgRating.toFixed(1)}
@@ -80,5 +88,6 @@ export const SellerReviewsPanel = ({ sellerId }: Props) => {
         )}
       </div>
     </div>
-  );
+    </>
+    );
 };

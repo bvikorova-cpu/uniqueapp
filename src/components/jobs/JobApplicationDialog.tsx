@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Briefcase, Upload } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface JobApplicationDialogProps {
   jobId: string;
   jobTitle: string;
@@ -93,7 +94,14 @@ export const JobApplicationDialog = ({ jobId, jobTitle, companyName }: JobApplic
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+      <FloatingHowItWorks title="How Job Application Dialog works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="w-full">
           <Briefcase className="mr-2 h-4 w-4" />
@@ -154,5 +162,6 @@ export const JobApplicationDialog = ({ jobId, jobTitle, companyName }: JobApplic
         </form>
       </DialogContent>
     </Dialog>
-  );
+    </>
+    );
 };

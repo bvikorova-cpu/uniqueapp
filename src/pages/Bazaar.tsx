@@ -42,6 +42,7 @@ import { Flag, Loader2 } from "lucide-react";
 import { VerifiedSellersProvider } from "@/components/bazaar/VerifiedSellersContext";
 import { SellerConnectGate } from "@/components/commerce/SellerConnectGate";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface BazaarItem {
   id: string;
   title: string;
@@ -416,6 +417,13 @@ const Bazaar = () => {
 
   return (
     <>
+      <FloatingHowItWorks title="How Bazaar works" steps={[
+          { title: 'Browse listings', desc: 'Explore items, services or offers.' },
+          { title: 'Open a detail', desc: 'Review price, seller and terms.' },
+          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
+          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+        ]} />
+      <>
       <SEO
         title="Bazaar - Buy & sell with smart AI tools"
         description="List items, set the right price with AI estimator, and find buyers fast. Unique Bazaar — your community marketplace."
@@ -942,7 +950,8 @@ const Bazaar = () => {
       </div>
     </div>
     </>
-  );
+    </>
+    );
 };
 
 export default Bazaar;

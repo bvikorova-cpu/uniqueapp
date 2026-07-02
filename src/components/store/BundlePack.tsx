@@ -3,6 +3,7 @@ import { Gift, Sparkles, Check, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export interface BundleItem {
   emoji: string;
   name: string;
@@ -53,7 +54,14 @@ export const BundlePack = ({
   const savingsPct = Math.round((savings / originalPrice) * 100);
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title="How Bundle Pack works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -106,5 +114,6 @@ export const BundlePack = ({
         </Button>
       </div>
     </motion.div>
-  );
+    </>
+    );
 };

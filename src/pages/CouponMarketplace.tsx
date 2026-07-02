@@ -52,6 +52,7 @@ import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { Link } from "react-router-dom";
 import { SellerConnectGate } from "@/components/commerce/SellerConnectGate";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const brandSlug = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 interface CouponListing {
   id: string; title: string; description: string | null; store_name: string;
@@ -326,7 +327,14 @@ const CouponMarketplace = () => {
   // Paywall
   if (!hasAccess) {
     return (
-      <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12">
+      <>
+        <FloatingHowItWorks title="How Coupon Marketplace works" steps={[
+          { title: 'Browse listings', desc: 'Explore items, services or offers.' },
+          { title: 'Open a detail', desc: 'Review price, seller and terms.' },
+          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
+          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+        ]} />
+        <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12">
         <div className="container mx-auto px-3 sm:px-4 max-w-6xl">
           <CouponHero couponCount={156} />
 
@@ -429,7 +437,8 @@ const CouponMarketplace = () => {
           </motion.div>
         </div>
       </div>
-    );
+      </>
+      );
   }
 
   // AI Tool Views

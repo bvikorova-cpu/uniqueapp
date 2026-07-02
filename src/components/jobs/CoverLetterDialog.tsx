@@ -7,6 +7,7 @@ import { Mail, Sparkles, Loader2, Copy } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export function CoverLetterDialog({ jobId, jobTitle, jobDescription, companyName }: { jobId: string; jobTitle: string; jobDescription: string; companyName: string }) {
   const [open, setOpen] = useState(false);
   const [content, setContent] = useState("");
@@ -41,7 +42,14 @@ export function CoverLetterDialog({ jobId, jobTitle, jobDescription, companyName
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+      <FloatingHowItWorks title="How Cover Letter Dialog works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm"><Mail className="h-4 w-4 mr-1.5" />Cover letter</Button>
       </DialogTrigger>
@@ -74,5 +82,6 @@ export function CoverLetterDialog({ jobId, jobTitle, jobDescription, companyName
         </div>
       </DialogContent>
     </Dialog>
-  );
+    </>
+    );
 }

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 // Public VAPID key - if you have one stored, set it via env, else fallback prompts user
 const VAPID_PUBLIC = (import.meta.env.VITE_VAPID_PUBLIC_KEY as string) || "";
 
@@ -70,9 +71,17 @@ export function JobsPushButton() {
   };
 
   return (
-    <Button size="sm" variant="outline" className="text-xs" onClick={enabled ? disable : enable} disabled={busy}>
+    <>
+      <FloatingHowItWorks title="How Jobs Push Button works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <Button size="sm" variant="outline" className="text-xs" onClick={enabled ? disable : enable} disabled={busy}>
       {enabled ? <BellOff className="h-3.5 w-3.5 mr-1" /> : <Bell className="h-3.5 w-3.5 mr-1" />}
       {enabled ? "Push on" : "Enable push"}
     </Button>
-  );
+    </>
+    );
 }

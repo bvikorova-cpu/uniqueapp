@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import DisputeModal from "./DisputeModal";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface OrderActionsProps {
   orderId: string;
   status: string;
@@ -100,7 +101,14 @@ export function OrderActions({
   const isDisputed = status === 'disputed' || escrowStatus === 'disputed';
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <>
+      <FloatingHowItWorks title="How Order Actions works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <div className="flex flex-wrap gap-2">
       {/* Seller: Mark as shipped */}
       {isSeller && status === 'paid' && (
         <Button onClick={handleMarkShipped} disabled={loading} className="gap-2">
@@ -180,7 +188,8 @@ export function OrderActions({
         </div>
       )}
     </div>
-  );
+    </>
+    );
 }
 
 export default OrderActions;

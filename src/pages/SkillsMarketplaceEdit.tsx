@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Trash2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const CATEGORIES = ["construction", "repairs", "cleaning", "gardening", "technology", "teaching", "creative", "other"] as const;
 
 const Schema = z.object({
@@ -74,12 +75,20 @@ export default function SkillsMarketplaceEdit() {
 
   if (ownerMismatch) {
     return (
-      <div className="container mx-auto px-4 py-16 max-w-xl text-center">
+      <>
+        <FloatingHowItWorks title="How Skills Marketplace Edit works" steps={[
+          { title: 'Browse listings', desc: 'Explore items, services or offers.' },
+          { title: 'Open a detail', desc: 'Review price, seller and terms.' },
+          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
+          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+        ]} />
+        <div className="container mx-auto px-4 py-16 max-w-xl text-center">
         <h1 className="text-2xl font-bold mb-2">Not allowed</h1>
         <p className="text-muted-foreground mb-6">You can only edit offerings you created.</p>
         <Button asChild><Link to="/skills-marketplace/mine">My Offerings</Link></Button>
       </div>
-    );
+      </>
+      );
   }
 
   const submit = async (e: React.FormEvent) => {

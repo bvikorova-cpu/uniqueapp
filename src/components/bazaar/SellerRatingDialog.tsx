@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props {
   open: boolean;
   onOpenChange: (v: boolean) => void;
@@ -60,7 +61,14 @@ export const SellerRatingDialog = ({ open, onOpenChange, orderId, sellerId, buye
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <>
+      <FloatingHowItWorks title="How Seller Rating Dialog works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{existingId ? "Update your rating" : "Rate the seller"}</DialogTitle>
@@ -99,7 +107,8 @@ export const SellerRatingDialog = ({ open, onOpenChange, orderId, sellerId, buye
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+    </>
+    );
 };
 
 export default SellerRatingDialog;

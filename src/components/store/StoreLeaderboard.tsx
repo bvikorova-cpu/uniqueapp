@@ -4,6 +4,7 @@ import { Trophy, Crown, Medal, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface LeaderRow {
   user_id: string;
   display_name: string | null;
@@ -78,10 +79,18 @@ export const StoreLeaderboard = ({ currentUserId }: { currentUserId?: string }) 
 
   if (loading) {
     return (
-      <div className="rounded-2xl border border-border/40 bg-card/40 backdrop-blur-xl p-6 text-center text-sm text-muted-foreground">
+      <>
+        <FloatingHowItWorks title="How Store Leaderboard works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+        <div className="rounded-2xl border border-border/40 bg-card/40 backdrop-blur-xl p-6 text-center text-sm text-muted-foreground">
         Loading top collectors…
       </div>
-    );
+      </>
+      );
   }
 
   if (rows.length === 0) {

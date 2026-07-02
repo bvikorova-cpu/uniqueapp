@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle2, Loader2, AlertCircle, ListOrdered } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function SkillsMarketplaceOrderSuccess() {
   const [params] = useSearchParams();
   const sessionId = params.get("session_id");
@@ -32,7 +33,14 @@ export default function SkillsMarketplaceOrderSuccess() {
   }, [sessionId]);
 
   return (
-    <div className="container mx-auto px-4 py-16 max-w-xl">
+    <>
+      <FloatingHowItWorks title="How Skills Marketplace Order Success works" steps={[
+          { title: 'Browse listings', desc: 'Explore items, services or offers.' },
+          { title: 'Open a detail', desc: 'Review price, seller and terms.' },
+          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
+          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+        ]} />
+      <div className="container mx-auto px-4 py-16 max-w-xl">
       <Card>
         <CardContent className="py-10 text-center space-y-4">
           {state === "verifying" && (
@@ -71,5 +79,6 @@ export default function SkillsMarketplaceOrderSuccess() {
         </CardContent>
       </Card>
     </div>
-  );
+    </>
+    );
 }

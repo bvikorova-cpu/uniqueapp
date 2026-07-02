@@ -29,6 +29,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface ResumeAnalysis {
   professionalScore: number;
   scoreBreakdown: {
@@ -179,6 +180,13 @@ export function AIJobOptimizer() {
 
   return (
     <>
+      <FloatingHowItWorks title="How AIJob Optimizer works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button variant="outline" size="sm" className="gap-1 md:gap-2 text-xs md:text-sm border-primary/30 hover:border-primary/50 hover:bg-primary/5">
@@ -574,5 +582,6 @@ Include your:
         </DialogContent>
       </Dialog>
     </>
-  );
+    </>
+    );
 }

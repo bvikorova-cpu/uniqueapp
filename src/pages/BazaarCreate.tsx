@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function BazaarCreate() {
   const nav = useNavigate();
   const { toast } = useToast();
@@ -30,7 +31,14 @@ export default function BazaarCreate() {
   };
 
   return (
-    <main className="container max-w-2xl py-8">
+    <>
+      <FloatingHowItWorks title="How Bazaar Create works" steps={[
+          { title: 'Browse listings', desc: 'Explore items, services or offers.' },
+          { title: 'Open a detail', desc: 'Review price, seller and terms.' },
+          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
+          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+        ]} />
+      <main className="container max-w-2xl py-8">
       <h1 className="text-3xl font-bold mb-6">Create Listing</h1>
       <Card>
         <CardHeader><CardTitle>New item</CardTitle></CardHeader>
@@ -42,5 +50,6 @@ export default function BazaarCreate() {
         </CardContent>
       </Card>
     </main>
-  );
+    </>
+    );
 }

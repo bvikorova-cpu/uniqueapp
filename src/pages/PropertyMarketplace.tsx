@@ -35,6 +35,7 @@ import { motion } from "framer-motion";
 import { useCommissionRate } from "@/hooks/useCommissionSettings";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ViewType = "hub" | "map" | "valuator" | "analytics" | "staging" | "mortgage" | "alerts" | "neighborhood" | "photos" | "compare" | "chatbot" | "documents" | "negotiate";
 
 const LISTING_PACKAGES = [
@@ -234,7 +235,14 @@ export default function PropertyMarketplace() {
   if (activeView === "negotiate") return wrap(PropertyNegotiation);
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <FloatingHowItWorks title="How Property Marketplace works" steps={[
+          { title: 'Browse listings', desc: 'Explore items, services or offers.' },
+          { title: 'Open a detail', desc: 'Review price, seller and terms.' },
+          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
+          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+        ]} />
+      <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-24">
         {/* Hero */}
         <PropertyHero />
@@ -619,5 +627,6 @@ export default function PropertyMarketplace() {
       <PropertyDetailDialog property={selectedProperty} open={showDetailDialog} onOpenChange={setShowDetailDialog} />
       <LeadBoostDialog open={leadBoostDialogOpen} onOpenChange={setLeadBoostDialogOpen} />
     </div>
-  );
+    </>
+    );
 }

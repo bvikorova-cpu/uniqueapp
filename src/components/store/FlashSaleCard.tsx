@@ -4,6 +4,7 @@ import { Flame, Clock, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface FlashSaleCardProps {
   name: string;
   description: string;
@@ -45,7 +46,14 @@ export const FlashSaleCard = ({
   }, []);
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title="How Flash Sale Card works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <motion.div
       initial={{ opacity: 0, scale: 0.96 }}
       animate={{ opacity: 1, scale: 1 }}
       className="relative overflow-hidden rounded-2xl border-2 border-orange-500/50 bg-gradient-to-br from-orange-500/15 via-red-500/10 to-amber-500/15 backdrop-blur-xl p-5"
@@ -99,5 +107,6 @@ export const FlashSaleCard = ({
         </Button>
       </div>
     </motion.div>
-  );
+    </>
+    );
 };

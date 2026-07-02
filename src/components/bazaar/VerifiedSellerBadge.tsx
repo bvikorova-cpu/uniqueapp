@@ -5,6 +5,7 @@ import { BadgeCheck, Clock } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useVerifiedSellerStatus } from "./VerifiedSellersContext";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props {
   sellerId: string;
   showPending?: boolean;
@@ -38,7 +39,14 @@ export const VerifiedSellerBadge = ({ sellerId, showPending = false }: Props) =>
 
   if (status === "verified") {
     return (
-      <TooltipProvider>
+      <>
+        <FloatingHowItWorks title="How Verified Seller Badge works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+        <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
             <Badge className="bg-emerald-500/15 text-emerald-500 border-emerald-500/30 gap-1">
@@ -48,7 +56,8 @@ export const VerifiedSellerBadge = ({ sellerId, showPending = false }: Props) =>
           <TooltipContent>Identity verified by Unique team</TooltipContent>
         </Tooltip>
       </TooltipProvider>
-    );
+      </>
+      );
   }
   if (status === "pending" && showPending) {
     return (

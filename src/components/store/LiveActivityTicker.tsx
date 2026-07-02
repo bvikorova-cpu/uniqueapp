@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, Zap, TrendingUp } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const ACTIVITIES = [
   { user: "Maria K.", item: "Legendary Crown Badge", emoji: "👑", color: "text-amber-400" },
   { user: "Jakub T.", item: "30-Day Premium Spotlight", emoji: "💎", color: "text-cyan-400" },
@@ -27,7 +28,14 @@ export const LiveActivityTicker = () => {
   const a = ACTIVITIES[index];
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title="How Live Activity Ticker works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <motion.div
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       className="relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-gradient-to-r from-emerald-500/10 via-background/60 to-emerald-500/10 backdrop-blur-xl px-4 py-3 mb-6"
@@ -63,5 +71,6 @@ export const LiveActivityTicker = () => {
         <TrendingUp className="h-4 w-4 text-emerald-400 shrink-0 hidden sm:block" />
       </div>
     </motion.div>
-  );
+    </>
+    );
 };

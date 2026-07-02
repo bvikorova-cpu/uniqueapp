@@ -33,6 +33,7 @@ import { Flame, TrendingUp, Award, Check } from "lucide-react";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { SellerConnectGate } from "@/components/commerce/SellerConnectGate";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Profile {
   full_name: string | null;
   avatar_url: string | null;
@@ -381,10 +382,18 @@ const Marketplace = () => {
       "realtime-bidding": <RealtimeBiddingView onBack={() => setActiveView(null)} />,
     };
     return (
-      <div className="min-h-screen bg-background pt-20 sm:pt-24 pb-12">
+      <>
+        <FloatingHowItWorks title="How Marketplace works" steps={[
+          { title: 'Browse listings', desc: 'Explore items, services or offers.' },
+          { title: 'Open a detail', desc: 'Review price, seller and terms.' },
+          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
+          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+        ]} />
+        <div className="min-h-screen bg-background pt-20 sm:pt-24 pb-12">
         <div className="container mx-auto px-4 max-w-6xl">{viewMap[activeView]}</div>
       </div>
-    );
+      </>
+      );
   }
 
   if (!isSubscribed) {

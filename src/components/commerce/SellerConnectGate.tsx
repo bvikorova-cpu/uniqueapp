@@ -4,6 +4,7 @@ import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { supabase } from "@/integrations/supabase/client";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props {
   /** Compact mode hides the success banner; only shows the warning. */
   compact?: boolean;
@@ -45,7 +46,14 @@ export function SellerConnectGate({ compact = false }: Props) {
 
   if (ready === false) {
     return (
-      <Alert variant="destructive" className="border-amber-500/50 bg-amber-500/10">
+      <>
+        <FloatingHowItWorks title="How Seller Connect Gate works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+        <Alert variant="destructive" className="border-amber-500/50 bg-amber-500/10">
         <AlertCircle className="h-4 w-4" />
         <AlertDescription className="text-xs">
           <strong>Stripe Connect required to receive payouts.</strong> You can publish, but
@@ -53,7 +61,8 @@ export function SellerConnectGate({ compact = false }: Props) {
           <Link to="/earnings" className="underline font-semibold">Connect Stripe →</Link>
         </AlertDescription>
       </Alert>
-    );
+      </>
+      );
   }
 
   if (compact) return null;

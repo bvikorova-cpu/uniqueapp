@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const REASONS = [
   { value: "spam", label: "Spam" },
   { value: "harassment", label: "Harassment / personal attack" },
@@ -54,7 +55,14 @@ export default function ReportReviewButton({ reviewId }: { reviewId: string }) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+      <FloatingHowItWorks title="How Report Review Button works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-destructive h-7 px-2">
           <Flag className="h-3.5 w-3.5" />
@@ -83,5 +91,6 @@ export default function ReportReviewButton({ reviewId }: { reviewId: string }) {
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+    </>
+    );
 }

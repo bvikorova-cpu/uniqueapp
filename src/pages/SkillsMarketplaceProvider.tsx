@@ -10,6 +10,7 @@ import { ArrowLeft, Star, MapPin, Euro, Briefcase } from "lucide-react";
 import SellerReviewsList from "@/components/skills/SellerReviewsList";
 import { SEO } from "@/components/SEO";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type Profile = { id: string; full_name: string | null; avatar_url: string | null; bio: string | null; location: string | null };
 
 type Offering = {
@@ -55,7 +56,14 @@ export default function SkillsMarketplaceProvider() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-5xl">
+    <>
+      <FloatingHowItWorks title="How Skills Marketplace Provider works" steps={[
+          { title: 'Browse listings', desc: 'Explore items, services or offers.' },
+          { title: 'Open a detail', desc: 'Review price, seller and terms.' },
+          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
+          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+        ]} />
+      <div className="container mx-auto px-4 py-8 max-w-5xl">
       <SEO title={`${profile?.full_name || "Provider"} — Skills Marketplace`} description={profile?.bio || "Provider profile"} />
       <Button asChild variant="ghost" className="mb-4 gap-2">
         <Link to="/skills-marketplace"><ArrowLeft className="h-4 w-4" /> Back to marketplace</Link>
@@ -124,5 +132,6 @@ export default function SkillsMarketplaceProvider() {
 
       <SellerReviewsList sellerId={userId!} />
     </div>
-  );
+    </>
+    );
 }

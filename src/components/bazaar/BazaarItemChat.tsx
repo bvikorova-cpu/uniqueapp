@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Send, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Msg {
   id: string;
   item_id: string;
@@ -104,7 +105,14 @@ export const BazaarItemChat = ({ itemId, sellerId, currentUserId }: Props) => {
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <>
+      <FloatingHowItWorks title="How Bazaar Item Chat works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <div className="flex flex-col gap-2">
       <ScrollArea className="h-64 rounded border bg-muted/30 p-3" ref={scrollRef as any}>
         {loading ? (
           <div className="flex justify-center py-8"><Loader2 className="h-5 w-5 animate-spin" /></div>
@@ -150,7 +158,8 @@ export const BazaarItemChat = ({ itemId, sellerId, currentUserId }: Props) => {
         </p>
       )}
     </div>
-  );
+    </>
+    );
 };
 
 export default BazaarItemChat;

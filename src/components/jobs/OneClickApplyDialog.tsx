@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Briefcase, Upload, FileText, CheckCircle, Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface OneClickApplyDialogProps {
   jobId: string;
   jobTitle: string;
@@ -152,7 +153,14 @@ export const OneClickApplyDialog = ({ jobId, jobTitle, companyName }: OneClickAp
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+      <FloatingHowItWorks title="How One Click Apply Dialog works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="w-full gap-2">
           <Briefcase className="h-4 w-4" />
@@ -276,5 +284,6 @@ export const OneClickApplyDialog = ({ jobId, jobTitle, companyName }: OneClickAp
         </form>
       </DialogContent>
     </Dialog>
-  );
+    </>
+    );
 };

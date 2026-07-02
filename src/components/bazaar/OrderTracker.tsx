@@ -1,6 +1,7 @@
 import { Check, Clock, Package, Truck, CheckCircle, Shield, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export type OrderStatus = 'pending' | 'paid' | 'shipped' | 'delivered' | 'completed' | 'disputed' | 'refunded';
 
 interface OrderTrackerProps {
@@ -72,7 +73,14 @@ export function OrderTracker({
 
   if (isDisputed) {
     return (
-      <div className={cn("p-4 rounded-lg bg-destructive/10 border border-destructive/20", className)}>
+      <>
+        <FloatingHowItWorks title="How Order Tracker works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+        <div className={cn("p-4 rounded-lg bg-destructive/10 border border-destructive/20", className)}>
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 rounded-full bg-destructive/20 flex items-center justify-center">
             <AlertTriangle className="h-5 w-5 text-destructive" />
@@ -85,7 +93,8 @@ export function OrderTracker({
           </div>
         </div>
       </div>
-    );
+      </>
+      );
   }
 
   if (isRefunded) {

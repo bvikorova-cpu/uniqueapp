@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Star, EyeOff, Eye, Trash2 } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type Report = {
   id: string; review_id: string; reporter_id: string; reason: string;
   description: string | null; status: string; created_at: string;
@@ -84,7 +85,14 @@ export default function AdminSkillsReviewModeration() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-5xl">
+    <>
+      <FloatingHowItWorks title="How Admin Skills Review Moderation works" steps={[
+          { title: 'Browse listings', desc: 'Explore items, services or offers.' },
+          { title: 'Open a detail', desc: 'Review price, seller and terms.' },
+          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
+          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+        ]} />
+      <div className="container mx-auto px-4 py-8 max-w-5xl">
       <h1 className="text-2xl md:text-3xl font-bold mb-2">Review moderation</h1>
       <p className="text-muted-foreground mb-6">Reported Skills Marketplace reviews.</p>
 
@@ -160,5 +168,6 @@ export default function AdminSkillsReviewModeration() {
         </div>
       )}
     </div>
-  );
+    </>
+    );
 }

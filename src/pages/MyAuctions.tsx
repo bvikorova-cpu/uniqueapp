@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { AuctionWithdrawalRequest } from "@/components/auction/AuctionWithdrawalRequest";
 import { formatDistanceToNow } from "date-fns";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface AuctionItem {
   id: string;
   title: string;
@@ -192,7 +193,14 @@ const MyAuctions = () => {
   );
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-5xl">
+    <>
+      <FloatingHowItWorks title="How My Auctions works" steps={[
+          { title: 'Browse listings', desc: 'Explore items, services or offers.' },
+          { title: 'Open a detail', desc: 'Review price, seller and terms.' },
+          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
+          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+        ]} />
+      <div className="container mx-auto px-4 py-8 max-w-5xl">
       <div className="flex items-center gap-3 mb-6">
         <Button variant="ghost" size="icon" asChild>
           <Link to="/auction"><ArrowLeft className="w-5 h-5" /></Link>
@@ -298,7 +306,8 @@ const MyAuctions = () => {
         <AuctionWithdrawalRequest />
       </div>
     </div>
-  );
+    </>
+    );
 };
 
 export default MyAuctions;

@@ -1,6 +1,7 @@
 import { TrendingUp, Lightbulb, Star, DollarSign, Briefcase } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const CAREER_TIPS = [
   "Tailor your CV for each application — generic resumes get filtered out",
   "Include quantifiable achievements, not just responsibilities",
@@ -10,7 +11,14 @@ const CAREER_TIPS = [
 
 export function JobsSidebar() {
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title="How Jobs Sidebar works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <div className="space-y-4">
       {/* Empty state encouragement */}
       <Card className="p-4 bg-card/50 backdrop-blur-sm border-border/30">
         <h3 className="flex items-center gap-2 text-sm font-bold mb-3">
@@ -38,5 +46,6 @@ export function JobsSidebar() {
         </div>
       </Card>
     </div>
-  );
+    </>
+    );
 }

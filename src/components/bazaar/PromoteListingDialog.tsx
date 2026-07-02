@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props {
   open: boolean;
   onOpenChange: (v: boolean) => void;
@@ -45,7 +46,14 @@ export const PromoteListingDialog = ({ open, onOpenChange, itemId, itemTitle, on
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <>
+      <FloatingHowItWorks title="How Promote Listing Dialog works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Promote listing</DialogTitle>
@@ -89,7 +97,8 @@ export const PromoteListingDialog = ({ open, onOpenChange, itemId, itemTitle, on
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+    </>
+    );
 };
 
 export default PromoteListingDialog;

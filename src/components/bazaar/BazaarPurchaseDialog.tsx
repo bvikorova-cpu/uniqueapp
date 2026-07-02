@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useCommissionRate } from "@/hooks/useCommissionSettings";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface BazaarItem {
   id: string;
   title: string;
@@ -93,7 +94,14 @@ export default function BazaarPurchaseDialog({ item, open, onOpenChange }: Bazaa
   if (!item) return null;
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <>
+      <FloatingHowItWorks title="How Bazaar Purchase Dialog works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -189,5 +197,6 @@ export default function BazaarPurchaseDialog({ item, open, onOpenChange }: Bazaa
         </div>
       </DialogContent>
     </Dialog>
-  );
+    </>
+    );
 }

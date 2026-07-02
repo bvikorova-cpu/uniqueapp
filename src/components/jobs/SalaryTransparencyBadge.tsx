@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { ShieldCheck, Eye, EyeOff } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props {
   salaryMin?: number | null;
   salaryMax?: number | null;
@@ -24,7 +25,14 @@ export function SalaryTransparencyBadge({ salaryMin, salaryMax, payRangeDisclose
   const Icon = tier.Icon;
 
   return (
-    <TooltipProvider>
+    <>
+      <FloatingHowItWorks title="How Salary Transparency Badge works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
           <Badge variant="outline" className={`${tier.color} text-[10px] gap-1`}>
@@ -39,5 +47,6 @@ export function SalaryTransparencyBadge({ salaryMin, salaryMax, payRangeDisclose
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
-  );
+    </>
+    );
 }
