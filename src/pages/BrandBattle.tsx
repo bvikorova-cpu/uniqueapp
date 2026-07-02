@@ -104,18 +104,8 @@ export default function BrandBattle() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => setUser(session?.user ?? null)
     );
-    return (
-    <>
-      <FloatingHowItWorks title="Brand Battle" intro="Vote for your favorite brands, join head-to-head duels, and earn rewards." steps={[
-    { title: "Pick a matchup", desc: "Browse head-to-head battles or tournaments and tap Vote for the brand you support." },
-    { title: "Build a streak", desc: "Vote daily to grow your voting streak and unlock bonus multipliers." },
-    { title: "Complete challenges", desc: "Finish daily challenges and comment on brand cards to earn extra XP." },
-    { title: "Earn rewards", desc: "Climb the leaderboard, collect badges, and redeem seasonal rewards." },
-    { title: "Support a brand", desc: "Tap a featured brand to visit its profile, coupons, and sponsor page." }
-  ]} />
-      
-    </>
-  ) => subscription.unsubscribe();
+    return () => subscription.unsubscribe();
+
   }, []);
 
   useEffect(() => {
@@ -268,6 +258,13 @@ export default function BrandBattle() {
 
   return (
     <div className="min-h-screen bg-background">
+      <FloatingHowItWorks title="Brand Battle" intro="Vote for your favorite brands, join head-to-head duels, and earn rewards." steps={[
+        { title: "Pick a matchup", desc: "Browse head-to-head battles or tournaments and tap Vote for the brand you support." },
+        { title: "Build a streak", desc: "Vote daily to grow your voting streak and unlock bonus multipliers." },
+        { title: "Complete challenges", desc: "Finish daily challenges and comment on brand cards to earn extra XP." },
+        { title: "Earn rewards", desc: "Climb the leaderboard, collect badges, and redeem seasonal rewards." },
+        { title: "Support a brand", desc: "Tap a featured brand to visit its profile, coupons, and sponsor page." }
+      ]} />
       <Navbar />
       <main className="container mx-auto px-3 sm:px-4 pt-20 pb-8 max-w-6xl">
         {/* Cinematic Video Hero */}
