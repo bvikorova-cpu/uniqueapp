@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { ShoppingCart, Image, Video, Package } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ContentPack {
   id: string;
@@ -99,7 +100,9 @@ export function CreatorContentPacks({ creatorId, canPurchase }: CreatorContentPa
   }
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Creator Content Packs - How it works"} steps={[{ title: 'Open', desc: 'Access the Creator Content Packs section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Creator Content Packs.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       <h3 className="text-2xl font-bold">Content Packs</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {packs.map((pack) => (
@@ -143,5 +146,6 @@ export function CreatorContentPacks({ creatorId, canPurchase }: CreatorContentPa
         ))}
       </div>
     </div>
+    </>
   );
 }

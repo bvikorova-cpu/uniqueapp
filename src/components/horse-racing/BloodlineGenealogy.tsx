@@ -8,6 +8,7 @@ import { GitBranch, Dna, Star, Zap, Shield, Heart, Flame, Crown, Sparkles, Info 
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserHorses } from "@/hooks/useHorseRacing";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface AncestorNode {
   id: string;
@@ -55,7 +56,9 @@ export const BloodlineGenealogy = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Bloodline Genealogy - How it works"} steps={[{ title: 'Open', desc: 'Access the Bloodline Genealogy section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Bloodline Genealogy.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-black font-mono flex items-center gap-2 text-white">
           <GitBranch className="h-6 w-6 text-amber-400" /> Bloodline Genealogy
@@ -214,5 +217,6 @@ export const BloodlineGenealogy = () => {
         </Card>
       )}
     </div>
+    </>
   );
 };

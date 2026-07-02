@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const categories = [
   { id: "physics", label: "Physics", icon: "⚡", color: "from-yellow-500/20 to-orange-500/20", border: "border-yellow-500/40", glow: "shadow-yellow-500/20" },
@@ -16,7 +17,9 @@ interface ScienceCategorySelectorProps {
 
 export const ScienceCategorySelector = ({ selected, onSelect, disabled }: ScienceCategorySelectorProps) => {
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Science Category Selector - How it works"} steps={[{ title: 'Open', desc: 'Access the Science Category Selector section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Science Category Selector.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <h3 className="text-lg font-bold mb-3 flex items-center gap-2">
         🔬 Choose a Category
       </h3>
@@ -52,5 +55,6 @@ export const ScienceCategorySelector = ({ selected, onSelect, disabled }: Scienc
         ))}
       </div>
     </div>
+    </>
   );
 };

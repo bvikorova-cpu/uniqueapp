@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Stream {
   id: string;
@@ -110,7 +111,12 @@ export const MegatalentWatchParty = ({ category }: Props) => {
         () => loadStreams(),
       )
       .subscribe();
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Megatalent Watch Party - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Watch Party section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Watch Party.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       supabase.removeChannel(ch);
     };
   }, [category, loadStreams]);

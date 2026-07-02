@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { MONETAG_ZONES, MONETAG_ZONE_IDS, showMonetagRewarded, trackMonetagEvent } from "@/lib/monetag";
 import adVideo from "@/assets/video-ad-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface RewardedAdCardProps {
   sectionKey: string;
@@ -186,7 +187,9 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
   };
 
   return (
-    <Card data-rewarded-ad-card className={`relative overflow-hidden border-2 border-primary/30 bg-gradient-to-br from-card via-card/95 to-card/90 backdrop-blur-xl ${className}`}>
+    <>
+      <FloatingHowItWorks title={"Rewarded Ad Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Rewarded Ad Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Rewarded Ad Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card data-rewarded-ad-card className={`relative overflow-hidden border-2 border-primary/30 bg-gradient-to-br from-card via-card/95 to-card/90 backdrop-blur-xl ${className}`}>
       <CardContent className="p-4 sm:p-6 space-y-4">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div className="flex items-center gap-2">
@@ -266,6 +269,7 @@ const RewardedAdCard = ({ sectionKey, adSlot, className = "" }: RewardedAdCardPr
       </Dialog>
 
     </Card>
+    </>
   );
 };
 

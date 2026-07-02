@@ -4,6 +4,7 @@ import { CREDIT_PACKAGES } from "@/hooks/useSecretSanta";
 import { CreditCard, Sparkles, Check, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const SecretSantaCredits = () => {
   const { toast } = useToast();
@@ -34,7 +35,9 @@ export const SecretSantaCredits = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Secret Santa Credits - How it works"} steps={[{ title: 'Open', desc: 'Access the Secret Santa Credits section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Secret Santa Credits.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       {/* Header */}
       <div className="bg-white/80 backdrop-blur-xl border border-amber-200 rounded-2xl p-6 text-center shadow-lg">
         <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-amber-100 to-yellow-100 flex items-center justify-center shadow-sm">
@@ -138,5 +141,6 @@ export const SecretSantaCredits = () => {
         </p>
       </div>
     </div>
+    </>
   );
 };

@@ -8,6 +8,7 @@ import { Users, UserPlus, Heart, Sparkles, Loader2 } from "lucide-react";
 import { useBuddyProfile, useBuddies } from "@/hooks/useSafetyExtras";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const TAGS = ["cyber", "school", "verbal", "exclusion", "lgbtq+", "race", "appearance", "anxiety"];
 
@@ -30,7 +31,9 @@ export function BuddyMatching() {
   };
 
   return (
-    <div className="grid lg:grid-cols-2 gap-4">
+    <>
+      <FloatingHowItWorks title={"Buddy Matching - How it works"} steps={[{ title: 'Open', desc: 'Access the Buddy Matching section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Buddy Matching.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="grid lg:grid-cols-2 gap-4">
       <Card className="border-pink-500/30 bg-gradient-to-br from-pink-500/5 to-card/60 backdrop-blur-md">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
@@ -121,5 +124,6 @@ export function BuddyMatching() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

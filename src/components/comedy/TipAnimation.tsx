@@ -10,6 +10,7 @@ import {
   Gift,
   Sparkles,
 } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface TipOption {
   amount: number;
@@ -52,7 +53,9 @@ export const TipAnimation = ({
   };
 
   return (
-    <Card className="overflow-hidden">
+    <>
+      <FloatingHowItWorks title={"Tip Animation - How it works"} steps={[{ title: 'Open', desc: 'Access the Tip Animation section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Tip Animation.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="overflow-hidden">
       <CardHeader className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20">
         <CardTitle className="flex items-center justify-between">
           <span className="flex items-center gap-2">
@@ -110,6 +113,7 @@ export const TipAnimation = ({
         )}
       </CardContent>
     </Card>
+    </>
   );
 };
 

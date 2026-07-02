@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const TESTIMONIALS = [
   {
@@ -54,7 +55,9 @@ const TESTIMONIALS = [
 
 export const SubscriptionTestimonials = () => {
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Subscription Testimonials - How it works"} steps={[{ title: 'Open', desc: 'Access the Subscription Testimonials section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Subscription Testimonials.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -105,5 +108,6 @@ export const SubscriptionTestimonials = () => {
         ))}
       </div>
     </motion.div>
+    </>
   );
 };

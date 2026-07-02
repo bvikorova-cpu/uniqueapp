@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ArrowLeft, Trophy, Download, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface CreatorLeaderboardViewProps {
   onBack: () => void;
@@ -99,7 +100,12 @@ export function CreatorLeaderboardView({ onBack }: CreatorLeaderboardViewProps) 
         setLoading(false);
       }
     })();
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Creator Leaderboard View - How it works"} steps={[{ title: 'Open', desc: 'Access the Creator Leaderboard View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Creator Leaderboard View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       cancelled = true;
     };
   }, []);

@@ -8,6 +8,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   subscriptionId: string;
@@ -59,7 +60,9 @@ export default function RefundButton({ subscriptionId, onDone }: Props) {
   const hrsLeft = Math.ceil(elig.hours_left ?? 0);
 
   return (
-    <AlertDialog>
+    <>
+      <FloatingHowItWorks title={"Refund Button - How it works"} steps={[{ title: 'Open', desc: 'Access the Refund Button section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Refund Button.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button size="sm" variant="outline" disabled={busy}>
           {busy ? <Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> : <RotateCcw className="h-4 w-4 mr-1.5" />}
@@ -81,5 +84,6 @@ export default function RefundButton({ subscriptionId, onDone }: Props) {
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
+    </>
   );
 }

@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Star } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface DailyStarsProps {
   starsCollected: number;
@@ -11,7 +12,9 @@ export const DailyStars = ({ starsCollected, totalStarsToday }: DailyStarsProps)
   const stars = Array.from({ length: totalStarsToday });
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Daily Stars - How it works"} steps={[{ title: 'Open', desc: 'Access the Daily Stars section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Daily Stars.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
@@ -53,5 +56,6 @@ export const DailyStars = ({ starsCollected, totalStarsToday }: DailyStarsProps)
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 };

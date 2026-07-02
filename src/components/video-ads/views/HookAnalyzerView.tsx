@@ -8,6 +8,7 @@ import { Loader2, Flame } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { handleEdgeError } from "@/lib/handleEdgeError";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface HookResult {
   hookScore: number; attentionGrab: number; clarity: number; curiosityGap: number; emotionalImpact: number;
@@ -29,7 +30,9 @@ export const HookAnalyzerView = ({ onBack }: { onBack: () => void }) => {
     } catch (e) { handleEdgeError(e, { context: 'Hook' }); } finally { setLoading(false); }
   };
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Hook Analyzer View - How it works"} steps={[{ title: 'Open', desc: 'Access the Hook Analyzer View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Hook Analyzer View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4">← Back</Button>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-orange-600 flex items-center justify-center"><Flame className="w-6 h-6 text-white" /></div>
@@ -60,5 +63,6 @@ export const HookAnalyzerView = ({ onBack }: { onBack: () => void }) => {
         </CardContent></Card>
       </div>
     </div>
+    </>
   );
 };

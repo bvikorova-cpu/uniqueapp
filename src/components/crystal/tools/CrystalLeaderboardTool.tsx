@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trophy, Loader2, Medal, Flame, Gem, Brain } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export const CrystalLeaderboardTool = () => {
   const [leaders, setLeaders] = useState<any[]>([]);
@@ -28,7 +29,9 @@ export const CrystalLeaderboardTool = () => {
   const medals = ["🥇", "🥈", "🥉"];
 
   return (
-    <Card className="bg-card/80 backdrop-blur-xl border-border/50">
+    <>
+      <FloatingHowItWorks title={"Crystal Leaderboard Tool - How it works"} steps={[{ title: 'Open', desc: 'Access the Crystal Leaderboard Tool section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Crystal Leaderboard Tool.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/80 backdrop-blur-xl border-border/50">
       <CardHeader>
         <CardTitle className="text-xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent flex items-center gap-2">
           <Trophy className="w-5 h-5" /> Energy Leaderboard
@@ -80,5 +83,6 @@ export const CrystalLeaderboardTool = () => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

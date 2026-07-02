@@ -3,16 +3,20 @@ import { Button } from "@/components/ui/button";
 import { Crown, Sparkles, Box, Zap } from "lucide-react";
 import { useVipSubscription } from "@/hooks/useVipSubscription";
 import { format } from "date-fns";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export default function VipSubscription() {
   const { is_vip, subscription_end, loading, upgradeToVip, refreshStatus } = useVipSubscription();
 
   if (loading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Vip Subscription - How it works"} steps={[{ title: 'Open', desc: 'Access the Vip Subscription section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Vip Subscription.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="p-8">
         <p className="text-center text-muted-foreground">Loading...</p>
       </Card>
-    );
+    </>
+  );
   }
 
   if (is_vip) {

@@ -2,12 +2,15 @@ import { useSocialGiftsProgress } from "@/hooks/useSocialGiftsProgress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Award, Lock, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const BadgesDisplay = () => {
   const { allBadges, earnedBadgeIds, progress, isLoading } = useSocialGiftsProgress();
 
   if (isLoading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Badges Display - How it works"} steps={[{ title: 'Open', desc: 'Access the Badges Display section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Badges Display.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="bg-white/80 backdrop-blur-xl border border-amber-200 rounded-2xl p-6 shadow-lg">
         <div className="animate-pulse space-y-4">
           <div className="h-8 bg-amber-100 rounded w-1/3" />
@@ -18,7 +21,8 @@ export const BadgesDisplay = () => {
           </div>
         </div>
       </div>
-    );
+    </>
+  );
   }
 
   const getRarityColor = (rarity: string) => {

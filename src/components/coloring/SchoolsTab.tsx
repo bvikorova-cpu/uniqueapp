@@ -8,6 +8,7 @@ import { Check, School, Users, Sparkles, BookOpen } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const SCHOOL_TIERS = [
   { id: "kindergarten", name: "Kindergarten Starter", price: 5, description: "Perfect for preschools and kindergartens", features: ["100 coloring pages per month", "Basic themes (animals, seasons, colors)", "PDF export with school logo", "Single teacher account", "Email support"], icon: School, popular: false },
@@ -42,7 +43,9 @@ export function SchoolsTab() {
   };
 
   return (
-    <div className="space-y-8">
+    <>
+      <FloatingHowItWorks title={"Schools Tab - How it works"} steps={[{ title: 'Open', desc: 'Access the Schools Tab section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Schools Tab.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-8">
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="text-center">
         <Badge className="mb-4" variant="secondary"><School className="w-4 h-4 mr-2" />For Schools & Educational Institutions</Badge>
         <h2 className="text-4xl font-bold mb-4">Educational Coloring Pages</h2>
@@ -94,5 +97,6 @@ export function SchoolsTab() {
         ))}
       </div>
     </div>
+    </>
   );
 }

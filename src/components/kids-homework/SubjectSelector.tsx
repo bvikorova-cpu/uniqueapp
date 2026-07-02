@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const SUBJECTS = [
   { id: "math", name: "Math", emoji: "📐", color: "from-blue-500/20 to-indigo-500/20", border: "border-blue-500/30", desc: "Numbers, equations & geometry" },
@@ -29,7 +30,9 @@ export const SubjectSelector = ({
   onDifficultyChange,
 }: SubjectSelectorProps) => {
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Subject Selector - How it works"} steps={[{ title: 'Open', desc: 'Access the Subject Selector section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Subject Selector.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       {/* Subject cards */}
       <div>
         <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
@@ -94,5 +97,6 @@ export const SubjectSelector = ({
         </div>
       </div>
     </div>
+    </>
   );
 };

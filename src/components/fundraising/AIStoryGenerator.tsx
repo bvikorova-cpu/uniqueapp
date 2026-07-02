@@ -10,6 +10,7 @@ import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   campaignType: "medical" | "crisis" | "pet" | "student" | "dream" | "hero" | "talent";
@@ -85,7 +86,9 @@ export function AIStoryGenerator({ campaignType, onGenerated, trigger }: Props) 
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+      <FloatingHowItWorks title={"A I Story Generator - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Story Generator section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Story Generator.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {trigger ?? (
           <Button variant="outline" className="gap-2 border-amber-400/40 hover:bg-amber-500/10">
@@ -212,5 +215,6 @@ export function AIStoryGenerator({ campaignType, onGenerated, trigger }: Props) 
         </div>
       </DialogContent>
     </Dialog>
+    </>
   );
 }

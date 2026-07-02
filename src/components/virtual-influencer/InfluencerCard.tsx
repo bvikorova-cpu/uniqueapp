@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Users, TrendingUp, DollarSign, Eye } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface InfluencerCardProps {
   influencer: {
@@ -22,7 +23,9 @@ interface InfluencerCardProps {
 
 const InfluencerCard = ({ influencer, onSelect }: InfluencerCardProps) => {
   return (
-    <Card className="p-6 hover:shadow-lg transition-shadow">
+    <>
+      <FloatingHowItWorks title={"Influencer Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Influencer Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Influencer Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-6 hover:shadow-lg transition-shadow">
       <div className="flex items-start gap-4 mb-4">
         <Avatar className="h-16 w-16">
           <AvatarImage src={influencer.avatar_url || ""} alt={influencer.name} />
@@ -80,6 +83,7 @@ const InfluencerCard = ({ influencer, onSelect }: InfluencerCardProps) => {
         View Dashboard
       </Button>
     </Card>
+    </>
   );
 };
 

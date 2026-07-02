@@ -2,6 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import type { PresenceUser } from "@/hooks/usePresenceChannel";
 import { cn } from "@/lib/utils";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface PresenceAvatarsProps {
   users: PresenceUser[];
@@ -22,7 +23,9 @@ export function PresenceAvatars({ users, max = 5, size = "sm", className }: Pres
   const dim = size === "sm" ? "h-6 w-6" : "h-8 w-8";
 
   return (
-    <TooltipProvider delayDuration={150}>
+    <>
+      <FloatingHowItWorks title={"Presence Avatars - How it works"} steps={[{ title: 'Open', desc: 'Access the Presence Avatars section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Presence Avatars.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <TooltipProvider delayDuration={150}>
       <div className={cn("flex items-center -space-x-2", className)}>
         {visible.map((u) => (
           <Tooltip key={u.user_id}>
@@ -57,5 +60,6 @@ export function PresenceAvatars({ users, max = 5, size = "sm", className }: Pres
         )}
       </div>
     </TooltipProvider>
+    </>
   );
 }

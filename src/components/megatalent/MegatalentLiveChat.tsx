@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { MessageCircle, Send, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type Msg = { id: string; user_id: string; display_name: string; body: string; created_at: string };
 
@@ -54,7 +55,12 @@ const MegatalentLiveChat = ({ category, userId }: { category?: string; userId: s
         }
       });
 
-    return () => { mounted = false; supabase.removeChannel(ch); };
+    return (
+    <>
+      <FloatingHowItWorks title={"Megatalent Live Chat - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Live Chat section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Live Chat.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => { mounted = false; supabase.removeChannel(ch); };
   }, [cat, userId, myName]);
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [msgs.length]);

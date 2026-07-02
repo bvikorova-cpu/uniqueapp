@@ -6,6 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const faqs = [
   { q: "Is the content safe for children?", a: "Absolutely! All AI-generated content passes through our child-safety filters. We comply with COPPA regulations and never show ads or inappropriate material." },
@@ -18,7 +19,9 @@ const faqs = [
 
 export function PricingFAQ() {
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Pricing F A Q - How it works"} steps={[{ title: 'Open', desc: 'Access the Pricing F A Q section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Pricing F A Q.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -46,5 +49,6 @@ export function PricingFAQ() {
         ))}
       </Accordion>
     </motion.div>
+    </>
   );
 }

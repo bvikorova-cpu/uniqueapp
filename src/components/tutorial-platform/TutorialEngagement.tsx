@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Progress } from "@/components/ui/progress";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface EngagementData {
   streak: number;
@@ -137,10 +138,13 @@ export function TutorialEngagement() {
 
   if (loading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Tutorial Engagement - How it works"} steps={[{ title: 'Open', desc: 'Access the Tutorial Engagement section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Tutorial Engagement.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="flex items-center justify-center py-8">
         <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
       </div>
-    );
+    </>
+  );
   }
 
   const d = data!;

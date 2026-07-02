@@ -5,6 +5,7 @@ import { Package, CheckCircle2, Sparkles, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { CRYSTAL_DATABASE } from "../crystalData";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export const CrystalSubBoxTool = () => {
   const [loading, setLoading] = useState(false);
@@ -47,7 +48,9 @@ export const CrystalSubBoxTool = () => {
   ];
 
   return (
-    <Card className="bg-card/80 backdrop-blur-xl border-border/50">
+    <>
+      <FloatingHowItWorks title={"Crystal Sub Box Tool - How it works"} steps={[{ title: 'Open', desc: 'Access the Crystal Sub Box Tool section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Crystal Sub Box Tool.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/80 backdrop-blur-xl border-border/50">
       <CardHeader>
         <CardTitle className="text-xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent flex items-center gap-2">
           <Package className="w-5 h-5" /> Crystal Subscription Box
@@ -97,5 +100,6 @@ export const CrystalSubBoxTool = () => {
         </Button>
       </CardContent>
     </Card>
+    </>
   );
 };

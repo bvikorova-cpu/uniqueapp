@@ -9,6 +9,7 @@ import { Gamepad2, ArrowRight, RotateCcw, CheckCircle, XCircle, Star, Mic, Loade
 import { motion } from "framer-motion";
 import { useRoleplayScore } from "@/hooks/useSafetyExtras";
 import { RoleplayLeaderboard } from "./RoleplayLeaderboard";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Choice { text: string; score: number; feedback: string; }
 interface Scenario { id: string; title: string; description: string; difficulty: "easy" | "medium" | "hard" | "expert"; category: string; steps: { situation: string; choices: Choice[] }[]; }
@@ -94,6 +95,8 @@ const SafetyRoleplay = () => {
     const max = selected.steps.length * 100;
 
     return (
+    <>
+      <FloatingHowItWorks title={"Safety Roleplay - How it works"} steps={[{ title: 'Open', desc: 'Access the Safety Roleplay section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Safety Roleplay.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="space-y-4">
         <Button variant="ghost" onClick={reset} size="sm">← Back</Button>
         <Card className="border-indigo-500/30 bg-gradient-to-br from-indigo-500/5 to-card/60 backdrop-blur-md">
@@ -150,7 +153,8 @@ const SafetyRoleplay = () => {
           </CardContent>
         </Card>
       </div>
-    );
+    </>
+  );
   }
 
   return (

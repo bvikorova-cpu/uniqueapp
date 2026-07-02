@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Bot, Loader2, Sparkles, Lock } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const TIER_LIMITS: Record<string, number> = { basic: 1, advanced: 3, celebrity: 999 };
 
@@ -89,6 +90,8 @@ export function CloneCreator() {
 
   if (!tier) {
     return (
+    <>
+      <FloatingHowItWorks title={"Clone Creator - How it works"} steps={[{ title: 'Open', desc: 'Access the Clone Creator section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Clone Creator.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="bg-card/80 backdrop-blur-xl border-primary/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><Lock className="h-5 w-5 text-primary" /> Subscription Required</CardTitle>
@@ -98,7 +101,8 @@ export function CloneCreator() {
           <p className="text-sm text-muted-foreground">Open the <strong>Subscriptions</strong> tab from the hub to choose a plan.</p>
         </CardContent>
       </Card>
-    );
+    </>
+  );
   }
 
   const limit = TIER_LIMITS[tier] ?? 1;

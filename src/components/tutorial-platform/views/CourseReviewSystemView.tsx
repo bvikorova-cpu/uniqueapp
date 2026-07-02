@@ -7,6 +7,7 @@ import { ArrowLeft, MessageSquare, Star, Loader2, Sparkles, TrendingUp } from "l
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -97,7 +98,9 @@ export function CourseReviewSystemView({ onBack }: Props) {
   };
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Course Review System View - How it works"} steps={[{ title: 'Open', desc: 'Access the Course Review System View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Course Review System View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
@@ -186,5 +189,6 @@ export function CourseReviewSystemView({ onBack }: Props) {
         </div>
       )}
     </div>
+    </>
   );
 }

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Flame, Clock, TrendingUp } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type FeedFilter = "hot" | "new" | "top";
 
@@ -17,7 +18,9 @@ const filters: { value: FeedFilter; label: string; icon: typeof Flame }[] = [
 
 export default function MegaTalentFeedFilters({ active, onChange }: FeedFiltersProps) {
   return (
-    <div className="flex items-center gap-2 mb-4">
+    <>
+      <FloatingHowItWorks title={"Mega Talent Feed Filters - How it works"} steps={[{ title: 'Open', desc: 'Access the Mega Talent Feed Filters section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Mega Talent Feed Filters.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="flex items-center gap-2 mb-4">
       {filters.map((f) => (
         <Button
           key={f.value}
@@ -31,6 +34,7 @@ export default function MegaTalentFeedFilters({ active, onChange }: FeedFiltersP
         </Button>
       ))}
     </div>
+    </>
   );
 }
 

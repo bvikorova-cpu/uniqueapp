@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { BookOpen, Sparkles, Star, Wand2 } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const MASCOTS = ["📖", "✏️", "🐉", "🧙‍♂️", "🦄", "🌟"];
 
@@ -7,7 +8,9 @@ const FLOATING_EMOJIS = ["⭐", "🌙", "✨", "💫", "🔮", "🪄", "📚", "
 
 export const StoryCreatorHero = () => {
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-950 via-purple-900 to-fuchsia-950 p-8 md:p-12 mb-8">
+    <>
+      <FloatingHowItWorks title={"Story Creator Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Story Creator Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Story Creator Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-950 via-purple-900 to-fuchsia-950 p-8 md:p-12 mb-8">
       {/* Animated particles */}
       {FLOATING_EMOJIS.map((emoji, i) => (
         <motion.span
@@ -114,5 +117,6 @@ export const StoryCreatorHero = () => {
         </motion.div>
       </div>
     </div>
+    </>
   );
 };

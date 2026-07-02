@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const testimonials = [
   { name: "Sarah M.", avatar: "👩", rating: 5, text: "My kids absolutely love the bedtime stories! The AI creates personalized adventures that make reading time magical." },
@@ -15,7 +16,12 @@ export function TestimonialCarousel() {
 
   useEffect(() => {
     const timer = setInterval(() => setCurrent(p => (p + 1) % testimonials.length), 5000);
-    return () => clearInterval(timer);
+    return (
+    <>
+      <FloatingHowItWorks title={"Testimonial Carousel - How it works"} steps={[{ title: 'Open', desc: 'Access the Testimonial Carousel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Testimonial Carousel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(timer);
   }, []);
 
   const t = testimonials[current];

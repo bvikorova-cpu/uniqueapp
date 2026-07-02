@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Bell, BellOff } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const MegatalentPushOptIn = () => {
   const [status, setStatus] = useState<NotificationPermission | "unsupported">("default");
@@ -30,7 +31,9 @@ const MegatalentPushOptIn = () => {
   if (status === "granted") return null;
 
   return (
-    <Card className="overflow-hidden backdrop-blur-xl bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20">
+    <>
+      <FloatingHowItWorks title={"Megatalent Push Opt In - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Push Opt In section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Push Opt In.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="overflow-hidden backdrop-blur-xl bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20">
       <CardContent className="p-4 flex items-center gap-3">
         <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center">
           {status === "denied" ? <BellOff className="h-5 w-5 text-destructive" /> : <Bell className="h-5 w-5 text-primary" />}
@@ -46,6 +49,7 @@ const MegatalentPushOptIn = () => {
         </Button>
       </CardContent>
     </Card>
+    </>
   );
 };
 

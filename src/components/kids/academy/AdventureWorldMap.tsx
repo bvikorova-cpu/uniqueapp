@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { PenTool, FlaskConical, Palette, BookOpen, Calculator, Briefcase, Shield } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { recordModuleVisit } from "@/lib/kidsAcademyEconomy";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const worlds = [
   {
@@ -83,7 +84,9 @@ export const AdventureWorldMap = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Adventure World Map - How it works"} steps={[{ title: 'Open', desc: 'Access the Adventure World Map section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Adventure World Map.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="text-center">
         <h2 className="text-2xl sm:text-3xl font-black text-foreground mb-2">
           🗺️ Adventure World Map
@@ -146,5 +149,6 @@ export const AdventureWorldMap = () => {
         })}
       </div>
     </div>
+    </>
   );
 };

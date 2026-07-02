@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Pencil, Palette, Mic, Film, Check, Loader2 } from 'lucide-react';
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface GenerationProgressProps {
   isGenerating: boolean;
@@ -36,7 +37,12 @@ export const GenerationProgress = ({ isGenerating }: GenerationProgressProps) =>
       setActiveStep(PIPELINE_STEPS.length - 1);
     }, 1000);
 
-    return () => clearInterval(interval);
+    return (
+    <>
+      <FloatingHowItWorks title={"Generation Progress - How it works"} steps={[{ title: 'Open', desc: 'Access the Generation Progress section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Generation Progress.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(interval);
   }, [isGenerating]);
 
   if (!isGenerating) return null;

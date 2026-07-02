@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const REACTION_TYPES = [
   { type: "love", emoji: "❤️", label: "Love" },
@@ -93,6 +94,8 @@ export const GiftReactions = ({ giftId, compact = false }: GiftReactionsProps) =
 
   if (compact) {
     return (
+    <>
+      <FloatingHowItWorks title={"Gift Reactions - How it works"} steps={[{ title: 'Open', desc: 'Access the Gift Reactions section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Gift Reactions.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="flex items-center gap-1">
         {reactionCounts.length > 0 ? (
           <div className="flex items-center gap-0.5 bg-gray-100 rounded-full px-2 py-0.5">
@@ -141,7 +144,8 @@ export const GiftReactions = ({ giftId, compact = false }: GiftReactionsProps) =
           )}
         </AnimatePresence>
       </div>
-    );
+    </>
+  );
   }
 
   return (

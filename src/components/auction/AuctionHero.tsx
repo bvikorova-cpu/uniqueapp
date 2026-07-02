@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Gavel, Users, TrendingUp, Clock } from "lucide-react";
 import heroVideo from "@/assets/auction-hero.mp4.asset.json";
 import { useLiveStats } from "@/hooks/useLiveStats";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const AuctionHero = () => {
   const { stats } = useLiveStats([
@@ -18,7 +19,9 @@ export const AuctionHero = () => {
   ];
 
   return (
-    <div className="relative rounded-2xl overflow-hidden mb-8 h-[340px] md:h-[380px]">
+    <>
+      <FloatingHowItWorks title={"Auction Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Auction Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Auction Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative rounded-2xl overflow-hidden mb-8 h-[340px] md:h-[380px]">
       <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" style={{ filter: "brightness(1.3) saturate(1.2)" }}>
         <source src={heroVideo.url} type="video/mp4" />
       </video>
@@ -49,5 +52,6 @@ export const AuctionHero = () => {
         </motion.div>
       </div>
     </div>
+    </>
   );
 };

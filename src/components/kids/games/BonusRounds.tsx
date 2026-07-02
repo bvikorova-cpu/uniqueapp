@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Clock, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface BonusRoundsProps {
   onPlay: (theme: string) => void;
@@ -14,7 +15,9 @@ const BONUS_EVENTS = [
 
 export function BonusRounds({ onPlay }: BonusRoundsProps) {
   return (
-    <div className="space-y-3">
+    <>
+      <FloatingHowItWorks title={"Bonus Rounds - How it works"} steps={[{ title: 'Open', desc: 'Access the Bonus Rounds section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Bonus Rounds.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-3">
       <h3 className="text-sm font-bold text-gray-700 flex items-center gap-1.5">
         <Sparkles className="h-4 w-4 text-pink-500" /> Bonus Events
       </h3>
@@ -53,5 +56,6 @@ export function BonusRounds({ onPlay }: BonusRoundsProps) {
         ))}
       </div>
     </div>
+    </>
   );
 }

@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Monitor, Square, Trash2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   onRecorded: (blob: Blob) => void;
@@ -60,7 +61,9 @@ export const ScreenRecorder = ({ onRecorded, maxSeconds = 30 }: Props) => {
   };
 
   return (
-    <div className="flex items-center gap-2">
+    <>
+      <FloatingHowItWorks title={"Screen Recorder - How it works"} steps={[{ title: 'Open', desc: 'Access the Screen Recorder section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Screen Recorder.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="flex items-center gap-2">
       {!recording && !recordedUrl && (
         <Button type="button" size="sm" variant="outline" onClick={start}>
           <Monitor className="h-3.5 w-3.5 mr-1.5" /> Record screen
@@ -80,5 +83,6 @@ export const ScreenRecorder = ({ onRecorded, maxSeconds = 30 }: Props) => {
         </>
       )}
     </div>
+    </>
   );
 };

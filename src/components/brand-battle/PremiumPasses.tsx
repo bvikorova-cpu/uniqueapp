@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useState } from "react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const FEATURES = [
   "Unlimited daily votes",
@@ -56,7 +57,9 @@ export const PremiumPasses = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <>
+      <FloatingHowItWorks title={"Premium Passes - How it works"} steps={[{ title: 'Open', desc: 'Access the Premium Passes section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Premium Passes.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Voter Pass */}
       <motion.div whileHover={{ y: -4 }}>
         <Card className="relative overflow-hidden border-amber-500/40 bg-gradient-to-br from-amber-950/30 via-zinc-950 to-zinc-950 h-full">
@@ -137,5 +140,6 @@ export const PremiumPasses = () => {
         </Card>
       </motion.div>
     </div>
+    </>
   );
 };

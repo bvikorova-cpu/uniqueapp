@@ -13,6 +13,7 @@ import {
 } from "@/hooks/useHandwritingCapsule";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function TimeCapsuleCard() {
   const entries = useCapsuleEntries();
@@ -62,7 +63,9 @@ export function TimeCapsuleCard() {
   const milestones: string[] = (diff.data as any)?.milestones ?? [];
 
   return (
-    <Card className="bg-gradient-to-br from-amber-50/80 to-orange-100/60 dark:from-amber-950/30 dark:to-orange-900/20 border-amber-300/40">
+    <>
+      <FloatingHowItWorks title={"Time Capsule Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Time Capsule Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Time Capsule Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-gradient-to-br from-amber-50/80 to-orange-100/60 dark:from-amber-950/30 dark:to-orange-900/20 border-amber-300/40">
       <CardHeader>
         <div className="flex items-center justify-between gap-2 flex-wrap">
           <CardTitle className="text-base flex items-center gap-2">
@@ -225,5 +228,6 @@ export function TimeCapsuleCard() {
         )}
       </CardContent>
     </Card>
+    </>
   );
 }

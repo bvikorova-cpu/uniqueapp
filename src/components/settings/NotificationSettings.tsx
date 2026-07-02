@@ -9,6 +9,7 @@ import { playMessageChime } from "@/lib/messageChime";
 import { playNotificationChime } from "@/lib/notificationChime";
 import { toast } from "sonner";
 import { useState } from "react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const LABELS: Record<NotifCategory, string> = {
   likes: "Likes & reactions",
@@ -25,7 +26,9 @@ export function NotificationSettings() {
   const push = usePushSubscription();
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Notification Settings - How it works"} steps={[{ title: 'Open', desc: 'Access the Notification Settings section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Notification Settings.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       <Card className="bg-card/50 backdrop-blur border-border/50">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
@@ -93,6 +96,7 @@ export function NotificationSettings() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }
 

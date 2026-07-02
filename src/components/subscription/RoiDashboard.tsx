@@ -4,6 +4,7 @@ import { TrendingUp, Coins, Sparkles, Trophy } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Currency } from "./CurrencySelector";
 import { formatPrice } from "./CurrencySelector";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface RoiDashboardProps {
   userId: string;
@@ -60,7 +61,12 @@ export const RoiDashboard = ({ userId, currency, tier }: RoiDashboardProps) => {
         if (active) setStats((s) => ({ ...s, loading: false }));
       }
     })();
-    return () => { active = false; };
+    return (
+    <>
+      <FloatingHowItWorks title={"Roi Dashboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Roi Dashboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Roi Dashboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => { active = false; };
   }, [userId, tier]);
 
   if (stats.loading) return null;

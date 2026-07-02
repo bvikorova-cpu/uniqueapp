@@ -3,6 +3,7 @@ import { Star, Quote, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const HandwritingTestimonials = () => {
   const [reviews, setReviews] = useState<any[]>([]);
@@ -23,12 +24,15 @@ export const HandwritingTestimonials = () => {
 
   if (loading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Handwriting Testimonials - How it works"} steps={[{ title: 'Open', desc: 'Access the Handwriting Testimonials section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Handwriting Testimonials.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="bg-card/60 backdrop-blur-sm border-border/50">
         <CardContent className="flex justify-center py-8">
           <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
         </CardContent>
       </Card>
-    );
+    </>
+  );
   }
 
   if (reviews.length === 0) {

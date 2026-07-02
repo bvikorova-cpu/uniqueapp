@@ -3,11 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Search, Sparkles, Target } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const PropertyProgress = () => {
   const navigate = useNavigate();
   return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
+    <>
+      <FloatingHowItWorks title={"Property Progress - How it works"} steps={[{ title: 'Open', desc: 'Access the Property Progress section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Property Progress.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
       <Card className="bg-gradient-to-r from-blue-500/10 via-primary/10 to-accent/10 border-primary/20 overflow-hidden relative h-full">
         <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2" />
         <CardContent className="p-4">
@@ -44,5 +47,6 @@ export const PropertyProgress = () => {
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 };

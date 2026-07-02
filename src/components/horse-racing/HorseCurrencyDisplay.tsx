@@ -6,6 +6,7 @@ import { useHorseCurrency, usePurchaseCurrency } from "@/hooks/useHorseRacing";
 import { useState } from "react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const HorseCurrencyDisplay = () => {
   const { currency, isLoading } = useHorseCurrency();
@@ -16,13 +17,16 @@ export const HorseCurrencyDisplay = () => {
 
   if (isLoading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Horse Currency Display - How it works"} steps={[{ title: 'Open', desc: 'Access the Horse Currency Display section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Horse Currency Display.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="p-8 text-center">
         <div className="inline-flex items-center gap-2 text-emerald-400/60 font-mono text-sm uppercase tracking-wider">
           <div className="h-2 w-2 bg-emerald-400 rounded-full animate-pulse" />
           Loading Currency...
         </div>
       </div>
-    );
+    </>
+  );
   }
 
   const handlePurchase = (packageType: string) => {

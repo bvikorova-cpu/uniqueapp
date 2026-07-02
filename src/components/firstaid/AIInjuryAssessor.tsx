@@ -7,6 +7,7 @@ import { ArrowLeft, Scan, Loader2, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -33,7 +34,9 @@ export function AIInjuryAssessor({ onBack }: Props) {
   };
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"A I Injury Assessor - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Injury Assessor section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Injury Assessor.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       <Button variant="outline" onClick={onBack} className="gap-2"><ArrowLeft className="w-4 h-4" />Back</Button>
       <Card>
         <CardHeader>
@@ -66,5 +69,6 @@ export function AIInjuryAssessor({ onBack }: Props) {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

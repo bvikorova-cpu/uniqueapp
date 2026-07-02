@@ -2,10 +2,13 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, Star, Upload, Heart, Trophy, Users, Gift, Crown, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const MegaTalentGuide = () => {
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+    <>
+      <FloatingHowItWorks title={"Mega Talent Guide - How it works"} steps={[{ title: 'Open', desc: 'Access the Mega Talent Guide section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Mega Talent Guide.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
       <Card className="mb-8 backdrop-blur-xl bg-card/80 border-primary/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-xl">
@@ -245,5 +248,6 @@ export const MegaTalentGuide = () => {
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 };

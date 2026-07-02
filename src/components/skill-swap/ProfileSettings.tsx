@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
 import heroVideo from "@/assets/skill-swap-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const ProfileSettings = () => {
   const navigate = useNavigate();
@@ -70,7 +71,9 @@ export const ProfileSettings = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
+    <>
+      <FloatingHowItWorks title={"Profile Settings - How it works"} steps={[{ title: 'Open', desc: 'Access the Profile Settings section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Profile Settings.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="min-h-screen bg-background relative overflow-hidden">
       <FloatingParticles />
       <div className="container mx-auto px-4 py-6 sm:py-10 max-w-3xl relative z-10">
         {/* Mini Hero */}
@@ -173,5 +176,6 @@ export const ProfileSettings = () => {
         </motion.div>
       </div>
     </div>
+    </>
   );
 };

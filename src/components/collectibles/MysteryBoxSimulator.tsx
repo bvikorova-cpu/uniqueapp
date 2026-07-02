@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAICredits } from "@/hooks/useAICredits";
 import { useCollectibles } from "@/hooks/useCollectibles";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { userId: string; }
 
@@ -47,7 +48,9 @@ export default function MysteryBoxSimulator({ userId }: Props) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Mystery Box Simulator - How it works"} steps={[{ title: 'Open', desc: 'Access the Mystery Box Simulator section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Mystery Box Simulator.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Card className="p-6 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border-cyan-500/20">
         <div className="flex items-center gap-3 mb-4">
           <Shuffle className="h-8 w-8 text-cyan-400" />
@@ -97,5 +100,6 @@ export default function MysteryBoxSimulator({ userId }: Props) {
         </Card>
       )}
     </div>
+    </>
   );
 }

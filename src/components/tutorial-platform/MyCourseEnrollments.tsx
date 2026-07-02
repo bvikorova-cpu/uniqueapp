@@ -7,6 +7,7 @@ import { GraduationCap, Play, Loader2, Users, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Enrollment {
   id: string;
@@ -82,10 +83,13 @@ export const MyCourseEnrollments = () => {
 
   if (loading) {
     return (
+    <>
+      <FloatingHowItWorks title={"My Course Enrollments - How it works"} steps={[{ title: 'Open', desc: 'Access the My Course Enrollments section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in My Course Enrollments.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="flex items-center justify-center py-12">
         <Loader2 className="w-8 h-8 animate-spin" />
       </div>
-    );
+    </>
+  );
   }
 
   if (enrollments.length === 0) {

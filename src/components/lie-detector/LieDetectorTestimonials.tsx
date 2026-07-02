@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Star, Quote } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const testimonials = [
   {
@@ -22,7 +23,9 @@ const testimonials = [
 
 export const LieDetectorTestimonials = () => {
   return (
-    <Card className="bg-card/60 backdrop-blur-sm border-border/50">
+    <>
+      <FloatingHowItWorks title={"Lie Detector Testimonials - How it works"} steps={[{ title: 'Open', desc: 'Access the Lie Detector Testimonials section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Lie Detector Testimonials.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/60 backdrop-blur-sm border-border/50">
       <CardHeader className="pb-3">
         <CardTitle className="text-sm flex items-center gap-2">
           <Quote className="w-4 h-4 text-primary" />
@@ -49,5 +52,6 @@ export const LieDetectorTestimonials = () => {
         ))}
       </CardContent>
     </Card>
+    </>
   );
 };

@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Users, UserPlus, X, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Seat { id: string; member_email: string; status: string; invited_at: string; }
 
@@ -55,7 +56,9 @@ export const SeatManagement = ({ tier }: { tier: string }) => {
   if (limit === 0) return null;
 
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title={"Seat Management - How it works"} steps={[{ title: 'Open', desc: 'Access the Seat Management section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Seat Management.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2"><Users className="h-5 w-5" /> Team seats ({seats.length}/{limit})</CardTitle>
       </CardHeader>
@@ -80,5 +83,6 @@ export const SeatManagement = ({ tier }: { tier: string }) => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

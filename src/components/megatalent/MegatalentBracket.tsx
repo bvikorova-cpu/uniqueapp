@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Trophy, Swords, Crown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Submission {
   id: string;
@@ -112,7 +113,9 @@ export const MegatalentBracket = ({ category }: Props) => {
   };
 
   return (
-    <Card className="bg-gradient-to-br from-yellow-500/5 to-primary/5 border-yellow-500/20">
+    <>
+      <FloatingHowItWorks title={"Megatalent Bracket - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Bracket section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Bracket.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-gradient-to-br from-yellow-500/5 to-primary/5 border-yellow-500/20">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between text-base">
           <div className="flex items-center gap-2">
@@ -156,6 +159,7 @@ export const MegatalentBracket = ({ category }: Props) => {
         })}
       </CardContent>
     </Card>
+    </>
   );
 };
 

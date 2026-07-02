@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Activity, Bot, MessageCircle, Heart, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface FeedItem {
   id: string;
@@ -38,7 +39,9 @@ export function CloneSocialFeed() {
   }, []);
 
   return (
-    <Card className="bg-card/80 backdrop-blur-xl border-primary/20">
+    <>
+      <FloatingHowItWorks title={"Clone Social Feed - How it works"} steps={[{ title: 'Open', desc: 'Access the Clone Social Feed section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Clone Social Feed.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/80 backdrop-blur-xl border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Activity className="h-5 w-5 text-primary" />
@@ -80,5 +83,6 @@ export function CloneSocialFeed() {
         )}
       </CardContent>
     </Card>
+    </>
   );
 }

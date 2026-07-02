@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Sparkles, Wand2, Copy, RefreshCw, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const MESSAGE_STYLES = [
   { id: "romantic", label: "Romantic", emoji: "💕", description: "Sweet and loving" },
@@ -77,7 +78,9 @@ export const AIMessageGenerator = ({ onSelectMessage, giftType, recipientName }:
   };
 
   return (
-    <div className="space-y-3">
+    <>
+      <FloatingHowItWorks title={"A I Message Generator - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Message Generator section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Message Generator.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-3">
       {/* Toggle button */}
       <Button
         variant="outline"
@@ -199,5 +202,6 @@ export const AIMessageGenerator = ({ onSelectMessage, giftType, recipientName }:
         )}
       </AnimatePresence>
     </div>
+    </>
   );
 };

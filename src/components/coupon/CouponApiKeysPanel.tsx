@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Key, Plus, Copy, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 async function sha256(text: string) {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
@@ -42,7 +43,9 @@ export function CouponApiKeysPanel() {
   };
 
   return (
-    <Card className="p-4 space-y-3 border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-yellow-500/5">
+    <>
+      <FloatingHowItWorks title={"Coupon Api Keys Panel - How it works"} steps={[{ title: 'Open', desc: 'Access the Coupon Api Keys Panel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Coupon Api Keys Panel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-4 space-y-3 border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-yellow-500/5">
       <div className="flex items-center gap-2">
         <Key className="w-5 h-5 text-amber-500" />
         <h3 className="font-bold">Affiliate API Keys</h3>
@@ -79,5 +82,6 @@ export function CouponApiKeysPanel() {
         ))}
       </div>
     </Card>
+    </>
   );
 }

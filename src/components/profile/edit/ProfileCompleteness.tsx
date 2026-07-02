@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { CheckCircle2, Circle, Trophy, Sparkles } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export interface CompletenessCheck {
   key: string;
@@ -32,7 +33,9 @@ export const ProfileCompleteness = ({ checks }: ProfileCompletenessProps) => {
   const TierIcon = tier.icon;
 
   return (
-    <div className="rounded-2xl border border-border/50 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl p-5 sm:p-6 mb-6">
+    <>
+      <FloatingHowItWorks title={"Profile Completeness - How it works"} steps={[{ title: 'Open', desc: 'Access the Profile Completeness section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Profile Completeness.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="rounded-2xl border border-border/50 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl p-5 sm:p-6 mb-6">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className={`h-9 w-9 rounded-xl bg-gradient-to-br ${tier.color} flex items-center justify-center shadow-lg`}>
@@ -74,5 +77,6 @@ export const ProfileCompleteness = ({ checks }: ProfileCompletenessProps) => {
         ))}
       </div>
     </div>
+    </>
   );
 };

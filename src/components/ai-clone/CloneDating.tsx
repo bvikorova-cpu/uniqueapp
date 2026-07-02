@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Heart, MessageCircle, Sparkles, Bot, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function CloneDating() {
   const { toast } = useToast();
@@ -49,7 +50,9 @@ export function CloneDating() {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Clone Dating - How it works"} steps={[{ title: 'Open', desc: 'Access the Clone Dating section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Clone Dating.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Card className="bg-card/80 backdrop-blur-xl border-pink-500/20 bg-gradient-to-br from-pink-950/10 to-purple-950/10">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -122,5 +125,6 @@ export function CloneDating() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

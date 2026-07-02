@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { FileText, Loader2, ExternalLink } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface PaymentRow {
   id: string;
@@ -85,7 +86,9 @@ export function PaymentHistoryCard() {
   };
 
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title={"Payment History Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Payment History Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Payment History Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <FileText className="h-5 w-5 text-primary" />
@@ -161,5 +164,6 @@ export function PaymentHistoryCard() {
         )}
       </CardContent>
     </Card>
+    </>
   );
 }

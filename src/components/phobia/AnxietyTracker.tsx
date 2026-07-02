@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Activity, Loader2, Heart, Wind, Brain, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const ANXIETY_SYMPTOMS = [
   { id: "racing_heart", label: "Racing Heart", icon: Heart, color: "text-red-400" },
@@ -62,6 +63,8 @@ export const AnxietyTracker = () => {
   if (showGrounding) {
     const step = GROUNDING_STEPS[currentGroundingStep];
     return (
+    <>
+      <FloatingHowItWorks title={"Anxiety Tracker - How it works"} steps={[{ title: 'Open', desc: 'Access the Anxiety Tracker section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Anxiety Tracker.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="space-y-4">
         <Button variant="ghost" size="sm" onClick={() => { setShowGrounding(false); setCurrentGroundingStep(0); }}>← Back</Button>
         <Card className="p-6 bg-card/80 backdrop-blur-xl border-border/50 text-center">
@@ -91,7 +94,8 @@ export const AnxietyTracker = () => {
           </Button>
         </Card>
       </div>
-    );
+    </>
+  );
   }
 
   return (

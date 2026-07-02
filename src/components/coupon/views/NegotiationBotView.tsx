@@ -7,6 +7,7 @@ import { MessageSquare, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { CouponToolLayout } from "../CouponToolLayout";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -38,7 +39,9 @@ export function NegotiationBotView({ onBack }: Props) {
   };
 
   return (
-    <CouponToolLayout onBack={onBack} title="AI Negotiation Bot" subtitle="Smart price negotiation strategies & ready-to-use scripts" credits={4} icon={MessageSquare} gradientFrom="#6366f1" gradientTo="#9333ea" borderColor="indigo" formTitle="Negotiation Setup" resultTitle="Negotiation Playbook" emptyText="Set up your negotiation scenario to get AI strategies" result={result} loading={loading}>
+    <>
+      <FloatingHowItWorks title={"Negotiation Bot View - How it works"} steps={[{ title: 'Open', desc: 'Access the Negotiation Bot View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Negotiation Bot View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <CouponToolLayout onBack={onBack} title="AI Negotiation Bot" subtitle="Smart price negotiation strategies & ready-to-use scripts" credits={4} icon={MessageSquare} gradientFrom="#6366f1" gradientTo="#9333ea" borderColor="indigo" formTitle="Negotiation Setup" resultTitle="Negotiation Playbook" emptyText="Set up your negotiation scenario to get AI strategies" result={result} loading={loading}>
       <div><label className="text-sm font-semibold mb-1.5 block">Coupon / Deal Title *</label>
         <Input placeholder="e.g., Nike €100 Gift Card" value={couponTitle} onChange={e => setCouponTitle(e.target.value)} /></div>
       <div><label className="text-sm font-semibold mb-1.5 block">Your Role</label>
@@ -57,5 +60,6 @@ export function NegotiationBotView({ onBack }: Props) {
         {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Strategizing...</> : <><MessageSquare className="w-4 h-4 mr-2" />Get Strategy (4 CR)</>}
       </Button>
     </CouponToolLayout>
+    </>
   );
 }

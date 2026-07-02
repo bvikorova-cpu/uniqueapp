@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Msg { role: "user" | "ai"; text: string; }
 
@@ -44,7 +45,9 @@ export const AIChatFollowup = ({ context }: { context: string }) => {
   };
 
   return (
-    <Card className="p-6 border-cyan-500/20 bg-gradient-to-br from-cyan-950/20 to-background">
+    <>
+      <FloatingHowItWorks title={"A I Chat Followup - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Chat Followup section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Chat Followup.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-6 border-cyan-500/20 bg-gradient-to-br from-cyan-950/20 to-background">
       <div className="flex items-center gap-2 mb-4">
         <MessageCircle className="w-5 h-5 text-cyan-400" />
         <h2 className="text-lg font-bold">Ask Follow-up Questions</h2>
@@ -80,5 +83,6 @@ export const AIChatFollowup = ({ context }: { context: string }) => {
         </Button>
       </div>
     </Card>
+    </>
   );
 };

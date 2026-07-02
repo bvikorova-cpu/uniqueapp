@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Briefcase } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const MegatalentTalentPortfolio = ({ category, categories }: { category?: string; categories?: string[] }) => {
   const [items, setItems] = useState<any[]>([]);
@@ -26,7 +27,9 @@ const MegatalentTalentPortfolio = ({ category, categories }: { category?: string
   if (!items.length) return null;
 
   return (
-    <Card className="overflow-hidden backdrop-blur-xl bg-card/70 border-border/30">
+    <>
+      <FloatingHowItWorks title={"Megatalent Talent Portfolio - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Talent Portfolio section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Talent Portfolio.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="overflow-hidden backdrop-blur-xl bg-card/70 border-border/30">
       <CardContent className="p-5">
         <div className="flex items-center gap-2 mb-4">
           <Briefcase className="h-5 w-5 text-primary" />
@@ -51,6 +54,7 @@ const MegatalentTalentPortfolio = ({ category, categories }: { category?: string
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };
 

@@ -7,6 +7,7 @@ import { Crown, Lock, Sparkles, Star, Check, Loader2 } from "lucide-react";
 import { useUserXp } from "@/hooks/useUserXp";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const TIERS = [
   { lvl: 1, xp: 0, reward: "Welcome badge", icon: "🎁" },
@@ -75,7 +76,9 @@ const MegatalentSeasonPass = ({ userId }: { userId: string | null }) => {
   const pct = nextTier ? Math.round(((xp - currentTier.xp) / (nextTier.xp - currentTier.xp)) * 100) : 100;
 
   return (
-    <Card className="overflow-hidden backdrop-blur-xl bg-gradient-to-br from-primary/15 via-accent/10 to-primary/5 border-primary/20">
+    <>
+      <FloatingHowItWorks title={"Megatalent Season Pass - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Season Pass section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Season Pass.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="overflow-hidden backdrop-blur-xl bg-gradient-to-br from-primary/15 via-accent/10 to-primary/5 border-primary/20">
       <CardContent className="p-5">
         <div className="flex items-center gap-2 mb-3">
           <Crown className="h-5 w-5 text-yellow-500" />
@@ -144,6 +147,7 @@ const MegatalentSeasonPass = ({ userId }: { userId: string | null }) => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };
 

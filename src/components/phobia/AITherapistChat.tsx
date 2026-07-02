@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Bot, Send, Loader2, User, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Message {
   role: "user" | "assistant";
@@ -60,7 +61,9 @@ export const AITherapistChat = () => {
   };
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"A I Therapist Chat - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Therapist Chat section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Therapist Chat.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       <Card className="bg-card/80 backdrop-blur-xl border-border/50 overflow-hidden">
         <div className="p-4 border-b border-border/50 flex items-center gap-2">
           <Bot className="h-5 w-5 text-cyan-400" />
@@ -131,5 +134,6 @@ export const AITherapistChat = () => {
         </div>
       </Card>
     </div>
+    </>
   );
 };

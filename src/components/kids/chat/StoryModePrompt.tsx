@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { BookOpen, Sword, Map, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface StoryModePromptProps {
   characterName: string;
@@ -44,7 +45,9 @@ const STORY_PROMPTS = [
 
 export function StoryModePrompt({ characterName, onSelectStory }: StoryModePromptProps) {
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Story Mode Prompt - How it works"} steps={[{ title: 'Open', desc: 'Access the Story Mode Prompt section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Story Mode Prompt.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-4 border border-indigo-100"
@@ -68,5 +71,6 @@ export function StoryModePrompt({ characterName, onSelectStory }: StoryModePromp
         ))}
       </div>
     </motion.div>
+    </>
   );
 }

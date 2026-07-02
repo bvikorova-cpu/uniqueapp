@@ -19,6 +19,7 @@ import { Download, Trash2, Shield, Eye, Settings, FileText, Loader2 } from "luci
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CookiePreferences {
   necessary: boolean;
@@ -137,7 +138,9 @@ export function GDPRPanel() {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"G D P R Panel - How it works"} steps={[{ title: 'Open', desc: 'Access the G D P R Panel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in G D P R Panel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -298,5 +301,6 @@ export function GDPRPanel() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

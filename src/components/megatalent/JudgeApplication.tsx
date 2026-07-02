@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Gavel, Loader2, Check, Clock, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { userId: string | null; }
 
@@ -48,7 +49,9 @@ const JudgeApplication = ({ userId }: Props) => {
   if (!userId) return null;
 
   return (
-    <Card className="border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-transparent">
+    <>
+      <FloatingHowItWorks title={"Judge Application - How it works"} steps={[{ title: 'Open', desc: 'Access the Judge Application section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Judge Application.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-transparent">
       <CardContent className="p-5 space-y-3">
         <div className="flex items-center gap-2">
           <Gavel className="h-4 w-4 text-amber-500" />
@@ -85,6 +88,7 @@ const JudgeApplication = ({ userId }: Props) => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };
 

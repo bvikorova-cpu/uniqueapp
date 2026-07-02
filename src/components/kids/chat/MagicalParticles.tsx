@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useMemo } from "react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface MagicalParticlesProps {
   characterColor?: string;
@@ -21,7 +22,9 @@ export function MagicalParticles({ count = 12 }: MagicalParticlesProps) {
   [count]);
 
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+    <>
+      <FloatingHowItWorks title={"Magical Particles - How it works"} steps={[{ title: 'Open', desc: 'Access the Magical Particles section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Magical Particles.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
       {particles.map((p) => (
         <motion.div
           key={p.id}
@@ -45,5 +48,6 @@ export function MagicalParticles({ count = 12 }: MagicalParticlesProps) {
         </motion.div>
       ))}
     </div>
+    </>
   );
 }

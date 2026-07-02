@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sparkles, Target, Lock, CheckCircle2, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type Participant = { id: string; submission_id: string; user_id: string };
 type Match = { id: string; round: number; slot: number; participant_a_id: string | null; participant_b_id: string | null; status: string };
@@ -85,7 +86,9 @@ const MegatalentPredictions = ({ category, userId }: { category?: string; userId
   const candidates = matches.flatMap(m => [m.participant_a_id, m.participant_b_id]).filter(Boolean) as string[];
 
   return (
-    <Card className="overflow-hidden backdrop-blur-xl bg-card/70 border-border/30">
+    <>
+      <FloatingHowItWorks title={"Megatalent Predictions - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Predictions section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Predictions.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="overflow-hidden backdrop-blur-xl bg-card/70 border-border/30">
       <CardContent className="p-5">
         <div className="flex items-center gap-2 mb-3">
           <Target className="h-5 w-5 text-accent" />
@@ -132,6 +135,7 @@ const MegatalentPredictions = ({ category, userId }: { category?: string; userId
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };
 

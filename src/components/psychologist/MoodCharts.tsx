@@ -7,6 +7,7 @@ import { ArrowLeft, TrendingUp, Calendar, BarChart3 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area, BarChart, Bar, CartesianGrid } from "recharts";
 import { format, subDays, startOfDay, eachDayOfInterval } from "date-fns";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -73,7 +74,9 @@ export const MoodCharts = ({ onBack }: Props) => {
   })();
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Mood Charts - How it works"} steps={[{ title: 'Open', desc: 'Access the Mood Charts section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Mood Charts.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2">
         <ArrowLeft className="h-4 w-4" /> Back to Dashboard
       </Button>
@@ -192,5 +195,6 @@ export const MoodCharts = ({ onBack }: Props) => {
         </motion.div>
       )}
     </div>
+    </>
   );
 };

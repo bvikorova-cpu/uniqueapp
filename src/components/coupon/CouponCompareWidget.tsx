@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { GitCompareArrows, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useCouponCompare, type CompareCoupon } from "@/hooks/useCouponCompare";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function CouponCompareWidget({ userId }: { userId: string | null }) {
   const { ids, toggle, clear } = useCouponCompare(userId);
@@ -21,7 +22,9 @@ export function CouponCompareWidget({ userId }: { userId: string | null }) {
   const bestSavings = Math.max(...rows.map(r => ((r.original_value - r.selling_price) / r.original_value) * 100));
 
   return (
-    <Card className="mb-6 border-primary/40 bg-primary/5">
+    <>
+      <FloatingHowItWorks title={"Coupon Compare Widget - How it works"} steps={[{ title: 'Open', desc: 'Access the Coupon Compare Widget section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Coupon Compare Widget.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="mb-6 border-primary/40 bg-primary/5">
       <CardContent className="p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
@@ -55,5 +58,6 @@ export function CouponCompareWidget({ userId }: { userId: string | null }) {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 }

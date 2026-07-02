@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Quest {
   id: string;
@@ -91,6 +92,8 @@ export const DailyTrainingQuests = () => {
     const { progress, completed, percentage } = getQuestStatus(quest);
     
     return (
+    <>
+      <FloatingHowItWorks title={"Daily Training Quests - How it works"} steps={[{ title: 'Open', desc: 'Access the Daily Training Quests section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Daily Training Quests.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <motion.div
         key={quest.id}
         initial={{ opacity: 0, x: -20 }}
@@ -149,7 +152,8 @@ export const DailyTrainingQuests = () => {
           </div>
         </Card>
       </motion.div>
-    );
+    </>
+  );
   };
 
   return (

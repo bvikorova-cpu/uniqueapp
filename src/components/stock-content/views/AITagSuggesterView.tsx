@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, Tags, Sparkles, Upload, Copy, Image as ImageIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -92,7 +93,9 @@ export function AITagSuggesterView({ onBack }: Props) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"A I Tag Suggester View - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Tag Suggester View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Tag Suggester View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-1" /> Back</Button>
         <h2 className="text-2xl font-bold flex items-center gap-2">
@@ -216,5 +219,6 @@ export function AITagSuggesterView({ onBack }: Props) {
         </Card>
       )}
     </div>
+    </>
   );
 }

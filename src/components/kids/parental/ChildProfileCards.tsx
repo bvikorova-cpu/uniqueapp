@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Star, Trophy, Flame, Clock, Smile, Meh, Frown } from "lucide-react";
 import { useState } from "react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface ChildProfile {
   name: string;
@@ -35,7 +36,9 @@ const moodLabels = { happy: "Happy", neutral: "Neutral", tired: "Tired" };
 export const ChildProfileCards = () => {
   const [profiles] = useState<ChildProfile[]>(defaultProfiles);
   return (
-    <div className="grid md:grid-cols-2 gap-6">
+    <>
+      <FloatingHowItWorks title={"Child Profile Cards - How it works"} steps={[{ title: 'Open', desc: 'Access the Child Profile Cards section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Child Profile Cards.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="grid md:grid-cols-2 gap-6">
       {profiles.map((child, i) => (
         <motion.div key={child.name} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.15 }}>
           <Card className="overflow-hidden border-2 hover:shadow-lg transition-all">
@@ -77,5 +80,6 @@ export const ChildProfileCards = () => {
         </motion.div>
       ))}
     </div>
+    </>
   );
 };

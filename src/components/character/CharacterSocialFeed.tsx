@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const CharacterSocialFeed = () => {
   const [postContent, setPostContent] = useState("");
@@ -64,7 +65,9 @@ export const CharacterSocialFeed = () => {
   });
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Character Social Feed - How it works"} steps={[{ title: 'Open', desc: 'Access the Character Social Feed section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Character Social Feed.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Card className="relative overflow-hidden border-border/30 bg-card/90 backdrop-blur-xl p-6">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-cyan-500 to-purple-500" />
         <div className="flex items-center gap-3 mb-6">
@@ -134,5 +137,6 @@ export const CharacterSocialFeed = () => {
         ))}
       </div>
     </div>
+    </>
   );
 };

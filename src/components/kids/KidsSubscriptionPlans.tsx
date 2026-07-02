@@ -14,6 +14,7 @@ import { TestimonialCarousel } from "./pricing/TestimonialCarousel";
 import { SavingsCalculator } from "./pricing/SavingsCalculator";
 import { PricingFAQ } from "./pricing/PricingFAQ";
 import { TrustBadges } from "./pricing/TrustBadges";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const PRODUCT_TIERS = {
   monthly: {
@@ -113,7 +114,9 @@ export default function KidsSubscriptionPlans() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100 dark:from-purple-900 dark:via-pink-900 dark:to-blue-900 py-8 px-4">
+    <>
+      <FloatingHowItWorks title={"Kids Subscription Plans - How it works"} steps={[{ title: 'Open', desc: 'Access the Kids Subscription Plans section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Kids Subscription Plans.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100 dark:from-purple-900 dark:via-pink-900 dark:to-blue-900 py-8 px-4">
       <div className="max-w-7xl mx-auto space-y-20">
         {/* Hero */}
         <PricingHero />
@@ -299,5 +302,6 @@ export default function KidsSubscriptionPlans() {
         </motion.div>
       </div>
     </div>
+    </>
   );
 }

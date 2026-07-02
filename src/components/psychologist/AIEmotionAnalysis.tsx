@@ -8,6 +8,7 @@ import { ArrowLeft, Brain, Sparkles, Zap, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -64,7 +65,9 @@ export const AIEmotionAnalysis = ({ onBack }: Props) => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"A I Emotion Analysis - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Emotion Analysis section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Emotion Analysis.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2">
         <ArrowLeft className="h-4 w-4" /> Back to Dashboard
       </Button>
@@ -173,5 +176,6 @@ export const AIEmotionAnalysis = ({ onBack }: Props) => {
         </div>
       )}
     </div>
+    </>
   );
 };

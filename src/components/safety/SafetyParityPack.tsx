@@ -14,6 +14,7 @@ import {
   useTrustedAllies, useSafeWord, useWellbeingPulse, useDailyAffirmation, useBystanderTrainer,
 } from "@/hooks/useSafetyParity";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const SCENARIOS = [
   { key: "group-chat-pile-on", label: "Group chat pile-on", text: "A classmate is being mocked in a group chat by 4 others. You're in the chat." },
@@ -25,7 +26,9 @@ const PLATFORMS = ["Instagram","TikTok","Snapchat","Discord","Roblox","X (Twitte
 
 export function SafetyParityPack() {
   return (
-    <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10 space-y-4">
+    <>
+      <FloatingHowItWorks title={"Safety Parity Pack - How it works"} steps={[{ title: 'Open', desc: 'Access the Safety Parity Pack section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Safety Parity Pack.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10 space-y-4">
       <div className="flex flex-wrap items-center gap-2 mb-2">
         <ShieldAlert className="w-5 h-5 text-orange-400" />
         <h2 className="text-xl sm:text-2xl font-black text-foreground">Safety Parity Pack</h2>
@@ -44,6 +47,7 @@ export function SafetyParityPack() {
         <SafeWordCard />
       </div>
     </motion.section>
+    </>
   );
 }
 

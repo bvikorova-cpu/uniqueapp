@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, TrendingUp, Users } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const NAMES = ["Sarah", "Marco", "Yuki", "Alex", "Priya", "Liam", "Emma", "Noah", "Zara", "Diego", "Sofia", "Kai"];
 const COUNTRIES = ["🇩🇪", "🇫🇷", "🇮🇹", "🇪🇸", "🇬🇧", "🇺🇸", "🇯🇵", "🇧🇷", "🇮🇳", "🇨🇦", "🇦🇺", "🇸🇰"];
@@ -30,7 +31,12 @@ export const LiveActivityBanner = ({ upgradesToday: initial = 247 }: LiveActivit
       // Occasionally bump the counter to feel alive
       if (Math.random() > 0.6) setCount((c) => c + 1);
     }, 3500);
-    return () => clearInterval(id);
+    return (
+    <>
+      <FloatingHowItWorks title={"Live Activity Banner - How it works"} steps={[{ title: 'Open', desc: 'Access the Live Activity Banner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Live Activity Banner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(id);
   }, []);
 
   const name = NAMES[index];

@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { FileText, CheckCircle2 } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 /** Lightweight DAC7 / W-9 / W-8 self-cert form — stores a single row per user. */
 export function TaxFormWidget() {
@@ -62,7 +63,9 @@ export function TaxFormWidget() {
   };
 
   return (
-    <Card className="border-primary/20">
+    <>
+      <FloatingHowItWorks title={"Tax Form Widget - How it works"} steps={[{ title: 'Open', desc: 'Access the Tax Form Widget section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Tax Form Widget.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-primary/20">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-sm flex items-center gap-2">
           <FileText className="h-4 w-4 text-primary" /> Tax certification
@@ -106,5 +109,6 @@ export function TaxFormWidget() {
         </Button>
       </CardContent>
     </Card>
+    </>
   );
 }

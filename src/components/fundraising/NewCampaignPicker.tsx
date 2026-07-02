@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Plus } from "lucide-react";
 import { FUNDRAISING_CATEGORIES, campaignCreateRoute } from "@/lib/fundraisingRoutes";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   triggerLabel?: string;
@@ -20,7 +21,9 @@ export function NewCampaignPicker({ triggerLabel = "New Campaign", size = "lg", 
   const [open, setOpen] = useState(false);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+      <FloatingHowItWorks title={"New Campaign Picker - How it works"} steps={[{ title: 'Open', desc: 'Access the New Campaign Picker section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in New Campaign Picker.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size={size} variant={variant}>
           <Plus className="mr-2 h-5 w-5" />
@@ -49,5 +52,6 @@ export function NewCampaignPicker({ triggerLabel = "New Campaign", size = "lg", 
         </div>
       </DialogContent>
     </Dialog>
+    </>
   );
 }

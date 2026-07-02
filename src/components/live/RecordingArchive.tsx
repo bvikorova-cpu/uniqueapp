@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useLiveRecordings } from "@/hooks/useLiveRecordings";
 import { formatDistanceToNow } from "date-fns";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   ownerId?: string;
@@ -23,7 +24,9 @@ export const RecordingArchive = ({ ownerId, canDelete }: Props) => {
     return <p className="text-sm text-muted-foreground text-center py-8">No recordings yet</p>;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <>
+      <FloatingHowItWorks title={"Recording Archive - How it works"} steps={[{ title: 'Open', desc: 'Access the Recording Archive section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Recording Archive.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {recordings.map((r) => (
         <Card key={r.id} className="overflow-hidden group">
           <div className="relative aspect-video bg-muted">
@@ -68,5 +71,6 @@ export const RecordingArchive = ({ ownerId, canDelete }: Props) => {
         </Card>
       ))}
     </div>
+    </>
   );
 };

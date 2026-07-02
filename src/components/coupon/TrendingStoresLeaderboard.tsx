@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
@@ -18,7 +19,9 @@ export function TrendingStoresLeaderboard() {
   if (rows.length === 0) return null;
 
   return (
-    <Card className="mb-6">
+    <>
+      <FloatingHowItWorks title={"Trending Stores Leaderboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Trending Stores Leaderboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Trending Stores Leaderboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="mb-6">
       <CardContent className="p-5">
         <div className="flex items-center gap-2 mb-3">
           <TrendingUp className="w-4 h-4 text-primary" />
@@ -38,5 +41,6 @@ export function TrendingStoresLeaderboard() {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 }

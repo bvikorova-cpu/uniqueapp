@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useState, useRef, useEffect } from "react";
 import heroVideo from "@/assets/brain-duel-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface BrainDuelHeroProps {
   onlineCount: number;
@@ -37,7 +38,12 @@ function AnimatedCounter({ value, duration = 2 }: { value: number; duration?: nu
         setCount(start);
       }
     }, 1000 / 60);
-    return () => clearInterval(timer);
+    return (
+    <>
+      <FloatingHowItWorks title={"Brain Duel Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Brain Duel Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Brain Duel Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(timer);
   }, [value, duration]);
   return <>{count.toLocaleString()}</>;
 }

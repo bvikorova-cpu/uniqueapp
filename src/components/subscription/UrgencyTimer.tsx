@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Flame, Clock } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 /**
  * 24-hour rolling launch offer timer. Resets every day at midnight UTC.
@@ -22,7 +23,12 @@ export const UrgencyTimer = () => {
     };
     tick();
     const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
+    return (
+    <>
+      <FloatingHowItWorks title={"Urgency Timer - How it works"} steps={[{ title: 'Open', desc: 'Access the Urgency Timer section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Urgency Timer.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(id);
   }, []);
 
   const Box = ({ value, label }: { value: number; label: string }) => (

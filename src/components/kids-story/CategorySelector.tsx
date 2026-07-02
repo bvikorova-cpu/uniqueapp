@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CategorySelectorProps {
   value: string;
@@ -18,7 +19,9 @@ const CATEGORIES = [
 
 export const CategorySelector = ({ value, onChange }: CategorySelectorProps) => {
   return (
-    <div className="space-y-3">
+    <>
+      <FloatingHowItWorks title={"Category Selector - How it works"} steps={[{ title: 'Open', desc: 'Access the Category Selector section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Category Selector.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-3">
       <h3 className="text-sm font-semibold text-muted-foreground">Choose Your World</h3>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {CATEGORIES.map((cat, i) => (
@@ -51,5 +54,6 @@ export const CategorySelector = ({ value, onChange }: CategorySelectorProps) => 
         ))}
       </div>
     </div>
+    </>
   );
 };

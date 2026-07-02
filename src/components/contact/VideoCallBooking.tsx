@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { Video, Calendar, Clock, Loader2, CheckCircle2 } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const SLOTS = ["09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00"];
 
@@ -78,7 +79,9 @@ export function VideoCallBooking() {
   if (!user) return null;
 
   return (
-    <Card className="border-2 mb-6 border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5">
+    <>
+      <FloatingHowItWorks title={"Video Call Booking - How it works"} steps={[{ title: 'Open', desc: 'Access the Video Call Booking section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Video Call Booking.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-2 mb-6 border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
           <Video className="h-4 w-4 text-primary" /> Book a video call
@@ -150,5 +153,6 @@ export function VideoCallBooking() {
         )}
       </CardContent>
     </Card>
+    </>
   );
 }

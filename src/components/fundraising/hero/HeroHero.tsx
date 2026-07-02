@@ -1,11 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import { Shield, Users, Award, TrendingUp } from "lucide-react";
 import { PremiumCategoryHero } from "@/components/fundraising/PremiumCategoryHero";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export const HeroHero = () => {
   const navigate = useNavigate();
   return (
-    <PremiumCategoryHero
+    <>
+      <FloatingHowItWorks title={"Hero Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Hero Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Hero Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <PremiumCategoryHero
       badge="Heroes Among Us"
       badgeIcon={Shield}
       title="Community Hero"
@@ -21,5 +24,6 @@ export const HeroHero = () => {
         { icon: TrendingUp, label: "Platform Fee", value: "5%" },
       ]}
     />
+    </>
   );
 };

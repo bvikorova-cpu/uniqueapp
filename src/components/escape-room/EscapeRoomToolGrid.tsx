@@ -5,6 +5,7 @@ import {
   Palette, BarChart3, History, Award, Users, Zap, Star, DollarSign,
   Brain, Wand2, Volume2, Calendar, Play, Music, Timer
 } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const tools = [
   { id: "browse", label: "Browse Rooms", desc: "Explore 76+ immersive rooms", icon: Lock, gradient: "from-amber-500 to-orange-600" },
@@ -37,7 +38,9 @@ interface Props { onToolSelect: (id: string) => void; }
 
 export function EscapeRoomToolGrid({ onToolSelect }: Props) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+    <>
+      <FloatingHowItWorks title={"Escape Room Tool Grid - How it works"} steps={[{ title: 'Open', desc: 'Access the Escape Room Tool Grid section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Escape Room Tool Grid.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
       {tools.map(tool => {
         const Icon = tool.icon;
         return (
@@ -64,5 +67,6 @@ export function EscapeRoomToolGrid({ onToolSelect }: Props) {
         );
       })}
     </div>
+    </>
   );
 }

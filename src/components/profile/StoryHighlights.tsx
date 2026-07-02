@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Plus, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface StoryHighlightsProps {
   userId: string;
@@ -28,7 +29,12 @@ export const StoryHighlights = ({ userId, isOwnProfile }: StoryHighlightsProps) 
         .select("*")
         .eq("user_id", userId)
         .order("order_index", { ascending: true });
-      return ((data || []) as unknown) as Highlight[];
+      return (
+    <>
+      <FloatingHowItWorks title={"Story Highlights - How it works"} steps={[{ title: 'Open', desc: 'Access the Story Highlights section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Story Highlights.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      (data || []) as unknown
+    </>
+  ) as Highlight[];
     },
     enabled: !!userId,
   });

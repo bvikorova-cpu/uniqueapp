@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Share2, Hash, Clock, Lightbulb, Copy, Check, ArrowLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface SocialMediaKitProps {
   credits: number;
@@ -71,7 +72,9 @@ const SocialMediaKit = ({ credits, onBack, onCreditsUsed }: SocialMediaKitProps)
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Social Media Kit - How it works"} steps={[{ title: 'Open', desc: 'Access the Social Media Kit section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Social Media Kit.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
         <Button variant="ghost" onClick={onBack} className="mb-4 gap-2">
           <ArrowLeft className="h-4 w-4" /> Back to Hub
@@ -230,6 +233,7 @@ const SocialMediaKit = ({ credits, onBack, onCreditsUsed }: SocialMediaKitProps)
         </motion.div>
       )}
     </div>
+    </>
   );
 };
 

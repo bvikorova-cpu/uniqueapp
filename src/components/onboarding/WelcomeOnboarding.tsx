@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sparkles, Trophy, Gift, ArrowRight, Check } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { triggerRewardConfetti } from "@/utils/confetti";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const INTERESTS = [
   { id: "talent", label: "Megatalent", emoji: "🎤", hub: "/megatalent" },
@@ -44,7 +45,12 @@ export function WelcomeOnboarding() {
     } else {
       const onLoad = () => schedule();
       window.addEventListener("load", onLoad, { once: true });
-      return () => {
+      return (
+    <>
+      <FloatingHowItWorks title={"Welcome Onboarding - How it works"} steps={[{ title: 'Open', desc: 'Access the Welcome Onboarding section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Welcome Onboarding.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
         window.removeEventListener("load", onLoad);
         if (timer) clearTimeout(timer);
       };

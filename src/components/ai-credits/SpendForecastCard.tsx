@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function SpendForecastCard() {
   const [avg, setAvg] = useState<number | null>(null);
@@ -30,7 +31,9 @@ export function SpendForecastCard() {
   if (avg === null) return null;
 
   return (
-    <Card className="max-w-5xl mx-auto mb-6">
+    <>
+      <FloatingHowItWorks title={"Spend Forecast Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Spend Forecast Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Spend Forecast Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="max-w-5xl mx-auto mb-6">
       <CardHeader>
         <div className="flex items-center gap-2">
           <TrendingUp className="h-5 w-5 text-primary" />
@@ -50,5 +53,6 @@ export function SpendForecastCard() {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 }

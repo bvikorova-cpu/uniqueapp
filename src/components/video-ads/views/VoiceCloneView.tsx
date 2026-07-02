@@ -9,6 +9,7 @@ import { Loader2, Mic, Upload, Play } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { handleEdgeError } from "@/lib/handleEdgeError";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export const VoiceCloneView = ({ onBack }: { onBack: () => void }) => {
   const [name, setName] = useState("");
@@ -61,7 +62,9 @@ export const VoiceCloneView = ({ onBack }: { onBack: () => void }) => {
   };
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Voice Clone View - How it works"} steps={[{ title: 'Open', desc: 'Access the Voice Clone View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Voice Clone View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4">← Back</Button>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-500 to-purple-600 flex items-center justify-center"><Mic className="w-6 h-6 text-white" /></div>
@@ -102,5 +105,6 @@ export const VoiceCloneView = ({ onBack }: { onBack: () => void }) => {
         </Card>
       </div>
     </div>
+    </>
   );
 };

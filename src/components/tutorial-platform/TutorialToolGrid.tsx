@@ -8,6 +8,7 @@ import {
   FileCheck, CalendarDays, Layers, Presentation, Sparkles
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const categories = [
   {
@@ -68,7 +69,9 @@ interface Props {
 
 export function TutorialToolGrid({ onToolSelect }: Props) {
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Tutorial Tool Grid - How it works"} steps={[{ title: 'Open', desc: 'Access the Tutorial Tool Grid section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Tutorial Tool Grid.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       {categories.map((cat, catIdx) => (
         <div key={cat.title}>
           <h3 className="text-sm md:text-base font-bold mb-2 flex items-center gap-2">
@@ -107,5 +110,6 @@ export function TutorialToolGrid({ onToolSelect }: Props) {
         </div>
       ))}
     </div>
+    </>
   );
 }

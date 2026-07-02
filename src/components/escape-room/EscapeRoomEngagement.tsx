@@ -1,9 +1,12 @@
 import { Flame, BarChart3, Award } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function EscapeRoomEngagement() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+    <>
+      <FloatingHowItWorks title={"Escape Room Engagement - How it works"} steps={[{ title: 'Open', desc: 'Access the Escape Room Engagement section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Escape Room Engagement.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
       <Card className="border-amber-500/20 bg-gradient-to-br from-amber-500/5 to-orange-500/5">
         <CardContent className="p-4 flex items-center gap-3">
           <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg">
@@ -43,5 +46,6 @@ export function EscapeRoomEngagement() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

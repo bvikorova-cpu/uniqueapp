@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Flame } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -9,7 +10,9 @@ export const HandwritingStreak = () => {
   const activeDays = [1, 2, 3].filter(d => d <= (today === 0 ? 7 : today));
 
   return (
-    <Card className="bg-card/60 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-all">
+    <>
+      <FloatingHowItWorks title={"Handwriting Streak - How it works"} steps={[{ title: 'Open', desc: 'Access the Handwriting Streak section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Handwriting Streak.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/60 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-all">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm flex items-center gap-2">
           <Flame className="w-4 h-4 text-orange-500" />
@@ -47,5 +50,6 @@ export const HandwritingStreak = () => {
         </p>
       </CardContent>
     </Card>
+    </>
   );
 };

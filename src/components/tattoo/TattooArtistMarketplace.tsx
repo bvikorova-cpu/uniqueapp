@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { ArrowLeft, MapPin, Star, MessageSquare, Search, ExternalLink, Crown, Award } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -30,7 +31,9 @@ export const TattooArtistMarketplace = ({ onBack }: Props) => {
   });
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <>
+      <FloatingHowItWorks title={"Tattoo Artist Marketplace - How it works"} steps={[{ title: 'Open', desc: 'Access the Tattoo Artist Marketplace section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Tattoo Artist Marketplace.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6 animate-fade-in">
       <Button variant="ghost" onClick={onBack} className="gap-2 text-amber-400 hover:text-amber-300">
         <ArrowLeft className="h-4 w-4" /> Back to Atelier
       </Button>
@@ -121,5 +124,6 @@ export const TattooArtistMarketplace = ({ onBack }: Props) => {
         ))}
       </div>
     </div>
+    </>
   );
 };

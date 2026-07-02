@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export const BidStrategyView = ({ onBack }: { onBack: () => void }) => {
   const [input, setInput] = useState("");
@@ -28,7 +29,9 @@ export const BidStrategyView = ({ onBack }: { onBack: () => void }) => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
+    <>
+      <FloatingHowItWorks title={"Bid Strategy View - How it works"} steps={[{ title: 'Open', desc: 'Access the Bid Strategy View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Bid Strategy View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-4xl mx-auto space-y-6">
         <Button variant="ghost" onClick={onBack} className="gap-2"><ArrowLeft className="w-4 h-4" />Back</Button>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
@@ -54,5 +57,6 @@ export const BidStrategyView = ({ onBack }: { onBack: () => void }) => {
         )}
       </div>
     </div>
+    </>
   );
 };

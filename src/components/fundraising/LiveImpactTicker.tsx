@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, Zap } from "lucide-react";
 import { useState, useEffect } from "react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const TICKER_MESSAGES = [
   "A generous donor just contributed to a medical campaign 💊",
@@ -18,7 +19,12 @@ export function LiveImpactTicker() {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % TICKER_MESSAGES.length);
     }, 4000);
-    return () => clearInterval(interval);
+    return (
+    <>
+      <FloatingHowItWorks title={"Live Impact Ticker - How it works"} steps={[{ title: 'Open', desc: 'Access the Live Impact Ticker section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Live Impact Ticker.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(interval);
   }, []);
 
   return (

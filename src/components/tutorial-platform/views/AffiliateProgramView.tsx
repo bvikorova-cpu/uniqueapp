@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Link2, Copy, Check, Users, DollarSign, TrendingUp, Share2, Gift, BarChart3 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -38,7 +39,9 @@ export function AffiliateProgramView({ onBack }: Props) {
   };
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Affiliate Program View - How it works"} steps={[{ title: 'Open', desc: 'Access the Affiliate Program View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Affiliate Program View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg">
@@ -145,5 +148,6 @@ export function AffiliateProgramView({ onBack }: Props) {
         ))}
       </div>
     </div>
+    </>
   );
 }

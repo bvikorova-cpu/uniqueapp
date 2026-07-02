@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { MessageSquareWarning, Gavel } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type Appeal = {
   id: string;
@@ -75,7 +76,9 @@ export function BrandAppealForm({ brandId, brandUserId }: { brandId: string; bra
   };
 
   return (
-    <div className="mt-3 space-y-2" data-testid="brand-appeal-section">
+    <>
+      <FloatingHowItWorks title={"Brand Appeal Form - How it works"} steps={[{ title: 'Open', desc: 'Access the Brand Appeal Form section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Brand Appeal Form.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="mt-3 space-y-2" data-testid="brand-appeal-section">
       {appeals.length > 0 && (
         <div className="space-y-2">
           {appeals.slice(0, 3).map((a) => (
@@ -130,5 +133,6 @@ export function BrandAppealForm({ brandId, brandUserId }: { brandId: string; bra
         </DialogContent>
       </Dialog>
     </div>
+    </>
   );
 }

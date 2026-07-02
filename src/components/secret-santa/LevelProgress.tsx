@@ -1,16 +1,20 @@
 import { useSocialGiftsProgress, calculateXPForLevel } from "@/hooks/useSocialGiftsProgress";
 import { Progress } from "@/components/ui/progress";
 import { Star, Zap, Gift, Target } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const LevelProgress = () => {
   const { progress, levelInfo, isLoading } = useSocialGiftsProgress();
 
   if (isLoading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Level Progress - How it works"} steps={[{ title: 'Open', desc: 'Access the Level Progress section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Level Progress.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="bg-white/80 backdrop-blur-xl border border-amber-200 rounded-2xl p-4 shadow-lg animate-pulse">
         <div className="h-20 bg-amber-100 rounded-xl" />
       </div>
-    );
+    </>
+  );
   }
 
   const progressPercent = levelInfo.xpForNextLevel > 0 

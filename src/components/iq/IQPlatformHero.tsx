@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Brain, Trophy, Users, Flame, Zap, GraduationCap } from "lucide-react";
 import heroVideo from "@/assets/iq-platform-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 function getWeeklyTimeLeft() {
   const now = new Date();
@@ -27,7 +28,12 @@ export default function IQPlatformHero({ totalTests, totalUsers, userIQ, streak 
 
   useEffect(() => {
     const timer = setInterval(() => setTimeLeft(getWeeklyTimeLeft()), 60000);
-    return () => clearInterval(timer);
+    return (
+    <>
+      <FloatingHowItWorks title={"I Q Platform Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the I Q Platform Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in I Q Platform Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(timer);
   }, []);
 
   const statCards = [

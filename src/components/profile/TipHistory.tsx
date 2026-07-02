@@ -26,6 +26,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface TipHistoryProps {
   userId: string;
@@ -121,7 +122,12 @@ export const TipHistory = ({ userId, isOwnProfile }: TipHistoryProps) => {
       await load();
       if (!alive) return;
     })();
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Tip History - How it works"} steps={[{ title: 'Open', desc: 'Access the Tip History section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Tip History.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       alive = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Flame, Trophy, ArrowLeft, Zap, Coins } from "lucide-react";
 import { useComedyCurrency } from "@/hooks/useComedy";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   onBack: () => void;
@@ -61,7 +62,9 @@ export const ComedyRoastArena = ({ onBack }: Props) => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Comedy Roast Arena - How it works"} steps={[{ title: 'Open', desc: 'Access the Comedy Roast Arena section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Comedy Roast Arena.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={onBack}>
           <ArrowLeft className="h-4 w-4 mr-1" /> Back
@@ -144,5 +147,6 @@ export const ComedyRoastArena = ({ onBack }: Props) => {
         </motion.div>
       )}
     </div>
+    </>
   );
 };

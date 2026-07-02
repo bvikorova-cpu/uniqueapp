@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import RewardedAdCard from "./RewardedAdCard";
 import { AD_PLACEMENTS } from "./AdPlacements";
 import { loadAllMonetagZones } from "@/lib/monetag";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 /**
  * Global "Watch & Earn" card mounted once per page near the end of content.
@@ -31,7 +32,12 @@ export const GlobalRewardedAd = () => {
       const existing = document.querySelectorAll("[data-rewarded-ad-card]").length;
       setHasLocalAd(existing > 1); // >1 because we render one ourselves
     }, 500);
-    return () => window.clearTimeout(t);
+    return (
+    <>
+      <FloatingHowItWorks title={"Global Rewarded Ad - How it works"} steps={[{ title: 'Open', desc: 'Access the Global Rewarded Ad section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Global Rewarded Ad.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => window.clearTimeout(t);
   }, [pathname, skip]);
 
   if (skip || hasLocalAd) return null;

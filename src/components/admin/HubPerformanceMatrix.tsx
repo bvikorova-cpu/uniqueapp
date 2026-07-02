@@ -5,6 +5,7 @@ import {
   ChefHat, Mic2, Trophy, Users, Heart, Music, Building2, Briefcase,
   Sparkles, Camera, Gamepad2, BookOpen, Image as ImageIcon, Wallet, TrendingUp
 } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Hub {
   key: string;
@@ -79,7 +80,12 @@ export const HubPerformanceMatrix = () => {
         .subscribe(),
     );
 
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Hub Performance Matrix - How it works"} steps={[{ title: 'Open', desc: 'Access the Hub Performance Matrix section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Hub Performance Matrix.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       cancelled = true;
       clearInterval(refresh);
       channels.forEach((c: any) => supabase.removeChannel(c));

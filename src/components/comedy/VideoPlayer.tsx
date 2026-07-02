@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface VideoPlayerProps {
   videoUrl: string;
@@ -19,7 +20,9 @@ export function VideoPlayer({ videoUrl, title, autoPlay = false }: VideoPlayerPr
   }, [autoPlay, videoUrl]);
 
   return (
-    <Card className="overflow-hidden">
+    <>
+      <FloatingHowItWorks title={"Video Player - How it works"} steps={[{ title: 'Open', desc: 'Access the Video Player section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Video Player.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="overflow-hidden">
       {title && (
         <div className="p-4 border-b">
           <h3 className="font-bold text-lg">{title}</h3>
@@ -37,5 +40,6 @@ export function VideoPlayer({ videoUrl, title, autoPlay = false }: VideoPlayerPr
         </video>
       </div>
     </Card>
+    </>
   );
 }

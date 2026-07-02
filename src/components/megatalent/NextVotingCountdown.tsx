@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Trophy, Clock, Flame, PlayCircle } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 /**
  * Countdown to the next MegaTalent voting round / €10,000 prize draw.
@@ -73,7 +74,12 @@ export default function NextVotingCountdown() {
 
   useEffect(() => {
     const id = setInterval(() => setT(getTimeLeft()), 1000);
-    return () => clearInterval(id);
+    return (
+    <>
+      <FloatingHowItWorks title={"Next Voting Countdown - How it works"} steps={[{ title: 'Open', desc: 'Access the Next Voting Countdown section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Next Voting Countdown.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(id);
   }, []);
 
   const Box = ({ value, label }: { value: number; label: string }) => (

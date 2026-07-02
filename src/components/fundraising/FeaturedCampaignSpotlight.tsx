@@ -3,10 +3,13 @@ import { Clock, Heart, Star, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function FeaturedCampaignSpotlight() {
   return (
-    <section className="py-12 px-4">
+    <>
+      <FloatingHowItWorks title={"Featured Campaign Spotlight - How it works"} steps={[{ title: 'Open', desc: 'Access the Featured Campaign Spotlight section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Featured Campaign Spotlight.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <section className="py-12 px-4">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-2 mb-6">
           <Star className="w-5 h-5 text-primary" />
@@ -69,5 +72,6 @@ export function FeaturedCampaignSpotlight() {
         </motion.div>
       </div>
     </section>
+    </>
   );
 }

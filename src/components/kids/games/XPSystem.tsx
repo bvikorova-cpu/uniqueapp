@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Star, Zap, Trophy } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface XPSystemProps {
   totalXP: number;
@@ -16,7 +17,9 @@ export function XPSystem({ totalXP, level }: XPSystemProps) {
   const progress = Math.min((xpInLevel / xpNeeded) * 100, 100);
 
   return (
-    <div className="space-y-3">
+    <>
+      <FloatingHowItWorks title={"X P System - How it works"} steps={[{ title: 'Open', desc: 'Access the X P System section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in X P System.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-3">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-bold text-gray-700 flex items-center gap-1.5">
           <Zap className="h-4 w-4 text-yellow-500" /> XP Progress
@@ -57,5 +60,6 @@ export function XPSystem({ totalXP, level }: XPSystemProps) {
         </span>
       </div>
     </div>
+    </>
   );
 }

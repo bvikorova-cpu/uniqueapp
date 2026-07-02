@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Sparkles } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CreateInfluencerProps {
   open: boolean;
@@ -159,7 +160,9 @@ const CreateInfluencer = ({ open, onOpenChange }: CreateInfluencerProps) => {
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <>
+      <FloatingHowItWorks title={"Create Influencer - How it works"} steps={[{ title: 'Open', desc: 'Access the Create Influencer section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Create Influencer.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Create Virtual Influencer</DialogTitle>
@@ -280,6 +283,7 @@ const CreateInfluencer = ({ open, onOpenChange }: CreateInfluencerProps) => {
         </form>
       </DialogContent>
     </Dialog>
+    </>
   );
 };
 

@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { ArrowLeft, Play, Clock, Star, Search, BookOpen, Video, Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface RecordedLessonsProps {
   onBack: () => void;
@@ -82,10 +83,13 @@ export const RecordedLessons = ({ onBack }: RecordedLessonsProps) => {
 
   if (isLoading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Recorded Lessons - How it works"} steps={[{ title: 'Open', desc: 'Access the Recorded Lessons section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Recorded Lessons.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="flex justify-center items-center py-20">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
-    );
+    </>
+  );
   }
 
   return (

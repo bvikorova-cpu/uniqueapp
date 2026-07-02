@@ -11,6 +11,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, Trophy, Clock, Users, Plus, Loader2, Flame, Medal, Star, Upload } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface WeeklyChallengesProps {
   onBack: () => void;
@@ -120,7 +121,9 @@ const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Weekly Challenges - How it works"} steps={[{ title: 'Open', desc: 'Access the Weekly Challenges section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Weekly Challenges.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
         <Button variant="ghost" onClick={onBack} className="gap-2 mb-4">
           <ArrowLeft className="h-4 w-4" /> Back to Hub
@@ -224,6 +227,7 @@ const WeeklyChallenges = ({ onBack }: WeeklyChallengesProps) => {
         </DialogContent>
       </Dialog>
     </div>
+    </>
   );
 };
 

@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Plus, Flag } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Flag {
   id: string;
@@ -59,7 +60,9 @@ export const FeatureFlagsPanel = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Feature Flags Panel - How it works"} steps={[{ title: 'Open', desc: 'Access the Feature Flags Panel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Feature Flags Panel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Card className="p-4 sm:p-6 border-primary/20 bg-card/60 backdrop-blur-xl">
         <div className="flex items-center gap-2 mb-4">
           <Plus className="h-4 w-4" />
@@ -115,5 +118,6 @@ export const FeatureFlagsPanel = () => {
         </div>
       )}
     </div>
+    </>
   );
 };

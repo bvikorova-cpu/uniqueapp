@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Target, Sparkles } from "lucide-react";
 import { useResponseCoach } from "@/hooks/useSafetyAIFeatures";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const SCENARIOS = [
   "A classmate publicly mocks your appearance in front of others.",
@@ -21,7 +22,9 @@ export function ResponseCoachCard() {
   const last = items[0];
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+      <FloatingHowItWorks title={"Response Coach Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Response Coach Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Response Coach Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Card className="group cursor-pointer relative overflow-hidden border border-cyan-500/20 bg-gradient-to-br from-cyan-950/40 via-card/40 to-sky-950/30 backdrop-blur-xl p-5 hover:border-cyan-400/40 transition-all">
           <div className="flex items-start gap-3">
@@ -98,5 +101,6 @@ export function ResponseCoachCard() {
         )}
       </DialogContent>
     </Dialog>
+    </>
   );
 }

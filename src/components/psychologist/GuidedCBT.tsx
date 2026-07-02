@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Brain, ChevronRight, CheckCircle2, RotateCcw, Lightbulb, Target, AlertTriangle, Scale } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -101,6 +102,8 @@ export const GuidedCBT = ({ onBack }: Props) => {
 
   if (!selectedExercise) {
     return (
+    <>
+      <FloatingHowItWorks title={"Guided C B T - How it works"} steps={[{ title: 'Open', desc: 'Access the Guided C B T section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Guided C B T.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="space-y-6">
         <Button variant="ghost" onClick={onBack} className="gap-2"><ArrowLeft className="h-4 w-4" /> Back to Dashboard</Button>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
@@ -128,7 +131,8 @@ export const GuidedCBT = ({ onBack }: Props) => {
           ))}
         </div>
       </div>
-    );
+    </>
+  );
   }
 
   if (completed) {

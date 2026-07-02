@@ -5,6 +5,7 @@ import { useFoundingMember } from "@/hooks/useFoundingMember";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const DISMISS_KEY = "founding_banner_dismissed_v1";
 
@@ -47,7 +48,9 @@ export function FoundingMembersBanner() {
   };
 
   return (
-    <AnimatePresence>
+    <>
+      <FloatingHowItWorks title={"Founding Members Banner - How it works"} steps={[{ title: 'Open', desc: 'Access the Founding Members Banner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Founding Members Banner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <AnimatePresence>
       <motion.div
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
@@ -86,5 +89,6 @@ export function FoundingMembersBanner() {
         </div>
       </motion.div>
     </AnimatePresence>
+    </>
   );
 }

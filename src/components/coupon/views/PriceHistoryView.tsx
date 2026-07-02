@@ -6,6 +6,7 @@ import { TrendingUp, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { CouponToolLayout } from "../CouponToolLayout";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -36,7 +37,9 @@ export function PriceHistoryView({ onBack }: Props) {
   };
 
   return (
-    <CouponToolLayout onBack={onBack} title="Price History Charts" subtitle="Market price trends & optimal buy/sell timing analysis" credits={3} icon={TrendingUp} gradientFrom="#22c55e" gradientTo="#059669" borderColor="green" formTitle="Price Analysis Parameters" resultTitle="Price Trend Report" emptyText="Enter details to get price history analysis and trends" result={result} loading={loading}>
+    <>
+      <FloatingHowItWorks title={"Price History View - How it works"} steps={[{ title: 'Open', desc: 'Access the Price History View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Price History View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <CouponToolLayout onBack={onBack} title="Price History Charts" subtitle="Market price trends & optimal buy/sell timing analysis" credits={3} icon={TrendingUp} gradientFrom="#22c55e" gradientTo="#059669" borderColor="green" formTitle="Price Analysis Parameters" resultTitle="Price Trend Report" emptyText="Enter details to get price history analysis and trends" result={result} loading={loading}>
       <div><label className="text-sm font-semibold mb-1.5 block">Store Name *</label>
         <Input placeholder="e.g., Nike, Amazon, Sephora" value={storeName} onChange={e => setStoreName(e.target.value)} /></div>
       <div><label className="text-sm font-semibold mb-1.5 block">Coupon Type</label>
@@ -53,5 +56,6 @@ export function PriceHistoryView({ onBack }: Props) {
         {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Analyzing...</> : <><TrendingUp className="w-4 h-4 mr-2" />Analyze Prices (3 CR)</>}
       </Button>
     </CouponToolLayout>
+    </>
   );
 }

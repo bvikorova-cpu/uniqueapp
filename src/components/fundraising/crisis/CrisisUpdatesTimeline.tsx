@@ -10,6 +10,7 @@ import { Pin, Radio, Plus, AlertCircle, Package, Trophy, Flag } from "lucide-rea
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Update {
   id: string;
@@ -63,7 +64,12 @@ export function CrisisUpdatesTimeline({ campaignId, ownerUserId }: Props) {
         () => load()
       )
       .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    return (
+    <>
+      <FloatingHowItWorks title={"Crisis Updates Timeline - How it works"} steps={[{ title: 'Open', desc: 'Access the Crisis Updates Timeline section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Crisis Updates Timeline.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => { supabase.removeChannel(channel); };
     // eslint-disable-next-line
   }, [campaignId, ownerUserId]);
 

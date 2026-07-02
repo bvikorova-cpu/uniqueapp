@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface MedicalCampaign {
   id: string;
@@ -41,7 +42,9 @@ export function MedicalCampaignCard({ campaign, index, onNavigate }: MedicalCamp
   const isAlmostFunded = progress >= 80;
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Medical Campaign Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Medical Campaign Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Medical Campaign Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.08 }}
@@ -171,5 +174,6 @@ export function MedicalCampaignCard({ campaign, index, onNavigate }: MedicalCamp
         )}
       </div>
     </motion.div>
+    </>
   );
 }

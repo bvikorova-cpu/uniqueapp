@@ -3,6 +3,7 @@ import { Mic2, Users, Video, Trophy } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useLiveStats } from "@/hooks/useLiveStats";
 import heroVideo from "@/assets/comedy-club-hero-v3.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: string }) => {
   const [count, setCount] = useState(0);
@@ -17,7 +18,12 @@ const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: str
       if (current >= target) { setCount(target); clearInterval(timer); }
       else setCount(Math.floor(current));
     }, duration / steps);
-    return () => clearInterval(timer);
+    return (
+    <>
+      <FloatingHowItWorks title={"Comedy Club Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Comedy Club Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Comedy Club Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(timer);
   }, [target]);
   return <span>{count > 0 ? `${count.toLocaleString()}${suffix}` : "—"}</span>;
 };

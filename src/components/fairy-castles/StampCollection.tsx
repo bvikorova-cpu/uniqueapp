@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Trophy, Lock, Sparkles } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface StampCollectionProps {
   castles: any[];
@@ -12,7 +13,9 @@ export function StampCollection({ castles, stampedIds }: StampCollectionProps) {
   const allComplete = castles.length > 0 && castles.every(c => stampedIds.includes(c.id));
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Stamp Collection - How it works"} steps={[{ title: 'Open', desc: 'Access the Stamp Collection section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Stamp Collection.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -88,5 +91,6 @@ export function StampCollection({ castles, stampedIds }: StampCollectionProps) {
         </motion.div>
       )}
     </motion.div>
+    </>
   );
 }

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useIsFollowing, useFollowMutation, useUnfollowMutation } from "@/hooks/useFollow";
 import { Loader2, UserPlus, UserMinus } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface FollowButtonProps {
   userId: string;
@@ -35,10 +36,13 @@ export const FollowButton = ({
 
   if (isLoading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Follow Button - How it works"} steps={[{ title: 'Open', desc: 'Access the Follow Button section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Follow Button.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Button variant={variant} size={size} disabled>
         <Loader2 className="h-4 w-4 animate-spin" />
       </Button>
-    );
+    </>
+  );
   }
 
   return (

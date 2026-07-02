@@ -6,6 +6,7 @@ import { Loader2, Trash2, Download, Share2, ImageIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import BeforeAfterSlider from "./BeforeAfterSlider";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Row { id: string; action: string; source_url: string | null; result_url: string; created_at: string; }
 
@@ -47,7 +48,9 @@ export default function FutureFaceGallery() {
   const visible = filter === "all" ? rows : rows.filter(r => r.action === filter);
 
   return (
-    <div className="mb-8 space-y-4">
+    <>
+      <FloatingHowItWorks title={"Future Face Gallery - How it works"} steps={[{ title: 'Open', desc: 'Access the Future Face Gallery section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Future Face Gallery.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="mb-8 space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-xl sm:text-2xl font-black">🖼️ My Gallery</h2>
         <Badge variant="outline">{rows.length} saved</Badge>
@@ -106,5 +109,6 @@ export default function FutureFaceGallery() {
         </div>
       )}
     </div>
+    </>
   );
 }

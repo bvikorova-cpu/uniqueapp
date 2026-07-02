@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Sparkles, Upload, Search, ImageIcon, Download, Euro, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -44,7 +45,9 @@ export function SmartSearchView({ onBack }: Props) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Smart Search View - How it works"} steps={[{ title: 'Open', desc: 'Access the Smart Search View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Smart Search View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center gap-3 flex-wrap">
         <Button variant="ghost" size="sm" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-1" />Back</Button>
         <h2 className="text-2xl font-bold flex items-center gap-2">
@@ -110,5 +113,6 @@ export function SmartSearchView({ onBack }: Props) {
         </>
       )}
     </div>
+    </>
   );
 }

@@ -58,6 +58,7 @@ import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
 import type { Post } from "@/types/database";
 import { getPostBackground } from "@/lib/postBackgrounds";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface PostCardProps {
   post: Post;
@@ -121,7 +122,12 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
     [newFiles]
   );
   useEffect(() => {
-    return () => { newFilePreviews.forEach((u) => u && URL.revokeObjectURL(u)); };
+    return (
+    <>
+      <FloatingHowItWorks title={"Post Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Post Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Post Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => { newFilePreviews.forEach((u) => u && URL.revokeObjectURL(u)); };
   }, [newFilePreviews]);
 
   // Get current user and check if post is saved

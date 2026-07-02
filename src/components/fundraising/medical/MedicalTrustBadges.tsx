@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ShieldCheck, Building2, RefreshCcw, FileCheck2 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props {
   verified?: boolean | null;
@@ -61,7 +62,9 @@ export function MedicalTrustBadges({
     }[c] || "bg-muted text-foreground border-border");
 
   return (
-    <TooltipProvider delayDuration={150}>
+    <>
+      <FloatingHowItWorks title={"Medical Trust Badges - How it works"} steps={[{ title: 'Open', desc: 'Access the Medical Trust Badges section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Medical Trust Badges.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <TooltipProvider delayDuration={150}>
       <div className="flex flex-wrap gap-2">
         {badges.map((b, i) => (
           <Tooltip key={b.label}>
@@ -83,5 +86,6 @@ export function MedicalTrustBadges({
         ))}
       </div>
     </TooltipProvider>
+    </>
   );
 }

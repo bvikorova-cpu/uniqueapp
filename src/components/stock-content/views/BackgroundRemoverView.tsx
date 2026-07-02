@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Eraser, Loader2, ImageIcon, Download, Save } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface BackgroundRemoverViewProps {
   onBack: () => void;
@@ -118,7 +119,9 @@ export function BackgroundRemoverView({ onBack }: BackgroundRemoverViewProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Background Remover View - How it works"} steps={[{ title: 'Open', desc: 'Access the Background Remover View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Background Remover View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-1" /> Back</Button>
         <h2 className="text-2xl font-bold flex items-center gap-2"><Eraser className="w-6 h-6 text-rose-500" /> AI Background Remover</h2>
@@ -197,5 +200,6 @@ export function BackgroundRemoverView({ onBack }: BackgroundRemoverViewProps) {
         </Card>
       </div>
     </div>
+    </>
   );
 }

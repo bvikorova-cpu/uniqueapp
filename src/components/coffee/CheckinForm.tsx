@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CheckinFormProps {
   selectedCafeId: string | null;
@@ -68,7 +69,9 @@ export const CheckinForm = ({ selectedCafeId }: CheckinFormProps) => {
   });
 
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title={"Checkin Form - How it works"} steps={[{ title: 'Open', desc: 'Access the Checkin Form section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Checkin Form.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card>
       <CardHeader>
         <CardTitle>Check In</CardTitle>
         <CardDescription>Share your coffee experience and earn 5 points</CardDescription>
@@ -119,5 +122,6 @@ export const CheckinForm = ({ selectedCafeId }: CheckinFormProps) => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

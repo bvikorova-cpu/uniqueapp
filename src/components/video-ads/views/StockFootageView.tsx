@@ -8,6 +8,7 @@ import { Loader2, Library, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { handleEdgeError } from "@/lib/handleEdgeError";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface StockResult {
   scenes: Array<{ sceneNumber: number; description: string; keywords: string[]; pexelsUrl: string; pixabayUrl: string; unsplashUrl: string; shotType: string; motionStyle: string; durationSeconds: number }>;
@@ -35,7 +36,9 @@ export const StockFootageView = ({ onBack }: { onBack: () => void }) => {
   };
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Stock Footage View - How it works"} steps={[{ title: 'Open', desc: 'Access the Stock Footage View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Stock Footage View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4">← Back</Button>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center"><Library className="w-6 h-6 text-white" /></div>
@@ -79,5 +82,6 @@ export const StockFootageView = ({ onBack }: { onBack: () => void }) => {
         </Card>
       </div>
     </div>
+    </>
   );
 };

@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { PawPrint, ShieldCheck, Heart, Home } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const steps = [
   { icon: PawPrint, title: "Report", description: "Create a campaign for an animal in need of help", color: "text-blue-500", bg: "bg-blue-500/10" },
@@ -10,7 +11,9 @@ const steps = [
 
 export const PetStepsWizard = () => {
   return (
-    <div className="py-12">
+    <>
+      <FloatingHowItWorks title={"Pet Steps Wizard - How it works"} steps={[{ title: 'Open', desc: 'Access the Pet Steps Wizard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Pet Steps Wizard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="py-12">
       <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
         className="text-2xl md:text-3xl font-bold text-center mb-10 text-foreground">
         How It Works
@@ -38,5 +41,6 @@ export const PetStepsWizard = () => {
         <strong>6% platform fee</strong> — 94% goes directly to the animal's care. Urgent cases get priority visibility.
       </motion.p>
     </div>
+    </>
   );
 };

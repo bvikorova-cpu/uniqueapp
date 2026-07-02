@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, Calendar, Trophy, Gift, Lock, Star, Zap, Crown } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const tiers = [
   { level: 1, xp: 0, reward: "Bronze Key Badge", icon: Star, unlocked: true },
@@ -31,7 +32,9 @@ export function SeasonPassView({ onBack }: { onBack: () => void }) {
   const currentLevel = 12;
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Season Pass View - How it works"} steps={[{ title: 'Open', desc: 'Access the Season Pass View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Season Pass View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
@@ -102,5 +105,6 @@ export function SeasonPassView({ onBack }: { onBack: () => void }) {
         })}
       </div>
     </div>
+    </>
   );
 }

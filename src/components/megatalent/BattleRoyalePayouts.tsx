@@ -6,6 +6,7 @@ import { Trophy, Loader2, Wallet, CheckCircle2, Clock, AlertCircle } from "lucid
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { userId: string | null; }
 
@@ -81,7 +82,9 @@ const BattleRoyalePayouts = ({ userId }: Props) => {
   if (!loading && wins.length === 0 && payouts.length === 0) return null;
 
   return (
-    <Card className="border-yellow-500/30 bg-gradient-to-br from-yellow-500/10 via-amber-500/5 to-transparent">
+    <>
+      <FloatingHowItWorks title={"Battle Royale Payouts - How it works"} steps={[{ title: 'Open', desc: 'Access the Battle Royale Payouts section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Battle Royale Payouts.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-yellow-500/30 bg-gradient-to-br from-yellow-500/10 via-amber-500/5 to-transparent">
       <CardContent className="p-5 space-y-3">
         <div className="flex items-center gap-2">
           <Trophy className="h-4 w-4 text-yellow-500" />
@@ -130,6 +133,7 @@ const BattleRoyalePayouts = ({ userId }: Props) => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };
 

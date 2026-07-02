@@ -2,10 +2,13 @@ import { motion } from "framer-motion";
 import heroVideo from "@/assets/lie-detector-eye-hero.mp4.asset.json";
 import poster from "@/assets/lie-detector-eye-poster.jpg";
 import { Eye, Lock, Activity } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const LieDetectorCinematicHero = () => {
   return (
-    <div className="relative w-full rounded-2xl overflow-hidden border border-red-900/40 shadow-[0_0_60px_-15px_hsl(0_70%_40%/0.5)]">
+    <>
+      <FloatingHowItWorks title={"Lie Detector Cinematic Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Lie Detector Cinematic Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Lie Detector Cinematic Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative w-full rounded-2xl overflow-hidden border border-red-900/40 shadow-[0_0_60px_-15px_hsl(0_70%_40%/0.5)]">
       {/* Background video */}
       <video
         src={heroVideo.url}
@@ -102,5 +105,6 @@ export const LieDetectorCinematicHero = () => {
         </motion.div>
       </div>
     </div>
+    </>
   );
 };

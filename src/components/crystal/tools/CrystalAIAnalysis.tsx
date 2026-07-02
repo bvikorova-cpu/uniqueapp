@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Sparkles, Loader2, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props {
   toolType: string;
@@ -67,7 +68,9 @@ export const CrystalAIAnalysis = ({ toolType, title, description, needsImage = t
   const canAnalyze = (needsImage && imageUrl) || (needsText && textInput.trim()) || (!needsImage && !needsText);
 
   return (
-    <Card className="bg-card/80 backdrop-blur-xl border-border/50">
+    <>
+      <FloatingHowItWorks title={"Crystal A I Analysis - How it works"} steps={[{ title: 'Open', desc: 'Access the Crystal A I Analysis section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Crystal A I Analysis.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/80 backdrop-blur-xl border-border/50">
       <CardHeader>
         <CardTitle className="text-xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">{title}</CardTitle>
         <p className="text-sm text-muted-foreground">{description}</p>
@@ -100,5 +103,6 @@ export const CrystalAIAnalysis = ({ toolType, title, description, needsImage = t
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

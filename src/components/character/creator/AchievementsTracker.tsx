@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Achievement {
   id: string;
@@ -27,7 +28,9 @@ export function AchievementsTracker({ characterCount, hasStory, hasTradingCard }
   const unlockedCount = achievements.filter((a) => a.unlocked).length;
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Achievements Tracker - How it works"} steps={[{ title: 'Open', desc: 'Access the Achievements Tracker section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Achievements Tracker.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className="bg-white/90 backdrop-blur-sm rounded-2xl p-5 border-2 border-white/60 shadow-lg"
@@ -62,5 +65,6 @@ export function AchievementsTracker({ characterCount, hasStory, hasTradingCard }
         ))}
       </div>
     </motion.div>
+    </>
   );
 }

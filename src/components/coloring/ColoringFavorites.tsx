@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Heart, FolderPlus, Download, Share2, Printer, Eye, Brush } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ColoringPage {
   id: string;
@@ -57,7 +58,9 @@ export function ColoringFavorites({ pages, onToggleFavorite, onDelete, onColorOn
   };
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Coloring Favorites - How it works"} steps={[{ title: 'Open', desc: 'Access the Coloring Favorites section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Coloring Favorites.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       {/* Controls */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex gap-2">
@@ -144,5 +147,6 @@ export function ColoringFavorites({ pages, onToggleFavorite, onDelete, onColorOn
         </Dialog>
       )}
     </div>
+    </>
   );
 }

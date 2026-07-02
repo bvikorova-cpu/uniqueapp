@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Clock, Target, TrendingUp } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CompletedCourse {
   id: string;
@@ -87,7 +88,9 @@ export const CourseHistory = ({ userId }: CourseHistoryProps = {}) => {
   );
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Course History - How it works"} steps={[{ title: 'Open', desc: 'Access the Course History section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Course History.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
@@ -219,5 +222,6 @@ export const CourseHistory = ({ userId }: CourseHistoryProps = {}) => {
         </Card>
       )}
     </div>
+    </>
   );
 };

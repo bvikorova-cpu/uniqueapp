@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { BarChart3, RefreshCw, TrendingUp, Users, FileText } from "lucide-react";
 import { format, subDays } from "date-fns";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   groupId: string;
@@ -49,7 +50,9 @@ export function GroupInsightsPanel({ groupId }: Props) {
   };
 
   return (
-    <Card className="p-4 space-y-4">
+    <>
+      <FloatingHowItWorks title={"Group Insights Panel - How it works"} steps={[{ title: 'Open', desc: 'Access the Group Insights Panel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Group Insights Panel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-4 space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="font-semibold flex items-center gap-2">
           <BarChart3 className="h-4 w-4 text-primary" /> Insights · last 30 days
@@ -102,6 +105,7 @@ export function GroupInsightsPanel({ groupId }: Props) {
         )}
       </div>
     </Card>
+    </>
   );
 }
 

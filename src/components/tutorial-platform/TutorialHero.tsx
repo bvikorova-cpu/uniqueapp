@@ -1,6 +1,7 @@
 import { GraduationCap, Users, BookOpen, Award, Sparkles, Play, Star } from "lucide-react";
 import heroVideo from "@/assets/education-hero.mp4.asset.json";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const stats = [
   { label: "Courses", icon: BookOpen, value: "1.8K+", color: "from-violet-500 to-purple-600" },
@@ -11,7 +12,9 @@ const stats = [
 
 export function TutorialHero() {
   return (
-    <div className="space-y-4 mb-8">
+    <>
+      <FloatingHowItWorks title={"Tutorial Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Tutorial Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Tutorial Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4 mb-8">
       {/* Badge */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -95,5 +98,6 @@ export function TutorialHero() {
         })}
       </div>
     </div>
+    </>
   );
 }

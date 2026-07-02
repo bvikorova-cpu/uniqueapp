@@ -2,6 +2,7 @@ import { ImagePlus, Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props {
   coverUrl: string;
@@ -12,7 +13,9 @@ interface Props {
 
 export const CoverBannerUpload = ({ coverUrl, uploading, onUpload, onRemove }: Props) => {
   return (
-    <div className="rounded-2xl border border-border/50 overflow-hidden mb-6 bg-card/50">
+    <>
+      <FloatingHowItWorks title={"Cover Banner Upload - How it works"} steps={[{ title: 'Open', desc: 'Access the Cover Banner Upload section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Cover Banner Upload.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="rounded-2xl border border-border/50 overflow-hidden mb-6 bg-card/50">
       <div
         className="relative h-40 sm:h-52 bg-gradient-to-br from-violet-900/40 via-amber-900/30 to-pink-900/40"
         style={coverUrl ? { backgroundImage: `url(${coverUrl})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
@@ -40,5 +43,6 @@ export const CoverBannerUpload = ({ coverUrl, uploading, onUpload, onRemove }: P
         </div>
       </div>
     </div>
+    </>
   );
 };

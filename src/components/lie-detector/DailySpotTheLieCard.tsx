@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Crown, Flame, Target, CheckCircle2, XCircle } from "lucide-react";
 import { useDailyChallenge, useSubmitChallenge, useLieLeaderboard } from "@/hooks/useLieDetectorTuning";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const DailySpotTheLieCard = () => {
   const { data, isLoading, refetch } = useDailyChallenge();
@@ -35,7 +36,9 @@ export const DailySpotTheLieCard = () => {
     : undefined;
 
   return (
-    <Card className="bg-gradient-to-br from-amber-950/40 via-card/80 to-red-950/30 border-amber-500/30 backdrop-blur-md">
+    <>
+      <FloatingHowItWorks title={"Daily Spot The Lie Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Daily Spot The Lie Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Daily Spot The Lie Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-gradient-to-br from-amber-950/40 via-card/80 to-red-950/30 border-amber-500/30 backdrop-blur-md">
       <CardHeader>
         <div className="flex items-start justify-between">
           <div>
@@ -120,5 +123,6 @@ export const DailySpotTheLieCard = () => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

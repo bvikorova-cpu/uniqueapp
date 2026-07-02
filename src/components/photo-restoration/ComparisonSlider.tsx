@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, Upload, Move } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -39,7 +40,9 @@ export const ComparisonSlider = ({ onBack }: Props) => {
   const handleTouchMove = (e: React.TouchEvent) => { updateSlider(e.touches[0].clientX); };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Comparison Slider - How it works"} steps={[{ title: 'Open', desc: 'Access the Comparison Slider section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Comparison Slider.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
       <Card className="p-6">
         <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
           <Move className="h-6 w-6 text-cyan-500" />
@@ -102,5 +105,6 @@ export const ComparisonSlider = ({ onBack }: Props) => {
       </Card>
       <Button variant="ghost" onClick={onBack} className="gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button>
     </motion.div>
+    </>
   );
 };

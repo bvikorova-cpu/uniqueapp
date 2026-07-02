@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Sparkles, TrendingUp, ArrowRight, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Rec {
   recommended_tier: string;
@@ -32,7 +33,9 @@ export const PlanRecommenderCard = () => {
 
   const upgrade = rec.recommended_tier !== "basic" || rec.current_tier === "premium";
   return (
-    <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-accent/5">
+    <>
+      <FloatingHowItWorks title={"Plan Recommender Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Plan Recommender Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Plan Recommender Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-accent/5">
       <CardContent className="py-5 space-y-3">
         <div className="flex items-center gap-2">
           <Sparkles className="h-5 w-5 text-primary" />
@@ -49,5 +52,6 @@ export const PlanRecommenderCard = () => {
         </Button>
       </CardContent>
     </Card>
+    </>
   );
 };

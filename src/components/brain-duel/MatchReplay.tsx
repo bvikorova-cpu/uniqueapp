@@ -8,6 +8,7 @@ import { BarChart3, Clock, CheckCircle2, XCircle, TrendingUp, Trophy, ChevronDow
 import { AICommentary } from './AICommentary';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface MatchReplayData {
   id: string;
@@ -98,7 +99,9 @@ export const MatchReplay = () => {
     : 0;
 
   return (
-    <Card className="relative overflow-hidden border-primary/20 backdrop-blur-xl bg-card/80">
+    <>
+      <FloatingHowItWorks title={"Match Replay - How it works"} steps={[{ title: 'Open', desc: 'Access the Match Replay section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Match Replay.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="relative overflow-hidden border-primary/20 backdrop-blur-xl bg-card/80">
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-primary/5 to-violet-500/5" />
       <CardHeader className="relative">
         <CardTitle className="flex items-center gap-2">
@@ -290,5 +293,6 @@ export const MatchReplay = () => {
         </ScrollArea>
       </CardContent>
     </Card>
+    </>
   );
 };

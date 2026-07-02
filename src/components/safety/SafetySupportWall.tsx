@@ -12,6 +12,7 @@ import { motion } from "framer-motion";
 import { WallReactions } from "./WallReactions";
 import { BuddyMatching } from "./BuddyMatching";
 import { useWallReactions, useWallFilter } from "@/hooks/useSafetyExtras";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const encouragements = [
   "You are stronger than you know 💪",
@@ -70,7 +71,9 @@ const SafetySupportWall = () => {
   const quickEncourage = (text: string) => addMessage.mutate(text);
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Safety Support Wall - How it works"} steps={[{ title: 'Open', desc: 'Access the Safety Support Wall section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Safety Support Wall.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       {/* Buddy Matching at top */}
       <BuddyMatching />
 
@@ -169,6 +172,7 @@ const SafetySupportWall = () => {
         )}
       </div>
     </div>
+    </>
   );
 };
 

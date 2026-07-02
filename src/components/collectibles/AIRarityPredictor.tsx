@@ -8,6 +8,7 @@ import { Loader2, TrendingUp, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAICredits } from "@/hooks/useAICredits";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { userId: string; }
 
@@ -39,7 +40,9 @@ export default function AIRarityPredictor({ userId }: Props) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"A I Rarity Predictor - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Rarity Predictor section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Rarity Predictor.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Card className="p-6 bg-gradient-to-br from-violet-500/10 to-purple-500/10 border-violet-500/20">
         <div className="flex items-center gap-3 mb-4">
           <TrendingUp className="h-8 w-8 text-violet-400" />
@@ -70,5 +73,6 @@ export default function AIRarityPredictor({ userId }: Props) {
         </Card>
       )}
     </div>
+    </>
   );
 }

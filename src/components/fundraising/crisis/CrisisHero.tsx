@@ -1,11 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import { AlertTriangle, Zap, Users, TrendingUp } from "lucide-react";
 import { PremiumCategoryHero } from "@/components/fundraising/PremiumCategoryHero";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export function CrisisHero() {
   const navigate = useNavigate();
   return (
-    <PremiumCategoryHero
+    <>
+      <FloatingHowItWorks title={"Crisis Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Crisis Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Crisis Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <PremiumCategoryHero
       badge="Emergency Response"
       badgeIcon={AlertTriangle}
       title="Crisis Relief"
@@ -21,5 +24,6 @@ export function CrisisHero() {
         { icon: TrendingUp, label: "Platform Fee", value: "8%" },
       ]}
     />
+    </>
   );
 }

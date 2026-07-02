@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight, Download, Heart, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface LightboxItem {
   id: string;
@@ -36,7 +37,9 @@ export function GalleryLightbox({
   if (!item) return null;
 
   return (
-    <AnimatePresence>
+    <>
+      <FloatingHowItWorks title={"Gallery Lightbox - How it works"} steps={[{ title: 'Open', desc: 'Access the Gallery Lightbox section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Gallery Lightbox.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <AnimatePresence>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -124,5 +127,6 @@ export function GalleryLightbox({
         </motion.div>
       </motion.div>
     </AnimatePresence>
+    </>
   );
 }

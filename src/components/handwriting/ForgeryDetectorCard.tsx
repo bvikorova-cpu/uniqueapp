@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { ShieldAlert, Loader2 } from "lucide-react";
 import { useForgeryDetector } from "@/hooks/useHandwritingPro";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const verdictColor = (v: string) => v?.includes("FORGERY") ? "text-rose-700 bg-rose-100/60" :
   v === "SUSPICIOUS" ? "text-amber-700 bg-amber-100/60" : "text-emerald-700 bg-emerald-100/60";
@@ -19,7 +20,9 @@ export const ForgeryDetectorCard = () => {
   };
 
   return (
-    <Card className="bg-card/60 backdrop-blur-sm border-amber-900/20">
+    <>
+      <FloatingHowItWorks title={"Forgery Detector Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Forgery Detector Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Forgery Detector Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/60 backdrop-blur-sm border-amber-900/20">
       <CardHeader>
         <CardTitle className="flex items-center justify-between text-base">
           <span className="flex items-center gap-2"><ShieldAlert className="w-5 h-5 text-burgundy-700" style={{ color: "hsl(345 50% 35%)" }} /> Forgery Detector</span>
@@ -55,5 +58,6 @@ export const ForgeryDetectorCard = () => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

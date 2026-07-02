@@ -4,6 +4,7 @@ import { Progress } from "@/components/ui/progress";
 import { Sparkles, ListPlus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSubscription } from "@/hooks/useSubscription";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const UsageMeterCard = () => {
   const { limits } = useSubscription();
@@ -30,7 +31,9 @@ export const UsageMeterCard = () => {
   const listPct = listLimit === -1 ? 0 : Math.min(100, (listingsUsed / listLimit) * 100);
 
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title={"Usage Meter Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Usage Meter Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Usage Meter Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card>
       <CardHeader><CardTitle className="text-base">This month's usage</CardTitle></CardHeader>
       <CardContent className="space-y-4">
         <div>
@@ -43,5 +46,6 @@ export const UsageMeterCard = () => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

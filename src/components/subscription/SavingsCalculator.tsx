@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Calculator, TrendingUp } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const SavingsCalculator = () => {
   const [monthlySales, setMonthlySales] = useState([1000]);
@@ -12,7 +13,9 @@ export const SavingsCalculator = () => {
   const totalSaved = premiumSavings + aiValue * 12;
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Savings Calculator - How it works"} steps={[{ title: 'Open', desc: 'Access the Savings Calculator section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Savings Calculator.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -72,5 +75,6 @@ export const SavingsCalculator = () => {
         </div>
       </div>
     </motion.div>
+    </>
   );
 };

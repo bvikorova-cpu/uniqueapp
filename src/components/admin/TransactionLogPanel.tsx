@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { CreditCard, Search, TrendingUp, DollarSign } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const TransactionLogPanel = () => {
   const [transactions, setTransactions] = useState<any[]>([]);
@@ -139,7 +140,9 @@ export const TransactionLogPanel = () => {
   };
 
   return (
-    <Card className="border-2 border-green-500/30 bg-gradient-to-br from-green-500/5 to-emerald-500/5">
+    <>
+      <FloatingHowItWorks title={"Transaction Log Panel - How it works"} steps={[{ title: 'Open', desc: 'Access the Transaction Log Panel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Transaction Log Panel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-2 border-green-500/30 bg-gradient-to-br from-green-500/5 to-emerald-500/5">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <CreditCard className="h-5 w-5 text-green-500" />
@@ -245,5 +248,6 @@ export const TransactionLogPanel = () => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

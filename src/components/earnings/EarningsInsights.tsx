@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Sparkles, ArrowUp, ArrowDown, Minus } from "lucide-react";
 import { useMemo } from "react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface EarningsInsightsProps {
   history: { created_at: string; amount: number; source?: string; item_type?: string }[];
@@ -61,7 +62,9 @@ export const EarningsInsights = ({ history }: EarningsInsightsProps) => {
     insights.trendPct > 5 ? "text-emerald-500" : insights.trendPct < -5 ? "text-rose-500" : "text-muted-foreground";
 
   return (
-    <Card className="p-6 bg-card/80 backdrop-blur-md border-amber-500/20">
+    <>
+      <FloatingHowItWorks title={"Earnings Insights - How it works"} steps={[{ title: 'Open', desc: 'Access the Earnings Insights section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Earnings Insights.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-6 bg-card/80 backdrop-blur-md border-amber-500/20">
       <h3 className="text-lg font-bold flex items-center gap-2 mb-4">
         <Sparkles className="h-5 w-5 text-amber-500" />
         Smart Insights
@@ -112,5 +115,6 @@ export const EarningsInsights = ({ history }: EarningsInsightsProps) => {
         )}
       </div>
     </Card>
+    </>
   );
 };

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface AmbientSound {
   id: string;
@@ -26,7 +27,9 @@ export function AmbientSoundMixer() {
   const activeCount = sounds.filter(s => s.active).length;
 
   return (
-    <div className="space-y-3">
+    <>
+      <FloatingHowItWorks title={"Ambient Sound Mixer - How it works"} steps={[{ title: 'Open', desc: 'Access the Ambient Sound Mixer section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Ambient Sound Mixer.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-3">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-bold text-purple-100 flex items-center gap-1.5">
           🎵 Ambient Sounds
@@ -83,5 +86,6 @@ export function AmbientSoundMixer() {
         ))}
       </div>
     </div>
+    </>
   );
 }

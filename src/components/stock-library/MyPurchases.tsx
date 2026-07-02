@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Download, Image as ImageIcon, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Purchase {
   id: string;
@@ -62,10 +63,13 @@ export const MyPurchases = () => {
 
   if (loading) {
     return (
+    <>
+      <FloatingHowItWorks title={"My Purchases - How it works"} steps={[{ title: 'Open', desc: 'Access the My Purchases section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in My Purchases.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="flex items-center justify-center py-12">
         <Loader2 className="w-8 h-8 animate-spin" />
       </div>
-    );
+    </>
+  );
   }
 
   if (purchases.length === 0) {

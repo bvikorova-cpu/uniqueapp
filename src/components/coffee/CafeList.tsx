@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { MapPin, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CafeListProps {
   onSelectCafe: (cafeId: string) => void;
@@ -26,7 +27,9 @@ export const CafeList = ({ onSelectCafe }: CafeListProps) => {
   if (isLoading) return <div>Loading cafes...</div>;
 
   return (
-    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <>
+      <FloatingHowItWorks title={"Cafe List - How it works"} steps={[{ title: 'Open', desc: 'Access the Cafe List section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Cafe List.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
       {cafes?.map((cafe) => (
         <Card key={cafe.id} className="hover:shadow-lg transition-shadow">
           <CardHeader>
@@ -61,5 +64,6 @@ export const CafeList = ({ onSelectCafe }: CafeListProps) => {
         </Card>
       ))}
     </div>
+    </>
   );
 };

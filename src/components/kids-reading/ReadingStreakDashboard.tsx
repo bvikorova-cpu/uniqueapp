@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   textsAnalyzed: number;
@@ -27,7 +28,9 @@ export const ReadingStreakDashboard = ({
   const xpInLevel = xp % 100;
 
   return (
-    <Card className="mb-6 border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5">
+    <>
+      <FloatingHowItWorks title={"Reading Streak Dashboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Reading Streak Dashboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Reading Streak Dashboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="mb-6 border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5">
       <CardContent className="pt-6 space-y-4">
         {/* XP Bar */}
         <div className="flex items-center gap-3">
@@ -79,5 +82,6 @@ export const ReadingStreakDashboard = ({
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

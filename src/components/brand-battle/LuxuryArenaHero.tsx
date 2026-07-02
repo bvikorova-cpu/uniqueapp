@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Trophy, Users, Zap } from "lucide-react";
 import heroVideo from "@/assets/brand-battle-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   totalVotes?: number;
@@ -16,7 +17,9 @@ export const LuxuryArenaHero = ({ totalVotes = 0, totalSponsors = 0, liveNow = 0
   ];
 
   return (
-    <div className="relative w-full h-[50vh] sm:h-[60vh] overflow-hidden bg-black rounded-2xl mb-8">
+    <>
+      <FloatingHowItWorks title={"Luxury Arena Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Luxury Arena Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Luxury Arena Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative w-full h-[50vh] sm:h-[60vh] overflow-hidden bg-black rounded-2xl mb-8">
       <video
         src={heroVideo.url}
         autoPlay
@@ -79,5 +82,6 @@ export const LuxuryArenaHero = ({ totalVotes = 0, totalSponsors = 0, liveNow = 0
         </motion.div>
       </div>
     </div>
+    </>
   );
 };

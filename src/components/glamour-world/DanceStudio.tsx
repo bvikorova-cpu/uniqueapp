@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Sparkles, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const danceStyles = ["Ballet", "Jazz", "Hip Hop", "Contemporary", "K-Pop", "Cheerleading", "Ballroom Waltz", "Latin"];
 
@@ -41,7 +42,9 @@ export function DanceStudio({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Dance Studio - How it works"} steps={[{ title: 'Open', desc: 'Access the Dance Studio section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Dance Studio.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button>
       <h2 className="text-2xl font-black">💃 Dance Studio</h2>
       <p className="text-muted-foreground">Learn amazing dance choreographies!</p>
@@ -65,5 +68,6 @@ export function DanceStudio({ onBack }: { onBack: () => void }) {
       </Button>
       {result && <div className="bg-gradient-to-br from-fuchsia-500/10 to-pink-500/10 border border-fuchsia-400/20 rounded-xl p-6 whitespace-pre-wrap">{result}</div>}
     </div>
+    </>
   );
 }

@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface StoryNode {
   id: number;
@@ -32,7 +33,9 @@ export function StoryConstellationMap({ stories, visitedStories }: StoryConstell
   const connections = [[0, 1], [1, 2], [0, 3], [3, 4], [4, 5], [2, 5], [1, 4]];
 
   return (
-    <div className="space-y-3">
+    <>
+      <FloatingHowItWorks title={"Story Constellation Map - How it works"} steps={[{ title: 'Open', desc: 'Access the Story Constellation Map section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Story Constellation Map.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-3">
       <h3 className="text-sm font-bold text-purple-100 flex items-center gap-1.5">
         ✨ Story Constellation
       </h3>
@@ -92,5 +95,6 @@ export function StoryConstellationMap({ stories, visitedStories }: StoryConstell
         ))}
       </div>
     </div>
+    </>
   );
 }

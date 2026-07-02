@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, ShoppingBag, Star, AlertTriangle, Package } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Stats {
   orders_completed: number;
@@ -31,12 +32,15 @@ export function CouponSellerDashboard({ userId }: { userId: string | null }) {
   const tile = (icon: any, label: string, value: string, accent: string, sub?: string) => {
     const Icon = icon;
     return (
+    <>
+      <FloatingHowItWorks title={"Coupon Seller Dashboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Coupon Seller Dashboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Coupon Seller Dashboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card><CardContent className="p-4">
         <div className="flex items-center gap-2 mb-1"><Icon className={`w-4 h-4 ${accent}`} /><span className="text-xs text-muted-foreground">{label}</span></div>
         <p className="text-2xl font-black">{value}</p>
         {sub && <p className="text-[11px] text-muted-foreground mt-0.5">{sub}</p>}
       </CardContent></Card>
-    );
+    </>
+  );
   };
 
   return (

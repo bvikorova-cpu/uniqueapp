@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Trophy, Crown, Flame, TrendingUp } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type Mode = "earners" | "spenders" | "active";
 type Range = "24h" | "7d" | "30d" | "all";
@@ -118,7 +119,12 @@ export const TopUsersLeaderboard = () => {
     };
 
     load();
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Top Users Leaderboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Top Users Leaderboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Top Users Leaderboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       cancel = true;
     };
   }, [mode, range]);

@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 
 import { Send, Coffee, Loader2, Check, AlertCircle, RotateCcw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CoffeeChatProps {
   matchId: string | null;
@@ -156,7 +157,12 @@ export const CoffeeChat = ({ matchId, open, onOpenChange }: CoffeeChatProps) => 
       { root, rootMargin: '100px 0px 0px 0px', threshold: 0 }
     );
     observer.observe(sentinel);
-    return () => observer.disconnect();
+    return (
+    <>
+      <FloatingHowItWorks title={"Coffee Chat - How it works"} steps={[{ title: 'Open', desc: 'Access the Coffee Chat section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Coffee Chat.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => observer.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, matchId, hasMore, messages.length]);
 

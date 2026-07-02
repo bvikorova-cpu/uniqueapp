@@ -13,6 +13,7 @@ import {
   Award,
   Lock
 } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Achievement {
   id: string;
@@ -116,7 +117,9 @@ export const AchievementsShowcase = ({
   const currentLevelProgress = (totalXp % 500) / 5;
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Achievements Showcase - How it works"} steps={[{ title: 'Open', desc: 'Access the Achievements Showcase section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Achievements Showcase.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       {/* Level Card */}
       <Card className="bg-gradient-to-br from-primary/10 to-primary/5">
         <CardContent className="pt-6">
@@ -222,6 +225,7 @@ export const AchievementsShowcase = ({
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };
 

@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface GalleryAchievementsProps {
   stories: number;
@@ -22,7 +23,9 @@ export function GalleryAchievements({ stories, drawings, characters, coloringPag
   const earned = badges.filter((b) => b.req(stories, drawings, characters, coloringPages));
 
   return (
-    <div className="max-w-4xl mx-auto mb-10">
+    <>
+      <FloatingHowItWorks title={"Gallery Achievements - How it works"} steps={[{ title: 'Open', desc: 'Access the Gallery Achievements section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Gallery Achievements.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="max-w-4xl mx-auto mb-10">
       <h2 className="text-2xl font-bold text-center mb-6">
         🏅{" "}
         <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
@@ -67,5 +70,6 @@ export function GalleryAchievements({ stories, drawings, characters, coloringPag
         })}
       </div>
     </div>
+    </>
   );
 }

@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface WithdrawalRequest {
   id: string;
@@ -119,10 +120,13 @@ export function CampaignWithdrawalManagement() {
 
   if (loading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Campaign Withdrawal Management - How it works"} steps={[{ title: 'Open', desc: 'Access the Campaign Withdrawal Management section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Campaign Withdrawal Management.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="flex items-center justify-center py-12">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
-    );
+    </>
+  );
   }
 
   return (

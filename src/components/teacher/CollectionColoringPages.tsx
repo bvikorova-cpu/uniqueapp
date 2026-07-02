@@ -5,6 +5,7 @@ import { Plus, Download, Trash2, Image as ImageIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import AddColoringPageDialog from "./AddColoringPageDialog";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ColoringPage {
   id: string;
@@ -81,10 +82,13 @@ export default function CollectionColoringPages({
 
   if (loading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Collection Coloring Pages - How it works"} steps={[{ title: 'Open', desc: 'Access the Collection Coloring Pages section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Collection Coloring Pages.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="flex items-center justify-center p-8">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
-    );
+    </>
+  );
   }
 
   return (

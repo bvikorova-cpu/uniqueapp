@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface TimeCapsuleToolCardProps {
   icon: LucideIcon;
@@ -31,7 +32,9 @@ const iconColorMap: Record<string, string> = {
 
 export const TimeCapsuleToolCard = ({ icon: Icon, title, description, color, onClick, index, badge }: TimeCapsuleToolCardProps) => {
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Time Capsule Tool Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Time Capsule Tool Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Time Capsule Tool Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05 }}
@@ -51,5 +54,6 @@ export const TimeCapsuleToolCard = ({ icon: Icon, title, description, color, onC
         <p className="text-xs text-muted-foreground leading-tight line-clamp-2">{description}</p>
       </div>
     </motion.div>
+    </>
   );
 };

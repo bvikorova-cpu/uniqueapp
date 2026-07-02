@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Sparkles, Users, Palette, Star, Crown } from "lucide-react";
 import heroVideo from "@/assets/tattoo-hero-v2.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const useLiveStats = () => {
   const [stats, setStats] = useState({
@@ -20,7 +21,12 @@ const useLiveStats = () => {
         rating: prev.rating,
       }));
     }, 4000);
-    return () => clearInterval(interval);
+    return (
+    <>
+      <FloatingHowItWorks title={"Tattoo Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Tattoo Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Tattoo Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(interval);
   }, []);
 
   return stats;

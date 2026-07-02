@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Check, Lock, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Room {
   id: string;
@@ -30,6 +31,8 @@ export const CastleRoomMiniMap = ({
 
   return (
     <>
+      <FloatingHowItWorks title={"Castle Room Mini Map - How it works"} steps={[{ title: 'Open', desc: 'Access the Castle Room Mini Map section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Castle Room Mini Map.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <>
       {/* Backdrop */}
       <div 
         className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 animate-fade-in"
@@ -151,6 +154,7 @@ export const CastleRoomMiniMap = ({
           </div>
         </div>
       </Card>
+    </>
     </>
   );
 };

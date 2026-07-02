@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CookiePreferences {
   necessary: boolean;
@@ -99,7 +100,9 @@ export function CookieConsentBanner() {
   if (!showBanner) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 p-2 sm:p-4 bg-background/95 backdrop-blur-sm border-t border-border shadow-lg sm:bg-transparent sm:border-t-0 sm:shadow-none">
+    <>
+      <FloatingHowItWorks title={"Cookie Consent Banner - How it works"} steps={[{ title: 'Open', desc: 'Access the Cookie Consent Banner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Cookie Consent Banner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="fixed bottom-0 left-0 right-0 z-50 p-2 sm:p-4 bg-background/95 backdrop-blur-sm border-t border-border shadow-lg sm:bg-transparent sm:border-t-0 sm:shadow-none">
       <div className="container mx-auto max-w-4xl">
         <Card className="p-3 sm:p-6 shadow-xl">
           <div className="flex items-start gap-2 sm:gap-4">
@@ -204,5 +207,6 @@ export function CookieConsentBanner() {
         </Card>
       </div>
     </div>
+    </>
   );
 }

@@ -9,6 +9,7 @@ import { Clock, Coins, Gavel, Plus, TrendingUp } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface AuctionsListProps {
   userId: string;
@@ -203,7 +204,9 @@ export default function AuctionsList({ userId }: AuctionsListProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Auctions List - How it works"} steps={[{ title: 'Open', desc: 'Access the Auctions List section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Auctions List.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h3 className="text-xl font-semibold">Active Auctions</h3>
         
@@ -371,5 +374,6 @@ export default function AuctionsList({ userId }: AuctionsListProps) {
         </div>
       )}
     </div>
+    </>
   );
 }

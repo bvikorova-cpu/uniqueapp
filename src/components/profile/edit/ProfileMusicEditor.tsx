@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Music2, Upload, Trash2, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const MAX_BYTES = 6 * 1024 * 1024; // 6MB
 
@@ -53,7 +54,9 @@ export const ProfileMusicEditor = ({
   };
 
   return (
-    <Card className="p-5 mb-6 bg-gradient-to-br from-card/80 to-card/40 border-border/50">
+    <>
+      <FloatingHowItWorks title={"Profile Music Editor - How it works"} steps={[{ title: 'Open', desc: 'Access the Profile Music Editor section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Profile Music Editor.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-5 mb-6 bg-gradient-to-br from-card/80 to-card/40 border-border/50">
       <div className="flex items-center gap-2 mb-3">
         <Music2 className="h-4 w-4 text-primary" />
         <Label className="font-semibold">Profile music</Label>
@@ -98,5 +101,6 @@ export const ProfileMusicEditor = ({
         )}
       </div>
     </Card>
+    </>
   );
 };

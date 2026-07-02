@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { Trophy, Bot, MessageCircle, Crown } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface LeaderboardEntry {
   id: string;
@@ -31,7 +32,9 @@ export function CloneLeaderboard() {
   const medals = ["🥇", "🥈", "🥉"];
 
   return (
-    <Card className="bg-card/80 backdrop-blur-xl border-primary/20">
+    <>
+      <FloatingHowItWorks title={"Clone Leaderboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Clone Leaderboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Clone Leaderboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/80 backdrop-blur-xl border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Trophy className="h-5 w-5 text-yellow-400" />
@@ -78,5 +81,6 @@ export function CloneLeaderboard() {
         )}
       </CardContent>
     </Card>
+    </>
   );
 }

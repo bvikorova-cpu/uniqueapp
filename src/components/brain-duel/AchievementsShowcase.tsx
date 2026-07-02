@@ -7,6 +7,7 @@ import AchievementBadge from "./AchievementBadge";
 import { FRIEND_CHALLENGE_ACHIEVEMENTS } from "@/types/brain-duel-achievements";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface AchievementsShowcaseProps {
   userId?: string;
@@ -30,7 +31,9 @@ export default function AchievementsShowcase({ userId, compact = false }: Achiev
   const progressPct = (achievements.length / totalAchievements) * 100;
 
   return (
-    <Card className="backdrop-blur-xl bg-card/80 border-primary/10 overflow-hidden relative">
+    <>
+      <FloatingHowItWorks title={"Achievements Showcase - How it works"} steps={[{ title: 'Open', desc: 'Access the Achievements Showcase section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Achievements Showcase.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="backdrop-blur-xl bg-card/80 border-primary/10 overflow-hidden relative">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
       <CardHeader className="relative">
         <div className="flex items-center justify-between">
@@ -111,5 +114,6 @@ export default function AchievementsShowcase({ userId, compact = false }: Achiev
         )}
       </CardContent>
     </Card>
+    </>
   );
 }

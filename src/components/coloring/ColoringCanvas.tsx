@@ -7,6 +7,7 @@ import {
   Brush, Eraser, Download, RotateCcw, Pipette, Undo2, Redo2,
   ZoomIn, ZoomOut, PenTool
 } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const COLOR_PALETTE = [
   "#FF0000", "#FF6B00", "#FFD700", "#00C853", "#00BCD4",
@@ -139,7 +140,9 @@ export function ColoringCanvas({ imageUrl, onSave }: ColoringCanvasProps) {
   };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}>
+    <>
+      <FloatingHowItWorks title={"Coloring Canvas - How it works"} steps={[{ title: 'Open', desc: 'Access the Coloring Canvas section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Coloring Canvas.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}>
       <Card className="overflow-hidden backdrop-blur-xl bg-card/80 border-primary/20">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between flex-wrap gap-2">
@@ -209,5 +212,6 @@ export function ColoringCanvas({ imageUrl, onSave }: ColoringCanvasProps) {
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 }

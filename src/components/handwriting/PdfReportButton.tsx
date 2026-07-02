@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { FileText, Loader2 } from "lucide-react";
 import { usePdfReport } from "@/hooks/useHandwritingPro";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { analysisId: string; source?: "main" | "signature" | "forgery" | "compatibility"; }
 
@@ -20,10 +21,13 @@ export const PdfReportButton = ({ analysisId, source = "main" }: Props) => {
   };
 
   return (
-    <Button onClick={exportPdf} disabled={m.isPending} variant="outline" className="gap-2 border-amber-700/40">
+    <>
+      <FloatingHowItWorks title={"Pdf Report Button - How it works"} steps={[{ title: 'Open', desc: 'Access the Pdf Report Button section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Pdf Report Button.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Button onClick={exportPdf} disabled={m.isPending} variant="outline" className="gap-2 border-amber-700/40">
       {m.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" />}
       Export Forensic PDF <Badge variant="secondary" className="ml-1">5 cr</Badge>
     </Button>
+    </>
   );
 };
 

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export const CommunityGalleryView = () => {
   const queryClient = useQueryClient();
@@ -53,7 +54,9 @@ export const CommunityGalleryView = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <>
+      <FloatingHowItWorks title={"Community Gallery View - How it works"} steps={[{ title: 'Open', desc: 'Access the Community Gallery View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Community Gallery View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="max-w-4xl mx-auto space-y-6">
       <div>
         <h2 className="text-2xl font-black mb-2">🌍 Community Gallery</h2>
         <p className="text-muted-foreground text-sm">Browse and like AI-generated images shared by the community</p>
@@ -96,5 +99,6 @@ export const CommunityGalleryView = () => {
         </div>
       )}
     </div>
+    </>
   );
 };

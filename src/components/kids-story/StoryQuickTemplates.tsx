@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface StoryQuickTemplatesProps {
   onSelect: (template: { title: string; characters: string; theme: string; category: string }) => void;
@@ -69,7 +70,9 @@ const TEMPLATES = [
 
 export const StoryQuickTemplates = ({ onSelect }: StoryQuickTemplatesProps) => {
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Story Quick Templates - How it works"} steps={[{ title: 'Open', desc: 'Access the Story Quick Templates section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Story Quick Templates.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       <div className="flex items-center gap-2">
         <span className="text-2xl">💡</span>
         <h3 className="text-lg font-bold text-foreground">Quick Start Templates</h3>
@@ -93,5 +96,6 @@ export const StoryQuickTemplates = ({ onSelect }: StoryQuickTemplatesProps) => {
         ))}
       </div>
     </div>
+    </>
   );
 };

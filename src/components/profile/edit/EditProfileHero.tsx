@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Pause, Play, Sparkles, UserCog, Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroVideo from "@/assets/edit-profile-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface EditProfileHeroProps {
   onBack: () => void;
@@ -33,7 +34,9 @@ export const EditProfileHero = ({ onBack, completeness, unlockedBadges, totalBad
   };
 
   return (
-    <div className="relative h-[60vh] min-h-[420px] w-full overflow-hidden rounded-3xl border border-border/40 mb-6">
+    <>
+      <FloatingHowItWorks title={"Edit Profile Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Edit Profile Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Edit Profile Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative h-[60vh] min-h-[420px] w-full overflow-hidden rounded-3xl border border-border/40 mb-6">
       <video
         ref={videoRef}
         className="absolute inset-0 h-full w-full object-cover brightness-110 saturate-110"
@@ -136,5 +139,6 @@ export const EditProfileHero = ({ onBack, completeness, unlockedBadges, totalBad
         </Button>
       </div>
     </div>
+    </>
   );
 };

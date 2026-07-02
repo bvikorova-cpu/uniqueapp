@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, Sparkles, BookOpen } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface HomeworkLimitBannerProps {
   creditsRemaining: number;
@@ -18,6 +19,8 @@ export const HomeworkLimitBanner = ({
 
   if (!canAsk) {
     return (
+    <>
+      <FloatingHowItWorks title={"Homework Limit Banner - How it works"} steps={[{ title: 'Open', desc: 'Access the Homework Limit Banner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Homework Limit Banner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="bg-gradient-to-r from-red-500/10 to-orange-500/10 border-red-500/50">
         <CardContent className="py-4">
           <div className="flex items-start gap-3">
@@ -41,7 +44,8 @@ export const HomeworkLimitBanner = ({
           </div>
         </CardContent>
       </Card>
-    );
+    </>
+  );
   }
 
   return (

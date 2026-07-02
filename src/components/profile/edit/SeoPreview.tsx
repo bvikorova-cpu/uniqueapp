@@ -3,6 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Search } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export const SeoPreview = ({
   title,
@@ -25,7 +26,9 @@ export const SeoPreview = ({
   const finalDesc = (description || fallbackDescription || "").slice(0, 160);
 
   return (
-    <Card className="p-5 mb-6 bg-gradient-to-br from-card/80 to-card/40 border-border/50">
+    <>
+      <FloatingHowItWorks title={"Seo Preview - How it works"} steps={[{ title: 'Open', desc: 'Access the Seo Preview section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Seo Preview.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-5 mb-6 bg-gradient-to-br from-card/80 to-card/40 border-border/50">
       <div className="flex items-center gap-2 mb-3">
         <Search className="h-4 w-4 text-primary" />
         <Label className="font-semibold">SEO preview</Label>
@@ -69,5 +72,6 @@ export const SeoPreview = ({
         </div>
       </div>
     </Card>
+    </>
   );
 };

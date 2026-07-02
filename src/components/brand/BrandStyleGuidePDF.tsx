@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, FileText, Download, ArrowLeft, Palette, Type, Share2, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface BrandStyleGuidePDFProps {
   credits: number;
@@ -105,7 +106,9 @@ ${Object.entries(kit.social_media_strategy || {}).map(([p, s]) => `  ${p.toUpper
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Brand Style Guide P D F - How it works"} steps={[{ title: 'Open', desc: 'Access the Brand Style Guide P D F section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Brand Style Guide P D F.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
         <Button variant="ghost" onClick={onBack} className="mb-4 gap-2">
           <ArrowLeft className="h-4 w-4" /> Back to Hub
@@ -170,6 +173,7 @@ ${Object.entries(kit.social_media_strategy || {}).map(([p, s]) => `  ${p.toUpper
         </div>
       )}
     </div>
+    </>
   );
 };
 

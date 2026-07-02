@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Pencil, Save, X } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CreatorProfileEditFormProps {
   creator: {
@@ -79,11 +80,14 @@ export function CreatorProfileEditForm({ creator, onSave }: CreatorProfileEditFo
 
   if (!editing) {
     return (
+    <>
+      <FloatingHowItWorks title={"Creator Profile Edit Form - How it works"} steps={[{ title: 'Open', desc: 'Access the Creator Profile Edit Form section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Creator Profile Edit Form.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
         <Pencil className="h-4 w-4 mr-2" />
         Edit Profile
       </Button>
-    );
+    </>
+  );
   }
 
   return (

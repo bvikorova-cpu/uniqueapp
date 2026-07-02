@@ -28,6 +28,7 @@ import {
 } from "@/hooks/useFamilyRelationships";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const RELATION_LABELS: Record<FamilyRelationKind, string> = {
   spouse: "Spouse",
@@ -79,7 +80,9 @@ export function FamilySection({ userId, currentUserId, isOwnProfile }: Props) {
   );
 
   return (
-    <Card className="p-4 space-y-4">
+    <>
+      <FloatingHowItWorks title={"Family Section - How it works"} steps={[{ title: 'Open', desc: 'Access the Family Section section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Family Section.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-4 space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="font-bold flex items-center gap-2">
           <Heart className="h-4 w-4 text-rose-500" />
@@ -204,6 +207,7 @@ export function FamilySection({ userId, currentUserId, isOwnProfile }: Props) {
         </div>
       )}
     </Card>
+    </>
   );
 }
 

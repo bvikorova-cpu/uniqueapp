@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Contact } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface VCardProfile {
   full_name?: string | null;
@@ -64,7 +65,9 @@ export const VCardDownloadButton = ({
   };
 
   return (
-    <Button
+    <>
+      <FloatingHowItWorks title={"V Card Download Button - How it works"} steps={[{ title: 'Open', desc: 'Access the V Card Download Button section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in V Card Download Button.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Button
       variant="outline"
       size="sm"
       onClick={handleDownload}
@@ -73,5 +76,6 @@ export const VCardDownloadButton = ({
       <Contact className="h-4 w-4 mr-2" />
       Save contact
     </Button>
+    </>
   );
 };

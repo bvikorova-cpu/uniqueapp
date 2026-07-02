@@ -6,6 +6,7 @@ import { ArrowLeft, ImageIcon, Download, Euro, Layers, Upload, Trash2, ShieldChe
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { ReleaseManagerDialog } from "../ReleaseManagerDialog";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface MyContentViewProps {
   onBack: () => void;
@@ -37,7 +38,9 @@ export function MyContentView({ onBack, onUpload }: MyContentViewProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"My Content View - How it works"} steps={[{ title: 'Open', desc: 'Access the My Content View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in My Content View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="sm" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-1" /> Back</Button>
@@ -104,5 +107,6 @@ export function MyContentView({ onBack, onUpload }: MyContentViewProps) {
         />
       )}
     </div>
+    </>
   );
 }

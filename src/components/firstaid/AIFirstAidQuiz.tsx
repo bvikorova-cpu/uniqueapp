@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, GraduationCap, Loader2, CheckCircle, XCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -54,7 +55,9 @@ export function AIFirstAidQuiz({ onBack }: Props) {
   const q = questions[currentQ];
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"A I First Aid Quiz - How it works"} steps={[{ title: 'Open', desc: 'Access the A I First Aid Quiz section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I First Aid Quiz.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       <Button variant="outline" onClick={onBack} className="gap-2"><ArrowLeft className="w-4 h-4" />Back</Button>
       <Card>
         <CardHeader>
@@ -106,5 +109,6 @@ export function AIFirstAidQuiz({ onBack }: Props) {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

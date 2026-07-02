@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import Room3D from "./Room3D";
 import { PanoramaEscapeRoom } from "./PanoramaEscapeRoom";
 import { getRoomsForTheme, RoomData } from "./puzzleRooms";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface GamePlayProps {
   roomId: string;
@@ -35,7 +36,12 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
     const timer = setInterval(() => {
       setElapsedTime(Math.floor((Date.now() - startTime) / 1000));
     }, 1000);
-    return () => clearInterval(timer);
+    return (
+    <>
+      <FloatingHowItWorks title={"Game Play - How it works"} steps={[{ title: 'Open', desc: 'Access the Game Play section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Game Play.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(timer);
   }, [roomId, startTime]);
 
   const loadRoom = async () => {

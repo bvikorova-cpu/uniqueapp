@@ -6,6 +6,7 @@ import { Mic, Loader2, Sparkles, Volume2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   matchId: string;
@@ -52,7 +53,9 @@ export const AICommentary = ({ matchId }: Props) => {
   };
 
   return (
-    <div className="space-y-3 mt-3">
+    <>
+      <FloatingHowItWorks title={"A I Commentary - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Commentary section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Commentary.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-3 mt-3">
       <div className="flex items-center gap-2">
         <Select value={style} onValueChange={setStyle}>
           <SelectTrigger className="w-48 h-8 text-xs">
@@ -109,5 +112,6 @@ export const AICommentary = ({ matchId }: Props) => {
         )}
       </AnimatePresence>
     </div>
+    </>
   );
 };

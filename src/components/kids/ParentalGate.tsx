@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Shield, AlertCircle, CheckCircle, RefreshCw, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_MS = 60 * 1000; // 60s cooldown after too many failed attempts
@@ -83,7 +84,12 @@ export function ParentalGate({
   useEffect(() => {
     if (!isLocked) return;
     const id = setInterval(() => setNow(Date.now()), 500);
-    return () => clearInterval(id);
+    return (
+    <>
+      <FloatingHowItWorks title={"Parental Gate - How it works"} steps={[{ title: 'Open', desc: 'Access the Parental Gate section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Parental Gate.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(id);
   }, [isLocked]);
 
   // Auto-clear lock when expired

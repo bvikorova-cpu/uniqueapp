@@ -2,12 +2,15 @@ import { HeartPulse } from "lucide-react";
 import { AnalyzerToolLayout } from "../AnalyzerToolLayout";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export const HealthScannerView = ({ onBack }: { onBack: () => void }) => {
   const [scanType, setScanType] = useState("general");
 
   return (
-    <AnalyzerToolLayout
+    <>
+      <FloatingHowItWorks title={"Health Scanner View - How it works"} steps={[{ title: 'Open', desc: 'Access the Health Scanner View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Health Scanner View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <AnalyzerToolLayout
       title="AI Health Scanner"
       description="Analyze skin conditions, food safety, plant toxicity & more — NOT a medical diagnosis"
       icon={<HeartPulse className="w-7 h-7" />}
@@ -33,5 +36,6 @@ export const HealthScannerView = ({ onBack }: { onBack: () => void }) => {
         </Select>
       </div>
     </AnalyzerToolLayout>
+    </>
   );
 };

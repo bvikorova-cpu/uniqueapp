@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Play, Clock, Brain, TrendingUp, Eye, BarChart3 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Replay {
   id: string;
@@ -30,6 +31,8 @@ export function RoomReplayView({ onBack }: { onBack: () => void }) {
 
   if (selected) {
     return (
+    <>
+      <FloatingHowItWorks title={"Room Replay View - How it works"} steps={[{ title: 'Open', desc: 'Access the Room Replay View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Room Replay View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div>
         <Button variant="ghost" onClick={() => setSelected(null)} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back to Replays</Button>
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
@@ -76,7 +79,8 @@ export function RoomReplayView({ onBack }: { onBack: () => void }) {
           </Button>
         </motion.div>
       </div>
-    );
+    </>
+  );
   }
 
   return (

@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Pause, AlertCircle } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Status {
   used: number;
@@ -27,7 +28,9 @@ export default function PauseLimitCard() {
   const exhausted = s.remaining === 0;
 
   return (
-    <Card className="p-4 bg-card/50 backdrop-blur">
+    <>
+      <FloatingHowItWorks title={"Pause Limit Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Pause Limit Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Pause Limit Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-4 bg-card/50 backdrop-blur">
       <div className="flex items-center gap-2 mb-2">
         <Pause className="h-4 w-4 text-primary" />
         <h3 className="font-semibold">Pause allowance</h3>
@@ -56,5 +59,6 @@ export default function PauseLimitCard() {
         </details>
       )}
     </Card>
+    </>
   );
 }

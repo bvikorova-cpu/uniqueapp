@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { useState } from "react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const IMPACT_TIERS = [
   { min: 0, max: 10, items: [{ emoji: "🍞", text: "1 meal for someone in need" }] },
@@ -19,7 +20,9 @@ export function ImpactCalculator() {
   const impact = getImpact(amount);
 
   return (
-    <section className="py-12 px-4">
+    <>
+      <FloatingHowItWorks title={"Impact Calculator - How it works"} steps={[{ title: 'Open', desc: 'Access the Impact Calculator section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Impact Calculator.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <section className="py-12 px-4">
       <div className="max-w-lg mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -75,5 +78,6 @@ export function ImpactCalculator() {
         </motion.div>
       </div>
     </section>
+    </>
   );
 }

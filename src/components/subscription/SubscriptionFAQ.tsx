@@ -1,6 +1,7 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { motion } from "framer-motion";
 import { HelpCircle } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const FAQS = [
   {
@@ -39,7 +40,9 @@ const FAQS = [
 
 export const SubscriptionFAQ = () => {
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Subscription F A Q - How it works"} steps={[{ title: 'Open', desc: 'Access the Subscription F A Q section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Subscription F A Q.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -70,5 +73,6 @@ export const SubscriptionFAQ = () => {
         ))}
       </Accordion>
     </motion.div>
+    </>
   );
 };

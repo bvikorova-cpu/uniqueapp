@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Horse3DProps {
   position: [number, number, number];
@@ -30,7 +31,9 @@ export const Horse3D = ({ position, color, speed, isRunning }: Horse3DProps) => 
   const threeColor = new THREE.Color(color);
 
   return (
-    <group ref={horseRef} position={position}>
+    <>
+      <FloatingHowItWorks title={"Horse3 D - How it works"} steps={[{ title: 'Open', desc: 'Access the Horse3 D section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Horse3 D.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <group ref={horseRef} position={position}>
       {/* Horse Body */}
       <mesh castShadow position={[0, 0.5, 0]}>
         <boxGeometry args={[0.8, 0.6, 1.2]} />
@@ -74,5 +77,6 @@ export const Horse3D = ({ position, color, speed, isRunning }: Horse3DProps) => 
         <meshStandardMaterial color="#2d1810" roughness={0.9} />
       </mesh>
     </group>
+    </>
   );
 };

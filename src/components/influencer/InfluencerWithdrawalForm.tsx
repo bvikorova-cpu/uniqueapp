@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface InfluencerWithdrawalFormProps {
   influencerId: string;
@@ -81,7 +82,9 @@ export const InfluencerWithdrawalForm = ({
   };
 
   return (
-    <Card className="p-6">
+    <>
+      <FloatingHowItWorks title={"Influencer Withdrawal Form - How it works"} steps={[{ title: 'Open', desc: 'Access the Influencer Withdrawal Form section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Influencer Withdrawal Form.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-6">
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <Label htmlFor="amount">Withdrawal Amount (€)</Label>
@@ -178,5 +181,6 @@ export const InfluencerWithdrawalForm = ({
         </Button>
       </form>
     </Card>
+    </>
   );
 };

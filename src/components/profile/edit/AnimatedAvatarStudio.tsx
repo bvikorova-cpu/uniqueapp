@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props {
   imageUrl: string | null;
@@ -47,7 +48,9 @@ export const AnimatedAvatarStudio = ({ imageUrl, audioUrl, onSaved }: Props) => 
   };
 
   return (
-    <div className="rounded-2xl border border-border/50 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl p-5 sm:p-6 mb-6">
+    <>
+      <FloatingHowItWorks title={"Animated Avatar Studio - How it works"} steps={[{ title: 'Open', desc: 'Access the Animated Avatar Studio section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Animated Avatar Studio.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="rounded-2xl border border-border/50 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl p-5 sm:p-6 mb-6">
       <div className="flex items-center gap-2 mb-4">
         <Wand2 className="h-5 w-5 text-fuchsia-400" />
         <div>
@@ -114,5 +117,6 @@ export const AnimatedAvatarStudio = ({ imageUrl, audioUrl, onSaved }: Props) => 
         </div>
       </div>
     </div>
+    </>
   );
 };

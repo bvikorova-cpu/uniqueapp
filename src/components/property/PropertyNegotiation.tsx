@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, Target, TrendingDown, TrendingUp, Brain, Zap, Shield, DollarSign, BarChart3, Loader2, CheckCircle2 } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -32,7 +33,9 @@ export function PropertyNegotiation({ onBack }: Props) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Property Negotiation - How it works"} steps={[{ title: 'Open', desc: 'Access the Property Negotiation section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Property Negotiation.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={onBack}><ArrowLeft className="h-5 w-5" /></Button>
         <div>
@@ -132,5 +135,6 @@ export function PropertyNegotiation({ onBack }: Props) {
         </motion.div>
       )}
     </div>
+    </>
   );
 }

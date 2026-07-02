@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ThreadSubscriptionProps {
   postId: string;
@@ -46,7 +47,9 @@ export const ThreadSubscription = ({ postId, userId }: ThreadSubscriptionProps) 
   if (!userId) return null;
 
   return (
-    <Button
+    <>
+      <FloatingHowItWorks title={"Thread Subscription - How it works"} steps={[{ title: 'Open', desc: 'Access the Thread Subscription section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Thread Subscription.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Button
       variant="ghost"
       size="sm"
       onClick={() => toggleSub.mutate()}
@@ -56,5 +59,6 @@ export const ThreadSubscription = ({ postId, userId }: ThreadSubscriptionProps) 
       {isSubscribed ? <BellOff className="h-3.5 w-3.5 mr-1" /> : <Bell className="h-3.5 w-3.5 mr-1" />}
       {isSubscribed ? "Following" : "Follow"}
     </Button>
+    </>
   );
 };

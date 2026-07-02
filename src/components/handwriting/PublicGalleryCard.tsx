@@ -18,6 +18,7 @@ import {
   useGalleryTour,
 } from "@/hooks/useHandwritingGallery";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function PublicGalleryCard() {
   const [tab, setTab] = useState<"all" | "famous" | "community">("all");
@@ -58,7 +59,9 @@ export function PublicGalleryCard() {
   };
 
   return (
-    <Card className="bg-gradient-to-br from-amber-50/80 to-orange-100/60 dark:from-amber-950/30 dark:to-orange-900/20 border-amber-300/40">
+    <>
+      <FloatingHowItWorks title={"Public Gallery Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Public Gallery Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Public Gallery Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-gradient-to-br from-amber-50/80 to-orange-100/60 dark:from-amber-950/30 dark:to-orange-900/20 border-amber-300/40">
       <CardHeader>
         <div className="flex items-center justify-between gap-2 flex-wrap">
           <CardTitle className="text-base flex items-center gap-2">
@@ -279,5 +282,6 @@ export function PublicGalleryCard() {
         </DialogContent>
       </Dialog>
     </Card>
+    </>
   );
 }

@@ -3,6 +3,7 @@ import { ImagePlus, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CoverImageUploadProps {
   value?: string;
@@ -76,7 +77,9 @@ export const CoverImageUpload = ({ value, onChange, folder }: CoverImageUploadPr
   };
 
   return (
-    <div className="space-y-2">
+    <>
+      <FloatingHowItWorks title={"Cover Image Upload - How it works"} steps={[{ title: 'Open', desc: 'Access the Cover Image Upload section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Cover Image Upload.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-2">
       {value ? (
         <div className="relative rounded-lg overflow-hidden">
           <img
@@ -121,5 +124,6 @@ export const CoverImageUpload = ({ value, onChange, folder }: CoverImageUploadPr
         className="hidden"
       />
     </div>
+    </>
   );
 };

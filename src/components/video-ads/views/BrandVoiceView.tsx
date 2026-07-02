@@ -9,6 +9,7 @@ import { Loader2, Mic2, Sparkles, CheckCircle2, XCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export const BrandVoiceView = ({ onBack }: { onBack: () => void }) => {
   const [brand, setBrand] = useState("");
@@ -33,7 +34,9 @@ export const BrandVoiceView = ({ onBack }: { onBack: () => void }) => {
   };
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Brand Voice View - How it works"} steps={[{ title: 'Open', desc: 'Access the Brand Voice View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Brand Voice View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4">← Back</Button>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
         <div className="flex items-center gap-3">
@@ -101,5 +104,6 @@ export const BrandVoiceView = ({ onBack }: { onBack: () => void }) => {
         </Card>
       </div>
     </div>
+    </>
   );
 };

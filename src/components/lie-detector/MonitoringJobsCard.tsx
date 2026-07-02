@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useMonitoringJobs, useMonitorAction } from "@/hooks/useLieDetectorPro";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function MonitoringJobsCard() {
   const [open, setOpen] = useState(false);
@@ -32,7 +33,9 @@ export function MonitoringJobsCard() {
   };
 
   return (
-    <Card className="bg-card/60 backdrop-blur-sm border-pink-500/30">
+    <>
+      <FloatingHowItWorks title={"Monitoring Jobs Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Monitoring Jobs Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Monitoring Jobs Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/60 backdrop-blur-sm border-pink-500/30">
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2 text-pink-400">
           <Bell className="w-5 h-5" /> Scheduled Monitoring
@@ -86,5 +89,6 @@ export function MonitoringJobsCard() {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 }

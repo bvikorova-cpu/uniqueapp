@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Shield, Sparkles } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const floatingItems = [
   { emoji: "🛡️", left: "5%", top: "15%", delay: 0 },
@@ -15,7 +16,9 @@ export const ParentalHero = () => {
   const greeting = hour < 12 ? "Good Morning" : hour < 18 ? "Good Afternoon" : "Good Evening";
 
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-violet-600 via-purple-600 to-fuchsia-600 p-8 md:p-12 text-white">
+    <>
+      <FloatingHowItWorks title={"Parental Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Parental Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Parental Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-violet-600 via-purple-600 to-fuchsia-600 p-8 md:p-12 text-white">
       {floatingItems.map((item, i) => (
         <motion.span
           key={i}
@@ -44,5 +47,6 @@ export const ParentalHero = () => {
         </motion.div>
       </motion.div>
     </div>
+    </>
   );
 };

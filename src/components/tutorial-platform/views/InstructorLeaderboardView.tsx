@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Star, Users, BookOpen, Trophy, Medal, Crown } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const instructors = [
   { rank: 1, name: "Dr. Alan Turing Jr.", courses: 12, students: 24500, rating: 4.9, earnings: "€125K", avatar: "🧑‍🏫" },
@@ -25,7 +26,9 @@ export function InstructorLeaderboardView({ onBack }: Props) {
   };
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Instructor Leaderboard View - How it works"} steps={[{ title: 'Open', desc: 'Access the Instructor Leaderboard View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Instructor Leaderboard View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center shadow-lg">
@@ -75,5 +78,6 @@ export function InstructorLeaderboardView({ onBack }: Props) {
         ))}
       </div>
     </div>
+    </>
   );
 }

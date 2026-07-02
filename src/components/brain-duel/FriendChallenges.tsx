@@ -15,6 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 import { formatDistanceToNow } from 'date-fns';
 import { useBrainDuelCredits } from '@/hooks/useBrainDuelCredits';
 import { useNavigate } from 'react-router-dom';
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const categories = [
   'General Knowledge',
@@ -108,7 +109,12 @@ export const FriendChallenges = () => {
       )
       .subscribe();
 
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Friend Challenges - How it works"} steps={[{ title: 'Open', desc: 'Access the Friend Challenges section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Friend Challenges.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       void supabase.removeChannel(channel);
     };
   }, [userId, toast, queryClient]);

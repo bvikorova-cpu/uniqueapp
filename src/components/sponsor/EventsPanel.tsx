@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, CalendarRange } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { sponsorId: string; }
 
@@ -42,7 +43,9 @@ export function EventsPanel({ sponsorId }: Props) {
   if (loading) return <Loader2 className="h-6 w-6 animate-spin text-purple-400" />;
 
   return (
-    <Card className="bg-black/40 backdrop-blur-lg border-purple-500/50">
+    <>
+      <FloatingHowItWorks title={"Events Panel - How it works"} steps={[{ title: 'Open', desc: 'Access the Events Panel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Events Panel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-black/40 backdrop-blur-lg border-purple-500/50">
       <CardHeader>
         <CardTitle className="text-white flex items-center gap-2">
           <CalendarRange className="h-5 w-5" /> Marketing & Custom Activations
@@ -83,5 +86,6 @@ export function EventsPanel({ sponsorId }: Props) {
         )}
       </CardContent>
     </Card>
+    </>
   );
 }

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, BarChart3, Clock, Users, Star, TrendingUp } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -21,7 +22,9 @@ export function RoomAnalyticsView({ onBack }: Props) {
   ];
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Room Analytics View - How it works"} steps={[{ title: 'Open', desc: 'Access the Room Analytics View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Room Analytics View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
@@ -80,5 +83,6 @@ export function RoomAnalyticsView({ onBack }: Props) {
         </Card>
       </div>
     </div>
+    </>
   );
 }

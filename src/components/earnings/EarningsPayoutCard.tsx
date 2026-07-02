@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Banknote, ArrowRight, Lock, ShieldAlert } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface EarningsPayoutCardProps {
   available: number;
@@ -33,7 +34,9 @@ export const EarningsPayoutCard = ({
   const progress = Math.min(100, (available / minimum) * 100);
 
   return (
-    <Card className="relative overflow-hidden p-6 bg-gradient-to-br from-amber-500/15 via-card to-yellow-500/10 border-amber-500/40">
+    <>
+      <FloatingHowItWorks title={"Earnings Payout Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Earnings Payout Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Earnings Payout Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="relative overflow-hidden p-6 bg-gradient-to-br from-amber-500/15 via-card to-yellow-500/10 border-amber-500/40">
       <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/20 rounded-full blur-3xl" />
 
       <div className="relative">
@@ -106,5 +109,6 @@ export const EarningsPayoutCard = ({
         )}
       </div>
     </Card>
+    </>
   );
 };

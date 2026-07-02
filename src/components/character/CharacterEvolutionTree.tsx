@@ -6,6 +6,7 @@ import { TreeDeciduous, Zap, Star, ArrowUp, Lock, Sparkles } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const EVOLUTION_STAGES = [
   { level: 1, name: "Recruit", color: "from-gray-400 to-gray-500", icon: "🗡️", requiredXP: 0 },
@@ -37,7 +38,9 @@ export const CharacterEvolutionTree = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Character Evolution Tree - How it works"} steps={[{ title: 'Open', desc: 'Access the Character Evolution Tree section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Character Evolution Tree.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Card className="relative overflow-hidden border-border/30 bg-card/90 backdrop-blur-xl p-6">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 via-blue-500 to-purple-500" />
         <div className="flex items-center gap-3 mb-6">
@@ -138,5 +141,6 @@ export const CharacterEvolutionTree = () => {
         </div>
       </Card>
     </div>
+    </>
   );
 };

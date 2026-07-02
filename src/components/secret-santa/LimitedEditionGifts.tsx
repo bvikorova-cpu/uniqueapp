@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useSecretSanta } from "@/hooks/useSecretSanta";
 import { Calendar, Snowflake, Heart, Ghost, Sparkles, Sun, Leaf, Star } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 // Get current season/holiday
 const getCurrentSeason = () => {
@@ -235,7 +236,9 @@ export const LimitedEditionGifts = ({ onSelectGift }: LimitedEditionGiftsProps) 
   };
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Limited Edition Gifts - How it works"} steps={[{ title: 'Open', desc: 'Access the Limited Edition Gifts section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Limited Edition Gifts.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       {/* Season tabs - vertical grid */}
       <div className="grid grid-cols-2 gap-2">
         {seasons.map((season) => {
@@ -338,6 +341,7 @@ export const LimitedEditionGifts = ({ onSelectGift }: LimitedEditionGiftsProps) 
         <span>Exclusive seasonal collections available all year round!</span>
       </div>
     </div>
+    </>
   );
 };
 

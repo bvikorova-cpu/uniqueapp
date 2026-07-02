@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trophy, Star, Flame, Target } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ProgressCardProps {
   points: {
@@ -15,7 +16,9 @@ export const ProgressCard = ({ points }: ProgressCardProps) => {
   const progressToNext = points ? ((points.total_points % 100) / 100) * 100 : 0;
 
   return (
-    <Card className="bg-gradient-to-br from-primary/10 to-secondary/10">
+    <>
+      <FloatingHowItWorks title={"Progress Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Progress Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Progress Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-gradient-to-br from-primary/10 to-secondary/10">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Trophy className="w-5 h-5 text-primary" />
@@ -58,5 +61,6 @@ export const ProgressCard = ({ points }: ProgressCardProps) => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

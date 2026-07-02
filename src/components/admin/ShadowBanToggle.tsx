@@ -22,6 +22,7 @@ import { EyeOff, Info, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ShadowBanToggleProps {
   userId: string;
@@ -95,6 +96,8 @@ export const ShadowBanToggle = ({
 
   return (
     <>
+      <FloatingHowItWorks title={"Shadow Ban Toggle - How it works"} steps={[{ title: 'Open', desc: 'Access the Shadow Ban Toggle section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Shadow Ban Toggle.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <>
       <div className={cn(
         "flex items-center gap-3 p-3 rounded-lg",
         "bg-gradient-to-r from-red-500/5 to-orange-500/5",
@@ -198,6 +201,7 @@ export const ShadowBanToggle = ({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+    </>
     </>
   );
 };

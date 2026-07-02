@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const DIFFICULTIES = [
   {
@@ -34,7 +35,9 @@ interface Props {
 
 export const DrawingDifficultySelector = ({ selected, onSelect }: Props) => {
   return (
-    <div className="space-y-3">
+    <>
+      <FloatingHowItWorks title={"Drawing Difficulty Selector - How it works"} steps={[{ title: 'Open', desc: 'Access the Drawing Difficulty Selector section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Drawing Difficulty Selector.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-3">
       <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
         Difficulty Level
       </h3>
@@ -62,5 +65,6 @@ export const DrawingDifficultySelector = ({ selected, onSelect }: Props) => {
         ))}
       </div>
     </div>
+    </>
   );
 };

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Radio } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ComedyLiveStreamPlayerProps {
   showId: string;
@@ -16,7 +17,12 @@ export function ComedyLiveStreamPlayer({ showId, streamKey }: ComedyLiveStreamPl
   const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
 
   useEffect(() => {
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Comedy Live Stream Player - How it works"} steps={[{ title: 'Open', desc: 'Access the Comedy Live Stream Player section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Comedy Live Stream Player.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       if (mediaStream) {
         mediaStream.getTracks().forEach(track => track.stop());
       }

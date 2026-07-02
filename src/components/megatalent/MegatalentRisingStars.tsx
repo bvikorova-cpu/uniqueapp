@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Flame, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   category?: string;
@@ -78,7 +79,12 @@ export default function MegatalentRisingStars({ category, categories }: Props) {
         if (!cancelled) setLoading(false);
       }
     })();
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Megatalent Rising Stars - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Rising Stars section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Rising Stars.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       cancelled = true;
     };
   }, [category, categories?.join(",")]);

@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ArrowLeft, Search, Users, ImageIcon, Download, Euro, MapPin, Globe, Camera, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -87,7 +88,9 @@ export function ContributorPortfoliosView({ onBack }: Props) {
   );
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Contributor Portfolios View - How it works"} steps={[{ title: 'Open', desc: 'Access the Contributor Portfolios View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Contributor Portfolios View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center gap-3 flex-wrap">
         <Button variant="ghost" size="sm" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-1" />Back</Button>
         <h2 className="text-2xl font-bold flex items-center gap-2">
@@ -184,5 +187,6 @@ export function ContributorPortfoliosView({ onBack }: Props) {
         </DialogContent>
       </Dialog>
     </div>
+    </>
   );
 }

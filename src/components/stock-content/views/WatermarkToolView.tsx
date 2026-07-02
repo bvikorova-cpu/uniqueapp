@@ -7,6 +7,7 @@ import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Upload, Download, Image as ImageIcon, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -93,7 +94,9 @@ export function WatermarkToolView({ onBack }: Props) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Watermark Tool View - How it works"} steps={[{ title: 'Open', desc: 'Access the Watermark Tool View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Watermark Tool View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-1" /> Back</Button>
         <h2 className="text-2xl font-bold flex items-center gap-2"><ImageIcon className="w-6 h-6 text-cyan-500" /> Watermark Tool</h2>
@@ -155,5 +158,6 @@ export function WatermarkToolView({ onBack }: Props) {
         </div>
       )}
     </div>
+    </>
   );
 }

@@ -3,13 +3,16 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useCreatorPayouts, KIND_LABELS } from "@/hooks/useCreatorPayouts";
 import { History } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 /** Cross-hub withdrawal history (musician, chef, instructor, etc.). */
 export function WithdrawalHistoryTable() {
   const { rows, totals, loading } = useCreatorPayouts();
 
   return (
-    <Card className="border-amber-500/20">
+    <>
+      <FloatingHowItWorks title={"Withdrawal History Table - How it works"} steps={[{ title: 'Open', desc: 'Access the Withdrawal History Table section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Withdrawal History Table.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-amber-500/20">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm flex items-center gap-2">
           <History className="h-4 w-4 text-amber-500" /> Withdrawal history (all hubs)
@@ -51,5 +54,6 @@ export function WithdrawalHistoryTable() {
         )}
       </CardContent>
     </Card>
+    </>
   );
 }

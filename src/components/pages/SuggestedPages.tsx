@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { FileText, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePages } from "@/hooks/usePages";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const SuggestedPages = () => {
   const { followPage } = usePages();
@@ -41,7 +42,9 @@ export const SuggestedPages = () => {
   if (isLoading || !suggestedPages?.length) return null;
 
   return (
-    <div className="glass-post-card p-4 space-y-4">
+    <>
+      <FloatingHowItWorks title={"Suggested Pages - How it works"} steps={[{ title: 'Open', desc: 'Access the Suggested Pages section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Suggested Pages.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="glass-post-card p-4 space-y-4">
       <div className="flex items-center gap-2">
         <Sparkles className="h-5 w-5 text-primary" />
         <h3 className="font-semibold">Popular Pages</h3>
@@ -80,5 +83,6 @@ export const SuggestedPages = () => {
         ))}
       </div>
     </div>
+    </>
   );
 };

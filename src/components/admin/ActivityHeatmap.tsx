@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Globe2, Activity } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Pulse {
   id: string;
@@ -68,7 +69,12 @@ export const ActivityHeatmap = () => {
       addPulse(types[Math.floor(Math.random() * types.length)]);
     }, 2200);
 
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Activity Heatmap - How it works"} steps={[{ title: 'Open', desc: 'Access the Activity Heatmap section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Activity Heatmap.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       channels.forEach((c) => supabase.removeChannel(c));
       clearInterval(demo);
     };

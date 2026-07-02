@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ShieldCheck, PawPrint } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const shelters = [
   { name: "Your Shelter Here", animals: "Register to showcase", verified: true },
@@ -11,7 +12,9 @@ const shelters = [
 
 export const VerifiedShelters = () => {
   return (
-    <div className="py-12">
+    <>
+      <FloatingHowItWorks title={"Verified Shelters - How it works"} steps={[{ title: 'Open', desc: 'Access the Verified Shelters section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Verified Shelters.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="py-12">
       <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-8">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 mb-4">
           <ShieldCheck className="h-4 w-4 text-blue-500" />
@@ -36,5 +39,6 @@ export const VerifiedShelters = () => {
         ))}
       </div>
     </div>
+    </>
   );
 };

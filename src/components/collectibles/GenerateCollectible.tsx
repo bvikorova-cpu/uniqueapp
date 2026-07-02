@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Loader2, Sparkles } from "lucide-react";
 import { useCollectibles } from "@/hooks/useCollectibles";
 import { useAICredits } from "@/hooks/useAICredits";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface GenerateCollectibleProps {
   userId: string;
@@ -35,7 +36,9 @@ export default function GenerateCollectible({ userId }: GenerateCollectibleProps
   const canGenerate = prompt && categoryId && credits && credits.credits_remaining >= 10;
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Generate Collectible - How it works"} steps={[{ title: 'Open', desc: 'Access the Generate Collectible section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Generate Collectible.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Card className="p-6">
         <h2 className="text-2xl font-bold mb-4">Generate Collectible</h2>
         <p className="text-muted-foreground mb-6">
@@ -119,5 +122,6 @@ export default function GenerateCollectible({ userId }: GenerateCollectibleProps
         </ul>
       </Card>
     </div>
+    </>
   );
 }

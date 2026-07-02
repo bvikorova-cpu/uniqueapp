@@ -7,6 +7,7 @@ import { ArrowLeft, Target, Sparkles, Loader2, Copy, Check } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -38,7 +39,9 @@ export function CampaignPlannerView({ onBack }: Props) {
   };
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Campaign Planner View - How it works"} steps={[{ title: 'Open', desc: 'Access the Campaign Planner View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Campaign Planner View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
         <div className="flex items-center gap-3">
@@ -91,5 +94,6 @@ export function CampaignPlannerView({ onBack }: Props) {
         </Card>
       </div>
     </div>
+    </>
   );
 }

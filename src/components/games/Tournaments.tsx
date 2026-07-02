@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Trophy, Users, Clock, Swords, Crown, Medal } from 'lucide-react';
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Tournament {
   id: string;
@@ -77,7 +78,9 @@ export const Tournaments = ({ tournaments = defaultTournaments, onJoin }: Tourna
   };
 
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title={"Tournaments - How it works"} steps={[{ title: 'Open', desc: 'Access the Tournaments section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Tournaments.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Trophy className="h-5 w-5 text-yellow-500" />
@@ -175,6 +178,7 @@ export const Tournaments = ({ tournaments = defaultTournaments, onJoin }: Tourna
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };
 

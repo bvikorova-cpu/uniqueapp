@@ -21,6 +21,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ReportButtonProps {
   contentId: string;
@@ -112,7 +113,9 @@ export const ReportButton = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+      <FloatingHowItWorks title={"Report Button - How it works"} steps={[{ title: 'Open', desc: 'Access the Report Button section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Report Button.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant={variant} size={size} className="text-muted-foreground hover:text-destructive">
           <Flag className="h-4 w-4" />
@@ -164,5 +167,6 @@ export const ReportButton = ({
         </DialogFooter>
       </DialogContent>
     </Dialog>
+    </>
   );
 };

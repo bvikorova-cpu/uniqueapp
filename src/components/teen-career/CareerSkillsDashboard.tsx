@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Brain, Star, Target, TrendingUp } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CareerSkillsDashboardProps {
   interests: string[];
@@ -64,7 +65,9 @@ export const CareerSkillsDashboard = (props: CareerSkillsDashboardProps) => {
   const readinessScore = Math.round(skills.reduce((sum, s) => sum + s.score, 0) / skills.length);
 
   return (
-    <Card className="border-primary/20 mb-6">
+    <>
+      <FloatingHowItWorks title={"Career Skills Dashboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Career Skills Dashboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Career Skills Dashboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-primary/20 mb-6">
       <CardHeader className="pb-2">
         <CardTitle className="text-lg flex items-center gap-2">
           <Brain className="h-5 w-5 text-primary" />
@@ -126,5 +129,6 @@ export const CareerSkillsDashboard = (props: CareerSkillsDashboardProps) => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

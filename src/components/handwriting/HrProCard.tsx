@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Briefcase, Settings, Loader2, Plus, X, Users } from "lucide-react";
 import { useHrStatus, useHrCheckout, useHrPortal, useHrBulkAnalyze } from "@/hooks/useHandwritingPremium";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type Candidate = { name: string; imageUrl: string };
 
@@ -44,7 +45,9 @@ export const HrProCard = () => {
   };
 
   return (
-    <Card className="bg-gradient-to-br from-slate-50/80 via-blue-50/60 to-indigo-50/40 border-blue-300/40 dark:from-slate-950/30 dark:via-blue-950/20 dark:to-indigo-950/10">
+    <>
+      <FloatingHowItWorks title={"Hr Pro Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Hr Pro Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Hr Pro Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-gradient-to-br from-slate-50/80 via-blue-50/60 to-indigo-50/40 border-blue-300/40 dark:from-slate-950/30 dark:via-blue-950/20 dark:to-indigo-950/10">
       <CardHeader>
         <CardTitle className="flex items-center justify-between text-base">
           <span className="flex items-center gap-2">
@@ -144,5 +147,6 @@ export const HrProCard = () => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

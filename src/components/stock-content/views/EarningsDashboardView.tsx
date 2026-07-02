@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Euro, Download, ImageIcon, TrendingUp, BarChart3 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface EarningsDashboardViewProps {
   onBack: () => void;
@@ -31,7 +32,9 @@ export function EarningsDashboardView({ onBack }: EarningsDashboardViewProps) {
   }, []);
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Earnings Dashboard View - How it works"} steps={[{ title: 'Open', desc: 'Access the Earnings Dashboard View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Earnings Dashboard View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-1" /> Back</Button>
         <h2 className="text-2xl font-bold flex items-center gap-2"><BarChart3 className="w-6 h-6 text-green-500" /> Earnings Dashboard</h2>
@@ -103,5 +106,6 @@ export function EarningsDashboardView({ onBack }: EarningsDashboardViewProps) {
         </>
       )}
     </div>
+    </>
   );
 }

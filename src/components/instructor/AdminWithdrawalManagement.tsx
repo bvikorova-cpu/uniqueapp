@@ -17,6 +17,7 @@ import { formatCurrency } from "@/lib/utils";
 import { format } from "date-fns";
 import { Check, X, Eye } from "lucide-react";
 import { StripePayoutButton } from "@/components/admin/StripePayoutButton";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface InstructorProfile {
   user_id: string;
@@ -162,12 +163,15 @@ export function AdminWithdrawalManagement() {
 
   if (loading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Admin Withdrawal Management - How it works"} steps={[{ title: 'Open', desc: 'Access the Admin Withdrawal Management section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Admin Withdrawal Management.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card>
         <CardContent className="p-12 text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
         </CardContent>
       </Card>
-    );
+    </>
+  );
   }
 
   return (

@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Video, Eye, Calendar, Loader2, Plus } from "lucide-react";
 import { VirtualTourUploader } from "./VirtualTourUploader";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Property {
   id: string;
@@ -82,10 +83,13 @@ export function PropertyDashboard() {
 
   if (loading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Property Dashboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Property Dashboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Property Dashboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="flex items-center justify-center p-8">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
-    );
+    </>
+  );
   }
 
   if (properties.length === 0) {

@@ -6,6 +6,7 @@ import { Package, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { CouponToolLayout } from "../CouponToolLayout";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -36,7 +37,9 @@ export function BundleBuilderView({ onBack }: Props) {
   };
 
   return (
-    <CouponToolLayout onBack={onBack} title="Coupon Bundle Builder" subtitle="AI-optimized bundle deals for maximum savings & resale value" credits={4} icon={Package} gradientFrom="#3b82f6" gradientTo="#06b6d4" borderColor="blue" formTitle="Bundle Parameters" resultTitle="Bundle Strategy" emptyText="Enter coupons to get AI-optimized bundle recommendations" result={result} loading={loading}>
+    <>
+      <FloatingHowItWorks title={"Bundle Builder View - How it works"} steps={[{ title: 'Open', desc: 'Access the Bundle Builder View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Bundle Builder View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <CouponToolLayout onBack={onBack} title="Coupon Bundle Builder" subtitle="AI-optimized bundle deals for maximum savings & resale value" credits={4} icon={Package} gradientFrom="#3b82f6" gradientTo="#06b6d4" borderColor="blue" formTitle="Bundle Parameters" resultTitle="Bundle Strategy" emptyText="Enter coupons to get AI-optimized bundle recommendations" result={result} loading={loading}>
       <div><label className="text-sm font-semibold mb-1.5 block">Available Coupons *</label>
         <Textarea placeholder="List coupons to bundle. E.g.:&#10;Nike €30 gift card&#10;Adidas 25% off&#10;Foot Locker €20 voucher" value={availableCoupons} onChange={e => setAvailableCoupons(e.target.value)} rows={5} /></div>
       <div><label className="text-sm font-semibold mb-1.5 block">Budget (€)</label>
@@ -49,5 +52,6 @@ export function BundleBuilderView({ onBack }: Props) {
         {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Building...</> : <><Package className="w-4 h-4 mr-2" />Build Bundle (4 CR)</>}
       </Button>
     </CouponToolLayout>
+    </>
   );
 }

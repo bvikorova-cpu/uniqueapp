@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart3, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const COLORS = ["#8b5cf6", "#ec4899", "#06b6d4", "#f59e0b", "#22c55e", "#ef4444", "#6366f1"];
 
@@ -42,7 +43,9 @@ export const CrystalAnalyticsTool = () => {
   });
 
   return (
-    <Card className="bg-card/80 backdrop-blur-xl border-border/50">
+    <>
+      <FloatingHowItWorks title={"Crystal Analytics Tool - How it works"} steps={[{ title: 'Open', desc: 'Access the Crystal Analytics Tool section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Crystal Analytics Tool.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/80 backdrop-blur-xl border-border/50">
       <CardHeader>
         <CardTitle className="text-xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent flex items-center gap-2">
           <BarChart3 className="w-5 h-5" /> Energy Analytics
@@ -107,5 +110,6 @@ export const CrystalAnalyticsTool = () => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

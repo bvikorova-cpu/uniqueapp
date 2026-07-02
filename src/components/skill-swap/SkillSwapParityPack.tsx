@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useSkillSwapParity, SKILL_SWAP_PARITY_COST, type SkillSwapParityAction } from "@/hooks/useSkillSwapParity";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ToolConfig {
   id: SkillSwapParityAction;
@@ -138,7 +139,9 @@ export const SkillSwapParityPack = () => {
   };
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Skill Swap Parity Pack - How it works"} steps={[{ title: 'Open', desc: 'Access the Skill Swap Parity Pack section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Skill Swap Parity Pack.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
@@ -252,5 +255,6 @@ export const SkillSwapParityPack = () => {
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 };

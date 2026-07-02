@@ -3,6 +3,7 @@ import { Crown, Sparkles, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import vaultVideo from "@/assets/premium-store-vault.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface PremiumStoreHeroProps {
   credits: number;
@@ -16,7 +17,9 @@ interface PremiumStoreHeroProps {
  */
 export const PremiumStoreHero = ({ credits, level, onBuyCredits }: PremiumStoreHeroProps) => {
   return (
-    <div className="relative w-full h-[360px] sm:h-[460px] rounded-3xl overflow-hidden mb-8">
+    <>
+      <FloatingHowItWorks title={"Premium Store Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Premium Store Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Premium Store Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative w-full h-[360px] sm:h-[460px] rounded-3xl overflow-hidden mb-8">
       <video
         autoPlay
         muted
@@ -76,5 +79,6 @@ export const PremiumStoreHero = ({ credits, level, onBuyCredits }: PremiumStoreH
         </motion.div>
       </div>
     </div>
+    </>
   );
 };

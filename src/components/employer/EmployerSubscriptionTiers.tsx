@@ -5,6 +5,7 @@ import { Check, Crown, Sparkles, Zap } from "lucide-react";
 import { useEmployerPaymentStatus } from "@/hooks/useEmployerPaymentStatus";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const SUBSCRIPTION_TIERS = [
   {
@@ -96,12 +97,15 @@ export function EmployerSubscriptionTiers() {
 
   if (loading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Employer Subscription Tiers - How it works"} steps={[{ title: 'Open', desc: 'Access the Employer Subscription Tiers section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Employer Subscription Tiers.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card>
         <CardContent className="flex items-center justify-center py-12">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         </CardContent>
       </Card>
-    );
+    </>
+  );
   }
 
   return (

@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, BookOpen, Palette, Sparkles, PaintBucket, Heart, LayoutGrid } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export type GalleryCategory = "all" | "stories" | "drawings" | "characters" | "coloring" | "favorites";
 
@@ -23,7 +24,9 @@ const categories: { key: GalleryCategory; label: string; icon: typeof LayoutGrid
 
 export function GalleryFilters({ active, onChange, search, onSearchChange, counts }: GalleryFiltersProps) {
   return (
-    <div className="max-w-4xl mx-auto mb-8 space-y-4">
+    <>
+      <FloatingHowItWorks title={"Gallery Filters - How it works"} steps={[{ title: 'Open', desc: 'Access the Gallery Filters section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Gallery Filters.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="max-w-4xl mx-auto mb-8 space-y-4">
       {/* Search bar */}
       <div className="relative max-w-md mx-auto">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -65,5 +68,6 @@ export function GalleryFilters({ active, onChange, search, onSearchChange, count
         })}
       </div>
     </div>
+    </>
   );
 }

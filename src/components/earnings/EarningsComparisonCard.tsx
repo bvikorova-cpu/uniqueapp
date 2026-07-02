@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, TrendingDown } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   thisMonth: number;
@@ -14,7 +15,9 @@ export function EarningsComparisonCard({ thisMonth, lastMonth }: Props) {
   const up = delta >= 0;
 
   return (
-    <Card className="border-primary/20">
+    <>
+      <FloatingHowItWorks title={"Earnings Comparison Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Earnings Comparison Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Earnings Comparison Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-primary/20">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm">This month vs last</CardTitle>
       </CardHeader>
@@ -31,5 +34,6 @@ export function EarningsComparisonCard({ thisMonth, lastMonth }: Props) {
         </p>
       </CardContent>
     </Card>
+    </>
   );
 }

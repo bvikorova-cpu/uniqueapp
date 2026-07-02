@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import heroVideo from "@/assets/masterchef-hero-v2.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const stats = [
   { icon: Trophy, value: "500+", label: "Competitions", shortLabel: "Comps" },
@@ -36,7 +37,9 @@ export function MasterChefHero() {
   };
 
   return (
-    <section className="relative h-[76svh] min-h-[520px] overflow-hidden rounded-2xl mx-2 md:mx-0 bg-black">
+    <>
+      <FloatingHowItWorks title={"Master Chef Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Master Chef Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Master Chef Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <section className="relative h-[76svh] min-h-[520px] overflow-hidden rounded-2xl mx-2 md:mx-0 bg-black">
       {/* Video Background */}
       <video
         ref={videoRef}
@@ -114,5 +117,6 @@ export function MasterChefHero() {
         </motion.div>
       </div>
     </section>
+    </>
   );
 }

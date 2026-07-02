@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Star } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   userId: string;
@@ -42,12 +43,15 @@ export const CSATWidget = ({ userId, ticketId, channel = "live_chat", onSubmitte
 
   if (submitted) {
     return (
+    <>
+      <FloatingHowItWorks title={"C S A T Widget - How it works"} steps={[{ title: 'Open', desc: 'Access the C S A T Widget section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in C S A T Widget.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="bg-emerald-500/10 border-emerald-500/30">
         <CardContent className="p-3 text-xs text-emerald-300 text-center">
           ⭐ Thanks for rating your experience!
         </CardContent>
       </Card>
-    );
+    </>
+  );
   }
 
   return (

@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Video, Calendar, Clock, Users, Radio, CheckCircle, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface LiveSession {
   id: string;
@@ -46,7 +47,9 @@ export function LiveSessionsView({ onBack }: Props) {
   }, []);
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Live Sessions View - How it works"} steps={[{ title: 'Open', desc: 'Access the Live Sessions View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Live Sessions View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
@@ -99,5 +102,6 @@ export function LiveSessionsView({ onBack }: Props) {
         </div>
       )}
     </div>
+    </>
   );
 }

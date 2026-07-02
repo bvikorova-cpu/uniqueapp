@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Crown, Sparkles, TrendingUp, Users } from "lucide-react";
 import subscriptionHeroAsset from "@/assets/subscription-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface SubscriptionHeroProps {
   currentTier?: string;
@@ -27,7 +28,12 @@ export const SubscriptionHero = ({ currentTier }: SubscriptionHeroProps) => {
       });
       if (step >= steps) clearInterval(timer);
     }, duration / steps);
-    return () => clearInterval(timer);
+    return (
+    <>
+      <FloatingHowItWorks title={"Subscription Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Subscription Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Subscription Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(timer);
   }, []);
 
   const statCards = [

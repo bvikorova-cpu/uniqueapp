@@ -7,6 +7,7 @@ import { Swords, Trophy, Loader2, Crown, ChevronRight, ExternalLink } from "luci
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type Tournament = {
   id: string;
@@ -198,7 +199,9 @@ const MegatalentBattleRoyale = ({ category, categories }: { category?: string; c
   const champion = tournament?.champion_participant_id ? participants.find(p => p.id === tournament.champion_participant_id) : null;
 
   return (
-    <Card className="overflow-hidden backdrop-blur-xl bg-gradient-to-br from-destructive/10 via-primary/5 to-accent/10 border-border/30">
+    <>
+      <FloatingHowItWorks title={"Megatalent Battle Royale - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Battle Royale section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Battle Royale.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="overflow-hidden backdrop-blur-xl bg-gradient-to-br from-destructive/10 via-primary/5 to-accent/10 border-border/30">
       <CardContent className="p-5">
         <div className="flex items-center gap-2 mb-4">
           <Swords className="h-5 w-5 text-destructive" />
@@ -307,6 +310,7 @@ const MegatalentBattleRoyale = ({ category, categories }: { category?: string; c
         )}
       </CardContent>
     </Card>
+    </>
   );
 };
 

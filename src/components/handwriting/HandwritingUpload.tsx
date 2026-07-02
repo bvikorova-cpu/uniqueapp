@@ -9,6 +9,7 @@ import { Upload, Link as LinkIcon, Loader2, PenTool, Image, Info } from "lucide-
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface HandwritingUploadProps {
   onAnalysisComplete: (result: any) => void;
@@ -56,7 +57,9 @@ export const HandwritingUpload = ({
   ];
 
   return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+    <>
+      <FloatingHowItWorks title={"Handwriting Upload - How it works"} steps={[{ title: 'Open', desc: 'Access the Handwriting Upload section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Handwriting Upload.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
       <Card className="bg-card/60 backdrop-blur-sm border-border/50 overflow-hidden">
         <div className={`h-1.5 bg-gradient-to-r ${analysisTypes.find(t => t.value === analysisType)?.color || 'from-primary to-accent'}`} />
         <CardHeader>
@@ -185,5 +188,6 @@ export const HandwritingUpload = ({
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 };

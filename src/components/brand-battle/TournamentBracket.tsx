@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Clock, ArrowRight, Crown, Swords, Shield, Zap, Flame, Timer, Target } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface BrandSponsor {
   id: string;
@@ -44,6 +45,8 @@ export const TournamentBracket = ({ sponsors }: TournamentBracketProps) => {
 
   if (top8.length < 2) {
     return (
+    <>
+      <FloatingHowItWorks title={"Tournament Bracket - How it works"} steps={[{ title: 'Open', desc: 'Access the Tournament Bracket section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Tournament Bracket.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="p-12 text-center backdrop-blur-xl bg-card/80">
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
@@ -56,7 +59,8 @@ export const TournamentBracket = ({ sponsors }: TournamentBracketProps) => {
           </p>
         </motion.div>
       </Card>
-    );
+    </>
+  );
   }
 
   return (

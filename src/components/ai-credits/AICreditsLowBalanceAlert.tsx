@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   credits: number;
@@ -17,7 +18,9 @@ export const AICreditsLowBalanceAlert = ({ credits, threshold = 5 }: Props) => {
   if (credits > threshold) return null;
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"A I Credits Low Balance Alert - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Credits Low Balance Alert section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Credits Low Balance Alert.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       className="flex items-center gap-3 px-4 py-3 rounded-xl border-2 border-amber-400/50 bg-gradient-to-r from-amber-500/10 to-orange-500/10 mb-4"
@@ -35,5 +38,6 @@ export const AICreditsLowBalanceAlert = ({ credits, threshold = 5 }: Props) => {
         Top up
       </Button>
     </motion.div>
+    </>
   );
 };

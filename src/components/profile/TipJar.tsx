@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface TipJarProps {
   recipientId: string;
@@ -65,7 +66,9 @@ export const TipJar = ({ recipientId, recipientName, currentUserId }: TipJarProp
   };
 
   return (
-    <Dialog
+    <>
+      <FloatingHowItWorks title={"Tip Jar - How it works"} steps={[{ title: 'Open', desc: 'Access the Tip Jar section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Tip Jar.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Dialog
       open={open}
       onOpenChange={(o) => {
         setOpen(o);
@@ -205,5 +208,6 @@ export const TipJar = ({ recipientId, recipientName, currentUserId }: TipJarProp
         )}
       </DialogContent>
     </Dialog>
+    </>
   );
 };

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
 import heroVideo from "@/assets/creative-forge-hero.mp4.asset.json";
 import { useLiveStats } from "@/hooks/useLiveStats";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: string }) => {
   const [count, setCount] = useState(0);
@@ -15,7 +16,12 @@ const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: str
       if (cur >= target) { setCount(target); clearInterval(t); }
       else setCount(Math.floor(cur));
     }, duration / steps);
-    return () => clearInterval(t);
+    return (
+    <>
+      <FloatingHowItWorks title={"Forge Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Forge Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Forge Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(t);
   }, [target]);
   return <span>{target === 0 ? "—" : `${count.toLocaleString()}${suffix}`}</span>;
 };

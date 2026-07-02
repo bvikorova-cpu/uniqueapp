@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Share2, Copy, Check, MessageCircle, Mail, Facebook, Twitter, Instagram, Smartphone } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props {
   campaignTitle: string;
@@ -97,7 +98,9 @@ export function MedicalShareKit({
   };
 
   return (
-    <Card className="p-5">
+    <>
+      <FloatingHowItWorks title={"Medical Share Kit - How it works"} steps={[{ title: 'Open', desc: 'Access the Medical Share Kit section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Medical Share Kit.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-5">
       <div className="flex items-center gap-2 mb-3">
         <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
           <Share2 className="w-5 h-5 text-white" />
@@ -168,5 +171,6 @@ export function MedicalShareKit({
         )}
       </Button>
     </Card>
+    </>
   );
 }

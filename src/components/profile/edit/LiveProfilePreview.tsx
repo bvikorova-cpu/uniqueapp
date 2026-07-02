@@ -3,6 +3,7 @@ import { BadgeCheck, MapPin, Briefcase, Globe } from "lucide-react";
 import { Skill } from "./SkillsEditor";
 import { SocialLinks } from "./SocialLinksSection";
 import { ProfileTheme } from "./PrivacyAndStyle";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props {
   fullName: string;
@@ -40,7 +41,9 @@ export const LiveProfilePreview = (props: Props) => {
   const accent = accentColor || "#f59e0b";
 
   return (
-    <div className={`rounded-2xl border border-border/50 overflow-hidden ${themeBg[theme]} backdrop-blur-xl shadow-2xl`}>
+    <>
+      <FloatingHowItWorks title={"Live Profile Preview - How it works"} steps={[{ title: 'Open', desc: 'Access the Live Profile Preview section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Live Profile Preview.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className={`rounded-2xl border border-border/50 overflow-hidden ${themeBg[theme]} backdrop-blur-xl shadow-2xl`}>
       {/* sticky preview chip */}
       <div className="px-4 py-2 border-b border-border/30 flex items-center justify-between text-xs">
         <span className="font-bold text-muted-foreground uppercase tracking-wider">Live Preview</span>
@@ -128,5 +131,6 @@ export const LiveProfilePreview = (props: Props) => {
         )}
       </div>
     </div>
+    </>
   );
 };

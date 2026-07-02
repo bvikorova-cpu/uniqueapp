@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, Award, Trophy, Star, Flame, Zap, Target, Crown, Shield, Car, Rocket, Medal, Lock } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Achievement {
   id: string;
@@ -50,7 +51,9 @@ export function AchievementSystem({ onBack }: { onBack: () => void }) {
   const totalPoints = achievements.filter(a => a.unlocked).length * 100;
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Achievement System - How it works"} steps={[{ title: 'Open', desc: 'Access the Achievement System section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Achievement System.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={onBack} className="text-cyan-400 hover:bg-cyan-950/30">
           <ArrowLeft className="h-5 w-5" />
@@ -138,5 +141,6 @@ export function AchievementSystem({ onBack }: { onBack: () => void }) {
         ))}
       </div>
     </div>
+    </>
   );
 }

@@ -4,12 +4,15 @@ import { Card } from "@/components/ui/card";
 import { MapPin, Loader2 } from "lucide-react";
 import { useCouponGeo } from "@/hooks/useCouponGeo";
 import { Link } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function CouponGeoDeals() {
   const { loading, deals, coords, findNearby } = useCouponGeo();
 
   return (
-    <Card className="p-4 space-y-3 border-blue-500/30 bg-gradient-to-br from-blue-500/5 to-cyan-500/5">
+    <>
+      <FloatingHowItWorks title={"Coupon Geo Deals - How it works"} steps={[{ title: 'Open', desc: 'Access the Coupon Geo Deals section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Coupon Geo Deals.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-4 space-y-3 border-blue-500/30 bg-gradient-to-br from-blue-500/5 to-cyan-500/5">
       <div className="flex items-center gap-2">
         <MapPin className="w-5 h-5 text-blue-500" />
         <h3 className="font-bold">Nearby Deals</h3>
@@ -34,5 +37,6 @@ export function CouponGeoDeals() {
         </div>
       )}
     </Card>
+    </>
   );
 }

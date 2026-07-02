@@ -5,6 +5,7 @@ import { Calendar as CalendarIcon, Droplet, Sprout, CheckCircle2 } from "lucide-
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { format, addDays } from "date-fns";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const CareCalendar = () => {
   const [schedules, setSchedules] = useState<any[]>([]);
@@ -105,10 +106,13 @@ export const CareCalendar = () => {
 
   if (loading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Care Calendar - How it works"} steps={[{ title: 'Open', desc: 'Access the Care Calendar section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Care Calendar.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="p-6">
         <p className="text-center">Loading care schedule...</p>
       </Card>
-    );
+    </>
+  );
   }
 
   return (

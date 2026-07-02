@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useCaseFiles, useCreateCase } from "@/hooks/useLieDetectorPro";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function CaseFilesCard() {
   const [open, setOpen] = useState(false);
@@ -22,7 +23,9 @@ export function CaseFilesCard() {
   };
 
   return (
-    <Card className="bg-card/60 backdrop-blur-sm border-yellow-500/30">
+    <>
+      <FloatingHowItWorks title={"Case Files Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Case Files Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Case Files Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/60 backdrop-blur-sm border-yellow-500/30">
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2 text-yellow-400">
           <FolderOpen className="w-5 h-5" /> Case Files Vault
@@ -66,5 +69,6 @@ export function CaseFilesCard() {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 }

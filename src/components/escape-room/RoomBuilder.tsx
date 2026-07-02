@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Trash2 } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Puzzle {
   title: string;
@@ -136,7 +137,9 @@ const RoomBuilder = () => {
   };
 
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title={"Room Builder - How it works"} steps={[{ title: 'Open', desc: 'Access the Room Builder section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Room Builder.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card>
       <CardHeader>
         <CardTitle>Create Your Escape Room</CardTitle>
         <CardDescription>
@@ -301,6 +304,7 @@ const RoomBuilder = () => {
         </form>
       </CardContent>
     </Card>
+    </>
   );
 };
 

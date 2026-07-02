@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Sparkles } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface SeasonalHub {
   id: string; slug: string; title: string; description: string | null;
@@ -22,7 +23,9 @@ export function SeasonalHubBanner() {
   const accent = hub.accent_color || "#8b5cf6";
 
   return (
-    <Link to={`/coupons/season/${hub.slug}`}
+    <>
+      <FloatingHowItWorks title={"Seasonal Hub Banner - How it works"} steps={[{ title: 'Open', desc: 'Access the Seasonal Hub Banner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Seasonal Hub Banner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Link to={`/coupons/season/${hub.slug}`}
       className="block relative overflow-hidden rounded-2xl mb-6 border border-border/50 group">
       <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${accent}33, ${accent}11)` }} />
       {hub.banner_url && (
@@ -37,5 +40,6 @@ export function SeasonalHubBanner() {
         <span className="text-xs font-semibold opacity-70 group-hover:opacity-100">Explore →</span>
       </div>
     </Link>
+    </>
   );
 }

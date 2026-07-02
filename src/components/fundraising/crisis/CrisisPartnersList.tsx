@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { ExternalLink, ShieldCheck, Plus, Handshake } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Partner {
   id: string;
@@ -64,7 +65,9 @@ export function CrisisPartnersList({ campaignId, ownerUserId }: Props) {
   if (partners.length === 0 && !isOwner) return null;
 
   return (
-    <Card className="p-5">
+    <>
+      <FloatingHowItWorks title={"Crisis Partners List - How it works"} steps={[{ title: 'Open', desc: 'Access the Crisis Partners List section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Crisis Partners List.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-5">
       <div className="flex items-center gap-2 mb-4">
         <Handshake className="w-5 h-5 text-primary" />
         <h3 className="font-bold">Partner Organizations</h3>
@@ -115,5 +118,6 @@ export function CrisisPartnersList({ campaignId, ownerUserId }: Props) {
         </div>
       )}
     </Card>
+    </>
   );
 }

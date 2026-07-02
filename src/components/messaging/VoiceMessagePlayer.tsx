@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Play, Pause } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   url: string;
@@ -26,7 +27,12 @@ export const VoiceMessagePlayer = ({ url, duration, className }: Props) => {
     a.addEventListener("timeupdate", onTime);
     a.addEventListener("loadedmetadata", onMeta);
     a.addEventListener("ended", onEnd);
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Voice Message Player - How it works"} steps={[{ title: 'Open', desc: 'Access the Voice Message Player section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Voice Message Player.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       a.removeEventListener("timeupdate", onTime);
       a.removeEventListener("loadedmetadata", onMeta);
       a.removeEventListener("ended", onEnd);

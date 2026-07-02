@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { handleEdgeError, throwIfInvokeError } from "@/lib/handleEdgeError";
 import ReactMarkdown from "react-markdown";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Msg { role: "user" | "assistant"; content: string; }
 
@@ -48,7 +49,9 @@ export default function FutureFaceDermChat() {
   };
 
   return (
-    <div className="mb-8 space-y-4">
+    <>
+      <FloatingHowItWorks title={"Future Face Derm Chat - How it works"} steps={[{ title: 'Open', desc: 'Access the Future Face Derm Chat section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Future Face Derm Chat.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="mb-8 space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-xl sm:text-2xl font-black">🩺 AI Dermatologist Chat</h2>
         <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">6 CR / msg</Badge>
@@ -81,5 +84,6 @@ export default function FutureFaceDermChat() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

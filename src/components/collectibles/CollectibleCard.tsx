@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow } from "date-fns";
 import { Cat, Dog, Compass, Wand2, Image, Trophy, Palette, Film, Sparkles } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CollectibleCardProps {
   collectible: any;
@@ -43,7 +44,9 @@ export default function CollectibleCard({ collectible }: CollectibleCardProps) {
   };
 
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+    <>
+      <FloatingHowItWorks title={"Collectible Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Collectible Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Collectible Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="overflow-hidden hover:shadow-lg transition-shadow">
       {collectible.image_url ? (
         <div className="aspect-square bg-muted flex items-center justify-center overflow-hidden">
           <img 
@@ -89,5 +92,6 @@ export default function CollectibleCard({ collectible }: CollectibleCardProps) {
         </div>
       </div>
     </Card>
+    </>
   );
 }

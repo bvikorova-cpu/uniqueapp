@@ -1,6 +1,7 @@
 import { useLiveStats } from "@/hooks/useLiveStats";
 import coffeeHeroAsset from "@/assets/coffee-hero.mp4.asset.json";
 import { Coffee, MapPin, Star, Users } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const statQueries = [
   { key: "cafes", table: "coffee_cafes" },
@@ -20,7 +21,9 @@ export const CoffeeHero = () => {
   const { stats, loading } = useLiveStats(statQueries);
 
   return (
-    <div className="relative w-full h-[340px] sm:h-[420px] overflow-hidden rounded-2xl mb-8">
+    <>
+      <FloatingHowItWorks title={"Coffee Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Coffee Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Coffee Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative w-full h-[340px] sm:h-[420px] overflow-hidden rounded-2xl mb-8">
       <video
         autoPlay
         loop
@@ -74,5 +77,6 @@ export const CoffeeHero = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };

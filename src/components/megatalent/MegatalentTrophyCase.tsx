@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Medal, Award, Crown, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type Item = {
   tournamentId: string;
@@ -81,7 +82,9 @@ const MegatalentTrophyCase = ({ userId }: { userId: string }) => {
   if (!items.length) return null;
 
   return (
-    <Card className="overflow-hidden backdrop-blur-xl bg-card/70 border-border/30">
+    <>
+      <FloatingHowItWorks title={"Megatalent Trophy Case - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Trophy Case section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Trophy Case.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="overflow-hidden backdrop-blur-xl bg-card/70 border-border/30">
       <CardContent className="p-5">
         <div className="flex items-center gap-2 mb-4">
           <Trophy className="h-5 w-5 text-yellow-500" />
@@ -105,6 +108,7 @@ const MegatalentTrophyCase = ({ userId }: { userId: string }) => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };
 

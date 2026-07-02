@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Star, Quote } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const testimonials = [
   {
@@ -21,7 +22,9 @@ const testimonials = [
 
 export const SkillSwapTestimonials = () => {
   return (
-    <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
+    <>
+      <FloatingHowItWorks title={"Skill Swap Testimonials - How it works"} steps={[{ title: 'Open', desc: 'Access the Skill Swap Testimonials section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Skill Swap Testimonials.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
       <h3 className="font-bold text-sm mb-3 flex items-center gap-2">
         <Quote className="h-4 w-4 text-primary" />
         Success Stories
@@ -40,5 +43,6 @@ export const SkillSwapTestimonials = () => {
         ))}
       </div>
     </Card>
+    </>
   );
 };

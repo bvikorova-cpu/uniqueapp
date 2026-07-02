@@ -6,6 +6,7 @@ import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Download } from "lucide-react";
 import { showImages } from "@/components/kids/ShowImages";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ImageInfo {
   name: string;
@@ -135,7 +136,9 @@ export const ImageTextRemover = () => {
   };
 
   return (
-    <div className="container mx-auto p-6">
+    <>
+      <FloatingHowItWorks title={"Image Text Remover - How it works"} steps={[{ title: 'Open', desc: 'Access the Image Text Remover section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Image Text Remover.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="container mx-auto p-6">
       <Card className="p-6">
         <h2 className="text-2xl font-bold mb-4">Remove Text from Images</h2>
         <p className="text-muted-foreground mb-6">
@@ -200,5 +203,6 @@ export const ImageTextRemover = () => {
         )}
       </Card>
     </div>
+    </>
   );
 };

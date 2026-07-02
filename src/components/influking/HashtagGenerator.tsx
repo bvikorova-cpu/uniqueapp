@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Hash, Copy, Sparkles, Loader2, Zap, TrendingUp, Target } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface HashtagGeneratorProps {
   onBack: () => void;
@@ -97,7 +98,9 @@ const HashtagGenerator = ({ onBack }: HashtagGeneratorProps) => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Hashtag Generator - How it works"} steps={[{ title: 'Open', desc: 'Access the Hashtag Generator section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Hashtag Generator.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
         <Button variant="ghost" onClick={onBack} className="gap-2 mb-4">
           <ArrowLeft className="h-4 w-4" /> Back to Hub
@@ -211,6 +214,7 @@ const HashtagGenerator = ({ onBack }: HashtagGeneratorProps) => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Upload, Video } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ComedyVideoUploadProps {
   comedianId: string;
@@ -87,7 +88,9 @@ export function ComedyVideoUpload({ comedianId, onUploadSuccess }: ComedyVideoUp
   };
 
   return (
-    <Card className="p-6">
+    <>
+      <FloatingHowItWorks title={"Comedy Video Upload - How it works"} steps={[{ title: 'Open', desc: 'Access the Comedy Video Upload section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Comedy Video Upload.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-6">
       <div className="flex items-center gap-3 mb-6">
         <Video className="h-6 w-6 text-primary" />
         <h3 className="text-xl font-bold">Upload Comedy Clip</h3>
@@ -171,5 +174,6 @@ export function ComedyVideoUpload({ comedianId, onUploadSuccess }: ComedyVideoUp
         </Button>
       </div>
     </Card>
+    </>
   );
 }

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Sparkles, ArrowRightLeft, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface SkillOffering {
   id: string;
@@ -66,10 +67,13 @@ export const MySkillsHub = ({ userId, isOwnProfile }: MySkillsHubProps) => {
 
   if (loading) {
     return (
+    <>
+      <FloatingHowItWorks title={"My Skills Hub - How it works"} steps={[{ title: 'Open', desc: 'Access the My Skills Hub section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in My Skills Hub.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="p-8 text-center">
         <Loader2 className="h-6 w-6 animate-spin mx-auto" />
       </Card>
-    );
+    </>
+  );
   }
 
   return (

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Bot, Send, TrendingUp, Lightbulb, BarChart3, Sparkles } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Message {
   id: string;
@@ -92,7 +93,9 @@ export const AISkillAdvisor = ({ onBack }: AISkillAdvisorProps) => {
   };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"A I Skill Advisor - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Skill Advisor section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Skill Advisor.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-6">
       <Button variant="ghost" size="sm" onClick={onBack} className="gap-2">
         <ArrowLeft className="h-4 w-4" /> Back to Hub
       </Button>
@@ -226,5 +229,6 @@ export const AISkillAdvisor = ({ onBack }: AISkillAdvisorProps) => {
         </div>
       </div>
     </motion.div>
+    </>
   );
 };

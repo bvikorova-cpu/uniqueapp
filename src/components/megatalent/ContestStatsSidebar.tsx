@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Users, TrendingUp, Flame, Award, Star } from "lucide-react";
 import { useMegatalentContestStats } from "@/hooks/useMegatalentContestStats";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ContestStatsSidebarProps {
   subscriptionTier: "premium" | "top_premium" | null;
@@ -12,7 +13,9 @@ interface ContestStatsSidebarProps {
 export default function ContestStatsSidebar({ subscriptionTier, totalVotes }: ContestStatsSidebarProps) {
   const { data: stats } = useMegatalentContestStats();
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Contest Stats Sidebar - How it works"} steps={[{ title: 'Open', desc: 'Access the Contest Stats Sidebar section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Contest Stats Sidebar.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       {/* Contest Prize Card */}
       <Card className="backdrop-blur-xl bg-card/80 border-primary/20 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-amber-500/5 pointer-events-none" />
@@ -120,5 +123,6 @@ export default function ContestStatsSidebar({ subscriptionTier, totalVotes }: Co
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

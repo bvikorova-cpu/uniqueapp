@@ -11,6 +11,7 @@ import {
   Trophy,
   Sparkles
 } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Contestant {
   id: string;
@@ -46,7 +47,9 @@ export const LiveVoting = ({
   };
 
   return (
-    <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
+    <>
+      <FloatingHowItWorks title={"Live Voting - How it works"} steps={[{ title: 'Open', desc: 'Access the Live Voting section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Live Voting.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span className="flex items-center gap-2">
@@ -146,6 +149,7 @@ export const LiveVoting = ({
         )}
       </CardContent>
     </Card>
+    </>
   );
 };
 

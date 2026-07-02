@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const CharacterFusionLab = () => {
   const [char1, setChar1] = useState<string | null>(null);
@@ -46,7 +47,9 @@ export const CharacterFusionLab = () => {
   const selectedChar2 = characters?.find((c) => c.id === char2);
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Character Fusion Lab - How it works"} steps={[{ title: 'Open', desc: 'Access the Character Fusion Lab section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Character Fusion Lab.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Card className="relative overflow-hidden border-border/30 bg-card/90 backdrop-blur-xl p-6">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-amber-500" />
         <div className="flex items-center gap-3 mb-6">
@@ -162,5 +165,6 @@ export const CharacterFusionLab = () => {
         </motion.div>
       )}
     </div>
+    </>
   );
 };

@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { Repeat, Save } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 /** User-controlled rule: auto-withdraw funds when balance hits a threshold. */
 export function AutoWithdrawSettings() {
@@ -56,7 +57,9 @@ export function AutoWithdrawSettings() {
   };
 
   return (
-    <Card className="border-primary/20">
+    <>
+      <FloatingHowItWorks title={"Auto Withdraw Settings - How it works"} steps={[{ title: 'Open', desc: 'Access the Auto Withdraw Settings section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Auto Withdraw Settings.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-primary/20">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-sm flex items-center gap-2">
           <Repeat className="h-4 w-4 text-primary" /> Auto-withdraw
@@ -92,5 +95,6 @@ export function AutoWithdrawSettings() {
         </p>
       </CardContent>
     </Card>
+    </>
   );
 }

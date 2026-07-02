@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { BookOpen, Star, Trophy, Flame, Sparkles } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface EducationalHeroProps {
   totalStars: number;
@@ -12,7 +13,9 @@ const floatingEmojis = ["📚", "🔬", "🌍", "🎨", "🧮", "🪐", "🦕", 
 
 export const EducationalHero = ({ totalStars, completedTopics, totalTopics, streak }: EducationalHeroProps) => {
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-500 via-orange-500 to-rose-500 p-8 md:p-12 mb-8">
+    <>
+      <FloatingHowItWorks title={"Educational Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Educational Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Educational Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-500 via-orange-500 to-rose-500 p-8 md:p-12 mb-8">
       {/* Floating emojis */}
       {floatingEmojis.map((emoji, i) => (
         <motion.div
@@ -88,6 +91,7 @@ export const EducationalHero = ({ totalStars, completedTopics, totalTopics, stre
         </motion.div>
       </div>
     </div>
+    </>
   );
 };
 

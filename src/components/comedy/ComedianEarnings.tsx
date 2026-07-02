@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { DollarSign, TrendingUp } from "lucide-react";
 import { format } from "date-fns";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ComedianEarningsProps {
   earnings: any;
@@ -70,7 +71,9 @@ export function ComedianEarnings({ earnings, comedianId, onRefresh }: ComedianEa
   };
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Comedian Earnings - How it works"} steps={[{ title: 'Open', desc: 'Access the Comedian Earnings section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Comedian Earnings.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card className="p-6">
           <div className="flex items-center gap-3 mb-4">
@@ -193,5 +196,6 @@ export function ComedianEarnings({ earnings, comedianId, onRefresh }: ComedianEa
         </div>
       </Card>
     </div>
+    </>
   );
 }

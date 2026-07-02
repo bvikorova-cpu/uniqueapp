@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const STORAGE_KEY = "ai_image_public_profile";
 
@@ -21,7 +22,9 @@ export const PublicProfileView = () => {
   const copy = () => { navigator.clipboard.writeText(profileUrl); toast.success("Link copied!"); };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <>
+      <FloatingHowItWorks title={"Public Profile View - How it works"} steps={[{ title: 'Open', desc: 'Access the Public Profile View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Public Profile View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="max-w-2xl mx-auto space-y-6">
       <div>
         <h2 className="text-2xl font-black mb-1">🌐 Public Profile</h2>
         <p className="text-muted-foreground text-sm">Share your AI gallery with the world. Toggle on to enable a public showcase.</p>
@@ -52,5 +55,6 @@ export const PublicProfileView = () => {
         )}
       </div>
     </div>
+    </>
   );
 };

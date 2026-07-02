@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { FileWarning, ShieldCheck, Heart, Ambulance } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const steps = [
   { icon: FileWarning, title: "Report", desc: "Submit emergency case", color: "text-destructive" },
@@ -10,7 +11,9 @@ const steps = [
 
 export function CrisisStepsWizard() {
   return (
-    <section className="py-10">
+    <>
+      <FloatingHowItWorks title={"Crisis Steps Wizard - How it works"} steps={[{ title: 'Open', desc: 'Access the Crisis Steps Wizard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Crisis Steps Wizard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <section className="py-10">
       <div className="relative flex flex-col md:flex-row items-center justify-between gap-6 max-w-3xl mx-auto">
         <div className="hidden md:block absolute top-1/2 left-[12%] right-[12%] h-0.5 bg-gradient-to-r from-destructive/20 via-destructive/40 to-destructive/20 -translate-y-1/2" />
         <motion.div
@@ -38,5 +41,6 @@ export function CrisisStepsWizard() {
         ))}
       </div>
     </section>
+    </>
   );
 }

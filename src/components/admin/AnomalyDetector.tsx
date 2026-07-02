@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AlertTriangle, ShieldAlert, ShieldCheck, RefreshCw, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Anomaly {
   title: string;
@@ -50,7 +51,9 @@ export const AnomalyDetector = () => {
   }, []);
 
   return (
-    <div className="rounded-2xl border border-rose-500/20 bg-gradient-to-br from-rose-500/5 via-card/60 to-amber-500/5 backdrop-blur-xl p-5 shadow-xl">
+    <>
+      <FloatingHowItWorks title={"Anomaly Detector - How it works"} steps={[{ title: 'Open', desc: 'Access the Anomaly Detector section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Anomaly Detector.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="rounded-2xl border border-rose-500/20 bg-gradient-to-br from-rose-500/5 via-card/60 to-amber-500/5 backdrop-blur-xl p-5 shadow-xl">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-xl bg-rose-500/15 border border-rose-500/30">
@@ -99,5 +102,6 @@ export const AnomalyDetector = () => {
         ))}
       </div>
     </div>
+    </>
   );
 };

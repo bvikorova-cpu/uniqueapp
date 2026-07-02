@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Zap, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   amount: number;
@@ -36,9 +37,12 @@ export function InstantPayoutButton({ amount, enabled, onPaid }: Props) {
   };
 
   return (
-    <Button onClick={run} disabled={!canRun || loading} variant="outline" className="w-full gap-2 border-primary/40">
+    <>
+      <FloatingHowItWorks title={"Instant Payout Button - How it works"} steps={[{ title: 'Open', desc: 'Access the Instant Payout Button section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Instant Payout Button.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Button onClick={run} disabled={!canRun || loading} variant="outline" className="w-full gap-2 border-primary/40">
       {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4 text-primary" />}
       Instant payout · €{net.toFixed(2)} <span className="text-[11px] text-muted-foreground">(1% fee)</span>
     </Button>
+    </>
   );
 }

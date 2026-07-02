@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FileDown, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const TaxDocsButton = () => {
   const [year, setYear] = useState<string>(String(new Date().getFullYear() - 1));
@@ -39,7 +40,9 @@ export const TaxDocsButton = () => {
   const years = Array.from({ length: 4 }, (_, i) => String(new Date().getFullYear() - i));
 
   return (
-    <Card className="border-amber-500/20 bg-card/80 backdrop-blur">
+    <>
+      <FloatingHowItWorks title={"Tax Docs Button - How it works"} steps={[{ title: 'Open', desc: 'Access the Tax Docs Button section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Tax Docs Button.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-amber-500/20 bg-card/80 backdrop-blur">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
           <FileDown className="w-4 h-4 text-amber-400" />
@@ -64,5 +67,6 @@ export const TaxDocsButton = () => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

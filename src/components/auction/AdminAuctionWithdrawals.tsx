@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, CheckCircle, XCircle, Clock, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StripePayoutButton } from "@/components/admin/StripePayoutButton";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface WithdrawalRequest {
   id: string;
@@ -98,11 +99,14 @@ export function AdminAuctionWithdrawals() {
     const config = variants[status] || variants.pending;
     const Icon = config.icon;
     return (
+    <>
+      <FloatingHowItWorks title={"Admin Auction Withdrawals - How it works"} steps={[{ title: 'Open', desc: 'Access the Admin Auction Withdrawals section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Admin Auction Withdrawals.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Badge variant={config.variant as any}>
         <Icon className="h-3 w-3 mr-1" />
         {status}
       </Badge>
-    );
+    </>
+  );
   };
 
   if (isLoading) {

@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   text: string;
@@ -29,7 +30,9 @@ export const TextDifficultyScanner = ({ text }: Props) => {
   const readingTime = Math.max(1, Math.ceil(wordCount / 150));
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Text Difficulty Scanner - How it works"} steps={[{ title: 'Open', desc: 'Access the Text Difficulty Scanner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Text Difficulty Scanner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, height: 0 }}
       animate={{ opacity: 1, height: "auto" }}
       className="mb-4 p-4 rounded-xl bg-muted/30 border border-border/50 space-y-3"
@@ -70,5 +73,6 @@ export const TextDifficultyScanner = ({ text }: Props) => {
 
       <p className="text-xs text-muted-foreground text-center">{difficulty.desc}</p>
     </motion.div>
+    </>
   );
 };

@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Award, Star, Zap, Crown, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ProfileMilestonesProps {
   userId: string;
@@ -68,7 +69,9 @@ export function ProfileMilestones({ userId }: ProfileMilestonesProps) {
   const Icon = currentLevel.icon;
 
   return (
-    <Card className="backdrop-blur-xl bg-card/80 border-primary/20 overflow-hidden">
+    <>
+      <FloatingHowItWorks title={"Profile Milestones - How it works"} steps={[{ title: 'Open', desc: 'Access the Profile Milestones section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Profile Milestones.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="backdrop-blur-xl bg-card/80 border-primary/20 overflow-hidden">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
           <Award className="h-5 w-5 text-primary" />
@@ -141,6 +144,7 @@ export function ProfileMilestones({ userId }: ProfileMilestonesProps) {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 }
 

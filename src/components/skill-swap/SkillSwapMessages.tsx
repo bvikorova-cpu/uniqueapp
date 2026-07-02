@@ -10,6 +10,7 @@ import { Send, ArrowLeft, MessageCircle, CheckCircle } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import VideoCall from "@/components/messenger/VideoCall";
 import { ReviewDialog } from "./ReviewDialog";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Message {
   id: string;
@@ -58,7 +59,12 @@ export const SkillSwapMessages = () => {
           loadConversations();
         }
       ).subscribe();
-    return () => { supabase.removeChannel(channel); };
+    return (
+    <>
+      <FloatingHowItWorks title={"Skill Swap Messages - How it works"} steps={[{ title: 'Open', desc: 'Access the Skill Swap Messages section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Skill Swap Messages.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => { supabase.removeChannel(channel); };
   }, [currentUserId, selectedConversation]);
 
   const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

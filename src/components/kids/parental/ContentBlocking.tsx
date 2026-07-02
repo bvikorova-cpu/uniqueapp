@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Eye, Ban, CheckCircle2, Calendar } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface CategoryControl { id: string; label: string; emoji: string; enabled: boolean; description: string; }
 
@@ -23,7 +24,9 @@ export const ContentBlocking = () => {
   const toggleCategory = (id: string) => { setCategories(prev => prev.map(c => c.id === id ? { ...c, enabled: !c.enabled } : c)); };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Content Blocking - How it works"} steps={[{ title: 'Open', desc: 'Access the Content Blocking section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Content Blocking.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}>
         <Card>
           <CardHeader>
@@ -89,5 +92,6 @@ export const ContentBlocking = () => {
         </Card>
       </motion.div>
     </div>
+    </>
   );
 };

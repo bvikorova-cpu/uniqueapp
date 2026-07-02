@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Check, Crown, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const SubscriptionPlans = () => {
   const plans = [
@@ -44,7 +45,9 @@ const SubscriptionPlans = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Subscription Plans - How it works"} steps={[{ title: 'Open', desc: 'Access the Subscription Plans section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Subscription Plans.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="text-center">
         <div className="h-20" />
         <h2 className="text-3xl font-bold mb-4">Choose Your Plan</h2>
@@ -150,6 +153,7 @@ const SubscriptionPlans = () => {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };
 

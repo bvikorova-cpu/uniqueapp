@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { X, Sparkles, Lock, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CollectiblesAlbumProps {
   collectibles: any[];
@@ -23,7 +24,9 @@ export function CollectiblesAlbum({ collectibles, collectedIds, isVisible, onClo
   const progress = collectibles.length > 0 ? Math.round((collectedCount / collectibles.length) * 100) : 0;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    <>
+      <FloatingHowItWorks title={"Collectibles Album - How it works"} steps={[{ title: 'Open', desc: 'Access the Collectibles Album section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Collectibles Album.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -115,5 +118,6 @@ export function CollectiblesAlbum({ collectibles, collectedIds, isVisible, onClo
         </div>
       </motion.div>
     </div>
+    </>
   );
 }

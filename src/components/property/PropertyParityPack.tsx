@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sparkles, Loader2, Pencil, LineChart, Users, Handshake, Sofa, MapPin, TrendingUp, ScrollText } from "lucide-react";
 import { motion } from "framer-motion";
 import { usePropertyParity, PROPERTY_PARITY_COST, type PropertyParityAction } from "@/hooks/usePropertyParity";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const TOOLS: { id: PropertyParityAction; label: string; icon: any; desc: string; color: string }[] = [
   { id: "listing-optimizer", label: "Listing Optimizer", icon: Pencil, desc: "SEO headline & hooks", color: "from-violet-500 to-purple-600" },
@@ -31,7 +32,9 @@ export function PropertyParityPack() {
   const result = lastAction === tab && (lastResult as any)?.result;
 
   return (
-    <Card className="bg-card/80 backdrop-blur-xl border-primary/20">
+    <>
+      <FloatingHowItWorks title={"Property Parity Pack - How it works"} steps={[{ title: 'Open', desc: 'Access the Property Parity Pack section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Property Parity Pack.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/80 backdrop-blur-xl border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 font-black bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
           <Sparkles className="h-5 w-5 text-primary" />
@@ -153,6 +156,7 @@ export function PropertyParityPack() {
         </Tabs>
       </CardContent>
     </Card>
+    </>
   );
 }
 

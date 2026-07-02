@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   pageId: string;
@@ -48,7 +49,12 @@ export function PageReviews({ pageId }: Props) {
         .select("id, full_name, avatar_url")
         .in("id", ids);
       const map = new Map((profs ?? []).map((p: any) => [p.id, p]));
-      return (data ?? []).map((r: any) => ({ ...r, profile: map.get(r.user_id) }));
+      return (
+    <>
+      <FloatingHowItWorks title={"Page Reviews - How it works"} steps={[{ title: 'Open', desc: 'Access the Page Reviews section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Page Reviews.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      data ?? []
+    </>
+  ).map((r: any) => ({ ...r, profile: map.get(r.user_id) }));
     },
   });
 

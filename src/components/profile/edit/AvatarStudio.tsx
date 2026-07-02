@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const STYLES = [
   { id: "realistic", label: "Realistic", emoji: "📷" },
@@ -33,7 +34,9 @@ export const AvatarStudio = ({
   const [style, setStyle] = useState("realistic");
 
   return (
-    <div className="rounded-2xl border border-border/50 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl p-5 sm:p-6 mb-6">
+    <>
+      <FloatingHowItWorks title={"Avatar Studio - How it works"} steps={[{ title: 'Open', desc: 'Access the Avatar Studio section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Avatar Studio.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="rounded-2xl border border-border/50 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl p-5 sm:p-6 mb-6">
       <div className="flex flex-col sm:flex-row gap-5 items-center sm:items-start">
         <div className="relative shrink-0">
           <div className="absolute -inset-2 bg-gradient-to-tr from-amber-400/30 via-violet-400/20 to-pink-400/30 rounded-full blur-lg" />
@@ -94,5 +97,6 @@ export const AvatarStudio = ({
         </div>
       </div>
     </div>
+    </>
   );
 };

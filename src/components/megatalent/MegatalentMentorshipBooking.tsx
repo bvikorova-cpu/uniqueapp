@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { GraduationCap, Star, Clock, Sparkles, Loader2, Plus, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Mentor {
   id: string;
@@ -163,7 +164,9 @@ const MegatalentMentorshipBooking = ({ category }: { category?: string }) => {
   };
 
   return (
-    <Card className="overflow-hidden backdrop-blur-xl bg-card/70 border-border/30">
+    <>
+      <FloatingHowItWorks title={"Megatalent Mentorship Booking - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Mentorship Booking section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Mentorship Booking.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="overflow-hidden backdrop-blur-xl bg-card/70 border-border/30">
       <CardContent className="p-5">
         <div className="flex items-center gap-2 mb-4 flex-wrap">
           <GraduationCap className="h-5 w-5 text-primary" />
@@ -332,6 +335,7 @@ const MegatalentMentorshipBooking = ({ category }: { category?: string }) => {
         </Dialog>
       </CardContent>
     </Card>
+    </>
   );
 };
 

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { BreathingCircleHero } from "./BreathingCircleHero";
 import { useLiveStats } from "@/hooks/useLiveStats";
 import oceanVideoMeta from "@/assets/wellness-ocean-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: string }) => {
   const [count, setCount] = useState(0);
@@ -15,7 +16,12 @@ const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: str
       if (current >= target) { setCount(target); clearInterval(timer); }
       else { setCount(Math.floor(current)); }
     }, duration / steps);
-    return () => clearInterval(timer);
+    return (
+    <>
+      <FloatingHowItWorks title={"Wellness Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Wellness Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Wellness Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(timer);
   }, [target]);
   return <span>{target === 0 ? "—" : `${count.toLocaleString()}${suffix}`}</span>;
 };

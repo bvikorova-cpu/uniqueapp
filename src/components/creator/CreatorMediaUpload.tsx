@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Upload, Image, Video } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CreatorMediaUploadProps {
   creatorId: string;
@@ -99,7 +100,9 @@ export function CreatorMediaUpload({ creatorId, onUploadComplete }: CreatorMedia
   };
 
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title={"Creator Media Upload - How it works"} steps={[{ title: 'Open', desc: 'Access the Creator Media Upload section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Creator Media Upload.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card>
       <CardHeader>
         <CardTitle>Create New Post</CardTitle>
         <CardDescription>
@@ -161,5 +164,6 @@ export function CreatorMediaUpload({ creatorId, onUploadComplete }: CreatorMedia
         </form>
       </CardContent>
     </Card>
+    </>
   );
 }

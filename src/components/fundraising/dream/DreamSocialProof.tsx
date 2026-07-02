@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Users, TrendingUp, Zap } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props {
   backersCount: number;
@@ -19,7 +20,9 @@ export function DreamSocialProof({
   if (total === 0 && recentDonationsLast24h === 0) return null;
 
   return (
-    <Card className="p-4">
+    <>
+      <FloatingHowItWorks title={"Dream Social Proof - How it works"} steps={[{ title: 'Open', desc: 'Access the Dream Social Proof section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Dream Social Proof.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-4">
       <div className="grid grid-cols-3 gap-3 text-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
@@ -59,5 +62,6 @@ export function DreamSocialProof({
         )}
       </div>
     </Card>
+    </>
   );
 }

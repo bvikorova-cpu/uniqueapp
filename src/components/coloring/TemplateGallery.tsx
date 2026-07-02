@@ -22,6 +22,7 @@ import templateHumanBody from "@/assets/coloring/template-human-body.jpg";
 import templateButterflyCollection from "@/assets/coloring/template-butterfly-collection.jpg";
 import templateZenGarden from "@/assets/coloring/template-zen-garden.jpg";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const CATEGORIES = [
   { id: "all", label: "All", icon: Sparkles },
@@ -68,7 +69,9 @@ export function TemplateGallery({ onSelectTemplate }: TemplateGalleryProps) {
   const filtered = activeCategory === "all" ? TEMPLATES : TEMPLATES.filter((t) => t.category === activeCategory);
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Template Gallery - How it works"} steps={[{ title: 'Open', desc: 'Access the Template Gallery section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Template Gallery.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="text-center">
         <h2 className="text-2xl font-bold mb-2">Template Gallery</h2>
         <p className="text-muted-foreground">Pick a theme and generate instantly — or use as inspiration!</p>
@@ -136,5 +139,6 @@ export function TemplateGallery({ onSelectTemplate }: TemplateGalleryProps) {
         </AnimatePresence>
       </motion.div>
     </div>
+    </>
   );
 }

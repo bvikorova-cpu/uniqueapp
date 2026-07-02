@@ -3,6 +3,7 @@ import { Hourglass, Sparkles, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface LimitedEditionBannerProps {
   title: string;
@@ -22,7 +23,9 @@ export const LimitedEditionBanner = ({
   const pct = Math.min(100, (sold / totalSupply) * 100);
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Limited Edition Banner - How it works"} steps={[{ title: 'Open', desc: 'Access the Limited Edition Banner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Limited Edition Banner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, scale: 0.98 }}
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}
@@ -65,5 +68,6 @@ export const LimitedEditionBanner = ({
         </Button>
       </div>
     </motion.div>
+    </>
   );
 };

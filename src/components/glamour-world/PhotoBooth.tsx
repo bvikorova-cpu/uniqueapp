@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Sparkles, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const filters = ["Fairy Dust", "Princess Crown", "Butterfly Wings", "Rainbow Aura", "Starlight Glow", "Rose Petals", "Diamond Sparkle", "Mermaid Scales"];
 
@@ -41,7 +42,9 @@ export function PhotoBooth({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Photo Booth - How it works"} steps={[{ title: 'Open', desc: 'Access the Photo Booth section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Photo Booth.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button>
       <h2 className="text-2xl font-black">📸 Photo Booth</h2>
       <p className="text-muted-foreground">Create magical photo shoot concepts!</p>
@@ -56,5 +59,6 @@ export function PhotoBooth({ onBack }: { onBack: () => void }) {
       </Button>
       {result && <div className="bg-gradient-to-br from-pink-500/10 to-purple-500/10 border border-pink-400/20 rounded-xl p-6 whitespace-pre-wrap">{result}</div>}
     </div>
+    </>
   );
 }

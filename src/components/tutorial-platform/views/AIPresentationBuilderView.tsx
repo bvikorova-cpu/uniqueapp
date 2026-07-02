@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useTutorialAICredits } from "@/hooks/useTutorialAICredits";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const CREDITS_COST = 5;
 
@@ -51,7 +52,9 @@ export function AIPresentationBuilderView({ onBack }: Props) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"A I Presentation Builder View - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Presentation Builder View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Presentation Builder View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={onBack}><ArrowLeft className="h-5 w-5" /></Button>
         <div>
@@ -138,5 +141,6 @@ export function AIPresentationBuilderView({ onBack }: Props) {
         </Card>
       </div>
     </div>
+    </>
   );
 }

@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Plus, Save, Trash2, Mail } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Tpl {
   id: string;
@@ -70,7 +71,9 @@ export const EmailTemplateEditor = () => {
   if (loading) return <div className="h-64 rounded bg-muted/40 animate-pulse" />;
 
   return (
-    <div className="grid gap-4 md:grid-cols-[260px_1fr]">
+    <>
+      <FloatingHowItWorks title={"Email Template Editor - How it works"} steps={[{ title: 'Open', desc: 'Access the Email Template Editor section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Email Template Editor.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="grid gap-4 md:grid-cols-[260px_1fr]">
       <Card className="p-3 border-primary/20 bg-card/60 backdrop-blur-xl">
         <div className="flex items-center justify-between mb-3">
           <h4 className="font-semibold text-sm flex items-center gap-2"><Mail className="h-4 w-4" />Templates</h4>
@@ -138,5 +141,6 @@ export const EmailTemplateEditor = () => {
         )}
       </Card>
     </div>
+    </>
   );
 };

@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Lightbulb, Star, Users, Clock, Calendar, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const mentors = [
   { id: 1, name: "Dr. Alan Turing Jr.", specialty: "AI & Machine Learning", rate: 120, rating: 4.9, students: 45, availability: "Mon-Fri", sessions: 234, avatar: "🧑‍🏫" },
@@ -44,7 +45,9 @@ export function MentorshipProgramView({ onBack }: Props) {
   };
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Mentorship Program View - How it works"} steps={[{ title: 'Open', desc: 'Access the Mentorship Program View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Mentorship Program View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <div className="flex items-center gap-3 mb-2">
         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-fuchsia-500 to-purple-600 flex items-center justify-center shadow-lg">
@@ -138,5 +141,6 @@ export function MentorshipProgramView({ onBack }: Props) {
         </DialogContent>
       </Dialog>
     </div>
+    </>
   );
 }

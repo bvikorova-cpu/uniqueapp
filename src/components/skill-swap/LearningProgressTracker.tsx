@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, BookOpen, Target, Clock, CheckCircle, Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface LearningProgressTrackerProps {
   onBack: () => void;
@@ -67,10 +68,13 @@ export const LearningProgressTracker = ({ onBack }: LearningProgressTrackerProps
 
   if (isLoading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Learning Progress Tracker - How it works"} steps={[{ title: 'Open', desc: 'Access the Learning Progress Tracker section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Learning Progress Tracker.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="flex justify-center items-center py-20">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
-    );
+    </>
+  );
   }
 
   return (

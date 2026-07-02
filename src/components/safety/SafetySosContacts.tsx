@@ -6,6 +6,7 @@ import { Phone, Globe, MessageCircle, Search, ExternalLink, Heart, MapPin, Loade
 import { useSosCountry } from "@/hooks/useSafetyExtras";
 import { motion } from "framer-motion";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const SafetySosContacts = () => {
   const { code, data, allCountries, setCountry, isLoading } = useSosCountry();
@@ -17,7 +18,9 @@ const SafetySosContacts = () => {
   }, [data, search]);
 
   return (
-    <div className="space-y-5">
+    <>
+      <FloatingHowItWorks title={"Safety Sos Contacts - How it works"} steps={[{ title: 'Open', desc: 'Access the Safety Sos Contacts section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Safety Sos Contacts.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-5">
       {/* CRITICAL EMERGENCY BANNER */}
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
@@ -114,6 +117,7 @@ const SafetySosContacts = () => {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };
 

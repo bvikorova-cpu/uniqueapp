@@ -9,6 +9,7 @@ import { BookOpen, Award, Plus, FileText, BookCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Report {
   id: string;
@@ -76,7 +77,9 @@ export function StudentProgressReports({ campaignId, ownerUserId }: Props) {
   if (reports.length === 0 && !isOwner) return null;
 
   return (
-    <Card className="p-5">
+    <>
+      <FloatingHowItWorks title={"Student Progress Reports - How it works"} steps={[{ title: 'Open', desc: 'Access the Student Progress Reports section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Student Progress Reports.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-5">
       <div className="flex items-center gap-2 mb-4">
         <BookOpen className="w-5 h-5 text-primary" />
         <h3 className="font-bold text-lg">Academic Progress</h3>
@@ -145,5 +148,6 @@ export function StudentProgressReports({ campaignId, ownerUserId }: Props) {
         </div>
       )}
     </Card>
+    </>
   );
 }

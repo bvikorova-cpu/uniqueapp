@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Upload, Wand2, Sun, Palette, Maximize, Sparkles, Download, Loader2, Check } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -38,7 +39,9 @@ export function PropertyPhotoEnhancer({ onBack }: Props) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Property Photo Enhancer - How it works"} steps={[{ title: 'Open', desc: 'Access the Property Photo Enhancer section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Property Photo Enhancer.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={onBack}><ArrowLeft className="h-5 w-5" /></Button>
         <div>
@@ -141,5 +144,6 @@ export function PropertyPhotoEnhancer({ onBack }: Props) {
         </motion.div>
       )}
     </div>
+    </>
   );
 }

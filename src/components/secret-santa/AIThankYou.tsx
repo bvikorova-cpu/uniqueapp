@@ -9,6 +9,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, Loader2, Copy, RefreshCw, Zap, MessageCircle, Send, Sparkles } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const THANK_YOU_STYLES = [
   { id: "heartfelt", label: "Heartfelt", emoji: "💕", desc: "Sincere and emotional" },
@@ -72,11 +73,14 @@ export const AIThankYou = () => {
 
   if (!currentUserId) {
     return (
+    <>
+      <FloatingHowItWorks title={"A I Thank You - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Thank You section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Thank You.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="p-8 bg-white/90 border-amber-200 text-center">
         <Heart className="h-12 w-12 mx-auto text-pink-400 mb-4" />
         <p className="text-gray-600">Please log in to use AI Thank You</p>
       </Card>
-    );
+    </>
+  );
   }
 
   return (

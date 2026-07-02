@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Check, ClipboardList, Brain, Target, Sparkles } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CareerWizardStepperProps {
   currentStep: number;
@@ -15,7 +16,9 @@ const steps = [
 
 export const CareerWizardStepper = ({ currentStep, totalSteps }: CareerWizardStepperProps) => {
   return (
-    <div className="flex items-center justify-center gap-1 sm:gap-2 mb-8">
+    <>
+      <FloatingHowItWorks title={"Career Wizard Stepper - How it works"} steps={[{ title: 'Open', desc: 'Access the Career Wizard Stepper section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Career Wizard Stepper.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="flex items-center justify-center gap-1 sm:gap-2 mb-8">
       {steps.slice(0, totalSteps).map((step, i) => {
         const isCompleted = i < currentStep;
         const isCurrent = i === currentStep;
@@ -55,5 +58,6 @@ export const CareerWizardStepper = ({ currentStep, totalSteps }: CareerWizardSte
         );
       })}
     </div>
+    </>
   );
 };

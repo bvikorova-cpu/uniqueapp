@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, BarChart3, Eye, Users, TrendingUp, DollarSign, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const overviewStats = [
   { label: "Total Views", value: "36.5K", change: "+12%", up: true, icon: Eye, color: "from-blue-500 to-indigo-600" },
@@ -21,7 +22,9 @@ interface Props { onBack: () => void; }
 
 export function CourseAnalyticsView({ onBack }: Props) {
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Course Analytics View - How it works"} steps={[{ title: 'Open', desc: 'Access the Course Analytics View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Course Analytics View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center shadow-lg">
@@ -88,5 +91,6 @@ export function CourseAnalyticsView({ onBack }: Props) {
         ))}
       </div>
     </div>
+    </>
   );
 }

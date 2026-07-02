@@ -7,6 +7,7 @@ import { Loader2, Wallet, TrendingUp, Clock, CheckCircle } from "lucide-react";
 import { InfluencerWithdrawalForm } from "./InfluencerWithdrawalForm";
 import { format } from "date-fns";
 import { EarningsHero, EarningsLiveTicker, EarningsTipsBanner } from "@/components/earnings";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const InfluencerEarningsPage = () => {
   const [selectedInfluencer, setSelectedInfluencer] = useState<string | null>(null);
@@ -81,10 +82,13 @@ export const InfluencerEarningsPage = () => {
 
   if (loadingInfluencers) {
     return (
+    <>
+      <FloatingHowItWorks title={"Influencer Earnings Page - How it works"} steps={[{ title: 'Open', desc: 'Access the Influencer Earnings Page section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Influencer Earnings Page.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="flex items-center justify-center min-h-[400px]">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
-    );
+    </>
+  );
   }
 
   if (!influencers || influencers.length === 0) {

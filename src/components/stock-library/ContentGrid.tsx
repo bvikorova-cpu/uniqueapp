@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Download, Euro, Image as ImageIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ContentItem {
   id: string;
@@ -49,11 +50,14 @@ export const ContentGrid = ({ items, onPurchase }: ContentGridProps) => {
 
   if (items.length === 0) {
     return (
+    <>
+      <FloatingHowItWorks title={"Content Grid - How it works"} steps={[{ title: 'Open', desc: 'Access the Content Grid section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Content Grid.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="text-center py-12">
         <ImageIcon className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
         <p className="text-muted-foreground">No content available yet</p>
       </div>
-    );
+    </>
+  );
   }
 
   return (

@@ -2,12 +2,15 @@ import { useSecretSanta } from "@/hooks/useSecretSanta";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Trophy, Crown, Medal, Award } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const SecretSantaLeaderboard = () => {
   const { leaderboard, leaderboardLoading } = useSecretSanta();
 
   if (leaderboardLoading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Secret Santa Leaderboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Secret Santa Leaderboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Secret Santa Leaderboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="bg-white/80 backdrop-blur-xl border border-amber-200 rounded-2xl p-6 shadow-lg">
         <div className="animate-pulse space-y-4">
           {[1, 2, 3].map((i) => (
@@ -15,7 +18,8 @@ export const SecretSantaLeaderboard = () => {
           ))}
         </div>
       </div>
-    );
+    </>
+  );
   }
 
   const getRankBg = (rank: number) => {

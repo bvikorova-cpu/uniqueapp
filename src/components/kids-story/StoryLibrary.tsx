@@ -19,6 +19,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Story {
   id: string;
@@ -208,13 +209,16 @@ export const StoryLibrary = () => {
 
   if (stories.length === 0) {
     return (
+    <>
+      <FloatingHowItWorks title={"Story Library - How it works"} steps={[{ title: 'Open', desc: 'Access the Story Library section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Story Library.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card>
         <CardContent className="py-8 text-center">
           <BookOpen className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
           <p className="text-muted-foreground">No stories yet. Create your first magical story!</p>
         </CardContent>
       </Card>
-    );
+    </>
+  );
   }
 
   return (

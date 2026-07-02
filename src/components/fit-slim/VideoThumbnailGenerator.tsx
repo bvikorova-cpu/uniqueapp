@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface VideoThumbnailGeneratorProps {
   videoTitle: string;
@@ -55,7 +56,9 @@ export const VideoThumbnailGenerator = ({ videoTitle, videoId, category }: Video
   };
 
   return (
-    <Button
+    <>
+      <FloatingHowItWorks title={"Video Thumbnail Generator - How it works"} steps={[{ title: 'Open', desc: 'Access the Video Thumbnail Generator section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Video Thumbnail Generator.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Button
       onClick={generateThumbnail}
       disabled={isGenerating}
       size="sm"
@@ -65,5 +68,6 @@ export const VideoThumbnailGenerator = ({ videoTitle, videoId, category }: Video
       <Download className="h-4 w-4 mr-2" />
       {isGenerating ? "Generating..." : "Generate image"}
     </Button>
+    </>
   );
 };

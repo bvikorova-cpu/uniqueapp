@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Sparkles, Zap, Target, AlertCircle } from "lucide-react";
 import { useLieCoach } from "@/hooks/useLieDetectorTuning";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const LiveLieCoachCard = () => {
   const [text, setText] = useState("");
@@ -14,7 +15,9 @@ export const LiveLieCoachCard = () => {
   const r = coach.data?.results;
 
   return (
-    <Card className="bg-gradient-to-br from-red-950/40 via-card/80 to-amber-950/30 border-red-500/30 backdrop-blur-md">
+    <>
+      <FloatingHowItWorks title={"Live Lie Coach Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Live Lie Coach Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Live Lie Coach Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-gradient-to-br from-red-950/40 via-card/80 to-amber-950/30 border-red-500/30 backdrop-blur-md">
       <CardHeader>
         <div className="flex items-start justify-between gap-2">
           <div>
@@ -91,5 +94,6 @@ export const LiveLieCoachCard = () => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

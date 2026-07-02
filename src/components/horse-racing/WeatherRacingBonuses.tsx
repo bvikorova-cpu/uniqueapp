@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Cloud, Sun, CloudRain, Snowflake, Wind, Thermometer, Eye, Zap, Shield, Flame, Heart, Info } from "lucide-react";
 import { useUserHorses } from "@/hooks/useHorseRacing";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface WeatherCondition {
   id: string;
@@ -116,7 +117,9 @@ export const WeatherRacingBonuses = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Weather Racing Bonuses - How it works"} steps={[{ title: 'Open', desc: 'Access the Weather Racing Bonuses section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Weather Racing Bonuses.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-black font-mono flex items-center gap-2 text-white">
           <Cloud className="h-6 w-6 text-amber-400" /> Weather Racing Bonuses
@@ -241,5 +244,6 @@ export const WeatherRacingBonuses = () => {
         </ul>
       </Card>
     </div>
+    </>
   );
 };

@@ -5,6 +5,7 @@ import { Music, Play, Square, Volume2 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { CHAKRAS } from "../crystalData";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const SESSIONS = [
   { name: "Full Chakra Journey", chakras: CHAKRAS.map(c => c.name), duration: "21 min", description: "3 minutes per chakra, ascending from Root to Crown" },
@@ -78,7 +79,12 @@ export const CrystalSoundBathTool = () => {
         return next;
       });
     }, 1000);
-    return () => clearInterval(interval);
+    return (
+    <>
+      <FloatingHowItWorks title={"Crystal Sound Bath Tool - How it works"} steps={[{ title: 'Open', desc: 'Access the Crystal Sound Bath Tool section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Crystal Sound Bath Tool.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(interval);
   }, [playing, currentSession, currentChakraIdx]);
 
   useEffect(() => {

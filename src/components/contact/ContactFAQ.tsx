@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Search, ThumbsUp, ThumbsDown, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface FAQItem {
   id: string;
@@ -56,7 +57,9 @@ export const ContactFAQ = ({ highlightId }: Props) => {
   };
 
   return (
-    <Card className="p-5 mb-6 border-2">
+    <>
+      <FloatingHowItWorks title={"Contact F A Q - How it works"} steps={[{ title: 'Open', desc: 'Access the Contact F A Q section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Contact F A Q.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-5 mb-6 border-2">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <HelpCircle className="h-5 w-5 text-primary" />
@@ -117,5 +120,6 @@ export const ContactFAQ = ({ highlightId }: Props) => {
         )}
       </Accordion>
     </Card>
+    </>
   );
 };

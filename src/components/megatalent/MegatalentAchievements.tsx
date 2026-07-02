@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Award, Flame, Heart, Trophy, Sparkles, Zap, Crown, Star, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   userId?: string | null;
@@ -100,7 +101,12 @@ export default function MegatalentAchievements({ userId }: Props) {
       }
     };
     run();
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Megatalent Achievements - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Achievements section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Achievements.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       cancelled = true;
     };
   }, [userId]);

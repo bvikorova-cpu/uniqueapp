@@ -7,6 +7,7 @@ import { ArrowLeft, Brain, Loader2, Copy, Check, Sparkles, HelpCircle, CreditCar
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useTutorialAICredits } from "@/hooks/useTutorialAICredits";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const CREDITS_COST = 5;
 
@@ -53,7 +54,9 @@ export function AIQuizGeneratorView({ onBack }: Props) {
   };
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"A I Quiz Generator View - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Quiz Generator View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Quiz Generator View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
@@ -131,5 +134,6 @@ export function AIQuizGeneratorView({ onBack }: Props) {
         )}
       </div>
     </div>
+    </>
   );
 }

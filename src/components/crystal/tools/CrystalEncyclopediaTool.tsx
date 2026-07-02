@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { BookOpen, Search, ChevronDown, ChevronUp } from "lucide-react";
 import { CRYSTAL_DATABASE } from "../crystalData";
 import { motion, AnimatePresence } from "framer-motion";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export const CrystalEncyclopediaTool = () => {
   const [search, setSearch] = useState("");
@@ -19,7 +20,9 @@ export const CrystalEncyclopediaTool = () => {
   });
 
   return (
-    <Card className="bg-card/80 backdrop-blur-xl border-border/50">
+    <>
+      <FloatingHowItWorks title={"Crystal Encyclopedia Tool - How it works"} steps={[{ title: 'Open', desc: 'Access the Crystal Encyclopedia Tool section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Crystal Encyclopedia Tool.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/80 backdrop-blur-xl border-border/50">
       <CardHeader>
         <CardTitle className="text-xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent flex items-center gap-2">
           <BookOpen className="w-5 h-5" /> Crystal Encyclopedia
@@ -76,5 +79,6 @@ export const CrystalEncyclopediaTool = () => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

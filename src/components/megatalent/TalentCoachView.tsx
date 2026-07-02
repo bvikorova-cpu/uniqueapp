@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { GraduationCap, Loader2, Sparkles, Target, Dumbbell, Trophy } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const TalentCoachView = () => {
   const { toast } = useToast();
@@ -35,7 +36,9 @@ export const TalentCoachView = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <>
+      <FloatingHowItWorks title={"Talent Coach View - How it works"} steps={[{ title: 'Open', desc: 'Access the Talent Coach View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Talent Coach View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="max-w-3xl mx-auto space-y-6">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         <div className="text-center mb-6">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-500 to-amber-600 flex items-center justify-center mx-auto mb-4">
@@ -116,5 +119,6 @@ export const TalentCoachView = () => {
         </motion.div>
       )}
     </div>
+    </>
   );
 };

@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Lightbulb, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   onSelectPackage: (creditsAmount: number) => void;
@@ -30,7 +31,12 @@ export const AICreditsRecommendation = ({ onSelectPackage }: Props) => {
       const total = (data ?? []).reduce((sum, r: any) => sum + (r.credits_used ?? 0), 0);
       setUsed30d(total);
     })();
-    return () => { cancelled = true; };
+    return (
+    <>
+      <FloatingHowItWorks title={"A I Credits Recommendation - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Credits Recommendation section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Credits Recommendation.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => { cancelled = true; };
   }, []);
 
   if (used30d === null || used30d === 0) return null;

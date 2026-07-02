@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { LucideIcon, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroVideo from "@/assets/profile-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ProfilePageHeroProps {
   icon: LucideIcon;
@@ -13,7 +14,9 @@ interface ProfilePageHeroProps {
 
 export const ProfilePageHero = ({ icon: Icon, title, subtitle, onBack, badge }: ProfilePageHeroProps) => {
   return (
-    <div className="relative w-full overflow-hidden rounded-3xl border border-amber-500/20 mb-6 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.6)]">
+    <>
+      <FloatingHowItWorks title={"Profile Page Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Profile Page Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Profile Page Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative w-full overflow-hidden rounded-3xl border border-amber-500/20 mb-6 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.6)]">
       <video
         autoPlay
         muted
@@ -84,5 +87,6 @@ export const ProfilePageHero = ({ icon: Icon, title, subtitle, onBack, badge }: 
         </div>
       </div>
     </div>
+    </>
   );
 };

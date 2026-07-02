@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { BarChart3, TrendingUp, MessageCircle, Users, Clock, Brain } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface AnalyticsData {
   totalClones: number;
@@ -43,7 +44,9 @@ export function CloneAnalytics() {
   ];
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Clone Analytics - How it works"} steps={[{ title: 'Open', desc: 'Access the Clone Analytics section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Clone Analytics.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Card className="bg-card/80 backdrop-blur-xl border-primary/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -82,5 +85,6 @@ export function CloneAnalytics() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

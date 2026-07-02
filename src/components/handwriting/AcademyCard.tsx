@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { GraduationCap, Loader2, CheckCircle2 } from "lucide-react";
 import { useAcademy } from "@/hooks/useHandwritingPro";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const LESSONS = [
   { id: "basics", title: "Foundations of Graphology", xp: 30 },
@@ -35,7 +36,9 @@ export const AcademyCard = () => {
   };
 
   return (
-    <Card className="bg-card/60 backdrop-blur-sm border-amber-900/20">
+    <>
+      <FloatingHowItWorks title={"Academy Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Academy Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Academy Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/60 backdrop-blur-sm border-amber-900/20">
       <CardHeader>
         <CardTitle className="flex items-center justify-between text-base">
           <span className="flex items-center gap-2"><GraduationCap className="w-5 h-5 text-amber-700" /> Graphology Academy</span>
@@ -89,5 +92,6 @@ export const AcademyCard = () => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

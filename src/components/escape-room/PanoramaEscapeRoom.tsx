@@ -17,6 +17,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useEscapeRoomSounds } from "./useEscapeRoomSounds";
 import { EscapeRoomTutorial } from "./EscapeRoomTutorial";
 import { StoryNarrative } from "./StoryNarrative";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 // Types
 interface InventoryItem {
@@ -75,10 +76,13 @@ function PanoramaSphere({ imageUrl }: { imageUrl: string }) {
   }, [texture]);
   
   return (
-    <mesh>
+    <>
+      <FloatingHowItWorks title={"Panorama Escape Room - How it works"} steps={[{ title: 'Open', desc: 'Access the Panorama Escape Room section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Panorama Escape Room.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <mesh>
       <sphereGeometry args={[500, 60, 40]} />
       <meshBasicMaterial map={texture} side={THREE.BackSide} />
     </mesh>
+    </>
   );
 }
 

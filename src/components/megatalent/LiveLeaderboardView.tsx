@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Trophy, Crown, Medal, Heart, TrendingUp, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface LeaderboardEntry {
   id: string;
@@ -70,7 +71,9 @@ export const LiveLeaderboardView = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <>
+      <FloatingHowItWorks title={"Live Leaderboard View - How it works"} steps={[{ title: 'Open', desc: 'Access the Live Leaderboard View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Live Leaderboard View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="max-w-3xl mx-auto space-y-6">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         <div className="text-center mb-6">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-500 to-amber-600 flex items-center justify-center mx-auto mb-4">
@@ -138,5 +141,6 @@ export const LiveLeaderboardView = () => {
         </AnimatePresence>
       )}
     </div>
+    </>
   );
 };

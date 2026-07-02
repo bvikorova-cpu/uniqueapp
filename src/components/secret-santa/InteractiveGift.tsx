@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { GiftConfetti } from "./GiftConfetti";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface InteractiveGiftProps {
   giftEmoji: string;
@@ -29,7 +30,9 @@ export const InteractiveGift = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+    <>
+      <FloatingHowItWorks title={"Interactive Gift - How it works"} steps={[{ title: 'Open', desc: 'Access the Interactive Gift section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Interactive Gift.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
       <GiftConfetti trigger={showConfetti} type="receive" />
       
       <AnimatePresence mode="wait">
@@ -68,6 +71,7 @@ export const InteractiveGift = ({
         )}
       </AnimatePresence>
     </div>
+    </>
   );
 };
 

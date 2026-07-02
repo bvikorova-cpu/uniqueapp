@@ -12,6 +12,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useUserHorses } from "@/hooks/useHorseRacing";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const SEASONS = [
   { id: "spring_cup", name: "Spring Cup Championship", prize: 5000, entryFee: 100, minLevel: 3, maxParticipants: 32, icon: "🌸" },
@@ -62,7 +63,9 @@ export const SeasonalChampionships = () => {
   const isEnrolled = (seasonId: string) => enrollments.some((e: any) => e.season_id === seasonId);
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Seasonal Championships - How it works"} steps={[{ title: 'Open', desc: 'Access the Seasonal Championships section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Seasonal Championships.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-black font-mono flex items-center gap-2 text-white">
           <Trophy className="h-6 w-6 text-amber-400" /> Seasonal Championships
@@ -189,5 +192,6 @@ export const SeasonalChampionships = () => {
         </ul>
       </Card>
     </div>
+    </>
   );
 };

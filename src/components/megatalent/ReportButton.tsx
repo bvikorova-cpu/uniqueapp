@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Flag, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   targetType: "comment" | "submission" | "user";
@@ -38,7 +39,9 @@ const ReportButton = ({ targetType, targetId, reporterId, size = "icon", classNa
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+      <FloatingHowItWorks title={"Report Button - How it works"} steps={[{ title: 'Open', desc: 'Access the Report Button section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Report Button.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="ghost" size={size === "icon" ? "icon" : "sm"} className={className} title="Report" aria-label="Report">
           <Flag className="h-3.5 w-3.5" />
@@ -65,6 +68,7 @@ const ReportButton = ({ targetType, targetId, reporterId, size = "icon", classNa
         </div>
       </DialogContent>
     </Dialog>
+    </>
   );
 };
 

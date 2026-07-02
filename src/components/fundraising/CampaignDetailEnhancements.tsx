@@ -7,6 +7,7 @@ import { DonorBadge, getTierFromAmount } from "./DonorBadge";
 import { LiveDonationFeed } from "./LiveDonationFeed";
 import { MatchDonationBadge } from "./MatchDonationBadge";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Donation {
   id: string;
@@ -59,7 +60,9 @@ export function CampaignDetailEnhancements({
   }, [campaignId, campaignType]);
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Campaign Detail Enhancements - How it works"} steps={[{ title: 'Open', desc: 'Access the Campaign Detail Enhancements section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Campaign Detail Enhancements.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       {match && (
         <MatchDonationBadge
           sponsorName={match.sponsor_name}
@@ -114,6 +117,7 @@ export function CampaignDetailEnhancements({
         </Card>
       )}
     </div>
+    </>
   );
 }
 

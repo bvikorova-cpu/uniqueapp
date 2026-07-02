@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface BillingToggleProps {
   yearly: boolean;
@@ -7,7 +8,9 @@ interface BillingToggleProps {
 
 export const BillingToggle = ({ yearly, onChange }: BillingToggleProps) => {
   return (
-    <div className="flex justify-center mb-10">
+    <>
+      <FloatingHowItWorks title={"Billing Toggle - How it works"} steps={[{ title: 'Open', desc: 'Access the Billing Toggle section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Billing Toggle.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="flex justify-center mb-10">
       <div className="relative inline-flex items-center gap-1 p-1.5 rounded-full bg-card/60 backdrop-blur-xl border border-border/60 shadow-lg">
         <button
           onClick={() => onChange(false)}
@@ -39,5 +42,6 @@ export const BillingToggle = ({ yearly, onChange }: BillingToggleProps) => {
         />
       </div>
     </div>
+    </>
   );
 };

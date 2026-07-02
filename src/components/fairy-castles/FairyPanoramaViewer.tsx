@@ -83,6 +83,7 @@ import shanghaiStorybook7 from "@/assets/fairy-castles/panoramas/shanghai-storyb
 import shanghaiStorybook8 from "@/assets/fairy-castles/panoramas/shanghai-storybook-8.jpg";
 import shanghaiStorybook9 from "@/assets/fairy-castles/panoramas/shanghai-storybook-9.jpg";
 import shanghaiStorybook10 from "@/assets/fairy-castles/panoramas/shanghai-storybook-10.jpg";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export type GuideVoice = "princess" | "wizard" | "explorer";
 
@@ -223,7 +224,12 @@ function PanoramaSphere({ imageUrl }: { imageUrl: string }) {
       }
     );
 
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Fairy Panorama Viewer - How it works"} steps={[{ title: 'Open', desc: 'Access the Fairy Panorama Viewer section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Fairy Panorama Viewer.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       // Cleanup: dispose old texture when component unmounts or imageUrl changes
       if (texture) {
         texture.dispose();

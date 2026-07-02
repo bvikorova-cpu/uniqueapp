@@ -8,6 +8,7 @@ import { Loader2, Volume2, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { handleEdgeError } from "@/lib/handleEdgeError";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const PRESETS = [
   "Whoosh transition", "Cinematic boom impact", "Cash register ding", "Notification pop",
@@ -36,7 +37,9 @@ export const SoundEffectsView = ({ onBack }: { onBack: () => void }) => {
   };
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Sound Effects View - How it works"} steps={[{ title: 'Open', desc: 'Access the Sound Effects View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Sound Effects View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4">← Back</Button>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-lime-500 to-emerald-600 flex items-center justify-center"><Volume2 className="w-6 h-6 text-white" /></div>
@@ -73,5 +76,6 @@ export const SoundEffectsView = ({ onBack }: { onBack: () => void }) => {
         </Card>
       </div>
     </div>
+    </>
   );
 };

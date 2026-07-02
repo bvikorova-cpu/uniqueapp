@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
 import confetti from 'canvas-confetti';
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const WHEEL_SEGMENTS = [
   { label: '5 Credits', value: 5, color: 'hsl(var(--primary))', icon: Coins, rarity: 'common' },
@@ -55,7 +56,12 @@ export const DailySpinWheel = () => {
         const secs = Math.floor((diff % (1000 * 60)) / 1000);
         setTimeUntilNext(`${hours}h ${mins}m ${secs}s`);
       }, 1000);
-      return () => clearInterval(interval);
+      return (
+    <>
+      <FloatingHowItWorks title={"Daily Spin Wheel - How it works"} steps={[{ title: 'Open', desc: 'Access the Daily Spin Wheel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Daily Spin Wheel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(interval);
     }
   }, [canSpin, lastSpinDate]);
 

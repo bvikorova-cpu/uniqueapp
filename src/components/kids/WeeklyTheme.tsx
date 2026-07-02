@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const themes = [
   { name: "Pirate Week", emoji: "🏴‍☠️", color: "from-red-400 to-orange-400", active: true },
@@ -13,7 +14,9 @@ export const WeeklyTheme = () => {
   const activeTheme = themes.find(t => t.active);
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Weekly Theme - How it works"} steps={[{ title: 'Open', desc: 'Access the Weekly Theme section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Weekly Theme.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.25 }}
@@ -56,5 +59,6 @@ export const WeeklyTheme = () => {
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 };

@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Sparkles, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props {
   openToMatch?: boolean;
@@ -14,7 +15,9 @@ export function ScholarshipMatchCard({ openToMatch, tags = [], fieldOfStudy, cam
   if (!openToMatch) return null;
 
   return (
-    <Card className="p-4 border-2 border-accent/30 bg-gradient-to-br from-accent/5 to-primary/5">
+    <>
+      <FloatingHowItWorks title={"Scholarship Match Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Scholarship Match Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Scholarship Match Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-4 border-2 border-accent/30 bg-gradient-to-br from-accent/5 to-primary/5">
       <div className="flex items-start gap-3">
         <Trophy className="w-5 h-5 text-accent shrink-0 mt-0.5" />
         <div className="flex-1 min-w-0">
@@ -49,5 +52,6 @@ export function ScholarshipMatchCard({ openToMatch, tags = [], fieldOfStudy, cam
         </div>
       </div>
     </Card>
+    </>
   );
 }

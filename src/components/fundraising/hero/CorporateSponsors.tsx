@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Building2 } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const sponsors = [
   { name: "Your Company Here", contribution: "Become a Sponsor", tier: "Gold" },
@@ -11,7 +12,9 @@ const sponsors = [
 
 export const CorporateSponsors = () => {
   return (
-    <div className="py-12">
+    <>
+      <FloatingHowItWorks title={"Corporate Sponsors - How it works"} steps={[{ title: 'Open', desc: 'Access the Corporate Sponsors section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Corporate Sponsors.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="py-12">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -47,5 +50,6 @@ export const CorporateSponsors = () => {
         ))}
       </div>
     </div>
+    </>
   );
 };

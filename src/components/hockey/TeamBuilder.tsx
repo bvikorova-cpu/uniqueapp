@@ -7,6 +7,7 @@ import { ArrowLeft, Shield, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const PLAYSTYLES = ["Balanced", "Forechecking", "Trap Defense", "Run & Gun", "Physical Grind", "Skill Finesse"];
 
@@ -42,7 +43,9 @@ export function TeamBuilder({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Team Builder - How it works"} steps={[{ title: 'Open', desc: 'Access the Team Builder section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Team Builder.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" />Back</Button>
       <Card>
         <CardHeader><CardTitle className="flex items-center gap-2"><Shield className="h-5 w-5 text-primary" />Team Builder</CardTitle></CardHeader>
@@ -77,5 +80,6 @@ export function TeamBuilder({ onBack }: { onBack: () => void }) {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

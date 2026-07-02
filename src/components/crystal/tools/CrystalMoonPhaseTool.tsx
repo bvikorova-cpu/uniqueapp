@@ -2,12 +2,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Moon } from "lucide-react";
 import { getMoonPhase, MOON_PHASES, CRYSTAL_DATABASE } from "../crystalData";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export const CrystalMoonPhaseTool = () => {
   const currentPhase = getMoonPhase();
 
   return (
-    <Card className="bg-card/80 backdrop-blur-xl border-border/50">
+    <>
+      <FloatingHowItWorks title={"Crystal Moon Phase Tool - How it works"} steps={[{ title: 'Open', desc: 'Access the Crystal Moon Phase Tool section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Crystal Moon Phase Tool.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/80 backdrop-blur-xl border-border/50">
       <CardHeader>
         <CardTitle className="text-xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent flex items-center gap-2">
           <Moon className="w-5 h-5" /> Moon Phase Crystals
@@ -55,5 +58,6 @@ export const CrystalMoonPhaseTool = () => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

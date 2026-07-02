@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Heart, MessageCircle, Lock, Image as ImageIcon, ShieldAlert } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ExclusivePost {
   id: string;
@@ -99,11 +100,14 @@ export function ExclusivePostsList({ creatorId, userTierId, isSubscribed }: Excl
 
   if (loading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Exclusive Posts List - How it works"} steps={[{ title: 'Open', desc: 'Access the Exclusive Posts List section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Exclusive Posts List.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="text-center py-12">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
         <p className="mt-4 text-muted-foreground">Loading exclusive content...</p>
       </div>
-    );
+    </>
+  );
   }
 
   if (posts.length === 0) {

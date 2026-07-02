@@ -4,6 +4,7 @@ import { Progress } from "@/components/ui/progress";
 import { Trophy, Star, Gem, Crown, Flame, Target, Zap, Shield } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { userId: string; }
 
@@ -50,7 +51,9 @@ export default function CollectorAchievements({ userId }: Props) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Collector Achievements - How it works"} steps={[{ title: 'Open', desc: 'Access the Collector Achievements section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Collector Achievements.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Card className="p-6 bg-gradient-to-br from-amber-500/10 to-yellow-500/10 border-amber-500/20">
         <div className="flex items-center gap-3 mb-2">
           <Trophy className="h-8 w-8 text-amber-400" />
@@ -96,5 +99,6 @@ export default function CollectorAchievements({ userId }: Props) {
         })}
       </div>
     </div>
+    </>
   );
 }

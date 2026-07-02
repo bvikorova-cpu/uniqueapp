@@ -10,6 +10,7 @@ import { useBrainDuelPowerups } from '@/hooks/useBrainDuelPowerups';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import { LiveDuelChat } from './LiveDuelChat';
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Question {
   id: string;
@@ -85,7 +86,12 @@ export const BrainDuelGame = () => {
   useEffect(() => {
     if (gamePhase !== 'playing' || timeLeft <= 0) return;
     const timer = setTimeout(() => setTimeLeft(t => t - 1), 1000);
-    return () => clearTimeout(timer);
+    return (
+    <>
+      <FloatingHowItWorks title={"Brain Duel Game - How it works"} steps={[{ title: 'Open', desc: 'Access the Brain Duel Game section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Brain Duel Game.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearTimeout(timer);
   }, [timeLeft, gamePhase]);
 
   // Auto-submit on timeout

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { Sparkles, ChevronRight, ChevronLeft, Globe, Palette, SlidersHorizontal } from 'lucide-react';
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface StoryWizardFormProps {
   onGenerate: (config: {
@@ -61,7 +62,9 @@ export const StoryWizardForm = ({ onGenerate, loading, initialTheme }: StoryWiza
   };
 
   return (
-    <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden border border-purple-100">
+    <>
+      <FloatingHowItWorks title={"Story Wizard Form - How it works"} steps={[{ title: 'Open', desc: 'Access the Story Wizard Form section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Story Wizard Form.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden border border-purple-100">
       {/* Progress */}
       <div className="px-6 pt-6">
         <div className="flex items-center justify-between mb-2">
@@ -198,5 +201,6 @@ export const StoryWizardForm = ({ onGenerate, loading, initialTheme }: StoryWiza
         </Button>
       </div>
     </div>
+    </>
   );
 };

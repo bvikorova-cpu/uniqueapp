@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Receipt, Upload } from "lucide-react";
 import { useCouponCashback } from "@/hooks/useCouponCashback";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function CouponReceiptCashback() {
   const ref = useRef<HTMLInputElement>(null);
@@ -10,7 +11,9 @@ export function CouponReceiptCashback() {
   const [file, setFile] = useState<File | null>(null);
 
   return (
-    <Card className="p-4 space-y-3 border-emerald-500/30 bg-gradient-to-br from-emerald-500/5 to-teal-500/5">
+    <>
+      <FloatingHowItWorks title={"Coupon Receipt Cashback - How it works"} steps={[{ title: 'Open', desc: 'Access the Coupon Receipt Cashback section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Coupon Receipt Cashback.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-4 space-y-3 border-emerald-500/30 bg-gradient-to-br from-emerald-500/5 to-teal-500/5">
       <div className="flex items-center gap-2">
         <Receipt className="w-5 h-5 text-emerald-500" />
         <h3 className="font-bold">Receipt Cashback</h3>
@@ -38,5 +41,6 @@ export function CouponReceiptCashback() {
         </div>
       )}
     </Card>
+    </>
   );
 }

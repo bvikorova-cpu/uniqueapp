@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import type { Character } from "@/data/kidsCharacters";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 type Mood = "happy" | "excited" | "curious" | "thoughtful" | "surprised";
 
@@ -32,7 +33,9 @@ export function CharacterMoodIndicator({ character, messageCount, lastMessage }:
   const config = MOOD_CONFIG[mood];
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Character Mood Indicator - How it works"} steps={[{ title: 'Open', desc: 'Access the Character Mood Indicator section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Character Mood Indicator.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       key={mood}
       initial={{ scale: 0.8, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
@@ -47,5 +50,6 @@ export function CharacterMoodIndicator({ character, messageCount, lastMessage }:
       </motion.span>
       <span className="text-xs font-medium text-gray-700">{character.name} is {config.label}</span>
     </motion.div>
+    </>
   );
 }

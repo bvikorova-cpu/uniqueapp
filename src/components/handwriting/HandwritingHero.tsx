@@ -3,6 +3,7 @@ import { Feather, FileText, Sparkles, ScrollText } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLiveStats } from "@/hooks/useLiveStats";
 import heroVideo from "@/assets/handwriting-magnifier-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const Counter = ({ target, suffix = "" }: { target: number; suffix?: string }) => {
   const [count, setCount] = useState(0);
@@ -14,7 +15,12 @@ const Counter = ({ target, suffix = "" }: { target: number; suffix?: string }) =
       if (cur >= target) { setCount(target); clearInterval(t); }
       else setCount(Math.floor(cur));
     }, 40);
-    return () => clearInterval(t);
+    return (
+    <>
+      <FloatingHowItWorks title={"Handwriting Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Handwriting Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Handwriting Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(t);
   }, [target]);
   return <span>{target ? `${count.toLocaleString()}${suffix}` : "—"}</span>;
 };

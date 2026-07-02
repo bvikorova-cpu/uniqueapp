@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { useBrandVotes } from "@/hooks/useBrandVotes";
 import { spendBrandCredits } from "@/lib/brandCredits";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Card { id: string; brand_id: string; rarity: string; power: number; base_price: number; minted_count: number; edition_size: number; brand?: { name: string; logo: string }; }
 
@@ -66,7 +67,9 @@ export const BrandTradingCards = () => {
   if (loading) return <div className="text-center py-8"><Loader2 className="h-6 w-6 animate-spin mx-auto text-amber-400" /></div>;
 
   return (
-    <Card className="relative overflow-hidden border-amber-500/30 bg-gradient-to-br from-zinc-950 to-zinc-900">
+    <>
+      <FloatingHowItWorks title={"Brand Trading Cards - How it works"} steps={[{ title: 'Open', desc: 'Access the Brand Trading Cards section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Brand Trading Cards.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="relative overflow-hidden border-amber-500/30 bg-gradient-to-br from-zinc-950 to-zinc-900">
       <CardHeader className="relative">
         <CardTitle className="flex items-center gap-2 text-amber-100">
           <Diamond className="h-5 w-5 text-amber-400" />
@@ -112,5 +115,6 @@ export const BrandTradingCards = () => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

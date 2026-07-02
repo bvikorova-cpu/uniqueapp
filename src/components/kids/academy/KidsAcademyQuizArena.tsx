@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { addFriendChallenge, getFriendChallenges } from "@/lib/kidsAcademyEconomy";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const QUIZ_CATEGORIES = [
   { id: "animals", name: "Animals", emoji: "🐾", color: "bg-green-500/15 border-green-500/30" },
@@ -52,7 +53,9 @@ export const KidsAcademyQuizArena = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Kids Academy Quiz Arena - How it works"} steps={[{ title: 'Open', desc: 'Access the Kids Academy Quiz Arena section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Kids Academy Quiz Arena.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       {/* Quiz Categories */}
       <Card className="border-2 border-primary/20">
         <CardHeader className="pb-3">
@@ -201,5 +204,6 @@ export const KidsAcademyQuizArena = () => {
         </DialogContent>
       </Dialog>
     </div>
+    </>
   );
 };

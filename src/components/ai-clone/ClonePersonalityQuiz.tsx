@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Brain, Sparkles, Loader2, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const QUESTIONS = [
   { q: "How do you prefer to communicate?", options: ["Short and direct", "Detailed and thoughtful", "Casual with humor", "Formal and professional"] },
@@ -58,7 +59,9 @@ export function ClonePersonalityQuiz() {
   };
 
   return (
-    <Card className="bg-card/80 backdrop-blur-xl border-primary/20">
+    <>
+      <FloatingHowItWorks title={"Clone Personality Quiz - How it works"} steps={[{ title: 'Open', desc: 'Access the Clone Personality Quiz section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Clone Personality Quiz.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/80 backdrop-blur-xl border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Brain className="h-5 w-5 text-primary" />
@@ -119,5 +122,6 @@ export function ClonePersonalityQuiz() {
         )}
       </CardContent>
     </Card>
+    </>
   );
 }

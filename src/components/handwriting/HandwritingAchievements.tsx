@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Award } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const achievements = [
   { icon: "✍️", name: "First Analysis", unlocked: false },
@@ -13,7 +14,9 @@ const achievements = [
 
 export const HandwritingAchievements = () => {
   return (
-    <Card className="bg-card/60 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-all">
+    <>
+      <FloatingHowItWorks title={"Handwriting Achievements - How it works"} steps={[{ title: 'Open', desc: 'Access the Handwriting Achievements section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Handwriting Achievements.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/60 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-all">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm flex items-center gap-2">
           <Award className="w-4 h-4 text-yellow-500" />
@@ -42,5 +45,6 @@ export const HandwritingAchievements = () => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

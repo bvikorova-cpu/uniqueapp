@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Lock, CheckCircle, Gift } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface UnlockableRewardsProps {
   level: number;
@@ -18,7 +19,9 @@ const REWARDS = [
 
 export function UnlockableRewards({ level }: UnlockableRewardsProps) {
   return (
-    <div className="space-y-3">
+    <>
+      <FloatingHowItWorks title={"Unlockable Rewards - How it works"} steps={[{ title: 'Open', desc: 'Access the Unlockable Rewards section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Unlockable Rewards.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-3">
       <h3 className="text-sm font-bold text-gray-700 flex items-center gap-1.5">
         <Gift className="h-4 w-4 text-purple-500" /> Rewards
       </h3>
@@ -57,5 +60,6 @@ export function UnlockableRewards({ level }: UnlockableRewardsProps) {
         })}
       </div>
     </div>
+    </>
   );
 }

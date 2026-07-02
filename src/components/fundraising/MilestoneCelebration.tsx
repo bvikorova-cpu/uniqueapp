@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PartyPopper, Trophy, Sparkles } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   /** Current % funded (0-100) */
@@ -38,6 +39,8 @@ export function MilestoneCelebration({ pct, onMilestone }: Props) {
 
   return (
     <>
+      <FloatingHowItWorks title={"Milestone Celebration - How it works"} steps={[{ title: 'Open', desc: 'Access the Milestone Celebration section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Milestone Celebration.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <>
       {/* Inline progress badges */}
       <div className="flex flex-wrap gap-1.5 mt-2">
         {MILESTONES.map((m) => {
@@ -98,6 +101,7 @@ export function MilestoneCelebration({ pct, onMilestone }: Props) {
           </motion.div>
         )}
       </AnimatePresence>
+    </>
     </>
   );
 }

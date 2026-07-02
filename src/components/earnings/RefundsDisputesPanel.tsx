@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { ShieldAlert, Receipt } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Row {
   id: string;
@@ -35,7 +36,9 @@ export function RefundsDisputesPanel() {
   }, [user?.id]);
 
   return (
-    <Card className="border-rose-500/20">
+    <>
+      <FloatingHowItWorks title={"Refunds Disputes Panel - How it works"} steps={[{ title: 'Open', desc: 'Access the Refunds Disputes Panel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Refunds Disputes Panel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-rose-500/20">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm flex items-center gap-2">
           <ShieldAlert className="h-4 w-4 text-rose-500" /> Refunds & Disputes
@@ -64,5 +67,6 @@ export function RefundsDisputesPanel() {
         )}
       </CardContent>
     </Card>
+    </>
   );
 }

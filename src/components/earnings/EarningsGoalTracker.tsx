@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface EarningsGoalTrackerProps {
   /** Earnings accumulated this calendar month */
@@ -41,7 +42,9 @@ export const EarningsGoalTracker = ({ monthEarnings, storageKey = "earnings_mont
   const perDay = remaining / daysLeft;
 
   return (
-    <Card className="p-6 bg-card/80 backdrop-blur-md border-amber-500/20">
+    <>
+      <FloatingHowItWorks title={"Earnings Goal Tracker - How it works"} steps={[{ title: 'Open', desc: 'Access the Earnings Goal Tracker section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Earnings Goal Tracker.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-6 bg-card/80 backdrop-blur-md border-amber-500/20">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-bold flex items-center gap-2">
           <Target className="h-5 w-5 text-amber-500" />
@@ -93,5 +96,6 @@ export const EarningsGoalTracker = ({ monthEarnings, storageKey = "earnings_mont
         <p className="text-xs font-bold text-emerald-500">🎉 Goal smashed! +€{(monthEarnings - goal).toFixed(2)} above target.</p>
       )}
     </Card>
+    </>
   );
 };

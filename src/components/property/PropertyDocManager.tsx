@@ -8,6 +8,7 @@ import { ArrowLeft, FileText, Upload, Check, Clock, AlertTriangle, FolderOpen, D
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -182,7 +183,9 @@ export function PropertyDocManager({ onBack }: Props) {
   const progress = Math.round((uploadedDocs / totalDocs) * 100);
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Property Doc Manager - How it works"} steps={[{ title: 'Open', desc: 'Access the Property Doc Manager section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Property Doc Manager.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <input ref={fileInputRef} type="file" className="hidden" onChange={handleFileChange} accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx" />
 
       <div className="flex items-center gap-3">
@@ -276,5 +279,6 @@ export function PropertyDocManager({ onBack }: Props) {
         })}
       </div>
     </div>
+    </>
   );
 }

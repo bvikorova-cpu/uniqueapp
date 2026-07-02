@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Users, Star, Crown, Award, ExternalLink, Target } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface TalentCampaign {
   id: string;
@@ -35,7 +36,9 @@ export function TalentCampaignCard({ campaign }: { campaign: TalentCampaign }) {
   const progress = Math.min((campaign.current_amount / campaign.target_amount) * 100, 100);
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Talent Campaign Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Talent Campaign Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Talent Campaign Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
       whileHover={{ y: -4, scale: 1.01 }} transition={{ duration: 0.3 }}>
       <Card className={`overflow-hidden h-full flex flex-col hover:shadow-xl transition-all duration-300 ${campaign.premium_subscriber ? "border-accent/50 hover:shadow-accent/10" : "border-border/50 hover:shadow-primary/5"}`}>
@@ -130,5 +133,6 @@ export function TalentCampaignCard({ campaign }: { campaign: TalentCampaign }) {
         </CardFooter>
       </Card>
     </motion.div>
+    </>
   );
 }

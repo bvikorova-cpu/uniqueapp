@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { Music, Loader2, Sparkles, Volume2, Disc3, ListMusic } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const MusicAdvisorView = () => {
   const { toast } = useToast();
@@ -36,7 +37,9 @@ export const MusicAdvisorView = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <>
+      <FloatingHowItWorks title={"Music Advisor View - How it works"} steps={[{ title: 'Open', desc: 'Access the Music Advisor View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Music Advisor View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="max-w-3xl mx-auto space-y-6">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         <div className="text-center mb-6">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center mx-auto mb-4">
@@ -133,5 +136,6 @@ export const MusicAdvisorView = () => {
         </motion.div>
       )}
     </div>
+    </>
   );
 };

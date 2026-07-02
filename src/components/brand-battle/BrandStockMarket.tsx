@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 import { useBrandVotes } from "@/hooks/useBrandVotes";
 import { spendBrandCredits } from "@/lib/brandCredits";
 import { useQueryClient } from "@tanstack/react-query";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface StockRow {
   id: string;
@@ -44,7 +45,12 @@ export const BrandStockMarket = () => {
     const ch = supabase.channel("stock-market")
       .on("postgres_changes", { event: "UPDATE", schema: "public", table: "brand_stock_prices" }, () => load())
       .subscribe();
-    return () => { supabase.removeChannel(ch); };
+    return (
+    <>
+      <FloatingHowItWorks title={"Brand Stock Market - How it works"} steps={[{ title: 'Open', desc: 'Access the Brand Stock Market section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Brand Stock Market.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => { supabase.removeChannel(ch); };
   }, []);
 
   const invest = async (s: StockRow) => {

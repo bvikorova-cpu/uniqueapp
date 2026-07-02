@@ -7,6 +7,7 @@ import { ArrowLeft, Sparkles, Loader2, BookOpen } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const genres = ["Fairy Tale", "Princess Adventure", "Mermaid Story", "Magic School", "Enchanted Forest", "Space Princess", "Animal Kingdom", "Fashion World"];
 
@@ -54,7 +55,9 @@ export function StoryCreator({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Story Creator - How it works"} steps={[{ title: 'Open', desc: 'Access the Story Creator section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Story Creator.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button>
       <h2 className="text-2xl font-black">📖 Story Creator</h2>
       <p className="text-muted-foreground">Create magical fairy tales with AI!</p>
@@ -81,5 +84,6 @@ export function StoryCreator({ onBack }: { onBack: () => void }) {
         </div>
       )}
     </div>
+    </>
   );
 }

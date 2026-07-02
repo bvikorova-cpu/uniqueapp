@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { FileText, ShieldCheck, CreditCard, CheckCircle } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const STEPS = [
   {
@@ -34,7 +35,9 @@ const STEPS = [
 
 export function MedicalStepsWizard() {
   return (
-    <section className="py-10 px-4">
+    <>
+      <FloatingHowItWorks title={"Medical Steps Wizard - How it works"} steps={[{ title: 'Open', desc: 'Access the Medical Steps Wizard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Medical Steps Wizard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <section className="py-10 px-4">
       <div className="max-w-4xl mx-auto">
         <h2 className="text-lg sm:text-xl font-bold text-foreground mb-6 text-center">
           How It Works
@@ -70,5 +73,6 @@ export function MedicalStepsWizard() {
         </div>
       </div>
     </section>
+    </>
   );
 }

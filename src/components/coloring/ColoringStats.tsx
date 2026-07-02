@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Image, Star, Trophy, Flame, Target, Medal, Award, Crown } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const ACHIEVEMENTS = [
   { id: "first", name: "First Page", desc: "Create your first coloring page", icon: Star, threshold: 1, color: "text-yellow-500" },
@@ -32,7 +33,9 @@ export function ColoringStats({ totalPages, easyCount, mediumCount, hardCount, f
   ];
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Coloring Stats - How it works"} steps={[{ title: 'Open', desc: 'Access the Coloring Stats section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Coloring Stats.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       {/* Stats cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {stats.map((stat, i) => (
@@ -112,5 +115,6 @@ export function ColoringStats({ totalPages, easyCount, mediumCount, hardCount, f
         </Card>
       </motion.div>
     </div>
+    </>
   );
 }

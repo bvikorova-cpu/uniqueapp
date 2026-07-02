@@ -2,6 +2,7 @@ import { Gift, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useFreeTierCredits } from "@/hooks/useFreeTierCredits";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   compact?: boolean;
@@ -19,6 +20,8 @@ export const FreeTierBalanceWidget = ({ compact = false }: Props) => {
 
   if (compact) {
     return (
+    <>
+      <FloatingHowItWorks title={"Free Tier Balance Widget - How it works"} steps={[{ title: 'Open', desc: 'Access the Free Tier Balance Widget section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Free Tier Balance Widget.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <button
         onClick={() => navigate("/ai-credits")}
         className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border backdrop-blur-xl transition-colors ${
@@ -32,7 +35,8 @@ export const FreeTierBalanceWidget = ({ compact = false }: Props) => {
         <span className="text-sm font-black tabular-nums">{loading ? "—" : balance}</span>
         <span className="text-[10px] uppercase font-bold tracking-wider opacity-80">free</span>
       </button>
-    );
+    </>
+  );
   }
 
   return (

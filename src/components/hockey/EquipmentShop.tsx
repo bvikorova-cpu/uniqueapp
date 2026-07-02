@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { spendSportCoins } from "@/lib/sportCoins";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const SHOP_ITEMS = [
   { name: "Pro Hockey Skates", type: "skates", rarity: "common", skating_boost: 3, shooting_boost: 0, defense_boost: 0, speed_boost: 2, price: 300 },
@@ -35,7 +36,9 @@ export function EquipmentShop({ onBack }: { onBack: () => void }) {
   const rarityColor = (r: string) => r === "legendary" ? "text-amber-400" : r === "epic" ? "text-purple-400" : r === "rare" ? "text-blue-400" : "text-muted-foreground";
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Equipment Shop - How it works"} steps={[{ title: 'Open', desc: 'Access the Equipment Shop section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Equipment Shop.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" />Back</Button>
       <Card>
         <CardHeader><CardTitle className="flex items-center gap-2"><ShoppingBag className="h-5 w-5 text-primary" />Equipment Shop</CardTitle></CardHeader>
@@ -55,5 +58,6 @@ export function EquipmentShop({ onBack }: { onBack: () => void }) {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

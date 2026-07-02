@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { MONETAG_ZONES, showMonetagRewarded } from "@/lib/monetag";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const XP_REWARD = 50;
 
@@ -77,7 +78,9 @@ const MonetagInFeedAd = ({ slotIndex }: { slotIndex: number }) => {
 
 
   return (
-    <Card className="relative overflow-hidden border border-primary/30 bg-gradient-to-br from-card/90 to-card/70 backdrop-blur-xl">
+    <>
+      <FloatingHowItWorks title={"Monetag In Feed Ad - How it works"} steps={[{ title: 'Open', desc: 'Access the Monetag In Feed Ad section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Monetag In Feed Ad.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="relative overflow-hidden border border-primary/30 bg-gradient-to-br from-card/90 to-card/70 backdrop-blur-xl">
       <CardContent className="p-4 space-y-3">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shrink-0">
@@ -129,6 +132,7 @@ const MonetagInFeedAd = ({ slotIndex }: { slotIndex: number }) => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };
 

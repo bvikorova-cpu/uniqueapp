@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, Wand2 } from "lucide-react";
 import { CreativeCategory } from "@/hooks/useCreativeForgeCredits";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export interface QuickTemplate {
   label: string;
@@ -60,7 +61,9 @@ export function ForgeTemplates({ category, onApply }: ForgeTemplatesProps) {
   if (!categoryTemplates || categoryTemplates.length === 0) return null;
 
   return (
-    <AnimatePresence mode="wait">
+    <>
+      <FloatingHowItWorks title={"Forge Templates - How it works"} steps={[{ title: 'Open', desc: 'Access the Forge Templates section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Forge Templates.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <AnimatePresence mode="wait">
       <motion.div
         key={category}
         initial={{ opacity: 0, y: 8 }}
@@ -106,5 +109,6 @@ export function ForgeTemplates({ category, onApply }: ForgeTemplatesProps) {
         </div>
       </motion.div>
     </AnimatePresence>
+    </>
   );
 }

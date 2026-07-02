@@ -3,6 +3,7 @@ import { Plus, X, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export interface Skill {
   name: string;
@@ -32,7 +33,9 @@ export const SkillsEditor = ({ skills, onChange }: Props) => {
     onChange(skills.map((s) => (s.name === n ? { ...s, level: l } : s)));
 
   return (
-    <div className="space-y-3">
+    <>
+      <FloatingHowItWorks title={"Skills Editor - How it works"} steps={[{ title: 'Open', desc: 'Access the Skills Editor section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Skills Editor.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-3">
       <div className="flex gap-2 items-end">
         <div className="flex-1">
           <Label className="text-xs">Skill</Label>
@@ -89,5 +92,6 @@ export const SkillsEditor = ({ skills, onChange }: Props) => {
         ))}
       </div>
     </div>
+    </>
   );
 };

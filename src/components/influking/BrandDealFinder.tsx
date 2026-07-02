@@ -9,6 +9,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, Briefcase, DollarSign, Users, Clock, CheckCircle, Send, Loader2, Filter, Building2, TrendingUp, Star } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface BrandDealFinderProps {
   onBack: () => void;
@@ -126,7 +127,9 @@ const BrandDealFinder = ({ onBack }: BrandDealFinderProps) => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Brand Deal Finder - How it works"} steps={[{ title: 'Open', desc: 'Access the Brand Deal Finder section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Brand Deal Finder.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
         <Button variant="ghost" onClick={onBack} className="gap-2 mb-4">
           <ArrowLeft className="h-4 w-4" /> Back to Hub
@@ -242,6 +245,7 @@ const BrandDealFinder = ({ onBack }: BrandDealFinderProps) => {
         </DialogContent>
       </Dialog>
     </div>
+    </>
   );
 };
 

@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, Wand2, Loader2, Lightbulb, Palette, Pentagon, Flower2, Layers, Grid3X3, LayoutPanelTop } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const STYLE_PRESETS = [
   { value: "cartoon", label: "Cartoon", icon: Palette, desc: "Fun, rounded outlines" },
@@ -44,7 +45,9 @@ export function AIPromptGenerator({ onGenerate, isGenerating }: AIPromptGenerato
   };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}>
+    <>
+      <FloatingHowItWorks title={"A I Prompt Generator - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Prompt Generator section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Prompt Generator.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}>
       <Card className="backdrop-blur-xl bg-card/80 border-primary/20 overflow-hidden relative">
         <div className="absolute -top-20 -right-20 w-60 h-60 bg-primary/10 rounded-full blur-3xl animate-pulse" />
         <CardHeader className="relative z-10">
@@ -133,5 +136,6 @@ export function AIPromptGenerator({ onGenerate, isGenerating }: AIPromptGenerato
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 }

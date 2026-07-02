@@ -8,6 +8,7 @@ import { ArrowLeft, ScanLine, Loader2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export default function AIBodyScanner({ onBack }: { onBack: () => void }) {
   const { credits } = useAICredits();
@@ -40,7 +41,9 @@ Give 5 specific recommendations for improvement. Use clear sections with emojis.
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"A I Body Scanner - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Body Scanner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Body Scanner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button>
       <Card className="bg-card/80 backdrop-blur-xl border-border/60">
         <CardHeader>
@@ -74,5 +77,6 @@ Give 5 specific recommendations for improvement. Use clear sections with emojis.
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

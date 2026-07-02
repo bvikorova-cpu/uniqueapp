@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Trophy, Heart, ArrowRight, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const stories = [
   { type: "🐕 Dog", name: "A rescued dog", outcome: "Adopted & healthy!", emoji: "🏠" },
@@ -15,7 +16,9 @@ export const PetSuccessStories = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="py-12">
+    <>
+      <FloatingHowItWorks title={"Pet Success Stories - How it works"} steps={[{ title: 'Open', desc: 'Access the Pet Success Stories section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Pet Success Stories.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="py-12">
       <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-8">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-4">
           <Trophy className="h-4 w-4 text-emerald-500" />
@@ -46,5 +49,6 @@ export const PetSuccessStories = () => {
         </Button>
       </motion.div>
     </div>
+    </>
   );
 };

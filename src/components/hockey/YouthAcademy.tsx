@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { spendSportCoins } from "@/lib/sportCoins";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function YouthAcademy({ onBack }: { onBack: () => void }) {
   const { user } = useAuth();
@@ -46,7 +47,9 @@ export function YouthAcademy({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Youth Academy - How it works"} steps={[{ title: 'Open', desc: 'Access the Youth Academy section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Youth Academy.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" />Back</Button>
       <Card>
         <CardHeader><CardTitle className="flex items-center gap-2"><GraduationCap className="h-5 w-5 text-primary" />Youth Academy <span className="text-xs text-muted-foreground">(350 coins)</span></CardTitle></CardHeader>
@@ -67,5 +70,6 @@ export function YouthAcademy({ onBack }: { onBack: () => void }) {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

@@ -7,6 +7,7 @@ import gamesImg from "@/assets/hero-slide-games.jpg";
 import kidsImg from "@/assets/hero-slide-kids.jpg";
 import jobsImg from "@/assets/hero-slide-jobs.jpg";
 import fundraisingImg from "@/assets/hero-slide-fundraising.jpg";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 /**
  * Crisp full-bleed slideshow for the home hero. Replaces the previous video
@@ -31,7 +32,12 @@ export function HeroSlideshow() {
 
   useEffect(() => {
     const t = setInterval(() => setIndex((i) => (i + 1) % SLIDES.length), INTERVAL_MS);
-    return () => clearInterval(t);
+    return (
+    <>
+      <FloatingHowItWorks title={"Hero Slideshow - How it works"} steps={[{ title: 'Open', desc: 'Access the Hero Slideshow section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Hero Slideshow.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(t);
   }, []);
 
   return (

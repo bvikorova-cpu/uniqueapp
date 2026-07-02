@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface OptionItem {
   id: string;
@@ -39,7 +40,9 @@ export function MagicalOptionCard({
   const accent = colorMap[accentColor] || colorMap.purple;
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Magical Option Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Magical Option Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Magical Option Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       className="bg-white/90 backdrop-blur-sm rounded-2xl p-5 border-2 border-white/60 shadow-lg"
@@ -90,5 +93,6 @@ export function MagicalOptionCard({
         })}
       </div>
     </motion.div>
+    </>
   );
 }

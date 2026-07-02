@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Check, LucideIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface SkillSwapToolCardProps {
   tool: {
@@ -21,7 +22,9 @@ interface SkillSwapToolCardProps {
 
 export const SkillSwapToolCard = ({ tool, onSelect, index }: SkillSwapToolCardProps) => {
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Skill Swap Tool Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Skill Swap Tool Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Skill Swap Tool Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.08, duration: 0.4 }}
@@ -56,5 +59,6 @@ export const SkillSwapToolCard = ({ tool, onSelect, index }: SkillSwapToolCardPr
         </div>
       </Card>
     </motion.div>
+    </>
   );
 };

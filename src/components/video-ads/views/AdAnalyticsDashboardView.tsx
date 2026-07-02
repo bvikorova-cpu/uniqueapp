@@ -9,6 +9,7 @@ import { Loader2, BarChart2, Sparkles, TrendingUp, TrendingDown, Target } from "
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export const AdAnalyticsDashboardView = ({ onBack }: { onBack: () => void }) => {
   const [product, setProduct] = useState("");
@@ -33,7 +34,9 @@ export const AdAnalyticsDashboardView = ({ onBack }: { onBack: () => void }) => 
   };
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Ad Analytics Dashboard View - How it works"} steps={[{ title: 'Open', desc: 'Access the Ad Analytics Dashboard View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Ad Analytics Dashboard View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4">← Back</Button>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
         <div className="flex items-center gap-3">
@@ -106,5 +109,6 @@ export const AdAnalyticsDashboardView = ({ onBack }: { onBack: () => void }) => 
         </Card>
       </div>
     </div>
+    </>
   );
 };

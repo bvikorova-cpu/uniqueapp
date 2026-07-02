@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ShieldCheck, X, Loader2 } from "lucide-react";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type Pending = {
   invoice_id: string;
@@ -70,7 +71,9 @@ export const SCABanner = () => {
   if (!pending || dismissed) return null;
 
   return (
-    <div className="sticky top-0 z-40 w-full border-b border-amber-500/40 bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-yellow-500/10 backdrop-blur-xl">
+    <>
+      <FloatingHowItWorks title={"S C A Banner - How it works"} steps={[{ title: 'Open', desc: 'Access the S C A Banner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in S C A Banner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="sticky top-0 z-40 w-full border-b border-amber-500/40 bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-yellow-500/10 backdrop-blur-xl">
       <div className="container mx-auto px-3 sm:px-6 py-2.5 flex flex-wrap items-center gap-3">
         <ShieldCheck className="h-5 w-5 text-amber-500 flex-shrink-0" />
         <div className="flex-1 min-w-0 text-sm">
@@ -91,5 +94,6 @@ export const SCABanner = () => {
         </Button>
       </div>
     </div>
+    </>
   );
 };

@@ -13,18 +13,22 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const DrawingGallery = () => {
   const { drawings, isLoading, deleteDrawing, isDeleting } = useKidsDrawingGallery();
 
   if (isLoading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Drawing Gallery - How it works"} steps={[{ title: 'Open', desc: 'Access the Drawing Gallery section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Drawing Gallery.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card>
         <CardContent className="py-8 flex justify-center">
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
         </CardContent>
       </Card>
-    );
+    </>
+  );
   }
 
   if (!drawings || drawings.length === 0) {

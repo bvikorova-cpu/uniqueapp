@@ -7,6 +7,7 @@ import { Wand2, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { CouponToolLayout } from "../CouponToolLayout";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -40,7 +41,9 @@ export function ListingWriterView({ onBack }: Props) {
   };
 
   return (
-    <CouponToolLayout onBack={onBack} title="AI Listing Writer" subtitle="Write compelling coupon listing descriptions that sell fast" credits={3} icon={Wand2} gradientFrom="#8b5cf6" gradientTo="#ec4899" borderColor="violet" formTitle="Coupon Info" resultTitle="Your Listing" emptyText="Enter coupon details to get a professionally written listing" result={result} loading={loading}>
+    <>
+      <FloatingHowItWorks title={"Listing Writer View - How it works"} steps={[{ title: 'Open', desc: 'Access the Listing Writer View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Listing Writer View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <CouponToolLayout onBack={onBack} title="AI Listing Writer" subtitle="Write compelling coupon listing descriptions that sell fast" credits={3} icon={Wand2} gradientFrom="#8b5cf6" gradientTo="#ec4899" borderColor="violet" formTitle="Coupon Info" resultTitle="Your Listing" emptyText="Enter coupon details to get a professionally written listing" result={result} loading={loading}>
       <div><label className="text-sm font-semibold mb-1.5 block">Store Name *</label><Input placeholder="e.g., Amazon" value={storeName} onChange={e => setStoreName(e.target.value)} /></div>
       <div><label className="text-sm font-semibold mb-1.5 block">Coupon Type</label>
         <Select value={couponType} onValueChange={setCouponType}><SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger><SelectContent>
@@ -57,5 +60,6 @@ export function ListingWriterView({ onBack }: Props) {
         {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Writing...</> : <><Wand2 className="w-4 h-4 mr-2" />Write Listing (3 CR)</>}
       </Button>
     </CouponToolLayout>
+    </>
   );
 }

@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Plus, Trash2, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Member { id: string; name: string; relation: string; emoji: string; }
 const KEY = "ff_family_v1";
@@ -45,7 +46,9 @@ export default function FutureFaceFamilyMode() {
   const remove = (id: string) => save(members.filter(m => m.id !== id), active === id ? null : active);
 
   return (
-    <div className="mb-8 space-y-4">
+    <>
+      <FloatingHowItWorks title={"Future Face Family Mode - How it works"} steps={[{ title: 'Open', desc: 'Access the Future Face Family Mode section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Future Face Family Mode.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="mb-8 space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-xl sm:text-2xl font-black">👨‍👩‍👧 Family Mode</h2>
         <Badge variant="outline" className="gap-1"><Users className="h-3 w-3" />{members.length} members</Badge>
@@ -95,5 +98,6 @@ export default function FutureFaceFamilyMode() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

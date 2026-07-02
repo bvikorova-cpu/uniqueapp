@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props {
   userId: string;
@@ -37,7 +38,12 @@ export const ShareQRSection = ({ userId, username, onUsernameChange, onCheckAvai
       const available = await onCheckAvailability(slug);
       setStatus(available ? "ok" : "taken");
     }, 400);
-    return () => clearTimeout(t);
+    return (
+    <>
+      <FloatingHowItWorks title={"Share Q R Section - How it works"} steps={[{ title: 'Open', desc: 'Access the Share Q R Section section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Share Q R Section.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearTimeout(t);
   }, [slug, valid, username, onCheckAvailability]);
 
   const apply = () => {

@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/AuthContext";
 import heroVideo from "@/assets/gp-racing-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const stats = [
   { icon: Car, value: "1,200+", label: "Active Cars", color: "text-cyan-400" },
@@ -38,7 +39,9 @@ export function GPRacingHero({ onNavigate }: { onNavigate: (view: string) => voi
   };
 
   return (
-    <section className="relative h-[70svh] min-h-[480px] overflow-hidden rounded-2xl mx-2 md:mx-0 bg-slate-950">
+    <>
+      <FloatingHowItWorks title={"G P Racing Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the G P Racing Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in G P Racing Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <section className="relative h-[70svh] min-h-[480px] overflow-hidden rounded-2xl mx-2 md:mx-0 bg-slate-950">
       {/* Video */}
       <video ref={videoRef} autoPlay loop muted playsInline
         className="absolute inset-0 w-full h-full object-cover"
@@ -131,5 +134,6 @@ export function GPRacingHero({ onNavigate }: { onNavigate: (view: string) => voi
         </motion.div>
       </div>
     </section>
+    </>
   );
 }

@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ShoppingBag, Sparkles, Loader2, Plus, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Listing {
   id: string;
@@ -156,7 +157,9 @@ const MegatalentTalentMarketplace = ({ category }: { category?: string }) => {
   };
 
   return (
-    <Card className="overflow-hidden backdrop-blur-xl bg-card/70 border-border/30">
+    <>
+      <FloatingHowItWorks title={"Megatalent Talent Marketplace - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Talent Marketplace section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Talent Marketplace.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="overflow-hidden backdrop-blur-xl bg-card/70 border-border/30">
       <CardContent className="p-5">
         <div className="flex items-center gap-2 mb-4 flex-wrap">
           <ShoppingBag className="h-5 w-5 text-accent" />
@@ -294,6 +297,7 @@ const MegatalentTalentMarketplace = ({ category }: { category?: string }) => {
         </Dialog>
       </CardContent>
     </Card>
+    </>
   );
 };
 

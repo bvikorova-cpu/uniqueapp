@@ -7,6 +7,7 @@ import { formatCurrency } from "@/lib/utils";
 import { format } from "date-fns";
 import { Calendar, DollarSign, Package } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface PayoutBatch {
   id: string;
@@ -101,12 +102,15 @@ export function PayoutBatchesView() {
 
   if (loading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Payout Batches View - How it works"} steps={[{ title: 'Open', desc: 'Access the Payout Batches View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Payout Batches View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card>
         <CardContent className="p-12 text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
         </CardContent>
       </Card>
-    );
+    </>
+  );
   }
 
   return (

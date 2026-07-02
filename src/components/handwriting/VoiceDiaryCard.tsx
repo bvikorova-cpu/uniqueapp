@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Mic, MicOff, Loader2, Sparkles } from "lucide-react";
 import { useVoiceDiary, useVoiceDiaryHistory } from "@/hooks/useHandwritingPremium";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const VoiceDiaryCard = () => {
   const [imageUrl, setImageUrl] = useState("");
@@ -38,7 +39,12 @@ export const VoiceDiaryCard = () => {
     };
     rec.onend = () => setListening(false);
     recognitionRef.current = rec;
-    return () => { try { rec.stop(); } catch {} };
+    return (
+    <>
+      <FloatingHowItWorks title={"Voice Diary Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Voice Diary Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Voice Diary Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => { try { rec.stop(); } catch {} };
   }, []);
 
   const toggle = () => {

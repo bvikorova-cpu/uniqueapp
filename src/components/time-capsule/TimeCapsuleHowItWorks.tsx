@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Clock, Brain, Mail, Shield, Calendar, Video, Users, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const TimeCapsuleHowItWorks = ({ onBack }: { onBack: () => void }) => {
   const steps = [
@@ -23,7 +24,9 @@ export const TimeCapsuleHowItWorks = ({ onBack }: { onBack: () => void }) => {
   ];
 
   return (
-    <div className="space-y-8">
+    <>
+      <FloatingHowItWorks title={"Time Capsule How It Works - How it works"} steps={[{ title: 'Open', desc: 'Access the Time Capsule How It Works section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Time Capsule How It Works.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-8">
       <Button variant="ghost" onClick={onBack} className="gap-2"><ArrowLeft className="w-4 h-4" /> Back to Hub</Button>
 
       <div>
@@ -70,5 +73,6 @@ export const TimeCapsuleHowItWorks = ({ onBack }: { onBack: () => void }) => {
         </div>
       </div>
     </div>
+    </>
   );
 };

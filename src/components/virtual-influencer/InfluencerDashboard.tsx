@@ -7,6 +7,7 @@ import EarningsChart from "./EarningsChart";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Users, TrendingUp, DollarSign, ImageIcon } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface InfluencerDashboardProps {
   influencerId: string;
@@ -62,7 +63,9 @@ const InfluencerDashboard = ({ influencerId }: InfluencerDashboardProps) => {
   const totalLikes = content?.reduce((sum, c) => sum + (c.likes || 0), 0) || 0;
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Influencer Dashboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Influencer Dashboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Influencer Dashboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       {/* Influencer Header */}
       <Card className="p-6">
         <div className="flex items-start gap-6">
@@ -178,6 +181,7 @@ const InfluencerDashboard = ({ influencerId }: InfluencerDashboardProps) => {
         </TabsContent>
       </Tabs>
     </div>
+    </>
   );
 };
 

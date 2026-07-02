@@ -5,6 +5,7 @@ import { ArrowLeft, Wand2, Upload, Palette, Sofa, Sparkles, Image } from "lucide
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -76,7 +77,9 @@ export const PropertyAIStaging = ({ onBack }: Props) => {
   };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+    <>
+      <FloatingHowItWorks title={"Property A I Staging - How it works"} steps={[{ title: 'Open', desc: 'Access the Property A I Staging section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Property A I Staging.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
       <Button variant="ghost" onClick={onBack} className="mb-4">
         <ArrowLeft className="w-4 h-4 mr-2" /> Back to Hub
       </Button>
@@ -196,5 +199,6 @@ export const PropertyAIStaging = ({ onBack }: Props) => {
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 };

@@ -1,6 +1,7 @@
 import { AlertTriangle, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   balance: number;
@@ -25,7 +26,9 @@ export const InsufficientCreditsGate = ({
   if (balance >= required) return null;
 
   return (
-    <div className="rounded-2xl border-2 border-amber-400/50 bg-gradient-to-br from-amber-500/10 via-orange-500/10 to-rose-500/10 p-5 backdrop-blur-xl">
+    <>
+      <FloatingHowItWorks title={"Insufficient Credits Gate - How it works"} steps={[{ title: 'Open', desc: 'Access the Insufficient Credits Gate section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Insufficient Credits Gate.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="rounded-2xl border-2 border-amber-400/50 bg-gradient-to-br from-amber-500/10 via-orange-500/10 to-rose-500/10 p-5 backdrop-blur-xl">
       <div className="flex items-start gap-3 mb-4">
         <div className="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center shrink-0">
           <AlertTriangle className="h-5 w-5 text-amber-400" />
@@ -49,5 +52,6 @@ export const InsufficientCreditsGate = ({
         </Button>
       </div>
     </div>
+    </>
   );
 };

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Camera, Loader2, AlertTriangle, MessageCircle } from "lucide-react";
 import { useScreenshotForensics } from "@/hooks/useLieDetectorAdvanced";
 import { Badge } from "@/components/ui/badge";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const ScreenshotForensicsCard = () => {
   const [preview, setPreview] = useState<string | null>(null);
@@ -25,7 +26,9 @@ export const ScreenshotForensicsCard = () => {
   };
 
   return (
-    <Card className="bg-gradient-to-br from-amber-950/30 via-card/60 to-card/60 backdrop-blur-md border-amber-900/40 overflow-hidden">
+    <>
+      <FloatingHowItWorks title={"Screenshot Forensics Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Screenshot Forensics Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Screenshot Forensics Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-gradient-to-br from-amber-950/30 via-card/60 to-card/60 backdrop-blur-md border-amber-900/40 overflow-hidden">
       <div className="h-1 bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600" />
       <CardHeader>
         <div className="flex items-center justify-between">
@@ -104,5 +107,6 @@ export const ScreenshotForensicsCard = () => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

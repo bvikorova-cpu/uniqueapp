@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { useSecretSanta } from "@/hooks/useSecretSanta";
 import { BarChart3, TrendingUp, Gift, Inbox, Heart, Calendar, Award, Flame } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const GiftAnalytics = () => {
   const { sentGifts, receivedGifts, credits } = useSecretSanta();
@@ -51,7 +52,9 @@ export const GiftAnalytics = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Gift Analytics - How it works"} steps={[{ title: 'Open', desc: 'Access the Gift Analytics section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Gift Analytics.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       {/* Header */}
       <Card className="p-6 bg-white/80 backdrop-blur-xl border-amber-200 text-center shadow-lg">
         <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg">
@@ -123,5 +126,6 @@ export const GiftAnalytics = () => {
         </ul>
       </Card>
     </div>
+    </>
   );
 };

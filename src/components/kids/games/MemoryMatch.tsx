@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface MemoryMatchProps {
   onComplete: (score: number) => void;
@@ -92,7 +93,9 @@ export const MemoryMatch = ({ onComplete, onBack }: MemoryMatchProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-red-100 via-pink-100 to-purple-100 p-4">
+    <>
+      <FloatingHowItWorks title={"Memory Match - How it works"} steps={[{ title: 'Open', desc: 'Access the Memory Match section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Memory Match.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="min-h-screen bg-gradient-to-b from-red-100 via-pink-100 to-purple-100 p-4">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <Button variant="ghost" onClick={onBack} className="hover:bg-white/50">
@@ -144,5 +147,6 @@ export const MemoryMatch = ({ onComplete, onBack }: MemoryMatchProps) => {
         </Card>
       </div>
     </div>
+    </>
   );
 };

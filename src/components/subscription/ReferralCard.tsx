@@ -4,6 +4,7 @@ import { Gift, Copy, Check, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ReferralCardProps {
   userId?: string;
@@ -47,7 +48,9 @@ export const ReferralCard = ({ userId }: ReferralCardProps) => {
   };
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Referral Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Referral Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Referral Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -94,5 +97,6 @@ export const ReferralCard = ({ userId }: ReferralCardProps) => {
         </div>
       </div>
     </motion.div>
+    </>
   );
 };

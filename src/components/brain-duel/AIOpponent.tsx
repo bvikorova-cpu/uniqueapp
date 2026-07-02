@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Bot, Brain, Zap, Timer, Trophy, Sparkles, Shield, Target, Flame } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface AIBot {
   id: string;
@@ -127,7 +128,9 @@ export const AIOpponent = () => {
   };
 
   return (
-    <Card className="relative overflow-hidden border-primary/20 backdrop-blur-xl bg-card/80">
+    <>
+      <FloatingHowItWorks title={"A I Opponent - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Opponent section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Opponent.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="relative overflow-hidden border-primary/20 backdrop-blur-xl bg-card/80">
       <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-primary/5 to-violet-500/5" />
       <CardHeader className="relative">
         <CardTitle className="flex items-center gap-2">
@@ -363,5 +366,6 @@ export const AIOpponent = () => {
         </AnimatePresence>
       </CardContent>
     </Card>
+    </>
   );
 };

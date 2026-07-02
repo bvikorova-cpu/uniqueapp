@@ -1,10 +1,13 @@
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const floatingEmojis = ["📖", "🔤", "✨", "🧠", "📚", "🎯", "💡", "⭐"];
 
 export const ReadingHero = () => {
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/20 via-accent/10 to-secondary/20 p-8 mb-8">
+    <>
+      <FloatingHowItWorks title={"Reading Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Reading Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Reading Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/20 via-accent/10 to-secondary/20 p-8 mb-8">
       {/* Floating emojis */}
       {floatingEmojis.map((emoji, i) => (
         <motion.div
@@ -73,5 +76,6 @@ export const ReadingHero = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import heroVideo from "@/assets/psychology-hero-v2.mp4.asset.json";
 import { useLiveStats } from "@/hooks/useLiveStats";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const PsychologyHero = () => {
   const [isMuted, setIsMuted] = useState(true);
@@ -46,7 +47,9 @@ export const PsychologyHero = () => {
   ];
 
   return (
-    <div className="relative w-full h-[70vh] min-h-[500px] overflow-hidden bg-background">
+    <>
+      <FloatingHowItWorks title={"Psychology Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Psychology Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Psychology Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative w-full h-[70vh] min-h-[500px] overflow-hidden bg-background">
       <video
         id="psych-hero-video"
         autoPlay
@@ -108,5 +111,6 @@ export const PsychologyHero = () => {
         </motion.div>
       </div>
     </div>
+    </>
   );
 };

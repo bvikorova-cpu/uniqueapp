@@ -10,6 +10,7 @@ import AchievementsShowcase from '@/components/brain-duel/AchievementsShowcase';
 import { formatDistanceToNow } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface BrainDuelStatsProps {
   userId: string;
@@ -32,10 +33,13 @@ export const BrainDuelStats = ({ userId }: BrainDuelStatsProps) => {
 
   if (isLoading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Brain Duel Stats - How it works"} steps={[{ title: 'Open', desc: 'Access the Brain Duel Stats section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Brain Duel Stats.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="flex items-center justify-center p-8">
         <div className="text-muted-foreground">Loading statistics...</div>
       </div>
-    );
+    </>
+  );
   }
 
   if (!stats) return null;

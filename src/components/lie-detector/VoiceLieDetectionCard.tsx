@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Mic, Square, Loader2, AlertTriangle } from "lucide-react";
 import { useVoiceLieDetection } from "@/hooks/useLieDetectorAdvanced";
 import { Badge } from "@/components/ui/badge";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const VoiceLieDetectionCard = () => {
   const [recording, setRecording] = useState(false);
@@ -50,7 +51,9 @@ export const VoiceLieDetectionCard = () => {
   };
 
   return (
-    <Card className="bg-gradient-to-br from-red-950/30 via-card/60 to-card/60 backdrop-blur-md border-red-900/40 overflow-hidden">
+    <>
+      <FloatingHowItWorks title={"Voice Lie Detection Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Voice Lie Detection Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Voice Lie Detection Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-gradient-to-br from-red-950/30 via-card/60 to-card/60 backdrop-blur-md border-red-900/40 overflow-hidden">
       <div className="h-1 bg-gradient-to-r from-red-600 via-amber-500 to-red-600" />
       <CardHeader>
         <div className="flex items-center justify-between">
@@ -114,5 +117,6 @@ export const VoiceLieDetectionCard = () => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

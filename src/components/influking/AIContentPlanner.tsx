@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, Brain, Calendar, Clock, TrendingUp, Sparkles, Loader2, Zap, Target } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface AIContentPlannerProps {
   onBack: () => void;
@@ -111,7 +112,9 @@ const AIContentPlanner = ({ onBack }: AIContentPlannerProps) => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"A I Content Planner - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Content Planner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Content Planner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
         <Button variant="ghost" onClick={onBack} className="gap-2 mb-4">
           <ArrowLeft className="h-4 w-4" /> Back to Hub
@@ -225,6 +228,7 @@ const AIContentPlanner = ({ onBack }: AIContentPlannerProps) => {
         </motion.div>
       </div>
     </div>
+    </>
   );
 };
 

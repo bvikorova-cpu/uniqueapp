@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props { onSelectPrompt: (prompt: string) => void; }
 
@@ -43,7 +44,9 @@ export const PromptHistoryView = ({ onSelectPrompt }: Props) => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <>
+      <FloatingHowItWorks title={"Prompt History View - How it works"} steps={[{ title: 'Open', desc: 'Access the Prompt History View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Prompt History View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="max-w-3xl mx-auto space-y-6">
       <div>
         <h2 className="text-2xl font-black mb-2">📜 Prompt History</h2>
         <p className="text-muted-foreground text-sm">Your saved prompts and favorites</p>
@@ -88,5 +91,6 @@ export const PromptHistoryView = ({ onSelectPrompt }: Props) => {
         </div>
       )}
     </div>
+    </>
   );
 };

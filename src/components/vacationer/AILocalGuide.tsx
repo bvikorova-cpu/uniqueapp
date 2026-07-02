@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Compass, Loader2, Sparkles, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -35,7 +36,9 @@ export const AILocalGuide = ({ onBack }: Props) => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"A I Local Guide - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Local Guide section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Local Guide.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-2" />Back to Hub</Button>
       <Card className="border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 via-background to-teal-500/5">
         <CardHeader>
@@ -52,5 +55,6 @@ export const AILocalGuide = ({ onBack }: Props) => {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };

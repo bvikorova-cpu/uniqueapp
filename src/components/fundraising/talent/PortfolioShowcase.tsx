@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, Image as ImageIcon, Play } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props {
   images: string[];
@@ -13,7 +14,9 @@ export const PortfolioShowcase = ({ images, videoUrl, portfolioUrl }: Props) => 
   if ((!images || images.length === 0) && !videoUrl && !portfolioUrl) return null;
 
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title={"Portfolio Showcase - How it works"} steps={[{ title: 'Open', desc: 'Access the Portfolio Showcase section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Portfolio Showcase.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <ImageIcon className="h-5 w-5 text-primary" />
@@ -60,5 +63,6 @@ export const PortfolioShowcase = ({ images, videoUrl, portfolioUrl }: Props) => 
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

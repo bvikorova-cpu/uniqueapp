@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Calendar, MapPin, Users } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const CoffeeEvents = () => {
   const { data: events, isLoading } = useQuery({
@@ -27,7 +28,9 @@ export const CoffeeEvents = () => {
   if (isLoading) return <div>Loading events...</div>;
 
   return (
-    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <>
+      <FloatingHowItWorks title={"Coffee Events - How it works"} steps={[{ title: 'Open', desc: 'Access the Coffee Events section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Coffee Events.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
       {events?.map((event) => (
         <Card key={event.id}>
           <CardHeader>
@@ -76,5 +79,6 @@ export const CoffeeEvents = () => {
         </Card>
       ))}
     </div>
+    </>
   );
 };

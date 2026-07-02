@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { AlertTriangle, CreditCard, X, Loader2 } from "lucide-react";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type Dunning = {
   id: string;
@@ -57,7 +58,9 @@ export const DunningBanner = () => {
   if (!dunning || dismissed) return null;
 
   return (
-    <div className="sticky top-0 z-40 w-full border-b border-destructive/40 bg-gradient-to-r from-destructive/15 via-destructive/10 to-orange-500/10 backdrop-blur-xl">
+    <>
+      <FloatingHowItWorks title={"Dunning Banner - How it works"} steps={[{ title: 'Open', desc: 'Access the Dunning Banner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Dunning Banner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="sticky top-0 z-40 w-full border-b border-destructive/40 bg-gradient-to-r from-destructive/15 via-destructive/10 to-orange-500/10 backdrop-blur-xl">
       <div className="container mx-auto px-3 sm:px-6 py-2.5 flex flex-wrap items-center gap-3">
         <AlertTriangle className="h-5 w-5 text-destructive flex-shrink-0" />
         <div className="flex-1 min-w-0 text-sm">
@@ -80,5 +83,6 @@ export const DunningBanner = () => {
         </Button>
       </div>
     </div>
+    </>
   );
 };

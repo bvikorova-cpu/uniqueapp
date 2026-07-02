@@ -7,6 +7,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface StoryVideoPlayerProps {
   scenes: string[];
@@ -59,7 +60,12 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
 
     window.addEventListener('keydown', handleKeyDown);
     
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Story Video Player - How it works"} steps={[{ title: 'Open', desc: 'Access the Story Video Player section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Story Video Player.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isPlaying, scenes.length]);

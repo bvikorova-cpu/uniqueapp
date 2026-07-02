@@ -8,6 +8,7 @@ import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import { useLiveInkAnalyze } from "@/hooks/useHandwritingCapsule";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type Point = { x: number; y: number; t: number; p: number };
 type Stroke = { points: Point[]; color: string };
@@ -30,7 +31,9 @@ function InkRibbon({ strokes }: { strokes: Stroke[] }) {
       const curve = new THREE.CatmullRomCurve3(pts);
       const tubeSegments = Math.max(20, pts.length * 2);
       return (
-        <mesh key={idx}>
+    <>
+      <FloatingHowItWorks title={"Live Ink Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Live Ink Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Live Ink Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <mesh key={idx}>
           <tubeGeometry args={[curve, tubeSegments, 0.025, 8, false]} />
           <meshStandardMaterial
             color={s.color}
@@ -40,7 +43,8 @@ function InkRibbon({ strokes }: { strokes: Stroke[] }) {
             metalness={0.4}
           />
         </mesh>
-      );
+    </>
+  );
     });
   return <>{geometries}</>;
 }

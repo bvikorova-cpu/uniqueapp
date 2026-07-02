@@ -2,13 +2,16 @@ import { FileText } from "lucide-react";
 import { AnalyzerToolLayout } from "../AnalyzerToolLayout";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export const DocumentScannerView = ({ onBack }: { onBack: () => void }) => {
   const [scanAction, setScanAction] = useState("full-analysis");
   const [targetLanguage, setTargetLanguage] = useState("English");
 
   return (
-    <AnalyzerToolLayout
+    <>
+      <FloatingHowItWorks title={"Document Scanner View - How it works"} steps={[{ title: 'Open', desc: 'Access the Document Scanner View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Document Scanner View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <AnalyzerToolLayout
       title="AI Document Scanner"
       description="OCR, translate, summarize & analyze any document or text content"
       icon={<FileText className="w-7 h-7" />}
@@ -51,5 +54,6 @@ export const DocumentScannerView = ({ onBack }: { onBack: () => void }) => {
         </div>
       </div>
     </AnalyzerToolLayout>
+    </>
   );
 };

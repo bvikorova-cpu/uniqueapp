@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useBodyLanguageScan } from "@/hooks/useLieDetectorPro";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 async function extractKeyframes(file: File, count = 5): Promise<string[]> {
   return new Promise((resolve, reject) => {
@@ -50,7 +51,9 @@ export function BodyLanguageScanCard() {
   };
 
   return (
-    <Card className="bg-card/60 backdrop-blur-sm border-purple-500/30">
+    <>
+      <FloatingHowItWorks title={"Body Language Scan Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Body Language Scan Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Body Language Scan Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/60 backdrop-blur-sm border-purple-500/30">
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2 text-purple-400">
           <Video className="w-5 h-5" /> Body Language Video Scan
@@ -80,5 +83,6 @@ export function BodyLanguageScanCard() {
         )}
       </CardContent>
     </Card>
+    </>
   );
 }

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Sparkles } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CareerQuizProps {
   onComplete: (answers: QuizAnswers) => void;
@@ -109,7 +110,9 @@ export const CareerQuiz = ({ onComplete }: CareerQuizProps) => {
   const selectedCount = answers[question.key].length;
 
   return (
-    <Card className="border-primary/20 overflow-hidden">
+    <>
+      <FloatingHowItWorks title={"Career Quiz - How it works"} steps={[{ title: 'Open', desc: 'Access the Career Quiz section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Career Quiz.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-primary/20 overflow-hidden">
       <CardContent className="p-4 sm:p-6">
         {/* Progress */}
         <div className="flex gap-1 mb-4">
@@ -176,5 +179,6 @@ export const CareerQuiz = ({ onComplete }: CareerQuizProps) => {
         </AnimatePresence>
       </CardContent>
     </Card>
+    </>
   );
 };

@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeftRight, Check, X, Minus } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Career {
   name: string;
@@ -53,7 +54,9 @@ export const CareerComparison = () => {
   ];
 
   return (
-    <Card className="border-primary/20">
+    <>
+      <FloatingHowItWorks title={"Career Comparison - How it works"} steps={[{ title: 'Open', desc: 'Access the Career Comparison section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Career Comparison.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-primary/20">
       <CardHeader className="pb-2">
         <CardTitle className="text-lg flex items-center gap-2">
           <ArrowLeftRight className="h-5 w-5 text-primary" />
@@ -140,5 +143,6 @@ export const CareerComparison = () => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

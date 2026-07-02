@@ -8,6 +8,7 @@ import { Loader2, Mic2, Download, Play } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { handleEdgeError } from "@/lib/handleEdgeError";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const VOICES = [
   { id: 'JBFqnCBsd6RMkjVDRZzb', name: 'George (M, warm)' },
@@ -48,7 +49,9 @@ export const TtsVoiceoverView = ({ onBack }: { onBack: () => void }) => {
   };
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Tts Voiceover View - How it works"} steps={[{ title: 'Open', desc: 'Access the Tts Voiceover View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Tts Voiceover View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4">← Back</Button>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center"><Mic2 className="w-6 h-6 text-white" /></div>
@@ -87,5 +90,6 @@ export const TtsVoiceoverView = ({ onBack }: { onBack: () => void }) => {
         </Card>
       </div>
     </div>
+    </>
   );
 };

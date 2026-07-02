@@ -7,6 +7,7 @@ import { Loader2, Send, MessageSquare, Lightbulb } from "lucide-react";
 import { AnalysisResults } from "./AnalysisResults";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const EXAMPLE_PROMPTS = [
   "I was at work the whole time, you can ask anyone.",
@@ -27,7 +28,9 @@ export const SingleMessageAnalysis = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Single Message Analysis - How it works"} steps={[{ title: 'Open', desc: 'Access the Single Message Analysis section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Single Message Analysis.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
         <Card className="bg-card/60 backdrop-blur-sm border-border/50 overflow-hidden">
           <div className="h-1.5 bg-gradient-to-r from-blue-500 to-cyan-500" />
@@ -96,5 +99,6 @@ export const SingleMessageAnalysis = () => {
 
       {result && <AnalysisResults analysis={result} />}
     </div>
+    </>
   );
 };

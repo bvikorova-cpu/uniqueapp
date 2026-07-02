@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { MessageSquare, ThumbsUp, Star, Send, User, Filter, TrendingUp, Award, Sparkles, BarChart3 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Comment {
   id: string;
@@ -46,7 +47,9 @@ export const BrandComments = ({ isAuthenticated }: BrandCommentsProps) => {
     : "0.0";
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Brand Comments - How it works"} steps={[{ title: 'Open', desc: 'Access the Brand Comments section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Brand Comments.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       {/* Review stats banner */}
       <Card className="backdrop-blur-xl bg-gradient-to-r from-primary/5 via-card/80 to-accent/5 border-primary/10 overflow-hidden">
         <CardContent className="p-6">
@@ -214,5 +217,6 @@ export const BrandComments = ({ isAuthenticated }: BrandCommentsProps) => {
         </AnimatePresence>
       </div>
     </div>
+    </>
   );
 };

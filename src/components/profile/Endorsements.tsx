@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Award, Plus, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   profileUserId: string;
@@ -84,7 +85,9 @@ export const Endorsements = ({ profileUserId, currentUserId }: Props) => {
   const topSkills = Object.entries(skillCounts).sort((a, b) => b[1] - a[1]).slice(0, 8);
 
   return (
-    <Card className="bg-card/80 backdrop-blur border-border/40">
+    <>
+      <FloatingHowItWorks title={"Endorsements - How it works"} steps={[{ title: 'Open', desc: 'Access the Endorsements section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Endorsements.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/80 backdrop-blur border-border/40">
       <CardHeader className="flex flex-row items-center justify-between pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
           <Award className="w-4 h-4 text-primary" />
@@ -138,5 +141,6 @@ export const Endorsements = ({ profileUserId, currentUserId }: Props) => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

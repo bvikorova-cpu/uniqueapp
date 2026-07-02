@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { BookOpen, Palette, Sparkles, PaintBucket, TrendingUp, Flame } from "lucide-react";
 import { useEffect, useState } from "react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface GalleryStatsProps {
   stories: number;
@@ -37,7 +38,9 @@ export function GalleryStats({ stories, drawings, characters, coloringPages, str
   const total = stories + drawings + characters + coloringPages;
 
   return (
-    <div className="max-w-4xl mx-auto mb-10">
+    <>
+      <FloatingHowItWorks title={"Gallery Stats - How it works"} steps={[{ title: 'Open', desc: 'Access the Gallery Stats section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Gallery Stats.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="max-w-4xl mx-auto mb-10">
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         {stats.map((s, i) => (
           <motion.div
@@ -82,5 +85,6 @@ export function GalleryStats({ stories, drawings, characters, coloringPages, str
         </div>
       </motion.div>
     </div>
+    </>
   );
 }

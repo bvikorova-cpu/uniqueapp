@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface AcceptanceTrackerProps {
   documentType: string;
@@ -86,7 +87,9 @@ Protective Edition.
   if (checking) return null;
 
   return (
-    <Card className="p-5 mt-8 bg-gradient-to-br from-amber-500/10 via-card/80 to-yellow-500/5 border-2 border-amber-400/30 backdrop-blur-md">
+    <>
+      <FloatingHowItWorks title={"Acceptance Tracker - How it works"} steps={[{ title: 'Open', desc: 'Access the Acceptance Tracker section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Acceptance Tracker.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-5 mt-8 bg-gradient-to-br from-amber-500/10 via-card/80 to-yellow-500/5 border-2 border-amber-400/30 backdrop-blur-md">
       <div className="flex items-start gap-4">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center shrink-0">
           <ShieldCheck className="w-6 h-6 text-white" />
@@ -124,5 +127,6 @@ Protective Edition.
         </div>
       </div>
     </Card>
+    </>
   );
 };

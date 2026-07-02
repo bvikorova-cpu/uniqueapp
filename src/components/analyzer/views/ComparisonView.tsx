@@ -9,6 +9,7 @@ import { useAnalyzerCredits } from "@/hooks/useAnalyzerCredits";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export const ComparisonView = ({ onBack }: { onBack: () => void }) => {
   const [item1, setItem1] = useState("");
@@ -47,7 +48,9 @@ export const ComparisonView = ({ onBack }: { onBack: () => void }) => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
+    <>
+      <FloatingHowItWorks title={"Comparison View - How it works"} steps={[{ title: 'Open', desc: 'Access the Comparison View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Comparison View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <Button variant="ghost" onClick={onBack} className="gap-2">
@@ -112,5 +115,6 @@ export const ComparisonView = ({ onBack }: { onBack: () => void }) => {
         )}
       </div>
     </div>
+    </>
   );
 };

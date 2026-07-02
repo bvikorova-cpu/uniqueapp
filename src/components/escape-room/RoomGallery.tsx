@@ -84,6 +84,7 @@ import polarIce from "@/assets/escape-rooms/polar-ice.jpg";
 import africanSafari from "@/assets/escape-rooms/african-safari.jpg";
 import himalayanTemple from "@/assets/escape-rooms/himalayan-temple.jpg";
 import rainforestCanopy from "@/assets/escape-rooms/rainforest-canopy.jpg";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Room {
   id: string;
@@ -221,7 +222,9 @@ const RoomGallery = ({ onSelectRoom }: RoomGalleryProps) => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Room Gallery - How it works"} steps={[{ title: 'Open', desc: 'Access the Room Gallery section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Room Gallery.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-w-3xl mx-auto">
         <Button
           variant={selectedTheme === "all" ? "default" : "outline"}
@@ -308,6 +311,7 @@ const RoomGallery = ({ onSelectRoom }: RoomGalleryProps) => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

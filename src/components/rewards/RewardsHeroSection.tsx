@@ -5,6 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { useGamification, useDailyReward } from "@/hooks/useGamification";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const calculateLevelProgress = (currentLevel: number, totalPoints: number) => {
   const xpForCurrentLevel = (currentLevel - 1) * 100;
@@ -33,7 +34,9 @@ export default function RewardsHeroSection() {
   const badgeCount = data?.userAchievements?.length || 0;
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Rewards Hero Section - How it works"} steps={[{ title: 'Open', desc: 'Access the Rewards Hero Section section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Rewards Hero Section.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -116,5 +119,6 @@ export default function RewardsHeroSection() {
         </motion.div>
       </div>
     </motion.div>
+    </>
   );
 }

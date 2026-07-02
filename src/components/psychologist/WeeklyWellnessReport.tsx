@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import { format, subDays } from "date-fns";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -72,10 +73,13 @@ export const WeeklyWellnessReport = ({ onBack }: Props) => {
 
   if (loading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Weekly Wellness Report - How it works"} steps={[{ title: 'Open', desc: 'Access the Weekly Wellness Report section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Weekly Wellness Report.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="flex items-center justify-center py-20">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
-    );
+    </>
+  );
   }
 
   return (

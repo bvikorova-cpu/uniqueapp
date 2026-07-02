@@ -6,6 +6,7 @@ import { Loader2, Sparkles, FlaskConical, Globe2, Trophy } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const SUPPORTED_LANGS = ["sk", "en", "hu", "cs", "de", "es", "fr", "it", "pl", "pt", "uk", "ro"];
 
@@ -99,7 +100,9 @@ export const BioToolkit = ({
     : "bg-rose-500/15 text-rose-300 border-rose-500/40";
 
   return (
-    <Card className="p-5 mb-6 bg-gradient-to-br from-card/80 to-card/40 border-border/50 space-y-5">
+    <>
+      <FloatingHowItWorks title={"Bio Toolkit - How it works"} steps={[{ title: 'Open', desc: 'Access the Bio Toolkit section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Bio Toolkit.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-5 mb-6 bg-gradient-to-br from-card/80 to-card/40 border-border/50 space-y-5">
       <div className="flex items-center gap-2">
         <Sparkles className="h-4 w-4 text-amber-400" />
         <Label className="font-semibold">AI Bio Toolkit</Label>
@@ -190,5 +193,6 @@ export const BioToolkit = ({
         )}
       </div>
     </Card>
+    </>
   );
 };

@@ -7,6 +7,7 @@ import { MessageSquare, Send, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Msg { id: string; username: string; message: string; reaction?: string | null; created_at: string; user_id: string; }
 
@@ -46,7 +47,12 @@ export const LiveBrandChat = ({ brandId }: { brandId?: string }) => {
           await channel.track({ user_id: user.id, online_at: new Date().toISOString() });
         }
       });
-    return () => { supabase.removeChannel(channel); };
+    return (
+    <>
+      <FloatingHowItWorks title={"Live Brand Chat - How it works"} steps={[{ title: 'Open', desc: 'Access the Live Brand Chat section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Live Brand Chat.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => { supabase.removeChannel(channel); };
   }, [brandId, user?.id]);
 
   useEffect(() => {

@@ -5,6 +5,7 @@ import { Target, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { CouponToolLayout } from "../CouponToolLayout";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -37,7 +38,9 @@ export function DealMatcherView({ onBack }: Props) {
   };
 
   return (
-    <CouponToolLayout onBack={onBack} title="AI Deal Matcher" subtitle="Find best deals matching your shopping preferences & budget" credits={3} icon={Target} gradientFrom="#10b981" gradientTo="#14b8a6" borderColor="emerald" formTitle="Your Preferences" resultTitle="Your Deal Matches" emptyText="Enter your preferences to find personalized deals" result={result} loading={loading}>
+    <>
+      <FloatingHowItWorks title={"Deal Matcher View - How it works"} steps={[{ title: 'Open', desc: 'Access the Deal Matcher View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Deal Matcher View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <CouponToolLayout onBack={onBack} title="AI Deal Matcher" subtitle="Find best deals matching your shopping preferences & budget" credits={3} icon={Target} gradientFrom="#10b981" gradientTo="#14b8a6" borderColor="emerald" formTitle="Your Preferences" resultTitle="Your Deal Matches" emptyText="Enter your preferences to find personalized deals" result={result} loading={loading}>
       <div><label className="text-sm font-semibold mb-1.5 block">Favorite Stores *</label><Input placeholder="e.g., Nike, Amazon, Zara..." value={favoriteStores} onChange={e => setFavoriteStores(e.target.value)} /></div>
       <div><label className="text-sm font-semibold mb-1.5 block">Shopping Categories</label><Input placeholder="e.g., Fashion, Electronics, Food..." value={categories} onChange={e => setCategories(e.target.value)} /></div>
       <div className="grid grid-cols-2 gap-3">
@@ -50,5 +53,6 @@ export function DealMatcherView({ onBack }: Props) {
         {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Matching...</> : <><Target className="w-4 h-4 mr-2" />Find Deals (3 CR)</>}
       </Button>
     </CouponToolLayout>
+    </>
   );
 }

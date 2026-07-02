@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Package, Eye, Edit, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface BazaarItem {
   id: string;
@@ -72,10 +73,13 @@ export const MyBazaarListings = ({ userId, isOwnProfile }: MyBazaarListingsProps
 
   if (loading) {
     return (
+    <>
+      <FloatingHowItWorks title={"My Bazaar Listings - How it works"} steps={[{ title: 'Open', desc: 'Access the My Bazaar Listings section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in My Bazaar Listings.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="p-8 text-center">
         <Loader2 className="h-6 w-6 animate-spin mx-auto" />
       </Card>
-    );
+    </>
+  );
   }
 
   if (items.length === 0) {

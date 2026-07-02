@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Building2, Sparkles, CheckCircle2, Utensils, Heart, Calendar } from "lucide-react";
 import { CorporateInquiryForm } from "@/components/corporate/CorporateInquiryForm";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function CorporateTab() {
   const [selectedPackage, setSelectedPackage] = useState<string>("");
@@ -22,6 +23,8 @@ export function CorporateTab() {
   const renderPricingCard = (props: { title: string; icon: any; desc: string; price: string; priceLabel: string; features: string[]; popular?: boolean; onClick: () => void; buttonText: string }, index: number) => {
     const Icon = props.icon;
     return (
+    <>
+      <FloatingHowItWorks title={"Corporate Tab - How it works"} steps={[{ title: 'Open', desc: 'Access the Corporate Tab section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Corporate Tab.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <motion.div key={props.title} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.08 }}>
         <Card className={`backdrop-blur-xl bg-card/80 hover:shadow-lg hover:shadow-primary/5 transition-all hover:-translate-y-1 ${props.popular ? "border-2 border-primary" : "border-border/30 hover:border-primary/30"}`}>
           <CardHeader>
@@ -48,7 +51,8 @@ export function CorporateTab() {
           </CardContent>
         </Card>
       </motion.div>
-    );
+    </>
+  );
   };
 
   return (

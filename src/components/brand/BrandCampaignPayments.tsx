@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { CreditCard, CheckCircle, AlertCircle } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function BrandCampaignPayments() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -119,10 +120,13 @@ export function BrandCampaignPayments() {
 
   if (isLoading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Brand Campaign Payments - How it works"} steps={[{ title: 'Open', desc: 'Access the Brand Campaign Payments section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Brand Campaign Payments.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="flex items-center justify-center p-8">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
-    );
+    </>
+  );
   }
 
   const pendingPayments = approvedApplications?.filter(

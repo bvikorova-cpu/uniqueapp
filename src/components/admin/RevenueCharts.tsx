@@ -4,6 +4,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Bar, BarChart } from "recharts";
 import { TrendingUp, BarChart3 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const RevenueCharts = () => {
   const [daily, setDaily] = useState<any[]>([]);
@@ -50,7 +51,9 @@ export const RevenueCharts = () => {
   }, []);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <>
+      <FloatingHowItWorks title={"Revenue Charts - How it works"} steps={[{ title: 'Open', desc: 'Access the Revenue Charts section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Revenue Charts.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <Card className="bg-card/70 backdrop-blur-xl border-border/40">
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center gap-2 text-base">
@@ -99,5 +102,6 @@ export const RevenueCharts = () => {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };

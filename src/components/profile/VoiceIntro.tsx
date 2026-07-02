@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface VoiceIntroProps {
   userId: string;
@@ -74,7 +75,9 @@ export const VoiceIntro = ({ userId, isOwnProfile }: VoiceIntroProps) => {
   };
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Voice Intro - How it works"} steps={[{ title: 'Open', desc: 'Access the Voice Intro section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Voice Intro.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className="glass-post-card p-4 mb-6 border border-violet-400/20 bg-gradient-to-br from-violet-950/40 to-card/40 backdrop-blur-xl"
@@ -149,5 +152,6 @@ export const VoiceIntro = ({ userId, isOwnProfile }: VoiceIntroProps) => {
         )}
       </AnimatePresence>
     </motion.div>
+    </>
   );
 };

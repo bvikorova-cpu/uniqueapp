@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface SimilarityHeatmapProps {
   userImageUrl: string;
@@ -156,7 +157,12 @@ export const SimilarityHeatmap = ({
       };
     }
 
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Similarity Heatmap - How it works"} steps={[{ title: 'Open', desc: 'Access the Similarity Heatmap section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Similarity Heatmap.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       userImage.onload = null;
       matchImage.onload = null;
     };

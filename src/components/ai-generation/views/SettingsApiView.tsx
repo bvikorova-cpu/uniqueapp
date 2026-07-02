@@ -3,6 +3,7 @@ import { Switch } from "@/components/ui/switch";
 import { Code2, Key, BookOpen, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const KEY_STORAGE = "ai_image_watermark";
 
@@ -19,7 +20,9 @@ export const SettingsApiView = () => {
   const copy = (s: string) => { navigator.clipboard.writeText(s); toast.success("Copied"); };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <>
+      <FloatingHowItWorks title={"Settings Api View - How it works"} steps={[{ title: 'Open', desc: 'Access the Settings Api View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Settings Api View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="max-w-3xl mx-auto space-y-6">
       <div>
         <h2 className="text-2xl font-black mb-1">⚙️ Settings & API Access</h2>
         <p className="text-muted-foreground text-sm">Watermark preference, EXIF metadata, and developer API access.</p>
@@ -50,5 +53,6 @@ export const SettingsApiView = () => {
         <p className="text-xs text-muted-foreground">All generated images include EXIF tags with the prompt, model, seed, and creation timestamp for full provenance.</p>
       </div>
     </div>
+    </>
   );
 };

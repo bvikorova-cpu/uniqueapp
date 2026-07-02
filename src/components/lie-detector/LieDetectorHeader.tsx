@@ -1,9 +1,12 @@
 import { Shield, Sparkles, MessageSquare, Users, Brain, CheckCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const LieDetectorHeader = () => {
   return (
-    <div className="mb-6 sm:mb-12 animate-fade-in">
+    <>
+      <FloatingHowItWorks title={"Lie Detector Header - How it works"} steps={[{ title: 'Open', desc: 'Access the Lie Detector Header section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Lie Detector Header.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="mb-6 sm:mb-12 animate-fade-in">
       <div className="text-center mb-6">
         <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
           <Shield className="h-8 w-8 sm:h-12 sm:w-12 text-primary" />
@@ -73,5 +76,6 @@ export const LieDetectorHeader = () => {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };

@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { History, Plus, Minus, Loader2 } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface LedgerRow {
   id: string;
@@ -42,7 +43,9 @@ export const FreeTierHistory = () => {
   }, []);
 
   return (
-    <Card className="p-5">
+    <>
+      <FloatingHowItWorks title={"Free Tier History - How it works"} steps={[{ title: 'Open', desc: 'Access the Free Tier History section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Free Tier History.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-5">
       <div className="flex items-center gap-2 mb-4">
         <History className="h-4 w-4 text-accent" />
         <h3 className="font-bold">Free credit history</h3>
@@ -99,5 +102,6 @@ export const FreeTierHistory = () => {
         </div>
       )}
     </Card>
+    </>
   );
 };

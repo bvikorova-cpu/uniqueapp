@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Wallet } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Balance {
   currency: string;
@@ -33,7 +34,9 @@ export function WalletBalanceCard() {
   }, [user?.id]);
 
   return (
-    <Card className="border-primary/20 bg-gradient-to-br from-primary/10 via-card to-accent/5">
+    <>
+      <FloatingHowItWorks title={"Wallet Balance Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Wallet Balance Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Wallet Balance Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-primary/20 bg-gradient-to-br from-primary/10 via-card to-accent/5">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-sm flex items-center gap-2">
           <Wallet className="h-4 w-4 text-primary" /> Wallet
@@ -56,5 +59,6 @@ export function WalletBalanceCard() {
         </p>
       </CardContent>
     </Card>
+    </>
   );
 }

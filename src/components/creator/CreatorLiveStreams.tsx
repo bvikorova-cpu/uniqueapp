@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Video, Calendar, Users, Lock, Play, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface LiveStream {
   id: string;
@@ -109,6 +110,8 @@ export function CreatorLiveStreams({ creatorId }: CreatorLiveStreamsProps) {
 
   if (loading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Creator Live Streams - How it works"} steps={[{ title: 'Open', desc: 'Access the Creator Live Streams section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Creator Live Streams.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card>
         <CardContent className="py-8">
           <div className="animate-pulse space-y-4">
@@ -117,7 +120,8 @@ export function CreatorLiveStreams({ creatorId }: CreatorLiveStreamsProps) {
           </div>
         </CardContent>
       </Card>
-    );
+    </>
+  );
   }
 
   if (streams.length === 0) {

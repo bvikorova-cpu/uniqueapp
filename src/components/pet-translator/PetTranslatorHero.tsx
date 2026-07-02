@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { PawPrint, Heart, Users, Sparkles, Crown, Mic } from "lucide-react";
 import heroVideo from "@/assets/pet-translator-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 function getDailyTimeLeft() {
   const now = new Date();
@@ -26,7 +27,12 @@ export default function PetTranslatorHero({ totalTranslations, totalUsers, strea
 
   useEffect(() => {
     const timer = setInterval(() => setTimeLeft(getDailyTimeLeft()), 60000);
-    return () => clearInterval(timer);
+    return (
+    <>
+      <FloatingHowItWorks title={"Pet Translator Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Pet Translator Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Pet Translator Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(timer);
   }, []);
 
   const statCards = [

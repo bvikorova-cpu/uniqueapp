@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, Lightbulb, Star, Brain, CheckCircle2, AlertTriangle, ListOrdered } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ChatResponseProps {
   result: {
@@ -24,7 +25,9 @@ export const ChatResponse = ({ result, isLoading, question, subject }: ChatRespo
   if (!isLoading && !result) return null;
 
   return (
-    <div className="space-y-3">
+    <>
+      <FloatingHowItWorks title={"Chat Response - How it works"} steps={[{ title: 'Open', desc: 'Access the Chat Response section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Chat Response.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-3">
       {/* User question bubble */}
       {question && (
         <motion.div
@@ -217,5 +220,6 @@ export const ChatResponse = ({ result, isLoading, question, subject }: ChatRespo
         </div>
       </motion.div>
     </div>
+    </>
   );
 };

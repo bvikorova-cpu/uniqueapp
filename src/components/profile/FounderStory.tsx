@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Quote, Mail, Phone, Globe, Calendar, MapPin, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface FounderStoryProps {
   profile: {
@@ -22,7 +23,9 @@ export const FounderStory = ({ profile }: FounderStoryProps) => {
   if (!profile.bio && !hasContact && !hasInterests) return null;
 
   return (
-    <div className="glass-post-card p-5 sm:p-7 mb-6 border border-amber-400/15 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl">
+    <>
+      <FloatingHowItWorks title={"Founder Story - How it works"} steps={[{ title: 'Open', desc: 'Access the Founder Story section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Founder Story.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="glass-post-card p-5 sm:p-7 mb-6 border border-amber-400/15 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl">
       {profile.bio && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -104,5 +107,6 @@ export const FounderStory = ({ profile }: FounderStoryProps) => {
         </>
       )}
     </div>
+    </>
   );
 };

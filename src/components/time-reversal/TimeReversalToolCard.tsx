@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface TimeReversalToolCardProps {
   icon: LucideIcon;
@@ -35,7 +36,9 @@ const iconColorMap: Record<string, string> = {
 
 export function TimeReversalToolCard({ icon: Icon, title, description, color, onClick, index, badge }: TimeReversalToolCardProps) {
   return (
-    <motion.button
+    <>
+      <FloatingHowItWorks title={"Time Reversal Tool Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Time Reversal Tool Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Time Reversal Tool Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.button
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.06 }}
@@ -53,5 +56,6 @@ export function TimeReversalToolCard({ icon: Icon, title, description, color, on
       <h3 className="font-bold text-sm mb-1 text-foreground">{title}</h3>
       <p className="text-[11px] text-muted-foreground leading-tight line-clamp-2">{description}</p>
     </motion.button>
+    </>
   );
 }

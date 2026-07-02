@@ -9,6 +9,7 @@ import { ArrowLeft, ShieldCheck, Upload, Loader2, CheckCircle, AlertTriangle, XC
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAICredits } from "@/hooks/useAICredits";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface PlagiarismScannerViewProps {
   onBack: () => void;
@@ -90,7 +91,9 @@ export function PlagiarismScannerView({ onBack }: PlagiarismScannerViewProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Plagiarism Scanner View - How it works"} steps={[{ title: 'Open', desc: 'Access the Plagiarism Scanner View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Plagiarism Scanner View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-1" /> Back</Button>
         <h2 className="text-2xl font-bold flex items-center gap-2"><ShieldCheck className="w-6 h-6 text-emerald-500" /> AI Plagiarism Scanner</h2>
@@ -167,5 +170,6 @@ export function PlagiarismScannerView({ onBack }: PlagiarismScannerViewProps) {
         </Card>
       </div>
     </div>
+    </>
   );
 }

@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { characterImages } from "@/data/characterImages";
 import { useState } from "react";
 import type { Character } from "@/data/kidsCharacters";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface AnimatedChatBubbleProps {
   message: { role: string; content: string };
@@ -25,7 +26,9 @@ export function AnimatedChatBubble({ message, character, index, onReaction }: An
   };
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Animated Chat Bubble - How it works"} steps={[{ title: 'Open', desc: 'Access the Animated Chat Bubble section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Animated Chat Bubble.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 20, scale: 0.9 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ 
@@ -124,5 +127,6 @@ export function AnimatedChatBubble({ message, character, index, onReaction }: An
         )}
       </div>
     </motion.div>
+    </>
   );
 }

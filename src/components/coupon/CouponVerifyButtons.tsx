@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ThumbsUp, ThumbsDown, ShieldCheck } from "lucide-react";
 import { useCouponVerifications } from "@/hooks/useCouponVerifications";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { couponId: string; userId: string | null; compact?: boolean; }
 
@@ -10,7 +11,9 @@ export function CouponVerifyButtons({ couponId, userId, compact }: Props) {
   const total = stats.worked + stats.didnt_work;
 
   return (
-    <div className={`flex items-center gap-2 ${compact ? "text-xs" : "text-sm"}`}>
+    <>
+      <FloatingHowItWorks title={"Coupon Verify Buttons - How it works"} steps={[{ title: 'Open', desc: 'Access the Coupon Verify Buttons section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Coupon Verify Buttons.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className={`flex items-center gap-2 ${compact ? "text-xs" : "text-sm"}`}>
       <Button size={compact ? "sm" : "default"} variant={myStatus === "worked" ? "default" : "outline"}
         disabled={loading} onClick={(e) => { e.stopPropagation(); vote("worked"); }} className="h-8">
         <ThumbsUp className="w-3.5 h-3.5" /> Worked ({stats.worked})
@@ -26,5 +29,6 @@ export function CouponVerifyButtons({ couponId, userId, compact }: Props) {
         </Badge>
       )}
     </div>
+    </>
   );
 }

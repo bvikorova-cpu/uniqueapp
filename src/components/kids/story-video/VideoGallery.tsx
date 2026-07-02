@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Heart, Clock, Loader2, Film } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface VideoGalleryProps {
   onSelectStory: (story: any) => void;
@@ -31,10 +32,13 @@ export const VideoGallery = ({ onSelectStory }: VideoGalleryProps) => {
 
   if (isLoading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Video Gallery - How it works"} steps={[{ title: 'Open', desc: 'Access the Video Gallery section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Video Gallery.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="flex items-center justify-center py-8">
         <Loader2 className="w-6 h-6 animate-spin text-purple-500" />
       </div>
-    );
+    </>
+  );
   }
 
   if (stories.length === 0) return null;

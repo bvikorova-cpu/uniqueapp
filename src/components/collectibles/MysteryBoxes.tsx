@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useCollectibles } from "@/hooks/useCollectibles";
 import { useAICredits } from "@/hooks/useAICredits";
 import { Loader2, Gift, Star, Crown, Sparkles, Diamond, Gem, Zap, Trophy, Flame } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface MysteryBoxesProps {
   userId: string;
@@ -109,7 +110,9 @@ export default function MysteryBoxes({ userId }: MysteryBoxesProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Mystery Boxes - How it works"} steps={[{ title: 'Open', desc: 'Access the Mystery Boxes section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Mystery Boxes.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="bg-gradient-subtle p-4 sm:p-6 rounded-lg">
         <h2 className="text-xl sm:text-2xl font-bold mb-2">Mystery Boxes</h2>
         <p className="text-sm sm:text-base text-muted-foreground mb-3">
@@ -231,5 +234,6 @@ export default function MysteryBoxes({ userId }: MysteryBoxesProps) {
         </p>
       </div>
     </div>
+    </>
   );
 }

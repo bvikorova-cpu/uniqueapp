@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calculator } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const FEES: Record<string, { pct: number; fixed: number; label: string }> = {
   stripe: { pct: 0.0025, fixed: 0.25, label: "Stripe Connect" },
@@ -21,7 +22,9 @@ export function PayoutFeeCalculator() {
   const net = +(amount - fee).toFixed(2);
 
   return (
-    <Card className="border-primary/20">
+    <>
+      <FloatingHowItWorks title={"Payout Fee Calculator - How it works"} steps={[{ title: 'Open', desc: 'Access the Payout Fee Calculator section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Payout Fee Calculator.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-primary/20">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm flex items-center gap-2">
           <Calculator className="h-4 w-4 text-primary" /> Fee calculator
@@ -45,5 +48,6 @@ export function PayoutFeeCalculator() {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 }

@@ -5,6 +5,7 @@ import {
   Users, ChefHat, Mic2, ShieldCheck, Wallet, BarChart3, Building2, Image as ImageIcon,
   Bell, Coins, FileSearch, CreditCard, Briefcase, Trophy
 } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const commands = [
   { label: "KitchenStars Payouts", path: "/admin/masterchef-payouts", icon: ChefHat, group: "Finance" },
@@ -42,7 +43,12 @@ export const CommandBar = ({ open, onOpenChange }: Props) => {
       }
     };
     document.addEventListener("keydown", down);
-    return () => document.removeEventListener("keydown", down);
+    return (
+    <>
+      <FloatingHowItWorks title={"Command Bar - How it works"} steps={[{ title: 'Open', desc: 'Access the Command Bar section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Command Bar.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => document.removeEventListener("keydown", down);
   }, [open, onOpenChange]);
 
   const groups = Array.from(new Set(commands.map(c => c.group)));

@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { UserPlus, Copy, Check, Share2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export default function MegatalentFriendInvites({ userId }: { userId: string | null }) {
   const [code, setCode] = useState<string | null>(null);
@@ -41,7 +42,12 @@ export default function MegatalentFriendInvites({ userId }: { userId: string | n
         setLoading(false);
       }
     })();
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Megatalent Friend Invites - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Friend Invites section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Friend Invites.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       cancelled = true;
     };
   }, [userId]);

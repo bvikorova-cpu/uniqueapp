@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -15,7 +16,9 @@ export function RoomReviewsView({ onBack }: Props) {
   ];
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Room Reviews View - How it works"} steps={[{ title: 'Open', desc: 'Access the Room Reviews View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Room Reviews View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
@@ -48,5 +51,6 @@ export function RoomReviewsView({ onBack }: Props) {
         </div>
       </div>
     </div>
+    </>
   );
 }

@@ -5,6 +5,7 @@ import { Trophy, Medal, Crown } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface LeaderboardEntry {
   user_id: string;
@@ -86,10 +87,13 @@ export const BrainDuelLeaderboard = () => {
     if (index === 2)
       return <Medal className="h-5 w-5 text-amber-600" />;
     return (
+    <>
+      <FloatingHowItWorks title={"Brain Duel Leaderboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Brain Duel Leaderboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Brain Duel Leaderboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <span className="text-lg font-bold text-muted-foreground">
         #{index + 1}
       </span>
-    );
+    </>
+  );
   };
 
   if (isLoading) {

@@ -8,6 +8,7 @@ import { ArrowLeft, Flame, Loader2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export default function AIMotivationCoach({ onBack }: { onBack: () => void }) {
   const { credits } = useAICredits();
@@ -45,7 +46,9 @@ Use energetic, empowering language with emojis. Make it personal and actionable.
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"A I Motivation Coach - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Motivation Coach section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Motivation Coach.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button>
       <Card className="bg-card/80 backdrop-blur-xl border-border/60">
         <CardHeader>
@@ -66,5 +69,6 @@ Use energetic, empowering language with emojis. Make it personal and actionable.
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

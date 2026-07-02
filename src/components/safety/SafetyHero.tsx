@@ -3,6 +3,7 @@ import { Shield, Heart, Users, Sparkles, Play, Pause, Volume2, VolumeX, AlertTri
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import heroVideo from "@/assets/safety-hero-hands.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   mode: "safe" | "crisis";
@@ -38,7 +39,9 @@ export const SafetyHero = ({ mode, onModeChange }: Props) => {
   ];
 
   return (
-    <div className="relative h-[78vh] min-h-[560px] w-full overflow-hidden rounded-3xl border border-border/40 mb-8">
+    <>
+      <FloatingHowItWorks title={"Safety Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Safety Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Safety Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative h-[78vh] min-h-[560px] w-full overflow-hidden rounded-3xl border border-border/40 mb-8">
       <video
         ref={videoRef}
         className="absolute inset-0 h-full w-full object-cover brightness-95 saturate-110"
@@ -157,5 +160,6 @@ export const SafetyHero = ({ mode, onModeChange }: Props) => {
         </Button>
       </div>
     </div>
+    </>
   );
 };

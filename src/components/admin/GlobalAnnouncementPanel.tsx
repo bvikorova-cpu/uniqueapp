@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Megaphone, Send, X } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const GlobalAnnouncementPanel = () => {
   const [message, setMessage] = useState('');
@@ -112,7 +113,9 @@ export const GlobalAnnouncementPanel = () => {
   };
 
   return (
-    <Card className="border-2 border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-orange-500/5">
+    <>
+      <FloatingHowItWorks title={"Global Announcement Panel - How it works"} steps={[{ title: 'Open', desc: 'Access the Global Announcement Panel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Global Announcement Panel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-2 border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-orange-500/5">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Megaphone className="h-5 w-5 text-amber-500" />
@@ -164,5 +167,6 @@ export const GlobalAnnouncementPanel = () => {
         </Button>
       </CardContent>
     </Card>
+    </>
   );
 };

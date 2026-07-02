@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Trophy } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface BattleVotingProps {
   battle: any;
@@ -38,7 +39,9 @@ export function BattleVoting({ battle, onVoteSuccess }: BattleVotingProps) {
   };
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Battle Voting - How it works"} steps={[{ title: 'Open', desc: 'Access the Battle Voting section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Battle Voting.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       <div className="flex items-center gap-2 mb-4">
         <Trophy className="h-5 w-5 text-yellow-500" />
         <p className="font-bold">Vote for your favorite comedian (10 coins per vote)</p>
@@ -68,5 +71,6 @@ export function BattleVoting({ battle, onVoteSuccess }: BattleVotingProps) {
         </Card>
       ))}
     </div>
+    </>
   );
 }

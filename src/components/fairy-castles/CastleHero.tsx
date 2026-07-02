@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Crown, Sparkles, Trophy, Map } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CastleHeroProps {
   stampsCount: number;
@@ -24,7 +25,9 @@ export function CastleHero({ stampsCount, totalCastles, visitedCount }: CastleHe
   const completionPercent = Math.round((stampsCount / totalCastles) * 100);
 
   return (
-    <div className="relative text-center py-16 overflow-hidden">
+    <>
+      <FloatingHowItWorks title={"Castle Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Castle Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Castle Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative text-center py-16 overflow-hidden">
       {/* Floating items */}
       {floatingItems.map((item, i) => (
         <motion.span
@@ -119,5 +122,6 @@ export function CastleHero({ stampsCount, totalCastles, visitedCount }: CastleHe
         )}
       </motion.div>
     </div>
+    </>
   );
 }

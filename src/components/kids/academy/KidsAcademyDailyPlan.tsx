@@ -7,6 +7,7 @@ import { Sparkles, Loader2, Flame, Trophy, Lightbulb, Coins } from "lucide-react
 import { toast } from "sonner";
 import { kidsHubCall, useKidsAcademyCredits, useKidsAcademyXP, useKidsFamilyLeaderboard, KIDS_HUB_COSTS } from "@/hooks/useKidsAcademyHub";
 import { useKidsChildren } from "@/hooks/useKidsRouter";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export function KidsAcademyDailyPlan() {
   const { activeChild, activeId } = useKidsChildren();
@@ -79,7 +80,9 @@ export function KidsAcademyDailyPlan() {
   const done: string[] = plan?.completed_items ?? [];
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Kids Academy Daily Plan - How it works"} steps={[{ title: 'Open', desc: 'Access the Kids Academy Daily Plan section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Kids Academy Daily Plan.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       {/* XP + Streak + Credits header */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <Card className="bg-gradient-to-br from-primary/20 to-accent/10">
@@ -213,5 +216,6 @@ export function KidsAcademyDailyPlan() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

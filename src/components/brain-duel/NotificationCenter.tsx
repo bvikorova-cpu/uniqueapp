@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const ICON_MAP: Record<string, typeof Bell> = {
   challenge: Swords,
@@ -71,7 +72,12 @@ export const NotificationCenter = () => {
         )
         .subscribe();
 
-      return () => { supabase.removeChannel(channel); };
+      return (
+    <>
+      <FloatingHowItWorks title={"Notification Center - How it works"} steps={[{ title: 'Open', desc: 'Access the Notification Center section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Notification Center.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => { supabase.removeChannel(channel); };
     };
 
     const cleanup = setupRealtime();

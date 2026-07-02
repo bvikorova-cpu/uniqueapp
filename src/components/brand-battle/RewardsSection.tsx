@@ -7,6 +7,7 @@ import { useBrandBattleCredits } from "@/hooks/useBrandBattleCredits";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CampaignStats {
   totalVotes: number;
@@ -67,7 +68,9 @@ export const RewardsSection = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Rewards Section - How it works"} steps={[{ title: 'Open', desc: 'Access the Rewards Section section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Rewards Section.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       {/* Your Rewards Summary */}
       <Card className="backdrop-blur-xl bg-card/80 border-primary/10 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5" />
@@ -256,5 +259,6 @@ export const RewardsSection = () => {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };

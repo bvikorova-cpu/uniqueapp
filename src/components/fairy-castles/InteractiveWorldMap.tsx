@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Castle {
   id: string;
@@ -31,7 +32,9 @@ export function InteractiveWorldMap({ castles, stampedIds, visitedIds, onCastleC
   });
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Interactive World Map - How it works"} steps={[{ title: 'Open', desc: 'Access the Interactive World Map section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Interactive World Map.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -127,5 +130,6 @@ export function InteractiveWorldMap({ castles, stampedIds, visitedIds, onCastleC
         })}
       </div>
     </motion.div>
+    </>
   );
 }

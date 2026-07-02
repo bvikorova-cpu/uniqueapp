@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Trophy, Flame, Zap, Star, Car } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const tickerEvents = [
   { icon: Trophy, text: "🏆 Phoenix Team won the Nebula Drift Circuit!", color: "text-amber-400" },
@@ -20,7 +21,12 @@ export function GPRacingLiveTicker() {
     const interval = setInterval(() => {
       setCurrentIndex(prev => (prev + 1) % tickerEvents.length);
     }, 4000);
-    return () => clearInterval(interval);
+    return (
+    <>
+      <FloatingHowItWorks title={"G P Racing Live Ticker - How it works"} steps={[{ title: 'Open', desc: 'Access the G P Racing Live Ticker section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in G P Racing Live Ticker.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(interval);
   }, []);
 
   const event = tickerEvents[currentIndex];

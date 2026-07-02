@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface MultiverseToolCardProps {
   icon: LucideIcon;
@@ -28,7 +29,9 @@ export const MultiverseToolCard = ({ icon: Icon, title, description, color, onCl
   const c = colorMap[color] || colorMap.violet;
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Multiverse Tool Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Multiverse Tool Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Multiverse Tool Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 20, scale: 0.9 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ delay: index * 0.04, type: "spring", damping: 15 }}
@@ -61,5 +64,6 @@ export const MultiverseToolCard = ({ icon: Icon, title, description, color, onCl
         <p className="text-xs text-violet-300/50 leading-relaxed">{description}</p>
       </div>
     </motion.div>
+    </>
   );
 };

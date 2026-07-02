@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { PenTool, ArrowLeft, Sparkles, Coins, Lightbulb, MessageSquare } from "lucide-react";
 import { useComedyCurrency } from "@/hooks/useComedy";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   onBack: () => void;
@@ -76,7 +77,9 @@ export const JokeWritingWorkshop = ({ onBack }: Props) => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Joke Writing Workshop - How it works"} steps={[{ title: 'Open', desc: 'Access the Joke Writing Workshop section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Joke Writing Workshop.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={onBack}>
           <ArrowLeft className="h-4 w-4 mr-1" /> Back
@@ -176,5 +179,6 @@ export const JokeWritingWorkshop = ({ onBack }: Props) => {
         </Card>
       </div>
     </div>
+    </>
   );
 };

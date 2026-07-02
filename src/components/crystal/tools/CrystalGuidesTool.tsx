@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Compass, Zap, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { HEALING_PATHS, CLEANSING_RITUALS } from "../crystalData";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props {
   mode: "guide" | "cleansing";
@@ -30,7 +31,9 @@ export const CrystalGuidesTool = ({ mode }: Props) => {
   const Icon = mode === "guide" ? Compass : Zap;
 
   return (
-    <Card className="bg-card/80 backdrop-blur-xl border-border/50">
+    <>
+      <FloatingHowItWorks title={"Crystal Guides Tool - How it works"} steps={[{ title: 'Open', desc: 'Access the Crystal Guides Tool section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Crystal Guides Tool.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/80 backdrop-blur-xl border-border/50">
       <CardHeader>
         <CardTitle className="text-xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent flex items-center gap-2">
           <Icon className="w-5 h-5" /> {title}
@@ -94,5 +97,6 @@ export const CrystalGuidesTool = ({ mode }: Props) => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Briefcase } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export interface OpenToWorkDetails {
   roles?: string[];
@@ -17,11 +18,14 @@ export const OpenToWorkBadge = ({
   const roles = details?.roles?.filter(Boolean) || [];
   if (compact) {
     return (
+    <>
+      <FloatingHowItWorks title={"Open To Work - How it works"} steps={[{ title: 'Open', desc: 'Access the Open To Work section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Open To Work.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Badge className="bg-emerald-500/15 text-emerald-300 border-emerald-500/40 backdrop-blur-md">
         <Briefcase className="h-3 w-3 mr-1" />
         Open to work
       </Badge>
-    );
+    </>
+  );
   }
   return (
     <div className="rounded-2xl border border-emerald-500/40 bg-emerald-500/10 backdrop-blur-md p-4 mb-6">

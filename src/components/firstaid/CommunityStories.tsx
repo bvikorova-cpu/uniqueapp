@@ -6,6 +6,7 @@ import { ArrowLeft, BookOpen, Heart, Send, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -101,7 +102,9 @@ export const CommunityStories = ({ onBack }: Props) => {
   const filtered = filterCat === "All" ? stories : stories.filter(s => s.category === filterCat);
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Community Stories - How it works"} steps={[{ title: 'Open', desc: 'Access the Community Stories section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Community Stories.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center justify-between">
         <Button variant="ghost" onClick={onBack}><ArrowLeft className="mr-2 h-4 w-4" /> Back</Button>
         <Button size="sm" onClick={() => setShowForm(!showForm)}>
@@ -168,5 +171,6 @@ export const CommunityStories = ({ onBack }: Props) => {
         </div>
       )}
     </div>
+    </>
   );
 };

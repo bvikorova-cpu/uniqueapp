@@ -6,6 +6,7 @@ import { Stethoscope, Upload, Loader2, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAICredits } from "@/hooks/useAICredits";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const PlantDiagnosis = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -96,7 +97,9 @@ export const PlantDiagnosis = () => {
   };
 
   return (
-    <div className="grid md:grid-cols-2 gap-6">
+    <>
+      <FloatingHowItWorks title={"Plant Diagnosis - How it works"} steps={[{ title: 'Open', desc: 'Access the Plant Diagnosis section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Plant Diagnosis.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="grid md:grid-cols-2 gap-6">
       <Card className="p-6">
         <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
           <Stethoscope className="h-6 w-6 text-green-500" />
@@ -221,5 +224,6 @@ export const PlantDiagnosis = () => {
         )}
       </Card>
     </div>
+    </>
   );
 };

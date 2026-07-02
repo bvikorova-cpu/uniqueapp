@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Crown, Sparkles, Zap, EyeOff, Star } from "lucide-react";
 import { useMegatalentVip } from "@/hooks/useMegatalentVip";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const MegatalentVipBanner = () => {
   const { isVip, loading, refresh, startCheckout } = useMegatalentVip();
@@ -33,6 +34,8 @@ export const MegatalentVipBanner = () => {
 
   if (isVip) {
     return (
+    <>
+      <FloatingHowItWorks title={"Megatalent Vip Banner - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Vip Banner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Vip Banner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="bg-gradient-to-r from-amber-500/10 via-yellow-500/10 to-amber-500/10 border-amber-500/40">
         <CardContent className="flex items-center gap-3 py-3">
           <Crown className="h-5 w-5 text-amber-500" />
@@ -49,7 +52,8 @@ export const MegatalentVipBanner = () => {
           </div>
         </CardContent>
       </Card>
-    );
+    </>
+  );
   }
 
   return (

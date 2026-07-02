@@ -7,6 +7,7 @@ import { Flame, Calendar, Gift, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   userId: string | null;
@@ -67,7 +68,12 @@ export default function MegatalentVotingStreak({ userId }: Props) {
   useEffect(() => {
     let cancelled = false;
     (async () => { if (!cancelled) await load(); })();
-    return () => { cancelled = true; };
+    return (
+    <>
+      <FloatingHowItWorks title={"Megatalent Voting Streak - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Voting Streak section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Voting Streak.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 

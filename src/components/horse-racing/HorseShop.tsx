@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useUserHorses, usePurchaseShopItem, useHorseCurrency } from "@/hooks/useHorseRacing";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ShopItem {
   id: string;
@@ -201,7 +202,9 @@ export const HorseShop = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Horse Shop - How it works"} steps={[{ title: 'Open', desc: 'Access the Horse Shop section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Horse Shop.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Card className="p-4 sm:p-6">
         <h2 className="text-xl sm:text-2xl font-bold mb-2">Racing Shop</h2>
         <p className="text-sm text-muted-foreground mb-4">
@@ -304,5 +307,6 @@ export const HorseShop = () => {
         </DialogContent>
       </Dialog>
     </div>
+    </>
   );
 };

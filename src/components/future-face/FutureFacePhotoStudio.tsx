@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { handleEdgeError, throwIfInvokeError } from "@/lib/handleEdgeError";
 import BeforeAfterSlider from "./BeforeAfterSlider";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type ActionId =
   | "age_progression" | "age_reversal" | "baby_predict" | "gender_swap"
@@ -37,7 +38,12 @@ async function uploadPhoto(file: File, userId: string): Promise<string> {
     contentType: file.type, upsert: false,
   });
   if (error) throw error;
-  return (await getReadableUrl("future-face-photos", path));
+  return (
+    <>
+      <FloatingHowItWorks title={"Future Face Photo Studio - How it works"} steps={[{ title: 'Open', desc: 'Access the Future Face Photo Studio section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Future Face Photo Studio.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      await getReadableUrl("future-face-photos", path)
+    </>
+  );
 }
 
 export default function FutureFacePhotoStudio() {

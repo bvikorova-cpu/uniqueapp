@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Award, Lock } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const badges = [
   { name: "First Story", icon: "📖", description: "Read your first story", unlocked: false },
@@ -13,7 +14,9 @@ const badges = [
 
 export const KidsProfileBadges = () => {
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Kids Profile Badges - How it works"} steps={[{ title: 'Open', desc: 'Access the Kids Profile Badges section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Kids Profile Badges.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.5 }}
@@ -58,5 +61,6 @@ export const KidsProfileBadges = () => {
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 };

@@ -4,6 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export const RealtimeView = ({ onCreditsUsed }: { onCreditsUsed: () => void }) => {
   const [prompt, setPrompt] = useState("");
@@ -25,7 +26,12 @@ export const RealtimeView = ({ onCreditsUsed }: { onCreditsUsed: () => void }) =
       } catch (e: any) { toast.error(e.message || "Failed"); }
       finally { setLoading(false); }
     }, 1500);
-    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
+    return (
+    <>
+      <FloatingHowItWorks title={"Realtime View - How it works"} steps={[{ title: 'Open', desc: 'Access the Realtime View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Realtime View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => { if (debounceRef.current) clearTimeout(debounceRef.current); };
   }, [prompt, onCreditsUsed]);
 
   return (

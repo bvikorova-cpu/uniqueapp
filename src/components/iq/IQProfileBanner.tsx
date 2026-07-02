@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Image } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const BANNERS = [
   { id: "aurora", name: "Aurora", bg: "linear-gradient(135deg, hsl(270 91% 60%), hsl(330 100% 60%))" },
@@ -25,7 +26,9 @@ export default function IQProfileBanner() {
   const current = BANNERS.find(b => b.id === picked) || BANNERS[0];
 
   return (
-    <Card className="glass-card">
+    <>
+      <FloatingHowItWorks title={"I Q Profile Banner - How it works"} steps={[{ title: 'Open', desc: 'Access the I Q Profile Banner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in I Q Profile Banner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="glass-card">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <Image className="h-4 w-4 text-primary" /> Profile Banner
@@ -46,5 +49,6 @@ export default function IQProfileBanner() {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 }

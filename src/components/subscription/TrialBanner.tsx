@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Sparkles, Shield, CreditCard, Calendar } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface TrialBannerProps {
   days?: number;
@@ -17,7 +18,9 @@ export const TrialBanner = ({ days = 7 }: TrialBannerProps) => {
   ];
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Trial Banner - How it works"} steps={[{ title: 'Open', desc: 'Access the Trial Banner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Trial Banner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, scale: 0.96 }}
       animate={{ opacity: 1, scale: 1 }}
       className="mb-10 max-w-3xl mx-auto"
@@ -44,5 +47,6 @@ export const TrialBanner = ({ days = 7 }: TrialBannerProps) => {
         </div>
       </div>
     </motion.div>
+    </>
   );
 };

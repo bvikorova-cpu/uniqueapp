@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Copy, Eye, EyeOff, Key, RefreshCw, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   sponsor: { id: string };
@@ -62,6 +63,8 @@ export function EnterpriseApiPanel({ sponsor }: Props) {
 
   return (
     <>
+      <FloatingHowItWorks title={"Enterprise Api Panel - How it works"} steps={[{ title: 'Open', desc: 'Access the Enterprise Api Panel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Enterprise Api Panel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <>
       <Card className="bg-black/40 backdrop-blur-lg border-amber-500/50">
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -158,6 +161,7 @@ export function EnterpriseApiPanel({ sponsor }: Props) {
           </div>
         </CardContent>
       </Card>
+    </>
     </>
   );
 }

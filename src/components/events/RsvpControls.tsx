@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useEventRsvps, type RsvpStatus } from "@/hooks/useEventRsvps";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   eventId: string;
@@ -19,6 +20,8 @@ export const RsvpControls = ({ eventId, capacity }: Props) => {
   const Btn = ({ status, label, icon: Icon }: { status: RsvpStatus; label: string; icon: any }) => {
     const active = myRsvp?.status === status;
     return (
+    <>
+      <FloatingHowItWorks title={"Rsvp Controls - How it works"} steps={[{ title: 'Open', desc: 'Access the Rsvp Controls section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Rsvp Controls.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Button
         size="sm"
         variant={active ? "default" : "outline"}
@@ -28,7 +31,8 @@ export const RsvpControls = ({ eventId, capacity }: Props) => {
         <Icon className="h-4 w-4" />
         {label}
       </Button>
-    );
+    </>
+  );
   };
 
   return (

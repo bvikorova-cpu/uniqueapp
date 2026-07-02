@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { TalentCommentsSheet } from "@/components/megatalent/TalentCommentsSheet";
 import { useSpendCredits } from "@/hooks/useSpendCredits";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type CategoryOption = { value: string; label: string };
 type CategoryGroup = { group: string; categories: CategoryOption[] };
@@ -65,7 +66,12 @@ export default function MegaTalentLatestFeed({ categoryGroups }: Props) {
   // Debounce search input -> actual query term
   useEffect(() => {
     const t = setTimeout(() => setSearch(searchInput.trim()), 300);
-    return () => clearTimeout(t);
+    return (
+    <>
+      <FloatingHowItWorks title={"Mega Talent Latest Feed - How it works"} steps={[{ title: 'Open', desc: 'Access the Mega Talent Latest Feed section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Mega Talent Latest Feed.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearTimeout(t);
   }, [searchInput]);
 
   useEffect(() => {

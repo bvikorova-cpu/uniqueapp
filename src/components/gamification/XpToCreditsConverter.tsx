@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useUserXp } from "@/hooks/useUserXp";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type Target = "free_tier" | "tutoring" | "brand_votes";
 
@@ -58,7 +59,9 @@ export const XpToCreditsConverter = ({ userId }: Props) => {
   };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}>
+    <>
+      <FloatingHowItWorks title={"Xp To Credits Converter - How it works"} steps={[{ title: 'Open', desc: 'Access the Xp To Credits Converter section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Xp To Credits Converter.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}>
       <Card className="backdrop-blur-xl bg-card/80 border-primary/20 bg-gradient-to-br from-primary/10 via-accent/5 to-amber-500/10 overflow-hidden">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between flex-wrap gap-2">
@@ -158,6 +161,7 @@ export const XpToCreditsConverter = ({ userId }: Props) => {
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 };
 

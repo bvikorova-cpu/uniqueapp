@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useTutorialAICredits } from "@/hooks/useTutorialAICredits";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const CREDITS_COST = 5;
 
@@ -59,7 +60,9 @@ export function AIHomeworkGraderView({ onBack }: Props) {
   const getScoreIcon = (s: number) => s >= 80 ? CheckCircle2 : s >= 60 ? AlertTriangle : XCircle;
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"A I Homework Grader View - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Homework Grader View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Homework Grader View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={onBack}><ArrowLeft className="h-5 w-5" /></Button>
         <div>
@@ -136,5 +139,6 @@ export function AIHomeworkGraderView({ onBack }: Props) {
         </Card>
       </div>
     </div>
+    </>
   );
 }

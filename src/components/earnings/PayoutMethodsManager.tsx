@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import {
   CreditCard, Globe, Bitcoin, Plus, Trash2, CheckCircle2, Star, Loader2,
 } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type MethodType = "paypal" | "wise" | "crypto" | "stripe_connect";
 
@@ -148,7 +149,9 @@ export const PayoutMethodsManager = ({ onChange }: Props) => {
   const Icon = meta.icon;
 
   return (
-    <Card className="border-amber-500/30 bg-gradient-to-br from-card via-card to-amber-500/5 p-5">
+    <>
+      <FloatingHowItWorks title={"Payout Methods Manager - How it works"} steps={[{ title: 'Open', desc: 'Access the Payout Methods Manager section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Payout Methods Manager.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-amber-500/30 bg-gradient-to-br from-card via-card to-amber-500/5 p-5">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="text-lg font-black flex items-center gap-2">
@@ -337,5 +340,6 @@ export const PayoutMethodsManager = ({ onChange }: Props) => {
         </div>
       )}
     </Card>
+    </>
   );
 };

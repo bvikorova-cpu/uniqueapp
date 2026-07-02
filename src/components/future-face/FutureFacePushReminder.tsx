@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Bell, BellOff, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const KEY = "ff_push_v1";
 
@@ -40,7 +41,12 @@ export default function FutureFacePushReminder() {
         localStorage.setItem(KEY + ":lastShown", todayKey);
       }
     }, 60_000);
-    return () => clearInterval(id);
+    return (
+    <>
+      <FloatingHowItWorks title={"Future Face Push Reminder - How it works"} steps={[{ title: 'Open', desc: 'Access the Future Face Push Reminder section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Future Face Push Reminder.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(id);
   }, [enabled, perm, hour]);
 
   const requestPerm = async () => {

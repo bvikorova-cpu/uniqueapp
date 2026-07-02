@@ -2,6 +2,7 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Brain, FlaskConical, BookOpen, Palette, Clock, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface StatItem { label: string; value: number; prevValue: number; icon: React.ReactNode; color: string; bgColor: string; suffix?: string; }
 
@@ -28,7 +29,9 @@ const StatCard = ({ stat, delay }: { stat: StatItem; delay: number }) => {
   const diff = stat.value - stat.prevValue;
   const diffPercent = stat.prevValue > 0 ? Math.round((diff / stat.prevValue) * 100) : 0;
   return (
-    <motion.div ref={ref} initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={isInView ? { opacity: 1, scale: 1, y: 0 } : {}} transition={{ delay, duration: 0.4 }}>
+    <>
+      <FloatingHowItWorks title={"Animated Stats - How it works"} steps={[{ title: 'Open', desc: 'Access the Animated Stats section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Animated Stats.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div ref={ref} initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={isInView ? { opacity: 1, scale: 1, y: 0 } : {}} transition={{ delay, duration: 0.4 }}>
       <Card className="hover:shadow-lg transition-all hover:-translate-y-1 cursor-default overflow-hidden group">
         <CardContent className="pt-5 pb-4 relative">
           <div className={`absolute inset-0 ${stat.bgColor} opacity-0 group-hover:opacity-100 transition-opacity`} />
@@ -46,6 +49,7 @@ const StatCard = ({ stat, delay }: { stat: StatItem; delay: number }) => {
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 };
 

@@ -6,6 +6,7 @@ import { Clock, Sparkles, Loader2, Smile, Frown, Wrench } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const COST = 3;
 
@@ -36,7 +37,9 @@ export const DayInLifeSimulator = ({ onCredits }: Props) => {
   };
 
   return (
-    <Card className="border-primary/20">
+    <>
+      <FloatingHowItWorks title={"Day In Life Simulator - How it works"} steps={[{ title: 'Open', desc: 'Access the Day In Life Simulator section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Day In Life Simulator.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
           <Clock className="h-5 w-5 text-primary" /> Day in the Life Simulator
@@ -108,5 +111,6 @@ export const DayInLifeSimulator = ({ onCredits }: Props) => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

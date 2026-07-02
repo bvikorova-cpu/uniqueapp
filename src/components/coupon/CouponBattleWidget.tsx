@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Swords, Skull } from "lucide-react";
 import { useCouponBattle } from "@/hooks/useCouponBattle";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function CouponBattleWidget({ userId }: { userId: string | null }) {
   const { pair, vote, refresh, loading } = useCouponBattle();
@@ -37,7 +38,9 @@ export function CouponBattleWidget({ userId }: { userId: string | null }) {
   );
 
   return (
-    <Card className="bg-gradient-to-br from-violet-500/10 via-pink-500/5 to-amber-500/10 border-pink-500/30 mb-6">
+    <>
+      <FloatingHowItWorks title={"Coupon Battle Widget - How it works"} steps={[{ title: 'Open', desc: 'Access the Coupon Battle Widget section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Coupon Battle Widget.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-gradient-to-br from-violet-500/10 via-pink-500/5 to-amber-500/10 border-pink-500/30 mb-6">
       <CardContent className="p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
@@ -54,5 +57,6 @@ export function CouponBattleWidget({ userId }: { userId: string | null }) {
         {!userId && <p className="text-[11px] text-muted-foreground text-center mt-2">Login to vote — winner gets a hot-ranking boost.</p>}
       </CardContent>
     </Card>
+    </>
   );
 }

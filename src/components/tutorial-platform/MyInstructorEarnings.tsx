@@ -16,6 +16,7 @@ import {
 import { Euro, Wallet, TrendingUp, ArrowUpRight, Loader2, History, CheckCircle, Clock, XCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface InstructorProfile {
   id: string;
@@ -169,10 +170,13 @@ export const MyInstructorEarnings = () => {
 
   if (loading) {
     return (
+    <>
+      <FloatingHowItWorks title={"My Instructor Earnings - How it works"} steps={[{ title: 'Open', desc: 'Access the My Instructor Earnings section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in My Instructor Earnings.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="flex items-center justify-center py-12">
         <Loader2 className="w-8 h-8 animate-spin" />
       </div>
-    );
+    </>
+  );
   }
 
   if (!profile) {

@@ -2,13 +2,16 @@ import { DollarSign } from "lucide-react";
 import { AnalyzerToolLayout } from "../AnalyzerToolLayout";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export const PriceEstimatorView = ({ onBack }: { onBack: () => void }) => {
   const [category, setCategory] = useState("general");
   const [condition, setCondition] = useState("good");
 
   return (
-    <AnalyzerToolLayout
+    <>
+      <FloatingHowItWorks title={"Price Estimator View - How it works"} steps={[{ title: 'Open', desc: 'Access the Price Estimator View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Price Estimator View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <AnalyzerToolLayout
       title="AI Price Estimator"
       description="Get accurate price estimates for any item — electronics, cars, antiques, fashion & more"
       icon={<DollarSign className="w-7 h-7" />}
@@ -50,5 +53,6 @@ export const PriceEstimatorView = ({ onBack }: { onBack: () => void }) => {
         </div>
       </div>
     </AnalyzerToolLayout>
+    </>
   );
 };

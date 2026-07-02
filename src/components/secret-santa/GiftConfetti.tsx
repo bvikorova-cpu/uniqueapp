@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import confetti from "canvas-confetti";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface GiftConfettiProps {
   trigger: boolean;
@@ -138,7 +139,9 @@ export const GiftConfetti = ({ trigger, type = "send" }: GiftConfettiProps) => {
 // Particle animation component for continuous effects
 export const ParticleEffect = ({ type }: { type: "sparkle" | "hearts" | "stars" }) => {
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <>
+      <FloatingHowItWorks title={"Gift Confetti - How it works"} steps={[{ title: 'Open', desc: 'Access the Gift Confetti section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Gift Confetti.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {[...Array(15)].map((_, i) => (
         <div
           key={i}
@@ -156,5 +159,6 @@ export const ParticleEffect = ({ type }: { type: "sparkle" | "hearts" | "stars" 
         </div>
       ))}
     </div>
+    </>
   );
 };

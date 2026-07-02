@@ -6,6 +6,7 @@ import { ShieldAlert, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { CouponToolLayout } from "../CouponToolLayout";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -40,7 +41,9 @@ export function FraudScannerView({ onBack }: Props) {
   };
 
   return (
-    <CouponToolLayout onBack={onBack} title="AI Fraud Scanner" subtitle="Detect fake coupons, expired codes & scam patterns instantly" credits={4} icon={ShieldAlert} gradientFrom="#ef4444" gradientTo="#f97316" borderColor="red" formTitle="Listing to Scan" resultTitle="Fraud Analysis" emptyText="Paste a suspicious listing to get AI fraud analysis" result={result} loading={loading}>
+    <>
+      <FloatingHowItWorks title={"Fraud Scanner View - How it works"} steps={[{ title: 'Open', desc: 'Access the Fraud Scanner View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Fraud Scanner View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <CouponToolLayout onBack={onBack} title="AI Fraud Scanner" subtitle="Detect fake coupons, expired codes & scam patterns instantly" credits={4} icon={ShieldAlert} gradientFrom="#ef4444" gradientTo="#f97316" borderColor="red" formTitle="Listing to Scan" resultTitle="Fraud Analysis" emptyText="Paste a suspicious listing to get AI fraud analysis" result={result} loading={loading}>
       <div><label className="text-sm font-semibold mb-1.5 block">Listing Title *</label><Input placeholder="e.g., 50% off Nike - Too Good?" value={title} onChange={e => setTitle(e.target.value)} /></div>
       <div><label className="text-sm font-semibold mb-1.5 block">Store Name</label><Input placeholder="e.g., Nike" value={storeName} onChange={e => setStoreName(e.target.value)} /></div>
       <div className="grid grid-cols-2 gap-3">
@@ -54,5 +57,6 @@ export function FraudScannerView({ onBack }: Props) {
         {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Scanning...</> : <><ShieldAlert className="w-4 h-4 mr-2" />Scan for Fraud (4 CR)</>}
       </Button>
     </CouponToolLayout>
+    </>
   );
 }

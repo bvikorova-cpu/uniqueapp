@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const CATEGORIES = [
   "General Knowledge", "Science", "History", "Geography", "Sports",
@@ -17,7 +18,9 @@ const CATEGORIES = [
 
 export const BonusRoundCard = () => {
   return (
-    <Card className="relative overflow-hidden border-2 border-dashed border-yellow-500/30 backdrop-blur-xl bg-card/80">
+    <>
+      <FloatingHowItWorks title={"Gameplay Enhancements - How it works"} steps={[{ title: 'Open', desc: 'Access the Gameplay Enhancements section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Gameplay Enhancements.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="relative overflow-hidden border-2 border-dashed border-yellow-500/30 backdrop-blur-xl bg-card/80">
       <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-amber-500/5" />
       <div className="absolute top-2 right-2">
         <Badge className="bg-yellow-500 text-white gap-1 animate-pulse shadow-md">
@@ -53,6 +56,7 @@ export const BonusRoundCard = () => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };
 

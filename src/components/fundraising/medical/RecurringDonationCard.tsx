@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Calendar, Heart, Sparkles } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props {
   isMonthly: boolean;
@@ -16,7 +17,9 @@ interface Props {
 export function RecurringDonationCard({ isMonthly, onChange, amount }: Props) {
   const yearly = amount * 12;
   return (
-    <motion.label
+    <>
+      <FloatingHowItWorks title={"Recurring Donation Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Recurring Donation Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Recurring Donation Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.label
       htmlFor="recurring-toggle"
       animate={{
         scale: isMonthly ? 1.01 : 1,
@@ -64,5 +67,6 @@ export function RecurringDonationCard({ isMonthly, onChange, amount }: Props) {
         </div>
       </div>
     </motion.label>
+    </>
   );
 }

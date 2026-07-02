@@ -7,6 +7,7 @@ import { Loader2, Plus, X, Users, MessageCircle } from "lucide-react";
 import { AnalysisResults } from "./AnalysisResults";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const ThreadAnalysis = () => {
   const [messages, setMessages] = useState<string[]>([""]);
@@ -37,7 +38,9 @@ export const ThreadAnalysis = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Thread Analysis - How it works"} steps={[{ title: 'Open', desc: 'Access the Thread Analysis section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Thread Analysis.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
         <Card className="bg-card/60 backdrop-blur-sm border-border/50 overflow-hidden">
           <div className="h-1.5 bg-gradient-to-r from-purple-500 to-pink-500" />
@@ -122,5 +125,6 @@ export const ThreadAnalysis = () => {
 
       {result && <AnalysisResults analysis={result} />}
     </div>
+    </>
   );
 };

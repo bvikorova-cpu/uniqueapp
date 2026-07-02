@@ -10,6 +10,7 @@ import { Camera, Plus, Sparkles, Heart, PawPrint } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Update {
   id: string;
@@ -94,7 +95,9 @@ export function PetProgressGallery({ campaignId, ownerUserId, petName }: Props) 
   if (updates.length === 0 && !isOwner) return null;
 
   return (
-    <Card className="p-5">
+    <>
+      <FloatingHowItWorks title={"Pet Progress Gallery - How it works"} steps={[{ title: 'Open', desc: 'Access the Pet Progress Gallery section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Pet Progress Gallery.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-5">
       <div className="flex items-center gap-2 mb-4">
         <Camera className="w-5 h-5 text-primary" />
         <h3 className="font-bold text-lg">{petName}'s Recovery Journey</h3>
@@ -178,5 +181,6 @@ export function PetProgressGallery({ campaignId, ownerUserId, petName }: Props) 
         </div>
       )}
     </Card>
+    </>
   );
 }

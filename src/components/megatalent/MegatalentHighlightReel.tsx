@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Film, ChevronLeft, ChevronRight, Play } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   category?: string;
@@ -35,7 +36,12 @@ export default function MegatalentHighlightReel({ category, categories }: Props)
         if (!cancelled) setLoading(false);
       }
     })();
-    return () => { cancelled = true; };
+    return (
+    <>
+      <FloatingHowItWorks title={"Megatalent Highlight Reel - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Highlight Reel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Highlight Reel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => { cancelled = true; };
   }, [category, categories?.join(",")]);
 
   useEffect(() => {

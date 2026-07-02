@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Users, Heart, AlertTriangle, MapPin, Clock, CheckCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface CrisisCampaign {
   id: string;
@@ -37,7 +38,9 @@ export function CrisisCampaignCard({ campaign }: { campaign: CrisisCampaign }) {
   const timeLeft = formatDistanceToNow(new Date(campaign.expires_at), { addSuffix: true });
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Crisis Campaign Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Crisis Campaign Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Crisis Campaign Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
       whileHover={{ y: -4, scale: 1.01 }} transition={{ duration: 0.3 }}>
       <Card className="overflow-hidden h-full flex flex-col border-destructive/20 hover:shadow-xl hover:shadow-destructive/10 transition-all duration-300">
@@ -109,5 +112,6 @@ export function CrisisCampaignCard({ campaign }: { campaign: CrisisCampaign }) {
         </CardFooter>
       </Card>
     </motion.div>
+    </>
   );
 }

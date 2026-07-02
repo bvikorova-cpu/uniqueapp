@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Activity, Gauge, Thermometer, Zap, TrendingUp, BarChart3 } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface TelemetryPoint {
   lap: number;
@@ -40,7 +41,9 @@ function MiniChart({ data, dataKey, color, label, unit, max }: {
   const avg = values.reduce((a, b) => a + b, 0) / values.length;
 
   return (
-    <Card className="p-3 bg-slate-950/50 border-cyan-500/10 backdrop-blur-sm">
+    <>
+      <FloatingHowItWorks title={"Telemetry - How it works"} steps={[{ title: 'Open', desc: 'Access the Telemetry section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Telemetry.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-3 bg-slate-950/50 border-cyan-500/10 backdrop-blur-sm">
       <div className="flex items-center justify-between mb-2">
         <span className="text-[10px] font-mono text-cyan-400/50 uppercase tracking-wider">{label}</span>
         <span className="font-mono font-bold text-sm text-white">{current.toFixed(1)}{unit}</span>
@@ -57,6 +60,7 @@ function MiniChart({ data, dataKey, color, label, unit, max }: {
         <span className="text-[9px] font-mono text-cyan-400/30">MAX: {Math.max(...values).toFixed(1)}{unit}</span>
       </div>
     </Card>
+    </>
   );
 }
 

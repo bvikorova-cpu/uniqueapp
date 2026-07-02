@@ -15,6 +15,7 @@ import {
   Star,
   Award
 } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ChildProfile {
   id: string;
@@ -70,7 +71,9 @@ export const ParentalDashboard = ({
   });
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Parental Dashboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Parental Dashboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Parental Dashboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold flex items-center gap-2">
@@ -223,6 +226,7 @@ export const ParentalDashboard = ({
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };
 

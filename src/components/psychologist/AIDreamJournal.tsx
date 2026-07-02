@@ -9,6 +9,7 @@ import { ArrowLeft, Moon, Sparkles, Star, Eye, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -75,7 +76,9 @@ export const AIDreamJournal = ({ onBack }: Props) => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"A I Dream Journal - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Dream Journal section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Dream Journal.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2">
         <ArrowLeft className="h-4 w-4" /> Back to Dashboard
       </Button>
@@ -189,5 +192,6 @@ export const AIDreamJournal = ({ onBack }: Props) => {
         ))}
       </div>
     </div>
+    </>
   );
 };

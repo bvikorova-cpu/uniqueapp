@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, MapPin } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface StoryNarrativeProps {
   theme: string;
@@ -86,7 +87,9 @@ export function StoryNarrative({
   }
 
   return (
-    <AnimatePresence>
+    <>
+      <FloatingHowItWorks title={"Story Narrative - How it works"} steps={[{ title: 'Open', desc: 'Access the Story Narrative section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Story Narrative.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <AnimatePresence>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -186,6 +189,7 @@ export function StoryNarrative({
         </div>
       </motion.div>
     </AnimatePresence>
+    </>
   );
 }
 

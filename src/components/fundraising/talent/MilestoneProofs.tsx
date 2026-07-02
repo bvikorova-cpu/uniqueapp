@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Trophy, Music, Award, Disc3, Plus, ExternalLink, Trash2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Proof {
   id: string;
@@ -75,7 +76,9 @@ export const MilestoneProofs = ({ campaignId, isOwner }: { campaignId: string; i
   if (proofs.length === 0 && !isOwner) return null;
 
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title={"Milestone Proofs - How it works"} steps={[{ title: 'Open', desc: 'Access the Milestone Proofs section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Milestone Proofs.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Trophy className="h-5 w-5 text-primary" />
@@ -169,5 +172,6 @@ export const MilestoneProofs = ({ campaignId, isOwner }: { campaignId: string; i
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

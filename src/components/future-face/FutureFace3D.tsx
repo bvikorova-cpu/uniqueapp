@@ -6,6 +6,7 @@ import { Upload, RotateCw } from "lucide-react";
 import * as THREE from "three";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export default function FutureFace3D() {
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -64,7 +65,12 @@ export default function FutureFace3D() {
     };
     animate();
 
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Future Face3 D - How it works"} steps={[{ title: 'Open', desc: 'Access the Future Face3 D section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Future Face3 D.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       cancelAnimationFrame(rafId);
       renderer.domElement.removeEventListener("pointerdown", onDown);
       window.removeEventListener("pointermove", onMove);

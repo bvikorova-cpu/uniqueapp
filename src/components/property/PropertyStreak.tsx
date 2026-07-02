@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Flame, Calendar } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const PropertyStreak = () => {
   const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
@@ -9,7 +10,9 @@ export const PropertyStreak = () => {
   const currentStreak = 0;
 
   return (
-    <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
+    <>
+      <FloatingHowItWorks title={"Property Streak - How it works"} steps={[{ title: 'Open', desc: 'Access the Property Streak section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Property Streak.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
       <Card className="backdrop-blur-xl bg-card/80 border-sky-500/20 bg-gradient-to-br from-sky-500/10 to-blue-500/10 h-full">
         <CardContent className="p-4">
           <div className="flex items-center justify-between mb-3">
@@ -60,5 +63,6 @@ export const PropertyStreak = () => {
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 };

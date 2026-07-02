@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { handleEdgeError, throwIfInvokeError } from "@/lib/handleEdgeError";
 import BeforeAfterSlider from "./BeforeAfterSlider";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const FILTERS = [
   { label: "Original", css: "none" },
@@ -81,7 +82,9 @@ export default function FutureFaceLiveAR() {
   };
 
   return (
-    <div className="mb-8 space-y-4">
+    <>
+      <FloatingHowItWorks title={"Future Face Live A R - How it works"} steps={[{ title: 'Open', desc: 'Access the Future Face Live A R section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Future Face Live A R.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="mb-8 space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-xl sm:text-2xl font-black">📹 Live AR Camera</h2>
         <Badge className="bg-red-500/20 text-red-400 border-red-500/30">{stream ? "● LIVE" : "Off"}</Badge>
@@ -132,5 +135,6 @@ export default function FutureFaceLiveAR() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const HorseAuctionHouse = () => {
   const { user } = useAuth();
@@ -79,7 +80,9 @@ export const HorseAuctionHouse = () => {
   const getPowerScore = (h: any) => (h.speed_stat || 0) + (h.stamina_stat || 0) + (h.acceleration_stat || 0) + (h.temperament_stat || 0);
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Horse Auction House - How it works"} steps={[{ title: 'Open', desc: 'Access the Horse Auction House section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Horse Auction House.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-start justify-between">
         <div>
           <h2 className="text-2xl font-black flex items-center gap-2">
@@ -171,5 +174,6 @@ export const HorseAuctionHouse = () => {
         </DialogContent>
       </Dialog>
     </div>
+    </>
   );
 };

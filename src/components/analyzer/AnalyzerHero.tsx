@@ -3,6 +3,7 @@ import { Scan, Users, Zap, Eye } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useLiveStats } from "@/hooks/useLiveStats";
 import analyzerHeroAsset from "@/assets/analyzer-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface AnalyzerHeroProps {
   credits: number;
@@ -19,7 +20,12 @@ const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: str
       if (current >= target) { setCount(target); clearInterval(timer); }
       else setCount(Math.floor(current));
     }, duration / steps);
-    return () => clearInterval(timer);
+    return (
+    <>
+      <FloatingHowItWorks title={"Analyzer Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Analyzer Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Analyzer Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(timer);
   }, [target]);
   return <span>{target === 0 ? "—" : `${count.toLocaleString()}${suffix}`}</span>;
 };
