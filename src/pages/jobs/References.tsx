@@ -8,6 +8,14 @@ import { Users, Plus, CheckCircle2, Star } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_REFERENCES = [
+  { title: "Add a reference", desc: "Enter name, role and email of a previous manager/colleague." },
+  { title: "Request via email", desc: "System sends a short form for them to fill in. You never see the response until they submit." },
+  { title: "Attach to applications", desc: "Verified references get a badge and can be attached to any application." },
+];
+
 export default function References() {
   const [items, setItems] = useState<any[]>([]);
   const [userId, setUserId] = useState<string | null>(null);

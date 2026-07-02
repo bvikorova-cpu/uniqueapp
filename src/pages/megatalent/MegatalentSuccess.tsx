@@ -7,6 +7,14 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { safeInvoke } from "@/utils/safeInvoke";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_MEGATALENTSUCCESS = [
+  { title: "You are now Premium", desc: "Voting, commenting and uploading are unlocked immediately." },
+  { title: "Head to Megatalent", desc: "Return to the contest, pick a category and start engaging." },
+  { title: "Manage subscription", desc: "You can cancel or upgrade any time from Rewards \u2192 Subscriptions." },
+];
+
 type Status = "verifying" | "success" | "error";
 
 /**

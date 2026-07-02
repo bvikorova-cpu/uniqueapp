@@ -8,6 +8,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_APPLICATIONTRACKER = [
+  { title: "See all applications", desc: "Sorted by newest. Each card shows job, company, status and last update." },
+  { title: "Status stages", desc: "Applied \u2192 Viewed \u2192 Interview \u2192 Offer \u2192 Rejected. Colour matches the stage." },
+  { title: "Add notes", desc: "Attach personal notes/reminders per application (interview times, contacts, prep)." },
+  { title: "Withdraw an application", desc: "You can withdraw at any stage \u2014 the employer is notified automatically." },
+];
+
 const COLUMNS = [
   { id: "pending", label: "Applied", color: "bg-blue-500/15 border-blue-500/30 text-blue-400" },
   { id: "viewed", label: "Viewed", color: "bg-amber-500/15 border-amber-500/30 text-amber-400" },

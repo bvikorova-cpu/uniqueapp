@@ -5,6 +5,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { BarChart3, Users } from "lucide-react";
 import { motion } from "framer-motion";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_DIVERSITYREPORTS = [
+  { title: "Pick a timeframe", desc: "Last 30 days, quarter, year or custom range." },
+  { title: "Read the breakdown", desc: "Charts show applicants, interviews and hires broken down by anonymous demographics." },
+  { title: "Export as CSV/PDF", desc: "Share the report with leadership or DEI teams." },
+];
+
 export default function DiversityReports() {
   const { jobId } = useParams();
   const [apps, setApps] = useState<any[]>([]);

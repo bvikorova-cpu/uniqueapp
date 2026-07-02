@@ -9,6 +9,14 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { useResolvedStorageUrl } from "@/lib/storageSigned";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_VIDEORESUMES = [
+  { title: "Record or upload", desc: "Use the in-browser recorder or upload a MP4 up to 60s." },
+  { title: "Add captions & tags", desc: "Auto-captions can be edited. Tag with role/skills for discovery." },
+  { title: "Attach to applications", desc: "Employers see your video directly on the application card." },
+];
+
 interface VR { id: string; user_id: string; video_url: string; thumbnail_url: string | null; title: string | null; duration_seconds: number | null; is_public: boolean; created_at: string; }
 
 function VideoResumeCard({ v, onToggle, onRemove }: { v: VR; onToggle: (v: VR) => void; onRemove: (v: VR) => void }) {

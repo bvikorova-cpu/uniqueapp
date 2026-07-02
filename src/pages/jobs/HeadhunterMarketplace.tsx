@@ -10,6 +10,14 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_HEADHUNTERMARKETPLACE = [
+  { title: "Post a mandate", desc: "Describe the role, budget and success fee (% of first-year salary)." },
+  { title: "Recruiters submit candidates", desc: "Vetted headhunters apply to your mandate and start sourcing." },
+  { title: "Interview & hire", desc: "Communicate in-app. Fee is paid only when the candidate is hired and stays past the guarantee period." },
+];
+
 export default function HeadhunterMarketplace() {
   const navigate = useNavigate();
   const [list, setList] = useState<any[]>([]);

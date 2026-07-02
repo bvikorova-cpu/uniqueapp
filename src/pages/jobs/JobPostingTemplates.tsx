@@ -9,6 +9,14 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_JOBPOSTINGTEMPLATES = [
+  { title: "Create a template", desc: "Save any job post as a template with placeholders." },
+  { title: "Reuse when posting", desc: "Start a new job from a template and only fill in the differences." },
+  { title: "Share within your company", desc: "Team members can use your templates for consistent branding." },
+];
+
 export default function JobPostingTemplates() {
   const navigate = useNavigate();
   const [list, setList] = useState<any[]>([]);

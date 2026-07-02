@@ -10,6 +10,14 @@ import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_JOBALERTS = [
+  { title: "Create an alert", desc: "Set keyword, location, remote-ok, salary range and frequency (instant / daily / weekly)." },
+  { title: "Receive notifications", desc: "You get an in-app + email alert whenever a job matches your criteria." },
+  { title: "Manage alerts", desc: "Pause, edit or delete alerts anytime from this page." },
+];
+
 export default function JobAlerts() {
   const [enabled, setEnabled] = useState(true);
   const [matches, setMatches] = useState<any[]>([]);

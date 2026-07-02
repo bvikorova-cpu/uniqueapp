@@ -8,6 +8,14 @@ import { Sparkles, Loader2, RefreshCw, MapPin, Building2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_PERSONALIZEDFEED = [
+  { title: "Improve accuracy", desc: "Complete your profile skills, past roles and preferences \u2014 more info = better matches." },
+  { title: "Rate suggestions", desc: "Thumbs up / down teaches the algorithm and refines future recommendations." },
+  { title: "Apply in one tap", desc: "Cards let you save or apply without leaving the feed." },
+];
+
 export default function PersonalizedFeed() {
   const navigate = useNavigate();
   const [items, setItems] = useState<any[]>([]);

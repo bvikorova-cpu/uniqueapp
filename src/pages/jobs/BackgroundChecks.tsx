@@ -8,6 +8,14 @@ import { ShieldCheck, Send, Check } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_BACKGROUNDCHECKS = [
+  { title: "Choose check type", desc: "ID, criminal, education, employment or full package." },
+  { title: "Candidate consents", desc: "Candidate receives an email to consent and upload documents securely." },
+  { title: "Receive the report", desc: "Report arrives in-app once complete, typically within 24-72h." },
+];
+
 const CHECK_TYPES = [
   { id: "criminal", label: "Criminal record" },
   { id: "employment", label: "Employment history" },

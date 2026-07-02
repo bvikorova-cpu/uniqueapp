@@ -52,6 +52,16 @@ import MegatalentRivalries from "@/components/megatalent/MegatalentRivalries";
 import { Badge as UiBadge } from "@/components/ui/badge";
 import { Rocket } from "lucide-react";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_MEGATALENTCATEGORY = [
+  { title: "Browse submissions", desc: "Feed shows every clip in this category. Sort by Top, New or Hot." },
+  { title: "Watch and vote", desc: "Tap a clip to watch full-screen. Premium users can vote once per voting window." },
+  { title: "Comment & share", desc: "Leave a comment or share to your Wall to help a talent get noticed." },
+  { title: "Category leaderboard", desc: "Top-voted submissions this week appear at the top and compete for the category prize." },
+  { title: "Upload your own", desc: "Premium users can submit a clip to this category from the upload button." },
+];
+
 const categoryConfig: Record<string, { title: string; icon: string; categories: string[] }> = {
   art: { title: "Art & Creativity", icon: "🎨", categories: ["drawing", "painting", "digital_art", "sculpture", "photography", "handmade", "makeup_art", "tattoo"] },
   music: { title: "Music", icon: "🎤", categories: ["singing", "instrument", "music_production", "beatbox", "rap"] },
@@ -259,6 +269,9 @@ const MegatalentCategory = () => {
   return (
     <div className="min-h-screen bg-background pt-20 pb-8">
       <div className="container mx-auto px-4 max-w-7xl">
+        <div className="flex justify-end mb-2">
+          <HowItWorksButton title="Megatalent Category" intro="How a single talent category (Music, Dance, Comedy\u2026) works." steps={HOW_STEPS_MEGATALENTCATEGORY} variant="compact" />
+        </div>
         {/* Back button */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
           <Button variant="ghost" onClick={() => navigate("/megatalent")} className="mb-6 gap-2">

@@ -8,6 +8,15 @@ import { motion } from "framer-motion";
 import { SEO } from "@/components/SEO";
 import { SalaryDialog } from "@/components/jobs/SalaryDialog";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_SALARYINSIGHTS = [
+  { title: "Pick a job title", desc: "Search or select from popular roles." },
+  { title: "Choose location + seniority", desc: "Filter by country/city and Junior/Mid/Senior/Lead." },
+  { title: "Read the range", desc: "You see min, median and max EUR salary based on Unique data + market sources." },
+  { title: "Compare roles", desc: "Add multiple titles to a comparison to help negotiate your next offer." },
+];
+
 export default function SalaryInsights() {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);

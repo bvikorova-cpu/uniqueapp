@@ -9,6 +9,14 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_REJECTIONTEMPLATES = [
+  { title: "Pick a template", desc: "Choose Post-application, Post-interview or Final-round wording." },
+  { title: "Personalise", desc: "Merge fields auto-fill candidate name, role and interviewer." },
+  { title: "Send in bulk or single", desc: "Select many candidates in ATS and send the same template at once." },
+];
+
 const DEFAULT_TPL = `Dear {candidate},
 
 Thank you for your interest in the {job_title} position at {company}. After careful consideration, we have decided not to move forward with your application at this time.

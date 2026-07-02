@@ -8,6 +8,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Map as MapIcon, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_JOBSMAP = [
+  { title: "Zoom & pan", desc: "Move around the map \u2014 job pins cluster; zoom in to split clusters into individual roles." },
+  { title: "Tap a pin", desc: "See a preview card with job title, company and salary. Tap it to open the full detail." },
+  { title: "Filter", desc: "Apply the same filters as the main Jobs board \u2014 role, seniority, remote-ok, salary." },
+];
+
 // Fix default marker icons (Vite breaks them)
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({

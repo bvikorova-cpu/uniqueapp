@@ -8,6 +8,15 @@ import { Map, Plus, Trash2, CheckCircle2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_CAREERPATH = [
+  { title: "Enter your current role", desc: "Pick title + years of experience." },
+  { title: "See next steps", desc: "AI suggests 2-4 realistic next roles with required skills and typical salary jump." },
+  { title: "Skill gaps", desc: "Missing skills are highlighted with links to courses and assessments to close the gap." },
+  { title: "Save a path", desc: "Bookmark a chosen path \u2014 the tracker reminds you of milestones." },
+];
+
 export default function CareerPath() {
   const [nodes, setNodes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);

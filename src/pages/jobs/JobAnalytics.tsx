@@ -6,6 +6,14 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, BarChart3, Eye, MousePointerClick, Send, Bookmark, Share2, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_JOBANALYTICS = [
+  { title: "Pick a timeframe", desc: "Last 7/30/90 days or custom." },
+  { title: "Key metrics", desc: "Views, applies, view-to-apply rate, source split, time-to-hire." },
+  { title: "Drill into a job", desc: "Click any post to see per-job funnel and source of hire." },
+];
+
 const TYPES: { id: string; label: string; icon: any }[] = [
   { id: "view", label: "Views", icon: Eye },
   { id: "impression", label: "Impressions", icon: MousePointerClick },

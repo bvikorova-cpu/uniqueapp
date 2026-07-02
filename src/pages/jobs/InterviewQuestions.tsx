@@ -9,6 +9,14 @@ import { motion } from "framer-motion";
 import { SEO } from "@/components/SEO";
 import { InterviewQuestionDialog } from "@/components/jobs/InterviewQuestionDialog";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_INTERVIEWQUESTIONS = [
+  { title: "Enter role & seniority", desc: "e.g. Senior Backend Engineer, Product Manager." },
+  { title: "Get a question set", desc: "Behavioural, technical and role-specific questions with model answers." },
+  { title: "Send to a candidate", desc: "Attach the set to an ATS stage \u2014 candidate answers in-app or on video." },
+];
+
 export default function InterviewQuestions() {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);

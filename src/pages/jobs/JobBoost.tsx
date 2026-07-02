@@ -7,6 +7,14 @@ import { Rocket, Loader2, Sparkles, TrendingUp, Crown } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_JOBBOOST = [
+  { title: "Pick the job", desc: "Select an active post to boost." },
+  { title: "Choose a boost tier", desc: "48h Highlight, 7-day Featured or 30-day Top-of-search." },
+  { title: "Pay & activate", desc: "Boost starts immediately after payment. Analytics show views/applies delta." },
+];
+
 const TIERS = [
   { tier: "basic", label: "Basic Boost", price: 19, days: 7, desc: "Pinned to top of category", icon: TrendingUp, color: "from-blue-500 to-cyan-500" },
   { tier: "premium", label: "Premium Boost", price: 49, days: 14, desc: "Featured + push notifications", icon: Sparkles, color: "from-purple-500 to-pink-500" },

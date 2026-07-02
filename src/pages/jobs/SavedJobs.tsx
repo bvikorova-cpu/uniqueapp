@@ -6,6 +6,14 @@ import { Bookmark, MapPin, Building2, Loader2, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_SAVEDJOBS = [
+  { title: "Add jobs from the board", desc: "Tap the bookmark on any job card or detail page \u2014 it appears here instantly." },
+  { title: "Remove a save", desc: "Tap the bookmark again to unsave. Applied jobs stay in Application Tracker." },
+  { title: "Apply from the list", desc: "Open a saved job and hit Apply when you're ready." },
+];
+
 export default function SavedJobs() {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);

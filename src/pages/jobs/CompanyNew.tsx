@@ -9,6 +9,14 @@ import { Building2, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_COMPANYNEW = [
+  { title: "Fill in company details", desc: "Name, industry, size, website, HQ location and a short bio." },
+  { title: "Upload a logo", desc: "Square logo works best (200\u00d7200+). Shown on all your job cards." },
+  { title: "Publish", desc: "Once created you become the owner and can post jobs from the Employer ATS." },
+];
+
 const slugify = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
 export default function CompanyNew() {

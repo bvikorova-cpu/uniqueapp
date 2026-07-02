@@ -7,6 +7,14 @@ import { Heart, Save } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_DIVERSITYSELFID = [
+  { title: "Read the intro", desc: "Filling this in is 100% optional and never affects your applications." },
+  { title: "Answer only what you want", desc: "Every question has a 'Prefer not to say' option." },
+  { title: "Data is anonymized", desc: "Employers see aggregate numbers only \u2014 never individual answers." },
+];
+
 const OPTS = {
   gender: ["Prefer not to say", "Female", "Male", "Non-binary", "Other"],
   ethnicity: ["Prefer not to say", "Asian", "Black/African", "Hispanic/Latino", "Middle Eastern", "White/European", "Mixed", "Other"],

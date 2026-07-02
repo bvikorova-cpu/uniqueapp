@@ -12,6 +12,15 @@ import { ReviewDialog } from "@/components/jobs/ReviewDialog";
 import { SalaryDialog } from "@/components/jobs/SalaryDialog";
 import { InterviewQuestionDialog } from "@/components/jobs/InterviewQuestionDialog";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_COMPANYPROFILE = [
+  { title: "Overview", desc: "Read the company bio, size, industry, HQ and website." },
+  { title: "See open roles", desc: "All current job posts appear as cards \u2014 tap one to open the full detail." },
+  { title: "Read reviews", desc: "Employee ratings and reviews are aggregated here. Verified reviews are marked." },
+  { title: "Follow the company", desc: "Get notified about new posts. Owners can claim/edit the profile in the employer area." },
+];
+
 export default function CompanyProfile() {
   const { slug } = useParams();
   const navigate = useNavigate();

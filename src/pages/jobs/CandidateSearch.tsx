@@ -9,6 +9,14 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_CANDIDATESEARCH = [
+  { title: "Filter", desc: "Skills, seniority, location, availability, salary expectation, remote-ok." },
+  { title: "Open a profile", desc: "See public profile, badges, video resume and past experience." },
+  { title: "Reach out", desc: "Message directly (uses employer credits) or invite them to apply to a role." },
+];
+
 export default function CandidateSearch() {
   const navigate = useNavigate();
   const [candidates, setCandidates] = useState<any[]>([]);

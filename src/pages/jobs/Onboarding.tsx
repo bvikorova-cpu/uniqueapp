@@ -9,6 +9,14 @@ import { ClipboardList, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_ONBOARDING = [
+  { title: "Assign a checklist", desc: "Pick or customise a template of tasks for the first day/week/month." },
+  { title: "Track progress", desc: "New hire ticks items off; HR sees completion in real time." },
+  { title: "Store documents", desc: "Contract, tax forms and ID uploads are stored securely in one place." },
+];
+
 interface Task { id: string; title: string; description?: string; due_days?: number; }
 
 export default function Onboarding() {

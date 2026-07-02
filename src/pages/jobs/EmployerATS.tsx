@@ -13,6 +13,15 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_EMPLOYERATS = [
+  { title: "Pipeline stages", desc: "Applied \u2192 Screening \u2192 Interview \u2192 Offer \u2192 Hired. Drag cards between stages." },
+  { title: "Bulk actions", desc: "Select many candidates to move stage, send email or reject with a template." },
+  { title: "Collaborate with team", desc: "Add hiring managers, leave scorecards, share feedback." },
+  { title: "Analytics", desc: "Time-to-hire, source of hire and pipeline conversion charts." },
+];
+
 const STAGES = [
   { id: "pending", label: "Applied", color: "bg-blue-500/15 border-blue-500/30 text-blue-300" },
   { id: "viewed", label: "Reviewed", color: "bg-amber-500/15 border-amber-500/30 text-amber-300" },

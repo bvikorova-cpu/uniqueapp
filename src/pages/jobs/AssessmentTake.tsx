@@ -6,6 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_ASSESSMENTTAKE = [
+  { title: "Read instructions carefully", desc: "Note time limit, number of questions and passing score." },
+  { title: "Start the timer", desc: "Once you begin you cannot pause. Ensure a stable connection." },
+  { title: "Submit before time runs out", desc: "Auto-submit at 00:00. Results are sent to you and the employer." },
+];
+
 export default function AssessmentTake() {
   const { id } = useParams();
   const navigate = useNavigate();

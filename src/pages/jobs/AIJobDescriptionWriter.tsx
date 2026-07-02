@@ -9,6 +9,14 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_AIJOBDESCRIPTIONWRITER = [
+  { title: "Enter role & team info", desc: "Title, seniority, team, must-have skills, tone." },
+  { title: "Generate the JD", desc: "AI writes a full posting: intro, responsibilities, requirements, benefits, EEO." },
+  { title: "Edit and publish", desc: "Tweak, save as template, then publish to the board." },
+];
+
 export default function AIJobDescriptionWriter() {
   const [title, setTitle] = useState("");
   const [company, setCompany] = useState("");

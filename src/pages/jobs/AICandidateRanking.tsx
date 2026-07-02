@@ -9,6 +9,14 @@ import { Sparkles, Loader2, ArrowLeft, Trophy, AlertTriangle, CheckCircle2 } fro
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_AICANDIDATERANKING = [
+  { title: "Pick a job", desc: "Select an active job with applicants." },
+  { title: "Run the ranking", desc: "AI scores each applicant on skills, experience, culture fit signals." },
+  { title: "Read the reasoning", desc: "Every score is explained \u2014 you can override the ranking and give AI feedback." },
+];
+
 export default function AICandidateRanking() {
   const { jobId } = useParams<{ jobId: string }>();
   const navigate = useNavigate();

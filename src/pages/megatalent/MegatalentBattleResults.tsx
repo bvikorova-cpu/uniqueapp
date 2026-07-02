@@ -12,6 +12,15 @@ import { ArrowLeft, Crown, Loader2, Swords, Trophy, History, Share2, AlertCircle
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_MEGATALENTBATTLERESULTS = [
+  { title: "Choose a tournament", desc: "Pick the current battle or browse past editions." },
+  { title: "Read the podium", desc: "Top 3 win the main cash prize. Positions 4-10 win smaller prizes." },
+  { title: "Full leaderboard", desc: "Every participant is ranked with vote count and estimated payout." },
+  { title: "Payouts", desc: "Winnings are paid via Stripe Connect once the battle is verified (usually within 72h)." },
+];
+
 type Tournament = {
   id: string;
   category: string;
@@ -277,6 +286,9 @@ const MegatalentBattleResults = () => {
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-4 max-w-6xl">
+        <div className="flex justify-end mb-2">
+          <HowItWorksButton title="Battle Results" intro="Weekly battle royale rankings and payouts." steps={HOW_STEPS_MEGATALENTBATTLERESULTS} variant="compact" />
+        </div>
         <Button variant="ghost" onClick={() => navigate(-1)} className="mb-6 gap-2">
           <ArrowLeft className="h-4 w-4" /> Back
         </Button>

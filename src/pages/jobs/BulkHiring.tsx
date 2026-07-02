@@ -11,6 +11,14 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_BULKHIRING = [
+  { title: "Upload a CSV", desc: "Provide a spreadsheet of roles or use the template." },
+  { title: "Auto-create job posts", desc: "Each row becomes a live job with the same template branding." },
+  { title: "Manage in one dashboard", desc: "Applicants across all bulk roles are unified for easier screening." },
+];
+
 export default function BulkHiring() {
   const navigate = useNavigate();
   const [list, setList] = useState<any[]>([]);

@@ -9,6 +9,15 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_MOCKINTERVIEW = [
+  { title: "Choose role & difficulty", desc: "Pick target job (e.g. Frontend Engineer) and level (Junior / Senior)." },
+  { title: "Answer questions", desc: "AI asks 5-10 questions \u2014 reply by text or voice. Timer optional." },
+  { title: "Get scored feedback", desc: "You receive a score per question + tips on clarity, structure and technical depth." },
+  { title: "Retry weak areas", desc: "Bookmark questions you struggled with and re-run just those next time." },
+];
+
 type Msg = { role: "assistant" | "user"; content: string };
 
 export default function MockInterview() {

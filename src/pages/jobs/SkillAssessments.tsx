@@ -7,6 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Award, Loader2, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_SKILLASSESSMENTS = [
+  { title: "Pick an assessment", desc: "Browse tests by skill (SQL, React, Excel\u2026). Each shows length and difficulty." },
+  { title: "Take the test", desc: "Timed multiple-choice + short answers. No pausing once started." },
+  { title: "Get a verified badge", desc: "Passing awards a badge shown on your profile \u2014 employers can filter by it." },
+];
+
 export default function SkillAssessments() {
   const navigate = useNavigate();
   const [items, setItems] = useState<any[]>([]);

@@ -7,6 +7,16 @@ import { Button } from "@/components/ui/button";
 import { Briefcase, MapPin, Globe, Clock, DollarSign, Building2, ArrowLeft } from "lucide-react";
 import { SimilarJobs } from "@/components/jobs/SimilarJobs";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_JOBDETAILPAGE = [
+  { title: "Read the full description", desc: "Requirements, responsibilities, salary range, benefits and company info are all here." },
+  { title: "Apply directly", desc: "Click Apply, write a short cover letter (min. 20 chars) and paste a resume link (Drive, Dropbox, LinkedIn, PDF)." },
+  { title: "Save for later", desc: "Bookmark icon adds this job to your Saved Jobs list." },
+  { title: "Share the job", desc: "Send the link to a friend \u2014 they can apply too and earn you a referral bonus if enabled." },
+  { title: "Check application status", desc: "After applying, open Application Tracker to follow status updates." },
+];
+
 interface JobDetail {
   id: string;
   slug?: string | null;
@@ -144,6 +154,9 @@ export default function JobDetailPage() {
       </Helmet>
       <div className="min-h-screen bg-background pt-20 pb-12">
         <div className="container mx-auto px-4 max-w-4xl">
+        <div className="flex justify-end mb-2">
+          <HowItWorksButton title="Job Detail" intro="Everything you can do on a single job posting." steps={HOW_STEPS_JOBDETAILPAGE} variant="compact" />
+        </div>
           <Link to="/jobs" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-4">
             <ArrowLeft className="h-4 w-4 mr-1" /> All jobs
           </Link>

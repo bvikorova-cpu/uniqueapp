@@ -8,6 +8,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 import { SEO } from "@/components/SEO";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_COMPANIES = [
+  { title: "Search a company", desc: "Type a name to filter the directory of employers on Unique." },
+  { title: "Open a company profile", desc: "See ratings, employee reviews, culture info and every open job at that company." },
+  { title: "Follow to get updates", desc: "Follow a company to receive alerts when they post a new role." },
+  { title: "Leave a review", desc: "Verified employees can post a rating + review that helps other candidates decide." },
+];
+
 export default function Companies() {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
