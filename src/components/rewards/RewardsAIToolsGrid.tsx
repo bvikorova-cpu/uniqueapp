@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import ReactMarkdown from "react-markdown";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 const tools = [
   { id: "xp_optimizer", icon: Zap, title: "AI XP Optimizer", desc: "Fastest path to level up", cost: 4, color: "from-amber-500 to-yellow-500" },
