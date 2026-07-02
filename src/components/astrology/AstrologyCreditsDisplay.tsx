@@ -5,8 +5,8 @@ import { useAstrologyCredits } from '@/hooks/useAstrologyCredits';
 import { Sparkles, ShoppingCart, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import {
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import {
   Dialog,
   DialogContent,
   DialogHeader,

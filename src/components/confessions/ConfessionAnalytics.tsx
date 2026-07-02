@@ -5,8 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, BarChart3, TrendingUp, PieChart, Calendar, RefreshCw } from "lucide-react";
 import { motion } from "framer-motion";
-import {
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart as RePieChart, Pie, Cell, AreaChart, Area
 } from "recharts";

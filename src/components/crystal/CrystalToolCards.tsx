@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import {
   Sparkles, Heart, Gem, BookOpen, Store, Upload, Timer, Palette,
   Brain, Compass, Users, BarChart3, Zap, Sun, Moon, Eye,
   Camera, Music, Globe, MessageCircle, Trophy, Package
