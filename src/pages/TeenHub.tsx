@@ -10,6 +10,7 @@ import { useTeenCredits } from "@/hooks/useTeenCredits";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const MODULES = [
   { key: "homework_pro",    title: "Homework Pro",     emoji: "📘", cost: 4, path: "/teen-homework-pro",    desc: "Step-by-step problem solving" },
