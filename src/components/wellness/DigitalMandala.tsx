@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Download, Trash2, Palette, Sparkles, Undo2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const COLOR_PALETTES = {
   "Cosmic": ["#8B5CF6", "#EC4899", "#3B82F6", "#6366F1", "#A855F7", "#F472B6"],
@@ -129,6 +130,7 @@ export function DigitalMandala() {
 
   return (
     <Card className="mt-4 relative overflow-hidden border-primary/20 backdrop-blur-xl bg-card/80">
+      <FloatingHowItWorks title="DigitalMandala — How it works" steps={[{title:"Open this tool",desc:"Access DigitalMandala within the Health & Wellness section."},{title:"Configure",desc:"Adjust preferences, choose duration or select goals."},{title:"Start & interact",desc:"Begin the session, log data or run an AI analysis (some cost 3–5 credits)."},{title:"Review results",desc:"Check outcomes, save to history and track progress over time."}]} />
       <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 via-primary/5 to-pink-500/5" />
       <CardHeader className="relative">
         <CardTitle className="flex items-center gap-2">

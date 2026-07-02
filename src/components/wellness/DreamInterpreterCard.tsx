@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Moon, Sparkles } from "lucide-react";
 import { useDreamInterpreter } from "@/hooks/useWellnessAIFeatures";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export function DreamInterpreterCard() {
   const [open, setOpen] = useState(false);
@@ -14,7 +15,9 @@ export function DreamInterpreterCard() {
   const last = dreams[0];
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+      <FloatingHowItWorks title="DreamInterpreterCard — How it works" steps={[{title:"Open this tool",desc:"Access DreamInterpreterCard within the Health & Wellness section."},{title:"Configure",desc:"Adjust preferences, choose duration or select goals."},{title:"Start & interact",desc:"Begin the session, log data or run an AI analysis (some cost 3–5 credits)."},{title:"Review results",desc:"Check outcomes, save to history and track progress over time."}]} />
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Card className="group cursor-pointer relative overflow-hidden border border-indigo-500/20 bg-gradient-to-br from-indigo-950/40 via-card/40 to-violet-950/30 backdrop-blur-xl p-5 hover:border-indigo-400/40 transition-all">
           <div className="flex items-start gap-3">
@@ -65,5 +68,5 @@ export function DreamInterpreterCard() {
         )}
       </DialogContent>
     </Dialog>
-  );
+    </>);
 }

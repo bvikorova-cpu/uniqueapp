@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { 
   Smile, Meh, Frown, Heart, Sun, Cloud, CloudRain, Sparkles, TrendingUp
 } from "lucide-react";
@@ -49,6 +50,7 @@ export const MoodTracker = ({ onSaveMood }: MoodTrackerProps) => {
 
   return (
     <div className="space-y-6">
+      <FloatingHowItWorks title="MoodTracker — How it works" steps={[{title:"Open this tool",desc:"Access MoodTracker within the Health & Wellness section."},{title:"Configure",desc:"Adjust preferences, choose duration or select goals."},{title:"Start & interact",desc:"Begin the session, log data or run an AI analysis (some cost 3–5 credits)."},{title:"Review results",desc:"Check outcomes, save to history and track progress over time."}]} />
       <Card className="relative overflow-hidden border-primary/20 backdrop-blur-xl bg-card/80">
         <div className="absolute inset-0 bg-gradient-to-br from-pink-500/5 via-primary/5 to-violet-500/5" />
         <CardHeader className="relative">

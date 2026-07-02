@@ -10,6 +10,7 @@ import { useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -34,7 +35,9 @@ export default function AIAllergyScanner({ onBack }: Props) {
   });
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+    <>
+      <FloatingHowItWorks title="AIAllergyScanner — How it works" steps={[{title:"Open this tool",desc:"Access AIAllergyScanner within the Health & Wellness section."},{title:"Configure",desc:"Adjust preferences, choose duration or select goals."},{title:"Start & interact",desc:"Begin the session, log data or run an AI analysis (some cost 3–5 credits)."},{title:"Review results",desc:"Check outcomes, save to history and track progress over time."}]} />
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2 mb-2 drop-shadow-md">
         <ArrowLeft className="h-4 w-4" /> Back to Dashboard
       </Button>
@@ -118,5 +121,5 @@ export default function AIAllergyScanner({ onBack }: Props) {
         </Card>
       </div>
     </motion.div>
-  );
+    </>);
 }

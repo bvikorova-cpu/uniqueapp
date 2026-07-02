@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { motion, AnimatePresence } from "framer-motion";
 import { Target, Flame, CheckCircle2, Clock, Sparkles, Trophy, Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Challenge {
   id: string;
@@ -58,6 +59,7 @@ export function DailyWellnessChallenges() {
 
   return (
     <Card className="mt-4 relative overflow-hidden border-primary/20 backdrop-blur-xl bg-card/80">
+      <FloatingHowItWorks title="DailyWellnessChallenges — How it works" steps={[{title:"Open this tool",desc:"Access DailyWellnessChallenges within the Health & Wellness section."},{title:"Configure",desc:"Adjust preferences, choose duration or select goals."},{title:"Start & interact",desc:"Begin the session, log data or run an AI analysis (some cost 3–5 credits)."},{title:"Review results",desc:"Check outcomes, save to history and track progress over time."}]} />
       <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-primary/5 to-emerald-500/5" />
       <CardHeader className="relative">
         <div className="flex items-center justify-between">

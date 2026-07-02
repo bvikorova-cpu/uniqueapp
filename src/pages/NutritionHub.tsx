@@ -31,6 +31,7 @@ import AIBarcodeScanner from "@/components/nutrition/AIBarcodeScanner";
 import WeeklyProgressDashboard from "@/components/nutrition/WeeklyProgressDashboard";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ActiveView = "dashboard" | "meal-planner" | "food-scanner" | "macro-tracker" |
   "restaurant" | "quests" | "workout" | "hydration" | "supplements" | "grocery" | "body-predictor" |
   "allergy-scanner" | "meal-challenges" | "nutrition-coach" | "barcode-scanner" | "weekly-progress";
@@ -86,6 +87,7 @@ export default function NutritionHub() {
     const hasBackButton = viewsWithBackButton.includes(activeView);
     return (
       <div className="min-h-screen flex flex-col bg-background">
+      <FloatingHowItWorks title="NutritionHub — How it works" steps={[{title:"Open the tool",desc:"Launch NutritionHub from the menu to access its features."},{title:"Explore options",desc:"Browse available cards, filters and personalized recommendations."},{title:"Interact & track",desc:"Log entries, start sessions or run AI scans. Some AI actions cost 3–5 credits."},{title:"Review progress",desc:"Check your dashboard for streaks, achievements and history."}]} />
         <Navbar />
         <main className="flex-1 container mx-auto px-4 py-20">
           {!hasBackButton && (

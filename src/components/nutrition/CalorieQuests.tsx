@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Trophy, Star, Target, Flame, Award, Users, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function CalorieQuests() {
   const { data: progress } = useQuery({
@@ -52,6 +53,7 @@ export default function CalorieQuests() {
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+      <FloatingHowItWorks title="CalorieQuests — How it works" steps={[{title:"Open this tool",desc:"Access CalorieQuests within the Health & Wellness section."},{title:"Configure",desc:"Adjust preferences, choose duration or select goals."},{title:"Start & interact",desc:"Begin the session, log data or run an AI analysis (some cost 3–5 credits)."},{title:"Review results",desc:"Check outcomes, save to history and track progress over time."}]} />
       {/* Level Card */}
       <Card className="bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-orange-500/10 border-primary/20 backdrop-blur-xl">
         <CardHeader>

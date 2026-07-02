@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Phone, MessageCircle, MapPin, Heart, AlertTriangle, ExternalLink } from 'lucide-react';
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface EmergencyResource {
   name: string;
@@ -55,6 +56,7 @@ export const EmergencyResources = ({
 }: EmergencyResourcesProps) => {
   return (
     <Card>
+      <FloatingHowItWorks title="EmergencyResources — How it works" steps={[{title:"Open this tool",desc:"Access EmergencyResources within the Health & Wellness section."},{title:"Configure",desc:"Adjust preferences, choose duration or select goals."},{title:"Start & interact",desc:"Begin the session, log data or run an AI analysis (some cost 3–5 credits)."},{title:"Review results",desc:"Check outcomes, save to history and track progress over time."}]} />
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Heart className="h-5 w-5 text-red-500" />

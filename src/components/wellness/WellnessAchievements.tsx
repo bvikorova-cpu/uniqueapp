@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Award, Lock } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const badges = [
   { name: "First Breath", icon: "🌬️", description: "Complete your first breathing exercise", unlocked: false },
@@ -13,7 +14,9 @@ const badges = [
 
 export const WellnessAchievements = () => {
   return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+    <>
+      <FloatingHowItWorks title="WellnessAchievements — How it works" steps={[{title:"Open this tool",desc:"Access WellnessAchievements within the Health & Wellness section."},{title:"Configure",desc:"Adjust preferences, choose duration or select goals."},{title:"Start & interact",desc:"Begin the session, log data or run an AI analysis (some cost 3–5 credits)."},{title:"Review results",desc:"Check outcomes, save to history and track progress over time."}]} />
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
       <Card className="backdrop-blur-xl bg-card/80 border-primary/20 h-full">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-base">
@@ -51,5 +54,5 @@ export const WellnessAchievements = () => {
         </CardContent>
       </Card>
     </motion.div>
-  );
+    </>);
 };

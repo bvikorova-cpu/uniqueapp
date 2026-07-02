@@ -6,6 +6,7 @@ import { Apple, Loader2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function MasterChefNutritionAnalyzer() {
   const [recipeName, setRecipeName] = useState("");
@@ -39,6 +40,7 @@ export default function MasterChefNutritionAnalyzer() {
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12 px-4">
+      <FloatingHowItWorks title="MasterChefNutritionAnalyzer — How it works" steps={[{title:"Open the tool",desc:"Launch MasterChefNutritionAnalyzer from the menu to access its features."},{title:"Explore options",desc:"Browse available cards, filters and personalized recommendations."},{title:"Interact & track",desc:"Log entries, start sessions or run AI scans. Some AI actions cost 3–5 credits."},{title:"Review progress",desc:"Check your dashboard for streaks, achievements and history."}]} />
       <div className="max-w-4xl mx-auto space-y-6">
         <Button variant="ghost" onClick={() => navigate("/masterchef-subscription")}>← Back</Button>
         <div className="text-center">

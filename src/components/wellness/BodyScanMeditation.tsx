@@ -6,6 +6,7 @@ import { Play, Pause, RotateCcw, Sparkles, Heart, CheckCircle2 } from "lucide-re
 import { Progress } from "@/components/ui/progress";
 import { useWellnessProgress } from "@/hooks/useWellnessProgress";
 import { motion, AnimatePresence } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface BodyPart {
   id: string;
@@ -117,6 +118,7 @@ export function BodyScanMeditation() {
 
   return (
     <div className="space-y-6 mt-4">
+      <FloatingHowItWorks title="BodyScanMeditation — How it works" steps={[{title:"Open this tool",desc:"Access BodyScanMeditation within the Health & Wellness section."},{title:"Configure",desc:"Adjust preferences, choose duration or select goals."},{title:"Start & interact",desc:"Begin the session, log data or run an AI analysis (some cost 3–5 credits)."},{title:"Review results",desc:"Check outcomes, save to history and track progress over time."}]} />
       <Card className="relative overflow-hidden border-primary/20 backdrop-blur-xl bg-card/80">
         <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 via-primary/5 to-emerald-500/5" />
         <CardHeader className="relative">

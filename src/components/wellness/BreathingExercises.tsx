@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Play, Pause, RotateCcw, Wind, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 type Exercise = {
   name: string;
@@ -91,6 +92,7 @@ export function BreathingExercises() {
 
   return (
     <Card className="mt-4 relative overflow-hidden border-primary/20 backdrop-blur-xl bg-card/80">
+      <FloatingHowItWorks title="BreathingExercises — How it works" steps={[{title:"Open this tool",desc:"Access BreathingExercises within the Health & Wellness section."},{title:"Configure",desc:"Adjust preferences, choose duration or select goals."},{title:"Start & interact",desc:"Begin the session, log data or run an AI analysis (some cost 3–5 credits)."},{title:"Review results",desc:"Check outcomes, save to history and track progress over time."}]} />
       <div className="absolute inset-0 bg-gradient-to-br from-sky-500/5 via-primary/5 to-emerald-500/5" />
       <CardHeader className="relative">
         <CardTitle className="flex items-center gap-2">

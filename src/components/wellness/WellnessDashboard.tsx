@@ -8,6 +8,7 @@ import {
   Phone, AlertTriangle, Heart, Brain, Shield, Sparkles, TrendingUp
 } from "lucide-react";
 import { WellnessParityPack } from "./WellnessParityPack";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface EmergencyContact {
   name: string;
@@ -39,6 +40,7 @@ export const WellnessDashboard = () => {
 
   return (
     <div className="space-y-6">
+      <FloatingHowItWorks title="WellnessDashboard — How it works" steps={[{title:"Open this tool",desc:"Access WellnessDashboard within the Health & Wellness section."},{title:"Configure",desc:"Adjust preferences, choose duration or select goals."},{title:"Start & interact",desc:"Begin the session, log data or run an AI analysis (some cost 3–5 credits)."},{title:"Review results",desc:"Check outcomes, save to history and track progress over time."}]} />
       <WellnessParityPack />
 
       {/* Emergency Button */}
