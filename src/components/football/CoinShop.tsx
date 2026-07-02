@@ -5,6 +5,7 @@ import { ArrowLeft, Coins, CreditCard } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const coinPackages = [
   { coins: 1000, price: 299, label: "Starter Pack" },
@@ -49,7 +50,8 @@ export const CoinShop = ({ onBack }: { onBack: () => void }) => {
   if (!user) return <div className="space-y-4"><Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4" /> Back</Button><p className="text-center py-8">Sign in first</p></div>;
 
   return (
-    <div className="space-y-6">
+    <><FloatingHowItWorks title="CoinShop — How it works" steps={[{title:"Open this section",desc:"Access CoinShop from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button>
       <h2 className="text-2xl font-bold">🪙 Coin Shop</h2>
       <Card className="border-amber-500/30 bg-gradient-to-br from-amber-500/10 to-transparent">
@@ -74,5 +76,6 @@ export const CoinShop = ({ onBack }: { onBack: () => void }) => {
         ))}
       </div>
     </div>
+  </>
   );
 };

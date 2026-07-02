@@ -26,6 +26,7 @@ import { Stadium3D } from "@/components/arena/Stadium3D";
 import { supabase } from "@/integrations/supabase/client";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ViewType = "hub" | "player-creator" | "player-market" | "team-builder" | "training" | "equipment" | "match" | "league" | "tactics" | "scout" | "stadium" | "transfers" | "trophies" | "youth" | "analysis" | "coins" | "penalty-game" | "play-game";
 
 const tools = [
@@ -96,7 +97,8 @@ const FootballArena = () => {
 
   if (activeView !== "hub") {
     return (
-      <div className="min-h-screen bg-background">
+      <><FloatingHowItWorks title="FootballArena — How it works" steps={[{title:"Open this section",desc:"Access FootballArena from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 pt-20 pb-28 md:pb-8">
           <ArenaAuthGuard onBack={() => setActiveView("hub")} sportName="Football Arena">
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>{renderView()}</motion.div>
@@ -128,6 +130,7 @@ const FootballArena = () => {
         </div>
       </div>
     </div>
+  </>
   );
 };
 

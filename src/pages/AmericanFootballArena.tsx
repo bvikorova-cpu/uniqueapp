@@ -25,6 +25,7 @@ import { EmbeddedGame } from "@/components/arena/EmbeddedGame";
 import { supabase } from "@/integrations/supabase/client";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ViewType = "hub" | "player-creator" | "player-market" | "team-builder" | "training" | "equipment" | "match" | "league" | "tactics" | "scout" | "stadium" | "transfers" | "trophies" | "youth" | "analysis" | "coins" | "field-goal" | "play-game";
 
 const tools = [
@@ -95,7 +96,8 @@ const AmericanFootballArena = () => {
 
   if (activeView !== "hub") {
     return (
-      <div className="min-h-screen bg-background">
+      <><FloatingHowItWorks title="AmericanFootballArena — How it works" steps={[{title:"Open this section",desc:"Access AmericanFootballArena from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 pt-20 pb-28 md:pb-8">
           <ArenaAuthGuard onBack={() => setActiveView("hub")} sportName="American Football Arena">
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>{renderView()}</motion.div>
@@ -122,6 +124,7 @@ const AmericanFootballArena = () => {
         </div>
       </div>
     </div>
+  </>
   );
 };
 

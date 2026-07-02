@@ -9,6 +9,7 @@ import { motion } from 'framer-motion';
 import { loadGoogleFont } from '@/utils/lazyFonts';
 
 import shadowPoster from '@/assets/shadow-arena-poster.jpg';
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface SubscriptionGateProps {
   children: ReactNode;
@@ -47,7 +48,8 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
+      <><FloatingHowItWorks title="SubscriptionGate — How it works" steps={[{title:"Open this section",desc:"Access SubscriptionGate from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<div className="flex items-center justify-center min-h-[60vh]">
         <div className="relative">
           <Skull className="w-16 h-16 text-red-600 animate-pulse drop-shadow-[0_0_25px_rgba(220,38,38,0.7)]" />
         </div>
@@ -205,6 +207,7 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
           </p>
         </div>
       </div>
+    </>
     );
   }
 

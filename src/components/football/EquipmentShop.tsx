@@ -6,6 +6,7 @@ import { ArrowLeft, ShoppingBag, Sparkles } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const shopItems = [
   { name: "Speed Boots Pro", type: "boots", boost_stat: "pace", boost_value: 3, price: 500, rarity: "common", icon: "👟" },
@@ -35,7 +36,8 @@ export const EquipmentShop = ({ onBack }: { onBack: () => void }) => {
   };
 
   return (
-    <div className="space-y-6">
+    <><FloatingHowItWorks title="EquipmentShop — How it works" steps={[{title:"Open this section",desc:"Access EquipmentShop from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button>
       <h2 className="text-2xl font-bold">🛒 Equipment Shop</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -60,5 +62,6 @@ export const EquipmentShop = ({ onBack }: { onBack: () => void }) => {
         ))}
       </div>
     </div>
+  </>
   );
 };

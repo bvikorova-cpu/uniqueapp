@@ -20,6 +20,7 @@ import { motion } from "framer-motion";
 import { usePaymentVerification } from "@/hooks/usePaymentVerification";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ActiveView = "dashboard" | "creator" | "battle" | "royale" | "social" | "gallery" | "tournament" | "fusion" | "evolution" | "dungeon";
 
 const TOOLS = [
@@ -71,7 +72,8 @@ const CharacterArena = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-2 sm:p-4">
+    <><FloatingHowItWorks title="CharacterArena — How it works" steps={[{title:"Open this section",desc:"Access CharacterArena from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<div className="min-h-screen bg-background p-2 sm:p-4">
       <div className="container mx-auto max-w-7xl pt-20 pb-28 md:pb-8">
         {activeView !== "dashboard" && (
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
@@ -142,6 +144,7 @@ const CharacterArena = () => {
         )}
       </div>
     </div>
+  </>
   );
 };
 
