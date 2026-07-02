@@ -125,7 +125,7 @@ const ContentRepurposer = ({ onBack }: Props) => {
                       <Icon className={`h-5 w-5 ${selected ? "text-primary" : "text-muted-foreground"}`} />
                       <div>
                         <p className="font-medium text-sm">{fmt.name}</p>
-                        <p className="text-xs text-muted-foreground">{fmt.description}</p>
+                        <p className="text-xs text-muted-foreground">{fmt.desc}</p>
                       </div>
                     </div>
                   </div>

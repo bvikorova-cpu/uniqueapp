@@ -110,7 +110,7 @@ const AIContentTemplates = ({ onBack }: Props) => {
                           <h3 className="font-bold">{t.name}</h3>
                           <Badge variant="outline" className="text-xs">{t.credits} cr</Badge>
                         </div>
-                        <p className="text-sm text-muted-foreground mt-1">{t.description}</p>
+                        <p className="text-sm text-muted-foreground mt-1">{t.desc}</p>
                       </div>
                     </div>
                   </CardContent>
