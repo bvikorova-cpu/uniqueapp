@@ -37,10 +37,10 @@ export default function InfluencerBattleArena({ onBack }: Props) {
       <FloatingHowItWorks
         title="How Battle Arena works"
         steps={[
-          { title: 'Enter two influencers', description: 'Names or @handles.' },
-          { title: 'Start battle (5 credits)', description: 'AI judges across multiple rounds.' },
-          { title: 'See the winner', description: 'Detailed stats per round.' },
-          { title: 'Share result', description: 'Post the outcome to your feed.' },
+          { title: 'Enter two influencers', desc: 'Names or @handles.' },
+          { title: 'Start battle (5 credits)', desc: 'AI judges across multiple rounds.' },
+          { title: 'See the winner', desc: 'Detailed stats per round.' },
+          { title: 'Share result', desc: 'Post the outcome to your feed.' },
         ]}
       />
     <div className="space-y-6">

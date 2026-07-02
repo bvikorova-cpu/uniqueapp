@@ -113,10 +113,10 @@ const ContentCalendar = ({ onBack }: Props) => {
       <FloatingHowItWorks
         title="How Content Calendar works"
         steps={[
-          { title: 'Plan posts', description: 'Drag & drop items across days.' },
-          { title: 'Set platforms', description: 'Choose IG, TikTok, YouTube, etc.' },
-          { title: 'Get AI suggestions', description: 'Fill gaps with generated ideas.' },
-          { title: 'Publish or export', description: 'Push to schedulers or download CSV.' },
+          { title: 'Plan posts', desc: 'Drag & drop items across days.' },
+          { title: 'Set platforms', desc: 'Choose IG, TikTok, YouTube, etc.' },
+          { title: 'Get AI suggestions', desc: 'Fill gaps with generated ideas.' },
+          { title: 'Publish or export', desc: 'Push to schedulers or download CSV.' },
         ]}
       />
     <div className="space-y-6">

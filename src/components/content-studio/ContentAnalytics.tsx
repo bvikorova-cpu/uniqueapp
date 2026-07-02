@@ -74,10 +74,10 @@ const ContentAnalytics = ({ onBack }: Props) => {
       <FloatingHowItWorks
         title="How Content Analytics works"
         steps={[
-          { title: 'Connect accounts', description: 'Link your social profiles.' },
-          { title: 'View metrics', description: 'Reach, engagement, growth.' },
-          { title: 'Spot winners', description: 'Filter by top-performing content.' },
-          { title: 'Iterate', description: 'Double down on formats that work.' },
+          { title: 'Connect accounts', desc: 'Link your social profiles.' },
+          { title: 'View metrics', desc: 'Reach, engagement, growth.' },
+          { title: 'Spot winners', desc: 'Filter by top-performing content.' },
+          { title: 'Iterate', desc: 'Double down on formats that work.' },
         ]}
       />
     <div className="space-y-6">

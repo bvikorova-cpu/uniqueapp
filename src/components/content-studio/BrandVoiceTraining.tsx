@@ -118,10 +118,10 @@ const BrandVoiceTraining = ({ onBack }: Props) => {
       <FloatingHowItWorks
         title="How Brand Voice Training works"
         steps={[
-          { title: 'Add samples', description: 'Paste 3–10 examples of your voice.' },
-          { title: 'Train', description: 'AI extracts tone, phrasing, style.' },
-          { title: 'Test outputs', description: 'Regenerate until it matches.' },
-          { title: 'Use everywhere', description: 'Applied across all Studio tools.' },
+          { title: 'Add samples', desc: 'Paste 3–10 examples of your voice.' },
+          { title: 'Train', desc: 'AI extracts tone, phrasing, style.' },
+          { title: 'Test outputs', desc: 'Regenerate until it matches.' },
+          { title: 'Use everywhere', desc: 'Applied across all Studio tools.' },
         ]}
       />
     <div className="space-y-6">

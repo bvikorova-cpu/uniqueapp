@@ -78,10 +78,10 @@ const SEOKeywordOptimizer = ({ onBack }: Props) => {
       <FloatingHowItWorks
         title="How SEO Keyword Optimizer works"
         steps={[
-          { title: 'Enter topic', description: 'Add seed keyword or URL.' },
-          { title: 'Analyze', description: 'See volume, difficulty, intent.' },
-          { title: 'Get suggestions', description: 'AI proposes titles and headings.' },
-          { title: 'Optimize', description: 'Update content and re-check.' },
+          { title: 'Enter topic', desc: 'Add seed keyword or URL.' },
+          { title: 'Analyze', desc: 'See volume, difficulty, intent.' },
+          { title: 'Get suggestions', desc: 'AI proposes titles and headings.' },
+          { title: 'Optimize', desc: 'Update content and re-check.' },
         ]}
       />
     <div className="space-y-6">

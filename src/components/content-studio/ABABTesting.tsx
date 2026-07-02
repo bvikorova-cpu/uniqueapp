@@ -68,10 +68,10 @@ const ABABTesting = ({ onBack }: Props) => {
       <FloatingHowItWorks
         title="How A/B Testing works"
         steps={[
-          { title: 'Create variants', description: 'Two versions of the same asset.' },
-          { title: 'Split audience', description: 'Send each variant to a segment.' },
-          { title: 'Track results', description: 'Compare CTR, engagement, conversions.' },
-          { title: 'Roll out winner', description: 'Promote the best-performing variant.' },
+          { title: 'Create variants', desc: 'Two versions of the same asset.' },
+          { title: 'Split audience', desc: 'Send each variant to a segment.' },
+          { title: 'Track results', desc: 'Compare CTR, engagement, conversions.' },
+          { title: 'Roll out winner', desc: 'Promote the best-performing variant.' },
         ]}
       />
     <div className="space-y-6">

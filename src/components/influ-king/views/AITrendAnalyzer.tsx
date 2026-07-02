@@ -36,10 +36,10 @@ export default function AITrendAnalyzer({ onBack }: Props) {
       <FloatingHowItWorks
         title="How AI Trend Analyzer works"
         steps={[
-          { title: 'Choose platform & niche', description: 'IG, TikTok, YouTube, X.' },
-          { title: 'Analyze (5 credits)', description: 'AI pulls trending topics and hashtags.' },
-          { title: 'Review insights', description: 'Get topics, hashtags, recommendations.' },
-          { title: 'Act on it', description: 'Use insights to plan next content batch.' },
+          { title: 'Choose platform & niche', desc: 'IG, TikTok, YouTube, X.' },
+          { title: 'Analyze (5 credits)', desc: 'AI pulls trending topics and hashtags.' },
+          { title: 'Review insights', desc: 'Get topics, hashtags, recommendations.' },
+          { title: 'Act on it', desc: 'Use insights to plan next content batch.' },
         ]}
       />
     <div className="space-y-6">

@@ -65,10 +65,10 @@ const PlagiarismChecker = ({ onBack }: Props) => {
       <FloatingHowItWorks
         title="How Plagiarism Checker works"
         steps={[
-          { title: 'Paste content', description: 'Any text up to configured limit.' },
-          { title: 'Scan', description: 'AI checks against public web sources.' },
-          { title: 'Review matches', description: 'See highlighted overlaps and sources.' },
-          { title: 'Rewrite', description: 'Use suggestions to make it original.' },
+          { title: 'Paste content', desc: 'Any text up to configured limit.' },
+          { title: 'Scan', desc: 'AI checks against public web sources.' },
+          { title: 'Review matches', desc: 'See highlighted overlaps and sources.' },
+          { title: 'Rewrite', desc: 'Use suggestions to make it original.' },
         ]}
       />
     <div className="space-y-6">
