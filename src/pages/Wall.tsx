@@ -59,6 +59,8 @@ import { StreaksAndChallenges } from "@/components/wall/StreaksAndChallenges";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import WallFeed from "@/components/wall/WallFeed";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+import { WALL_HIW_STEPS } from "@/pages/wall/WallFeed";
 import WallComposer from "@/components/wall/WallComposer";
 import type { FeedItem as WallFeedItem, Post, Repost } from "@/components/wall/WallPost";
 type FeedItem = WallFeedItem;
