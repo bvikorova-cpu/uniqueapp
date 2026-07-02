@@ -107,7 +107,7 @@ export default function MacroTracker() {
                 ))}
               </div>
             </div>
-    </>)}
+    )}
         </CardContent>
       </Card>
 
@@ -157,5 +157,6 @@ export default function MacroTracker() {
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 }
