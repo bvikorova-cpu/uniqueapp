@@ -153,7 +153,14 @@ export default function RewardsAIToolsGrid() {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    <div className="space-y-3">
+      <div className="flex justify-end"><HowItWorksButton variant="compact" title="AI Rewards Tools" intro="AI-powered helpers that analyse your stats and suggest what to do next." steps={[
+        { title: "Pick a tool", desc: "Each card is a specialised AI (XP optimizer, badge predictor, strategy coach, etc.)." },
+        { title: "Answer prompts", desc: "The tool may ask a few short questions to tailor its output to your playstyle." },
+        { title: "Get a report", desc: "The AI returns a markdown report you can read, copy or apply immediately." },
+        { title: "Costs credits", desc: "Each tool run consumes a small number of AI credits (shown on the card)." },
+      ]} /></div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
       {tools.map((tool, i) => (
         <motion.div key={tool.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} onClick={() => setActiveTool(tool.id)} className="cursor-pointer group">
           <Card className="p-4 bg-card/80 backdrop-blur-md border-amber-400/15 hover:border-amber-400/40 transition-all hover:shadow-lg hover:shadow-amber-500/10">
