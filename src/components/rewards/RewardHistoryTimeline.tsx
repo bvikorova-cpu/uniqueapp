@@ -46,9 +46,14 @@ export default function RewardHistoryTimeline({ userId }: { userId: string }) {
   return (
     <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
       <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2">
-          <Clock className="h-5 w-5 text-primary" />
-          Reward History
+        <CardTitle className="flex items-center gap-2 justify-between">
+          <span className="flex items-center gap-2"><Clock className="h-5 w-5 text-primary" /> Reward History</span>
+          <HowItWorksButton title="Reward History" intro="A timeline of every XP gain, badge unlock and prize you've received." steps={[
+            { title: "Chronological order", desc: "Newest events at the top. Each entry shows what happened and when." },
+            { title: "Event types", desc: "Icons indicate the type: XP, badge, level up or reward drop." },
+            { title: "Verify your history", desc: "Use this if you think an XP or badge is missing — every credit is logged here." },
+            { title: "Scroll for more", desc: "Older entries load as you scroll. Data is stored for the last 12 months." },
+          ]} />
         </CardTitle>
       </CardHeader>
       <CardContent>
