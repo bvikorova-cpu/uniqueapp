@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import ReactMarkdown from "react-markdown";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 interface MysteryEvent {
   id: string;
@@ -99,6 +100,12 @@ export default function RewardsMysteryBadges() {
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+      <div className="flex justify-end"><HowItWorksButton variant="compact" title="Mystery Badges" intro="Solve limited-time riddles to earn exclusive hidden badges." steps={[
+        { title: "New riddle appears", desc: "When an event is live, a mystery card shows a clue. Only the clue is visible — the badge is hidden." },
+        { title: "Submit your guess", desc: "Type your answer in the input. You get a limited number of attempts per event." },
+        { title: "Reveal the badge", desc: "A correct answer unlocks the badge in your collection and awards bonus XP." },
+        { title: "Missed it?", desc: "Once the event ends the badge is gone forever — check back regularly for new mysteries." },
+      ]} /></div>
       {/* Real active mystery events from DB */}
       {events.length === 0 ? (
         <Card className="p-4 bg-card/80 backdrop-blur-md border-purple-400/20 text-center">

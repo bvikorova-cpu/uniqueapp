@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 interface ShopItem {
   code: string;
@@ -77,6 +78,12 @@ export default function RewardsMarketplace() {
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+      <div className="flex justify-end"><HowItWorksButton variant="compact" title="Rewards Marketplace" intro="Spend XP or credits on cosmetics, boosts and consumables." steps={[
+        { title: "Browse items", desc: "Cards show the price (XP or credits), rarity and what the item does." },
+        { title: "Buy with XP or credits", desc: "Some items accept XP, others only credits. The button label tells you which currency is used." },
+        { title: "Your inventory", desc: "Purchased items go straight to your inventory and can be equipped from the Cosmetics tab." },
+        { title: "Limited stock", desc: "Featured items rotate weekly. If you love it, buy it — it may not come back for a while." },
+      ]} /></div>
       <Card className="p-6 bg-gradient-to-br from-violet-500/10 to-fuchsia-500/5 border-violet-400/20 backdrop-blur-md">
         <div className="flex items-center gap-3 mb-2">
           <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-violet-500/40">

@@ -5,6 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { useRewardsStats } from "@/hooks/useRewardsStats";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 const tiers = [
   { id: "bronze", name: "Bronze", emoji: "🥉", minXP: 0, maxXP: 500, color: "from-amber-700 to-orange-800", perks: ["Daily reward +10%", "Basic badge display"], icon: Shield },
@@ -34,6 +35,12 @@ export default function RewardsRewardTiers() {
 
   return (
     <div className="space-y-3">
+      <div className="flex justify-end"><HowItWorksButton variant="compact" title="Reward Tiers" intro="Lifetime XP tiers (Bronze → Diamond) that unlock permanent perks." steps={[
+        { title: "Based on total XP", desc: "Every XP you've ever earned counts toward your tier — you never lose it." },
+        { title: "Progress bar", desc: "The bar shows how far you are from the next tier and how much XP is needed." },
+        { title: "Permanent perks", desc: "Each tier unlocks bonuses (daily reward multiplier, profile frames, extra features)." },
+        { title: "No expiry", desc: "Unlike Leagues (weekly), tiers are permanent — once you're Gold, you stay Gold." },
+      ]} /></div>
       <Card className="p-4 bg-gradient-to-br from-amber-500/10 to-yellow-500/5 border-amber-400/20 backdrop-blur-md">
         <h3 className="font-bold flex items-center gap-2 mb-1"><Crown className="h-5 w-5 text-amber-500" /> Your Tier</h3>
         <div className="flex items-center gap-3">

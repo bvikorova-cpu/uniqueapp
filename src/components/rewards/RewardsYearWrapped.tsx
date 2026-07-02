@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Share2, Sparkles, TrendingUp, Award, Flame } from "lucide-react";
 import { toast } from "sonner";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 
 export default function RewardsYearWrapped() {
@@ -75,6 +76,12 @@ export default function RewardsYearWrapped() {
 
   return (
     <Card className="overflow-hidden">
+      <div className="flex justify-end p-2"><HowItWorksButton variant="compact" title="Year Wrapped" intro="Your personal year-in-review — total XP, badges, streak days and biggest moments." steps={[
+        { title: "Auto-generated", desc: "Stats aggregate everything you did on Unique during the year. Nothing manual required." },
+        { title: "Share your card", desc: "Tap Share to post the wrapped card to Instagram/X — perfect end-of-year brag." },
+        { title: "Updated in real-time", desc: "Numbers refresh as you play. The final version locks in on December 31." },
+        { title: "Yearly history", desc: "Previous years remain accessible so you can compare your growth over time." },
+      ]} /></div>
       <div className="bg-gradient-to-br from-purple-600 via-pink-500 to-amber-500 p-6 text-white">
         <div className="flex items-center gap-2 mb-2">
           <Calendar className="h-5 w-5" />

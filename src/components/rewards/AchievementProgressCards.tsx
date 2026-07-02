@@ -7,6 +7,7 @@ import { Lock, Target } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 
 export default function AchievementProgressCards({ userId }: { userId: string }) {
@@ -58,9 +59,14 @@ export default function AchievementProgressCards({ userId }: { userId: string })
   return (
     <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
       <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-base">
-          <Target className="h-5 w-5 text-primary" />
-          {"Next Badges to Unlock"}
+        <CardTitle className="flex items-center gap-2 text-base justify-between">
+          <span className="flex items-center gap-2"><Target className="h-5 w-5 text-primary" /> {"Next Badges to Unlock"}</span>
+          <HowItWorksButton title="Next Badges" intro="Shows the badges you are closest to earning." steps={[
+            { title: "Ranked by progress", desc: "Cards are sorted so the badge you're closest to unlocking appears first." },
+            { title: "Progress bar", desc: "The bar fills as you take related actions (games played, friends added, etc.)." },
+            { title: "Locked details", desc: "Hover the lock icon to see the exact requirement in a tooltip." },
+            { title: "Auto-unlocks", desc: "When you hit 100% the badge is granted automatically and appears in your profile." },
+          ]} />
         </CardTitle>
       </CardHeader>
       <CardContent>

@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { CalendarDays, Gift, Check, Lock, Sparkles, Star, Info } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 
 interface Tpl {
@@ -92,6 +93,12 @@ export default function RewardsLoginCalendar() {
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-end"><HowItWorksButton variant="compact" title="Daily Login Calendar" intro="Log in every day of the month to open bonus rewards — XP, credits and rare items." steps={[
+        { title: "Tap today's tile", desc: "Only the current day's tile is claimable. Past days are locked (🔒), future days are hidden." },
+        { title: "Milestone days", desc: "Days 7, 14, 21 and 30 are highlighted — they give the biggest rewards for consistency." },
+        { title: "Missed a day?", desc: "Use a Streak Freeze to unlock a missed day and keep your streak alive." },
+        { title: "Monthly reset", desc: "On the 1st of every month the calendar resets so you can start a fresh 30-day run." },
+      ]} /></div>
       <Card className="overflow-hidden border-primary/30">
         <div className="bg-gradient-to-r from-rose-500 via-pink-500 to-fuchsia-600 p-6 text-white">
           <div className="flex items-center justify-between">

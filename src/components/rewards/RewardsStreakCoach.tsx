@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import ReactMarkdown from "react-markdown";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 export default function RewardsStreakCoach() {
   const [loading, setLoading] = useState(false);
@@ -66,6 +67,12 @@ export default function RewardsStreakCoach() {
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+      <div className="flex justify-end"><HowItWorksButton variant="compact" title="Streak Coach" intro="AI coach that helps you keep your daily login streak alive." steps={[
+        { title: "Tell the coach", desc: "Type your situation (busy week, travelling, forgot yesterday…) and pick a tone." },
+        { title: "Get a plan", desc: "The coach generates a personalized plan: which micro-actions to do today to protect your streak." },
+        { title: "Apply the tips", desc: "Follow the suggestions — usually a 1-minute daily action is enough to keep the flame going." },
+        { title: "Costs credits", desc: "Each coach session uses a small amount of AI credits. Your remaining balance is shown in the header." },
+      ]} /></div>
       <Card className="p-5 bg-card/90 backdrop-blur-md border-amber-400/20">
         <div className="flex items-center gap-3 mb-4">
           <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">

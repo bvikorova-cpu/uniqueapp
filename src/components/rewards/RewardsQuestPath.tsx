@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Map, Lock, Check, Star, Skull } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 
 export default function RewardsQuestPath() {
@@ -64,6 +65,12 @@ export default function RewardsQuestPath() {
 
   return (
     <div className="space-y-4">
+      <div className="flex justify-end"><HowItWorksButton variant="compact" title="Quest Path" intro="Follow a themed storyline of quests. Each node unlocks the next chapter and its reward." steps={[
+        { title: "Progress in order", desc: "Complete the current node to unlock the next one — locked nodes (🔒) become active in sequence." },
+        { title: "Complete objectives", desc: "Each node has an objective (play X games, invite a friend, etc.). Progress is tracked automatically." },
+        { title: "Claim rewards", desc: "When a node is complete, tap Claim to receive XP, credits or badges." },
+        { title: "Boss node", desc: "Final nodes are boss quests (💀) — harder, but they drop the biggest reward of the path." },
+      ]} /></div>
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">

@@ -10,6 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Shield, Crown, Plus, Users, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 const EMBLEMS = ["⚔️", "🛡️", "🐉", "🦅", "🔥", "⚡", "🌙", "👑", "💎", "🏆"];
 
@@ -98,6 +99,12 @@ export default function RewardsGuilds() {
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-end"><HowItWorksButton variant="compact" title="Guilds" intro="Team up with other players to earn shared XP, climb leaderboards and unlock guild rewards." steps={[
+        { title: "Join or create", desc: "Browse the top guilds below and join one, or create your own with a name and emblem." },
+        { title: "Contribute XP", desc: "Every XP you earn on the platform also counts toward your guild's total this week." },
+        { title: "Guild perks", desc: "Higher guild ranks unlock member-only cosmetics, credit bonuses and exclusive badges." },
+        { title: "Leadership", desc: "Guild leaders can rename the guild, promote officers and remove inactive members." },
+      ]} /></div>
       {myGuild?.guild ? (
         <Card className="border-primary/30 overflow-hidden">
           <div className="p-6" style={{ background: `linear-gradient(135deg, ${myGuild.guild.banner_color}, ${myGuild.guild.banner_color}80)` }}>
