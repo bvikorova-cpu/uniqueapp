@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, Star, Trophy, Gift, Zap, Medal } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 interface TimelineEvent {
   id: string;
