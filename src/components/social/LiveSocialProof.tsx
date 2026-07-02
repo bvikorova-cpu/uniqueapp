@@ -4,6 +4,7 @@ import { Eye, TrendingUp, Users } from "lucide-react";
 import { usePresenceChannel } from "@/hooks/usePresenceChannel";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface LiveSocialProofProps {
   /** Unique channel key, e.g. `megatalent:${entryId}` or `hub:megatalent` */
@@ -48,6 +49,17 @@ export function LiveSocialProof({
           className
         )}
       >
+      <FloatingHowItWorks
+        title={"Live Social Proof"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
         <span className="relative flex h-2 w-2">
           <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
           <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />

@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Atom, Users, Eye, Zap } from "lucide-react";
 import { useLiveStats } from "@/hooks/useLiveStats";
 import heroVideo from "@/assets/quantum-social-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const statQueries = [
   { key: "profiles", table: "quantum_profiles" },
@@ -36,6 +37,17 @@ export function QuantumSocialHero() {
 
   return (
     <div className="relative w-full overflow-hidden rounded-2xl" style={{ minHeight: 420 }}>
+      <FloatingHowItWorks
+        title={"Quantum Social Hero"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       {/* Video Background */}
       <video
         src={heroVideo.url}

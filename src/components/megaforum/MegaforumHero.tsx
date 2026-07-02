@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { MessageSquare, Users, TrendingUp, Flame, Volume2, VolumeX, Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroAsset from "@/assets/megaforum-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface MegaforumHeroProps {
   totalPosts: number;
@@ -43,6 +44,17 @@ export const MegaforumHero = ({ totalPosts, totalUsers, todayPosts, trendingTopi
 
   return (
     <div className="relative w-full h-[340px] sm:h-[400px] rounded-2xl overflow-hidden mb-8">
+      <FloatingHowItWorks
+        title={"Megaforum Hero"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       {/* Video */}
       <video
         ref={videoRef}

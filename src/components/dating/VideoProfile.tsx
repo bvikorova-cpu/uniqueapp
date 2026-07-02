@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Play, Pause, Volume2, VolumeX, Heart, X, Shield, CheckCircle } from 'lucide-react';
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface VideoProfileProps {
   user: {
@@ -31,6 +32,17 @@ export const VideoProfile = ({ user, onLike, onPass }: VideoProfileProps) => {
       exit={{ scale: 0.9, opacity: 0 }}
       className="relative w-full max-w-sm mx-auto"
     >
+      <FloatingHowItWorks
+        title={"Video Profile"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <Card className="overflow-hidden rounded-3xl">
         <CardContent className="p-0 relative aspect-[3/4]">
           {/* Video Container */}

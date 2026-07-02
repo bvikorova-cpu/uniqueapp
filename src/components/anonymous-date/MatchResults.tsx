@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { AnonymousAvatar } from "./AnonymousAvatar";
 import { Heart, MapPin, Languages, Target, Sparkles, Loader2, ArrowLeft, RefreshCw, Lock } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export interface MatchCandidate {
   user_id: string;
@@ -69,6 +70,17 @@ export function MatchResults({
       animate={{ opacity: 1, y: 0 }}
       className="space-y-5 max-w-4xl mx-auto"
     >
+      <FloatingHowItWorks
+        title={"Match Results"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-pink-500 via-primary to-accent bg-clip-text text-transparent">

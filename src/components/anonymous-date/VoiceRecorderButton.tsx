@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Mic, Square, Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useVoiceRecorder } from "@/hooks/useVoiceRecorder";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props {
   userId: string | null;
@@ -22,6 +23,17 @@ export const VoiceRecorderButton = ({ userId, onUploaded, maxDuration = 60 }: Pr
   if (isUploading) {
     return (
       <Button size="icon" disabled variant="ghost" className="rounded-full">
+      <FloatingHowItWorks
+        title={"Voice Recorder Button"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
         <Loader2 className="h-4 w-4 animate-spin" />
       </Button>
     );

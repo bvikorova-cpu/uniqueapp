@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, Star, Crown, Zap, Check } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface CreditPackagesProps {
   onPurchase: (packageType: string) => void;
@@ -54,6 +55,17 @@ const BASE_RATE = PACKAGES[0].priceEur / PACKAGES[0].credits; // €/credit base
 export function CreditPackages({ onPurchase, currentCredits }: CreditPackagesProps) {
   return (
     <div className="space-y-6">
+      <FloatingHowItWorks
+        title={"Credit Packages"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="text-center">
         <h2 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-foreground via-pink-500 to-accent bg-clip-text text-transparent">
           Credit Store

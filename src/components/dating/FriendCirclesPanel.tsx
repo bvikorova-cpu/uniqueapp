@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Users2, Plus, Trash2, UserPlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Circle { id: string; owner_id: string; name: string; member_count?: number; }
 
@@ -57,6 +58,17 @@ export const FriendCirclesPanel = ({ userId }: { userId: string }) => {
 
   return (
     <div className="space-y-4">
+      <FloatingHowItWorks
+        title={"Friend Circles Panel"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-bold flex items-center gap-2"><Users2 className="h-5 w-5 text-primary" /> Friend Circles</h3>
         <Dialog open={open} onOpenChange={setOpen}>

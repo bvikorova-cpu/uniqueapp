@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ActiveMatches } from "@/components/anonymous-date/ActiveMatches";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 /**
  * E2E test harness — renders <ActiveMatches /> with deterministic fixture data
@@ -34,6 +35,17 @@ export default function E2EAnonymousDateMatches() {
 
   return (
     <div data-testid="e2e-anon-date-harness" className="container py-10">
+      <FloatingHowItWorks
+        title={"E2 E Anonymous Date Matches"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <h1 className="sr-only">E2E Anonymous Dating Matches Harness</h1>
       <ActiveMatches matches={matches} onOpenChat={() => {}} />
     </div>

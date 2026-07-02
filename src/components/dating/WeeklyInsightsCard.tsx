@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sparkles, TrendingUp, TrendingDown, Minus, Loader2, Calendar } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Insight {
   id: string;
@@ -49,7 +50,18 @@ export const WeeklyInsightsCard = ({ onAction }: Props) => {
   useEffect(() => { load(); }, []);
 
   if (loading) return (
-    <Card className="border-primary/20"><CardContent className="py-8 flex justify-center">
+    <Card className="border-primary/20">
+      <FloatingHowItWorks
+        title={"Weekly Insights Card"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+<CardContent className="py-8 flex justify-center">
       <Loader2 className="w-5 h-5 animate-spin text-primary" />
     </CardContent></Card>
   );

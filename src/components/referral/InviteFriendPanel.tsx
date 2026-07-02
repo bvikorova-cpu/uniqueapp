@@ -50,6 +50,7 @@ import {
 import { format, formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 type ReferralStatus = "pending" | "paid" | "withdrawn";
 
@@ -185,6 +186,17 @@ ${inviteUrl}`,
   if (loading) {
     return (
       <Card className="border-primary/20 bg-card/80 backdrop-blur-xl">
+      <FloatingHowItWorks
+        title={"Invite Friend Panel"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
         <CardContent className="flex items-center justify-center py-16">
           <Loader2 className="h-6 w-6 animate-spin text-primary" />
         </CardContent>

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface AccessPaymentGateProps {
   onPayAccess: () => void;
@@ -28,6 +29,17 @@ export function AccessPaymentGate({ onPayAccess, loading }: AccessPaymentGatePro
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <FloatingHowItWorks
+        title={"Access Payment Gate"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="max-w-3xl w-full space-y-6">
         {/* Hero */}
         <motion.div

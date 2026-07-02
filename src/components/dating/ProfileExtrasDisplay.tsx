@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Music, Instagram, ShieldCheck, Volume2, Video } from "lucide-react";
 import type { Prompt } from "./PromptsEditor";
 import type { VideoPrompt } from "./VideoPromptRecorder";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props {
   prompts?: Prompt[] | null;
@@ -32,6 +33,17 @@ export const ProfileExtrasDisplay = ({
 
   return (
     <div className="px-5 py-3 space-y-3 border-b border-border/50">
+      <FloatingHowItWorks
+        title={"Profile Extras Display"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       {verified && (
         <Badge className="bg-emerald-500 text-white gap-1 w-fit">
           <ShieldCheck className="h-3 w-3" /> Verified

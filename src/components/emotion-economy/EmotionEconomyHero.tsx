@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Heart, TrendingUp, Zap, Users } from "lucide-react";
 import { useLiveStats } from "@/hooks/useLiveStats";
 import heroVideo from "@/assets/emotion-economy-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const statQueries = [
   { key: "traders", table: "emotion_wallets" },
@@ -36,6 +37,17 @@ export function EmotionEconomyHero() {
 
   return (
     <div className="relative w-full overflow-hidden rounded-2xl" style={{ minHeight: 420 }}>
+      <FloatingHowItWorks
+        title={"Emotion Economy Hero"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       {/* Video Background */}
       <video
         src={heroVideo.url}

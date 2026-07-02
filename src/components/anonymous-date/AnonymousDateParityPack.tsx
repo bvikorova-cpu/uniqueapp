@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Loader2, Sparkles, Heart, ShieldAlert, Eye, MapPin, Anchor, Languages, HeartCrack, Wand2 } from "lucide-react";
 import { useAnonymousDateParity, PARITY_COST, type ParityFeature } from "@/hooks/useAnonymousDateParity";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const TOOLS: { id: ParityFeature; label: string; icon: any; tagline: string }[] = [
   { id: "vibe_decoder",       label: "Vibe Decoder",       icon: Wand2,       tagline: "Decode the chat's overall energy" },
@@ -54,6 +55,17 @@ export function AnonymousDateParityPack({ matchId }: { matchId?: string }) {
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+      <FloatingHowItWorks
+        title={"Anonymous Date Parity Pack"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <Card className="p-5 sm:p-6 bg-card/60 backdrop-blur-sm border border-border/50">
         <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
           <div>

@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Check, LucideIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface AnonymousDateToolCardProps {
   tool: {
@@ -26,6 +27,17 @@ export const AnonymousDateToolCard = ({ tool, onSelect, index }: AnonymousDateTo
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.08, duration: 0.4 }}
     >
+      <FloatingHowItWorks
+        title={"Anonymous Date Tool Card"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <Card
         className="group relative overflow-hidden cursor-pointer hover:shadow-xl transition-all duration-300 bg-card/80 backdrop-blur-xl border-border/50"
         onClick={onSelect}

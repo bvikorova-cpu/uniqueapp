@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { BarChart3, Plus, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Poll {
   id: string;
@@ -63,6 +64,17 @@ export const MatchPollCard = ({ matchId, userId }: { matchId: string; userId: st
 
   return (
     <Card className="p-3 space-y-3 bg-primary/5 border-primary/30">
+      <FloatingHowItWorks
+        title={"Match Poll Card"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="flex items-center justify-between">
         <h4 className="text-sm font-semibold flex items-center gap-1.5"><BarChart3 className="h-4 w-4 text-primary" /> Polls</h4>
         <Dialog open={open} onOpenChange={setOpen}>

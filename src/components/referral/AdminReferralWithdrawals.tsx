@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, CheckCircle, XCircle, Clock } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { StripePayoutButton } from "@/components/admin/StripePayoutButton";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const AdminReferralWithdrawals = () => {
   const [selectedRequest, setSelectedRequest] = useState<string | null>(null);
@@ -73,6 +74,17 @@ export const AdminReferralWithdrawals = () => {
   if (isLoading) {
     return (
       <div className="flex justify-center p-8">
+      <FloatingHowItWorks
+        title={"Admin Referral Withdrawals"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );

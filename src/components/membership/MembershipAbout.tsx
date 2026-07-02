@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Crown, Heart, CheckCircle2, Star, DollarSign, Shield, Zap, Globe } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const MembershipAbout = () => {
   return (
@@ -10,6 +11,17 @@ export const MembershipAbout = () => {
       transition={{ delay: 0.2 }}
       className="space-y-6 mb-8"
     >
+      <FloatingHowItWorks
+        title={"Membership About"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       {/* What is Membership Community */}
       <Card className="bg-card/80 backdrop-blur-xl border-border/50 hover:border-primary/20 transition-all">
         <CardHeader>

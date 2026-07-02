@@ -30,6 +30,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Flag, Shield, Loader2, UserX } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const REPORT_REASONS = [
   { value: "harassment", label: "Harassment or bullying" },
@@ -85,6 +86,17 @@ export function ChatSafetyMenu({
 
   return (
     <>
+      <FloatingHowItWorks
+        title={"Chat Safety Menu"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button

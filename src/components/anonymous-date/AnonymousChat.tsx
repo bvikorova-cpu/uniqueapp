@@ -28,6 +28,7 @@ import { ConversationCoach } from "./ConversationCoach";
 import { RevealLock } from "./RevealLock";
 import { SafeWordSettings } from "./SafeWordSettings";
 import { exportChatToPDF } from "@/lib/exportChatPDF";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface MatchInfo {
   id: string;
@@ -227,6 +228,17 @@ export const AnonymousChat = ({ match, currentUserId, myName, partnerName, credi
   if (chatLocked) {
     return (
       <Card className="p-8 text-center bg-gradient-to-br from-destructive/15 to-card border-destructive/40">
+      <FloatingHowItWorks
+        title={"Anonymous Chat"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
         <AlertOctagon className="h-12 w-12 mx-auto text-destructive mb-3" />
         <h3 className="text-lg font-black mb-1">Chat Closed</h3>
         <p className="text-sm text-muted-foreground">

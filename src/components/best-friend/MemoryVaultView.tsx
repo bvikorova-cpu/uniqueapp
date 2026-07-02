@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2, Brain, Trash2, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const MemoryVaultView = () => {
   const [loading, setLoading] = useState(true);
@@ -53,6 +54,17 @@ export const MemoryVaultView = () => {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
+      <FloatingHowItWorks
+        title={"Memory Vault View"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="text-center">
         <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center mx-auto mb-4">
           <Brain className="h-8 w-8 text-white" />

@@ -12,6 +12,7 @@ import { motion } from "framer-motion";
 import { anonymousDatingProfileSchema } from "@/lib/anonymousDatingSchema";
 
 import heroVideo from "@/assets/anonymous-date-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const INTERESTS = [
   "Travel", "Movies", "Music", "Sports", "Reading", "Cooking",
@@ -138,6 +139,17 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
 
   return (
     <div className="space-y-8 max-w-5xl mx-auto">
+      <FloatingHowItWorks
+        title={"Profile Setup"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       {/* Cinematic Hero with video */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}

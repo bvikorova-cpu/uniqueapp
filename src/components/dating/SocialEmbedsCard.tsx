@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Music, Instagram, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props {
   profileId: string;
@@ -53,6 +54,17 @@ export const SocialEmbedsCard = ({ profileId, spotifyUrl, instagramUrl, onChange
 
   return (
     <Card className="p-5 space-y-3">
+      <FloatingHowItWorks
+        title={"Social Embeds Card"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <h3 className="font-semibold text-sm">Connect Social</h3>
       <div className="space-y-2">
         <label className="text-xs text-muted-foreground flex items-center gap-1.5">

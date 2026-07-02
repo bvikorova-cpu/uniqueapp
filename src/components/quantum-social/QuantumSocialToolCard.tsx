@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface QuantumSocialToolCardProps {
   icon: LucideIcon;
@@ -33,6 +34,17 @@ export function QuantumSocialToolCard({
       onClick={onClick}
       className={`cursor-pointer rounded-xl border border-cyan-500/20 bg-gradient-to-br ${gradient} p-4 hover:border-cyan-400/40 transition-all group relative overflow-hidden`}
     >
+      <FloatingHowItWorks
+        title={"Quantum Social Tool Card"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       {/* Neon glow effect on hover */}
       <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/0 to-violet-500/0 group-hover:from-cyan-500/5 group-hover:to-violet-500/5 transition-all duration-300" />
 

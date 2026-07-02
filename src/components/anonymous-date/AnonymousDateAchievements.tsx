@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Trophy } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const badges = [
   { icon: "💌", label: "First Match", unlocked: true },
@@ -14,6 +15,17 @@ const badges = [
 export const AnonymousDateAchievements = () => {
   return (
     <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
+      <FloatingHowItWorks
+        title={"Anonymous Date Achievements"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="flex items-center gap-2 mb-3">
         <Trophy className="h-5 w-5 text-yellow-500" />
         <h3 className="font-bold text-sm">Achievements</h3>

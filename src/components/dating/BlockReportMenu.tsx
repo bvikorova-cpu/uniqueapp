@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { MoreVertical, Shield, Flag, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props {
   targetUserId: string;
@@ -63,6 +64,17 @@ export const BlockReportMenu = ({ targetUserId, targetName, onBlocked }: Props) 
 
   return (
     <>
+      <FloatingHowItWorks
+        title={"Block Report Menu"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="icon" className="h-9 w-9"><MoreVertical className="h-5 w-5" /></Button>

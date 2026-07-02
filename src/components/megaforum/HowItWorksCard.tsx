@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Eye, Lock, Sparkles, Crown } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 
 export const HowItWorksCard = () => {
@@ -45,6 +46,17 @@ export const HowItWorksCard = () => {
       transition={{ duration: 0.4 }}
       className="mb-6 rounded-xl bg-card/60 backdrop-blur-xl border border-border/50 p-3 sm:p-4"
     >
+      <FloatingHowItWorks
+        title={"How It Works Card"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="flex items-center gap-2 mb-3">
         <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
           {"How it works"}

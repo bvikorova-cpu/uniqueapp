@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Lock } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface MembershipToolViewProps {
   toolName: string;
@@ -106,6 +107,17 @@ export const MembershipToolView = ({ toolName, onBack }: MembershipToolViewProps
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
     >
+      <FloatingHowItWorks
+        title={"Membership Tool View"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <Button variant="ghost" onClick={onBack} className="mb-4 gap-2">
         <ArrowLeft className="w-4 h-4" />
         Back to Hub

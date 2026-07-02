@@ -5,6 +5,7 @@ import { Mic, Square, Play, Trash2, Loader2 } from "lucide-react";
 import { useVoiceRecorder } from "@/hooks/useVoiceRecorder";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props {
   profileId: string;
@@ -56,6 +57,17 @@ export const VoiceIntroRecorder = ({ profileId, userId, url, duration, onChange 
 
   return (
     <Card className="p-5">
+      <FloatingHowItWorks
+        title={"Voice Intro Recorder"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-semibold text-sm flex items-center gap-2">
           <Mic className="h-4 w-4 text-primary" />

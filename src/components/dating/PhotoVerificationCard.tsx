@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ShieldCheck, Loader2, Camera, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props {
   profileId: string;
@@ -66,6 +67,17 @@ export const PhotoVerificationCard = ({ profileId, userId, status, verified, onC
 
   return (
     <Card className="p-5">
+      <FloatingHowItWorks
+        title={"Photo Verification Card"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="flex items-start justify-between mb-3">
         <div>
           <h3 className="font-semibold text-sm flex items-center gap-2">

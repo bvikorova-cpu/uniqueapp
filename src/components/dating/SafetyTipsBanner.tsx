@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Shield, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props {
   matchId: string;
@@ -30,6 +31,17 @@ export const SafetyTipsBanner = ({ matchId, partnerName }: Props) => {
 
   return (
     <div className="mx-3 mb-2 rounded-lg border border-amber-500/30 bg-amber-500/5 p-3 text-xs text-foreground/90 relative">
+      <FloatingHowItWorks
+        title={"Safety Tips Banner"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <button
         onClick={dismiss}
         aria-label="Dismiss safety tips"

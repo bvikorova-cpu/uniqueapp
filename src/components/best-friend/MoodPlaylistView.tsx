@@ -7,6 +7,7 @@ import { Music, Loader2, Play, Headphones } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const MoodPlaylistView = () => {
   const [mood, setMood] = useState("");
@@ -30,6 +31,17 @@ export const MoodPlaylistView = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
+      <FloatingHowItWorks
+        title={"Mood Playlist View"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="text-center">
         <Music className="h-10 w-10 text-pink-400 mx-auto mb-2" />
         <h2 className="text-2xl font-black">AI Mood Playlist</h2>

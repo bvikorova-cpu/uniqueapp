@@ -2,6 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props {
   open: boolean;
@@ -25,6 +26,17 @@ export function ReferralQRDialog({ open, onOpenChange, url, code }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
+      <FloatingHowItWorks
+        title={"Referral Q R Dialog"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <DialogContent className="max-w-sm">
         <DialogHeader>
           <DialogTitle>Scan to join with my code</DialogTitle>

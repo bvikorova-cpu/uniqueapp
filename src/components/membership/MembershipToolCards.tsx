@@ -6,6 +6,7 @@ import {
   Calendar, Settings, Sparkles, Vote, ShoppingBag, Video,
   Megaphone, Handshake, Award, Share2, Search
 } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const tools = [
   { icon: FileText, name: "Content Manager", description: "Create, schedule, and manage exclusive posts", gradient: "from-blue-500 to-cyan-400", bgGlow: "bg-blue-500/10" },
@@ -34,6 +35,17 @@ interface MembershipToolCardsProps {
 export const MembershipToolCards = ({ onSelectTool }: MembershipToolCardsProps) => {
   return (
     <div className="mb-10">
+      <FloatingHowItWorks
+        title={"Membership Tool Cards"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="text-center mb-6">
         <h2 className="text-2xl sm:text-3xl font-black mb-2 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
           Creator Tools

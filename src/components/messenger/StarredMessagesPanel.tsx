@@ -3,12 +3,24 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Star, X } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export function StarredMessagesPanel() {
   const { data, isLoading, unstar } = useStarredMessages();
 
   return (
     <Card className="bg-card/50 backdrop-blur border-border/50">
+      <FloatingHowItWorks
+        title={"Starred Messages Panel"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <Star className="h-4 w-4 text-primary" />

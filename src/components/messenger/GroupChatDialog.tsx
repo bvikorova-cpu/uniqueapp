@@ -14,6 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Profile {
   id: string;
@@ -112,6 +113,17 @@ export const GroupChatDialog = ({ userId, allUsers, onGroupCreated }: GroupChatD
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
+      <FloatingHowItWorks
+        title={"Group Chat Dialog"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <DialogTrigger asChild>
         <Button variant="outline" size="sm" className="gap-2">
           <Users className="h-4 w-4" />

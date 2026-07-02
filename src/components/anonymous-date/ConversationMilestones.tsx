@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Award, MessageSquare, Clock, Sparkles } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props {
   messageCount: number;
@@ -18,6 +19,17 @@ export const ConversationMilestones = ({ messageCount, matchAgeHours, voiceMessa
 
   return (
     <div className="p-3 rounded-2xl bg-card/60 backdrop-blur-md border border-border/40">
+      <FloatingHowItWorks
+        title={"Conversation Milestones"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <p className="text-xs font-bold uppercase tracking-wide mb-2 flex items-center gap-1.5">
         <Award className="h-3.5 w-3.5 text-amber-400" /> Milestones
       </p>

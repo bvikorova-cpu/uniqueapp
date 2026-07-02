@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
 import { PushNotificationToggle } from "@/components/PushNotificationToggle";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 type Filter = "all" | "likes" | "matches" | "messages" | "system";
 
@@ -108,6 +109,17 @@ export function DatingNotificationsCenter() {
 
   return (
     <Card className="max-w-3xl mx-auto bg-card/70 backdrop-blur border-border/50">
+      <FloatingHowItWorks
+        title={"Dating Notifications Center"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <CardHeader className="flex flex-row items-center justify-between gap-2 flex-wrap">
         <CardTitle className="flex items-center gap-2">
           <Bell className="h-5 w-5" /> Notification Center

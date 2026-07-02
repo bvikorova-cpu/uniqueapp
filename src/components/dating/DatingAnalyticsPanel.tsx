@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { BarChart3, Heart, MessageCircle, Eye, TrendingUp, Star, Image as ImageIcon, Zap } from "lucide-react";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import { format, subDays, startOfDay } from "date-fns";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Stats {
   likesSent: number;
@@ -109,6 +110,17 @@ export const DatingAnalyticsPanel = () => {
 
   return (
     <div className="space-y-4 max-w-4xl mx-auto">
+      <FloatingHowItWorks
+        title={"Dating Analytics Panel"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><BarChart3 className="h-5 w-5 text-primary" /> Your Stats (last 30 days)</CardTitle>
