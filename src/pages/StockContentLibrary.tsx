@@ -30,6 +30,7 @@ import { WatermarkToolView } from "@/components/stock-content/views/WatermarkToo
 import { Tags, Palette, Wand2, Star, Eye, Download } from "lucide-react";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const StockContentLibrary = () => {
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
@@ -100,6 +101,17 @@ const StockContentLibrary = () => {
       default:
         return (
           <>
+            <FloatingHowItWorks
+              title="Stock Library"
+              intro="Unlimited AI-generated stock photos, videos, audio."
+              steps={[
+                { title: "Search or browse", desc: "By keyword, mood, color or category." },
+          { title: "Preview", desc: "See variations and licensing terms." },
+          { title: "Generate on demand", desc: "Missing a shot? AI creates it \u2014 3 credits." },
+          { title: "Download", desc: "Royalty-free for commercial use." },
+          { title: "Save to collection", desc: "Build reusable brand libraries." }
+              ]}
+            />
             <StockContentHero />
             <HeroRewardedAd sectionKey="page_stockcontentlibrary" />
 

@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ViewType = "hub" | "create" | "dashboard" | "content-calendar" | "brand-deals" | "trend-analyzer" | "battle-arena" | string;
 
 const TOOLS = [
@@ -106,6 +107,17 @@ const VirtualInfluencerAgency = () => {
   if (activeView === "dashboard" && selectedInfluencer) {
     return (
       <div className="min-h-screen bg-background">
+        <FloatingHowItWorks
+          title="Virtual Influencer Agency"
+          intro="Create and manage AI influencers."
+          steps={[
+            { title: "Build your influencer", desc: "Face, style, personality, voice." },
+          { title: "Generate content", desc: "Posts, reels and stories automatically." },
+          { title: "Post to socials", desc: "Connect Instagram, TikTok, X." },
+          { title: "Grow the audience", desc: "Analytics and follower insights." },
+          { title: "Monetize", desc: "Brand deals via the Brand Arena." }
+          ]}
+        />
         <div className="container mx-auto px-4 py-8 mt-16">
           <Button variant="ghost" onClick={goBack} className="mb-4 gap-2">← Back to Hub</Button>
           <InfluencerDashboard influencerId={selectedInfluencer} />

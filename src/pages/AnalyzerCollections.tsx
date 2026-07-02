@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Collection {
   id: string; name: string; description: string; is_public: boolean; created_at: string; item_count?: number;
@@ -67,6 +68,17 @@ export default function AnalyzerCollections() {
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
+      <FloatingHowItWorks
+        title="Analyzer Collections"
+        intro="Organize saved analyses into folders."
+        steps={[
+          { title: "Open a collection", desc: "Group by topic \u2014 health, receipts, products." },
+          { title: "Add analyses", desc: "Move items from History into folders." },
+          { title: "Share a folder", desc: "Send read-only links to friends or team." },
+          { title: "Export", desc: "Download all reports as PDF." },
+          { title: "Clean up", desc: "Delete or archive old collections." }
+        ]}
+      />
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">

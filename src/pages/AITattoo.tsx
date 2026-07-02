@@ -27,6 +27,7 @@ import { TattooPainMap } from "@/components/tattoo/TattooPainMap";
 import { TattooCareAssistant } from "@/components/tattoo/TattooCareAssistant";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ActiveView = "dashboard" | "generate" | "gallery" | "ar_preview" | "style_mixer" | "aging_sim" | "marketplace" | "color_palette" | "meaning" | "cover_up" | "pain_map" | "care";
 
 interface TattooDesign {
@@ -270,6 +271,17 @@ const AITattoo = () => {
   // Dashboard
   return (
     <div className="min-h-screen bg-background">
+      <FloatingHowItWorks
+        title="AI Tattoo"
+        intro="Design custom tattoos before you get inked."
+        steps={[
+          { title: "Describe the tattoo", desc: "Style, symbols, placement." },
+          { title: "Upload a body photo (optional)", desc: "Preview it on your skin." },
+          { title: "Generate variants", desc: "Multiple designs per generation." },
+          { title: "Refine", desc: "Change color, size, style." },
+          { title: "Download", desc: "Take the PNG to your artist." }
+        ]}
+      />
       <Navbar />
       <main className="container mx-auto px-4 py-8 mt-20">
         <TattooHero />

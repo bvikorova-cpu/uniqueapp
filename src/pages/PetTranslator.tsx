@@ -37,6 +37,7 @@ import { Card } from '@/components/ui/card';
 import { Crown, Sparkles, PawPrint, Heart, Stethoscope, GraduationCap, MessageSquareText, History, Radio, Video, Search, Users, Watch, BookOpen } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const PetTranslator = () => {
   const [activeView, setActiveView] = useState<string | null>(null);
@@ -53,6 +54,17 @@ const PetTranslator = () => {
   if (subLoading) {
     return (
       <div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-[60vh]">
+        <FloatingHowItWorks
+          title="Pet Translator"
+          intro="Understand what your pet is trying to say."
+          steps={[
+            { title: "Record your pet", desc: "Bark, meow or gesture \u2014 video or audio." },
+          { title: "Pick species", desc: "Dog, cat, bird, exotic." },
+          { title: "Get the translation", desc: "AI interprets sound + body language." },
+          { title: "Save moments", desc: "Share cute translations with friends." },
+          { title: "Track over time", desc: "Emotion journal for your pet." }
+          ]}
+        />
         <Loader2 className="w-8 h-8 animate-spin" />
       </div>
     );

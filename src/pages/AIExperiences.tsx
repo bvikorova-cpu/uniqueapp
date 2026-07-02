@@ -18,6 +18,7 @@ import { VirtualPostcards } from "@/components/experiences/VirtualPostcards";
 import { DestinationRecommender } from "@/components/experiences/DestinationRecommender";
 import { ExplorerAchievements } from "@/components/experiences/ExplorerAchievements";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 type ActiveView = "hub" | "tours" | "future" | "travel-planner" | "postcards" | "recommender" | "achievements";
 
@@ -279,6 +280,17 @@ const AIExperiences = () => {
 
     return (
       <AnimatePresence>
+        <FloatingHowItWorks
+          title="AI Experiences"
+          intro="Explore all interactive AI experiences on Unique."
+          steps={[
+            { title: "Browse the catalog", desc: "Grouped by category \u2014 creative, wellness, fun." },
+          { title: "Preview each experience", desc: "Short demo and required credits." },
+          { title: "Launch", desc: "Opens the tool directly." },
+          { title: "Save favorites", desc: "Pin experiences you use often." },
+          { title: "Discover new ones", desc: "Weekly featured drops." }
+          ]}
+        />
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-black">
           <div ref={viewerRef} className="relative w-full h-full overflow-hidden select-none"
             onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}

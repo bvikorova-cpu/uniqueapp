@@ -7,6 +7,7 @@ import { Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import heroVideo from '@/assets/pet-translator-hero.mp4.asset.json';
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const PetTranslatorPricing = () => {
   const { subscription, loading, createCheckout } = usePetSubscription();
@@ -61,6 +62,17 @@ const PetTranslatorPricing = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <FloatingHowItWorks
+        title="Pet Translator Pricing"
+        intro="Buy credits for pet translations."
+        steps={[
+          { title: "Pick a pack", desc: "Bigger packs = lower price per translation." },
+          { title: "Pay in EUR", desc: "Stripe secure checkout." },
+          { title: "Credits instant", desc: "Balance updates on return." },
+          { title: "Free monthly top-up", desc: "+10 credits on the 1st of each month." },
+          { title: "Cancel anytime", desc: "No subscription required for one-off packs." }
+        ]}
+      />
       {/* Cinematic Hero */}
       <div className="relative overflow-hidden min-h-[260px] sm:min-h-[320px]">
         <div className="absolute inset-0 z-0">
