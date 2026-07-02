@@ -179,6 +179,15 @@ export default function WallFeed({
           {/* Smart feed tabs are rendered by the Wall page (parent) — do not duplicate here */}
 
           {/* Search Bar */}
+          <div className="flex justify-end">
+            <FloatingHowItWorks
+              title="Wall"
+              intro="The Wall is your social feed. Here's what every button and feature does — so nothing on this page is a mystery."
+              steps={WALL_HIW_STEPS}
+            />
+          </div>
+
+          {/* Search Bar */}
           <SearchBar />
 
             <PostFilters
