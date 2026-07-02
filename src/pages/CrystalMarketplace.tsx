@@ -11,7 +11,6 @@ import { useOneOffPaymentVerify } from "@/hooks/useOneOffPaymentVerify";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import {
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   Select,
   SelectContent,
   SelectItem,
@@ -28,6 +27,7 @@ import {
 } from "@/components/ui/dialog";
 import { SellerConnectGate } from "@/components/commerce/SellerConnectGate";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface CrystalItem {
   id: string;
   title: string;

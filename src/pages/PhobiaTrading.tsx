@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import {
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   Brain, ShoppingCart, HeartPulse, TrendingUp, Shield, Zap, ArrowLeft,
   Flame, Trophy, Check, BarChart3, BookOpen, Users, Eye, Activity,
   Bot, MessageCircle, Star, Play, Pause, Volume2, VolumeX, ArrowRightLeft, CreditCard,
@@ -29,6 +28,7 @@ import { PhobiaPricing } from "@/components/phobia/PhobiaPricing";
 import phobiaPoster from "@/assets/phobia-hero-poster.jpg";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ToolView = "hub" | "detect" | "my-phobias" | "marketplace" | "cure" | "journal" | "analytics" | "therapist" | "exposure" | "community" | "anxiety" | "pricing";
 
 const tools = [

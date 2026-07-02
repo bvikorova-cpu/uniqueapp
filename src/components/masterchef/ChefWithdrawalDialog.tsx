@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   Dialog,
   DialogContent,
   DialogDescription,
@@ -15,6 +14,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface ChefWithdrawalDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;

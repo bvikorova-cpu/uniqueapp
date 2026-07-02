@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   Trophy, ChefHat, Timer, ScanLine, MessageCircle, 
   Video, Award, Apple, Globe, Bot, BookOpen,
   Crown, Sparkles, Check
@@ -15,6 +14,7 @@ import { useState } from "react";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import UnifiedXPLeaderboard from "@/components/shared/UnifiedXPLeaderboard";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const TIERS = {
   amateur: {
     name: "Amateur", price: "€19.99", priceId: "price_1SPiaUGaXSfGtYFtpV3Q8jjN",

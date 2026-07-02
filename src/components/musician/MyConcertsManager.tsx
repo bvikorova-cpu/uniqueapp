@@ -7,13 +7,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import {
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
 import { Radio, StopCircle, Calendar, Copy, ExternalLink, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props {
   musicianId: string;
 }

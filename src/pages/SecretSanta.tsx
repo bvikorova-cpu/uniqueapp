@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   Gift, Inbox, Sparkles, Trophy, CreditCard, ArrowLeft, Award, Box, Star, 
   MessageCircle, Play, Pause, Volume2, VolumeX, Shuffle, Wand2, BarChart3,
   Target, Heart, Flame
@@ -28,6 +27,7 @@ import { GiftStreakRewards } from "@/components/secret-santa/GiftStreakRewards";
 import { useSecretSanta } from "@/hooks/useSecretSanta";
 import heroVideo from "@/assets/secret-santa-hero.mp4.asset.json";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const SecretSanta = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("send");

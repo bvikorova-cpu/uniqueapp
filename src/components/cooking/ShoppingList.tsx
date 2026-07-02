@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { 
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   ChefHat, 
   ShoppingCart, 
   Plus, 
@@ -19,6 +18,7 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   Users
 } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Ingredient {
   id: string;
   name: string;

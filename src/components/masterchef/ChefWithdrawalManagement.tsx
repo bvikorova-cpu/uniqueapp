@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import {
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   Dialog,
   DialogContent,
   DialogDescription,
@@ -17,6 +16,7 @@ import { CheckCircle, XCircle, Clock, DollarSign } from "lucide-react";
 import { toast } from "sonner";
 import { StripePayoutButton } from "@/components/admin/StripePayoutButton";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface WithdrawalRequest {
   id: string;
   chef_id: string;
