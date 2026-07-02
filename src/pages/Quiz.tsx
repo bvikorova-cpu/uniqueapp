@@ -138,7 +138,7 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
     { question: "Which sport does Roger Federer play?", options: ["Tennis", "Badminton", "Squash", "Table tennis"], correct: 0 },
     { question: "How many rings does the Olympic symbol have?", options: ["3", "4", "5", "6"], correct: 2 },
     { question: "Where were the 2024 Olympics held?", options: ["Tokyo", "Paris", "Los Angeles", "Brisbane"], correct: 1 },
-    { question: "When did the Slovak team win the Ice Hockey World Championship?", options: ["2000", "2002", "2012", "Never"], correct: 1 },
+    { question: "How often are the Summer Olympic Games held?", options: ["Every 2 years", "Every 3 years", "Every 4 years", "Every 5 years"], correct: 2 },
   ],
   movies: [
     { question: "Who directed Titanic?", options: ["Spielberg", "Cameron", "Nolan", "Tarantino"], correct: 1 },
