@@ -124,5 +124,6 @@ export const AvatarTalkingHeadView = ({ onBack }: { onBack: () => void }) => {
         </Card>
       </div>
     </div>
+    </>
   );
 };
