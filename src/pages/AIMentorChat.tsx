@@ -13,16 +13,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
 import {
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-
-const __HIW_AIMENTORCHAT_STEPS = [
-  { title: 'Type or speak', desc: 'Send a message or hold the mic button for voice input.' },
-  { title: 'Get an action plan', desc: 'The mentor replies with steps, exercises or reflections.' },
-  { title: 'Save key moments', desc: 'Bookmark answers to revisit in your progress dashboard.' },
-  { title: 'Continue anytime', desc: 'Chat history is saved; pick up where you left off.' }
-];
-const __HIW_AIMENTORCHAT = { title: 'Mentor Chat', intro: 'Your live conversation with an AI mentor — text or voice.', steps: __HIW_AIMENTORCHAT_STEPS };
-
   Send,
   ArrowLeft,
   Target,
@@ -33,6 +23,16 @@ const __HIW_AIMENTORCHAT = { title: 'Mentor Chat', intro: 'Your live conversatio
   User,
   Sparkles,
 } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_AIMENTORCHAT_STEPS = [
+  { title: 'Type or speak', desc: 'Send a message or hold the mic button for voice input.' },
+  { title: 'Get an action plan', desc: 'The mentor replies with steps, exercises or reflections.' },
+  { title: 'Save key moments', desc: 'Bookmark answers to revisit in your progress dashboard.' },
+  { title: 'Continue anytime', desc: 'Chat history is saved; pick up where you left off.' }
+];
+const __HIW_AIMENTORCHAT = { title: 'Mentor Chat', intro: 'Your live conversation with an AI mentor — text or voice.', steps: __HIW_AIMENTORCHAT_STEPS };
+
 
 const AIMentorChat = () => {
   const { area } = useParams();
