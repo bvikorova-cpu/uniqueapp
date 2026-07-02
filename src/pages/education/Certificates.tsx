@@ -5,6 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Award, Sparkles } from "lucide-react";
 import { Helmet } from "react-helmet-async";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_CERTIFICATES_STEPS = [
+  { title: 'Complete a course', desc: 'Finish a full learning path or pass its final exam.' },
+  { title: 'Get a certificate', desc: 'A shareable, verifiable certificate is issued to your profile.' },
+  { title: 'Download or share', desc: 'Save the PDF or share the verification link.' }
+];
+const __HIW_CERTIFICATES = { title: 'Certificates', intro: "Certificates you've earned by completing courses and challenges.", steps: __HIW_CERTIFICATES_STEPS };
+
 
 export default function Certificates() {
   const { data: certs = [] } = useCertificates();
@@ -15,6 +24,7 @@ export default function Certificates() {
 
   return (
     <>
+      <FloatingHowItWorks title={__HIW_CERTIFICATES.title} intro={__HIW_CERTIFICATES.intro} steps={__HIW_CERTIFICATES.steps} />
       <Helmet><title>Certificates · Education</title></Helmet>
       <div className="container mx-auto px-4 pt-20 pb-12 max-w-4xl">
         <h1 className="text-3xl font-black mb-6 flex items-center gap-2"><Award className="w-7 h-7 text-primary" /> My Certificates</h1>

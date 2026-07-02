@@ -9,6 +9,16 @@ import { ArrowLeft, Heart, Play, Clock, Eye, Crown, Star, Sparkles } from "lucid
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { showImages, episodeImages } from "@/components/kids/ShowImages";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_KIDSSHOWDETAIL_STEPS = [
+  { title: 'Check the age rating', desc: 'Every show shows its recommended age.' },
+  { title: 'Play the episode', desc: 'The player is ad-free with Gold Pass.' },
+  { title: 'Earn stars for watching', desc: 'Completing an episode rewards stars.' },
+  { title: 'Related shows', desc: 'The page suggests similar age-appropriate shows.' }
+];
+const __HIW_KIDSSHOWDETAIL = { title: 'Kids Show', intro: 'Watch a single show — safe, moderated and age-rated.', steps: __HIW_KIDSSHOWDETAIL_STEPS };
+
 
 interface Show {
   id: string;
@@ -259,6 +269,7 @@ const KidsShowDetail = () => {
   if (loading || !show) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-pink-500 to-blue-400">
+      <FloatingHowItWorks title={__HIW_KIDSSHOWDETAIL.title} intro={__HIW_KIDSSHOWDETAIL.intro} steps={__HIW_KIDSSHOWDETAIL.steps} />
         <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-white"></div>
       </div>
     );

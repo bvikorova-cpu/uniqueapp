@@ -22,6 +22,17 @@ import { GlassmorphismCategories } from "@/components/education/GlassmorphismCat
 import { useEducationStats } from "@/hooks/useEducationStats";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_EDUCATION_STEPS = [
+  { title: 'Pick a subject', desc: 'Choose from 30+ categories or launch a quick quiz from the hub.' },
+  { title: 'Learn your way', desc: 'Use Photo Math Solver, Voice Tutor, PDF Quiz Generator or AI chat.' },
+  { title: 'Practice with quizzes', desc: 'Take daily challenges and category quizzes to earn XP and streaks.' },
+  { title: 'Track progress', desc: 'Watch your learning path, achievements and leaderboard ranking grow.' },
+  { title: 'Spend credits wisely', desc: 'AI tools use 3–5 credits; free credits refill monthly.' }
+];
+const __HIW_EDUCATION = { title: 'Education Hub', intro: 'Learn any subject with AI tutors, quizzes and gamified progress.', steps: __HIW_EDUCATION_STEPS };
+
 const quizCategories = [
   { id: "math", name: "Mathematics", icon: "📐" },
   { id: "biology", name: "Biology", icon: "🧬" },
@@ -145,6 +156,7 @@ const Education = () => {
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
+      <FloatingHowItWorks title={__HIW_EDUCATION.title} intro={__HIW_EDUCATION.intro} steps={__HIW_EDUCATION.steps} />
       <div className="container mx-auto px-2 sm:px-4">
         <EducationHero />
 

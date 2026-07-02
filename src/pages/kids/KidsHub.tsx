@@ -8,6 +8,16 @@ import { Input } from "@/components/ui/input";
 import { Users, Filter, Map, Download, FileBarChart, Clock, BookOpen, Sparkles, ShieldCheck, ShieldAlert, Volume2, Type, Calculator, TrendingUp, Cat, Trophy, ClipboardCheck, Share2, Plus, ArrowLeft } from "lucide-react";
 import { useKidsChildren, kidsCall } from "@/hooks/useKidsRouter";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_KIDSHUB_STEPS = [
+  { title: 'Kids-safe by default', desc: 'Parental gate protects settings and purchases.' },
+  { title: 'Pick a feature', desc: 'Shows, Academy, Drawing Buddy, Story Creator, and more.' },
+  { title: 'Earn stars & badges', desc: 'Every activity rewards learning progress.' },
+  { title: 'Parents get a dashboard', desc: 'Track time, topics and safety in Parental Dashboard.' }
+];
+const __HIW_KIDSHUB = { title: 'Kids Hub', intro: 'The dashboard for every Kids feature.', steps: __HIW_KIDSHUB_STEPS };
+
 
 export const KIDS_FEATURES = [
   { slug: "children", title: "Family Profiles", desc: "Multi-child profiles", icon: Users, color: "from-pink-500 to-rose-500" },
@@ -44,6 +54,7 @@ export function ChildPicker() {
 
   return (
     <Card className="p-4 bg-card/80 backdrop-blur border-primary/20">
+      <FloatingHowItWorks title={__HIW_KIDSHUB.title} intro={__HIW_KIDSHUB.intro} steps={__HIW_KIDSHUB.steps} />
       <div className="flex items-center gap-3 flex-wrap">
         <Users className="w-5 h-5 text-primary" />
         <span className="font-semibold">Active child:</span>

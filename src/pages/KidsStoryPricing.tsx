@@ -6,6 +6,15 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { useKidsStoryCredits, KIDS_STORY_CREDIT_COST } from "@/hooks/useKidsStoryCredits";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_KIDSSTORYPRICING_STEPS = [
+  { title: 'Pick a pack', desc: 'Packs bundle credits at a lower per-use price.' },
+  { title: 'Pay securely', desc: 'Stripe checkout — parent-approved via parental gate.' },
+  { title: 'Credits appear instantly', desc: 'Credits are usable in Story Creator right away.' }
+];
+const __HIW_KIDSSTORYPRICING = { title: 'Story Creator Pricing', intro: 'Choose a pack for Kids Story Creator.', steps: __HIW_KIDSSTORYPRICING_STEPS };
+
 
 const PACKS = [
   { credits: 9, price: "€4.99", label: "Starter", description: "3 stories" },
@@ -30,6 +39,7 @@ const KidsStoryPricing = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <FloatingHowItWorks title={__HIW_KIDSSTORYPRICING.title} intro={__HIW_KIDSSTORYPRICING.intro} steps={__HIW_KIDSSTORYPRICING.steps} />
       <Navbar />
       <main className="container mx-auto px-4 py-8 mt-16">
         <div className="max-w-5xl mx-auto">

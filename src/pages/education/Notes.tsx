@@ -7,6 +7,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { FileText, Sparkles, Plus } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_NOTES_STEPS = [
+  { title: 'Create a note', desc: 'Write freely or paste from another source.' },
+  { title: 'AI summarise', desc: 'Turn long notes into concise summaries.' },
+  { title: 'Generate a quiz', desc: 'Convert a note into a flashcard deck or quiz.' },
+  { title: 'Organise by subject', desc: 'Tag notes to keep them searchable.' }
+];
+const __HIW_NOTES = { title: 'Notes', intro: 'Your personal study notebook — AI-enhanced.', steps: __HIW_NOTES_STEPS };
+
 
 export default function Notes() {
   const { data: notes = [] } = useNotes();
@@ -35,6 +45,7 @@ export default function Notes() {
 
   return (
     <>
+      <FloatingHowItWorks title={__HIW_NOTES.title} intro={__HIW_NOTES.intro} steps={__HIW_NOTES.steps} />
       <Helmet><title>Notes · Education</title></Helmet>
       <div className="container mx-auto px-4 pt-20 pb-12 max-w-5xl">
         <div className="flex items-center justify-between mb-6">

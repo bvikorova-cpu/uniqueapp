@@ -10,6 +10,16 @@ import { Progress } from "@/components/ui/progress";
 import { mentorCall, useMentor, useMentorMutation, useMentorPremium } from "@/hooks/useMentorRouter";
 import { toast } from "sonner";
 import { ArrowLeft, Send, Plus, Check, Copy, Crown } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_MENTORFEATURE_STEPS = [
+  { title: 'Read what it does', desc: 'Each feature explains its coaching approach.' },
+  { title: 'Try a session', desc: 'A short free session shows the value.' },
+  { title: 'Unlock with Premium', desc: 'Premium unlocks unlimited sessions & analytics.' },
+  { title: 'Track your progress', desc: 'Progress shows up in the mentor hub.' }
+];
+const __HIW_MENTORFEATURE = { title: 'Mentor Feature', intro: 'Detail page for a single mentor capability.', steps: __HIW_MENTORFEATURE_STEPS };
+
 
 const AREAS = ["career", "fitness", "mindset", "relationships"];
 
@@ -21,6 +31,7 @@ export default function MentorFeature() {
   if (sub && !sub.subscribed) {
     return (
       <div className="container mx-auto pt-20 pb-12 max-w-xl text-center">
+      <FloatingHowItWorks title={__HIW_MENTORFEATURE.title} intro={__HIW_MENTORFEATURE.intro} steps={__HIW_MENTORFEATURE.steps} />
         <Helmet><title>Premium required</title></Helmet>
         <Crown className="w-12 h-12 mx-auto text-primary mb-3" />
         <h1 className="text-2xl font-black mb-2">Premium feature</h1>

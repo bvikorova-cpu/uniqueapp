@@ -17,6 +17,16 @@ import { GalleryFilters, type GalleryCategory } from "@/components/kids/gallery/
 import { GalleryLightbox } from "@/components/kids/gallery/GalleryLightbox";
 import { GalleryAchievements } from "@/components/kids/gallery/GalleryAchievements";
 import { GalleryTimeline } from "@/components/kids/gallery/GalleryTimeline";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_KIDSMAGICLIBRARY_STEPS = [
+  { title: 'Pick a story', desc: 'Illustrated stories organised by age and theme.' },
+  { title: 'Read or listen', desc: 'Text-to-speech reads along with kid-friendly voices.' },
+  { title: 'Answer questions', desc: 'Comprehension prompts turn reading into learning.' },
+  { title: 'Collect stars', desc: 'Finishing a story rewards stars and unlocks new ones.' }
+];
+const __HIW_KIDSMAGICLIBRARY = { title: 'Kids Magic Library', intro: 'A curated library of interactive stories and read-alongs.', steps: __HIW_KIDSMAGICLIBRARY_STEPS };
+
 
 interface Story {
   id: string;
@@ -314,6 +324,7 @@ export default function KidsMagicLibrary() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50/80 via-pink-50/80 to-blue-50/80 dark:from-gray-900 dark:via-purple-950/50 dark:to-blue-950/50">
+      <FloatingHowItWorks title={__HIW_KIDSMAGICLIBRARY.title} intro={__HIW_KIDSMAGICLIBRARY.intro} steps={__HIW_KIDSMAGICLIBRARY.steps} />
       {/* Header */}
       <div className="bg-card/80 backdrop-blur-sm border-b border-border/50 sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">

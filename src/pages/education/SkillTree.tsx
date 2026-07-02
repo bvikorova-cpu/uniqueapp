@@ -5,6 +5,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import * as LucideIcons from "lucide-react";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_SKILLTREE_STEPS = [
+  { title: 'Pick a starting skill', desc: 'Unlocked skills glow — locked skills need prerequisites.' },
+  { title: 'Complete challenges', desc: 'Each skill has quizzes and mini-projects to master it.' },
+  { title: 'Level up nodes', desc: 'Completed skills unlock the next tier.' },
+  { title: 'See your path', desc: "The whole tree shows how far you've come." }
+];
+const __HIW_SKILLTREE = { title: 'Skill Tree', intro: 'A visual roadmap of skills to unlock, level by level.', steps: __HIW_SKILLTREE_STEPS };
+
 
 export default function SkillTree() {
   const { subject = "general" } = useParams<{ subject: string }>();
@@ -55,6 +65,7 @@ export default function SkillTree() {
               const locked = status === "locked";
               return (
                 <motion.div key={n.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}>
+      <FloatingHowItWorks title={__HIW_SKILLTREE.title} intro={__HIW_SKILLTREE.intro} steps={__HIW_SKILLTREE.steps} />
                   <Card className={`backdrop-blur-xl ${locked ? "bg-card/40 opacity-60" : "bg-card/80 border-primary/30"}`}>
                     <CardContent className="p-4 flex items-center gap-3">
                       <Icon className={`w-8 h-8 ${locked ? "text-muted-foreground" : "text-primary"}`} />

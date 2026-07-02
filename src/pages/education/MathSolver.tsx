@@ -7,6 +7,16 @@ import { Input } from "@/components/ui/input";
 import { Calculator, Sparkles } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import { useHomeworkCredits } from "@/hooks/useHomeworkCredits";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_MATHSOLVER_STEPS = [
+  { title: 'Capture the problem', desc: 'Take a photo or type the equation.' },
+  { title: 'See every step', desc: 'The solver explains each step, not just the answer.' },
+  { title: 'Ask why', desc: 'Tap any step for a deeper explanation.' },
+  { title: 'Save to Notes', desc: 'Push the solution to your Notes for later revision.' }
+];
+const __HIW_MATHSOLVER = { title: 'Math Solver', intro: 'Snap or type any math problem — get a step-by-step solution.', steps: __HIW_MATHSOLVER_STEPS };
+
 
 export default function MathSolver() {
   const solve = useMathSolver();
@@ -23,6 +33,7 @@ export default function MathSolver() {
 
   return (
     <>
+      <FloatingHowItWorks title={__HIW_MATHSOLVER.title} intro={__HIW_MATHSOLVER.intro} steps={__HIW_MATHSOLVER.steps} />
       <Helmet><title>Math Solver · Education</title></Helmet>
       <div className="container mx-auto px-4 pt-20 pb-12 max-w-3xl">
         <div className="flex items-center gap-2 mb-6">

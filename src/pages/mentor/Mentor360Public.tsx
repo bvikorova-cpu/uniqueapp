@@ -7,6 +7,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { mentorCall } from "@/hooks/useMentorRouter";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_MENTOR360PUBLIC_STEPS = [
+  { title: 'View progress publicly', desc: 'Only the milestones you chose to share are visible.' },
+  { title: 'No personal data', desc: 'Sensitive details stay private in your account.' },
+  { title: 'Share the link', desc: 'Great for accountability partners or coaches.' }
+];
+const __HIW_MENTOR360PUBLIC = { title: 'Mentor 360', intro: "A public shareable view of a mentee's progress.", steps: __HIW_MENTOR360PUBLIC_STEPS };
+
 
 export default function Mentor360Public() {
   const { token } = useParams();
@@ -34,6 +43,7 @@ export default function Mentor360Public() {
 
   return (
     <>
+      <FloatingHowItWorks title={__HIW_MENTOR360PUBLIC.title} intro={__HIW_MENTOR360PUBLIC.intro} steps={__HIW_MENTOR360PUBLIC.steps} />
       <Helmet><title>Anonymous 360° Feedback</title></Helmet>
       <div className="container mx-auto px-4 pt-20 pb-12 max-w-xl">
         <h1 className="text-2xl font-black mb-2">Anonymous 360° feedback</h1>

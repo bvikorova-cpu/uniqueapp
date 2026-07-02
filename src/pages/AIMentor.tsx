@@ -21,6 +21,17 @@ import { GamificationXP } from "@/components/mentor/GamificationXP";
 import { VoiceCoaching } from "@/components/mentor/VoiceCoaching";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_AIMENTOR_STEPS = [
+  { title: 'Choose a coach', desc: 'Pick Career, Fitness, Mindset or Wellness — each is fine-tuned for that area.' },
+  { title: 'Set a goal', desc: 'Tell the mentor what you want to achieve; it builds an action plan.' },
+  { title: 'Chat or voice', desc: 'Text chat or voice coaching sessions — both track your streak.' },
+  { title: 'Track mood & XP', desc: 'Log mood, complete plans and earn achievement badges.' },
+  { title: 'Go Premium for more', desc: 'Premium unlocks unlimited sessions and deeper analytics.' }
+];
+const __HIW_AIMENTOR = { title: 'AI Personal Mentor', intro: 'Four AI coaches (Career, Fitness, Mindset, Wellness) guiding your growth.', steps: __HIW_AIMENTOR_STEPS };
+
 const MENTOR_AREAS = [
   {
     id: "career",
@@ -143,6 +154,7 @@ const AIMentor = () => {
   if (loading || adminLoading) {
     return (
       <div className="min-h-screen bg-background pt-20 pb-12">
+      <FloatingHowItWorks title={__HIW_AIMENTOR.title} intro={__HIW_AIMENTOR.intro} steps={__HIW_AIMENTOR.steps} />
         <div className="container mx-auto px-2 sm:px-4 space-y-6">
           <Skeleton className="h-48 w-full rounded-2xl" />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

@@ -23,6 +23,16 @@ import {
   User,
   Sparkles,
 } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_AIMENTORCHAT_STEPS = [
+  { title: 'Type or speak', desc: 'Send a message or hold the mic button for voice input.' },
+  { title: 'Get an action plan', desc: 'The mentor replies with steps, exercises or reflections.' },
+  { title: 'Save key moments', desc: 'Bookmark answers to revisit in your progress dashboard.' },
+  { title: 'Continue anytime', desc: 'Chat history is saved; pick up where you left off.' }
+];
+const __HIW_AIMENTORCHAT = { title: 'Mentor Chat', intro: 'Your live conversation with an AI mentor — text or voice.', steps: __HIW_AIMENTORCHAT_STEPS };
+
 
 const AIMentorChat = () => {
   const { area } = useParams();
@@ -185,6 +195,7 @@ const AIMentorChat = () => {
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-4">
+      <FloatingHowItWorks title={__HIW_AIMENTORCHAT.title} intro={__HIW_AIMENTORCHAT.intro} steps={__HIW_AIMENTORCHAT.steps} />
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6 flex items-center gap-4">

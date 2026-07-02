@@ -4,6 +4,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Award, CheckCircle2, XCircle } from "lucide-react";
 import { Helmet } from "react-helmet-async";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_CERTIFICATEVERIFY_STEPS = [
+  { title: 'Enter certificate ID', desc: 'Paste the ID printed on the certificate.' },
+  { title: 'Instant lookup', desc: 'The verifier checks it against our database.' },
+  { title: 'View the details', desc: "Owner, course, date and score are shown if it's valid." }
+];
+const __HIW_CERTIFICATEVERIFY = { title: 'Certificate Verification', intro: 'Verify a Unique learning certificate is genuine.', steps: __HIW_CERTIFICATEVERIFY_STEPS };
+
 
 export default function CertificateVerify() {
   const { code } = useParams<{ code: string }>();
@@ -27,6 +36,7 @@ export default function CertificateVerify() {
 
   return (
     <>
+      <FloatingHowItWorks title={__HIW_CERTIFICATEVERIFY.title} intro={__HIW_CERTIFICATEVERIFY.intro} steps={__HIW_CERTIFICATEVERIFY.steps} />
       <Helmet><title>Verify Certificate · Unique</title></Helmet>
       <div className="container mx-auto px-4 pt-20 pb-12 max-w-xl">
         <Card className="backdrop-blur-xl bg-card/80">

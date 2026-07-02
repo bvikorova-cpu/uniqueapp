@@ -14,10 +14,21 @@ import { ArrowLeft, Trash2, Check, X, Play, Pause, RefreshCw, Copy } from "lucid
 import { toast } from "sonner";
 import { KIDS_FEATURES, ChildPicker } from "./KidsHub";
 import { useKidsChildren, kidsCall, KidsChild } from "@/hooks/useKidsRouter";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_KIDSFEATURE_STEPS = [
+  { title: 'Read what it does', desc: 'The feature explains the activity and age range.' },
+  { title: 'Try it free', desc: 'A limited free version lets you preview.' },
+  { title: 'Unlock with Gold Pass', desc: 'Gold Pass or a one-off pack unlocks full access.' },
+  { title: 'Track kid progress', desc: 'Progress shows up in Parental Dashboard.' }
+];
+const __HIW_KIDSFEATURE = { title: 'Kids Feature', intro: 'Detail page for a single Kids feature.', steps: __HIW_KIDSFEATURE_STEPS };
+
 
 function Shell({ title, desc, children }: any) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/10 p-4 md:p-8">
+      <FloatingHowItWorks title={__HIW_KIDSFEATURE.title} intro={__HIW_KIDSFEATURE.intro} steps={__HIW_KIDSFEATURE.steps} />
       <div className="max-w-5xl mx-auto space-y-6">
         <Link to="/kids-channel/hub" className="text-sm text-muted-foreground hover:text-primary inline-flex items-center gap-1"><ArrowLeft className="w-4 h-4" />Kids Hub</Link>
         <div>

@@ -9,6 +9,16 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Users, Plus, KeyRound, Copy } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_STUDYGROUPS_STEPS = [
+  { title: 'Join or create a group', desc: 'Pick a subject and invite friends or open it to everyone.' },
+  { title: 'Share notes & decks', desc: 'Members can pool notes, flashcards and quizzes.' },
+  { title: 'Group challenges', desc: 'Compete or cooperate on weekly group goals.' },
+  { title: 'Group chat', desc: 'Ask questions and celebrate wins together.' }
+];
+const __HIW_STUDYGROUPS = { title: 'Study Groups', intro: 'Learn together in small focused groups.', steps: __HIW_STUDYGROUPS_STEPS };
+
 
 export default function StudyGroups() {
   const qc = useQueryClient();
@@ -69,6 +79,7 @@ export default function StudyGroups() {
 
   return (
     <>
+      <FloatingHowItWorks title={__HIW_STUDYGROUPS.title} intro={__HIW_STUDYGROUPS.intro} steps={__HIW_STUDYGROUPS.steps} />
       <Helmet><title>Study Groups · Education</title></Helmet>
       <div className="container mx-auto px-4 pt-20 pb-12 max-w-5xl">
         <div className="flex items-center justify-between mb-6 flex-wrap gap-2">

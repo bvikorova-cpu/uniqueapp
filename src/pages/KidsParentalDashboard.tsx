@@ -24,6 +24,16 @@ import { AchievementTracking } from "@/components/kids/parental/AchievementTrack
 import { ActivityTimeline } from "@/components/kids/parental/ActivityTimeline";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_KIDSPARENTALDASHBOARD_STEPS = [
+  { title: 'Sign in as parent', desc: 'The dashboard is protected by the parental gate.' },
+  { title: 'See time & topics', desc: 'Daily time spent per feature and per subject.' },
+  { title: 'Set limits', desc: 'Cap daily screen time and lock premium content.' },
+  { title: 'Review safety flags', desc: 'Any moderation flag surfaces here immediately.' }
+];
+const __HIW_KIDSPARENTALDASHBOARD = { title: 'Parental Dashboard', intro: "One place to monitor your child's Kids activity.", steps: __HIW_KIDSPARENTALDASHBOARD_STEPS };
+
 interface UsageStats {
   homework_tasks: number;
   science_experiments: number;
@@ -165,6 +175,7 @@ export default function KidsParentalDashboard() {
   if (!user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100 flex items-center justify-center px-4">
+      <FloatingHowItWorks title={__HIW_KIDSPARENTALDASHBOARD.title} intro={__HIW_KIDSPARENTALDASHBOARD.intro} steps={__HIW_KIDSPARENTALDASHBOARD.steps} />
         <Card className="max-w-md w-full text-center">
           <CardHeader>
             <Shield className="w-16 h-16 mx-auto text-primary mb-4" />

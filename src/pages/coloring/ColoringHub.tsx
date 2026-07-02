@@ -9,6 +9,16 @@ import { toast } from "sonner";
 import { Loader2, ArrowLeft, Sparkles, Brush, Layers, Palette, Trophy, Video, Users, Repeat, Heart, Lock, Music, ShoppingBag, Wand2, Grid3x3, ZoomIn, Flame, Image as ImageIcon } from "lucide-react";
 import { coloringCall } from "@/hooks/useColoringRouter";
 import { useColoringCredits } from "@/hooks/useColoringCredits";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_COLORINGHUB_STEPS = [
+  { title: 'Create or pick a template', desc: 'Generate with AI or choose a curated template.' },
+  { title: 'Color online or print', desc: 'Use the digital canvas or download a print-ready PDF.' },
+  { title: 'Community gallery', desc: "Share your work and admire others' creations." },
+  { title: 'Programs for schools & orgs', desc: 'Special tabs for schools, healthcare and corporate.' }
+];
+const __HIW_COLORINGHUB = { title: 'Coloring Hub', intro: 'Your dashboard for every coloring activity.', steps: __HIW_COLORINGHUB_STEPS };
+
 
 type Feature = {
   slug: string;
@@ -49,6 +59,7 @@ export default function ColoringHub() {
 
   return (
     <div className="min-h-screen bg-background">
+      <FloatingHowItWorks title={__HIW_COLORINGHUB.title} intro={__HIW_COLORINGHUB.intro} steps={__HIW_COLORINGHUB.steps} />
       <Navbar />
       <main className="container mx-auto px-4 py-10 max-w-7xl">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">

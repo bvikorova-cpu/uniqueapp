@@ -21,6 +21,16 @@ import { SafetyCheckCard } from "@/components/kids-science/SafetyCheckCard";
 import { AskTheScientist } from "@/components/kids-science/AskTheScientist";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_KIDSSCIENCELAB_STEPS = [
+  { title: 'Pick an experiment', desc: 'Browse by topic and age — each has a safety label.' },
+  { title: 'Watch the demo', desc: 'Short videos and animations explain the science.' },
+  { title: 'Try it at home', desc: 'Follow the step-by-step guide with safe materials.' },
+  { title: 'Answer the quiz', desc: 'A short quiz cements the science and rewards stars.' }
+];
+const __HIW_KIDSSCIENCELAB = { title: 'Kids Science Lab', intro: 'Interactive, safe science experiments for kids.', steps: __HIW_KIDSSCIENCELAB_STEPS };
+
 
 const PARENTAL_GATE_KEY = "parental_gate_verified_kids_science_lab";
 
@@ -147,6 +157,7 @@ const KidsScienceLab = () => {
   if (!isVerified) {
     return (
       <div className="min-h-screen">
+      <FloatingHowItWorks title={__HIW_KIDSSCIENCELAB.title} intro={__HIW_KIDSSCIENCELAB.intro} steps={__HIW_KIDSSCIENCELAB.steps} />
         <ParentalGate
           isOpen={true}
           storageKey={PARENTAL_GATE_KEY}

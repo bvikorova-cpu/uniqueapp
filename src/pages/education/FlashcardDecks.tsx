@@ -7,6 +7,15 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Plus, Layers, Globe } from "lucide-react";
 import { Helmet } from "react-helmet-async";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_FLASHCARDDECKS_STEPS = [
+  { title: 'Create a deck', desc: 'Add cards manually or auto-generate from a PDF / notes.' },
+  { title: 'Share with friends', desc: 'Public decks are searchable by other learners.' },
+  { title: 'Study daily', desc: 'Open a deck to run a spaced-repetition session.' }
+];
+const __HIW_FLASHCARDDECKS = { title: 'Flashcard Decks', intro: 'Your library of flashcard decks.', steps: __HIW_FLASHCARDDECKS_STEPS };
+
 
 export default function FlashcardDecks() {
   const { data: decks = [], isLoading } = useFlashcardDecks();
@@ -17,6 +26,7 @@ export default function FlashcardDecks() {
 
   return (
     <>
+      <FloatingHowItWorks title={__HIW_FLASHCARDDECKS.title} intro={__HIW_FLASHCARDDECKS.intro} steps={__HIW_FLASHCARDDECKS.steps} />
       <Helmet><title>Flashcards · Education</title></Helmet>
       <div className="container mx-auto px-4 pt-20 pb-12 max-w-5xl">
         <div className="flex items-center justify-between mb-6">

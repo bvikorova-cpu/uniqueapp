@@ -4,6 +4,15 @@ import { Button } from "@/components/ui/button";
 import * as LucideIcons from "lucide-react";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_ACHIEVEMENTS_STEPS = [
+  { title: 'See what you earned', desc: 'Badges unlock through quizzes, streaks and challenges.' },
+  { title: "Find what's next", desc: 'Locked badges show requirements — a natural learning roadmap.' },
+  { title: 'Share your wins', desc: 'Post achievements to your profile to inspire friends.' }
+];
+const __HIW_ACHIEVEMENTS = { title: 'Achievements', intro: "Every milestone you've unlocked while learning.", steps: __HIW_ACHIEVEMENTS_STEPS };
+
 
 export default function Achievements() {
   const { data: achievements = [], isLoading } = useAchievements();
@@ -27,6 +36,7 @@ export default function Achievements() {
             const Icon = (LucideIcons as any)[a.icon] ?? LucideIcons.Trophy;
             return (
               <motion.div key={a.id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.03 }}>
+      <FloatingHowItWorks title={__HIW_ACHIEVEMENTS.title} intro={__HIW_ACHIEVEMENTS.intro} steps={__HIW_ACHIEVEMENTS.steps} />
                 <Card className={`backdrop-blur-xl ${a.unlocked ? "bg-primary/10 border-primary/40" : "bg-card/60 opacity-60 grayscale"}`}>
                   <CardContent className="p-4 text-center">
                     <Icon className={`w-10 h-10 mx-auto mb-2 ${a.unlocked ? "text-primary" : "text-muted-foreground"}`} />

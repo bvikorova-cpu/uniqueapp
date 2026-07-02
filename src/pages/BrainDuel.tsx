@@ -48,6 +48,16 @@ import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_BRAINDUEL_STEPS = [
+  { title: 'Choose a category', desc: 'Pick a subject you know well to boost your win rate.' },
+  { title: 'Duel a player', desc: 'Play against a friend or get matched with a random opponent.' },
+  { title: 'Answer under pressure', desc: 'Fastest correct answer wins the round — speed matters.' },
+  { title: 'Climb the ladder', desc: 'Earn XP, rank up, unlock badges and tournament seats.' }
+];
+const __HIW_BRAINDUEL = { title: 'BrainDuel', intro: 'Real-time knowledge battles — challenge friends or random players.', steps: __HIW_BRAINDUEL_STEPS };
+
 const BrainDuel = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -130,6 +140,7 @@ const BrainDuel = () => {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
+      <FloatingHowItWorks title={__HIW_BRAINDUEL.title} intro={__HIW_BRAINDUEL.intro} steps={__HIW_BRAINDUEL.steps} />
       {/* Achievement Animation Overlay */}
       <AchievementAnimation />
 
