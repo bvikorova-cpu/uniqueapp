@@ -99,12 +99,7 @@ export default function StoriesBar() {
         .gt("expires_at", new Date().toISOString())
         .limit(1);
 
-      return (
-    <>
-      <FloatingHowItWorks title={"Stories Bar - How it works"} steps={[{ title: 'Open', desc: 'Access the Stories Bar section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Stories Bar.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      data?.length || 0
-    </>
-  ) > 0;
+      return (data?.length || 0) > 0;
     },
     enabled: !!currentUser,
   });

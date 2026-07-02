@@ -39,12 +39,7 @@ export const PublicGoals = ({ userId, isOwnProfile }: PublicGoalsProps) => {
         .select("*")
         .eq("user_id", userId)
         .order("created_at", { ascending: false });
-      return (
-    <>
-      <FloatingHowItWorks title={"Public Goals - How it works"} steps={[{ title: 'Open', desc: 'Access the Public Goals section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Public Goals.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      data || []
-    </>
-  ) as Goal[];
+      return (data || []) as Goal[];
     },
     enabled: !!userId,
   });

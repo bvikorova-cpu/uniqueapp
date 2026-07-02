@@ -59,12 +59,7 @@ export const PhotoGallery = ({ onBack }: Props) => {
         const ext = file.name.split('.').pop();
         const name = `gallery/${user.id}/${prefix}-${Date.now()}.${ext}`;
         await supabase.storage.from('old-photos').upload(name, file);
-        return (
-    <>
-      <FloatingHowItWorks title={"Photo Gallery - How it works"} steps={[{ title: 'Open', desc: 'Access the Photo Gallery section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Photo Gallery.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      await getReadableUrl('old-photos', name)
-    </>
-  );
+        return (await getReadableUrl('old-photos', name));
       };
 
       const [beforeUrl, afterUrl] = await Promise.all([uploadFile(beforeFile, 'before'), uploadFile(afterFile, 'after')]);

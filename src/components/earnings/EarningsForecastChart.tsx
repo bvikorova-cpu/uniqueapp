@@ -61,12 +61,7 @@ export const EarningsForecastChart = ({ history }: EarningsForecastChartProps) =
         return Date.now() - d.getTime() <= 30 * 86400000;
       })
       .reduce((s, h) => s + Number(h.amount), 0);
-    return (
-    <>
-      <FloatingHowItWorks title={"Earnings Forecast Chart - How it works"} steps={[{ title: 'Open', desc: 'Access the Earnings Forecast Chart section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Earnings Forecast Chart.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      last30 / 30
-    </>
-  ) * 14;
+    return (last30 / 30) * 14;
   }, [history]);
 
   return (

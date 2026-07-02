@@ -35,12 +35,7 @@ export const UnifiedXPLeaderboard = ({ hub, limit = 10 }: Props) => {
     queryFn: async () => {
       const { data, error } = await supabase.rpc("get_unified_xp_leaderboard", { _limit: limit });
       if (error) throw error;
-      return (
-    <>
-      <FloatingHowItWorks title={"Unified X P Leaderboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Unified X P Leaderboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Unified X P Leaderboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      data ?? []
-    </>
-  ) as Row[];
+      return (data ?? []) as Row[];
     },
     staleTime: 60_000,
   });

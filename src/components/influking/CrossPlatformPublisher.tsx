@@ -55,12 +55,7 @@ const CrossPlatformPublisher = ({ onBack }: CrossPlatformPublisherProps) => {
         .order("created_at", { ascending: false })
         .limit(20);
       if (error) throw error;
-      return (
-    <>
-      <FloatingHowItWorks title={"Cross Platform Publisher - How it works"} steps={[{ title: 'Open', desc: 'Access the Cross Platform Publisher section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Cross Platform Publisher.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      data || []
-    </>
-  ).map((item: any) => ({
+      return (data || []).map((item: any) => ({
         id: item.id,
         content: item.metadata?.content || "",
         platforms: item.metadata?.platforms || [],
