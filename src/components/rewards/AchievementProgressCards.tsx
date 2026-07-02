@@ -7,6 +7,7 @@ import { Lock, Target } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 
 export default function AchievementProgressCards({ userId }: { userId: string }) {
