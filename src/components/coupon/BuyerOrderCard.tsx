@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Ticket, ShieldCheck, AlertTriangle, Star, Clock, Copy, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Order {
   id: string;
@@ -70,7 +71,9 @@ export function BuyerOrderCard({ order, onChanged }: { order: Order; onChanged: 
   };
 
   return (
-    <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
+    <>
+      <FloatingHowItWorks title={"Buyer Order Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Buyer Order Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Buyer Order Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
       <div className="flex items-start gap-4">
         <div className="w-14 h-14 bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
           <Ticket className="w-7 h-7 text-primary/60" />
@@ -162,5 +165,6 @@ export function BuyerOrderCard({ order, onChanged }: { order: Order; onChanged: 
         </DialogContent>
       </Dialog>
     </Card>
+    </>
   );
 }

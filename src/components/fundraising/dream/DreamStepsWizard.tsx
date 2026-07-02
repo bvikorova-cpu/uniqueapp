@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Lightbulb, ShieldCheck, Heart, Trophy } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const steps = [
   {
@@ -34,7 +35,9 @@ const steps = [
 
 export const DreamStepsWizard = () => {
   return (
-    <div className="py-12">
+    <>
+      <FloatingHowItWorks title={"Dream Steps Wizard - How it works"} steps={[{ title: 'Open', desc: 'Access the Dream Steps Wizard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Dream Steps Wizard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="py-12">
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -91,5 +94,6 @@ export const DreamStepsWizard = () => {
         </p>
       </motion.div>
     </div>
+    </>
   );
 };

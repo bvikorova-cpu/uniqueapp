@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus, Trash2, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const TYPES = [
   { id: "character", label: "Character" },
@@ -78,7 +79,9 @@ export function ForgeStoryBible({ open, onClose }: Props) {
   const filtered = filter === "all" ? entries : entries.filter((e) => e.entry_type === filter);
 
   return (
-    <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
+    <>
+      <FloatingHowItWorks title={"Forge Story Bible - How it works"} steps={[{ title: 'Open', desc: 'Access the Forge Story Bible section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Forge Story Bible.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Story Bible</DialogTitle>
@@ -140,5 +143,6 @@ export function ForgeStoryBible({ open, onClose }: Props) {
         )}
       </DialogContent>
     </Dialog>
+    </>
   );
 }

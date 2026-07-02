@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Sparkles, Wand2, Star } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export function WizardHero() {
   const particles = Array.from({ length: 20 }, (_, i) => ({
@@ -12,7 +13,9 @@ export function WizardHero() {
   }));
 
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-violet-600 via-purple-700 to-indigo-800 p-8 md:p-12 mb-8 shadow-2xl">
+    <>
+      <FloatingHowItWorks title={"Wizard Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Wizard Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Wizard Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-violet-600 via-purple-700 to-indigo-800 p-8 md:p-12 mb-8 shadow-2xl">
       {/* Animated particles */}
       {particles.map((p) => (
         <motion.div
@@ -116,5 +119,6 @@ export function WizardHero() {
         </motion.div>
       </div>
     </div>
+    </>
   );
 }

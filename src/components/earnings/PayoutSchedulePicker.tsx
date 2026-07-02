@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CalendarClock, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type Interval = "manual" | "daily" | "weekly" | "monthly";
 
@@ -52,7 +53,9 @@ export const PayoutSchedulePicker = () => {
   if (!loading && !connected) return null;
 
   return (
-    <Card className="border-blue-500/20 bg-card/80 backdrop-blur">
+    <>
+      <FloatingHowItWorks title={"Payout Schedule Picker - How it works"} steps={[{ title: 'Open', desc: 'Access the Payout Schedule Picker section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Payout Schedule Picker.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-blue-500/20 bg-card/80 backdrop-blur">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
           <CalendarClock className="w-4 h-4 text-blue-400" />
@@ -110,5 +113,6 @@ export const PayoutSchedulePicker = () => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

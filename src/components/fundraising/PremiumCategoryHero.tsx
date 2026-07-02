@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { LucideIcon, Sparkles, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroVideo from "@/assets/fundraising-hub-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Stat { icon: LucideIcon; label: string; value: string | number; }
 
@@ -33,7 +34,9 @@ export function PremiumCategoryHero({
   const a = accentMap[accentColor];
 
   return (
-    <div className={`relative h-[60vh] min-h-[460px] w-full overflow-hidden rounded-3xl border ${a.chip.split(" ")[0]} mb-8 ${a.chip.split(" ")[1]}`}>
+    <>
+      <FloatingHowItWorks title={"Premium Category Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Premium Category Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Premium Category Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className={`relative h-[60vh] min-h-[460px] w-full overflow-hidden rounded-3xl border ${a.chip.split(" ")[0]} mb-8 ${a.chip.split(" ")[1]}`}>
       <div className="absolute inset-0 bg-black" />
       <video className="absolute inset-0 h-full w-full object-cover brightness-[1.05] saturate-[1.15]" autoPlay muted loop playsInline>
         <source src={heroVideo.url} type="video/mp4" />
@@ -126,5 +129,6 @@ export function PremiumCategoryHero({
         </motion.div>
       </div>
     </div>
+    </>
   );
 }

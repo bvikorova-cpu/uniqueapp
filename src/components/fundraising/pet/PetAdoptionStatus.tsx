@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Heart, Home, Stethoscope, Clock, Sparkles, PawPrint } from "lucide-react";
 import { format } from "date-fns";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props {
   status: string;
@@ -24,7 +25,9 @@ export function PetAdoptionStatus({ status, petName, adopterName, adoptedAt, int
   const Icon = meta.icon;
 
   return (
-    <Card className={`p-4 border-2 ${meta.tone}`}>
+    <>
+      <FloatingHowItWorks title={"Pet Adoption Status - How it works"} steps={[{ title: 'Open', desc: 'Access the Pet Adoption Status section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Pet Adoption Status.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className={`p-4 border-2 ${meta.tone}`}>
       <div className="flex items-start gap-3">
         <Icon className="w-6 h-6 shrink-0" />
         <div className="flex-1 min-w-0">
@@ -48,5 +51,6 @@ export function PetAdoptionStatus({ status, petName, adopterName, adoptedAt, int
         </div>
       </div>
     </Card>
+    </>
   );
 }

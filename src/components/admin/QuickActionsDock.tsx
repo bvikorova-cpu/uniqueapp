@@ -10,6 +10,7 @@ import {
   ChevronRight,
   Zap,
 } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const QuickActionsDock = () => {
   const nav = useNavigate();
@@ -34,7 +35,9 @@ export const QuickActionsDock = () => {
   };
 
   return (
-    <div className="fixed right-3 bottom-6 z-40 flex flex-col items-end gap-2">
+    <>
+      <FloatingHowItWorks title={"Quick Actions Dock - How it works"} steps={[{ title: 'Open', desc: 'Access the Quick Actions Dock section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Quick Actions Dock.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="fixed right-3 bottom-6 z-40 flex flex-col items-end gap-2">
       {open && (
         <div className="flex flex-col gap-2 animate-in slide-in-from-bottom-2">
           {actions.map((a) => (
@@ -60,5 +63,6 @@ export const QuickActionsDock = () => {
         {open ? <Sparkles className="h-5 w-5" /> : <Zap className="h-5 w-5" />}
       </button>
     </div>
+    </>
   );
 };

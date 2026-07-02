@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Check, ArrowRight, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ForgeToolDef {
   id: string;
@@ -25,7 +26,9 @@ export const ForgeToolCard = ({ tool, onSelect, index }: ForgeToolCardProps) => 
   const Icon = tool.icon;
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Forge Tool Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Forge Tool Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Forge Tool Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 + index * 0.08 }}
@@ -94,5 +97,6 @@ export const ForgeToolCard = ({ tool, onSelect, index }: ForgeToolCardProps) => 
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 };

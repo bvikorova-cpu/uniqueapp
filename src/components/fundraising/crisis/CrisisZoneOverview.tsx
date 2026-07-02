@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, AlertTriangle } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const zones = [
   { region: "Southeast Asia", active: 3, severity: "high", emoji: "🌊", types: "Floods, Typhoons" },
@@ -19,7 +20,9 @@ const severityColors: Record<string, string> = {
 
 export function CrisisZoneOverview() {
   return (
-    <section className="py-12">
+    <>
+      <FloatingHowItWorks title={"Crisis Zone Overview - How it works"} steps={[{ title: 'Open', desc: 'Access the Crisis Zone Overview section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Crisis Zone Overview.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <section className="py-12">
       <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-foreground mb-2">🌍 Active Crisis Zones</h2>
@@ -46,5 +49,6 @@ export function CrisisZoneOverview() {
         </div>
       </motion.div>
     </section>
+    </>
   );
 }

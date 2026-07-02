@@ -3,6 +3,7 @@ import { Switch } from "@/components/ui/switch";
 import { Skull, Eye } from "lucide-react";
 import { useInterrogationMode } from "@/hooks/useLieDetectorTuning";
 import { useEffect } from "react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const InterrogationModeToggle = () => {
   const { data, toggle } = useInterrogationMode();
@@ -11,7 +12,12 @@ export const InterrogationModeToggle = () => {
   useEffect(() => {
     if (on) document.documentElement.classList.add("interrogation-mode");
     else document.documentElement.classList.remove("interrogation-mode");
-    return () => document.documentElement.classList.remove("interrogation-mode");
+    return (
+    <>
+      <FloatingHowItWorks title={"Interrogation Mode Toggle - How it works"} steps={[{ title: 'Open', desc: 'Access the Interrogation Mode Toggle section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Interrogation Mode Toggle.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => document.documentElement.classList.remove("interrogation-mode");
   }, [on]);
 
   return (

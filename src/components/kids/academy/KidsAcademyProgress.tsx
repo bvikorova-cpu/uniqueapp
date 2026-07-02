@@ -4,6 +4,7 @@ import { Star, Trophy, Medal, Zap, Crown } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const LEVELS = [
   { name: "Explorer", minXP: 0, emoji: "🌱", color: "text-green-500" },
@@ -55,7 +56,9 @@ export const KidsAcademyProgress = () => {
   const lockedBadges = BADGES.filter(b => xp < b.unlockXP);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <>
+      <FloatingHowItWorks title={"Kids Academy Progress - How it works"} steps={[{ title: 'Open', desc: 'Access the Kids Academy Progress section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Kids Academy Progress.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
       {/* XP & Level Card */}
       <Card className="border-2 border-primary/20">
         <CardHeader className="pb-3">
@@ -148,5 +151,6 @@ export const KidsAcademyProgress = () => {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };

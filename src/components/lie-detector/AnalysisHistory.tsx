@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { MessageSquare, Users, Brain, Loader2, Clock, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const AnalysisHistory = () => {
   const { data: analyses, isLoading } = useQuery({
@@ -54,10 +55,13 @@ export const AnalysisHistory = () => {
 
   if (isLoading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Analysis History - How it works"} steps={[{ title: 'Open', desc: 'Access the Analysis History section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Analysis History.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="flex items-center justify-center py-12">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
-    );
+    </>
+  );
   }
 
   if (!analyses || analyses.length === 0) {

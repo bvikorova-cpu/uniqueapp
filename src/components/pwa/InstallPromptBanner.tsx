@@ -13,6 +13,7 @@ import { Download, ExternalLink, Share, X } from "lucide-react";
 import { useInstallPrompt } from "@/hooks/useInstallPrompt";
 import { Button } from "@/components/ui/button";
 import { trackPwaInstallEvent } from "@/lib/pwaInstallAnalytics";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const SHOW_DELAY_MS = 8_000;
 
@@ -43,7 +44,12 @@ export function InstallPromptBanner() {
       update();
       return r;
     };
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Install Prompt Banner - How it works"} steps={[{ title: 'Open', desc: 'Access the Install Prompt Banner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Install Prompt Banner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       window.removeEventListener("popstate", update);
       history.pushState = origPush;
       history.replaceState = origReplace;

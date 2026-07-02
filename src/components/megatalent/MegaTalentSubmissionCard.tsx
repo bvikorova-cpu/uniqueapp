@@ -7,6 +7,7 @@ import { TopPremiumBadge } from "@/components/megatalent/TopPremiumBadge";
 import { VoteBoostTooltip } from "@/components/megatalent/VoteBoostTooltip";
 import MegatalentReactions from "@/components/megatalent/MegatalentReactions";
 import MegatalentPinButton from "@/components/megatalent/MegatalentPinButton";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface SubmissionCardProps {
   submission: any;
@@ -41,7 +42,9 @@ export default function MegaTalentSubmissionCard({
   const displayVotes = (submission.votes_count || 0).toLocaleString();
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Mega Talent Submission Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Mega Talent Submission Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Mega Talent Submission Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.06 }}
@@ -152,5 +155,6 @@ export default function MegaTalentSubmissionCard({
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 }

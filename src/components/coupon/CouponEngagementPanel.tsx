@@ -8,6 +8,7 @@ import { Bell, Trash2, Plus, Coins, BookmarkPlus } from "lucide-react";
 import { useCouponPriceAlerts } from "@/hooks/useCouponPriceAlerts";
 import { useCouponSavedSearches } from "@/hooks/useCouponSavedSearches";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   userId: string | null;
@@ -33,7 +34,9 @@ export function CouponEngagementPanel({ userId, currentFilters, onApplySearch }:
   }, [userId]);
 
   return (
-    <div className="grid md:grid-cols-3 gap-4">
+    <>
+      <FloatingHowItWorks title={"Coupon Engagement Panel - How it works"} steps={[{ title: 'Open', desc: 'Access the Coupon Engagement Panel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Coupon Engagement Panel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="grid md:grid-cols-3 gap-4">
       {/* Cashback */}
       <Card className="bg-gradient-to-br from-emerald-500/10 to-teal-500/5 border-emerald-500/30">
         <CardContent className="p-5">
@@ -104,5 +107,6 @@ export function CouponEngagementPanel({ userId, currentFilters, onApplySearch }:
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

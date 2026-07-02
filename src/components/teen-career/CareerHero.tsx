@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Briefcase, Sparkles, Rocket, GraduationCap, Target, TrendingUp } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const floatingEmojis = ["🎓", "💼", "🚀", "⭐", "🎯", "💡", "🏆", "📊"];
 
@@ -22,7 +23,9 @@ const mascots = [
 
 export const CareerHero = () => {
   return (
-    <div className="relative text-center mb-8 overflow-hidden">
+    <>
+      <FloatingHowItWorks title={"Career Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Career Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Career Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative text-center mb-8 overflow-hidden">
       {/* Floating emojis */}
       {floatingEmojis.map((emoji, i) => (
         <motion.span
@@ -146,5 +149,6 @@ export const CareerHero = () => {
         ))}
       </motion.div>
     </div>
+    </>
   );
 };

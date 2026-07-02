@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Brain, Loader2, Sparkles, Target, TrendingUp, CheckCircle2 } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   category: string;
@@ -44,7 +45,9 @@ export default function MegatalentAICoach({ category }: Props) {
   };
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Megatalent A I Coach - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent A I Coach section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent A I Coach.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className="w-full"
@@ -165,5 +168,6 @@ export default function MegatalentAICoach({ category }: Props) {
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 }

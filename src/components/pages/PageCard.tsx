@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface PageCardProps {
   page: {
@@ -30,7 +31,9 @@ export const PageCard = ({ page, onFollow, onUnfollow, isFollowing }: PageCardPr
   };
 
   return (
-    <div 
+    <>
+      <FloatingHowItWorks title={"Page Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Page Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Page Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div 
       className="glass-post-card overflow-hidden hover:scale-[1.02] transition-all duration-500 cursor-pointer"
       onClick={handleCardClick}
     >
@@ -85,5 +88,6 @@ export const PageCard = ({ page, onFollow, onUnfollow, isFollowing }: PageCardPr
         </Button>
       </div>
     </div>
+    </>
   );
 };

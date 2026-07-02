@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Play, Loader2, Clock } from "lucide-react";
 import { useRewardedAd } from "@/hooks/useRewardedAd";
 import { cn } from "@/lib/utils";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface WatchAdButtonProps {
   className?: string;
@@ -23,7 +24,9 @@ export function WatchAdButton({
   const seconds = Math.ceil(cooldownRemaining / 1000);
 
   return (
-    <Button
+    <>
+      <FloatingHowItWorks title={"Watch Ad Button - How it works"} steps={[{ title: 'Open', desc: 'Access the Watch Ad Button section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Watch Ad Button.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Button
       onClick={watchAd}
       disabled={isLoading || onCooldown}
       variant={variant}
@@ -39,5 +42,6 @@ export function WatchAdButton({
       )}
       {onCooldown ? `Wait ${seconds}s` : (label ?? `Watch ad +${xpAmount} XP`)}
     </Button>
+    </>
   );
 }

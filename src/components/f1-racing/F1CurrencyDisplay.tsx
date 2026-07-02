@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const packages = [
   { id: "coins_100", name: "100 Coins", coins: 100, gems: 0, price: 5.99, popular: false },
@@ -66,7 +67,9 @@ export function F1CurrencyDisplay() {
   };
 
   return (
-    <motion.div 
+    <>
+      <FloatingHowItWorks title={"F1 Currency Display - How it works"} steps={[{ title: 'Open', desc: 'Access the F1 Currency Display section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in F1 Currency Display.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div 
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       className="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-gradient-to-r from-slate-900/90 via-cyan-950/40 to-slate-900/90 backdrop-blur-sm"
@@ -185,5 +188,6 @@ export function F1CurrencyDisplay() {
         )}
       </div>
     </motion.div>
+    </>
   );
 }

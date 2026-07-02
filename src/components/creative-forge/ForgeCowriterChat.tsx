@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import { COWRITER_COST } from "@/hooks/useCreativeAITools";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -115,7 +116,9 @@ export const ForgeCowriterChat = ({ open, onClose, category, currentText, onInse
   if (!open) return null;
 
   return (
-    <AnimatePresence>
+    <>
+      <FloatingHowItWorks title={"Forge Cowriter Chat - How it works"} steps={[{ title: 'Open', desc: 'Access the Forge Cowriter Chat section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Forge Cowriter Chat.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <AnimatePresence>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -186,5 +189,6 @@ export const ForgeCowriterChat = ({ open, onClose, category, currentText, onInse
         </motion.div>
       </motion.div>
     </AnimatePresence>
+    </>
   );
 };

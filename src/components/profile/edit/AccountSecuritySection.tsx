@@ -19,6 +19,7 @@ import {
   reauthenticateWithPassword,
 } from "@/lib/requireRecentAuth";
 import { logSecurityEvent } from "@/lib/securityAudit";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 /**
  * P4 step-up auth: changing email or password requires a recent sign-in
@@ -143,7 +144,9 @@ export function AccountSecuritySection({ currentEmail }: AccountSecuritySectionP
   };
 
   return (
-    <Card className="p-4 space-y-6 border-border/60">
+    <>
+      <FloatingHowItWorks title={"Account Security Section - How it works"} steps={[{ title: 'Open', desc: 'Access the Account Security Section section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Account Security Section.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-4 space-y-6 border-border/60">
       <div className="flex items-center gap-2">
         <ShieldCheck className="h-4 w-4 text-primary" />
         <h3 className="text-sm font-semibold">Account security</h3>
@@ -243,5 +246,6 @@ export function AccountSecuritySection({ currentEmail }: AccountSecuritySectionP
         </DialogContent>
       </Dialog>
     </Card>
+    </>
   );
 }

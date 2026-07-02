@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Compass, Sparkles, Volume2, MapPin } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export type TourGuideId = "princess" | "wizard" | "explorer";
 
@@ -27,7 +28,9 @@ export function TourOnboarding({ castleName, castleCountry, funFacts, totalRooms
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+    <>
+      <FloatingHowItWorks title={"Tour Onboarding - How it works"} steps={[{ title: 'Open', desc: 'Access the Tour Onboarding section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Tour Onboarding.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -110,5 +113,6 @@ export function TourOnboarding({ castleName, castleCountry, funFacts, totalRooms
         </AnimatePresence>
       </motion.div>
     </div>
+    </>
   );
 }

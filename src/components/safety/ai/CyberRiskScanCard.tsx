@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Radar, Sparkles } from "lucide-react";
 import { useCyberRiskScan } from "@/hooks/useSafetyAIFeatures";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const RISK_COLORS: Record<string, string> = {
   safe: "bg-emerald-600",
@@ -20,7 +21,9 @@ export function CyberRiskScanCard() {
   const last = items[0];
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+      <FloatingHowItWorks title={"Cyber Risk Scan Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Cyber Risk Scan Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Cyber Risk Scan Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Card className="group cursor-pointer relative overflow-hidden border border-violet-500/20 bg-gradient-to-br from-violet-950/40 via-card/40 to-fuchsia-950/30 backdrop-blur-xl p-5 hover:border-violet-400/40 transition-all">
           <div className="flex items-start gap-3">
@@ -100,5 +103,6 @@ export function CyberRiskScanCard() {
         )}
       </DialogContent>
     </Dialog>
+    </>
   );
 }

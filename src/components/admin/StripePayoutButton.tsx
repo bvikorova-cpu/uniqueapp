@@ -16,6 +16,7 @@ import {
   useAdminPayoutWithdrawal,
   type PayoutKind,
 } from "@/hooks/useAdminPayoutWithdrawal";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   kind: PayoutKind;
@@ -59,6 +60,8 @@ export function StripePayoutButton({
 
   return (
     <>
+      <FloatingHowItWorks title={"Stripe Payout Button - How it works"} steps={[{ title: 'Open', desc: 'Access the Stripe Payout Button section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Stripe Payout Button.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <>
       <Button
         size={size}
         variant={variant}
@@ -110,6 +113,7 @@ export function StripePayoutButton({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+    </>
     </>
   );
 }

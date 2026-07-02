@@ -1,12 +1,15 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trophy, Crown, Medal } from "lucide-react";
 import { useLeaderboard } from "@/hooks/useSafetyExtras";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function RoleplayLeaderboard() {
   const { data = [], isLoading } = useLeaderboard();
 
   return (
-    <Card className="border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-card/60 backdrop-blur-md">
+    <>
+      <FloatingHowItWorks title={"Roleplay Leaderboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Roleplay Leaderboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Roleplay Leaderboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-card/60 backdrop-blur-md">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <Trophy className="h-4 w-4 text-amber-400" /> Top Defenders Leaderboard
@@ -40,5 +43,6 @@ export function RoleplayLeaderboard() {
         )}
       </CardContent>
     </Card>
+    </>
   );
 }

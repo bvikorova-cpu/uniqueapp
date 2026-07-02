@@ -1,11 +1,14 @@
 import { motion } from "framer-motion";
 import { Sparkles, Star, Crown } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const floatingEmojis = ["🦄", "🌈", "⭐", "🎪", "🧚", "🎠", "🪄", "🎨"];
 
 export const KidsHero = () => {
   return (
-    <div className="text-center mb-8 pt-8 relative">
+    <>
+      <FloatingHowItWorks title={"Kids Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Kids Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Kids Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="text-center mb-8 pt-8 relative">
       {/* Floating emojis */}
       {floatingEmojis.map((emoji, i) => (
         <motion.div
@@ -82,5 +85,6 @@ export const KidsHero = () => {
         </span>
       </motion.div>
     </div>
+    </>
   );
 };

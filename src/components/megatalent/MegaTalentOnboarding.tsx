@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Trophy, Upload, Heart, Award, ChevronRight, ChevronLeft, Check } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const STORAGE_KEY_PREFIX = "megatalent_onboarding_done_";
 
@@ -94,7 +95,12 @@ export const MegaTalentOnboarding = () => {
         if (!localStorage.getItem(globalKey) && !globalDone) return;
         setOpen(true);
       }, delay);
-      return () => clearTimeout(t);
+      return (
+    <>
+      <FloatingHowItWorks title={"Mega Talent Onboarding - How it works"} steps={[{ title: 'Open', desc: 'Access the Mega Talent Onboarding section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Mega Talent Onboarding.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearTimeout(t);
     })();
     return () => { cancelled = true; };
   }, [user]);

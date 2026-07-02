@@ -6,6 +6,7 @@ import { ArrowLeft, Gamepad2, Loader2, RotateCcw, ChevronRight } from "lucide-re
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAICredits } from "@/hooks/useAICredits";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -142,7 +143,9 @@ CHOICE_C: [third option]`}`,
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"A I Scenario Simulator - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Scenario Simulator section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Scenario Simulator.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center justify-between">
         <Button variant="ghost" onClick={onBack}><ArrowLeft className="mr-2 h-4 w-4" /> Back</Button>
         <Badge className="bg-red-100 text-red-700">3 Credits</Badge>
@@ -209,5 +212,6 @@ CHOICE_C: [third option]`}`,
         </Card>
       )}
     </div>
+    </>
   );
 };

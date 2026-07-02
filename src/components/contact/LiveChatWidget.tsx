@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import { CSATWidget } from "./CSATWidget";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Msg { role: "user" | "assistant"; content: string }
 
@@ -81,6 +82,8 @@ export const LiveChatWidget = () => {
 
   if (hidden) {
     return (
+    <>
+      <FloatingHowItWorks title={"Live Chat Widget - How it works"} steps={[{ title: 'Open', desc: 'Access the Live Chat Widget section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Live Chat Widget.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <button
         onClick={show}
         className="fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] right-3 md:bottom-3 md:right-3 z-50 flex items-center gap-1 rounded-full border border-border bg-background/80 backdrop-blur px-2.5 py-1 text-[11px] text-muted-foreground hover:text-foreground hover:opacity-100 opacity-60 transition shadow"
@@ -90,7 +93,8 @@ export const LiveChatWidget = () => {
         <Sparkles className="h-3 w-3 text-primary" />
         Show chat
       </button>
-    );
+    </>
+  );
   }
 
   return (

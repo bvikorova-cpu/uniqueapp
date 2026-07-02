@@ -8,6 +8,7 @@ import {
   getPushStatus,
   isPushSupported,
 } from "@/lib/pushNotifications";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type Status = "unsupported" | "denied" | "default" | "granted";
 
@@ -54,10 +55,13 @@ export const PushOptInButton = ({ variant = "outline", size = "sm", className }:
 
   if (status === "granted") {
     return (
+    <>
+      <FloatingHowItWorks title={"Push Opt In Button - How it works"} steps={[{ title: 'Open', desc: 'Access the Push Opt In Button section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Push Opt In Button.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Button variant={variant} size={size} className={className} onClick={disable} disabled={busy}>
         <BellRing className="h-4 w-4 mr-2" /> Notifications on
       </Button>
-    );
+    </>
+  );
   }
   if (status === "denied") {
     return (

@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   children: ReactNode;
@@ -8,7 +9,9 @@ interface Props {
 /** Cinematic background + container shared across all admin subpages */
 export const AdminPageShell = ({ children, className = "" }: Props) => {
   return (
-    <div className="relative min-h-screen bg-gradient-to-b from-background via-background to-primary/5">
+    <>
+      <FloatingHowItWorks title={"Admin Page Shell - How it works"} steps={[{ title: 'Open', desc: 'Access the Admin Page Shell section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Admin Page Shell.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative min-h-screen bg-gradient-to-b from-background via-background to-primary/5">
       {/* Ambient glow */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full bg-primary/10 blur-3xl" />
@@ -18,6 +21,7 @@ export const AdminPageShell = ({ children, className = "" }: Props) => {
         {children}
       </div>
     </div>
+    </>
   );
 };
 

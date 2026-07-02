@@ -15,6 +15,7 @@ import { format } from "date-fns";
 import { motion } from "framer-motion";
 import { MoodTracker } from "./MoodTracker";
 import { JournalExportPDF } from "./JournalExportPDF";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const incidentTypes = [
   "Verbal bullying", "Physical bullying", "Cyberbullying",
@@ -61,7 +62,9 @@ const SafetyJournal = () => {
     r <= 3 ? <Frown className="h-4 w-4 text-red-400" /> : r <= 6 ? <Meh className="h-4 w-4 text-amber-400" /> : <Smile className="h-4 w-4 text-emerald-400" />;
 
   return (
-    <div className="space-y-5">
+    <>
+      <FloatingHowItWorks title={"Safety Journal - How it works"} steps={[{ title: 'Open', desc: 'Access the Safety Journal section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Safety Journal.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-5">
       {/* Privacy banner */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -174,6 +177,7 @@ const SafetyJournal = () => {
         )}
       </div>
     </div>
+    </>
   );
 };
 

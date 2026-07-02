@@ -1,10 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Globe, ExternalLink } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export const CustomDomainNotice = () => {
   return (
-    <Card className="border-primary/30 bg-card/80 backdrop-blur">
+    <>
+      <FloatingHowItWorks title={"Custom Domain Notice - How it works"} steps={[{ title: 'Open', desc: 'Access the Custom Domain Notice section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Custom Domain Notice.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-primary/30 bg-card/80 backdrop-blur">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
           <Globe className="w-4 h-4 text-primary" />
@@ -32,5 +35,6 @@ export const CustomDomainNotice = () => {
         </Button>
       </CardContent>
     </Card>
+    </>
   );
 };

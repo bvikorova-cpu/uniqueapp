@@ -15,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckCircle, XCircle, Clock, DollarSign } from "lucide-react";
 import { toast } from "sonner";
 import { StripePayoutButton } from "@/components/admin/StripePayoutButton";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface WithdrawalRequest {
   id: string;
@@ -137,10 +138,13 @@ export const AdminInfluencerWithdrawals = () => {
 
   if (loading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Admin Influencer Withdrawals - How it works"} steps={[{ title: 'Open', desc: 'Access the Admin Influencer Withdrawals section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Admin Influencer Withdrawals.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="flex items-center justify-center p-8">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
-    );
+    </>
+  );
   }
 
   return (

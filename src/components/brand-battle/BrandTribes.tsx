@@ -6,6 +6,7 @@ import { Users, Crown, Flame, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Tribe {
   id: string;
@@ -68,7 +69,9 @@ export const BrandTribes = () => {
   if (loading) return <div className="text-center py-8"><Loader2 className="h-6 w-6 animate-spin mx-auto text-amber-400" /></div>;
 
   return (
-    <Card className="relative overflow-hidden border-amber-500/30 bg-gradient-to-br from-zinc-950 to-zinc-900">
+    <>
+      <FloatingHowItWorks title={"Brand Tribes - How it works"} steps={[{ title: 'Open', desc: 'Access the Brand Tribes section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Brand Tribes.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="relative overflow-hidden border-amber-500/30 bg-gradient-to-br from-zinc-950 to-zinc-900">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,hsl(45_90%_55%/.08),transparent_70%)]" />
       <CardHeader className="relative">
         <CardTitle className="flex items-center gap-2 text-amber-100">
@@ -130,5 +133,6 @@ export const BrandTribes = () => {
         })}
       </CardContent>
     </Card>
+    </>
   );
 };

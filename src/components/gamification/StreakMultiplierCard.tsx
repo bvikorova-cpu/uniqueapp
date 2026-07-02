@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Flame, Trophy, Zap, Crown, Loader2 } from "lucide-react";
 import { useDailyLoginReward } from "@/hooks/useDailyLoginReward";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Milestone {
   days: number;
@@ -43,7 +44,9 @@ export function StreakMultiplierCard() {
   };
 
   return (
-    <Card className="backdrop-blur-xl bg-gradient-to-br from-orange-500/10 via-card/80 to-amber-500/5 border-orange-500/30 overflow-hidden">
+    <>
+      <FloatingHowItWorks title={"Streak Multiplier Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Streak Multiplier Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Streak Multiplier Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="backdrop-blur-xl bg-gradient-to-br from-orange-500/10 via-card/80 to-amber-500/5 border-orange-500/30 overflow-hidden">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-base">
@@ -118,6 +121,7 @@ export function StreakMultiplierCard() {
         </Button>
       </CardContent>
     </Card>
+    </>
   );
 }
 

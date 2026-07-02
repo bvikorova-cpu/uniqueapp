@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Phone, Globe, Heart, AlertTriangle, ExternalLink, Shield, Clock } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const HOTLINES = [
   { country: "International", name: "Crisis Text Line", contact: "Text HOME to 741741", type: "text", available: "24/7", url: "https://www.crisistextline.org" },
@@ -36,7 +37,9 @@ export const CrisisResources = ({ onBack }: Props) => {
   const filtered = filter === "all" ? HOTLINES : HOTLINES.filter(h => h.country === filter);
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Crisis Resources - How it works"} steps={[{ title: 'Open', desc: 'Access the Crisis Resources section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Crisis Resources.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2">
         <ArrowLeft className="h-4 w-4" /> Back to Dashboard
       </Button>
@@ -135,5 +138,6 @@ export const CrisisResources = ({ onBack }: Props) => {
         </p>
       </Card>
     </div>
+    </>
   );
 };

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, XCircle, Award, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export interface QuizQuestion {
   question: string;
@@ -150,6 +151,8 @@ at the <strong>${difficulty}</strong> level and passed the comprehension quiz.</
   if (finished) {
     const passed = score >= PASS_THRESHOLD;
     return (
+    <>
+      <FloatingHowItWorks title={"Science Comprehension Quiz - How it works"} steps={[{ title: 'Open', desc: 'Access the Science Comprehension Quiz section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Science Comprehension Quiz.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-cyan-500/10">
         <CardContent className="py-8 text-center space-y-4">
           <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="text-6xl">
@@ -189,7 +192,8 @@ at the <strong>${difficulty}</strong> level and passed the comprehension quiz.</
           )}
         </CardContent>
       </Card>
-    );
+    </>
+  );
   }
 
   const q = questions[currentQ];

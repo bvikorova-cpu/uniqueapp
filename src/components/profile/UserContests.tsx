@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Heart } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Submission {
   id: string;
@@ -42,10 +43,13 @@ export const UserContests = ({ userId }: { userId: string }) => {
 
   if (submissions.length === 0) {
     return (
+    <>
+      <FloatingHowItWorks title={"User Contests - How it works"} steps={[{ title: 'Open', desc: 'Access the User Contests section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in User Contests.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="p-8 text-center text-muted-foreground">
         No contest submissions yet
       </Card>
-    );
+    </>
+  );
   }
 
   return (

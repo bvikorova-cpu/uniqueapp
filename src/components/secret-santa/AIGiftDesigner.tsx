@@ -8,6 +8,7 @@ import { useSecretSanta } from "@/hooks/useSecretSanta";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { Wand2, Sparkles, Loader2, Copy, Send, Palette, Heart, Zap, RefreshCw } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const DESIGN_PROMPTS = [
   { id: "birthday", label: "Birthday Surprise", emoji: "🎂", prompt: "Create a unique birthday-themed digital gift" },
@@ -83,7 +84,9 @@ export const AIGiftDesigner = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"A I Gift Designer - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Gift Designer section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Gift Designer.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       {/* Header */}
       <Card className="p-6 bg-white/80 backdrop-blur-xl border-purple-200 text-center shadow-lg">
         <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
@@ -197,5 +200,6 @@ export const AIGiftDesigner = () => {
         </p>
       </Card>
     </div>
+    </>
   );
 };

@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props {
   userId: string;
@@ -122,7 +123,9 @@ export const VoiceIntroRecorder = ({ userId, audioUrl, transcript, onSaved, onRe
   };
 
   return (
-    <div className="rounded-2xl border border-border/50 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl p-5 sm:p-6 mb-6">
+    <>
+      <FloatingHowItWorks title={"Voice Intro Recorder - How it works"} steps={[{ title: 'Open', desc: 'Access the Voice Intro Recorder section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Voice Intro Recorder.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="rounded-2xl border border-border/50 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl p-5 sm:p-6 mb-6">
       <div className="flex items-center gap-2 mb-3">
         <Mic className="h-5 w-5 text-rose-400" />
         <div>
@@ -188,5 +191,6 @@ export const VoiceIntroRecorder = ({ userId, audioUrl, transcript, onSaved, onRe
         </div>
       </div>
     </div>
+    </>
   );
 };

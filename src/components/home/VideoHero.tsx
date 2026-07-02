@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Play, Pause, Volume2, VolumeX } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface VideoHeroProps {
   videoSrc?: string;
@@ -51,7 +52,9 @@ export const VideoHero = ({
   };
 
   return (
-    <div className="relative h-[80vh] min-h-[500px] w-full overflow-hidden">
+    <>
+      <FloatingHowItWorks title={"Video Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Video Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Video Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative h-[80vh] min-h-[500px] w-full overflow-hidden">
       {/* Video Background */}
       <video
         ref={videoRef}
@@ -131,6 +134,7 @@ export const VideoHero = ({
         </Button>
       </div>
     </div>
+    </>
   );
 };
 

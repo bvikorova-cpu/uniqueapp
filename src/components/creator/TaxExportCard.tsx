@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { FileSpreadsheet, Loader2, Download } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 /**
  * Year-picker + "Download CSV" button that calls the `creator-tax-export`
@@ -60,7 +61,9 @@ export function TaxExportCard() {
   };
 
   return (
-    <Card className="border-primary/20">
+    <>
+      <FloatingHowItWorks title={"Tax Export Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Tax Export Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Tax Export Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-primary/20">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <FileSpreadsheet className="h-5 w-5 text-primary" />
@@ -96,5 +99,6 @@ export function TaxExportCard() {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 }

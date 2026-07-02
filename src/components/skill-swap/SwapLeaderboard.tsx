@@ -6,6 +6,7 @@ import { ArrowLeft, Trophy, Star, ArrowLeftRight, Medal, Crown, TrendingUp, Load
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type SortType = "exchanges" | "rating" | "streak";
 
@@ -90,10 +91,13 @@ export const SwapLeaderboard = ({ onBack }: SwapLeaderboardProps) => {
 
   if (isLoading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Swap Leaderboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Swap Leaderboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Swap Leaderboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="flex justify-center items-center py-20">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
-    );
+    </>
+  );
   }
 
   return (

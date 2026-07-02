@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Sparkles, Palette, Image, Gem, Scan } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import heroVideo from "@/assets/coloring-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const stats = [
   { label: "Pages Created", icon: Image, value: "—", color: "from-pink-500 to-rose-600" },
@@ -24,7 +25,9 @@ export function ColoringHero({ totalPages, credits }: ColoringHeroProps) {
   ];
 
   return (
-    <div className="space-y-4 mb-8">
+    <>
+      <FloatingHowItWorks title={"Coloring Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Coloring Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Coloring Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4 mb-8">
       {/* Badge */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -102,5 +105,6 @@ export function ColoringHero({ totalPages, credits }: ColoringHeroProps) {
         })}
       </div>
     </div>
+    </>
   );
 }

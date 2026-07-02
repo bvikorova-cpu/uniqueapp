@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Crown, Zap, TrendingUp, Shield } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const CREDIT_PACKAGES = [
   { credits: 30, price: 8, label: "Starter", emoji: "⚡", icon: Zap, gradient: "from-sky-500/10 to-blue-500/5", borderColor: "border-sky-500/20", savings: null },
@@ -16,7 +17,9 @@ interface ForgeCreditPackagesProps {
 
 export function ForgeCreditPackages({ onPurchase }: ForgeCreditPackagesProps) {
   return (
-    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <>
+      <FloatingHowItWorks title={"Forge Credit Packages - How it works"} steps={[{ title: 'Open', desc: 'Access the Forge Credit Packages section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Forge Credit Packages.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {CREDIT_PACKAGES.map((pkg, i) => {
         const Icon = pkg.icon;
         return (
@@ -86,6 +89,7 @@ export function ForgeCreditPackages({ onPurchase }: ForgeCreditPackagesProps) {
         );
       })}
     </div>
+    </>
   );
 }
 

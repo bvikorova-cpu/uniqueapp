@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Coins, Plus, Sparkles, Zap } from "lucide-react";
 import { useCharacterCredits } from "@/hooks/useCharacterCredits";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const CharacterCreditsDisplay = () => {
   const { credits, isLoading, purchaseCredits } = useCharacterCredits();
@@ -16,7 +17,9 @@ export const CharacterCreditsDisplay = () => {
   if (isLoading) return <div className="animate-pulse h-24 bg-card/50 rounded-xl" />;
 
   return (
-    <Card className="relative overflow-hidden border-border/30 bg-card/90 backdrop-blur-xl p-4 sm:p-5">
+    <>
+      <FloatingHowItWorks title={"Character Credits Display - How it works"} steps={[{ title: 'Open', desc: 'Access the Character Credits Display section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Character Credits Display.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="relative overflow-hidden border-border/30 bg-card/90 backdrop-blur-xl p-4 sm:p-5">
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-yellow-500 via-amber-500 to-orange-500" />
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
@@ -53,5 +56,6 @@ export const CharacterCreditsDisplay = () => {
         <Badge variant="outline" className="text-[10px] border-border/30">Raid: 5-25cr</Badge>
       </div>
     </Card>
+    </>
   );
 };

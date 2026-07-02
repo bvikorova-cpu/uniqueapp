@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { ArrowLeft, Calculator, DollarSign, Percent, Calendar, TrendingUp, PiggyBank } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -33,7 +34,9 @@ export const PropertyMortgageCalc = ({ onBack }: Props) => {
   }, [price, downPayment, interestRate, years]);
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+    <>
+      <FloatingHowItWorks title={"Property Mortgage Calc - How it works"} steps={[{ title: 'Open', desc: 'Access the Property Mortgage Calc section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Property Mortgage Calc.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
       <Button variant="ghost" onClick={onBack} className="mb-4">
         <ArrowLeft className="w-4 h-4 mr-2" /> Back to Hub
       </Button>
@@ -142,5 +145,6 @@ export const PropertyMortgageCalc = ({ onBack }: Props) => {
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 };

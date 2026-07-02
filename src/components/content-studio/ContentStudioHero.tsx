@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Sparkles, FileText, Image as ImageIcon, Users } from "lucide-react";
 import { useLiveStats } from "@/hooks/useLiveStats";
 import heroVideo from "@/assets/content-studio-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const ContentStudioHero = () => {
   const { stats } = useLiveStats([
@@ -19,7 +20,9 @@ const ContentStudioHero = () => {
   ];
 
   return (
-    <div className="relative w-full h-[60vh] min-h-[400px] max-h-[600px] overflow-hidden rounded-2xl mb-8">
+    <>
+      <FloatingHowItWorks title={"Content Studio Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Content Studio Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Content Studio Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative w-full h-[60vh] min-h-[400px] max-h-[600px] overflow-hidden rounded-2xl mb-8">
       <video
         src={heroVideo.url}
         autoPlay
@@ -80,6 +83,7 @@ const ContentStudioHero = () => {
         </motion.div>
       </div>
     </div>
+    </>
   );
 };
 

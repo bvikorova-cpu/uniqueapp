@@ -5,6 +5,7 @@ import { useVotingStreak } from "@/hooks/useVotingStreak";
 import { useBrandBattleCredits } from "@/hooks/useBrandBattleCredits";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const VotingStreakCard = () => {
   const { data: streak, isLoading: streakLoading } = useVotingStreak();
@@ -24,7 +25,12 @@ export const VotingStreakCard = () => {
     };
     updateCountdown();
     const interval = setInterval(updateCountdown, 1000);
-    return () => clearInterval(interval);
+    return (
+    <>
+      <FloatingHowItWorks title={"Voting Streak Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Voting Streak Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Voting Streak Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(interval);
   }, []);
 
   if (streakLoading || creditsLoading) return null;

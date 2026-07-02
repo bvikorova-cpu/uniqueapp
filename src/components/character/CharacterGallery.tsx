@@ -4,6 +4,7 @@ import { Trophy, Zap, Shield, Heart, Star, Crown } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const CharacterGallery = () => {
   const { data: characters } = useQuery({
@@ -16,7 +17,9 @@ export const CharacterGallery = () => {
   });
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Character Gallery - How it works"} steps={[{ title: 'Open', desc: 'Access the Character Gallery section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Character Gallery.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Card className="relative overflow-hidden border-border/30 bg-card/90 backdrop-blur-xl p-6 mb-6">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 via-purple-500 to-pink-500" />
         <div className="flex items-center gap-3">
@@ -93,5 +96,6 @@ export const CharacterGallery = () => {
         ))}
       </div>
     </div>
+    </>
   );
 };

@@ -4,6 +4,7 @@ import { Flame, Star, Sparkles } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const DAYS = ["M", "T", "W", "T", "F", "S", "S"];
 
@@ -63,7 +64,9 @@ export const KidsAcademyStreak = () => {
   const currentMultiplier = streak >= 30 ? "3x" : streak >= 14 ? "2.5x" : streak >= 7 ? "2x" : streak >= 3 ? "1.5x" : "1x";
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <>
+      <FloatingHowItWorks title={"Kids Academy Streak - How it works"} steps={[{ title: 'Open', desc: 'Access the Kids Academy Streak section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Kids Academy Streak.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
       {/* Streak Card */}
       <Card className="border-2 border-orange-500/20">
         <CardHeader className="pb-3">
@@ -193,5 +196,6 @@ export const KidsAcademyStreak = () => {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };

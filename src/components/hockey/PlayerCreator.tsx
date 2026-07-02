@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { spendSportCoins } from "@/lib/sportCoins";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const POSITIONS = [
   { value: "C", label: "Center" },
@@ -52,7 +53,9 @@ export function PlayerCreator({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Player Creator - How it works"} steps={[{ title: 'Open', desc: 'Access the Player Creator section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Player Creator.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" />Back</Button>
       <Card>
         <CardHeader><CardTitle className="flex items-center gap-2"><Sparkles className="h-5 w-5 text-primary" />AI Player Creator <span className="text-xs text-muted-foreground">(500 coins)</span></CardTitle></CardHeader>
@@ -79,5 +82,6 @@ export function PlayerCreator({ onBack }: { onBack: () => void }) {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

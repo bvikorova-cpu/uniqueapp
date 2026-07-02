@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { ShoppingBag, Package, Download, Loader2 } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface MerchItem {
   id: string;
@@ -84,6 +85,8 @@ export function CreatorMerchStore({ creatorId }: CreatorMerchStoreProps) {
 
   if (loading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Creator Merch Store - How it works"} steps={[{ title: 'Open', desc: 'Access the Creator Merch Store section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Creator Merch Store.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card>
         <CardContent className="py-8">
           <div className="animate-pulse space-y-4">
@@ -96,7 +99,8 @@ export function CreatorMerchStore({ creatorId }: CreatorMerchStoreProps) {
           </div>
         </CardContent>
       </Card>
-    );
+    </>
+  );
   }
 
   if (merch.length === 0) {

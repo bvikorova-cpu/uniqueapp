@@ -6,6 +6,7 @@ import { Play, Pause, RotateCcw, Timer } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { CHAKRAS } from "../crystalData";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const DURATIONS = [{ label: "5 min", value: 300 }, { label: "10 min", value: 600 }, { label: "15 min", value: 900 }, { label: "20 min", value: 1200 }, { label: "30 min", value: 1800 }];
 
@@ -68,7 +69,12 @@ export const CrystalTimerTool = () => {
       return;
     }
     const t = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
-    return () => clearInterval(t);
+    return (
+    <>
+      <FloatingHowItWorks title={"Crystal Timer Tool - How it works"} steps={[{ title: 'Open', desc: 'Access the Crystal Timer Tool section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Crystal Timer Tool.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(t);
   }, [isRunning, timeLeft]);
 
   useEffect(() => () => stopAudio(), []);

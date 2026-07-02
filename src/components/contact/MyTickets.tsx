@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Ticket, Clock, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface T {
   id: string;
@@ -47,7 +48,12 @@ export const MyTickets = ({ userId }: { userId: string }) => {
       )
       .subscribe();
 
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"My Tickets - How it works"} steps={[{ title: 'Open', desc: 'Access the My Tickets section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in My Tickets.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       supabase.removeChannel(channel);
     };
   }, [userId]);

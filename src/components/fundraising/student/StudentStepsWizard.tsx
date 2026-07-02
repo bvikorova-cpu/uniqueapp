@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { FileText, ShieldCheck, Heart, BookOpen } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const steps = [
   { icon: FileText, title: "Apply", desc: "Submit your educational need", color: "text-primary" },
@@ -10,7 +11,9 @@ const steps = [
 
 export function StudentStepsWizard() {
   return (
-    <section className="py-10">
+    <>
+      <FloatingHowItWorks title={"Student Steps Wizard - How it works"} steps={[{ title: 'Open', desc: 'Access the Student Steps Wizard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Student Steps Wizard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <section className="py-10">
       <div className="relative flex flex-col md:flex-row items-center justify-between gap-6 max-w-3xl mx-auto">
         <div className="hidden md:block absolute top-1/2 left-[12%] right-[12%] h-0.5 bg-gradient-to-r from-primary/20 via-primary/40 to-primary/20 -translate-y-1/2" />
         <motion.div
@@ -38,5 +41,6 @@ export function StudentStepsWizard() {
         ))}
       </div>
     </section>
+    </>
   );
 }

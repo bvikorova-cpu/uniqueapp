@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { BookOpen, Loader2, Sparkles, Copy, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface PromptGalleryViewProps {
   onSelectPrompt: (prompt: string) => void;
@@ -75,7 +76,9 @@ export const PromptGalleryView = ({ onSelectPrompt }: PromptGalleryViewProps) =>
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <>
+      <FloatingHowItWorks title={"Prompt Gallery View - How it works"} steps={[{ title: 'Open', desc: 'Access the Prompt Gallery View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Prompt Gallery View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="max-w-4xl mx-auto space-y-6">
       {/* AI Prompt Generator */}
       <Card className="border-2 border-primary/20">
         <CardHeader>
@@ -161,5 +164,6 @@ export const PromptGalleryView = ({ onSelectPrompt }: PromptGalleryViewProps) =>
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };

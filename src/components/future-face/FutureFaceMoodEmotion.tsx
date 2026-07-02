@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { handleEdgeError, throwIfInvokeError } from "@/lib/handleEdgeError";
 import BeforeAfterSlider from "./BeforeAfterSlider";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const COST = 5;
 const MOODS = [
@@ -63,7 +64,9 @@ export default function FutureFaceMoodEmotion() {
   };
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Future Face Mood Emotion - How it works"} steps={[{ title: 'Open', desc: 'Access the Future Face Mood Emotion section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Future Face Mood Emotion.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-xl sm:text-2xl font-black">😊 Mood &amp; Emotion Studio</h2>
         <Badge className="bg-gradient-to-r from-yellow-500 to-pink-500 text-white">{COST} CR</Badge>
@@ -115,5 +118,6 @@ export default function FutureFaceMoodEmotion() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

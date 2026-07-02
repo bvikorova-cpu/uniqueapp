@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const TEMPLATES: Record<string, Array<{ question: string; emoji: string }>> = {
   math: [
@@ -44,11 +45,14 @@ export const QuestionTemplates = ({ subject, onSelectTemplate }: QuestionTemplat
 
   if (!subject || templates.length === 0) {
     return (
+    <>
+      <FloatingHowItWorks title={"Question Templates - How it works"} steps={[{ title: 'Open', desc: 'Access the Question Templates section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Question Templates.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="text-center py-4 text-sm text-muted-foreground">
         <span className="text-2xl block mb-2">👆</span>
         Select a subject to see quick question templates!
       </div>
-    );
+    </>
+  );
   }
 
   return (

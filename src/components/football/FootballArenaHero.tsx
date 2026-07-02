@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Users, Swords, Trophy, Wifi } from "lucide-react";
 import heroVideo from "@/assets/football-arena-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface FootballArenaHeroProps {
   stats: { totalPlayers: number; totalMatches: number; activeLeagues: number; onlineManagers: number };
@@ -16,7 +17,9 @@ export const FootballArenaHero = ({ stats }: FootballArenaHeroProps) => {
   ];
 
   return (
-    <div className="relative w-full h-[340px] md:h-[420px] rounded-2xl overflow-hidden mb-8">
+    <>
+      <FloatingHowItWorks title={"Football Arena Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Football Arena Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Football Arena Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative w-full h-[340px] md:h-[420px] rounded-2xl overflow-hidden mb-8">
       <video
         autoPlay muted loop playsInline
         className="absolute inset-0 w-full h-full object-cover brightness-[1.3] saturate-[1.2]"
@@ -83,5 +86,6 @@ export const FootballArenaHero = ({ stats }: FootballArenaHeroProps) => {
         </motion.div>
       </div>
     </div>
+    </>
   );
 };

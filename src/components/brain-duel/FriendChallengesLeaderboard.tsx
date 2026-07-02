@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Users, TrendingUp, TrendingDown } from "lucide-react";
 import AchievementBadge from "./AchievementBadge";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export default function FriendChallengesLeaderboard() {
   const { user } = useAuth();
@@ -14,7 +15,9 @@ export default function FriendChallengesLeaderboard() {
   const { achievements } = useFriendChallengeAchievements(user?.id);
 
   return (
-    <Card className="overflow-hidden backdrop-blur-xl bg-card/80 border-primary/10 relative">
+    <>
+      <FloatingHowItWorks title={"Friend Challenges Leaderboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Friend Challenges Leaderboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Friend Challenges Leaderboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="overflow-hidden backdrop-blur-xl bg-card/80 border-primary/10 relative">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
       <CardHeader className="pb-3 relative">
         <div className="space-y-3">
@@ -101,5 +104,6 @@ export default function FriendChallengesLeaderboard() {
         )}
       </CardContent>
     </Card>
+    </>
   );
 }

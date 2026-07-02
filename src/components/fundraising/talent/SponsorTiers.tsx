@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Crown, Gem, Star, Sparkles, Plus, Trash2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Tier {
   id: string;
@@ -76,7 +77,9 @@ export const SponsorTiers = ({ campaignId, isOwner }: { campaignId: string; isOw
   if (tiers.length === 0 && !isOwner) return null;
 
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title={"Sponsor Tiers - How it works"} steps={[{ title: 'Open', desc: 'Access the Sponsor Tiers section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Sponsor Tiers.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Crown className="h-5 w-5 text-primary" />
@@ -147,5 +150,6 @@ export const SponsorTiers = ({ campaignId, isOwner }: { campaignId: string; isOw
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

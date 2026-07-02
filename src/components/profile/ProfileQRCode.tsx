@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { QRCodeCanvas } from "qrcode.react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ProfileQRCodeProps {
   userId: string;
@@ -23,7 +24,9 @@ export const ProfileQRCode = ({ userId, userName }: ProfileQRCodeProps) => {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+      <FloatingHowItWorks title={"Profile Q R Code - How it works"} steps={[{ title: 'Open', desc: 'Access the Profile Q R Code section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Profile Q R Code.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size="sm" variant="outline" className="bg-card/80 backdrop-blur-md border-amber-400/30">
           <QrCode className="h-4 w-4" />
@@ -46,5 +49,6 @@ export const ProfileQRCode = ({ userId, userName }: ProfileQRCodeProps) => {
         </div>
       </DialogContent>
     </Dialog>
+    </>
   );
 };

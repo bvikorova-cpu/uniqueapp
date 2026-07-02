@@ -9,6 +9,7 @@ import { Loader2, UserCircle2, Image as ImageIcon, Play, Download } from "lucide
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { handleEdgeError } from "@/lib/handleEdgeError";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface AvatarPlan {
   avatarDescription: string; voiceCharacter: string; recommendedVoiceId: string;
@@ -69,7 +70,9 @@ export const AvatarTalkingHeadView = ({ onBack }: { onBack: () => void }) => {
   };
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Avatar Talking Head View - How it works"} steps={[{ title: 'Open', desc: 'Access the Avatar Talking Head View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Avatar Talking Head View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4">← Back</Button>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center"><UserCircle2 className="w-6 h-6 text-white" /></div>
@@ -84,7 +87,9 @@ export const AvatarTalkingHeadView = ({ onBack }: { onBack: () => void }) => {
             <div><Label>Target audience</Label><Input value={audience} onChange={e => setAudience(e.target.value)} /></div>
             <div><Label>Tone</Label><Input value={tone} onChange={e => setTone(e.target.value)} placeholder="professional, friendly, energetic..." /></div>
             <Button onClick={generatePlan} disabled={loading} className="w-full bg-gradient-to-r from-sky-500 to-indigo-600">
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : '1) Generate plan (3 CR)'}
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : '1
+    </>
+  ) Generate plan (3 CR)'}
             </Button>
             {plan && (
               <>

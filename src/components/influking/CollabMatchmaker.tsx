@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CollabMatchmakerProps {
   onBack: () => void;
@@ -104,7 +105,9 @@ const CollabMatchmaker = ({ onBack }: CollabMatchmakerProps) => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Collab Matchmaker - How it works"} steps={[{ title: 'Open', desc: 'Access the Collab Matchmaker section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Collab Matchmaker.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
         <Button variant="ghost" onClick={onBack} className="gap-2 mb-4">
           <ArrowLeft className="h-4 w-4" /> Back to Hub
@@ -239,6 +242,7 @@ const CollabMatchmaker = ({ onBack }: CollabMatchmakerProps) => {
         </DialogContent>
       </Dialog>
     </div>
+    </>
   );
 };
 

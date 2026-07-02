@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Template {
   title: string;
@@ -59,7 +60,9 @@ interface ExperimentTemplatesProps {
 
 export const ExperimentTemplates = ({ onSelect }: ExperimentTemplatesProps) => {
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Experiment Templates - How it works"} steps={[{ title: 'Open', desc: 'Access the Experiment Templates section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Experiment Templates.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <h3 className="text-lg font-bold mb-3 flex items-center gap-2">
         ⚡ Quick Start — Choose an Experiment
       </h3>
@@ -82,5 +85,6 @@ export const ExperimentTemplates = ({ onSelect }: ExperimentTemplatesProps) => {
         ))}
       </div>
     </div>
+    </>
   );
 };

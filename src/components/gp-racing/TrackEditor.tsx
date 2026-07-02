@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { ArrowLeft, Plus, Trash2, RotateCcw, Save, Share2, Play, MapPin, Ruler, Mountain, Waves, Zap } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface TrackSegment {
   id: string;
@@ -75,7 +76,9 @@ export function TrackEditor({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Track Editor - How it works"} steps={[{ title: 'Open', desc: 'Access the Track Editor section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Track Editor.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={onBack} className="text-cyan-400 hover:bg-cyan-950/30">
           <ArrowLeft className="h-5 w-5" />
@@ -252,5 +255,6 @@ export function TrackEditor({ onBack }: { onBack: () => void }) {
         </div>
       )}
     </div>
+    </>
   );
 }

@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Flame, Loader2, Swords } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type Match = {
   id: string;
@@ -77,7 +78,9 @@ const MegatalentRivalries = ({ category, categories }: Props) => {
   if (!cats.length) return null;
 
   return (
-    <Card className="overflow-hidden border-destructive/30 bg-gradient-to-br from-destructive/10 via-rose-500/5 to-transparent">
+    <>
+      <FloatingHowItWorks title={"Megatalent Rivalries - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Rivalries section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Rivalries.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="overflow-hidden border-destructive/30 bg-gradient-to-br from-destructive/10 via-rose-500/5 to-transparent">
       <CardContent className="p-5">
         <div className="flex items-center gap-2 mb-3">
           <Flame className="h-4 w-4 text-destructive" />
@@ -115,6 +118,7 @@ const MegatalentRivalries = ({ category, categories }: Props) => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };
 

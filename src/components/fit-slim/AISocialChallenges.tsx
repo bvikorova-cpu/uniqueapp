@@ -7,6 +7,7 @@ import { ArrowLeft, Swords, Trophy, Users, Flame, Medal } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -47,7 +48,9 @@ export default function AISocialChallenges({ onBack }: Props) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"A I Social Challenges - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Social Challenges section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Social Challenges.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button>
       <div className="text-center space-y-2">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-pink-500/20 to-rose-500/20 border border-pink-500/30">
@@ -96,5 +99,6 @@ export default function AISocialChallenges({ onBack }: Props) {
         )}
       </Card>
     </div>
+    </>
   );
 }

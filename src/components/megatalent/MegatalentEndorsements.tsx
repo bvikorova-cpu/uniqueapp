@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ThumbsUp, Sparkles, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const SKILLS = ["Vocal", "Performance", "Charisma", "Technique", "Originality", "Stage Presence"];
 
@@ -80,7 +81,9 @@ const MegatalentEndorsements = ({ category, categories, userId }: Props) => {
   if (!cats.length) return null;
 
   return (
-    <Card className="backdrop-blur-xl bg-card/60 border-border/30">
+    <>
+      <FloatingHowItWorks title={"Megatalent Endorsements - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Endorsements section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Endorsements.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="backdrop-blur-xl bg-card/60 border-border/30">
       <CardContent className="p-5">
         <div className="flex items-center gap-2 mb-3">
           <Sparkles className="h-4 w-4 text-primary" />
@@ -124,6 +127,7 @@ const MegatalentEndorsements = ({ category, categories, userId }: Props) => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };
 

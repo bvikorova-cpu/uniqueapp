@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, CheckCircle, XCircle, TrendingUp, Brain, MessageSquare, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface AnalysisResultsProps {
   analysis: {
@@ -37,6 +38,8 @@ export const AnalysisResults = ({ analysis }: AnalysisResultsProps) => {
   const renderArray = (arr: any[]) => {
     if (!arr || arr.length === 0) return <p className="text-xs sm:text-sm text-muted-foreground">None detected</p>;
     return (
+    <>
+      <FloatingHowItWorks title={"Analysis Results - How it works"} steps={[{ title: 'Open', desc: 'Access the Analysis Results section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Analysis Results.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <ul className="space-y-2">
         {arr.map((item, idx) => (
           <motion.li
@@ -51,7 +54,8 @@ export const AnalysisResults = ({ analysis }: AnalysisResultsProps) => {
           </motion.li>
         ))}
       </ul>
-    );
+    </>
+  );
   };
 
   const scoreBadge = score ? getScoreBadge(score) : null;

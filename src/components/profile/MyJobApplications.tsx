@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Briefcase, Building2, MapPin, Calendar, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface JobApplication {
   id: string;
@@ -95,11 +96,14 @@ export const MyJobApplications = ({ userId, isOwnProfile }: MyJobApplicationsPro
 
   if (!isOwnProfile) {
     return (
+    <>
+      <FloatingHowItWorks title={"My Job Applications - How it works"} steps={[{ title: 'Open', desc: 'Access the My Job Applications section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in My Job Applications.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="p-8 text-center">
         <Briefcase className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
         <p className="text-muted-foreground">Job applications are private</p>
       </Card>
-    );
+    </>
+  );
   }
 
   if (loading) {

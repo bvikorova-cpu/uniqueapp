@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Brain, Sparkles, Calendar, Coins, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { sanitizeHtml } from "@/lib/sanitizeHtml";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const AIWeeklyRecap = () => {
   const queryClient = useQueryClient();
@@ -69,7 +70,9 @@ export const AIWeeklyRecap = () => {
   };
 
   return (
-    <Card className="relative overflow-hidden border-primary/20 backdrop-blur-xl bg-card/80">
+    <>
+      <FloatingHowItWorks title={"A I Weekly Recap - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Weekly Recap section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Weekly Recap.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="relative overflow-hidden border-primary/20 backdrop-blur-xl bg-card/80">
       <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 via-transparent to-cyan-500/5" />
       <CardHeader className="relative">
         <div className="flex items-center justify-between">
@@ -202,5 +205,6 @@ export const AIWeeklyRecap = () => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

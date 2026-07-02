@@ -15,6 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useBrainDuelCredits } from '@/hooks/useBrainDuelCredits';
 import { motion } from 'framer-motion';
 import { SpectatorBetting } from './SpectatorBetting';
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 interface VirtualGift {
   id: string;
   name: string;
@@ -161,7 +162,12 @@ export const LiveSpectatorMode = () => {
       )
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); };
+    return (
+    <>
+      <FloatingHowItWorks title={"Live Spectator Mode - How it works"} steps={[{ title: 'Open', desc: 'Access the Live Spectator Mode section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Live Spectator Mode.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => { supabase.removeChannel(channel); };
   }, [selectedMatch]);
 
   const joinAsSpectator = useMutation({

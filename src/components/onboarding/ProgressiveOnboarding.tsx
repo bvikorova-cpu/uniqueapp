@@ -14,6 +14,7 @@ import {
   Bell,
   Sparkles
 } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface OnboardingStep {
   id: string;
@@ -103,7 +104,12 @@ export const ProgressiveOnboarding = ({ onComplete }: ProgressiveOnboardingProps
       const timer = setTimeout(() => {
         setIsVisible(true);
       }, 1500);
-      return () => clearTimeout(timer);
+      return (
+    <>
+      <FloatingHowItWorks title={"Progressive Onboarding - How it works"} steps={[{ title: 'Open', desc: 'Access the Progressive Onboarding section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Progressive Onboarding.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearTimeout(timer);
     }
 
     setHasSeenOnboarding(true);

@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { Award, Globe, Trophy, Star, Target, Crown, Compass, Map } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ExplorerAchievementsProps {
   visitedCount: number;
@@ -62,7 +63,9 @@ export const ExplorerAchievements = ({ visitedCount, totalDestinations }: Explor
   const progressPercent = (visitedCount / totalDestinations) * 100;
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Explorer Achievements - How it works"} steps={[{ title: 'Open', desc: 'Access the Explorer Achievements section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Explorer Achievements.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       {/* Progress Overview */}
       <Card>
         <CardHeader>
@@ -115,5 +118,6 @@ export const ExplorerAchievements = ({ visitedCount, totalDestinations }: Explor
         })}
       </div>
     </div>
+    </>
   );
 };

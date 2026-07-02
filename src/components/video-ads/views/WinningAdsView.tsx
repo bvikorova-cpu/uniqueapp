@@ -8,6 +8,7 @@ import { Loader2, Trophy, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { handleEdgeError } from "@/lib/handleEdgeError";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface LibAd { id: string; brand_name: string; ad_title: string; hook: string; full_script: string | null; industry: string; platform: string; why_it_works: string | null; performance_metrics: Record<string, string> | null; tags: string[] | null; }
 interface Reco { matches: Array<{ brand: string; hook: string; whyItWorks: string; applyToYou: string; score: number }>; customStrategy: string; patternsToSteal: string[]; avoidMistakes: string[]; nextSteps: string[]; }
@@ -40,7 +41,9 @@ export const WinningAdsView = ({ onBack }: { onBack: () => void }) => {
   };
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Winning Ads View - How it works"} steps={[{ title: 'Open', desc: 'Access the Winning Ads View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Winning Ads View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4">← Back</Button>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-500 to-amber-600 flex items-center justify-center"><Trophy className="w-6 h-6 text-white" /></div>
@@ -86,5 +89,6 @@ export const WinningAdsView = ({ onBack }: { onBack: () => void }) => {
         </div>
       </div>
     </div>
+    </>
   );
 };

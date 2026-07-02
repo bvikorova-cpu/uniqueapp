@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Bot, MessageCircle, Pause, Play, Download, RefreshCw, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Clone {
   id: string;
@@ -91,6 +92,8 @@ export function MyClones() {
 
   if (clones.length === 0) {
     return (
+    <>
+      <FloatingHowItWorks title={"My Clones - How it works"} steps={[{ title: 'Open', desc: 'Access the My Clones section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in My Clones.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="bg-card/80 backdrop-blur-xl border-primary/20">
         <CardContent className="text-center py-12">
           <Bot className="h-16 w-16 mx-auto mb-4 text-muted-foreground/50" />
@@ -98,7 +101,8 @@ export function MyClones() {
           <p className="text-sm text-muted-foreground">Start by creating your first AI personality clone</p>
         </CardContent>
       </Card>
-    );
+    </>
+  );
   }
 
   return (

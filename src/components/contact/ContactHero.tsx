@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { MessageSquare, Clock, Smile, Headphones } from "lucide-react";
 import heroVideo from "@/assets/contact-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   responseTime: string;
@@ -17,7 +18,9 @@ export const ContactHero = ({ responseTime, todayCount, satisfaction }: Props) =
   ];
 
   return (
-    <div className="relative w-full min-h-[560px] sm:min-h-[520px] sm:h-[520px] rounded-3xl overflow-hidden mb-8 border border-primary/20">
+    <>
+      <FloatingHowItWorks title={"Contact Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Contact Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Contact Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative w-full min-h-[560px] sm:min-h-[520px] sm:h-[520px] rounded-3xl overflow-hidden mb-8 border border-primary/20">
       <video
         autoPlay
         muted
@@ -70,5 +73,6 @@ export const ContactHero = ({ responseTime, todayCount, satisfaction }: Props) =
         </motion.div>
       </div>
     </div>
+    </>
   );
 };

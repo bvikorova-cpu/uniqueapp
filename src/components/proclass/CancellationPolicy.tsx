@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertTriangle, Clock, CheckCircle2, XCircle } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CancellationPolicyProps {
   /** Hours before start when full refund still applies. Default 48h. */
@@ -34,7 +35,9 @@ export function CancellationPolicy({
   );
 
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title={"Cancellation Policy - How it works"} steps={[{ title: 'Open', desc: 'Access the Cancellation Policy section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Cancellation Policy.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card>
       <CardContent className="p-4 space-y-2">
         <div className="flex items-center gap-2 mb-2">
           <AlertTriangle className="w-4 h-4 text-amber-400" />
@@ -60,5 +63,6 @@ export function CancellationPolicy({
         />
       </CardContent>
     </Card>
+    </>
   );
 }

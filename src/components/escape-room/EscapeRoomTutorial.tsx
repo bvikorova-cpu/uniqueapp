@@ -5,6 +5,7 @@ import {
   MousePointer2, Eye, Package, Lightbulb, Clock, 
   ChevronRight, ChevronLeft, Play, Volume2
 } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface TutorialStep {
   icon: React.ReactNode;
@@ -70,7 +71,9 @@ export function EscapeRoomTutorial({ onComplete, onSkip }: EscapeRoomTutorialPro
   };
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Escape Room Tutorial - How it works"} steps={[{ title: 'Open', desc: 'Access the Escape Room Tutorial section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Escape Room Tutorial.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -194,6 +197,7 @@ export function EscapeRoomTutorial({ onComplete, onSkip }: EscapeRoomTutorialPro
         </motion.div>
       </div>
     </motion.div>
+    </>
   );
 }
 

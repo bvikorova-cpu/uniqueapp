@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Video, Users, Sparkles, TrendingUp } from "lucide-react";
 import heroVideo from "@/assets/video-ad-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const useLiveStats = () => {
   const [stats, setStats] = useState({ ads: 18420, creators: 3150, scripts: 92500, platforms: 6 });
@@ -14,7 +15,12 @@ const useLiveStats = () => {
         platforms: 6,
       }));
     }, 4000);
-    return () => clearInterval(i);
+    return (
+    <>
+      <FloatingHowItWorks title={"Video Ad Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Video Ad Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Video Ad Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(i);
   }, []);
   return stats;
 };

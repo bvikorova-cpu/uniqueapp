@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingDown, TrendingUp, Wallet } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Holding {
   id: string;
@@ -38,7 +39,9 @@ export function PortfolioDashboard() {
   const pnlPct = totalCost > 0 ? (pnl / totalCost) * 100 : 0;
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Portfolio Dashboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Portfolio Dashboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Portfolio Dashboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       <Card className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 border-purple-400/30">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -89,5 +92,6 @@ export function PortfolioDashboard() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

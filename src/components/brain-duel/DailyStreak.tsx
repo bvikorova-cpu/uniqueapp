@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Flame, Zap, Trophy } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface DailyStreakProps {
   currentStreak?: number;
@@ -27,7 +28,9 @@ export const DailyStreak = ({ currentStreak = 0, longestStreak = 0, todayPlayed 
   });
 
   return (
-    <Card className="relative overflow-hidden backdrop-blur-xl bg-card/80 border-primary/10">
+    <>
+      <FloatingHowItWorks title={"Daily Streak - How it works"} steps={[{ title: 'Open', desc: 'Access the Daily Streak section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Daily Streak.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="relative overflow-hidden backdrop-blur-xl bg-card/80 border-primary/10">
       <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-red-500/5" />
       <CardHeader className="relative pb-3">
         <CardTitle className="flex items-center justify-between">
@@ -130,5 +133,6 @@ export const DailyStreak = ({ currentStreak = 0, longestStreak = 0, todayPlayed 
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

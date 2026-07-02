@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface EquipmentItem {
   id: string;
@@ -84,7 +85,9 @@ export const HorseEquipmentSystem = () => {
   const filteredItems = EQUIPMENT.filter(e => e.slot === selectedSlot);
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Horse Equipment System - How it works"} steps={[{ title: 'Open', desc: 'Access the Horse Equipment System section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Horse Equipment System.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-black font-mono flex items-center gap-2 text-white">
           <Wrench className="h-6 w-6 text-amber-400" /> Horse Equipment
@@ -189,5 +192,6 @@ export const HorseEquipmentSystem = () => {
         })}
       </div>
     </div>
+    </>
   );
 };

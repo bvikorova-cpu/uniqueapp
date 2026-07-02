@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, Plus, Trash2, Star, Search, Loader2, ListChecks, Sparkles, CheckCircle } from "lucide-react";
 import { GIFT_CATALOG, GIFT_CATEGORIES } from "@/hooks/useSecretSanta";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface WishlistItem {
   id: string;
@@ -103,11 +104,14 @@ export const GiftWishlist = () => {
 
   if (!currentUserId) {
     return (
+    <>
+      <FloatingHowItWorks title={"Gift Wishlist - How it works"} steps={[{ title: 'Open', desc: 'Access the Gift Wishlist section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Gift Wishlist.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="p-8 bg-white/90 border-amber-200 text-center">
         <Heart className="h-12 w-12 mx-auto text-pink-400 mb-4" />
         <p className="text-gray-600">Please log in to manage your wishlist</p>
       </Card>
-    );
+    </>
+  );
   }
 
   return (

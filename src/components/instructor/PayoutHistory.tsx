@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { formatCurrency } from "@/lib/utils";
 import { format } from "date-fns";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface PayoutRecord {
   id: string;
@@ -89,12 +90,15 @@ export function PayoutHistory({ instructorId }: PayoutHistoryProps) {
 
   if (loading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Payout History - How it works"} steps={[{ title: 'Open', desc: 'Access the Payout History section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Payout History.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card>
         <CardContent className="p-12 text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
         </CardContent>
       </Card>
-    );
+    </>
+  );
   }
 
   return (

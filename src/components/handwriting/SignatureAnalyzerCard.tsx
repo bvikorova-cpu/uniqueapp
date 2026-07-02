@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, Signature, Upload } from "lucide-react";
 import { useSignatureAnalyzer } from "@/hooks/useHandwritingPro";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const SignatureAnalyzerCard = () => {
   const [imageUrl, setImageUrl] = useState("");
@@ -22,7 +23,9 @@ export const SignatureAnalyzerCard = () => {
   };
 
   return (
-    <Card className="bg-card/60 backdrop-blur-sm border-amber-900/20">
+    <>
+      <FloatingHowItWorks title={"Signature Analyzer Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Signature Analyzer Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Signature Analyzer Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/60 backdrop-blur-sm border-amber-900/20">
       <CardHeader>
         <CardTitle className="flex items-center justify-between text-base">
           <span className="flex items-center gap-2"><Signature className="w-5 h-5 text-amber-700" /> Signature Analyzer</span>
@@ -64,5 +67,6 @@ export const SignatureAnalyzerCard = () => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

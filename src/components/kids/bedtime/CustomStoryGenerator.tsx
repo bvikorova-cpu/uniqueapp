@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Sparkles, Loader2, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface CustomStoryGeneratorProps {
   onGenerate: (story: { title: string; text: string }) => void;
@@ -32,7 +33,9 @@ export function CustomStoryGenerator({ onGenerate, isGenerating }: CustomStoryGe
   };
 
   return (
-    <div className="space-y-3">
+    <>
+      <FloatingHowItWorks title={"Custom Story Generator - How it works"} steps={[{ title: 'Open', desc: 'Access the Custom Story Generator section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Custom Story Generator.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-3">
       <h3 className="text-sm font-bold text-purple-100 flex items-center gap-1.5">
         <Wand2 className="h-4 w-4 text-pink-400" /> Create Your Story
       </h3>
@@ -87,5 +90,6 @@ export function CustomStoryGenerator({ onGenerate, isGenerating }: CustomStoryGe
         </Button>
       </motion.div>
     </div>
+    </>
   );
 }

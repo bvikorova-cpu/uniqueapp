@@ -3,6 +3,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ShieldCheck, Sparkles, Trophy, Coins, Lock, RefreshCw } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const STEPS = [
   { icon: Sparkles, title: "Sign up free", desc: "Get 10 free credits instantly. No credit card required." },
@@ -41,7 +42,9 @@ const FAQS = [
 
 export function HowItWorksTrust() {
   return (
-    <section className="py-12 px-4">
+    <>
+      <FloatingHowItWorks title={"How It Works Trust - How it works"} steps={[{ title: 'Open', desc: 'Access the How It Works Trust section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in How It Works Trust.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <section className="py-12 px-4">
       <div className="max-w-5xl mx-auto space-y-10">
         {/* steps */}
         <div className="text-center space-y-2">
@@ -125,6 +128,7 @@ export function HowItWorksTrust() {
         }}
       />
     </section>
+    </>
   );
 }
 

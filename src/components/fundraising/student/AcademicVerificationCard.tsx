@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { GraduationCap, ShieldCheck, FileCheck, Calendar, Award, ExternalLink } from "lucide-react";
 import { format } from "date-fns";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props {
   institutionVerified?: boolean;
@@ -27,7 +28,9 @@ export function AcademicVerificationCard({
   const fullyVerified = institutionVerified && enrollmentVerified;
 
   return (
-    <Card className={`p-4 border-2 ${fullyVerified ? "border-green-500/40 bg-green-500/5" : "border-border"}`}>
+    <>
+      <FloatingHowItWorks title={"Academic Verification Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Academic Verification Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Academic Verification Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className={`p-4 border-2 ${fullyVerified ? "border-green-500/40 bg-green-500/5" : "border-border"}`}>
       <div className="flex items-start gap-3 mb-3">
         <GraduationCap className="w-5 h-5 text-primary shrink-0 mt-0.5" />
         <div className="flex-1 min-w-0">
@@ -86,5 +89,6 @@ export function AcademicVerificationCard({
         </p>
       )}
     </Card>
+    </>
   );
 }

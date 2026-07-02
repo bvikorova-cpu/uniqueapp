@@ -3,6 +3,7 @@ import { Brain, Loader2, Sparkles, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Question {
   id: string;
@@ -92,6 +93,8 @@ export const PersonalityTest = ({ onApply }: Props) => {
 
   if (!open) {
     return (
+    <>
+      <FloatingHowItWorks title={"Personality Test - How it works"} steps={[{ title: 'Open', desc: 'Access the Personality Test section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Personality Test.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="rounded-2xl border border-border/50 bg-gradient-to-br from-violet-900/30 via-card/40 to-fuchsia-900/30 backdrop-blur-xl p-5 sm:p-6 mb-6">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -110,7 +113,8 @@ export const PersonalityTest = ({ onApply }: Props) => {
           </Button>
         </div>
       </div>
-    );
+    </>
+  );
   }
 
   return (

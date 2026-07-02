@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Bot, Search, MessageCircle, Star, Crown } from "lucide-react";
 import { CloneChatDialog } from "./CloneChatDialog";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Clone {
   id: string;
@@ -61,7 +62,9 @@ export function CloneMarketplace() {
   );
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Clone Marketplace - How it works"} steps={[{ title: 'Open', desc: 'Access the Clone Marketplace section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Clone Marketplace.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Card className="bg-card/80 backdrop-blur-xl border-primary/20">
         <CardHeader>
           <CardTitle>Explore AI Clones</CardTitle>
@@ -119,5 +122,6 @@ export function CloneMarketplace() {
 
       <CloneChatDialog open={chatOpen} onOpenChange={setChatOpen} clone={selectedClone} />
     </div>
+    </>
   );
 }

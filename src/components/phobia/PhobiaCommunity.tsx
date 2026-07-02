@@ -8,6 +8,7 @@ import { Users, MessageCircle, Send, Loader2, ThumbsUp, Plus } from "lucide-reac
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Post {
   id: string;
@@ -69,7 +70,9 @@ export const PhobiaCommunity = () => {
   };
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Phobia Community - How it works"} steps={[{ title: 'Open', desc: 'Access the Phobia Community section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Phobia Community.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -136,5 +139,6 @@ export const PhobiaCommunity = () => {
         </div>
       )}
     </div>
+    </>
   );
 };

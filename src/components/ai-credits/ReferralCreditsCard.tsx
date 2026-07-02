@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Users, Copy, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function ReferralCreditsCard() {
   const [link, setLink] = useState("");
@@ -34,7 +35,9 @@ export function ReferralCreditsCard() {
   };
 
   return (
-    <Card className="max-w-5xl mx-auto mb-6 border-primary/30">
+    <>
+      <FloatingHowItWorks title={"Referral Credits Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Referral Credits Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Referral Credits Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="max-w-5xl mx-auto mb-6 border-primary/30">
       <CardHeader>
         <div className="flex items-center gap-2">
           <Users className="h-5 w-5 text-primary" />
@@ -54,5 +57,6 @@ export function ReferralCreditsCard() {
         </p>
       </CardContent>
     </Card>
+    </>
   );
 }

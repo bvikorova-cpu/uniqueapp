@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Trophy, Award, Medal, Crown } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface EarningsMilestonesProps {
   totalEarnings: number;
@@ -21,7 +22,9 @@ export const EarningsMilestones = ({ totalEarnings }: EarningsMilestonesProps) =
   const progress = next ? Math.min(100, ((totalEarnings - (last?.amount ?? 0)) / (next.amount - (last?.amount ?? 0))) * 100) : 100;
 
   return (
-    <Card className="p-6 bg-card/80 backdrop-blur-md border-amber-500/20">
+    <>
+      <FloatingHowItWorks title={"Earnings Milestones - How it works"} steps={[{ title: 'Open', desc: 'Access the Earnings Milestones section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Earnings Milestones.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-6 bg-card/80 backdrop-blur-md border-amber-500/20">
       <h3 className="text-lg font-bold flex items-center gap-2 mb-4">
         <Trophy className="h-5 w-5 text-amber-500" />
         Earnings Milestones
@@ -74,5 +77,6 @@ export const EarningsMilestones = ({ totalEarnings }: EarningsMilestonesProps) =
         })}
       </div>
     </Card>
+    </>
   );
 };

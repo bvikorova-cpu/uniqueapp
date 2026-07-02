@@ -6,6 +6,7 @@ import { ShoppingBag, Sparkles, Loader2, Check, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useUserXp } from "@/hooks/useUserXp";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type Item = { id: string; name: string; description: string | null; cost_xp: number; item_type: string; payload: any; active: boolean };
 type Purchase = { item_id: string; created_at: string };
@@ -52,7 +53,9 @@ const MegatalentTalentShop = ({ userId }: Props) => {
   };
 
   return (
-    <Card className="backdrop-blur-xl bg-card/60 border-border/30">
+    <>
+      <FloatingHowItWorks title={"Megatalent Talent Shop - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Talent Shop section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Talent Shop.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="backdrop-blur-xl bg-card/60 border-border/30">
       <CardContent className="p-5">
         <div className="flex items-center gap-2 mb-3">
           <ShoppingBag className="h-4 w-4 text-primary" />
@@ -90,6 +93,7 @@ const MegatalentTalentShop = ({ userId }: Props) => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };
 

@@ -7,6 +7,7 @@ import { Loader2, Paintbrush, Sparkles, Image as ImageIcon, Download, Brush } fr
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const ART_STYLES = [
   { value: "van-gogh", label: "Van Gogh", desc: "Swirling post-impressionist brushstrokes", gradient: "from-amber-500 to-yellow-500" },
@@ -46,7 +47,9 @@ export function AIStyleTransfer({ onColorOnline }: AIStyleTransferProps) {
   };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"A I Style Transfer - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Style Transfer section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Style Transfer.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
       <Card className="backdrop-blur-xl bg-card/80 border-primary/20 overflow-hidden relative">
         <div className="absolute -top-20 -right-20 w-60 h-60 bg-gradient-to-br from-amber-500/10 to-purple-500/10 rounded-full blur-3xl" />
         <CardHeader className="relative z-10">
@@ -140,5 +143,6 @@ export function AIStyleTransfer({ onColorOnline }: AIStyleTransferProps) {
         </motion.div>
       )}
     </motion.div>
+    </>
   );
 }

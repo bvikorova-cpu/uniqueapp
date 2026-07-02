@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { MessageSquare, Trash2, CornerDownRight } from "lucide-react";
 import { useCouponComments, type CouponComment } from "@/hooks/useCouponComments";
 import { formatDistanceToNow } from "date-fns";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { couponId: string; userId: string | null; }
 
@@ -43,7 +44,9 @@ export function CouponComments({ couponId, userId }: Props) {
   );
 
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title={"Coupon Comments - How it works"} steps={[{ title: 'Open', desc: 'Access the Coupon Comments section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Coupon Comments.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card>
       <CardContent className="p-4 space-y-3">
         <div className="flex items-center gap-2">
           <MessageSquare className="w-4 h-4 text-primary" />
@@ -61,5 +64,6 @@ export function CouponComments({ couponId, userId }: Props) {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 }

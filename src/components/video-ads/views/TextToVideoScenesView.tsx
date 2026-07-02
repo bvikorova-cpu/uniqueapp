@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { handleEdgeError } from "@/lib/handleEdgeError";
 import { motion, AnimatePresence } from "framer-motion";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface SceneSplit {
   scenes: Array<{ sceneNumber: number; durationSeconds: number; visualPrompt: string; cameraMove: string; lighting: string; mood: string; voiceoverLine: string; textOverlay?: string }>;
@@ -58,7 +59,9 @@ export const TextToVideoScenesView = ({ onBack }: { onBack: () => void }) => {
   };
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Text To Video Scenes View - How it works"} steps={[{ title: 'Open', desc: 'Access the Text To Video Scenes View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Text To Video Scenes View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4">← Back</Button>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center"><Film className="w-6 h-6 text-white" /></div>
@@ -84,7 +87,9 @@ export const TextToVideoScenesView = ({ onBack }: { onBack: () => void }) => {
             </div>
             <div><Label>Style</Label><input className="w-full mt-1 p-2 rounded-md border bg-background" value={style} onChange={e => setStyle(e.target.value)} /></div>
             <Button onClick={split} disabled={loading} className="w-full bg-gradient-to-r from-violet-500 to-fuchsia-600">
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Wand2 className="mr-2 h-4 w-4" />1) Split into scenes (3 CR)</>}
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Wand2 className="mr-2 h-4 w-4" />1
+    </>
+  ) Split into scenes (3 CR)</>}
             </Button>
             {splitResult && (
               <Button onClick={renderVideo} disabled={genVideo} variant="outline" className="w-full">

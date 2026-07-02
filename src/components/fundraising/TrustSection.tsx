@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Shield, Lock, CheckCircle, CreditCard } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const TRUST_ITEMS = [
   { icon: Shield, title: "Verified Campaigns", desc: "All campaigns are reviewed before going live" },
@@ -10,7 +11,9 @@ const TRUST_ITEMS = [
 
 export function TrustSection() {
   return (
-    <section className="py-12 px-4">
+    <>
+      <FloatingHowItWorks title={"Trust Section - How it works"} steps={[{ title: 'Open', desc: 'Access the Trust Section section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Trust Section.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <section className="py-12 px-4">
       <div className="max-w-4xl mx-auto">
         <h2 className="text-xl font-bold text-foreground mb-6 text-center">Why Trust Us</h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -32,5 +35,6 @@ export function TrustSection() {
         </div>
       </div>
     </section>
+    </>
   );
 }

@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { handleEdgeError } from "@/lib/handleEdgeError";
 import { motion, AnimatePresence } from "framer-motion";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface UrlResult {
   productName: string; valueProposition: string; targetAudience: string;
@@ -64,7 +65,9 @@ export const UrlToVideoView = ({ onBack }: { onBack: () => void }) => {
   };
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Url To Video View - How it works"} steps={[{ title: 'Open', desc: 'Access the Url To Video View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Url To Video View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4">← Back</Button>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center"><Link2 className="w-6 h-6 text-white" /></div>
@@ -126,5 +129,6 @@ export const UrlToVideoView = ({ onBack }: { onBack: () => void }) => {
         </Card>
       </div>
     </div>
+    </>
   );
 };

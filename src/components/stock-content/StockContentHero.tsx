@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ImageIcon, Download, Users, TrendingUp } from "lucide-react";
 import heroVideo from "@/assets/stock-content-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const stats = [
   { label: "Assets", icon: ImageIcon, key: "assets" },
@@ -22,7 +23,12 @@ export function StockContentHero() {
         revenue: Math.floor(Math.random() * 15000) + 240000,
       });
     }, 3000);
-    return () => clearInterval(interval);
+    return (
+    <>
+      <FloatingHowItWorks title={"Stock Content Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Stock Content Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Stock Content Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(interval);
   }, []);
 
   return (

@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { FileText, ShieldCheck, ExternalLink, Lock } from 'lucide-react';
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface MedicalDocumentsViewerProps {
   documents?: string[] | null;
@@ -26,7 +27,9 @@ export function MedicalDocumentsViewer({
   }
 
   return (
-    <Card className="border-emerald-500/30 bg-emerald-500/5">
+    <>
+      <FloatingHowItWorks title={"Medical Documents Viewer - How it works"} steps={[{ title: 'Open', desc: 'Access the Medical Documents Viewer section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Medical Documents Viewer.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-emerald-500/30 bg-emerald-500/5">
       <CardHeader>
         <div className="flex items-start justify-between gap-2">
           <div>
@@ -84,5 +87,6 @@ export function MedicalDocumentsViewer({
         )}
       </CardContent>
     </Card>
+    </>
   );
 }

@@ -24,12 +24,15 @@ import {
   Zap
 } from "lucide-react";
 import { CommissionSummaryTable } from "./CommissionSummaryTable";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function WorkUserGuide() {
   const [open, setOpen] = useState(false);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+      <FloatingHowItWorks title={"Work User Guide - How it works"} steps={[{ title: 'Open', desc: 'Access the Work User Guide section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Work User Guide.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button 
           variant="outline" 
@@ -400,6 +403,7 @@ export function WorkUserGuide() {
         </ScrollArea>
       </DialogContent>
     </Dialog>
+    </>
   );
 }
 

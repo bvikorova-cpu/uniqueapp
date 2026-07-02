@@ -4,10 +4,13 @@ import { OrbitControls } from "@react-three/drei";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, RotateCcw } from "lucide-react";
 import * as THREE from "three";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 function IceRink() {
   return (
-    <group>
+    <>
+      <FloatingHowItWorks title={"Penalty Shot3 D - How it works"} steps={[{ title: 'Open', desc: 'Access the Penalty Shot3 D section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Penalty Shot3 D.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
         <planeGeometry args={[30, 15]} />
         <meshStandardMaterial color="#d4e8f0" metalness={0.3} roughness={0.1} />
@@ -42,6 +45,7 @@ function IceRink() {
         </mesh>
       ))}
     </group>
+    </>
   );
 }
 

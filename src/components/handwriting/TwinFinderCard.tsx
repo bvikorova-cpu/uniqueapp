@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Users, Loader2 } from "lucide-react";
 import { useTwinFinder } from "@/hooks/useHandwritingPro";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const TwinFinderCard = () => {
   const [imageUrl, setImageUrl] = useState(""); const [name, setName] = useState(""); const [pub, setPub] = useState(true);
@@ -17,7 +18,9 @@ export const TwinFinderCard = () => {
   };
 
   return (
-    <Card className="bg-card/60 backdrop-blur-sm border-amber-900/20">
+    <>
+      <FloatingHowItWorks title={"Twin Finder Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Twin Finder Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Twin Finder Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/60 backdrop-blur-sm border-amber-900/20">
       <CardHeader>
         <CardTitle className="flex items-center justify-between text-base">
           <span className="flex items-center gap-2"><Users className="w-5 h-5 text-amber-700" /> Handwriting Twin Finder</span>
@@ -55,5 +58,6 @@ export const TwinFinderCard = () => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

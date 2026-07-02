@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Camera, Zap, Target, Flame, Crown, Star, Medal, Eye, Heart, Gem, GraduationCap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const achievements = [
   { id: "first_scan", name: "First Glimpse", desc: "Complete your first face scan", icon: Camera, points: 10, color: "text-cyan-400" },
@@ -37,7 +38,9 @@ export default function FutureFaceAchievements() {
   const maxPoints = achievements.reduce((s, a) => s + a.points, 0);
 
   return (
-    <div className="mb-8">
+    <>
+      <FloatingHowItWorks title={"Future Face Achievements - How it works"} steps={[{ title: 'Open', desc: 'Access the Future Face Achievements section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Future Face Achievements.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="mb-8">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl sm:text-2xl font-black">🏅 Age Reversal Achievements</h2>
         <Badge className="bg-gradient-to-r from-cyan-500 to-purple-500 text-white border-0">
@@ -60,5 +63,6 @@ export default function FutureFaceAchievements() {
         })}
       </div>
     </div>
+    </>
   );
 }

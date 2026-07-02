@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Brand { id: string; name: string; logo: string; }
 
@@ -44,6 +45,8 @@ export const BrandAIAnalyzer = ({ brands }: { brands: Brand[] }) => {
 
   return (
     <>
+      <FloatingHowItWorks title={"Brand A I Analyzer - How it works"} steps={[{ title: 'Open', desc: 'Access the Brand A I Analyzer section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Brand A I Analyzer.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <>
       <Card className="relative overflow-hidden border-amber-500/30 bg-gradient-to-br from-zinc-950 via-zinc-900 to-amber-950/20">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,hsl(45_90%_55%/.12),transparent_60%)]" />
         <div className="absolute -top-20 -left-20 w-60 h-60 bg-amber-500/10 rounded-full blur-3xl" />
@@ -131,6 +134,7 @@ export const BrandAIAnalyzer = ({ brands }: { brands: Brand[] }) => {
           </ScrollArea>
         </DialogContent>
       </Dialog>
+    </>
     </>
   );
 };

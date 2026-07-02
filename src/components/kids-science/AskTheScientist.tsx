@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sparkles, Loader2, MessageCircleQuestion } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   context: string;
@@ -45,7 +46,9 @@ export const AskTheScientist = ({ context, onCreditsChanged }: Props) => {
   };
 
   return (
-    <Card className="border-primary/30">
+    <>
+      <FloatingHowItWorks title={"Ask The Scientist - How it works"} steps={[{ title: 'Open', desc: 'Access the Ask The Scientist section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Ask The Scientist.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-primary/30">
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center justify-between gap-2">
           <span className="flex items-center gap-2">
@@ -103,5 +106,6 @@ export const AskTheScientist = ({ context, onCreditsChanged }: Props) => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

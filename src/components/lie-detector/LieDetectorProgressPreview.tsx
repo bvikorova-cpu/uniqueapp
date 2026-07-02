@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const progressItems = [
   { label: "Messages Analyzed", value: 0, max: 50, color: "bg-primary" },
@@ -10,7 +11,9 @@ const progressItems = [
 
 export const LieDetectorProgressPreview = () => {
   return (
-    <Card className="bg-card/60 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-all">
+    <>
+      <FloatingHowItWorks title={"Lie Detector Progress Preview - How it works"} steps={[{ title: 'Open', desc: 'Access the Lie Detector Progress Preview section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Lie Detector Progress Preview.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/60 backdrop-blur-sm border-border/50 hover:border-primary/30 transition-all">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm flex items-center gap-2">
           <TrendingUp className="w-4 h-4 text-primary" />
@@ -36,5 +39,6 @@ export const LieDetectorProgressPreview = () => {
         ))}
       </CardContent>
     </Card>
+    </>
   );
 };

@@ -10,6 +10,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface MarketListing {
   id: string;
@@ -138,6 +139,8 @@ export const HorseMarketplace = () => {
 
   return (
     <>
+      <FloatingHowItWorks title={"Horse Marketplace - How it works"} steps={[{ title: 'Open', desc: 'Access the Horse Marketplace section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Horse Marketplace.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="flex items-center gap-2">
@@ -256,6 +259,7 @@ export const HorseMarketplace = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+    </>
     </>
   );
 };

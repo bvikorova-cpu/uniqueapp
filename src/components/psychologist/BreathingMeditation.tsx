@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { ArrowLeft, Wind, Timer, Check, Play, Pause, RotateCcw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const EXERCISES = [
   { id: "box", name: "Box Breathing", desc: "4-4-4-4 pattern for calm focus", inhale: 4, hold1: 4, exhale: 4, hold2: 4, color: "from-blue-500 to-cyan-500" },
@@ -95,7 +96,12 @@ export const BreathingMeditation = ({ onBack }: Props) => {
         return prev + 0.1;
       });
     }, 100);
-    return () => clearInterval(intervalRef.current);
+    return (
+    <>
+      <FloatingHowItWorks title={"Breathing Meditation - How it works"} steps={[{ title: 'Open', desc: 'Access the Breathing Meditation section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Breathing Meditation.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(intervalRef.current);
   }, [isActive, phase, selectedExercise, duration]);
 
   const completeSession = async () => {

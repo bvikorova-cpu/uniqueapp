@@ -2,6 +2,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const heroTypes = [
   { key: "all", label: "All Heroes" },
@@ -30,7 +31,9 @@ interface HeroFiltersProps {
 
 export const HeroFilters = ({ search, onSearchChange, filter, onFilterChange, sort, onSortChange }: HeroFiltersProps) => {
   return (
-    <div className="space-y-4" id="hero-campaigns">
+    <>
+      <FloatingHowItWorks title={"Hero Filters - How it works"} steps={[{ title: 'Open', desc: 'Access the Hero Filters section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Hero Filters.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4" id="hero-campaigns">
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -55,5 +58,6 @@ export const HeroFilters = ({ search, onSearchChange, filter, onFilterChange, so
         ))}
       </div>
     </div>
+    </>
   );
 };

@@ -12,6 +12,7 @@ import { handleEdgeError } from "@/lib/handleEdgeError";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const VOICES = [
   { id: 'JBFqnCBsd6RMkjVDRZzb', name: 'George (M)' },
@@ -73,7 +74,12 @@ export const FinalVideoComposerView = ({ onBack }: { onBack: () => void }) => {
     load();
     window.addEventListener('cloned-voices-updated', load);
     window.addEventListener('storage', load);
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Final Video Composer View - How it works"} steps={[{ title: 'Open', desc: 'Access the Final Video Composer View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Final Video Composer View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       window.removeEventListener('cloned-voices-updated', load);
       window.removeEventListener('storage', load);
     };

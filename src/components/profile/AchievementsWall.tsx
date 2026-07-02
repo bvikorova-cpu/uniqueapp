@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Trophy, Star, Award, Medal, Crown, Zap, Heart, Target, Sparkles, Flame } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface AchievementsWallProps {
   userId: string;
@@ -64,7 +65,9 @@ export const AchievementsWall = ({ userId, stats }: AchievementsWallProps) => {
   void dbAchievements; // available for future expansion
 
   return (
-    <div className="glass-post-card p-5 sm:p-7 mb-6 border border-amber-400/15 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl">
+    <>
+      <FloatingHowItWorks title={"Achievements Wall - How it works"} steps={[{ title: 'Open', desc: 'Access the Achievements Wall section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Achievements Wall.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="glass-post-card p-5 sm:p-7 mb-6 border border-amber-400/15 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl">
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
           <div className="relative">
@@ -114,5 +117,6 @@ export const AchievementsWall = ({ userId, stats }: AchievementsWallProps) => {
         </p>
       )}
     </div>
+    </>
   );
 };

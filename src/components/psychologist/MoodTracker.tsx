@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Smile, Frown, Meh, Heart, Zap, Sun, Moon, CloudRain, Flame, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const MOODS = [
   { score: 1, label: "Terrible", icon: Frown, color: "text-red-500", bg: "bg-red-500/20" },
@@ -71,7 +72,9 @@ export const MoodTracker = ({ onBack }: Props) => {
     : "—";
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Mood Tracker - How it works"} steps={[{ title: 'Open', desc: 'Access the Mood Tracker section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Mood Tracker.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2">
         <ArrowLeft className="h-4 w-4" /> Back to Dashboard
       </Button>
@@ -192,5 +195,6 @@ export const MoodTracker = ({ onBack }: Props) => {
         })}
       </div>
     </div>
+    </>
   );
 };

@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { Target, Flame, Gift, Zap, Trophy, Clock, CheckCircle, Star, Loader2 } from "lucide-react";
 import { GiftConfetti } from "./GiftConfetti";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Challenge {
   id: string;
@@ -112,11 +113,14 @@ export const GiftChallenges = () => {
 
   if (!currentUserId) {
     return (
+    <>
+      <FloatingHowItWorks title={"Gift Challenges - How it works"} steps={[{ title: 'Open', desc: 'Access the Gift Challenges section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Gift Challenges.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="p-8 bg-white/90 border-amber-200 text-center">
         <Target className="h-12 w-12 mx-auto text-amber-400 mb-4" />
         <p className="text-gray-600">Please log in to view challenges</p>
       </Card>
-    );
+    </>
+  );
   }
 
   const renderChallenge = (challenge: Challenge, i: number) => {

@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, Target, TrendingUp, Shield, Zap, ArrowLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CompetitorAnalyzerProps {
   credits: number;
@@ -55,7 +56,9 @@ const CompetitorAnalyzer = ({ credits, onBack, onCreditsUsed }: CompetitorAnalyz
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Competitor Analyzer - How it works"} steps={[{ title: 'Open', desc: 'Access the Competitor Analyzer section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Competitor Analyzer.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
         <Button variant="ghost" onClick={onBack} className="mb-4 gap-2">
           <ArrowLeft className="h-4 w-4" /> Back to Hub
@@ -203,6 +206,7 @@ const CompetitorAnalyzer = ({ credits, onBack, onCreditsUsed }: CompetitorAnalyz
         </div>
       )}
     </div>
+    </>
   );
 };
 

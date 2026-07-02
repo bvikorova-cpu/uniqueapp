@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Palette, Save, Upload, Image as ImageIcon } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   sponsorId: string;
@@ -107,6 +108,8 @@ export function BrandingPanel({ sponsorId, tier }: Props) {
     const value = (form[field] as string) ?? "";
     const swatch = isHex(value) ? value : placeholder;
     return (
+    <>
+      <FloatingHowItWorks title={"Branding Panel - How it works"} steps={[{ title: 'Open', desc: 'Access the Branding Panel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Branding Panel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div>
         <Label className="text-white">{label}</Label>
         <div className="flex gap-2 items-center">
@@ -130,7 +133,8 @@ export function BrandingPanel({ sponsorId, tier }: Props) {
           />
         </div>
       </div>
-    );
+    </>
+  );
   };
 
   return (

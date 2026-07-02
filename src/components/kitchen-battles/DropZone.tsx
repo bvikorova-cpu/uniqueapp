@@ -3,6 +3,7 @@ import { UploadCloud, X, ImageIcon, Film, AlertCircle } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export type DropZoneError = { title: string; reason: string; suggestion: string };
 export type DropZoneValidation =
@@ -44,7 +45,9 @@ export function DropZone({ file, onChange, validate, accept, hint }: DropZonePro
   const stop = (e: React.DragEvent) => { e.preventDefault(); e.stopPropagation(); };
 
   return (
-    <div className="space-y-2">
+    <>
+      <FloatingHowItWorks title={"Drop Zone - How it works"} steps={[{ title: 'Open', desc: 'Access the Drop Zone section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Drop Zone.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-2">
       <div
         onClick={() => inputRef.current?.click()}
         onDragEnter={(e) => { stop(e); setDragOver(true); }}
@@ -147,5 +150,6 @@ export function DropZone({ file, onChange, validate, accept, hint }: DropZonePro
         )}
       </div>
     </div>
+    </>
   );
 }

@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollText, Plus, Trash2, ArrowUp, ArrowDown } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   groupId: string;
@@ -34,7 +35,12 @@ export function GroupRulesEditor({ groupId, isStaff }: Props) {
         .eq("group_id", groupId)
         .order("position", { ascending: true });
       if (error) throw error;
-      return (data ?? []) as Rule[];
+      return (
+    <>
+      <FloatingHowItWorks title={"Group Rules Editor - How it works"} steps={[{ title: 'Open', desc: 'Access the Group Rules Editor section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Group Rules Editor.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      data ?? []
+    </>
+  ) as Rule[];
     },
   });
 

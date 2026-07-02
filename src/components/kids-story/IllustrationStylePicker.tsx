@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface IllustrationStylePickerProps {
   value: string;
@@ -16,7 +17,9 @@ const STYLES = [
 
 export const IllustrationStylePicker = ({ value, onChange }: IllustrationStylePickerProps) => {
   return (
-    <div className="space-y-3">
+    <>
+      <FloatingHowItWorks title={"Illustration Style Picker - How it works"} steps={[{ title: 'Open', desc: 'Access the Illustration Style Picker section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Illustration Style Picker.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-3">
       <h3 className="text-sm font-semibold text-muted-foreground">Illustration Style</h3>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
         {STYLES.map((style) => (
@@ -40,5 +43,6 @@ export const IllustrationStylePicker = ({ value, onChange }: IllustrationStylePi
         ))}
       </div>
     </div>
+    </>
   );
 };

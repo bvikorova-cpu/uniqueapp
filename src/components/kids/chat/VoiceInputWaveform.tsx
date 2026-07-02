@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mic, MicOff, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface VoiceInputWaveformProps {
   onTranscript: (text: string) => void;
@@ -17,7 +18,12 @@ export function VoiceInputWaveform({ onTranscript, disabled }: VoiceInputWavefor
   const streamRef = useRef<MediaStream | null>(null);
 
   useEffect(() => {
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Voice Input Waveform - How it works"} steps={[{ title: 'Open', desc: 'Access the Voice Input Waveform section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Voice Input Waveform.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       stopRecording();
     };
   }, []);

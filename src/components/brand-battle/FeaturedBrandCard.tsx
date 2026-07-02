@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Vote, Loader2, ExternalLink, Crown, TrendingUp, Flame } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface BrandSponsor {
   id: string;
@@ -72,7 +73,9 @@ export const FeaturedBrandCard = ({
   const tierColor = TIER_COLORS[sponsor.tier];
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Featured Brand Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Featured Brand Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Featured Brand Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: (rank - 1) * 0.15, type: "spring" }}
@@ -200,5 +203,6 @@ export const FeaturedBrandCard = ({
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 };

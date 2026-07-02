@@ -7,6 +7,7 @@ import { Swords, Crown, RefreshCw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   category?: string;
@@ -79,7 +80,9 @@ export default function MegatalentTalentDuel({ category, categories }: Props) {
   };
 
   return (
-    <Card className="backdrop-blur-xl bg-gradient-to-br from-card/90 to-card/60 border-accent/30">
+    <>
+      <FloatingHowItWorks title={"Megatalent Talent Duel - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Talent Duel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Talent Duel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="backdrop-blur-xl bg-gradient-to-br from-card/90 to-card/60 border-accent/30">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
           <Swords className="h-5 w-5 text-accent" />
@@ -158,5 +161,6 @@ export default function MegatalentTalentDuel({ category, categories }: Props) {
         )}
       </CardContent>
     </Card>
+    </>
   );
 }

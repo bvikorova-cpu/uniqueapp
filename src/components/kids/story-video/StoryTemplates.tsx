@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Rocket, Crown, TreePine, Fish, Ghost, Sword } from 'lucide-react';
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface StoryTemplatesProps {
   onSelect: (theme: string) => void;
@@ -16,7 +17,9 @@ const TEMPLATES = [
 
 export const StoryTemplates = ({ onSelect }: StoryTemplatesProps) => {
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Story Templates - How it works"} steps={[{ title: 'Open', desc: 'Access the Story Templates section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Story Templates.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       <div className="flex items-center gap-2">
         <span className="text-2xl">💡</span>
         <h3 className="text-lg font-bold text-purple-800">Quick Start Templates</h3>
@@ -41,5 +44,6 @@ export const StoryTemplates = ({ onSelect }: StoryTemplatesProps) => {
         ))}
       </div>
     </div>
+    </>
   );
 };

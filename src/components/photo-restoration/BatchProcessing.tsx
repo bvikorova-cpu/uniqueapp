@@ -11,6 +11,7 @@ import { Layers, Upload, ArrowLeft, Download, CheckCircle, Loader2 } from "lucid
 import { usePhotoCredits } from "@/hooks/usePhotoCredits";
 import { motion } from "framer-motion";
 import { Progress } from "@/components/ui/progress";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -83,7 +84,9 @@ export const BatchProcessing = ({ onBack }: Props) => {
   };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Batch Processing - How it works"} steps={[{ title: 'Open', desc: 'Access the Batch Processing section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Batch Processing.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
       <Card className="p-6">
         <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
           <Layers className="h-6 w-6 text-indigo-500" />
@@ -176,5 +179,6 @@ export const BatchProcessing = ({ onBack }: Props) => {
       </Card>
       <Button variant="ghost" onClick={onBack} className="gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button>
     </motion.div>
+    </>
   );
 };

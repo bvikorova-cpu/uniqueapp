@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle2, Target, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Challenge {
   id: string;
@@ -87,7 +88,9 @@ export const MegatalentDailyChallenge = () => {
   const ready = progress >= challenge.requirement_value && !completed;
 
   return (
-    <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border-primary/30">
+    <>
+      <FloatingHowItWorks title={"Megatalent Daily Challenge - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Daily Challenge section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Daily Challenge.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border-primary/30">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between gap-2 text-base">
           <div className="flex items-center gap-2">
@@ -132,6 +135,7 @@ export const MegatalentDailyChallenge = () => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };
 

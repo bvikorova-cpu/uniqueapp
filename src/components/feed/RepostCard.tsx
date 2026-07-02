@@ -9,6 +9,7 @@ import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
 import PostCard from "./PostCard";
 import type { Repost } from "@/types/database";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface RepostCardProps {
   repost: Repost;
@@ -73,7 +74,9 @@ const RepostCard = ({ repost, onDelete }: RepostCardProps) => {
   };
 
   return (
-    <div className="glass-post-card overflow-hidden group hover:-translate-y-1 border-l-4 border-l-blue-500">
+    <>
+      <FloatingHowItWorks title={"Repost Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Repost Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Repost Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="glass-post-card overflow-hidden group hover:-translate-y-1 border-l-4 border-l-blue-500">
       <div className="p-6 pb-4">
         {/* Repost Header */}
         <div className="flex items-center gap-3 mb-4">
@@ -132,6 +135,7 @@ const RepostCard = ({ repost, onDelete }: RepostCardProps) => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { CheckCircle, XCircle, Clock, User, Calendar } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function AdminCampaignApplications() {
   const [selectedApp, setSelectedApp] = useState<string | null>(null);
@@ -71,11 +72,14 @@ export function AdminCampaignApplications() {
     };
     const { variant, icon: Icon, label } = config[status as keyof typeof config] || config.pending;
     return (
+    <>
+      <FloatingHowItWorks title={"Admin Campaign Applications - How it works"} steps={[{ title: 'Open', desc: 'Access the Admin Campaign Applications section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Admin Campaign Applications.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Badge variant={variant} className="gap-1">
         <Icon className="h-3 w-3" />
         {label}
       </Badge>
-    );
+    </>
+  );
   };
 
   if (isLoading) {

@@ -2,13 +2,16 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
 import { BarChart3, PieChartIcon } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const COLORS = ["#8b5cf6", "#ec4899", "#06b6d4", "#10b981", "#f59e0b"];
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload) return null;
   return (
-    <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-xl border p-3 text-sm">
+    <>
+      <FloatingHowItWorks title={"Enhanced Charts - How it works"} steps={[{ title: 'Open', desc: 'Access the Enhanced Charts section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Enhanced Charts.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-xl border p-3 text-sm">
       <p className="font-bold text-foreground mb-1">{label}</p>
       {payload.map((entry: any, i: number) => (
         <div key={i} className="flex items-center gap-2">
@@ -18,6 +21,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
         </div>
       ))}
     </div>
+    </>
   );
 };
 

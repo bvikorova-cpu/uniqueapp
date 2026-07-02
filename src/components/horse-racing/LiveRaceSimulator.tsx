@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const LiveRaceSimulator = () => {
   const { user } = useAuth();
@@ -36,6 +37,8 @@ export const LiveRaceSimulator = () => {
 
   if (selectedRace && activeRace) {
     return (
+    <>
+      <FloatingHowItWorks title={"Live Race Simulator - How it works"} steps={[{ title: 'Open', desc: 'Access the Live Race Simulator section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Live Race Simulator.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="space-y-4">
         <Button variant="outline" onClick={() => setSelectedRace(null)} className="gap-2">
           ← Back to Races
@@ -65,7 +68,8 @@ export const LiveRaceSimulator = () => {
           }}
         />
       </div>
-    );
+    </>
+  );
   }
 
   return (

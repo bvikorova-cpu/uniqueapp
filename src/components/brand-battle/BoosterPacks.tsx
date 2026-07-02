@@ -7,6 +7,7 @@ import { useBrandVotes } from "@/hooks/useBrandVotes";
 import { spendBrandCredits } from "@/lib/brandCredits";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const PACKS = [
   { id: "double_vote_24h", name: "2× Vote Multiplier", desc: "All votes count double for 24h", cost: 10, icon: Zap, color: "from-cyan-400 to-blue-600" },
@@ -43,7 +44,9 @@ export const BoosterPacks = () => {
   };
 
   return (
-    <Card className="relative overflow-hidden border-amber-500/30 bg-gradient-to-br from-zinc-950 to-zinc-900">
+    <>
+      <FloatingHowItWorks title={"Booster Packs - How it works"} steps={[{ title: 'Open', desc: 'Access the Booster Packs section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Booster Packs.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="relative overflow-hidden border-amber-500/30 bg-gradient-to-br from-zinc-950 to-zinc-900">
       <CardHeader className="relative">
         <CardTitle className="flex items-center gap-2 text-amber-100">
           <Rocket className="h-5 w-5 text-amber-400" />
@@ -79,5 +82,6 @@ export const BoosterPacks = () => {
         })}
       </CardContent>
     </Card>
+    </>
   );
 };

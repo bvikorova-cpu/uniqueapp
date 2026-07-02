@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Percent, ShoppingBag, Briefcase, Users, RefreshCw, Shield } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CommissionSetting {
   id: string;
@@ -45,6 +46,8 @@ export function CommissionSummaryTable() {
 
   if (isLoading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Commission Summary Table - How it works"} steps={[{ title: 'Open', desc: 'Access the Commission Summary Table section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Commission Summary Table.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -61,7 +64,8 @@ export function CommissionSummaryTable() {
           </div>
         </CardContent>
       </Card>
-    );
+    </>
+  );
   }
 
   if (error) {

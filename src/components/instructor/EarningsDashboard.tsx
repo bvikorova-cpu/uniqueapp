@@ -8,6 +8,7 @@ import { formatCurrency } from "@/lib/utils";
 import { WithdrawalRequestDialog } from "./WithdrawalRequestDialog";
 import { PayoutHistory } from "./PayoutHistory";
 import { useStripeConnect } from "@/hooks/useStripeConnect";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 interface InstructorStats {
   pending_balance: number;
   lifetime_earnings: number;
@@ -112,10 +113,13 @@ export function EarningsDashboard() {
 
   if (loading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Earnings Dashboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Earnings Dashboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Earnings Dashboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="flex items-center justify-center p-12">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
-    );
+    </>
+  );
   }
 
   if (!stats) {

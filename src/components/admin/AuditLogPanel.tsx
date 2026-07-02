@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { FileText, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface LogRow {
   id: string;
@@ -54,7 +55,9 @@ export const AuditLogPanel = () => {
   };
 
   return (
-    <Card className="bg-card/70 backdrop-blur-xl border-border/40">
+    <>
+      <FloatingHowItWorks title={"Audit Log Panel - How it works"} steps={[{ title: 'Open', desc: 'Access the Audit Log Panel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Audit Log Panel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/70 backdrop-blur-xl border-border/40">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
           <FileText className="h-5 w-5 text-purple-400" /> Audit Log
@@ -97,5 +100,6 @@ export const AuditLogPanel = () => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

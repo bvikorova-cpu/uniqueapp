@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const packages = [
   { coins: 50, price: 4.99, label: "Starter Pack", popular: false },
@@ -54,7 +55,9 @@ export function CoinShop({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Coin Shop - How it works"} steps={[{ title: 'Open', desc: 'Access the Coin Shop section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Coin Shop.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button>
       <div className="text-center">
         <h2 className="text-2xl font-black">💰 Coin Shop</h2>
@@ -86,5 +89,6 @@ export function CoinShop({ onBack }: { onBack: () => void }) {
         ))}
       </div>
     </div>
+    </>
   );
 }

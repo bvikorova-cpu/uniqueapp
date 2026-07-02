@@ -9,6 +9,7 @@ import { Loader2, Globe2, Sparkles, Copy } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export const MultiLanguageView = ({ onBack }: { onBack: () => void }) => {
   const [script, setScript] = useState("");
@@ -37,7 +38,9 @@ export const MultiLanguageView = ({ onBack }: { onBack: () => void }) => {
   };
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Multi Language View - How it works"} steps={[{ title: 'Open', desc: 'Access the Multi Language View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Multi Language View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4">← Back</Button>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
         <div className="flex items-center gap-3">
@@ -91,5 +94,6 @@ export const MultiLanguageView = ({ onBack }: { onBack: () => void }) => {
         </Card>
       </div>
     </div>
+    </>
   );
 };

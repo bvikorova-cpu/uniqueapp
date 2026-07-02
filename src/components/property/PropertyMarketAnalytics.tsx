@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, BarChart3, TrendingUp, TrendingDown, DollarSign, Home, MapPin, Activity } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -16,7 +17,9 @@ const TRENDS = [
 
 export const PropertyMarketAnalytics = ({ onBack }: Props) => {
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+    <>
+      <FloatingHowItWorks title={"Property Market Analytics - How it works"} steps={[{ title: 'Open', desc: 'Access the Property Market Analytics section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Property Market Analytics.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
       <Button variant="ghost" onClick={onBack} className="mb-4">
         <ArrowLeft className="w-4 h-4 mr-2" /> Back to Hub
       </Button>
@@ -118,5 +121,6 @@ export const PropertyMarketAnalytics = ({ onBack }: Props) => {
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 };

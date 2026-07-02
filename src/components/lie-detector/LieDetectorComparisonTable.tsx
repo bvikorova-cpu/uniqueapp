@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, X, Zap } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const features = [
   { name: "Single Message Analysis", basic: true, premium: true },
@@ -14,7 +15,9 @@ const features = [
 
 export const LieDetectorComparisonTable = () => {
   return (
-    <Card className="bg-card/60 backdrop-blur-sm border-border/50">
+    <>
+      <FloatingHowItWorks title={"Lie Detector Comparison Table - How it works"} steps={[{ title: 'Open', desc: 'Access the Lie Detector Comparison Table section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Lie Detector Comparison Table.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/60 backdrop-blur-sm border-border/50">
       <CardHeader className="pb-3">
         <CardTitle className="text-sm flex items-center gap-2">
           <Zap className="w-4 h-4 text-primary" />
@@ -46,5 +49,6 @@ export const LieDetectorComparisonTable = () => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

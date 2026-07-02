@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface FlipBenefitCardProps {
   icon: LucideIcon;
@@ -15,7 +16,9 @@ export function FlipBenefitCard({ icon: Icon, emoji, title, shortDesc, details, 
   const [flipped, setFlipped] = useState(false);
 
   return (
-    <div
+    <>
+      <FloatingHowItWorks title={"Flip Benefit Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Flip Benefit Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Flip Benefit Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div
       className="perspective-1000 h-56 cursor-pointer"
       onMouseEnter={() => setFlipped(true)}
       onMouseLeave={() => setFlipped(false)}
@@ -58,5 +61,6 @@ export function FlipBenefitCard({ icon: Icon, emoji, title, shortDesc, details, 
         </div>
       </motion.div>
     </div>
+    </>
   );
 }

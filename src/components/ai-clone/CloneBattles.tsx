@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Swords, Bot, Loader2, Trophy, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const BATTLE_SCRIPTS = [
   { winner: "yours", analysis: "Round 1: Your clone opened with a devastating pun about quantum physics. The opponent tried to counter with a joke about Schrödinger's cat, but your clone's timing was impeccable!\n\nRound 2: The opponent rallied with a clever wordplay, but your clone delivered the knockout blow with a perfectly crafted metaphor about AI consciousness. Victory!" },
@@ -35,7 +36,9 @@ export function CloneBattles() {
   };
 
   return (
-    <Card className="bg-card/80 backdrop-blur-xl border-primary/20">
+    <>
+      <FloatingHowItWorks title={"Clone Battles - How it works"} steps={[{ title: 'Open', desc: 'Access the Clone Battles section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Clone Battles.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/80 backdrop-blur-xl border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Swords className="h-5 w-5 text-primary" />
@@ -81,5 +84,6 @@ export function CloneBattles() {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 }

@@ -1,6 +1,7 @@
 import { Instagram, Linkedin, Twitter, Youtube, Globe, Music2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export interface SocialLinks {
   instagram?: string;
@@ -27,7 +28,9 @@ const FIELDS: { key: keyof SocialLinks; label: string; icon: React.ElementType; 
 
 export const SocialLinksSection = ({ value, onChange }: Props) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    <>
+      <FloatingHowItWorks title={"Social Links Section - How it works"} steps={[{ title: 'Open', desc: 'Access the Social Links Section section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Social Links Section.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
       {FIELDS.map(({ key, label, icon: Icon, placeholder, color }) => (
         <div key={key}>
           <Label className="flex items-center gap-1.5 text-xs">
@@ -42,5 +45,6 @@ export const SocialLinksSection = ({ value, onChange }: Props) => {
         </div>
       ))}
     </div>
+    </>
   );
 };

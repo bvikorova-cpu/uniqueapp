@@ -6,6 +6,7 @@ import { Building2, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { CouponToolLayout } from "../CouponToolLayout";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -36,7 +37,9 @@ export function StoreReputationView({ onBack }: Props) {
   };
 
   return (
-    <CouponToolLayout onBack={onBack} title="Store Reputation Score" subtitle="AI trust & reliability analysis for any retail store" credits={3} icon={Building2} gradientFrom="#f59e0b" gradientTo="#ea580c" borderColor="amber" formTitle="Store Details" resultTitle="Reputation Report" emptyText="Enter a store name to get AI reputation analysis" result={result} loading={loading}>
+    <>
+      <FloatingHowItWorks title={"Store Reputation View - How it works"} steps={[{ title: 'Open', desc: 'Access the Store Reputation View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Store Reputation View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <CouponToolLayout onBack={onBack} title="Store Reputation Score" subtitle="AI trust & reliability analysis for any retail store" credits={3} icon={Building2} gradientFrom="#f59e0b" gradientTo="#ea580c" borderColor="amber" formTitle="Store Details" resultTitle="Reputation Report" emptyText="Enter a store name to get AI reputation analysis" result={result} loading={loading}>
       <div><label className="text-sm font-semibold mb-1.5 block">Store Name *</label>
         <Input placeholder="e.g., Nike, Amazon, Shein" value={storeName} onChange={e => setStoreName(e.target.value)} /></div>
       <div><label className="text-sm font-semibold mb-1.5 block">Store Website (optional)</label>
@@ -49,5 +52,6 @@ export function StoreReputationView({ onBack }: Props) {
         {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Analyzing...</> : <><Building2 className="w-4 h-4 mr-2" />Get Reputation Score (3 CR)</>}
       </Button>
     </CouponToolLayout>
+    </>
   );
 }

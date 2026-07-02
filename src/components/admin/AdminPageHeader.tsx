@@ -3,6 +3,7 @@ import { ChevronRight, ArrowLeft, LucideIcon } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import heroVideo from "@/assets/admin-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Stat {
   label: string;
@@ -42,7 +43,9 @@ export const AdminPageHeader = ({
   const crumbs = [{ label: "Command Center", to: "/admin" }, ...breadcrumbs];
 
   return (
-    <div className="relative w-full rounded-3xl overflow-hidden mb-6 border border-primary/30 shadow-2xl shadow-primary/10">
+    <>
+      <FloatingHowItWorks title={"Admin Page Header - How it works"} steps={[{ title: 'Open', desc: 'Access the Admin Page Header section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Admin Page Header.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative w-full rounded-3xl overflow-hidden mb-6 border border-primary/30 shadow-2xl shadow-primary/10">
       <video
         autoPlay
         muted
@@ -151,5 +154,6 @@ export const AdminPageHeader = ({
         )}
       </div>
     </div>
+    </>
   );
 };

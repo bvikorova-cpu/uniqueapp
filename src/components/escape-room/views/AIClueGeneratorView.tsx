@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Wand2, Loader2, Copy, Check, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -37,7 +38,9 @@ export function AIClueGeneratorView({ onBack }: Props) {
   };
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"A I Clue Generator View - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Clue Generator View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Clue Generator View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
@@ -100,5 +103,6 @@ export function AIClueGeneratorView({ onBack }: Props) {
         )}
       </div>
     </div>
+    </>
   );
 }

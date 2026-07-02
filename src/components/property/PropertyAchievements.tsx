@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Award, Lock } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const badges = [
   { name: "First View", icon: "👁️", description: "View your first property", unlocked: false, color: "from-blue-500/20 to-cyan-500/20", borderColor: "border-blue-500/30" },
@@ -13,7 +14,9 @@ const badges = [
 
 export const PropertyAchievements = () => {
   return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+    <>
+      <FloatingHowItWorks title={"Property Achievements - How it works"} steps={[{ title: 'Open', desc: 'Access the Property Achievements section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Property Achievements.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
       <Card className="bg-gradient-to-br from-amber-500/10 to-yellow-500/10 border-amber-300/30 h-full">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-base">
@@ -50,5 +53,6 @@ export const PropertyAchievements = () => {
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 };

@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Image, Sparkles, Loader2, Zap, Download, Palette, Type, Layout } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface AIThumbnailCreatorProps {
   onBack: () => void;
@@ -103,7 +104,9 @@ const AIThumbnailCreator = ({ onBack }: AIThumbnailCreatorProps) => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"A I Thumbnail Creator - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Thumbnail Creator section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Thumbnail Creator.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
         <Button variant="ghost" onClick={onBack} className="gap-2 mb-4">
           <ArrowLeft className="h-4 w-4" /> Back to Hub
@@ -244,6 +247,7 @@ const AIThumbnailCreator = ({ onBack }: AIThumbnailCreatorProps) => {
         </Card>
       </div>
     </div>
+    </>
   );
 };
 

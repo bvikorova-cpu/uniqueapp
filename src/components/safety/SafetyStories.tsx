@@ -10,6 +10,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const categories = ["School", "Workplace", "Online", "Neighborhood", "Family", "Other"];
 
@@ -87,7 +88,9 @@ const SafetyStories = () => {
   });
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Safety Stories - How it works"} steps={[{ title: 'Open', desc: 'Access the Safety Stories section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Safety Stories.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -214,6 +217,7 @@ const SafetyStories = () => {
         )}
       </div>
     </div>
+    </>
   );
 };
 

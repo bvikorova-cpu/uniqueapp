@@ -5,6 +5,7 @@ import { Sparkles, TrendingUp, AlertTriangle, Lightbulb, Target, TrendingDown, Z
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Insight {
   title: string;
@@ -60,7 +61,9 @@ export const AIInsightsPanel = ({ stats }: Props) => {
   };
 
   return (
-    <Card className="bg-gradient-to-br from-purple-500/10 via-card/80 to-pink-500/10 backdrop-blur-xl border-primary/30">
+    <>
+      <FloatingHowItWorks title={"A I Insights Panel - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Insights Panel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Insights Panel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-gradient-to-br from-purple-500/10 via-card/80 to-pink-500/10 backdrop-blur-xl border-primary/30">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between text-base">
           <span className="flex items-center gap-2">
@@ -106,5 +109,6 @@ export const AIInsightsPanel = ({ stats }: Props) => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

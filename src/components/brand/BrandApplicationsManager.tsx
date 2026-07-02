@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { CheckCircle2, ExternalLink, HandCoins, Loader2, ShieldCheck, XCircle } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type Application = {
   id: string;
@@ -88,7 +89,9 @@ function ApprovePayDialog({
   });
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+      <FloatingHowItWorks title={"Brand Applications Manager - How it works"} steps={[{ title: 'Open', desc: 'Access the Brand Applications Manager section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Brand Applications Manager.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Dialog open={open} onOpenChange={setOpen}>
       <Button size="sm" onClick={() => setOpen(true)}>
         <HandCoins className="h-4 w-4 mr-1" />
         Approve & Pay
@@ -147,6 +150,7 @@ function ApprovePayDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
+    </>
   );
 }
 

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Zap, Banknote } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const TABLES = [
   "instructor_withdrawal_requests",
@@ -77,7 +78,9 @@ export function PendingPayoutsCard() {
   };
 
   return (
-    <Card className="border-primary/20 bg-card/60 backdrop-blur-xl">
+    <>
+      <FloatingHowItWorks title={"Pending Payouts Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Pending Payouts Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Pending Payouts Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-primary/20 bg-card/60 backdrop-blur-xl">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-sm font-medium flex items-center gap-2">
           <Banknote className="h-4 w-4 text-amber-500" />
@@ -119,5 +122,6 @@ export function PendingPayoutsCard() {
         )}
       </CardContent>
     </Card>
+    </>
   );
 }

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Gift, Copy, Check } from "lucide-react";
 import { useReferralProgram } from "@/hooks/useReferralProgram";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function CouponReferralBanner({ userId }: { userId: string | null }) {
   const { toast } = useToast();
@@ -21,7 +22,9 @@ export function CouponReferralBanner({ userId }: { userId: string | null }) {
   };
 
   return (
-    <Card className="bg-gradient-to-r from-emerald-500/10 to-teal-500/5 border-emerald-500/30 mb-6">
+    <>
+      <FloatingHowItWorks title={"Coupon Referral Banner - How it works"} steps={[{ title: 'Open', desc: 'Access the Coupon Referral Banner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Coupon Referral Banner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-gradient-to-r from-emerald-500/10 to-teal-500/5 border-emerald-500/30 mb-6">
       <CardContent className="p-4 flex flex-col sm:flex-row items-start sm:items-center gap-3">
         <div className="flex items-center gap-2">
           <Gift className="w-5 h-5 text-emerald-500" />
@@ -36,5 +39,6 @@ export function CouponReferralBanner({ userId }: { userId: string | null }) {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 }

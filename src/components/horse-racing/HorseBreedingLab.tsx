@@ -8,6 +8,7 @@ import { useUserHorses, useBreedHorses } from "@/hooks/useHorseRacing";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const HorseBreedingLab = () => {
   const { user } = useAuth();
@@ -37,7 +38,9 @@ export const HorseBreedingLab = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Horse Breeding Lab - How it works"} steps={[{ title: 'Open', desc: 'Access the Horse Breeding Lab section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Horse Breeding Lab.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-black flex items-center gap-2">
           <Dna className="h-6 w-6 text-purple-400" /> Horse Breeding Lab
@@ -159,5 +162,6 @@ export const HorseBreedingLab = () => {
         </ul>
       </Card>
     </div>
+    </>
   );
 };

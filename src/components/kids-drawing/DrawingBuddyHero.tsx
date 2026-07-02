@@ -1,11 +1,14 @@
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const floatingEmojis = ["🎨", "✏️", "🖌️", "🌈", "⭐", "🎭", "🖍️", "💫"];
 const mascots = ["🎨", "🖌️", "✏️", "🖍️"];
 
 export const DrawingBuddyHero = () => {
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-accent/10 to-primary/5 p-8 md:p-12">
+    <>
+      <FloatingHowItWorks title={"Drawing Buddy Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Drawing Buddy Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Drawing Buddy Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-accent/10 to-primary/5 p-8 md:p-12">
       {/* Floating emojis */}
       {floatingEmojis.map((emoji, i) => (
         <motion.div
@@ -109,5 +112,6 @@ export const DrawingBuddyHero = () => {
         </motion.div>
       </div>
     </div>
+    </>
   );
 };

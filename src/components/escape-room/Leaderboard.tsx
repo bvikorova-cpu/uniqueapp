@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trophy, Clock, Lightbulb } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface LeaderboardEntry {
   id: string;
@@ -59,7 +60,9 @@ const Leaderboard = () => {
   };
 
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title={"Leaderboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Leaderboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Leaderboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card>
       <CardHeader>
         <div className="flex items-center gap-2">
           <Trophy className="h-6 w-6 text-yellow-500" />
@@ -111,6 +114,7 @@ const Leaderboard = () => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };
 

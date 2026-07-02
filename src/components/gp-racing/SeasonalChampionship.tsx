@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, Trophy, Flag, Calendar, Star, Crown, Medal, TrendingUp, ChevronRight } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const seasonRaces = [
   { id: 1, name: "Nebula Drift GP", date: "Mar 15", status: "completed", winner: "James K.", points: [25, 18, 15, 12, 10] },
@@ -41,7 +42,9 @@ export function SeasonalChampionship({ onBack }: { onBack: () => void }) {
   const progress = (completedRaces / seasonRaces.length) * 100;
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Seasonal Championship - How it works"} steps={[{ title: 'Open', desc: 'Access the Seasonal Championship section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Seasonal Championship.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={onBack} className="text-cyan-400 hover:bg-cyan-950/30">
           <ArrowLeft className="h-5 w-5" />
@@ -180,5 +183,6 @@ export function SeasonalChampionship({ onBack }: { onBack: () => void }) {
         </div>
       )}
     </div>
+    </>
   );
 }

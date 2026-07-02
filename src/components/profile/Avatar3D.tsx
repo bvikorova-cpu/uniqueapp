@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Box } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Avatar3DProps {
   userId: string;
@@ -24,7 +25,9 @@ export const Avatar3D = ({ userId }: Avatar3DProps) => {
   if (!profile?.avatar_3d_url) return null;
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Avatar3 D - How it works"} steps={[{ title: 'Open', desc: 'Access the Avatar3 D section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Avatar3 D.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       className="glass-post-card p-3 mb-6 border border-cyan-400/20 bg-gradient-to-br from-cyan-950/30 to-card/40 backdrop-blur-xl"
@@ -42,5 +45,6 @@ export const Avatar3D = ({ userId }: Avatar3DProps) => {
         />
       </div>
     </motion.div>
+    </>
   );
 };

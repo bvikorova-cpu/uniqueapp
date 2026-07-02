@@ -5,6 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const THEMES = [
   { id: "amber",   label: "Gold",     class: "from-amber-400 to-orange-500" },
@@ -40,7 +41,9 @@ export const ThemePicker = ({ userId, current }: ThemePickerProps) => {
   };
 
   return (
-    <Popover>
+    <>
+      <FloatingHowItWorks title={"Theme Picker - How it works"} steps={[{ title: 'Open', desc: 'Access the Theme Picker section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Theme Picker.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Popover>
       <PopoverTrigger asChild>
         <Button size="sm" variant="outline" className="bg-card/80 backdrop-blur-md border-amber-400/30">
           <Palette className="h-4 w-4" />
@@ -67,5 +70,6 @@ export const ThemePicker = ({ userId, current }: ThemePickerProps) => {
         </div>
       </PopoverContent>
     </Popover>
+    </>
   );
 };

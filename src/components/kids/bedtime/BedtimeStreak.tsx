@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Flame, Moon, Star } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface BedtimeStreakProps {
   currentStreak: number;
@@ -11,7 +12,9 @@ const WEEK_DAYS = ["M", "T", "W", "T", "F", "S", "S"];
 
 export function BedtimeStreak({ currentStreak, dreamTokens, storiesListened }: BedtimeStreakProps) {
   return (
-    <div className="space-y-3">
+    <>
+      <FloatingHowItWorks title={"Bedtime Streak - How it works"} steps={[{ title: 'Open', desc: 'Access the Bedtime Streak section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Bedtime Streak.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-3">
       <h3 className="text-sm font-bold text-purple-100 flex items-center gap-1.5">
         <Flame className="h-4 w-4 text-orange-400" /> Bedtime Streak
       </h3>
@@ -53,5 +56,6 @@ export function BedtimeStreak({ currentStreak, dreamTokens, storiesListened }: B
         })}
       </div>
     </div>
+    </>
   );
 }

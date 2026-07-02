@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Copy, Users, DollarSign, Share2, Facebook, Twitter, Mail, RefreshCw, TrendingUp, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const ReferralProgram = () => {
   const [referralCode, setReferralCode] = useState<string>("");
@@ -83,10 +84,13 @@ export const ReferralProgram = () => {
 
   if (loading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Referral Program - How it works"} steps={[{ title: 'Open', desc: 'Access the Referral Program section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Referral Program.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="flex items-center justify-center py-12">
         <div className="animate-spin rounded-full h-6 w-6 border-2 border-primary border-t-transparent" />
       </div>
-    );
+    </>
+  );
   }
 
   return (

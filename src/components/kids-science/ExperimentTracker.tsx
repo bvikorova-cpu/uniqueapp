@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const badges = [
   { id: "first", label: "First Experiment", icon: "🥇", requirement: 1 },
@@ -15,7 +16,9 @@ interface ExperimentTrackerProps {
 
 export const ExperimentTracker = ({ experimentsCompleted }: ExperimentTrackerProps) => {
   return (
-    <Card className="border-indigo-500/30 bg-gradient-to-br from-indigo-500/10 to-purple-500/10">
+    <>
+      <FloatingHowItWorks title={"Experiment Tracker - How it works"} steps={[{ title: 'Open', desc: 'Access the Experiment Tracker section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Experiment Tracker.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-indigo-500/30 bg-gradient-to-br from-indigo-500/10 to-purple-500/10">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           🏅 Your Achievements
@@ -45,5 +48,6 @@ export const ExperimentTracker = ({ experimentsCompleted }: ExperimentTrackerPro
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

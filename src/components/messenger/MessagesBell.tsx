@@ -4,6 +4,7 @@ import { Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 /**
  * Header envelope icon that shows unread Messenger messages and links to /messenger.
@@ -78,7 +79,12 @@ const MessagesBell = () => {
     window.addEventListener("messages-read", onRead);
     window.addEventListener("focus", onFocus);
 
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Messages Bell - How it works"} steps={[{ title: 'Open', desc: 'Access the Messages Bell section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Messages Bell.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       cancelled = true;
       window.removeEventListener("messages-read", onRead);
       window.removeEventListener("focus", onFocus);

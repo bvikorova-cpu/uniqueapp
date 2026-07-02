@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Siren, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -36,7 +37,9 @@ export function AIEmergencyGuide({ onBack }: Props) {
   };
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"A I Emergency Guide - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Emergency Guide section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Emergency Guide.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       <Button variant="outline" onClick={onBack} className="gap-2"><ArrowLeft className="w-4 h-4" />Back</Button>
       <Card>
         <CardHeader>
@@ -56,5 +59,6 @@ export function AIEmergencyGuide({ onBack }: Props) {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

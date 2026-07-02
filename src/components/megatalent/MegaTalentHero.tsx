@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Trophy, Heart, Clock, Flame, Crown, Sparkles } from "lucide-react";
 import heroVideo from "@/assets/megatalent-hero.mp4.asset.json";
 import { useMegatalentContestStats } from "@/hooks/useMegatalentContestStats";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 function getContestTimeLeft() {
   const now = new Date();
@@ -26,7 +27,12 @@ export default function MegaTalentHero({ totalVotes, isSubscribed, subscriptionT
 
   useEffect(() => {
     const timer = setInterval(() => setTimeLeft(getContestTimeLeft()), 60000);
-    return () => clearInterval(timer);
+    return (
+    <>
+      <FloatingHowItWorks title={"Mega Talent Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Mega Talent Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Mega Talent Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(timer);
   }, []);
 
   // Stable defaults prevent hero "flash of empty" (TBA / em-dash) before query resolves

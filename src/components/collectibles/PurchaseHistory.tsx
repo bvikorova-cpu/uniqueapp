@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { format } from "date-fns";
 import { ShoppingBag, Box } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Purchase {
   id: string;
@@ -43,10 +44,13 @@ export default function PurchaseHistory({ userId }: { userId: string }) {
 
   if (loading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Purchase History - How it works"} steps={[{ title: 'Open', desc: 'Access the Purchase History section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Purchase History.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="p-8">
         <p className="text-center text-muted-foreground">Loading...</p>
       </Card>
-    );
+    </>
+  );
   }
 
   if (purchases.length === 0) {

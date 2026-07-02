@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Sparkles, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const styles = ["Pink Palace", "Fairy Tale Castle", "Beach House", "Treehouse", "Modern Penthouse", "Cottage Garden", "Crystal Tower", "Cloud Mansion"];
 const rooms = ["Living Room", "Bedroom", "Kitchen", "Bathroom", "Pool Area", "Garden", "Rooftop Terrace", "Secret Room"];
@@ -47,7 +48,9 @@ export function DreamHouseBuilder({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Dream House Builder - How it works"} steps={[{ title: 'Open', desc: 'Access the Dream House Builder section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Dream House Builder.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button>
       <h2 className="text-2xl font-black">🏰 Dream House Builder</h2>
       <p className="text-muted-foreground">Design your perfect dream house room by room!</p>
@@ -70,5 +73,6 @@ export function DreamHouseBuilder({ onBack }: { onBack: () => void }) {
         <div className="bg-gradient-to-br from-pink-500/10 to-purple-500/10 border border-pink-400/20 rounded-xl p-6 whitespace-pre-wrap">{result}</div>
       )}
     </div>
+    </>
   );
 }

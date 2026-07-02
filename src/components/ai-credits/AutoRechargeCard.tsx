@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Zap, CreditCard, ShieldCheck, Loader2, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Settings {
   enabled: boolean;
@@ -142,7 +143,9 @@ export const AutoRechargeCard = ({ currentBalance }: { currentBalance: number })
   const hasCard = !!pm?.last4;
 
   return (
-    <Card className="max-w-3xl mx-auto mb-8 border-primary/30 bg-gradient-to-br from-primary/5 via-card to-accent/5">
+    <>
+      <FloatingHowItWorks title={"Auto Recharge Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Auto Recharge Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Auto Recharge Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="max-w-3xl mx-auto mb-8 border-primary/30 bg-gradient-to-br from-primary/5 via-card to-accent/5">
       <CardHeader>
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -237,6 +240,7 @@ export const AutoRechargeCard = ({ currentBalance }: { currentBalance: number })
         )}
       </CardContent>
     </Card>
+    </>
   );
 };
 

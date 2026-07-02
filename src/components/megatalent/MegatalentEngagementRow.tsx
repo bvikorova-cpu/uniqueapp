@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Flame, Trophy, Star } from "lucide-react";
 import { useVotingStreak } from "@/hooks/useVotingStreak";
 import { useMegatalentContestStats } from "@/hooks/useMegatalentContestStats";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   totalVotes: number;
@@ -48,7 +49,9 @@ const MegatalentEngagementRow = ({ totalVotes, subscriptionTier }: Props) => {
     },
   ];
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+    <>
+      <FloatingHowItWorks title={"Megatalent Engagement Row - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Engagement Row section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Engagement Row.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
       {items.map((item, i) => (
         <motion.div key={i} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
           <Card className="bg-card/80 backdrop-blur-xl border-yellow-500/10 hover:border-yellow-500/30 transition-all">
@@ -66,6 +69,7 @@ const MegatalentEngagementRow = ({ totalVotes, subscriptionTier }: Props) => {
         </motion.div>
       ))}
     </div>
+    </>
   );
 };
 

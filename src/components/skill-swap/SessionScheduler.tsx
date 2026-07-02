@@ -7,6 +7,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { ArrowLeft, CalendarDays, Clock, Video, MapPin, Plus, Check, X, Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface SessionSchedulerProps {
   onBack: () => void;
@@ -72,10 +73,13 @@ export const SessionScheduler = ({ onBack }: SessionSchedulerProps) => {
 
   if (isLoading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Session Scheduler - How it works"} steps={[{ title: 'Open', desc: 'Access the Session Scheduler section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Session Scheduler.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="flex justify-center items-center py-20">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
-    );
+    </>
+  );
   }
 
   return (

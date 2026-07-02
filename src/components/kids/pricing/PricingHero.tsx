@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Crown, Sparkles } from "lucide-react";
 import { useState, useEffect } from "react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const floatingEmojis = ["👑", "🎨", "📖", "🔬", "🎓", "🌙", "🏰", "⭐", "🎪", "📚"];
 
@@ -18,7 +19,12 @@ export function PricingHero() {
         return { hours, minutes, seconds };
       });
     }, 1000);
-    return () => clearInterval(timer);
+    return (
+    <>
+      <FloatingHowItWorks title={"Pricing Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Pricing Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Pricing Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(timer);
   }, []);
 
   return (

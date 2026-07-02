@@ -11,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useBrainDuelCredits } from '@/hooks/useBrainDuelCredits';
 import { motion } from 'framer-motion';
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const categoryIcons: Record<string, typeof Globe> = {
   'Entertainment': Star,
@@ -75,7 +76,9 @@ export const QuestionPackStore = () => {
   const isOwned = (packId: string) => userPacks?.includes(packId);
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Question Pack Store - How it works"} steps={[{ title: 'Open', desc: 'Access the Question Pack Store section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Question Pack Store.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       {/* Header */}
       <Card className="border-primary/20 backdrop-blur-xl bg-card/80 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-purple-500/5" />
@@ -250,5 +253,6 @@ export const QuestionPackStore = () => {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };

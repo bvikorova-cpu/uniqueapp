@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Step {
   label: string;
@@ -19,7 +20,9 @@ interface StepProgressBarProps {
 
 export function StepProgressBar({ currentStep, onStepClick }: StepProgressBarProps) {
   return (
-    <div className="mb-6">
+    <>
+      <FloatingHowItWorks title={"Step Progress Bar - How it works"} steps={[{ title: 'Open', desc: 'Access the Step Progress Bar section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Step Progress Bar.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="mb-6">
       <div className="flex items-center justify-between relative">
         {/* Connection line */}
         <div className="absolute top-5 left-0 right-0 h-1 bg-gray-200 rounded-full mx-8" />
@@ -60,5 +63,6 @@ export function StepProgressBar({ currentStep, onStepClick }: StepProgressBarPro
         ))}
       </div>
     </div>
+    </>
   );
 }

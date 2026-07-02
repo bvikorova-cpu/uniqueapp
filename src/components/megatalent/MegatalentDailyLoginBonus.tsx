@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Gift, Check, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useDailyLoginReward } from "@/hooks/useDailyLoginReward";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const REWARDS = [
   { day: 1, label: "+1" },
@@ -34,7 +35,9 @@ export default function MegatalentDailyLoginBonus({ userId }: { userId: string |
   };
 
   return (
-    <Card className="backdrop-blur-xl bg-gradient-to-br from-amber-500/10 to-yellow-500/5 border-amber-500/30">
+    <>
+      <FloatingHowItWorks title={"Megatalent Daily Login Bonus - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Daily Login Bonus section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Daily Login Bonus.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="backdrop-blur-xl bg-gradient-to-br from-amber-500/10 to-yellow-500/5 border-amber-500/30">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
           <Gift className="h-5 w-5 text-amber-500" />
@@ -84,5 +87,6 @@ export default function MegatalentDailyLoginBonus({ userId }: { userId: string |
         )}
       </CardContent>
     </Card>
+    </>
   );
 }

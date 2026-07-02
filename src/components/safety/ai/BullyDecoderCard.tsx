@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { ScanText, Sparkles, AlertTriangle } from "lucide-react";
 import { useBullyDecoder } from "@/hooks/useSafetyAIFeatures";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const SEVERITY_COLORS: Record<string, string> = {
   low: "bg-emerald-500",
@@ -20,7 +21,9 @@ export function BullyDecoderCard() {
   const last = items[0];
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+      <FloatingHowItWorks title={"Bully Decoder Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Bully Decoder Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Bully Decoder Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Card className="group cursor-pointer relative overflow-hidden border border-orange-500/20 bg-gradient-to-br from-orange-950/40 via-card/40 to-red-950/30 backdrop-blur-xl p-5 hover:border-orange-400/40 transition-all">
           <div className="flex items-start gap-3">
@@ -99,5 +102,6 @@ export function BullyDecoderCard() {
         )}
       </DialogContent>
     </Dialog>
+    </>
   );
 }

@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { useSuperChats } from "@/hooks/useSuperChats";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   streamId: string;
@@ -10,7 +11,9 @@ export const SuperChatFeed = ({ streamId }: Props) => {
   const { superChats } = useSuperChats(streamId);
 
   return (
-    <div className="space-y-2">
+    <>
+      <FloatingHowItWorks title={"Super Chat Feed - How it works"} steps={[{ title: 'Open', desc: 'Access the Super Chat Feed section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Super Chat Feed.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-2">
       <AnimatePresence>
         {superChats.slice(0, 10).map((sc) => (
           <motion.div
@@ -34,5 +37,6 @@ export const SuperChatFeed = ({ streamId }: Props) => {
         ))}
       </AnimatePresence>
     </div>
+    </>
   );
 };

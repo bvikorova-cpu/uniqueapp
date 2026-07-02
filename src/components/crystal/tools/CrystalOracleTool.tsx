@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { CRYSTAL_DATABASE } from "../crystalData";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export const CrystalOracleTool = () => {
   const [todayDraw, setTodayDraw] = useState<any>(null);
@@ -69,7 +70,9 @@ export const CrystalOracleTool = () => {
   if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin" /></div>;
 
   return (
-    <Card className="bg-card/80 backdrop-blur-xl border-border/50">
+    <>
+      <FloatingHowItWorks title={"Crystal Oracle Tool - How it works"} steps={[{ title: 'Open', desc: 'Access the Crystal Oracle Tool section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Crystal Oracle Tool.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/80 backdrop-blur-xl border-border/50">
       <CardHeader>
         <CardTitle className="text-xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent flex items-center gap-2">
           <Sun className="w-5 h-5" /> Daily Crystal Oracle
@@ -109,5 +112,6 @@ export const CrystalOracleTool = () => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

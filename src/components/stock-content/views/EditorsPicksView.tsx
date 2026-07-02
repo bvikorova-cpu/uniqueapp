@@ -11,6 +11,7 @@ import { ArrowLeft, Star, Trash2, Plus, Sparkles, Pencil, Eye, EyeOff } from "lu
 import { supabase } from "@/integrations/supabase/client";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -127,7 +128,9 @@ export function EditorsPicksView({ onBack }: Props) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Editors Picks View - How it works"} steps={[{ title: 'Open', desc: 'Access the Editors Picks View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Editors Picks View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center gap-3 flex-wrap">
         <Button variant="ghost" size="sm" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-1" /> Back</Button>
         <h2 className="text-2xl font-bold flex items-center gap-2"><Star className="w-6 h-6 text-yellow-500" /> Editor's Picks — Weekly Curation</h2>
@@ -237,5 +240,6 @@ export function EditorsPicksView({ onBack }: Props) {
         </DialogContent>
       </Dialog>
     </div>
+    </>
   );
 }

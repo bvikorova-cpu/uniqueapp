@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Calendar, Plus, Clock, BookOpen, CheckCircle, AlertCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const initialSchedule = [
   { id: 1, course: "Web Dev Bootcamp", lesson: "Module 5: APIs", date: "Apr 8, 2026", time: "10:00", status: "scheduled" },
@@ -43,7 +44,9 @@ export function CourseSchedulerView({ onBack }: Props) {
   };
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Course Scheduler View - How it works"} steps={[{ title: 'Open', desc: 'Access the Course Scheduler View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Course Scheduler View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
@@ -104,5 +107,6 @@ export function CourseSchedulerView({ onBack }: Props) {
         ))}
       </div>
     </div>
+    </>
   );
 }

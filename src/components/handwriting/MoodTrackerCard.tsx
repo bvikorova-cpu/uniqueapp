@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Activity, Loader2 } from "lucide-react";
 import { useMoodTracker, useMoodHistory } from "@/hooks/useHandwritingPro";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend } from "recharts";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const MoodTrackerCard = () => {
   const [imageUrl, setImageUrl] = useState(""); const [notes, setNotes] = useState("");
@@ -23,7 +24,9 @@ export const MoodTrackerCard = () => {
   }));
 
   return (
-    <Card className="bg-card/60 backdrop-blur-sm border-amber-900/20">
+    <>
+      <FloatingHowItWorks title={"Mood Tracker Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Mood Tracker Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Mood Tracker Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/60 backdrop-blur-sm border-amber-900/20">
       <CardHeader>
         <CardTitle className="flex items-center justify-between text-base">
           <span className="flex items-center gap-2"><Activity className="w-5 h-5 text-emerald-700" /> Mood & Stress Tracker</span>
@@ -62,5 +65,6 @@ export const MoodTrackerCard = () => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

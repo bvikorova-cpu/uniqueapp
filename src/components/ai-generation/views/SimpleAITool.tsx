@@ -4,6 +4,7 @@ import { Loader2, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface SimpleAIToolProps {
   title: string;
@@ -44,7 +45,9 @@ export const SimpleAITool = ({
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <>
+      <FloatingHowItWorks title={"Simple A I Tool - How it works"} steps={[{ title: 'Open', desc: 'Access the Simple A I Tool section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Simple A I Tool.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="max-w-2xl mx-auto space-y-6">
       <div>
         <h2 className="text-2xl font-black mb-1">{emoji} {title}</h2>
         <p className="text-muted-foreground text-sm">{description} Cost: {cost} CR</p>
@@ -72,5 +75,6 @@ export const SimpleAITool = ({
         </div>
       )}
     </div>
+    </>
   );
 };

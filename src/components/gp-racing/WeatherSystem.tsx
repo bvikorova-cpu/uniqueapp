@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Cloud, Sun, CloudRain, CloudSnow, Wind, Thermometer, Eye, Droplets } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const weatherTypes = [
   { 
@@ -59,7 +60,9 @@ export function WeatherSystem({ onBack }: { onBack: () => void }) {
   }, [selectedWeather]);
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Weather System - How it works"} steps={[{ title: 'Open', desc: 'Access the Weather System section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Weather System.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={onBack} className="text-cyan-400 hover:bg-cyan-950/30">
           <ArrowLeft className="h-5 w-5" />
@@ -163,5 +166,6 @@ export function WeatherSystem({ onBack }: { onBack: () => void }) {
         </div>
       </Card>
     </div>
+    </>
   );
 }

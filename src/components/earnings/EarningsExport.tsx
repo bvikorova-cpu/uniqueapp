@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Download, FileSpreadsheet, FileText } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface EarningsExportProps {
   rows: Record<string, any>[];
@@ -61,7 +62,9 @@ export const EarningsExport = ({ rows, filename = "earnings" }: EarningsExportPr
   };
 
   return (
-    <DropdownMenu>
+    <>
+      <FloatingHowItWorks title={"Earnings Export - How it works"} steps={[{ title: 'Open', desc: 'Access the Earnings Export section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Earnings Export.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm" className="gap-2 border-amber-500/30 hover:bg-amber-500/10">
           <Download className="h-4 w-4" /> Export
@@ -76,5 +79,6 @@ export const EarningsExport = ({ rows, filename = "earnings" }: EarningsExportPr
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+    </>
   );
 };

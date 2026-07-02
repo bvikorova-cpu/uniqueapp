@@ -9,6 +9,7 @@ import { Calendar, Trophy, Clock, Zap, Star, Medal, Loader2, CheckCircle2 } from
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const DailyChallenges = () => {
   const queryClient = useQueryClient();
@@ -62,7 +63,9 @@ export const DailyChallenges = () => {
   const userEntry = data?.userEntry;
 
   return (
-    <Card className="border-primary/20 backdrop-blur-xl bg-card/80 overflow-hidden relative">
+    <>
+      <FloatingHowItWorks title={"Daily Challenges - How it works"} steps={[{ title: 'Open', desc: 'Access the Daily Challenges section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Daily Challenges.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-primary/20 backdrop-blur-xl bg-card/80 overflow-hidden relative">
       <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-primary/5 to-emerald-500/5" />
       <CardHeader className="relative pb-3">
         <CardTitle className="flex items-center gap-2">
@@ -174,5 +177,6 @@ export const DailyChallenges = () => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

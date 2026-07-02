@@ -3,6 +3,7 @@ import { ShoppingBag, Gavel, Store } from "lucide-react";
 import AuctionsList from "./AuctionsList";
 import TradesList from "./TradesList";
 import BrowseListings from "./BrowseListings";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CollectiblesMarketplaceProps {
   userId: string;
@@ -10,7 +11,9 @@ interface CollectiblesMarketplaceProps {
 
 export default function CollectiblesMarketplace({ userId }: CollectiblesMarketplaceProps) {
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Collectibles Marketplace - How it works"} steps={[{ title: 'Open', desc: 'Access the Collectibles Marketplace section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Collectibles Marketplace.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="bg-gradient-subtle p-6 rounded-lg">
         <h2 className="text-2xl font-bold mb-2">Marketplace</h2>
         <p className="text-muted-foreground">
@@ -47,5 +50,6 @@ export default function CollectiblesMarketplace({ userId }: CollectiblesMarketpl
         </TabsContent>
       </Tabs>
     </div>
+    </>
   );
 }

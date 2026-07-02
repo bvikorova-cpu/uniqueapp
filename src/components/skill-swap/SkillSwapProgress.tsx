@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const SkillSwapProgress = () => {
   const metrics = [
@@ -9,7 +10,9 @@ export const SkillSwapProgress = () => {
   ];
 
   return (
-    <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
+    <>
+      <FloatingHowItWorks title={"Skill Swap Progress - How it works"} steps={[{ title: 'Open', desc: 'Access the Skill Swap Progress section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Skill Swap Progress.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
       <div className="flex items-center gap-2 mb-3">
         <TrendingUp className="h-5 w-5 text-primary" />
         <h3 className="font-bold text-sm">Your Progress</h3>
@@ -31,5 +34,6 @@ export const SkillSwapProgress = () => {
         ))}
       </div>
     </Card>
+    </>
   );
 };

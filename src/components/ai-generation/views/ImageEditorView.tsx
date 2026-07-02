@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Pencil, Loader2, Download, Upload, Eraser, Paintbrush, Layers } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface ImageEditorViewProps {
   onCreditsUsed: () => void;
@@ -46,7 +47,9 @@ export const ImageEditorView = ({ onCreditsUsed }: ImageEditorViewProps) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <>
+      <FloatingHowItWorks title={"Image Editor View - How it works"} steps={[{ title: 'Open', desc: 'Access the Image Editor View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Image Editor View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="max-w-4xl mx-auto space-y-6">
       <Card className="border-2 border-primary/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><Pencil className="w-5 h-5 text-primary" /> AI Image Editor</CardTitle>
@@ -122,5 +125,6 @@ export const ImageEditorView = ({ onCreditsUsed }: ImageEditorViewProps) => {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };

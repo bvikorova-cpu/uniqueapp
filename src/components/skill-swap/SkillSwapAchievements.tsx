@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Trophy } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const badges = [
   { icon: "🔄", label: "First Swap", unlocked: true },
@@ -13,7 +14,9 @@ const badges = [
 
 export const SkillSwapAchievements = () => {
   return (
-    <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
+    <>
+      <FloatingHowItWorks title={"Skill Swap Achievements - How it works"} steps={[{ title: 'Open', desc: 'Access the Skill Swap Achievements section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Skill Swap Achievements.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
       <div className="flex items-center gap-2 mb-3">
         <Trophy className="h-5 w-5 text-yellow-500" />
         <h3 className="font-bold text-sm">Achievements</h3>
@@ -38,5 +41,6 @@ export const SkillSwapAchievements = () => {
         ))}
       </div>
     </Card>
+    </>
   );
 };

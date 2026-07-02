@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useMemo } from "react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export function NightSkyBackground() {
   const stars = useMemo(() =>
@@ -23,7 +24,9 @@ export function NightSkyBackground() {
   []);
 
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+    <>
+      <FloatingHowItWorks title={"Night Sky Background - How it works"} steps={[{ title: 'Open', desc: 'Access the Night Sky Background section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Night Sky Background.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
       {/* Twinkling stars */}
       {stars.map((star) => (
         <motion.div
@@ -68,5 +71,6 @@ export function NightSkyBackground() {
         🌙
       </motion.div>
     </div>
+    </>
   );
 }

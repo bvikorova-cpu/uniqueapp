@@ -10,6 +10,7 @@ import { CaptionWriterView } from "./CaptionWriterView";
 import { LiveLeaderboardView } from "./LiveLeaderboardView";
 import { CollaborationMatcherView } from "./CollaborationMatcherView";
 import { AchievementSystemView } from "./AchievementSystemView";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   activeView: string;
@@ -34,7 +35,9 @@ const MegatalentToolView = ({ activeView, onBack }: Props) => {
   };
 
   return (
-    <div className="min-h-screen bg-background pt-20 pb-12">
+    <>
+      <FloatingHowItWorks title={"Megatalent Tool View - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Tool View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Tool View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-4 max-w-6xl">
         <Button variant="ghost" onClick={onBack} className="mb-6 gap-2">
           <ArrowLeft className="h-4 w-4" /> Back to MegaTalent
@@ -42,6 +45,7 @@ const MegatalentToolView = ({ activeView, onBack }: Props) => {
         {renderToolView()}
       </div>
     </div>
+    </>
   );
 };
 

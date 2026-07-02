@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const PhobiaCureDashboard = () => {
   const [phobias, setPhobias] = useState<any[]>([]);
@@ -122,10 +123,13 @@ const PhobiaCureDashboard = () => {
 
   if (checkingAccess) {
     return (
+    <>
+      <FloatingHowItWorks title={"Phobia Cure Dashboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Phobia Cure Dashboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Phobia Cure Dashboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="flex items-center justify-center py-12">
         <Loader2 className="w-8 h-8 animate-spin text-cyan-400" />
       </div>
-    );
+    </>
+  );
   }
 
   if (!hasAccess) {

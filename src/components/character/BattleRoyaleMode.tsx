@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const BattleRoyaleMode = () => {
   const [selectedChars, setSelectedChars] = useState<string[]>([]);
@@ -44,7 +45,9 @@ export const BattleRoyaleMode = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Battle Royale Mode - How it works"} steps={[{ title: 'Open', desc: 'Access the Battle Royale Mode section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Battle Royale Mode.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Card className="relative overflow-hidden border-border/30 bg-card/90 backdrop-blur-xl p-6">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500" />
         <div className="flex items-center gap-3 mb-2">
@@ -144,5 +147,6 @@ export const BattleRoyaleMode = () => {
         </motion.div>
       )}
     </div>
+    </>
   );
 };

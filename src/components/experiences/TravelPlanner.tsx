@@ -10,6 +10,7 @@ import { Loader2, Map, Calendar, Utensils, Camera, MapPin, Star } from "lucide-r
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const TravelPlanner = () => {
   const { toast } = useToast();
@@ -58,7 +59,9 @@ export const TravelPlanner = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Travel Planner - How it works"} steps={[{ title: 'Open', desc: 'Access the Travel Planner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Travel Planner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><Map className="h-5 w-5 text-primary" />AI Travel Planner</CardTitle>
@@ -136,5 +139,6 @@ export const TravelPlanner = () => {
         </motion.div>
       )}
     </div>
+    </>
   );
 };

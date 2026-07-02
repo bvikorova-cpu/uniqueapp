@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Send } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const formSchema = z.object({
   company_name: z.string().trim().min(2, "Company name must be at least 2 characters").max(100, "Company name can be at most 100 characters"),
@@ -90,7 +91,9 @@ export function CorporateInquiryForm({ defaultPackage, defaultCategory }: Corpor
   };
 
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title={"Corporate Inquiry Form - How it works"} steps={[{ title: 'Open', desc: 'Access the Corporate Inquiry Form section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Corporate Inquiry Form.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card>
       <CardHeader>
         <CardTitle>Request a Quote</CardTitle>
         <CardDescription>
@@ -256,5 +259,6 @@ export function CorporateInquiryForm({ defaultPackage, defaultCategory }: Corpor
         </Form>
       </CardContent>
     </Card>
+    </>
   );
 }

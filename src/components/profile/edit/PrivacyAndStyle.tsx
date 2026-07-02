@@ -1,6 +1,7 @@
 import { Eye, Globe, Lock, Users } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export type Visibility = "public" | "friends" | "private";
 export type ProfileTheme = "default" | "cinematic" | "minimal" | "neon" | "editorial";
@@ -59,7 +60,9 @@ export const PrivacyAndStyle = ({
   visibility, onVisibilityChange, accentColor, onAccentChange, theme, onThemeChange,
 }: Props) => {
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Privacy And Style - How it works"} steps={[{ title: 'Open', desc: 'Access the Privacy And Style section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Privacy And Style.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       {/* Privacy */}
       <div>
         <Label className="flex items-center gap-1.5 mb-3 text-sm font-bold">
@@ -134,5 +137,6 @@ export const PrivacyAndStyle = ({
         </div>
       </div>
     </div>
+    </>
   );
 };

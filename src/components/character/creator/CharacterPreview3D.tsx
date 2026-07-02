@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, Zap, Shield, Eye } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface CharacterPreview3DProps {
   characterName: string;
@@ -32,7 +33,9 @@ export function CharacterPreview3D({
   ];
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Character Preview3 D - How it works"} steps={[{ title: 'Open', desc: 'Access the Character Preview3 D section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Character Preview3 D.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       className="sticky top-24"
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -174,5 +177,6 @@ export function CharacterPreview3D({
         </div>
       </div>
     </motion.div>
+    </>
   );
 }

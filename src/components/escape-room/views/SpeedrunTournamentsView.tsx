@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Timer, Trophy, Flame, Medal, Users, Clock, Zap } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Tournament {
   id: string;
@@ -35,7 +36,9 @@ const leaderboard = [
 
 export function SpeedrunTournamentsView({ onBack }: { onBack: () => void }) {
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Speedrun Tournaments View - How it works"} steps={[{ title: 'Open', desc: 'Access the Speedrun Tournaments View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Speedrun Tournaments View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
@@ -120,5 +123,6 @@ export function SpeedrunTournamentsView({ onBack }: { onBack: () => void }) {
         </TabsContent>
       </Tabs>
     </div>
+    </>
   );
 }

@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { getXP, getModuleVisits } from "@/lib/kidsAcademyEconomy";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const BADGE_THRESHOLDS = [10, 50, 75, 100, 150, 200, 300, 1500];
 
@@ -40,7 +41,12 @@ export const KidsAcademyParentPanel = () => {
     };
     window.addEventListener("storage", refresh);
     const interval = setInterval(refresh, 2000);
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Kids Academy Parent Panel - How it works"} steps={[{ title: 'Open', desc: 'Access the Kids Academy Parent Panel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Kids Academy Parent Panel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       window.removeEventListener("storage", refresh);
       clearInterval(interval);
     };

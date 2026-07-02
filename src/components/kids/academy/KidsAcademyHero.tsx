@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Sparkles, Star, Rocket, GraduationCap, Wand2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const floatingEmojis = ["🦄", "🌈", "⭐", "🧪", "🎨", "📖", "🚀", "🧙‍♂️", "🔬", "✏️"];
 
@@ -20,7 +21,12 @@ export const KidsAcademyHero = () => {
     const timer = setInterval(() => {
       setMsgIndex(prev => (prev + 1) % mascotMessages.length);
     }, 5000);
-    return () => clearInterval(timer);
+    return (
+    <>
+      <FloatingHowItWorks title={"Kids Academy Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Kids Academy Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Kids Academy Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(timer);
   }, []);
 
   const current = mascotMessages[msgIndex];

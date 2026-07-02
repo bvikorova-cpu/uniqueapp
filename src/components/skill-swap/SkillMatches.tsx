@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Star, Sparkles, X, MessageSquare, Award, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface SkillMatch {
   id: string;
@@ -101,6 +102,8 @@ export const SkillMatches = () => {
 
   if (matches.length === 0) {
     return (
+    <>
+      <FloatingHowItWorks title={"Skill Matches - How it works"} steps={[{ title: 'Open', desc: 'Access the Skill Matches section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Skill Matches.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="p-12 text-center bg-card/80 backdrop-blur-xl border-border/50">
         <Sparkles className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
         <h3 className="text-lg font-black mb-2">No Matches Yet</h3>
@@ -109,7 +112,8 @@ export const SkillMatches = () => {
         </p>
         <Button onClick={() => navigate('/skill-swap/profile/edit')}>Update Skills</Button>
       </Card>
-    );
+    </>
+  );
   }
 
   return (

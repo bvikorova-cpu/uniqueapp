@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Upload, ArrowLeft, Check, Building2, Camera, Sparkles, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { SellerConnectGate } from "@/components/commerce/SellerConnectGate";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const LISTING_PACKAGES = [
   { id: "basic", name: "Basic", price: 29, duration: 30, features: ["Basic presentation", "30 days active"], color: "from-sky-500/10 to-blue-500/10", border: "border-sky-500/20" },
@@ -123,7 +124,9 @@ export default function PropertySubmissionForm() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <FloatingHowItWorks title={"Property Submission Form - How it works"} steps={[{ title: 'Open', desc: 'Access the Property Submission Form section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Property Submission Form.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto p-6 pt-24">
         <Button variant="ghost" onClick={() => navigate("/property-marketplace")} className="mb-4">
           <ArrowLeft className="w-4 h-4 mr-2" /> Back to Marketplace
@@ -259,5 +262,6 @@ export default function PropertySubmissionForm() {
         </motion.div>
       </div>
     </div>
+    </>
   );
 }

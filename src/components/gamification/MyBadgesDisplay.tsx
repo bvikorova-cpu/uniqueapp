@@ -8,6 +8,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface MyBadgesDisplayProps {
   userId: string;
@@ -24,6 +25,8 @@ export default function MyBadgesDisplay({ userId }: MyBadgesDisplayProps) {
 
   if (totalEarned === 0) {
     return (
+    <>
+      <FloatingHowItWorks title={"My Badges Display - How it works"} steps={[{ title: 'Open', desc: 'Access the My Badges Display section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in My Badges Display.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -39,7 +42,8 @@ export default function MyBadgesDisplay({ userId }: MyBadgesDisplayProps) {
           </div>
         </CardContent>
       </Card>
-    );
+    </>
+  );
   }
 
   return (

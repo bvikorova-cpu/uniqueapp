@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowUpDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function TransferMarket({ onBack }: { onBack: () => void }) {
   const { user } = useAuth();
@@ -33,7 +34,9 @@ export function TransferMarket({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Transfer Market - How it works"} steps={[{ title: 'Open', desc: 'Access the Transfer Market section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Transfer Market.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" />Back</Button>
       <Card>
         <CardHeader><CardTitle className="flex items-center gap-2"><ArrowUpDown className="h-5 w-5 text-primary" />Transfer Market</CardTitle></CardHeader>
@@ -59,5 +62,6 @@ export function TransferMarket({ onBack }: { onBack: () => void }) {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

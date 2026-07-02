@@ -5,6 +5,7 @@ import { useBrainDuelCredits } from '@/hooks/useBrainDuelCredits';
 import { Brain, Plus, Sparkles } from 'lucide-react';
 import { BuyCreditsDialog } from './BuyCreditsDialog';
 import { motion } from 'framer-motion';
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const BrainDuelCreditsDisplay = () => {
   const { credits, isLoading } = useBrainDuelCredits();
@@ -14,6 +15,8 @@ export const BrainDuelCreditsDisplay = () => {
 
   return (
     <>
+      <FloatingHowItWorks title={"Brain Duel Credits Display - How it works"} steps={[{ title: 'Open', desc: 'Access the Brain Duel Credits Display section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Brain Duel Credits Display.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <>
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
         <Card className="p-4 backdrop-blur-xl bg-card/80 border-primary/10 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5" />
@@ -54,6 +57,7 @@ export const BrainDuelCreditsDisplay = () => {
         open={showBuyDialog} 
         onOpenChange={setShowBuyDialog}
       />
+    </>
     </>
   );
 };

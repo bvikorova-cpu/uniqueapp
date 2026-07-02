@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Sparkles, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const hairStyles = ["Princess Curls", "Mermaid Waves", "Braided Crown", "Space Buns", "Fairy Updo", "Butterfly Clips Style", "Glitter Ponytail", "Rainbow Streaks"];
 const hairTypes = ["Straight", "Wavy", "Curly", "Coily", "Fine", "Thick"];
@@ -43,7 +44,9 @@ export function HairStylist({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Hair Stylist - How it works"} steps={[{ title: 'Open', desc: 'Access the Hair Stylist section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Hair Stylist.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button>
       <h2 className="text-2xl font-black">💇‍♀️ Hair Stylist</h2>
       <p className="text-muted-foreground">Get beautiful hairstyle tutorials!</p>
@@ -64,5 +67,6 @@ export function HairStylist({ onBack }: { onBack: () => void }) {
       </Button>
       {result && <div className="bg-gradient-to-br from-pink-500/10 to-purple-500/10 border border-pink-400/20 rounded-xl p-6 whitespace-pre-wrap">{result}</div>}
     </div>
+    </>
   );
 }

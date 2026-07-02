@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Star } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface HiddenObjectsProps {
   onComplete: (score: number) => void;
@@ -45,7 +46,12 @@ export const HiddenObjects = ({ onComplete, onBack }: HiddenObjectsProps) => {
       setTimeLeft((prev) => prev - 1);
     }, 1000);
 
-    return () => clearInterval(timer);
+    return (
+    <>
+      <FloatingHowItWorks title={"Hidden Objects - How it works"} steps={[{ title: 'Open', desc: 'Access the Hidden Objects section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Hidden Objects.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(timer);
   }, [timeLeft, foundObjects]);
 
   const handleObjectClick = (index: number) => {

@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAICredits } from "@/hooks/useAICredits";
 import { useCollectibles } from "@/hooks/useCollectibles";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { userId: string; }
 
@@ -39,7 +40,9 @@ export default function CollectiblePriceAlerts({ userId }: Props) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Collectible Price Alerts - How it works"} steps={[{ title: 'Open', desc: 'Access the Collectible Price Alerts section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Collectible Price Alerts.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Card className="p-6 bg-gradient-to-br from-red-500/10 to-rose-500/10 border-red-500/20">
         <div className="flex items-center gap-3 mb-4">
           <Bell className="h-8 w-8 text-red-400" />
@@ -109,5 +112,6 @@ export default function CollectiblePriceAlerts({ userId }: Props) {
         </div>
       )}
     </div>
+    </>
   );
 }

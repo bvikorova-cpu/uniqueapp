@@ -4,6 +4,7 @@ import { OrbitControls, Environment } from "@react-three/drei";
 import * as THREE from "three";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, RotateCcw, Download, Sparkles } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 // Color palettes
 const SKIN_COLORS = ["#FFDCB5", "#E8B88A", "#C68642", "#8D5524", "#F5D0A9", "#4A2511"];
@@ -62,7 +63,9 @@ function BarbieDoll({ config, isSpinning }: { config: BarbieConfig; isSpinning: 
     switch (config.hairStyle) {
       case "Long":
         return (
-          <>
+    <>
+      <FloatingHowItWorks title={"Barbie Creator3 D - How it works"} steps={[{ title: 'Open', desc: 'Access the Barbie Creator3 D section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Barbie Creator3 D.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <>
             <mesh position={[0, 2.65, 0]}>
               <sphereGeometry args={[0.38, 16, 16]} />
               <meshStandardMaterial color={hair} roughness={0.4} />
@@ -72,7 +75,8 @@ function BarbieDoll({ config, isSpinning }: { config: BarbieConfig; isSpinning: 
               <meshStandardMaterial color={hair} roughness={0.4} />
             </mesh>
           </>
-        );
+    </>
+  );
       case "Short":
         return (
           <mesh position={[0, 2.65, 0]}>

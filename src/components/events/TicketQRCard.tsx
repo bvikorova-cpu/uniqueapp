@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Ticket, CheckCircle2 } from "lucide-react";
 import type { EventTicket } from "@/hooks/useEventTickets";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   ticket: EventTicket;
@@ -13,7 +14,9 @@ export const TicketQRCard = ({ ticket, eventTitle }: Props) => {
   const checkedIn = !!ticket.checked_in_at;
 
   return (
-    <Card className="overflow-hidden border-primary/30 bg-gradient-to-br from-primary/10 via-background to-pink-500/10">
+    <>
+      <FloatingHowItWorks title={"Ticket Q R Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Ticket Q R Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Ticket Q R Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="overflow-hidden border-primary/30 bg-gradient-to-br from-primary/10 via-background to-pink-500/10">
       <div className="p-4 flex items-center gap-2 border-b border-border/50">
         <Ticket className="h-5 w-5 text-primary" />
         <div className="flex-1">
@@ -33,5 +36,6 @@ export const TicketQRCard = ({ ticket, eventTitle }: Props) => {
         {ticket.qr_token.slice(0, 24)}…
       </div>
     </Card>
+    </>
   );
 };

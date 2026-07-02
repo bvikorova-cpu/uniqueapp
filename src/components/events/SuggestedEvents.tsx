@@ -4,6 +4,7 @@ import { Calendar, Sparkles, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEvents } from "@/hooks/useEvents";
 import { format } from "date-fns";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const SuggestedEvents = () => {
   const { attendEvent } = useEvents();
@@ -44,7 +45,9 @@ export const SuggestedEvents = () => {
   if (isLoading || !suggestedEvents?.length) return null;
 
   return (
-    <div className="glass-post-card p-4 space-y-4">
+    <>
+      <FloatingHowItWorks title={"Suggested Events - How it works"} steps={[{ title: 'Open', desc: 'Access the Suggested Events section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Suggested Events.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="glass-post-card p-4 space-y-4">
       <div className="flex items-center gap-2">
         <Sparkles className="h-5 w-5 text-primary" />
         <h3 className="font-semibold">Upcoming Events</h3>
@@ -89,5 +92,6 @@ export const SuggestedEvents = () => {
         ))}
       </div>
     </div>
+    </>
   );
 };

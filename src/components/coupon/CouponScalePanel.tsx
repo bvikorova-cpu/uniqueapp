@@ -7,6 +7,7 @@ import { Crown, Gift, Users, Calculator, Chrome, Bitcoin, ShoppingBag, Copy, Che
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { PushNotificationToggle } from "@/components/PushNotificationToggle";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   userId: string | null;
@@ -78,7 +79,9 @@ export function CouponScalePanel({ userId, wishlistCount, onBulkBuy }: Props) {
   };
 
   return (
-    <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <>
+      <FloatingHowItWorks title={"Coupon Scale Panel - How it works"} steps={[{ title: 'Open', desc: 'Access the Coupon Scale Panel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Coupon Scale Panel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-4">
       {/* Loyalty tier */}
       <Card className={`bg-gradient-to-br ${meta?.color ?? "from-amber-700 to-amber-900"} text-white border-0`}>
         <CardContent className="p-5">
@@ -190,5 +193,6 @@ export function CouponScalePanel({ userId, wishlistCount, onBulkBuy }: Props) {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface BrowseListingsProps {
   userId: string;
@@ -245,7 +246,9 @@ export default function BrowseListings({ userId }: BrowseListingsProps) {
   }
 
   return (
-    <Tabs defaultValue="browse" className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Browse Listings - How it works"} steps={[{ title: 'Open', desc: 'Access the Browse Listings section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Browse Listings.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Tabs defaultValue="browse" className="space-y-6">
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="browse">Browse Offers</TabsTrigger>
         <TabsTrigger value="my-listings">My Listings</TabsTrigger>
@@ -532,5 +535,6 @@ export default function BrowseListings({ userId }: BrowseListingsProps) {
         )}
       </TabsContent>
     </Tabs>
+    </>
   );
 }

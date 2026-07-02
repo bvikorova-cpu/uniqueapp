@@ -4,6 +4,7 @@ import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Tick {
   brand_id: string;
@@ -31,7 +32,12 @@ export const BrandStockTicker = () => {
       .subscribe();
 
     const interval = setInterval(load, 30_000);
-    return () => { supabase.removeChannel(channel); clearInterval(interval); };
+    return (
+    <>
+      <FloatingHowItWorks title={"Brand Stock Ticker - How it works"} steps={[{ title: 'Open', desc: 'Access the Brand Stock Ticker section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Brand Stock Ticker.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => { supabase.removeChannel(channel); clearInterval(interval); };
   }, []);
 
   if (ticks.length === 0) return null;

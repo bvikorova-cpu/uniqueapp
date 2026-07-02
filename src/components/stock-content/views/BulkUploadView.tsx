@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, FolderUp, Upload, CheckCircle, XCircle, Loader2, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface BulkUploadViewProps {
   onBack: () => void;
@@ -96,7 +97,9 @@ export function BulkUploadView({ onBack }: BulkUploadViewProps) {
   const totalProgress = files.length ? Math.round((files.reduce((acc, f) => acc + f.progress, 0)) / files.length) : 0;
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Bulk Upload View - How it works"} steps={[{ title: 'Open', desc: 'Access the Bulk Upload View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Bulk Upload View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-1" /> Back</Button>
         <h2 className="text-2xl font-bold flex items-center gap-2"><FolderUp className="w-6 h-6 text-indigo-500" /> Bulk Upload Manager</h2>
@@ -164,5 +167,6 @@ export function BulkUploadView({ onBack }: BulkUploadViewProps) {
         </>
       )}
     </div>
+    </>
   );
 }

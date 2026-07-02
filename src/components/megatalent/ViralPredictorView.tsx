@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { TrendingUp, Loader2, Sparkles, Flame, Zap, BarChart3, Eye } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const ViralPredictorView = () => {
   const { toast } = useToast();
@@ -36,7 +37,9 @@ export const ViralPredictorView = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <>
+      <FloatingHowItWorks title={"Viral Predictor View - How it works"} steps={[{ title: 'Open', desc: 'Access the Viral Predictor View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Viral Predictor View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="max-w-3xl mx-auto space-y-6">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         <div className="text-center mb-6">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-red-500 to-orange-600 flex items-center justify-center mx-auto mb-4">
@@ -114,5 +117,6 @@ export const ViralPredictorView = () => {
         </motion.div>
       )}
     </div>
+    </>
   );
 };

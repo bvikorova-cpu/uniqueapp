@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { RefreshCw, Plus, Wand2, Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface StoryRemixProps {
   currentTheme: string;
@@ -18,7 +19,9 @@ export const StoryRemix = ({ currentTheme, onRemix }: StoryRemixProps) => {
   if (!currentTheme) return null;
 
   return (
-    <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-5 border border-purple-200">
+    <>
+      <FloatingHowItWorks title={"Story Remix - How it works"} steps={[{ title: 'Open', desc: 'Access the Story Remix section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Story Remix.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-5 border border-purple-200">
       <h3 className="text-lg font-bold text-purple-800 mb-3 flex items-center gap-2">
         <RefreshCw className="w-5 h-5" />
         Remix This Story
@@ -38,5 +41,6 @@ export const StoryRemix = ({ currentTheme, onRemix }: StoryRemixProps) => {
         ))}
       </div>
     </div>
+    </>
   );
 };

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Calculator } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 // Tier pricing per credit (€)
 function pricePerCredit(qty: number): number {
@@ -53,7 +54,9 @@ export function BulkSliderCalculator() {
   };
 
   return (
-    <Card className="max-w-5xl mx-auto mb-8">
+    <>
+      <FloatingHowItWorks title={"Bulk Slider Calculator - How it works"} steps={[{ title: 'Open', desc: 'Access the Bulk Slider Calculator section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Bulk Slider Calculator.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="max-w-5xl mx-auto mb-8">
       <CardHeader>
         <div className="flex items-center gap-2">
           <Calculator className="h-5 w-5 text-primary" />
@@ -73,5 +76,6 @@ export function BulkSliderCalculator() {
         </Button>
       </CardContent>
     </Card>
+    </>
   );
 }

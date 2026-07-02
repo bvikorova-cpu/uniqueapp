@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const categories = [
   { key: "medical",   label: "Medical",        emoji: "💊", route: "/fundraising/medical",  desc: "Treatments & surgeries", gradient: "from-rose-500/20 to-pink-500/10",      border: "border-rose-500/30",    glow: "shadow-[0_0_30px_-10px_rgba(244,63,94,0.4)]" },
@@ -16,7 +17,9 @@ export function FundraisingCategoryCards() {
   const navigate = useNavigate();
 
   return (
-    <section className="py-12 px-4">
+    <>
+      <FloatingHowItWorks title={"Fundraising Category Cards - How it works"} steps={[{ title: 'Open', desc: 'Access the Fundraising Category Cards section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Fundraising Category Cards.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <section className="py-12 px-4">
       <div className="max-w-6xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-8">
           <h2 className="text-3xl sm:text-4xl font-black mb-2">
@@ -55,5 +58,6 @@ export function FundraisingCategoryCards() {
         </div>
       </div>
     </section>
+    </>
   );
 }

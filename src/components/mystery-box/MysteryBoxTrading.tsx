@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -71,7 +72,9 @@ export const MysteryBoxTrading = ({ onBack }: Props) => {
   ];
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <>
+      <FloatingHowItWorks title={"Mystery Box Trading - How it works"} steps={[{ title: 'Open', desc: 'Access the Mystery Box Trading section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Mystery Box Trading.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6 animate-fade-in">
       <Button variant="ghost" onClick={onBack} className="gap-2 text-yellow-400 hover:text-yellow-300">
         <ArrowLeft className="h-4 w-4" /> Back to Vault
       </Button>
@@ -222,5 +225,6 @@ export const MysteryBoxTrading = ({ onBack }: Props) => {
         </AnimatePresence>
       </Card>
     </div>
+    </>
   );
 };

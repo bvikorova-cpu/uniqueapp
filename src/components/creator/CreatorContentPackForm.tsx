@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Loader2 } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CreatorContentPackFormProps {
   creatorId: string;
@@ -66,7 +67,9 @@ export function CreatorContentPackForm({ creatorId, onSuccess }: CreatorContentP
   };
 
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title={"Creator Content Pack Form - How it works"} steps={[{ title: 'Open', desc: 'Access the Creator Content Pack Form section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Creator Content Pack Form.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card>
       <CardHeader>
         <CardTitle>Create Content Pack</CardTitle>
         <CardDescription>
@@ -160,5 +163,6 @@ export function CreatorContentPackForm({ creatorId, onSuccess }: CreatorContentP
         </form>
       </CardContent>
     </Card>
+    </>
   );
 }

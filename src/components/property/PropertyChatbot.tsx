@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Bot, Send, User, Sparkles, Home, Calculator, MapPin, FileText } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -46,7 +47,9 @@ export function PropertyChatbot({ onBack }: Props) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Property Chatbot - How it works"} steps={[{ title: 'Open', desc: 'Access the Property Chatbot section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Property Chatbot.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={onBack}><ArrowLeft className="h-5 w-5" /></Button>
         <div>
@@ -120,5 +123,6 @@ export function PropertyChatbot({ onBack }: Props) {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

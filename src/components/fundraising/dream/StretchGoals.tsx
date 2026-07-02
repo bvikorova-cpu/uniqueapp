@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Rocket, CheckCircle2, Lock } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export interface StretchGoal {
   id: string;
@@ -21,7 +22,9 @@ export function StretchGoals({ baseTarget, currentAmount, goals }: Props) {
   const sorted = [...goals].sort((a, b) => a.amount - b.amount);
 
   return (
-    <Card className="p-5 bg-gradient-to-br from-accent/5 via-primary/5 to-background border-accent/20">
+    <>
+      <FloatingHowItWorks title={"Stretch Goals - How it works"} steps={[{ title: 'Open', desc: 'Access the Stretch Goals section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Stretch Goals.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-5 bg-gradient-to-br from-accent/5 via-primary/5 to-background border-accent/20">
       <div className="flex items-center gap-2 mb-4">
         <Rocket className="w-5 h-5 text-accent" />
         <h3 className="font-bold text-lg">Stretch Goals</h3>
@@ -70,5 +73,6 @@ export function StretchGoals({ baseTarget, currentAmount, goals }: Props) {
         })}
       </div>
     </Card>
+    </>
   );
 }

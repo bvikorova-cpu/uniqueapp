@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, BarChart3, Eye, Download, DollarSign, MousePointer, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface ContentAnalyticsViewProps {
   onBack: () => void;
@@ -60,7 +61,12 @@ export function ContentAnalyticsView({ onBack }: ContentAnalyticsViewProps) {
         setLoading(false);
       }
     })();
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Content Analytics View - How it works"} steps={[{ title: 'Open', desc: 'Access the Content Analytics View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Content Analytics View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       cancelled = true;
     };
   }, [user?.id]);

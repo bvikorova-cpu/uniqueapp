@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function CommunityGallery() {
   const queryClient = useQueryClient();
@@ -90,7 +91,9 @@ export function CommunityGallery() {
   };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Community Gallery - How it works"} steps={[{ title: 'Open', desc: 'Access the Community Gallery section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Community Gallery.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
       {/* Share Card */}
       <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
         <CardHeader>
@@ -163,5 +166,6 @@ export function CommunityGallery() {
         </Dialog>
       )}
     </motion.div>
+    </>
   );
 }

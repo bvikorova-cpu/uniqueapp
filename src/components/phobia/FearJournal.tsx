@@ -7,6 +7,7 @@ import { BookOpen, Plus, Loader2, Calendar, TrendingDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface JournalEntry {
   id: string;
@@ -70,7 +71,9 @@ export const FearJournal = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Fear Journal - How it works"} steps={[{ title: 'Open', desc: 'Access the Fear Journal section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Fear Journal.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Card className="p-6 bg-card/80 backdrop-blur-xl border-border/50">
         <div className="flex items-center gap-2 mb-4">
           <BookOpen className="h-5 w-5 text-cyan-400" />
@@ -141,5 +144,6 @@ export const FearJournal = () => {
         </div>
       )}
     </div>
+    </>
   );
 };

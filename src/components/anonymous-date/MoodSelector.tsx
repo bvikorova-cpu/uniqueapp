@@ -1,5 +1,6 @@
 import { Moon, Sun, Brain, Heart } from "lucide-react";
 import type { Mood } from "@/hooks/useMatchMeta";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const MOODS: Array<{ id: Mood; label: string; icon: any; gradient: string }> = [
   { id: "mysterious", label: "Mysterious", icon: Moon, gradient: "from-violet-500 to-primary" },
@@ -20,7 +21,9 @@ export const MoodSelector = ({ current, onChange }: Props) => (
       {MOODS.map(m => {
         const active = current === m.id;
         return (
-          <button
+    <>
+      <FloatingHowItWorks title={"Mood Selector - How it works"} steps={[{ title: 'Open', desc: 'Access the Mood Selector section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Mood Selector.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <button
             key={m.id}
             onClick={() => onChange(m.id)}
             className={`flex flex-col items-center gap-1 p-2 rounded-xl border transition-all ${
@@ -32,7 +35,8 @@ export const MoodSelector = ({ current, onChange }: Props) => (
             <m.icon className="h-4 w-4" />
             <span className="text-[9px] font-semibold">{m.label}</span>
           </button>
-        );
+    </>
+  );
       })}
     </div>
   </div>

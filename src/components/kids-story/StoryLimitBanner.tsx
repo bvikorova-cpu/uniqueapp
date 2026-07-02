@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Sparkles, Crown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface StoryLimitBannerProps {
   storiesCreatedThisMonth: number;
@@ -15,6 +16,8 @@ export const StoryLimitBanner = ({ storiesCreatedThisMonth, isPremium }: StoryLi
 
   if (isPremium) {
     return (
+    <>
+      <FloatingHowItWorks title={"Story Limit Banner - How it works"} steps={[{ title: 'Open', desc: 'Access the Story Limit Banner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Story Limit Banner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="border-primary/30 bg-gradient-to-r from-primary/10 to-secondary/10">
         <CardContent className="py-4 px-6">
           <div className="flex items-center justify-between">
@@ -29,7 +32,8 @@ export const StoryLimitBanner = ({ storiesCreatedThisMonth, isPremium }: StoryLi
           </div>
         </CardContent>
       </Card>
-    );
+    </>
+  );
   }
 
   if (storiesRemaining === 0) {

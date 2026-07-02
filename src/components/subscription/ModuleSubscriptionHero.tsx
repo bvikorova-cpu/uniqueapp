@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { LucideIcon, Sparkles } from "lucide-react";
 import subscriptionHeroAsset from "@/assets/subscription-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ModuleSubscriptionHeroProps {
   /** Module display name e.g. "Nutrition Hub" */
@@ -31,7 +32,9 @@ export const ModuleSubscriptionHero = ({
   videoUrl,
 }: ModuleSubscriptionHeroProps) => {
   return (
-    <div className="relative w-full h-[260px] sm:h-[340px] rounded-3xl overflow-hidden mb-8">
+    <>
+      <FloatingHowItWorks title={"Module Subscription Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Module Subscription Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Module Subscription Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative w-full h-[260px] sm:h-[340px] rounded-3xl overflow-hidden mb-8">
       <video
         autoPlay
         muted
@@ -71,5 +74,6 @@ export const ModuleSubscriptionHero = ({
         </motion.div>
       </div>
     </div>
+    </>
   );
 };

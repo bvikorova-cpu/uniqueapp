@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { BarChart3, Swords, TrendingUp, TrendingDown, Search, Trophy, Target, Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface HeadToHeadRecord {
   opponentId: string;
@@ -100,7 +101,9 @@ export const DuelHistoryStats = () => {
   ) || [];
 
   return (
-    <Card className="relative overflow-hidden border-primary/20 backdrop-blur-xl bg-card/80">
+    <>
+      <FloatingHowItWorks title={"Duel History Stats - How it works"} steps={[{ title: 'Open', desc: 'Access the Duel History Stats section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Duel History Stats.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="relative overflow-hidden border-primary/20 backdrop-blur-xl bg-card/80">
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-violet-500/5" />
       <CardHeader className="relative">
         <CardTitle className="flex items-center gap-2">
@@ -207,5 +210,6 @@ export const DuelHistoryStats = () => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

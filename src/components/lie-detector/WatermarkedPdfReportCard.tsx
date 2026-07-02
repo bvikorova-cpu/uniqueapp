@@ -9,6 +9,7 @@ import { FileBadge2, Download, ShieldCheck, Copy } from "lucide-react";
 import jsPDF from "jspdf";
 import { useRegisterVerification } from "@/hooks/useLieDetectorTuning";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const WatermarkedPdfReportCard = () => {
   const [title, setTitle] = useState("Lie Detector Report");
@@ -64,7 +65,9 @@ export const WatermarkedPdfReportCard = () => {
   };
 
   return (
-    <Card className="bg-gradient-to-br from-emerald-950/40 via-card/80 to-amber-950/30 border-emerald-500/30 backdrop-blur-md">
+    <>
+      <FloatingHowItWorks title={"Watermarked Pdf Report Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Watermarked Pdf Report Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Watermarked Pdf Report Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-gradient-to-br from-emerald-950/40 via-card/80 to-amber-950/30 border-emerald-500/30 backdrop-blur-md">
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2">
           <FileBadge2 className="w-4 h-4 text-emerald-300" />
@@ -115,5 +118,6 @@ export const WatermarkedPdfReportCard = () => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

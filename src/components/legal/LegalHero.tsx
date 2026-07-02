@@ -3,6 +3,7 @@ import { Shield, Sparkles, Play, Pause, Volume2, VolumeX } from "lucide-react";
 import { useEffect, useRef, useState, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import legalHeroVideo from "@/assets/legal-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface LegalHeroProps {
   badge: string;
@@ -33,7 +34,9 @@ export const LegalHero = ({ badge, title, subtitle, effectiveDate, stats = [] }:
   };
 
   return (
-    <div className="relative min-h-[420px] sm:min-h-[480px] md:h-[60vh] w-full overflow-hidden rounded-3xl border border-amber-400/20 mb-8">
+    <>
+      <FloatingHowItWorks title={"Legal Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Legal Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Legal Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative min-h-[420px] sm:min-h-[480px] md:h-[60vh] w-full overflow-hidden rounded-3xl border border-amber-400/20 mb-8">
       <video ref={videoRef} className="absolute inset-0 h-full w-full object-cover" autoPlay muted loop playsInline>
         <source src={legalHeroVideo.url} type="video/mp4" />
       </video>
@@ -74,5 +77,6 @@ export const LegalHero = ({ badge, title, subtitle, effectiveDate, stats = [] }:
         </Button>
       </div>
     </div>
+    </>
   );
 };

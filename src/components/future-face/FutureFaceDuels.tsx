@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Swords, Loader2, Zap, Trophy, Clock, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const modes = [
   { id: "quick", name: "Quick Challenge", desc: "Guess age in 3 rounds", credits: 3, icon: Zap, time: "2 min" },
@@ -29,7 +30,9 @@ export default function FutureFaceDuels() {
   };
 
   return (
-    <div className="mb-8">
+    <>
+      <FloatingHowItWorks title={"Future Face Duels - How it works"} steps={[{ title: 'Open', desc: 'Access the Future Face Duels section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Future Face Duels.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="mb-8">
       <h2 className="text-xl sm:text-2xl font-black mb-4">⚔️ Age Challenge Duels</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {modes.map((mode, i) => (
@@ -63,5 +66,6 @@ export default function FutureFaceDuels() {
         ))}
       </div>
     </div>
+    </>
   );
 }

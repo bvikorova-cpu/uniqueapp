@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Users, Heart, GraduationCap, RefreshCw, School } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface StudentCampaign {
   id: string;
@@ -34,7 +35,9 @@ export function StudentCampaignCard({ campaign }: { campaign: StudentCampaign })
   const progress = Math.min((campaign.current_amount / campaign.target_amount) * 100, 100);
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Student Campaign Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Student Campaign Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Student Campaign Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
       whileHover={{ y: -4, scale: 1.01 }} transition={{ duration: 0.3 }}>
       <Card className="overflow-hidden h-full flex flex-col border-border/50 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300">
@@ -99,5 +102,6 @@ export function StudentCampaignCard({ campaign }: { campaign: StudentCampaign })
         </CardFooter>
       </Card>
     </motion.div>
+    </>
   );
 }

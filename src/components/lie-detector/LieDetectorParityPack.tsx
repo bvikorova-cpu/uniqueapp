@@ -13,6 +13,7 @@ import {
   useChatImport, useEmailScan, useSentimentTimeline, useWatchlist,
   useRedFlagLookup, useTruthChat, useTrustScore, useTacticClassify,
 } from "@/hooks/useLieDetectorParity";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const COST = 6;
 
@@ -35,7 +36,9 @@ function ChatImportTool() {
   const [app, setApp] = useState("whatsapp");
   const latest = run.data || items[0]?.analysis;
   return (
-    <Card className="bg-card/60 backdrop-blur-sm border-border/50">
+    <>
+      <FloatingHowItWorks title={"Lie Detector Parity Pack - How it works"} steps={[{ title: 'Open', desc: 'Access the Lie Detector Parity Pack section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Lie Detector Parity Pack.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/60 backdrop-blur-sm border-border/50">
       <Header icon={MessageSquareWarning} title="Chat Import Analyzer" color="from-rose-500 to-red-500" />
       <CardContent className="space-y-3">
         <div className="flex gap-2">
@@ -58,6 +61,7 @@ function ChatImportTool() {
         )}
       </CardContent>
     </Card>
+    </>
   );
 }
 

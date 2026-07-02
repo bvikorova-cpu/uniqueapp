@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import type { Character } from "@/data/kidsCharacters";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface TypingIndicatorProps {
   character: Character;
@@ -7,7 +8,9 @@ interface TypingIndicatorProps {
 
 export function TypingIndicator({ character }: TypingIndicatorProps) {
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Typing Indicator - How it works"} steps={[{ title: 'Open', desc: 'Access the Typing Indicator section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Typing Indicator.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
@@ -33,5 +36,6 @@ export function TypingIndicator({ character }: TypingIndicatorProps) {
         </div>
       </div>
     </motion.div>
+    </>
   );
 }

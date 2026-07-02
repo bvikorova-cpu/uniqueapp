@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import ReactMarkdown from "react-markdown";
 import { useNavigate } from "react-router-dom";
 import { handleEdgeError, throwIfInvokeError } from "@/lib/handleEdgeError";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const seasons = [
   { id: "spring", label: "🌸 Spring" },
@@ -51,7 +52,9 @@ export default function FutureFaceSeasonalReport() {
   };
 
   return (
-    <div className="mb-8">
+    <>
+      <FloatingHowItWorks title={"Future Face Seasonal Report - How it works"} steps={[{ title: 'Open', desc: 'Access the Future Face Seasonal Report section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Future Face Seasonal Report.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="mb-8">
       <h2 className="text-xl sm:text-2xl font-black mb-4">🌤️ Seasonal Skin Report</h2>
       <Card className="border-sky-500/20 bg-gradient-to-br from-sky-500/5 to-blue-500/5">
         <CardContent className="p-4 sm:p-6 space-y-4">
@@ -103,5 +106,6 @@ export default function FutureFaceSeasonalReport() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

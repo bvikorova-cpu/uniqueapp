@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface ColorQuestProps {
   onComplete: (score: number) => void;
@@ -56,7 +57,9 @@ export const ColorQuest = ({ onComplete, onBack }: ColorQuestProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-red-100 via-pink-100 to-purple-100 p-4">
+    <>
+      <FloatingHowItWorks title={"Color Quest - How it works"} steps={[{ title: 'Open', desc: 'Access the Color Quest section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Color Quest.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="min-h-screen bg-gradient-to-b from-red-100 via-pink-100 to-purple-100 p-4">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <Button variant="ghost" onClick={onBack} className="hover:bg-white/50">
@@ -133,5 +136,6 @@ export const ColorQuest = ({ onComplete, onBack }: ColorQuestProps) => {
         </Card>
       </div>
     </div>
+    </>
   );
 };

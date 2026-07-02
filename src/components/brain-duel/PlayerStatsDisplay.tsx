@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { TrendingUp, TrendingDown, Zap, Award } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface PlayerStatsDisplayProps {
   xp?: number;
@@ -58,7 +59,9 @@ export const PlayerStatsDisplay = ({
   const winRate = wins + losses > 0 ? Math.round((wins / (wins + losses)) * 100) : 0;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <>
+      <FloatingHowItWorks title={"Player Stats Display - How it works"} steps={[{ title: 'Open', desc: 'Access the Player Stats Display section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Player Stats Display.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {/* XP & Level Card */}
       <Card className="relative overflow-hidden backdrop-blur-xl bg-card/80 border-primary/10">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-violet-500/5" />
@@ -187,5 +190,6 @@ export const PlayerStatsDisplay = ({
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };

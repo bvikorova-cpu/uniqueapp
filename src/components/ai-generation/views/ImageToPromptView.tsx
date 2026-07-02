@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props { onCreditsUsed: () => void; onUsePrompt: (prompt: string) => void; }
 
@@ -62,7 +63,9 @@ export const ImageToPromptView = ({ onCreditsUsed, onUsePrompt }: Props) => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <>
+      <FloatingHowItWorks title={"Image To Prompt View - How it works"} steps={[{ title: 'Open', desc: 'Access the Image To Prompt View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Image To Prompt View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="max-w-2xl mx-auto space-y-6">
       <div>
         <h2 className="text-2xl font-black mb-2">🔍 AI Image-to-Prompt</h2>
         <p className="text-muted-foreground text-sm">Reverse engineer a detailed prompt from any image. Cost: 3 CR</p>
@@ -122,5 +125,6 @@ export const ImageToPromptView = ({ onCreditsUsed, onUsePrompt }: Props) => {
         </motion.div>
       )}
     </div>
+    </>
   );
 };

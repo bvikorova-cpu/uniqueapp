@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SlidersHorizontal } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface BeforeAfterSliderProps {
   beforeUrl: string;
@@ -21,7 +22,9 @@ export function BeforeAfterSlider({ beforeUrl, afterUrl }: BeforeAfterSliderProp
   };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}>
+    <>
+      <FloatingHowItWorks title={"Before After Slider - How it works"} steps={[{ title: 'Open', desc: 'Access the Before After Slider section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Before After Slider.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}>
       <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm flex items-center gap-2">
@@ -58,5 +61,6 @@ export function BeforeAfterSlider({ beforeUrl, afterUrl }: BeforeAfterSliderProp
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 }

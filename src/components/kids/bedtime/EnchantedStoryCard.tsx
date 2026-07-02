@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Moon, Play, Pause, Loader2, Clock, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface StoryData {
   id: number;
@@ -38,7 +39,9 @@ export function EnchantedStoryCard({
   const glow = CARD_GLOWS[index % CARD_GLOWS.length];
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Enchanted Story Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Enchanted Story Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Enchanted Story Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 30, rotateY: -10 }}
       animate={{ opacity: 1, y: 0, rotateY: 0 }}
       transition={{ type: "spring", stiffness: 200, damping: 15, delay: index * 0.1 }}
@@ -110,5 +113,6 @@ export function EnchantedStoryCard({
         </motion.div>
       </div>
     </motion.div>
+    </>
   );
 }

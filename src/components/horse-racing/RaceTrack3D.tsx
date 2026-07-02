@@ -3,6 +3,7 @@ import { OrbitControls, Sky, Environment } from "@react-three/drei";
 import { Horse3D } from "./Horse3D";
 import { useEffect, useState } from "react";
 import * as THREE from "three";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Participant {
   id: string;
@@ -75,7 +76,12 @@ export const RaceTrack3D = ({ participants, isRaceActive, onRaceComplete }: Race
       });
     }, 50);
 
-    return () => clearInterval(interval);
+    return (
+    <>
+      <FloatingHowItWorks title={"Race Track3 D - How it works"} steps={[{ title: 'Open', desc: 'Access the Race Track3 D section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Race Track3 D.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(interval);
   }, [isRaceActive, raceStartTime, participants, onRaceComplete]);
 
   return (

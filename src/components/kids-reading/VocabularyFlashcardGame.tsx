@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import confetti from "canvas-confetti";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface VocabWord {
   word: string;
@@ -112,6 +113,8 @@ export const VocabularyFlashcardGame = ({ vocabulary, onComplete }: Props) => {
 
   if (gameMode === "complete") {
     return (
+    <>
+      <FloatingHowItWorks title={"Vocabulary Flashcard Game - How it works"} steps={[{ title: 'Open', desc: 'Access the Vocabulary Flashcard Game section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Vocabulary Flashcard Game.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="border-2 border-primary/30 bg-gradient-to-br from-primary/10 to-accent/10">
         <CardContent className="pt-6 text-center space-y-4">
           <motion.div
@@ -135,7 +138,8 @@ export const VocabularyFlashcardGame = ({ vocabulary, onComplete }: Props) => {
           </div>
         </CardContent>
       </Card>
-    );
+    </>
+  );
   }
 
   if (gameMode === "match") {

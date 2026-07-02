@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { UserCog, AlertTriangle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Session {
   id: string;
@@ -85,7 +86,9 @@ export const ImpersonationPanel = () => {
   };
 
   return (
-    <Card className="border-orange-500/30 bg-card/80 backdrop-blur">
+    <>
+      <FloatingHowItWorks title={"Impersonation Panel - How it works"} steps={[{ title: 'Open', desc: 'Access the Impersonation Panel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Impersonation Panel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-orange-500/30 bg-card/80 backdrop-blur">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <UserCog className="w-4 h-4 text-orange-400" />
@@ -142,5 +145,6 @@ export const ImpersonationPanel = () => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

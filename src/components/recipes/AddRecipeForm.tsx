@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { Upload, Plus, X } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface AddRecipeFormProps {
   onSuccess: () => void;
@@ -142,7 +143,9 @@ export const AddRecipeForm = ({ onSuccess }: AddRecipeFormProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 bg-card p-6 rounded-lg border">
+    <>
+      <FloatingHowItWorks title={"Add Recipe Form - How it works"} steps={[{ title: 'Open', desc: 'Access the Add Recipe Form section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Add Recipe Form.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <form onSubmit={handleSubmit} className="space-y-6 bg-card p-6 rounded-lg border">
       <h2 className="text-2xl font-bold">Add New Recipe</h2>
 
       <div className="space-y-4">
@@ -330,5 +333,6 @@ export const AddRecipeForm = ({ onSuccess }: AddRecipeFormProps) => {
         {isSubmitting ? "Saving..." : "Add Recipe"}
       </Button>
     </form>
+    </>
   );
 };

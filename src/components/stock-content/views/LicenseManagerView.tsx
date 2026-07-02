@@ -23,6 +23,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, FileCheck, Plus, Ban, Trash2, RotateCw } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface License {
   id: string;
@@ -164,7 +165,9 @@ export function LicenseManagerView({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"License Manager View - How it works"} steps={[{ title: 'Open', desc: 'Access the License Manager View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in License Manager View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="sm" onClick={onBack}>
@@ -384,5 +387,6 @@ export function LicenseManagerView({ onBack }: { onBack: () => void }) {
         </DialogContent>
       </Dialog>
     </div>
+    </>
   );
 }

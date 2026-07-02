@@ -7,6 +7,7 @@ import { Loader2, Activity } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Row { recorded_at: string; score: number; notes?: string | null; }
 
@@ -55,7 +56,9 @@ export default function FutureFaceSkinScore() {
   const trend = rows.length >= 2 ? last - rows[rows.length - 2].score : 0;
 
   return (
-    <div className="mb-8 space-y-4">
+    <>
+      <FloatingHowItWorks title={"Future Face Skin Score - How it works"} steps={[{ title: 'Open', desc: 'Access the Future Face Skin Score section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Future Face Skin Score.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="mb-8 space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-xl sm:text-2xl font-black">📊 Skin Score Tracker</h2>
         <Badge className="bg-emerald-500/20 text-emerald-500 border-emerald-500/30">{rows.length} entries</Badge>
@@ -113,5 +116,6 @@ export default function FutureFaceSkinScore() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

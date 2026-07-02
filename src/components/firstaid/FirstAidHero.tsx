@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Heart, Activity, Shield, Users } from "lucide-react";
 import heroVideo from "@/assets/firstaid-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface FirstAidHeroProps {
   stats: Record<string, number>;
@@ -19,7 +20,9 @@ export function FirstAidHero({ stats, loading }: FirstAidHeroProps) {
   ];
 
   return (
-    <div className="relative w-full h-[420px] md:h-[500px] rounded-2xl overflow-hidden mb-8">
+    <>
+      <FloatingHowItWorks title={"First Aid Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the First Aid Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in First Aid Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative w-full h-[420px] md:h-[500px] rounded-2xl overflow-hidden mb-8">
       <video
         autoPlay muted loop playsInline
         className="absolute inset-0 w-full h-full object-cover brightness-[1.15] saturate-[1.2]"
@@ -61,5 +64,6 @@ export function FirstAidHero({ stats, loading }: FirstAidHeroProps) {
         </div>
       </div>
     </div>
+    </>
   );
 }

@@ -2,12 +2,15 @@ import { useSecretSanta } from "@/hooks/useSecretSanta";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatDistanceToNow } from "date-fns";
 import { Sparkles, Clock } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const SecretSantaStories = () => {
   const { stories, storiesLoading } = useSecretSanta();
 
   if (storiesLoading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Secret Santa Stories - How it works"} steps={[{ title: 'Open', desc: 'Access the Secret Santa Stories section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Secret Santa Stories.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="bg-white/80 backdrop-blur-xl border border-amber-200 rounded-2xl p-6 shadow-lg">
         <div className="animate-pulse space-y-4">
           {[1, 2, 3].map((i) => (
@@ -15,7 +18,8 @@ export const SecretSantaStories = () => {
           ))}
         </div>
       </div>
-    );
+    </>
+  );
   }
 
   if (stories.length === 0) {

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Gift, Check, Users, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export interface RewardTier {
   id: string;
@@ -27,7 +28,9 @@ export function RewardTiers({ tiers, selectedTierId, onSelect }: Props) {
   if (!tiers || tiers.length === 0) return null;
 
   return (
-    <Card className="p-5">
+    <>
+      <FloatingHowItWorks title={"Reward Tiers - How it works"} steps={[{ title: 'Open', desc: 'Access the Reward Tiers section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Reward Tiers.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-5">
       <div className="flex items-center gap-2 mb-4">
         <Gift className="w-5 h-5 text-primary" />
         <h3 className="font-bold text-lg">Choose Your Reward</h3>
@@ -124,5 +127,6 @@ export function RewardTiers({ tiers, selectedTierId, onSelect }: Props) {
         })}
       </div>
     </Card>
+    </>
   );
 }

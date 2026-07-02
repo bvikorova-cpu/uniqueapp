@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { useTutoringCredits } from "@/hooks/useTutoringCredits";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Message { role: "user" | "assistant"; content: string; }
 interface Props { onBack: () => void; }
@@ -75,7 +76,9 @@ export function AITutorChatView({ onBack }: Props) {
   };
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"A I Tutor Chat View - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Tutor Chat View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Tutor Chat View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <div className="max-w-3xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-3 mb-2">
@@ -220,5 +223,6 @@ export function AITutorChatView({ onBack }: Props) {
         </Card>
       </div>
     </div>
+    </>
   );
 }

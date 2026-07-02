@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { MapPin, Package, Plus, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Point {
   id: string;
@@ -68,7 +69,9 @@ export function CrisisDistributionMap({ campaignId, ownerUserId }: Props) {
   if (points.length === 0 && !isOwner) return null;
 
   return (
-    <Card className="p-5">
+    <>
+      <FloatingHowItWorks title={"Crisis Distribution Map - How it works"} steps={[{ title: 'Open', desc: 'Access the Crisis Distribution Map section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Crisis Distribution Map.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-5">
       <div className="flex items-center gap-2 mb-4">
         <MapPin className="w-5 h-5 text-primary" />
         <h3 className="font-bold">Aid Distribution</h3>
@@ -138,5 +141,6 @@ export function CrisisDistributionMap({ campaignId, ownerUserId }: Props) {
         </ul>
       )}
     </Card>
+    </>
   );
 }

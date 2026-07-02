@@ -1,5 +1,6 @@
 import { Palette, Check } from "lucide-react";
 import type { ChatTheme } from "@/hooks/useMatchMeta";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const THEMES: Array<{ id: ChatTheme; label: string; gradient: string }> = [
   { id: "midnight", label: "Midnight", gradient: "from-slate-900 via-violet-900 to-primary" },
@@ -22,7 +23,9 @@ export const ChatThemePicker = ({ current, onChange }: Props) => (
       {THEMES.map(t => {
         const active = current === t.id;
         return (
-          <button
+    <>
+      <FloatingHowItWorks title={"Chat Theme Picker - How it works"} steps={[{ title: 'Open', desc: 'Access the Chat Theme Picker section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Chat Theme Picker.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <button
             key={t.id}
             onClick={() => onChange(t.id)}
             className={`relative h-12 rounded-xl bg-gradient-to-br ${t.gradient} border-2 transition-all ${
@@ -38,7 +41,8 @@ export const ChatThemePicker = ({ current, onChange }: Props) => (
               {t.label}
             </span>
           </button>
-        );
+    </>
+  );
       })}
     </div>
     <div className="h-3" />

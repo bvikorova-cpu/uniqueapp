@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { BarChart3, Eye, Globe2, Loader2, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props {
   userId: string;
@@ -60,7 +61,9 @@ export const ProfileAnalytics = ({ userId }: Props) => {
   const max = Math.max(1, ...days.map((d) => d.count));
 
   return (
-    <div className="rounded-2xl border border-border/50 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl p-5 sm:p-6 mb-6">
+    <>
+      <FloatingHowItWorks title={"Profile Analytics - How it works"} steps={[{ title: 'Open', desc: 'Access the Profile Analytics section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Profile Analytics.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="rounded-2xl border border-border/50 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl p-5 sm:p-6 mb-6">
       <div className="flex items-center gap-2 mb-4">
         <BarChart3 className="h-5 w-5 text-cyan-400" />
         <div>
@@ -137,6 +140,7 @@ export const ProfileAnalytics = ({ userId }: Props) => {
         </>
       )}
     </div>
+    </>
   );
 };
 

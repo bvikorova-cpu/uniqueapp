@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Crown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface GalleryHeroProps {
   totalCreations: number;
@@ -20,7 +21,9 @@ const floatingItems = [
 
 export function GalleryHero({ totalCreations, hasGoldPass }: GalleryHeroProps) {
   return (
-    <div className="relative text-center py-14 overflow-hidden">
+    <>
+      <FloatingHowItWorks title={"Gallery Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Gallery Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Gallery Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative text-center py-14 overflow-hidden">
       {floatingItems.map((item, i) => (
         <motion.span
           key={i}
@@ -59,5 +62,6 @@ export function GalleryHero({ totalCreations, hasGoldPass }: GalleryHeroProps) {
         )}
       </motion.div>
     </div>
+    </>
   );
 }

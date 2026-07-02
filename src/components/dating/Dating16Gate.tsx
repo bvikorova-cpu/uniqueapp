@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { ShieldAlert } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const STORAGE_KEY = "dating_age_gate_v1";
 
@@ -33,7 +34,9 @@ export const Dating16Gate = () => {
   };
 
   return (
-    <Dialog open={open} onOpenChange={(v) => { if (!v) deny(); }}>
+    <>
+      <FloatingHowItWorks title={"Dating16 Gate - How it works"} steps={[{ title: 'Open', desc: 'Access the Dating16 Gate section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Dating16 Gate.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Dialog open={open} onOpenChange={(v) => { if (!v) deny(); }}>
       <DialogContent className="max-w-sm">
         <DialogHeader>
           <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
@@ -50,6 +53,7 @@ export const Dating16Gate = () => {
         </div>
       </DialogContent>
     </Dialog>
+    </>
   );
 };
 

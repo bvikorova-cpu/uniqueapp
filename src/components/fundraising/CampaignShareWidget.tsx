@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Facebook, Twitter, Link as LinkIcon, Mail, MessageCircle, Code2, QrCode, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { QRCodeSVG } from "qrcode.react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   campaignType: "medical" | "dream" | "hero" | "crisis" | "pet" | "student" | "talent";
@@ -78,7 +79,9 @@ export function CampaignShareWidget({
     : null;
 
   return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+    <>
+      <FloatingHowItWorks title={"Campaign Share Widget - How it works"} steps={[{ title: 'Open', desc: 'Access the Campaign Share Widget section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Campaign Share Widget.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
       <Card className="border-primary/20 bg-gradient-to-br from-card via-card to-primary/5">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
@@ -151,5 +154,6 @@ export function CampaignShareWidget({
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 }

@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Crown, Shield, Sword, Star, Gem, Flame } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const RANK_TIERS = [
   { key: "bronze", name: "Bronze", min: 0, color: "from-amber-700 to-amber-900", border: "ring-amber-600", icon: Shield, emoji: "🥉" },
@@ -66,7 +67,9 @@ export const RankAvatarSystem = () => {
     : 100;
 
   return (
-    <Card className="border-primary/20 backdrop-blur-xl bg-card/80 overflow-hidden relative">
+    <>
+      <FloatingHowItWorks title={"Rank Avatar System - How it works"} steps={[{ title: 'Open', desc: 'Access the Rank Avatar System section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Rank Avatar System.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-primary/20 backdrop-blur-xl bg-card/80 overflow-hidden relative">
       <div className={`absolute inset-0 bg-gradient-to-br ${currentRank.color} opacity-5`} />
       <CardHeader className="relative pb-3">
         <CardTitle className="text-sm flex items-center gap-2">
@@ -136,5 +139,6 @@ export const RankAvatarSystem = () => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
 import { BarChart3, Loader2, TrendingDown, Brain } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const COLORS = ["#06b6d4", "#3b82f6", "#8b5cf6", "#ec4899", "#f59e0b", "#10b981"];
 
@@ -58,7 +59,9 @@ export const FearAnalytics = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Fear Analytics - How it works"} steps={[{ title: 'Open', desc: 'Access the Fear Analytics section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Fear Analytics.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
           { label: "Fears Tracked", value: phobiaData.length, icon: Brain, color: "text-cyan-400" },
@@ -112,5 +115,6 @@ export const FearAnalytics = () => {
         </Card>
       </div>
     </div>
+    </>
   );
 };

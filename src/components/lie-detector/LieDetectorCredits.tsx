@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useLieDetectorCredits } from "@/hooks/useLieDetectorCredits";
 import { Coins, Plus, Sparkles, Crown, Zap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const LieDetectorCredits = () => {
   const { credits, isLoading, purchaseCredits } = useLieDetectorCredits();
@@ -51,7 +52,9 @@ export const LieDetectorCredits = () => {
   ];
 
   return (
-    <Card className="glassmorphism">
+    <>
+      <FloatingHowItWorks title={"Lie Detector Credits - How it works"} steps={[{ title: 'Open', desc: 'Access the Lie Detector Credits section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Lie Detector Credits.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="glassmorphism">
       <div className="p-4 sm:p-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 mb-4 sm:mb-6">
           <div className="flex items-center gap-2 sm:gap-3">
@@ -119,5 +122,6 @@ export const LieDetectorCredits = () => {
         </div>
       </div>
     </Card>
+    </>
   );
 };

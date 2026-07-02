@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { BookOpen, Palette, Sparkles, PaintBucket } from "lucide-react";
 import { format, isToday, isYesterday } from "date-fns";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface TimelineItem {
   id: string;
@@ -34,7 +35,9 @@ export function GalleryTimeline({ items }: GalleryTimelineProps) {
   if (sorted.length === 0) return null;
 
   return (
-    <div className="max-w-2xl mx-auto mb-10">
+    <>
+      <FloatingHowItWorks title={"Gallery Timeline - How it works"} steps={[{ title: 'Open', desc: 'Access the Gallery Timeline section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Gallery Timeline.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="max-w-2xl mx-auto mb-10">
       <h2 className="text-2xl font-bold text-center mb-6">
         📅{" "}
         <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
@@ -79,5 +82,6 @@ export function GalleryTimeline({ items }: GalleryTimelineProps) {
         </div>
       </div>
     </div>
+    </>
   );
 }

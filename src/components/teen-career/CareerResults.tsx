@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Download, Briefcase, GraduationCap, Zap, ArrowRight, DollarSign, TrendingUp, BarChart3 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CareerResultsProps {
   guidance: string;
@@ -48,7 +49,9 @@ export const CareerResults = ({ guidance, onExportPDF }: CareerResultsProps) => 
   const careers = parseCareerPaths(guidance);
 
   return (
-    <Card className="border-primary/20">
+    <>
+      <FloatingHowItWorks title={"Career Results - How it works"} steps={[{ title: 'Open', desc: 'Access the Career Results section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Career Results.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-primary/20">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-lg flex items-center gap-2">
           <Briefcase className="h-5 w-5 text-primary" />
@@ -192,5 +195,6 @@ export const CareerResults = ({ guidance, onExportPDF }: CareerResultsProps) => 
         </Tabs>
       </CardContent>
     </Card>
+    </>
   );
 };

@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const newItems = [
   { title: "Frozen Adventures 2", type: "New Story", emoji: "❄️", color: "bg-blue-500" },
@@ -11,7 +12,9 @@ const newItems = [
 
 export const WhatsNewSpotlight = () => {
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Whats New Spotlight - How it works"} steps={[{ title: 'Open', desc: 'Access the Whats New Spotlight section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Whats New Spotlight.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3 }}
@@ -43,5 +46,6 @@ export const WhatsNewSpotlight = () => {
         ))}
       </div>
     </motion.div>
+    </>
   );
 };

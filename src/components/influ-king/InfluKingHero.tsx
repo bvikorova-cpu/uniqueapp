@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Users, Zap, TrendingUp, DollarSign } from "lucide-react";
 import heroVideo from "@/assets/influ-king-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const stats = [
   { label: "Influencers", icon: Users, key: "influencers" },
@@ -22,7 +23,12 @@ export function InfluKingHero() {
         earnings: Math.floor(Math.random() * 10000) + 150000,
       });
     }, 3000);
-    return () => clearInterval(interval);
+    return (
+    <>
+      <FloatingHowItWorks title={"Influ King Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Influ King Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Influ King Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(interval);
   }, []);
 
   return (

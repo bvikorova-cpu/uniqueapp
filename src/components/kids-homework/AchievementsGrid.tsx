@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Achievement {
   id: string;
@@ -25,7 +26,9 @@ export const AchievementsGrid = ({ achievements, unlockedAchievements }: Achieve
   const unlockedIds = new Set(unlockedAchievements?.map(a => a.achievement_id) || []);
 
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title={"Achievements Grid - How it works"} steps={[{ title: 'Open', desc: 'Access the Achievements Grid section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Achievements Grid.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card>
       <CardHeader>
         <CardTitle>Achievements & Badges</CardTitle>
       </CardHeader>
@@ -63,5 +66,6 @@ export const AchievementsGrid = ({ achievements, unlockedAchievements }: Achieve
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

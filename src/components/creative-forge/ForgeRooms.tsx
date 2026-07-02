@@ -14,6 +14,7 @@ import { useCreativeRooms, useRoomMessages, useCreativeAITools, ROOM_AI_COST } f
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const CATEGORIES = ["song_lyrics", "screenplay", "theater_play", "novel_chapter", "poetry", "standup", "podcast_script", "ad_copy"];
 
@@ -61,7 +62,9 @@ export const ForgeRooms = ({ open, onClose }: Props) => {
   if (!open) return null;
 
   return (
-    <AnimatePresence>
+    <>
+      <FloatingHowItWorks title={"Forge Rooms - How it works"} steps={[{ title: 'Open', desc: 'Access the Forge Rooms section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Forge Rooms.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <AnimatePresence>
       <motion.div
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
         className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4"
@@ -163,6 +166,7 @@ export const ForgeRooms = ({ open, onClose }: Props) => {
         </motion.div>
       </motion.div>
     </AnimatePresence>
+    </>
   );
 };
 

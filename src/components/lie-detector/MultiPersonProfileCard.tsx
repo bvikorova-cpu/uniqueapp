@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Users, Plus, Trash2, GitBranch } from "lucide-react";
 import { useMultiPersonProfile } from "@/hooks/useLieDetectorTuning";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type Person = { name: string; messages: string };
 
@@ -34,7 +35,9 @@ export const MultiPersonProfileCard = () => {
   };
 
   return (
-    <Card className="bg-gradient-to-br from-purple-950/40 via-card/80 to-red-950/30 border-purple-500/30 backdrop-blur-md">
+    <>
+      <FloatingHowItWorks title={"Multi Person Profile Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Multi Person Profile Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Multi Person Profile Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-gradient-to-br from-purple-950/40 via-card/80 to-red-950/30 border-purple-500/30 backdrop-blur-md">
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2">
           <Users className="w-4 h-4 text-purple-300" />
@@ -115,5 +118,6 @@ export const MultiPersonProfileCard = () => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

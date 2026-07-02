@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import ReactMarkdown from "react-markdown";
 import { useNavigate } from "react-router-dom";
 import { handleEdgeError, throwIfInvokeError } from "@/lib/handleEdgeError";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export default function FutureFaceDermatologist() {
   const [age, setAge] = useState("30");
@@ -42,7 +43,9 @@ export default function FutureFaceDermatologist() {
   };
 
   return (
-    <div className="mb-8">
+    <>
+      <FloatingHowItWorks title={"Future Face Dermatologist - How it works"} steps={[{ title: 'Open', desc: 'Access the Future Face Dermatologist section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Future Face Dermatologist.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="mb-8">
       <h2 className="text-xl sm:text-2xl font-black mb-4">🩺 Dermatologist Verification</h2>
       <Card className="border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 to-teal-500/5">
         <CardContent className="p-4 sm:p-6 space-y-4">
@@ -80,5 +83,6 @@ export default function FutureFaceDermatologist() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

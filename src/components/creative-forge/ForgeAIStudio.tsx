@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Sparkles, Loader2, Globe, Search, ShieldCheck, BarChart3, Wand2, ScanText, Maximize2, Minimize2, FileText } from "lucide-react";
 import { useForgeAITools, FORGE_AI_COST } from "@/hooks/useForgeAITools";
 import { toast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   open: boolean;
@@ -66,7 +67,9 @@ export function ForgeAIStudio({ open, onClose, currentText, onReplace, onAppend,
   );
 
   return (
-    <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
+    <>
+      <FloatingHowItWorks title={"Forge A I Studio - How it works"} steps={[{ title: 'Open', desc: 'Access the Forge A I Studio section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Forge A I Studio.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2"><Sparkles className="h-5 w-5 text-primary" />AI Studio</DialogTitle>
@@ -189,5 +192,6 @@ export function ForgeAIStudio({ open, onClose, currentText, onReplace, onAppend,
         )}
       </DialogContent>
     </Dialog>
+    </>
   );
 }

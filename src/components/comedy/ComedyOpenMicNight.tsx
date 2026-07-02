@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Mic2, ArrowLeft, ThumbsUp, Clock, Users, Star, Coins } from "lucide-react";
 import { useComedyCurrency } from "@/hooks/useComedy";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   onBack: () => void;
@@ -94,7 +95,9 @@ export const ComedyOpenMicNight = ({ onBack }: Props) => {
   const maxVotes = Math.max(...performances.map(p => p.votes || 0), 1);
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Comedy Open Mic Night - How it works"} steps={[{ title: 'Open', desc: 'Access the Comedy Open Mic Night section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Comedy Open Mic Night.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="sm" onClick={onBack}>
@@ -181,5 +184,6 @@ export const ComedyOpenMicNight = ({ onBack }: Props) => {
         )}
       </div>
     </div>
+    </>
   );
 };

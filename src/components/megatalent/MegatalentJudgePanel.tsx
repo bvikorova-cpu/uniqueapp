@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Gavel, Loader2, Star, ImageOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type Pick = { id: string; judge_id: string; submission_id: string; category: string | null; note: string | null; created_at: string };
 type Sub = { id: string; title: string; media_url: string; media_type: string; user_id: string };
@@ -101,7 +102,9 @@ const MegatalentJudgePanel = ({ category, categories, userId }: Props) => {
   if (!cats.length) return null;
 
   return (
-    <Card className="overflow-hidden border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-transparent">
+    <>
+      <FloatingHowItWorks title={"Megatalent Judge Panel - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Judge Panel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Judge Panel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="overflow-hidden border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-transparent">
       <CardContent className="p-5">
         <div className="flex items-center gap-2 mb-3">
           <Gavel className="h-4 w-4 text-amber-500" />
@@ -161,6 +164,7 @@ const MegatalentJudgePanel = ({ category, categories, userId }: Props) => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };
 

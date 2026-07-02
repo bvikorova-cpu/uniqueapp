@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const levels = [
   { id: "young", label: "Young Scientist", age: "6-8 years", icon: "🌱", color: "from-green-500/20 to-lime-500/20", border: "border-green-500/40" },
@@ -13,7 +14,9 @@ interface DifficultySelectorProps {
 
 export const DifficultySelector = ({ selected, onSelect }: DifficultySelectorProps) => {
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Difficulty Selector - How it works"} steps={[{ title: 'Open', desc: 'Access the Difficulty Selector section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Difficulty Selector.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <h3 className="text-lg font-bold mb-3 flex items-center gap-2">
         🎯 Choose Your Level
       </h3>
@@ -40,5 +43,6 @@ export const DifficultySelector = ({ selected, onSelect }: DifficultySelectorPro
         ))}
       </div>
     </div>
+    </>
   );
 };

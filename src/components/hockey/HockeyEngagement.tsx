@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Flame, BarChart3, Trophy } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function HockeyEngagement() {
   const cards = [
@@ -9,7 +10,9 @@ export function HockeyEngagement() {
   ];
 
   return (
-    <div className="grid grid-cols-3 gap-3">
+    <>
+      <FloatingHowItWorks title={"Hockey Engagement - How it works"} steps={[{ title: 'Open', desc: 'Access the Hockey Engagement section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Hockey Engagement.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="grid grid-cols-3 gap-3">
       {cards.map((card, i) => (
         <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 * i }}
           className={`p-3 md:p-4 rounded-xl bg-gradient-to-br ${card.gradient} border border-border/30`}>
@@ -20,5 +23,6 @@ export function HockeyEngagement() {
         </motion.div>
       ))}
     </div>
+    </>
   );
 }

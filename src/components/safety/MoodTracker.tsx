@@ -6,6 +6,7 @@ import { Smile, Sparkles, Loader2, TrendingUp, TrendingDown, Minus } from "lucid
 import { useMoodLogs, useAddMoodLog, useWeeklyInsight } from "@/hooks/useSafetyExtras";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { format, parseISO } from "date-fns";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function MoodTracker() {
   const { data: logs = [] } = useMoodLogs(30);
@@ -26,7 +27,9 @@ export function MoodTracker() {
   const trendColor = insight?.trend === "improving" ? "text-emerald-400" : insight?.trend === "declining" ? "text-red-400" : "text-muted-foreground";
 
   return (
-    <div className="grid lg:grid-cols-2 gap-4">
+    <>
+      <FloatingHowItWorks title={"Mood Tracker - How it works"} steps={[{ title: 'Open', desc: 'Access the Mood Tracker section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Mood Tracker.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="grid lg:grid-cols-2 gap-4">
       <Card className="border-teal-500/30 bg-card/60 backdrop-blur-md">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
@@ -92,5 +95,6 @@ export function MoodTracker() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

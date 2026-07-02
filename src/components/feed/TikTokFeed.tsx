@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatDistanceToNow } from "date-fns";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export interface ShortItem {
   id: string;          // raw id (uuid)
@@ -86,7 +87,9 @@ function CommentsSheet({ open, onOpenChange, short, onCountChange }: {
   };
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
+    <>
+      <FloatingHowItWorks title={"Tik Tok Feed - How it works"} steps={[{ title: 'Open', desc: 'Access the Tik Tok Feed section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Tik Tok Feed.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="h-[75dvh] p-0 flex flex-col rounded-t-2xl">
         <SheetHeader className="px-4 py-3 border-b">
           <SheetTitle className="text-center text-sm font-semibold">{items.length} comments</SheetTitle>
@@ -126,6 +129,7 @@ function CommentsSheet({ open, onOpenChange, short, onCountChange }: {
         </div>
       </SheetContent>
     </Sheet>
+    </>
   );
 }
 

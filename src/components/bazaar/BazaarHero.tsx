@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ShoppingCart, Users, Package, TrendingUp } from "lucide-react";
 import bazaarHeroAsset from "@/assets/bazaar-hero-v2.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface BazaarHeroProps {
   itemCount: number;
@@ -30,7 +31,12 @@ export const BazaarHero = ({ itemCount }: BazaarHeroProps) => {
       if (step >= steps) clearInterval(timer);
     }, interval);
 
-    return () => clearInterval(timer);
+    return (
+    <>
+      <FloatingHowItWorks title={"Bazaar Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Bazaar Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Bazaar Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(timer);
   }, [itemCount]);
 
   const statCards = [

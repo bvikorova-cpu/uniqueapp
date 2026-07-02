@@ -7,6 +7,7 @@ import { DollarSign, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { CouponToolLayout } from "../CouponToolLayout";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -39,7 +40,9 @@ export function CouponValuatorView({ onBack }: Props) {
   };
 
   return (
-    <CouponToolLayout onBack={onBack} title="AI Coupon Valuator" subtitle="Get fair market price & expiry risk analysis for any coupon" credits={3} icon={DollarSign} gradientFrom="#9333ea" gradientTo="#f59e0b" borderColor="purple" formTitle="Coupon Details" resultTitle="Valuation Report" emptyText="Enter coupon details to get a fair market valuation" result={result} loading={loading}>
+    <>
+      <FloatingHowItWorks title={"Coupon Valuator View - How it works"} steps={[{ title: 'Open', desc: 'Access the Coupon Valuator View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Coupon Valuator View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <CouponToolLayout onBack={onBack} title="AI Coupon Valuator" subtitle="Get fair market price & expiry risk analysis for any coupon" credits={3} icon={DollarSign} gradientFrom="#9333ea" gradientTo="#f59e0b" borderColor="purple" formTitle="Coupon Details" resultTitle="Valuation Report" emptyText="Enter coupon details to get a fair market valuation" result={result} loading={loading}>
       <div><label className="text-sm font-semibold mb-1.5 block">Store Name *</label><Input placeholder="e.g., Nike, Amazon, Starbucks" value={storeName} onChange={e => setStoreName(e.target.value)} /></div>
       <div><label className="text-sm font-semibold mb-1.5 block">Coupon Type</label>
         <Select value={couponType} onValueChange={setCouponType}><SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger><SelectContent>
@@ -55,5 +58,6 @@ export function CouponValuatorView({ onBack }: Props) {
         {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Analyzing...</> : <><DollarSign className="w-4 h-4 mr-2" />Get Valuation (3 CR)</>}
       </Button>
     </CouponToolLayout>
+    </>
   );
 }

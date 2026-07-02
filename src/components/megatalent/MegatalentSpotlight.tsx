@@ -7,6 +7,7 @@ import { Sparkles, Heart, Eye, Trophy } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   category?: string;
@@ -59,7 +60,12 @@ export default function MegatalentSpotlight({ category, categories }: Props) {
         if (!cancelled) setLoading(false);
       }
     })();
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Megatalent Spotlight - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Spotlight section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Spotlight.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       cancelled = true;
     };
   }, [category, categories?.join(",")]);

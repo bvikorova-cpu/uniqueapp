@@ -26,6 +26,7 @@ import {
   type LifeEventKind,
 } from "@/hooks/useLifeEvents";
 import { format } from "date-fns";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   userId: string;
@@ -72,7 +73,9 @@ export function LifeEventsTimeline({ userId, isOwnProfile }: Props) {
   const events = list.data ?? [];
 
   return (
-    <Card className="p-4 space-y-4">
+    <>
+      <FloatingHowItWorks title={"Life Events Timeline - How it works"} steps={[{ title: 'Open', desc: 'Access the Life Events Timeline section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Life Events Timeline.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-4 space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="font-bold flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-primary" />
@@ -199,5 +202,6 @@ export function LifeEventsTimeline({ userId, isOwnProfile }: Props) {
         </div>
       )}
     </Card>
+    </>
   );
 }

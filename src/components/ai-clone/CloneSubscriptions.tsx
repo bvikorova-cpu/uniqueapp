@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Check, Star, Crown, Zap, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const subscriptionTiers = [
   {
@@ -91,7 +92,9 @@ export function CloneSubscriptions() {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Clone Subscriptions - How it works"} steps={[{ title: 'Open', desc: 'Access the Clone Subscriptions section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Clone Subscriptions.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Card className="bg-card/80 backdrop-blur-xl border-primary/20">
         <CardHeader>
           <CardTitle>Choose Your Clone Subscription</CardTitle>
@@ -172,5 +175,6 @@ export function CloneSubscriptions() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

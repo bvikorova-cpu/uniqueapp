@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Shield, Lock, CreditCard, RefreshCcw } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const badges = [
   { icon: Shield, label: "COPPA Compliant", desc: "Child privacy protected", color: "text-blue-500" },
@@ -10,7 +11,9 @@ const badges = [
 
 export function TrustBadges() {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
+    <>
+      <FloatingHowItWorks title={"Trust Badges - How it works"} steps={[{ title: 'Open', desc: 'Access the Trust Badges section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Trust Badges.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
       {badges.map((badge, i) => (
         <motion.div
           key={badge.label}
@@ -29,5 +32,6 @@ export function TrustBadges() {
         </motion.div>
       ))}
     </div>
+    </>
   );
 }

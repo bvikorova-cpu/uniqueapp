@@ -9,6 +9,7 @@ import { GraduationCap, CheckCircle, ArrowRight, Trophy } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const courses = [
   {
@@ -151,7 +152,12 @@ const SafetyCourses = () => {
     const course = courses.find(c => c.id === courseId);
     if (!course) return 0;
     const completed = course.lessons.filter(l => isLessonCompleted(courseId, l.id)).length;
-    return (completed / course.lessons.length) * 100;
+    return (
+    <>
+      <FloatingHowItWorks title={"Safety Courses - How it works"} steps={[{ title: 'Open', desc: 'Access the Safety Courses section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Safety Courses.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      completed / course.lessons.length
+    </>
+  ) * 100;
   };
 
   const currentCourse = courses.find(c => c.id === selectedCourse);

@@ -11,6 +11,7 @@ import { Loader2, Mail, Heart, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const VirtualPostcards = () => {
   const { toast } = useToast();
@@ -62,7 +63,9 @@ export const VirtualPostcards = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Virtual Postcards - How it works"} steps={[{ title: 'Open', desc: 'Access the Virtual Postcards section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Virtual Postcards.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><Mail className="h-5 w-5 text-primary" />Virtual Postcards</CardTitle>
@@ -129,5 +132,6 @@ export const VirtualPostcards = () => {
         </div>
       )}
     </div>
+    </>
   );
 };

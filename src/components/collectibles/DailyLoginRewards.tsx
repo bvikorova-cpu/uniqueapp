@@ -6,6 +6,7 @@ import { Gift, Flame, Star, Zap, Crown } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { userId: string; }
 
@@ -72,7 +73,9 @@ export default function DailyLoginRewards({ userId }: Props) {
   const currentDay = streakData?.currentDay || 1;
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Daily Login Rewards - How it works"} steps={[{ title: 'Open', desc: 'Access the Daily Login Rewards section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Daily Login Rewards.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Card className="p-6 bg-gradient-to-br from-lime-500/10 to-green-500/10 border-lime-500/20">
         <div className="flex items-center gap-3 mb-4">
           <Flame className="h-8 w-8 text-orange-400" />
@@ -126,5 +129,6 @@ export default function DailyLoginRewards({ userId }: Props) {
         )}
       </Card>
     </div>
+    </>
   );
 }

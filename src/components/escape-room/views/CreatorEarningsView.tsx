@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, DollarSign, TrendingUp, Users, BarChart3 } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -20,7 +21,9 @@ export function CreatorEarningsView({ onBack }: Props) {
   ];
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Creator Earnings View - How it works"} steps={[{ title: 'Open', desc: 'Access the Creator Earnings View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Creator Earnings View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
@@ -67,5 +70,6 @@ export function CreatorEarningsView({ onBack }: Props) {
         </Card>
       </div>
     </div>
+    </>
   );
 }

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useHandwritingCredits } from "@/hooks/useHandwritingCredits";
 import { Coins, Plus, Sparkles, Crown, Zap, PenTool } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const HandwritingCreditsDisplay = () => {
   const { credits, isLoading, purchaseCredits } = useHandwritingCredits();
@@ -26,7 +27,9 @@ export const HandwritingCreditsDisplay = () => {
   ];
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Handwriting Credits Display - How it works"} steps={[{ title: 'Open', desc: 'Access the Handwriting Credits Display section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Handwriting Credits Display.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       {/* Balance */}
       <Card className="bg-card/60 backdrop-blur-sm border-border/50">
         <CardContent className="p-4 sm:p-6">
@@ -95,5 +98,6 @@ export const HandwritingCreditsDisplay = () => {
         })}
       </div>
     </div>
+    </>
   );
 };

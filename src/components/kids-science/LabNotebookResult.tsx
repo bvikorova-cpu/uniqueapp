@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sparkles, FlaskConical, BookOpen, Lightbulb } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface LabNotebookResultProps {
   result: {
@@ -19,7 +20,9 @@ export const LabNotebookResult = ({ result, category: _category }: LabNotebookRe
     ? result.funFacts.filter((f) => typeof f === "string" && f.trim())
     : [];
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Lab Notebook Result - How it works"} steps={[{ title: 'Open', desc: 'Access the Lab Notebook Result section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Lab Notebook Result.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -112,5 +115,6 @@ export const LabNotebookResult = ({ result, category: _category }: LabNotebookRe
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 };

@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 import { LucideIcon } from "lucide-react";
 import shadowVideo from "@/assets/shadow-arena-hero.mp4.asset.json";
 import shadowPoster from "@/assets/shadow-arena-poster.jpg";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   icon: LucideIcon;
@@ -25,7 +26,9 @@ export function GothicPageHeader({
   height = "h-[280px] md:h-[340px]",
 }: Props) {
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Gothic Page Header - How it works"} steps={[{ title: 'Open', desc: 'Access the Gothic Page Header section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Gothic Page Header.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       className={`relative overflow-hidden rounded-3xl border border-red-900/30 mb-8 shadow-[0_0_50px_-15px_rgba(127,29,29,0.5)] ${height}`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -99,5 +102,6 @@ export function GothicPageHeader({
         )}
       </div>
     </motion.div>
+    </>
   );
 }

@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Sparkles, Wand2 } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ContentGeneratorProps {
   influencerId: string;
@@ -176,7 +177,9 @@ const ContentGenerator = ({ influencerId, influencer }: ContentGeneratorProps) =
   });
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <>
+      <FloatingHowItWorks title={"Content Generator - How it works"} steps={[{ title: 'Open', desc: 'Access the Content Generator section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Content Generator.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <Card className="p-6">
         <h3 className="text-lg font-semibold mb-4">Generate New Content</h3>
         
@@ -288,6 +291,7 @@ const ContentGenerator = ({ influencerId, influencer }: ContentGeneratorProps) =
         )}
       </Card>
     </div>
+    </>
   );
 };
 

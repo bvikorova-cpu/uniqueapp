@@ -5,6 +5,7 @@ import { Leaf, Plus, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const MyPlants = () => {
   const [plants, setPlants] = useState<any[]>([]);
@@ -67,10 +68,13 @@ export const MyPlants = () => {
 
   if (loading) {
     return (
+    <>
+      <FloatingHowItWorks title={"My Plants - How it works"} steps={[{ title: 'Open', desc: 'Access the My Plants section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in My Plants.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="p-6">
         <p className="text-center">Loading your plants...</p>
       </Card>
-    );
+    </>
+  );
   }
 
   return (

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Crown, Medal, Trophy, Star, TrendingUp, Users } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   onBack: () => void;
@@ -52,7 +53,9 @@ export const ComedianHallOfFame = ({ onBack }: Props) => {
   ];
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Comedian Hall Of Fame - How it works"} steps={[{ title: 'Open', desc: 'Access the Comedian Hall Of Fame section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Comedian Hall Of Fame.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={onBack}>
           <ArrowLeft className="h-4 w-4 mr-1" /> Back
@@ -118,5 +121,6 @@ export const ComedianHallOfFame = ({ onBack }: Props) => {
         </div>
       </Card>
     </div>
+    </>
   );
 };

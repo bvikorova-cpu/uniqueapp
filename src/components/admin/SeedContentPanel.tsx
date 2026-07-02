@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Sparkles, Trash2, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 /**
  * Admin-only tool to populate the platform with demo content so the
@@ -44,7 +45,9 @@ export function SeedContentPanel() {
   );
 
   return (
-    <Card className="p-4 sm:p-6 space-y-4">
+    <>
+      <FloatingHowItWorks title={"Seed Content Panel - How it works"} steps={[{ title: 'Open', desc: 'Access the Seed Content Panel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Seed Content Panel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-4 sm:p-6 space-y-4">
       <div>
         <h3 className="font-bold text-lg flex items-center gap-2">
           <Sparkles className="h-5 w-5 text-amber-400" /> Seed Demo Content
@@ -63,5 +66,6 @@ export function SeedContentPanel() {
         <Btn id="purge" label="Purge demo rows" icon={Trash2} variant="destructive" />
       </div>
     </Card>
+    </>
   );
 }

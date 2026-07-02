@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const TournamentHub = () => {
   const { user } = useAuth();
@@ -160,7 +161,9 @@ export const TournamentHub = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Tournament Hub - How it works"} steps={[{ title: 'Open', desc: 'Access the Tournament Hub section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Tournament Hub.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Card className="relative overflow-hidden border-border/30 bg-card/90 backdrop-blur-xl p-6">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-yellow-500 via-amber-500 to-orange-500" />
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -337,5 +340,6 @@ export const TournamentHub = () => {
         </DialogContent>
       </Dialog>
     </div>
+    </>
   );
 };

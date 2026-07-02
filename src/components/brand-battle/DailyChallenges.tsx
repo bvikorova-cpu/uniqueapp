@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Target, Flame, Gift, Trophy, Share2, Zap, Calendar, Star, Rocket, Users, Crown, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Challenge {
   id: string;
@@ -77,7 +78,9 @@ export const DailyChallenges = ({ currentStreak = 0, totalVotesCast = 0 }: Daily
   const totalReward = enrichedChallenges.reduce((sum, c) => sum + c.reward, 0);
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Daily Challenges - How it works"} steps={[{ title: 'Open', desc: 'Access the Daily Challenges section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Daily Challenges.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       {/* Multiplier banner */}
       <Card className="backdrop-blur-xl bg-card/80 border-primary/20 overflow-hidden relative">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5" />
@@ -251,5 +254,6 @@ export const DailyChallenges = ({ currentStreak = 0, totalVotesCast = 0 }: Daily
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };

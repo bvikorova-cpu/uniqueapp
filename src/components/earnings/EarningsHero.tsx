@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Coins, TrendingUp, Wallet, Banknote } from "lucide-react";
 import heroVideo from "@/assets/earnings-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface EarningsHeroProps {
   title?: string;
@@ -36,7 +37,9 @@ export const EarningsHero = ({
   ];
 
   return (
-    <div className="relative w-full h-[360px] sm:h-[440px] rounded-3xl overflow-hidden mb-8">
+    <>
+      <FloatingHowItWorks title={"Earnings Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Earnings Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Earnings Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative w-full h-[360px] sm:h-[440px] rounded-3xl overflow-hidden mb-8">
       <video
         autoPlay
         muted
@@ -93,5 +96,6 @@ export const EarningsHero = ({
         </motion.div>
       </div>
     </div>
+    </>
   );
 };

@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Palette, Save } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface KitState {
   business_name: string; business_type: string; logo_url: string; tagline: string;
@@ -85,7 +86,9 @@ export const BrandKitView = ({ onBack }: { onBack: () => void }) => {
   if (loading) return <div className="flex justify-center py-12"><Loader2 className="h-8 w-8 animate-spin" /></div>;
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Brand Kit View - How it works"} steps={[{ title: 'Open', desc: 'Access the Brand Kit View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Brand Kit View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4">← Back</Button>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center"><Palette className="w-6 h-6 text-white" /></div>
@@ -121,5 +124,6 @@ export const BrandKitView = ({ onBack }: { onBack: () => void }) => {
         </CardContent></Card>
       </CardContent></Card>
     </div>
+    </>
   );
 };

@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import confetti from "canvas-confetti";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface QuizQuestion {
   question: string;
@@ -39,7 +40,12 @@ export const MultiQuestionQuiz = ({ questions, onComplete, onBack }: Props) => {
         return prev - 1;
       });
     }, 1000);
-    return () => clearInterval(interval);
+    return (
+    <>
+      <FloatingHowItWorks title={"Multi Question Quiz - How it works"} steps={[{ title: 'Open', desc: 'Access the Multi Question Quiz section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Multi Question Quiz.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(interval);
   }, [currentQ, answered, isComplete]);
 
   const handleTimeout = () => {

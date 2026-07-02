@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Users, Shield, Heart, CheckCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface HeroCampaign {
   id: string;
@@ -47,7 +48,9 @@ export const HeroCampaignCard = ({ campaign }: { campaign: HeroCampaign }) => {
   const urgency = getUrgencyBadge();
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Hero Campaign Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Hero Campaign Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Hero Campaign Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -128,5 +131,6 @@ export const HeroCampaignCard = ({ campaign }: { campaign: HeroCampaign }) => {
         </CardFooter>
       </Card>
     </motion.div>
+    </>
   );
 };

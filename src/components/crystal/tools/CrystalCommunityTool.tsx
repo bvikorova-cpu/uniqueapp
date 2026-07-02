@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { MessageCircle, Plus, Send, Loader2, Heart } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export const CrystalCommunityTool = () => {
   const [posts, setPosts] = useState<any[]>([]);
@@ -50,7 +51,9 @@ export const CrystalCommunityTool = () => {
   if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin" /></div>;
 
   return (
-    <Card className="bg-card/80 backdrop-blur-xl border-border/50">
+    <>
+      <FloatingHowItWorks title={"Crystal Community Tool - How it works"} steps={[{ title: 'Open', desc: 'Access the Crystal Community Tool section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Crystal Community Tool.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/80 backdrop-blur-xl border-border/50">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent flex items-center gap-2">
@@ -93,5 +96,6 @@ export const CrystalCommunityTool = () => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

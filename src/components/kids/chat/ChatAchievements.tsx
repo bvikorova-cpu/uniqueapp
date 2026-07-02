@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Trophy, Lock, Star, MessageCircle, Users, Sparkles } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Achievement {
   id: string;
@@ -41,7 +42,9 @@ export function ChatAchievements({ messagesSent, charactersUsed, reactionsGiven 
   const unlockedCount = ACHIEVEMENTS.filter(isUnlocked).length;
 
   return (
-    <div className="space-y-3">
+    <>
+      <FloatingHowItWorks title={"Chat Achievements - How it works"} steps={[{ title: 'Open', desc: 'Access the Chat Achievements section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Chat Achievements.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-3">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-bold text-gray-700 flex items-center gap-1.5">
           <Trophy className="h-4 w-4 text-yellow-500" />
@@ -116,5 +119,6 @@ export function ChatAchievements({ messagesSent, charactersUsed, reactionsGiven 
         )}
       </AnimatePresence>
     </div>
+    </>
   );
 }

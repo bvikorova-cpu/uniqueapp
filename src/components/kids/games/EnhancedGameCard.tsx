@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Gamepad2, Star, Lock, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface GameCardProps {
   game: {
@@ -37,7 +38,9 @@ export function EnhancedGameCard({ game, index, isUnlocked, bestScore, onPlay }:
   const diffGradient = DIFFICULTY_COLORS[game.difficulty] || "from-gray-400 to-gray-500";
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Enhanced Game Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Enhanced Game Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Enhanced Game Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 40, rotateX: -10 }}
       animate={{ opacity: 1, y: 0, rotateX: 0 }}
       transition={{ type: "spring", stiffness: 200, damping: 15, delay: index * 0.08 }}
@@ -133,5 +136,6 @@ export function EnhancedGameCard({ game, index, isUnlocked, bestScore, onPlay }:
         </motion.div>
       </div>
     </motion.div>
+    </>
   );
 }

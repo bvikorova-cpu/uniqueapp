@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Trophy, Target, TrendingUp, Star, Flame, CheckCircle2 } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const milestones = [
   { label: "10 tasks completed", progress: 80, icon: "📝", earned: false },
@@ -20,7 +21,9 @@ const recommendations = [
 
 export const WeeklyDigest = () => {
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Weekly Digest - How it works"} steps={[{ title: 'Open', desc: 'Access the Weekly Digest section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Weekly Digest.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}>
         <Card>
           <CardHeader>
@@ -74,5 +77,6 @@ export const WeeklyDigest = () => {
         </Card>
       </motion.div>
     </div>
+    </>
   );
 };

@@ -6,6 +6,7 @@ import {
   FolderOpen, Search, BarChart3, Palette, Wand2, ShoppingBag,
   Star, Layers, Eye, ShieldCheck, Crown, Trophy, Eraser, FolderUp, PieChart, Users
 } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface StockContentToolGridProps {
   onToolSelect: (tool: string) => void;
@@ -38,7 +39,9 @@ const tools = [
 
 export function StockContentToolGrid({ onToolSelect }: StockContentToolGridProps) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
+    <>
+      <FloatingHowItWorks title={"Stock Content Tool Grid - How it works"} steps={[{ title: 'Open', desc: 'Access the Stock Content Tool Grid section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Stock Content Tool Grid.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
       {tools.map((tool, i) => {
         const Icon = tool.icon;
         return (
@@ -70,5 +73,6 @@ export function StockContentToolGrid({ onToolSelect }: StockContentToolGridProps
         );
       })}
     </div>
+    </>
   );
 }

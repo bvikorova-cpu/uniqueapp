@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Trophy, Crown, Medal, Loader2, Gift } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   category: string;
@@ -74,7 +75,12 @@ export default function MegatalentLeaderboard({ category, categories }: Props) {
       }
     };
     load();
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Megatalent Leaderboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Leaderboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Leaderboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       cancelled = true;
     };
   }, [category, categories, period]);

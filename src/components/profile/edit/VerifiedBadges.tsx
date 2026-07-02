@@ -1,4 +1,5 @@
 import { BadgeCheck, Phone, IdCard, CreditCard, AtSign } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export interface VerifiedBadgesState {
   email: boolean;
@@ -23,7 +24,9 @@ export const VerifiedBadges = ({ state, onStartVerification }: Props) => {
   const verifiedCount = Object.values(state).filter(Boolean).length;
 
   return (
-    <div className="rounded-2xl border border-border/50 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl p-5 sm:p-6 mb-6">
+    <>
+      <FloatingHowItWorks title={"Verified Badges - How it works"} steps={[{ title: 'Open', desc: 'Access the Verified Badges section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Verified Badges.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="rounded-2xl border border-border/50 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl p-5 sm:p-6 mb-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <BadgeCheck className="h-5 w-5 text-sky-400" />
@@ -64,5 +67,6 @@ export const VerifiedBadges = ({ state, onStartVerification }: Props) => {
         })}
       </div>
     </div>
+    </>
   );
 };

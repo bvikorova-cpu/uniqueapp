@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink, ShoppingBag, Star } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Product {
   name: string; brand: string; price: string; rating: number; concern: string; url: string; emoji: string;
@@ -20,7 +21,9 @@ const PRODUCTS: Product[] = [
 
 export default function FutureFaceShop() {
   return (
-    <div className="mb-8 space-y-4">
+    <>
+      <FloatingHowItWorks title={"Future Face Shop - How it works"} steps={[{ title: 'Open', desc: 'Access the Future Face Shop section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Future Face Shop.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="mb-8 space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-xl sm:text-2xl font-black">🛍️ Skincare Picks</h2>
         <Badge variant="outline" className="text-[10px]">Affiliate</Badge>
@@ -52,5 +55,6 @@ export default function FutureFaceShop() {
         ))}
       </div>
     </div>
+    </>
   );
 }

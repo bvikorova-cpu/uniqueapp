@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Gift, Users, Crown, Star, Gem, Flame } from "lucide-react";
 import heroVideo from "@/assets/mystery-box-hero.mp4.asset.json";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 /**
  * Real, cached stats from DB (no random/fake live ticking — EU consumer compliance).
@@ -44,7 +45,9 @@ export const MysteryBoxHero = () => {
   ];
 
   return (
-    <div className="mb-8">
+    <>
+      <FloatingHowItWorks title={"Mystery Box Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Mystery Box Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Mystery Box Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="mb-8">
       {/* Video Hero */}
       <div className="relative w-full h-[40vh] md:h-[50vh] overflow-hidden rounded-2xl border border-yellow-500/30 shadow-[0_0_60px_rgba(255,215,0,0.12)]">
         <video
@@ -131,5 +134,6 @@ export const MysteryBoxHero = () => {
         ))}
       </div>
     </div>
+    </>
   );
 };

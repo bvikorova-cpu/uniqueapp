@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Heart, Zap } from "lucide-react";
 import { useState, useEffect } from "react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const mockDonations = [
   { donor: "A supporter", amount: 50, crisis: "Flood Relief — Manila" },
@@ -17,7 +18,12 @@ export function CrisisImpactTicker() {
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % mockDonations.length);
     }, 4000);
-    return () => clearInterval(interval);
+    return (
+    <>
+      <FloatingHowItWorks title={"Crisis Impact Ticker - How it works"} steps={[{ title: 'Open', desc: 'Access the Crisis Impact Ticker section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Crisis Impact Ticker.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(interval);
   }, []);
 
   const donation = mockDonations[current];

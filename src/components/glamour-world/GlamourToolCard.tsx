@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Coins } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface GlamourToolCardProps {
   id: string;
@@ -15,7 +16,9 @@ interface GlamourToolCardProps {
 
 export function GlamourToolCard({ icon: Icon, title, description, badge, credits, gradient, onClick }: GlamourToolCardProps) {
   return (
-    <Button
+    <>
+      <FloatingHowItWorks title={"Glamour Tool Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Glamour Tool Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Glamour Tool Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Button
       variant="ghost"
       className={`h-auto p-4 flex flex-col items-start gap-2 bg-gradient-to-br ${gradient} border border-pink-200/20 hover:border-pink-400/40 rounded-xl transition-all hover:scale-[1.02] w-full text-left`}
       onClick={onClick}
@@ -42,5 +45,6 @@ export function GlamourToolCard({ icon: Icon, title, description, badge, credits
         <p className="text-xs text-muted-foreground line-clamp-2">{description}</p>
       </div>
     </Button>
+    </>
   );
 }

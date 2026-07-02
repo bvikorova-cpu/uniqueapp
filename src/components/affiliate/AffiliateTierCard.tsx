@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Award, Crown, Gem, Medal, Sparkles, TrendingUp } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const TIER_META: Record<string, { icon: typeof Award; color: string; gradient: string }> = {
   bronze: { icon: Medal, color: "text-amber-700", gradient: "from-amber-700/20 to-amber-900/10" },
@@ -66,7 +67,9 @@ export const AffiliateTierCard = () => {
   const remaining = next ? Math.max(0, next.min_referrals - status.approved_referrals) : 0;
 
   return (
-    <Card className={`p-5 bg-gradient-to-br ${meta.gradient} border-border/50 backdrop-blur-xl`}>
+    <>
+      <FloatingHowItWorks title={"Affiliate Tier Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Affiliate Tier Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Affiliate Tier Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className={`p-5 bg-gradient-to-br ${meta.gradient} border-border/50 backdrop-blur-xl`}>
       <div className="flex items-start justify-between gap-3 mb-4">
         <div className="flex items-center gap-3">
           <div className={`p-3 rounded-xl bg-background/40 ${meta.color}`}>
@@ -135,5 +138,6 @@ export const AffiliateTierCard = () => {
         </ul>
       </div>
     </Card>
+    </>
   );
 };

@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Trash2, Plus, Check, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export interface BrandVoice {
   id: string;
@@ -81,7 +82,9 @@ export function ForgeBrandVoice({ open, onClose, onSelect }: Props) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
+    <>
+      <FloatingHowItWorks title={"Forge Brand Voice - How it works"} steps={[{ title: 'Open', desc: 'Access the Forge Brand Voice section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Forge Brand Voice.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Brand Voices</DialogTitle>
@@ -132,5 +135,6 @@ export function ForgeBrandVoice({ open, onClose, onSelect }: Props) {
         )}
       </DialogContent>
     </Dialog>
+    </>
   );
 }

@@ -16,6 +16,7 @@ import { Video, Radio } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface GoLiveButtonProps {
   influencerId: string;
@@ -68,7 +69,9 @@ export function GoLiveButton({ influencerId }: GoLiveButtonProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+      <FloatingHowItWorks title={"Go Live Button - How it works"} steps={[{ title: 'Open', desc: 'Access the Go Live Button section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Go Live Button.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="gap-2 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700">
           <Radio className="h-4 w-4 animate-pulse" />
@@ -136,5 +139,6 @@ export function GoLiveButton({ influencerId }: GoLiveButtonProps) {
         </DialogFooter>
       </DialogContent>
     </Dialog>
+    </>
   );
 }

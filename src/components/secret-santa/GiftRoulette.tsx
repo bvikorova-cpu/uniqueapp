@@ -8,6 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { Shuffle, Gift, Sparkles, Loader2, Users, Zap } from "lucide-react";
 import { GiftConfetti } from "./GiftConfetti";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const ROULETTE_TIERS = [
   { id: "casual", label: "Casual Roulette", cost: 10, minValue: 5, maxValue: 30, emoji: "🎲", color: "from-green-500 to-emerald-600", desc: "Random gift worth 5-30 credits" },
@@ -104,7 +105,9 @@ export const GiftRoulette = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Gift Roulette - How it works"} steps={[{ title: 'Open', desc: 'Access the Gift Roulette section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Gift Roulette.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <GiftConfetti trigger={showConfetti} type="mystery" />
 
       {/* Header */}
@@ -201,5 +204,6 @@ export const GiftRoulette = () => {
         </div>
       </Card>
     </div>
+    </>
   );
 };

@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { useKidsDrawingGallery } from "@/hooks/useKidsDrawingGallery";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface DrawingCanvasProps {
   tutorialImage?: string;
@@ -81,7 +82,12 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category }: DrawingCa
 
     setFabricCanvas(canvas);
 
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Drawing Canvas - How it works"} steps={[{ title: 'Open', desc: 'Access the Drawing Canvas section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Drawing Canvas.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       canvas.off("path:created", saveState);
       canvas.off("object:modified", saveState);
       canvas.off("object:removed", saveState);

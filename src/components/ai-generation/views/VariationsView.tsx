@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props { onCreditsUsed: () => void; }
 
@@ -36,7 +37,9 @@ export const VariationsView = ({ onCreditsUsed }: Props) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <>
+      <FloatingHowItWorks title={"Variations View - How it works"} steps={[{ title: 'Open', desc: 'Access the Variations View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Variations View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="max-w-4xl mx-auto space-y-6">
       <div>
         <h2 className="text-2xl font-black mb-2">🎨 AI Image Variations</h2>
         <p className="text-muted-foreground text-sm">Generate 4 unique variations from a single prompt. Cost: 8 CR total (2 CR each)</p>
@@ -65,5 +68,6 @@ export const VariationsView = ({ onCreditsUsed }: Props) => {
         </div>
       )}
     </div>
+    </>
   );
 };

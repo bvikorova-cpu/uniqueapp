@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Terminal, Shield, Activity, Database, Zap, Users } from "lucide-react";
 import heroVideo from "@/assets/admin-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   totalUsers: number;
@@ -17,7 +18,9 @@ export const AdminHero = ({ totalUsers, premiumUsers, monthlyRevenue }: Props) =
   ];
 
   return (
-    <div className="relative w-full min-h-[460px] sm:min-h-[440px] sm:h-[440px] rounded-3xl overflow-hidden mb-8 border border-primary/30 shadow-2xl shadow-primary/10">
+    <>
+      <FloatingHowItWorks title={"Admin Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Admin Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Admin Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative w-full min-h-[460px] sm:min-h-[440px] sm:h-[440px] rounded-3xl overflow-hidden mb-8 border border-primary/30 shadow-2xl shadow-primary/10">
       <video
         autoPlay
         muted
@@ -84,5 +87,6 @@ export const AdminHero = ({ totalUsers, premiumUsers, monthlyRevenue }: Props) =
         </motion.div>
       </div>
     </div>
+    </>
   );
 };

@@ -3,6 +3,7 @@ import { useCollectibles } from "@/hooks/useCollectibles";
 import { Loader2 } from "lucide-react";
 import CollectibleCard from "./CollectibleCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface MyCollectionProps {
   userId: string;
@@ -13,10 +14,13 @@ export default function MyCollection({ userId }: MyCollectionProps) {
 
   if (isLoadingMy) {
     return (
+    <>
+      <FloatingHowItWorks title={"My Collection - How it works"} steps={[{ title: 'Open', desc: 'Access the My Collection section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in My Collection.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="flex items-center justify-center p-12">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
-    );
+    </>
+  );
   }
 
   if (!myCollectibles || myCollectibles.length === 0) {

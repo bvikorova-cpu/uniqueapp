@@ -14,6 +14,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { format } from "date-fns";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface PendingPayout {
   id: string;
@@ -142,7 +143,9 @@ export function CampaignPayoutReviews() {
   };
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Campaign Payout Reviews - How it works"} steps={[{ title: 'Open', desc: 'Access the Campaign Payout Reviews section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Campaign Payout Reviews.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold flex items-center gap-2">
@@ -267,5 +270,6 @@ export function CampaignPayoutReviews() {
         </DialogContent>
       </Dialog>
     </div>
+    </>
   );
 }

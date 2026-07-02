@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Heart, Sword, Shield, Zap } from "lucide-react";
 import { LevelBadge } from "@/components/character/LevelBadge";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Character {
   id: string;
@@ -33,7 +34,9 @@ export const CharacterSelector = ({
   position
 }: CharacterSelectorProps) => {
   return (
-    <Card className="bg-black/40 backdrop-blur-lg border-purple-500/50 p-6">
+    <>
+      <FloatingHowItWorks title={"Character Selector - How it works"} steps={[{ title: 'Open', desc: 'Access the Character Selector section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Character Selector.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-black/40 backdrop-blur-lg border-purple-500/50 p-6">
       <h2 className="text-3xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
         {label}
       </h2>
@@ -144,5 +147,6 @@ export const CharacterSelector = ({
         </div>
       )}
     </Card>
+    </>
   );
 };

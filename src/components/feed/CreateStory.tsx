@@ -17,6 +17,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export default function CreateStory() {
   const queryClient = useQueryClient();
@@ -97,7 +98,9 @@ export default function CreateStory() {
   });
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+      <FloatingHowItWorks title={"Create Story - How it works"} steps={[{ title: 'Open', desc: 'Access the Create Story section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Create Story.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="w-full gap-2">
           <Plus className="h-4 w-4" />
@@ -219,5 +222,6 @@ export default function CreateStory() {
         </div>
       </DialogContent>
     </Dialog>
+    </>
   );
 }

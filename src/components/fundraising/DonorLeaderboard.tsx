@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Crown, Heart, Users } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const TIERS = [
   { name: "Diamond", min: 500, color: "from-cyan-400 to-blue-500", emoji: "💎" },
@@ -10,7 +11,9 @@ const TIERS = [
 
 export function DonorLeaderboard() {
   return (
-    <section className="py-12 px-4">
+    <>
+      <FloatingHowItWorks title={"Donor Leaderboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Donor Leaderboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Donor Leaderboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <section className="py-12 px-4">
       <div className="max-w-lg mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -58,5 +61,6 @@ export function DonorLeaderboard() {
         </motion.div>
       </div>
     </section>
+    </>
   );
 }

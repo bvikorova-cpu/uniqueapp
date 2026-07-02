@@ -1,9 +1,12 @@
 import { Card } from "@/components/ui/card";
 import { Flame, BarChart3, Trophy } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function StockContentEngagement() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+    <>
+      <FloatingHowItWorks title={"Stock Content Engagement - How it works"} steps={[{ title: 'Open', desc: 'Access the Stock Content Engagement section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Stock Content Engagement.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
       {/* Streak */}
       <Card className="p-4 md:p-5 bg-gradient-to-br from-orange-500/10 to-red-500/10 border-orange-500/20">
         <div className="flex items-center gap-3">
@@ -46,5 +49,6 @@ export function StockContentEngagement() {
         </div>
       </Card>
     </div>
+    </>
   );
 }

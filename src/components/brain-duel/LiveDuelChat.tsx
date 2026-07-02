@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { MessageCircle, Send, X, Minimize2, Maximize2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ChatMessage {
   id: string;
@@ -49,7 +50,12 @@ export const LiveDuelChat = ({ matchId, isMinimized: externalMinimized, onToggle
       })
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); };
+    return (
+    <>
+      <FloatingHowItWorks title={"Live Duel Chat - How it works"} steps={[{ title: 'Open', desc: 'Access the Live Duel Chat section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Live Duel Chat.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => { supabase.removeChannel(channel); };
   }, [channelName, isOpen, isMinimized]);
 
   useEffect(() => {

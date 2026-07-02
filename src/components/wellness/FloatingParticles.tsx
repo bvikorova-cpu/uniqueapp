@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function FloatingParticles() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -80,7 +81,12 @@ export function FloatingParticles() {
     animate();
 
     window.addEventListener("resize", resize);
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Floating Particles - How it works"} steps={[{ title: 'Open', desc: 'Access the Floating Particles section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Floating Particles.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       window.removeEventListener("resize", resize);
       cancelAnimationFrame(animationId);
     };

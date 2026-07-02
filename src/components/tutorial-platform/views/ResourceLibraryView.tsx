@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, BookMarked, Download, FileText, Video, Image, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const resources = [
   { id: 1, title: "Course Slide Template Pack", type: "Template", format: "PPTX", downloads: 1240, icon: FileText, rating: 4.8, free: true },
@@ -37,7 +38,9 @@ export function ResourceLibraryView({ onBack }: Props) {
   };
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Resource Library View - How it works"} steps={[{ title: 'Open', desc: 'Access the Resource Library View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Resource Library View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <div className="flex items-center gap-3 mb-2">
         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-lime-500 to-green-600 flex items-center justify-center shadow-lg">
@@ -84,5 +87,6 @@ export function ResourceLibraryView({ onBack }: Props) {
         })}
       </div>
     </div>
+    </>
   );
 }

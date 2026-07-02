@@ -6,6 +6,7 @@ import { Loader2, FileDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import jsPDF from "jspdf";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export default function FutureFaceMonthlyReport() {
   const [busy, setBusy] = useState(false);
@@ -91,7 +92,9 @@ export default function FutureFaceMonthlyReport() {
   };
 
   return (
-    <div className="mb-8 space-y-4">
+    <>
+      <FloatingHowItWorks title={"Future Face Monthly Report - How it works"} steps={[{ title: 'Open', desc: 'Access the Future Face Monthly Report section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Future Face Monthly Report.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="mb-8 space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-xl sm:text-2xl font-black">📄 Monthly PDF Report</h2>
         <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">Free</Badge>
@@ -106,5 +109,6 @@ export default function FutureFaceMonthlyReport() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

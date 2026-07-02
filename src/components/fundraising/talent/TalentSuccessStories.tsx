@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Trophy, Star, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const stories = [
   {
@@ -30,7 +31,9 @@ export const TalentSuccessStories = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="py-12">
+    <>
+      <FloatingHowItWorks title={"Talent Success Stories - How it works"} steps={[{ title: 'Open', desc: 'Access the Talent Success Stories section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Talent Success Stories.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="py-12">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -85,5 +88,6 @@ export const TalentSuccessStories = () => {
         </Button>
       </motion.div>
     </div>
+    </>
   );
 };

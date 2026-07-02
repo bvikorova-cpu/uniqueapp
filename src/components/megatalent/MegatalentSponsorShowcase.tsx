@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Building2, ExternalLink, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   category?: string;
@@ -37,7 +38,12 @@ export default function MegatalentSponsorShowcase({ category }: Props) {
       setSponsors(rows);
       setLoading(false);
     })();
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Megatalent Sponsor Showcase - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Sponsor Showcase section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Sponsor Showcase.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       cancelled = true;
     };
   }, [category]);

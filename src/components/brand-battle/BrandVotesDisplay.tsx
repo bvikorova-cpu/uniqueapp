@@ -5,6 +5,7 @@ import { Vote, ShoppingCart } from 'lucide-react';
 import { useState } from 'react';
 import { BuyVotesDialog } from './BuyVotesDialog';
 import { motion } from 'framer-motion';
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const BrandVotesDisplay = () => {
   const { data: votes, isLoading } = useBrandVotes();
@@ -18,6 +19,8 @@ export const BrandVotesDisplay = () => {
 
   return (
     <>
+      <FloatingHowItWorks title={"Brand Votes Display - How it works"} steps={[{ title: 'Open', desc: 'Access the Brand Votes Display section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Brand Votes Display.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <>
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
         <Card className="p-4 backdrop-blur-xl bg-card/80 border-primary/10">
           <div className="flex items-center justify-between gap-4">
@@ -59,6 +62,7 @@ export const BrandVotesDisplay = () => {
       </motion.div>
 
       <BuyVotesDialog open={showBuyDialog} onOpenChange={setShowBuyDialog} />
+    </>
     </>
   );
 };

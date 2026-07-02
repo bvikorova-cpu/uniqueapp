@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { useBrainDuelPowerups } from '@/hooks/useBrainDuelPowerups';
 import { motion } from 'framer-motion';
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Question {
   id: string;
@@ -91,7 +92,9 @@ export const EnhancedGameUI = ({
   ];
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Enhanced Game U I - How it works"} steps={[{ title: 'Open', desc: 'Access the Enhanced Game U I section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Enhanced Game U I.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       {/* Top Bar */}
       <Card className="p-4 backdrop-blur-xl bg-card/80 border-primary/10 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-orange-500/5" />
@@ -284,5 +287,6 @@ export const EnhancedGameUI = ({
         <span className="text-green-500 font-semibold">Win: +{match.win_reward} credits</span>
       </div>
     </div>
+    </>
   );
 };

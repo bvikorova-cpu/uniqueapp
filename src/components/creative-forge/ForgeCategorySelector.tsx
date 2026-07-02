@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Music, Film, Theater, BookOpen, Feather, Mic2, Podcast, Megaphone, Sparkles } from "lucide-react";
 import { CreativeCategory, CREDIT_COSTS } from "@/hooks/useCreativeForgeCredits";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const CATEGORIES = [
   { id: "song_lyrics", name: "Song Lyrics", icon: Music, description: "Professional lyrics with verses, chorus & bridge structure", emoji: "🎵", gradient: "from-pink-500/15 to-rose-500/10" },
@@ -21,7 +22,9 @@ interface ForgeCategorySelectorProps {
 
 export function ForgeCategorySelector({ selected, onSelect }: ForgeCategorySelectorProps) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <>
+      <FloatingHowItWorks title={"Forge Category Selector - How it works"} steps={[{ title: 'Open', desc: 'Access the Forge Category Selector section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Forge Category Selector.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
       {CATEGORIES.map((cat, i) => {
         const isSelected = selected === cat.id;
         const Icon = cat.icon;
@@ -79,6 +82,7 @@ export function ForgeCategorySelector({ selected, onSelect }: ForgeCategorySelec
         );
       })}
     </div>
+    </>
   );
 }
 

@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
 import heroVideo from "@/assets/skill-swap-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Profile {
   id: string;
@@ -68,13 +69,16 @@ export const UserProfile = () => {
 
   if (!profile || !userId || userId === 'undefined') {
     return (
+    <>
+      <FloatingHowItWorks title={"User Profile - How it works"} steps={[{ title: 'Open', desc: 'Access the User Profile section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in User Profile.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Card className="p-8 text-center bg-card/80 backdrop-blur-xl border-border/50">
           <p className="text-muted-foreground">Profile not found</p>
           <Button onClick={() => navigate('/skill-swap')} className="mt-4">Back to Skill Swap</Button>
         </Card>
       </div>
-    );
+    </>
+  );
   }
 
   return (

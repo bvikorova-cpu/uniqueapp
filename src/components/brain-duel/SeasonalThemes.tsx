@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const SeasonalThemes = () => {
   const { data: themes } = useQuery({
@@ -21,7 +22,9 @@ export const SeasonalThemes = () => {
   if (!activeTheme) return null;
 
   return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+    <>
+      <FloatingHowItWorks title={"Seasonal Themes - How it works"} steps={[{ title: 'Open', desc: 'Access the Seasonal Themes section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Seasonal Themes.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
       <Card
         className="border-primary/20 overflow-hidden relative"
         style={{
@@ -64,5 +67,6 @@ export const SeasonalThemes = () => {
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 };

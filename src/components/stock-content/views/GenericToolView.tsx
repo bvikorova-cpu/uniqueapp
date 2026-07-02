@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Construction } from "lucide-react";
 import { type LucideIcon } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface GenericToolViewProps {
   onBack: () => void;
@@ -17,7 +18,9 @@ interface GenericToolViewProps {
 
 export function GenericToolView({ onBack, title, description, icon: Icon, iconColor, credits, features }: GenericToolViewProps) {
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Generic Tool View - How it works"} steps={[{ title: 'Open', desc: 'Access the Generic Tool View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Generic Tool View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-1" /> Back</Button>
         <h2 className="text-2xl font-bold flex items-center gap-2"><Icon className={`w-6 h-6 ${iconColor}`} /> {title}</h2>
@@ -57,5 +60,6 @@ export function GenericToolView({ onBack, title, description, icon: Icon, iconCo
         </Button>
       </Card>
     </div>
+    </>
   );
 }

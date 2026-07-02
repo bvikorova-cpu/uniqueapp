@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Sparkles, Palette, Check, Star } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const presetColors = [
   { name: "Neon Cyan", hex: "#00e5ff", premium: false },
@@ -50,7 +51,9 @@ export function CarPaintStudio({ onBack }: { onBack: () => void }) {
   const [customColor, setCustomColor] = useState("#00e5ff");
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Car Paint Studio - How it works"} steps={[{ title: 'Open', desc: 'Access the Car Paint Studio section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Car Paint Studio.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={onBack} className="text-cyan-400 hover:bg-cyan-950/30">
           <ArrowLeft className="h-5 w-5" />
@@ -182,5 +185,6 @@ export function CarPaintStudio({ onBack }: { onBack: () => void }) {
         </div>
       </div>
     </div>
+    </>
   );
 }

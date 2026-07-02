@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAnalyzerCredits } from "@/hooks/useAnalyzerCredits";
 import { reserveAnalyzerCredits } from "../creditUtils";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const CREDIT_COST = 2;
 
@@ -40,7 +41,9 @@ export const BarcodeScannerView = ({ onBack }: { onBack: () => void }) => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
+    <>
+      <FloatingHowItWorks title={"Barcode Scanner View - How it works"} steps={[{ title: 'Open', desc: 'Access the Barcode Scanner View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Barcode Scanner View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-3xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <Button variant="ghost" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-2" /> Back</Button>
@@ -98,5 +101,6 @@ export const BarcodeScannerView = ({ onBack }: { onBack: () => void }) => {
         )}
       </div>
     </div>
+    </>
   );
 };

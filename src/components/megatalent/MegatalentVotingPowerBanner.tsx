@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Zap, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export default function MegatalentVotingPowerBanner() {
   const { tier, isSubscribed } = useMegaTalentTier();
@@ -13,7 +14,9 @@ export default function MegatalentVotingPowerBanner() {
   const multiplierLabel = tier === "top_premium" ? "×2" : "×1";
 
   return (
-    <Card
+    <>
+      <FloatingHowItWorks title={"Megatalent Voting Power Banner - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Voting Power Banner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Voting Power Banner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card
       className={`backdrop-blur-xl border-primary/40 overflow-hidden ${
         isSubscribed
           ? "bg-gradient-to-r from-primary/20 to-accent/20"
@@ -61,5 +64,6 @@ export default function MegatalentVotingPowerBanner() {
         )}
       </CardContent>
     </Card>
+    </>
   );
 }

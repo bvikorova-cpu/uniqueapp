@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, XCircle, Brain, Star, Trophy } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ComprehensionQuizProps {
   subject: string;
@@ -74,6 +75,8 @@ export const ComprehensionQuiz = ({ subject }: ComprehensionQuizProps) => {
 
   if (!started) {
     return (
+    <>
+      <FloatingHowItWorks title={"Comprehension Quiz - How it works"} steps={[{ title: 'Open', desc: 'Access the Comprehension Quiz section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Comprehension Quiz.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="border-2 border-purple-500/20 bg-gradient-to-br from-purple-500/5 to-pink-500/5">
         <CardContent className="py-6 text-center">
           <motion.div
@@ -93,7 +96,8 @@ export const ComprehensionQuiz = ({ subject }: ComprehensionQuizProps) => {
           </Button>
         </CardContent>
       </Card>
-    );
+    </>
+  );
   }
 
   if (showResult) {

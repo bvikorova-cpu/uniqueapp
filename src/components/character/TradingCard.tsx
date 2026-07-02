@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Download } from "lucide-react";
 import html2canvas from "html2canvas";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface TradingCardProps {
   characterName: string;
@@ -63,7 +64,9 @@ export const TradingCard = ({
   };
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Trading Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Trading Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Trading Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       <div 
         ref={cardRef}
         className="w-full max-w-md mx-auto bg-gradient-to-br from-purple-900 via-blue-900 to-pink-900 rounded-3xl p-6 shadow-2xl border-4 border-yellow-400"
@@ -141,5 +144,6 @@ export const TradingCard = ({
         </Button>
       </div>
     </div>
+    </>
   );
 };

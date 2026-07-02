@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Tag } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function PromoCodeInput({ onApplied }: { onApplied?: () => void }) {
   const [code, setCode] = useState("");
@@ -66,7 +67,9 @@ export function PromoCodeInput({ onApplied }: { onApplied?: () => void }) {
   };
 
   return (
-    <Card className="max-w-md mx-auto mb-6">
+    <>
+      <FloatingHowItWorks title={"Promo Code Input - How it works"} steps={[{ title: 'Open', desc: 'Access the Promo Code Input section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Promo Code Input.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="max-w-md mx-auto mb-6">
       <CardHeader>
         <div className="flex items-center gap-2">
           <Tag className="h-5 w-5 text-primary" />
@@ -80,5 +83,6 @@ export function PromoCodeInput({ onApplied }: { onApplied?: () => void }) {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 }

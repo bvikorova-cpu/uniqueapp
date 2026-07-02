@@ -7,6 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2, Sun, Moon, Droplet, BedDouble, Flame } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Row {
   routine_date: string; morning_done: boolean; evening_done: boolean;
@@ -72,7 +73,9 @@ export default function FutureFaceRoutineTracker() {
   if (loading) return <div className="grid place-items-center h-48"><Loader2 className="h-6 w-6 animate-spin text-cyan-500" /></div>;
 
   return (
-    <div className="mb-8 space-y-4">
+    <>
+      <FloatingHowItWorks title={"Future Face Routine Tracker - How it works"} steps={[{ title: 'Open', desc: 'Access the Future Face Routine Tracker section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Future Face Routine Tracker.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="mb-8 space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-xl sm:text-2xl font-black">🧴 Daily Routine</h2>
         <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 gap-1">
@@ -148,5 +151,6 @@ export default function FutureFaceRoutineTracker() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

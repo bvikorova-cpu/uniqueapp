@@ -6,13 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { usePolygraph } from "@/hooks/useLieDetectorPro";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function PolygraphCard() {
   const [text, setText] = useState("");
   const m = usePolygraph();
   const data = m.data;
   return (
-    <Card className="bg-card/60 backdrop-blur-sm border-red-500/30 overflow-hidden">
+    <>
+      <FloatingHowItWorks title={"Polygraph Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Polygraph Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Polygraph Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/60 backdrop-blur-sm border-red-500/30 overflow-hidden">
       <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-red-500 via-amber-400 to-red-500 animate-pulse" />
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2 text-red-400">
@@ -57,5 +60,6 @@ export function PolygraphCard() {
         )}
       </CardContent>
     </Card>
+    </>
   );
 }

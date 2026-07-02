@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { triggerRewardConfetti } from "@/utils/confetti";
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export default function DailyRewardButton() {
   const { checkCanClaim, claimReward } = useDailyReward();
@@ -22,7 +23,9 @@ export default function DailyRewardButton() {
   }, [canClaim, claimReward.isPending]);
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+    <>
+      <FloatingHowItWorks title={"Daily Reward Button - How it works"} steps={[{ title: 'Open', desc: 'Access the Daily Reward Button section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Daily Reward Button.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
       <Card className="backdrop-blur-xl bg-card/80 border-primary/20 h-full">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -69,5 +72,6 @@ export default function DailyRewardButton() {
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 }

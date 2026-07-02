@@ -6,6 +6,7 @@ import { Zap, Trophy, Crown, Clock, Users, Brain } from 'lucide-react';
 import { useBrainDuelCredits } from '@/hooks/useBrainDuelCredits';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export interface GameMode {
   id: string;
@@ -81,7 +82,9 @@ export const GameModeSelector = ({ onSelectMode, isSearching = false }: GameMode
   };
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Game Mode Selector - How it works"} steps={[{ title: 'Open', desc: 'Access the Game Mode Selector section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Game Mode Selector.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       <div className="flex items-center gap-2 mb-2">
         <Brain className="h-5 w-5 text-primary" />
         <h3 className="text-lg font-semibold">Select Game Mode</h3>
@@ -162,6 +165,7 @@ export const GameModeSelector = ({ onSelectMode, isSearching = false }: GameMode
         })}
       </div>
     </div>
+    </>
   );
 };
 

@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Ghost, Skull, Eye } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const fogParticles = Array.from({ length: 20 }).map((_, i) => ({
   id: i,
@@ -12,7 +13,9 @@ const fogParticles = Array.from({ length: 20 }).map((_, i) => ({
 
 export function ArenaHero() {
   return (
-    <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[hsl(0,20%,5%)] via-[hsl(280,30%,8%)] to-[hsl(0,0%,3%)] p-8 md:p-14 text-center mb-8">
+    <>
+      <FloatingHowItWorks title={"Arena Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Arena Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Arena Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[hsl(0,20%,5%)] via-[hsl(280,30%,8%)] to-[hsl(0,0%,3%)] p-8 md:p-14 text-center mb-8">
       {/* Atmospheric fog */}
       {fogParticles.map((p) => (
         <motion.div
@@ -83,5 +86,6 @@ export function ArenaHero() {
         ))}
       </motion.div>
     </section>
+    </>
   );
 }

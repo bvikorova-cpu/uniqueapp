@@ -1,4 +1,5 @@
 import { LucideIcon } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export interface LuxuryTabItem {
   value: string;
@@ -14,7 +15,9 @@ interface Props {
 
 export const LuxuryTabsNav = ({ tabs, active, onChange }: Props) => {
   return (
-    <div className="mb-8">
+    <>
+      <FloatingHowItWorks title={"Luxury Tabs Nav - How it works"} steps={[{ title: 'Open', desc: 'Access the Luxury Tabs Nav section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Luxury Tabs Nav.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="mb-8">
       {/* Gold header bar */}
       <div className="flex items-center gap-3 mb-4 px-1">
         <span className="h-px flex-1 bg-gradient-to-r from-transparent via-amber-500/40 to-amber-500/40" />
@@ -74,5 +77,6 @@ export const LuxuryTabsNav = ({ tabs, active, onChange }: Props) => {
         })}
       </div>
     </div>
+    </>
   );
 };

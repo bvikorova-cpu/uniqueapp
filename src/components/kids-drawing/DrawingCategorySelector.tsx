@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Category {
   id: string;
@@ -119,7 +120,9 @@ export const DrawingCategorySelector = ({
   const activeCategory = CATEGORIES.find((c) => c.id === selectedCategory);
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Drawing Category Selector - How it works"} steps={[{ title: 'Open', desc: 'Access the Drawing Category Selector section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Drawing Category Selector.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
         Choose a Category
       </h3>
@@ -180,5 +183,6 @@ export const DrawingCategorySelector = ({
         </motion.div>
       )}
     </div>
+    </>
   );
 };

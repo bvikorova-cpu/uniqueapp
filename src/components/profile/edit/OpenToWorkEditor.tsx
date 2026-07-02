@@ -8,6 +8,7 @@ import { Briefcase, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { OpenToWorkDetails } from "@/components/profile/OpenToWork";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export const OpenToWorkEditor = ({
   enabled,
@@ -29,7 +30,9 @@ export const OpenToWorkEditor = ({
   };
 
   return (
-    <Card className="p-5 mb-6 bg-gradient-to-br from-emerald-500/10 to-card/40 border-emerald-500/30">
+    <>
+      <FloatingHowItWorks title={"Open To Work Editor - How it works"} steps={[{ title: 'Open', desc: 'Access the Open To Work Editor section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Open To Work Editor.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-5 mb-6 bg-gradient-to-br from-emerald-500/10 to-card/40 border-emerald-500/30">
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2">
           <Briefcase className="h-4 w-4 text-emerald-400" />
@@ -86,5 +89,6 @@ export const OpenToWorkEditor = ({
         </div>
       )}
     </Card>
+    </>
   );
 };

@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useMemo } from "react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const COMBOS: Record<string, { name: string; emoji: string; rarity: string; description: string }> = {
   "flying+super-strength": { name: "Titan Flight", emoji: "🦸‍♂️", rarity: "Legendary", description: "Fly AND punch through mountains!" },
@@ -41,7 +42,9 @@ export function PowerCombination({ selectedPower, personality }: PowerCombinatio
   if (matchingCombos.length === 0) return null;
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Power Combination - How it works"} steps={[{ title: 'Open', desc: 'Access the Power Combination section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Power Combination.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className="bg-gradient-to-br from-gray-900 to-purple-900 rounded-2xl p-5 border border-purple-500/30"
@@ -74,5 +77,6 @@ export function PowerCombination({ selectedPower, personality }: PowerCombinatio
         </AnimatePresence>
       </div>
     </motion.div>
+    </>
   );
 }

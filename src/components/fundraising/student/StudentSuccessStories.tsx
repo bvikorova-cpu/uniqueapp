@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { GraduationCap, Briefcase } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const stories = [
   { name: "Priya S.", field: "Computer Science", outcome: "Now a Software Engineer", emoji: "👩‍💻", raised: 2400 },
@@ -12,7 +13,9 @@ const stories = [
 
 export function StudentSuccessStories() {
   return (
-    <section className="py-12">
+    <>
+      <FloatingHowItWorks title={"Student Success Stories - How it works"} steps={[{ title: 'Open', desc: 'Access the Student Success Stories section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Student Success Stories.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <section className="py-12">
       <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-foreground mb-2">🎉 Alumni Success Stories</h2>
@@ -39,5 +42,6 @@ export function StudentSuccessStories() {
         </div>
       </motion.div>
     </section>
+    </>
   );
 }

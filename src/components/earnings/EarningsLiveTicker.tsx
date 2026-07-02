@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Coins } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const SAMPLE_EVENTS = [
   "Lukas earned €42 from a course sale",
@@ -21,7 +22,12 @@ export const EarningsLiveTicker = () => {
 
   useEffect(() => {
     const t = setInterval(() => setIdx((i) => (i + 1) % SAMPLE_EVENTS.length), 3500);
-    return () => clearInterval(t);
+    return (
+    <>
+      <FloatingHowItWorks title={"Earnings Live Ticker - How it works"} steps={[{ title: 'Open', desc: 'Access the Earnings Live Ticker section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Earnings Live Ticker.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(t);
   }, []);
 
   return (

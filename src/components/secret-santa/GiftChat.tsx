@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ChatMessage {
   id: string;
@@ -152,13 +153,16 @@ export const GiftChat = () => {
 
   if (!currentUserId) {
     return (
+    <>
+      <FloatingHowItWorks title={"Gift Chat - How it works"} steps={[{ title: 'Open', desc: 'Access the Gift Chat section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Gift Chat.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="bg-white/90 backdrop-blur-xl border-amber-200">
         <CardContent className="p-8 text-center">
           <MessageCircle className="h-12 w-12 mx-auto text-amber-400 mb-4" />
           <p className="text-gray-600">Please log in to use chat</p>
         </CardContent>
       </Card>
-    );
+    </>
+  );
   }
 
   return (

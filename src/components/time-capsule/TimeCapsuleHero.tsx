@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Clock, Play, Pause, Volume2, VolumeX, Sparkles, Mail, Shield, Calendar } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: string }) => {
   const [count, setCount] = useState(0);
@@ -13,7 +14,12 @@ const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: str
       if (current >= target) { setCount(target); clearInterval(timer); }
       else { setCount(Math.floor(current)); }
     }, duration / steps);
-    return () => clearInterval(timer);
+    return (
+    <>
+      <FloatingHowItWorks title={"Time Capsule Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Time Capsule Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Time Capsule Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(timer);
   }, [target]);
   return <span>{target === 0 ? "—" : `${count.toLocaleString()}${suffix}`}</span>;
 };

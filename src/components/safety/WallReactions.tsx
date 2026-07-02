@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Heart, Shield, Users, Sun } from "lucide-react";
 import { useToggleReaction } from "@/hooks/useSafetyExtras";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const REACTIONS = [
   { type: "hug", icon: Heart, label: "Hug", color: "text-pink-400" },
@@ -12,7 +13,9 @@ const REACTIONS = [
 export function WallReactions({ messageId, counts }: { messageId: string; counts: Record<string, number> }) {
   const toggle = useToggleReaction();
   return (
-    <div className="flex flex-wrap gap-1 mt-2">
+    <>
+      <FloatingHowItWorks title={"Wall Reactions - How it works"} steps={[{ title: 'Open', desc: 'Access the Wall Reactions section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Wall Reactions.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="flex flex-wrap gap-1 mt-2">
       {REACTIONS.map((r) => {
         const Icon = r.icon;
         const count = counts?.[r.type] || 0;
@@ -30,5 +33,6 @@ export function WallReactions({ messageId, counts }: { messageId: string; counts
         );
       })}
     </div>
+    </>
   );
 }

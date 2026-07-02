@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CreditCard, Settings, Crown, Shield, RefreshCw, FileText } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface PremiumManagementCardProps {
   subscribed: boolean;
@@ -22,7 +23,9 @@ export const PremiumManagementCard = ({
   if (!subscribed) return null;
 
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+    <>
+      <FloatingHowItWorks title={"Premium Management Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Premium Management Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Premium Management Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
       <Card className="relative overflow-hidden border-primary/30 bg-gradient-to-br from-primary/10 via-purple-500/5 to-amber-400/5 backdrop-blur-xl">
         <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary via-purple-500 to-amber-400" />
         <div className="absolute -top-10 -right-10 h-40 w-40 rounded-full bg-primary/20 blur-3xl pointer-events-none" />
@@ -77,5 +80,6 @@ export const PremiumManagementCard = ({
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 };

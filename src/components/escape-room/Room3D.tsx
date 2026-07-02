@@ -3,6 +3,7 @@ import { PointerLockControls, Sky, Text, useTexture, Sphere, Environment } from 
 import { Physics, RigidBody, CuboidCollider } from '@react-three/rapier';
 import { useRef, useState, useMemo } from 'react';
 import * as THREE from 'three';
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Room3DProps {
   theme: string;
@@ -76,7 +77,9 @@ const Room3D = ({ theme, currentRoom, totalRooms, roomName, roomDescription, onR
   };
 
   return (
-    <div className="w-full h-screen relative">
+    <>
+      <FloatingHowItWorks title={"Room3 D - How it works"} steps={[{ title: 'Open', desc: 'Access the Room3 D section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Room3 D.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="w-full h-screen relative">
       <Canvas shadows camera={{ fov: 75 }}>
         <Sky sunPosition={[100, 20, 100]} />
         <fog attach="fog" args={[config.fog.color, config.fog.near, config.fog.far]} />
@@ -462,6 +465,7 @@ const Room3D = ({ theme, currentRoom, totalRooms, roomName, roomDescription, onR
         Quit Game
       </button>
     </div>
+    </>
   );
 };
 

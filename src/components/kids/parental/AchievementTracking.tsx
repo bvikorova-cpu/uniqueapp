@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Award, Lock, Sparkles } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface ChildAchievement {
   childName: string; childAvatar: string; totalPoints: number; level: number;
@@ -36,7 +37,9 @@ const childrenAchievements: ChildAchievement[] = [
 
 export const AchievementTracking = () => {
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Achievement Tracking - How it works"} steps={[{ title: 'Open', desc: 'Access the Achievement Tracking section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Achievement Tracking.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       {childrenAchievements.map((child, ci) => (
         <motion.div key={child.childName} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: ci * 0.15 }}>
           <Card>
@@ -70,5 +73,6 @@ export const AchievementTracking = () => {
         </motion.div>
       ))}
     </div>
+    </>
   );
 };

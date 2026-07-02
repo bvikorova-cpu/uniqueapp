@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Plus } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface ChatCreditBannerProps {
   credits: number;
@@ -12,7 +13,9 @@ export const ChatCreditBanner = ({ credits, loading }: ChatCreditBannerProps) =>
   const isEmpty = credits < 1;
 
   return (
-    <div
+    <>
+      <FloatingHowItWorks title={"Chat Credit Banner - How it works"} steps={[{ title: 'Open', desc: 'Access the Chat Credit Banner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Chat Credit Banner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div
       className={`rounded-2xl border-2 p-4 mb-6 flex items-center justify-between gap-4 backdrop-blur-md shadow-lg ${
         isEmpty
           ? "bg-gradient-to-r from-orange-100 to-pink-100 border-orange-300"
@@ -42,5 +45,6 @@ export const ChatCreditBanner = ({ credits, loading }: ChatCreditBannerProps) =>
         {isEmpty ? "Buy credits" : "Add more"}
       </Button>
     </div>
+    </>
   );
 };

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Mic, Square, Bot, ShieldCheck, AlertOctagon } from "lucide-react";
 import { useDeepfakeCheck } from "@/hooks/useLieDetectorTuning";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const VoiceCloneDetectorCard = () => {
   const [recording, setRecording] = useState(false);
@@ -45,7 +46,9 @@ export const VoiceCloneDetectorCard = () => {
   };
 
   return (
-    <Card className="bg-gradient-to-br from-cyan-950/40 via-card/80 to-red-950/30 border-cyan-500/30 backdrop-blur-md">
+    <>
+      <FloatingHowItWorks title={"Voice Clone Detector Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Voice Clone Detector Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Voice Clone Detector Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-gradient-to-br from-cyan-950/40 via-card/80 to-red-950/30 border-cyan-500/30 backdrop-blur-md">
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2">
           <Bot className="w-4 h-4 text-cyan-300" />
@@ -107,5 +110,6 @@ export const VoiceCloneDetectorCard = () => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

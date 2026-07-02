@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trophy, Target, Flame, Star, Palette, Sparkles } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Achievement {
   id: string;
@@ -27,7 +28,9 @@ interface Props {
 
 export const DrawingAchievements = ({ completedCount }: Props) => {
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title={"Drawing Achievements - How it works"} steps={[{ title: 'Open', desc: 'Access the Drawing Achievements section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Drawing Achievements.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Trophy className="w-5 h-5 text-primary" />
@@ -80,5 +83,6 @@ export const DrawingAchievements = ({ completedCount }: Props) => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

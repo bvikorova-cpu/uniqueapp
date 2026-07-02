@@ -3,6 +3,7 @@ import { Pin, PinOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   submissionId: string;
@@ -32,7 +33,12 @@ export default function MegatalentPinButton({ submissionId, isOwner }: Props) {
       const { data } = await supabase.from("mt_pinned_submissions").select("id").eq("submission_id", submissionId).limit(1).maybeSingle();
       if (!cancelled) setPinned(!!data);
     })();
-    return () => { cancelled = true; };
+    return (
+    <>
+      <FloatingHowItWorks title={"Megatalent Pin Button - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Pin Button section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Pin Button.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => { cancelled = true; };
   }, [submissionId, isOwner]);
 
   if (!isOwner) {

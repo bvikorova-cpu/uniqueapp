@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const DUNGEONS = [
   { id: "goblin_cave", name: "Goblin Cave", difficulty: "Easy", icon: "🏚️", cost: 5, reward: "50-100 XP", color: "from-green-500 to-emerald-600" },
@@ -56,7 +57,9 @@ export const AIDungeonRaids = () => {
   const dungeon = DUNGEONS.find((d) => d.id === selectedDungeon);
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"A I Dungeon Raids - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Dungeon Raids section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Dungeon Raids.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Card className="relative overflow-hidden border-border/30 bg-card/90 backdrop-blur-xl p-6">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-violet-500 via-red-500 to-amber-500" />
         <div className="flex items-center gap-3 mb-6">
@@ -170,5 +173,6 @@ export const AIDungeonRaids = () => {
         </motion.div>
       )}
     </div>
+    </>
   );
 };

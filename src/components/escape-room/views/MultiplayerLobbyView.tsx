@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Users, Copy, Plus, Crown, Clock, Gamepad2 } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Lobby {
   id: string;
@@ -43,7 +44,9 @@ export function MultiplayerLobbyView({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Multiplayer Lobby View - How it works"} steps={[{ title: 'Open', desc: 'Access the Multiplayer Lobby View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Multiplayer Lobby View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
@@ -106,5 +109,6 @@ export function MultiplayerLobbyView({ onBack }: { onBack: () => void }) {
         ))}
       </div>
     </div>
+    </>
   );
 }

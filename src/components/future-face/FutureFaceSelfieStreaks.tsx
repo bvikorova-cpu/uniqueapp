@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Flame, Gift, Camera, Crown, Star, Trophy } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const streakRewards = [
   { day: 3, reward: "+2 Bonus Credits", icon: Gift },
@@ -16,7 +17,9 @@ interface Props { currentStreak: number; }
 
 export default function FutureFaceSelfieStreaks({ currentStreak }: Props) {
   return (
-    <div className="mb-8">
+    <>
+      <FloatingHowItWorks title={"Future Face Selfie Streaks - How it works"} steps={[{ title: 'Open', desc: 'Access the Future Face Selfie Streaks section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Future Face Selfie Streaks.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="mb-8">
       <h2 className="text-xl sm:text-2xl font-black mb-4">📸 Daily Selfie Streaks</h2>
       <Card className="bg-gradient-to-r from-cyan-500/10 to-purple-500/10 border-cyan-500/20">
         <CardContent className="p-4 sm:p-6">
@@ -50,5 +53,6 @@ export default function FutureFaceSelfieStreaks({ currentStreak }: Props) {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

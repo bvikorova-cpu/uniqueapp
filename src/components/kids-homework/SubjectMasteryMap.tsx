@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Map, Trophy } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const SUBJECTS = [
   { id: "math", name: "Math", emoji: "📐", color: "text-blue-500", badge: "Math Master", badgeEmoji: "🧮" },
@@ -23,7 +24,9 @@ export const SubjectMasteryMap = ({ points }: SubjectMasteryMapProps) => {
   const perSubject = Math.floor(totalPoints / SUBJECTS.length);
 
   return (
-    <Card className="border-2 border-primary/20">
+    <>
+      <FloatingHowItWorks title={"Subject Mastery Map - How it works"} steps={[{ title: 'Open', desc: 'Access the Subject Mastery Map section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Subject Mastery Map.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-2 border-primary/20">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Map className="w-5 h-5 text-primary" />
@@ -73,5 +76,6 @@ export const SubjectMasteryMap = ({ points }: SubjectMasteryMapProps) => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

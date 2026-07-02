@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface VocabWord {
   word: string;
@@ -17,7 +18,9 @@ interface Props {
 
 export const InteractiveResults = ({ summary, vocabulary, onStartFlashcards, onStartQuiz }: Props) => {
   return (
-    <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5">
+    <>
+      <FloatingHowItWorks title={"Interactive Results - How it works"} steps={[{ title: 'Open', desc: 'Access the Interactive Results section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Interactive Results.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5">
       <CardHeader className="pb-3">
         <CardTitle className="text-lg flex items-center gap-2">
           📝 Your Reading Report
@@ -91,5 +94,6 @@ export const InteractiveResults = ({ summary, vocabulary, onStartFlashcards, onS
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

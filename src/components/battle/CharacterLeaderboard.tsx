@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Swords, Shield, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface LeaderboardCharacter {
   id: string;
@@ -56,12 +57,15 @@ export const CharacterLeaderboard = () => {
 
   if (loading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Character Leaderboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Character Leaderboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Character Leaderboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="bg-black/40 backdrop-blur-lg border-yellow-500/50">
         <CardContent className="p-8">
           <p className="text-center text-white">Loading leaderboard...</p>
         </CardContent>
       </Card>
-    );
+    </>
+  );
   }
 
   return (

@@ -4,6 +4,7 @@ import {
   LineChart, Target, GitCompare, Store,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const TIPS = [
   { icon: Library, title: "Inspiration Library", desc: "Browse 10,000+ AI-generated examples sorted by style and era" },
@@ -18,7 +19,9 @@ const TIPS = [
 
 export const ForgeIdeasShowcase = () => {
   return (
-    <Card className="border-amber-700/30 bg-gradient-to-br from-[hsl(30,20%,10%)]/80 to-[hsl(0,30%,10%)]/80 backdrop-blur-xl">
+    <>
+      <FloatingHowItWorks title={"Forge Ideas Showcase - How it works"} steps={[{ title: 'Open', desc: 'Access the Forge Ideas Showcase section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Forge Ideas Showcase.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-amber-700/30 bg-gradient-to-br from-[hsl(30,20%,10%)]/80 to-[hsl(0,30%,10%)]/80 backdrop-blur-xl">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-amber-100" style={{ fontFamily: "Georgia, serif" }}>
           <Lightbulb className="h-5 w-5 text-amber-400" />
@@ -53,5 +56,6 @@ export const ForgeIdeasShowcase = () => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

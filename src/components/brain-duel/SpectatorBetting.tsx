@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useBrainDuelCredits } from "@/hooks/useBrainDuelCredits";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   matchId: string;
@@ -61,7 +62,9 @@ export const SpectatorBetting = ({ matchId, player1Name, player2Name, player1Id,
   };
 
   return (
-    <Card className="border-amber-500/20 backdrop-blur-xl bg-card/80 overflow-hidden relative">
+    <>
+      <FloatingHowItWorks title={"Spectator Betting - How it works"} steps={[{ title: 'Open', desc: 'Access the Spectator Betting section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Spectator Betting.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-amber-500/20 backdrop-blur-xl bg-card/80 overflow-hidden relative">
       <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-orange-500/5" />
       <CardHeader className="relative pb-3">
         <CardTitle className="flex items-center gap-2 text-sm">
@@ -147,5 +150,6 @@ export const SpectatorBetting = ({ matchId, player1Name, player2Name, player1Id,
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

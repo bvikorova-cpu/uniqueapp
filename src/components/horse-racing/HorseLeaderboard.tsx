@@ -2,6 +2,7 @@ import { Trophy, Star, TrendingUp } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const HorseLeaderboard = () => {
   const { data: topHorses = [], isLoading } = useQuery({
@@ -38,13 +39,16 @@ export const HorseLeaderboard = () => {
 
   if (isLoading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Horse Leaderboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Horse Leaderboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Horse Leaderboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="p-8 text-center">
         <div className="inline-flex items-center gap-2 text-emerald-400/60 font-mono text-sm uppercase tracking-wider">
           <div className="h-2 w-2 bg-emerald-400 rounded-full animate-pulse" />
           Loading Rankings...
         </div>
       </div>
-    );
+    </>
+  );
   }
 
   if (topHorses.length === 0) {

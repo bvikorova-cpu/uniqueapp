@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Lock, CheckCircle, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const adventures = [
   { name: "Forest of Stories", emoji: "🌲", completed: false },
@@ -13,7 +14,9 @@ const adventures = [
 
 export const AdventureMap = () => {
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Adventure Map - How it works"} steps={[{ title: 'Open', desc: 'Access the Adventure Map section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Adventure Map.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.4 }}
@@ -57,5 +60,6 @@ export const AdventureMap = () => {
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 };

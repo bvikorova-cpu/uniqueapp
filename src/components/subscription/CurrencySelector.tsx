@@ -12,6 +12,7 @@ import {
   useCurrency,
   type Currency,
 } from "@/contexts/CurrencyContext";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export type { Currency };
 export { CURRENCIES, formatPrice };
@@ -32,7 +33,9 @@ interface CurrencySelectorProps {
 
 export const CurrencySelector = ({ value, onChange }: CurrencySelectorProps) => {
   return (
-    <DropdownMenu>
+    <>
+      <FloatingHowItWorks title={"Currency Selector - How it works"} steps={[{ title: 'Open', desc: 'Access the Currency Selector section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Currency Selector.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm" className="gap-2 rounded-full">
           <Globe className="h-4 w-4" />
@@ -57,5 +60,6 @@ export const CurrencySelector = ({ value, onChange }: CurrencySelectorProps) => 
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
+    </>
   );
 };

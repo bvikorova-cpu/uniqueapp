@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface FolderData { id: string; name: string; tags: string[]; }
 const STORAGE_KEY = "ai_image_folders_v1";
@@ -35,7 +36,9 @@ export const FoldersView = () => {
   const removeTag = (id: string, tag: string) => save(folders.map(f => f.id === id ? { ...f, tags: f.tags.filter(t => t !== tag) } : f));
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <>
+      <FloatingHowItWorks title={"Folders View - How it works"} steps={[{ title: 'Open', desc: 'Access the Folders View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Folders View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="max-w-3xl mx-auto space-y-6">
       <div>
         <h2 className="text-2xl font-black mb-1">📁 Folders & Tags</h2>
         <p className="text-muted-foreground text-sm">Organize your AI generations into projects with tags. Stored locally.</p>
@@ -67,5 +70,6 @@ export const FoldersView = () => {
         ))}
       </div>
     </div>
+    </>
   );
 };

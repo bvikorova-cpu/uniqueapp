@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { Bell, Heart, MessageCircle, UserPlus, AtSign } from "lucide-react";
 import { playNotificationChime } from "@/lib/notificationChime";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Notification {
   id: string;
@@ -76,7 +77,12 @@ export const useRealTimeNotifications = () => {
 
     fetchNotifications();
 
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Real Time Notifications - How it works"} steps={[{ title: 'Open', desc: 'Access the Real Time Notifications section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Real Time Notifications.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       supabase.removeChannel(channel);
     };
   }, [user]);

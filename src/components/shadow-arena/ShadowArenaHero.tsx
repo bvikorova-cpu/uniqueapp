@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 import shadowVideo from "@/assets/shadow-arena-hero.mp4.asset.json";
 import shadowPoster from "@/assets/shadow-arena-poster.jpg";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   totalPrizePool?: number;
@@ -42,7 +43,9 @@ export function ShadowArenaHero({ totalPrizePool = 0, activeBattles = 0, topStor
   ];
 
   return (
-    <div className="relative h-[78vh] min-h-[560px] w-full overflow-hidden rounded-3xl border border-red-900/30 mb-8 shadow-[0_0_60px_-15px_rgba(127,29,29,0.5)]">
+    <>
+      <FloatingHowItWorks title={"Shadow Arena Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Shadow Arena Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Shadow Arena Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative h-[78vh] min-h-[560px] w-full overflow-hidden rounded-3xl border border-red-900/30 mb-8 shadow-[0_0_60px_-15px_rgba(127,29,29,0.5)]">
       {/* Cinematic horror video background */}
       <video
         ref={videoRef}
@@ -185,5 +188,6 @@ export function ShadowArenaHero({ totalPrizePool = 0, activeBattles = 0, topStor
         </Button>
       </div>
     </div>
+    </>
   );
 }

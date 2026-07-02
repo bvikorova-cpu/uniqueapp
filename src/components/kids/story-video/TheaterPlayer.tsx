@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { StoryVideoPlayer } from '@/components/kids/StoryVideoPlayer';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface TheaterPlayerProps {
   storyData: {
@@ -15,7 +16,9 @@ interface TheaterPlayerProps {
 
 export const TheaterPlayer = ({ storyData, sceneDuration, onBack }: TheaterPlayerProps) => {
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Theater Player - How it works"} steps={[{ title: 'Open', desc: 'Access the Theater Player section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Theater Player.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       className="space-y-6"
@@ -48,5 +51,6 @@ export const TheaterPlayer = ({ storyData, sceneDuration, onBack }: TheaterPlaye
         </Button>
       </div>
     </motion.div>
+    </>
   );
 };

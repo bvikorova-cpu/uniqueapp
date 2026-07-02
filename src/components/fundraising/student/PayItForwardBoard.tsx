@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { RefreshCw, ArrowRight } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const chain = [
   { giver: "Priya S.", receiver: "Amir K.", amount: 150, field: "CS" },
@@ -13,7 +14,9 @@ const chain = [
 
 export function PayItForwardBoard() {
   return (
-    <section className="py-12">
+    <>
+      <FloatingHowItWorks title={"Pay It Forward Board - How it works"} steps={[{ title: 'Open', desc: 'Access the Pay It Forward Board section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Pay It Forward Board.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <section className="py-12">
       <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-foreground mb-2">🔄 Pay-it-Forward Chain</h2>
@@ -50,5 +53,6 @@ export function PayItForwardBoard() {
         </p>
       </motion.div>
     </section>
+    </>
   );
 }

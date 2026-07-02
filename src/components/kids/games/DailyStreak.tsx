@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Flame, Gift } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface DailyStreakProps {
   currentStreak: number;
@@ -10,7 +11,9 @@ const DAYS = ["M", "T", "W", "T", "F", "S", "S"];
 
 export function DailyStreak({ currentStreak, longestStreak }: DailyStreakProps) {
   return (
-    <div className="space-y-3">
+    <>
+      <FloatingHowItWorks title={"Daily Streak - How it works"} steps={[{ title: 'Open', desc: 'Access the Daily Streak section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Daily Streak.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-3">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-bold text-gray-700 flex items-center gap-1.5">
           <Flame className="h-4 w-4 text-orange-500" /> Daily Streak
@@ -71,5 +74,6 @@ export function DailyStreak({ currentStreak, longestStreak }: DailyStreakProps) 
         </motion.div>
       )}
     </div>
+    </>
   );
 }

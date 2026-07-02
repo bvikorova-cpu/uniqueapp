@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Award } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -24,7 +25,9 @@ export function EscapeBadgesView({ onBack }: Props) {
   const totalXP = badges.filter(b => b.earned).reduce((s, b) => s + b.xp, 0);
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Escape Badges View - How it works"} steps={[{ title: 'Open', desc: 'Access the Escape Badges View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Escape Badges View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
@@ -62,5 +65,6 @@ export function EscapeBadgesView({ onBack }: Props) {
         </div>
       </div>
     </div>
+    </>
   );
 }

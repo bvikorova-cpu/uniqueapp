@@ -7,6 +7,7 @@ import {
   Briefcase, Users, Target, Activity, Lightbulb, Crown, Share2,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface HandwritingAnalysisResultProps {
   analysis: any;
@@ -47,7 +48,9 @@ export const HandwritingAnalysisResult = ({ analysis }: HandwritingAnalysisResul
   const color = getTypeColor(analysis.analysis_type);
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Handwriting Analysis Result - How it works"} steps={[{ title: 'Open', desc: 'Access the Handwriting Analysis Result section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Handwriting Analysis Result.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="space-y-4"
@@ -236,5 +239,6 @@ export const HandwritingAnalysisResult = ({ analysis }: HandwritingAnalysisResul
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 };

@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, Medal, Trophy, Star, Zap, BookOpen, Users, Flame, Target, Award, Crown, GraduationCap, Sparkles } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface BadgeItem {
   id: string;
@@ -49,7 +50,9 @@ export function GamificationBadgesView({ onBack }: Props) {
   const totalXP = badges.filter(b => b.unlocked).reduce((s, b) => s + b.xp, 0);
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Gamification Badges View - How it works"} steps={[{ title: 'Open', desc: 'Access the Gamification Badges View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Gamification Badges View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg">
@@ -115,5 +118,6 @@ export function GamificationBadgesView({ onBack }: Props) {
         })}
       </div>
     </div>
+    </>
   );
 }

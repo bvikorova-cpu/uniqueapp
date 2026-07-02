@@ -3,6 +3,7 @@ import { Sparkles, Brain, Zap, Cpu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import heroVideo from "@/assets/ai-credits-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface AICreditsHeroProps {
   credits: number;
@@ -16,7 +17,9 @@ interface AICreditsHeroProps {
  */
 export const AICreditsHero = ({ credits, totalPurchased, onScrollToPackages }: AICreditsHeroProps) => {
   return (
-    <div className="relative w-full min-h-[560px] sm:min-h-[520px] sm:h-[520px] rounded-3xl overflow-hidden mb-8 border border-primary/20">
+    <>
+      <FloatingHowItWorks title={"A I Credits Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Credits Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Credits Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative w-full min-h-[560px] sm:min-h-[520px] sm:h-[520px] rounded-3xl overflow-hidden mb-8 border border-primary/20">
       <video
         autoPlay
         muted
@@ -78,5 +81,6 @@ export const AICreditsHero = ({ credits, totalPurchased, onScrollToPackages }: A
         </motion.div>
       </div>
     </div>
+    </>
   );
 };

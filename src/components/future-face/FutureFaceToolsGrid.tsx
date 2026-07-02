@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import ReactMarkdown from "react-markdown";
 import { useNavigate } from "react-router-dom";
 import { handleEdgeError, throwIfInvokeError } from "@/lib/handleEdgeError";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const tools = [
   { id: "age_progression", name: "AI Age Progression", desc: "See your future self in 10-50 years", icon: Gem, credits: 5, color: "from-cyan-500 to-blue-500" },
@@ -59,7 +60,9 @@ export default function FutureFaceToolsGrid() {
   };
 
   return (
-    <div className="mb-8">
+    <>
+      <FloatingHowItWorks title={"Future Face Tools Grid - How it works"} steps={[{ title: 'Open', desc: 'Access the Future Face Tools Grid section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Future Face Tools Grid.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="mb-8">
       <h2 className="text-xl sm:text-2xl font-black mb-4">💎 AI Face Tools</h2>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-4">
         {tools.map((tool, i) => (
@@ -118,5 +121,6 @@ export default function FutureFaceToolsGrid() {
         </motion.div>
       )}
     </div>
+    </>
   );
 }

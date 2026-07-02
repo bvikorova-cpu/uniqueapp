@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { characterImages } from "@/data/characterImages";
 import type { Character } from "@/data/kidsCharacters";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface ImmersiveCharacterCardProps {
   character: Character;
@@ -12,7 +13,9 @@ export function ImmersiveCharacterCard({ character, onClick, index }: ImmersiveC
   const imageUrl = characterImages[character.id];
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Immersive Character Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Immersive Character Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Immersive Character Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 30, rotateY: -15 }}
       animate={{ opacity: 1, y: 0, rotateY: 0 }}
       transition={{ 
@@ -80,5 +83,6 @@ export function ImmersiveCharacterCard({ character, onClick, index }: ImmersiveC
         </div>
       </div>
     </motion.div>
+    </>
   );
 }

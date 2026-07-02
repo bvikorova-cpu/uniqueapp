@@ -3,6 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Filter, X } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export type SortBy = "newest" | "oldest" | "popular" | "most-comments";
 export type TimeFilter = "all" | "today" | "week" | "month";
@@ -30,7 +31,9 @@ export const PostFilters = ({
   const hasActiveFilters = sortBy !== "newest" || timeFilter !== "all" || categoryFilter !== "all";
 
   return (
-    <Card className="p-4 mb-6">
+    <>
+      <FloatingHowItWorks title={"Post Filters - How it works"} steps={[{ title: 'Open', desc: 'Access the Post Filters section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Post Filters.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-4 mb-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Filter className="h-4 w-4 text-muted-foreground" />
@@ -96,5 +99,6 @@ export const PostFilters = ({
         </div>
       </div>
     </Card>
+    </>
   );
 };

@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { ArrowLeftRight, Users, Star, MessageSquare } from "lucide-react";
 import { useLiveStats } from "@/hooks/useLiveStats";
 import heroVideo from "@/assets/skill-swap-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const SkillSwapHero = () => {
   const { stats: liveStats, loading } = useLiveStats([
@@ -24,7 +25,9 @@ export const SkillSwapHero = () => {
   };
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Skill Swap Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Skill Swap Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Skill Swap Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       className="relative rounded-3xl overflow-hidden mb-8 sm:mb-12"
@@ -105,5 +108,6 @@ export const SkillSwapHero = () => {
         </motion.div>
       </div>
     </motion.div>
+    </>
   );
 };

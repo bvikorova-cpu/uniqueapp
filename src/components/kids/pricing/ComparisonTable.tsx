@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Check, X, Crown, Sparkles } from "lucide-react";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const features = [
   { name: "Bedtime Stories", free: "3/day", gold: "Unlimited" },
@@ -27,7 +28,9 @@ function CellValue({ value }: { value: string | boolean }) {
 
 export function ComparisonTable() {
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Comparison Table - How it works"} steps={[{ title: 'Open', desc: 'Access the Comparison Table section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Comparison Table.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -78,5 +81,6 @@ export function ComparisonTable() {
         ))}
       </div>
     </motion.div>
+    </>
   );
 }

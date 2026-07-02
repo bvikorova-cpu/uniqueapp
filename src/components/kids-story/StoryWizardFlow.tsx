@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, ChevronRight, Sparkles, Loader2, Palette, Users, MapPin, BookText } from "lucide-react";
 import { CategorySelector } from "./CategorySelector";
 import { IllustrationStylePicker } from "./IllustrationStylePicker";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface StoryWizardFlowProps {
   onGenerate: (data: {
@@ -64,7 +65,9 @@ export const StoryWizardFlow = ({ onGenerate, loading, disabled, initialData }: 
   };
 
   return (
-    <div className="bg-card rounded-2xl shadow-xl overflow-hidden border border-border">
+    <>
+      <FloatingHowItWorks title={"Story Wizard Flow - How it works"} steps={[{ title: 'Open', desc: 'Access the Story Wizard Flow section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Story Wizard Flow.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="bg-card rounded-2xl shadow-xl overflow-hidden border border-border">
       {/* Progress header */}
       <div className="px-6 pt-6">
         <div className="flex items-center justify-between mb-2">
@@ -181,5 +184,6 @@ export const StoryWizardFlow = ({ onGenerate, loading, disabled, initialData }: 
         </Button>
       </div>
     </div>
+    </>
   );
 };

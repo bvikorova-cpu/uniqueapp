@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Trophy, Medal, Crown } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface BadgeLeaderEntry {
   user_id: string;
@@ -69,6 +70,8 @@ export default function BadgeLeaderboard() {
 
   if (isLoading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Badge Leaderboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Badge Leaderboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Badge Leaderboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -79,7 +82,8 @@ export default function BadgeLeaderboard() {
           {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-16 w-full rounded-xl" />)}
         </CardContent>
       </Card>
-    );
+    </>
+  );
   }
 
   return (

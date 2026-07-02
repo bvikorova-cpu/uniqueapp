@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Trophy, Medal } from 'lucide-react';
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const CoffeeLeaderboard = () => {
   const { data: leaderboard, isLoading } = useQuery({
@@ -28,7 +29,9 @@ export const CoffeeLeaderboard = () => {
   };
 
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title={"Coffee Leaderboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Coffee Leaderboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Coffee Leaderboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card>
       <CardHeader>
         <CardTitle>Top Coffee Enthusiasts</CardTitle>
       </CardHeader>
@@ -56,5 +59,6 @@ export const CoffeeLeaderboard = () => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

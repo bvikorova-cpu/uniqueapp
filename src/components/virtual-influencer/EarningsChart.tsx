@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { format } from "date-fns";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Earning {
   id: string;
@@ -43,7 +44,9 @@ const EarningsChart = ({ earnings }: EarningsChartProps) => {
   }, {});
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Earnings Chart - How it works"} steps={[{ title: 'Open', desc: 'Access the Earnings Chart section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Earnings Chart.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="p-6">
           <h3 className="text-sm text-muted-foreground mb-1">Total Earnings</h3>
@@ -121,6 +124,7 @@ const EarningsChart = ({ earnings }: EarningsChartProps) => {
         </div>
       </Card>
     </div>
+    </>
   );
 };
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Crown, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface LeaderboardProps {
   playerScore: number;
@@ -52,7 +53,12 @@ export function Leaderboard({ playerScore, playerName = "You" }: LeaderboardProp
         setLoading(false);
       }
     })();
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Leaderboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Leaderboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Leaderboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       cancelled = true;
     };
   }, []);

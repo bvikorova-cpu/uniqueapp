@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Gem, Users, Clock, Flame, Sparkles } from "lucide-react";
 import heroVideo from "@/assets/future-face-hero-v2.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const stats = [
   { label: "Faces Generated", value: "2.4M+", icon: Sparkles },
@@ -12,7 +13,9 @@ const stats = [
 
 export default function FutureFaceHero() {
   return (
-    <div className="relative w-full mb-8">
+    <>
+      <FloatingHowItWorks title={"Future Face Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Future Face Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Future Face Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative w-full mb-8">
       {/* Video */}
       <div className="relative w-full aspect-video rounded-2xl overflow-hidden">
         <video
@@ -65,5 +68,6 @@ export default function FutureFaceHero() {
         ))}
       </div>
     </div>
+    </>
   );
 }

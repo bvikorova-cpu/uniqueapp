@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { showMonetagRewarded, trackMonetagEvent, MONETAG_ZONES } from "@/lib/monetag";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface DailyXPVideoRewardProps {
   userId: string;
@@ -29,7 +30,12 @@ export const DailyXPVideoReward = ({ userId }: DailyXPVideoRewardProps) => {
 
   useEffect(() => {
     checkDailyClaim();
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Daily X P Video Reward - How it works"} steps={[{ title: 'Open', desc: 'Access the Daily X P Video Reward section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Daily X P Video Reward.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
   }, [userId]);

@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Swords, Users, Trophy, Flame } from "lucide-react";
 import heroVideo from "@/assets/character-arena-hero-v3.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CharacterArenaHeroProps {
   stats: {
@@ -13,7 +14,9 @@ interface CharacterArenaHeroProps {
 
 export const CharacterArenaHero = ({ stats }: CharacterArenaHeroProps) => {
   return (
-    <div className="mb-8 space-y-3">
+    <>
+      <FloatingHowItWorks title={"Character Arena Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Character Arena Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Character Arena Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="mb-8 space-y-3">
       {/* Video Section */}
       <div className="relative w-full h-[240px] sm:h-[320px] md:h-[380px] overflow-hidden rounded-2xl">
         <div className="absolute inset-0 bg-black">
@@ -93,5 +96,6 @@ export const CharacterArenaHero = ({ stats }: CharacterArenaHeroProps) => {
         ))}
       </div>
     </div>
+    </>
   );
 };

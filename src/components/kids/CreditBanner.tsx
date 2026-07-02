@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, Sparkles, Coins } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CreditBannerProps {
   label: string;            // e.g. "Reading"
@@ -26,6 +27,8 @@ export const CreditBanner = ({
 
   if (!canUse) {
     return (
+    <>
+      <FloatingHowItWorks title={"Credit Banner - How it works"} steps={[{ title: 'Open', desc: 'Access the Credit Banner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Credit Banner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="bg-gradient-to-r from-red-500/10 to-orange-500/10 border-red-500/50">
         <CardContent className="py-4">
           <div className="flex items-start gap-3">
@@ -51,7 +54,8 @@ export const CreditBanner = ({
           </div>
         </CardContent>
       </Card>
-    );
+    </>
+  );
   }
 
   return (

@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 // Strict monetization rules
 export const MONETIZATION_RULES = {
@@ -36,7 +37,9 @@ export const MonetizationPolicy = () => {
   const navigate = useNavigate();
 
   return (
-    <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
+    <>
+      <FloatingHowItWorks title={"Monetization Policy - How it works"} steps={[{ title: 'Open', desc: 'Access the Monetization Policy section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Monetization Policy.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Shield className="h-5 w-5 text-primary" />
@@ -141,5 +144,6 @@ export const MonetizationPolicy = () => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

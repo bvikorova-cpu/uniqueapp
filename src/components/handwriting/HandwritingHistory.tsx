@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Loader2, PenTool, Clock, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const getTypeLabel = (type: string) => {
   const labels: Record<string, string> = {
@@ -50,6 +51,8 @@ export const HandwritingHistory = () => {
 
   if (selectedAnalysis) {
     return (
+    <>
+      <FloatingHowItWorks title={"Handwriting History - How it works"} steps={[{ title: 'Open', desc: 'Access the Handwriting History section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Handwriting History.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="space-y-4">
         <Button
           variant="ghost"
@@ -61,7 +64,8 @@ export const HandwritingHistory = () => {
         </Button>
         <HandwritingAnalysisResult analysis={selectedAnalysis} />
       </div>
-    );
+    </>
+  );
   }
 
   if (isLoading) {

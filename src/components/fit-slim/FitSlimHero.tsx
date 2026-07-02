@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import heroVideo from "@/assets/fitslim-hero.mp4.asset.json";
 import { useLiveStats } from "@/hooks/useLiveStats";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const statQueries = [
   { key: "plans", table: "fitness_plans" },
@@ -19,7 +20,9 @@ export default function FitSlimHero() {
   ];
 
   return (
-    <div className="relative w-full h-[340px] md:h-[420px] rounded-2xl overflow-hidden mb-8">
+    <>
+      <FloatingHowItWorks title={"Fit Slim Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Fit Slim Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Fit Slim Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative w-full h-[340px] md:h-[420px] rounded-2xl overflow-hidden mb-8">
       <video
         autoPlay muted loop playsInline
         className="absolute inset-0 w-full h-full object-cover brightness-[1.15] saturate-[1.2]"
@@ -63,5 +66,6 @@ export default function FitSlimHero() {
         </motion.div>
       </div>
     </div>
+    </>
   );
 }

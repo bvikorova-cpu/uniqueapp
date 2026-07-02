@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, Download, Volume2, VolumeX, BookOpen, Loader
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useKidsStoryCredits } from "@/hooks/useKidsStoryCredits";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface StorybookDisplayProps {
   story: {
@@ -136,7 +137,12 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
   };
 
   useEffect(() => {
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Storybook Display - How it works"} steps={[{ title: 'Open', desc: 'Access the Storybook Display section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Storybook Display.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       audioRef.current?.pause();
       if (typeof window !== "undefined" && "speechSynthesis" in window) {
         window.speechSynthesis.cancel();

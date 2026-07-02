@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface AnimatedVoteCounterProps {
   targetValue: number;
@@ -15,7 +16,9 @@ export const AnimatedVoteCounter = ({
   className,
 }: AnimatedVoteCounterProps) => {
   return (
-    <Badge
+    <>
+      <FloatingHowItWorks title={"Animated Vote Counter - How it works"} steps={[{ title: 'Open', desc: 'Access the Animated Vote Counter section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Animated Vote Counter.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Badge
       className={cn(
         "text-base font-bold transition-all duration-300",
         isTopPremium
@@ -26,6 +29,7 @@ export const AnimatedVoteCounter = ({
     >
       {targetValue.toLocaleString('en-US')}
     </Badge>
+    </>
   );
 };
 

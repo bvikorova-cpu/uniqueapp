@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const levels = [
   {
@@ -37,7 +38,9 @@ interface Props {
 
 export const ReadingLevelSelector = ({ selected, onSelect }: Props) => {
   return (
-    <div className="mb-6">
+    <>
+      <FloatingHowItWorks title={"Reading Level Selector - How it works"} steps={[{ title: 'Open', desc: 'Access the Reading Level Selector section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Reading Level Selector.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="mb-6">
       <h3 className="text-sm font-semibold mb-3 text-muted-foreground uppercase tracking-wider">
         Reading Level
       </h3>
@@ -61,5 +64,6 @@ export const ReadingLevelSelector = ({ selected, onSelect }: Props) => {
         ))}
       </div>
     </div>
+    </>
   );
 };

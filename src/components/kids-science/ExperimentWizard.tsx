@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ScienceCategorySelector } from "./ScienceCategorySelector";
 import { DifficultySelector } from "./DifficultySelector";
 import { Microscope, ArrowRight, ArrowLeft } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ExperimentWizardProps {
   category: string;
@@ -44,7 +45,9 @@ export const ExperimentWizard = ({
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Experiment Wizard - How it works"} steps={[{ title: 'Open', desc: 'Access the Experiment Wizard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Experiment Wizard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       {/* Progress bar */}
       <div className="flex items-center gap-2">
         {steps.map((s, i) => (
@@ -181,5 +184,6 @@ export const ExperimentWizard = ({
         )}
       </div>
     </div>
+    </>
   );
 };

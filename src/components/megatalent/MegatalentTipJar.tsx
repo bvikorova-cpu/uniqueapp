@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const PRESETS = [200, 500, 1000, 2500]; // cents
 
@@ -42,7 +43,12 @@ export default function MegatalentTipJar({ creatorId, creatorName, categorySlug 
         });
       }
     })();
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Megatalent Tip Jar - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Tip Jar section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Tip Jar.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       active = false;
     };
   }, [creatorId]);

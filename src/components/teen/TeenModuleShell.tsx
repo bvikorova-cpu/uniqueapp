@@ -9,6 +9,7 @@ import { ParentalGate, useParentalGate } from "@/components/kids/ParentalGate";
 import { useTeenCredits, TeenModuleKey } from "@/hooks/useTeenCredits";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface TeenModuleShellProps {
   module: TeenModuleKey;
@@ -39,6 +40,8 @@ export function TeenModuleShell({
 
   if (!isVerified) {
     return (
+    <>
+      <FloatingHowItWorks title={"Teen Module Shell - How it works"} steps={[{ title: 'Open', desc: 'Access the Teen Module Shell section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Teen Module Shell.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="min-h-screen bg-background">
         <Navbar />
         <ParentalGate
@@ -48,7 +51,8 @@ export function TeenModuleShell({
           storageKey={storageKey}
         />
       </div>
-    );
+    </>
+  );
   }
 
   const handleGenerate = async () => {

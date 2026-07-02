@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 const categories = [
   { key: "all", label: "All", emoji: "📋" },
@@ -23,7 +24,9 @@ interface StudentFiltersProps {
 
 export function StudentFilters({ search, onSearchChange, filter, onFilterChange, sort, onSortChange }: StudentFiltersProps) {
   return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Student Filters - How it works"} steps={[{ title: 'Open', desc: 'Access the Student Filters section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Student Filters.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -63,5 +66,6 @@ export function StudentFilters({ search, onSearchChange, filter, onFilterChange,
         ))}
       </div>
     </motion.div>
+    </>
   );
 }

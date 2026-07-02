@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Crown, Users, Heart, Eye, TrendingUp, Volume2, VolumeX, Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroAsset from "@/assets/influking-hero-v2.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const heroVideo = heroAsset.url;
 
@@ -47,7 +48,9 @@ const InfluKingHero = ({ totalInfluencers, totalFollowers, totalLikes, totalView
   ];
 
   return (
-    <div className="relative w-full h-[76svh] min-h-[500px] sm:min-h-[540px] rounded-2xl sm:rounded-3xl overflow-hidden mb-8 border border-border/40">
+    <>
+      <FloatingHowItWorks title={"Influ King Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Influ King Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Influ King Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative w-full h-[76svh] min-h-[500px] sm:min-h-[540px] rounded-2xl sm:rounded-3xl overflow-hidden mb-8 border border-border/40">
       {/* Video Background */}
       <video
         ref={videoRef}
@@ -139,6 +142,7 @@ const InfluKingHero = ({ totalInfluencers, totalFollowers, totalLikes, totalView
         </motion.div>
       </div>
     </div>
+    </>
   );
 };
 

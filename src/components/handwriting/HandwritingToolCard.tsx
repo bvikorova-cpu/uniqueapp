@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Check, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ToolDef {
   id: string;
@@ -25,7 +26,9 @@ export const HandwritingToolCard = ({ tool, onSelect, index }: HandwritingToolCa
   const Icon = tool.icon;
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Handwriting Tool Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Handwriting Tool Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Handwriting Tool Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 + index * 0.1 }}
@@ -84,5 +87,6 @@ export const HandwritingToolCard = ({ tool, onSelect, index }: HandwritingToolCa
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 };

@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const CATEGORIES = [
   { name: "Superhero", icon: "🦸", color: "from-blue-500 to-cyan-500" },
@@ -53,7 +54,9 @@ export const CharacterCreator = () => {
   });
 
   return (
-    <Card className="relative overflow-hidden border-border/30 bg-card/90 backdrop-blur-xl p-6">
+    <>
+      <FloatingHowItWorks title={"Character Creator - How it works"} steps={[{ title: 'Open', desc: 'Access the Character Creator section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Character Creator.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="relative overflow-hidden border-border/30 bg-card/90 backdrop-blur-xl p-6">
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 via-yellow-500 to-orange-500" />
       
       <div className="flex items-center gap-3 mb-6">
@@ -148,5 +151,6 @@ export const CharacterCreator = () => {
         </Button>
       </div>
     </Card>
+    </>
   );
 };

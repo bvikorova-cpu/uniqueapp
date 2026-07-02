@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Heart, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const AMOUNTS = [5, 10, 25, 50];
 
@@ -17,7 +18,9 @@ export function QuickDonateWidget() {
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
 
   return (
-    <section className="py-12 px-4">
+    <>
+      <FloatingHowItWorks title={"Quick Donate Widget - How it works"} steps={[{ title: 'Open', desc: 'Access the Quick Donate Widget section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Quick Donate Widget.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <section className="py-12 px-4">
       <div className="max-w-lg mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -75,5 +78,6 @@ export function QuickDonateWidget() {
         </motion.div>
       </div>
     </section>
+    </>
   );
 }

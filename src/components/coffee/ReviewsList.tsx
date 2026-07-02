@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Star } from 'lucide-react';
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const ReviewsList = () => {
   const { data: reviews, isLoading } = useQuery({
@@ -24,7 +25,9 @@ export const ReviewsList = () => {
   if (isLoading) return <div>Loading reviews...</div>;
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Reviews List - How it works"} steps={[{ title: 'Open', desc: 'Access the Reviews List section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Reviews List.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       {reviews?.map((review) => (
         <Card key={review.id}>
           <CardHeader>
@@ -60,5 +63,6 @@ export const ReviewsList = () => {
         </Card>
       ))}
     </div>
+    </>
   );
 };

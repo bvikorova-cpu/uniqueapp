@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { TrendingUp, TrendingDown, History, Zap, Settings, Crown, Trophy } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface LotterySidebarProps {
   subscription: any;
@@ -18,7 +19,9 @@ export const LotterySidebar = ({ subscription, onRefreshStatus, onManageSubscrip
   const navigate = useNavigate();
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title={"Lottery Sidebar - How it works"} steps={[{ title: 'Open', desc: 'Access the Lottery Sidebar section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Lottery Sidebar.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-4">
       {/* Hot Numbers */}
       <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
         <Card className="bg-gradient-to-br from-red-500/10 to-orange-500/10 border-red-300/30">
@@ -134,5 +137,6 @@ export const LotterySidebar = ({ subscription, onRefreshStatus, onManageSubscrip
         </Card>
       </motion.div>
     </div>
+    </>
   );
 };

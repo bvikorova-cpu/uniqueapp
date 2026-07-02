@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Search, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useDebounce } from "@/hooks/use-debounce";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Profile {
   id: string;
@@ -44,7 +45,12 @@ const UserSearch = () => {
         if (!cancelled) setSearching(false);
       }
     })();
-    return () => { cancelled = true; };
+    return (
+    <>
+      <FloatingHowItWorks title={"User Search - How it works"} steps={[{ title: 'Open', desc: 'Access the User Search section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in User Search.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => { cancelled = true; };
   }, [debounced, toast]);
 
   return (

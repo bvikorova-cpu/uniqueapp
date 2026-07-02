@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const SEGMENTS = [
   { id: "all", label: "All users", icon: Users, color: "bg-cyan-500/20 border-cyan-500/50 text-cyan-900 dark:text-cyan-200" },
@@ -97,7 +98,9 @@ export const BroadcastCenter = () => {
   };
 
   return (
-    <div id="broadcast-center" className="rounded-2xl border border-fuchsia-500/20 bg-gradient-to-br from-fuchsia-500/5 via-card/60 to-purple-500/5 backdrop-blur-xl p-5 shadow-xl">
+    <>
+      <FloatingHowItWorks title={"Broadcast Center - How it works"} steps={[{ title: 'Open', desc: 'Access the Broadcast Center section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Broadcast Center.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div id="broadcast-center" className="rounded-2xl border border-fuchsia-500/20 bg-gradient-to-br from-fuchsia-500/5 via-card/60 to-purple-500/5 backdrop-blur-xl p-5 shadow-xl">
       <div className="flex items-center gap-3 mb-4">
         <div className="p-2 rounded-xl bg-fuchsia-500/15 border border-fuchsia-500/30">
           <Megaphone className="h-5 w-5 text-fuchsia-300" />
@@ -189,5 +192,6 @@ export const BroadcastCenter = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };

@@ -6,6 +6,7 @@ import { Sparkles, Loader2, Trophy, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Brand { id: string; name: string; logo: string; total_votes: number; }
 
@@ -43,7 +44,9 @@ export const AIBattlePredictor = ({ brands }: { brands: Brand[] }) => {
   };
 
   return (
-    <Card className="relative overflow-hidden border-violet-500/30 bg-gradient-to-br from-zinc-950 via-violet-950/20 to-zinc-950">
+    <>
+      <FloatingHowItWorks title={"A I Battle Predictor - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Battle Predictor section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Battle Predictor.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="relative overflow-hidden border-violet-500/30 bg-gradient-to-br from-zinc-950 via-violet-950/20 to-zinc-950">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,hsl(280_85%_55%/.12),transparent_60%)]" />
       <CardHeader className="relative">
         <CardTitle className="flex items-center gap-2 text-violet-100">
@@ -104,5 +107,6 @@ export const AIBattlePredictor = ({ brands }: { brands: Brand[] }) => {
         </AnimatePresence>
       </CardContent>
     </Card>
+    </>
   );
 };

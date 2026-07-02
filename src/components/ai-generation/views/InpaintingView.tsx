@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Props { onCreditsUsed: () => void; }
 
@@ -47,7 +48,9 @@ export const InpaintingView = ({ onCreditsUsed }: Props) => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <>
+      <FloatingHowItWorks title={"Inpainting View - How it works"} steps={[{ title: 'Open', desc: 'Access the Inpainting View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Inpainting View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="max-w-2xl mx-auto space-y-6">
       <div>
         <h2 className="text-2xl font-black mb-2">🎯 AI Inpainting</h2>
         <p className="text-muted-foreground text-sm">Selectively edit specific areas of an image concept. Cost: 4 CR</p>
@@ -91,5 +94,6 @@ export const InpaintingView = ({ onCreditsUsed }: Props) => {
         </motion.div>
       )}
     </div>
+    </>
   );
 };

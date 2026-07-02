@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, BarChart3, TrendingUp, Users, Heart, Eye, Calendar, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, BarChart, Bar } from "recharts";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface EngagementAnalyticsProps {
   onBack: () => void;
@@ -103,7 +104,9 @@ const EngagementAnalytics = ({ onBack }: EngagementAnalyticsProps) => {
   ];
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Engagement Analytics - How it works"} steps={[{ title: 'Open', desc: 'Access the Engagement Analytics section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Engagement Analytics.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
         <Button variant="ghost" onClick={onBack} className="gap-2 mb-4">
           <ArrowLeft className="h-4 w-4" /> Back to Hub
@@ -253,6 +256,7 @@ const EngagementAnalytics = ({ onBack }: EngagementAnalyticsProps) => {
         </motion.div>
       </div>
     </div>
+    </>
   );
 };
 

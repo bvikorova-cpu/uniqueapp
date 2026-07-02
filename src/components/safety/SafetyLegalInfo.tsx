@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Scale, Globe, Shield, AlertTriangle, ExternalLink } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const legalInfo = [
   {
@@ -118,7 +119,9 @@ const legalInfo = [
 
 const SafetyLegalInfo = () => {
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Safety Legal Info - How it works"} steps={[{ title: 'Open', desc: 'Access the Safety Legal Info section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Safety Legal Info.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -223,6 +226,7 @@ const SafetyLegalInfo = () => {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };
 

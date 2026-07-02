@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Eye, Play, Pause, ChevronRight, Shield, Heart, Timer } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const SCENARIOS = [
   { id: "spider", name: "Arachnophobia", emoji: "🕷️", levels: 5, description: "Gradually face your fear of spiders" },
@@ -71,6 +72,8 @@ export const ExposureSimulator = () => {
     const levels = LEVEL_DESCRIPTIONS[selectedScenario] || [];
 
     return (
+    <>
+      <FloatingHowItWorks title={"Exposure Simulator - How it works"} steps={[{ title: 'Open', desc: 'Access the Exposure Simulator section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Exposure Simulator.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="space-y-4">
         <Button variant="ghost" size="sm" onClick={() => setSelectedScenario(null)}>← Back to Scenarios</Button>
         
@@ -134,7 +137,8 @@ export const ExposureSimulator = () => {
           )}
         </Card>
       </div>
-    );
+    </>
+  );
   }
 
   return (

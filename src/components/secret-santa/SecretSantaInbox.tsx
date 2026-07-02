@@ -12,6 +12,7 @@ import { GiftAnimation } from "./GiftAnimation";
 import { GiftReactions } from "./GiftReactions";
 import { InteractiveGift } from "./InteractiveGift";
 import { useSocialGiftsProgress } from "@/hooks/useSocialGiftsProgress";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const SecretSantaInbox = () => {
   const { receivedGifts, giftsLoading, sentGifts, sentLoading, shareToStory } = useSecretSanta();
@@ -88,6 +89,8 @@ export const SecretSantaInbox = () => {
 
   if (isLoading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Secret Santa Inbox - How it works"} steps={[{ title: 'Open', desc: 'Access the Secret Santa Inbox section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Secret Santa Inbox.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="bg-white/80 backdrop-blur-xl border border-amber-200 rounded-2xl p-6 shadow-lg">
         <div className="animate-pulse space-y-4">
           {[1, 2, 3].map((i) => (
@@ -95,7 +98,8 @@ export const SecretSantaInbox = () => {
           ))}
         </div>
       </div>
-    );
+    </>
+  );
   }
 
   return (

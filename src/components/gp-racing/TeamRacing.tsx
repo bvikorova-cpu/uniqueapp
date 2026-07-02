@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ArrowLeft, Users, Shield, Trophy, Star, Plus, MessageSquare, Car, Flame, Crown } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const existingTeams = [
   {
@@ -60,7 +61,9 @@ export function TeamRacing({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Team Racing - How it works"} steps={[{ title: 'Open', desc: 'Access the Team Racing section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Team Racing.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="icon" onClick={onBack} className="text-cyan-400 hover:bg-cyan-950/30">
@@ -201,5 +204,6 @@ export function TeamRacing({ onBack }: { onBack: () => void }) {
         </DialogContent>
       </Dialog>
     </div>
+    </>
   );
 }

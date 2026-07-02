@@ -6,6 +6,7 @@ import { Activity, UserPlus, CreditCard, AlertCircle, Zap, MessageSquare, Volume
 import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Event {
   id: string;
@@ -170,7 +171,12 @@ export const RealtimeActivityFeed = () => {
       })
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); };
+    return (
+    <>
+      <FloatingHowItWorks title={"Realtime Activity Feed - How it works"} steps={[{ title: 'Open', desc: 'Access the Realtime Activity Feed section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Realtime Activity Feed.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => { supabase.removeChannel(channel); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paused, soundOn, notifOn]);
 

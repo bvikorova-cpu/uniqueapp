@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useCrossExam } from "@/hooks/useLieDetectorPro";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function CrossExaminationCard() {
   const [subject, setSubject] = useState("");
@@ -28,7 +29,9 @@ export function CrossExaminationCard() {
   };
 
   return (
-    <Card className="bg-card/60 backdrop-blur-sm border-amber-500/30">
+    <>
+      <FloatingHowItWorks title={"Cross Examination Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Cross Examination Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Cross Examination Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-card/60 backdrop-blur-sm border-amber-500/30">
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2 text-amber-400">
           <Gavel className="w-5 h-5" /> AI Cross-Examination
@@ -81,5 +84,6 @@ export function CrossExaminationCard() {
         )}
       </CardContent>
     </Card>
+    </>
   );
 }

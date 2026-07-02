@@ -5,6 +5,7 @@ import { Trophy, Calendar, Clock, Users, Crown, Star, Flame, Gift } from "lucide
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface WeeklyTournamentsProps {
   currentStreak?: number;
@@ -19,7 +20,9 @@ export const WeeklyTournaments = ({ currentStreak = 0 }: WeeklyTournamentsProps)
   const daysLeft = Math.ceil((weekEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Weekly Tournaments - How it works"} steps={[{ title: 'Open', desc: 'Access the Weekly Tournaments section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Weekly Tournaments.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       {/* Current Weekly Event */}
       <Card className="relative overflow-hidden border-2 border-primary/20 backdrop-blur-xl bg-card/80">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-violet-500/5 to-cyan-500/5" />
@@ -141,5 +144,6 @@ export const WeeklyTournaments = ({ currentStreak = 0 }: WeeklyTournamentsProps)
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };

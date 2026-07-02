@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import ReactMarkdown from "react-markdown";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Msg { role: "user" | "assistant"; content: string; }
 
@@ -58,6 +59,8 @@ export const LegalAssistant = ({ documentType, documentText }: LegalAssistantPro
 
   return (
     <>
+      <FloatingHowItWorks title={"Legal Assistant - How it works"} steps={[{ title: 'Open', desc: 'Access the Legal Assistant section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Legal Assistant.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <>
       {/* Floating button */}
       {!open && (
         <button
@@ -128,6 +131,7 @@ export const LegalAssistant = ({ documentType, documentText }: LegalAssistantPro
           </div>
         </div>
       )}
+    </>
     </>
   );
 };

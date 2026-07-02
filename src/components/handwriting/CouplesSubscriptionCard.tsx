@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Heart, Sparkles, Settings, Loader2 } from "lucide-react";
 import { useCouplesStatus, useCouplesCheckout, useCouplesPortal } from "@/hooks/useHandwritingPremium";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const CouplesSubscriptionCard = () => {
   const [email, setEmail] = useState("");
@@ -15,7 +16,9 @@ export const CouplesSubscriptionCard = () => {
   const isActive = (status.data as any)?.active;
 
   return (
-    <Card className="bg-gradient-to-br from-rose-50/80 via-pink-50/60 to-amber-50/40 border-rose-300/40 dark:from-rose-950/30 dark:via-pink-950/20 dark:to-amber-950/10">
+    <>
+      <FloatingHowItWorks title={"Couples Subscription Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Couples Subscription Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Couples Subscription Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="bg-gradient-to-br from-rose-50/80 via-pink-50/60 to-amber-50/40 border-rose-300/40 dark:from-rose-950/30 dark:via-pink-950/20 dark:to-amber-950/10">
       <CardHeader>
         <CardTitle className="flex items-center justify-between text-base">
           <span className="flex items-center gap-2">
@@ -81,5 +84,6 @@ export const CouplesSubscriptionCard = () => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

@@ -9,6 +9,7 @@ import { Loader2, Subtitles, Download, Copy } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { handleEdgeError } from "@/lib/handleEdgeError";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface CapResult {
   captions: Array<{ startTime: number; endTime: number; text: string; style: string; position: string; animation: string; color: string; emoji?: string }>;
@@ -45,7 +46,9 @@ export const CaptionsView = ({ onBack }: { onBack: () => void }) => {
   };
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Captions View - How it works"} steps={[{ title: 'Open', desc: 'Access the Captions View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Captions View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4">← Back</Button>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center"><Subtitles className="w-6 h-6 text-white" /></div>
@@ -94,5 +97,6 @@ export const CaptionsView = ({ onBack }: { onBack: () => void }) => {
         </Card>
       </div>
     </div>
+    </>
   );
 };

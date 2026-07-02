@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Calculator, Info } from "lucide-react";
 import { useState } from "react";
 import { Slider } from "@/components/ui/slider";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface EarningsTaxEstimatorProps {
   totalEarnings: number;
@@ -17,7 +18,9 @@ export const EarningsTaxEstimator = ({ totalEarnings }: EarningsTaxEstimatorProp
   const net = totalEarnings - taxOwed;
 
   return (
-    <Card className="p-6 bg-card/80 backdrop-blur-md border-amber-500/20">
+    <>
+      <FloatingHowItWorks title={"Earnings Tax Estimator - How it works"} steps={[{ title: 'Open', desc: 'Access the Earnings Tax Estimator section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Earnings Tax Estimator.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-6 bg-card/80 backdrop-blur-md border-amber-500/20">
       <h3 className="text-lg font-bold flex items-center gap-2 mb-4">
         <Calculator className="h-5 w-5 text-amber-500" />
         Tax Estimator (Indicative)
@@ -53,5 +56,6 @@ export const EarningsTaxEstimator = ({ totalEarnings }: EarningsTaxEstimatorProp
         </p>
       </div>
     </Card>
+    </>
   );
 };

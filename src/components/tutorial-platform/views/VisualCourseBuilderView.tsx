@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface Module {
   id: number;
@@ -214,7 +215,9 @@ export function VisualCourseBuilderView({ onBack }: Props) {
   };
 
   return (
-    <div>
+    <>
+      <FloatingHowItWorks title={"Visual Course Builder View - How it works"} steps={[{ title: 'Open', desc: 'Access the Visual Course Builder View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Visual Course Builder View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div>
       <Button variant="ghost" onClick={onBack} className="mb-4"><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
@@ -376,5 +379,6 @@ export function VisualCourseBuilderView({ onBack }: Props) {
         </div>
       </div>
     </div>
+    </>
   );
 }

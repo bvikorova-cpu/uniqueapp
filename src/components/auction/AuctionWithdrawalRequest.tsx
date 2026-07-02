@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, DollarSign, AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function AuctionWithdrawalRequest() {
   const { toast } = useToast();
@@ -172,10 +173,13 @@ export function AuctionWithdrawalRequest() {
 
   if (balanceLoading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Auction Withdrawal Request - How it works"} steps={[{ title: 'Open', desc: 'Access the Auction Withdrawal Request section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Auction Withdrawal Request.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="flex items-center justify-center p-8">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
-    );
+    </>
+  );
   }
 
   return (

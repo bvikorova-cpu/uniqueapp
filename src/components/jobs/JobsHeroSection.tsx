@@ -1,5 +1,6 @@
 import { Briefcase, Building2, Users, TrendingUp } from "lucide-react";
 import { useEffect, useState } from "react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface StatCounterProps {
   end: number;
@@ -26,7 +27,12 @@ function StatCounter({ end, label, icon, suffix = "" }: StatCounterProps) {
         setCount(Math.floor(current));
       }
     }, duration / steps);
-    return () => clearInterval(timer);
+    return (
+    <>
+      <FloatingHowItWorks title={"Jobs Hero Section - How it works"} steps={[{ title: 'Open', desc: 'Access the Jobs Hero Section section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Jobs Hero Section.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(timer);
   }, [end]);
 
   return (

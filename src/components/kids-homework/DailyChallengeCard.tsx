@@ -4,6 +4,7 @@ import { Progress } from "@/components/ui/progress";
 import { CheckCircle2, Target } from "lucide-react";
 import confetti from "canvas-confetti";
 import { useEffect, useRef } from "react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Challenge {
   id: string;
@@ -71,13 +72,16 @@ export const DailyChallengeCard = ({ challenge, progress, isCompleted }: DailyCh
 
   if (!challenge) {
     return (
+    <>
+      <FloatingHowItWorks title={"Daily Challenge Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Daily Challenge Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Daily Challenge Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="bg-gradient-to-br from-orange-500/10 to-yellow-500/10 border-orange-300/50">
         <CardContent className="py-8 text-center">
           <Target className="w-12 h-12 mx-auto mb-4 text-orange-500" />
           <p className="text-muted-foreground">No challenge available today. Check back tomorrow!</p>
         </CardContent>
       </Card>
-    );
+    </>
+  );
   }
 
   // Calculate progress percentage

@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { BookOpen, Loader2, Sparkles, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -34,7 +35,9 @@ export const AICulturalGuide = ({ onBack }: Props) => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"A I Cultural Guide - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Cultural Guide section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Cultural Guide.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-2" />Back to Hub</Button>
       <Card className="border-rose-500/20 bg-gradient-to-br from-rose-500/5 via-background to-pink-500/5">
         <CardHeader>
@@ -50,5 +53,6 @@ export const AICulturalGuide = ({ onBack }: Props) => {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };

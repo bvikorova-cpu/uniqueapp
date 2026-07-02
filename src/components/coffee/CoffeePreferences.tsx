@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const CoffeePreferences = () => {
   const { toast } = useToast();
@@ -67,7 +68,9 @@ export const CoffeePreferences = () => {
   const atmosphereOptions = ['Quiet', 'Social', 'Cozy', 'Modern', 'Outdoor', 'Work-friendly'];
 
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title={"Coffee Preferences - How it works"} steps={[{ title: 'Open', desc: 'Access the Coffee Preferences section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Coffee Preferences.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card>
       <CardHeader>
         <CardTitle>Coffee Preferences</CardTitle>
         <CardDescription>Help us match you with like-minded coffee lovers</CardDescription>
@@ -144,5 +147,6 @@ export const CoffeePreferences = () => {
         </Button>
       </CardContent>
     </Card>
+    </>
   );
 };

@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Flame } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export const SkillSwapStreak = () => {
   const days = ["M", "T", "W", "T", "F", "S", "S"];
@@ -7,7 +8,9 @@ export const SkillSwapStreak = () => {
   const currentStreak = 4;
 
   return (
-    <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
+    <>
+      <FloatingHowItWorks title={"Skill Swap Streak - How it works"} steps={[{ title: 'Open', desc: 'Access the Skill Swap Streak section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Skill Swap Streak.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
       <div className="flex items-center gap-2 mb-3">
         <Flame className="h-5 w-5 text-orange-500" />
         <h3 className="font-bold text-sm">Activity Streak</h3>
@@ -28,5 +31,6 @@ export const SkillSwapStreak = () => {
         ))}
       </div>
     </Card>
+    </>
   );
 };

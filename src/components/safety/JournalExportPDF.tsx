@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import jsPDF from "jspdf";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   entries: any[];
@@ -56,8 +57,11 @@ export function JournalExportPDF({ entries, audience }: Props) {
   };
 
   return (
-    <Button size="sm" variant="outline" onClick={exportPdf} className="gap-1">
+    <>
+      <FloatingHowItWorks title={"Journal Export P D F - How it works"} steps={[{ title: 'Open', desc: 'Access the Journal Export P D F section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Journal Export P D F.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Button size="sm" variant="outline" onClick={exportPdf} className="gap-1">
       <Download className="h-3 w-3" /> Export for {audience}
     </Button>
+    </>
   );
 }

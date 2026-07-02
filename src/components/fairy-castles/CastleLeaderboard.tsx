@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Trophy, Medal, Crown, Flame } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface LeaderboardEntry {
   rank: number;
@@ -34,7 +35,9 @@ export function CastleLeaderboard({ userStamps }: CastleLeaderboardProps) {
   ).sort((a, b) => b.xp - a.xp).map((e, i) => ({ ...e, rank: i + 1 }));
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Castle Leaderboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Castle Leaderboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Castle Leaderboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -112,5 +115,6 @@ export function CastleLeaderboard({ userStamps }: CastleLeaderboardProps) {
         </div>
       </div>
     </motion.div>
+    </>
   );
 }

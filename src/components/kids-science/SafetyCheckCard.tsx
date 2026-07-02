@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ShieldCheck, ShieldAlert, ShieldX, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   category: string;
@@ -62,7 +63,9 @@ export const SafetyCheckCard = ({ category, hypothesis, observations, onCreditsC
     : "bg-red-500/10 border-red-500/40";
 
   return (
-    <Card className={result ? tone : "border-primary/30"}>
+    <>
+      <FloatingHowItWorks title={"Safety Check Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Safety Check Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Safety Check Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className={result ? tone : "border-primary/30"}>
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center justify-between gap-2">
           <span className="flex items-center gap-2">
@@ -123,5 +126,6 @@ export const SafetyCheckCard = ({ category, hypothesis, observations, onCreditsC
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CategoryItem {
   emoji: string;
@@ -27,7 +28,9 @@ export default function MegaTalentCategoryGrid() {
   const navigate = useNavigate();
 
   return (
-    <div className="mb-8">
+    <>
+      <FloatingHowItWorks title={"Mega Talent Category Grid - How it works"} steps={[{ title: 'Open', desc: 'Access the Mega Talent Category Grid section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Mega Talent Category Grid.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="mb-8">
       <h2 className="text-xl sm:text-2xl font-black mb-4">Explore by Category</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
         {categories.map((cat, i) => (
@@ -57,5 +60,6 @@ export default function MegaTalentCategoryGrid() {
         ))}
       </div>
     </div>
+    </>
   );
 }

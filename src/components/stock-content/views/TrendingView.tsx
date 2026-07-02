@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, TrendingUp, Download, Euro, ImageIcon, Flame, Crown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface TrendingViewProps {
   onBack: () => void;
@@ -28,7 +29,9 @@ export function TrendingView({ onBack }: TrendingViewProps) {
   }, []);
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Trending View - How it works"} steps={[{ title: 'Open', desc: 'Access the Trending View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Trending View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-1" /> Back</Button>
         <h2 className="text-2xl font-bold flex items-center gap-2"><TrendingUp className="w-6 h-6 text-rose-500" /> Trending Content</h2>
@@ -86,5 +89,6 @@ export function TrendingView({ onBack }: TrendingViewProps) {
         </div>
       )}
     </div>
+    </>
   );
 }

@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Star, Flame, Crown, Gem, TrendingUp } from "lucide-react";
 import heroVideo from "@/assets/rewards-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 function getWeeklyTimeLeft() {
   const now = new Date();
@@ -25,7 +26,12 @@ export default function RewardsCinematicHero({ level, totalXP, streak, badges }:
 
   useEffect(() => {
     const timer = setInterval(() => setTimeLeft(getWeeklyTimeLeft()), 60000);
-    return () => clearInterval(timer);
+    return (
+    <>
+      <FloatingHowItWorks title={"Rewards Cinematic Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Rewards Cinematic Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Rewards Cinematic Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => clearInterval(timer);
   }, []);
 
   const statCards = [

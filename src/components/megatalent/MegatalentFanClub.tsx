@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Users, Heart, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type Row = { talent_user_id: string; member_count: number; name: string; avatar: string | null };
 
@@ -88,7 +89,9 @@ const MegatalentFanClub = ({ userId }: { userId: string | null }) => {
   if (!items.length) return null;
 
   return (
-    <Card className="overflow-hidden backdrop-blur-xl bg-card/70 border-border/30">
+    <>
+      <FloatingHowItWorks title={"Megatalent Fan Club - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Fan Club section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Fan Club.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="overflow-hidden backdrop-blur-xl bg-card/70 border-border/30">
       <CardContent className="p-5">
         <div className="flex items-center gap-2 mb-3">
           <Users className="h-5 w-5 text-pink-500" />
@@ -117,6 +120,7 @@ const MegatalentFanClub = ({ userId }: { userId: string | null }) => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };
 

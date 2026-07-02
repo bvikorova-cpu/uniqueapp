@@ -14,6 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface MyPhobiasProps {
   onPhobiaListed?: () => void;
@@ -137,10 +138,13 @@ const MyPhobias = ({ onPhobiaListed }: MyPhobiasProps) => {
 
   if (checkingAccess) {
     return (
+    <>
+      <FloatingHowItWorks title={"My Phobias - How it works"} steps={[{ title: 'Open', desc: 'Access the My Phobias section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in My Phobias.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="flex items-center justify-center py-12">
         <Loader2 className="w-8 h-8 animate-spin text-cyan-400" />
       </div>
-    );
+    </>
+  );
   }
 
   if (!hasAccess) {

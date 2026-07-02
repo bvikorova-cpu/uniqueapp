@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Play, Pause, Volume2, VolumeX, Timer, TrendingDown, Users, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function TimeReversalHero() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -32,7 +33,9 @@ export function TimeReversalHero() {
   };
 
   return (
-    <div className="relative h-[76svh] min-h-[500px] sm:min-h-[540px] w-full overflow-hidden rounded-2xl sm:rounded-3xl border border-border/40 mb-8">
+    <>
+      <FloatingHowItWorks title={"Time Reversal Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Time Reversal Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Time Reversal Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative h-[76svh] min-h-[500px] sm:min-h-[540px] w-full overflow-hidden rounded-2xl sm:rounded-3xl border border-border/40 mb-8">
       <video ref={videoRef} className="absolute inset-0 h-full w-full object-cover brightness-110 saturate-110" autoPlay muted loop playsInline>
         <source src="/__l5e/assets-v1/7d3ecbfe-9bcb-4577-9a77-d3a46480a98f/time-reversal-hero-video.mp4" type="video/mp4" />
       </video>
@@ -102,5 +105,6 @@ export function TimeReversalHero() {
         </motion.div>
       </div>
     </div>
+    </>
   );
 }

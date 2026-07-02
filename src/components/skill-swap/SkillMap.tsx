@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface SkillMapProps {
   onBack: () => void;
@@ -57,10 +58,13 @@ export const SkillMap = ({ onBack }: SkillMapProps) => {
 
   if (isLoading) {
     return (
+    <>
+      <FloatingHowItWorks title={"Skill Map - How it works"} steps={[{ title: 'Open', desc: 'Access the Skill Map section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Skill Map.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="flex justify-center items-center py-20">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
-    );
+    </>
+  );
   }
 
   return (

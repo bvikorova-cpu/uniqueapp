@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { LicenseSelectorDialog } from "../LicenseSelectorDialog";
 import { ResolutionSelectorDialog, type ResolutionKey } from "../ResolutionSelectorDialog";
 import { LightboxManagerDialog } from "../LightboxManagerDialog";
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 interface BrowseLibraryViewProps {
   onBack: () => void;
@@ -90,7 +91,9 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
   const categories = [...new Set(items.map(i => i.category).filter(Boolean))];
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Browse Library View - How it works"} steps={[{ title: 'Open', desc: 'Access the Browse Library View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Browse Library View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-1" /> Back</Button>
         <h2 className="text-2xl font-bold">Browse Library</h2>
@@ -204,5 +207,6 @@ export function BrowseLibraryView({ onBack }: BrowseLibraryViewProps) {
         contentItemId={lightboxItemId ?? undefined}
       />
     </div>
+    </>
   );
 }

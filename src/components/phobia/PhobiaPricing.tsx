@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Check, Brain, Zap, Sparkles, Crown, CreditCard, Star } from "lucide-react";
 import { motion } from "framer-motion";
 import { usePhobiaCredits } from "@/hooks/usePhobiaCredits";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const CREDIT_PACKAGES = [
   { credits: 10, price: "€5", icon: Zap, label: "Starter", desc: "Try out AI tools", features: ["2 AI detections", "5 journal entries", "Basic analytics"] },
@@ -17,7 +18,9 @@ export function PhobiaPricing() {
   if (isLoading) return null;
 
   return (
-    <div className="space-y-8">
+    <>
+      <FloatingHowItWorks title={"Phobia Pricing - How it works"} steps={[{ title: 'Open', desc: 'Access the Phobia Pricing section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Phobia Pricing.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-8">
       {/* Current Status */}
       <Card className="bg-card/80 backdrop-blur-xl border-border/50">
         <CardContent className="p-4 sm:p-6">
@@ -135,5 +138,6 @@ export function PhobiaPricing() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

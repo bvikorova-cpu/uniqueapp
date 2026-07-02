@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LucideIcon } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface HockeyToolCardProps {
   icon: LucideIcon;
@@ -17,7 +18,9 @@ interface HockeyToolCardProps {
 
 export function HockeyToolCard({ icon: Icon, title, description, badge, credits, gradient, iconColor, onClick, delay }: HockeyToolCardProps) {
   return (
-    <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+    <>
+      <FloatingHowItWorks title={"Hockey Tool Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Hockey Tool Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Hockey Tool Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
       <Card className="cursor-pointer h-full hover:shadow-lg hover:shadow-primary/10 transition-all border-border/50 hover:border-primary/30 group" onClick={onClick}>
         <CardContent className="p-3 md:p-4">
           <div className="flex items-start gap-3">
@@ -36,5 +39,6 @@ export function HockeyToolCard({ icon: Icon, title, description, badge, credits,
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 }

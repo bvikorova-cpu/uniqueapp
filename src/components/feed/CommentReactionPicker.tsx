@@ -8,6 +8,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { Smile, X } from "lucide-react";
 import { ReactionsDialog } from "@/components/wall/ReactionsDialog";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface CommentReactionPickerProps {
   commentId: string;
@@ -86,7 +87,9 @@ export const CommentReactionPicker = ({ commentId }: CommentReactionPickerProps)
   const userReactionEmoji = REACTIONS.find(r => r.type === userReaction)?.emoji;
 
   return (
-    <div className="flex items-center gap-1">
+    <>
+      <FloatingHowItWorks title={"Comment Reaction Picker - How it works"} steps={[{ title: 'Open', desc: 'Access the Comment Reaction Picker section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Comment Reaction Picker.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="flex items-center gap-1">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button variant="ghost" size="sm" className="h-6 px-1.5 text-[10px]">
@@ -144,5 +147,6 @@ export const CommentReactionPicker = ({ commentId }: CommentReactionPickerProps)
         reactionMeta={REACTIONS}
       />
     </div>
+    </>
   );
 };

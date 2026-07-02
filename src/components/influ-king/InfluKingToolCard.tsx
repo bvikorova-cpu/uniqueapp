@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Lock, LucideIcon } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface InfluKingToolCardProps {
   icon: LucideIcon;
@@ -48,6 +49,8 @@ export function InfluKingToolCard({ icon: Icon, title, description, badge, credi
 
   if (locked && lockedReason) {
     return (
+    <>
+      <FloatingHowItWorks title={"Influ King Tool Card - How it works"} steps={[{ title: 'Open', desc: 'Access the Influ King Tool Card section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Influ King Tool Card.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <TooltipProvider delayDuration={150}>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -58,7 +61,8 @@ export function InfluKingToolCard({ icon: Icon, title, description, badge, credi
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
-    );
+    </>
+  );
   }
 
   return card;

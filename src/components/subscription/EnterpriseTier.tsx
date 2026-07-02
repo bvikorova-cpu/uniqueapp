@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Building2, Check, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface EnterpriseTierProps {
   onContact?: () => void;
@@ -28,7 +29,9 @@ export const EnterpriseTier = ({ onContact }: EnterpriseTierProps) => {
   };
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title={"Enterprise Tier - How it works"} steps={[{ title: 'Open', desc: 'Access the Enterprise Tier section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Enterprise Tier.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -83,5 +86,6 @@ export const EnterpriseTier = ({ onContact }: EnterpriseTierProps) => {
         </div>
       </div>
     </motion.div>
+    </>
   );
 };

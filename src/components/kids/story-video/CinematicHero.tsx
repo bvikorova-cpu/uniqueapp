@@ -1,9 +1,12 @@
 import { motion } from 'framer-motion';
 import { Film, Sparkles, Star } from 'lucide-react';
+import { FloatingHowItWorks } from "../../common/FloatingHowItWorks";
 
 export const CinematicHero = () => {
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-950 via-purple-900 to-violet-950 p-8 md:p-12">
+    <>
+      <FloatingHowItWorks title={"Cinematic Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Cinematic Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Cinematic Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-950 via-purple-900 to-violet-950 p-8 md:p-12">
       {/* Film strip borders */}
       <div className="absolute top-0 left-0 right-0 h-8 flex gap-1 px-2 items-center opacity-30">
         {Array.from({ length: 30 }).map((_, i) => (
@@ -102,5 +105,6 @@ export const CinematicHero = () => {
         </motion.div>
       </div>
     </div>
+    </>
   );
 };

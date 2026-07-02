@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, Volume2, VolumeX, Play, Pause, CloudRain, Wind, Waves, Trees, Bird, Coffee, Flame, Music } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -103,7 +104,12 @@ export const AmbientSounds = ({ onBack }: Props) => {
   const timerRef = useRef<any>(null);
 
   useEffect(() => {
-    return () => {
+    return (
+    <>
+      <FloatingHowItWorks title={"Ambient Sounds - How it works"} steps={[{ title: 'Open', desc: 'Access the Ambient Sounds section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Ambient Sounds.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => {
       generatorRef.current?.close();
       if (timerRef.current) clearInterval(timerRef.current);
     };

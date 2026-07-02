@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useHealthcareSubscription } from "@/hooks/useHealthcareSubscription";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const basicPlans = [
   { id: "pediatric_mini", name: "Pediatric Mini", price: 3, icon: Baby, description: "For small practices (1-2 doctors)", features: ["50 downloads per month", "Basic child-friendly themes", "Print-ready PDF format", "Email support"], priceId: "price_1TlWB3GaXSfGtYFtwmGHpzLV" },
@@ -36,7 +37,9 @@ export function HealthcareTab() {
   };
 
   return (
-    <div className="space-y-8">
+    <>
+      <FloatingHowItWorks title={"Healthcare Tab - How it works"} steps={[{ title: 'Open', desc: 'Access the Healthcare Tab section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Healthcare Tab.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-8">
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="text-center">
         <Badge className="mb-4" variant="secondary"><Heart className="w-4 h-4 mr-2" />For Healthcare & Therapy Professionals</Badge>
         <h2 className="text-4xl font-bold mb-4">Healthcare Coloring Solutions</h2>
@@ -86,5 +89,6 @@ export function HealthcareTab() {
         ))}
       </div>
     </div>
+    </>
   );
 }

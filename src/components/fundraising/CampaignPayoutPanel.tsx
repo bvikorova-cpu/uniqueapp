@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type CampaignType = "medical" | "dream" | "hero" | "pet" | "student" | "crisis" | "talent";
 
@@ -176,7 +177,9 @@ export function CampaignPayoutPanel({ campaignType, campaignId, ownerUserId }: P
   };
 
   return (
-    <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-accent/5">
+    <>
+      <FloatingHowItWorks title={"Campaign Payout Panel - How it works"} steps={[{ title: 'Open', desc: 'Access the Campaign Payout Panel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Campaign Payout Panel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-accent/5">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
           <Wallet className="h-5 w-5 text-primary" />
@@ -301,5 +304,6 @@ export function CampaignPayoutPanel({ campaignType, campaignId, ownerUserId }: P
         )}
       </CardContent>
     </Card>
+    </>
   );
 }

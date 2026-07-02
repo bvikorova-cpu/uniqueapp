@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Zap } from "lucide-react";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Template {
   id: string;
@@ -31,7 +32,9 @@ interface Props {
 
 export const QuickDrawTemplates = ({ onSelectTemplate, loading }: Props) => {
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title={"Quick Draw Templates - How it works"} steps={[{ title: 'Open', desc: 'Access the Quick Draw Templates section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Quick Draw Templates.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Zap className="w-5 h-5 text-primary" />
@@ -64,5 +67,6 @@ export const QuickDrawTemplates = ({ onSelectTemplate, loading }: Props) => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Chrome, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 export function CouponExtensionTeaser() {
   const [email, setEmail] = useState("");
@@ -29,7 +30,9 @@ export function CouponExtensionTeaser() {
   };
 
   return (
-    <Card className="p-5 space-y-3 border-orange-500/30 bg-gradient-to-br from-orange-500/10 via-pink-500/5 to-purple-500/10">
+    <>
+      <FloatingHowItWorks title={"Coupon Extension Teaser - How it works"} steps={[{ title: 'Open', desc: 'Access the Coupon Extension Teaser section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Coupon Extension Teaser.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="p-5 space-y-3 border-orange-500/30 bg-gradient-to-br from-orange-500/10 via-pink-500/5 to-purple-500/10">
       <div className="flex items-center gap-2">
         <Chrome className="w-5 h-5 text-orange-500" />
         <h3 className="font-bold">Browser Extension <span className="text-xs text-muted-foreground">(Coming soon)</span></h3>
@@ -49,5 +52,6 @@ export function CouponExtensionTeaser() {
         <div className="text-sm text-emerald-500 font-bold">✓ You're on the list!</div>
       )}
     </Card>
+    </>
   );
 }

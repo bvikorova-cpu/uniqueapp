@@ -6,6 +6,7 @@ import { ArrowLeft, Sparkles, Loader2, Heart } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const species = ["Puppy", "Kitten", "Bunny", "Pony", "Unicorn", "Dolphin", "Flamingo", "Butterfly"];
 const groomingStyles = ["Glamorous", "Cute & Cozy", "Princess Style", "Sporty", "Boho", "Rainbow", "Fairy", "Rockstar"];
@@ -66,7 +67,9 @@ export function PetSalon({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"Pet Salon - How it works"} steps={[{ title: 'Open', desc: 'Access the Pet Salon section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Pet Salon.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button>
       <h2 className="text-2xl font-black">🐾 Pet Salon</h2>
       <p className="text-muted-foreground">Adopt and groom your virtual pets!</p>
@@ -110,5 +113,6 @@ export function PetSalon({ onBack }: { onBack: () => void }) {
 
       {result && <div className="bg-gradient-to-br from-pink-500/10 to-rose-500/10 border border-pink-400/20 rounded-xl p-6 whitespace-pre-wrap">{result}</div>}
     </div>
+    </>
   );
 }

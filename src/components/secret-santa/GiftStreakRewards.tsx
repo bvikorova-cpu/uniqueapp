@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { Flame, Gift, Trophy, Star, Zap, CheckCircle, Lock, Loader2 } from "lucide-react";
 import { GiftConfetti } from "./GiftConfetti";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 const STREAK_MILESTONES = [
   { days: 3, reward: 10, label: "3-Day Streak", emoji: "🔥", tier: "Bronze" },
@@ -118,11 +119,14 @@ export const GiftStreakRewards = () => {
 
   if (!currentUserId) {
     return (
+    <>
+      <FloatingHowItWorks title={"Gift Streak Rewards - How it works"} steps={[{ title: 'Open', desc: 'Access the Gift Streak Rewards section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Gift Streak Rewards.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <Card className="p-8 bg-white/90 border-amber-200 text-center">
         <Flame className="h-12 w-12 mx-auto text-orange-400 mb-4" />
         <p className="text-gray-600">Please log in to view streak rewards</p>
       </Card>
-    );
+    </>
+  );
   }
 
   return (

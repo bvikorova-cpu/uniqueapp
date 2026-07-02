@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import RewardedAdCard from "./RewardedAdCard";
 import { AD_PLACEMENTS } from "./AdPlacements";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   /** Unique key per section so the daily 3x limit is independent per page */
@@ -32,7 +33,12 @@ export const HeroRewardedAd = ({ sectionKey, className = "" }: Props) => {
       { rootMargin: "200px" },
     );
     io.observe(ref.current);
-    return () => io.disconnect();
+    return (
+    <>
+      <FloatingHowItWorks title={"Hero Rewarded Ad - How it works"} steps={[{ title: 'Open', desc: 'Access the Hero Rewarded Ad section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Hero Rewarded Ad.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
+    </>
+  ) => io.disconnect();
   }, [visible]);
 
   return (

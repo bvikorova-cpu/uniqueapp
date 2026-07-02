@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useBrainDuelCredits } from '@/hooks/useBrainDuelCredits';
 import { motion } from 'framer-motion';
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface League {
   id: string;
@@ -99,7 +100,9 @@ export const LeagueSystem = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"League System - How it works"} steps={[{ title: 'Open', desc: 'Access the League System section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in League System.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       {/* User's Current League Status */}
       {userLeague && (
         <Card className="border-primary/30 backdrop-blur-xl bg-card/80 relative overflow-hidden">
@@ -256,5 +259,6 @@ export const LeagueSystem = () => {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };

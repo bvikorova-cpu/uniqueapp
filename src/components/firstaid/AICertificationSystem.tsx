@@ -6,6 +6,7 @@ import { ArrowLeft, Award, Loader2, CheckCircle, XCircle, Download } from "lucid
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAICredits } from "@/hooks/useAICredits";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -126,7 +127,9 @@ aid training program.
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"A I Certification System - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Certification System section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Certification System.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="space-y-6">
       <div className="flex items-center justify-between">
         <Button variant="ghost" onClick={onBack}><ArrowLeft className="mr-2 h-4 w-4" /> Back</Button>
         <Badge className="bg-red-100 text-red-700">3 Credits</Badge>
@@ -224,5 +227,6 @@ aid training program.
         </div>
       )}
     </div>
+    </>
   );
 };

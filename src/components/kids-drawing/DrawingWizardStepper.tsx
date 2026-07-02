@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface Props {
   currentStep: number;
@@ -7,7 +8,9 @@ interface Props {
 
 export const DrawingWizardStepper = ({ currentStep, steps }: Props) => {
   return (
-    <div className="flex items-center justify-center gap-1 sm:gap-2">
+    <>
+      <FloatingHowItWorks title={"Drawing Wizard Stepper - How it works"} steps={[{ title: 'Open', desc: 'Access the Drawing Wizard Stepper section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Drawing Wizard Stepper.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <div className="flex items-center justify-center gap-1 sm:gap-2">
       {steps.map((label, i) => {
         const isActive = i === currentStep;
         const isDone = i < currentStep;
@@ -37,5 +40,6 @@ export const DrawingWizardStepper = ({ currentStep, steps }: Props) => {
         );
       })}
     </div>
+    </>
   );
 };

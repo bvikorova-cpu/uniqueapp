@@ -8,6 +8,7 @@ import { Loader2, Palette, Sparkles, Copy, Check } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface ColorPalette {
   name: string;
@@ -47,7 +48,9 @@ export function AIColorSuggestions() {
   };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+    <>
+      <FloatingHowItWorks title={"A I Color Suggestions - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Color Suggestions section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Color Suggestions.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
       <Card className="backdrop-blur-xl bg-card/80 border-primary/20 overflow-hidden relative">
         <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-gradient-to-tr from-emerald-500/10 to-cyan-500/10 rounded-full blur-3xl" />
         <CardHeader className="relative z-10">
@@ -135,5 +138,6 @@ export function AIColorSuggestions() {
         </div>
       )}
     </motion.div>
+    </>
   );
 }

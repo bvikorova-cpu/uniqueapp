@@ -8,6 +8,7 @@ import { Receipt, Clock, CheckCircle2, XCircle, AlertCircle, CalendarClock, Refr
 import { format, formatDistanceToNow, isPast, differenceInDays } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RenewJobDialog } from "./RenewJobDialog";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface PostingRow {
   id: string;
@@ -33,9 +34,12 @@ function PaymentBadge({ status }: { status: string }) {
   const cfg = map[status] ?? map.pending;
   const { Icon } = cfg;
   return (
-    <Badge className={`${cfg.cls} gap-1`}>
+    <>
+      <FloatingHowItWorks title={"Job Postings Status - How it works"} steps={[{ title: 'Open', desc: 'Access the Job Postings Status section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Job Postings Status.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Badge className={`${cfg.cls} gap-1`}>
       <Icon className="h-3 w-3" /> {cfg.label}
     </Badge>
+    </>
   );
 }
 

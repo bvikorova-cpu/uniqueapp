@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Film, Crown, Loader2, RefreshCw, ImageOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 type Clip = { id: string; for_date: string; category: string; submission_id: string; votes_count: number; awarded_user_id: string | null };
 type Sub = { id: string; title: string; media_url: string; media_type: string; user_id: string };
@@ -63,7 +64,9 @@ const MegatalentClipOfDay = ({ category }: Props) => {
   if (!category) return null;
 
   return (
-    <Card className="overflow-hidden border-yellow-500/30 bg-gradient-to-br from-yellow-500/10 via-amber-500/5 to-transparent">
+    <>
+      <FloatingHowItWorks title={"Megatalent Clip Of Day - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Clip Of Day section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Clip Of Day.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="overflow-hidden border-yellow-500/30 bg-gradient-to-br from-yellow-500/10 via-amber-500/5 to-transparent">
       <CardContent className="p-5">
         <div className="flex items-center gap-2 mb-3">
           <Film className="h-4 w-4 text-yellow-500" />
@@ -110,6 +113,7 @@ const MegatalentClipOfDay = ({ category }: Props) => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };
 

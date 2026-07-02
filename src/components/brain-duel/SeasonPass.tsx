@@ -8,6 +8,7 @@ import { Crown, Star, Lock, Gift, Zap, Trophy, Sparkles, Coins, Target, Shield }
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface SeasonTier {
   level: number;
@@ -91,7 +92,9 @@ export const SeasonPass = () => {
   };
 
   return (
-    <Card className="relative overflow-hidden border-primary/20 backdrop-blur-xl bg-card/80">
+    <>
+      <FloatingHowItWorks title={"Season Pass - How it works"} steps={[{ title: 'Open', desc: 'Access the Season Pass section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Season Pass.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Card className="relative overflow-hidden border-primary/20 backdrop-blur-xl bg-card/80">
       <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-primary/5 to-violet-500/5" />
       <CardHeader className="relative">
         <div className="flex items-center justify-between">
@@ -226,5 +229,6 @@ export const SeasonPass = () => {
         </ScrollArea>
       </CardContent>
     </Card>
+    </>
   );
 };
