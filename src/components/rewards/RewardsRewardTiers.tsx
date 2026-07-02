@@ -5,6 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { useRewardsStats } from "@/hooks/useRewardsStats";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 const tiers = [
   { id: "bronze", name: "Bronze", emoji: "🥉", minXP: 0, maxXP: 500, color: "from-amber-700 to-orange-800", perks: ["Daily reward +10%", "Basic badge display"], icon: Shield },
