@@ -18,7 +18,45 @@ interface Tpl {
   is_milestone: boolean;
 }
 
-const monthKey = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+// Server anchors the calendar to Europe/Bratislava — mirror it here so
+// worldwide users see the same "today" regardless of their local timezone.
+const TZ = "Europe/Bratislava";
+
+const getBratislavaParts = (d: Date) => {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
+  }).formatToParts(d).reduce<Record<string, string>>((acc, p) => {
+    if (p.type !== "literal") acc[p.type] = p.value;
+    return acc;
+  }, {});
+  return {
+    year: Number(parts.year),
+    month: Number(parts.month),
+    day: Number(parts.day),
+    hour: Number(parts.hour),
+    minute: Number(parts.minute),
+    second: Number(parts.second),
+  };
+};
+
+const monthKeyBratislava = (d: Date) => {
+  const p = getBratislavaParts(d);
+  return `${p.year}-${String(p.month).padStart(2, "0")}`;
+};
+
+const secondsUntilNextBratislavaMidnight = (d: Date) => {
+  const p = getBratislavaParts(d);
+  const elapsed = p.hour * 3600 + p.minute * 60 + p.second;
+  return 86400 - elapsed;
+};
+
+const formatCountdown = (secs: number) => {
+  const h = Math.floor(secs / 3600);
+  const m = Math.floor((secs % 3600) / 60);
+  const s = secs % 60;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+};
 
 const DEFAULTS: Tpl[] = Array.from({ length: 30 }, (_, i) => {
   const day = i + 1;
@@ -35,10 +73,18 @@ const DEFAULTS: Tpl[] = Array.from({ length: 30 }, (_, i) => {
 
 export default function RewardsLoginCalendar() {
   const { user } = useAuth();
-  const today = new Date();
-  const todayDay = today.getDate();
-  const mKey = monthKey(today);
-  const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const bratParts = getBratislavaParts(now);
+  const todayDay = bratParts.day;
+  const mKey = monthKeyBratislava(now);
+  const daysInMonth = new Date(bratParts.year, bratParts.month, 0).getDate();
+  const countdown = formatCountdown(secondsUntilNextBratislavaMidnight(now));
 
   const [tpls, setTpls] = useState<Tpl[]>(DEFAULTS);
   const [claims, setClaims] = useState<Set<number>>(new Set());
@@ -108,7 +154,7 @@ export default function RewardsLoginCalendar() {
                 <h2 className="text-xl font-bold">{"Daily Login Calendar"}</h2>
               </div>
               <p className="text-sm opacity-90">
-                {`${today.toLocaleString("en", { month: "long", year: "numeric" })} • Day ${todayDay}`}
+                {`${new Date(bratParts.year, bratParts.month - 1, bratParts.day).toLocaleString("en", { month: "long", year: "numeric" })} • Day ${todayDay}`}
               </p>
             </div>
             <div className="text-right">
@@ -116,6 +162,11 @@ export default function RewardsLoginCalendar() {
               <p className="text-xs opacity-80">{"claimed"}</p>
             </div>
           </div>
+          <div className="mt-4 rounded-lg bg-white/15 backdrop-blur-sm px-3 py-2 flex items-center justify-between">
+            <span className="text-xs opacity-90">{"Next reward unlocks in"}</span>
+            <span className="font-mono text-lg font-bold tabular-nums">{countdown}</span>
+          </div>
+          <p className="text-[10px] opacity-70 mt-1 text-right">{"Resets at midnight Europe/Bratislava (CET/CEST)"}</p>
         </div>
       </Card>
 
