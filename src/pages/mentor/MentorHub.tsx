@@ -5,6 +5,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useMentorPremium } from "@/hooks/useMentorRouter";
 import {
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_MENTORHUB_STEPS = [
+  { title: 'Switch between coaches', desc: 'Jump between Career, Fitness, Mindset, Wellness.' },
+  { title: 'Continue open plans', desc: 'Active plans and streaks are on the hub.' },
+  { title: 'Log mood daily', desc: 'Mood tracking feeds into personalised coaching.' },
+  { title: 'See your XP', desc: 'Every session earns XP and unlocks badges.' }
+];
+const __HIW_MENTORHUB = { title: 'Mentor Hub', intro: 'The dashboard for all four AI coaches.', steps: __HIW_MENTORHUB_STEPS };
+
   Brain, Target, Theater, Users, Bell, ListChecks, Sparkles, Repeat, UserCog, FileText, Mic2, BookHeart, Crown, ScrollText, Award, MessageCircle, Lightbulb, Flame,
 } from "lucide-react";
 
@@ -31,6 +41,7 @@ export default function MentorHub() {
 
   return (
     <>
+      <FloatingHowItWorks title={__HIW_MENTORHUB.title} intro={__HIW_MENTORHUB.intro} steps={__HIW_MENTORHUB.steps} />
       <Helmet><title>Personal Mentor Hub · Unique</title></Helmet>
       <div className="container mx-auto px-4 pt-20 pb-12 max-w-6xl">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-6 flex items-center justify-between flex-wrap gap-3">

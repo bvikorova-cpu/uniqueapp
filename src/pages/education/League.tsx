@@ -5,6 +5,16 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Trophy, Crown, Medal } from "lucide-react";
 import { Helmet } from "react-helmet-async";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_LEAGUE_STEPS = [
+  { title: 'Earn XP all week', desc: 'Every quiz, challenge and tutor session counts.' },
+  { title: 'Compete in your league', desc: "You're grouped with learners at your level." },
+  { title: 'Get promoted', desc: 'Top ranks move up a league; the bottom drops down.' },
+  { title: 'Season resets Sunday', desc: 'Weekly reset gives everyone a fresh chance.' }
+];
+const __HIW_LEAGUE = { title: 'Learning League', intro: 'Weekly leaderboards that promote top learners.', steps: __HIW_LEAGUE_STEPS };
+
 
 const TIERS = [
   { id: "bronze", label: "Bronze", color: "text-amber-600" },
@@ -19,6 +29,7 @@ export default function League() {
 
   return (
     <>
+      <FloatingHowItWorks title={__HIW_LEAGUE.title} intro={__HIW_LEAGUE.intro} steps={__HIW_LEAGUE.steps} />
       <Helmet><title>Weekly League · Education</title></Helmet>
       <div className="container mx-auto px-4 pt-20 pb-12 max-w-3xl">
         <div className="flex items-center gap-2 mb-6">

@@ -10,6 +10,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, Plus, ArrowLeft, Eye } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_FLASHCARDDECKDETAIL_STEPS = [
+  { title: 'Flip a card', desc: 'Tap to reveal the answer, then rate how well you knew it.' },
+  { title: 'Spaced repetition', desc: 'Cards you struggled with come back sooner.' },
+  { title: 'Track mastery', desc: "The deck shows how much you've truly memorised." },
+  { title: 'Practice anywhere', desc: 'Works offline once opened on the PWA.' }
+];
+const __HIW_FLASHCARDDECKDETAIL = { title: 'Flashcard Deck', intro: 'Study a deck of flashcards with spaced repetition.', steps: __HIW_FLASHCARDDECKDETAIL_STEPS };
+
 
 export default function FlashcardDeckDetail() {
   const { deckId } = useParams<{ deckId: string }>();
@@ -36,6 +46,7 @@ export default function FlashcardDeckDetail() {
 
   return (
     <>
+      <FloatingHowItWorks title={__HIW_FLASHCARDDECKDETAIL.title} intro={__HIW_FLASHCARDDECKDETAIL.intro} steps={__HIW_FLASHCARDDECKDETAIL.steps} />
       <Helmet><title>Deck · Flashcards</title></Helmet>
       <div className="container mx-auto px-4 pt-20 pb-12 max-w-3xl">
         <Link to="/education/flashcards" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4">

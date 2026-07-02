@@ -6,6 +6,16 @@ import { Input } from "@/components/ui/input";
 import { Brain, Send } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import { useHomeworkCredits } from "@/hooks/useHomeworkCredits";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
+const __HIW_AITUTOR_STEPS = [
+  { title: 'Type your question', desc: 'Text, formula or photo — the tutor understands all three.' },
+  { title: 'Read the walkthrough', desc: 'Answers include the full reasoning, not just the result.' },
+  { title: 'Ask follow-ups', desc: 'Keep the thread going until it clicks.' },
+  { title: 'Save to Notes', desc: 'Push valuable answers to your Notes for later revision.' }
+];
+const __HIW_AITUTOR = { title: 'AI Tutor', intro: 'Ask any study question and get step-by-step explanations.', steps: __HIW_AITUTOR_STEPS };
+
 
 interface Msg { role: "user" | "assistant"; content: string; }
 
@@ -28,6 +38,7 @@ export default function AITutor() {
 
   return (
     <>
+      <FloatingHowItWorks title={__HIW_AITUTOR.title} intro={__HIW_AITUTOR.intro} steps={__HIW_AITUTOR.steps} />
       <Helmet><title>AI Tutor · Education</title></Helmet>
       <div className="container mx-auto px-4 pt-20 pb-12 max-w-3xl">
         <div className="flex items-center gap-2 mb-4">
