@@ -178,5 +178,6 @@ export default function RewardsAIToolsGrid() {
         </motion.div>
       ))}
     </div>
+    </div>
   );
 }
