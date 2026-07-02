@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLearningContent } from "@/hooks/useLearningContent";
 import { PenTool, Clock, Star, Users } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const CreativeWriting = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -111,6 +112,16 @@ const CreativeWriting = () => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title="How Creative Writing works"
+        steps={[
+          { title: 'Browse workshops', description: 'Explore ProClass writing workshops led by pros.' },
+          { title: 'Enroll & pay', description: 'Secure your seat via Stripe checkout.' },
+          { title: 'Attend & practice', description: 'Follow lessons and complete exercises.' },
+          { title: 'Get feedback', description: 'Submit work and receive mentor feedback.' },
+        ]}
+      />
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12 mt-16">
@@ -208,6 +219,7 @@ const CreativeWriting = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

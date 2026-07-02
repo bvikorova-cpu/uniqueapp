@@ -16,6 +16,7 @@ import { useDecorSubscription } from "@/hooks/useDecorSubscription";
 import { CheckCircle } from "lucide-react";
 import { SellerConnectGate } from "@/components/commerce/SellerConnectGate";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface DecorItem {
   id: string;
   title: string;
@@ -245,6 +246,16 @@ const HomeDecorMarketplace = () => {
   ];
 
   return (
+    <>
+      <FloatingHowItWorks
+        title="How Home Decor Marketplace works"
+        steps={[
+          { title: 'Browse listings', description: 'Search decor items by category and price.' },
+          { title: 'List your items', description: 'Sellers connect Stripe and upload products.' },
+          { title: 'Buy safely', description: 'Checkout via Stripe; 80/20 split protects you.' },
+          { title: 'Try AI Designer', description: 'Redesign rooms with the built-in AI tool.' },
+        ]}
+      />
     <div className="min-h-screen bg-background">
       <Navbar />
       
@@ -542,6 +553,7 @@ const HomeDecorMarketplace = () => {
       </div>
 
     </div>
+    </>
   );
 };
 

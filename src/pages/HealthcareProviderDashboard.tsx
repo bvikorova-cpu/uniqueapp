@@ -15,6 +15,7 @@ import { useHealthcareSubscription } from "@/hooks/useHealthcareSubscription";
 import { toast } from "sonner";
 import { Heart, Plus, Download, Users, BarChart, Folder, FileText, Settings, Lock, Library } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Collection {
   id: string;
   name: string;
@@ -139,6 +140,16 @@ export default function HealthcareProviderDashboard() {
   }
 
   return (
+    <>
+      <FloatingHowItWorks
+        title="How Provider Dashboard works"
+        steps={[
+          { title: 'Verify credentials', description: 'Complete healthcare provider KYC.' },
+          { title: 'Publish content', description: 'Add medically reviewed articles/videos.' },
+          { title: 'Engage followers', description: 'Answer questions and grow reach.' },
+          { title: 'Track earnings', description: 'See views, tips, and payouts in EUR.' },
+        ]}
+      />
     <div className="min-h-screen bg-background">
       <Navbar />
       
@@ -355,6 +366,7 @@ export default function HealthcareProviderDashboard() {
       </div>
 
     </div>
+    </>
   );
 }
 

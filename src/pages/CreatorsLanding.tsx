@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import {
   Crown,
   Lock,
@@ -40,6 +41,16 @@ const benefits = [
 
 const CreatorsLanding = () => {
   return (
+    <>
+      <FloatingHowItWorks
+        title="How Creators works"
+        steps={[
+          { title: 'Learn the model', description: '85/15 split, EUR payouts, Stripe Connect.' },
+          { title: 'Sign up', description: 'Create profile and complete KYC.' },
+          { title: 'Monetize', description: 'Subscriptions, tips, PPV, brand deals.' },
+          { title: 'Get paid', description: 'Automated payouts every month.' },
+        ]}
+      />
     <>
       <Helmet>
         <title>Creators – Exclusive content & subscriptions | Unique</title>
@@ -155,6 +166,7 @@ const CreatorsLanding = () => {
           </Button>
         </section>
       </main>
+    </>
     </>
   );
 };

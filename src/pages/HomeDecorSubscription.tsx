@@ -9,6 +9,7 @@ import Navbar from "@/components/Navbar";
 import { useNavigate } from "react-router-dom";
 import { ModuleSubscriptionHero } from "@/components/subscription/ModuleSubscriptionHero";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const HomeDecorSubscription = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -61,6 +62,16 @@ const HomeDecorSubscription = () => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title="How Decor Subscription works"
+        steps={[
+          { title: 'Pick a plan', description: 'Choose monthly access to premium AI decor features.' },
+          { title: 'Subscribe', description: 'Stripe recurring billing in EUR.' },
+          { title: 'Unlock tools', description: 'Get AI room designer, mood boards, priority support.' },
+          { title: 'Cancel anytime', description: 'Manage subscription from your billing portal.' },
+        ]}
+      />
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="container mx-auto px-4 pt-24 pb-12 max-w-6xl">
@@ -153,6 +164,7 @@ const HomeDecorSubscription = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
