@@ -26,12 +26,7 @@ export const CouponHero = ({ couponCount }: CouponHeroProps) => {
       });
       if (step >= steps) clearInterval(timer);
     }, 33);
-    return (
-    <>
-      <FloatingHowItWorks title={"Coupon Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Coupon Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Coupon Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearInterval(timer);
+    return () => clearInterval(timer);
   }, [couponCount]);
 
   const statCards = [

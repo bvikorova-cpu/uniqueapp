@@ -137,12 +137,7 @@ export const StorybookDisplay = ({ story, onSave, onContinue, showContinue, cont
   };
 
   useEffect(() => {
-    return (
-    <>
-      <FloatingHowItWorks title={"Storybook Display - How it works"} steps={[{ title: 'Open', desc: 'Access the Storybook Display section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Storybook Display.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => {
+    return () => {
       audioRef.current?.pause();
       if (typeof window !== "undefined" && "speechSynthesis" in window) {
         window.speechSynthesis.cancel();

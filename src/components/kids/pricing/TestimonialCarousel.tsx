@@ -16,12 +16,7 @@ export function TestimonialCarousel() {
 
   useEffect(() => {
     const timer = setInterval(() => setCurrent(p => (p + 1) % testimonials.length), 5000);
-    return (
-    <>
-      <FloatingHowItWorks title={"Testimonial Carousel - How it works"} steps={[{ title: 'Open', desc: 'Access the Testimonial Carousel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Testimonial Carousel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearInterval(timer);
+    return () => clearInterval(timer);
   }, []);
 
   const t = testimonials[current];

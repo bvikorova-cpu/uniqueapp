@@ -68,12 +68,7 @@ const FanClubManager = ({ onBack }: FanClubManagerProps) => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return (
-    <>
-      <FloatingHowItWorks title={"Fan Club Manager - How it works"} steps={[{ title: 'Open', desc: 'Access the Fan Club Manager section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Fan Club Manager.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      data || []
-    </>
-  ).map((item: any) => ({
+      return (data || []).map((item: any) => ({
         id: item.id,
         name: item.metadata?.name || "Unnamed Club",
         description: item.metadata?.description || "",

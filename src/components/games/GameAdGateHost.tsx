@@ -14,12 +14,7 @@ export const GameAdGateHost = () => {
 
   useEffect(() => {
     _registerAdGateHost((phase, done) => setState({ phase, done }));
-    return (
-    <>
-      <FloatingHowItWorks title={"Game Ad Gate Host - How it works"} steps={[{ title: 'Open', desc: 'Access the Game Ad Gate Host section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Game Ad Gate Host.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => _registerAdGateHost(null);
+    return () => _registerAdGateHost(null);
   }, []);
 
   if (!state) return null;

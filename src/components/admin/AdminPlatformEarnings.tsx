@@ -79,12 +79,7 @@ export function AdminPlatformEarnings() {
       if (withdrawalError) throw withdrawalError;
 
       // Map influencer details with withdrawal info
-      return (
-    <>
-      <FloatingHowItWorks title={"Admin Platform Earnings - How it works"} steps={[{ title: 'Open', desc: 'Access the Admin Platform Earnings section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Admin Platform Earnings.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      profiles || []
-    </>
-  ).map((profile) => {
+      return (profiles || []).map((profile) => {
         const pendingWithdrawals = (withdrawals || [])
           .filter((w) => w.influencer_id === profile.id)
           .reduce((sum, w) => sum + w.amount, 0);

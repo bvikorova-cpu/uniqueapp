@@ -36,12 +36,7 @@ export const ReadAloudPlayer = ({ text, onWordClick }: Props) => {
     };
     load();
     window.speechSynthesis?.addEventListener("voiceschanged", load);
-    return (
-    <>
-      <FloatingHowItWorks title={"Read Aloud Player - How it works"} steps={[{ title: 'Open', desc: 'Access the Read Aloud Player section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Read Aloud Player.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => {
+    return () => {
       window.speechSynthesis?.removeEventListener("voiceschanged", load);
       window.speechSynthesis?.cancel();
     };

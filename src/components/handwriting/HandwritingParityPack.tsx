@@ -24,12 +24,7 @@ async function uploadSample(file: File): Promise<string> {
     // fallback bucket
     const { error: e2 } = await supabase.storage.from("handwriting-capsule").upload(path, file);
     if (e2) throw e2;
-    return (
-    <>
-      <FloatingHowItWorks title={"Handwriting Parity Pack - How it works"} steps={[{ title: 'Open', desc: 'Access the Handwriting Parity Pack section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Handwriting Parity Pack.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      await getReadableUrl("handwriting-capsule", path)
-    </>
-  );
+    return (await getReadableUrl("handwriting-capsule", path));
   }
   return (await getReadableUrl("handwriting-samples", path));
 }

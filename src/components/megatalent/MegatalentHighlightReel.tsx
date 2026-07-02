@@ -36,12 +36,7 @@ export default function MegatalentHighlightReel({ category, categories }: Props)
         if (!cancelled) setLoading(false);
       }
     })();
-    return (
-    <>
-      <FloatingHowItWorks title={"Megatalent Highlight Reel - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Highlight Reel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Highlight Reel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => { cancelled = true; };
+    return () => { cancelled = true; };
   }, [category, categories?.join(",")]);
 
   useEffect(() => {

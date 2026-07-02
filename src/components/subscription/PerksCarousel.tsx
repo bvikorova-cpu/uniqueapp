@@ -21,12 +21,7 @@ export const PerksCarousel = () => {
 
   useEffect(() => {
     const id = setInterval(() => setIndex((i) => (i + 1) % PERKS.length), 3500);
-    return (
-    <>
-      <FloatingHowItWorks title={"Perks Carousel - How it works"} steps={[{ title: 'Open', desc: 'Access the Perks Carousel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Perks Carousel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearInterval(id);
+    return () => clearInterval(id);
   }, []);
 
   const perk = PERKS[index];

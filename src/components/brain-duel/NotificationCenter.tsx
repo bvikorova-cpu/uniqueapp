@@ -72,12 +72,7 @@ export const NotificationCenter = () => {
         )
         .subscribe();
 
-      return (
-    <>
-      <FloatingHowItWorks title={"Notification Center - How it works"} steps={[{ title: 'Open', desc: 'Access the Notification Center section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Notification Center.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => { supabase.removeChannel(channel); };
+      return () => { supabase.removeChannel(channel); };
     };
 
     const cleanup = setupRealtime();

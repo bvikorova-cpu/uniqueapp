@@ -51,12 +51,7 @@ export default function MegatalentReactions({ submissionId }: Props) {
         () => load(),
       )
       .subscribe();
-    return (
-    <>
-      <FloatingHowItWorks title={"Megatalent Reactions - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Reactions section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Reactions.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => {
+    return () => {
       supabase.removeChannel(ch);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

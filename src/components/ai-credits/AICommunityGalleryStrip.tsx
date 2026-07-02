@@ -39,12 +39,7 @@ export const AICommunityGalleryStrip = () => {
         setLoading(false);
       }
     })();
-    return (
-    <>
-      <FloatingHowItWorks title={"A I Community Gallery Strip - How it works"} steps={[{ title: 'Open', desc: 'Access the A I Community Gallery Strip section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in A I Community Gallery Strip.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => { cancelled = true; };
+    return () => { cancelled = true; };
   }, []);
 
   return (

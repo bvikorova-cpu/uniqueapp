@@ -12,12 +12,7 @@ export const ScienceLabHero = () => {
     const interval = setInterval(() => {
       setCurrentMascot((prev) => (prev + 1) % mascots.length);
     }, 2000);
-    return (
-    <>
-      <FloatingHowItWorks title={"Science Lab Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Science Lab Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Science Lab Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearInterval(interval);
+    return () => clearInterval(interval);
   }, []);
 
   return (

@@ -82,12 +82,7 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber, category }: DrawingCa
 
     setFabricCanvas(canvas);
 
-    return (
-    <>
-      <FloatingHowItWorks title={"Drawing Canvas - How it works"} steps={[{ title: 'Open', desc: 'Access the Drawing Canvas section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Drawing Canvas.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => {
+    return () => {
       canvas.off("path:created", saveState);
       canvas.off("object:modified", saveState);
       canvas.off("object:removed", saveState);

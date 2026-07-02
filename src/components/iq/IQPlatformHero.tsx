@@ -28,12 +28,7 @@ export default function IQPlatformHero({ totalTests, totalUsers, userIQ, streak 
 
   useEffect(() => {
     const timer = setInterval(() => setTimeLeft(getWeeklyTimeLeft()), 60000);
-    return (
-    <>
-      <FloatingHowItWorks title={"I Q Platform Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the I Q Platform Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in I Q Platform Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearInterval(timer);
+    return () => clearInterval(timer);
   }, []);
 
   const statCards = [

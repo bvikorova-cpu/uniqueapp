@@ -18,12 +18,7 @@ export const EarningsTipsBanner = () => {
 
   useEffect(() => {
     const t = setInterval(() => setI((p) => (p + 1) % TIPS.length), 6000);
-    return (
-    <>
-      <FloatingHowItWorks title={"Earnings Tips Banner - How it works"} steps={[{ title: 'Open', desc: 'Access the Earnings Tips Banner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Earnings Tips Banner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearInterval(t);
+    return () => clearInterval(t);
   }, []);
 
   const tip = TIPS[i];

@@ -15,12 +15,7 @@ const Counter = ({ target, suffix = "" }: { target: number; suffix?: string }) =
       if (cur >= target) { setCount(target); clearInterval(t); }
       else setCount(Math.floor(cur));
     }, 40);
-    return (
-    <>
-      <FloatingHowItWorks title={"Handwriting Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Handwriting Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Handwriting Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearInterval(t);
+    return () => clearInterval(t);
   }, [target]);
   return <span>{target ? `${count.toLocaleString()}${suffix}` : "—"}</span>;
 };

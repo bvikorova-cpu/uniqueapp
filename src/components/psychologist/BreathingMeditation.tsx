@@ -96,12 +96,7 @@ export const BreathingMeditation = ({ onBack }: Props) => {
         return prev + 0.1;
       });
     }, 100);
-    return (
-    <>
-      <FloatingHowItWorks title={"Breathing Meditation - How it works"} steps={[{ title: 'Open', desc: 'Access the Breathing Meditation section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Breathing Meditation.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearInterval(intervalRef.current);
+    return () => clearInterval(intervalRef.current);
   }, [isActive, phase, selectedExercise, duration]);
 
   const completeSession = async () => {

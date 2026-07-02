@@ -98,12 +98,7 @@ export function DailyChallenge() {
   };
 
   if (challengeLoading) {
-    return (
-    <>
-      <FloatingHowItWorks title={"Daily Challenge - How it works"} steps={[{ title: 'Open', desc: 'Access the Daily Challenge section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Daily Challenge.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      <div className="flex justify-center py-12"><Loader2 className="h-8 w-8 animate-spin" /></div>
-    </>
-  );
+    return (<div className="flex justify-center py-12"><Loader2 className="h-8 w-8 animate-spin" /></div>);
   }
 
   if (!challenge) {

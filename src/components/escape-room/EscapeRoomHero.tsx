@@ -23,12 +23,7 @@ export function EscapeRoomHero() {
       setCounts(stats.map(s => Math.floor(s.end * Math.min(step / steps, 1))));
       if (step >= steps) clearInterval(timer);
     }, interval);
-    return (
-    <>
-      <FloatingHowItWorks title={"Escape Room Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Escape Room Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Escape Room Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearInterval(timer);
+    return () => clearInterval(timer);
   }, []);
 
   const formatNum = (n: number) => n >= 1000 ? `${(n / 1000).toFixed(1)}K` : n.toString();

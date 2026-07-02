@@ -66,12 +66,7 @@ export const WeeklyXPLeaderboard = () => {
     queryFn: async () => {
       const { data, error } = await supabase.rpc("get_weekly_xp_leaderboard");
       if (error) throw error;
-      return (
-    <>
-      <FloatingHowItWorks title={"Weekly X P Leaderboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Weekly X P Leaderboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Weekly X P Leaderboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      data as LeaderboardRow[]
-    </>
-  ) || [];
+      return (data as LeaderboardRow[]) || [];
     },
     refetchInterval: 60_000,
   });

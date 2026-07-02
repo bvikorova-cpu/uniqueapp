@@ -87,9 +87,7 @@ export const TextToVideoScenesView = ({ onBack }: { onBack: () => void }) => {
             </div>
             <div><Label>Style</Label><input className="w-full mt-1 p-2 rounded-md border bg-background" value={style} onChange={e => setStyle(e.target.value)} /></div>
             <Button onClick={split} disabled={loading} className="w-full bg-gradient-to-r from-violet-500 to-fuchsia-600">
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Wand2 className="mr-2 h-4 w-4" />1
-    </>
-  ) Split into scenes (3 CR)</>}
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Wand2 className="mr-2 h-4 w-4" />1) Split into scenes (3 CR)</>}
             </Button>
             {splitResult && (
               <Button onClick={renderVideo} disabled={genVideo} variant="outline" className="w-full">
@@ -128,5 +126,6 @@ export const TextToVideoScenesView = ({ onBack }: { onBack: () => void }) => {
         </Card>
       </div>
     </div>
+    </>
   );
 };

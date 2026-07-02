@@ -85,12 +85,7 @@ export function PrioritySupportPanel({ sponsorId: _sponsorId }: Props) {
         (p) => setMessages((m) => [...m, p.new as TicketMessage])
       )
       .subscribe();
-    return (
-    <>
-      <FloatingHowItWorks title={"Account Manager Panel - How it works"} steps={[{ title: 'Open', desc: 'Access the Account Manager Panel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Account Manager Panel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => { supabase.removeChannel(ch); };
+    return () => { supabase.removeChannel(ch); };
   }, [active?.id]);
 
   const createTicket = async () => {

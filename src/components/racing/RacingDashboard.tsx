@@ -117,12 +117,7 @@ export const RacingDashboard = () => {
         return p + 30; // 30s per tick = 30x speed
       });
     }, 500);
-    return (
-    <>
-      <FloatingHowItWorks title={"Racing Dashboard - How it works"} steps={[{ title: 'Open', desc: 'Access the Racing Dashboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Racing Dashboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => {
+    return () => {
       if (intervalRef.current) window.clearInterval(intervalRef.current);
     };
   }, [playing, totalSec]);

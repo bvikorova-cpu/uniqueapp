@@ -18,12 +18,7 @@ export const MascotGuide = () => {
     const timer = setInterval(() => {
       setCurrentMsg(prev => (prev + 1) % mascotMessages.length);
     }, 6000);
-    return (
-    <>
-      <FloatingHowItWorks title={"Mascot Guide - How it works"} steps={[{ title: 'Open', desc: 'Access the Mascot Guide section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Mascot Guide.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearInterval(timer);
+    return () => clearInterval(timer);
   }, []);
 
   if (!isVisible) return null;

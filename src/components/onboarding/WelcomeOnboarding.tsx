@@ -45,12 +45,7 @@ export function WelcomeOnboarding() {
     } else {
       const onLoad = () => schedule();
       window.addEventListener("load", onLoad, { once: true });
-      return (
-    <>
-      <FloatingHowItWorks title={"Welcome Onboarding - How it works"} steps={[{ title: 'Open', desc: 'Access the Welcome Onboarding section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Welcome Onboarding.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => {
+      return () => {
         window.removeEventListener("load", onLoad);
         if (timer) clearTimeout(timer);
       };

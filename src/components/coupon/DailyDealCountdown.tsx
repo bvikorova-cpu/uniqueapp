@@ -32,12 +32,7 @@ export function DailyDealCountdown({ onOpenCoupon }: { onOpenCoupon: (id: string
     };
     tick();
     const iv = setInterval(tick, 1000);
-    return (
-    <>
-      <FloatingHowItWorks title={"Daily Deal Countdown - How it works"} steps={[{ title: 'Open', desc: 'Access the Daily Deal Countdown section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Daily Deal Countdown.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearInterval(iv);
+    return () => clearInterval(iv);
   }, []);
 
   if (!dealId || !meta) return null;

@@ -95,12 +95,7 @@ export const MegaTalentOnboarding = () => {
         if (!localStorage.getItem(globalKey) && !globalDone) return;
         setOpen(true);
       }, delay);
-      return (
-    <>
-      <FloatingHowItWorks title={"Mega Talent Onboarding - How it works"} steps={[{ title: 'Open', desc: 'Access the Mega Talent Onboarding section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Mega Talent Onboarding.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearTimeout(t);
+      return () => clearTimeout(t);
     })();
     return () => { cancelled = true; };
   }, [user]);

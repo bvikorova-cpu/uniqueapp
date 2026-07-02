@@ -41,12 +41,7 @@ export const KidsAcademyParentPanel = () => {
     };
     window.addEventListener("storage", refresh);
     const interval = setInterval(refresh, 2000);
-    return (
-    <>
-      <FloatingHowItWorks title={"Kids Academy Parent Panel - How it works"} steps={[{ title: 'Open', desc: 'Access the Kids Academy Parent Panel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Kids Academy Parent Panel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => {
+    return () => {
       window.removeEventListener("storage", refresh);
       clearInterval(interval);
     };

@@ -77,12 +77,7 @@ export const useRealTimeNotifications = () => {
 
     fetchNotifications();
 
-    return (
-    <>
-      <FloatingHowItWorks title={"Real Time Notifications - How it works"} steps={[{ title: 'Open', desc: 'Access the Real Time Notifications section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Real Time Notifications.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => {
+    return () => {
       supabase.removeChannel(channel);
     };
   }, [user]);

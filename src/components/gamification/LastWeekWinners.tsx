@@ -37,12 +37,7 @@ export const LastWeekWinners = () => {
     queryFn: async () => {
       const { data, error } = await supabase.rpc("get_last_week_xp_winners");
       if (error) throw error;
-      return (
-    <>
-      <FloatingHowItWorks title={"Last Week Winners - How it works"} steps={[{ title: 'Open', desc: 'Access the Last Week Winners section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Last Week Winners.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      data as WinnerRow[]
-    </>
-  ) || [];
+      return (data as WinnerRow[]) || [];
     },
   });
 

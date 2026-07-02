@@ -27,12 +27,7 @@ export default function XPMultiplierBanner() {
     };
     update();
     const timer = setInterval(update, 60000);
-    return (
-    <>
-      <FloatingHowItWorks title={"X P Multiplier Banner - How it works"} steps={[{ title: 'Open', desc: 'Access the X P Multiplier Banner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in X P Multiplier Banner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearInterval(timer);
+    return () => clearInterval(timer);
   }, [event]);
 
   if (!event) return null;

@@ -109,12 +109,7 @@ export const FriendChallenges = () => {
       )
       .subscribe();
 
-    return (
-    <>
-      <FloatingHowItWorks title={"Friend Challenges - How it works"} steps={[{ title: 'Open', desc: 'Access the Friend Challenges section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Friend Challenges.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => {
+    return () => {
       void supabase.removeChannel(channel);
     };
   }, [userId, toast, queryClient]);
