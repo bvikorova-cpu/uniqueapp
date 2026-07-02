@@ -741,3 +741,9 @@ All colors MUST be HSL.
     .h-anon-chat { height: calc(100vh - 16rem); }
   }
 }
+
+/* Hide floating "How it works" trigger when a Radix overlay (mobile menu, sheet, dialog) locks scroll */
+body[data-scroll-locked] [data-floating-hiw],
+body:has([data-state="open"][role="dialog"]) [data-floating-hiw] {
+  display: none !important;
+}
