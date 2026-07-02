@@ -12,7 +12,8 @@ import {
 
 export interface HowItWorksStep {
   title: string;
-  desc: string;
+  desc?: string;
+  description?: string;
 }
 
 interface HowItWorksButtonProps {
