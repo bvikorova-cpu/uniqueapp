@@ -84,7 +84,7 @@ const FEATURES: Array<{
     gradient: "from-emerald-500 to-teal-500",
     fields: [
       { key: "shared_interests", label: "Your shared interests", placeholder: "Coffee, books, indie music, hiking..." },
-      { key: "city", label: "City (optional)", placeholder: "Bratislava" },
+      { key: "city", label: "City (optional)", placeholder: "Berlin" },
     ],
   },
   {

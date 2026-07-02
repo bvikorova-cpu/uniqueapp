@@ -226,7 +226,7 @@ export const BazaarFilters = ({ filters, onChange, conditions, currentUserId }: 
           <div>
             <label className="text-xs font-semibold mb-1 block">Location contains</label>
             <Input
-              placeholder="e.g. Bratislava"
+              placeholder="e.g. Berlin"
               value={filters.location}
               onChange={(e) => set("location", e.target.value)}
             />
@@ -324,7 +324,7 @@ export const BazaarFilters = ({ filters, onChange, conditions, currentUserId }: 
             <DialogTitle>Save current search</DialogTitle>
           </DialogHeader>
           <div className="space-y-3 py-2">
-            <Input placeholder="Name (e.g. iPhone Bratislava ≤ 500€)" value={searchName} onChange={(e) => setSearchName(e.target.value)} />
+            <Input placeholder="Name (e.g. iPhone Berlin ≤ 500€)" value={searchName} onChange={(e) => setSearchName(e.target.value)} />
             <label className="flex items-center gap-2 text-sm">
               <input type="checkbox" checked={notify} onChange={(e) => setNotify(e.target.checked)} />
               Notify me when new matching items appear

@@ -17,7 +17,7 @@ const TOOLS: { id: CrystalParityAction; label: string; description: string; fiel
   { id: "birth-chart-crystals", label: "Birth Chart Crystals", description: "Crystals aligned with your astrological chart.", fields: [
     { key: "birth_date", label: "Birth date", placeholder: "1990-05-12" },
     { key: "birth_time", label: "Birth time", placeholder: "07:30" },
-    { key: "birth_place", label: "Birth place", placeholder: "Bratislava, SK" },
+    { key: "birth_place", label: "Birth place", placeholder: "Berlin, DE" },
   ]},
   { id: "ritual-designer", label: "Ritual Designer", description: "Custom crystal ritual for your intention.", fields: [
     { key: "intention", label: "Intention", placeholder: "Release self-doubt" },

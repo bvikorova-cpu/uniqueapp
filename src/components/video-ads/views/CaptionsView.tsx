@@ -21,7 +21,7 @@ export const CaptionsView = ({ onBack }: { onBack: () => void }) => {
   const [script, setScript] = useState("");
   const [duration, setDuration] = useState(30);
   const [style, setStyle] = useState("modern bold");
-  const [language, setLanguage] = useState("Slovak");
+  const [language, setLanguage] = useState("English");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<CapResult | null>(null);
 

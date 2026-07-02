@@ -371,7 +371,7 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
                     <Input
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
-                      placeholder="Bratislava, Prague, Vienna..."
+                      placeholder="Berlin, Prague, Vienna..."
                       className="mt-1.5 bg-muted/10 border-border/50 focus:border-primary/50"
                     />
                     <p className="text-[10px] text-muted-foreground mt-1">Helps find matches near you</p>

@@ -5,7 +5,7 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 const TESTIMONIALS = [
   {
     name: "Maria K.",
-    role: "Bazaar seller, Slovakia",
+    role: "Bazaar seller, Germany",
     avatar: "🌸",
     text: "Switched to Premium and my listings tripled overnight. Zero commission means I keep every euro I earn.",
     rating: 5,

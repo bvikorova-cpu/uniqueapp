@@ -73,7 +73,7 @@ export default function ParallelUniverse() {
           <CardContent>
             <Label htmlFor="seed">Your context</Label>
             <Textarea id="seed" rows={4} value={seed} onChange={(e) => setSeed(e.target.value)}
-              placeholder="I'm 32, software engineer in Bratislava. At 22 I almost moved to Tokyo to study film…" />
+              placeholder="I'm 32, software engineer in Berlin. At 22 I almost moved to Tokyo to study film…" />
           </CardContent>
         </Card>
 

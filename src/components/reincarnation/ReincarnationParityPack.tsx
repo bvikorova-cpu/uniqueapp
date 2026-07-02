@@ -26,7 +26,7 @@ const TOOLS: { id: ReincarnationParityAction; label: string; description: string
     { key: "life_purpose_clue", label: "Life purpose clue", placeholder: "Teaching, healing, building" },
   ]},
   { id: "past-life-letter", label: "Past Life Letter", description: "Receive a letter from a past-life self.", fields: [
-    { key: "persona", label: "Past-life persona", placeholder: "16th-century Slovak weaver" },
+    { key: "persona", label: "Past-life persona", placeholder: "16th-century Venetian weaver" },
     { key: "question", label: "Question to ask", type: "textarea", placeholder: "What lesson did I leave unfinished?" },
   ]},
   { id: "dharma-path", label: "Dharma Path", description: "Daily dharma alignment plan.", fields: [

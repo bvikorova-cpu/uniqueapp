@@ -85,22 +85,22 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
     { question: "What is the symbol for sodium?", options: ["So", "Sd", "Na", "S"], correct: 2 },
   ],
   geography: [
-    { question: "What is the largest city in Slovakia?", options: ["Košice", "Bratislava", "Prešov", "Žilina"], correct: 1 },
-    { question: "What is the highest peak in Slovakia?", options: ["Kriváň", "Rysy", "Gerlachovský štít", "Lomnický štít"], correct: 2 },
-    { question: "How many neighbors does Slovakia have?", options: ["3", "4", "5", "6"], correct: 2 },
-    { question: "Which river flows through Bratislava?", options: ["Váh", "Danube", "Hron", "Nitra"], correct: 1 },
-    { question: "In what year was the Slovak Republic established?", options: ["1990", "1991", "1992", "1993"], correct: 3 },
+    { question: "What is the capital of Germany?", options: ["Munich", "Hamburg", "Berlin", "Frankfurt"], correct: 2 },
+    { question: "What is the highest mountain in the world?", options: ["K2", "Kangchenjunga", "Everest", "Makalu"], correct: 2 },
+    { question: "How many continents are there?", options: ["5", "6", "7", "8"], correct: 2 },
+    { question: "Which river flows through Berlin?", options: ["Rhine", "Spree", "Elbe", "Danube"], correct: 1 },
+    { question: "In what year did the European Union adopt the euro?", options: ["1997", "1999", "2001", "2002"], correct: 1 },
   ],
   history: [
     { question: "In what year did World War II end?", options: ["1943", "1944", "1945", "1946"], correct: 2 },
     { question: "Who was the first president of the USA?", options: ["Jefferson", "Washington", "Lincoln", "Adams"], correct: 1 },
     { question: "When did the Berlin Wall fall?", options: ["1987", "1988", "1989", "1990"], correct: 2 },
     { question: "Who discovered America?", options: ["Magellan", "Columbus", "Vasco da Gama", "Cook"], correct: 1 },
-    { question: "In what year was Czechoslovakia established?", options: ["1916", "1917", "1918", "1919"], correct: 2 },
+    { question: "In what year did the French Revolution begin?", options: ["1776", "1789", "1804", "1815"], correct: 1 },
   ],
   literature: [
     { question: "Who wrote Romeo and Juliet?", options: ["Byron", "Shakespeare", "Dickens", "Wilde"], correct: 1 },
-    { question: "Which Slovak writer was Martin Kukučín?", options: ["Hviezdoslav", "Botto", "Kukučín", "Hollý"], correct: 2 },
+    { question: "Who wrote 'Pride and Prejudice'?", options: ["Brontë", "Austen", "Woolf", "Eliot"], correct: 1 },
     { question: "Who wrote The Little Prince?", options: ["Verne", "Saint-Exupéry", "Dumas", "Hugo"], correct: 1 },
     { question: "From which country is Fyodor Dostoevsky?", options: ["Poland", "Ukraine", "Russia", "Czechia"], correct: 2 },
     { question: "Who wrote 1984?", options: ["Huxley", "Bradbury", "Orwell", "Kafka"], correct: 2 },
@@ -130,7 +130,7 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
     { question: "Who is the singer of Bad Guy and Ocean Eyes?", options: ["Ariana Grande", "Billie Eilish", "Dua Lipa", "Taylor Swift"], correct: 1 },
     { question: "Who played Iron Man in Marvel movies?", options: ["Chris Evans", "Chris Hemsworth", "Robert Downey Jr.", "Mark Ruffalo"], correct: 2 },
     { question: "Who is the most followed person on Instagram?", options: ["Kylie Jenner", "Cristiano Ronaldo", "Selena Gomez", "Dwayne Johnson"], correct: 1 },
-    { question: "Which Slovak hockey player played in the NHL?", options: ["Zdeno Chára", "Marián Hossa", "Ján Lašák", "All of them"], correct: 3 },
+    { question: "Who played Wolverine in the X-Men movies?", options: ["Hugh Jackman", "Ryan Reynolds", "Chris Pratt", "Michael Fassbender"], correct: 0 },
     { question: "Who won Eurovision 2023?", options: ["Sweden", "Finland", "Ukraine", "Spain"], correct: 0 },
   ],
   sport: [
@@ -138,7 +138,7 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
     { question: "Which sport does Roger Federer play?", options: ["Tennis", "Badminton", "Squash", "Table tennis"], correct: 0 },
     { question: "How many rings does the Olympic symbol have?", options: ["3", "4", "5", "6"], correct: 2 },
     { question: "Where were the 2024 Olympics held?", options: ["Tokyo", "Paris", "Los Angeles", "Brisbane"], correct: 1 },
-    { question: "When did the Slovak team win the Ice Hockey World Championship?", options: ["2000", "2002", "2012", "Never"], correct: 1 },
+    { question: "How often are the Summer Olympic Games held?", options: ["Every 2 years", "Every 3 years", "Every 4 years", "Every 5 years"], correct: 2 },
   ],
   movies: [
     { question: "Who directed Titanic?", options: ["Spielberg", "Cameron", "Nolan", "Tarantino"], correct: 1 },
@@ -159,7 +159,7 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
     { question: "What is the main ingredient in guacamole?", options: ["Tomato", "Avocado", "Pepper", "Cucumber"], correct: 1 },
     { question: "What is the main ingredient in hummus?", options: ["Beans", "Lentils", "Chickpeas", "Peas"], correct: 2 },
     { question: "What is tofu made from?", options: ["Milk", "Soybeans", "Rice", "Corn"], correct: 1 },
-    { question: "Which dish is typical for Slovakia?", options: ["Paella", "Bryndzové halušky", "Sushi", "Curry"], correct: 1 }
+    { question: "Which dish is typical for Italy?", options: ["Paella", "Risotto", "Sushi", "Curry"], correct: 1 }
   ],
   travel: [
     { question: "What is the capital of France?", options: ["Lyon", "Marseille", "Paris", "Nice"], correct: 2 },

@@ -95,7 +95,7 @@ export default function Privacy() {
             <LegalSection id="retention" number="§6" title="Retention Period">
               <ul>
                 <li><strong>Account data</strong> — deleted within 30 days of account closure.</li>
-                <li><strong>Payment records</strong> — 10 years (Slovak tax law).</li>
+                <li><strong>Payment records</strong> — 10 years (local tax law).</li>
                 <li><strong>Security logs</strong> — 12 months.</li>
                 <li><strong>Anonymized analytics</strong> — indefinite.</li>
               </ul>

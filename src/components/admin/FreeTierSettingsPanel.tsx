@@ -17,7 +17,7 @@ interface Settings {
 }
 
 const TIMEZONES = [
-  "Europe/Bratislava", "Europe/Prague", "Europe/Vienna", "Europe/Berlin",
+  "Europe/Berlin", "Europe/Prague", "Europe/Vienna", "Europe/Berlin",
   "Europe/London", "Europe/Paris", "Europe/Madrid", "UTC", "America/New_York",
 ];
 

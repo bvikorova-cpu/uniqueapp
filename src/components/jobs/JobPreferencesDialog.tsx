@@ -242,7 +242,7 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
             </p>
             <div className="flex gap-2 mb-2">
               <Input
-                placeholder={"e.g.: Bratislava, Prague, Remote..."}
+                placeholder={"e.g.: Berlin, Prague, Remote..."}
                 value={locationInput}
                 onChange={(e) => setLocationInput(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && addLocation()}

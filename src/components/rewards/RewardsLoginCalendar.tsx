@@ -18,11 +18,11 @@ interface Tpl {
   is_milestone: boolean;
 }
 
-// Server anchors the calendar to Europe/Bratislava — mirror it here so
+// Server anchors the calendar to Europe/Berlin — mirror it here so
 // worldwide users see the same "today" regardless of their local timezone.
-const TZ = "Europe/Bratislava";
+const TZ = "Europe/Berlin";
 
-const getBratislavaParts = (d: Date) => {
+const getLocalParts = (d: Date) => {
   const parts = new Intl.DateTimeFormat("en-GB", {
     timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit",
     hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
@@ -40,13 +40,13 @@ const getBratislavaParts = (d: Date) => {
   };
 };
 
-const monthKeyBratislava = (d: Date) => {
-  const p = getBratislavaParts(d);
+const monthKeyLocal = (d: Date) => {
+  const p = getLocalParts(d);
   return `${p.year}-${String(p.month).padStart(2, "0")}`;
 };
 
-const secondsUntilNextBratislavaMidnight = (d: Date) => {
-  const p = getBratislavaParts(d);
+const secondsUntilNextLocalMidnight = (d: Date) => {
+  const p = getLocalParts(d);
   const elapsed = p.hour * 3600 + p.minute * 60 + p.second;
   return 86400 - elapsed;
 };
@@ -80,11 +80,11 @@ export default function RewardsLoginCalendar() {
     return () => clearInterval(id);
   }, []);
 
-  const bratParts = getBratislavaParts(now);
-  const todayDay = bratParts.day;
-  const mKey = monthKeyBratislava(now);
-  const daysInMonth = new Date(bratParts.year, bratParts.month, 0).getDate();
-  const countdown = formatCountdown(secondsUntilNextBratislavaMidnight(now));
+  const localParts = getLocalParts(now);
+  const todayDay = localParts.day;
+  const mKey = monthKeyLocal(now);
+  const daysInMonth = new Date(localParts.year, localParts.month, 0).getDate();
+  const countdown = formatCountdown(secondsUntilNextLocalMidnight(now));
 
   const [tpls, setTpls] = useState<Tpl[]>(DEFAULTS);
   const [claims, setClaims] = useState<Set<number>>(new Set());
@@ -154,7 +154,7 @@ export default function RewardsLoginCalendar() {
                 <h2 className="text-xl font-bold">{"Daily Login Calendar"}</h2>
               </div>
               <p className="text-sm opacity-90">
-                {`${new Date(bratParts.year, bratParts.month - 1, bratParts.day).toLocaleString("en", { month: "long", year: "numeric" })} • Day ${todayDay}`}
+                {`${new Date(localParts.year, localParts.month - 1, localParts.day).toLocaleString("en", { month: "long", year: "numeric" })} • Day ${todayDay}`}
               </p>
             </div>
             <div className="text-right">
@@ -166,7 +166,7 @@ export default function RewardsLoginCalendar() {
             <span className="text-xs opacity-90">{"Next reward unlocks in"}</span>
             <span className="font-mono text-lg font-bold tabular-nums">{countdown}</span>
           </div>
-          <p className="text-[10px] opacity-70 mt-1 text-right">{"Resets at midnight Europe/Bratislava (CET/CEST)"}</p>
+          <p className="text-[10px] opacity-70 mt-1 text-right">{"Resets at midnight Europe/Berlin (CET/CEST)"}</p>
         </div>
       </Card>
 

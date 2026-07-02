@@ -50,7 +50,7 @@ export function SalaryDialog({ open, onOpenChange, companyId, companyName, onSub
         <div className="space-y-3">
           {!companyName && <div><Label>Company *</Label><Input value={form.company_name} onChange={e => setForm({ ...form, company_name: e.target.value })} /></div>}
           <div><Label>Job title *</Label><Input value={form.job_title} onChange={e => setForm({ ...form, job_title: e.target.value })} /></div>
-          <div><Label>Location</Label><Input value={form.location} onChange={e => setForm({ ...form, location: e.target.value })} placeholder="Bratislava" /></div>
+          <div><Label>Location</Label><Input value={form.location} onChange={e => setForm({ ...form, location: e.target.value })} placeholder="Berlin" /></div>
           <div className="grid grid-cols-2 gap-3">
             <div><Label>Years experience</Label><Input type="number" value={form.years_experience} onChange={e => setForm({ ...form, years_experience: Number(e.target.value) })} /></div>
             <div><Label>Base salary (€/yr) *</Label><Input type="number" value={form.base_salary} onChange={e => setForm({ ...form, base_salary: Number(e.target.value) })} /></div>

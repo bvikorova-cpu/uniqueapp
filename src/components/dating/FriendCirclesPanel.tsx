@@ -76,7 +76,7 @@ export const FriendCirclesPanel = ({ userId }: { userId: string }) => {
           <DialogContent>
             <DialogHeader><DialogTitle>Create a circle</DialogTitle></DialogHeader>
             <div className="space-y-3">
-              <div><Label>Circle name</Label><Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Bratislava crew" /></div>
+              <div><Label>Circle name</Label><Input value={name} onChange={(e) => setName(e.target.value)} placeholder="City crew" /></div>
               <Button onClick={create} className="w-full">Create</Button>
             </div>
           </DialogContent>

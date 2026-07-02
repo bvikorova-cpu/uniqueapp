@@ -93,7 +93,7 @@ export function PublicGalleryCard() {
                   </div>
                   <div className="space-y-1">
                     <Label className="text-xs">Region</Label>
-                    <Input value={region} onChange={(e) => setRegion(e.target.value)} placeholder="Slovakia" maxLength={40} />
+                    <Input value={region} onChange={(e) => setRegion(e.target.value)} placeholder="Germany" maxLength={40} />
                   </div>
                 </div>
                 <div className="space-y-1">
