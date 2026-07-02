@@ -9,6 +9,7 @@ import { Heart, Receipt, Repeat, TrendingUp, ArrowLeft, Download, Calendar, Spar
 import { motion } from "framer-motion";
 import { toast } from "@/hooks/use-toast";
 import {
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
@@ -210,6 +211,17 @@ export default function DonorDashboard() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
+        <FloatingHowItWorks
+          title="Donor Dashboard"
+          intro="See all your donations and tax receipts in one place."
+          steps={[
+            { title: "View donation history", desc: "Every gift with date, campaign and amount." },
+          { title: "Download receipts", desc: "PDF receipts for tax purposes." },
+          { title: "Manage recurring gifts", desc: "Pause, edit or cancel monthly donations anytime." },
+          { title: "Follow campaigns", desc: "Get updates from causes you supported." },
+          { title: "Discover new causes", desc: "Personalized recommendations based on your interests." }
+          ]}
+        />
         <p className="text-muted-foreground">Loading your dashboard...</p>
       </div>
     );

@@ -8,6 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { Printer, Download, ArrowLeft, ShieldCheck, Loader2 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { Helmet } from 'react-helmet-async';
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface ReceiptData {
   receipt_number: string;
@@ -66,6 +67,17 @@ export default function DonationReceipt() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
+        <FloatingHowItWorks
+          title="Donation Receipt"
+          intro="Official proof of your tax-deductible donation."
+          steps={[
+            { title: "Verify details", desc: "Amount, date, campaign and donor info." },
+          { title: "Download PDF", desc: "Save or print for tax filings." },
+          { title: "Email a copy", desc: "Send to your accountant if needed." },
+          { title: "Contact support", desc: "For corrections or questions." },
+          { title: "Donate again", desc: "Return to the campaign anytime." }
+          ]}
+        />
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );

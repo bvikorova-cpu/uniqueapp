@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import {
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   Heart,
   TrendingUp,
   Users,
@@ -184,6 +185,17 @@ export default function FundraisingDashboard() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
+        <FloatingHowItWorks
+          title="Fundraising Dashboard"
+          intro="Overview of all your campaigns and donations."
+          steps={[
+            { title: "See all campaigns", desc: "Both those you run and those you support." },
+          { title: "Track totals", desc: "Combined raised, donors, days left." },
+          { title: "Manage payouts", desc: "Request Stripe Connect transfers." },
+          { title: "Post updates", desc: "Keep donors engaged across campaigns." },
+          { title: "Create new campaign", desc: "Start a new one in any of the 7 categories." }
+          ]}
+        />
         <p className="text-muted-foreground">Loading...</p>
       </div>
     );

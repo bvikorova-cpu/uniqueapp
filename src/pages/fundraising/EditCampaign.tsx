@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, Loader2, Save } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import {
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   categoryToTable,
   campaignDetailRoute,
   campaignDashboardRoute,
@@ -125,6 +126,17 @@ export default function EditCampaign() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
+        <FloatingHowItWorks
+          title="Edit Campaign"
+          intro="Update your campaign details, story and images."
+          steps={[
+            { title: "Edit story", desc: "Improve description, add photos or videos." },
+          { title: "Adjust goal", desc: "Change target amount if scope changes." },
+          { title: "Update deadline", desc: "Extend the campaign if allowed." },
+          { title: "Save changes", desc: "Donors see updates immediately." },
+          { title: "Post an update", desc: "Notify all donors about important news." }
+          ]}
+        />
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );

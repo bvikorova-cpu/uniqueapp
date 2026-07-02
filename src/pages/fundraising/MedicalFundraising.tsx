@@ -9,6 +9,7 @@ import { MedicalStepsWizard } from '@/components/fundraising/medical/MedicalStep
 import { MedicalFilters, type DiagnosisFilter, type SortOption } from '@/components/fundraising/medical/MedicalFilters';
 import { MedicalCampaignCard } from '@/components/fundraising/medical/MedicalCampaignCard';
 import { MedicalSuccessStories } from '@/components/fundraising/medical/MedicalSuccessStories';
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface MedicalCampaign {
@@ -98,6 +99,17 @@ export default function MedicalFundraising() {
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
+      <FloatingHowItWorks
+        title="Medical Fundraising"
+        intro="Help patients cover treatments, surgeries and medication."
+        steps={[
+          { title: "Browse cases", desc: "Verified patients with documented medical needs." },
+          { title: "Read the story", desc: "Open a campaign to see diagnosis, goal and updates." },
+          { title: "Donate any amount", desc: "Secure Stripe checkout in EUR, one-time or monthly." },
+          { title: "Get a tax receipt", desc: "Emailed automatically after payment." },
+          { title: "Create a campaign", desc: "Patients or families can apply \u2014 verification required." }
+        ]}
+      />
       <MedicalHero onCreateCampaign={() => navigate('/fundraising/medical/create')} />
       <HeroRewardedAd sectionKey="page_medicalfundraising" />
 

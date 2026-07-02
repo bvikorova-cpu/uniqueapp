@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
   AlertDialogTrigger,
@@ -86,6 +87,17 @@ export default function RecurringDonationsHub() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
+        <FloatingHowItWorks
+          title="Recurring Donations"
+          intro="Set up automatic monthly giving to causes you love."
+          steps={[
+            { title: "Pick campaigns", desc: "Choose any active campaign to support monthly." },
+          { title: "Set amount", desc: "From \u20ac5/month \u2014 charged automatically via Stripe." },
+          { title: "Manage anytime", desc: "Pause, edit or cancel from your donor dashboard." },
+          { title: "Get monthly receipts", desc: "PDF sent after every charge." },
+          { title: "Track impact", desc: "See total lifetime giving and impact stats." }
+          ]}
+        />
         <p className="text-muted-foreground">Loading…</p>
       </div>
     );

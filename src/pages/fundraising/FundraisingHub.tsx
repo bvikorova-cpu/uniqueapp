@@ -12,12 +12,24 @@ import { DonorLeaderboard } from "@/components/fundraising/DonorLeaderboard";
 import { TrustSection } from "@/components/fundraising/TrustSection";
 import { AIStoryGenerator } from "@/components/fundraising/AIStoryGenerator";
 import { NewCampaignPicker } from "@/components/fundraising/NewCampaignPicker";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function FundraisingHub() {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-background pt-20">
+      <FloatingHowItWorks
+        title="Fundraising Hub"
+        intro="Central place to browse all 7 fundraising categories."
+        steps={[
+          { title: "Pick a category", desc: "Choose Medical, Dream, Hero, Pet, Student, Crisis or Talent." },
+          { title: "Browse verified campaigns", desc: "Only campaigns that passed verification are shown." },
+          { title: "Donate securely", desc: "Payments are handled by Stripe with instant receipts." },
+          { title: "Track your impact", desc: "See donor dashboard for history, tax receipts and recurring gifts." },
+          { title: "Start your own", desc: "Every category has a Create button for new campaigns." }
+        ]}
+      />
       <div className="max-w-7xl mx-auto px-4">
         <FundraisingHero
           onMyCampaigns={() => navigate("/fundraising/dashboard")}

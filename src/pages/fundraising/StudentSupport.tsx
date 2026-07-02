@@ -8,6 +8,7 @@ import { StudentCampaignCard } from '@/components/fundraising/student/StudentCam
 import { UniversityPartners } from '@/components/fundraising/student/UniversityPartners';
 import { StudentSuccessStories } from '@/components/fundraising/student/StudentSuccessStories';
 import { PayItForwardBoard } from '@/components/fundraising/student/PayItForwardBoard';
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface StudentCampaign {
@@ -87,6 +88,17 @@ export default function StudentSupport() {
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12 px-4">
+      <FloatingHowItWorks
+        title="Student Support"
+        intro="Help students cover tuition, books and living costs."
+        steps={[
+          { title: "Browse student stories", desc: "Verified students with academic records." },
+          { title: "Fund tuition or supplies", desc: "Donate any amount toward their goal." },
+          { title: "Track their studies", desc: "Students post grades, milestones and thanks." },
+          { title: "Tax-deductible receipts", desc: "Emailed after payment where applicable." },
+          { title: "Apply as a student", desc: "Requires school confirmation and clear budget." }
+        ]}
+      />
       <div className="max-w-7xl mx-auto">
         <StudentHero />
         <HeroRewardedAd sectionKey="page_studentsupport" />

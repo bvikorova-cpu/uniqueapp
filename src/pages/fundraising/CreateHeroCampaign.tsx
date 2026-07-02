@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ArrowLeft, Shield, ImagePlus, X } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { AIStoryGenerator } from '@/components/fundraising/AIStoryGenerator';
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const heroTypes = [
   { value: 'firefighter', label: '🚒 Firefighters' },
@@ -180,6 +181,17 @@ export default function CreateHeroCampaign() {
 
   return (
     <div className="min-h-screen bg-background py-12 px-4">
+      <FloatingHowItWorks
+        title="Create Hero Campaign"
+        intro="Launch a new fundraising campaign in this category."
+        steps={[
+          { title: "Fill the story", desc: "Title, description, goal amount and deadline." },
+          { title: "Upload proof", desc: "Photos, documents and verification files." },
+          { title: "Set payout method", desc: "Connect Stripe to receive donations." },
+          { title: "Submit for review", desc: "Our team verifies within 24-72 hours." },
+          { title: "Go live & share", desc: "Once approved, share the link everywhere." }
+        ]}
+      />
       <div className="max-w-3xl mx-auto">
         <Button variant="outline" size="sm" onClick={() => navigate('/fundraising/hero')} className="mb-6">
           <ArrowLeft className="mr-2 h-4 w-4" />

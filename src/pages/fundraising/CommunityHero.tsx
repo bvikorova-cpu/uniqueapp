@@ -7,6 +7,7 @@ import { HeroFilters } from '@/components/fundraising/hero/HeroFilters';
 import { HeroCampaignCard } from '@/components/fundraising/hero/HeroCampaignCard';
 import { CorporateSponsors } from '@/components/fundraising/hero/CorporateSponsors';
 import { HeroSuccessStories } from '@/components/fundraising/hero/HeroSuccessStories';
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface HeroCampaign {
@@ -80,6 +81,17 @@ export default function CommunityHero() {
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12 px-4">
+      <FloatingHowItWorks
+        title="Community Hero"
+        intro="Reward heroes making a real difference in their community."
+        steps={[
+          { title: "Discover heroes", desc: "Verified stories of impact \u2014 teachers, medics, volunteers." },
+          { title: "Nominate & donate", desc: "Send funds directly to the hero's campaign." },
+          { title: "Read updates", desc: "Heroes post progress and thank-you notes." },
+          { title: "Share their story", desc: "Amplify their reach via social sharing." },
+          { title: "Nominate a hero", desc: "Anyone can create a campaign for a deserving person." }
+        ]}
+      />
       <div className="max-w-7xl mx-auto">
         <HeroHero />
         <HeroRewardedAd sectionKey="page_communityhero" />

@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   Loader2, 
   ArrowLeft, 
   DollarSign, 
@@ -258,6 +259,17 @@ export default function CampaignDashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
+        <FloatingHowItWorks
+          title="Campaign Dashboard"
+          intro="Manage your campaign, donors and updates."
+          steps={[
+            { title: "Track donations", desc: "Live totals, donor list and payout status." },
+          { title: "Post updates", desc: "Keep donors engaged with progress posts." },
+          { title: "Reply to donors", desc: "Send thank-you messages directly." },
+          { title: "Request payout", desc: "Stripe Connect transfers to your bank." },
+          { title: "Close or extend", desc: "Mark the goal reached or extend the deadline." }
+          ]}
+        />
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );

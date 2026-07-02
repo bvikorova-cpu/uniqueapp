@@ -6,6 +6,7 @@ import { TalentStepsWizard } from '@/components/fundraising/talent/TalentStepsWi
 import { TalentFilters } from '@/components/fundraising/talent/TalentFilters';
 import { TalentCampaignCard } from '@/components/fundraising/talent/TalentCampaignCard';
 import { TalentSuccessStories } from '@/components/fundraising/talent/TalentSuccessStories';
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface TalentCampaign {
@@ -87,6 +88,17 @@ export default function TalentSponsorship() {
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12 px-4">
+      <FloatingHowItWorks
+        title="Talent Sponsorship"
+        intro="Sponsor emerging talents in sport, music and art."
+        steps={[
+          { title: "Discover talents", desc: "Verified young talents with portfolio and achievements." },
+          { title: "Sponsor a talent", desc: "Pay in EUR \u2014 one-time or recurring monthly." },
+          { title: "Get sponsor perks", desc: "Updates, mentions and exclusive content." },
+          { title: "Watch them grow", desc: "Talents post progress and results." },
+          { title: "Apply as talent", desc: "Requires portfolio, coach or teacher endorsement." }
+        ]}
+      />
       <div className="max-w-7xl mx-auto">
         <TalentHero />
         <HeroRewardedAd sectionKey="page_talentsponsorship" />

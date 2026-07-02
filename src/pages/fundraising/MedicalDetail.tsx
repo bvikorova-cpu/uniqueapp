@@ -24,6 +24,7 @@ import { CampaignShareWidget } from '@/components/fundraising/CampaignShareWidge
 import { MedicalTrustBadges } from '@/components/fundraising/medical/MedicalTrustBadges';
 import { RecurringDonationCard } from '@/components/fundraising/medical/RecurringDonationCard';
 import { MedicalDocumentsViewer } from '@/components/fundraising/medical/MedicalDocumentsViewer';
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface MedicalCampaign {
   id: string;
@@ -281,6 +282,17 @@ export default function MedicalDetail() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
+        <FloatingHowItWorks
+          title="Medical Campaign"
+          intro="Full campaign page \u2014 story, updates, donations and sharing."
+          steps={[
+            { title: "Read the story", desc: "Full description, photos, videos and verification badges." },
+          { title: "Check the goal", desc: "Progress bar shows raised vs. target amount in EUR." },
+          { title: "Donate securely", desc: "Stripe checkout \u2014 one-time or recurring monthly." },
+          { title: "Share the campaign", desc: "Copy link or share to social to boost reach." },
+          { title: "Follow updates", desc: "Get notified when the organizer posts news." }
+          ]}
+        />
         <p className="text-muted-foreground">Loading...</p>
       </div>
     );
