@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Question {
   id: string;
   question: string;
@@ -139,7 +140,14 @@ export default function IQTestRunner({ open, onClose, category, title, timeLimit
   }, [result]);
 
   return (
-    <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
+    <>
+      <FloatingHowItWorks title="How IQTest Runner works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -244,5 +252,6 @@ export default function IQTestRunner({ open, onClose, category, title, timeLimit
         </AnimatePresence>
       </DialogContent>
     </Dialog>
-  );
+    </>
+    );
 }

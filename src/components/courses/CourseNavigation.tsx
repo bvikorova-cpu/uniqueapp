@@ -5,6 +5,7 @@ import { CheckCircle, Circle, Lock, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Topic {
   title: string;
   content: string;
@@ -36,7 +37,14 @@ export const CourseNavigation = ({
   const navigate = useNavigate();
 
   return (
-    <Card className="h-full flex flex-col">
+    <>
+      <FloatingHowItWorks title="How Course Navigation works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="h-full flex flex-col">
       <CardHeader>
         <CardTitle>Obsah kurzu</CardTitle>
       </CardHeader>
@@ -89,5 +97,6 @@ export const CourseNavigation = ({
         </Button>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };

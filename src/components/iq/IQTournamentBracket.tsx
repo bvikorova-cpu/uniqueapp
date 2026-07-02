@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import IQMatchBetting from "./IQMatchBetting";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Match {
   id: string;
   round: number;
@@ -96,12 +97,20 @@ export default function IQTournamentBracket({ competitionId, bracketSize, finali
 
   if (matches.length === 0) {
     return (
-      <Card className="border-dashed bg-muted/20">
+      <>
+        <FloatingHowItWorks title="How IQTournament Bracket works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+        <Card className="border-dashed bg-muted/20">
         <CardContent className="p-6 text-center text-sm text-muted-foreground">
           Bracket will appear once an admin starts the tournament.
         </CardContent>
       </Card>
-    );
+      </>
+      );
   }
 
   return (

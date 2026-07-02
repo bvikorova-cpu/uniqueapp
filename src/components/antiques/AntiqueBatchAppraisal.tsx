@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export const AntiqueBatchAppraisal = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
@@ -62,7 +63,14 @@ export const AntiqueBatchAppraisal = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Antique Batch Appraisal works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="space-y-6">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         <Card className="bg-card/80 backdrop-blur-xl border-teal-500/20">
           <CardHeader>
@@ -135,5 +143,6 @@ export const AntiqueBatchAppraisal = () => {
         </motion.div>
       ))}
     </div>
-  );
+    </>
+    );
 };

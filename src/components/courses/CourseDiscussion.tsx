@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Discussion {
   id: string;
   title: string;
@@ -156,13 +157,21 @@ export const CourseDiscussion = ({ courseId, userHasAccess, isInstructor }: Cour
 
   if (!userHasAccess) {
     return (
-      <Card>
+      <>
+        <FloatingHowItWorks title="How Course Discussion works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+        <Card>
         <CardContent className="py-12 text-center">
           <MessageSquare className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
           <p className="text-muted-foreground">Enroll in this course to join the discussion</p>
         </CardContent>
       </Card>
-    );
+      </>
+      );
   }
 
   if (selectedDiscussion) {

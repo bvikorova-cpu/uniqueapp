@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sparkles } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function IQCustomSummary() {
   const [data, setData] = useState({ avatar: "", theme: "", title: "", banner: "", frame: "", nick: "", bio: "", sound: true });
   useEffect(() => {
@@ -22,7 +23,14 @@ export default function IQCustomSummary() {
     ["Bio", data.bio.slice(0, 30) + (data.bio.length > 30 ? "..." : "")], ["Sound", data.sound ? "On" : "Off"],
   ];
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title="How IQCustom Summary works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card>
       <CardHeader><CardTitle className="flex items-center gap-2"><Sparkles className="w-5 h-5" />Customization Summary</CardTitle></CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 gap-2 text-sm">
@@ -35,5 +43,6 @@ export default function IQCustomSummary() {
         </div>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLearningContent } from "@/hooks/useLearningContent";
 import { Globe, Clock, Star, Users, CheckCircle } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const LanguageLearning = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -110,7 +111,14 @@ const LanguageLearning = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background px-3 sm:px-6 pb-10">
+    <>
+      <FloatingHowItWorks title="How Language Learning works" steps={[
+          { title: 'Explore', desc: 'Browse the learning content or tool.' },
+          { title: 'Start / generate', desc: 'Take a course, quiz or AI action (2-5 credits where applicable).' },
+          { title: 'Track progress', desc: 'Your XP, badges and completion are saved.' },
+          { title: 'Level up', desc: 'Unlock next lessons, leaderboards and rewards.' },
+        ]} />
+      <div className="min-h-screen bg-background px-3 sm:px-6 pb-10">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-8 sm:mb-12 pt-20 sm:pt-24">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary mb-4">
@@ -211,7 +219,8 @@ const LanguageLearning = () => {
         </div>
       </div>
     </div>
-  );
+    </>
+    );
 };
 
 export default LanguageLearning;

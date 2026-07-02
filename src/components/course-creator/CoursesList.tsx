@@ -26,6 +26,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Course {
   id: string;
   title: string;
@@ -104,11 +105,19 @@ export function CoursesList({ onEditCourse }: CoursesListProps) {
 
   if (loading) {
     return (
-      <div className="text-center py-12">
+      <>
+        <FloatingHowItWorks title="How Courses List works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+        <div className="text-center py-12">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
         <p className="mt-4 text-muted-foreground">Loading courses...</p>
       </div>
-    );
+      </>
+      );
   }
 
   if (courses.length === 0) {

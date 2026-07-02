@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Puzzle, Trophy } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const PUZZLES = [
   { name: "Minesweeper", key: "iq_minesweeper_best_ms", unit: "ms" },
   { name: "Lights Out", key: "iq_lightsout_best_moves", unit: "mv" },
@@ -36,7 +37,14 @@ const IQPuzzleSummary = () => {
   const completed = stats.filter(s => s.v > 0).length;
 
   return (
-    <Card className="bg-card/50 backdrop-blur border-primary/20">
+    <>
+      <FloatingHowItWorks title="How IQPuzzle Summary works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="bg-card/50 backdrop-blur border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Puzzle className="w-5 h-5 text-primary" /> Puzzle Pack Summary
@@ -59,7 +67,8 @@ const IQPuzzleSummary = () => {
         </div>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };
 
 export default IQPuzzleSummary;

@@ -3,6 +3,7 @@ import { BookOpen, Star, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface EnchantedTopicCardProps {
   topic: {
     id: string;
@@ -47,7 +48,14 @@ export const EnchantedTopicCard = ({ topic, index, progress, onStart }: Enchante
   const isCompleted = progress?.isCompleted;
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title="How Enchanted Topic Card works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <motion.div
       initial={{ opacity: 0, y: 30, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ delay: index * 0.04, duration: 0.4 }}
@@ -133,5 +141,6 @@ export const EnchantedTopicCard = ({ topic, index, progress, onStart }: Enchante
         </div>
       </div>
     </motion.div>
-  );
+    </>
+    );
 };

@@ -8,6 +8,7 @@ import { toast } from "@/hooks/use-toast";
 import { Crown, Sparkles, Check, Loader2 } from "lucide-react";
 import { trackIQEvent } from "@/lib/iqAnalytics";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const TIERS = [
   {
     id: "pro",
@@ -76,7 +77,14 @@ export default function IQSubscription() {
   const currentTier = sub?.tier ?? "free";
 
   return (
-    <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
+    <>
+      <FloatingHowItWorks title="How IQSubscription works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span className="flex items-center gap-2">
@@ -140,5 +148,6 @@ export default function IQSubscription() {
         })}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

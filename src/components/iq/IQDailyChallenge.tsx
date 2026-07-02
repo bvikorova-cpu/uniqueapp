@@ -8,6 +8,7 @@ import { toast } from "@/hooks/use-toast";
 import { Calendar, Loader2, CheckCircle2, XCircle, Sparkles } from "lucide-react";
 import { trackIQEvent } from "@/lib/iqAnalytics";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function IQDailyChallenge() {
   const qc = useQueryClient();
   const [picked, setPicked] = useState<number | null>(null);
@@ -44,10 +45,18 @@ export default function IQDailyChallenge() {
 
   if (isLoading) {
     return (
-      <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
+      <>
+        <FloatingHowItWorks title="How IQDaily Challenge works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+        <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
         <CardContent className="p-6 text-center"><Loader2 className="h-5 w-5 animate-spin mx-auto" /></CardContent>
       </Card>
-    );
+      </>
+      );
   }
 
   if (!data) {

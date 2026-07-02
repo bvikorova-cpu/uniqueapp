@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { triggerRewardConfetti } from "@/utils/confetti";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface StreakRow {
   current_streak: number;
   longest_streak: number;
@@ -85,10 +86,18 @@ export default function IQDailyStreak() {
 
   if (loading) {
     return (
-      <Card className="bg-gradient-to-br from-orange-500/10 to-pink-500/5 border-orange-500/20">
+      <>
+        <FloatingHowItWorks title="How IQDaily Streak works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+        <Card className="bg-gradient-to-br from-orange-500/10 to-pink-500/5 border-orange-500/20">
         <CardContent className="p-6 flex justify-center"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></CardContent>
       </Card>
-    );
+      </>
+      );
   }
 
   const streak = row?.current_streak ?? 0;

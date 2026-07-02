@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { Smile, Zap, Brain, TrendingUp, Loader2, Sparkles, ChevronDown, ChevronUp } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface MoodEntry {
   id: string;
   mood_score: number;
@@ -114,10 +115,18 @@ export function MoodTracker() {
     const h = 32;
     const points = data.map((d, i) => `${(i / (data.length - 1)) * w},${h - (d[key] / max) * h}`).join(" ");
     return (
-      <svg width={w} height={h} className="opacity-60">
+      <>
+        <FloatingHowItWorks title="How Mood Tracker works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+        <svg width={w} height={h} className="opacity-60">
         <polyline fill="none" stroke="currentColor" strokeWidth="1.5" points={points} />
       </svg>
-    );
+      </>
+      );
   };
 
   return (

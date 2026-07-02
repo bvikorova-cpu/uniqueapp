@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLearningContent } from "@/hooks/useLearningContent";
 import { CheckCircle, Lock, Award, Clock, BookOpen } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Module {
   id: number;
   title: string;
@@ -160,7 +161,14 @@ const GenericLearning = () => {
 
   if (!isPurchased(contentId || "", "course")) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-6">
+      <>
+        <FloatingHowItWorks title="How Generic Learning works" steps={[
+          { title: 'Explore', desc: 'Browse the learning content or tool.' },
+          { title: 'Start / generate', desc: 'Take a course, quiz or AI action (2-5 credits where applicable).' },
+          { title: 'Track progress', desc: 'Your XP, badges and completion are saved.' },
+          { title: 'Level up', desc: 'Unlock next lessons, leaderboards and rewards.' },
+        ]} />
+        <div className="min-h-screen flex items-center justify-center p-6">
         <Card className="p-8 text-center max-w-md">
           <Lock className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
           <h2 className="text-2xl font-black mb-2">Access Denied</h2>
@@ -170,7 +178,8 @@ const GenericLearning = () => {
           <Button onClick={() => navigate(-1)}>Go Back</Button>
         </Card>
       </div>
-    );
+      </>
+      );
   }
 
   return (

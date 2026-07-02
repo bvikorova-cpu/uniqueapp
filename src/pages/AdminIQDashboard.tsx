@@ -5,9 +5,17 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { Brain, Users, Trophy, Coins, Zap, Target, Flame, Bell } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 function StatCard({ icon: Icon, label, value, hint }: any) {
   return (
-    <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
+    <>
+      <FloatingHowItWorks title="How Admin IQDashboard works" steps={[
+          { title: 'Explore', desc: 'Browse the learning content or tool.' },
+          { title: 'Start / generate', desc: 'Take a course, quiz or AI action (2-5 credits where applicable).' },
+          { title: 'Track progress', desc: 'Your XP, badges and completion are saved.' },
+          { title: 'Level up', desc: 'Unlock next lessons, leaderboards and rewards.' },
+        ]} />
+      <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
       <CardContent className="p-4">
         <div className="flex items-center justify-between">
           <div>
@@ -21,7 +29,8 @@ function StatCard({ icon: Icon, label, value, hint }: any) {
         </div>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }
 
 export default function AdminIQDashboard() {

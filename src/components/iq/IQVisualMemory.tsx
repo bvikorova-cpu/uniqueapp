@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Eye, Trophy, RotateCcw } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type Phase = "idle" | "show" | "input" | "result";
 const KEY = "iq_visual_memory_best";
 const GRID = 5;
@@ -57,7 +58,14 @@ const IQVisualMemory = () => {
   const reset = () => { setPhase("idle"); setLevel(3); setTarget(new Set()); setPicked(new Set()); setLastOk(null); };
 
   return (
-    <Card className="bg-card/50 backdrop-blur border-primary/20">
+    <>
+      <FloatingHowItWorks title="How IQVisual Memory works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="bg-card/50 backdrop-blur border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Eye className="w-5 h-5 text-primary" /> Visual Memory
@@ -96,7 +104,8 @@ const IQVisualMemory = () => {
         )}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };
 
 export default IQVisualMemory;

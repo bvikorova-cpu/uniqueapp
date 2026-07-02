@@ -10,6 +10,7 @@ import { Clock, Trophy, ArrowLeft, CheckCircle, XCircle, Sparkles } from "lucide
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function QuizTaker() {
   const { quizId } = useParams();
   const navigate = useNavigate();
@@ -31,7 +32,14 @@ export default function QuizTaker() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <>
+        <FloatingHowItWorks title="How Quiz Taker works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+        <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center mx-auto mb-3 animate-pulse">
             <Sparkles className="h-6 w-6 text-primary" />
@@ -39,7 +47,8 @@ export default function QuizTaker() {
           <p className="text-muted-foreground">Loading quiz...</p>
         </div>
       </div>
-    );
+      </>
+      );
   }
 
   if (!data?.quiz || !data.questions) {

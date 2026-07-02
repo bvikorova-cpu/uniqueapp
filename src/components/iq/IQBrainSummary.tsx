@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LayoutDashboard, Trophy, Trash2 } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type Stat = { key: string; label: string; suffix?: string; lowerBetter?: boolean };
 const STATS: Stat[] = [
   { key: "iq_reaction_best", label: "Reaction", suffix: "ms", lowerBetter: true },
@@ -60,7 +61,14 @@ const IQBrainSummary = () => {
   const completion = Math.round((completed / STATS.length) * 100);
 
   return (
-    <Card className="bg-gradient-to-br from-primary/10 to-accent/5 backdrop-blur border-primary/30">
+    <>
+      <FloatingHowItWorks title="How IQBrain Summary works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="bg-gradient-to-br from-primary/10 to-accent/5 backdrop-blur border-primary/30">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <LayoutDashboard className="w-5 h-5 text-primary" /> Brain Training Summary
@@ -92,7 +100,8 @@ const IQBrainSummary = () => {
         </div>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };
 
 export default IQBrainSummary;

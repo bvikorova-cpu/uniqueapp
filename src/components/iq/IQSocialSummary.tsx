@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const KEYS = {
   invites: "iq_duel_invites",
   duelWins: "iq_duel_match_wins",
@@ -37,7 +38,14 @@ export default function IQSocialSummary() {
   ];
 
   return (
-    <Card className="glass-card">
+    <>
+      <FloatingHowItWorks title="How IQSocial Summary works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="glass-card">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <Users className="h-4 w-4 text-primary" /> Social Summary
@@ -52,5 +60,6 @@ export default function IQSocialSummary() {
         ))}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

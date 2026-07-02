@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Video, Download, Play, Pause } from "lucide-react";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface LessonRecordingProps {
   lessonId: string;
   recordingUrl?: string;
@@ -70,7 +71,14 @@ export const LessonRecording = ({ lessonId, recordingUrl, isInstructor }: Lesson
   };
 
   return (
-    <Card className="p-6">
+    <>
+      <FloatingHowItWorks title="How Lesson Recording works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="p-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Video className="h-5 w-5" />
@@ -128,5 +136,6 @@ export const LessonRecording = ({ lessonId, recordingUrl, isInstructor }: Lesson
         </div>
       )}
     </Card>
-  );
+    </>
+    );
 };

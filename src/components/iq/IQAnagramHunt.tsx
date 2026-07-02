@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Type, Trophy, Timer, RotateCcw } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const KEY = "iq_anagram_hunt_best";
 const DUR = 90;
 
@@ -58,7 +59,14 @@ const IQAnagramHunt = () => {
   const reset = () => { if (tRef.current) window.clearInterval(tRef.current); setPhase("idle"); setFound([]); setTime(DUR); setGuess(""); };
 
   return (
-    <Card className="bg-card/50 backdrop-blur border-primary/20">
+    <>
+      <FloatingHowItWorks title="How IQAnagram Hunt works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="bg-card/50 backdrop-blur border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Type className="w-5 h-5 text-primary" /> Anagram Hunt
@@ -97,7 +105,8 @@ const IQAnagramHunt = () => {
         )}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };
 
 export default IQAnagramHunt;

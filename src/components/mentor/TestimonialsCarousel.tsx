@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const testimonials = [
   {
     name: "Sarah K.",
@@ -46,7 +47,14 @@ export const TestimonialsCarousel = () => {
   }, []);
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
+    <>
+      <FloatingHowItWorks title="How Testimonials Carousel works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
       <Card className="backdrop-blur-xl bg-card/80 border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5 overflow-hidden relative">
         <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-primary/5 to-transparent rounded-tr-full" />
         <CardHeader className="pb-3">
@@ -111,5 +119,6 @@ export const TestimonialsCarousel = () => {
         </CardContent>
       </Card>
     </motion.div>
-  );
+    </>
+    );
 };

@@ -3,6 +3,7 @@ import { Progress } from "@/components/ui/progress";
 import { Map, Lock } from "lucide-react";
 import { motion } from "framer-motion";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const learningPaths = [
   { name: "Beginner", xpNeeded: 0, icon: "🌱", color: "from-green-500/20 to-emerald-500/20", borderColor: "border-green-500/30" },
   { name: "Student", xpNeeded: 100, icon: "📖", color: "from-blue-500/20 to-cyan-500/20", borderColor: "border-blue-500/30" },
@@ -32,7 +33,14 @@ export const LearningPathProgress = ({ currentXP }: LearningPathProgressProps) =
       : ((currentXP - learningPaths[currentLevel].xpNeeded) / (learningPaths[nextLevel].xpNeeded - learningPaths[currentLevel].xpNeeded)) * 100;
 
   return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}>
+    <>
+      <FloatingHowItWorks title="How Learning Path Progress works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}>
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-base">
@@ -83,5 +91,6 @@ export const LearningPathProgress = ({ currentXP }: LearningPathProgressProps) =
         </CardContent>
       </Card>
     </motion.div>
-  );
+    </>
+    );
 };

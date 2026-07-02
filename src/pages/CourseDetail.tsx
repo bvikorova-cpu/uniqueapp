@@ -11,6 +11,7 @@ import { TopicContent } from "@/components/courses/TopicContent";
 import { useCourseProgress } from "@/hooks/useCourseProgress";
 import { courseContent, generateDefaultTopics, type Topic } from "@/data/courseContent";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const CourseDetail = () => {
   const { courseName } = useParams();
   const navigate = useNavigate();
@@ -91,13 +92,21 @@ const CourseDetail = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <>
+        <FloatingHowItWorks title="How Course Detail works" steps={[
+          { title: 'Explore', desc: 'Browse the learning content or tool.' },
+          { title: 'Start / generate', desc: 'Take a course, quiz or AI action (2-5 credits where applicable).' },
+          { title: 'Track progress', desc: 'Your XP, badges and completion are saved.' },
+          { title: 'Level up', desc: 'Unlock next lessons, leaderboards and rewards.' },
+        ]} />
+        <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin h-12 w-12 border-b-2 border-primary mx-auto mb-4" />
           <p className="text-muted-foreground">Loading course...</p>
         </div>
       </div>
-    );
+      </>
+      );
   }
 
   if (testPassed) {

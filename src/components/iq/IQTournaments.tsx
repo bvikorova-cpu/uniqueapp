@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import IQTournamentBracket from "./IQTournamentBracket";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function IQTournaments() {
   const [competitions, setCompetitions] = useState<any[]>([]);
   const [counts, setCounts] = useState<Record<string, number>>({});
@@ -58,7 +59,14 @@ export default function IQTournaments() {
   };
 
   return (
-    <div className="mb-8">
+    <>
+      <FloatingHowItWorks title="How IQTournaments works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="mb-8">
       <h2 className="text-xl sm:text-2xl font-black mb-4">⚔️ Weekly Tournaments</h2>
       {competitions.length === 0 ? (
         <Card className="bg-muted/30 border-dashed">
@@ -139,5 +147,6 @@ export default function IQTournaments() {
         </div>
       )}
     </div>
-  );
+    </>
+    );
 }

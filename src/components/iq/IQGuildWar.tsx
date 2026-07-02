@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Swords } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const KEY = "iq_guildwar_score";
 
 export default function IQGuildWar() {
@@ -20,7 +21,14 @@ export default function IQGuildWar() {
   const reset = () => { setScore(0); localStorage.setItem(KEY, "0"); };
 
   return (
-    <Card className="glass-card">
+    <>
+      <FloatingHowItWorks title="How IQGuild War works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="glass-card">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <Swords className="h-4 w-4 text-primary" /> Guild War
@@ -37,5 +45,6 @@ export default function IQGuildWar() {
         </div>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

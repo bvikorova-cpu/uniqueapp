@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export const ProgressPreview = () => {
   const [sessionsCount, setSessionsCount] = useState(0);
   const [goalsCount, setGoalsCount] = useState(0);
@@ -36,7 +37,14 @@ export const ProgressPreview = () => {
   ];
 
   return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}>
+    <>
+      <FloatingHowItWorks title="How Progress Preview works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}>
       <Card className="backdrop-blur-xl bg-card/80 border-blue-500/20 bg-gradient-to-br from-blue-500/5 to-purple-500/5 overflow-hidden relative">
         <div className="absolute top-0 left-0 w-20 h-20 bg-gradient-to-br from-blue-500/10 to-transparent rounded-br-full" />
         <CardHeader className="pb-3">
@@ -87,5 +95,6 @@ export const ProgressPreview = () => {
         </CardContent>
       </Card>
     </motion.div>
-  );
+    </>
+    );
 };

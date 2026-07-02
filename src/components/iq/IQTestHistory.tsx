@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface TestRow {
   id: string;
   iq_score: number | null;
@@ -42,7 +43,14 @@ export default function IQTestHistory() {
   if (loading) return null;
 
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title="How IQTest History works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2"><Brain className="h-5 w-5 text-purple-500" /> Test History</CardTitle>
         <CardDescription>Your last {rows.length} IQ tests with full breakdown</CardDescription>
@@ -113,7 +121,8 @@ export default function IQTestHistory() {
         )}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }
 
 function Stat({ label, value, icon: Icon }: { label: string; value: any; icon?: any }) {

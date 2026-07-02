@@ -5,6 +5,7 @@ import { Trophy, Medal, Award, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface PayoutRow {
   competition_id: string;
   user_id: string;
@@ -63,7 +64,14 @@ export default function IQHallOfFame() {
   const compIds = Object.keys(grouped);
 
   return (
-    <div className="mb-8">
+    <>
+      <FloatingHowItWorks title="How IQHall Of Fame works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="mb-8">
       <h2 className="text-xl sm:text-2xl font-black mb-4 flex items-center gap-2">
         <Trophy className="h-5 w-5 text-yellow-400" /> Hall of Fame
       </h2>
@@ -112,5 +120,6 @@ export default function IQHallOfFame() {
         </CardContent>
       </Card>
     </div>
-  );
+    </>
+    );
 }

@@ -24,6 +24,7 @@ import { UnlockableRewards } from "@/components/kids/games/UnlockableRewards";
 import { BonusRounds } from "@/components/kids/games/BonusRounds";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function StoryGames() {
   const navigate = useNavigate();
   const [score, setScore] = useState(0);
@@ -122,7 +123,14 @@ export default function StoryGames() {
   if (activeGame === "number") return <NumberAdventure onComplete={handleGameComplete} onBack={() => setActiveGame(null)} />;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-violet-100 via-pink-50 to-cyan-100 relative overflow-hidden">
+    <>
+      <FloatingHowItWorks title="How Story Games works" steps={[
+          { title: 'Explore', desc: 'Browse the learning content or tool.' },
+          { title: 'Start / generate', desc: 'Take a course, quiz or AI action (2-5 credits where applicable).' },
+          { title: 'Track progress', desc: 'Your XP, badges and completion are saved.' },
+          { title: 'Level up', desc: 'Unlock next lessons, leaderboards and rewards.' },
+        ]} />
+      <div className="min-h-screen bg-gradient-to-b from-violet-100 via-pink-50 to-cyan-100 relative overflow-hidden">
       <Navbar />
       <MagicalParticles count={8} />
 
@@ -184,5 +192,6 @@ export default function StoryGames() {
       </div>
 
     </div>
-  );
+    </>
+    );
 }

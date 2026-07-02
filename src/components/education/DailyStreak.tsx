@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Flame, Calendar } from "lucide-react";
 import { motion } from "framer-motion";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface DailyStreakProps {
   currentStreak: number;
   bestStreak: number;
@@ -14,7 +15,14 @@ export const DailyStreak = ({ currentStreak, bestStreak, todayCompleted }: Daily
   const adjustedToday = today === 0 ? 6 : today - 1;
 
   return (
-    <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
+    <>
+      <FloatingHowItWorks title="How Daily Streak works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
       <Card className="bg-gradient-to-br from-orange-500/10 to-red-500/10 border-orange-300/30">
         <CardContent className="p-4">
           <div className="flex items-center justify-between mb-3">
@@ -63,5 +71,6 @@ export const DailyStreak = ({ currentStreak, bestStreak, todayCompleted }: Daily
         </CardContent>
       </Card>
     </motion.div>
-  );
+    </>
+    );
 };

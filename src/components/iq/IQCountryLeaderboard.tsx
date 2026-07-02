@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Globe, Trophy, ChevronLeft, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface CountryRow {
   rank: number;
   country_code: string;
@@ -60,7 +61,14 @@ export default function IQCountryLeaderboard() {
   }, [selected]);
 
   return (
-    <Card className="backdrop-blur-xl bg-card/80 border-primary/20 mb-8">
+    <>
+      <FloatingHowItWorks title="How IQCountry Leaderboard works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="backdrop-blur-xl bg-card/80 border-primary/20 mb-8">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           {selected ? (
@@ -129,5 +137,6 @@ export default function IQCountryLeaderboard() {
         )}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

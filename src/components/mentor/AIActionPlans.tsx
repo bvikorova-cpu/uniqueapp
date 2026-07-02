@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import { Sparkles, Loader2, Calendar, FileText, ChevronDown, ChevronUp } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface ActionPlan {
   id: string;
   title: string;
@@ -60,7 +61,14 @@ export function AIActionPlans() {
   };
 
   return (
-    <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
+    <>
+      <FloatingHowItWorks title="How AIAction Plans works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center gap-2">
           <Calendar className="h-4 w-4 text-primary" /> AI Weekly Action Plans
@@ -133,5 +141,6 @@ export function AIActionPlans() {
         )}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

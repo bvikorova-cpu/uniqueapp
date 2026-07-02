@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export const AntiqueARTryInRoom = () => {
   const [antiqueFile, setAntiqueFile] = useState<File | null>(null);
   const [roomFile, setRoomFile] = useState<File | null>(null);
@@ -55,7 +56,14 @@ export const AntiqueARTryInRoom = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Antique ARTry In Room works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="space-y-6">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         <Card className="bg-card/80 backdrop-blur-xl border-violet-500/20">
           <CardHeader>
@@ -117,5 +125,6 @@ export const AntiqueARTryInRoom = () => {
         </motion.div>
       )}
     </div>
-  );
+    </>
+    );
 };

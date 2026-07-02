@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Music, Trophy, RotateCcw } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const KEY = "iq_audiomem_best_level";
 const TONES = [261.63, 329.63, 392.0, 523.25]; // C E G C
 const COLORS = ["bg-rose-500", "bg-amber-500", "bg-emerald-500", "bg-sky-500"];
@@ -61,7 +62,14 @@ const IQAudioMemory = () => {
   };
 
   return (
-    <Card className="bg-card/50 backdrop-blur border-primary/20">
+    <>
+      <FloatingHowItWorks title="How IQAudio Memory works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="bg-card/50 backdrop-blur border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Music className="w-5 h-5 text-primary" /> Audio Memory
@@ -82,7 +90,8 @@ const IQAudioMemory = () => {
         </Button>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };
 
 export default IQAudioMemory;

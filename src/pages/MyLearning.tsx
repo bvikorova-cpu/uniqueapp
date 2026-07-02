@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { BookOpen, Award, Clock, TrendingUp, Download } from "lucide-react";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface EnrolledCourse {
   id: string;
   course_id: string;
@@ -124,10 +125,18 @@ export default function MyLearning() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <>
+        <FloatingHowItWorks title="How My Learning works" steps={[
+          { title: 'Explore', desc: 'Browse the learning content or tool.' },
+          { title: 'Start / generate', desc: 'Take a course, quiz or AI action (2-5 credits where applicable).' },
+          { title: 'Track progress', desc: 'Your XP, badges and completion are saved.' },
+          { title: 'Level up', desc: 'Unlock next lessons, leaderboards and rewards.' },
+        ]} />
+        <div className="min-h-screen bg-background flex items-center justify-center">
         <p className="text-muted-foreground">Loading your learning journey...</p>
       </div>
-    );
+      </>
+      );
   }
 
   return (

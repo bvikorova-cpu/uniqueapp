@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ReactMarkdown from "react-markdown";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function IQCertificate() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -44,6 +45,13 @@ export default function IQCertificate() {
 
   return (
     <>
+      <FloatingHowItWorks title="How IQCertificate works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <>
       <div className="mb-8">
         <h2 className="text-xl sm:text-2xl font-black mb-4">📜 IQ Certificate</h2>
         <Card className="bg-gradient-to-br from-indigo-500/10 to-purple-500/5 border-indigo-500/20">
@@ -111,7 +119,8 @@ export default function IQCertificate() {
         </DialogContent>
       </Dialog>
     </>
-  );
+    </>
+    );
 }
 
 function formatCertResult(data: any): string {

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, Trophy, RotateCcw } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const KEY = "iq_magicsq_best_ms";
 // 3x3 with sums = 15. Two cells given, fill rest with 1-9 unique.
 const HINTS: (number | null)[] = [null, null, 6, null, 5, null, 8, null, null];
@@ -34,7 +35,14 @@ const IQMagicSquare = () => {
   const reset = () => { setVals([...HINTS]); setStart(performance.now()); setDone(false); };
 
   return (
-    <Card className="bg-card/50 backdrop-blur border-primary/20">
+    <>
+      <FloatingHowItWorks title="How IQMagic Square works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="bg-card/50 backdrop-blur border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-primary" /> Magic Square 3×3
@@ -57,7 +65,8 @@ const IQMagicSquare = () => {
         <Button onClick={reset} variant="outline" size="sm" className="w-full"><RotateCcw className="w-3 h-3 mr-1" /> Reset</Button>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };
 
 export default IQMagicSquare;

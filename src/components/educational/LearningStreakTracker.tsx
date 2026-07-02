@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Flame, Zap, Calendar } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface LearningStreakTrackerProps {
   streak: number;
   totalXP: number;
@@ -13,7 +14,14 @@ export const LearningStreakTracker = ({ streak, totalXP }: LearningStreakTracker
   const todayIndex = today === 0 ? 6 : today - 1;
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title="How Learning Streak Tracker works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.1 }}
@@ -64,5 +72,6 @@ export const LearningStreakTracker = ({ streak, totalXP }: LearningStreakTracker
         })}
       </div>
     </motion.div>
-  );
+    </>
+    );
 };

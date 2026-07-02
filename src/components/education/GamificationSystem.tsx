@@ -17,6 +17,7 @@ import {
   Sparkles
 } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface LeaderboardEntry {
   rank: number;
   userId: string;
@@ -67,7 +68,14 @@ export const GamificationSystem = ({
   const progressPercent = (currentLevelXp / 500) * 100;
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Gamification System works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="space-y-6">
       {/* XP & Level Card */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         <Card className="overflow-hidden backdrop-blur-xl bg-card/80 border-primary/20">
@@ -212,7 +220,8 @@ export const GamificationSystem = ({
         </Card>
       </motion.div>
     </div>
-  );
+    </>
+    );
 };
 
 export default GamificationSystem;

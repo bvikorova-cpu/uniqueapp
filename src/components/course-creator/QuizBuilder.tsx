@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Plus, Edit, Trash2, Save, X, HelpCircle } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Quiz {
   id: string;
   lesson_id: string;
@@ -234,7 +235,14 @@ export function QuizBuilder({ courseId }: QuizBuilderProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Quiz Builder works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="space-y-6">
       {/* Create Quiz Form */}
       <Card>
         <CardHeader>
@@ -436,5 +444,6 @@ export function QuizBuilder({ courseId }: QuizBuilderProps) {
         </Card>
       )}
     </div>
-  );
+    </>
+    );
 }

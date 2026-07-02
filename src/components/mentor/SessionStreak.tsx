@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export const SessionStreak = () => {
   const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
   const today = new Date().getDay();
@@ -61,7 +62,14 @@ export const SessionStreak = () => {
   };
 
   return (
-    <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
+    <>
+      <FloatingHowItWorks title="How Session Streak works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
       <Card className="backdrop-blur-xl bg-card/80 border-orange-500/20 bg-gradient-to-br from-orange-500/10 to-red-500/10 overflow-hidden relative">
         <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-orange-500/10 to-transparent rounded-bl-full" />
         <CardContent className="p-4">
@@ -119,5 +127,6 @@ export const SessionStreak = () => {
         </CardContent>
       </Card>
     </motion.div>
-  );
+    </>
+    );
 };

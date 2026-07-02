@@ -5,6 +5,7 @@ import { Brain, Loader2, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface PlanItem {
   domain: string;
   score: number;
@@ -31,7 +32,14 @@ export default function IQTrainingPlan() {
   }, []);
 
   return (
-    <div className="mb-8">
+    <>
+      <FloatingHowItWorks title="How IQTraining Plan works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="mb-8">
       <h2 className="text-xl sm:text-2xl font-black mb-4">🎯 Personalised Training Plan</h2>
       <Card className="bg-gradient-to-br from-violet-500/5 to-purple-500/5 border-violet-500/20">
         <CardHeader className="p-4">
@@ -68,5 +76,6 @@ export default function IQTrainingPlan() {
         </CardContent>
       </Card>
     </div>
-  );
+    </>
+    );
 }

@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { generateAllCourseContent, generateCourseContentFile } from "@/utils/generateAllCourses";
 import { Loader2, Download, RefreshCw } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function GenerateCourses() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -65,7 +66,14 @@ export default function GenerateCourses() {
   };
 
   return (
-    <div className="min-h-screen bg-background pt-20 pb-12">
+    <>
+      <FloatingHowItWorks title="How Generate Courses works" steps={[
+          { title: 'Explore', desc: 'Browse the learning content or tool.' },
+          { title: 'Start / generate', desc: 'Take a course, quiz or AI action (2-5 credits where applicable).' },
+          { title: 'Track progress', desc: 'Your XP, badges and completion are saved.' },
+          { title: 'Level up', desc: 'Unlock next lessons, leaderboards and rewards.' },
+        ]} />
+      <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-4 max-w-4xl">
         <Card>
           <CardHeader>
@@ -151,5 +159,6 @@ export default function GenerateCourses() {
         </Card>
       </div>
     </div>
-  );
+    </>
+    );
 }

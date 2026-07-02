@@ -5,6 +5,7 @@ import { Trophy, Medal, Award, Clock, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface LeaderboardEntry {
   user_id: string;
   student_name: string;
@@ -74,12 +75,20 @@ export const CourseLeaderboard = ({ courseId }: CourseLeaderboardProps) => {
 
   if (isLoading) {
     return (
-      <Card>
+      <>
+        <FloatingHowItWorks title="How Course Leaderboard works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+        <Card>
         <CardContent className="py-12 text-center">
           <p className="text-muted-foreground">Loading leaderboard...</p>
         </CardContent>
       </Card>
-    );
+      </>
+      );
   }
 
   if (leaderboard.length === 0) {

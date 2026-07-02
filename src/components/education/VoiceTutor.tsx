@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useTutoringCredits } from "@/hooks/useTutoringCredits";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 // Browser SpeechRecognition types (vendor-prefixed)
 const SR: any =
   (typeof window !== "undefined" && ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition));
@@ -92,7 +93,14 @@ const VoiceTutor = () => {
   };
 
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title="How Voice Tutor works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
           <Mic className="h-5 w-5 text-primary" /> Voice Tutor
@@ -151,7 +159,8 @@ const VoiceTutor = () => {
         )}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };
 
 export default VoiceTutor;

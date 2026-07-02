@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Shuffle, Trophy, Timer, RotateCcw } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const WORDS = ["BRAIN","LOGIC","SMART","FOCUS","THINK","SPEED","MEMORY","PATTERN","NUMBER","PUZZLE","GENIUS","REASON","RECALL","MENTAL","SHARP","CLEVER","VISION","ANSWER","RIDDLE","INSIGHT"];
 const KEY = "iq_word_scramble_best";
 const DUR = 60;
@@ -60,7 +61,14 @@ const IQWordScramble = () => {
   const reset = () => { if (tRef.current) window.clearInterval(tRef.current); setPhase("idle"); setScore(0); setTime(DUR); };
 
   return (
-    <Card className="bg-card/50 backdrop-blur border-primary/20">
+    <>
+      <FloatingHowItWorks title="How IQWord Scramble works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="bg-card/50 backdrop-blur border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Shuffle className="w-5 h-5 text-primary" /> Word Scramble
@@ -99,7 +107,8 @@ const IQWordScramble = () => {
         )}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };
 
 export default IQWordScramble;

@@ -6,6 +6,7 @@ import { Trophy, XCircle, CheckCircle, ArrowRight } from "lucide-react";
 import { QuizQuestion } from "@/data/educationalContent";
 import confetti from "canvas-confetti";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface QuizViewerProps {
   questions: QuizQuestion[];
   onQuizComplete: (score: number) => void;
@@ -63,7 +64,14 @@ export const QuizViewer = ({
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <>
+      <FloatingHowItWorks title="How Quiz Viewer works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="space-y-6 animate-fade-in">
       <Button
         variant="ghost"
         onClick={onBack}
@@ -184,5 +192,6 @@ export const QuizViewer = ({
         </CardContent>
       </Card>
     </div>
-  );
+    </>
+    );
 };

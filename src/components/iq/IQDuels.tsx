@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import IQDuelGame from "./IQDuelGame";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const duelModes = [
   { id: "quick", name: "Quick Duel", questions: 5, time: "3 min", credits: 3, icon: Zap, desc: "5 questions, fast" },
   { id: "standard", name: "Standard Duel", questions: 10, time: "10 min", credits: 5, icon: Brain, desc: "10 balanced questions" },
@@ -47,7 +48,14 @@ export default function IQDuels() {
   };
 
   return (
-    <div className="mb-8">
+    <>
+      <FloatingHowItWorks title="How IQDuels works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="mb-8">
       <h2 className="text-xl sm:text-2xl font-black mb-4">⚡ Live IQ Duels</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {duelModes.map((mode, i) => (
@@ -89,5 +97,6 @@ export default function IQDuels() {
         <IQDuelGame duelId={activeDuelId} myUserId={userId} onClose={() => setActiveDuelId(null)} />
       )}
     </div>
-  );
+    </>
+    );
 }

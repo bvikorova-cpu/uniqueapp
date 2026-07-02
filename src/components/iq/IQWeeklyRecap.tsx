@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { CalendarRange, TrendingUp, TrendingDown, Brain, Clock, Trophy } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type Recap = {
   tests_this_week: number;
   tests_last_week: number;
@@ -45,7 +46,14 @@ const IQWeeklyRecap = () => {
   const testDelta = data.tests_this_week - data.tests_last_week;
 
   return (
-    <Card className="bg-gradient-to-br from-primary/10 via-card/50 to-accent/10 backdrop-blur border-primary/30">
+    <>
+      <FloatingHowItWorks title="How IQWeekly Recap works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="bg-gradient-to-br from-primary/10 via-card/50 to-accent/10 backdrop-blur border-primary/30">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <CalendarRange className="w-5 h-5 text-primary" /> Weekly Recap
@@ -90,7 +98,8 @@ const IQWeeklyRecap = () => {
         )}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };
 
 export default IQWeeklyRecap;

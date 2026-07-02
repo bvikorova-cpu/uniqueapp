@@ -7,6 +7,7 @@ import { Ticket, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function IQPromoCode() {
   const { toast } = useToast();
   const qc = useQueryClient();
@@ -32,7 +33,14 @@ export default function IQPromoCode() {
   });
 
   return (
-    <Card className="bg-gradient-to-br from-amber-500/5 to-orange-500/5 border-amber-500/20">
+    <>
+      <FloatingHowItWorks title="How IQPromo Code works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="bg-gradient-to-br from-amber-500/5 to-orange-500/5 border-amber-500/20">
       <CardHeader className="p-4">
         <CardTitle className="text-base flex items-center gap-2">
           <Ticket className="h-4 w-4 text-amber-400" /> Promo Code
@@ -60,5 +68,6 @@ export default function IQPromoCode() {
         </div>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

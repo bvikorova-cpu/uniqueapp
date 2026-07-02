@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users2 } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const CLANS = [
   { name: "Mensa Elite", members: 142, score: 8420 },
   { name: "Logic Lords", members: 98, score: 7150 },
@@ -11,7 +12,14 @@ const CLANS = [
 
 export default function IQClanList() {
   return (
-    <Card className="glass-card">
+    <>
+      <FloatingHowItWorks title="How IQClan List works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="glass-card">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <Users2 className="h-4 w-4 text-primary" /> Top Clans
@@ -26,5 +34,6 @@ export default function IQClanList() {
         ))}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

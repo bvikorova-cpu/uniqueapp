@@ -5,6 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { TrendingUp, TrendingDown, Target, Clock, Loader2, Lightbulb } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface CategoryStat {
   category: string;
   avg_iq: number;
@@ -36,12 +37,20 @@ export default function IQPerformanceInsights() {
 
   if (loading) {
     return (
-      <Card className="backdrop-blur-xl bg-card/80 border-primary/20 mb-8">
+      <>
+        <FloatingHowItWorks title="How IQPerformance Insights works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+        <Card className="backdrop-blur-xl bg-card/80 border-primary/20 mb-8">
         <CardContent className="py-8 flex justify-center">
           <Loader2 className="h-5 w-5 animate-spin text-primary" />
         </CardContent>
       </Card>
-    );
+      </>
+      );
   }
 
   if (!data || !data.total_tests) {

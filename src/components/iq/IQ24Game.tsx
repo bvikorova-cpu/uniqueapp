@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Hash, Trophy, RotateCcw, Lightbulb } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const KEY = "iq_24_solved";
 
 // safe eval of arithmetic with parentheses
@@ -53,7 +54,14 @@ const IQ24Game = () => {
   const insert = (s: string) => setExpr(e => e + s);
 
   return (
-    <Card className="bg-card/50 backdrop-blur border-primary/20">
+    <>
+      <FloatingHowItWorks title="How IQ24Game works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="bg-card/50 backdrop-blur border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Hash className="w-5 h-5 text-primary" /> 24 Game
@@ -82,7 +90,8 @@ const IQ24Game = () => {
         <Button onClick={reset} variant="ghost" size="sm" className="w-full text-xs"><RotateCcw className="w-3 h-3 mr-1" /> Reset score</Button>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };
 
 export default IQ24Game;

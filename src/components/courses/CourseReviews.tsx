@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Review {
   id: string;
   rating: number;
@@ -127,7 +128,14 @@ export const CourseReviews = ({ courseId, userHasAccess }: CourseReviewsProps) =
   );
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Course Reviews works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle>Course Reviews</CardTitle>
@@ -220,5 +228,6 @@ export const CourseReviews = ({ courseId, userHasAccess }: CourseReviewsProps) =
         <p className="text-center text-muted-foreground">No reviews yet. Be the first to review!</p>
       )}
     </div>
-  );
+    </>
+    );
 };

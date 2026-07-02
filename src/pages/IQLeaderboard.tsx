@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Trophy, Loader2, Crown, Medal } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function IQLeaderboard() {
   const { data, isLoading } = useQuery({
     queryKey: ["iq-leaderboard"],
@@ -25,7 +26,14 @@ export default function IQLeaderboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 py-12 px-4">
+    <>
+      <FloatingHowItWorks title="How IQLeaderboard works" steps={[
+          { title: 'Explore', desc: 'Browse the learning content or tool.' },
+          { title: 'Start / generate', desc: 'Take a course, quiz or AI action (2-5 credits where applicable).' },
+          { title: 'Track progress', desc: 'Your XP, badges and completion are saved.' },
+          { title: 'Level up', desc: 'Unlock next lessons, leaderboards and rewards.' },
+        ]} />
+      <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/5 py-12 px-4">
       <Helmet>
         <title>IQ Leaderboard — Top Scores | Unique IQ</title>
         <meta name="description" content="Top global IQ scores from the Unique IQ community." />
@@ -74,5 +82,6 @@ export default function IQLeaderboard() {
         </Card>
       </div>
     </div>
-  );
+    </>
+    );
 }

@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ReactMarkdown from "react-markdown";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface ToolDef {
   id: string;
   title: string;
@@ -137,13 +138,21 @@ export default function IQToolsGrid() {
     const { credits_used, credits_remaining, ...rest } = data;
     const md = jsonToMarkdown(rest);
     return (
-      <div className="prose prose-sm dark:prose-invert max-w-none">
+      <>
+        <FloatingHowItWorks title="How IQTools Grid works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+        <div className="prose prose-sm dark:prose-invert max-w-none">
         <ReactMarkdown>{md}</ReactMarkdown>
         <div className="mt-4 text-xs text-muted-foreground">
           Credits used: {credits_used} | Remaining: {credits_remaining}
         </div>
       </div>
-    );
+      </>
+      );
   };
 
   return (

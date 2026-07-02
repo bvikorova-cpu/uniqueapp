@@ -7,6 +7,7 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface CertificateProps {
   userName: string;
   courseName: string;
@@ -55,7 +56,14 @@ export const Certificate = ({ userName, courseName, completionDate }: Certificat
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <>
+      <FloatingHowItWorks title="How Certificate works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="max-w-6xl mx-auto space-y-6">
       <div className="flex gap-4 print:hidden">
         <Button variant="outline" onClick={() => navigate("/education")}>
           <Home className="mr-2 h-4 w-4" />
@@ -206,5 +214,6 @@ export const Certificate = ({ userName, courseName, completionDate }: Certificat
         </Card>
       </div>
     </div>
-  );
+    </>
+    );
 };

@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Crown, Shield, Gem, Star, Medal, Award, Swords, Flame } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const leagues = [
   { name: "Bronze", icon: Shield, color: "text-amber-700", bg: "from-amber-700/20 to-amber-900/10", minIQ: 0, maxIQ: 89 },
   { name: "Silver", icon: Medal, color: "text-gray-400", bg: "from-gray-400/20 to-gray-600/10", minIQ: 90, maxIQ: 99 },
@@ -27,7 +28,14 @@ export default function IQLeaguesSection({ userIQ }: IQLeaguesSectionProps) {
     : 0;
 
   return (
-    <div className="mb-8">
+    <>
+      <FloatingHowItWorks title="How IQLeagues Section works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="mb-8">
       <h2 className="text-xl sm:text-2xl font-black mb-4">🏆 IQ Leagues</h2>
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 mb-4">
         {leagues.map((league, i) => {
@@ -84,7 +92,8 @@ export default function IQLeaguesSection({ userIQ }: IQLeaguesSectionProps) {
         </Card>
       )}
     </div>
-  );
+    </>
+    );
 }
 
 function Brain(props: any) {

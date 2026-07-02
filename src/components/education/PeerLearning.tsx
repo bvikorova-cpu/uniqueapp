@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Users, MessageCircle, Video, Star, Clock, Trophy, Crown, Medal } from 'lucide-react';
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface StudyPartner {
   id: string;
   name: string;
@@ -28,7 +29,14 @@ export const PeerLearning = ({ partners = [], onConnect }: PeerLearningProps) =>
   const filteredPartners = selectedSubject ? partners.filter(p => p.subject === selectedSubject) : partners;
 
   return (
-    <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
+    <>
+      <FloatingHowItWorks title="How Peer Learning works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Users className="h-5 w-5 text-primary" />
@@ -99,7 +107,8 @@ export const PeerLearning = ({ partners = [], onConnect }: PeerLearningProps) =>
         )}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };
 
 export const Leaderboard = ({ 

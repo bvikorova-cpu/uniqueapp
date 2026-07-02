@@ -7,6 +7,7 @@ import { Users, UserPlus, Swords, Check, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface FriendRow {
   id: string;
   requester_id: string;
@@ -82,7 +83,14 @@ export default function IQFriends() {
   const friends  = rows.filter(r => r.status === "accepted");
 
   return (
-    <Card className="backdrop-blur-xl bg-card/80 border-primary/20 mb-8">
+    <>
+      <FloatingHowItWorks title="How IQFriends works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="backdrop-blur-xl bg-card/80 border-primary/20 mb-8">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Users className="h-5 w-5 text-primary" /> IQ Friends & 1v1
@@ -158,5 +166,6 @@ export default function IQFriends() {
         )}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

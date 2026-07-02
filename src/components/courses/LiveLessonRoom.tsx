@@ -9,6 +9,7 @@ import { Whiteboard } from "./Whiteboard";
 import { BreakoutRooms } from "./BreakoutRooms";
 import { LessonRecording } from "./LessonRecording";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface LiveLessonRoomProps {
   lessonId: string;
   lessonTitle: string;
@@ -185,7 +186,14 @@ export function LiveLessonRoom({ lessonId, lessonTitle, isInstructor }: LiveLess
   };
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title="How Live Lesson Room works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="space-y-4">
       <Card className="p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
@@ -303,5 +311,6 @@ export function LiveLessonRoom({ lessonId, lessonTitle, isInstructor }: LiveLess
         <BreakoutRooms lessonId={lessonId} participants={participants} />
       )}
     </div>
-  );
+    </>
+    );
 }

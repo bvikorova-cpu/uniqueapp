@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Pipette, Trophy, Timer, RotateCcw } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const KEY = "iq_pipes_best_ms";
 const N = 4;
 
@@ -59,14 +60,22 @@ const IQPipesRotate = () => {
   const renderPipe = (mask: number, rot: number) => {
     const m = rotate(mask, rot);
     return (
-      <svg viewBox="0 0 40 40" className="w-full h-full">
+      <>
+        <FloatingHowItWorks title="How IQPipes Rotate works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+        <svg viewBox="0 0 40 40" className="w-full h-full">
         {(m & 1) ? <line x1="20" y1="0" x2="20" y2="20" stroke="hsl(var(--primary))" strokeWidth="6" /> : null}
         {(m & 2) ? <line x1="20" y1="20" x2="40" y2="20" stroke="hsl(var(--primary))" strokeWidth="6" /> : null}
         {(m & 4) ? <line x1="20" y1="20" x2="20" y2="40" stroke="hsl(var(--primary))" strokeWidth="6" /> : null}
         {(m & 8) ? <line x1="0" y1="20" x2="20" y2="20" stroke="hsl(var(--primary))" strokeWidth="6" /> : null}
         <circle cx="20" cy="20" r="3" fill="hsl(var(--primary))" />
       </svg>
-    );
+      </>
+      );
   };
 
   return (

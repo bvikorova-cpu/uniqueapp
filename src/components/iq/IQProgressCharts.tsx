@@ -7,6 +7,7 @@ import { Brain, TrendingUp, BarChart3, Loader2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useIQProgress, useIQUserStats } from "@/hooks/useIQUserStats";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const DOMAINS = ["Memory", "Logic", "Spatial", "Verbal", "Speed", "Pattern"];
 
 export default function IQProgressCharts() {
@@ -30,7 +31,14 @@ export default function IQProgressCharts() {
   const noData = !loadingProgress && trendData.length === 0;
 
   return (
-    <div className="mb-8">
+    <>
+      <FloatingHowItWorks title="How IQProgress Charts works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="mb-8">
       <h2 className="text-xl sm:text-2xl font-black mb-4">📈 IQ Progress Tracking</h2>
       <Tabs defaultValue="iq" className="space-y-4">
         <TabsList className="grid w-full grid-cols-2 h-auto p-1">
@@ -99,5 +107,6 @@ export default function IQProgressCharts() {
         </TabsContent>
       </Tabs>
     </div>
-  );
+    </>
+    );
 }

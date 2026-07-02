@@ -6,6 +6,7 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { Certificate } from "@/hooks/useEducationalCertificates";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface CertificateViewerProps {
   certificate: Certificate;
 }
@@ -44,7 +45,14 @@ export const CertificateViewer = ({ certificate }: CertificateViewerProps) => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Certificate Viewer works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="space-y-6">
       <div
         ref={certificateRef}
         className="bg-gradient-to-br from-yellow-50 via-orange-50 to-red-50 p-12 rounded-lg border-8 border-yellow-300 shadow-2xl"
@@ -146,5 +154,6 @@ export const CertificateViewer = ({ certificate }: CertificateViewerProps) => {
         </Button>
       </div>
     </div>
-  );
+    </>
+    );
 };

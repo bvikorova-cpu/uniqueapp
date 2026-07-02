@@ -7,6 +7,7 @@ import { Loader2, TrendingUp, Trophy, Coins } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Match {
   id: string;
   player1_id: string | null;
@@ -139,10 +140,18 @@ export default function IQMatchBetting({ competitionId }: { competitionId: strin
 
   if (!matches.length) {
     return (
-      <div className="text-center py-8 text-sm text-muted-foreground">
+      <>
+        <FloatingHowItWorks title="How IQMatch Betting works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+        <div className="text-center py-8 text-sm text-muted-foreground">
         No matches yet. Bracket must start first.
       </div>
-    );
+      </>
+      );
   }
 
   return (

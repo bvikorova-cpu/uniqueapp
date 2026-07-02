@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, MessageCircle } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const EMOJIS = ["🔥", "👏", "😱", "🤯", "💪", "🎯", "🤡", "👑"];
 
 interface ChatMsg {
@@ -94,7 +95,14 @@ export default function IQDuelChat({
   };
 
   return (
-    <div className="relative border-t pt-3 mt-3 space-y-2">
+    <>
+      <FloatingHowItWorks title="How IQDuel Chat works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="relative border-t pt-3 mt-3 space-y-2">
       <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
         <MessageCircle className="h-3.5 w-3.5" /> Live chat
       </div>
@@ -165,5 +173,6 @@ export default function IQDuelChat({
         </Button>
       </div>
     </div>
-  );
+    </>
+    );
 }

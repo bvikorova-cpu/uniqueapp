@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Brain } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const SKILLS = ["Logic", "Memory", "Math", "Verbal", "Spatial"];
 
 export default function IQSkillRadar() {
@@ -15,7 +16,14 @@ export default function IQSkillRadar() {
     setScores(arr);
   }, []);
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title="How IQSkill Radar works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card>
       <CardHeader><CardTitle className="flex items-center gap-2"><Brain className="w-5 h-5" />Skill Breakdown</CardTitle></CardHeader>
       <CardContent className="space-y-2">
         {SKILLS.map((s, i) => (
@@ -26,5 +34,6 @@ export default function IQSkillRadar() {
         ))}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Grid2x2, Trophy, RotateCcw } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const KEY = "iq_sudoku4_best_solved";
 
 // 4x4 sudoku solutions, then mask cells
@@ -44,7 +45,14 @@ const IQSudoku4 = () => {
   const reset = () => { const np = makePuzzle(); setPuzzle(np); setBoard(np.board); setSel(null); setSolved(0); };
 
   return (
-    <Card className="bg-card/50 backdrop-blur border-primary/20">
+    <>
+      <FloatingHowItWorks title="How IQSudoku4 works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="bg-card/50 backdrop-blur border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Grid2x2 className="w-5 h-5 text-primary" /> Sudoku 4×4
@@ -75,7 +83,8 @@ const IQSudoku4 = () => {
         <Button onClick={reset} variant="outline" size="sm" className="w-full"><RotateCcw className="w-3 h-3 mr-1" /> New puzzle</Button>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };
 
 export default IQSudoku4;

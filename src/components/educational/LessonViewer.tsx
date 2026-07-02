@@ -5,6 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, ArrowRight, CheckCircle, Lightbulb } from "lucide-react";
 import { Lesson } from "@/data/educationalContent";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface LessonViewerProps {
   lessons: Lesson[];
   currentLesson: number;
@@ -23,7 +24,14 @@ export const LessonViewer = ({
   const isLastLesson = currentLesson === lessons.length - 1;
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <>
+      <FloatingHowItWorks title="How Lesson Viewer works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="space-y-6 animate-fade-in">
       <Button
         variant="ghost"
         onClick={onBack}
@@ -94,5 +102,6 @@ export const LessonViewer = ({
         </CardContent>
       </Card>
     </div>
-  );
+    </>
+    );
 };

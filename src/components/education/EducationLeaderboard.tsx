@@ -4,11 +4,19 @@ import { motion } from "framer-motion";
 import { useEducationLeaderboard } from "@/hooks/useEducationStats";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export const EducationLeaderboard = () => {
   const { data: rows, isLoading } = useEducationLeaderboard();
 
   return (
-    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
+    <>
+      <FloatingHowItWorks title="How Education Leaderboard works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
       <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-base">
@@ -66,5 +74,6 @@ export const EducationLeaderboard = () => {
         </CardContent>
       </Card>
     </motion.div>
-  );
+    </>
+    );
 };

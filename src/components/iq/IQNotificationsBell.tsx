@@ -11,6 +11,7 @@ import {
 import { Bell, CheckCheck } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function IQNotificationsBell() {
   const [open, setOpen] = useState(false);
   const qc = useQueryClient();
@@ -40,7 +41,14 @@ export default function IQNotificationsBell() {
   });
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <>
+      <FloatingHowItWorks title="How IQNotifications Bell works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="h-5 w-5" />
@@ -85,5 +93,6 @@ export default function IQNotificationsBell() {
         </div>
       </PopoverContent>
     </Popover>
-  );
+    </>
+    );
 }

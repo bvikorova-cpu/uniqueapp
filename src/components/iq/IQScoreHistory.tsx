@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function IQScoreHistory() {
   const [scores, setScores] = useState<number[]>([]);
   useEffect(() => {
@@ -15,7 +16,14 @@ export default function IQScoreHistory() {
   const min = Math.min(...scores, max);
   const range = max - min || 1;
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title="How IQScore History works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card>
       <CardHeader><CardTitle className="flex items-center gap-2"><TrendingUp className="w-5 h-5" />Score History</CardTitle></CardHeader>
       <CardContent>
         <svg viewBox="0 0 200 60" className="w-full h-20">
@@ -31,5 +39,6 @@ export default function IQScoreHistory() {
         </div>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

@@ -8,6 +8,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import { motion, AnimatePresence } from "framer-motion";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const suggestedQuestions = [
   "Explain the Pythagorean theorem",
   "What is photosynthesis?",
@@ -37,7 +38,14 @@ export const EnhancedChat = ({
   isUsingCredit,
 }: EnhancedChatProps) => {
   return (
-    <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
+    <>
+      <FloatingHowItWorks title="How Enhanced Chat works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -175,5 +183,6 @@ export const EnhancedChat = ({
         </div>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };

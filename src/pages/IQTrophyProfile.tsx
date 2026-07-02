@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Brain, Trophy, Swords, Flame, ArrowLeft, Loader2, Medal, Crown } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Stats {
   best_iq: number | null;
   latest_iq: number | null;
@@ -80,10 +81,18 @@ export default function IQTrophyProfile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <>
+        <FloatingHowItWorks title="How IQTrophy Profile works" steps={[
+          { title: 'Explore', desc: 'Browse the learning content or tool.' },
+          { title: 'Start / generate', desc: 'Take a course, quiz or AI action (2-5 credits where applicable).' },
+          { title: 'Track progress', desc: 'Your XP, badges and completion are saved.' },
+          { title: 'Level up', desc: 'Unlock next lessons, leaderboards and rewards.' },
+        ]} />
+        <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="h-10 w-10 animate-spin text-purple-500" />
       </div>
-    );
+      </>
+      );
   }
 
   const tier = stats?.tier ?? "novice";

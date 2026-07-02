@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { NotebookPen } from "lucide-react";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const KEY = "iq_journal";
 
 export default function IQJournal() {
@@ -21,7 +22,14 @@ export default function IQJournal() {
     toast.success("Saved");
   };
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title="How IQJournal works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card>
       <CardHeader><CardTitle className="flex items-center gap-2"><NotebookPen className="w-5 h-5" />Training Journal</CardTitle></CardHeader>
       <CardContent className="space-y-2">
         <Textarea value={text} onChange={e => setText(e.target.value)} placeholder="Today's reflection..." rows={2} />
@@ -36,5 +44,6 @@ export default function IQJournal() {
         </div>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function IQWeeklyActivity() {
   const [data, setData] = useState<number[]>([]);
   useEffect(() => {
@@ -14,7 +15,14 @@ export default function IQWeeklyActivity() {
   const days = ["M", "T", "W", "T", "F", "S", "S"];
   const max = Math.max(...data, 1);
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title="How IQWeekly Activity works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card>
       <CardHeader><CardTitle className="flex items-center gap-2"><Activity className="w-5 h-5" />Weekly Activity</CardTitle></CardHeader>
       <CardContent>
         <div className="flex items-end justify-between h-24 gap-2">
@@ -27,5 +35,6 @@ export default function IQWeeklyActivity() {
         </div>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

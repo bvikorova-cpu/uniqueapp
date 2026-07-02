@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Brain, Loader2, Trophy, Flame } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function IQPublicProfile() {
   const { slug } = useParams<{ slug: string }>();
 
@@ -22,10 +23,18 @@ export default function IQPublicProfile() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <>
+        <FloatingHowItWorks title="How IQPublic Profile works" steps={[
+          { title: 'Explore', desc: 'Browse the learning content or tool.' },
+          { title: 'Start / generate', desc: 'Take a course, quiz or AI action (2-5 credits where applicable).' },
+          { title: 'Track progress', desc: 'Your XP, badges and completion are saved.' },
+          { title: 'Level up', desc: 'Unlock next lessons, leaderboards and rewards.' },
+        ]} />
+        <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
-    );
+      </>
+      );
   }
 
   if (!data) {

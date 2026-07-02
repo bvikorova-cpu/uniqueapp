@@ -4,6 +4,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { DollarSign, TrendingUp, Users, BookOpen, Calendar } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface EarningsSummary {
   totalEarnings: number;
   totalEnrollments: number;
@@ -117,11 +118,19 @@ export function CreatorEarnings() {
 
   if (loading) {
     return (
-      <div className="text-center py-12">
+      <>
+        <FloatingHowItWorks title="How Creator Earnings works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+        <div className="text-center py-12">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
         <p className="mt-4 text-muted-foreground">Loading earnings...</p>
       </div>
-    );
+      </>
+      );
   }
 
   return (
