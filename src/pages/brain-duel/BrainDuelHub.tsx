@@ -141,6 +141,16 @@ export default function BrainDuelHub() {
 
   return (
     <div className="min-h-screen bg-background">
+      <FloatingHowItWorks
+        title="Brain Duel Hub"
+        intro="12 next-gen Brain Duel features — AI quizzes, tournaments and more."
+        steps={[
+          { title: "Pick a feature", desc: "Tap any card to launch that tool (AI tools show a credit cost)." },
+          { title: "Spend credits for AI", desc: "AI actions like quiz generation cost 3–5 credits." },
+          { title: "Play & compete", desc: "Battle friends, join tournaments and climb the leaderboard." },
+          { title: "Track progress", desc: "Wins, XP and badges are saved to your profile." },
+        ]}
+      />
       <main className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="flex items-center justify-between mb-6">
           <Button variant="ghost" onClick={() => navigate("/brain-duel")}>
