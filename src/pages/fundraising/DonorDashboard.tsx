@@ -9,11 +9,11 @@ import { Heart, Receipt, Repeat, TrendingUp, ArrowLeft, Download, Calendar, Spar
 import { motion } from "framer-motion";
 import { toast } from "@/hooks/use-toast";
 import {
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const REFUND_WINDOW_DAYS = 14;
 

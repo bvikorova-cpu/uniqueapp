@@ -10,13 +10,13 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, Loader2, Save } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import {
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   categoryToTable,
   campaignDetailRoute,
   campaignDashboardRoute,
   FUNDRAISING_CATEGORIES,
   type FundraisingCategory,
 } from "@/lib/fundraisingRoutes";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const schema = z.object({
   title: z.string().trim().min(3, "Title too short").max(150),

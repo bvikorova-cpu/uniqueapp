@@ -7,7 +7,6 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import {
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   Heart,
   TrendingUp,
   Users,
@@ -21,6 +20,7 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { toast } from '@/hooks/use-toast';
 import { campaignDetailRoute, campaignDashboardRoute, tableToCategory } from '@/lib/fundraisingRoutes';
 import { NewCampaignPicker } from '@/components/fundraising/NewCampaignPicker';
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Campaign {
   id: string;
