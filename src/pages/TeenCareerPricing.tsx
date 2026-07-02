@@ -27,6 +27,12 @@ export default function TeenCareerPricing() {
 
   return (
     <div className="min-h-screen bg-background">
+      <FloatingHowItWorks title="Career Counselor Pricing" intro="Credit packs for the Teen Career Counselor." steps={[
+        { title: "Pick a pack", desc: "Starter, Explorer or Visionary — bigger packs give a lower per-credit price." },
+        { title: "Checkout with Stripe", desc: "Pay in EUR via secure Stripe checkout — no subscription." },
+        { title: "Credits appear instantly", desc: "Balance auto-updates after payment succeeds." },
+        { title: "Use anywhere in Career Counselor", desc: `Each guidance session costs ${TEEN_CAREER_CREDIT_COST} credit(s).` }
+      ]} />
       <Navbar />
       <main className="container mx-auto px-4 pt-20 pb-12 max-w-5xl">
         <div className="text-center mb-10">
