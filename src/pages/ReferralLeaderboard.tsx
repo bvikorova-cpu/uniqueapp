@@ -9,6 +9,7 @@ import { Trophy, Medal, Crown, Gift, Users } from "lucide-react";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { ReferralCard } from "@/components/subscription/ReferralCard";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 type Row = {
   referrer_id: string;
@@ -55,6 +56,16 @@ export default function ReferralLeaderboard() {
 
   return (
     <div className="container mx-auto py-10 px-4 max-w-4xl">
+      <FloatingHowItWorks
+        title={'Referral Leaderboard'}
+        intro={"See top inviters this month and the prizes they've unlocked."}
+        steps={[
+          { title: 'Monthly reset', desc: 'The board resets on the 1st. Everyone starts at zero.' },
+        { title: 'Earn points', desc: 'Each verified referral (7-day active friend) gives you 1 point.' },
+        { title: 'Climb the ranks', desc: 'Top 10 win extra credits and cash bonuses each month.' },
+        { title: 'Track yourself', desc: 'Your rank and progress bar appear at the top when signed in.' }
+        ]}
+      />
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}

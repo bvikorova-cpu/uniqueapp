@@ -18,6 +18,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Check, Loader2, Search, UserMinus, ArrowLeft, Users, X } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Friend {
   id: string;
@@ -162,6 +163,16 @@ const Friends = () => {
 
   return (
     <div className="min-h-screen bg-background py-6">
+      <FloatingHowItWorks
+        title={'Friends'}
+        intro={'See requests, all friends, suggestions, and manage your circle.'}
+        steps={[
+          { title: 'Check requests', desc: 'Accept or decline pending friend requests at the top of the tab.' },
+        { title: 'Browse all friends', desc: 'Open the All Friends tab to search and message any friend.' },
+        { title: 'Discover people', desc: 'Use Suggestions to find people you may know via mutual friends.' },
+        { title: 'Manage privacy', desc: 'Unfriend, mute, or block anyone from their profile menu.' }
+        ]}
+      />
       <div className="container mx-auto px-3 sm:px-4 max-w-2xl">
         <Button variant="ghost" onClick={() => navigate(-1)} className="mb-3">
           <ArrowLeft className="h-4 w-4 mr-2" />
