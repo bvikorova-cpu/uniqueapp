@@ -25,6 +25,7 @@ import { CareerComparison } from "@/components/teen-career/CareerComparison";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface ShadowArenaAchievement {
   id: string;
   placement: number;
