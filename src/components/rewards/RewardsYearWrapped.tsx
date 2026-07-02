@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Share2, Sparkles, TrendingUp, Award, Flame } from "lucide-react";
 import { toast } from "sonner";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 
 export default function RewardsYearWrapped() {
