@@ -50,8 +50,8 @@ export default function RewardsStreakFreeze() {
     try {
       if (method === "eur") {
         try {
-          const { data, error } = await supabase.functions.invoke("create-rewards-checkout", {
-            body: { kind: "streak_freeze", qty: pack.qty },
+          const { data, error } = await supabase.functions.invoke("create-checkout", {
+            body: { product: "rewards_checkout", kind: "streak_freeze", qty: pack.qty },
           });
           if (error) throw error;
           const url = (data as any)?.url;
