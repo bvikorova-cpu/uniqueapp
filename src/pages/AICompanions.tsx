@@ -19,6 +19,7 @@ import { MoodMatcher } from "@/components/companions/MoodMatcher";
 import { VoiceMessages } from "@/components/companions/VoiceMessages";
 import { CompanionMemory } from "@/components/companions/CompanionMemory";
 import { GroupConversations } from "@/components/companions/GroupConversations";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const personalityIcons: Record<string, any> = {
   motivator: Lightbulb,
@@ -185,6 +186,16 @@ const AICompanions = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <FloatingHowItWorks
+        title={'Character Companions'}
+        intro={'Chat with AI-powered characters — casual, roleplay, coaching, or fun.'}
+        steps={[
+          { title: 'Pick a companion', desc: 'Browse characters by mood, style, or use-case.' },
+        { title: 'Start chatting', desc: 'Each message spends AI credits (see credit badge).' },
+        { title: 'Customize', desc: 'Set tone, memory, and voice. Premium unlocks longer memory and voice chat.' },
+        { title: 'Buy more credits', desc: 'Top up in the Credit Store whenever you run out.' }
+        ]}
+      />
       {/* Cinematic Video Hero */}
       <div className="relative h-[340px] sm:h-[420px] overflow-hidden">
         <video

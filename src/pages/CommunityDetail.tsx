@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -245,6 +246,16 @@ export default function CommunityDetail() {
 
   return (
     <>
+      <FloatingHowItWorks
+        title={'Community'}
+        intro={'Explore posts, chat, members, and events inside this community.'}
+        steps={[
+          { title: 'Browse posts', desc: 'Read the community feed; react and comment like on the Wall.' },
+        { title: 'Join or subscribe', desc: 'Free communities join instantly. Paid ones start a monthly Stripe subscription (85/15).' },
+        { title: 'Chat live', desc: 'Open the community chat room for real-time discussion with members.' },
+        { title: 'Events & perks', desc: 'RSVP to events and unlock member-only perks from the creator.' }
+        ]}
+      />
       <Helmet>
         <title>{`u/${community.slug} · Community · Unique`}</title>
         <meta name="description" content={community.description ?? `${community.name} community on Unique`} />

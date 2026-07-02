@@ -54,6 +54,7 @@ import { AIBioCoach } from "@/components/dating/AIBioCoach";
 import { Dating16Gate } from "@/components/dating/Dating16Gate";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface DatingProfile {
   id: string;
   user_id: string;
@@ -853,6 +854,17 @@ const Dating = () => {
 
   return (
     <>
+      <FloatingHowItWorks
+        title={'Dating'}
+        intro={'Swipe, match, chat, and meet — with EU-safe verification and boundaries.'}
+        steps={[
+          { title: 'Complete your profile', desc: 'Add photos, interests, and preferences to get better matches.' },
+        { title: 'Swipe on suggestions', desc: 'Like or pass. Mutual likes become matches instantly.' },
+        { title: 'Start chatting', desc: 'DMs unlock on match. Use icebreakers and voice notes.' },
+        { title: 'Upgrade for boosts', desc: 'Premium unlocks Super Likes, Boost, and Passport across cities.' },
+        { title: 'Meet responsibly', desc: 'Video-verify before meeting. Report anything off — moderation is 24/7.' }
+        ]}
+      />
       <Dating16Gate />
       <SEO
         title="Dating - Meet your match on Unique"

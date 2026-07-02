@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { Send, ArrowLeft, Loader2, Sparkles, Clock } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const CompanionChat = () => {
   const { conversationId } = useParams();
@@ -111,6 +112,16 @@ const CompanionChat = () => {
 
   return (
     <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12">
+      <FloatingHowItWorks
+        title={'Companion Chat'}
+        intro={'Chat with an AI character — each reply spends AI credits.'}
+        steps={[
+          { title: 'Say hi', desc: 'Type a message and press Send. The companion replies in-character.' },
+        { title: 'Credits per reply', desc: 'See the credit badge above the input; each response costs 3–5 credits.' },
+        { title: 'Customize the vibe', desc: 'Adjust tone, memory, and voice in the companion settings.' },
+        { title: 'Buy more credits', desc: 'Open the Credit Store when you run low.' }
+        ]}
+      />
       <div className="container mx-auto px-3 sm:px-4 max-w-4xl">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
           <div className="mb-4 flex items-center justify-between">

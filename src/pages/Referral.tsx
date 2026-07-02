@@ -18,6 +18,7 @@ import { ReferralQRDialog } from "@/components/referral/ReferralQRDialog";
 import { ReferralEarningsCalculator } from "@/components/referral/ReferralEarningsCalculator";
 import { AffiliateTierCard } from "@/components/affiliate/AffiliateTierCard";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const Referral = () => {
   const { stats, loading, refreshStats } = useReferralProgram();
@@ -79,6 +80,16 @@ const Referral = () => {
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
+      <FloatingHowItWorks
+        title={'Invite a Friend'}
+        intro={'Share your link — earn credits when friends join and reach milestones.'}
+        steps={[
+          { title: 'Copy your link', desc: 'Every account has a unique referral code and share link.' },
+        { title: 'Share it', desc: 'Send by WhatsApp, email, or QR. Track opens in your dashboard.' },
+        { title: 'Friend signs up', desc: 'You get credits when they register and stay active for 7 days.' },
+        { title: 'Milestone bonuses', desc: 'Extra rewards at 5, 10, and 25 referrals plus a monthly leaderboard prize.' }
+        ]}
+      />
       {/* Cinematic Hero */}
       <div className="relative overflow-hidden mb-8 min-h-[300px]">
         <div className="absolute inset-0 z-0">

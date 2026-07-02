@@ -31,6 +31,7 @@ import { ThreadSubscription } from "@/components/megaforum/ThreadSubscription";
 import { ForumNotifications } from "@/components/megaforum/ForumNotifications";
 import ReactMarkdown from "react-markdown";
 import { SEO } from "@/components/SEO";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Profile {
   id: string;
@@ -324,6 +325,16 @@ const Megaforum = () => {
 
   return (
     <>
+      <FloatingHowItWorks
+        title={'Megaforum'}
+        intro={'Topic-based public discussions with upvotes, threads, and awards.'}
+        steps={[
+          { title: 'Pick a topic', desc: 'Browse categories or search a specific tag.' },
+        { title: 'Post or reply', desc: 'Start a thread or reply. Rich text and images supported.' },
+        { title: 'Upvote & award', desc: 'Give upvotes and paid awards to boost great posts.' },
+        { title: 'Earn reputation', desc: 'Quality contributions raise your karma and unlock perks.' }
+        ]}
+      />
       <SEO
         title="Megaforum - Open community discussions"
         description="Join premium, member-only discussions across 9 categories. Live debates, polls, hot topics and weekly challenges on Unique Megaforum."
