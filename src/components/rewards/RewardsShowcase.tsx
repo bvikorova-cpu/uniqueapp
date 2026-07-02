@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import ReactMarkdown from "react-markdown";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 export default function RewardsShowcase() {
   const [loading, setLoading] = useState(false);
@@ -65,6 +66,12 @@ export default function RewardsShowcase() {
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+      <div className="flex justify-end"><HowItWorksButton variant="compact" title="Showcase" intro="AI-generated pitch that highlights your achievements to share on social media." steps={[
+        { title: "Pick a style", desc: "Choose the tone (professional, funny, humble-brag, etc.) — this shapes how the pitch reads." },
+        { title: "Generate", desc: "The AI reads your recent badges, XP, streak and creates a shareable text/image." },
+        { title: "Share", desc: "Copy the text or use the Share button to post to Instagram, TikTok, X, or send to friends." },
+        { title: "Costs credits", desc: "Each generation uses AI credits. Regenerate if you want a different variant." },
+      ]} /></div>
       <Card className="p-5 bg-card/90 backdrop-blur-md border-amber-400/20">
         <div className="flex items-center gap-3 mb-4">
           <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center">

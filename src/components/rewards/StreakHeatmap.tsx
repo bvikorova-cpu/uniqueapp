@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Flame } from "lucide-react";
 import { motion } from "framer-motion";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 export default function StreakHeatmap({ userId }: { userId: string }) {
   const { data: claims = [] } = useQuery({
@@ -45,9 +46,14 @@ export default function StreakHeatmap({ userId }: { userId: string }) {
   return (
     <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
       <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-base">
-          <Flame className="h-5 w-5 text-orange-500" />
-          Login Streak
+        <CardTitle className="flex items-center gap-2 text-base justify-between">
+          <span className="flex items-center gap-2"><Flame className="h-5 w-5 text-orange-500" /> Login Streak</span>
+          <HowItWorksButton title="Streak Heatmap" intro="A 30-day map of your daily logins." steps={[
+            { title: "Colored tile = you logged in", desc: "Brighter tiles are days when you claimed the daily calendar reward." },
+            { title: "Empty tile = missed day", desc: "Gaps break your streak unless a Streak Freeze was applied that day." },
+            { title: "Hover for details", desc: "Hovering (or tapping) a tile shows the exact date and status." },
+            { title: "Aim for a full month", desc: "A 30-day unbroken streak triggers a hidden milestone reward." },
+          ]} />
         </CardTitle>
       </CardHeader>
       <CardContent>

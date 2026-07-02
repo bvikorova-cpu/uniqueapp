@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Target, Clock, Zap, MessageSquare, Heart } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 interface Challenge {
   id: string;
@@ -80,6 +81,12 @@ export default function WeeklyChallenges() {
               <Clock className="h-3 w-3" />
               {timeLeft.days}d {timeLeft.hours}h left
             </Badge>
+            <HowItWorksButton title="Weekly Challenges" intro="Rotating weekly objectives that reward bonus XP." steps={[
+              { title: "One week per set", desc: "The timer shows when this week's challenges reset. New ones appear every Monday." },
+              { title: "Progress auto-tracks", desc: "Playing games, chatting, liking posts — normal activity fills the challenge bars." },
+              { title: "Bonus XP on completion", desc: "Every finished challenge instantly credits the XP shown on its card." },
+              { title: "Don't skip a week", desc: "Unfinished challenges expire on reset. Complete all for a Weekly Champion bonus." },
+            ]} />
           </div>
         </CardTitle>
       </CardHeader>

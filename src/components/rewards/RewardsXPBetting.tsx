@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 interface Bet {
   id: string;
@@ -124,6 +125,12 @@ export default function RewardsXPBetting() {
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+      <div className="flex justify-end"><HowItWorksButton variant="compact" title="XP Betting Arena" intro="Wager your XP on skill-based challenges. Win to double up, lose your stake if you fall short." steps={[
+        { title: "Pick a match", desc: "Choose an open bet from the list — each shows the challenge, stake and time remaining." },
+        { title: "Set your stake", desc: "Enter how much XP you want to wager. You can only bet XP you currently have." },
+        { title: "Compete", desc: "Once both players stake, the challenge starts. Winner takes the combined pot minus the platform fee." },
+        { title: "Fair play", desc: "All results are server-verified. Suspected cheating voids the bet and refunds both sides." },
+      ]} /></div>
       <Card className="p-6 bg-gradient-to-br from-red-500/10 to-orange-500/5 border-red-400/20 backdrop-blur-md">
         <h2 className="font-black text-xl flex items-center gap-2 mb-1">
           <Sword className="h-5 w-5 text-red-500" /> XP Betting Arena

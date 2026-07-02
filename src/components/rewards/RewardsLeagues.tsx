@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Trophy, ArrowUp, ArrowDown, Minus, Shield } from "lucide-react";
 import { motion } from "framer-motion";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 const TIERS = [
   { id: "bronze", label: "Bronze", color: "from-amber-700 to-amber-900", text: "text-amber-300" },
@@ -74,6 +75,12 @@ export default function RewardsLeagues() {
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-end"><HowItWorksButton variant="compact" title="Leagues" intro="Compete weekly with players of your skill for promotion, rewards and bragging rights." steps={[
+        { title: "Your tier", desc: "Everyone starts in Bronze. You move up through Silver, Gold, Platinum, Diamond as you earn weekly XP." },
+        { title: "Weekly reset", desc: "Every Monday the leaderboard resets and top players get promoted; bottom players relegate down." },
+        { title: "Earn league XP", desc: "Every action that gives normal XP also counts toward your league score this week." },
+        { title: "Top rewards", desc: "Top ranks receive credits, exclusive badges and cosmetics — check the reward preview on the tier card." },
+      ]} /></div>
       <Card className="overflow-hidden border-primary/20">
         <div className={`bg-gradient-to-r ${myTier.color} p-6`}>
           <div className="flex items-center justify-between text-white">

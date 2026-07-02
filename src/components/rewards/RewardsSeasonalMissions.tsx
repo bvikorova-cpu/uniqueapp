@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 const seasons = [
   { id: "spring", name: "Spring Bloom", emoji: "🌸", icon: Leaf, color: "from-green-500 to-emerald-500" },
@@ -71,6 +72,12 @@ export default function RewardsSeasonalMissions() {
 
   return (
     <div className="space-y-4">
+      <div className="flex justify-end"><HowItWorksButton variant="compact" title="Seasonal Missions" intro="Limited-time missions tied to the current season. Complete them before the season ends." steps={[
+        { title: "Season banner", desc: "The top card shows the active season and how much time is left before missions rotate." },
+        { title: "Track progress", desc: "Each mission has a progress bar. Actions across the platform automatically count toward it." },
+        { title: "Claim on completion", desc: "When a mission hits 100%, tap Claim to grab the reward (XP, credits, seasonal cosmetics)." },
+        { title: "Expiring items", desc: "Seasonal cosmetics disappear when the next season starts — claim before the timer runs out!" },
+      ]} /></div>
       <Card className={`p-4 bg-gradient-to-br ${activeSeason.color}/10 border-amber-400/20 backdrop-blur-md`}>
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-3">

@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { Users, Heart, Send, Check, X } from "lucide-react";
 import { toast } from "sonner";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 const QUEST_TYPES = [
   { id: "post_streak", title: "Post 14 days in a row", target: 14, reward: 700 },
@@ -98,6 +99,12 @@ export default function RewardsFriendQuests() {
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-end"><HowItWorksButton variant="compact" title="Friend Quests" intro="Team up with a friend for shared quests that reward both of you." steps={[
+        { title: "Invite a friend", desc: "Pick a quest type and enter your friend's username or email to send an invite." },
+        { title: "Both must accept", desc: "The friend receives a notification. Once they accept, the quest starts for both accounts." },
+        { title: "Progress together", desc: "Both players contribute to the objective. The bar fills as either of you completes actions." },
+        { title: "Split rewards", desc: "When the quest completes, XP and credits are awarded to both players automatically." },
+      ]} /></div>
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">

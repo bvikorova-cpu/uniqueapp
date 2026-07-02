@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 interface Profile {
   id: string;
@@ -123,6 +124,12 @@ export default function RewardsGiftXP() {
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+      <div className="flex justify-end"><HowItWorksButton variant="compact" title="Gift XP" intro="Send some of your XP to a friend as a gift." steps={[
+        { title: "Find your friend", desc: "Search by username or email. Only registered Unique users appear in the list." },
+        { title: "Enter the amount", desc: "Type how much XP you want to gift. It's deducted from your balance instantly." },
+        { title: "Add a note (optional)", desc: "Include a short message. Your friend sees it with the gift notification." },
+        { title: "Daily limit", desc: "There is a daily cap to prevent abuse. If you hit it, come back tomorrow." },
+      ]} /></div>
       <Card className="p-6 bg-gradient-to-br from-pink-500/10 to-rose-500/5 border-pink-400/20 backdrop-blur-md">
         <h2 className="font-black text-xl flex items-center gap-2 mb-1">
           <Gift className="h-5 w-5 text-pink-500" /> Gift XP to a Friend

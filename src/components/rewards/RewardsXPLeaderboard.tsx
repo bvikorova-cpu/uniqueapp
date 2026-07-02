@@ -5,6 +5,7 @@ import { Trophy, Medal, Crown, TrendingUp, Star, Flame, Gem, Loader2 } from "luc
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 interface LeaderboardEntry {
   user_id: string;
@@ -92,6 +93,12 @@ export default function RewardsXPLeaderboard() {
     <Card className="p-4 bg-card/80 backdrop-blur-md border-amber-400/15">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-bold flex items-center gap-2"><Trophy className="h-5 w-5 text-amber-500" /> XP Leaderboard</h3>
+        <HowItWorksButton title="XP Leaderboard" intro="See the top XP earners on Unique for the current period." steps={[
+          { title: "Switch period", desc: "Use the tabs to toggle between weekly, monthly and all-time leaderboards." },
+          { title: "How ranks work", desc: "Rank is based on XP earned in the selected period. Ties are broken by earliest achievement." },
+          { title: "Weekly prizes", desc: "Top 10 on the weekly board receive credits and an exclusive weekly badge — awarded each Monday." },
+          { title: "Climb up", desc: "Earn XP from games, quests, daily login, streaks and events. Multipliers count!" },
+        ]} />
         <Tabs value={period} onValueChange={(v) => setPeriod(v as Period)}>
           <TabsList className="h-8">
             <TabsTrigger value="weekly" className="text-xs px-3 h-7">Weekly</TabsTrigger>

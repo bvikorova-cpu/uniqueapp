@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Snowflake, Flame, ShieldCheck, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 const PACKS = [
   { qty: 1, xp: 200, eur: 0.99, label: "Single Freeze" },
@@ -83,6 +84,12 @@ export default function RewardsStreakFreeze() {
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-end"><HowItWorksButton variant="compact" title="Streak Freeze" intro="Protect your daily login streak from breaking if you miss a day." steps={[
+        { title: "Why it matters", desc: "Losing your streak resets your bonus multiplier back to 1x. A freeze keeps the streak intact." },
+        { title: "Buy freezes", desc: "Pick a pack (single, triple, week shield) and pay with XP or EUR via secure Stripe checkout." },
+        { title: "Auto-apply", desc: "If you skip a day, one freeze is automatically consumed the next morning." },
+        { title: "Stack them", desc: "You can hold multiple freezes at once — great before holidays or busy weeks." },
+      ]} /></div>
       <Card className="overflow-hidden border-cyan-500/30">
         <div className="bg-gradient-to-br from-cyan-600 via-blue-600 to-indigo-700 p-6 text-white">
           <div className="flex items-center justify-between">

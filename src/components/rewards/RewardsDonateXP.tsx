@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Heart, Euro } from "lucide-react";
 import { toast } from "sonner";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 const RATE = 1000; // 1000 XP = 1 EUR
 const PRESETS = [1000, 2500, 5000, 10000];
@@ -60,6 +61,12 @@ export default function RewardsDonateXP() {
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-end"><HowItWorksButton variant="compact" title="Donate XP" intro="Convert your XP into a real-money donation to a supported cause." steps={[
+        { title: "Pick an amount", desc: "Use presets or type a custom XP amount. 1000 XP converts to 1 EUR donation." },
+        { title: "Choose a cause", desc: "Select from the vetted list of charities. Descriptions explain what each cause supports." },
+        { title: "Confirm the donation", desc: "XP is deducted from your balance and Unique routes the EUR equivalent to the charity monthly." },
+        { title: "Track your impact", desc: "The 'Your donations' card lists every donation with date and cause for your records." },
+      ]} /></div>
       <Card className="overflow-hidden">
         <div className="bg-gradient-to-r from-rose-500 to-pink-600 p-6 text-white">
           <Heart className="h-8 w-8 mb-2" />

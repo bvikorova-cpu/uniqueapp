@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Crown, Lock, Check, Sparkles, Star } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 
 interface Reward {
@@ -148,6 +149,13 @@ export default function RewardsBattlePass() {
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-end"><HowItWorksButton variant="compact" title="Battle Pass" intro="Earn XP to progress tiers and unlock free and premium rewards each season." steps={[
+        { title: "Season timer", desc: "Each season lasts a limited time. The banner shows the current season and days left." },
+        { title: "Free vs Premium", desc: "Free track rewards are for everyone. Premium unlocks the paid track — buy Premium via the button at the top." },
+        { title: "Earn tier XP", desc: "Playing games, completing quests and daily activity increases your Battle Pass tier." },
+        { title: "Claim rewards", desc: "When a tier is unlocked, tap Claim to receive XP, credits, badges or cosmetics." },
+        { title: "Don't miss the deadline", desc: "Unclaimed rewards disappear when the season ends. Log in daily to stay on track." },
+      ]} /></div>
       <Card className="overflow-hidden border-primary/30">
         <div className="bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-600 p-6 text-white">
           <div className="flex items-start justify-between gap-4">

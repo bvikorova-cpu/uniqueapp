@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Sparkles, Check } from "lucide-react";
 import { toast } from "sonner";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 
 const RARITY: Record<string, string> = {
@@ -128,7 +129,15 @@ export default function RewardsCosmetics() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2"><Sparkles className="h-5 w-5 text-primary" /> {"Cosmetics catalog"}</CardTitle>
+        <CardTitle className="flex items-center gap-2 justify-between">
+          <span className="flex items-center gap-2"><Sparkles className="h-5 w-5 text-primary" /> {"Cosmetics catalog"}</span>
+          <HowItWorksButton title="Cosmetics" intro="Customize how your profile looks with avatars, frames, banners and effects." steps={[
+            { title: "Browse by tab", desc: "Switch between avatars, frames, banners and effects using the tabs." },
+            { title: "Rarity matters", desc: "Colored borders show rarity (common → legendary). Rare items are harder to obtain but stand out more." },
+            { title: "Equip owned items", desc: "Items you own show a Check mark. Tap Equip to apply — only one item per slot can be active." },
+            { title: "Where to get more", desc: "Earn cosmetics from Battle Pass, Marketplace, seasonal events and the Lucky Wheel." },
+          ]} />
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <Tabs value={tab} onValueChange={setTab}>

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 const prizes = [
   { label: "0 CR", emoji: "💨", color: "text-muted-foreground" },
@@ -149,6 +150,12 @@ export default function RewardsLuckyWheel() {
 
   return (
     <div className="space-y-4">
+      <div className="flex justify-end"><HowItWorksButton variant="compact" title="Lucky Wheel" intro="Spin once per day for a chance at credits, XP boosts and rare cosmetics." steps={[
+        { title: "One free spin per day", desc: "Come back every 24 hours for a free spin. Missed days do NOT stack." },
+        { title: "Extra spins", desc: "Buy additional spins with credits — the cost and remaining spins are shown on the wheel." },
+        { title: "Prizes are randomised", desc: "Each segment has different odds. Rare prizes (jackpot 🎉) have a small chance — good luck!" },
+        { title: "Auto-credit", desc: "Winnings drop into your wallet or inventory instantly. Check your credit balance in the header." },
+      ]} /></div>
       <Card className="p-6 bg-gradient-to-br from-amber-500/10 to-yellow-500/5 border-amber-400/20 backdrop-blur-md text-center">
         <h3 className="font-bold text-lg flex items-center justify-center gap-2 mb-4">
           <Disc3 className="h-5 w-5 text-amber-500" /> Daily Lucky Spin
