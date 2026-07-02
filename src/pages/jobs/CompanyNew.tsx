@@ -40,6 +40,9 @@ export default function CompanyNew() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-5">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Create Company" intro="Register your business so you can post jobs." steps={HOW_STEPS_COMPANYNEW} variant="compact" />
+      </div>
       <div className="flex items-center gap-3">
         <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-pink-500"><Building2 className="h-5 w-5 text-white" /></div>
         <h1 className="text-2xl font-black">Add Company</h1>

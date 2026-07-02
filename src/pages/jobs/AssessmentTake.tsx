@@ -47,6 +47,9 @@ export default function AssessmentTake() {
 
   if (submitted) return (
     <div className="max-w-xl mx-auto px-4 pt-10">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Take Assessment" intro="Complete a skill assessment sent by an employer." steps={HOW_STEPS_ASSESSMENTTAKE} variant="compact" />
+      </div>
       <Card><CardContent className="py-12 text-center space-y-3">
         <h2 className="text-3xl font-black">{submitted.passed ? "🎉 Passed!" : "Try again"}</h2>
         <p className="text-5xl font-black text-primary">{submitted.score}%</p>

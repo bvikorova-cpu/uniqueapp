@@ -22,7 +22,10 @@ interface VR { id: string; user_id: string; video_url: string; thumbnail_url: st
 function VideoResumeCard({ v, onToggle, onRemove }: { v: VR; onToggle: (v: VR) => void; onRemove: (v: VR) => void }) {
   const src = useResolvedStorageUrl(v.video_url);
   return (
-    <Card><CardContent className="p-3 space-y-2">
+    <Card>
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Video Resumes" intro="Stand out with a 60-second intro video." steps={HOW_STEPS_VIDEORESUMES} variant="compact" />
+      </div><CardContent className="p-3 space-y-2">
       {src ? <video src={src} controls className="w-full rounded-md aspect-video bg-black" /> : <div className="w-full aspect-video rounded-md bg-muted animate-pulse" />}
       <div className="flex items-center justify-between gap-2">
         <p className="text-sm font-bold truncate">{v.title}</p>

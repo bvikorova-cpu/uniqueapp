@@ -66,6 +66,9 @@ export default function CandidateSearch() {
   if (!loading && !verified) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center space-y-4">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Candidate Search" intro="Search Unique's talent pool as an employer." steps={HOW_STEPS_CANDIDATESEARCH} variant="compact" />
+      </div>
         <ShieldCheck className="h-16 w-16 mx-auto text-amber-500" />
         <h1 className="text-2xl font-black">Employer verification required</h1>
         <p className="text-muted-foreground">Only verified employers can search the candidate database.</p>

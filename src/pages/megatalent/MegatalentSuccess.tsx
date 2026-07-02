@@ -78,6 +78,9 @@ export default function MegatalentSuccess() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background via-background to-primary/10">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Payment Success" intro="Your Megatalent Premium subscription is active." steps={HOW_STEPS_MEGATALENTSUCCESS} variant="compact" />
+      </div>
       <Card className="max-w-md w-full border-2 border-primary/40 shadow-2xl">
         {status === "verifying" && (
           <CardHeader className="text-center space-y-3">

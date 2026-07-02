@@ -47,6 +47,9 @@ export default function SalaryInsights() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 pt-6 pb-8 space-y-6">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Salary Insights" intro="Real salary ranges by role, location and seniority." steps={HOW_STEPS_SALARYINSIGHTS} variant="compact" />
+      </div>
       <SEO title="Salary Insights" description="Real salary data shared by employees across roles and companies." />
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
         className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/15 via-primary/5 to-pink-500/10 border border-primary/20 p-6">

@@ -44,6 +44,9 @@ export default function ApplicationTracker() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 pt-6 pb-8 space-y-6">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Application Tracker" intro="Follow every application you submitted." steps={HOW_STEPS_APPLICATIONTRACKER} variant="compact" />
+      </div>
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
         className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500/15 via-primary/10 to-blue-500/5 border border-emerald-500/20 p-6">
         <div className="flex items-center gap-4">

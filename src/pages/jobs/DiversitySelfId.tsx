@@ -47,6 +47,9 @@ export default function DiversitySelfId() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 pt-6 pb-8 space-y-4">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Self-ID" intro="Voluntary and anonymous demographic questionnaire." steps={HOW_STEPS_DIVERSITYSELFID} variant="compact" />
+      </div>
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl bg-gradient-to-br from-pink-500/15 via-primary/10 to-rose-500/5 border border-pink-500/20 p-6 flex items-center gap-3">
         <div className="p-3 rounded-xl bg-gradient-to-br from-pink-500 to-rose-500 shadow-xl"><Heart className="h-6 w-6 text-white" /></div>

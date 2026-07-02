@@ -92,6 +92,9 @@ export default function AICandidateRanking() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 pt-6 pb-8 space-y-6">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="AI Candidate Ranking" intro="AI ranks applicants against a job." steps={HOW_STEPS_AICANDIDATERANKING} variant="compact" />
+      </div>
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
         className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-violet-500/15 via-primary/10 to-fuchsia-500/5 border border-violet-500/20 p-6">
         <div className="flex items-center gap-4">

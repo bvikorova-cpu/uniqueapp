@@ -59,6 +59,9 @@ export default function CompanyProfile() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 pt-6 pb-12 space-y-6">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Company Profile" intro="Public page of a single employer." steps={HOW_STEPS_COMPANYPROFILE} variant="compact" />
+      </div>
       <SEO title={`${company.name} — Reviews, Salaries, Jobs`} description={company.description?.slice(0, 155) || `${company.name} company profile.`} />
 
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
