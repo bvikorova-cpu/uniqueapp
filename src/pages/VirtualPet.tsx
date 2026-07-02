@@ -20,7 +20,6 @@ import { AIPetCompatibilityChecker } from "@/components/virtual-pet/AIPetCompati
 import { AIPetBattleStrategy } from "@/components/virtual-pet/AIPetBattleStrategy";
 import { VirtualPetHero } from "@/components/virtual-pet/VirtualPetHero";
 import {
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   Heart, Store, Palette, ArrowLeftRight, Gamepad2, Swords, Dna,
   Brain, Wand2, Activity, BookOpen, Coins, CreditCard, Flame, Trophy, Star,
   SmilePlus, CalendarDays, HeartHandshake, Target
@@ -31,6 +30,7 @@ import { motion } from "framer-motion";
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import PetCrossPromo from "@/components/pet-translator/PetCrossPromo";
 import { trackPetActivity } from "@/lib/petLover";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ActiveView = "dashboard" | "pets" | "battle" | "shop" | "customize" | "trading" | "games" | "breeding" |
   "personality-coach" | "name-generator" | "health-predictor" | "story-generator" |
   "mood-analyzer" | "training-planner" | "compatibility-checker" | "battle-strategy";

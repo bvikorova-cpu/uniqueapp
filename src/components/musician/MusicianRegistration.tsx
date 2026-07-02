@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   Dialog,
   DialogContent,
   DialogDescription,
@@ -24,6 +23,7 @@ import { Music, Sparkles, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const GENRES = [
   "Pop", "Rock", "Hip Hop", "R&B", "Electronic", "Jazz", "Classical",
   "Country", "Latin", "Reggae", "Blues", "Metal", "Folk", "Soul", "Indie"

@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import {
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   ArrowLeft,
   Swords,
   Sparkles,
@@ -20,6 +19,7 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 } from "lucide-react";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const PAGE_SIZE = 20;
 
 interface BattleRow {

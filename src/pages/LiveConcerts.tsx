@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { 
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   Music, Calendar, Gift, Trophy, Users, Sparkles, Crown, MessageCircle,
   PlayCircle, BarChart3, Star, Bell, ShoppingBag, ListMusic, Loader2,
   Info, Ticket, Headphones
@@ -34,6 +33,7 @@ import { ConcertAfterparty } from "@/components/concerts/ConcertAfterparty";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { useOneOffPaymentVerify } from "@/hooks/useOneOffPaymentVerify";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ViewType = "hub" | "browse" | "gifts" | "artists" | "leaderboard" | "replay" | 
   "schedule" | "chat" | "analytics" | "vip" | "setlist" | "merch" | "notifications" | "how-it-works" | "musician" |
   "song-requests" | "multi-camera" | "fan-badges" | "stories" | "collectibles" | "afterparty";

@@ -8,7 +8,6 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   Dialog,
   DialogContent,
   DialogDescription,
@@ -24,6 +23,7 @@ import { EarningsDashboard } from "@/components/musician/EarningsDashboard";
 import { MyConcertsManager } from "@/components/musician/MyConcertsManager";
 import { MusicianVerificationCard } from "@/components/musician/MusicianVerificationCard";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const MusicianDashboard = () => {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
