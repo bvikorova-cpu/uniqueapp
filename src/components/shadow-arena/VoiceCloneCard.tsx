@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Mic, Square, CheckCircle2 } from "lucide-react";
 import { useVoiceClone } from "@/hooks/useShadowArenaFeatures";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export function VoiceCloneCard() {
   const { clone, cloneVoice } = useVoiceClone();
@@ -39,7 +40,8 @@ export function VoiceCloneCard() {
 
   if (clone) {
     return (
-      <Card className="p-5 bg-gradient-to-br from-[hsl(280,30%,8%)] to-[hsl(0,0%,4%)] border-red-900/30 mb-6">
+      <><FloatingHowItWorks title="VoiceCloneCard — How it works" steps={[{title:"Open this section",desc:"Access VoiceCloneCard from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<Card className="p-5 bg-gradient-to-br from-[hsl(280,30%,8%)] to-[hsl(0,0%,4%)] border-red-900/30 mb-6">
         <div className="flex items-center gap-3">
           <CheckCircle2 className="w-8 h-8 text-green-400" />
           <div>
@@ -85,5 +87,6 @@ export function VoiceCloneCard() {
         )}
       </div>
     </Card>
+  </>
   );
 }

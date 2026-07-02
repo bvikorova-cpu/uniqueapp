@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Video, VideoOff, Eye } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface LiveStreamProps {
   participantId: string;
@@ -313,7 +314,8 @@ export function LiveStream({ participantId, battleId, isStreamer }: LiveStreamPr
   }, []);
 
   return (
-    <Card className="overflow-hidden bg-black border-red-900/50">
+    <><FloatingHowItWorks title="LiveStream — How it works" steps={[{title:"Open this section",desc:"Access LiveStream from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<Card className="overflow-hidden bg-black border-red-900/50">
       <div className="relative aspect-video bg-gradient-to-br from-red-950/20 to-black">
         <video 
           ref={videoRef}
@@ -390,5 +392,6 @@ export function LiveStream({ participantId, battleId, isStreamer }: LiveStreamPr
         </div>
       )}
     </Card>
+  </>
   );
 }

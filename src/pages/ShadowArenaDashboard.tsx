@@ -32,6 +32,7 @@ import { supabase } from '@/integrations/supabase/client';
 
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Battle {
   id: string;
@@ -125,7 +126,8 @@ export default function ShadowArenaDashboard() {
   const activeBattlesCount = battles.filter(b => b.status === 'active' || b.status === 'waiting_for_participants').length;
 
   return (
-    <SubscriptionGate>
+    <><FloatingHowItWorks title="ShadowArenaDashboard — How it works" steps={[{title:"Open this section",desc:"Access ShadowArenaDashboard from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<SubscriptionGate>
       <div className="container mx-auto px-4 sm:px-6 pt-6 pb-28 md:pb-8 max-w-6xl">
         <ShadowArenaHero
           totalPrizePool={totalActivePrizePool}
@@ -234,5 +236,6 @@ export default function ShadowArenaDashboard() {
         </Tabs>
       </div>
     </SubscriptionGate>
+  </>
   );
 }

@@ -6,6 +6,7 @@ import { Swords } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { shadowArenaCall } from "@/hooks/useShadowArenaRouter";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Duet {
   id: string; theme: string; votes_a: number; votes_b: number;
@@ -39,7 +40,8 @@ export function DuetBattlesCard() {
   };
 
   return (
-    <Card className="p-5 mb-6 border-purple-900/40">
+    <><FloatingHowItWorks title="DuetBattlesCard — How it works" steps={[{title:"Open this section",desc:"Access DuetBattlesCard from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<Card className="p-5 mb-6 border-purple-900/40">
       <div className="flex items-center gap-2 mb-3">
         <Swords className="h-5 w-5 text-red-400" />
         <h3 className="font-bold">Duet Battles (1v1 Live)</h3>
@@ -73,5 +75,6 @@ export function DuetBattlesCard() {
         })}
       </div>
     </Card>
+  </>
   );
 }

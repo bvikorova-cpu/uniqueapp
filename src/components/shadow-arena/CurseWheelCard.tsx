@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Lock } from "lucide-react";
 import { useCurseWheel } from "@/hooks/useShadowArenaFeatures";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const SEGMENTS = [
   "+5 cr", "+10 cr", "2x votes", "Lucky badge", "Nothing", "+20 cr", "JACKPOT", "Cursed",
@@ -21,7 +22,8 @@ export function CurseWheelCard() {
   };
 
   return (
-    <Card className="p-5 bg-gradient-to-br from-[hsl(280,30%,8%)] via-[hsl(0,30%,7%)] to-[hsl(0,0%,4%)] border-red-900/30 mb-6 overflow-hidden relative">
+    <><FloatingHowItWorks title="CurseWheelCard — How it works" steps={[{title:"Open this section",desc:"Access CurseWheelCard from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<Card className="p-5 bg-gradient-to-br from-[hsl(280,30%,8%)] via-[hsl(0,30%,7%)] to-[hsl(0,0%,4%)] border-red-900/30 mb-6 overflow-hidden relative">
       <div className="absolute top-0 right-0 w-48 h-48 bg-purple-700/10 rounded-full blur-3xl" />
       <div className="relative z-10 flex items-center justify-between mb-4 flex-wrap gap-3">
         <div>
@@ -72,5 +74,6 @@ export function CurseWheelCard() {
         )}
       </div>
     </Card>
+  </>
   );
 }

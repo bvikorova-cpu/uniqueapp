@@ -4,12 +4,14 @@ import { OrbitControls, Text, Environment } from "@react-three/drei";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, RotateCcw } from "lucide-react";
 import * as THREE from "three";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 // --- 3D Scene Components ---
 
 function Pitch() {
   return (
-    <group>
+    <><FloatingHowItWorks title="PenaltyShootout3D — How it works" steps={[{title:"Open this section",desc:"Access PenaltyShootout3D from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<group>
       {/* Main grass */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
         <planeGeometry args={[40, 30]} />
@@ -557,5 +559,6 @@ export function PenaltyShootout3D({ onBack }: PenaltyShootout3DProps) {
         Aim with your mouse and click on the goal to shoot. The goalkeeper will try to save it!
       </p>
     </div>
+  </>
   );
 }

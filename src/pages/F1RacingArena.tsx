@@ -32,10 +32,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 // 3D F1 Car Component
 function F1Car3D({ position, color }: { position: [number, number, number]; color: string }) {
   return (
-    <group position={position}>
+    <><FloatingHowItWorks title="F1RacingArena — How it works" steps={[{title:"Open this section",desc:"Access F1RacingArena from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<group position={position}>
       <mesh position={[0, 0.3, 0]}>
         <boxGeometry args={[2, 0.6, 1]} />
         <meshStandardMaterial color={color} metalness={0.8} roughness={0.2} />
@@ -750,5 +752,6 @@ export default function F1RacingArena() {
         </DialogContent>
       </Dialog>
     </div>
+  </>
   );
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Crown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Row { sender_id: string; total: number; }
 
@@ -22,7 +23,8 @@ export function TopGiftersCard() {
   }, []);
 
   return (
-    <Card className="p-5 mb-6 border-purple-900/40">
+    <><FloatingHowItWorks title="TopGiftersCard — How it works" steps={[{title:"Open this section",desc:"Access TopGiftersCard from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<Card className="p-5 mb-6 border-purple-900/40">
       <div className="flex items-center gap-2 mb-3">
         <Crown className="h-5 w-5 text-amber-400" />
         <h3 className="font-bold">Top Gifters (Weekly)</h3>
@@ -40,5 +42,6 @@ export function TopGiftersCard() {
         </ol>
       )}
     </Card>
+  </>
   );
 }

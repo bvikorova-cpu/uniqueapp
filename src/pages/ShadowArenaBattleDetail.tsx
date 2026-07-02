@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
 import { GothicPageHeader } from '@/components/shadow-arena/GothicPageHeader';
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const GIFT_TYPES = [
   { type: "faint_whisper", amount: 0.10, name: "Faint Whisper", icon: "W" },
@@ -114,7 +115,8 @@ export default function ShadowArenaBattleDetail() {
 
   if (loading) {
     return (
-      <SubscriptionGate>
+      <><FloatingHowItWorks title="ShadowArenaBattleDetail — How it works" steps={[{title:"Open this section",desc:"Access ShadowArenaBattleDetail from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<SubscriptionGate>
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500"></div>
         </div>
@@ -287,5 +289,6 @@ export default function ShadowArenaBattleDetail() {
         )}
       </div>
     </SubscriptionGate>
+  </>
   );
 }

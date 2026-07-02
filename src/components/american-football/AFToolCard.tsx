@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LucideIcon } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface AFToolCardProps {
   icon: LucideIcon;
@@ -17,7 +18,8 @@ interface AFToolCardProps {
 
 export function AFToolCard({ icon: Icon, title, description, badge, credits, gradient, iconColor, onClick, delay }: AFToolCardProps) {
   return (
-    <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+    <><FloatingHowItWorks title="AFToolCard — How it works" steps={[{title:"Open this section",desc:"Access AFToolCard from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
       <Card className="cursor-pointer h-full hover:shadow-lg hover:shadow-primary/10 transition-all border-border/50 hover:border-primary/30 group" onClick={onClick}>
         <CardContent className="p-3 md:p-4">
           <div className="flex items-start gap-3">
@@ -36,5 +38,6 @@ export function AFToolCard({ icon: Icon, title, description, badge, credits, gra
         </CardContent>
       </Card>
     </motion.div>
+  </>
   );
 }

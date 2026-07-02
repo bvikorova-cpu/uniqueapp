@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Clock, ThumbsUp, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Story {
   id: string;
@@ -29,7 +30,8 @@ export function ArenaStoryCard({ story }: { story: Story }) {
   const tag = getRandomTag(story.id);
 
   return (
-    <motion.div
+    <><FloatingHowItWorks title="ArenaStoryCard — How it works" steps={[{title:"Open this section",desc:"Access ArenaStoryCard from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<motion.div
       className="group relative rounded-xl border border-red-900/20 bg-gradient-to-br from-card/40 to-red-950/10 overflow-hidden cursor-pointer hover:border-red-600/40 transition-all"
       onClick={() => navigate(`/shadow-arena/story/${story.id}`)}
       whileHover={{ y: -2 }}
@@ -69,5 +71,6 @@ export function ArenaStoryCard({ story }: { story: Story }) {
         </div>
       </div>
     </motion.div>
+  </>
   );
 }

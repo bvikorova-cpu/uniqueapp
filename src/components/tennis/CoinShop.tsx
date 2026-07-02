@@ -5,6 +5,7 @@ import { ArrowLeft, Coins, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const COIN_PACKS = [
   { coins: 1000, price: "€4.99", priceId: "price_1TP7UAGaXSfGtYFtM6NtX4Su" },
@@ -39,7 +40,8 @@ export function CoinShop({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <div className="space-y-4">
+    <><FloatingHowItWorks title="CoinShop — How it works" steps={[{title:"Open this section",desc:"Access CoinShop from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<div className="space-y-4">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" />Back</Button>
       <Card>
         <CardHeader>
@@ -64,5 +66,6 @@ export function CoinShop({ onBack }: { onBack: () => void }) {
         </CardContent>
       </Card>
     </div>
+  </>
   );
 }

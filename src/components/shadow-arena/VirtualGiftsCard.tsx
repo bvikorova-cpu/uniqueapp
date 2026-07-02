@@ -5,6 +5,7 @@ import { Gift, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { shadowArenaCall } from "@/hooks/useShadowArenaRouter";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface CatalogItem {
   id: string; code: string; name: string; emoji: string;
@@ -46,7 +47,8 @@ export function VirtualGiftsCard({ recipientId, contextType, contextId }: { reci
   };
 
   return (
-    <Card className="p-5 mb-6 border-purple-900/40 bg-gradient-to-br from-zinc-950 to-purple-950/30 relative overflow-hidden">
+    <><FloatingHowItWorks title="VirtualGiftsCard — How it works" steps={[{title:"Open this section",desc:"Access VirtualGiftsCard from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<Card className="p-5 mb-6 border-purple-900/40 bg-gradient-to-br from-zinc-950 to-purple-950/30 relative overflow-hidden">
       <div className="flex items-center gap-2 mb-3">
         <Gift className="h-5 w-5 text-pink-400" />
         <h3 className="font-bold text-foreground">Virtual Gifts</h3>
@@ -72,5 +74,6 @@ export function VirtualGiftsCard({ recipientId, contextType, contextId }: { reci
         </div>
       )}
     </Card>
+  </>
   );
 }

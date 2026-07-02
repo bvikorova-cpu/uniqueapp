@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import megatalentLogo from "@/assets/megatalent-logo.png";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface BattleResultProps {
   result: {
@@ -222,7 +223,8 @@ export function BattleResult({ result, homeName, watermark = "Megatalent", water
   };
 
   return (
-    <motion.div
+    <><FloatingHowItWorks title="BattleResult — How it works" steps={[{title:"Open this section",desc:"Access BattleResult from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<motion.div
       ref={cardRef}
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -498,5 +500,6 @@ export function BattleResult({ result, homeName, watermark = "Megatalent", water
         </>
       )}
     </motion.div>
+  </>
   );
 }

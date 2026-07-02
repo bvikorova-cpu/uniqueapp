@@ -8,6 +8,7 @@ import { Skull, Volume2, Sparkles, Wand2, Loader2, Image as ImageIcon, BookOpen,
 import { useShadowAITools, useShadowArenaCredits, SHADOW_AI_COSTS } from "@/hooks/useShadowArenaAI";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 
 const TONES = ["Cosmic dread", "Slasher", "Gothic", "Psychological", "Folk horror", "Body horror"];
@@ -51,7 +52,8 @@ export function ShadowAIToolsHub() {
   };
 
   return (
-    <Card className="p-5 mb-8 bg-gradient-to-br from-card/80 via-[hsl(280,20%,7%)] to-[hsl(0,15%,5%)] border-red-900/30">
+    <><FloatingHowItWorks title="ShadowAIToolsHub — How it works" steps={[{title:"Open this section",desc:"Access ShadowAIToolsHub from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<Card className="p-5 mb-8 bg-gradient-to-br from-card/80 via-[hsl(280,20%,7%)] to-[hsl(0,15%,5%)] border-red-900/30">
       <div className="flex items-center gap-3 mb-5">
         <motion.div
           animate={{ rotate: [0, 8, -8, 0] }}
@@ -220,5 +222,6 @@ export function ShadowAIToolsHub() {
         </TabsContent>
       </Tabs>
     </Card>
+  </>
   );
 }

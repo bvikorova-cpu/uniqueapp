@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Flame, BarChart3, Trophy } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export function TennisEngagement() {
   const cards = [
@@ -9,7 +10,8 @@ export function TennisEngagement() {
   ];
 
   return (
-    <div className="grid grid-cols-3 gap-3">
+    <><FloatingHowItWorks title="TennisEngagement — How it works" steps={[{title:"Open this section",desc:"Access TennisEngagement from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<div className="grid grid-cols-3 gap-3">
       {cards.map((card, i) => (
         <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 * i }}
           className={`p-3 md:p-4 rounded-xl bg-gradient-to-br ${card.gradient} border border-border/30`}>
@@ -20,5 +22,6 @@ export function TennisEngagement() {
         </motion.div>
       ))}
     </div>
+  </>
   );
 }

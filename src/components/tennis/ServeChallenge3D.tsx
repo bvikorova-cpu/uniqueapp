@@ -4,10 +4,12 @@ import { OrbitControls } from "@react-three/drei";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, RotateCcw } from "lucide-react";
 import * as THREE from "three";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 function TennisCourt() {
   return (
-    <group>
+    <><FloatingHowItWorks title="ServeChallenge3D — How it works" steps={[{title:"Open this section",desc:"Access ServeChallenge3D from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<group>
       {/* Court surface */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
         <planeGeometry args={[20, 12]} />
@@ -225,5 +227,6 @@ export function ServeChallenge3D({ onBack }: { onBack: () => void }) {
         {gs.phase === "gameover" && <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm"><div className="text-center space-y-3 p-6"><p className="text-lg text-white/80">{gs.lastResult}</p><p className="text-5xl font-black text-white">{gs.aces >= 8 ? "🏆 PERFECT!" : gs.aces >= 5 ? "👏 GREAT!" : "💪 PRACTICE!"}</p><p className="text-2xl font-bold text-white">{gs.aces}/10 in</p><Button onClick={reset} size="lg" className="gap-2"><RotateCcw className="h-4 w-4" /> Play Again</Button></div></div>}
       </div>
     </div>
+  </>
   );
 }

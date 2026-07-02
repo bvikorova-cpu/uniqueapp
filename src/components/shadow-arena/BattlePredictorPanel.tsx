@@ -5,6 +5,7 @@ import { Sparkles, Trophy, Loader2, TrendingUp } from "lucide-react";
 import { useShadowAITools, useShadowArenaCredits, SHADOW_AI_COSTS } from "@/hooks/useShadowArenaAI";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props {
   battleId: string;
@@ -25,7 +26,8 @@ export function BattlePredictorPanel({ battleId }: Props) {
   };
 
   return (
-    <Card className="p-5 mb-6 bg-gradient-to-br from-purple-950/30 via-card/60 to-red-950/20 border-purple-900/30">
+    <><FloatingHowItWorks title="BattlePredictorPanel — How it works" steps={[{title:"Open this section",desc:"Access BattlePredictorPanel from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<Card className="p-5 mb-6 bg-gradient-to-br from-purple-950/30 via-card/60 to-red-950/20 border-purple-900/30">
       <div className="flex items-start justify-between gap-4 flex-wrap mb-3">
         <div className="flex items-center gap-3">
           <motion.div
@@ -91,5 +93,6 @@ export function BattlePredictorPanel({ battleId }: Props) {
         </motion.div>
       )}
     </Card>
+  </>
   );
 }
