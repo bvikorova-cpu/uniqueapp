@@ -107,12 +107,7 @@ export default function LotteryAI() {
       if (session?.user) { checkSubscription(); loadHistory(); }
       else { setSubscription(null); setSavedCombinations([]); }
     });
-    return (
-    <>
-      <FloatingHowItWorks title="Lottery AI Predictions" steps={[{ title: "Pick a lottery", desc: "Select the game and draw you want numbers for." }, { title: "Generate numbers", desc: "AI blends numerology, statistics, and randomness (costs credits)." }, { title: "Review the set", desc: "See combos with reasoning; regenerate if you want." }, { title: "Play responsibly", desc: "For entertainment \u2014 no guaranteed wins." }]} />
-      
-    </>
-  ) => { authSubscription.unsubscribe(); };
+    return () => { authSubscription.unsubscribe(); };
   }, []);
 
   useEffect(() => {
