@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Puzzle, Brain, Zap, Calculator, Users, User, BarChart3, Target, Database } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 // Puzzles & Games
 import IQHanoi from "@/components/iq/IQHanoi";
@@ -155,6 +156,16 @@ const IQBrainLab = () => {
 
   return (
     <div className="container mx-auto p-3 sm:p-4 md:p-6 space-y-6 mt-16 sm:mt-20">
+      <FloatingHowItWorks
+        title="IQ Brain Lab"
+        intro="100+ brain-training mini-games across puzzles, memory, focus, math and logic."
+        steps={[
+          { title: "Pick a category", desc: "Use the tabs — Puzzles, Memory, Focus, Math, Logic and more." },
+          { title: "Play a mini-game", desc: "Each game is short and tracks your best score." },
+          { title: "Beat your best", desc: "Scores update your IQ profile and unlock achievements." },
+          { title: "Track progress", desc: "Stats tab shows history and improvement over time." },
+        ]}
+      />
       <SEO
         title="Brain Lab — IQ Training Tools | Unique"
         description="100+ brain training mini-games: puzzles, memory, focus, math, logic. Track progress and beat your best."
