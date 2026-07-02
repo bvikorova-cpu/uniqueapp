@@ -17,7 +17,7 @@ const TOOLS: { id: DnaParityAction; label: string; description: string; fields: 
   ]},
   { id: "heritage-map", label: "Heritage Map", description: "Migration routes for your DNA markers.", fields: [
     { key: "haplogroup", label: "Haplogroup", placeholder: "I2a" },
-    { key: "known_origins", label: "Known origins", placeholder: "Slovakia, Hungary" },
+    { key: "known_origins", label: "Known origins", placeholder: "Germany, Austria" },
   ]},
   { id: "genetic-compatibility", label: "Genetic Compatibility", description: "Compatibility analysis with a partner profile.", fields: [
     { key: "you_profile", label: "Your traits", type: "textarea", placeholder: "Brown eyes, endurance, lactose tolerant..." },

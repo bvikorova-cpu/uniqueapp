@@ -118,7 +118,7 @@ export function CompatibilityMatchFinder({ credits, loading, onFindMatch }: Prop
                   <MapPin className="h-3.5 w-3.5 text-pink-500" /> Location
                 </Label>
                 <Input
-                  placeholder="e.g. Berlin, Bratislava…"
+                  placeholder="e.g. Berlin, Vienna…"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                 />

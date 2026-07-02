@@ -589,7 +589,7 @@ const EditProfile = () => {
                     </div>
                     <div>
                       <Label htmlFor="location">Location</Label>
-                      <Input id="location" placeholder="e.g. Bratislava, Slovakia" value={profile.location || ""} onChange={(e) => setProfile({ ...profile, location: e.target.value })} />
+                      <Input id="location" placeholder="e.g. Berlin, Germany" value={profile.location || ""} onChange={(e) => setProfile({ ...profile, location: e.target.value })} />
                     </div>
                     <div>
                       <Label htmlFor="birth_date">Birth Date</Label>

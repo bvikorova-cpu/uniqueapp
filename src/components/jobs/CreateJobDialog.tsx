@@ -204,7 +204,7 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
                   id="location"
                   value={newJob.location}
                   onChange={(e) => setNewJob({ ...newJob, location: e.target.value })}
-                  placeholder="e.g. Bratislava"
+                  placeholder="e.g. Berlin"
                 />
               </div>
               <div>

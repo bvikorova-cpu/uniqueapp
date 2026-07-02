@@ -14,7 +14,7 @@ export interface FreeTierCredits {
 /**
  * Free tier credits hook.
  * - 10 credits granted at signup (via handle_new_user_free_credits trigger)
- * - +10 credits on the 1st of each month (via ensure_free_tier_credits RPC, Europe/Bratislava TZ)
+ * - +10 credits on the 1st of each month (via ensure_free_tier_credits RPC, Europe/Berlin TZ)
  */
 export function useFreeTierCredits() {
   const { user } = useAuth();

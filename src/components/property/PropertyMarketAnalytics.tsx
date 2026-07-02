@@ -7,7 +7,7 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 interface Props { onBack: () => void; }
 
 const TRENDS = [
-  { city: "Bratislava", avgPrice: 185000, change: 12.5, listings: 45, demand: "High" },
+  { city: "Berlin", avgPrice: 185000, change: 12.5, listings: 45, demand: "High" },
   { city: "Košice", avgPrice: 125000, change: 8.2, listings: 28, demand: "Medium" },
   { city: "Žilina", avgPrice: 145000, change: 15.1, listings: 15, demand: "High" },
   { city: "Banská Bystrica", avgPrice: 110000, change: -2.3, listings: 12, demand: "Low" },

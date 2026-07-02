@@ -68,7 +68,7 @@ export function PropertyParityPack() {
               {t.id === "listing-optimizer" && (
                 <ToolForm onRun={() => submit(t.id, { type: form.type, city: form.city, size_m2: form.size, price_eur: form.price, features: form.features })}>
                   <Field label="Property type" value={form.type} onChange={(v) => set("type", v)} placeholder="2-bedroom apartment" />
-                  <Field label="City / district" value={form.city} onChange={(v) => set("city", v)} placeholder="Bratislava, Staré Mesto" />
+                  <Field label="City / district" value={form.city} onChange={(v) => set("city", v)} placeholder="Berlin, Mitte" />
                   <Field label="Size (m²)" value={form.size} onChange={(v) => set("size", v)} placeholder="75" />
                   <Field label="Asking price (€)" value={form.price} onChange={(v) => set("price", v)} placeholder="220000" />
                   <Field label="Key features" value={form.features} onChange={(v) => set("features", v)} placeholder="balcony, parking, near park" multiline />
@@ -86,7 +86,7 @@ export function PropertyParityPack() {
               {t.id === "buyer-persona" && (
                 <ToolForm onRun={() => submit(t.id, { listing: form.listing, city: form.city, price_eur: form.price })}>
                   <Field label="Listing summary" value={form.listing} onChange={(v) => set("listing", v)} placeholder="loft, open plan, city center" multiline />
-                  <Field label="City" value={form.city} onChange={(v) => set("city", v)} placeholder="Bratislava" />
+                  <Field label="City" value={form.city} onChange={(v) => set("city", v)} placeholder="Berlin" />
                   <Field label="Price (€)" value={form.price} onChange={(v) => set("price", v)} placeholder="180000" />
                 </ToolForm>
               )}
@@ -107,7 +107,7 @@ export function PropertyParityPack() {
               )}
               {t.id === "neighborhood-pitch" && (
                 <ToolForm onRun={() => submit(t.id, { city: form.city, district: form.district, target_buyer: form.target })}>
-                  <Field label="City" value={form.city} onChange={(v) => set("city", v)} placeholder="Bratislava" />
+                  <Field label="City" value={form.city} onChange={(v) => set("city", v)} placeholder="Berlin" />
                   <Field label="District / area" value={form.district} onChange={(v) => set("district", v)} placeholder="Ružinov" />
                   <Field label="Target buyer" value={form.target} onChange={(v) => set("target", v)} placeholder="young family with 2 kids" />
                 </ToolForm>
@@ -116,7 +116,7 @@ export function PropertyParityPack() {
                 <ToolForm onRun={() => submit(t.id, { purchase_eur: form.price, expected_rent_eur: form.rent, city: form.city, expenses_eur: form.exp })}>
                   <Field label="Purchase price (€)" value={form.price} onChange={(v) => set("price", v)} placeholder="200000" />
                   <Field label="Expected monthly rent (€)" value={form.rent} onChange={(v) => set("rent", v)} placeholder="850" />
-                  <Field label="City" value={form.city} onChange={(v) => set("city", v)} placeholder="Bratislava" />
+                  <Field label="City" value={form.city} onChange={(v) => set("city", v)} placeholder="Berlin" />
                   <Field label="Yearly expenses (€)" value={form.exp} onChange={(v) => set("exp", v)} placeholder="1200" />
                 </ToolForm>
               )}

@@ -18,9 +18,9 @@ interface Tpl {
   is_milestone: boolean;
 }
 
-// Server anchors the calendar to Europe/Bratislava — mirror it here so
+// Server anchors the calendar to Europe/Berlin — mirror it here so
 // worldwide users see the same "today" regardless of their local timezone.
-const TZ = "Europe/Bratislava";
+const TZ = "Europe/Berlin";
 
 const getBratislavaParts = (d: Date) => {
   const parts = new Intl.DateTimeFormat("en-GB", {
@@ -166,7 +166,7 @@ export default function RewardsLoginCalendar() {
             <span className="text-xs opacity-90">{"Next reward unlocks in"}</span>
             <span className="font-mono text-lg font-bold tabular-nums">{countdown}</span>
           </div>
-          <p className="text-[10px] opacity-70 mt-1 text-right">{"Resets at midnight Europe/Bratislava (CET/CEST)"}</p>
+          <p className="text-[10px] opacity-70 mt-1 text-right">{"Resets at midnight Europe/Berlin (CET/CEST)"}</p>
         </div>
       </Card>
 

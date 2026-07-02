@@ -38,7 +38,7 @@ const defaultResources: EmergencyResource[] = [
   },
   {
     name: 'League for Mental Health',
-    description: 'Directory of support groups and experts in Slovakia',
+    description: 'Directory of support groups and experts internationally',
     website: 'https://dusevnezdravie.sk',
     available: 'Varies',
     type: 'local',

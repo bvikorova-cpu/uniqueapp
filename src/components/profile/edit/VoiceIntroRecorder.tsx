@@ -177,7 +177,7 @@ export const VoiceIntroRecorder = ({ userId, audioUrl, transcript, onSaved, onRe
             <Sparkles className="h-3 w-3 text-amber-400" /> Generate with AI voice
           </Label>
           <Textarea
-            placeholder="e.g. Hi! I'm Anna — designer & coffee lover from Bratislava. Let's connect!"
+            placeholder="e.g. Hi! I'm Anna — designer & coffee lover from Berlin. Let's connect!"
             rows={3}
             value={aiText}
             onChange={(e) => setAiText(e.target.value)}

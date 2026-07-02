@@ -63,7 +63,7 @@ const Terms = () => {
 
           <main className="flex-1 space-y-5 min-w-0">
             <LegalSection id="scope" number="§1" title="Scope & Acceptance">
-              <p><strong>1.1.</strong> These terms govern the relationship between the Operator (UNIQUE s.r.o., Slovak Republic) and all Users/Creators.</p>
+              <p><strong>1.1.</strong> These terms govern the relationship between the Operator (UNIQUE s.r.o., Germany) and all Users/Creators.</p>
               <p><strong>1.2.</strong> By accessing or using the platform you unconditionally and immediately agree to be bound.</p>
               <p><strong>1.3.</strong> If you disagree with any part, you must stop using the service.</p>
               <p><strong>1.4. Age rating — 16+.</strong> The main platform is rated <strong>16+</strong>. See <a href="#registration" className="text-amber-400 underline">§3 Registration & Age</a> for full details and the Kids Channel for ages 6–12.</p>

@@ -98,7 +98,7 @@ export function LotteryParityPack() {
               )}
               {t.id === "tax-planner" && (
                 <ToolForm onRun={() => submit(t.id, { jurisdiction: form.country, gross_eur: form.gross })}>
-                  <Field label="Country / region" value={form.country} onChange={(v) => set("country", v)} placeholder="Slovakia, Germany, USA-NY..." />
+                  <Field label="Country / region" value={form.country} onChange={(v) => set("country", v)} placeholder="Germany, France, USA-NY..." />
                   <Field label="Estimated gross win (€)" value={form.gross} onChange={(v) => set("gross", v)} placeholder="1000000" />
                 </ToolForm>
               )}
