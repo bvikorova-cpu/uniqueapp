@@ -101,7 +101,7 @@ export const HowItWorksButton = ({
               <div className="min-w-0">
                 <p className="font-bold text-sm leading-tight">{s.title}</p>
                 <p className="text-xs text-muted-foreground leading-relaxed mt-1">
-                  {s.desc}
+                  {s.desc ?? s.description}
                 </p>
               </div>
             </li>
