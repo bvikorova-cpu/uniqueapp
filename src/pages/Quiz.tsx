@@ -85,11 +85,11 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
     { question: "What is the symbol for sodium?", options: ["So", "Sd", "Na", "S"], correct: 2 },
   ],
   geography: [
-    { question: "What is the largest city in Slovakia?", options: ["Košice", "Berlin", "Prešov", "Žilina"], correct: 1 },
-    { question: "What is the highest peak in Slovakia?", options: ["Kriváň", "Rysy", "Gerlachovský štít", "Lomnický štít"], correct: 2 },
-    { question: "How many neighbors does Slovakia have?", options: ["3", "4", "5", "6"], correct: 2 },
-    { question: "Which river flows through Berlin?", options: ["Váh", "Danube", "Hron", "Nitra"], correct: 1 },
-    { question: "In what year was the Germany established?", options: ["1990", "1991", "1992", "1993"], correct: 3 },
+    { question: "What is the capital of Germany?", options: ["Munich", "Hamburg", "Berlin", "Frankfurt"], correct: 2 },
+    { question: "What is the highest mountain in the world?", options: ["K2", "Kangchenjunga", "Everest", "Makalu"], correct: 2 },
+    { question: "How many continents are there?", options: ["5", "6", "7", "8"], correct: 2 },
+    { question: "Which river flows through Berlin?", options: ["Rhine", "Spree", "Elbe", "Danube"], correct: 1 },
+    { question: "In what year did the European Union adopt the euro?", options: ["1997", "1999", "2001", "2002"], correct: 1 },
   ],
   history: [
     { question: "In what year did World War II end?", options: ["1943", "1944", "1945", "1946"], correct: 2 },
