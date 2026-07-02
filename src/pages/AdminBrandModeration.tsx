@@ -18,6 +18,7 @@ import { AdminGuard } from "@/components/admin/AdminGuard";
 import { AdminPageShell, AdminGlassCard } from "@/components/admin/AdminPageShell";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { formatDistanceToNow } from "date-fns";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 type Brand = {
   id: string;
@@ -464,7 +465,15 @@ function AuditLog() {
 
 export default function AdminBrandModeration() {
   return (
-    <AdminGuard>
+    <>
+      <FloatingHowItWorks title="Admin: Brand Moderation" intro="Handle reports, disputes and appeals coming from brands and users." steps={[
+    { title: "Triage queue", desc: "Filter by status (pending, in-review, resolved) and severity." },
+    { title: "Read context", desc: "Open each case to see the reported content, brand, and full history." },
+    { title: "Decide", desc: "Approve, reject, warn or ban \u2014 leave an internal note explaining the ruling." },
+    { title: "Reply publicly", desc: "Send a message back to the brand/user; the appeal thread updates in real-time." },
+    { title: "Audit", desc: "All actions are logged and visible in the history tab." }
+  ]} />
+      <AdminGuard>
       <AdminPageShell>
         <AdminPageHeader
           title="Brand Moderation"
@@ -491,5 +500,6 @@ export default function AdminBrandModeration() {
         </AdminGlassCard>
       </AdminPageShell>
     </AdminGuard>
+    </>
   );
 }

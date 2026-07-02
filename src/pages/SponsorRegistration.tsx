@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const formSchema = z.object({
   name: z.string().min(2, "Brand name must be at least 2 characters"),
@@ -217,7 +218,15 @@ export default function SponsorRegistration() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <>
+      <FloatingHowItWorks title="Become a Sponsor" intro="Register your brand as an official Unique sponsor and unlock campaign tools." steps={[
+    { title: "Choose a tier", desc: "Pick Starter, Growth, Pro or Enterprise \u2014 each unlocks more features and reach." },
+    { title: "Fill company details", desc: "Enter brand name, contact, website, and upload your logo." },
+    { title: "Pay & verify", desc: "Complete Stripe checkout; your account is verified within minutes." },
+    { title: "Open the dashboard", desc: "Once approved you're redirected to the Sponsor Dashboard to launch campaigns." },
+    { title: "Manage anytime", desc: "Upgrade tier, edit branding, or cancel from the dashboard settings." }
+  ]} />
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Navbar />
       
       <div className="container mx-auto px-4 pt-24 pb-12 max-w-6xl">
@@ -448,5 +457,6 @@ export default function SponsorRegistration() {
         </Card>
       </div>
     </div>
+    </>
   );
 }

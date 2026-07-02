@@ -4,10 +4,18 @@ import { Megaphone } from "lucide-react";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import { AdminPageShell, AdminGlassCard } from "@/components/admin/AdminPageShell";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function AdminBrandCampaigns() {
   return (
-    <AdminGuard>
+    <>
+      <FloatingHowItWorks title="Admin: Brand Campaigns" intro="Review, approve and moderate all brand campaigns and creator applications." steps={[
+    { title: "Open a campaign", desc: "Use the tabs to filter pending, active, or completed campaigns." },
+    { title: "Review applications", desc: "Inspect each creator's application and content proof." },
+    { title: "Approve or reject", desc: "Approve to release escrow, reject with a reason to notify the creator." },
+    { title: "Escalate", desc: "Flag suspicious cases to the Brand Moderation queue for deeper review." }
+  ]} />
+      <AdminGuard>
       <AdminPageShell>
         <AdminPageHeader
           title="Brand Campaigns"
@@ -28,5 +36,6 @@ export default function AdminBrandCampaigns() {
         </AdminGlassCard>
       </AdminPageShell>
     </AdminGuard>
+    </>
   );
 }

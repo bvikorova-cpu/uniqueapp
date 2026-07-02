@@ -9,6 +9,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const TOOLS = [
   { icon: Palette, title: "Color Palette", desc: "5-color brand palette with HEX + usage notes", cost: 4 },
@@ -54,7 +55,14 @@ export default function BrandKits() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <FloatingHowItWorks title="Brand Kits" intro="Store your brand identity \u2014 logos, colors, fonts, guidelines \u2014 in one place." steps={[
+    { title: "Create a kit", desc: "Give it a name and add primary/secondary colors, typography and logo files." },
+    { title: "Generate assets", desc: "AI helpers can produce social kits and PDF style guides from your kit." },
+    { title: "Reuse anywhere", desc: "Kits auto-fill Brand Builder, Campaigns and Sponsor branding forms." },
+    { title: "Download", desc: "Export the full kit as a PDF style guide to share with partners." }
+  ]} />
+      <div className="min-h-screen bg-background">
       <Navbar />
       <main className="container mx-auto px-4 py-8 max-w-6xl">
         <header className="text-center mb-10">
@@ -110,5 +118,6 @@ export default function BrandKits() {
         )}
       </main>
     </div>
+    </>
   );
 }
