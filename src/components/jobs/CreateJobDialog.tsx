@@ -213,7 +213,7 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
                   id="country"
                   value={newJob.country}
                   onChange={(e) => setNewJob({ ...newJob, country: e.target.value })}
-                  placeholder="e.g. Slovakia"
+                  placeholder="e.g. Germany"
                 />
               </div>
             </div>

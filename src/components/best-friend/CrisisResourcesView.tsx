@@ -6,7 +6,6 @@ import { AlertTriangle, Phone, Heart, Loader2 } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const HOTLINES = [
-  { country: "🇸🇰 Slovakia", name: "Forget-Me-Not Trust Line", phone: "0800 800 566", hours: "24/7" },
   { country: "🇨🇿 Czech Republic", name: "Safety Line", phone: "116 111", hours: "24/7" },
   { country: "🇭🇺 Hungary", name: "Mental Health First Aid", phone: "116 123", hours: "24/7" },
   { country: "🇵🇱 Polska", name: "Telefon Zaufania", phone: "116 123", hours: "14:00–22:00" },

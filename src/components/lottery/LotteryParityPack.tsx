@@ -106,14 +106,14 @@ export function LotteryParityPack() {
                 <ToolForm onRun={() => submit(t.id, { lottery: form.lottery, prize_eur: form.prize, country: form.country })}>
                   <Field label="Lottery" value={form.lottery} onChange={(v) => set("lottery", v)} placeholder="EuroJackpot" />
                   <Field label="Prize amount (€)" value={form.prize} onChange={(v) => set("prize", v)} placeholder="500000" />
-                  <Field label="Country" value={form.country} onChange={(v) => set("country", v)} placeholder="Slovakia" />
+                  <Field label="Country" value={form.country} onChange={(v) => set("country", v)} placeholder="Germany" />
                 </ToolForm>
               )}
               {t.id === "budget-coach" && (
                 <ToolForm onRun={() => submit(t.id, { monthly_income_eur: form.income, current_spend_eur: form.spend, country: form.country })}>
                   <Field label="Monthly income (€)" value={form.income} onChange={(v) => set("income", v)} placeholder="2000" />
                   <Field label="Current lottery spend / month (€)" value={form.spend} onChange={(v) => set("spend", v)} placeholder="40" />
-                  <Field label="Country" value={form.country} onChange={(v) => set("country", v)} placeholder="Slovakia" />
+                  <Field label="Country" value={form.country} onChange={(v) => set("country", v)} placeholder="Germany" />
                 </ToolForm>
               )}
               {t.id === "lucky-charm" && (

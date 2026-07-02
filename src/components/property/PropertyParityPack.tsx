@@ -122,7 +122,7 @@ export function PropertyParityPack() {
               )}
               {t.id === "legal-checklist" && (
                 <ToolForm onRun={() => submit(t.id, { country: form.country, transaction: form.tx, property_type: form.type })}>
-                  <Field label="Country" value={form.country} onChange={(v) => set("country", v)} placeholder="Slovakia" />
+                  <Field label="Country" value={form.country} onChange={(v) => set("country", v)} placeholder="Germany" />
                   <Field label="Transaction" value={form.tx} onChange={(v) => set("tx", v)} placeholder="sale, purchase, rental lease" />
                   <Field label="Property type" value={form.type} onChange={(v) => set("type", v)} placeholder="apartment" />
                 </ToolForm>

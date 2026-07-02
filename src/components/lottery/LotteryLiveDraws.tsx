@@ -29,7 +29,7 @@ const LIVE_DRAWS = [
   {
     id: 4, lottery: "Lotto 6/49", status: "completed", nextDraw: "Completed",
     jackpot: "€2,500,000", numbers: [6, 13, 22, 29, 38, 45], bonus: [],
-    country: "🇸🇰 Slovakia", revealed: 6,
+    country: "🇩🇪 Germany", revealed: 6,
   },
 ];
 
