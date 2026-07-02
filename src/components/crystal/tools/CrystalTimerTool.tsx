@@ -69,12 +69,7 @@ export const CrystalTimerTool = () => {
       return;
     }
     const t = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
-    return (
-    <>
-      <FloatingHowItWorks title={"Crystal Timer Tool - How it works"} steps={[{ title: 'Open', desc: 'Access the Crystal Timer Tool section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Crystal Timer Tool.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearInterval(t);
+    return () => clearInterval(t);
   }, [isRunning, timeLeft]);
 
   useEffect(() => () => stopAudio(), []);

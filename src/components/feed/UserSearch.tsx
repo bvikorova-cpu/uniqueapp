@@ -45,12 +45,7 @@ const UserSearch = () => {
         if (!cancelled) setSearching(false);
       }
     })();
-    return (
-    <>
-      <FloatingHowItWorks title={"User Search - How it works"} steps={[{ title: 'Open', desc: 'Access the User Search section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in User Search.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => { cancelled = true; };
+    return () => { cancelled = true; };
   }, [debounced, toast]);
 
   return (

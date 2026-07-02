@@ -18,12 +18,7 @@ export function CrisisImpactTicker() {
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % mockDonations.length);
     }, 4000);
-    return (
-    <>
-      <FloatingHowItWorks title={"Crisis Impact Ticker - How it works"} steps={[{ title: 'Open', desc: 'Access the Crisis Impact Ticker section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Crisis Impact Ticker.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearInterval(interval);
+    return () => clearInterval(interval);
   }, []);
 
   const donation = mockDonations[current];

@@ -55,12 +55,7 @@ const MegatalentLiveChat = ({ category, userId }: { category?: string; userId: s
         }
       });
 
-    return (
-    <>
-      <FloatingHowItWorks title={"Megatalent Live Chat - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Live Chat section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Live Chat.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => { mounted = false; supabase.removeChannel(ch); };
+    return () => { mounted = false; supabase.removeChannel(ch); };
   }, [cat, userId, myName]);
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [msgs.length]);

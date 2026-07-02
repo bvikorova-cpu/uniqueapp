@@ -23,12 +23,7 @@ export function GlamourHero() {
       });
     }, 3000);
     setLiveStats({ creations: 1456, outfits: 923, stories: 512, pets: 387 });
-    return (
-    <>
-      <FloatingHowItWorks title={"Glamour Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Glamour Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Glamour Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearInterval(interval);
+    return () => clearInterval(interval);
   }, []);
 
   return (

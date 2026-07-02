@@ -162,12 +162,7 @@ export const LiveSpectatorMode = () => {
       )
       .subscribe();
 
-    return (
-    <>
-      <FloatingHowItWorks title={"Live Spectator Mode - How it works"} steps={[{ title: 'Open', desc: 'Access the Live Spectator Mode section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Live Spectator Mode.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => { supabase.removeChannel(channel); };
+    return () => { supabase.removeChannel(channel); };
   }, [selectedMatch]);
 
   const joinAsSpectator = useMutation({

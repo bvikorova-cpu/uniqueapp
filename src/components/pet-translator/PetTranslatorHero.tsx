@@ -27,12 +27,7 @@ export default function PetTranslatorHero({ totalTranslations, totalUsers, strea
 
   useEffect(() => {
     const timer = setInterval(() => setTimeLeft(getDailyTimeLeft()), 60000);
-    return (
-    <>
-      <FloatingHowItWorks title={"Pet Translator Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Pet Translator Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Pet Translator Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearInterval(timer);
+    return () => clearInterval(timer);
   }, []);
 
   const statCards = [

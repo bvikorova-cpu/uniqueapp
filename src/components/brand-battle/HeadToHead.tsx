@@ -53,12 +53,7 @@ export const HeadToHead = ({ sponsors, onVote, isVoting, canVote, isAuthenticate
         return prev - 1;
       });
     }, 1000);
-    return (
-    <>
-      <FloatingHowItWorks title={"Head To Head - How it works"} steps={[{ title: 'Open', desc: 'Access the Head To Head section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Head To Head.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearInterval(timer);
+    return () => clearInterval(timer);
   }, [matchup, voted]);
 
   const handleVote = (brand: BrandSponsor) => {

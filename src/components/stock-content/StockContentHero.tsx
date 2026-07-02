@@ -23,12 +23,7 @@ export function StockContentHero() {
         revenue: Math.floor(Math.random() * 15000) + 240000,
       });
     }, 3000);
-    return (
-    <>
-      <FloatingHowItWorks title={"Stock Content Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Stock Content Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Stock Content Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearInterval(interval);
+    return () => clearInterval(interval);
   }, []);
 
   return (

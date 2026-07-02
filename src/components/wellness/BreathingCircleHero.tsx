@@ -13,12 +13,7 @@ export function BreathingCircleHero() {
     };
     cycle();
     const interval = setInterval(cycle, 11000);
-    return (
-    <>
-      <FloatingHowItWorks title={"Breathing Circle Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Breathing Circle Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Breathing Circle Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearInterval(interval);
+    return () => clearInterval(interval);
   }, []);
 
   const scale = phase === "inhale" ? 1.3 : phase === "hold" ? 1.3 : 0.9;

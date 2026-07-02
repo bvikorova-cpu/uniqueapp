@@ -66,12 +66,7 @@ export default function MegaTalentLatestFeed({ categoryGroups }: Props) {
   // Debounce search input -> actual query term
   useEffect(() => {
     const t = setTimeout(() => setSearch(searchInput.trim()), 300);
-    return (
-    <>
-      <FloatingHowItWorks title={"Mega Talent Latest Feed - How it works"} steps={[{ title: 'Open', desc: 'Access the Mega Talent Latest Feed section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Mega Talent Latest Feed.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearTimeout(t);
+    return () => clearTimeout(t);
   }, [searchInput]);
 
   useEffect(() => {

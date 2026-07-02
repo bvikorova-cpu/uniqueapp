@@ -21,12 +21,7 @@ const useLiveStats = () => {
         rating: prev.rating,
       }));
     }, 4000);
-    return (
-    <>
-      <FloatingHowItWorks title={"Tattoo Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Tattoo Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Tattoo Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearInterval(interval);
+    return () => clearInterval(interval);
   }, []);
 
   return stats;

@@ -26,12 +26,7 @@ export default function RewardsCinematicHero({ level, totalXP, streak, badges }:
 
   useEffect(() => {
     const timer = setInterval(() => setTimeLeft(getWeeklyTimeLeft()), 60000);
-    return (
-    <>
-      <FloatingHowItWorks title={"Rewards Cinematic Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Rewards Cinematic Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Rewards Cinematic Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearInterval(timer);
+    return () => clearInterval(timer);
   }, []);
 
   const statCards = [

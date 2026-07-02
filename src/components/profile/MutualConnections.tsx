@@ -56,12 +56,7 @@ export const MutualConnections = ({
       }
     })();
 
-    return (
-    <>
-      <FloatingHowItWorks title={"Mutual Connections - How it works"} steps={[{ title: 'Open', desc: 'Access the Mutual Connections section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Mutual Connections.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => { cancelled = true; };
+    return () => { cancelled = true; };
   }, [viewerId, profileUserId]);
 
   if (!viewerId || viewerId === profileUserId || count == null || count === 0) return null;

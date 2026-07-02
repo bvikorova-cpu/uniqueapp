@@ -106,12 +106,7 @@ export const StripeConnectBanner = () => {
     load(true);
     const onFocus = () => load(true);
     window.addEventListener('focus', onFocus);
-    return (
-    <>
-      <FloatingHowItWorks title={"Stripe Connect Banner - How it works"} steps={[{ title: 'Open', desc: 'Access the Stripe Connect Banner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Stripe Connect Banner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => window.removeEventListener('focus', onFocus);
+    return () => window.removeEventListener('focus', onFocus);
   }, [load]);
 
   if (loading) return null;

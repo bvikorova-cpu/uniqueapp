@@ -56,12 +56,7 @@ export const DailySpinWheel = () => {
         const secs = Math.floor((diff % (1000 * 60)) / 1000);
         setTimeUntilNext(`${hours}h ${mins}m ${secs}s`);
       }, 1000);
-      return (
-    <>
-      <FloatingHowItWorks title={"Daily Spin Wheel - How it works"} steps={[{ title: 'Open', desc: 'Access the Daily Spin Wheel section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Daily Spin Wheel.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearInterval(interval);
+      return () => clearInterval(interval);
     }
   }, [canSpin, lastSpinDate]);
 

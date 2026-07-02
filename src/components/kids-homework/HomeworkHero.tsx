@@ -21,12 +21,7 @@ export const HomeworkHero = () => {
     const timer = setInterval(() => {
       setMsgIndex(prev => (prev + 1) % mascotMessages.length);
     }, 5000);
-    return (
-    <>
-      <FloatingHowItWorks title={"Homework Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Homework Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Homework Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearInterval(timer);
+    return () => clearInterval(timer);
   }, []);
 
   const current = mascotMessages[msgIndex];

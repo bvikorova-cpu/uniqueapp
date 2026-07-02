@@ -82,12 +82,7 @@ const MegatalentComments = ({ category, categories, userId }: Props) => {
         (payload: any) => setComments(prev => prev.filter(c => c.id !== payload.old.id)))
       .subscribe();
     channelRef.current = ch;
-    return (
-    <>
-      <FloatingHowItWorks title={"Megatalent Comments - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Comments section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Comments.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => { mounted = false; supabase.removeChannel(ch); };
+    return () => { mounted = false; supabase.removeChannel(ch); };
     // eslint-disable-next-line
   }, [selectedId]);
 

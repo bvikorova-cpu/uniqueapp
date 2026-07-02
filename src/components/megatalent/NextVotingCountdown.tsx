@@ -74,12 +74,7 @@ export default function NextVotingCountdown() {
 
   useEffect(() => {
     const id = setInterval(() => setT(getTimeLeft()), 1000);
-    return (
-    <>
-      <FloatingHowItWorks title={"Next Voting Countdown - How it works"} steps={[{ title: 'Open', desc: 'Access the Next Voting Countdown section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Next Voting Countdown.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearInterval(id);
+    return () => clearInterval(id);
   }, []);
 
   const Box = ({ value, label }: { value: number; label: string }) => (

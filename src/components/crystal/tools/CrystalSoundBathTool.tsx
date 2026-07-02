@@ -79,12 +79,7 @@ export const CrystalSoundBathTool = () => {
         return next;
       });
     }, 1000);
-    return (
-    <>
-      <FloatingHowItWorks title={"Crystal Sound Bath Tool - How it works"} steps={[{ title: 'Open', desc: 'Access the Crystal Sound Bath Tool section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Crystal Sound Bath Tool.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearInterval(interval);
+    return () => clearInterval(interval);
   }, [playing, currentSession, currentChakraIdx]);
 
   useEffect(() => {

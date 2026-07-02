@@ -16,12 +16,7 @@ const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: str
       if (current >= target) { setCount(target); clearInterval(timer); }
       else { setCount(Math.floor(current)); }
     }, duration / steps);
-    return (
-    <>
-      <FloatingHowItWorks title={"Astrology Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Astrology Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Astrology Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearInterval(timer);
+    return () => clearInterval(timer);
   }, [target]);
   return <span>{target === 0 ? "—" : `${count.toLocaleString()}${suffix}`}</span>;
 };

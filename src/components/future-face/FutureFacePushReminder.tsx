@@ -41,12 +41,7 @@ export default function FutureFacePushReminder() {
         localStorage.setItem(KEY + ":lastShown", todayKey);
       }
     }, 60_000);
-    return (
-    <>
-      <FloatingHowItWorks title={"Future Face Push Reminder - How it works"} steps={[{ title: 'Open', desc: 'Access the Future Face Push Reminder section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Future Face Push Reminder.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => clearInterval(id);
+    return () => clearInterval(id);
   }, [enabled, perm, hour]);
 
   const requestPerm = async () => {

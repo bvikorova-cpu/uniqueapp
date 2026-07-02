@@ -45,12 +45,7 @@ export function CertificateGalleryView({ onBack }: Props) {
         description: "If it doesn't appear, try downloading the certificate.",
       });
     }, 10000);
-    return (
-    <>
-      <FloatingHowItWorks title={"Certificate Gallery View - How it works"} steps={[{ title: 'Open', desc: 'Access the Certificate Gallery View section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Certificate Gallery View.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => window.clearTimeout(timeout);
+    return () => window.clearTimeout(timeout);
   }, [previewCert?.id]);
 
   useEffect(() => {
