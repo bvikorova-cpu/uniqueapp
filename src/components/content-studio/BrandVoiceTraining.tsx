@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { ArrowLeft, Loader2, Sparkles, Brain, Save, Trash2, Plus, Wand2 } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface BrandVoice {
   id: string;
   brand_name: string;
@@ -113,6 +114,16 @@ const BrandVoiceTraining = ({ onBack }: Props) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title="How Brand Voice Training works"
+        steps={[
+          { title: 'Add samples', description: 'Paste 3–10 examples of your voice.' },
+          { title: 'Train', description: 'AI extracts tone, phrasing, style.' },
+          { title: 'Test outputs', description: 'Regenerate until it matches.' },
+          { title: 'Use everywhere', description: 'Applied across all Studio tools.' },
+        ]}
+      />
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="sm" onClick={onBack}>
@@ -225,6 +236,7 @@ const BrandVoiceTraining = ({ onBack }: Props) => {
         </motion.div>
       )}
     </div>
+    </>
   );
 };
 

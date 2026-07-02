@@ -21,6 +21,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Users, CheckCircle2, Crown, ShieldAlert, Instagram, Twitter, Gift, MessageCircle, Camera, ImagePlus, UserPlus, UserMinus } from "lucide-react";
 import { useIsFollowing, useFollowMutation, useUnfollowMutation } from "@/hooks/useFollow";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Creator {
   id: string;
   user_id: string;
@@ -328,6 +329,16 @@ export default function CreatorProfile() {
   }
 
   return (
+    <>
+      <FloatingHowItWorks
+        title="How Creator Profile works"
+        steps={[
+          { title: 'Set up profile', description: 'Add bio, avatar, links, and pricing.' },
+          { title: 'Publish content', description: 'Free posts, subscription tiers, PPV.' },
+          { title: 'Grow following', description: 'Share your profile link everywhere.' },
+          { title: 'Earn', description: 'Subscriptions, tips, PPV — 85/15 split.' },
+        ]}
+      />
     <div className="min-h-screen bg-background">
       {/* Cover Image */}
       <div className="h-64 w-full relative bg-gradient-to-br from-primary/20 to-primary/5">
@@ -589,5 +600,6 @@ export default function CreatorProfile() {
         creatorName={creator.display_name}
       />
     </div>
+    </>
   );
 }

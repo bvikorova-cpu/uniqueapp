@@ -5,6 +5,7 @@ import { BarChart3, Eye, Heart, MessageCircle, TrendingUp, Users, Loader2, FileT
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, BarChart, Bar } from "recharts";
 import { motion } from "framer-motion";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props {
   userId?: string;
 }
@@ -37,6 +38,16 @@ export const CreatorStudioDashboard = ({ userId }: Props) => {
   const heatMax = Math.max(1, ...data.hourlyHeatmap);
 
   return (
+    <>
+      <FloatingHowItWorks
+        title="How Creator Studio works"
+        steps={[
+          { title: 'Overview', description: 'See earnings, followers, and top posts at a glance.' },
+          { title: 'Create content', description: 'Jump into any AI studio (Content, Beauty, Fashion...).' },
+          { title: 'Monetize', description: 'Enable tips, subs, and PPV.' },
+          { title: 'Get support', description: 'Access docs and creator success team.' },
+        ]}
+      />
     <div className="space-y-6">
       <div className="flex items-center gap-3">
         <div className="p-3 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 border border-primary/30">
@@ -123,5 +134,6 @@ export const CreatorStudioDashboard = ({ userId }: Props) => {
         </Card>
       </div>
     </div>
+    </>
   );
 };

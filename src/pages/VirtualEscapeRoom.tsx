@@ -33,6 +33,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const VirtualEscapeRoom = () => {
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const [activeView, setActiveView] = useState("dashboard");
@@ -153,11 +154,22 @@ const VirtualEscapeRoom = () => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title="How Virtual Escape Room works"
+        steps={[
+          { title: 'Pick a room', description: 'Browse mystery/adventure themes.' },
+          { title: 'Buy tickets', description: 'Secure your slot via Stripe.' },
+          { title: 'Play with friends', description: 'Multi-user real-time puzzles.' },
+          { title: 'Beat the timer', description: 'Solve clues and escape to earn rewards.' },
+        ]}
+      />
     <div className="min-h-screen bg-background">
       <main className="container mx-auto px-4 py-8 pt-24">
         {renderView()}
       </main>
     </div>
+    </>
   );
 };
 

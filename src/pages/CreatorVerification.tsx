@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type KycStatus =
   | "unverified" | "pending" | "verified" | "rejected" | "requires_input";
 
@@ -73,6 +74,16 @@ const CreatorVerification = () => {
   const status = data?.status ?? "unverified";
 
   return (
+    <>
+      <FloatingHowItWorks
+        title="How Creator Verification works"
+        steps={[
+          { title: 'Submit KYC', description: 'Upload ID and complete Stripe verification.' },
+          { title: 'Wait for review', description: 'Admin reviews within 24-48h.' },
+          { title: 'Get verified badge', description: 'Unlocks monetization and higher trust.' },
+          { title: 'Stay compliant', description: 'Keep KYC current to avoid holds.' },
+        ]}
+      />
     <div className="container max-w-2xl mx-auto py-12 space-y-6">
       <Helmet>
         <title>Identity Verification — Creator KYC</title>
@@ -182,6 +193,7 @@ const CreatorVerification = () => {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };
 

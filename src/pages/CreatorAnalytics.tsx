@@ -4,6 +4,7 @@ import { useCreatorPayouts, KIND_LABELS, type PayoutKind } from "@/hooks/useCrea
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, TrendingUp, BarChart3, PieChart as PieIcon, Award } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import {
   ResponsiveContainer,
   LineChart,
@@ -272,8 +273,19 @@ function HealthRow({
 
 function EmptyChart({ text }: { text: string }) {
   return (
+    <>
+      <FloatingHowItWorks
+        title="How Creator Analytics works"
+        steps={[
+          { title: 'View metrics', description: 'Track views, engagement, and revenue.' },
+          { title: 'Compare periods', description: 'See week-over-week and month-over-month trends.' },
+          { title: 'Segment audience', description: 'Understand demographics and top content.' },
+          { title: 'Export data', description: 'Download CSVs for deeper analysis.' },
+        ]}
+      />
     <div className="h-full flex items-center justify-center text-sm text-muted-foreground text-center px-6">
       {text}
     </div>
+    </>
   );
 }

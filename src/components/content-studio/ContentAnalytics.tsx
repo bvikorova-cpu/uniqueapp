@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, BarChart3, TrendingUp, FileText, Image as ImageIcon, Calendar, Sparkles } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props {
   onBack: () => void;
 }
@@ -69,6 +70,16 @@ const ContentAnalytics = ({ onBack }: Props) => {
   })();
 
   return (
+    <>
+      <FloatingHowItWorks
+        title="How Content Analytics works"
+        steps={[
+          { title: 'Connect accounts', description: 'Link your social profiles.' },
+          { title: 'View metrics', description: 'Reach, engagement, growth.' },
+          { title: 'Spot winners', description: 'Filter by top-performing content.' },
+          { title: 'Iterate', description: 'Double down on formats that work.' },
+        ]}
+      />
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="sm" onClick={onBack}>
@@ -183,6 +194,7 @@ const ContentAnalytics = ({ onBack }: Props) => {
         </>
       )}
     </div>
+    </>
   );
 };
 

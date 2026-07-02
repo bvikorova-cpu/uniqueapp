@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowLeft, Lock, Plus, Loader2 } from 'lucide-react';
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface LibraryItem {
   id: string;
   title: string;
@@ -186,6 +187,16 @@ export default function HealthcareContentLibrary() {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title="How Healthcare Library works"
+        steps={[
+          { title: 'Browse content', description: 'Medically reviewed articles and videos.' },
+          { title: 'Filter by topic', description: 'Narrow by specialty or condition.' },
+          { title: 'Save favorites', description: 'Bookmark items for later reference.' },
+          { title: 'Follow providers', description: 'Get updates from verified healthcare creators.' },
+        ]}
+      />
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
       
@@ -310,5 +321,6 @@ export default function HealthcareContentLibrary() {
       </Dialog>
 
     </div>
+    </>
   );
 }

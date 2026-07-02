@@ -5,8 +5,19 @@ import { AdminGuard } from "@/components/admin/AdminGuard";
 import { AdminPageShell, AdminGlassCard } from "@/components/admin/AdminPageShell";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function AdminInfluencerPayouts() {
   return (
+    <>
+      <FloatingHowItWorks
+        title="How Admin Payouts works"
+        steps={[
+          { title: 'Review queue', description: 'See pending payout requests.' },
+          { title: 'Verify identity', description: 'Confirm KYC and account status.' },
+          { title: 'Approve or reject', description: 'Trigger Stripe transfer or flag issues.' },
+          { title: 'Audit log', description: 'Every action is logged for compliance.' },
+        ]}
+      />
     <AdminGuard>
       <AdminPageShell>
         <AdminPageHeader
@@ -28,5 +39,6 @@ export default function AdminInfluencerPayouts() {
         </AdminGlassCard>
       </AdminPageShell>
     </AdminGuard>
+    </>
   );
 }

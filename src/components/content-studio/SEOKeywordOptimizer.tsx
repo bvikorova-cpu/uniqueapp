@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { ArrowLeft, Loader2, Search, TrendingUp, AlertTriangle, CheckCircle, Target } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface KeywordResult {
   keyword: string;
   density: number;
@@ -73,6 +74,16 @@ const SEOKeywordOptimizer = ({ onBack }: Props) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title="How SEO Keyword Optimizer works"
+        steps={[
+          { title: 'Enter topic', description: 'Add seed keyword or URL.' },
+          { title: 'Analyze', description: 'See volume, difficulty, intent.' },
+          { title: 'Get suggestions', description: 'AI proposes titles and headings.' },
+          { title: 'Optimize', description: 'Update content and re-check.' },
+        ]}
+      />
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="sm" onClick={onBack}>
@@ -207,6 +218,7 @@ const SEOKeywordOptimizer = ({ onBack }: Props) => {
         </motion.div>
       )}
     </div>
+    </>
   );
 };
 

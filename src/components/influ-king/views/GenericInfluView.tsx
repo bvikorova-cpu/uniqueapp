@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props {
   onBack: () => void;
   title: string;
@@ -39,6 +40,16 @@ export default function GenericInfluView({ onBack, title, description, icon: Ico
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title="How AI Tool works"
+        steps={[
+          { title: 'Describe what you need', description: 'Give the AI clear context.' },
+          { title: 'Generate', description: 'Costs a few credits per run.' },
+          { title: 'Review output', description: 'Copy, refine, or regenerate.' },
+          { title: 'Use it', description: 'Publish, share, or iterate.' },
+        ]}
+      />
     <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button>
       <div className="flex items-center gap-3 mb-4">
@@ -69,5 +80,6 @@ export default function GenericInfluView({ onBack, title, description, icon: Ico
         </Card>
       )}
     </div>
+    </>
   );
 }

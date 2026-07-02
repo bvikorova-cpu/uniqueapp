@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLearningContent } from "@/hooks/useLearningContent";
 import { Camera, Clock, Star, Users } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const Photography = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -113,6 +114,16 @@ const Photography = () => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title="How Photography ProClass works"
+        steps={[
+          { title: 'Pick a class', description: 'Choose a photography workshop that fits your level.' },
+          { title: 'Enroll', description: 'Pay securely with Stripe to unlock lessons.' },
+          { title: 'Learn & shoot', description: 'Work through modules with real assignments.' },
+          { title: 'Share results', description: 'Post your best shots to the community.' },
+        ]}
+      />
     <div className="min-h-screen bg-background px-3 sm:px-6 pb-10">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-8 sm:mb-12 pt-20 sm:pt-24">
@@ -215,6 +226,7 @@ const Photography = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

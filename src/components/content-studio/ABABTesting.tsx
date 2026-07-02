@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { ArrowLeft, Loader2, FlaskConical, Copy, ThumbsUp, ThumbsDown, Sparkles } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props {
   onBack: () => void;
 }
@@ -63,6 +64,16 @@ const ABABTesting = ({ onBack }: Props) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title="How A/B Testing works"
+        steps={[
+          { title: 'Create variants', description: 'Two versions of the same asset.' },
+          { title: 'Split audience', description: 'Send each variant to a segment.' },
+          { title: 'Track results', description: 'Compare CTR, engagement, conversions.' },
+          { title: 'Roll out winner', description: 'Promote the best-performing variant.' },
+        ]}
+      />
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="sm" onClick={onBack}>
@@ -152,6 +163,7 @@ const ABABTesting = ({ onBack }: Props) => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

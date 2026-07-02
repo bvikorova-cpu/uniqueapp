@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import {
   DollarSign,
   Users,
@@ -143,6 +144,16 @@ export default function CreatorDashboard() {
   }
 
   return (
+    <>
+      <FloatingHowItWorks
+        title="How Creator Dashboard works"
+        steps={[
+          { title: 'Manage content', description: 'Publish, edit, and schedule posts.' },
+          { title: 'Monetize', description: 'Enable subscriptions, tips, and PPV.' },
+          { title: 'Engage fans', description: 'Respond to DMs and comments.' },
+          { title: 'Cash out', description: 'Request payouts via Stripe Connect.' },
+        ]}
+      />
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
@@ -333,5 +344,6 @@ export default function CreatorDashboard() {
         </Tabs>
       </div>
     </div>
+    </>
   );
 }

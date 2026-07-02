@@ -8,6 +8,7 @@ import { TaxExportCard } from "@/components/creator/TaxExportCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import {
   Table,
   TableBody,
@@ -85,6 +86,16 @@ export default function CreatorPayouts() {
   const connectReady = connect?.connected && connect?.payouts_enabled;
 
   return (
+    <>
+      <FloatingHowItWorks
+        title="How Creator Payouts works"
+        steps={[
+          { title: 'Connect Stripe', description: 'Complete Stripe Connect onboarding.' },
+          { title: 'Check balance', description: 'See available and pending earnings.' },
+          { title: 'Withdraw', description: 'Request payout to your bank (85/15 split).' },
+          { title: 'Payout history', description: 'Review past transfers and invoices.' },
+        ]}
+      />
     <>
       <Helmet>
         <title>Creator Payouts — Earnings Dashboard</title>
@@ -269,6 +280,7 @@ export default function CreatorPayouts() {
           </CardContent>
         </Card>
       </main>
+    </>
     </>
   );
 }
