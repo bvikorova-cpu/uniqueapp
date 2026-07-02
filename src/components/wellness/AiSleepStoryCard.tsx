@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { BookOpen, Sparkles } from "lucide-react";
 import { useAiSleepStory } from "@/hooks/useWellnessAIFeatures";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export function AiSleepStoryCard() {
   const [open, setOpen] = useState(false);
@@ -13,7 +14,9 @@ export function AiSleepStoryCard() {
   const { stories, generate } = useAiSleepStory();
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+      <FloatingHowItWorks title="AiSleepStoryCard — How it works" steps={[{title:"Open this tool",desc:"Access AiSleepStoryCard within the Health & Wellness section."},{title:"Configure",desc:"Adjust preferences, choose duration or select goals."},{title:"Start & interact",desc:"Begin the session, log data or run an AI analysis (some cost 3–5 credits)."},{title:"Review results",desc:"Check outcomes, save to history and track progress over time."}]} />
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Card className="group cursor-pointer relative overflow-hidden border border-blue-500/20 bg-gradient-to-br from-blue-950/40 via-card/40 to-indigo-950/30 backdrop-blur-xl p-5 hover:border-blue-400/40 transition-all">
           <div className="flex items-start gap-3">
@@ -59,5 +62,5 @@ export function AiSleepStoryCard() {
         )}
       </DialogContent>
     </Dialog>
-  );
+    </>);
 }

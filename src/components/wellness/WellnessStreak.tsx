@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Flame, Calendar } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const WellnessStreak = () => {
   const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
@@ -9,7 +10,9 @@ export const WellnessStreak = () => {
   const currentStreak = 0;
 
   return (
-    <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
+    <>
+      <FloatingHowItWorks title="WellnessStreak — How it works" steps={[{title:"Open this tool",desc:"Access WellnessStreak within the Health & Wellness section."},{title:"Configure",desc:"Adjust preferences, choose duration or select goals."},{title:"Start & interact",desc:"Begin the session, log data or run an AI analysis (some cost 3–5 credits)."},{title:"Review results",desc:"Check outcomes, save to history and track progress over time."}]} />
+      <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
       <Card className="backdrop-blur-xl bg-card/80 border-emerald-500/20 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 h-full">
         <CardContent className="p-4">
           <div className="flex items-center justify-between mb-3">
@@ -60,5 +63,5 @@ export const WellnessStreak = () => {
         </CardContent>
       </Card>
     </motion.div>
-  );
+    </>);
 };

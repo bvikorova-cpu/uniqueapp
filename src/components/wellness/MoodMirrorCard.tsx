@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Camera, Sparkles, Upload } from "lucide-react";
 import { useMoodMirror } from "@/hooks/useWellnessAIFeatures";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export function MoodMirrorCard() {
   const [open, setOpen] = useState(false);
@@ -20,7 +21,9 @@ export function MoodMirrorCard() {
   };
 
   return (
-    <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) setPreview(null); }}>
+    <>
+      <FloatingHowItWorks title="MoodMirrorCard — How it works" steps={[{title:"Open this tool",desc:"Access MoodMirrorCard within the Health & Wellness section."},{title:"Configure",desc:"Adjust preferences, choose duration or select goals."},{title:"Start & interact",desc:"Begin the session, log data or run an AI analysis (some cost 3–5 credits)."},{title:"Review results",desc:"Check outcomes, save to history and track progress over time."}]} />
+      <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) setPreview(null); }}>
       <DialogTrigger asChild>
         <Card className="group cursor-pointer relative overflow-hidden border border-rose-500/20 bg-gradient-to-br from-rose-950/40 via-card/40 to-pink-950/30 backdrop-blur-xl p-5 hover:border-rose-400/40 transition-all">
           <div className="flex items-start gap-3">
@@ -86,5 +89,5 @@ export function MoodMirrorCard() {
         )}
       </DialogContent>
     </Dialog>
-  );
+    </>);
 }

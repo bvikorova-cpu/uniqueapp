@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Check, ArrowRight, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface WellnessTool {
   id: string;
@@ -26,7 +27,9 @@ export const WellnessToolCard = ({ tool, hasAccess, isPremium, onSelect, index }
   const Icon = tool.icon;
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title="WellnessToolCard — How it works" steps={[{title:"Open this tool",desc:"Access WellnessToolCard within the Health & Wellness section."},{title:"Configure",desc:"Adjust preferences, choose duration or select goals."},{title:"Start & interact",desc:"Begin the session, log data or run an AI analysis (some cost 3–5 credits)."},{title:"Review results",desc:"Check outcomes, save to history and track progress over time."}]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 + index * 0.1 }}
@@ -116,5 +119,5 @@ export const WellnessToolCard = ({ tool, hasAccess, isPremium, onSelect, index }
         </CardContent>
       </Card>
     </motion.div>
-  );
+    </>);
 };

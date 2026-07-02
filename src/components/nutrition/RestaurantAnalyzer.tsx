@@ -10,6 +10,7 @@ import { Store, Loader2, Camera, Star, Sparkles, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function RestaurantAnalyzer() {
   const { credits } = useAICredits();
@@ -39,7 +40,9 @@ export default function RestaurantAnalyzer() {
   };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid lg:grid-cols-2 gap-6">
+    <>
+      <FloatingHowItWorks title="RestaurantAnalyzer — How it works" steps={[{title:"Open this tool",desc:"Access RestaurantAnalyzer within the Health & Wellness section."},{title:"Configure",desc:"Adjust preferences, choose duration or select goals."},{title:"Start & interact",desc:"Begin the session, log data or run an AI analysis (some cost 3–5 credits)."},{title:"Review results",desc:"Check outcomes, save to history and track progress over time."}]} />
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid lg:grid-cols-2 gap-6">
       <Card className="border-border/60 bg-card/80 backdrop-blur-xl">
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -136,5 +139,5 @@ export default function RestaurantAnalyzer() {
         </CardContent>
       </Card>
     </motion.div>
-  );
+    </>);
 }

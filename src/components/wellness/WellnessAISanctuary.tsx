@@ -4,10 +4,13 @@ import { DreamInterpreterCard } from "./DreamInterpreterCard";
 import { PersonalizedMeditationCard } from "./PersonalizedMeditationCard";
 import { MoodMirrorCard } from "./MoodMirrorCard";
 import { AiSleepStoryCard } from "./AiSleepStoryCard";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export function WellnessAISanctuary() {
   return (
-    <motion.section
+    <>
+      <FloatingHowItWorks title="WellnessAISanctuary — How it works" steps={[{title:"Open this tool",desc:"Access WellnessAISanctuary within the Health & Wellness section."},{title:"Configure",desc:"Adjust preferences, choose duration or select goals."},{title:"Start & interact",desc:"Begin the session, log data or run an AI analysis (some cost 3–5 credits)."},{title:"Review results",desc:"Check outcomes, save to history and track progress over time."}]} />
+      <motion.section
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="mb-10"
@@ -24,5 +27,5 @@ export function WellnessAISanctuary() {
         <AiSleepStoryCard />
       </div>
     </motion.section>
-  );
+    </>);
 }
