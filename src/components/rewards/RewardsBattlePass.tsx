@@ -108,8 +108,8 @@ export default function RewardsBattlePass() {
     if (!user || !season || purchasingPremium) return;
     setPurchasingPremium(true);
     try {
-      const { data, error } = await supabase.functions.invoke("create-rewards-checkout", {
-        body: { kind: "battle_pass_premium" },
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { product: "rewards_checkout", kind: "battle_pass_premium" },
       });
       if (error) throw error;
       const url = (data as any)?.url;
