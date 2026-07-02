@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Heart, Clock, Eye, Globe, Lock } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const SAMPLE_CAPSULES = [
   { id: "1", title: "Letter to My Future Wife", type: "letter", author: "Alex M.", likes: 342, daysUntil: 730, isPublic: true },
@@ -22,6 +23,16 @@ export const CapsuleGallery = ({ onBack }: { onBack: () => void }) => {
   const filtered = filter === "all" ? SAMPLE_CAPSULES : SAMPLE_CAPSULES.filter(c => c.type === filter);
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Capsule Gallery'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Capsule Gallery panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2"><ArrowLeft className="w-4 h-4" /> Back to Hub</Button>
 
@@ -63,5 +74,6 @@ export const CapsuleGallery = ({ onBack }: { onBack: () => void }) => {
         ))}
       </div>
     </div>
+    </>
   );
 };

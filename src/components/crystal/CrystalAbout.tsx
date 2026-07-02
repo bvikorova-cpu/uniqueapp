@@ -1,9 +1,20 @@
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Gem, Heart, CheckCircle2, Star, DollarSign, Shield, Sparkles, Globe, Brain, Eye } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const CrystalAbout = () => {
   return (
+    <>
+      <FloatingHowItWorks
+        title='Crystal About'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Crystal About panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -130,5 +141,6 @@ export const CrystalAbout = () => {
         Disclaimer: Crystal healing is used for relaxation and wellness purposes. This service does not replace professional medical advice, diagnosis, or treatment.
       </p>
     </motion.div>
+    </>
   );
 };

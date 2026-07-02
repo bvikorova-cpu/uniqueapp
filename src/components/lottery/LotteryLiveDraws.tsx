@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Radio, Clock, Globe, Trophy, Zap } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface LotteryLiveDrawsProps {
   onBack: () => void;
@@ -47,6 +48,16 @@ export function LotteryLiveDraws({ onBack }: LotteryLiveDrawsProps) {
   }, []);
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Lottery Live Draws'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Lottery Live Draws panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={onBack} className="shrink-0">
@@ -186,5 +197,6 @@ export function LotteryLiveDraws({ onBack }: LotteryLiveDrawsProps) {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

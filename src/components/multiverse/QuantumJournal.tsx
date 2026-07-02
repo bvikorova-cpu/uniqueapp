@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { BookOpen, Loader2, ArrowLeft, Save } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface QuantumJournalProps {
   onBack: () => void;
@@ -28,6 +29,16 @@ const QuantumJournal = ({ onBack }: QuantumJournalProps) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Quantum Journal'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Quantum Journal panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-2" /> Back to Hub</Button>
 
@@ -62,6 +73,7 @@ const QuantumJournal = ({ onBack }: QuantumJournalProps) => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

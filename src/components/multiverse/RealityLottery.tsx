@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Dices, Loader2, ArrowLeft, Sparkles, Trophy } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface RealityLotteryProps {
   onBack: () => void;
@@ -55,6 +56,16 @@ const RealityLottery = ({ onBack }: RealityLotteryProps) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Reality Lottery'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Reality Lottery panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="mb-2">
         <ArrowLeft className="w-4 h-4 mr-2" /> Back to Hub
@@ -127,6 +138,7 @@ const RealityLottery = ({ onBack }: RealityLotteryProps) => {
         </Card>
       )}
     </div>
+    </>
   );
 };
 

@@ -9,6 +9,7 @@ import { User, Star, Hash, Flame, Droplets, Wind, Mountain, Sparkles, Loader2 } 
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const ZODIAC_SIGNS = [
   { value: 'aries', label: 'Aries ♈', element: 'Fire', emoji: '🐏' },
@@ -70,6 +71,16 @@ export const MysticalProfile = () => {
   const totalReadings = readingHistory ? (readingHistory.tarot + readingHistory.horoscopes + readingHistory.dreams + readingHistory.runes) : 0;
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Mystical Profile'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Mystical Profile panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <Card className="p-5 sm:p-6 bg-card/90 backdrop-blur-xl border-border/30 overflow-hidden relative">
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-blue-500 to-cyan-500" />
 
@@ -151,5 +162,6 @@ export const MysticalProfile = () => {
         </motion.div>
       )}
     </Card>
+    </>
   );
 };

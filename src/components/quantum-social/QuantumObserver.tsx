@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Eye, Sparkles, ArrowLeft, Atom, Loader2, Lock } from "lucide-react";
 import { motion } from "framer-motion";
 import { useQuantumAccess } from "@/hooks/useQuantumAccess";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const QuantumObserver = ({ onBack }: { onBack: () => void }) => {
   const access = useQuantumAccess();
@@ -45,6 +46,16 @@ const QuantumObserver = ({ onBack }: { onBack: () => void }) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Quantum Observer'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Quantum Observer panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={onBack}><ArrowLeft className="h-5 w-5" /></Button>
@@ -108,6 +119,7 @@ const QuantumObserver = ({ onBack }: { onBack: () => void }) => {
         </>
       )}
     </div>
+    </>
   );
 };
 

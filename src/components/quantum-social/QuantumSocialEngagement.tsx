@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Flame, Atom, Trophy } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export function QuantumSocialEngagement() {
   const items = [
@@ -30,6 +31,16 @@ export function QuantumSocialEngagement() {
   ];
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Quantum Social Engagement'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Quantum Social Engagement panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {items.map((item, i) => (
         <motion.div
@@ -52,5 +63,6 @@ export function QuantumSocialEngagement() {
         </motion.div>
       ))}
     </div>
+    </>
   );
 }

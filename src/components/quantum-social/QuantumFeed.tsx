@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { useQuantumAccess } from "@/hooks/useQuantumAccess";
 import { Skeleton } from "@/components/ui/skeleton";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Post {
   id: string;
@@ -202,6 +203,16 @@ const QuantumFeed = ({ onBack }: { onBack: () => void }) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Quantum Feed'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Quantum Feed panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -295,6 +306,7 @@ const QuantumFeed = ({ onBack }: { onBack: () => void }) => {
         )}
       </div>
     </div>
+    </>
   );
 };
 

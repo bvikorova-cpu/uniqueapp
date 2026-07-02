@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Brain, Calendar, Sparkles, Loader2, Target, Clock, Heart } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const AITimingPredictor = ({ onBack }: { onBack: () => void }) => {
   const [message, setMessage] = useState("");
@@ -35,6 +36,16 @@ export const AITimingPredictor = ({ onBack }: { onBack: () => void }) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='AITiming Predictor'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the AITiming Predictor panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2"><ArrowLeft className="w-4 h-4" /> Back to Hub</Button>
 
@@ -91,5 +102,6 @@ export const AITimingPredictor = ({ onBack }: { onBack: () => void }) => {
         </motion.div>
       )}
     </div>
+    </>
   );
 };

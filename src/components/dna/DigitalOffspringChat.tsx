@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Baby, Send, Loader2, Sparkles } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Message {
   id: string;
@@ -159,6 +160,16 @@ export const DigitalOffspringChat = () => {
 
   if (!offspring) {
     return (
+      <>
+        <FloatingHowItWorks
+          title='Digital Offspring Chat'
+          steps={[
+          { title: 'Open the tool', desc: 'Launch the Digital Offspring Chat panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+        />
       <Card className="border-primary/20 bg-card/50 backdrop-blur">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -191,6 +202,7 @@ export const DigitalOffspringChat = () => {
           </Button>
         </CardContent>
       </Card>
+      </>
     );
   }
 

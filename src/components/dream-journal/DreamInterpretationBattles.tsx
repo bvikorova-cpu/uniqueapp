@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Loader2, Swords, ArrowLeft, ThumbsUp, ThumbsDown, Send, Crown } from "lucide-react";
 import { motion } from "framer-motion";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface DreamInterpretationBattlesProps {
   onBack: () => void;
@@ -125,6 +126,16 @@ const DreamInterpretationBattles = ({ onBack }: DreamInterpretationBattlesProps)
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Dream Interpretation Battles'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Dream Interpretation Battles panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2">
         <ArrowLeft className="h-4 w-4" /> Back to Dashboard
@@ -207,6 +218,7 @@ const DreamInterpretationBattles = ({ onBack }: DreamInterpretationBattlesProps)
         </Card>
       )}
     </div>
+    </>
   );
 };
 

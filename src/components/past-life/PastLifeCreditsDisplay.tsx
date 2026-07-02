@@ -6,6 +6,7 @@ import { usePastLifeCredits } from "@/hooks/usePastLifeCredits";
 import { Clock, Plus, Sparkles, Zap } from "lucide-react";
 import { motion } from "framer-motion";
 import {
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   Dialog,
   DialogContent,
   DialogHeader,
@@ -36,6 +37,16 @@ export const PastLifeCreditsDisplay = () => {
   ];
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Past Life Credits Display'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Past Life Credits Display panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <>
       <Card className="overflow-hidden bg-card/80 backdrop-blur-xl border-border/50">
         <div className="h-1.5 bg-gradient-to-r from-primary to-accent" />
@@ -122,6 +133,7 @@ export const PastLifeCreditsDisplay = () => {
           </div>
         </DialogContent>
       </Dialog>
+    </>
     </>
   );
 };

@@ -5,6 +5,7 @@ import { ArrowLeft, Check, Clock, Sparkles, Shield, Loader2 } from "lucide-react
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const PLANS = [
   { key: "oneYear", name: "1 Year Capsule", price: "€4.99", priceId: "price_1SQAOcGaXSfGtYFtunvQGLzb", icon: Clock, popular: false, type: "one-time", features: ["Text, video, or letter format", "Automatic delivery in 1 year", "Email notifications", "Secure encrypted storage"] },
@@ -35,6 +36,16 @@ export const CapsulePlans = ({ onBack }: { onBack: () => void }) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Capsule Plans'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Capsule Plans panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2"><ArrowLeft className="w-4 h-4" /> Back to Hub</Button>
 
@@ -79,5 +90,6 @@ export const CapsulePlans = ({ onBack }: { onBack: () => void }) => {
         ))}
       </div>
     </div>
+    </>
   );
 };

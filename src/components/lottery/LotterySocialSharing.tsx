@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Share2, Facebook, Twitter, Link as LinkIcon, Mail, Users, Trophy, Copy, Check } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface LotterySocialSharingProps {
   onBack: () => void;
@@ -32,6 +33,16 @@ export function LotterySocialSharing({ onBack }: LotterySocialSharingProps) {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Lottery Social Sharing'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Lottery Social Sharing panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={onBack} className="shrink-0">
@@ -127,5 +138,6 @@ export function LotterySocialSharing({ onBack }: LotterySocialSharingProps) {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

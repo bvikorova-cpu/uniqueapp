@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, MapPin, Calendar, Sparkles, Globe } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface TimelineEntry {
   id: string;
@@ -50,11 +51,22 @@ export const HeritageTimeline = () => {
 
   if (entries.length === 0) {
     return (
+      <>
+        <FloatingHowItWorks
+          title='Heritage Timeline'
+          steps={[
+          { title: 'Open the tool', desc: 'Launch the Heritage Timeline panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+        />
       <Card className="p-12 text-center bg-card/80 backdrop-blur-xl border-border/50">
         <Globe className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
         <h3 className="font-bold text-lg mb-2">No Heritage Data Yet</h3>
         <p className="text-sm text-muted-foreground">Complete a DNA Analysis to unlock your heritage timeline and trace your ancestral migration paths.</p>
       </Card>
+      </>
     );
   }
 

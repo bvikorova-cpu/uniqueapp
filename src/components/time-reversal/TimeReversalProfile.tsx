@@ -6,6 +6,7 @@ import { Slider } from "@/components/ui/slider";
 import { ArrowLeft, Upload, Save, Loader2, TrendingDown, Clock, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -69,6 +70,16 @@ export function TimeReversalProfile({ onBack }: Props) {
   if (loading) return <div className="py-12 text-center"><Loader2 className="h-8 w-8 animate-spin mx-auto text-purple-400" /></div>;
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Time Reversal Profile'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Time Reversal Profile panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-6">
         <Button variant="ghost" size="icon" onClick={onBack}><ArrowLeft className="h-5 w-5" /></Button>
@@ -145,5 +156,6 @@ export function TimeReversalProfile({ onBack }: Props) {
         </Card>
       </div>
     </div>
+    </>
   );
 }

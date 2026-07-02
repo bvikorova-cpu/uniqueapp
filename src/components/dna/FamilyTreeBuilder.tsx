@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Loader2, GitBranch, Plus, User, MapPin, Calendar, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface FamilyMember {
   id: string;
@@ -107,6 +108,16 @@ export const FamilyTreeBuilder = () => {
   const manualMembers = members.filter(m => !m.isFromDNA);
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Family Tree Builder'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Family Tree Builder panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Card className="p-5 bg-gradient-to-br from-lime-500/10 to-green-500/10 border-lime-500/20">
         <div className="flex items-center justify-between">
@@ -203,5 +214,6 @@ export const FamilyTreeBuilder = () => {
         </div>
       )}
     </div>
+    </>
   );
 };

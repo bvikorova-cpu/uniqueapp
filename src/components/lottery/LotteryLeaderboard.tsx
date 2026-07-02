@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Trophy, Crown, Medal, Star, TrendingUp, Flame } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface LotteryLeaderboardProps {
   onBack: () => void;
@@ -46,6 +47,16 @@ const getTierColor = (tier: string) => {
 
 export function LotteryLeaderboard({ onBack }: LotteryLeaderboardProps) {
   return (
+    <>
+      <FloatingHowItWorks
+        title='Lottery Leaderboard'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Lottery Leaderboard panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={onBack} className="shrink-0">
@@ -133,5 +144,6 @@ export function LotteryLeaderboard({ onBack }: LotteryLeaderboardProps) {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

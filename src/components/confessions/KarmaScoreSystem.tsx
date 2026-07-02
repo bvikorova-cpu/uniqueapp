@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Star, TrendingUp, Award, Zap, Shield, Heart, Flame, Crown, Gift } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface KarmaData {
   level: number;
@@ -136,10 +137,21 @@ export const KarmaScoreSystem = () => {
 
   if (loading) {
     return (
+      <>
+        <FloatingHowItWorks
+          title='Karma Score System'
+          steps={[
+          { title: 'Open the tool', desc: 'Launch the Karma Score System panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+        />
       <Card className="p-12 text-center bg-card/80 backdrop-blur-xl border-border/50">
         <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
         <p className="text-sm text-muted-foreground mt-2">Loading karma data...</p>
       </Card>
+      </>
     );
   }
 

@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, Send, Brain, User, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Message {
   id: string;
@@ -109,6 +110,16 @@ Provide thoughtful spiritual guidance addressing their concern.`,
   ];
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='AISpiritual Advisor'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the AISpiritual Advisor panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-4">
       <Card className="p-6 bg-card/80 backdrop-blur-xl border-border/50">
         <h3 className="text-lg font-black mb-2">AI Spiritual Advisor</h3>
@@ -195,5 +206,6 @@ Provide thoughtful spiritual guidance addressing their concern.`,
         </div>
       </Card>
     </div>
+    </>
   );
 };

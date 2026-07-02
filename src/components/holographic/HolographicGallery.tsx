@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -40,6 +41,16 @@ export const HolographicGallery = ({ onBack }: Props) => {
   const filtered = filter === "featured" ? GALLERY_AVATARS.filter(a => a.featured) : GALLERY_AVATARS;
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Holographic Gallery'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Holographic Gallery panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={onBack}><ArrowLeft className="w-5 h-5" /></Button>
@@ -96,5 +107,6 @@ export const HolographicGallery = ({ onBack }: Props) => {
         </AnimatePresence>
       </div>
     </div>
+    </>
   );
 };

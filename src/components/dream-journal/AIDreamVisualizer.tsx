@@ -8,6 +8,7 @@ import { useAICredits } from "@/hooks/useAICredits";
 import { toast } from "sonner";
 import { Loader2, Palette, ArrowLeft, Download, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface AIDreamVisualizerProps {
   onBack: () => void;
@@ -59,6 +60,16 @@ const AIDreamVisualizer = ({ onBack }: AIDreamVisualizerProps) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='AIDream Visualizer'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the AIDream Visualizer panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2">
         <ArrowLeft className="h-4 w-4" /> Back to Dashboard
@@ -130,6 +141,7 @@ const AIDreamVisualizer = ({ onBack }: AIDreamVisualizerProps) => {
         </motion.div>
       )}
     </div>
+    </>
   );
 };
 

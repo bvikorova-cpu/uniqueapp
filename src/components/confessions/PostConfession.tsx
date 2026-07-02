@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Send } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface PostConfessionProps {
   onConfessionPosted?: () => void;
@@ -58,6 +59,16 @@ export const PostConfession = ({ onConfessionPosted }: PostConfessionProps) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Post Confession'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Post Confession panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <Card className="border-border/50">
       <CardHeader>
         <CardTitle className="text-foreground">Share Your Confession</CardTitle>
@@ -114,5 +125,6 @@ export const PostConfession = ({ onConfessionPosted }: PostConfessionProps) => {
         </Button>
       </CardContent>
     </Card>
+    </>
   );
 };

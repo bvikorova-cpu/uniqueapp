@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Users, Link as LinkIcon, Zap, ArrowLeft, Lock, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useQuantumAccess } from "@/hooks/useQuantumAccess";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Entanglement {
   id: string;
@@ -57,6 +58,16 @@ const QuantumEntanglements = ({ onBack }: { onBack: () => void }) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Quantum Entanglements'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Quantum Entanglements panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -127,6 +138,7 @@ const QuantumEntanglements = ({ onBack }: { onBack: () => void }) => {
         )}
       </div>
     </div>
+    </>
   );
 };
 

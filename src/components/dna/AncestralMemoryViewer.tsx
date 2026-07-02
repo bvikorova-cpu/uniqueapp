@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { supabase } from "@/integrations/supabase/client";
 import { Sparkles, MapPin, Calendar } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Memory {
   id: string;
@@ -44,6 +45,16 @@ export const AncestralMemoryViewer = () => {
 
   if (loading) {
     return (
+      <>
+        <FloatingHowItWorks
+          title='Ancestral Memory Viewer'
+          steps={[
+          { title: 'Open the tool', desc: 'Launch the Ancestral Memory Viewer panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+        />
       <div className="space-y-4">
         {[1, 2, 3].map((i) => (
           <Card key={i}>
@@ -57,6 +68,7 @@ export const AncestralMemoryViewer = () => {
           </Card>
         ))}
       </div>
+      </>
     );
   }
 

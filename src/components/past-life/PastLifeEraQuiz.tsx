@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { Sparkles, RotateCcw } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const QUESTIONS = [
   {
@@ -62,6 +63,16 @@ export const PastLifeEraQuiz = () => {
   const winner = Object.entries(scores).sort((a, b) => b[1] - a[1])[0]?.[0] || "egypt";
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Past Life Era Quiz'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Past Life Era Quiz panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <Card className="p-5 bg-card/80 backdrop-blur-xl border-border/50">
       <div className="flex items-center gap-2 mb-3">
         <span className="text-lg">🔮</span>
@@ -116,5 +127,6 @@ export const PastLifeEraQuiz = () => {
         )}
       </AnimatePresence>
     </Card>
+    </>
   );
 };

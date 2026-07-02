@@ -8,6 +8,7 @@ import { useState, useMemo } from "react";
 import { Loader2, Calendar, ArrowLeft, Clock, Sparkles, Heart, Search, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const PastLifeHistory = () => {
   const [selectedReading, setSelectedReading] = useState<any>(null);
@@ -40,6 +41,16 @@ export const PastLifeHistory = () => {
 
   if (selectedReading) {
     return (
+      <>
+        <FloatingHowItWorks
+          title='Past Life History'
+          steps={[
+          { title: 'Open the tool', desc: 'Launch the Past Life History panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+        />
       <div className="space-y-4">
         <Button
           variant="ghost"
@@ -58,6 +69,7 @@ export const PastLifeHistory = () => {
           }}
         />
       </div>
+      </>
     );
   }
 

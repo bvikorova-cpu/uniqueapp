@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Globe, Loader2, AlertCircle, Sparkles } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface UniverseCreatorProps {
   onUniverseCreated: () => void;
@@ -102,9 +103,20 @@ const UniverseCreator = ({ onUniverseCreated }: UniverseCreatorProps) => {
 
   if (checkingAccess) {
     return (
+      <>
+        <FloatingHowItWorks
+          title='Universe Creator'
+          steps={[
+          { title: 'Open the tool', desc: 'Launch the Universe Creator panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+        />
       <div className="flex items-center justify-center py-12">
         <Loader2 className="w-8 h-8 animate-spin text-violet-400" />
       </div>
+      </>
     );
   }
 

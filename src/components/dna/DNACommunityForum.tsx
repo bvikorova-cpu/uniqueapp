@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, MessageSquare, Send, Heart, Clock, User, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface ForumPost {
   id: string;
@@ -132,6 +133,16 @@ export const DNACommunityForum = () => {
   }
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='DNACommunity Forum'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the DNACommunity Forum panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Card className="p-5 bg-gradient-to-br from-sky-500/10 to-cyan-500/10 border-sky-500/20">
         <div className="flex items-center justify-between flex-wrap gap-3">
@@ -217,5 +228,6 @@ export const DNACommunityForum = () => {
         </div>
       )}
     </div>
+    </>
   );
 };

@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Network, Loader2, ArrowLeft, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface DecisionTreeMapperProps {
   onBack: () => void;
@@ -56,6 +57,16 @@ const DecisionTreeMapper = ({ onBack }: DecisionTreeMapperProps) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Decision Tree Mapper'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Decision Tree Mapper panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-2" /> Back to Hub</Button>
 
@@ -97,6 +108,7 @@ const DecisionTreeMapper = ({ onBack }: DecisionTreeMapperProps) => {
         </Card>
       )}
     </div>
+    </>
   );
 };
 

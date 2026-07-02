@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Heart, Users, Sparkles, TrendingUp, Loader2 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const GeneticDatingSection = () => {
   const { toast } = useToast();
@@ -147,6 +148,16 @@ export const GeneticDatingSection = () => {
 
   if (!hasProfile) {
     return (
+      <>
+        <FloatingHowItWorks
+          title='Genetic Dating Section'
+          steps={[
+          { title: 'Open the tool', desc: 'Launch the Genetic Dating Section panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+        />
       <Card className="border-primary/20 bg-card/50 backdrop-blur">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -187,6 +198,7 @@ export const GeneticDatingSection = () => {
           </Button>
         </CardContent>
       </Card>
+      </>
     );
   }
 

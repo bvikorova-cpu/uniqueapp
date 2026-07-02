@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { GitBranch, Loader2, ArrowLeft, Circle } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface MultiverseTimelineProps {
   onBack: () => void;
@@ -27,6 +28,16 @@ const MultiverseTimeline = ({ onBack }: MultiverseTimelineProps) => {
   }, []);
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Multiverse Timeline'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Multiverse Timeline panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="mb-2">
         <ArrowLeft className="w-4 h-4 mr-2" /> Back to Hub
@@ -89,6 +100,7 @@ const MultiverseTimeline = ({ onBack }: MultiverseTimelineProps) => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

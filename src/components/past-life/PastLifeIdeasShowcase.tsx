@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Lightbulb, Wand2, Map, Users, Mic, Image as ImageIcon, Calendar, Flame } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const IDEAS = [
   {
@@ -63,6 +64,16 @@ const IDEAS = [
 
 export const PastLifeIdeasShowcase = () => {
   return (
+    <>
+      <FloatingHowItWorks
+        title='Past Life Ideas Showcase'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Past Life Ideas Showcase panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <Card className="p-5 bg-card/80 backdrop-blur-xl border-border/50">
       <div className="flex items-center gap-2 mb-1">
         <div className="p-1.5 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20">
@@ -101,5 +112,6 @@ export const PastLifeIdeasShowcase = () => {
         ))}
       </div>
     </Card>
+    </>
   );
 };

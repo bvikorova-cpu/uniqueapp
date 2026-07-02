@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2, Hand, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const PalmistryReader = () => {
   const [imageUrl, setImageUrl] = useState("");
@@ -30,6 +31,16 @@ export const PalmistryReader = () => {
   });
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Palmistry Reader'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Palmistry Reader panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-4">
       <Card className="p-5 bg-card/90 backdrop-blur-xl border-border/30 relative overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-green-500" />
@@ -64,5 +75,6 @@ export const PalmistryReader = () => {
         </motion.div>
       )}
     </div>
+    </>
   );
 };

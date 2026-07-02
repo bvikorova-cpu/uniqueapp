@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Flame } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const PastLifeStreak = () => {
   const days = ["M", "T", "W", "T", "F", "S", "S"];
@@ -7,6 +8,16 @@ export const PastLifeStreak = () => {
   const currentStreak = 4;
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Past Life Streak'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Past Life Streak panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
       <div className="flex items-center gap-2 mb-3">
         <Flame className="h-5 w-5 text-orange-500" />
@@ -28,5 +39,6 @@ export const PastLifeStreak = () => {
         ))}
       </div>
     </Card>
+    </>
   );
 };

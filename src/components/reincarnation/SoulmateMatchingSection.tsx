@@ -10,6 +10,7 @@ import { Loader2, Heart, MapPin, User, Sparkles, Lock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const SoulmateMatchingSection = () => {
   const { toast } = useToast();
@@ -73,6 +74,16 @@ export const SoulmateMatchingSection = () => {
   if (!hasAccess) return <Card className="border-destructive/50"><CardHeader><CardTitle className="flex items-center gap-2"><Lock className="h-6 w-6" />Locked</CardTitle></CardHeader><CardContent><Alert><AlertDescription>Go to Services tab (€29/month)</AlertDescription></Alert></CardContent></Card>;
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Soulmate Matching Section'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Soulmate Matching Section panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <Card className="border-primary/20">
       <CardHeader><CardTitle className="flex items-center gap-2"><Heart className="h-6 w-6 text-primary" />Soulmate Matching</CardTitle></CardHeader>
       <CardContent className="space-y-4">
@@ -93,5 +104,6 @@ export const SoulmateMatchingSection = () => {
         )}
       </CardContent>
     </Card>
+    </>
   );
 };

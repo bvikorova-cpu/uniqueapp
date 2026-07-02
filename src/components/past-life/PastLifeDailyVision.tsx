@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Eye, Gift, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const VISIONS = [
   "A weaver in the silk markets of Constantinople, 1350 CE",
@@ -30,6 +31,16 @@ export const PastLifeDailyVision = () => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Past Life Daily Vision'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Past Life Daily Vision panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <Card className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-card/80 to-accent/10 backdrop-blur-xl border-primary/30">
       <motion.div
         animate={{ rotate: 360 }}
@@ -70,5 +81,6 @@ export const PastLifeDailyVision = () => {
         </Button>
       </div>
     </Card>
+    </>
   );
 };

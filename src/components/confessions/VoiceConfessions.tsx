@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, Mic, MicOff, Square, Play, Pause, Send, Clock, Volume2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { escapeWithLineBreaks } from "@/lib/sanitizeHtml";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface VoiceEntry {
   id: string;
@@ -168,6 +169,16 @@ Respond in markdown format, be compassionate and brief.`,
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Voice Confessions'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Voice Confessions panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Card className="p-6 bg-card/80 backdrop-blur-xl border-border/50">
         <h3 className="text-lg font-black mb-2">🎙️ Voice Confessions</h3>
@@ -298,5 +309,6 @@ Respond in markdown format, be compassionate and brief.`,
         </Card>
       )}
     </div>
+    </>
   );
 };

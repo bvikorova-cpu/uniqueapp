@@ -7,6 +7,7 @@ import { Loader2, Infinity as InfinityIcon, TrendingUp, CheckCircle, AlertCircle
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const KarmicDebtTracker = () => {
   const { toast } = useToast();
@@ -62,6 +63,16 @@ export const KarmicDebtTracker = () => {
   if (!hasAccess) return <Card className="border-destructive/50"><CardHeader><CardTitle className="flex items-center gap-2"><Lock className="h-6 w-6" />Locked</CardTitle></CardHeader><CardContent><Alert><AlertDescription>Go to Services tab (€19/month)</AlertDescription></Alert></CardContent></Card>;
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Karmic Debt Tracker'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Karmic Debt Tracker panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <Card className="border-primary/20">
       <CardHeader><CardTitle className="flex items-center gap-2"><InfinityIcon className="h-6 w-6 text-primary" />Karmic Debt Tracker</CardTitle></CardHeader>
       <CardContent className="space-y-4">
@@ -77,5 +88,6 @@ export const KarmicDebtTracker = () => {
         <Button onClick={calculateKarma} disabled={loading} variant="outline" className="w-full">{loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Calculating...</> : "Recalculate"}</Button>
       </CardContent>
     </Card>
+    </>
   );
 };

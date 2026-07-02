@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const ERAS = [
   { id: "ancient-egypt", icon: "𓂀", label: "Ancient Egypt", years: "3000 BCE", color: "from-amber-500 to-yellow-400" },
@@ -26,6 +27,16 @@ export const PastLifeEraWheel = ({ onEraSelect }: PastLifeEraWheelProps) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Past Life Era Wheel'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Past Life Era Wheel panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <Card className="p-5 bg-card/80 backdrop-blur-xl border-border/50 overflow-hidden">
       <div className="mb-3">
         <h3 className="font-black text-base flex items-center gap-2">
@@ -73,5 +84,6 @@ export const PastLifeEraWheel = ({ onEraSelect }: PastLifeEraWheelProps) => {
         </motion.p>
       )}
     </Card>
+    </>
   );
 };

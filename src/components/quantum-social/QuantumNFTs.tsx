@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAICredits } from "@/hooks/useAICredits";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface QuantumNFT {
   id: string;
@@ -141,6 +142,16 @@ export function QuantumNFTs({ onBack }: { onBack: () => void }) {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Quantum NFTs'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Quantum NFTs panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -206,5 +217,6 @@ export function QuantumNFTs({ onBack }: { onBack: () => void }) {
         </div>
       )}
     </div>
+    </>
   );
 }

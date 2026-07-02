@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Upload, Dna, Loader2 } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const DNAUploadSection = () => {
   const { toast } = useToast();
@@ -59,6 +60,16 @@ export const DNAUploadSection = () => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='DNAUpload Section'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the DNAUpload Section panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Card className="border-primary/20 bg-card/50 backdrop-blur">
         <CardHeader>
@@ -153,5 +164,6 @@ export const DNAUploadSection = () => {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };

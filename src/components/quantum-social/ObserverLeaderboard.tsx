@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface ObserverEntry {
   id: string;
@@ -69,6 +70,16 @@ export function ObserverLeaderboard({ onBack }: { onBack: () => void }) {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Observer Leaderboard'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Observer Leaderboard panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-4">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={onBack}><ArrowLeft className="h-5 w-5" /></Button>
@@ -142,5 +153,6 @@ export function ObserverLeaderboard({ onBack }: { onBack: () => void }) {
         </div>
       )}
     </div>
+    </>
   );
 }
