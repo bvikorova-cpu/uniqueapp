@@ -60,12 +60,7 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
 
     window.addEventListener('keydown', handleKeyDown);
     
-    return (
-    <>
-      <FloatingHowItWorks title={"Story Video Player - How it works"} steps={[{ title: 'Open', desc: 'Access the Story Video Player section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Story Video Player.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => {
+    return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isPlaying, scenes.length]);

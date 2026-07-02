@@ -42,12 +42,7 @@ export default function MegatalentFriendInvites({ userId }: { userId: string | n
         setLoading(false);
       }
     })();
-    return (
-    <>
-      <FloatingHowItWorks title={"Megatalent Friend Invites - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Friend Invites section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Friend Invites.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => {
+    return () => {
       cancelled = true;
     };
   }, [userId]);

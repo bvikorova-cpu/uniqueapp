@@ -79,12 +79,7 @@ export const ProfileJsonLd = ({ profile }: ProfileJsonLdProps) => {
     script.setAttribute("data-profile-jsonld", profile.id || name);
     document.head.appendChild(script);
 
-    return (
-    <>
-      <FloatingHowItWorks title={"Profile Json Ld - How it works"} steps={[{ title: 'Open', desc: 'Access the Profile Json Ld section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Profile Json Ld.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => {
+    return () => {
       document.title = prevTitle;
       if (createdMeta && meta) meta.remove();
       else if (meta && prevMetaContent) meta.setAttribute("content", prevMetaContent);

@@ -61,12 +61,7 @@ export default function MegatalentCertificate({ userId, category }: Props) {
         if (!cancelled) setLoading(false);
       }
     })();
-    return (
-    <>
-      <FloatingHowItWorks title={"Megatalent Certificate - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Certificate section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Certificate.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => {
+    return () => {
       cancelled = true;
     };
   }, [userId]);

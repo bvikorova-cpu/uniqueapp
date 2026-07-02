@@ -120,12 +120,7 @@ export const ConfettiAnimation = ({
 
     animate();
 
-    return (
-    <>
-      <FloatingHowItWorks title={"Confetti Animation - How it works"} steps={[{ title: 'Open', desc: 'Access the Confetti Animation section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Confetti Animation.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => {
+    return () => {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }

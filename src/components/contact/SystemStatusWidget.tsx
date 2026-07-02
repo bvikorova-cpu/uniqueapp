@@ -38,12 +38,7 @@ export const SystemStatusWidget = () => {
       .on("postgres_changes", { event: "*", schema: "public", table: "system_status_components" }, load)
       .subscribe();
 
-    return (
-    <>
-      <FloatingHowItWorks title={"System Status Widget - How it works"} steps={[{ title: 'Open', desc: 'Access the System Status Widget section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in System Status Widget.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => {
+    return () => {
       supabase.removeChannel(channel);
     };
   }, []);

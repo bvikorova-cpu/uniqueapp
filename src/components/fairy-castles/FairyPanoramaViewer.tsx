@@ -224,12 +224,7 @@ function PanoramaSphere({ imageUrl }: { imageUrl: string }) {
       }
     );
 
-    return (
-    <>
-      <FloatingHowItWorks title={"Fairy Panorama Viewer - How it works"} steps={[{ title: 'Open', desc: 'Access the Fairy Panorama Viewer section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Fairy Panorama Viewer.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => {
+    return () => {
       // Cleanup: dispose old texture when component unmounts or imageUrl changes
       if (texture) {
         texture.dispose();

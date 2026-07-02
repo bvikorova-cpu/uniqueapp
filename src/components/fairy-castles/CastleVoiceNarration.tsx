@@ -62,12 +62,7 @@ export function CastleVoiceNarration({
 
   // Cleanup on unmount
   useEffect(() => {
-    return (
-    <>
-      <FloatingHowItWorks title={"Castle Voice Narration - How it works"} steps={[{ title: 'Open', desc: 'Access the Castle Voice Narration section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Castle Voice Narration.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => {
+    return () => {
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current = null;

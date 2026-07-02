@@ -44,12 +44,7 @@ export const KidsAcademyShop = () => {
     const refresh = () => setStars(getStars());
     window.addEventListener("storage", refresh);
     const interval = setInterval(refresh, 1500);
-    return (
-    <>
-      <FloatingHowItWorks title={"Kids Academy Shop - How it works"} steps={[{ title: 'Open', desc: 'Access the Kids Academy Shop section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Kids Academy Shop.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => {
+    return () => {
       window.removeEventListener("storage", refresh);
       clearInterval(interval);
     };

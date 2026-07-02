@@ -104,12 +104,7 @@ export const AmbientSounds = ({ onBack }: Props) => {
   const timerRef = useRef<any>(null);
 
   useEffect(() => {
-    return (
-    <>
-      <FloatingHowItWorks title={"Ambient Sounds - How it works"} steps={[{ title: 'Open', desc: 'Access the Ambient Sounds section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Ambient Sounds.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => {
+    return () => {
       generatorRef.current?.close();
       if (timerRef.current) clearInterval(timerRef.current);
     };

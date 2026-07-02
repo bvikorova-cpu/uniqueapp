@@ -43,12 +43,7 @@ export default function MegatalentTipJar({ creatorId, creatorName, categorySlug 
         });
       }
     })();
-    return (
-    <>
-      <FloatingHowItWorks title={"Megatalent Tip Jar - How it works"} steps={[{ title: 'Open', desc: 'Access the Megatalent Tip Jar section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Megatalent Tip Jar.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => {
+    return () => {
       active = false;
     };
   }, [creatorId]);

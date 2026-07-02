@@ -22,12 +22,7 @@ export const GiftAnimation = ({ emoji, label, onComplete, type = "open" }: GiftA
     const timer2 = setTimeout(() => setStage("revealed"), 1500);
     const timer3 = setTimeout(() => onComplete?.(), 3000);
 
-    return (
-    <>
-      <FloatingHowItWorks title={"Gift Animation - How it works"} steps={[{ title: 'Open', desc: 'Access the Gift Animation section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Gift Animation.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => {
+    return () => {
       clearTimeout(timer1);
       clearTimeout(timer2);
       clearTimeout(timer3);

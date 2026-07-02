@@ -26,12 +26,7 @@ export default function BeforeAfterSlider({ before, after, className = "", alt =
     window.addEventListener("touchmove", onMove);
     window.addEventListener("mouseup", onUp);
     window.addEventListener("touchend", onUp);
-    return (
-    <>
-      <FloatingHowItWorks title={"Before After Slider - How it works"} steps={[{ title: 'Open', desc: 'Access the Before After Slider section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Before After Slider.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => {
+    return () => {
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("touchmove", onMove);
       window.removeEventListener("mouseup", onUp);

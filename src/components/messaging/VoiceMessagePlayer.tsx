@@ -27,12 +27,7 @@ export const VoiceMessagePlayer = ({ url, duration, className }: Props) => {
     a.addEventListener("timeupdate", onTime);
     a.addEventListener("loadedmetadata", onMeta);
     a.addEventListener("ended", onEnd);
-    return (
-    <>
-      <FloatingHowItWorks title={"Voice Message Player - How it works"} steps={[{ title: 'Open', desc: 'Access the Voice Message Player section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Voice Message Player.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => {
+    return () => {
       a.removeEventListener("timeupdate", onTime);
       a.removeEventListener("loadedmetadata", onMeta);
       a.removeEventListener("ended", onEnd);

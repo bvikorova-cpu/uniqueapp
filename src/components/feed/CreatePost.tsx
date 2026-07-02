@@ -37,12 +37,7 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
   );
 
   useEffect(() => {
-    return (
-    <>
-      <FloatingHowItWorks title={"Create Post - How it works"} steps={[{ title: 'Open', desc: 'Access the Create Post section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Create Post.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => {
+    return () => {
       previews.forEach((u) => u && URL.revokeObjectURL(u));
     };
   }, [previews]);
