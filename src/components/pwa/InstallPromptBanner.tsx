@@ -44,12 +44,7 @@ export function InstallPromptBanner() {
       update();
       return r;
     };
-    return (
-    <>
-      <FloatingHowItWorks title={"Install Prompt Banner - How it works"} steps={[{ title: 'Open', desc: 'Access the Install Prompt Banner section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Install Prompt Banner.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
-      
-    </>
-  ) => {
+    return () => {
       window.removeEventListener("popstate", update);
       history.pushState = origPush;
       history.replaceState = origReplace;
