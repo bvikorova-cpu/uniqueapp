@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Check, Sparkles } from "lucide-react";
 import { useNutritionSubscription } from "@/hooks/useNutritionSubscription";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const plans = [
   {
@@ -74,6 +75,7 @@ export default function SubscriptionPlans() {
 
   return (
     <div className="space-y-6">
+      <FloatingHowItWorks title="SubscriptionPlans — How it works" steps={[{title:"Open this tool",desc:"Access SubscriptionPlans within the Health & Wellness section."},{title:"Configure",desc:"Adjust preferences, choose duration or select goals."},{title:"Start & interact",desc:"Begin the session, log data or run an AI analysis (some cost 3–5 credits)."},{title:"Review results",desc:"Check outcomes, save to history and track progress over time."}]} />
       <div className="text-center space-y-2">
         <h2 className="text-3xl font-bold">Choose Your Plan</h2>
         <p className="text-muted-foreground">

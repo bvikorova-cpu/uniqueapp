@@ -7,6 +7,7 @@ import { Loader2, Sparkles, Heart, BookOpen } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useWellnessProgress } from "@/hooks/useWellnessProgress";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const MOOD_EMOJIS = [
   { value: 1, emoji: "😔", label: "Down" },
@@ -84,6 +85,7 @@ export function GratitudeJournal() {
 
   return (
     <Card className="mt-4 relative overflow-hidden border-primary/20 backdrop-blur-xl bg-card/80">
+      <FloatingHowItWorks title="GratitudeJournal — How it works" steps={[{title:"Open this tool",desc:"Access GratitudeJournal within the Health & Wellness section."},{title:"Configure",desc:"Adjust preferences, choose duration or select goals."},{title:"Start & interact",desc:"Begin the session, log data or run an AI analysis (some cost 3–5 credits)."},{title:"Review results",desc:"Check outcomes, save to history and track progress over time."}]} />
       <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-primary/5 to-green-500/5" />
       <CardHeader className="relative">
         <CardTitle className="flex items-center gap-2">

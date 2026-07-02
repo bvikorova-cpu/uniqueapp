@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, Circle, Brain, Sparkles, RotateCcw, Eye, Hand, Ear, Wind as Nose, Coffee } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const STEPS = [
   { count: 5, prompt: "Name 5 things you can SEE around you", icon: Eye, color: "text-blue-400", bg: "from-blue-500/10 to-cyan-500/5" },
@@ -50,6 +51,7 @@ export function GroundingExercise() {
   if (isComplete) {
     return (
       <Card className="mt-4 relative overflow-hidden border-primary/20 backdrop-blur-xl bg-card/80">
+      <FloatingHowItWorks title="GroundingExercise — How it works" steps={[{title:"Open this tool",desc:"Access GroundingExercise within the Health & Wellness section."},{title:"Configure",desc:"Adjust preferences, choose duration or select goals."},{title:"Start & interact",desc:"Begin the session, log data or run an AI analysis (some cost 3–5 credits)."},{title:"Review results",desc:"Check outcomes, save to history and track progress over time."}]} />
         <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 via-primary/5 to-emerald-500/5" />
         <CardContent className="relative pt-8 text-center pb-8">
           <motion.div

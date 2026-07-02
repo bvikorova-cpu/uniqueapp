@@ -5,6 +5,7 @@ import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { Cloud, Waves, Trees, Play, Pause, Volume2, VolumeX, Zap, Flame, Droplets, Clock, X, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const NATURE_SOUNDS = [
   { id: "rain", name: "Rain", icon: Cloud, description: "Gentle rain for calming the mind", src: "/sounds/rain.mp3", color: "text-blue-400", bg: "from-blue-500/10 to-cyan-500/5" },
@@ -89,6 +90,7 @@ export function NatureSounds() {
 
   return (
     <div className="space-y-6 mt-6">
+      <FloatingHowItWorks title="NatureSounds — How it works" steps={[{title:"Open this tool",desc:"Access NatureSounds within the Health & Wellness section."},{title:"Configure",desc:"Adjust preferences, choose duration or select goals."},{title:"Start & interact",desc:"Begin the session, log data or run an AI analysis (some cost 3–5 credits)."},{title:"Review results",desc:"Check outcomes, save to history and track progress over time."}]} />
       <Card className="relative overflow-hidden border-primary/20 backdrop-blur-xl bg-card/80">
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-primary/5 to-sky-500/5" />
         <CardHeader className="relative">
