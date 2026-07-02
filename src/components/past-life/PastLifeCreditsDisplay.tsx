@@ -5,8 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { usePastLifeCredits } from "@/hooks/usePastLifeCredits";
 import { Clock, Plus, Sparkles, Zap } from "lucide-react";
 import { motion } from "framer-motion";
-import {
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
