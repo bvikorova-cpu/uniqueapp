@@ -98,7 +98,6 @@ const HockeyArena = () => {
 
   if (activeView !== "hub") {
     return (
-      <><FloatingHowItWorks title="HockeyArena — How it works" steps={[{title:"Open this section",desc:"Access HockeyArena from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
 <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 pt-20 pb-28 md:pb-8">
           <ArenaAuthGuard onBack={() => setActiveView("hub")} sportName="Hockey Arena">
@@ -113,6 +112,7 @@ const HockeyArena = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <FloatingHowItWorks title="HockeyArena — How it works" steps={[{title:"Open this section",desc:"Access HockeyArena from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
       <div className="container mx-auto px-4 pt-20 pb-28 md:pb-8 space-y-8">
         <HockeyArenaHero stats={stats} onNavigate={(v) => setActiveView(v as ViewType)} />
         <HeroRewardedAd sectionKey="page_hockeyarena" />
@@ -128,7 +128,6 @@ const HockeyArena = () => {
         </div>
       </div>
     </div>
-  </>
   );
 };
 

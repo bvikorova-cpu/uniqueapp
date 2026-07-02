@@ -14,7 +14,6 @@ function FootballPitch() {
   });
 
   return (
-    <><FloatingHowItWorks title="Stadium3D — How it works" steps={[{title:"Open this section",desc:"Access Stadium3D from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
 <group ref={groupRef} position={[0, -0.5, 0]}>
       {/* Main pitch */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
@@ -465,6 +464,7 @@ export function Stadium3D({ sport, className = "" }: Stadium3DProps) {
   
   return (
     <div className={`w-full h-full ${className}`} style={{ background: config.bgColor }}>
+      <FloatingHowItWorks title="Stadium3D — How it works" steps={[{title:"Open this section",desc:"Access Stadium3D from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
       <Canvas
         shadows
         camera={{ position: config.cameraPos, fov: 45 }}
@@ -495,6 +495,5 @@ export function Stadium3D({ sport, className = "" }: Stadium3DProps) {
         />
       </Canvas>
     </div>
-  </>
   );
 }

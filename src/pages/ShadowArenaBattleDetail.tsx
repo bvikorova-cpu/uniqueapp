@@ -115,7 +115,6 @@ export default function ShadowArenaBattleDetail() {
 
   if (loading) {
     return (
-      <><FloatingHowItWorks title="ShadowArenaBattleDetail — How it works" steps={[{title:"Open this section",desc:"Access ShadowArenaBattleDetail from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
 <SubscriptionGate>
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500"></div>
@@ -147,6 +146,7 @@ export default function ShadowArenaBattleDetail() {
 
   return (
     <SubscriptionGate>
+      <FloatingHowItWorks title="ShadowArenaBattleDetail — How it works" steps={[{title:"Open this section",desc:"Access ShadowArenaBattleDetail from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
       <div className="container mx-auto px-4 sm:px-6 pt-24 pb-8 max-w-6xl">
         <Button variant="ghost" size="sm" onClick={() => navigate('/shadow-arena/battles')} className="mb-4">
           <ArrowLeft className="w-4 h-4 mr-2" /> Back to Battles
@@ -289,6 +289,5 @@ export default function ShadowArenaBattleDetail() {
         )}
       </div>
     </SubscriptionGate>
-  </>
   );
 }

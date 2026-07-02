@@ -40,7 +40,6 @@ export function DuetBattlesCard() {
   };
 
   return (
-    <><FloatingHowItWorks title="DuetBattlesCard — How it works" steps={[{title:"Open this section",desc:"Access DuetBattlesCard from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
 <Card className="p-5 mb-6 border-purple-900/40">
       <div className="flex items-center gap-2 mb-3">
         <Swords className="h-5 w-5 text-red-400" />
@@ -57,6 +56,7 @@ export function DuetBattlesCard() {
           const pctA = Math.round((d.votes_a / total) * 100);
           return (
             <div key={d.id} className="rounded border border-border/50 p-3 bg-black/30">
+              <FloatingHowItWorks title="DuetBattlesCard — How it works" steps={[{title:"Open this section",desc:"Access DuetBattlesCard from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
               <div className="text-sm font-semibold mb-2">{d.theme}</div>
               <div className="flex gap-2 items-center">
                 <Button size="sm" variant="outline" className="flex-1" onClick={() => vote(d.id, "A")}>
@@ -75,6 +75,5 @@ export function DuetBattlesCard() {
         })}
       </div>
     </Card>
-  </>
   );
 }

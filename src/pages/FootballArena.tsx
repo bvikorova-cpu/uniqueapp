@@ -97,7 +97,6 @@ const FootballArena = () => {
 
   if (activeView !== "hub") {
     return (
-      <><FloatingHowItWorks title="FootballArena — How it works" steps={[{title:"Open this section",desc:"Access FootballArena from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
 <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 pt-20 pb-28 md:pb-8">
           <ArenaAuthGuard onBack={() => setActiveView("hub")} sportName="Football Arena">
@@ -110,6 +109,7 @@ const FootballArena = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <FloatingHowItWorks title="FootballArena — How it works" steps={[{title:"Open this section",desc:"Access FootballArena from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
       <div className="container mx-auto px-4 pt-20 pb-28 md:pb-8 space-y-8">
         <FootballArenaHero stats={stats} onNavigate={(v) => setActiveView(v as ViewType)} />
         <HeroRewardedAd sectionKey="page_footballarena" />
@@ -130,7 +130,6 @@ const FootballArena = () => {
         </div>
       </div>
     </div>
-  </>
   );
 };
 

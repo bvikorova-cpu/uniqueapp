@@ -10,7 +10,6 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 function Pitch() {
   return (
-    <><FloatingHowItWorks title="PenaltyShootout3D — How it works" steps={[{title:"Open this section",desc:"Access PenaltyShootout3D from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
 <group>
       {/* Main grass */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
@@ -479,6 +478,7 @@ export function PenaltyShootout3D({ onBack }: PenaltyShootout3DProps) {
 
   return (
     <div className="space-y-4">
+      <FloatingHowItWorks title="PenaltyShootout3D — How it works" steps={[{title:"Open this section",desc:"Access PenaltyShootout3D from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
       <div className="flex items-center gap-3">
         <Button variant="ghost" onClick={onBack} className="gap-2">
           <ArrowLeft className="h-4 w-4" /> Back
@@ -559,6 +559,5 @@ export function PenaltyShootout3D({ onBack }: PenaltyShootout3DProps) {
         Aim with your mouse and click on the goal to shoot. The goalkeeper will try to save it!
       </p>
     </div>
-  </>
   );
 }

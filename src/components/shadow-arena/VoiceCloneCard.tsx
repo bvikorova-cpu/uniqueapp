@@ -40,7 +40,6 @@ export function VoiceCloneCard() {
 
   if (clone) {
     return (
-      <><FloatingHowItWorks title="VoiceCloneCard — How it works" steps={[{title:"Open this section",desc:"Access VoiceCloneCard from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
 <Card className="p-5 bg-gradient-to-br from-[hsl(280,30%,8%)] to-[hsl(0,0%,4%)] border-red-900/30 mb-6">
         <div className="flex items-center gap-3">
           <CheckCircle2 className="w-8 h-8 text-green-400" />
@@ -55,6 +54,7 @@ export function VoiceCloneCard() {
 
   return (
     <Card className="p-5 bg-gradient-to-br from-[hsl(0,30%,8%)] to-[hsl(280,25%,7%)] border-red-900/30 mb-6">
+      <FloatingHowItWorks title="VoiceCloneCard — How it works" steps={[{title:"Open this section",desc:"Access VoiceCloneCard from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
       <h3 className="text-xl font-black text-red-100 flex items-center gap-2 mb-1">
         <Mic className="w-5 h-5 text-pink-400" />
         Clone Your Voice
@@ -87,6 +87,5 @@ export function VoiceCloneCard() {
         )}
       </div>
     </Card>
-  </>
   );
 }

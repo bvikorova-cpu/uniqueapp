@@ -48,7 +48,6 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
 
   if (loading) {
     return (
-      <><FloatingHowItWorks title="SubscriptionGate — How it works" steps={[{title:"Open this section",desc:"Access SubscriptionGate from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
 <div className="flex items-center justify-center min-h-[60vh]">
         <div className="relative">
           <Skull className="w-16 h-16 text-red-600 animate-pulse drop-shadow-[0_0_25px_rgba(220,38,38,0.7)]" />
@@ -60,6 +59,7 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
   if (!subscribed) {
     return (
       <div className="relative w-full min-h-screen overflow-hidden bg-black">
+        <FloatingHowItWorks title="SubscriptionGate — How it works" steps={[{title:"Open this section",desc:"Access SubscriptionGate from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
         {/* Cinematic poster background */}
         <div
           className="absolute inset-0 bg-cover bg-center"
@@ -207,7 +207,6 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
           </p>
         </div>
       </div>
-    </>
     );
   }
 
