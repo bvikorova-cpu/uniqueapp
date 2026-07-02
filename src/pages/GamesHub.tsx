@@ -10,6 +10,15 @@ import { SEO } from "@/components/SEO";
 import { gdGames, gdCategories, getGDGamesByCategory, type GDCategory, type GDGame } from "@/data/gdGames";
 import { useGamesHub } from "@/hooks/useGamesHub";
 import { gateGameLaunch, playPostRoll } from "@/lib/gameAdGate";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const GAMES_HUB_HOW_IT_WORKS = [
+  { title: "Search or browse by category", desc: "Use the search bar for a specific title, or open a category tab (Action, Puzzle, Racing…) to explore." },
+  { title: "Favorite games with the heart", desc: "Tap the heart on any card to save it. Your favorites appear at the top of the hub next visit." },
+  { title: "Tap Play to launch full-screen", desc: "A short ad may play first, then the game loads in an embedded frame. Use the back arrow to leave." },
+  { title: "Recently played row", desc: "Games you launched appear in a Recent row so you can jump back into them with one tap." },
+  { title: "Pagination", desc: "Big categories are paginated — use Prev / Next or the page numbers to see more." },
+];
 
 const PAGE_SIZE = 30;
 
@@ -213,6 +222,9 @@ const GamesHub = () => {
       />
       <div className="min-h-screen bg-background pt-20 pb-12">
         <div className="container mx-auto px-2 sm:px-4">
+          <div className="flex justify-end mb-2">
+            <HowItWorksButton title="Games Hub" intro="How to find, favorite and play the HTML5 games." steps={GAMES_HUB_HOW_IT_WORKS} variant="compact" />
+          </div>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary mb-4">
               <Sparkles className="w-4 h-4" />

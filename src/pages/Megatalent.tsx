@@ -47,6 +47,17 @@ import MegatalentShareSheet from "@/components/megatalent/MegatalentShareSheet";
 import MegatalentExpandedMediaDialog from "@/components/megatalent/MegatalentExpandedMediaDialog";
 import MegatalentCopyrightCard from "@/components/megatalent/MegatalentCopyrightCard";
 import MegatalentSubscriptionManagement from "@/components/megatalent/MegatalentSubscriptionManagement";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const MEGATALENT_HOW_IT_WORKS = [
+  { title: "Activate Premium to compete", desc: "Megatalent needs Premium (€10/month) to upload clips, vote and comment. Free users can watch." },
+  { title: "Pick a category & upload", desc: "Choose a category (Music, Dance, Comedy…), upload a short video/photo, add a title and publish your submission." },
+  { title: "Get votes from the community", desc: "Other Premium users vote in daily voting windows. Longer voting streaks give you a 2× vote multiplier." },
+  { title: "Climb the leaderboard", desc: "Sort feed by Top / New / Hot. Weekly leaderboards decide finalists in each category." },
+  { title: "Win real prizes", desc: "Weekly cash rewards + a quarterly €10,000 grand prize (Megatalent Champion). Payouts via Stripe Connect." },
+  { title: "Boost with AI tools", desc: "Use the AI toolbox (clip editor, thumbnail maker, caption writer) to make your submission stand out." },
+  { title: "Engage: comment, share, follow", desc: "Comment on clips, share to your Wall, follow other talents. Notification bell keeps you updated on votes & replies." },
+];
 import { categoryGroups } from "@/components/megatalent/megatalentConstants";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
@@ -364,7 +375,8 @@ const Megatalent = () => {
         <div className="container mx-auto px-4 max-w-6xl">
           <NextVotingCountdown />
 
-          <div className="flex justify-end mb-2">
+          <div className="flex justify-end items-center gap-2 mb-2">
+            <HowItWorksButton title="Megatalent" intro="How the talent contest, voting and prizes work." steps={MEGATALENT_HOW_IT_WORKS} variant="compact" />
             <MegatalentNotificationBell />
           </div>
 

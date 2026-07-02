@@ -28,6 +28,17 @@ import {
   Gift, Eye, Sword, HelpCircle, ShoppingBag, Shield, Snowflake, CalendarDays,
   Users, Castle, Map, Sparkles as SparklesIcon, PartyPopper, Heart,
 } from "lucide-react";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const REWARDS_HOW_IT_WORKS = [
+  { title: "Earn XP every day", desc: "You gain XP for logging in, using AI tools, playing games, completing challenges and helping friends. XP levels you up." },
+  { title: "Daily Login Calendar", desc: "Tap today's tile and press Claim to grab the free XP. 7 / 14 / 21 / 30-day milestones give bigger bonuses." },
+  { title: "Streak Freeze", desc: "Missed a day? Buy or claim a Streak Freeze to protect your streak. Otherwise the counter resets." },
+  { title: "Weekly Challenges", desc: "Complete rotating quests (invite a friend, use 3 AI tools…) for burst XP and badges." },
+  { title: "Battle Pass & Leagues", desc: "Season pass with free + premium tracks. Weekly leagues rank you against other players — promote to a higher league by finishing top." },
+  { title: "Convert XP → Credits", desc: "Use the XP → Credits converter to turn earned XP into platform credits usable across AI tools and premium features." },
+  { title: "Lucky Wheel, Gifts, Marketplace", desc: "Spend XP on the Lucky Wheel spin, gift XP to friends, or trade badges/rewards in the Marketplace." },
+];
 
 // Lazy-load heavy tab content — keeps initial bundle small on mobile.
 const RewardsAIToolsGrid = lazy(() => import("@/components/rewards/RewardsAIToolsGrid"));
@@ -204,6 +215,9 @@ export default function Rewards() {
   return (
     <div className="min-h-screen bg-background pt-24 pb-8">
       <div className="container mx-auto px-4 max-w-6xl">
+        <div className="flex justify-end mb-2">
+          <HowItWorksButton title="Rewards" intro="Everything you can earn, spend and win in the Rewards hub." steps={REWARDS_HOW_IT_WORKS} variant="compact" />
+        </div>
         <XPMultiplierBanner />
         {statsLoading ? (
           <Skeleton className="h-40 w-full rounded-2xl mb-4" />
