@@ -5,6 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useMentorPremium } from "@/hooks/useMentorRouter";
 import {
+  Brain, Target, Theater, Users, Bell, ListChecks, Sparkles, Repeat, UserCog, FileText, Mic2, BookHeart, Crown, ScrollText, Award, MessageCircle, Lightbulb, Flame,
+} from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const __HIW_MENTORHUB_STEPS = [
@@ -15,8 +17,6 @@ const __HIW_MENTORHUB_STEPS = [
 ];
 const __HIW_MENTORHUB = { title: 'Mentor Hub', intro: 'The dashboard for all four AI coaches.', steps: __HIW_MENTORHUB_STEPS };
 
-  Brain, Target, Theater, Users, Bell, ListChecks, Sparkles, Repeat, UserCog, FileText, Mic2, BookHeart, Crown, ScrollText, Award, MessageCircle, Lightbulb, Flame,
-} from "lucide-react";
 
 const FEATURES = [
   { to: "/ai-mentor/tools/memory", icon: Brain, title: "Memory", desc: "Coach remembers across sessions" },
