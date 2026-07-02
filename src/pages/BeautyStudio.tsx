@@ -15,6 +15,15 @@ import { BeautyGallery } from "@/components/beauty/BeautyGallery";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import heroVideo from "@/assets/beauty-studio-hero.mp4.asset.json";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const BEAUTY_HOW_IT_WORKS = [
+  { title: "Pick a tool", desc: "Choose from AI Virtual Makeup, Hair Styler, Skin Analysis, Nail Art, Celebrity Match, Product Advisor, Tutorials or the community Gallery." },
+  { title: "Upload your photo", desc: "Most tools ask for a clear selfie or reference photo. Your images stay private to your account." },
+  { title: "Spend credits", desc: "Each tool costs 2–10 credits (shown on the tile). You get 10 free credits monthly; buy more anytime in the Credits Store." },
+  { title: "Save & share", desc: "Save transformations to your gallery, publish before/after to the community, and track your streaks and achievements." },
+  { title: "Learn as you go", desc: "Follow step-by-step Tutorials to master looks, then apply them with Virtual Makeup or Hair Styler." },
+];
 
 type ActiveView = "hub" | "makeup" | "hair" | "products" | "tutorials" | "skin-analysis" | "nail-art" | "celebrity-match" | "gallery";
 
