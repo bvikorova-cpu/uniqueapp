@@ -19,6 +19,7 @@ import { ProfileCustomizationDialog } from "@/components/profile/ProfileCustomiz
 import { SpacesDialog } from "@/components/wall/SpacesDialog";
 import { useUserMutes } from "@/hooks/useUserMutes";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
 
 const WALL_HIW_STEPS = [
   { title: "Feed tabs (For You / Following / Trending / Latest / Friends)", desc: "Switch what you see: personalized picks, only people you follow, hottest posts right now, newest globally, or just your friends." },
