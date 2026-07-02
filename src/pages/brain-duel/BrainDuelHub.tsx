@@ -15,6 +15,7 @@ import { brainDuelCall } from "@/hooks/useBrainDuelRouter";
 import { useBrainDuelCredits } from "@/hooks/useBrainDuelCredits";
 import { useQueryClient } from "@tanstack/react-query";
 import { handleEdgeError } from "@/lib/handleEdgeError";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 type Feature = {
   id: string;
