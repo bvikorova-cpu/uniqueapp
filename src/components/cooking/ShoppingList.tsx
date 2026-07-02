@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   ChefHat, 
   ShoppingCart, 
   Plus, 
@@ -100,7 +101,14 @@ export const ShoppingList = () => {
   }, {} as Record<string, Ingredient[]>);
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Shopping List works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       {/* Recipe Header */}
       <Card className="bg-gradient-to-br from-orange-500/10 to-transparent">
         <CardContent className="pt-6">
@@ -252,7 +260,8 @@ export const ShoppingList = () => {
         </CardContent>
       </Card>
     </div>
-  );
+    </>
+    );
 };
 
 export default ShoppingList;

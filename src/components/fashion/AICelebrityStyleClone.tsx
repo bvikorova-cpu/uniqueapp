@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { Loader2, Star, Crown, Sparkles, Euro, ShoppingBag } from "lucide-react";
 import { useAICredits } from "@/hooks/useAICredits";
 import { motion, AnimatePresence } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const CREDIT_COST = 15;
 
@@ -62,7 +63,14 @@ export default function AICelebrityStyleClone() {
   });
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How AICelebrity Style Clone works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       <Card className="p-6 bg-card/80 backdrop-blur-xl border-primary/20">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 rounded-xl bg-gradient-to-br from-yellow-500 to-amber-600">
@@ -166,5 +174,6 @@ export default function AICelebrityStyleClone() {
         )}
       </AnimatePresence>
     </div>
-  );
+    </>
+    );
 }

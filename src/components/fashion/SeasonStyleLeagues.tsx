@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Loader2, Trophy, Crown, Medal, TrendingUp, Users, Calendar, Flame, Star, Shield } from "lucide-react";
 import { useAICredits } from "@/hooks/useAICredits";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const CREDIT_COST = 10;
 
@@ -74,7 +75,14 @@ export default function SeasonStyleLeagues() {
   const currentLeague = LEAGUES[0];
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Season Style Leagues works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       {/* Hero */}
       <Card className="p-6 bg-gradient-to-br from-purple-500/20 via-primary/10 to-pink-500/20 border-primary/30 backdrop-blur-xl overflow-hidden relative">
         <div className="absolute top-0 right-0 w-40 h-40 bg-primary/10 rounded-full blur-3xl" />
@@ -155,5 +163,6 @@ export default function SeasonStyleLeagues() {
         )}
       </Card>
     </div>
-  );
+    </>
+    );
 }

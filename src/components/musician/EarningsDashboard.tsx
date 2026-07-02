@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { DollarSign, TrendingUp, Download, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { WithdrawalRequestDialog } from "./WithdrawalRequestDialog";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface EarningsDashboardProps {
   musicianId: string;
@@ -80,7 +81,14 @@ export const EarningsDashboard = ({
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Earnings Dashboard works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
@@ -223,5 +231,6 @@ export const EarningsDashboard = ({
         }}
       />
     </div>
-  );
+    </>
+    );
 };

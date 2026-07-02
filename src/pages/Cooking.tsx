@@ -25,6 +25,7 @@ import SocialRecipeFeed from "@/components/cooking/SocialRecipeFeed";
 import AIDietaryAdvisor from "@/components/cooking/AIDietaryAdvisor";
 import WeeklyCookingChallenge from "@/components/cooking/WeeklyCookingChallenge";
 import AIKitchenInventory from "@/components/cooking/AIKitchenInventory";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 import grilledChickenSalad from "@/assets/recipes/grilled-chicken-salad.jpg";
 import lentilSoup from "@/assets/recipes/lentil-soup.jpg";
@@ -1131,7 +1132,14 @@ const Cooking = () => {
   if (activeView !== "hub") {
     const back = () => setActiveView("hub");
     return (
-      <div className="min-h-screen flex flex-col bg-background">
+      <>
+        <FloatingHowItWorks title="How Cooking works" steps={[
+          { title: 'Explore the feature', desc: 'Browse the options and pick what interests you.' },
+          { title: 'Interact', desc: 'Tap actions, generate content, or make a selection. AI actions cost 2-5 credits.' },
+          { title: 'Review results', desc: 'Check the output, share, save or purchase where available.' },
+          { title: 'Come back', desc: 'Progress and history are saved to your account.' },
+        ]} />
+        <div className="min-h-screen flex flex-col bg-background">
         <main className="flex-1 container mx-auto px-4 py-20">
           {activeView === "substitution" && <AIIngredientSubstitution onBack={back} />}
           {activeView === "nutrition-calc" && <AINutritionCalculator onBack={back} />}
@@ -1146,7 +1154,8 @@ const Cooking = () => {
           {activeView === "inventory" && <AIKitchenInventory onBack={back} />}
         </main>
       </div>
-    );
+      </>
+      );
   }
 
   return (

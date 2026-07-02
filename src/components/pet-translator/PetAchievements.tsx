@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const achievements = [
   { id: 1, title: "First Translation", desc: "Complete your first pet translation", icon: "🎤", points: 50, unlocked: false },
@@ -23,7 +24,14 @@ interface PetAchievementsProps {
 
 export default function PetAchievements({ totalPoints }: PetAchievementsProps) {
   return (
-    <div className="mb-8">
+    <>
+      <FloatingHowItWorks title="How Pet Achievements works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="mb-8">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl sm:text-2xl font-black">🏅 Pet Achievements</h2>
         <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30">
@@ -45,5 +53,6 @@ export default function PetAchievements({ totalPoints }: PetAchievementsProps) {
         ))}
       </div>
     </div>
-  );
+    </>
+    );
 }

@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function FashionChallenges() {
   const queryClient = useQueryClient();
@@ -81,7 +82,14 @@ export default function FashionChallenges() {
   const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString('sk-SK', { day: 'numeric', month: 'long', year: 'numeric' });
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Fashion Challenges works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       <Card>
         <CardHeader><CardTitle className="flex items-center gap-2"><Trophy className="h-5 w-5" />Active Challenges</CardTitle></CardHeader>
         <CardContent>
@@ -153,5 +161,6 @@ export default function FashionChallenges() {
         </CardContent>
       </Card>
     </div>
-  );
+    </>
+    );
 }

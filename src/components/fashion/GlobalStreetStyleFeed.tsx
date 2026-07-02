@@ -11,6 +11,7 @@ import { Loader2, Globe, Upload, MapPin, Heart, MessageSquare, TrendingUp, Camer
 import { useAICredits } from "@/hooks/useAICredits";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const AI_SCORE_COST = 3;
 
@@ -106,7 +107,14 @@ export default function GlobalStreetStyleFeed() {
   });
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Global Street Style Feed works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       {/* Header */}
       <Card className="p-6 bg-gradient-to-br from-orange-500/15 via-primary/10 to-pink-500/15 border-primary/30 backdrop-blur-xl">
         <div className="flex items-center justify-between flex-wrap gap-3">
@@ -208,5 +216,6 @@ export default function GlobalStreetStyleFeed() {
         </div>
       )}
     </div>
-  );
+    </>
+    );
 }

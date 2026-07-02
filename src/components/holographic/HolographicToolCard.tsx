@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { LucideIcon } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props {
   icon: LucideIcon;
@@ -33,7 +34,14 @@ const iconColorMap: Record<string, string> = {
 
 export const HolographicToolCard = ({ icon: Icon, title, description, color, onClick, index, badge }: Props) => {
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title="How Holographic Tool Card works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.04, duration: 0.4 }}
@@ -60,5 +68,6 @@ export const HolographicToolCard = ({ icon: Icon, title, description, color, onC
       <h3 className="font-bold text-sm mb-0.5">{title}</h3>
       <p className="text-xs text-muted-foreground line-clamp-2">{description}</p>
     </motion.div>
-  );
+    </>
+    );
 };

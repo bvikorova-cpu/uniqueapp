@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Camera, Loader2 } from "lucide-react";
 import { useAICredits } from "@/hooks/useAICredits";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const VirtualTryOn = () => {
   const [photoUrl, setPhotoUrl] = useState("");
@@ -46,7 +47,14 @@ export const VirtualTryOn = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Virtual Try On works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       <Card className="p-6">
         <h2 className="text-2xl font-bold mb-4">Virtual Try-On</h2>
         <p className="text-sm text-muted-foreground mb-6">
@@ -118,5 +126,6 @@ export const VirtualTryOn = () => {
         </Card>
       )}
     </div>
-  );
+    </>
+    );
 };

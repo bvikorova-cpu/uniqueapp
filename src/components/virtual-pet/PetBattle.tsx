@@ -11,6 +11,7 @@ import puppyImg from "@/assets/pets/cute-puppy.png";
 import kittenImg from "@/assets/pets/cute-kitten.png";
 import bunnyImg from "@/assets/pets/cute-bunny.png";
 import hamsterImg from "@/assets/pets/cute-hamster.png";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const PetBattle = () => {
   const [selectedPets, setSelectedPets] = useState<string[]>([]);
@@ -89,7 +90,14 @@ export const PetBattle = () => {
   if (isLoading) return <div className="flex justify-center p-8"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Pet Battle works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
       {/* Battle Info Banner */}
       <Card className="border-red-500/20 bg-gradient-to-r from-red-500/10 via-orange-500/10 to-amber-500/10 backdrop-blur-xl overflow-hidden">
         <CardContent className="p-4">
@@ -261,5 +269,6 @@ export const PetBattle = () => {
         </Card>
       )}
     </motion.div>
-  );
+    </>
+    );
 };

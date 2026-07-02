@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ChefHat, Camera, Calendar, MessageSquare, Wine, MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const CookingAI = () => {
   const navigate = useNavigate();
@@ -60,7 +61,14 @@ const CookingAI = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 pt-20 pb-8 px-8">
+    <>
+      <FloatingHowItWorks title="How Cooking AI works" steps={[
+          { title: 'Explore the feature', desc: 'Browse the options and pick what interests you.' },
+          { title: 'Interact', desc: 'Tap actions, generate content, or make a selection. AI actions cost 2-5 credits.' },
+          { title: 'Review results', desc: 'Check the output, share, save or purchase where available.' },
+          { title: 'Come back', desc: 'Progress and history are saved to your account.' },
+        ]} />
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 pt-20 pb-8 px-8">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-5xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
@@ -155,7 +163,8 @@ const CookingAI = () => {
         </Card>
       </div>
     </div>
-  );
+    </>
+    );
 };
 
 export default CookingAI;

@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { SendGiftDialog } from "@/components/masterchef/SendGiftDialog";
 import { useMasterChefSubscription } from "@/hooks/useMasterChefSubscription";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function MasterChefDashboard() {
   const navigate = useNavigate();
@@ -53,13 +54,21 @@ export default function MasterChefDashboard() {
 
   if (subscriptionLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <>
+        <FloatingHowItWorks title="How Master Chef Dashboard works" steps={[
+          { title: 'Explore the feature', desc: 'Browse the options and pick what interests you.' },
+          { title: 'Interact', desc: 'Tap actions, generate content, or make a selection. AI actions cost 2-5 credits.' },
+          { title: 'Review results', desc: 'Check the output, share, save or purchase where available.' },
+          { title: 'Come back', desc: 'Progress and history are saved to your account.' },
+        ]} />
+        <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <Trophy className="h-12 w-12 animate-bounce text-primary mx-auto mb-4" />
           <p className="text-muted-foreground">Loading your KitchenStars dashboard...</p>
         </div>
       </div>
-    );
+      </>
+      );
   }
 
   if (!subscribed) {

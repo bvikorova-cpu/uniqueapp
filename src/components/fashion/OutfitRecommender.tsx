@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { Sparkles, Heart } from "lucide-react";
 import { useAICredits } from "@/hooks/useAICredits";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const OutfitRecommender = () => {
   const [occasion, setOccasion] = useState("casual");
@@ -69,7 +70,14 @@ export const OutfitRecommender = () => {
   });
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Outfit Recommender works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       <Card className="p-6 space-y-4">
         <h2 className="text-2xl font-bold">Get Outfit Recommendations</h2>
         <p className="text-sm text-muted-foreground">
@@ -178,5 +186,6 @@ export const OutfitRecommender = () => {
         )}
       </div>
     </div>
-  );
+    </>
+    );
 };

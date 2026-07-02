@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Heart, MessageCircle, Share2, Star, PawPrint, Crown } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const mockPosts = [
   { id: 1, user: "PawMaster", pet: "Max (Golden Retriever)", mood: "Happy 😄", score: 95, likes: 234, comments: 18, badge: "Top Pet" },
@@ -17,7 +18,14 @@ const mockPosts = [
 export default function PetSocialNetwork() {
   const navigate = useNavigate();
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Pet Social Network works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-xl sm:text-2xl font-black">🌍 Pet Social Network</h2>
         <Button size="sm" className="bg-gradient-to-r from-purple-600 to-fuchsia-600 text-xs" onClick={() => navigate("/pet-translator?tool=create-post")}>
@@ -65,5 +73,6 @@ export default function PetSocialNetwork() {
         ))}
       </div>
     </div>
-  );
+    </>
+    );
 }

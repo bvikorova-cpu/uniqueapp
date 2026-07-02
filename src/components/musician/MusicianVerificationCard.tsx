@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { BadgeCheck, ShieldAlert, Clock, XCircle } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props {
   profile: any;
@@ -82,7 +83,14 @@ export const MusicianVerificationCard = ({ profile, onUpdated }: Props) => {
   };
 
   return (
-    <Card className="border-primary/20">
+    <>
+      <FloatingHowItWorks title="How Musician Verification Card works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <Card className="border-primary/20">
       <CardHeader>
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div>
@@ -121,5 +129,6 @@ export const MusicianVerificationCard = ({ profile, onUpdated }: Props) => {
         </CardContent>
       )}
     </Card>
-  );
+    </>
+    );
 };

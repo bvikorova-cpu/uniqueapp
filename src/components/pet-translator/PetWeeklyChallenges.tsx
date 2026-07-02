@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Clock, Trophy, Users, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const challenges = [
   { id: 1, title: "Cutest Moment", desc: "Share your pet's cutest moment description and get the most votes", reward: "15 Credits", participants: 342, endsIn: "3d 12h", active: true },
@@ -14,7 +15,14 @@ const challenges = [
 
 export default function PetWeeklyChallenges() {
   return (
-    <div className="mb-8">
+    <>
+      <FloatingHowItWorks title="How Pet Weekly Challenges works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="mb-8">
       <h2 className="text-xl sm:text-2xl font-black mb-4">🎯 Weekly Pet Challenges</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {challenges.map((c, i) => (
@@ -47,5 +55,6 @@ export default function PetWeeklyChallenges() {
         ))}
       </div>
     </div>
-  );
+    </>
+    );
 }

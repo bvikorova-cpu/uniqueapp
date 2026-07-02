@@ -10,6 +10,7 @@ import { useAICredits } from "@/hooks/useAICredits";
 import { handleEdgeError } from "@/lib/handleEdgeError";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -46,7 +47,14 @@ export const AIPetHealthPredictor = ({ onBack }: Props) => {
   };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How AIPet Health Predictor works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2"><ArrowLeft className="w-4 h-4" />Back to Dashboard</Button>
       <div className="text-center space-y-2">
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 mb-2">
@@ -93,5 +101,6 @@ export const AIPetHealthPredictor = ({ onBack }: Props) => {
         </motion.div>
       )}
     </motion.div>
-  );
+    </>
+    );
 };

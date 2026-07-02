@@ -12,6 +12,7 @@ import { ConcertGiftsPanel } from "@/components/concerts/ConcertGiftsPanel";
 import { ReportConcertButton } from "@/components/concerts/ReportConcertButton";
 import { VerifiedBadge } from "@/components/profile/VerifiedBadge";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 type Concert = {
   id: string;
@@ -174,10 +175,18 @@ const ConcertWatch = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center pt-20">
+      <>
+        <FloatingHowItWorks title="How Concert Watch works" steps={[
+          { title: 'Explore the feature', desc: 'Browse the options and pick what interests you.' },
+          { title: 'Interact', desc: 'Tap actions, generate content, or make a selection. AI actions cost 2-5 credits.' },
+          { title: 'Review results', desc: 'Check the output, share, save or purchase where available.' },
+          { title: 'Come back', desc: 'Progress and history are saved to your account.' },
+        ]} />
+        <div className="min-h-screen bg-background flex items-center justify-center pt-20">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
-    );
+      </>
+      );
   }
 
   if (error || !allowed) {

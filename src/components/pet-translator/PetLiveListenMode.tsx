@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Mic, MicOff, Radio } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 // Always-listening mode: detects loud sounds (peak above threshold) and notifies.
 // Lightweight client-side detector — no recording uploaded; just notification.
@@ -55,7 +56,14 @@ export default function PetLiveListenMode({ onBack, onDetected }: { onBack: () =
   };
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title="How Pet Live Listen Mode works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-4">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <Card className="p-6">
         <div className="flex items-center justify-between mb-3">
@@ -73,5 +81,6 @@ export default function PetLiveListenMode({ onBack, onDetected }: { onBack: () =
         )}
       </Card>
     </div>
-  );
+    </>
+    );
 }

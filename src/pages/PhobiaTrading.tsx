@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import {
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   Brain, ShoppingCart, HeartPulse, TrendingUp, Shield, Zap, ArrowLeft,
   Flame, Trophy, Check, BarChart3, BookOpen, Users, Eye, Activity,
   Bot, MessageCircle, Star, Play, Pause, Volume2, VolumeX, ArrowRightLeft, CreditCard,
@@ -133,7 +134,14 @@ const PhobiaTrading = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <FloatingHowItWorks title="How Phobia Trading works" steps={[
+          { title: 'Explore the feature', desc: 'Browse the options and pick what interests you.' },
+          { title: 'Interact', desc: 'Tap actions, generate content, or make a selection. AI actions cost 2-5 credits.' },
+          { title: 'Review results', desc: 'Check the output, share, save or purchase where available.' },
+          { title: 'Come back', desc: 'Progress and history are saved to your account.' },
+        ]} />
+      <div className="min-h-screen bg-background">
       <section className="relative h-[60vh] sm:h-[70vh] overflow-hidden">
         <video
           ref={videoRef}
@@ -360,7 +368,8 @@ const PhobiaTrading = () => {
         )}
       </div>
     </div>
-  );
+    </>
+    );
 };
 
 export default PhobiaTrading;

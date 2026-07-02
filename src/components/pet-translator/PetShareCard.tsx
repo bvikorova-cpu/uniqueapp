@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Download, Share2 } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props { petName: string; emotion?: string; quote: string; species?: string; }
 
@@ -42,7 +43,14 @@ export default function PetShareCard({ petName, emotion, quote, species = "dog" 
   };
 
   return (
-    <Card className="p-4">
+    <>
+      <FloatingHowItWorks title="How Pet Share Card works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <Card className="p-4">
       <div ref={ref} className="rounded-lg p-6 bg-gradient-to-br from-purple-500 to-pink-500 text-white text-center mb-3">
         <div className="text-2xl font-bold">{petName} {species === "cat" ? "🐱" : species === "dog" ? "🐶" : "🐾"}</div>
         {emotion && <div className="text-sm mt-1 opacity-90">{emotion}</div>}
@@ -53,5 +61,6 @@ export default function PetShareCard({ petName, emotion, quote, species = "dog" 
         <Button onClick={share} className="flex-1"><Share2 className="w-4 h-4 mr-1" />Share</Button>
       </div>
     </Card>
-  );
+    </>
+    );
 }

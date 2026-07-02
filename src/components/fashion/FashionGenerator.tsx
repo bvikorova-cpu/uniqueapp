@@ -11,6 +11,7 @@ import { Loader2, Sparkles, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function FashionGenerator() {
   const queryClient = useQueryClient();
@@ -147,7 +148,14 @@ export default function FashionGenerator() {
   };
 
   return (
-    <div className="grid lg:grid-cols-2 gap-6">
+    <>
+      <FloatingHowItWorks title="How Fashion Generator works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="grid lg:grid-cols-2 gap-6">
       {/* Generator Form */}
       <Card>
         <CardHeader>
@@ -365,5 +373,6 @@ export default function FashionGenerator() {
         </CardContent>
       </Card>
     </div>
-  );
+    </>
+    );
 }

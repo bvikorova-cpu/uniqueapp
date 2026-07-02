@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Stethoscope, ExternalLink } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const VETS = [
   { name: "Pawp 24/7 Vet Chat", url: "https://pawp.com", note: "$24/mo unlimited chat" },
@@ -11,7 +12,14 @@ const VETS = [
 
 export default function PetVetReferral({ onBack }: { onBack: () => void }) {
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title="How Pet Vet Referral works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-4">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <Card className="p-6">
         <h2 className="text-xl font-bold flex items-center gap-2 mb-2"><Stethoscope className="w-5 h-5 text-primary" /> Talk to a Real Vet</h2>
@@ -29,5 +37,6 @@ export default function PetVetReferral({ onBack }: { onBack: () => void }) {
         <p className="text-xs text-muted-foreground mt-4">Affiliate disclosure: we may earn a small commission from referrals at no extra cost to you.</p>
       </Card>
     </div>
-  );
+    </>
+    );
 }

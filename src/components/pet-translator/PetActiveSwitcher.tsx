@@ -1,6 +1,7 @@
 import { PawPrint } from "lucide-react";
 import { usePetProfiles } from "@/hooks/usePetProfiles";
 import { Badge } from "@/components/ui/badge";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function PetActiveSwitcher() {
   const { pets, active, setActive, loading } = usePetProfiles();
@@ -8,10 +9,18 @@ export default function PetActiveSwitcher() {
   if (loading) return null;
   if (pets.length === 0) {
     return (
-      <Badge variant="outline" className="h-9 px-3 gap-1 text-xs">
+      <>
+        <FloatingHowItWorks title="How Pet Active Switcher works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+        <Badge variant="outline" className="h-9 px-3 gap-1 text-xs">
         <PawPrint className="w-3.5 h-3.5" /> No pet — add one in My Pets
       </Badge>
-    );
+      </>
+      );
   }
 
   return (

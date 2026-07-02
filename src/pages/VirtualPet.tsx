@@ -20,6 +20,7 @@ import { AIPetCompatibilityChecker } from "@/components/virtual-pet/AIPetCompati
 import { AIPetBattleStrategy } from "@/components/virtual-pet/AIPetBattleStrategy";
 import { VirtualPetHero } from "@/components/virtual-pet/VirtualPetHero";
 import {
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   Heart, Store, Palette, ArrowLeftRight, Gamepad2, Swords, Dna,
   Brain, Wand2, Activity, BookOpen, Coins, CreditCard, Flame, Trophy, Star,
   SmilePlus, CalendarDays, HeartHandshake, Target
@@ -86,7 +87,14 @@ const VirtualPet = () => {
   const oldViews: ActiveView[] = ["pets", "battle", "shop", "customize", "trading", "games", "breeding"];
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <>
+      <FloatingHowItWorks title="How Virtual Pet works" steps={[
+          { title: 'Explore the feature', desc: 'Browse the options and pick what interests you.' },
+          { title: 'Interact', desc: 'Tap actions, generate content, or make a selection. AI actions cost 2-5 credits.' },
+          { title: 'Review results', desc: 'Check the output, share, save or purchase where available.' },
+          { title: 'Come back', desc: 'Progress and history are saved to your account.' },
+        ]} />
+      <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
       <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.03]"
         style={{ background: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(236,72,153,0.15) 3px, rgba(236,72,153,0.15) 4px)' }} />
@@ -206,7 +214,8 @@ const VirtualPet = () => {
         </div>
       </main>
     </div>
-  );
+    </>
+    );
 };
 
 export default VirtualPet;

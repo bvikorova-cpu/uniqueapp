@@ -16,6 +16,7 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import heroVideo from "@/assets/beauty-studio-hero.mp4.asset.json";
 import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const BEAUTY_HOW_IT_WORKS = [
   { title: "Pick a tool", desc: "Choose from AI Virtual Makeup, Hair Styler, Skin Analysis, Nail Art, Celebrity Match, Product Advisor, Tutorials or the community Gallery." },
@@ -80,7 +81,14 @@ const BeautyStudio = () => {
   if (activeView === "gallery") return <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 pt-20 pb-8"><BeautyGallery onBack={() => setActiveView("hub")} /></div></div>;
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <FloatingHowItWorks title="How Beauty Studio works" steps={[
+          { title: 'Explore the feature', desc: 'Browse the options and pick what interests you.' },
+          { title: 'Interact', desc: 'Tap actions, generate content, or make a selection. AI actions cost 2-5 credits.' },
+          { title: 'Review results', desc: 'Check the output, share, save or purchase where available.' },
+          { title: 'Come back', desc: 'Progress and history are saved to your account.' },
+        ]} />
+      <div className="min-h-screen bg-background">
       <Navbar />
 
       {/* Cinematic Video Hero */}
@@ -187,7 +195,8 @@ const BeautyStudio = () => {
         </div>
       </div>
     </div>
-  );
+    </>
+    );
 };
 
 export default BeautyStudio;

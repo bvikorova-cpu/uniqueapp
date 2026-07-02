@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Heart, Download, Eye, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function FashionGallery() {
   const queryClient = useQueryClient();
@@ -121,7 +122,14 @@ export default function FashionGallery() {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Fashion Gallery works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       {/* Search */}
       <Card className="p-4">
         <div className="flex gap-2">
@@ -198,5 +206,6 @@ export default function FashionGallery() {
         </div>
       )}
     </div>
-  );
+    </>
+    );
 }

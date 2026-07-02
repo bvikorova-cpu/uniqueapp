@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Star, Trash2, History as HistoryIcon } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Row {
   id: string; kind: string; emotion: string | null; text_result: string | null;
@@ -31,7 +32,14 @@ export default function PetTranslationHistory({ onBack }: { onBack: () => void }
   };
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title="How Pet Translation History works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-4">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <Card className="p-6">
         <h2 className="text-xl font-bold flex items-center gap-2 mb-4"><HistoryIcon className="w-5 h-5 text-primary" /> Translation History</h2>
@@ -61,5 +69,6 @@ export default function PetTranslationHistory({ onBack }: { onBack: () => void }
           </div>}
       </Card>
     </div>
-  );
+    </>
+    );
 }

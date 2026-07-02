@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2, Mic, Brain, Heart, Stethoscope, GraduationCap, Apple, ArrowLeft, Sparkles, Camera, Volume2, Shield, Bell } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const tools = [
   { id: "translate", title: "AI Pet Translator", desc: "Decode what your pet is saying from audio recordings", icon: Mic, cost: 4, color: "from-purple-500 to-violet-600" },
@@ -62,14 +63,22 @@ export default function PetToolsGrid({ activeView, setActiveView }: PetToolsGrid
     switch (toolId) {
       case "translate":
         return (
-          <div className="space-y-4">
+          <>
+            <FloatingHowItWorks title="How Pet Tools Grid works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+            <div className="space-y-4">
             <Textarea placeholder="Describe your pet's sound (e.g., 'My dog is making a high-pitched whining sound while looking at the door')" value={formData.description || ""} onChange={e => setFormData(p => ({ ...p, description: e.target.value }))} rows={3} />
             <Select value={formData.pet_type || ""} onValueChange={v => setFormData(p => ({ ...p, pet_type: v }))}>
               <SelectTrigger><SelectValue placeholder="Pet type" /></SelectTrigger>
               <SelectContent><SelectItem value="dog">Dog</SelectItem><SelectItem value="cat">Cat</SelectItem><SelectItem value="bird">Bird</SelectItem><SelectItem value="other">Other</SelectItem></SelectContent>
             </Select>
           </div>
-        );
+          </>
+          );
       case "emotion":
         return (
           <div className="space-y-4">

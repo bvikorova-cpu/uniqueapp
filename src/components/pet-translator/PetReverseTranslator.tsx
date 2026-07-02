@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { ArrowLeft, Loader2, MessageSquareText } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { usePetProfiles } from "@/hooks/usePetProfiles";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function PetReverseTranslator({ onBack }: { onBack: () => void }) {
   const { active } = usePetProfiles();
@@ -33,7 +34,14 @@ export default function PetReverseTranslator({ onBack }: { onBack: () => void })
   };
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title="How Pet Reverse Translator works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-4">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <Card className="p-6">
         <h2 className="text-xl font-bold mb-2 flex items-center gap-2"><MessageSquareText className="w-5 h-5 text-primary" /> Speak Pet (Human → {active?.species || "Pet"})</h2>
@@ -50,5 +58,6 @@ export default function PetReverseTranslator({ onBack }: { onBack: () => void })
         </Card>
       )}
     </div>
-  );
+    </>
+    );
 }

@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Flame, Gift, Star, Crown, Trophy, Heart } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const streakRewards = [
   { day: 3, reward: "+2 Bonus Credits", icon: Gift },
@@ -18,7 +19,14 @@ interface PetMoodStreaksProps {
 
 export default function PetMoodStreaks({ currentStreak }: PetMoodStreaksProps) {
   return (
-    <div className="mb-8">
+    <>
+      <FloatingHowItWorks title="How Pet Mood Streaks works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="mb-8">
       <h2 className="text-xl sm:text-2xl font-black mb-4">🔥 Pet Mood Streaks</h2>
       <Card className="bg-gradient-to-r from-purple-500/10 to-fuchsia-500/10 border-purple-500/20">
         <CardContent className="p-4 sm:p-6">
@@ -52,5 +60,6 @@ export default function PetMoodStreaks({ currentStreak }: PetMoodStreaksProps) {
         </CardContent>
       </Card>
     </div>
-  );
+    </>
+    );
 }

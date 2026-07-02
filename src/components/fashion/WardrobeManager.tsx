@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Plus, Trash2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const WardrobeManager = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -105,7 +106,14 @@ export const WardrobeManager = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Wardrobe Manager works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">My Wardrobe</h2>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -252,5 +260,6 @@ export const WardrobeManager = () => {
         </div>
       )}
     </div>
-  );
+    </>
+    );
 };

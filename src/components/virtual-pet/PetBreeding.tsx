@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dna, Loader2, Heart, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface PetBreedingProps { selectedPetId: string | null; }
 
@@ -57,7 +58,14 @@ export const PetBreeding = ({ selectedPetId }: PetBreedingProps) => {
   });
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Pet Breeding works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
       <div>
         <h2 className="text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Breeding Lab</h2>
         <p className="text-xs text-muted-foreground">Combine two pets (Level 10+) for rare offspring</p>
@@ -152,5 +160,6 @@ export const PetBreeding = ({ selectedPetId }: PetBreedingProps) => {
         )}
       </div>
     </motion.div>
-  );
+    </>
+    );
 };

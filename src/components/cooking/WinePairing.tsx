@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { Wine } from 'lucide-react';
 import { useCookingCredits } from '@/hooks/useCookingCredits';
 import { invokeOrThrow } from '@/utils/safeInvoke';
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const WinePairing = () => {
   const [dishName, setDishName] = useState('');
@@ -29,7 +30,14 @@ export const WinePairing = () => {
   });
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Wine Pairing works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       <Card className="p-6">
         <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
           <Wine className="h-6 w-6 text-primary" />
@@ -72,5 +80,6 @@ export const WinePairing = () => {
         </Card>
       )}
     </div>
-  );
+    </>
+    );
 };

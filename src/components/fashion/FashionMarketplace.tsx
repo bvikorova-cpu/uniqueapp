@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function FashionMarketplace() {
   const queryClient = useQueryClient();
@@ -77,7 +78,14 @@ export default function FashionMarketplace() {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Fashion Marketplace works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       <div className="grid md:grid-cols-3 gap-4">
         <Card>
           <CardContent className="pt-6 text-center space-y-2">
@@ -181,5 +189,6 @@ export default function FashionMarketplace() {
         </CardContent>
       </Card>
     </div>
-  );
+    </>
+    );
 }

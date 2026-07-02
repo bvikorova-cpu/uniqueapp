@@ -8,6 +8,7 @@ import { Target, Loader2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAICredits } from "@/hooks/useAICredits";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function AIBodyShapeAnalyzer() {
   const { credits } = useAICredits();
@@ -35,7 +36,14 @@ export default function AIBodyShapeAnalyzer() {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How AIBody Shape Analyzer works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       <Card className="p-4 sm:p-6 bg-gradient-to-br from-lime-500/10 to-green-500/10 border-lime-500/20">
         <div className="flex items-center gap-3 mb-4">
           <Target className="h-7 w-7 text-lime-400" />
@@ -94,5 +102,6 @@ export default function AIBodyShapeAnalyzer() {
         </div>
       )}
     </div>
-  );
+    </>
+    );
 }

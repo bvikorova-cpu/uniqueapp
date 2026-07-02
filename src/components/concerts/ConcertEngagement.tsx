@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Flame, Music, Trophy } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props {
   liveShows: number;
@@ -15,7 +16,14 @@ export const ConcertEngagement = ({ liveShows, totalConcerts, topGifts }: Props)
   ];
 
   return (
-    <div className="grid grid-cols-3 gap-3 mb-8">
+    <>
+      <FloatingHowItWorks title="How Concert Engagement works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="grid grid-cols-3 gap-3 mb-8">
       {items.map((item, i) => (
         <motion.div key={item.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 * i }}
@@ -26,5 +34,6 @@ export const ConcertEngagement = ({ liveShows, totalConcerts, topGifts }: Props)
         </motion.div>
       ))}
     </div>
-  );
+    </>
+    );
 };

@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Heart, Activity, Moon, Smile, TrendingUp, Thermometer } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from "recharts";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const moodData = [
   { day: "Mon", mood: 8, energy: 7, stress: 2 },
@@ -32,7 +33,14 @@ const stats = [
 
 export default function PetHealthDashboard() {
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Pet Health Dashboard works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       <h2 className="text-xl sm:text-2xl font-black">📊 Pet Health Dashboard</h2>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -93,5 +101,6 @@ export default function PetHealthDashboard() {
         </Card>
       </div>
     </div>
-  );
+    </>
+    );
 }
