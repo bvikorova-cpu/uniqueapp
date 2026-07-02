@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { usePurchaseVerification } from "@/hooks/usePurchaseVerification";
 import { getUserFriendlyErrorMessage } from "@/utils/errorHandler";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Tipster {
   id: string;
@@ -135,7 +136,7 @@ export function ExpertTips() {
 
   if (loading) {
     return (
-      <div className="flex justify-center py-12">
+<div className="flex justify-center py-12">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
@@ -166,6 +167,7 @@ export function ExpertTips() {
 
         return (
           <Card key={prediction.id} className="hover:shadow-lg transition-all">
+            <FloatingHowItWorks title="ExpertTips — How it works" steps={[{title:"Open this section",desc:"Access ExpertTips from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
             <CardHeader>
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-4">

@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Trophy, Crown, Ghost, Skull } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const tiers = [
   { min: 10, label: "Shadow Lord", icon: Crown, color: "text-yellow-400" },
@@ -27,7 +28,8 @@ export function ArenaLeaderboard() {
   const leaders = mockLeaders;
 
   return (
-    <div className="rounded-2xl border border-purple-900/30 bg-gradient-to-br from-purple-950/20 via-card/30 to-red-950/20 p-6 mb-8">
+<div className="rounded-2xl border border-purple-900/30 bg-gradient-to-br from-purple-950/20 via-card/30 to-red-950/20 p-6 mb-8">
+  <FloatingHowItWorks title="ArenaLeaderboard — How it works" steps={[{title:"Open this section",desc:"Access ArenaLeaderboard from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
       <h2 className="text-xl font-bold text-purple-400 flex items-center gap-2 mb-4">
         <Trophy className="w-5 h-5" />
         Arena Leaderboard

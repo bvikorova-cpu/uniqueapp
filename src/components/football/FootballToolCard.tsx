@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface FootballToolCardProps {
   icon: LucideIcon;
@@ -15,7 +16,8 @@ interface FootballToolCardProps {
 
 export function FootballToolCard({ icon: Icon, title, description, badge, credits, gradient, iconColor, onClick, delay = 0 }: FootballToolCardProps) {
   return (
-    <motion.div
+    <><FloatingHowItWorks title="FootballToolCard — How it works" steps={[{title:"Open this section",desc:"Access FootballToolCard from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay }}
@@ -36,5 +38,6 @@ export function FootballToolCard({ icon: Icon, title, description, badge, credit
         </div>
       </div>
     </motion.div>
+  </>
   );
 }

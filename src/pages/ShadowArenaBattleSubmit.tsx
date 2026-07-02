@@ -12,6 +12,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Clock, CheckCircle, ArrowLeft, Swords, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { GothicPageHeader } from '@/components/shadow-arena/GothicPageHeader';
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function ShadowArenaBattleSubmit() {
   const { battleId } = useParams();
@@ -102,7 +103,7 @@ export default function ShadowArenaBattleSubmit() {
 
   if (!battle) {
     return (
-      <SubscriptionGate>
+<SubscriptionGate>
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500"></div>
         </div>
@@ -118,6 +119,7 @@ export default function ShadowArenaBattleSubmit() {
 
   return (
     <SubscriptionGate>
+      <FloatingHowItWorks title="ShadowArenaBattleSubmit — How it works" steps={[{title:"Open this section",desc:"Access ShadowArenaBattleSubmit from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
       <div className="container mx-auto px-4 sm:px-6 pt-24 pb-8 max-w-4xl">
         <Button variant="ghost" size="sm" onClick={() => navigate(`/shadow-arena/battle/${battleId}`)} className="mb-4">
           <ArrowLeft className="w-4 h-4 mr-2" /> Back to Battle

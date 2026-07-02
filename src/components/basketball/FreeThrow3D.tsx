@@ -4,12 +4,13 @@ import { OrbitControls, Text } from "@react-three/drei";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, RotateCcw } from "lucide-react";
 import * as THREE from "three";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 // --- 3D Components ---
 
 function Court() {
   return (
-    <group>
+<group>
       {/* Wooden court */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
         <planeGeometry args={[28, 15]} />
@@ -267,6 +268,7 @@ export function FreeThrow3D({ onBack }: { onBack: () => void }) {
 
   return (
     <div className="space-y-4">
+      <FloatingHowItWorks title="FreeThrow3D — How it works" steps={[{title:"Open this section",desc:"Access FreeThrow3D from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
       <div className="flex items-center gap-3">
         <Button variant="ghost" onClick={onBack} className="gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button>
         <h2 className="text-xl font-bold">🏀 Free Throw Challenge</h2>

@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { useCursedAchievements } from "@/hooks/useShadowArenaFeatures";
 import { Trophy, Sparkles, Skull } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const RARITY_STYLES: Record<string, { color: string; glow: string; icon: typeof Trophy }> = {
   common: { color: "text-gray-300 border-gray-600/40", glow: "shadow-[0_0_15px_rgba(156,163,175,0.3)]", icon: Trophy },
@@ -13,7 +14,8 @@ export function CursedAchievementsCard() {
   const { data: achievements, isLoading } = useCursedAchievements();
 
   return (
-    <Card className="p-5 bg-gradient-to-br from-[hsl(280,30%,8%)] to-[hsl(0,0%,4%)] border-red-900/30 mb-6">
+<Card className="p-5 bg-gradient-to-br from-[hsl(280,30%,8%)] to-[hsl(0,0%,4%)] border-red-900/30 mb-6">
+  <FloatingHowItWorks title="CursedAchievementsCard — How it works" steps={[{title:"Open this section",desc:"Access CursedAchievementsCard from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
       <h3 className="text-xl font-black text-red-100 flex items-center gap-2 mb-4">
         <Skull className="w-5 h-5 text-yellow-400" />
         Cursed Achievements

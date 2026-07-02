@@ -3,6 +3,7 @@ import { Swords, Clock, Trophy } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Battle {
   id: string;
@@ -42,7 +43,8 @@ export function LiveBattleTicker({ battles }: { battles: Battle[] }) {
   if (activeBattles.length === 0) return null;
 
   return (
-    <div className="mb-8 overflow-hidden rounded-2xl border border-red-900/30 bg-gradient-to-r from-red-950/40 via-card/20 to-purple-950/40">
+    <><FloatingHowItWorks title="LiveBattleTicker — How it works" steps={[{title:"Open this section",desc:"Access LiveBattleTicker from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<div className="mb-8 overflow-hidden rounded-2xl border border-red-900/30 bg-gradient-to-r from-red-950/40 via-card/20 to-purple-950/40">
       <div className="flex items-center gap-2 px-4 py-2 border-b border-red-900/20 bg-red-950/30">
         <motion.div
           className="w-2 h-2 rounded-full bg-red-500"
@@ -82,5 +84,6 @@ export function LiveBattleTicker({ battles }: { battles: Battle[] }) {
         ))}
       </div>
     </div>
+  </>
   );
 }

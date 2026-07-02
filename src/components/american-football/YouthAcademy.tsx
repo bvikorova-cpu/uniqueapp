@@ -5,6 +5,7 @@ import { ArrowLeft, GraduationCap, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export function YouthAcademy({ onBack }: { onBack: () => void }) {
   const { user } = useAuth();
@@ -47,7 +48,8 @@ export function YouthAcademy({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <div className="space-y-4">
+    <><FloatingHowItWorks title="YouthAcademy — How it works" steps={[{title:"Open this section",desc:"Access YouthAcademy from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<div className="space-y-4">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" />Back</Button>
       <Card>
         <CardHeader><CardTitle className="flex items-center gap-2"><GraduationCap className="h-5 w-5 text-primary" />Draft Academy <span className="text-xs text-muted-foreground">(350 coins)</span></CardTitle></CardHeader>
@@ -68,5 +70,6 @@ export function YouthAcademy({ onBack }: { onBack: () => void }) {
         </CardContent>
       </Card>
     </div>
+  </>
   );
 }

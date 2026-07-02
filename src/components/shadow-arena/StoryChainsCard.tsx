@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Link2, Plus } from "lucide-react";
 import { useStoryChains } from "@/hooks/useShadowArenaFeatures";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export function StoryChainsCard() {
   const { chains, isLoading, createChain, addSegment } = useStoryChains();
@@ -15,7 +16,8 @@ export function StoryChainsCard() {
   const [segment, setSegment] = useState("");
 
   return (
-    <Card className="p-5 bg-gradient-to-br from-[hsl(280,30%,8%)] to-[hsl(0,0%,4%)] border-red-900/30 mb-6">
+    <><FloatingHowItWorks title="StoryChainsCard — How it works" steps={[{title:"Open this section",desc:"Access StoryChainsCard from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<Card className="p-5 bg-gradient-to-br from-[hsl(280,30%,8%)] to-[hsl(0,0%,4%)] border-red-900/30 mb-6">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-xl font-black text-red-100 flex items-center gap-2">
           <Link2 className="w-5 h-5 text-purple-400" />
@@ -78,5 +80,6 @@ export function StoryChainsCard() {
         </div>
       )}
     </Card>
+  </>
   );
 }

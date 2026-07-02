@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Film, Play } from "lucide-react";
 import { useHorrorReels } from "@/hooks/useShadowArenaFeatures";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export function HorrorReelsCard() {
   const { reels, generate } = useHorrorReels();
@@ -12,7 +13,8 @@ export function HorrorReelsCard() {
   const [title, setTitle] = useState("");
 
   return (
-    <Card className="p-5 bg-gradient-to-br from-[hsl(0,30%,8%)] to-[hsl(280,25%,7%)] border-red-900/30 mb-6">
+    <><FloatingHowItWorks title="HorrorReelsCard — How it works" steps={[{title:"Open this section",desc:"Access HorrorReelsCard from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<Card className="p-5 bg-gradient-to-br from-[hsl(0,30%,8%)] to-[hsl(280,25%,7%)] border-red-900/30 mb-6">
       <h3 className="text-xl font-black text-red-100 flex items-center gap-2 mb-1">
         <Film className="w-5 h-5 text-red-400" />
         Horror Reels
@@ -44,5 +46,6 @@ export function HorrorReelsCard() {
         </div>
       )}
     </Card>
+  </>
   );
 }

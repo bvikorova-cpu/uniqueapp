@@ -5,6 +5,7 @@ import { ArrowLeft, ShoppingBag } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const SHOP_ITEMS = [
   { name: "Pro Helmet", type: "helmet", rarity: "common", throwing_boost: 0, rushing_boost: 0, blocking_boost: 2, speed_boost: 0, stamina_boost: 3, price: 300 },
@@ -34,7 +35,8 @@ export function EquipmentShop({ onBack }: { onBack: () => void }) {
   const rarityColor = (r: string) => r === "legendary" ? "text-amber-400" : r === "epic" ? "text-purple-400" : r === "rare" ? "text-blue-400" : "text-muted-foreground";
 
   return (
-    <div className="space-y-4">
+    <><FloatingHowItWorks title="EquipmentShop — How it works" steps={[{title:"Open this section",desc:"Access EquipmentShop from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<div className="space-y-4">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" />Back</Button>
       <Card>
         <CardHeader><CardTitle className="flex items-center gap-2"><ShoppingBag className="h-5 w-5 text-primary" />Equipment Shop</CardTitle></CardHeader>
@@ -54,5 +56,6 @@ export function EquipmentShop({ onBack }: { onBack: () => void }) {
         </CardContent>
       </Card>
     </div>
+  </>
   );
 }

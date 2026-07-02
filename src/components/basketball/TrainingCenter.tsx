@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { spendSportCoins } from "@/lib/sportCoins";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const DRILLS = [
   { type: "Shooting Drills", stat: "shooting", cost: 200 },
@@ -51,7 +52,8 @@ export function TrainingCenter({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <div className="space-y-4">
+    <><FloatingHowItWorks title="TrainingCenter — How it works" steps={[{title:"Open this section",desc:"Access TrainingCenter from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<div className="space-y-4">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" />Back</Button>
       <Card>
         <CardHeader><CardTitle className="flex items-center gap-2"><Dumbbell className="h-5 w-5 text-primary" />Training Center</CardTitle></CardHeader>
@@ -71,5 +73,6 @@ export function TrainingCenter({ onBack }: { onBack: () => void }) {
         </CardContent>
       </Card>
     </div>
+  </>
   );
 }

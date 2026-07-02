@@ -5,6 +5,7 @@ import { Trophy } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { shadowArenaCall } from "@/hooks/useShadowArenaRouter";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface T { id: string; title: string; status: string; max_participants: number; entry_credits: number; prize_pool_credits: number; starts_at: string; }
 
@@ -34,7 +35,8 @@ export function TournamentsCard() {
   };
 
   return (
-    <Card className="p-5 mb-6 border-purple-900/40">
+    <><FloatingHowItWorks title="TournamentsCard — How it works" steps={[{title:"Open this section",desc:"Access TournamentsCard from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<Card className="p-5 mb-6 border-purple-900/40">
       <div className="flex items-center gap-2 mb-3">
         <Trophy className="h-5 w-5 text-amber-400" />
         <h3 className="font-bold">Weekly Tournaments</h3>
@@ -55,5 +57,6 @@ export function TournamentsCard() {
         </div>
       ))}
     </Card>
+  </>
   );
 }

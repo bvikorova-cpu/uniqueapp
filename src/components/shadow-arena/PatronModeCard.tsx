@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Crown, Lock } from "lucide-react";
 import { usePatronCheckout } from "@/hooks/useShadowArenaFeatures";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 
 export function PatronModeCard({ authorUserId, authorName }: { authorUserId: string; authorName: string }) {
@@ -30,7 +31,8 @@ export function PatronModeCard({ authorUserId, authorName }: { authorUserId: str
   ];
 
   return (
-    <Card className="p-5 bg-gradient-to-br from-[hsl(45,30%,8%)] via-[hsl(0,30%,7%)] to-[hsl(280,25%,7%)] border-yellow-900/30 mb-6">
+    <><FloatingHowItWorks title="PatronModeCard — How it works" steps={[{title:"Open this section",desc:"Access PatronModeCard from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<Card className="p-5 bg-gradient-to-br from-[hsl(45,30%,8%)] via-[hsl(0,30%,7%)] to-[hsl(280,25%,7%)] border-yellow-900/30 mb-6">
       <h3 className="text-xl font-black text-yellow-100 flex items-center gap-2 mb-1">
         <Crown className="w-5 h-5 text-yellow-400" />
         {`Become a Patron of ${authorName}`}
@@ -63,5 +65,6 @@ export function PatronModeCard({ authorUserId, authorName }: { authorUserId: str
         ))}
       </div>
     </Card>
+  </>
   );
 }

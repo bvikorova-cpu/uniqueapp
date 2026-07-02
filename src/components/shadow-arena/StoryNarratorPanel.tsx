@@ -5,6 +5,7 @@ import { Volume2, Loader2 } from "lucide-react";
 import { useShadowAITools, useShadowArenaCredits, SHADOW_AI_COSTS } from "@/hooks/useShadowArenaAI";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const VOICES = [
   { id: "kPtEHAvRnjUJFv7SK9WI", label: "Glitch (whispered)" },
@@ -39,7 +40,8 @@ export function StoryNarratorPanel({ text, storyId, existingAudioUrl }: Props) {
   };
 
   return (
-    <Card className="p-5 mb-6 bg-gradient-to-br from-purple-950/20 via-card/60 to-red-950/15 border-purple-900/30">
+    <><FloatingHowItWorks title="StoryNarratorPanel — How it works" steps={[{title:"Open this section",desc:"Access StoryNarratorPanel from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<Card className="p-5 mb-6 bg-gradient-to-br from-purple-950/20 via-card/60 to-red-950/15 border-purple-900/30">
       <div className="flex items-start justify-between gap-3 flex-wrap mb-3">
         <div className="flex items-center gap-2">
           <motion.div
@@ -78,5 +80,6 @@ export function StoryNarratorPanel({ text, storyId, existingAudioUrl }: Props) {
         <audio controls src={audio} className="w-full mt-3" />
       )}
     </Card>
+  </>
   );
 }

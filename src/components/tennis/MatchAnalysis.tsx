@@ -5,6 +5,7 @@ import { ArrowLeft, BarChart3, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export function MatchAnalysis({ onBack }: { onBack: () => void }) {
   const { user } = useAuth();
@@ -36,7 +37,8 @@ export function MatchAnalysis({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <div className="space-y-4">
+    <><FloatingHowItWorks title="MatchAnalysis — How it works" steps={[{title:"Open this section",desc:"Access MatchAnalysis from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<div className="space-y-4">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" />Back</Button>
       <Card>
         <CardHeader><CardTitle className="flex items-center gap-2"><BarChart3 className="h-5 w-5 text-primary" />AI Match Analysis <span className="text-xs text-muted-foreground">(400 coins)</span></CardTitle></CardHeader>
@@ -46,5 +48,6 @@ export function MatchAnalysis({ onBack }: { onBack: () => void }) {
         </CardContent>
       </Card>
     </div>
+  </>
   );
 }

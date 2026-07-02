@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { GothicPageHeader } from '@/components/shadow-arena/GothicPageHeader';
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Battle {
   id: string;
@@ -114,7 +115,8 @@ export default function ShadowArenaBattles() {
   ];
 
   return (
-    <SubscriptionGate>
+<SubscriptionGate>
+  <FloatingHowItWorks title="ShadowArenaBattles — How it works" steps={[{title:"Open this section",desc:"Access ShadowArenaBattles from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
       <div className="container mx-auto px-4 sm:px-6 pt-24 pb-8 max-w-5xl">
         {/* Back nav */}
         <Button variant="ghost" size="sm" onClick={() => navigate('/shadow-arena/dashboard')} className="mb-4">

@@ -15,6 +15,7 @@ import { ExpertTips } from "@/components/sports/ExpertTips";
 import { TipstersLeaderboard } from "@/components/sports/TipstersLeaderboard";
 import { getUserFriendlyErrorMessage } from "@/utils/errorHandler";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import {
   Trophy,
   TrendingUp,
@@ -250,7 +251,8 @@ export default function SportsPredictor() {
   const canViewPredictions = subscribed && (tier === 'ai_premium' || tier === 'expert_tipster');
 
   return (
-    <div className="min-h-screen bg-background">
+    <><FloatingHowItWorks title="SportsPredictor — How it works" steps={[{title:"Open this section",desc:"Access SportsPredictor from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="relative py-16 sm:py-20 px-3 sm:px-4 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
@@ -637,5 +639,6 @@ export default function SportsPredictor() {
         onOpenChange={setShowTipsterDialog}
       />
     </div>
+  </>
   );
 }

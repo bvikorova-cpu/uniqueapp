@@ -21,6 +21,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface TipsterRegistrationDialogProps {
   open: boolean;
@@ -227,7 +228,8 @@ export function TipsterRegistrationDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <><FloatingHowItWorks title="TipsterRegistrationDialog — How it works" steps={[{title:"Open this section",desc:"Access TipsterRegistrationDialog from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Become a Professional Tipster</DialogTitle>
@@ -368,5 +370,6 @@ export function TipsterRegistrationDialog({
         )}
       </DialogContent>
     </Dialog>
+  </>
   );
 }

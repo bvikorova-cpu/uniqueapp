@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Coins, Zap } from "lucide-react";
 import { useShadowArenaCredits } from "@/hooks/useShadowArenaAI";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 
 const PACKAGES = [
@@ -16,7 +17,8 @@ export function ShadowCreditsCard() {
   const balance = credits?.credits_remaining ?? 0;
 
   return (
-    <Card className="p-5 bg-gradient-to-br from-[hsl(0,30%,8%)] via-[hsl(280,25%,7%)] to-[hsl(0,0%,4%)] border-red-900/30 mb-6 overflow-hidden relative">
+    <><FloatingHowItWorks title="ShadowCreditsCard — How it works" steps={[{title:"Open this section",desc:"Access ShadowCreditsCard from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<Card className="p-5 bg-gradient-to-br from-[hsl(0,30%,8%)] via-[hsl(280,25%,7%)] to-[hsl(0,0%,4%)] border-red-900/30 mb-6 overflow-hidden relative">
       <div className="absolute top-0 right-0 w-48 h-48 bg-red-700/10 rounded-full blur-3xl" />
 
       <div className="relative z-10 flex items-start justify-between gap-4 mb-5 flex-wrap">
@@ -71,5 +73,6 @@ export function ShadowCreditsCard() {
         ))}
       </div>
     </Card>
+  </>
   );
 }

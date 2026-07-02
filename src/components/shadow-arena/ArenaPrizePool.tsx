@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Trophy, DollarSign } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface ArenaPrizePoolProps {
   totalPool: number;
@@ -14,7 +15,8 @@ const segments = [
 
 export function ArenaPrizePool({ totalPool }: ArenaPrizePoolProps) {
   return (
-    <div className="mb-8 rounded-2xl border border-yellow-900/30 bg-gradient-to-br from-yellow-950/20 via-card/30 to-red-950/20 p-6">
+    <><FloatingHowItWorks title="ArenaPrizePool — How it works" steps={[{title:"Open this section",desc:"Access ArenaPrizePool from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<div className="mb-8 rounded-2xl border border-yellow-900/30 bg-gradient-to-br from-yellow-950/20 via-card/30 to-red-950/20 p-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold text-yellow-400 flex items-center gap-2">
           <Trophy className="w-5 h-5" />
@@ -57,5 +59,6 @@ export function ArenaPrizePool({ totalPool }: ArenaPrizePoolProps) {
         Payouts processed via Stripe within 48 hours of battle completion
       </p>
     </div>
+  </>
   );
 }

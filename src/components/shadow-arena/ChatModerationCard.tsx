@@ -6,6 +6,7 @@ import { Shield, X, UserPlus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { shadowArenaCall } from "@/hooks/useShadowArenaRouter";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export function ChatModerationCard() {
   const [words, setWords] = useState<{ id: string; word: string }[]>([]);
@@ -41,7 +42,8 @@ export function ChatModerationCard() {
   };
 
   return (
-    <Card className="p-5 mb-6 border-purple-900/40">
+    <><FloatingHowItWorks title="ChatModerationCard — How it works" steps={[{title:"Open this section",desc:"Access ChatModerationCard from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<Card className="p-5 mb-6 border-purple-900/40">
       <div className="flex items-center gap-2 mb-3">
         <Shield className="h-5 w-5 text-blue-400" />
         <h3 className="font-bold">Chat Moderation</h3>
@@ -78,5 +80,6 @@ export function ChatModerationCard() {
         </div>
       </div>
     </Card>
+  </>
   );
 }

@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Flame, Target, Star, Zap } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const achievements = [
   { code: "first_blood", label: "First Blood", desc: "Win your first battle", icon: Flame, color: "text-red-400" },
@@ -11,7 +12,8 @@ const achievements = [
 export function ArenaAchievements() {
   // All locked by default — real unlock status would come from supabase
   return (
-    <div className="rounded-2xl border border-border/30 bg-card/20 p-6 mb-8">
+    <><FloatingHowItWorks title="ArenaAchievements — How it works" steps={[{title:"Open this section",desc:"Access ArenaAchievements from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+<div className="rounded-2xl border border-border/30 bg-card/20 p-6 mb-8">
       <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
         <Star className="w-5 h-5 text-yellow-400" />
         Achievements
@@ -33,5 +35,6 @@ export function ArenaAchievements() {
         ))}
       </div>
     </div>
+  </>
   );
 }

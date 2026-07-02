@@ -6,6 +6,7 @@ import { Target } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { shadowArenaCall } from "@/hooks/useShadowArenaRouter";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Goal { id: string; title: string; target_credits: number; current_credits: number; reward_description: string | null; is_active: boolean; }
 
@@ -33,7 +34,7 @@ export function StreamGoalsCard() {
   };
 
   return (
-    <Card className="p-5 mb-6 border-purple-900/40">
+<Card className="p-5 mb-6 border-purple-900/40">
       <div className="flex items-center gap-2 mb-3">
         <Target className="h-5 w-5 text-emerald-400" />
         <h3 className="font-bold">Stream Goals</h3>
@@ -49,6 +50,7 @@ export function StreamGoalsCard() {
           const pct = Math.min(100, Math.round((g.current_credits / g.target_credits) * 100));
           return (
             <div key={g.id} className="p-3 rounded border border-border/50 bg-black/30">
+              <FloatingHowItWorks title="StreamGoalsCard — How it works" steps={[{title:"Open this section",desc:"Access StreamGoalsCard from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
               <div className="flex justify-between text-sm mb-1">
                 <span className="font-medium">{g.title}{!g.is_active && " ✅"}</span>
                 <span className="text-amber-300">{g.current_credits}/{g.target_credits}</span>
