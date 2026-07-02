@@ -96,7 +96,7 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
     { question: "Who was the first president of the USA?", options: ["Jefferson", "Washington", "Lincoln", "Adams"], correct: 1 },
     { question: "When did the Berlin Wall fall?", options: ["1987", "1988", "1989", "1990"], correct: 2 },
     { question: "Who discovered America?", options: ["Magellan", "Columbus", "Vasco da Gama", "Cook"], correct: 1 },
-    { question: "In what year was Czechoslovakia established?", options: ["1916", "1917", "1918", "1919"], correct: 2 },
+    { question: "In what year did the French Revolution begin?", options: ["1776", "1789", "1804", "1815"], correct: 1 },
   ],
   literature: [
     { question: "Who wrote Romeo and Juliet?", options: ["Byron", "Shakespeare", "Dickens", "Wilde"], correct: 1 },
