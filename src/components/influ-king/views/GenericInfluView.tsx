@@ -10,7 +10,7 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props {
   onBack: () => void;
   title: string;
-  desc: string;
+  desc?: string;
   description: string;
   icon: LucideIcon;
   action: string;
