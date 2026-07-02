@@ -32,6 +32,7 @@ import ReincarnationParityPack from "@/components/reincarnation/ReincarnationPar
 import heroPoster from "@/assets/reincarnation-hero-poster.jpg";
 // @ts-ignore
 import heroVideoAsset from "/public/videos/reincarnation-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 type ToolView = "hub" | "regression" | "karma" | "soulmates" | "plan" |
   "journey-map" | "akashic" | "gallery" | "community" | "journal" | "meditation" |
@@ -150,6 +151,9 @@ const ReincarnationSocial = () => {
 
   if (verifyingPayment) {
     return (
+      
+    <>
+      <FloatingHowItWorks title="Reincarnation Social" steps={[{ title: "Reveal your soul type", desc: "Complete a soul profile to unlock the network." }, { title: "Find soul kin", desc: "Match with users whose past lives echo yours." }, { title: "Meditate together", desc: "Join the Meditation Chamber and Akashic Records." }, { title: "Journal lessons", desc: "Track karmic growth over time." }]} />
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Card className="max-w-md p-12 text-center border-primary/30 bg-card/80 backdrop-blur-xl">
           <Sparkles className="h-16 w-16 mx-auto text-primary animate-pulse" />
@@ -158,7 +162,8 @@ const ReincarnationSocial = () => {
           <Loader2 className="h-8 w-8 mx-auto animate-spin text-primary mt-4" />
         </Card>
       </div>
-    );
+    </>
+  );
   }
 
   // Tool subpage view

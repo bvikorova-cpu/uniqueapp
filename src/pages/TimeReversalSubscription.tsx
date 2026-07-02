@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { ModuleSubscriptionHero } from "@/components/subscription/ModuleSubscriptionHero";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const FEATURES = {
   timeSpeed: {
@@ -132,7 +133,10 @@ export default function TimeReversalSubscription() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    
+    <>
+      <FloatingHowItWorks title="Time Reversal Subscription" steps={[{ title: "Pick a tier", desc: "Free, Plus, or Unlimited rewinds." }, { title: "Checkout with Stripe", desc: "Secure payment in EUR." }, { title: "Unlock deeper rewinds", desc: "More branches, longer history." }, { title: "Cancel anytime", desc: "Manage from your billing portal." }]} />
+      <div className="min-h-screen relative overflow-hidden">
       {/* Animated background */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-background to-blue-500/10" />
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiM5MzMzZWEiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDE0YzAtMS4xLS45LTItMi0yaC0yYy0xLjEgMC0yIC45LTIgMnYyYzAgMS4xLjkgMiAyIDJoMmMxLjEgMCAyLS45IDItMnYtMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-40" />
@@ -285,5 +289,6 @@ export default function TimeReversalSubscription() {
         </div>
       </div>
     </div>
+    </>
   );
 }

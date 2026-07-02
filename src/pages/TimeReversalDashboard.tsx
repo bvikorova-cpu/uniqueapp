@@ -7,6 +7,7 @@ import { TIME_REVERSAL_PRODUCTS, getTimeReversalProduct, hasTimeReversalFeature 
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function TimeReversalDashboard() {
   const { subscribed, activeFeatures, subscription_end, loading, refresh } = useTimeReversalSubscription();
@@ -26,10 +27,14 @@ export default function TimeReversalDashboard() {
 
   if (loading) {
     return (
+      
+    <>
+      <FloatingHowItWorks title="Time Reversal Dashboard" steps={[{ title: "See your timelines", desc: "All your rewinds and alt outcomes in one place." }, { title: "Filter by impact", desc: "High-impact reversals first." }, { title: "Reopen a rewind", desc: "Continue exploring branches." }, { title: "Export learnings", desc: "Save reflections to your journal." }]} />
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
-    );
+    </>
+  );
   }
 
   if (!subscribed || activeFeatures.length === 0) {

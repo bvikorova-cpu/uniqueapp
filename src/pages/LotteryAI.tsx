@@ -36,6 +36,7 @@ import { LotteryParityPack } from "@/components/lottery/LotteryParityPack";
 import { Moon, Hash, Activity, Users } from "lucide-react";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const LOTTERY_TYPES = [
   { id: "eurojackpot", name: "EuroJackpot", maxNumber: 50, bonusBalls: 12, mainBalls: 5, bonusCount: 2 },
   { id: "lotto", name: "Lotto 6/49", maxNumber: 49, bonusBalls: 0, mainBalls: 6, bonusCount: 0 },
@@ -106,7 +107,12 @@ export default function LotteryAI() {
       if (session?.user) { checkSubscription(); loadHistory(); }
       else { setSubscription(null); setSavedCombinations([]); }
     });
-    return () => { authSubscription.unsubscribe(); };
+    return (
+    <>
+      <FloatingHowItWorks title="Lottery AI Predictions" steps={[{ title: "Pick a lottery", desc: "Select the game and draw you want numbers for." }, { title: "Generate numbers", desc: "AI blends numerology, statistics, and randomness (costs credits)." }, { title: "Review the set", desc: "See combos with reasoning; regenerate if you want." }, { title: "Play responsibly", desc: "For entertainment \u2014 no guaranteed wins." }]} />
+      
+    </>
+  ) => { authSubscription.unsubscribe(); };
   }, []);
 
   useEffect(() => {

@@ -24,6 +24,7 @@ import { CREDIT_COSTS } from "@/hooks/useAstrologyCredits";
 import { usePaymentVerification } from "@/hooks/usePaymentVerification";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ActiveView = "dashboard" | "horoscope" | "tarot" | "dream" | "numerology" | "palmistry" | "compatibility" | "yesno" | "rune" | "birthchart" | "livechat";
 
 const TOOLS = [
@@ -62,6 +63,9 @@ const Astrology = () => {
   if (activeView !== "dashboard") {
     const tool = TOOLS.find(t => t.id === activeView);
     return (
+      
+    <>
+      <FloatingHowItWorks title="Astrology" steps={[{ title: "Set your chart", desc: "Enter birth date, time, and place." }, { title: "Read your daily", desc: "Get horoscope, ritual, and mood forecast." }, { title: "Chat with the AI", desc: "Ask relationship, career, or timing questions." }, { title: "Track patterns", desc: "Save readings and revisit your mystical profile." }]} />
       <div className="min-h-screen bg-background p-2 sm:p-4">
         <div className="container mx-auto max-w-4xl pt-16 sm:pt-20">
           <Button variant="ghost" onClick={() => setActiveView("dashboard")} className="mb-4 gap-2 text-muted-foreground hover:text-foreground">
@@ -82,7 +86,8 @@ const Astrology = () => {
           {renderToolView()}
         </div>
       </div>
-    );
+    </>
+  );
   }
 
   return (

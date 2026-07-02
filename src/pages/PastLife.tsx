@@ -24,6 +24,7 @@ import { PastLifeParityPack } from "@/components/past-life/PastLifeParityPack";
 import { usePastLifeCredits } from "@/hooks/usePastLifeCredits";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ViewType = "hub" | "basic" | "full" | "soulmate" | "history" | "credits";
 
 const PAST_LIFE_TOOLS = [
@@ -89,7 +90,10 @@ const PastLife = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    
+    <>
+      <FloatingHowItWorks title="Past Life Explorer" steps={[{ title: "Enter your details", desc: "Birth date and reflective questions guide the reading." }, { title: "Generate a life", desc: "AI describes a plausible past-life persona and era." }, { title: "Explore soul art", desc: "Get a portrait, karmic lessons, and journal prompts." }, { title: "Share or save", desc: "Keep it private or share with the spiritual community." }]} />
+      <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-6 sm:py-10 space-y-6">
         <AnimatePresence mode="wait">
           {activeView === "hub" ? (
@@ -234,6 +238,7 @@ const PastLife = () => {
         </AnimatePresence>
       </div>
     </div>
+    </>
   );
 };
 

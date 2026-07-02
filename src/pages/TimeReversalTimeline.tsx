@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function TimeReversalTimeline() {
   const navigate = useNavigate();
@@ -95,13 +96,17 @@ export default function TimeReversalTimeline() {
 
   if (loading) {
     return (
+      
+    <>
+      <FloatingHowItWorks title="Time Reversal Timeline" steps={[{ title: "Scroll history", desc: "Chronological view of all rewinds." }, { title: "Compare versions", desc: "Original vs alternate side-by-side." }, { title: "Bookmark moments", desc: "Save pivotal branches." }, { title: "Continue exploring", desc: "Rewind further from any point." }]} />
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
           <p className="text-muted-foreground">Loading your timeline...</p>
         </div>
       </div>
-    );
+    </>
+  );
   }
 
   return (

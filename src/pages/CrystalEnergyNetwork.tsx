@@ -12,6 +12,7 @@ import { CrystalAbout } from "@/components/crystal/CrystalAbout";
 import CrystalParityPack from "@/components/crystal/CrystalParityPack";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function CrystalEnergyNetwork() {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -39,7 +40,10 @@ export default function CrystalEnergyNetwork() {
   }, [searchParams, toast]);
 
   return (
-    <div className="min-h-screen bg-background">
+    
+    <>
+      <FloatingHowItWorks title="Crystal & Energy Network" steps={[{ title: "Pick a crystal", desc: "Browse the library by intention or chakra." }, { title: "Use a tool", desc: "Sound bath, cleansing, or grid builder (costs credits)." }, { title: "Join the network", desc: "Connect with others working the same energy." }, { title: "Track your practice", desc: "Log sessions and see energetic progress." }]} />
+      <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 pt-24 pb-8">
         {/* Hero */}
         <CrystalHero />
@@ -77,5 +81,6 @@ export default function CrystalEnergyNetwork() {
         )}
       </div>
     </div>
+    </>
   );
 }

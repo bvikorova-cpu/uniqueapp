@@ -28,6 +28,7 @@ import { QuantumTimeTravel } from "@/components/quantum-social/QuantumTimeTravel
 import { EntanglementNetworkMap } from "@/components/quantum-social/EntanglementNetworkMap";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ViewType = "hub" | "feed" | "profile" | "observer" | "entanglements" | "subscriptions" | "chat" | "voting" | "achievements" | "oracle" | "nfts" | "merge" | "tournaments" | "leaderboard" | "timetravel" | "networkmap";
 
 const tools = [
@@ -113,6 +114,9 @@ const QuantumSocial = () => {
 
   if (activeView !== "hub") {
     return (
+      
+    <>
+      <FloatingHowItWorks title="Quantum Social Network" steps={[{ title: "Ask the Oracle", desc: "Quantum AI answers reality-bending questions." }, { title: "Entangle with users", desc: "Form quantum pairs for synced experiences." }, { title: "Observe outcomes", desc: "Predictions collapse based on your choices." }, { title: "Iterate", desc: "Rerun experiments to see new branches." }]} />
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 pt-20 pb-8">
           <motion.div
@@ -124,7 +128,8 @@ const QuantumSocial = () => {
           </motion.div>
         </div>
       </div>
-    );
+    </>
+  );
   }
 
   return (
