@@ -119,6 +119,19 @@ export default function RewardsLoginCalendar() {
             {"See what's coming this month"}
           </CardTitle>
         </CardHeader>
+        <CardContent className="pb-2">
+          <div className="rounded-lg bg-primary/5 border border-primary/10 p-3 text-xs text-muted-foreground space-y-1">
+            <p className="flex items-start gap-2 font-medium text-foreground">
+              <Info className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+              {"How it works"}
+            </p>
+            <p>{"1. Each day you log in, click today's tile to claim your reward."}</p>
+            <p>{"2. Only today's reward can be claimed — missed days are locked."}</p>
+            <p>{"3. Streak Freeze lets you unlock a missed day and keep your streak alive."}</p>
+            <p>{"4. Milestone days (7, 14, 21, 30) give bigger bonus rewards."}</p>
+            <p>{"5. The calendar resets at the start of each new month."}</p>
+          </div>
+        </CardContent>
         <CardContent>
           <div className="grid grid-cols-5 sm:grid-cols-7 gap-2">
             {days.map(day => {
