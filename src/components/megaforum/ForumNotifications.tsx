@@ -5,6 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface ForumNotificationsProps {
   userId: string;
@@ -52,6 +53,17 @@ export const ForumNotifications = ({ userId, onViewPost }: ForumNotificationsPro
 
   return (
     <Popover>
+      <FloatingHowItWorks
+        title={"Forum Notifications"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <PopoverTrigger asChild>
         <Button variant="ghost" size="sm" className="relative h-8 w-8 p-0">
           <Bell className="h-4 w-4" />

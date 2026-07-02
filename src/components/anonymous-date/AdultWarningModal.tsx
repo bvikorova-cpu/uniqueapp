@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface AdultWarningModalProps {
   open: boolean;
@@ -55,7 +56,18 @@ export function AdultWarningModal({ open, onAccept, onDecline }: AdultWarningMod
   };
 
   return (
-    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onDecline()}>
+    <Dialog open={open} onOpenChange={(isOpen) =>
+      <FloatingHowItWorks
+        title={"Adult Warning Modal"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+ !isOpen && onDecline()}>
       <DialogContent className="sm:max-w-md bg-card/95 backdrop-blur-xl border-border/50">
         <DialogHeader>
           <div className="flex justify-center mb-4">

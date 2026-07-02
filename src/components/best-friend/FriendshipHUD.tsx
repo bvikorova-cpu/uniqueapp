@@ -4,6 +4,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { Flame, Trophy, Heart } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const LEVEL_NAMES: Record<number, string> = {
   1: "New Friend", 2: "Acquaintance", 3: "Buddy", 4: "Close Friend",
@@ -32,6 +33,17 @@ export const FriendshipHUD = () => {
 
   return (
     <Card className="bg-card/80 backdrop-blur-xl border-purple-500/20">
+      <FloatingHowItWorks
+        title={"Friendship H U D"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <CardContent className="p-4 grid grid-cols-3 gap-4">
         <div className="text-center">
           <Heart className="h-5 w-5 text-pink-400 mx-auto mb-1"/>

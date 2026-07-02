@@ -7,6 +7,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Crown, Calendar, Users, MessageCircle, Heart, Gift, Video, TrendingUp } from "lucide-react";
 import { useMembershipParity, MembershipParityAction, MEMBERSHIP_PARITY_COST } from "@/hooks/useMembershipParity";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const TOOLS: { id: MembershipParityAction; label: string; icon: any; desc: string; fields: { key: string; label: string; type?: "text" | "textarea"; placeholder?: string }[] }[] = [
   { id: "tier-designer", label: "Tier Designer", icon: Crown, desc: "AI-built 3-tier membership ladder", fields: [
@@ -58,6 +59,17 @@ function ToolForm({ tool }: { tool: typeof TOOLS[number] }) {
 
   return (
     <div className="space-y-4">
+      <FloatingHowItWorks
+        title={"Membership Parity Pack"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="space-y-3">
         {tool.fields.map(f => (
           <div key={f.key}>

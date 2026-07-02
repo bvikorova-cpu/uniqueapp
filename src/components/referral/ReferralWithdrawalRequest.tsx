@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const ReferralWithdrawalRequest = () => {
   const [amount, setAmount] = useState("");
@@ -165,6 +166,17 @@ export const ReferralWithdrawalRequest = () => {
 
   return (
     <div className="space-y-6">
+      <FloatingHowItWorks
+        title={"Referral Withdrawal Request"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <Card className="p-6">
         <div className="flex items-center gap-2 mb-4">
           <DollarSign className="h-6 w-6 text-primary" />

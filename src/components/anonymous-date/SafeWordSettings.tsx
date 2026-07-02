@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Shield, Save, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props {
   matchId: string;
@@ -44,6 +45,17 @@ export const SafeWordSettings = ({ matchId, currentUserId }: Props) => {
 
   return (
     <Card className="p-3 bg-gradient-to-br from-emerald-500/10 via-card/80 to-cyan-500/10 border-emerald-500/30">
+      <FloatingHowItWorks
+        title={"Safe Word Settings"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="flex items-center gap-2 mb-2">
         <Shield className="h-4 w-4 text-emerald-400" />
         <p className="text-sm font-bold">Safe Word</p>

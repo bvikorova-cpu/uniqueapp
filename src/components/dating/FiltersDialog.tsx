@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export interface DatingFilters {
   min_age: number;
@@ -77,6 +78,17 @@ export const FiltersDialog = ({ open, onOpenChange, userId, onSaved }: Props) =>
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
+      <FloatingHowItWorks
+        title={"Filters Dialog"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <DialogContent className="max-w-md">
         <DialogHeader><DialogTitle>Discovery Filters</DialogTitle></DialogHeader>
         {loading ? (

@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Heart, Users, MessageCircle, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import heroVideo from "@/assets/best-friend-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const useLiveStats = () => {
   const [stats, setStats] = useState({ conversations: 0, messages: 0, moods: 0, users: 0 });
@@ -36,6 +37,17 @@ export const BestFriendHero = () => {
 
   return (
     <div className="relative w-full h-[420px] md:h-[480px] overflow-hidden rounded-3xl mb-8">
+      <FloatingHowItWorks
+        title={"Best Friend Hero"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" style={{ filter: "brightness(1.3) saturate(1.2)" }}>
         <source src={heroVideo.url} type="video/mp4" />
       </video>

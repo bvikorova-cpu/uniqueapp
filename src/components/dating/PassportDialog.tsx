@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Globe2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const POPULAR = ["New York", "London", "Paris", "Tokyo", "Bali", "Barcelona", "Berlin", "Dubai", "Sydney", "Mexico City"];
 
@@ -33,6 +34,17 @@ export const PassportDialog = ({ open, onOpenChange, userId, current, onSaved }:
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
+      <FloatingHowItWorks
+        title={"Passport Dialog"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2"><Globe2 className="h-5 w-5 text-primary" /> Passport</DialogTitle>

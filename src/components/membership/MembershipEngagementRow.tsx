@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Flame, TrendingUp, Trophy, DollarSign, Users, FileText, Lock } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -17,6 +18,17 @@ const achievements = [
 export const MembershipEngagementRow = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <FloatingHowItWorks
+        title={"Membership Engagement Row"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       {/* Creator Streak */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
         <Card className="bg-card/80 backdrop-blur-xl border-border/50 h-full hover:border-primary/30 transition-all">

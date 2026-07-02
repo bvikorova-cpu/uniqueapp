@@ -3,6 +3,7 @@ import { Crown, Users, TrendingUp, DollarSign, Sparkles, Heart, Play, Pause, Vol
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useLiveStats } from "@/hooks/useLiveStats";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: string }) => {
   const [count, setCount] = useState(0);
@@ -46,6 +47,17 @@ export const MembershipHero = () => {
 
   return (
     <div className="relative h-[78vh] min-h-[540px] w-full overflow-hidden rounded-3xl border border-border/40 mb-8">
+      <FloatingHowItWorks
+        title={"Membership Hero"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <video ref={videoRef} className="absolute inset-0 h-full w-full object-cover brightness-110 saturate-110" autoPlay muted loop playsInline>
         <source src="/__l5e/assets-v1/f17c6c1b-77a2-41bf-b6be-baffa50439ac/membership-community-hero.mp4" type="video/mp4" />
       </video>

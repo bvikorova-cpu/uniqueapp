@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Flame, Wallet, Trophy } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export function EmotionEconomyEngagement() {
   const items = [
@@ -31,6 +32,17 @@ export function EmotionEconomyEngagement() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <FloatingHowItWorks
+        title={"Emotion Economy Engagement"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       {items.map((item, i) => (
         <motion.div
           key={item.label}

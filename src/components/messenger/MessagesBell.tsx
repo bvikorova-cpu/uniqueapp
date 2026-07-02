@@ -4,6 +4,7 @@ import { Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 /**
  * Header envelope icon that shows unread Messenger messages and links to /messenger.
@@ -92,6 +93,17 @@ const MessagesBell = () => {
 
   return (
     <Button asChild variant="ghost" size="icon" className="relative" aria-label="Messages">
+      <FloatingHowItWorks
+        title={"Messages Bell"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <Link to="/messenger">
         <Mail className="h-5 w-5" />
         {unread > 0 && (

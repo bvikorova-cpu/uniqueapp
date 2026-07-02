@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { X } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface TagInputProps {
   tags: string[];
@@ -22,6 +23,17 @@ export const TagInput = ({ tags, onChange, maxTags = 5 }: TagInputProps) => {
 
   return (
     <div className="space-y-2">
+      <FloatingHowItWorks
+        title={"Tag Input"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="flex gap-1 flex-wrap">
         {tags.map((tag) => (
           <Badge key={tag} variant="secondary" className="text-[10px] gap-1 pr-1">

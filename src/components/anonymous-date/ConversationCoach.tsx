@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Brain, Loader2, Coins, AlertTriangle, ArrowRight } from "lucide-react";
 import { useAnonymousDateAI } from "@/hooks/useAnonymousDateAI";
 import type { ChatMessage } from "@/hooks/useAnonymousChat";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props {
   matchId: string;
@@ -30,6 +31,17 @@ export const ConversationCoach = ({ matchId, messages, currentUserId, partnerNam
 
   return (
     <Card className="p-4 bg-gradient-to-br from-violet-500/10 via-card/80 to-primary/10 backdrop-blur-xl border-violet-500/30">
+      <FloatingHowItWorks
+        title={"Conversation Coach"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className="p-1.5 rounded-lg bg-gradient-to-br from-violet-500 to-primary">

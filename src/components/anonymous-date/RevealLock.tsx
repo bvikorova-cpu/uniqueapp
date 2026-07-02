@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Eye, Loader2, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props {
   matchId: string;
@@ -31,6 +32,17 @@ export const RevealLock = ({ matchId, currentUserId, partnerName, revealRequestA
   if (status === "revealed") {
     return (
       <Card className="p-3 bg-gradient-to-br from-emerald-500/15 to-primary/15 border-emerald-500/40 text-center">
+      <FloatingHowItWorks
+        title={"Reveal Lock"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
         <p className="text-sm font-bold text-emerald-400 flex items-center justify-center gap-2">
           <Eye className="h-4 w-4" /> Identities revealed ✨
         </p>

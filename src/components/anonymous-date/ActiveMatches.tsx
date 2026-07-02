@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { MessageCircle, Clock, Eye, Heart, Sparkles } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface ActiveMatchesProps {
   matches: any[];
@@ -15,6 +16,17 @@ export function ActiveMatches({ matches, onOpenChat, onFindMatch }: ActiveMatche
   if (matches.length === 0) {
     return (
       <Card className="p-10 sm:p-14 text-center bg-anon-date-gradient-soft border-anon-date relative overflow-hidden">
+      <FloatingHowItWorks
+        title={"Active Matches"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
         <motion.div
           animate={{ scale: [1, 1.15, 1], rotate: [0, -8, 8, 0] }}
           transition={{ duration: 4, repeat: Infinity }}

@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { LucideIcon } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface EmotionEconomyToolCardProps {
   icon: LucideIcon;
@@ -40,6 +41,17 @@ export function EmotionEconomyToolCard({
         hover:border-white/20 hover:shadow-[0_8px_32px_rgba(139,92,246,0.15)]
       `}
     >
+      <FloatingHowItWorks
+        title={"Emotion Economy Tool Card"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       {/* Glow effect */}
       <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 

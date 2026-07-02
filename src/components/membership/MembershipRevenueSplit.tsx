@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Sparkles, ShieldCheck, Wallet } from "lucide-react";
 import { CREATOR_SUBSCRIPTION_CREATOR_SHARE_PCT, CREATOR_SUBSCRIPTION_PLATFORM_FEE_PCT } from "@/lib/feeRates";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const exampleAmounts = [5, 10, 25];
 
@@ -10,6 +11,17 @@ export const MembershipRevenueSplit = () => {
 
   return (
     <section aria-labelledby="revenue-split-heading" className="my-10">
+      <FloatingHowItWorks
+        title={"Membership Revenue Split"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="relative overflow-hidden rounded-3xl border border-border/40 bg-gradient-to-br from-primary/10 via-background to-accent/10 p-6 md:p-8 backdrop-blur-xl">
         <div className="flex items-center gap-2 mb-2">
           <Sparkles className="h-5 w-5 text-primary" />

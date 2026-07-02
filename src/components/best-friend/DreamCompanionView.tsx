@@ -7,6 +7,7 @@ import { Moon, Loader2, Brain, BookOpen, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const DreamCompanionView = () => {
   const [dream, setDream] = useState("");
@@ -29,6 +30,17 @@ export const DreamCompanionView = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
+      <FloatingHowItWorks
+        title={"Dream Companion View"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="text-center">
         <Moon className="h-10 w-10 text-indigo-400 mx-auto mb-2" />
         <h2 className="text-2xl font-black">AI Dream Companion</h2>

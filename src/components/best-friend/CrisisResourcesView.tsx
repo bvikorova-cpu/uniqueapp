@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { AlertTriangle, Phone, Heart, Loader2 } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const HOTLINES = [
   { country: "🇸🇰 Slovakia", name: "Forget-Me-Not Trust Line", phone: "0800 800 566", hours: "24/7" },
@@ -30,6 +31,17 @@ export const CrisisResourcesView = () => {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
+      <FloatingHowItWorks
+        title={"Crisis Resources View"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="text-center">
         <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-red-500 to-rose-500 flex items-center justify-center mx-auto mb-4">
           <Heart className="h-8 w-8 text-white"/>

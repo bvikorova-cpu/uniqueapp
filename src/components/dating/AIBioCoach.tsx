@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sparkles, Loader2, Copy, ThumbsUp, AlertTriangle, Lightbulb } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props { profile: any; onApply?: (bio: string) => void; }
 
@@ -43,6 +44,17 @@ export const AIBioCoach = ({ profile, onApply }: Props) => {
 
   return (
     <Card className="border-primary/20">
+      <FloatingHowItWorks
+        title={"A I Bio Coach"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <Sparkles className="w-5 h-5 text-primary" /> AI Bio Coach

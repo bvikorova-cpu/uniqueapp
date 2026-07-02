@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Mic, Square, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const MAX_SECONDS = 60;
 
@@ -88,6 +89,17 @@ export const VoiceNoteRecorder = ({ userId, matchId, onSent }: Props) => {
   if (recording) {
     return (
       <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/30 rounded-full px-3 py-1.5">
+      <FloatingHowItWorks
+        title={"Voice Note Recorder"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
         <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
         <span className="text-xs font-mono text-red-500">{elapsed}s</span>
         <Button size="icon" variant="ghost" className="h-7 w-7 text-muted-foreground" onClick={cancel}><X className="h-4 w-4" /></Button>

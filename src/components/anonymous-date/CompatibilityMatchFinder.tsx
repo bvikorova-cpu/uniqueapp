@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, Sparkles, Heart, Loader2, MapPin, Globe, Target, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props {
   credits: number;
@@ -83,6 +84,17 @@ export function CompatibilityMatchFinder({ credits, loading, onFindMatch }: Prop
       animate={{ opacity: 1, y: 0 }}
       className="space-y-6 max-w-3xl mx-auto"
     >
+      <FloatingHowItWorks
+        title={"Compatibility Match Finder"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="text-center space-y-2">
         <h2 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-pink-500 via-primary to-accent bg-clip-text text-transparent">
           Find Your Anonymous Match

@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { Compass } from "lucide-react";
 import { useState } from "react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const TRAITS = [
   { id: "adventurous", label: "Adventurous", emoji: "🌍", color: "from-orange-500 to-pink-500" },
@@ -19,6 +20,17 @@ export const AnonymousDatePersonalityCompass = () => {
 
   return (
     <Card className="p-5 bg-card/80 backdrop-blur-xl border-border/50">
+      <FloatingHowItWorks
+        title={"Anonymous Date Personality Compass"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="flex items-center gap-2 mb-1">
         <div className="p-1.5 rounded-lg bg-gradient-to-br from-primary/20 to-pink-500/20">
           <Compass className="h-4 w-4 text-primary" />

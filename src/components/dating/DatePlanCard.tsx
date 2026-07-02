@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { CalendarHeart, MapPin, Video, Check, X, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface DatePlan {
   id: string;
@@ -94,6 +95,17 @@ export const DatePlanCard = ({ matchId, userId }: Props) => {
             const pending = p.status === "proposed";
             return (
               <div key={p.id} className="rounded-lg border border-border bg-card p-3 space-y-1.5">
+      <FloatingHowItWorks
+        title={"Date Plan Card"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
                     <p className="text-sm font-semibold truncate">{p.title}</p>

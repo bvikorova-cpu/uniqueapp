@@ -5,6 +5,7 @@ import { Flame, Star, Crown, Gift, Eye, Zap, Sparkles, Check } from "lucide-reac
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Pack {
   key: string;
@@ -54,6 +55,17 @@ export const DatingPremiumPanel = ({ userId, isSubscribed, likesYouCount, onSubs
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
+      <FloatingHowItWorks
+        title={"Dating Premium Panel"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       {/* Credit balance */}
       <Card className="border-2 border-primary/30 bg-gradient-to-br from-primary/10 to-pink-500/10">
         <CardContent className="p-4 flex items-center justify-between">

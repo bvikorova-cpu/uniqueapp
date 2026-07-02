@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface ReputationSystemProps {
   onBack: () => void;
@@ -93,6 +94,17 @@ export const ReputationSystem = ({ onBack }: ReputationSystemProps) => {
 
   return (
     <div className="space-y-6">
+      <FloatingHowItWorks
+        title={"Reputation System"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <Button variant="ghost" onClick={onBack} className="gap-2">
         <ArrowLeft className="h-4 w-4" /> Back
       </Button>

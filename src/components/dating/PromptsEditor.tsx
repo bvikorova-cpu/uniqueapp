@@ -12,6 +12,7 @@ import {
 import { Plus, X, MessageSquareQuote } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const PROMPT_QUESTIONS = [
   "Two truths and a lie...",
@@ -80,6 +81,17 @@ export const PromptsEditor = ({ profileId, value, onChange }: Props) => {
 
   return (
     <Card className="p-5">
+      <FloatingHowItWorks
+        title={"Prompts Editor"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-semibold text-sm flex items-center gap-2">
           <MessageSquareQuote className="h-4 w-4 text-primary" />

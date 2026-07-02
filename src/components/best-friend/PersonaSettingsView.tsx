@@ -9,6 +9,7 @@ import { Loader2, Save, User, Sparkles } from "lucide-react";
 import { toast as sonner } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const PersonaSettingsView = () => {
   const [loading, setLoading] = useState(true);
@@ -64,6 +65,17 @@ export const PersonaSettingsView = () => {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
+      <FloatingHowItWorks
+        title={"Persona Settings View"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="text-center">
         <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mx-auto mb-4">
           <User className="h-8 w-8 text-white" />

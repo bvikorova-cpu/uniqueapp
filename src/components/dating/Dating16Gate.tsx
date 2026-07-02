@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { ShieldAlert } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const STORAGE_KEY = "dating_age_gate_v1";
 
@@ -33,7 +34,18 @@ export const Dating16Gate = () => {
   };
 
   return (
-    <Dialog open={open} onOpenChange={(v) => { if (!v) deny(); }}>
+    <Dialog open={open} onOpenChange={(v) =>
+      <FloatingHowItWorks
+        title={"Dating16 Gate"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+ { if (!v) deny(); }}>
       <DialogContent className="max-w-sm">
         <DialogHeader>
           <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">

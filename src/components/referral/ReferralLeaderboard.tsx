@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Trophy, Crown, Medal, Award, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface LeaderEntry {
   referrer_id: string;
@@ -91,6 +92,17 @@ export const ReferralLeaderboard = ({ currentUserId }: Props) => {
 
   return (
     <Card className="border-yellow-500/20 bg-card/80 backdrop-blur-xl">
+      <FloatingHowItWorks
+        title={"Referral Leaderboard"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Trophy className="h-5 w-5 text-yellow-500" />

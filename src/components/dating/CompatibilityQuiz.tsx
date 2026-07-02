@@ -5,6 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { Brain, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface QuizAnswer { [key: string]: string }
 
@@ -58,6 +59,17 @@ export const CompatibilityQuiz = ({ userId, initial, onSaved }: Props) => {
 
   return (
     <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border-primary/30">
+      <FloatingHowItWorks
+        title={"Compatibility Quiz"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <Brain className="h-5 w-5 text-primary" /> Compatibility Quiz

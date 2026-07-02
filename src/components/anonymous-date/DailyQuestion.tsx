@@ -8,6 +8,7 @@ import { Sparkles, Loader2, Coins, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAnonymousDateAI, AI_COSTS } from "@/hooks/useAnonymousDateAI";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props {
   matchId: string;
@@ -91,6 +92,17 @@ export const DailyQuestion = ({ matchId, currentUserId, isUser1, partnerName, cr
 
   return (
     <Card className="p-4 bg-gradient-to-br from-amber-500/10 via-card/80 to-pink-500/10 backdrop-blur-xl border-amber-500/30">
+      <FloatingHowItWorks
+        title={"Daily Question"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className="p-1.5 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500">

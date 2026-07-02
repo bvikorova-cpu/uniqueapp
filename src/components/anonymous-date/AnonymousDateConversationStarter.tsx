@@ -4,6 +4,7 @@ import { MessageCircleHeart, RefreshCw, Copy, Check } from "lucide-react";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const STARTERS = [
   "If your life had a soundtrack, what 3 songs would be on it?",
@@ -60,6 +61,17 @@ export const AnonymousDateConversationStarter = () => {
 
   return (
     <Card className="p-5 bg-gradient-to-br from-pink-500/10 via-card/80 to-primary/10 backdrop-blur-xl border-pink-500/20">
+      <FloatingHowItWorks
+        title={"Anonymous Date Conversation Starter"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="flex items-center gap-2 mb-3">
         <div className="p-1.5 rounded-lg bg-gradient-to-br from-pink-500/30 to-primary/30">
           <MessageCircleHeart className="h-4 w-4 text-pink-400" />

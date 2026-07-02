@@ -7,6 +7,7 @@ import { Wand2, Loader2, Sparkles, ArrowLeft, Copy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { spendDatingCredits } from "@/lib/datingAiCredits";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -52,6 +53,17 @@ Keep the optimized bios under 300 characters each. Make them sound genuine, not 
 
   return (
     <div className="space-y-6">
+      <FloatingHowItWorks
+        title={"A I Profile Optimizer"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-2" />Back to Hub</Button>
       <Card className="border-primary/20 bg-gradient-to-br from-primary/5 via-background to-accent/5">
         <CardHeader>

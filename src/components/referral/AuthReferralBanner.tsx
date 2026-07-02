@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Gift, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface ReferrerInfo {
   found: boolean;
@@ -61,6 +62,17 @@ export function AuthReferralBanner() {
       animate={{ opacity: 1, y: 0 }}
       className="mb-6 rounded-2xl border-2 border-yellow-500/40 bg-gradient-to-br from-yellow-500/10 via-amber-500/5 to-transparent p-4 backdrop-blur-md"
     >
+      <FloatingHowItWorks
+        title={"Auth Referral Banner"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="flex items-center gap-3">
         <Avatar className="h-12 w-12 border-2 border-yellow-500/50">
           {info.avatar_url && <AvatarImage src={info.avatar_url} alt={info.full_name} />}

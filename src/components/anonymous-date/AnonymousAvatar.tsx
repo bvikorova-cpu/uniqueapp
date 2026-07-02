@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props {
   seed: string;
@@ -11,6 +12,17 @@ export const AnonymousAvatar = ({ seed, size = 40, online }: Props) => {
   const url = `https://api.dicebear.com/7.x/shapes/svg?seed=${encodeURIComponent(seed)}&backgroundType=gradientLinear`;
   return (
     <div className="relative inline-block" style={{ width: size, height: size }}>
+      <FloatingHowItWorks
+        title={"Anonymous Avatar"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <motion.img
         src={url}
         alt={`${seed} avatar`}

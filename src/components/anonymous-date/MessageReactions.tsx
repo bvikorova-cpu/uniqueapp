@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Smile } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import type { MessageReaction } from "@/hooks/useAnonymousChat";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const EMOJIS = ["❤️", "🔥", "😂", "😍", "🤯", "👀"];
 
@@ -26,6 +27,17 @@ export const MessageReactions = ({ messageId, reactions, currentUserId, onToggle
 
   return (
     <div className={`relative flex items-center gap-1 mt-1 ${align === "right" ? "justify-end" : "justify-start"}`}>
+      <FloatingHowItWorks
+        title={"Message Reactions"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       {Object.entries(grouped).map(([emoji, { count, mine }]) => (
         <motion.button
           key={emoji}

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Users, CheckCircle2, ArrowRight, Search, Heart, Gift, SlidersHorizontal, Star, TrendingUp, Clock } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Creator {
   id: string;
@@ -71,6 +72,17 @@ export const MembershipFeaturedCreators = ({ onViewAll }: MembershipFeaturedCrea
   if (loading) {
     return (
       <div className="mb-10">
+      <FloatingHowItWorks
+        title={"Membership Featured Creators"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
         <div className="text-center py-12">
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mx-auto" />
           <p className="mt-4 text-sm text-muted-foreground">Loading creators...</p>

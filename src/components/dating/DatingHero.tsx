@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useLiveStats } from "@/hooks/useLiveStats";
 import heroVideo from "@/assets/dating-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const AnimatedCounter = ({ target, suffix = "" }: { target: number; suffix?: string }) => {
   const [count, setCount] = useState(0);
@@ -47,6 +48,17 @@ export const DatingHero = () => {
 
   return (
     <div className="relative h-[78vh] min-h-[540px] w-full overflow-hidden rounded-3xl border border-border/40 mb-8">
+      <FloatingHowItWorks
+        title={"Dating Hero"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <video ref={videoRef} className="absolute inset-0 h-full w-full object-cover brightness-[1.15] saturate-[1.2]" autoPlay muted loop playsInline>
         <source src={heroVideo.url} type="video/mp4" />
       </video>

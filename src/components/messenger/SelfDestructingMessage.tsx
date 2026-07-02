@@ -7,6 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface SelfDestructingMessageProps {
   onSelectDuration: (seconds: number) => void;
@@ -36,6 +37,17 @@ export const SelfDestructingMessage = ({
 
   return (
     <DropdownMenu>
+      <FloatingHowItWorks
+        title={"Self Destructing Message"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <DropdownMenuTrigger asChild>
         <Button
           variant={isActive ? "secondary" : "ghost"}

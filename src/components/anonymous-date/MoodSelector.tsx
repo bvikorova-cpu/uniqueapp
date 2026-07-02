@@ -1,5 +1,6 @@
 import { Moon, Sun, Brain, Heart } from "lucide-react";
 import type { Mood } from "@/hooks/useMatchMeta";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const MOODS: Array<{ id: Mood; label: string; icon: any; gradient: string }> = [
   { id: "mysterious", label: "Mysterious", icon: Moon, gradient: "from-violet-500 to-primary" },
@@ -22,7 +23,18 @@ export const MoodSelector = ({ current, onChange }: Props) => (
         return (
           <button
             key={m.id}
-            onClick={() => onChange(m.id)}
+            onClick={() =>
+      <FloatingHowItWorks
+        title={"Mood Selector"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+ onChange(m.id)}
             className={`flex flex-col items-center gap-1 p-2 rounded-xl border transition-all ${
               active
                 ? `bg-gradient-to-br ${m.gradient} text-white border-transparent shadow-lg scale-105`

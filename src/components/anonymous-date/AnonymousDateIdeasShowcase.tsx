@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Lightbulb, Mic, Video, Calendar, Gift, Music, Brain, Lock, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const IDEAS = [
   {
@@ -64,6 +65,17 @@ const IDEAS = [
 export const AnonymousDateIdeasShowcase = () => {
   return (
     <Card className="p-5 bg-card/80 backdrop-blur-xl border-border/50">
+      <FloatingHowItWorks
+        title={"Anonymous Date Ideas Showcase"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="flex items-center gap-2 mb-1">
         <div className="p-1.5 rounded-lg bg-gradient-to-br from-pink-500/20 to-primary/20">
           <Lightbulb className="h-4 w-4 text-primary" />

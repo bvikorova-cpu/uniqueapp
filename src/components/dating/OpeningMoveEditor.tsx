@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const PRESETS = [
   "What's the best meal you've ever cooked?",
@@ -33,6 +34,17 @@ export const OpeningMoveEditor = ({ userId, initial, onSaved }: Props) => {
 
   return (
     <Card>
+      <FloatingHowItWorks
+        title={"Opening Move Editor"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2">
           <MessageCircle className="h-4 w-4 text-primary" /> Opening Move

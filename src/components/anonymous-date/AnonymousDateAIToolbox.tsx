@@ -11,6 +11,7 @@ import {
   Sparkles, MessageSquareHeart, Brain, Wand2, Mic, MapPin, ScrollText, Loader2, Coins,
 } from "lucide-react";
 import { useAnonymousDateAI, AI_COSTS, type AIFeature } from "@/hooks/useAnonymousDateAI";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const FEATURES: Array<{
   id: AIFeature;
@@ -106,6 +107,17 @@ function renderOutput(feature: AIFeature, output: any) {
     const arr = Array.isArray(output) ? output : output.icebreakers || output.lines || [];
     return (
       <ul className="space-y-2">
+      <FloatingHowItWorks
+        title={"Anonymous Date A I Toolbox"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
         {arr.map((line: string, i: number) => (
           <li key={i} className="p-3 rounded-lg bg-muted/30 border border-border/40 text-sm">
             <span className="font-bold text-primary mr-2">#{i + 1}</span>{line}

@@ -3,6 +3,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Shield, Eye, EyeOff, CheckCheck, AlertTriangle, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props {
   open: boolean;
@@ -16,6 +17,17 @@ interface Props {
 export const SafetyCenter = ({ open, onOpenChange, incognito, readReceipts, onTogglePrivacy, onOpenBlocked }: Props) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
+      <FloatingHowItWorks
+        title={"Safety Center"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2"><Shield className="h-5 w-5 text-primary" /> Safety Center</DialogTitle>

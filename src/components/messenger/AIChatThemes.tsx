@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Palette, Sparkles, Check, Lock, Wand2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface AIChatThemesProps {
   onBack: () => void;
@@ -54,6 +55,17 @@ export const AIChatThemes = ({ onBack, userId }: AIChatThemesProps) => {
 
   return (
     <div className="space-y-6">
+      <FloatingHowItWorks
+        title={"A I Chat Themes"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={onBack}><ArrowLeft className="h-5 w-5" /></Button>
         <div>

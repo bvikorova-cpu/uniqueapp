@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Heart, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props {
   fromUserId: string;
@@ -59,6 +60,17 @@ export const PhotoLikeButton = ({ fromUserId, toUserId, photoUrl, promptIndex = 
 
   return (
     <>
+      <FloatingHowItWorks
+        title={"Photo Like Button"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <button
         onClick={(e) => { e.stopPropagation(); if (!liked) setOpen(true); }}
         disabled={liked}

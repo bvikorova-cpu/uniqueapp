@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Download, Share2, Trophy, Sparkles, Copy, Check } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface VictoryCardGeneratorProps {
   defaultTitle?: string;
@@ -162,6 +163,17 @@ export function VictoryCardGenerator({
 
   return (
     <Card className="backdrop-blur-xl bg-gradient-to-br from-purple-500/10 to-pink-500/5 border-primary/30">
+      <FloatingHowItWorks
+        title={"Victory Card Generator"}
+        intro={"Here's how to use this feature."}
+        steps={[
+          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
+          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
+          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
+          { title: "Review history", desc: "Come back anytime to continue where you left off." },
+        ]}
+      />
+
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <Trophy className="h-5 w-5 text-yellow-500" />
