@@ -35,6 +35,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const ANALYSIS_TOOLS = [
   {
     id: "personal",
@@ -117,6 +118,17 @@ const Handwriting = () => {
 
   return (
     <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-8 sm:pb-12 relative overflow-hidden">
+      <FloatingHowItWorks
+        title="Handwriting AI"
+        intro="Convert handwriting to text or generate custom fonts."
+        steps={[
+          { title: "Upload a sample", desc: "Photo or scan of your handwriting." },
+          { title: "Choose action", desc: "OCR to text, or generate a font from your writing." },
+          { title: "Spend credits", desc: "3\u20135 credits per job." },
+          { title: "Download the result", desc: "TXT, PDF or font file." },
+          { title: "Reuse the font", desc: "Apply it to notes, letters or designs." }
+        ]}
+      />
       <FloatingParticles />
       <div className="container mx-auto px-3 sm:px-4 max-w-6xl relative z-10">
         <AnimatePresence mode="wait">

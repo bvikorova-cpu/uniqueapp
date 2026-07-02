@@ -20,6 +20,7 @@ import { DesignConsultations } from "@/components/home-decor/DesignConsultations
 import { useDecorSubscription } from "@/hooks/useDecorSubscription";
 import { motion } from "framer-motion";
 import heroVideo from "@/assets/home-designer-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 type ActiveView = "hub" | "ai-designer" | "marketplace" | "sell" | "color-palette" | "furniture-recommender" | "virtual-staging" | "before-after" | "consultations" | "subscription" | "ar-preview";
 
@@ -176,7 +177,18 @@ const HomeDesigner = () => {
 
   // Sub-view renders
   if (activeView === "ai-designer") return (
-    <div className="min-h-screen bg-background"><Navbar />
+    <div className="min-h-screen bg-background">
+      <FloatingHowItWorks
+        title="Home Designer"
+        intro="AI interior designer \u2014 redesign any room from a photo."
+        steps={[
+          { title: "Photograph the room", desc: "Wide shot with good lighting." },
+          { title: "Pick a style", desc: "Modern, Scandi, boho, luxury, industrial\u2026" },
+          { title: "Generate designs", desc: "Multiple variants per run, 3\u20135 credits." },
+          { title: "Get a shopping list", desc: "Real product suggestions with links." },
+          { title: "Save projects", desc: "Compare before/after and share." }
+        ]}
+      /><Navbar />
       <div className="container mx-auto px-4 pt-20 pb-8">
         <Button variant="ghost" onClick={() => setActiveView("hub")} className="mb-4"><ArrowLeft className="mr-2 h-4 w-4" /> Dashboard</Button>
         <AIRoomDesigner subscription={subscription} onDesignComplete={loadItems} />

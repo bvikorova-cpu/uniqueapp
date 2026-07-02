@@ -52,6 +52,7 @@ import { useAICredits } from "@/hooks/useAICredits";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import heroVideo from "@/assets/fashion-runway-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 type ActiveView =
   | "hub" | "generator" | "gallery" | "marketplace" | "challenges"
@@ -180,6 +181,17 @@ export default function FashionStudio() {
     const currentTool = tools.find(t => t.id === activeView);
     return (
       <div className="min-h-screen bg-background pt-16 sm:pt-0">
+        <FloatingHowItWorks
+          title="Fashion Studio"
+          intro="Try on outfits, mix styles and get AI stylist advice."
+          steps={[
+            { title: "Upload your photo", desc: "Full-body preferred." },
+          { title: "Try on outfits", desc: "AI dresses you in clothes from the catalog." },
+          { title: "Get a stylist review", desc: "AI suggests better matches." },
+          { title: "Shop the look", desc: "Direct links to retailers." },
+          { title: "Save looks", desc: "Build a lookbook for outfits you love." }
+          ]}
+        />
         <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
           <Button variant="ghost" onClick={() => setActiveView("hub")} className="mb-4 gap-2 drop-shadow-md">
             <ArrowLeft className="h-4 w-4" /> Dashboard

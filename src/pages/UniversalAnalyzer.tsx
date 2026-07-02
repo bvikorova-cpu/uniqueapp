@@ -27,6 +27,7 @@ import { URLAnalyzerView } from "@/components/analyzer/views/URLAnalyzerView";
 import { NutritionScanView } from "@/components/analyzer/views/NutritionScanView";
 import { HomeworkHelperView } from "@/components/analyzer/views/HomeworkHelperView";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const CATEGORIES = [
   { id: 'nature', name: 'Nature & Plants', icon: '🌿', description: 'Trees, plants, flowers, fungi' },
@@ -135,6 +136,17 @@ export default function UniversalAnalyzer() {
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
+      <FloatingHowItWorks
+        title="Universal Analyzer"
+        intro="Analyze any image, product or document with AI."
+        steps={[
+          { title: "Upload a file", desc: "Photo, screenshot, receipt, product, doc." },
+          { title: "Pick analysis type", desc: "Product, health, ingredients, translation, etc." },
+          { title: "Spend credits", desc: "3\u20135 credits per analysis." },
+          { title: "Read the report", desc: "Structured breakdown with recommendations." },
+          { title: "Save to collection", desc: "Reopen in History or Collections later." }
+        ]}
+      />
       <div className="max-w-6xl mx-auto space-y-6">
         <AnalyzerHero credits={credits?.credits_remaining || 0} tier={credits?.tier || 'free'} />
 

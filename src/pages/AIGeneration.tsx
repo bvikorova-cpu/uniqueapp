@@ -17,6 +17,7 @@ import { PageLoader } from "@/components/ui/PageLoader";
 import { AICreditsLowBalanceAlert } from "@/components/ai-credits/AICreditsLowBalanceAlert";
 import { AICreditsLiveTicker } from "@/components/ai-credits/AICreditsLiveTicker";
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const GenerateView = lazy(() => import("@/components/ai-generation/views/GenerateView").then((module) => ({ default: module.GenerateView })));
 const ImageEditorView = lazy(() => import("@/components/ai-generation/views/ImageEditorView").then((module) => ({ default: module.ImageEditorView })));
@@ -130,6 +131,17 @@ const AIGeneration = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <FloatingHowItWorks
+        title="AI Generation"
+        intro="Text-to-image and text-to-video generation hub."
+        steps={[
+          { title: "Pick a model", desc: "Fast, Standard or Premium \u2014 higher costs more credits." },
+          { title: "Write the prompt", desc: "Be specific about subject, style, lighting." },
+          { title: "Set size & aspect", desc: "Square, portrait or landscape." },
+          { title: "Generate", desc: "3\u201310 credits per image depending on quality." },
+          { title: "Download or reuse", desc: "Save to gallery, remix or send to Studio." }
+        ]}
+      />
       <div className="container mx-auto px-3 sm:px-4 py-6 pt-16">
         {activeView !== 'hub' ? (
           <div className="mb-6">

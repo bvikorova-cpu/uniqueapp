@@ -33,6 +33,7 @@ import FutureFacePhotoStudio from "@/components/future-face/FutureFacePhotoStudi
 import FutureFaceMultiAgeTimeline from "@/components/future-face/FutureFaceMultiAgeTimeline";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const FutureFace = () => {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -50,6 +51,17 @@ const FutureFace = () => {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-background pt-24 pb-12">
+        <FloatingHowItWorks
+          title="Future Face"
+          intro="See how you'll look in 5, 10 or 50 years."
+          steps={[
+            { title: "Upload a selfie", desc: "Front-facing, clear lighting." },
+          { title: "Pick a time span", desc: "+5, +10, +30, +50 years or +baby." },
+          { title: "Generate", desc: "Uses 3\u20135 credits per aging." },
+          { title: "Save or share", desc: "Download or share with friends." },
+          { title: "Compare", desc: "Side-by-side with your original photo." }
+          ]}
+        />
         <div className="container mx-auto px-4 max-w-4xl text-center space-y-6">
           <Badge className="bg-gradient-to-r from-cyan-500 to-purple-500 text-white">Authentication Required</Badge>
           <h1 className="text-4xl md:text-6xl font-bold">

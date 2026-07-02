@@ -7,6 +7,7 @@ import { useAnalyzerCredits } from "@/hooks/useAnalyzerCredits";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const PRICING_TIERS = [
   { id: 'basic', name: 'Basic', price: '€4.99', period: '/month', icon: Sparkles, gradient: 'from-cyan-600 to-blue-600', popular: false,
@@ -29,6 +30,17 @@ export default function AnalyzerPricing() {
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
+      <FloatingHowItWorks
+        title="Analyzer Pricing"
+        intro="Buy credit packs for AI analyses."
+        steps={[
+          { title: "Pick a pack", desc: "Bigger packs = better price per credit." },
+          { title: "Pay in EUR", desc: "Secure Stripe checkout." },
+          { title: "Credits added instantly", desc: "Balance updates in seconds." },
+          { title: "Spend on any tool", desc: "Credits work across all AI tools." },
+          { title: "Free monthly top-up", desc: "+10 credits on the 1st of every month." }
+        ]}
+      />
       <div className="max-w-7xl mx-auto space-y-12">
         <Button variant="ghost" onClick={() => navigate('/analyzer')}>
           <ArrowLeft className="w-4 h-4 mr-2" /> Back to Analyzer

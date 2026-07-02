@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { AIChatFollowup } from "@/components/analyzer/AIChatFollowup";
 import { exportAnalysisPDF, shareAnalysisCard } from "@/components/analyzer/exportHelpers";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface AnalysisData {
   id: string;
@@ -70,6 +71,17 @@ export default function AnalyzerResult() {
 
   if (isLoading) return (
     <div className="min-h-screen flex items-center justify-center">
+      <FloatingHowItWorks
+        title="Analyzer Result"
+        intro="Detailed report from a single analysis."
+        steps={[
+          { title: "Read the summary", desc: "Key findings at the top." },
+          { title: "Explore sections", desc: "Ingredients, warnings, recommendations." },
+          { title: "Save to collection", desc: "Keep the report for later." },
+          { title: "Share", desc: "Copy link or export as PDF." },
+          { title: "Reanalyze", desc: "Rerun with a different mode." }
+        ]}
+      />
       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400"></div>
     </div>
   );

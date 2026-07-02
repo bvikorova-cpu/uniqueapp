@@ -39,6 +39,7 @@ import { Wand2, Mic, Users, Palette, BookMarked, Sparkles as SparkleIcon, FileDo
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { exportAs } from "@/lib/forgeExport";
 import { motion, AnimatePresence } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const STYLE_REFERENCES: Record<string, string[]> = {
   song_lyrics: ["Ed Sheeran", "Taylor Swift", "The Beatles", "Bob Dylan", "Adele", "Billie Eilish"],
@@ -233,6 +234,17 @@ export default function CreativeForge() {
   if (activeView !== "hub") {
     return (
       <div className="relative min-h-screen">
+        <FloatingHowItWorks
+          title="Creative Forge"
+          intro="AI-powered creative studio for text, images and ideas."
+          steps={[
+            { title: "Pick a tool", desc: "Choose from text, image, brainstorm or remix generators." },
+          { title: "Describe your goal", desc: "Write a clear prompt \u2014 style, mood, audience." },
+          { title: "Spend credits", desc: "Each generation costs 3\u20135 credits from your balance." },
+          { title: "Refine & iterate", desc: "Regenerate or tweak the prompt for better results." },
+          { title: "Save or export", desc: "Download or send to Content Studio." }
+          ]}
+        />
         <div className="fixed inset-0 pointer-events-none z-0"><FloatingParticles /></div>
         {sharedModals}
         <div className="relative z-10 container mx-auto px-2 sm:px-4 pt-20 pb-12 max-w-7xl">

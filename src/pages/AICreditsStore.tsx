@@ -28,6 +28,7 @@ import { AlternativePayMethods } from "@/components/ai-credits/AlternativePayMet
 import { ReceiptHistoryCard } from "@/components/ai-credits/ReceiptHistoryCard";
 import { WatchAdButton } from "@/components/ads/WatchAdButton";
 import { SEO } from "@/components/SEO";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const AICreditsStore = () => {
   const navigate = useNavigate();
@@ -128,6 +129,17 @@ const AICreditsStore = () => {
 
   return (
     <>
+      <FloatingHowItWorks
+        title="AI Credits Store"
+        intro="Central place to top up your AI credits."
+        steps={[
+          { title: "See your balance", desc: "Current credits shown at the top." },
+          { title: "Pick a pack", desc: "From 100 to 10,000 credits." },
+          { title: "Checkout in EUR", desc: "Powered by Stripe." },
+          { title: "Credits added instantly", desc: "Use across all AI tools." },
+          { title: "Free +10 monthly", desc: "Automatic top-up every 1st of the month." }
+        ]}
+      />
       <SEO
         title="AI Credits Store - Top up & unlock AI tools"
         description="Buy AI credits to generate images, videos, music, courses and more across Unique. Flash sales, packs and bundles available."

@@ -25,6 +25,7 @@ import { DamageDetection } from "@/components/photo-restoration/DamageDetection"
 import { BatchProcessing } from "@/components/photo-restoration/BatchProcessing";
 import { ComparisonSlider } from "@/components/photo-restoration/ComparisonSlider";
 import { AIUpscaling } from "@/components/photo-restoration/AIUpscaling";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 type ActiveView = "hub" | "colorize" | "repair" | "enhance" | "background-removal" | "face-enhancement" | "colorization-pro" | "gallery" | "credits" | "damage-detection" | "batch-processing" | "comparison-slider" | "ai-upscaling";
 
@@ -138,6 +139,17 @@ const PhotoRestoration = () => {
     const Icon = icon;
     return (
       <div className="min-h-screen bg-background">
+        <FloatingHowItWorks
+          title="Photo Restoration"
+          intro="Restore old, damaged or faded photos with AI."
+          steps={[
+            { title: "Upload the photo", desc: "JPG or PNG, any age or damage." },
+          { title: "Pick options", desc: "Denoise, colorize, upscale, fix scratches." },
+          { title: "Spend credits", desc: "3\u20135 credits per restoration." },
+          { title: "Compare before/after", desc: "See exactly what changed." },
+          { title: "Download HD", desc: "Save the restored image." }
+          ]}
+        />
         <Navbar />
         <div className="container mx-auto px-3 pt-20 pb-8">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>

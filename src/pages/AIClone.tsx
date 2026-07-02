@@ -22,6 +22,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ViewType = "hub" | "create" | "my-clones" | "marketplace" | "dating" | "subscriptions" | "analytics" | "quiz" | "voice" | "battles" | "leaderboard" | "feed";
 
 const TOOLS = [
@@ -92,6 +93,17 @@ export default function AIClone() {
 
   return (
     <div className="min-h-screen bg-background">
+      <FloatingHowItWorks
+        title="Personality Clone"
+        intro="Create your AI clone \u2014 voice, style and personality."
+        steps={[
+          { title: "Upload samples", desc: "Photos, voice recordings, writing samples." },
+          { title: "Train the clone", desc: "AI learns your tone and appearance." },
+          { title: "Chat with your clone", desc: "Practice interviews, dating, presentations." },
+          { title: "Generate content", desc: "Let the clone reply to fans or write drafts." },
+          { title: "Manage privacy", desc: "Delete data or lock the clone anytime." }
+        ]}
+      />
       <div className="container mx-auto px-4 py-6 max-w-7xl">
         <CloneHero />
 

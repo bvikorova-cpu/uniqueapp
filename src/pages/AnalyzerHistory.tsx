@@ -11,6 +11,7 @@ import { motion } from "framer-motion";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface AnalysisHistoryItem {
   id: string; image_url: string; category: string; main_identification: string;
@@ -64,6 +65,17 @@ export default function AnalyzerHistory() {
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
+      <FloatingHowItWorks
+        title="Analyzer History"
+        intro="Every analysis you've run, in one place."
+        steps={[
+          { title: "Browse chronologically", desc: "Newest first with thumbnails." },
+          { title: "Reopen a report", desc: "See the full breakdown again." },
+          { title: "Filter", desc: "By type \u2014 product, health, doc, etc." },
+          { title: "Move to collection", desc: "Organize into folders." },
+          { title: "Delete", desc: "Remove sensitive analyses anytime." }
+        ]}
+      />
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">

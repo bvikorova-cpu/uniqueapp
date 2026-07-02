@@ -26,6 +26,7 @@ import BulkContentGenerator from "@/components/content-studio/BulkContentGenerat
 import SEOKeywordOptimizer from "@/components/content-studio/SEOKeywordOptimizer";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ActiveView = "main" | "templates" | "brand-voice" | "calendar" | "plagiarism" | "generate" | "repurpose" | "analytics" | "ab-test" | "bulk" | "seo";
 
 const CONTENT_TYPES = [
@@ -143,6 +144,17 @@ const ContentStudio = () => {
   if (activeView === "generate") {
     return (
       <div className="min-h-screen bg-background pt-20 pb-12">
+        <FloatingHowItWorks
+          title="Content Studio"
+          intro="Plan, write and schedule social content with AI."
+          steps={[
+            { title: "Pick a channel", desc: "Instagram, TikTok, LinkedIn, X \u2014 templates differ." },
+          { title: "Generate a draft", desc: "AI writes captions and hooks from your topic." },
+          { title: "Add visuals", desc: "Attach AI-generated or uploaded images." },
+          { title: "Schedule", desc: "Queue the post for the best time." },
+          { title: "Track performance", desc: "See saved history and reuse winners." }
+          ]}
+        />
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="flex items-center gap-4 mb-6">
             <Button variant="ghost" size="sm" onClick={() => setActiveView("main")}>
