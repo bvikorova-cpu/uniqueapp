@@ -12,6 +12,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const CATEGORIES = {
   it_software: "IT & Software",
   marketing_sales: "Marketing & Sales",
@@ -156,6 +157,13 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
 
   return (
     <>
+      <FloatingHowItWorks title="How Create Job Dialog works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <>
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
         <DialogTrigger asChild>
           <Button onClick={handleOpenDialog}>
@@ -410,5 +418,6 @@ export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: Cre
         </DialogContent>
       </Dialog>
     </>
-  );
+    </>
+    );
 }

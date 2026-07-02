@@ -9,6 +9,7 @@ import { ShoppingBag, Package, Clock, Euro, MessageCircle, Bell } from "lucide-r
 import { format } from "date-fns";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Order {
   id: string;
   buyer_id: string;
@@ -132,7 +133,14 @@ export function MyOrders({ userId }: MyOrdersProps) {
       : selectedOrder.buyer_profile;
 
     return (
-      <OrderChat
+      <>
+        <FloatingHowItWorks title="How My Orders works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+        <OrderChat
         order={{
           ...selectedOrder,
           offering: selectedOrder.offering
@@ -149,7 +157,8 @@ export function MyOrders({ userId }: MyOrdersProps) {
         }}
         onStatusChange={loadOrders}
       />
-    );
+      </>
+      );
   }
 
   const OrderCard = ({ order, role }: { order: Order; role: "buyer" | "seller" }) => {

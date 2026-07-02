@@ -7,6 +7,7 @@ import { Bell, BellOff, Trash2, Search } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface SavedSearch {
   id: string;
   name: string;
@@ -64,7 +65,14 @@ export default function BazaarSavedSearches() {
   };
 
   return (
-    <div className="container max-w-3xl py-8 space-y-6">
+    <>
+      <FloatingHowItWorks title="How Bazaar Saved Searches works" steps={[
+          { title: 'Browse listings', desc: 'Explore items, services or offers.' },
+          { title: 'Open a detail', desc: 'Review price, seller and terms.' },
+          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
+          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+        ]} />
+      <div className="container max-w-3xl py-8 space-y-6">
       <header>
         <h1 className="text-3xl font-bold">Uložené vyhľadávania</h1>
         <p className="text-muted-foreground">Ulož filtre v Bazaare a dostaň notifikácie o nových výsledkoch.</p>
@@ -101,5 +109,6 @@ export default function BazaarSavedSearches() {
         </div>
       )}
     </div>
-  );
+    </>
+    );
 }

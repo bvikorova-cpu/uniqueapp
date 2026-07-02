@@ -3,6 +3,7 @@ import { Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props {
   sellerId: string;
   size?: "sm" | "md";
@@ -35,11 +36,19 @@ export const SellerRatingBadge = ({ sellerId, size = "sm", className }: Props) =
 
   if (!data || data.rating_count === 0) {
     return (
-      <span className={cn("inline-flex items-center gap-1 text-muted-foreground", size === "sm" ? "text-xs" : "text-sm", className)}>
+      <>
+        <FloatingHowItWorks title="How Seller Rating Badge works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+        <span className={cn("inline-flex items-center gap-1 text-muted-foreground", size === "sm" ? "text-xs" : "text-sm", className)}>
         <Star className="h-3.5 w-3.5" />
         New seller
       </span>
-    );
+      </>
+      );
   }
 
   return (

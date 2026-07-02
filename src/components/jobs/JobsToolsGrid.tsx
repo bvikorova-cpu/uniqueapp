@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { FileText, Mic, DollarSign, Map, Loader2, Sparkles, ArrowLeft } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const TOOLS = [
   { id: "resume_builder", title: "AI Resume Builder", desc: "Generate ATS-optimized professional resumes tailored to specific jobs", icon: FileText, credits: 5, color: "from-amber-500 to-yellow-600" },
   { id: "interview_coach", title: "AI Interview Coach", desc: "Practice interviews with AI feedback, STAR answers & confidence scoring", icon: Mic, credits: 5, color: "from-blue-500 to-cyan-600" },
@@ -97,7 +98,14 @@ export default function JobsToolsGrid() {
     const tool = TOOLS.find(t => t.id === activeTool)!;
     const fields = TOOL_FIELDS[activeTool] || [];
     return (
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+      <>
+        <FloatingHowItWorks title="How Jobs Tools Grid works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         <Button variant="ghost" onClick={() => { setActiveTool(null); setResult(null); setFormData({}); }} className="mb-4">
           <ArrowLeft className="h-4 w-4 mr-2" /> Back to Tools
         </Button>
@@ -135,7 +143,8 @@ export default function JobsToolsGrid() {
           </CardContent>
         </Card>
       </motion.div>
-    );
+      </>
+      );
   }
 
   return (

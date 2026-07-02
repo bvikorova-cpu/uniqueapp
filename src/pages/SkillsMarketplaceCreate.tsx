@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const CATEGORIES = ["construction", "repairs", "cleaning", "gardening", "technology", "teaching", "creative", "other"] as const;
 
 const Schema = z.object({
@@ -78,7 +79,14 @@ export default function SkillsMarketplaceCreate() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-2xl">
+    <>
+      <FloatingHowItWorks title="How Skills Marketplace Create works" steps={[
+          { title: 'Browse listings', desc: 'Explore items, services or offers.' },
+          { title: 'Open a detail', desc: 'Review price, seller and terms.' },
+          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
+          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+        ]} />
+      <div className="container mx-auto px-4 py-8 max-w-2xl">
       <Button variant="ghost" onClick={() => navigate("/skills-marketplace")} className="mb-4 gap-2">
         <ArrowLeft className="h-4 w-4" /> Back to marketplace
       </Button>
@@ -124,5 +132,6 @@ export default function SkillsMarketplaceCreate() {
         </CardContent>
       </Card>
     </div>
-  );
+    </>
+    );
 }

@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface JobAchievement {
   code: string;
   name: string;
@@ -35,7 +36,14 @@ export default function JobsCareerAchievements() {
   const maxPoints = achievements.reduce((s, a) => s + a.points, 0);
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Jobs Career Achievements works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-xl sm:text-2xl font-black">🏅 Career Achievements</h2>
         <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30 text-sm">
@@ -86,5 +94,6 @@ export default function JobsCareerAchievements() {
         </div>
       )}
     </div>
-  );
+    </>
+    );
 }

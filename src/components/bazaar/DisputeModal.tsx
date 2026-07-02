@@ -8,6 +8,7 @@ import { AlertTriangle, Upload, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface DisputeModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -68,7 +69,14 @@ export function DisputeModal({ open, onOpenChange, orderId, onDisputeOpened }: D
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <>
+      <FloatingHowItWorks title="How Dispute Modal works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -134,7 +142,8 @@ export function DisputeModal({ open, onOpenChange, orderId, onDisputeOpened }: D
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+    </>
+    );
 }
 
 export default DisputeModal;

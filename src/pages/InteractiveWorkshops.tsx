@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Users, Calendar, Clock, Award, Zap } from "lucide-react";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const InteractiveWorkshops = () => {
   const { toast } = useToast();
   const [joining, setJoining] = useState<string | null>(null);
@@ -133,7 +134,14 @@ const InteractiveWorkshops = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <>
+      <FloatingHowItWorks title="How Interactive Workshops works" steps={[
+          { title: 'Browse listings', desc: 'Explore items, services or offers.' },
+          { title: 'Open a detail', desc: 'Review price, seller and terms.' },
+          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
+          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+        ]} />
+      <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12 mt-16">
           <h1 className="text-4xl md:text-5xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
@@ -256,7 +264,8 @@ const InteractiveWorkshops = () => {
         </div>
       </div>
     </div>
-  );
+    </>
+    );
 };
 
 export default InteractiveWorkshops;

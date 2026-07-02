@@ -9,6 +9,7 @@ import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props {
   open: boolean;
   onOpenChange: (v: boolean) => void;
@@ -36,7 +37,14 @@ export function InterviewQuestionDialog({ open, onOpenChange, companyId, company
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <>
+      <FloatingHowItWorks title="How Interview Question Dialog works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg">
         <DialogHeader><DialogTitle>Share an interview question</DialogTitle></DialogHeader>
         <div className="space-y-3">
@@ -76,5 +84,6 @@ export function InterviewQuestionDialog({ open, onOpenChange, companyId, company
         </div>
       </DialogContent>
     </Dialog>
-  );
+    </>
+    );
 }

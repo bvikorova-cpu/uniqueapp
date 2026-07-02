@@ -11,6 +11,7 @@ import OrderTracker, { OrderStatus } from "./OrderTracker";
 import OrderActions from "./OrderActions";
 import EscrowStatusBadge, { EscrowStatus } from "./EscrowStatusBadge";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface BazaarOrder {
   id: string;
   item_id: string;
@@ -145,7 +146,14 @@ export default function BazaarOrderChat({ order, currentUserId, onStatusChange }
   const escrowStatus = (order.escrow_status || escrowData?.status || 'none') as EscrowStatus;
 
   return (
-    <Card className="flex flex-col h-[700px]">
+    <>
+      <FloatingHowItWorks title="How Bazaar Order Chat works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <Card className="flex flex-col h-[700px]">
       <CardHeader className="border-b pb-4 space-y-4">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -251,5 +259,6 @@ export default function BazaarOrderChat({ order, currentUserId, onStatusChange }
         </div>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

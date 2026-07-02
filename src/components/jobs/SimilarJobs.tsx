@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Building2, MapPin, Sparkles } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface SimilarJob {
   id: string;
   slug: string | null;
@@ -88,12 +89,20 @@ export function SimilarJobs({ jobId, category, title, country }: Props) {
 
   if (loading) {
     return (
-      <div className="grid sm:grid-cols-2 gap-3 mt-8">
+      <>
+        <FloatingHowItWorks title="How Similar Jobs works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+        <div className="grid sm:grid-cols-2 gap-3 mt-8">
         {Array.from({ length: 4 }).map((_, i) => (
           <div key={i} className="h-24 rounded-lg bg-muted animate-pulse" />
         ))}
       </div>
-    );
+      </>
+      );
   }
 
   if (items.length === 0) return null;

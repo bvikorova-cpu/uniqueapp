@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Textarea } from "@/components/ui/textarea";
 import { useSellerReviews } from "@/hooks/useSellerReviews";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props {
   open: boolean;
   onOpenChange: (v: boolean) => void;
@@ -34,7 +35,14 @@ export default function LeaveReviewDialog({ open, onOpenChange, sellerId, seller
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <>
+      <FloatingHowItWorks title="How Leave Review Dialog works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Rate {sellerName || "this provider"}</DialogTitle>
@@ -75,5 +83,6 @@ export default function LeaveReviewDialog({ open, onOpenChange, sellerId, seller
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+    </>
+    );
 }

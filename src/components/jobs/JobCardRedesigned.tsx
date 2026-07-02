@@ -1,6 +1,7 @@
 import { Building2, MapPin, Globe, Clock, DollarSign, Flame, Sparkles, Users, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface JobListing {
   id: string;
   title: string;
@@ -57,7 +58,14 @@ export function JobCardRedesigned({ job, onViewDetails, onApply, isLoggedIn }: J
   const companyInitials = job.company_name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase();
 
   return (
-    <div className="group relative rounded-xl sm:rounded-2xl border border-border/30 bg-card/40 backdrop-blur-sm p-3 sm:p-5 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 active:scale-[0.99]">
+    <>
+      <FloatingHowItWorks title="How Job Card Redesigned works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <div className="group relative rounded-xl sm:rounded-2xl border border-border/30 bg-card/40 backdrop-blur-sm p-3 sm:p-5 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 active:scale-[0.99]">
       {/* Badges */}
       {(isNew || isHot || job.is_featured) && (
         <div className="absolute top-2 right-2 sm:top-3 sm:right-3 flex gap-1.5">
@@ -164,5 +172,6 @@ export function JobCardRedesigned({ job, onViewDetails, onApply, isLoggedIn }: J
         </div>
       </div>
     </div>
-  );
+    </>
+    );
 }

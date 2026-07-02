@@ -11,6 +11,7 @@ import { Upload, X, FileText, CheckCircle, Clock, XCircle, AlertCircle } from "l
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface DocumentUpload {
   id: string;
   type: string;
@@ -165,10 +166,18 @@ export function EmployerVerificationForm({ userId }: { userId: string }) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center p-12">
+      <>
+        <FloatingHowItWorks title="How Employer Verification Form works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+        <div className="flex items-center justify-center p-12">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
-    );
+      </>
+      );
   }
 
   // Show status if verification exists

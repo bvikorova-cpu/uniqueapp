@@ -4,6 +4,7 @@ import { Bookmark, BookmarkCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export function SaveJobButton({ jobId, variant = "outline", size = "sm" }: { jobId: string; variant?: any; size?: any }) {
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -35,9 +36,17 @@ export function SaveJobButton({ jobId, variant = "outline", size = "sm" }: { job
   };
 
   return (
-    <Button variant={variant} size={size} onClick={toggle} disabled={loading}>
+    <>
+      <FloatingHowItWorks title="How Save Job Button works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <Button variant={variant} size={size} onClick={toggle} disabled={loading}>
       {saved ? <BookmarkCheck className="h-4 w-4 mr-1.5 fill-primary text-primary" /> : <Bookmark className="h-4 w-4 mr-1.5" />}
       {saved ? "Saved" : "Save"}
     </Button>
-  );
+    </>
+    );
 }

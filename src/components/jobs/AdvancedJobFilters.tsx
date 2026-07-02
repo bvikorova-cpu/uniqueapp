@@ -3,6 +3,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SlidersHorizontal } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export interface AdvancedFiltersState {
   remote: boolean;
   fourDayWeek: boolean;
@@ -27,7 +28,14 @@ export function AdvancedJobFilters({ value, onChange }: Props) {
     onChange({ ...value, [k]: v });
 
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title="How Advanced Job Filters works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <Card>
       <CardContent className="p-4 space-y-3">
         <div className="flex items-center gap-2 text-sm font-bold">
           <SlidersHorizontal className="h-4 w-4" /> Advanced filters
@@ -62,5 +70,6 @@ export function AdvancedJobFilters({ value, onChange }: Props) {
         </div>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const MILESTONES = [
   { day: 3, reward: "🎯 Profile Boost", desc: "Your profile gets priority visibility for 24h" },
   { day: 7, reward: "⭐ Gold Badge", desc: "Earn the 'Consistent Applicant' badge" },
@@ -83,7 +84,14 @@ export default function JobsApplicationStreaks() {
   });
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Jobs Application Streaks works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <div className="space-y-6">
       <h2 className="text-xl sm:text-2xl font-black">🔥 Application Streaks</h2>
 
       <Card className="bg-gradient-to-br from-orange-500/10 to-amber-500/5 border-orange-500/20">
@@ -141,5 +149,6 @@ export default function JobsApplicationStreaks() {
         })}
       </div>
     </div>
-  );
+    </>
+    );
 }

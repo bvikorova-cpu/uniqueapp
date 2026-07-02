@@ -12,6 +12,7 @@ import OrderConversation from "@/components/skills/OrderConversation";
 import LeaveReviewDialog from "@/components/skills/LeaveReviewDialog";
 import { formatDistanceToNow } from "date-fns";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type Order = {
   id: string; offering_id: string; buyer_id: string; seller_id: string;
   hours: number; amount_cents: number; currency: string; status: string;
@@ -92,7 +93,14 @@ export default function SkillsMarketplaceOrderDetail() {
   const otherId = isBuyer ? order.seller_id : order.buyer_id;
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <>
+      <FloatingHowItWorks title="How Skills Marketplace Order Detail works" steps={[
+          { title: 'Browse listings', desc: 'Explore items, services or offers.' },
+          { title: 'Open a detail', desc: 'Review price, seller and terms.' },
+          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
+          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+        ]} />
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
       <Button variant="ghost" onClick={() => navigate("/skills-marketplace/orders")} className="mb-4 gap-2">
         <ArrowLeft className="h-4 w-4" /> Back to orders
       </Button>
@@ -203,5 +211,6 @@ export default function SkillsMarketplaceOrderDetail() {
         />
       )}
     </div>
-  );
+    </>
+    );
 }

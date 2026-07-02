@@ -5,6 +5,7 @@ import { BadgeCheck, Loader2, ShieldCheck, Clock, XCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props {
   userId: string;
 }
@@ -52,7 +53,14 @@ export const RequestVerificationCard = ({ userId }: Props) => {
   if (loading) return null;
 
   return (
-    <Card className="bg-card/60 border-border/50">
+    <>
+      <FloatingHowItWorks title="How Request Verification Card works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <Card className="bg-card/60 border-border/50">
       <CardContent className="p-4 space-y-2">
         <div className="flex items-center gap-2 font-semibold">
           <ShieldCheck className="h-4 w-4 text-primary" /> Seller verification
@@ -90,7 +98,8 @@ export const RequestVerificationCard = ({ userId }: Props) => {
         )}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };
 
 export default RequestVerificationCard;

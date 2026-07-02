@@ -12,6 +12,7 @@ import {
   ArrowLeft, Plus, Pencil, Trash2, Eye, ListOrdered, MessageSquare, Euro,
 } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type Offering = {
   id: string;
   title: string;
@@ -102,11 +103,19 @@ export default function SkillsMarketplaceMine() {
 
   if (!user) {
     return (
-      <div className="container mx-auto px-4 py-16 max-w-xl text-center">
+      <>
+        <FloatingHowItWorks title="How Skills Marketplace Mine works" steps={[
+          { title: 'Browse listings', desc: 'Explore items, services or offers.' },
+          { title: 'Open a detail', desc: 'Review price, seller and terms.' },
+          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
+          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+        ]} />
+        <div className="container mx-auto px-4 py-16 max-w-xl text-center">
         <h1 className="text-2xl font-bold mb-2">Sign in to manage your offerings</h1>
         <Button asChild className="mt-4"><Link to="/auth">Sign in</Link></Button>
       </div>
-    );
+      </>
+      );
   }
 
   return (

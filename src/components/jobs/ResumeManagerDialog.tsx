@@ -9,6 +9,7 @@ import { FileText, Upload, Sparkles, Loader2, Trash2, Star } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export function ResumeManagerDialog() {
   const [open, setOpen] = useState(false);
   const [resumes, setResumes] = useState<any[]>([]);
@@ -81,7 +82,14 @@ export function ResumeManagerDialog() {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+      <FloatingHowItWorks title="How Resume Manager Dialog works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm"><FileText className="h-4 w-4 mr-1.5" />My CVs</Button>
       </DialogTrigger>
@@ -128,5 +136,6 @@ export function ResumeManagerDialog() {
         </div>
       </DialogContent>
     </Dialog>
-  );
+    </>
+    );
 }

@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 import { FloatingParticles } from "@/components/wellness/FloatingParticles";
 import heroVideo from "@/assets/skill-swap-hero.mp4.asset.json";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface DashboardStats {
   totalExchanges: number;
   averageRating: number;
@@ -102,7 +103,14 @@ export default function SkillSwapDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
+    <>
+      <FloatingHowItWorks title="How Skill Swap Dashboard works" steps={[
+          { title: 'Browse listings', desc: 'Explore items, services or offers.' },
+          { title: 'Open a detail', desc: 'Review price, seller and terms.' },
+          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
+          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+        ]} />
+      <div className="min-h-screen bg-background relative overflow-hidden">
       <FloatingParticles />
       <div className="container mx-auto px-4 py-6 sm:py-10 max-w-7xl relative z-10">
         {/* Mini Hero */}
@@ -224,5 +232,6 @@ export default function SkillSwapDashboard() {
         </div>
       </div>
     </div>
-  );
+    </>
+    );
 }

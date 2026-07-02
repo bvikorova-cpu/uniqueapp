@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface ConfettiBurstProps {
   trigger: number; // increment to retrigger
 }
@@ -23,7 +24,14 @@ export const ConfettiBurst = ({ trigger }: ConfettiBurstProps) => {
   const colors = ["#fbbf24", "#a855f7", "#ec4899", "#10b981", "#3b82f6", "#f97316"];
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-[100] overflow-hidden">
+    <>
+      <FloatingHowItWorks title="How Confetti Burst works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <div className="pointer-events-none fixed inset-0 z-[100] overflow-hidden">
       <AnimatePresence>
         {particles.map((_, i) => {
           const angle = (i / particles.length) * Math.PI * 2;
@@ -56,5 +64,6 @@ export const ConfettiBurst = ({ trigger }: ConfettiBurstProps) => {
         })}
       </AnimatePresence>
     </div>
-  );
+    </>
+    );
 };

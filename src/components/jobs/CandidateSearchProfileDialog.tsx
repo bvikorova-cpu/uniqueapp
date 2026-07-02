@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { UserCheck } from "lucide-react";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function CandidateSearchProfileDialog() {
   const [open, setOpen] = useState(false);
   const [profile, setProfile] = useState<any>({
@@ -49,7 +50,14 @@ export default function CandidateSearchProfileDialog() {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+      <FloatingHowItWorks title="How Candidate Search Profile Dialog works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size="sm" variant="outline" className="text-xs"><UserCheck className="h-3.5 w-3.5 mr-1" /> Recruit me</Button>
       </DialogTrigger>
@@ -72,5 +80,6 @@ export default function CandidateSearchProfileDialog() {
         </div>
       </DialogContent>
     </Dialog>
-  );
+    </>
+    );
 }

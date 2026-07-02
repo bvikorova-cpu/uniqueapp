@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface JobMatch {
   jobId: string;
   score: number;
@@ -97,7 +98,14 @@ export function JobAIAssistant() {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+      <FloatingHowItWorks title="How Job AIAssistant works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm" className="gap-1 md:gap-2 text-xs md:text-sm">
           <Sparkles className="h-4 w-4" />
@@ -237,5 +245,6 @@ export function JobAIAssistant() {
         </div>
       </DialogContent>
     </Dialog>
-  );
+    </>
+    );
 }

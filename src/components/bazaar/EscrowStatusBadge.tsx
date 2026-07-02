@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Shield, ShieldCheck, ShieldAlert, ShieldX, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export type EscrowStatus = 'none' | 'held' | 'released' | 'refunded' | 'disputed';
 
 interface EscrowStatusBadgeProps {
@@ -64,7 +65,14 @@ export function EscrowStatusBadge({ status, autoReleaseAt, className }: EscrowSt
   const daysRemaining = getDaysRemaining();
 
   return (
-    <div className={cn("flex items-center gap-2", className)}>
+    <>
+      <FloatingHowItWorks title="How Escrow Status Badge works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <div className={cn("flex items-center gap-2", className)}>
       <Badge variant={config.variant} className={cn("gap-1", config.className)}>
         <Icon className="h-3 w-3" />
         {config.label}
@@ -76,7 +84,8 @@ export function EscrowStatusBadge({ status, autoReleaseAt, className }: EscrowSt
         </span>
       )}
     </div>
-  );
+    </>
+    );
 }
 
 export default EscrowStatusBadge;

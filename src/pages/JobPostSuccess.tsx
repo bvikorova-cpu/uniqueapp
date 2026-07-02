@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, Loader2, XCircle } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function JobPostSuccess() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
@@ -49,7 +50,14 @@ export default function JobPostSuccess() {
   }, [params]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6">
+    <>
+      <FloatingHowItWorks title="How Job Post Success works" steps={[
+          { title: 'Browse listings', desc: 'Explore items, services or offers.' },
+          { title: 'Open a detail', desc: 'Review price, seller and terms.' },
+          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
+          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+        ]} />
+      <div className="min-h-screen flex items-center justify-center p-6">
       <Card className="max-w-md w-full">
         <CardContent className="pt-8 text-center space-y-4">
           {status === "verifying" && (
@@ -81,5 +89,6 @@ export default function JobPostSuccess() {
         </CardContent>
       </Card>
     </div>
-  );
+    </>
+    );
 }

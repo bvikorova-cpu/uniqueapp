@@ -11,6 +11,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Bell, X } from "lucide-react";
 
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface JobPreferencesDialogProps {
   userId: string;
 }
@@ -153,7 +154,14 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+      <FloatingHowItWorks title="How Job Preferences Dialog works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm" className="text-xs md:text-sm">
           <Bell className="h-4 w-4 mr-1 md:mr-2" />
@@ -304,5 +312,6 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
         </div>
       </DialogContent>
     </Dialog>
-  );
+    </>
+    );
 }

@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Gavel, Clock, Sparkles, Lock, Trophy, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const FEATURES = [
   { icon: Gavel, title: "Bid on real memories", desc: "Verified personal stories, photos, voice notes from creators across the platform." },
   { icon: Lock, title: "NFT-style provenance", desc: "Every winning bid mints a unique, owner-only access token. Resellable in-platform." },
@@ -15,7 +16,14 @@ const FEATURES = [
 
 export default function MemoryAuctions() {
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <FloatingHowItWorks title="How Memory Auctions works" steps={[
+          { title: 'Browse listings', desc: 'Explore items, services or offers.' },
+          { title: 'Open a detail', desc: 'Review price, seller and terms.' },
+          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
+          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+        ]} />
+      <div className="min-h-screen bg-background">
       <Navbar />
       <main className="container mx-auto px-4 py-12 max-w-6xl">
         <header className="text-center mb-12">
@@ -72,5 +80,6 @@ export default function MemoryAuctions() {
         </Card>
       </main>
     </div>
-  );
+    </>
+    );
 }

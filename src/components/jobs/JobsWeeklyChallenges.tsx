@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface ChallengeRow {
   id: string;
   slug: string;
@@ -93,7 +94,14 @@ export default function JobsWeeklyChallenges() {
   const progressMap = new Map(progress.map((p) => [p.challenge_id, p]));
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Jobs Weekly Challenges works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-xl sm:text-2xl font-black">🏋️ Weekly Challenges</h2>
         <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
@@ -187,5 +195,6 @@ export default function JobsWeeklyChallenges() {
         )}
       </div>
     </div>
-  );
+    </>
+    );
 }

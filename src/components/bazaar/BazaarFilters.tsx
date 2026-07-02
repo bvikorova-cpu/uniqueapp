@@ -9,6 +9,7 @@ import { Bookmark, Bell, BellOff, SlidersHorizontal, Trash2 } from "lucide-react
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export type SortOption = "newest" | "price_asc" | "price_desc" | "oldest";
 
 export interface BazaarFilterState {
@@ -156,7 +157,14 @@ export const BazaarFilters = ({ filters, onChange, conditions, currentUserId }: 
   const isClothing = filters.category === "clothing";
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <>
+      <FloatingHowItWorks title="How Bazaar Filters works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <div className="flex flex-wrap items-center gap-2">
       {/* Sort */}
       <Select value={filters.sort} onValueChange={(v) => set("sort", v as SortOption)}>
         <SelectTrigger className="w-[160px]">
@@ -331,7 +339,8 @@ export const BazaarFilters = ({ filters, onChange, conditions, currentUserId }: 
         </DialogContent>
       </Dialog>
     </div>
-  );
+    </>
+    );
 };
 
 export default BazaarFilters;

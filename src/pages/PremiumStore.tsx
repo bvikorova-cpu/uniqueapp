@@ -24,6 +24,7 @@ import { WishlistButton } from "@/components/store/WishlistButton";
 import { GiftDialog } from "@/components/store/GiftDialog";
 import { ConfettiBurst } from "@/components/store/ConfettiBurst";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const LEVEL_REQUIREMENTS: Record<string, number> = {
   'visibility_boost': 5,
   'featured_listing': 10,
@@ -151,10 +152,18 @@ const PremiumStore = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <>
+        <FloatingHowItWorks title="How Premium Store works" steps={[
+          { title: 'Browse listings', desc: 'Explore items, services or offers.' },
+          { title: 'Open a detail', desc: 'Review price, seller and terms.' },
+          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
+          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+        ]} />
+        <div className="min-h-screen bg-background flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
-    );
+      </>
+      );
   }
 
   return (

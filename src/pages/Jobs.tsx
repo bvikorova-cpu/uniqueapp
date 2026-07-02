@@ -85,6 +85,7 @@ import { SEO } from "@/components/SEO";
 import JobsWeeklyChallenges from "@/components/jobs/JobsWeeklyChallenges";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface JobListing {
   id: string;
   title: string;
@@ -334,6 +335,13 @@ const Jobs = () => {
 
   return (
     <>
+      <FloatingHowItWorks title="How Jobs works" steps={[
+          { title: 'Browse listings', desc: 'Explore items, services or offers.' },
+          { title: 'Open a detail', desc: 'Review price, seller and terms.' },
+          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
+          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+        ]} />
+      <>
       <SEO
         title="Jobs - Find your next career opportunity"
         description="Browse jobs, apply with AI assistance and track applications. Employers post jobs and find verified candidates on Unique."
@@ -798,7 +806,8 @@ const Jobs = () => {
       </div>
     </div>
     </>
-  );
+    </>
+    );
 };
 
 export default Jobs;

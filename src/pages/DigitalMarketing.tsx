@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLearningContent } from "@/hooks/useLearningContent";
 import { TrendingUp, Clock, Star, Users } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const DigitalMarketing = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -107,7 +108,14 @@ const DigitalMarketing = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <>
+      <FloatingHowItWorks title="How Digital Marketing works" steps={[
+          { title: 'Browse listings', desc: 'Explore items, services or offers.' },
+          { title: 'Open a detail', desc: 'Review price, seller and terms.' },
+          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
+          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+        ]} />
+      <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12 mt-16">
           <h1 className="text-4xl md:text-5xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
@@ -204,7 +212,8 @@ const DigitalMarketing = () => {
         </div>
       </div>
     </div>
-  );
+    </>
+    );
 };
 
 export default DigitalMarketing;

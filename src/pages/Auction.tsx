@@ -29,6 +29,7 @@ import { MarketTrendsView } from "@/components/auction/views/MarketTrendsView";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { SellerConnectGate } from "@/components/commerce/SellerConnectGate";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface AuctionItem {
   id: string;
   title: string;
@@ -259,7 +260,14 @@ const Auction = () => {
   if (activeView === "market_trends") return <MarketTrendsView onBack={() => setActiveView("dashboard")} />;
 
   return (
-    <div className="min-h-screen bg-background pt-16">
+    <>
+      <FloatingHowItWorks title="How Auction works" steps={[
+          { title: 'Browse listings', desc: 'Explore items, services or offers.' },
+          { title: 'Open a detail', desc: 'Review price, seller and terms.' },
+          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
+          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+        ]} />
+      <div className="min-h-screen bg-background pt-16">
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
         {/* Cinematic Hero */}
         <AuctionHero />
@@ -589,7 +597,8 @@ const Auction = () => {
         </Dialog>
       </div>
     </div>
-  );
+    </>
+    );
 };
 
 export default Auction;

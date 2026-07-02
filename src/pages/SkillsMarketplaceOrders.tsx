@@ -11,6 +11,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ArrowLeft, Euro, ShoppingBag, Inbox, CheckCircle2, X, Star } from "lucide-react";
 import LeaveReviewDialog from "@/components/skills/LeaveReviewDialog";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type Order = {
   id: string;
   offering_id: string;
@@ -81,12 +82,20 @@ export default function SkillsMarketplaceOrders() {
     if (loading) return <Skeleton className="h-24 w-full" />;
     if (orders.length === 0) {
       return (
-        <Card>
+        <>
+          <FloatingHowItWorks title="How Skills Marketplace Orders works" steps={[
+          { title: 'Browse listings', desc: 'Explore items, services or offers.' },
+          { title: 'Open a detail', desc: 'Review price, seller and terms.' },
+          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
+          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+        ]} />
+          <Card>
           <CardContent className="py-10 text-center text-muted-foreground">
             No orders yet.
           </CardContent>
         </Card>
-      );
+        </>
+        );
     }
     return (
       <div className="space-y-3">

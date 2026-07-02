@@ -15,6 +15,7 @@ import OrderActions from "./OrderActions";
 import SellerRatingDialog from "./SellerRatingDialog";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface BazaarOrder {
   id: string;
   item_id: string;
@@ -153,7 +154,14 @@ export default function MyBazaarOrders({ userId }: MyBazaarOrdersProps) {
     const escrowStatus = (order.escrow_status || escrowData?.status || 'none') as EscrowStatus;
     
     return (
-      <Card 
+      <>
+        <FloatingHowItWorks title="How My Bazaar Orders works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+        <Card 
         className="cursor-pointer hover:shadow-md transition-shadow"
         onClick={() => setSelectedOrder(order)}
       >
@@ -208,7 +216,8 @@ export default function MyBazaarOrders({ userId }: MyBazaarOrdersProps) {
           </div>
         </CardContent>
       </Card>
-    );
+      </>
+      );
   };
 
   return (

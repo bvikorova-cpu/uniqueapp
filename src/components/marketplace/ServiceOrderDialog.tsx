@@ -10,6 +10,7 @@ import { Loader2, Clock, Euro, AlertCircle } from "lucide-react";
 import { useCommissionRate } from "@/hooks/useCommissionSettings";
 import { FEE_DEFAULTS } from "@/lib/feeRates";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface ServiceOrderDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -89,7 +90,14 @@ export function ServiceOrderDialog({ open, onOpenChange, offering }: ServiceOrde
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <>
+      <FloatingHowItWorks title="How Service Order Dialog works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Order Service</DialogTitle>
@@ -181,5 +189,6 @@ export function ServiceOrderDialog({ open, onOpenChange, offering }: ServiceOrde
         </div>
       </DialogContent>
     </Dialog>
-  );
+    </>
+    );
 }

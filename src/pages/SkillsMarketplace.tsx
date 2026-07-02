@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Plus, Search, MapPin, Euro, Star } from "lucide-react";
 import { SEO } from "@/components/SEO";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const CATEGORIES = [
   { value: "all", label: "All categories" },
   { value: "construction", label: "Construction" },
@@ -102,7 +103,14 @@ export default function SkillsMarketplace() {
   }, [offerings, q, category, location, sort, sellerStats]);
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
+    <>
+      <FloatingHowItWorks title="How Skills Marketplace works" steps={[
+          { title: 'Browse listings', desc: 'Explore items, services or offers.' },
+          { title: 'Open a detail', desc: 'Review price, seller and terms.' },
+          { title: 'Buy / order / bid', desc: 'Complete secure Stripe checkout in EUR. Fees follow platform splits.' },
+          { title: 'Track & review', desc: 'Manage orders, leave reviews, get notifications.' },
+        ]} />
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
       <SEO title="Skills Marketplace — Hire & offer microservices" description="Browse and order microservices. Offer your own skills and get paid in EUR." />
 
       <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
@@ -209,5 +217,6 @@ export default function SkillsMarketplace() {
         </div>
       )}
     </div>
-  );
+    </>
+    );
 }

@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FileText, Plus, Pencil, Trash2 } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Template {
   id: string;
   name: string;
@@ -150,7 +151,14 @@ export const ResponseTemplatesManager = () => {
   };
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title="How Response Templates Manager works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">Response Templates</h2>
         <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) resetForm(); }}>
@@ -297,5 +305,6 @@ export const ResponseTemplatesManager = () => {
         </div>
       )}
     </div>
-  );
+    </>
+    );
 };

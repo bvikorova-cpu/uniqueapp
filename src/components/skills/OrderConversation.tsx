@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Send } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props {
   offeringId: string;
   orderId?: string;
@@ -93,7 +94,14 @@ export default function OrderConversation({ offeringId, orderId, otherUserId }: 
   };
 
   return (
-    <div className="space-y-3">
+    <>
+      <FloatingHowItWorks title="How Order Conversation works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <div className="space-y-3">
       <div className="border rounded-lg p-3 bg-muted/30 max-h-80 overflow-y-auto space-y-3">
         {messages.length === 0 && (
           <p className="text-sm text-muted-foreground text-center py-6">No messages yet. Say hello.</p>
@@ -134,5 +142,6 @@ export default function OrderConversation({ offeringId, orderId, otherUserId }: 
         </Button>
       </div>
     </div>
-  );
+    </>
+    );
 }

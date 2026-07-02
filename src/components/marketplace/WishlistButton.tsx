@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useWishlist } from "@/hooks/useWishlist";
 import { cn } from "@/lib/utils";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props {
   productId: string;
   size?: "sm" | "default" | "icon";
@@ -13,7 +14,14 @@ export const WishlistButton = ({ productId, size = "icon" }: Props) => {
   const active = has(productId);
 
   return (
-    <Button
+    <>
+      <FloatingHowItWorks title="How Wishlist Button works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <Button
       size={size}
       variant={active ? "default" : "outline"}
       onClick={() => (active ? remove(productId) : add({ productId }))}
@@ -22,5 +30,6 @@ export const WishlistButton = ({ productId, size = "icon" }: Props) => {
       <Heart className={cn("h-4 w-4", active && "fill-white")} />
       {size !== "icon" && <span className="ml-2">{active ? "Saved" : "Save"}</span>}
     </Button>
-  );
+    </>
+    );
 };

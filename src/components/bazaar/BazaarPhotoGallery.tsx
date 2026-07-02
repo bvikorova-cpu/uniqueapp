@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props {
   images: string[];
   alt: string;
@@ -30,7 +31,14 @@ export const BazaarPhotoGallery = ({ images, alt, className }: Props) => {
   };
 
   return (
-    <div className={cn("space-y-2", className)}>
+    <>
+      <FloatingHowItWorks title="How Bazaar Photo Gallery works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
+          { title: 'Review results', desc: 'Track progress, orders or messages.' },
+          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
+        ]} />
+      <div className={cn("space-y-2", className)}>
       <div
         className="relative w-full h-64 sm:h-80 rounded-lg overflow-hidden bg-muted"
         onTouchStart={onTouchStart}
@@ -83,7 +91,8 @@ export const BazaarPhotoGallery = ({ images, alt, className }: Props) => {
         </div>
       )}
     </div>
-  );
+    </>
+    );
 };
 
 export default BazaarPhotoGallery;
