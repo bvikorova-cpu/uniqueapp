@@ -10,6 +10,15 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { SEO } from "@/components/SEO";
 import { gateGameLaunch, playPostRoll } from "@/lib/gameAdGate";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const GAMES_HOW_IT_WORKS = [
+  { title: "Pick a category", desc: "Tabs across the top split games by genre — Action, Puzzle, Racing, Sports and more. Tap one to filter the grid." },
+  { title: "Tap a game to launch", desc: "Games open full-screen inside the app. A short ad may play before/after — that keeps the games free for you." },
+  { title: "Play instantly, no install", desc: "Everything runs in the browser. Progress is saved by the game itself; some games sync via cookies." },
+  { title: "Earn XP by playing", desc: "Time spent in Game Arena counts toward your daily XP goal and streak in the Rewards module." },
+  { title: "Back to the arena anytime", desc: "Use the Back button (top-left inside a game) to return to the arena and pick another title." },
+];
 
 const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.05 } } };
 const item = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.35 } } };
@@ -42,6 +51,9 @@ const Games = () => {
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-2 sm:px-4">
         {/* Hero */}
+        <div className="flex justify-end mb-2">
+          <HowItWorksButton title="Game Arena" intro="How to browse, launch and enjoy the free Poki games." steps={GAMES_HOW_IT_WORKS} variant="compact" />
+        </div>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8 sm:mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary mb-4">
             <Gamepad2 className="w-4 h-4" />

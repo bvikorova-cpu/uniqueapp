@@ -48,6 +48,16 @@ const applicationSchema = z.object({
 });
 import { ResumeManagerDialog } from "@/components/jobs/ResumeManagerDialog";
 import CandidateSearchProfileDialog from "@/components/jobs/CandidateSearchProfileDialog";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const JOBS_HOW_IT_WORKS = [
+  { title: "Search and filter jobs", desc: "Use the search bar and filters (location, salary, remote, hot deals) to narrow down open roles." },
+  { title: "Open a job detail", desc: "Tap a job card to see the full description, company info, salary range and required skills." },
+  { title: "Apply with cover letter + resume", desc: "Click Apply, write a cover letter (min. 20 chars) and paste an https resume link (Drive, Dropbox, LinkedIn, GitHub, PDF)." },
+  { title: "Track your applications", desc: "Open the Application Tracker tab to see status changes for every job you applied to." },
+  { title: "Save jobs for later", desc: "Bookmark a job to find it in Saved Jobs. Turn on Job Alerts to get notified about new matching roles." },
+  { title: "Employers: Post & manage", desc: "Companies can post jobs, use the AI JD writer, rank candidates, run assessments and boost visibility." },
+];
 import { JobsPushButton } from "@/components/jobs/JobsPushButton";
 import { SaveJobButton } from "@/components/jobs/SaveJobButton";
 import { MatchScoreBadge } from "@/components/jobs/MatchScoreBadge";
@@ -331,6 +341,9 @@ const Jobs = () => {
       />
     <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-8 sm:pb-12">
       <div className="container mx-auto px-2 sm:px-4">
+        <div className="flex justify-end mb-2">
+          <HowItWorksButton title="Jobs" intro="How the Unique job board works for candidates and employers." steps={JOBS_HOW_IT_WORKS} variant="compact" />
+        </div>
         {/* Cinematic Hero */}
         <JobsCinematicHero
           totalJobs={jobs.length}
