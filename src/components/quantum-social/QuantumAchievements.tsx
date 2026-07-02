@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Achievement {
   id: string;
@@ -53,6 +54,16 @@ export function QuantumAchievements({ onBack }: { onBack: () => void }) {
   const categories = [...new Set(achievements.map(a => a.category))];
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Quantum Achievements'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Quantum Achievements panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={onBack}>
@@ -130,5 +141,6 @@ export function QuantumAchievements({ onBack }: { onBack: () => void }) {
         ))
       )}
     </div>
+    </>
   );
 }

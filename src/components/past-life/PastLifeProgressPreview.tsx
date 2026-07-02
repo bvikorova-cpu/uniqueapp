@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const PastLifeProgressPreview = () => {
   const metrics = [
@@ -9,6 +10,16 @@ export const PastLifeProgressPreview = () => {
   ];
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Past Life Progress Preview'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Past Life Progress Preview panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
       <div className="flex items-center gap-2 mb-3">
         <TrendingUp className="h-5 w-5 text-primary" />
@@ -31,5 +42,6 @@ export const PastLifeProgressPreview = () => {
         ))}
       </div>
     </Card>
+    </>
   );
 };

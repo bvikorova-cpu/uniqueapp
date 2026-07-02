@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { supabase } from "@/integrations/supabase/client";
 import { TrendingUp, Loader2, ArrowLeft } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, RadarChart, Radar, PolarGrid, PolarAngleAxis } from "recharts";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface DimensionalAnalyticsProps {
   onBack: () => void;
@@ -35,6 +36,16 @@ const DimensionalAnalytics = ({ onBack }: DimensionalAnalyticsProps) => {
   }));
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Dimensional Analytics'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Dimensional Analytics panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-2" /> Back to Hub</Button>
 
@@ -84,6 +95,7 @@ const DimensionalAnalytics = ({ onBack }: DimensionalAnalyticsProps) => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

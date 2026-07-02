@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Loader2, Palette, Sparkles, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const artStyles = [
   { id: "abstract", label: "Abstract Genome", desc: "Flowing shapes representing your genetic diversity" },
@@ -76,6 +77,16 @@ export const DNAArtGenerator = () => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='DNAArt Generator'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the DNAArt Generator panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Card className="p-5 bg-gradient-to-br from-fuchsia-500/10 to-pink-500/10 border-fuchsia-500/20">
         <div className="flex items-center gap-2 mb-3">
@@ -155,5 +166,6 @@ export const DNAArtGenerator = () => {
         </motion.div>
       )}
     </div>
+    </>
   );
 };

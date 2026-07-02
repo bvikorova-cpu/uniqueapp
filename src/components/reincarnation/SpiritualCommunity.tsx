@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, MessageSquare, Send, Heart, Users } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Post {
   id: string;
@@ -103,6 +104,16 @@ export const SpiritualCommunity = () => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Spiritual Community'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Spiritual Community panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Card className="p-6 bg-card/80 backdrop-blur-xl border-border/50">
         <h3 className="text-lg font-black mb-2">Spiritual Community</h3>
@@ -194,5 +205,6 @@ export const SpiritualCommunity = () => {
         </div>
       )}
     </div>
+    </>
   );
 };

@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Atom, Settings, ArrowLeft } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface QuantumProfileData {
   quantum_mode: string;
@@ -48,6 +49,16 @@ const QuantumProfile = ({ onBack }: { onBack: () => void }) => {
   if (loading) return <p className="text-muted-foreground">Loading profile...</p>;
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Quantum Profile'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Quantum Profile panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={onBack}><ArrowLeft className="h-5 w-5" /></Button>
@@ -108,6 +119,7 @@ const QuantumProfile = ({ onBack }: { onBack: () => void }) => {
         </>
       )}
     </div>
+    </>
   );
 };
 

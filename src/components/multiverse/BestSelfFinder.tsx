@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Crown, Loader2, AlertCircle, Sparkles, TrendingUp } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const BestSelfFinder = () => {
   const [bestVersions, setBestVersions] = useState<any[]>([]);
@@ -95,9 +96,20 @@ const BestSelfFinder = () => {
 
   if (checkingAccess) {
     return (
+      <>
+        <FloatingHowItWorks
+          title='Best Self Finder'
+          steps={[
+          { title: 'Open the tool', desc: 'Launch the Best Self Finder panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+        />
       <div className="flex items-center justify-center py-12">
         <Loader2 className="w-8 h-8 animate-spin text-violet-400" />
       </div>
+      </>
     );
   }
 

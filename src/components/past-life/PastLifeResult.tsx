@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { SocialShareButtons } from "@/components/shared/SocialShareButtons";
 import { Clock, MapPin, Briefcase, Heart, Lightbulb, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface PastLife {
   period: string;
@@ -25,6 +26,16 @@ interface PastLifeResultProps {
 
 export const PastLifeResult = ({ reading }: PastLifeResultProps) => {
   return (
+    <>
+      <FloatingHowItWorks
+        title='Past Life Result'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Past Life Result panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       {/* Karmic Theme */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
@@ -145,5 +156,6 @@ export const PastLifeResult = ({ reading }: PastLifeResultProps) => {
         />
       </Card>
     </div>
+    </>
   );
 };

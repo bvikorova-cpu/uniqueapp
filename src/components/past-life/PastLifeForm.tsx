@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Loader2, Sparkles, Clock, Heart } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface PastLifeFormProps {
   onSubmit: (data: any) => void;
@@ -70,6 +71,16 @@ export const PastLifeForm = ({ onSubmit, isAnalyzing, defaultReadingType }: Past
   const selectedType = readingTypes.find(t => t.value === readingType);
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Past Life Form'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Past Life Form panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
       <Card className="overflow-hidden bg-gradient-to-br from-card/90 via-card/80 to-primary/5 backdrop-blur-xl border-border/50 relative">
         {/* Mystical decorative orbs */}
@@ -229,5 +240,6 @@ export const PastLifeForm = ({ onSubmit, isAnalyzing, defaultReadingType }: Past
         </div>
       </Card>
     </motion.div>
+    </>
   );
 };

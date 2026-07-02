@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAICredits } from "@/hooks/useAICredits";
 import ReactMarkdown from "react-markdown";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface MergedReality {
   id: string;
@@ -98,6 +99,16 @@ export function RealityMerge({ onBack }: { onBack: () => void }) {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Reality Merge'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Reality Merge panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -152,5 +163,6 @@ export function RealityMerge({ onBack }: { onBack: () => void }) {
         </div>
       )}
     </div>
+    </>
   );
 }

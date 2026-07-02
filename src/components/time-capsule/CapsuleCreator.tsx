@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, FileText, Video, Mail, Calendar, Send, Loader2, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const CapsuleCreator = ({ onBack }: { onBack: () => void }) => {
   const { toast } = useToast();
@@ -61,6 +62,16 @@ export const CapsuleCreator = ({ onBack }: { onBack: () => void }) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Capsule Creator'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Capsule Creator panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2"><ArrowLeft className="w-4 h-4" /> Back to Hub</Button>
 
@@ -119,5 +130,6 @@ export const CapsuleCreator = ({ onBack }: { onBack: () => void }) => {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };

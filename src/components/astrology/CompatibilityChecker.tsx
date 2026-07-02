@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Loader2, Heart, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const ZODIAC_SIGNS = [
   { value: 'aries', label: 'Aries ♈', emoji: '🐏' }, { value: 'taurus', label: 'Taurus ♉', emoji: '🐂' },
@@ -47,6 +48,16 @@ export const CompatibilityChecker = () => {
   const s2 = ZODIAC_SIGNS.find(s => s.value === sign2);
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Compatibility Checker'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Compatibility Checker panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-4">
       <Card className="p-5 bg-card/90 backdrop-blur-xl border-border/30 relative overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-pink-500 via-red-500 to-rose-500" />
@@ -130,5 +141,6 @@ export const CompatibilityChecker = () => {
         </motion.div>
       )}
     </div>
+    </>
   );
 };

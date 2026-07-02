@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, MessageCircle, Users, Send, LogOut, Plus, Lock, Globe, Flame } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Room {
   id: string;
@@ -174,6 +175,16 @@ export const ConfessionRooms = () => {
   // Active room view
   if (activeRoom) {
     return (
+      <>
+        <FloatingHowItWorks
+          title='Confession Rooms'
+          steps={[
+          { title: 'Open the tool', desc: 'Launch the Confession Rooms panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+        />
       <div className="space-y-4">
         {/* Room Header */}
         <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
@@ -249,6 +260,7 @@ export const ConfessionRooms = () => {
           </div>
         </Card>
       </div>
+      </>
     );
   }
 

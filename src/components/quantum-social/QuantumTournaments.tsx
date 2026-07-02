@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAICredits } from "@/hooks/useAICredits";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Tournament {
   id: string;
@@ -90,6 +91,16 @@ export function QuantumTournaments({ onBack }: { onBack: () => void }) {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Quantum Tournaments'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Quantum Tournaments panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-4">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={onBack}><ArrowLeft className="h-5 w-5" /></Button>
@@ -146,5 +157,6 @@ export function QuantumTournaments({ onBack }: { onBack: () => void }) {
         </div>
       )}
     </div>
+    </>
   );
 }

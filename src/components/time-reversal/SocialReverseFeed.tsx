@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Heart, MessageCircle, Share, Send, Upload, Loader2, TrendingDown, Image } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -73,6 +74,16 @@ export function SocialReverseFeed({ onBack }: Props) {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Social Reverse Feed'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Social Reverse Feed panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-6">
         <Button variant="ghost" size="icon" onClick={onBack}><ArrowLeft className="h-5 w-5" /></Button>
@@ -142,5 +153,6 @@ export function SocialReverseFeed({ onBack }: Props) {
         </div>
       )}
     </div>
+    </>
   );
 }

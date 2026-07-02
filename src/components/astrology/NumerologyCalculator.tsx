@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, Calculator, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const NumerologyCalculator = () => {
   const [fullName, setFullName] = useState('');
@@ -60,6 +61,16 @@ export const NumerologyCalculator = () => {
   ] : [];
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Numerology Calculator'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Numerology Calculator panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-4">
       <Card className="p-5 bg-card/90 backdrop-blur-xl border-border/30 relative overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500" />
@@ -113,5 +124,6 @@ export const NumerologyCalculator = () => {
         </motion.div>
       )}
     </div>
+    </>
   );
 };

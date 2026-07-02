@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Play, Pause, RotateCcw, Timer, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const meditations = [
   { id: "past-life", label: "Past Life Recall", duration: 300, description: "Guided meditation to access past life memories through deep relaxation and visualization." },
@@ -105,6 +106,16 @@ export const MeditationChamber = () => {
   const activeMeditation = meditations.find((m) => m.id === selectedMeditation);
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Meditation Chamber'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Meditation Chamber panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Card className="p-6 bg-card/80 backdrop-blur-xl border-border/50">
         <div className="flex items-start justify-between mb-2">
@@ -189,5 +200,6 @@ export const MeditationChamber = () => {
         </div>
       )}
     </div>
+    </>
   );
 };

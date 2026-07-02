@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { useAICredits } from "@/hooks/useAICredits";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const TrendsAnalysis = () => {
   const { toast } = useToast();
@@ -63,6 +64,16 @@ const TrendsAnalysis = () => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Trends Analysis'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Trends Analysis panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Card>
         <CardHeader>
@@ -152,6 +163,7 @@ const TrendsAnalysis = () => {
         </>
       )}
     </div>
+    </>
   );
 };
 

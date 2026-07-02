@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Swords, Trophy, ThumbsUp, Upload, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -77,6 +78,16 @@ export function AgeBattleArena({ onBack }: Props) {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Age Battle Arena'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Age Battle Arena panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-6">
         <Button variant="ghost" size="icon" onClick={onBack}><ArrowLeft className="h-5 w-5" /></Button>
@@ -137,5 +148,6 @@ export function AgeBattleArena({ onBack }: Props) {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

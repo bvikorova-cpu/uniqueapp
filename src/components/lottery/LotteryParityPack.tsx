@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useLotteryParity, LOTTERY_PARITY_COST, type LotteryParityAction } from "@/hooks/useLotteryParity";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const TOOLS: { id: LotteryParityAction; label: string; icon: any; desc: string; color: string }[] = [
   { id: "wheel-builder", label: "Wheel Builder", icon: Settings2, desc: "Cover more combos with smart wheeling", color: "from-amber-500 to-yellow-500" },
@@ -38,6 +39,16 @@ export function LotteryParityPack() {
   const result = lastAction === tab && (lastResult as any)?.result;
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Lottery Parity Pack'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Lottery Parity Pack panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <Card className="bg-card/80 backdrop-blur-xl border-amber-400/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 font-black bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500 bg-clip-text text-transparent">
@@ -154,6 +165,7 @@ export function LotteryParityPack() {
         </Tabs>
       </CardContent>
     </Card>
+    </>
   );
 }
 

@@ -8,6 +8,7 @@ import { Eye, Loader2, ArrowLeft, Sparkles, TrendingUp, TrendingDown, Minus } fr
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface QuantumDestinyForecastProps {
   onBack: () => void;
@@ -70,6 +71,16 @@ const QuantumDestinyForecast = ({ onBack }: QuantumDestinyForecastProps) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Quantum Destiny Forecast'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Quantum Destiny Forecast panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="text-violet-300 hover:text-violet-100">
         <ArrowLeft className="w-4 h-4 mr-2" /> Back to Hub
@@ -169,6 +180,7 @@ const QuantumDestinyForecast = ({ onBack }: QuantumDestinyForecastProps) => {
         </motion.div>
       )}
     </div>
+    </>
   );
 };
 

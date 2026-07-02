@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Trophy, CheckCircle, Calendar } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const RedemptionDashboard = () => {
   const { toast } = useToast();
@@ -74,6 +75,16 @@ export const RedemptionDashboard = () => {
 
   if (!hasAccess) {
     return (
+      <>
+        <FloatingHowItWorks
+          title='Redemption Dashboard'
+          steps={[
+          { title: 'Open the tool', desc: 'Launch the Redemption Dashboard panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+        />
       <Card className="border-destructive/50">
         <CardHeader>
           <CardTitle className="text-foreground">Redemption Path - Locked</CardTitle>
@@ -87,6 +98,7 @@ export const RedemptionDashboard = () => {
           </p>
         </CardContent>
       </Card>
+      </>
     );
   }
 

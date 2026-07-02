@@ -5,6 +5,7 @@ import { ArrowLeft, Check, Clock, Lock, Eye, Sparkles, Zap } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -40,6 +41,16 @@ export function TimeReversalPlans({ onBack }: Props) {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Time Reversal Plans'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Time Reversal Plans panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-6">
         <Button variant="ghost" size="icon" onClick={onBack}><ArrowLeft className="h-5 w-5" /></Button>
@@ -88,5 +99,6 @@ export function TimeReversalPlans({ onBack }: Props) {
         })}
       </div>
     </div>
+    </>
   );
 }

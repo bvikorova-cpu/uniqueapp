@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Globe, Crown, Trophy, Flame } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface MultiverseEngagementProps {
   universesCount: number;
@@ -9,6 +10,16 @@ interface MultiverseEngagementProps {
 
 export const MultiverseEngagement = ({ universesCount, bestSelfScore, achievements }: MultiverseEngagementProps) => {
   return (
+    <>
+      <FloatingHowItWorks
+        title='Multiverse Engagement'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Multiverse Engagement panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
       <motion.div
         initial={{ opacity: 0, x: -30 }}
@@ -108,5 +119,6 @@ export const MultiverseEngagement = ({ universesCount, bestSelfScore, achievemen
         </div>
       </motion.div>
     </div>
+    </>
   );
 };

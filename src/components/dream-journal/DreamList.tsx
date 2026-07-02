@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface DreamEntry {
   id: string;
@@ -49,9 +50,20 @@ const DreamList = () => {
 
   if (loading) {
     return (
+      <>
+        <FloatingHowItWorks
+          title='Dream List'
+          steps={[
+          { title: 'Open the tool', desc: 'Launch the Dream List panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+        />
       <div className="flex justify-center p-8">
         <Loader2 className="w-8 h-8 animate-spin" />
       </div>
+      </>
     );
   }
 

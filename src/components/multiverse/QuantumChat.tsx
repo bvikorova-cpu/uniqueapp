@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { MessageCircle, Loader2, ArrowLeft, Send, Bot, User } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ReactMarkdown from "react-markdown";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface QuantumChatProps {
   onBack: () => void;
@@ -79,6 +80,16 @@ const QuantumChat = ({ onBack }: QuantumChatProps) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Quantum Chat'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Quantum Chat panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="mb-2">
         <ArrowLeft className="w-4 h-4 mr-2" /> Back to Hub
@@ -151,6 +162,7 @@ const QuantumChat = ({ onBack }: QuantumChatProps) => {
         </Card>
       )}
     </div>
+    </>
   );
 };
 

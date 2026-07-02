@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface AncestorVoice {
   id: string;
@@ -89,11 +90,22 @@ export const AncestralVoiceSynth = () => {
 
   if (ancestors.length === 0) {
     return (
+      <>
+        <FloatingHowItWorks
+          title='Ancestral Voice Synth'
+          steps={[
+          { title: 'Open the tool', desc: 'Launch the Ancestral Voice Synth panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+        />
       <Card className="p-12 text-center bg-card/80 backdrop-blur-xl border-border/50">
         <Mic className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
         <h3 className="font-bold text-lg mb-2">No Ancestors Found</h3>
         <p className="text-sm text-muted-foreground">Complete a DNA Analysis to discover ancestors and synthesize their voices.</p>
       </Card>
+      </>
     );
   }
 

@@ -6,6 +6,7 @@ import { Medal, Loader2, ArrowLeft, Crown, Star, TrendingUp } from "lucide-react
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface MultiverseLeaderboardProps {
   onBack: () => void;
@@ -69,6 +70,16 @@ const MultiverseLeaderboard = ({ onBack }: MultiverseLeaderboardProps) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Multiverse Leaderboard'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Multiverse Leaderboard panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="text-violet-300 hover:text-violet-100">
         <ArrowLeft className="w-4 h-4 mr-2" /> Back to Hub
@@ -138,6 +149,7 @@ const MultiverseLeaderboard = ({ onBack }: MultiverseLeaderboardProps) => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

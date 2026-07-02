@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2, Moon, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const DreamInterpretation = () => {
   const [dream, setDream] = useState("");
@@ -32,6 +33,16 @@ export const DreamInterpretation = () => {
   });
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Dream Interpretation'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Dream Interpretation panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-4">
       <Card className="p-5 bg-card/90 backdrop-blur-xl border-border/30 relative overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-500" />
@@ -66,5 +77,6 @@ export const DreamInterpretation = () => {
         </motion.div>
       )}
     </div>
+    </>
   );
 };

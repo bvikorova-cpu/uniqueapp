@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props { onBack: () => void; }
 
@@ -54,6 +55,16 @@ export const AvatarMarketplace = ({ onBack }: Props) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Avatar Marketplace'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Avatar Marketplace panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={onBack}><ArrowLeft className="w-5 h-5" /></Button>
@@ -105,5 +116,6 @@ export const AvatarMarketplace = ({ onBack }: Props) => {
         ))}
       </div>
     </div>
+    </>
   );
 };

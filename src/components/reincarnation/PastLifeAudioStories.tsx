@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, Play, Pause, Volume2, Clock, MapPin, Star, SkipBack, SkipForward } from "lucide-react";
 import { motion } from "framer-motion";
 import { Slider } from "@/components/ui/slider";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface PastLifeStory {
   id: string;
@@ -167,9 +168,20 @@ export const PastLifeAudioStories = () => {
 
   if (loading) {
     return (
+      <>
+        <FloatingHowItWorks
+          title='Past Life Audio Stories'
+          steps={[
+          { title: 'Open the tool', desc: 'Launch the Past Life Audio Stories panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+        />
       <Card className="p-12 text-center bg-card/80 backdrop-blur-xl border-border/50">
         <Loader2 className="h-8 w-8 mx-auto animate-spin text-primary" />
       </Card>
+      </>
     );
   }
 

@@ -6,6 +6,7 @@ import { Switch } from "@/components/ui/switch";
 import { Bell, BellOff, Calendar, TrendingUp, Sparkles, ArrowLeft, Zap, Moon, Sun } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface LotteryPushNotificationsProps {
   onBack: () => void;
@@ -79,6 +80,16 @@ export function LotteryPushNotifications({ onBack }: LotteryPushNotificationsPro
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Lottery Push Notifications'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Lottery Push Notifications panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={onBack} className="shrink-0">
@@ -187,5 +198,6 @@ export function LotteryPushNotifications({ onBack }: LotteryPushNotificationsPro
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

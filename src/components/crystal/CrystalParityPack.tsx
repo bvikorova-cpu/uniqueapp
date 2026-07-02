@@ -11,6 +11,7 @@ import { useCrystalSubscription } from "@/hooks/useCrystalSubscription";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const TOOLS: { id: CrystalParityAction; label: string; description: string; fields: { key: string; label: string; placeholder?: string; type?: "text" | "textarea" }[] }[] = [
   { id: "birth-chart-crystals", label: "Birth Chart Crystals", description: "Crystals aligned with your astrological chart.", fields: [
@@ -78,6 +79,16 @@ export default function CrystalParityPack() {
 
   if (!subLoading && !subscribed) {
     return (
+      <>
+        <FloatingHowItWorks
+          title='Crystal Parity Pack'
+          steps={[
+          { title: 'Open the tool', desc: 'Launch the Crystal Parity Pack panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+        />
       <Card className="my-8 border-primary/40 bg-gradient-to-br from-primary/10 via-card to-card/60">
         <CardHeader className="text-center">
           <div className="mx-auto mb-3 inline-flex h-14 w-14 items-center justify-center rounded-full bg-primary/20">
@@ -119,6 +130,7 @@ export default function CrystalParityPack() {
           </div>
         </CardContent>
       </Card>
+      </>
     );
   }
 

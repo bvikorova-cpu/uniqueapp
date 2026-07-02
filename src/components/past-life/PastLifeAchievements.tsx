@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Trophy } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const badges = [
   { icon: "🔮", label: "First Vision", unlocked: true },
@@ -13,6 +14,16 @@ const badges = [
 
 export const PastLifeAchievements = () => {
   return (
+    <>
+      <FloatingHowItWorks
+        title='Past Life Achievements'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Past Life Achievements panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
       <div className="flex items-center gap-2 mb-3">
         <Trophy className="h-5 w-5 text-yellow-500" />
@@ -38,5 +49,6 @@ export const PastLifeAchievements = () => {
         ))}
       </div>
     </Card>
+    </>
   );
 };

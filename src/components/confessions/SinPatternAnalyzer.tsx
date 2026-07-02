@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, Eye, Brain, AlertTriangle, CheckCircle, Sparkles, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface PatternAnalysis {
   input: string;
@@ -81,6 +82,16 @@ Provide a compassionate, insightful analysis in markdown format. Be specific and
   ];
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Sin Pattern Analyzer'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Sin Pattern Analyzer panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Card className="p-6 bg-card/80 backdrop-blur-xl border-border/50">
         <h3 className="text-lg font-black mb-2">Sin Pattern Analyzer</h3>
@@ -160,5 +171,6 @@ Provide a compassionate, insightful analysis in markdown format. Be specific and
         </Card>
       )}
     </div>
+    </>
   );
 };

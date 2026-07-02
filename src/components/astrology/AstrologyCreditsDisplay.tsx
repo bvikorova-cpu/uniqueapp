@@ -6,6 +6,7 @@ import { Sparkles, ShoppingCart, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import {
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   Dialog,
   DialogContent,
   DialogHeader,
@@ -51,6 +52,16 @@ export const AstrologyCreditsDisplay = () => {
   if (isLoading) return null;
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Astrology Credits Display'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Astrology Credits Display panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <Card className="p-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10">
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-2">
@@ -116,5 +127,6 @@ export const AstrologyCreditsDisplay = () => {
         </Dialog>
       </div>
     </Card>
+    </>
   );
 };

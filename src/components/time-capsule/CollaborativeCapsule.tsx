@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, Users, Plus, Mail, Send, UserPlus, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const CollaborativeCapsule = ({ onBack }: { onBack: () => void }) => {
   const { toast } = useToast();
@@ -34,6 +35,16 @@ export const CollaborativeCapsule = ({ onBack }: { onBack: () => void }) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Collaborative Capsule'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Collaborative Capsule panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2"><ArrowLeft className="w-4 h-4" /> Back to Hub</Button>
 
@@ -89,5 +100,6 @@ export const CollaborativeCapsule = ({ onBack }: { onBack: () => void }) => {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };

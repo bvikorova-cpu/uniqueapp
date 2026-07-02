@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, Flame, Calendar, TrendingUp, BarChart3 } from "lucide-react";
 import { motion } from "framer-motion";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area } from "recharts";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const CATEGORIES = [
   { name: "Pride", color: "#8b5cf6", emoji: "👑" },
@@ -103,10 +104,21 @@ export const SinHeatmap = () => {
 
   if (loading) {
     return (
+      <>
+        <FloatingHowItWorks
+          title='Sin Heatmap'
+          steps={[
+          { title: 'Open the tool', desc: 'Launch the Sin Heatmap panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+        />
       <Card className="p-12 text-center bg-card/80 backdrop-blur-xl border-border/50">
         <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
         <p className="text-sm text-muted-foreground mt-2">Loading heatmap data...</p>
       </Card>
+      </>
     );
   }
 

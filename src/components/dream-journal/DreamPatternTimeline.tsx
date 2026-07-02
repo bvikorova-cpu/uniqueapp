@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Loader2, GitBranch, ArrowLeft, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface DreamPatternTimelineProps {
   onBack: () => void;
@@ -76,6 +77,16 @@ const DreamPatternTimeline = ({ onBack }: DreamPatternTimelineProps) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Dream Pattern Timeline'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Dream Pattern Timeline panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2">
         <ArrowLeft className="h-4 w-4" /> Back to Dashboard
@@ -132,6 +143,7 @@ const DreamPatternTimeline = ({ onBack }: DreamPatternTimelineProps) => {
         </motion.div>
       )}
     </motion.div>
+    </>
   );
 };
 

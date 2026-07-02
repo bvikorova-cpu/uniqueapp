@@ -9,6 +9,7 @@ import { Loader2, Sparkles } from "lucide-react";
 import { useAICredits } from "@/hooks/useAICredits";
 import { useNavigate } from "react-router-dom";
 import { handleEdgeError, throwIfInvokeError } from "@/lib/handleEdgeError";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface DreamEntryFormProps {
   onSuccess: () => void;
@@ -80,6 +81,16 @@ const DreamEntryForm = ({ onSuccess }: DreamEntryFormProps) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Dream Entry Form'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Dream Entry Form panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
@@ -121,6 +132,7 @@ const DreamEntryForm = ({ onSuccess }: DreamEntryFormProps) => {
         </Button>
       </div>
     </form>
+    </>
   );
 };
 

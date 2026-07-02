@@ -7,6 +7,7 @@ import { Slider } from "@/components/ui/slider";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Save } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface MoodTrackerProps {
   onSuccess: () => void;
@@ -48,6 +49,16 @@ const MoodTracker = ({ onSuccess }: MoodTrackerProps) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Mood Tracker'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Mood Tracker panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
         <Label htmlFor="mood">How are you feeling?</Label>
@@ -109,6 +120,7 @@ const MoodTracker = ({ onSuccess }: MoodTrackerProps) => {
         Save Mood Log
       </Button>
     </form>
+    </>
   );
 };
 

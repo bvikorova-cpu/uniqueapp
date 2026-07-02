@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Check, X, Sparkles } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const features = [
   { name: "Past Life Story", basic: true, full: true, soulmate: true },
@@ -14,6 +15,16 @@ const features = [
 
 export const PastLifeComparisonTable = () => {
   return (
+    <>
+      <FloatingHowItWorks
+        title='Past Life Comparison Table'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Past Life Comparison Table panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <Card className="p-4 bg-card/80 backdrop-blur-xl border-border/50">
       <h3 className="font-bold text-sm mb-3 flex items-center gap-2">
         <Sparkles className="h-4 w-4 text-primary" />
@@ -42,5 +53,6 @@ export const PastLifeComparisonTable = () => {
         </table>
       </div>
     </Card>
+    </>
   );
 };

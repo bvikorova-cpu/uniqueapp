@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { ThumbsUp, ThumbsDown, Calendar, Tag } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Confession {
   id: string;
@@ -89,6 +90,16 @@ export const ConfessionWall = () => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Confession Wall'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Confession Wall panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h3 className="text-2xl font-bold text-foreground">Community Confessions</h3>
@@ -154,5 +165,6 @@ export const ConfessionWall = () => {
         </div>
       )}
     </div>
+    </>
   );
 };

@@ -10,6 +10,7 @@ import { useAstrologyCredits, CREDIT_COSTS } from "@/hooks/useAstrologyCredits";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Message { role: "user" | "assistant"; content: string; }
 
@@ -65,6 +66,16 @@ export const LiveChatWithAI = () => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Live Chat With AI'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Live Chat With AI panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <Card className="p-5 bg-card/90 backdrop-blur-xl border-border/30 space-y-4 relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500" />
       
@@ -148,5 +159,6 @@ export const LiveChatWithAI = () => {
         </Button>
       </div>
     </Card>
+    </>
   );
 };

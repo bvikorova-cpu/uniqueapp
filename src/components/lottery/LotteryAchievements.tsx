@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Award, Lock } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const badges = [
   { name: "First Pick", icon: "🎰", description: "Generate your first numbers", unlocked: false, color: "from-blue-500/20 to-cyan-500/20", borderColor: "border-blue-500/30" },
@@ -13,6 +14,16 @@ const badges = [
 
 export const LotteryAchievements = () => {
   return (
+    <>
+      <FloatingHowItWorks
+        title='Lottery Achievements'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Lottery Achievements panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
       <Card className="bg-gradient-to-br from-yellow-500/10 to-amber-500/10 border-yellow-300/30 h-full">
         <CardHeader className="pb-3">
@@ -50,5 +61,6 @@ export const LotteryAchievements = () => {
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 };

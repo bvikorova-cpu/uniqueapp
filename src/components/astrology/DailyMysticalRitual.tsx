@@ -7,6 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAstrologyCredits, CREDIT_COSTS } from "@/hooks/useAstrologyCredits";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface RitualResult {
   cardOfTheDay: { name: string; meaning: string };
@@ -54,6 +55,16 @@ export const DailyMysticalRitual = () => {
   ] : [];
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Daily Mystical Ritual'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Daily Mystical Ritual panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <Card className="p-5 sm:p-6 bg-card/90 backdrop-blur-xl border-border/30 overflow-hidden relative">
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 via-purple-500 to-pink-500" />
       
@@ -110,5 +121,6 @@ export const DailyMysticalRitual = () => {
         </div>
       )}
     </Card>
+    </>
   );
 };

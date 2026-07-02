@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { usePastLifeParity, PAST_LIFE_PARITY_COST, type PastLifeParityAction } from "@/hooks/usePastLifeParity";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface ToolConfig {
   id: PastLifeParityAction;
@@ -123,6 +124,16 @@ export const PastLifeParityPack = () => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Past Life Parity Pack'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Past Life Parity Pack panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
@@ -238,6 +249,7 @@ export const PastLifeParityPack = () => {
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 };
 

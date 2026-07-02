@@ -7,6 +7,7 @@ import { Loader2, Eye, Clock, MapPin, User, Lock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const PastLifeRegressionSection = () => {
   const { toast } = useToast();
@@ -80,12 +81,23 @@ export const PastLifeRegressionSection = () => {
 
   if (checkingAccess) {
     return (
+      <>
+        <FloatingHowItWorks
+          title='Past Life Regression Section'
+          steps={[
+          { title: 'Open the tool', desc: 'Launch the Past Life Regression Section panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+        />
       <Card className="border-primary/20">
         <CardContent className="py-12 text-center">
           <Loader2 className="h-10 w-10 mx-auto animate-spin text-primary" />
           <p className="text-muted-foreground mt-4">Checking access...</p>
         </CardContent>
       </Card>
+      </>
     );
   }
 

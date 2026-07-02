@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Room {
   id: string;
@@ -118,6 +119,16 @@ export function QuantumChatRooms({ onBack }: { onBack: () => void }) {
 
   if (activeRoom) {
     return (
+      <>
+        <FloatingHowItWorks
+          title='Quantum Chat Rooms'
+          steps={[
+          { title: 'Open the tool', desc: 'Launch the Quantum Chat Rooms panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+        />
       <div className="space-y-4">
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="icon" onClick={() => setActiveRoom(null)}>
@@ -181,6 +192,7 @@ export function QuantumChatRooms({ onBack }: { onBack: () => void }) {
           </Button>
         </div>
       </div>
+      </>
     );
   }
 

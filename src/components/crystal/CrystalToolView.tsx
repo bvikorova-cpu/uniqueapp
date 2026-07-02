@@ -20,6 +20,7 @@ import { CrystalAnalyticsTool } from "./tools/CrystalAnalyticsTool";
 import { CrystalChakraBalancingTool } from "./tools/CrystalChakraBalancingTool";
 import { CrystalSubBoxTool } from "./tools/CrystalSubBoxTool";
 import CrystalEnergyUpload from "./CrystalEnergyUpload";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface CrystalToolViewProps {
   toolName: string;
@@ -88,11 +89,22 @@ export const CrystalToolView = ({ toolName, onBack }: CrystalToolViewProps) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Crystal Tool View'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Crystal Tool View panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
       <Button variant="ghost" onClick={onBack} className="mb-4 gap-2">
         <ArrowLeft className="w-4 h-4" /> Back to Hub
       </Button>
       {renderTool()}
     </motion.div>
+    </>
   );
 };

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, Trophy, Award, Users, Crown, Medal, Star, RefreshCw } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface LeaderboardEntry {
   user_id: string;
@@ -79,6 +80,16 @@ export const CommunityLeaderboard = () => {
   }
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Community Leaderboard'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Community Leaderboard panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Card className="p-6 bg-card/80 backdrop-blur-xl border-border/50">
         <div className="flex items-center justify-between">
@@ -147,5 +158,6 @@ export const CommunityLeaderboard = () => {
         </div>
       )}
     </div>
+    </>
   );
 };

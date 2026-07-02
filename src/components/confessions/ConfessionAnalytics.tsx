@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Loader2, BarChart3, TrendingUp, PieChart, Calendar, RefreshCw } from "lucide-react";
 import { motion } from "framer-motion";
 import {
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart as RePieChart, Pie, Cell, AreaChart, Area
 } from "recharts";
@@ -88,6 +89,16 @@ export const ConfessionAnalytics = () => {
   }
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Confession Analytics'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Confession Analytics panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Card className="p-6 bg-card/80 backdrop-blur-xl border-border/50">
         <div className="flex items-center justify-between">
@@ -196,5 +207,6 @@ export const ConfessionAnalytics = () => {
         </Card>
       )}
     </div>
+    </>
   );
 };

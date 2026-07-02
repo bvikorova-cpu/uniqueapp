@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   Sparkles, Heart, Gem, BookOpen, Store, Upload, Timer, Palette,
   Brain, Compass, Users, BarChart3, Zap, Sun, Moon, Eye,
   Camera, Music, Globe, MessageCircle, Trophy, Package
@@ -38,6 +39,16 @@ interface CrystalToolCardsProps {
 
 export const CrystalToolCards = ({ onSelectTool }: CrystalToolCardsProps) => {
   return (
+    <>
+      <FloatingHowItWorks
+        title='Crystal Tool Cards'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Crystal Tool Cards panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="mb-10">
       <div className="text-center mb-6">
         <h2 className="text-2xl sm:text-3xl font-black mb-2 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
@@ -78,5 +89,6 @@ export const CrystalToolCards = ({ onSelectTool }: CrystalToolCardsProps) => {
         ))}
       </div>
     </div>
+    </>
   );
 };

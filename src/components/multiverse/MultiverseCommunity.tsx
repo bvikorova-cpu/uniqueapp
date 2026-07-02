@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ArrowLeft, Users, MessageSquare, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface MultiverseCommunityProps {
   onBack: () => void;
@@ -20,6 +21,16 @@ const mockExplorers = [
 
 const MultiverseCommunity = ({ onBack }: MultiverseCommunityProps) => {
   return (
+    <>
+      <FloatingHowItWorks
+        title='Multiverse Community'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Multiverse Community panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-2" /> Back to Hub</Button>
 
@@ -61,6 +72,7 @@ const MultiverseCommunity = ({ onBack }: MultiverseCommunityProps) => {
         ))}
       </div>
     </div>
+    </>
   );
 };
 

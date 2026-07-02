@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Upload, Sparkles, CheckCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function CrystalEnergyUpload() {
   const [uploading, setUploading] = useState(false);
@@ -76,6 +77,16 @@ export default function CrystalEnergyUpload() {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Crystal Energy Upload'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Crystal Energy Upload panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Card>
         <CardHeader>
@@ -157,5 +168,6 @@ export default function CrystalEnergyUpload() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

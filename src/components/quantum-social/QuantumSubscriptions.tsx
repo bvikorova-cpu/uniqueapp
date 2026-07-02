@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Zap, Check, X, ArrowLeft, Settings } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Subscription {
   id: string;
@@ -54,6 +55,16 @@ const QuantumSubscriptions = ({ onBack }: { onBack: () => void }) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Quantum Subscriptions'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Quantum Subscriptions panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -134,6 +145,7 @@ const QuantumSubscriptions = ({ onBack }: { onBack: () => void }) => {
         )}
       </div>
     </div>
+    </>
   );
 };
 

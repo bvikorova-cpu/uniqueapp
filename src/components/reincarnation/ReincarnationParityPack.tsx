@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Sparkles, Loader2, Infinity as InfinityIcon } from "lucide-react";
 import { useReincarnationParity, REINCARNATION_PARITY_COST, type ReincarnationParityAction } from "@/hooks/useReincarnationParity";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const TOOLS: { id: ReincarnationParityAction; label: string; description: string; fields: { key: string; label: string; placeholder?: string; type?: "text" | "textarea" }[] }[] = [
   { id: "soul-origin", label: "Soul Origin", description: "Trace your soul's first spark and archetype.", fields: [
@@ -52,6 +53,16 @@ export default function ReincarnationParityPack() {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Reincarnation Parity Pack'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Reincarnation Parity Pack panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <Card className="my-8 border-primary/30 bg-gradient-to-br from-card to-card/60">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
@@ -116,5 +127,6 @@ export default function ReincarnationParityPack() {
         </Tabs>
       </CardContent>
     </Card>
+    </>
   );
 }

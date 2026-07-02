@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Layers, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const TimelineMerger = () => {
   const [universes, setUniverses] = useState<any[]>([]);
@@ -113,9 +114,20 @@ const TimelineMerger = () => {
 
   if (checkingAccess) {
     return (
+      <>
+        <FloatingHowItWorks
+          title='Timeline Merger'
+          steps={[
+          { title: 'Open the tool', desc: 'Launch the Timeline Merger panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+        />
       <div className="flex items-center justify-center py-12">
         <Loader2 className="w-8 h-8 animate-spin text-violet-400" />
       </div>
+      </>
     );
   }
 

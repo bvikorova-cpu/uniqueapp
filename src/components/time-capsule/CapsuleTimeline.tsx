@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Clock, Calendar, Lock, Unlock, ChevronRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const CapsuleTimeline = ({ onBack }: { onBack: () => void }) => {
   const [capsules, setCapsules] = useState<any[]>([]);
@@ -39,6 +40,16 @@ export const CapsuleTimeline = ({ onBack }: { onBack: () => void }) => {
   ];
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Capsule Timeline'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Capsule Timeline panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2"><ArrowLeft className="w-4 h-4" /> Back to Hub</Button>
 
@@ -87,5 +98,6 @@ export const CapsuleTimeline = ({ onBack }: { onBack: () => void }) => {
         </div>
       </div>
     </div>
+    </>
   );
 };

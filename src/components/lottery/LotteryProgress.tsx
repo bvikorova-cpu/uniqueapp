@@ -3,9 +3,20 @@ import { Button } from "@/components/ui/button";
 import { Zap, Sparkles, Target } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const LotteryProgress = () => {
   return (
+    <>
+      <FloatingHowItWorks
+        title='Lottery Progress'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Lottery Progress panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
       <Card className="bg-gradient-to-r from-purple-500/10 via-primary/10 to-accent/10 border-primary/20 overflow-hidden relative h-full">
         <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2" />
@@ -43,5 +54,6 @@ export const LotteryProgress = () => {
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 };

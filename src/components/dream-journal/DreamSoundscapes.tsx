@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { Loader2, Volume2, ArrowLeft, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface DreamSoundscapesProps {
   onBack: () => void;
@@ -60,6 +61,16 @@ const DreamSoundscapes = ({ onBack }: DreamSoundscapesProps) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Dream Soundscapes'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Dream Soundscapes panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2">
         <ArrowLeft className="h-4 w-4" /> Back to Dashboard
@@ -124,6 +135,7 @@ const DreamSoundscapes = ({ onBack }: DreamSoundscapesProps) => {
         </motion.div>
       )}
     </div>
+    </>
   );
 };
 

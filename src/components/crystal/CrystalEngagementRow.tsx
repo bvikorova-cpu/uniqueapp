@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Flame, TrendingUp, Trophy, Gem, Heart, Sparkles, Lock, CheckCircle2 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -53,6 +54,16 @@ export const CrystalEngagementRow = () => {
   const chakras = stats?.chakras_balanced || 0;
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Crystal Engagement Row'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Crystal Engagement Row panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
       {/* Healing Streak */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
@@ -143,5 +154,6 @@ export const CrystalEngagementRow = () => {
         </Card>
       </motion.div>
     </div>
+    </>
   );
 };

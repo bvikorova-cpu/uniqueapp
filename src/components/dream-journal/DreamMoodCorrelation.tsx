@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import { useNavigate } from "react-router-dom";
 import { handleEdgeError, throwIfInvokeError } from "@/lib/handleEdgeError";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface DreamMoodCorrelationProps {
   onBack: () => void;
@@ -67,6 +68,16 @@ const DreamMoodCorrelation = ({ onBack }: DreamMoodCorrelationProps) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Dream Mood Correlation'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Dream Mood Correlation panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2">
         <ArrowLeft className="h-4 w-4" /> Back to Dashboard
@@ -120,6 +131,7 @@ const DreamMoodCorrelation = ({ onBack }: DreamMoodCorrelationProps) => {
         </motion.div>
       )}
     </div>
+    </>
   );
 };
 

@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Paintbrush, Download, Clock, MapPin, Star, Sparkles, Image as ImageIcon } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface PastLifeForArt {
   id: string;
@@ -135,9 +136,20 @@ export const SoulArtGenerator = () => {
 
   if (loading) {
     return (
+      <>
+        <FloatingHowItWorks
+          title='Soul Art Generator'
+          steps={[
+          { title: 'Open the tool', desc: 'Launch the Soul Art Generator panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+        />
       <Card className="p-12 text-center bg-card/80 backdrop-blur-xl border-border/50">
         <Loader2 className="h-8 w-8 mx-auto animate-spin text-primary" />
       </Card>
+      </>
     );
   }
 

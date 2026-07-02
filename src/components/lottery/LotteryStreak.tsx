@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Flame, Calendar } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const LotteryStreak = () => {
   const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
@@ -9,6 +10,16 @@ export const LotteryStreak = () => {
   const currentStreak = 0;
 
   return (
+    <>
+      <FloatingHowItWorks
+        title='Lottery Streak'
+        steps={[
+          { title: 'Open the tool', desc: 'Launch the Lottery Streak panel from this page.' },
+          { title: 'Provide inputs', desc: 'Fill in required fields or select the options you want to explore.' },
+          { title: 'Run the action', desc: 'Tap the primary action button to generate or process.' },
+          { title: 'Review the result', desc: 'Read the output, save, share or refine as you like.' }
+        ]}
+      />
     <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
       <Card className="backdrop-blur-xl bg-card/80 border-orange-500/20 bg-gradient-to-br from-orange-500/10 to-red-500/10 h-full">
         <CardContent className="p-4">
@@ -60,5 +71,6 @@ export const LotteryStreak = () => {
         </CardContent>
       </Card>
     </motion.div>
+    </>
   );
 };
