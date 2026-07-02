@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Play, X, ExternalLink } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface LessonPlayerProps {
   isOpen: boolean;
   onClose: () => void;
@@ -64,7 +65,14 @@ export function LessonPlayer({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <>
+      <FloatingHowItWorks title="How Lesson Player works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
@@ -131,5 +139,6 @@ export function LessonPlayer({
         </div>
       </DialogContent>
     </Dialog>
-  );
+    </>
+    );
 }

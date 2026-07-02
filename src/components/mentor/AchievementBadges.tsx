@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const badgeDefinitions = [
   { name: "First Session", icon: "🎉", description: "Complete your first mentor session", check: (d: any) => d.sessions >= 1 },
   { name: "3-Day Streak", icon: "🔥", description: "Maintain a 3-day session streak", check: (d: any) => d.sessions >= 3 },
@@ -39,7 +40,14 @@ export const AchievementBadges = () => {
   const unlockedCount = badges.filter(b => b.unlocked).length;
 
   return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+    <>
+      <FloatingHowItWorks title="How Achievement Badges works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
       <Card className="backdrop-blur-xl bg-card/80 border-amber-500/20 bg-gradient-to-br from-amber-500/5 to-yellow-500/5 overflow-hidden relative">
         <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-amber-500/10 to-transparent rounded-bl-full" />
         <CardHeader className="pb-3">
@@ -88,5 +96,6 @@ export const AchievementBadges = () => {
         </CardContent>
       </Card>
     </motion.div>
-  );
+    </>
+    );
 };

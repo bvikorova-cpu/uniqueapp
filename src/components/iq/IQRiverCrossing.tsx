@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sailboat, Trophy, RotateCcw } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const KEY = "iq_river_best_moves";
 // 0 = left, 1 = right. Items: F farmer, W wolf, G goat, C cabbage
 type Side = 0 | 1;
@@ -48,7 +49,14 @@ const IQRiverCrossing = () => {
   );
 
   return (
-    <Card className="bg-card/50 backdrop-blur border-primary/20">
+    <>
+      <FloatingHowItWorks title="How IQRiver Crossing works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="bg-card/50 backdrop-blur border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Sailboat className="w-5 h-5 text-primary" /> River Crossing
@@ -84,7 +92,8 @@ const IQRiverCrossing = () => {
         <Button onClick={reset} variant="outline" size="sm" className="w-full"><RotateCcw className="w-3 h-3 mr-1" /> Reset</Button>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };
 
 export default IQRiverCrossing;

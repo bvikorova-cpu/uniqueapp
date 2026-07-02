@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trophy } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function IQFinalSummary() {
   const [stats, setStats] = useState({ keys: 0, score: 0, milestones: 0, badges: 0, time: 0 });
   useEffect(() => {
@@ -19,7 +20,14 @@ export default function IQFinalSummary() {
     });
   }, []);
   return (
-    <Card className="border-primary/40 bg-gradient-to-br from-primary/10 to-accent/10">
+    <>
+      <FloatingHowItWorks title="How IQFinal Summary works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="border-primary/40 bg-gradient-to-br from-primary/10 to-accent/10">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-2xl">
           <Trophy className="w-7 h-7 text-primary" />Your IQ Journey
@@ -49,5 +57,6 @@ export default function IQFinalSummary() {
         </p>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

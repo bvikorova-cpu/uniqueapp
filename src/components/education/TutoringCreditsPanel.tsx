@@ -6,11 +6,19 @@ import { Coins, Sparkles, Zap } from "lucide-react";
 import { useTutoringCredits, TUTORING_CREDIT_PACKAGES } from "@/hooks/useTutoringCredits";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export const TutoringCreditsPanel = () => {
   const { credits, isLoading, purchaseCredits } = useTutoringCredits();
 
   return (
-    <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
+    <>
+      <FloatingHowItWorks title="How Tutoring Credits Panel works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
       <Card className="backdrop-blur-xl bg-card/80 border-amber-500/20 bg-gradient-to-br from-amber-500/10 to-orange-500/10">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
@@ -64,5 +72,6 @@ export const TutoringCreditsPanel = () => {
         </CardContent>
       </Card>
     </motion.div>
-  );
+    </>
+    );
 };

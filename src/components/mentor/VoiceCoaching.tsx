@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mic, Loader2, Volume2, Sparkles, Pause, Play } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export function VoiceCoaching() {
   const [message, setMessage] = useState("");
   const [area, setArea] = useState("career");
@@ -58,7 +59,14 @@ export function VoiceCoaching() {
   };
 
   return (
-    <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
+    <>
+      <FloatingHowItWorks title="How Voice Coaching works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center gap-2">
           <Mic className="h-4 w-4 text-primary" /> Voice AI Coach
@@ -129,5 +137,6 @@ export function VoiceCoaching() {
         </AnimatePresence>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

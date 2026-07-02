@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { trackIQEvent } from "@/lib/iqAnalytics";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const FUNNEL_ORDER = [
   "iq_view",
   "iq_test_start",
@@ -33,7 +34,14 @@ export default function AdminIQAnalytics() {
   const others = (data ?? []).filter((r) => !FUNNEL_ORDER.includes(r.event_name));
 
   return (
-    <AdminGuard>
+    <>
+      <FloatingHowItWorks title="How Admin IQAnalytics works" steps={[
+          { title: 'Explore', desc: 'Browse the learning content or tool.' },
+          { title: 'Start / generate', desc: 'Take a course, quiz or AI action (2-5 credits where applicable).' },
+          { title: 'Track progress', desc: 'Your XP, badges and completion are saved.' },
+          { title: 'Level up', desc: 'Unlock next lessons, leaderboards and rewards.' },
+        ]} />
+      <AdminGuard>
       <div className="container mx-auto p-4 md:p-6 space-y-6 mt-16">
         <div>
           <h1 className="text-3xl font-black bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
@@ -90,5 +98,6 @@ export default function AdminIQAnalytics() {
         )}
       </div>
     </AdminGuard>
-  );
+    </>
+    );
 }

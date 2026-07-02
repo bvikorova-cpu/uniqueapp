@@ -5,6 +5,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { useRef } from "react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface CertificateGeneratorProps {
   userName: string;
   courseName: string;
@@ -47,7 +48,14 @@ export const CertificateGenerator = ({
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Certificate Generator works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="space-y-6">
       <div className="flex justify-end">
         <Button onClick={handleDownload} className="gap-2">
           <Download className="h-4 w-4" />
@@ -153,5 +161,6 @@ export const CertificateGenerator = ({
         </div>
       </div>
     </div>
-  );
+    </>
+    );
 };

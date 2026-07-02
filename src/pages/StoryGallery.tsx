@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { StoryVideoPlayer } from '@/components/kids/StoryVideoPlayer';
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Story {
   id: string;
   title: string;
@@ -207,7 +208,14 @@ export default function StoryGallery() {
 
   if (playingStory) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 p-6">
+      <>
+        <FloatingHowItWorks title="How Story Gallery works" steps={[
+          { title: 'Explore', desc: 'Browse the learning content or tool.' },
+          { title: 'Start / generate', desc: 'Take a course, quiz or AI action (2-5 credits where applicable).' },
+          { title: 'Track progress', desc: 'Your XP, badges and completion are saved.' },
+          { title: 'Level up', desc: 'Unlock next lessons, leaderboards and rewards.' },
+        ]} />
+        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 p-6">
         <div className="max-w-6xl mx-auto space-y-4">
           <Button
             variant="outline"
@@ -233,7 +241,8 @@ export default function StoryGallery() {
           />
         </div>
       </div>
-    );
+      </>
+      );
   }
 
   return (

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { GraduationCap } from "lucide-react";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const MENTORS = [
   { name: "Dr. Alex Kim", field: "Logic & Reasoning", rating: 4.9 },
   { name: "Prof. Maya Chen", field: "Mathematics", rating: 4.8 },
@@ -23,7 +24,14 @@ export default function IQMentorMatch() {
   };
 
   return (
-    <Card className="glass-card">
+    <>
+      <FloatingHowItWorks title="How IQMentor Match works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="glass-card">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <GraduationCap className="h-4 w-4 text-primary" /> Mentor Match
@@ -44,5 +52,6 @@ export default function IQMentorMatch() {
         ))}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

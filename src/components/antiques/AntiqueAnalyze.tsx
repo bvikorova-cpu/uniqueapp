@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const analysisOptions = [
   { type: 'basic', name: 'Basic Identification', icon: Search, credits: 3, description: 'Identify the item, period, and style', color: 'text-blue-500' },
   { type: 'valuation', name: 'Market Valuation', icon: TrendingUp, credits: 10, description: 'Estimate current market value', color: 'text-green-500' },
@@ -63,7 +64,14 @@ export const AntiqueAnalyze = () => {
   const selected = analysisOptions.find(o => o.type === analysisType);
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Antique Analyze works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="space-y-6">
       {/* Analysis Type Selection */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
         {analysisOptions.map((option, i) => {
@@ -147,5 +155,6 @@ export const AntiqueAnalyze = () => {
         </Card>
       </div>
     </div>
-  );
+    </>
+    );
 };

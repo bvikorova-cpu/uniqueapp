@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, X, Zap } from "lucide-react";
 import { motion } from "framer-motion";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const features = [
   { name: "Daily Check-ins", career: true, fitness: true, mindset: true, relationships: true },
   { name: "Goal Setting & Tracking", career: true, fitness: true, mindset: true, relationships: true },
@@ -24,7 +25,14 @@ const areas = [
 
 export const ComparisonTable = () => {
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}>
+    <>
+      <FloatingHowItWorks title="How Comparison Table works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}>
       <Card className="backdrop-blur-xl bg-card/80 border-primary/20 overflow-hidden">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
@@ -79,5 +87,6 @@ export const ComparisonTable = () => {
         </CardContent>
       </Card>
     </motion.div>
-  );
+    </>
+    );
 };

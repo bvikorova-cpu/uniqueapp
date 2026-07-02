@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Brain, Trophy, RotateCcw } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type Phase = "idle" | "show" | "input" | "result";
 const KEY = "iq_number_span_best";
 
@@ -69,7 +70,14 @@ const IQNumberSpan = () => {
   };
 
   return (
-    <Card className="bg-card/50 backdrop-blur border-primary/20">
+    <>
+      <FloatingHowItWorks title="How IQNumber Span works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="bg-card/50 backdrop-blur border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Brain className="w-5 h-5 text-primary" /> Number Span
@@ -128,7 +136,8 @@ const IQNumberSpan = () => {
         </div>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };
 
 export default IQNumberSpan;

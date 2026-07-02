@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Plus, Edit, Trash2, Save, X, GripVertical, Upload } from "lucide-react";
 import { MaterialUploader } from "./MaterialUploader";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Lesson {
   id: string;
   title: string;
@@ -163,7 +164,14 @@ export function LessonManager({ courseId }: LessonManagerProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Lesson Manager works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="space-y-6">
       {/* Lesson Form */}
       <Card>
         <CardHeader>
@@ -315,5 +323,6 @@ export function LessonManager({ courseId }: LessonManagerProps) {
         </CardContent>
       </Card>
     </div>
-  );
+    </>
+    );
 }

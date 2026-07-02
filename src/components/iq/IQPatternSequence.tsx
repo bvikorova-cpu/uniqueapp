@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Sigma, Trophy, RotateCcw } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const KEY = "iq_pattern_seq_best";
 
 type Puzzle = { seq: number[]; answer: number; rule: string };
@@ -53,7 +54,14 @@ const IQPatternSequence = () => {
   const reset = () => { setScore(0); setPuzzle(gen(1)); setGuess(""); setReveal(false); };
 
   return (
-    <Card className="bg-card/50 backdrop-blur border-primary/20">
+    <>
+      <FloatingHowItWorks title="How IQPattern Sequence works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="bg-card/50 backdrop-blur border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Sigma className="w-5 h-5 text-primary" /> Pattern Sequence
@@ -76,7 +84,8 @@ const IQPatternSequence = () => {
         </div>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };
 
 export default IQPatternSequence;

@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { triggerRewardConfetti } from "@/utils/confetti";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Season {
   id: string;
   season_number: number;
@@ -117,10 +118,18 @@ export default function IQBattlePass() {
 
   if (loading) {
     return (
-      <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/5 border-purple-500/20">
+      <>
+        <FloatingHowItWorks title="How IQBattle Pass works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+        <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/5 border-purple-500/20">
         <CardContent className="p-6 flex justify-center"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></CardContent>
       </Card>
-    );
+      </>
+      );
   }
 
   if (!season) {

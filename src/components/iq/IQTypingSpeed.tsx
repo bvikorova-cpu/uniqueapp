@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Keyboard, Trophy, RotateCcw } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const SAMPLES = [
   "the quick brown fox jumps over the lazy dog",
   "practice makes perfect when you focus daily",
@@ -50,7 +51,14 @@ const IQTypingSpeed = () => {
   const reset = () => { setPhase("idle"); setTyped(""); setWpm(0); setAcc(100); };
 
   return (
-    <Card className="bg-card/50 backdrop-blur border-primary/20">
+    <>
+      <FloatingHowItWorks title="How IQTyping Speed works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="bg-card/50 backdrop-blur border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Keyboard className="w-5 h-5 text-primary" /> Typing Speed
@@ -88,7 +96,8 @@ const IQTypingSpeed = () => {
         )}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };
 
 export default IQTypingSpeed;

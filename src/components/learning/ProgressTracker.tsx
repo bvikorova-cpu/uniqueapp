@@ -3,6 +3,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Clock } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface ProgressTrackerProps {
   progress: {
     progress_percentage: number;
@@ -19,7 +20,14 @@ export const ProgressTracker = ({ progress, totalModules }: ProgressTrackerProps
   const isCompleted = progress.progress_percentage >= 100;
 
   return (
-    <Card className="p-6">
+    <>
+      <FloatingHowItWorks title="How Progress Tracker works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="p-6">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-bold text-lg">Your Progress</h3>
         {isCompleted && (
@@ -69,5 +77,6 @@ export const ProgressTracker = ({ progress, totalModules }: ProgressTrackerProps
         </div>
       </div>
     </Card>
-  );
+    </>
+    );
 };

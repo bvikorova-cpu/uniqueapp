@@ -28,6 +28,7 @@ import { AntiqueCertificate } from "@/components/antiques/AntiqueCertificate";
 import { AntiqueARTryInRoom } from "@/components/antiques/AntiqueARTryInRoom";
 import { AntiqueExpertMarketplace } from "@/components/antiques/AntiqueExpertMarketplace";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ActiveView = "hub" | "analyze" | "collection" | "credits" | "provenance" | "forgery" | "market-trends" | "ar-museum" | "batch" | "social" | "price-alert" | "certificate" | "ar-room" | "expert-marketplace";
 
 const AntiqueAppraisal = () => {
@@ -118,7 +119,14 @@ const AntiqueAppraisal = () => {
 
   if (activeView !== "hub") {
     return (
-      <div className="min-h-screen bg-background">
+      <>
+        <FloatingHowItWorks title="How Antique Appraisal works" steps={[
+          { title: 'Explore', desc: 'Browse the learning content or tool.' },
+          { title: 'Start / generate', desc: 'Take a course, quiz or AI action (2-5 credits where applicable).' },
+          { title: 'Track progress', desc: 'Your XP, badges and completion are saved.' },
+          { title: 'Level up', desc: 'Unlock next lessons, leaderboards and rewards.' },
+        ]} />
+        <div className="min-h-screen bg-background">
         <Navbar />
         <div className="container mx-auto px-3 sm:px-4 pt-20 pb-8 max-w-6xl">
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
@@ -144,7 +152,8 @@ const AntiqueAppraisal = () => {
           </motion.div>
         </div>
       </div>
-    );
+      </>
+      );
   }
 
   return (

@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import Navbar from "@/components/Navbar";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Course {
   id: string;
   title: string;
@@ -147,13 +148,21 @@ const PremiumCourses = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col">
+      <>
+        <FloatingHowItWorks title="How Premium Courses works" steps={[
+          { title: 'Explore', desc: 'Browse the learning content or tool.' },
+          { title: 'Start / generate', desc: 'Take a course, quiz or AI action (2-5 credits where applicable).' },
+          { title: 'Track progress', desc: 'Your XP, badges and completion are saved.' },
+          { title: 'Level up', desc: 'Unlock next lessons, leaderboards and rewards.' },
+        ]} />
+        <div className="min-h-screen flex flex-col">
         <Navbar />
         <div className="flex-1 flex items-center justify-center">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
       </div>
-    );
+      </>
+      );
   }
 
   return (

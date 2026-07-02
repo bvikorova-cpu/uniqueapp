@@ -9,6 +9,7 @@ import { CheckCircle2, XCircle, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { expandQuizQuestions } from "@/utils/expandQuizData";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const quizData: Record<string, Array<{question: string; options: string[]; correct: number}>> = {
   math: [
     { question: "What is 15 + 28?", options: ["41", "42", "43", "44"], correct: 2 },
@@ -252,7 +253,14 @@ export default function Quiz() {
   if (showResult) {
     const percentage = Math.round((score / questions.length) * 100);
     return (
-      <div className="min-h-screen bg-background pt-20 pb-12">
+      <>
+        <FloatingHowItWorks title="How Quiz works" steps={[
+          { title: 'Explore', desc: 'Browse the learning content or tool.' },
+          { title: 'Start / generate', desc: 'Take a course, quiz or AI action (2-5 credits where applicable).' },
+          { title: 'Track progress', desc: 'Your XP, badges and completion are saved.' },
+          { title: 'Level up', desc: 'Unlock next lessons, leaderboards and rewards.' },
+        ]} />
+        <div className="min-h-screen bg-background pt-20 pb-12">
         <div className="container mx-auto px-4 max-w-2xl">
           <Card>
             <CardHeader>
@@ -278,7 +286,8 @@ export default function Quiz() {
           </Card>
         </div>
       </div>
-    );
+      </>
+      );
   }
 
   return (

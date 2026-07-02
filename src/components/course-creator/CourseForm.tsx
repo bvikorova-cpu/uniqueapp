@@ -13,6 +13,7 @@ import { Save, X, BookOpen } from "lucide-react";
 import { LessonManager } from "./LessonManager";
 import { QuizBuilder } from "./QuizBuilder";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface CourseFormProps {
   courseId: string | null;
   onSuccess: () => void;
@@ -135,7 +136,14 @@ export function CourseForm({ courseId, onSuccess, onCancel }: CourseFormProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Course Form works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">{courseId ? "Edit Course" : "Create New Course"}</h2>
@@ -183,7 +191,8 @@ export function CourseForm({ courseId, onSuccess, onCancel }: CourseFormProps) {
         />
       )}
     </div>
-  );
+    </>
+    );
 }
 
 function CourseDetailsForm({ formData, setFormData, handleSubmit, saving, categories }: any) {

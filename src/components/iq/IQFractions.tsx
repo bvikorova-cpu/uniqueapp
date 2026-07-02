@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Divide, Trophy, RotateCcw } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const KEY = "iq_fractions_best_streak";
 
 const gen = () => {
@@ -42,7 +43,14 @@ const IQFractions = () => {
   );
 
   return (
-    <Card className="bg-card/50 backdrop-blur border-primary/20">
+    <>
+      <FloatingHowItWorks title="How IQFractions works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="bg-card/50 backdrop-blur border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Divide className="w-5 h-5 text-primary" /> Fractions
@@ -58,7 +66,8 @@ const IQFractions = () => {
         <Button onClick={() => { setQ(gen()); setStreak(0); }} variant="outline" size="sm" className="w-full"><RotateCcw className="w-3 h-3 mr-1" /> Reset</Button>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };
 
 export default IQFractions;

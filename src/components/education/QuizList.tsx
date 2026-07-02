@@ -6,19 +6,28 @@ import { useNavigate } from "react-router-dom";
 import { Plus, Play, Trophy, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function QuizList() {
   const navigate = useNavigate();
   const { data: quizzes, isLoading } = useQuizzes();
 
   if (isLoading) {
     return (
-      <div className="text-center py-8">
+      <>
+        <FloatingHowItWorks title="How Quiz List works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+        <div className="text-center py-8">
         <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center mx-auto mb-3 animate-pulse">
           <Sparkles className="h-5 w-5 text-primary" />
         </div>
         <p className="text-sm text-muted-foreground">Loading quizzes...</p>
       </div>
-    );
+      </>
+      );
   }
 
   return (

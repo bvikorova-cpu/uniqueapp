@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface LearningMapProps {
   topics: Array<{
     id: string;
@@ -15,7 +16,14 @@ export const LearningMap = ({ topics, completedTopicIds }: LearningMapProps) => 
   const displayTopics = topics.slice(0, 12); // Show first 12 for the map
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title="How Learning Map works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
@@ -68,5 +76,6 @@ export const LearningMap = ({ topics, completedTopicIds }: LearningMapProps) => 
         </div>
       </div>
     </motion.div>
-  );
+    </>
+    );
 };

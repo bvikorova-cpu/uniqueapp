@@ -8,6 +8,7 @@ import confetti from "canvas-confetti";
 import { useEducationalCertificates } from "@/hooks/useEducationalCertificates";
 import { CertificateViewer } from "./CertificateViewer";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface CompletionCelebrationProps {
   totalTopicsCompleted: number;
   totalStarsEarned: number;
@@ -53,7 +54,14 @@ export const CompletionCelebration = ({
 
   if (showCertificate && latestCertificate) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-yellow-100 via-orange-100 to-red-100 p-8">
+      <>
+        <FloatingHowItWorks title="How Completion Celebration works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+        <div className="min-h-screen bg-gradient-to-b from-yellow-100 via-orange-100 to-red-100 p-8">
         <div className="max-w-5xl mx-auto">
           <Button
             variant="ghost"
@@ -65,7 +73,8 @@ export const CompletionCelebration = ({
           <CertificateViewer certificate={latestCertificate} />
         </div>
       </div>
-    );
+      </>
+      );
   }
 
   return (

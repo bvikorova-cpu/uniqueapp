@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import IQDuelChat from "./IQDuelChat";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Question {
   id: string;
   question: string;
@@ -131,10 +132,18 @@ export default function IQDuelGame({
 
   if (!duel) {
     return (
-      <Dialog open onOpenChange={onClose}>
+      <>
+        <FloatingHowItWorks title="How IQDuel Game works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+        <Dialog open onOpenChange={onClose}>
         <DialogContent><Loader2 className="h-8 w-8 animate-spin mx-auto my-8" /></DialogContent>
       </Dialog>
-    );
+      </>
+      );
   }
 
   // WAITING for opponent

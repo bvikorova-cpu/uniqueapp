@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { Globe, Copy, Loader2 } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function IQPublicProfileSettings() {
   const qc = useQueryClient();
   const [displayName, setDisplayName] = useState("");
@@ -61,7 +62,14 @@ export default function IQPublicProfileSettings() {
   const url = profile?.share_slug ? `${window.location.origin}/iq/u/${profile.share_slug}` : "";
 
   return (
-    <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
+    <>
+      <FloatingHowItWorks title="How IQPublic Profile Settings works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2"><Globe className="h-5 w-5 text-primary" /> Public IQ Profile</CardTitle>
       </CardHeader>
@@ -97,5 +105,6 @@ export default function IQPublicProfileSettings() {
         )}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

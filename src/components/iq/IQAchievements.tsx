@@ -6,6 +6,7 @@ import { Trophy, Brain, Zap, Target, Flame, Crown, Star, Medal, Swords, Lightbul
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type Rarity = "common" | "rare" | "epic" | "legendary";
 
 interface AchievementDef {
@@ -79,7 +80,14 @@ export default function IQAchievements() {
   achievements.forEach(a => { if (unlockedIds.includes(a.id)) byRarity[a.rarity]++; });
 
   return (
-    <div className="mb-8">
+    <>
+      <FloatingHowItWorks title="How IQAchievements works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="mb-8">
       <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
         <h2 className="text-xl sm:text-2xl font-black">🏅 Achievements</h2>
         <div className="flex items-center gap-2 flex-wrap">
@@ -115,5 +123,6 @@ export default function IQAchievements() {
         })}
       </div>
     </div>
-  );
+    </>
+    );
 }

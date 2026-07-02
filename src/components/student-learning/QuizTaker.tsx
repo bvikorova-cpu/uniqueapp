@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Award, CheckCircle, XCircle, ChevronRight } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Quiz {
   id: string;
   title: string;
@@ -142,7 +143,14 @@ export function QuizTaker({ isOpen, onClose, quiz, userId, onComplete }: QuizTak
 
   if (loading) {
     return (
-      <Dialog open={isOpen} onOpenChange={onClose}>
+      <>
+        <FloatingHowItWorks title="How Quiz Taker works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+        <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent>
           <div className="text-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
@@ -150,7 +158,8 @@ export function QuizTaker({ isOpen, onClose, quiz, userId, onComplete }: QuizTak
           </div>
         </DialogContent>
       </Dialog>
-    );
+      </>
+      );
   }
 
   if (questions.length === 0) {

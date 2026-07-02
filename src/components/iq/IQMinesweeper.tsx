@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Bomb, Trophy, Timer, RotateCcw, Flag } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const KEY = "iq_minesweeper_best_ms";
 const N = 6;
 const MINES = 6;
@@ -92,7 +93,14 @@ const IQMinesweeper = () => {
   const elapsed = ((now - start) / 1000).toFixed(1);
 
   return (
-    <Card className="bg-card/50 backdrop-blur border-primary/20">
+    <>
+      <FloatingHowItWorks title="How IQMinesweeper works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="bg-card/50 backdrop-blur border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Bomb className="w-5 h-5 text-primary" /> Minesweeper 6×6
@@ -117,7 +125,8 @@ const IQMinesweeper = () => {
         <Button onClick={reset} variant="outline" size="sm" className="w-full"><RotateCcw className="w-3 h-3 mr-1" /> New game</Button>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };
 
 export default IQMinesweeper;

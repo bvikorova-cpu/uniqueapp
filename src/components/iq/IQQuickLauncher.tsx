@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Brain, Calendar, Trophy, Swords } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const SHORTCUTS = [
   { id: "test",   label: "IQ Test",        icon: Brain,    color: "from-purple-500 to-pink-500", path: "/iq" },
   { id: "daily",  label: "Daily",          icon: Calendar, color: "from-amber-500 to-orange-500", path: "/iq" },
@@ -36,7 +37,14 @@ export default function IQQuickLauncher() {
   }, [params]);
 
   return (
-    <div className="grid grid-cols-4 gap-2 mb-6">
+    <>
+      <FloatingHowItWorks title="How IQQuick Launcher works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="grid grid-cols-4 gap-2 mb-6">
       {SHORTCUTS.map((s) => (
         <Card
           key={s.id}
@@ -51,5 +59,6 @@ export default function IQQuickLauncher() {
         </Card>
       ))}
     </div>
-  );
+    </>
+    );
 }

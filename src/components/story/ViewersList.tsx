@@ -11,6 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatDistanceToNow } from "date-fns";
 import { sk } from "date-fns/locale";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface ViewersListProps {
   storyId: string;
   viewsCount: number;
@@ -57,7 +58,14 @@ export const ViewersList = ({ storyId, viewsCount, open, onOpenChange }: Viewers
   });
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <>
+      <FloatingHowItWorks title="How Viewers List works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
@@ -98,5 +106,6 @@ export const ViewersList = ({ storyId, viewsCount, open, onOpenChange }: Viewers
         </ScrollArea>
       </DialogContent>
     </Dialog>
-  );
+    </>
+    );
 };

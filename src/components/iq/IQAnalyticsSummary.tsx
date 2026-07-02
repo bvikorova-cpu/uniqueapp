@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart3 } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function IQAnalyticsSummary() {
   const [data, setData] = useState({ activity: 0, skill: 0, score: 0, time: 0 });
   useEffect(() => {
@@ -22,7 +23,14 @@ export default function IQAnalyticsSummary() {
     ["Time", `${Math.floor(data.time / 60)}h`],
   ];
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title="How IQAnalytics Summary works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card>
       <CardHeader><CardTitle className="flex items-center gap-2"><BarChart3 className="w-5 h-5" />Analytics Summary</CardTitle></CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 gap-3">
@@ -35,5 +43,6 @@ export default function IQAnalyticsSummary() {
         </div>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

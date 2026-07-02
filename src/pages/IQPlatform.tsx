@@ -49,6 +49,7 @@ import { useIQUserStats, useIQGlobalCounts } from "@/hooks/useIQUserStats";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const IQPlatform = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [cooldowns, setCooldowns] = useState<Record<string, number>>({});
@@ -127,7 +128,14 @@ const IQPlatform = () => {
   };
 
   return (
-    <div className="container mx-auto p-3 sm:p-4 md:p-6 space-y-6 mt-16 sm:mt-20">
+    <>
+      <FloatingHowItWorks title="How IQPlatform works" steps={[
+          { title: 'Explore', desc: 'Browse the learning content or tool.' },
+          { title: 'Start / generate', desc: 'Take a course, quiz or AI action (2-5 credits where applicable).' },
+          { title: 'Track progress', desc: 'Your XP, badges and completion are saved.' },
+          { title: 'Level up', desc: 'Unlock next lessons, leaderboards and rewards.' },
+        ]} />
+      <div className="container mx-auto p-3 sm:p-4 md:p-6 space-y-6 mt-16 sm:mt-20">
       <IQPlatformHero
         totalTests={counts?.totalTests ?? 0}
         totalUsers={counts?.totalUsers ?? 0}
@@ -374,7 +382,8 @@ const IQPlatform = () => {
         />
       )}
     </div>
-  );
+    </>
+    );
 };
 
 export default IQPlatform;

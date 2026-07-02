@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Timer, Play, Pause, RotateCcw, Coffee, Brain } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type Phase = "focus" | "break";
 const PRESETS = [
   { focus: 15, brk: 3, label: "Quick" },
@@ -90,7 +91,14 @@ const IQFocusTimer = () => {
   };
 
   return (
-    <Card className="bg-card/50 backdrop-blur border-primary/20">
+    <>
+      <FloatingHowItWorks title="How IQFocus Timer works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="bg-card/50 backdrop-blur border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Timer className="w-5 h-5 text-primary" /> Focus Timer
@@ -147,7 +155,8 @@ const IQFocusTimer = () => {
         </p>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };
 
 export default IQFocusTimer;

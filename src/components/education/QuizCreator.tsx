@@ -9,6 +9,7 @@ import { Plus, Trash2, Save, ArrowLeft, Sparkles } from "lucide-react";
 import { useCreateQuiz, QuizQuestion } from "@/hooks/useQuizzes";
 import { useNavigate } from "react-router-dom";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function QuizCreator() {
   const navigate = useNavigate();
   const createQuiz = useCreateQuiz();
@@ -56,7 +57,14 @@ export default function QuizCreator() {
   };
 
   return (
-    <div className="min-h-screen bg-background pt-24 pb-8">
+    <>
+      <FloatingHowItWorks title="How Quiz Creator works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="min-h-screen bg-background pt-24 pb-8">
       <div className="container mx-auto px-4 max-w-4xl">
         {/* Hero */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
@@ -168,5 +176,6 @@ export default function QuizCreator() {
         </motion.div>
       </div>
     </div>
-  );
+    </>
+    );
 }

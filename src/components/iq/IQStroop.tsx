@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Palette, Trophy, Timer, RotateCcw } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const COLORS = [
   { name: "RED", cls: "text-rose-500" },
   { name: "BLUE", cls: "text-sky-500" },
@@ -59,7 +60,14 @@ const IQStroop = () => {
   const reset = () => { if (tRef.current) window.clearInterval(tRef.current); setPhase("idle"); setScore(0); setStreak(0); setTime(DUR); };
 
   return (
-    <Card className="bg-card/50 backdrop-blur border-primary/20">
+    <>
+      <FloatingHowItWorks title="How IQStroop works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="bg-card/50 backdrop-blur border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Palette className="w-5 h-5 text-primary" /> Color Match (Stroop)
@@ -99,7 +107,8 @@ const IQStroop = () => {
         )}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };
 
 export default IQStroop;

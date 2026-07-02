@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Award, Calendar, Flame, Layers, Medal, Star, Trophy, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type Milestones = {
   total_tests: number;
   first_test_at: string | null;
@@ -46,7 +47,14 @@ const IQMilestones = () => {
   ];
 
   return (
-    <Card className="bg-card/50 backdrop-blur border-primary/20">
+    <>
+      <FloatingHowItWorks title="How IQMilestones works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="bg-card/50 backdrop-blur border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Award className="w-5 h-5 text-primary" /> Milestones
@@ -79,7 +87,8 @@ const IQMilestones = () => {
         </div>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };
 
 export default IQMilestones;

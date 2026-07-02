@@ -9,6 +9,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface LeaderboardEntry {
   user_id: string;
   username: string;
@@ -73,7 +74,14 @@ export default function IQGlobalLeaderboard() {
   }, [scope, country]);
 
   return (
-    <div className="mb-8">
+    <>
+      <FloatingHowItWorks title="How IQGlobal Leaderboard works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="mb-8">
       <h2 className="text-xl sm:text-2xl font-black mb-4">🌍 Leaderboard</h2>
       <Card className="bg-gradient-to-br from-indigo-500/5 to-blue-500/5 border-indigo-500/20">
         <CardHeader className="p-4 flex flex-row items-center justify-between gap-3 flex-wrap">
@@ -142,5 +150,6 @@ export default function IQGlobalLeaderboard() {
         </CardContent>
       </Card>
     </div>
-  );
+    </>
+    );
 }

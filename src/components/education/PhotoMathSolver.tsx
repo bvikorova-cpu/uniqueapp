@@ -11,6 +11,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import remarkGfm from "remark-gfm";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const PhotoMathSolver = () => {
   const { credits, spendCredit, refundCredit, isUsingCredit } = useTutoringCredits();
   const fileRef = useRef<HTMLInputElement>(null);
@@ -64,7 +65,14 @@ const PhotoMathSolver = () => {
   };
 
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title="How Photo Math Solver works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
           <Camera className="h-5 w-5 text-primary" /> Photo Math Solver
@@ -120,7 +128,8 @@ const PhotoMathSolver = () => {
         )}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };
 
 export default PhotoMathSolver;

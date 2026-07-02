@@ -3,13 +3,21 @@ import { Button } from "@/components/ui/button";
 import { Brain, Plus } from "lucide-react";
 import { useIQCredits } from "@/hooks/useIQCredits";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export const IQCreditsDisplay = () => {
   const { credits, isLoading, purchaseCredits } = useIQCredits();
 
   if (isLoading) return null;
 
   return (
-    <Card className="p-4 sm:p-6 bg-gradient-to-r from-primary/10 to-primary/5">
+    <>
+      <FloatingHowItWorks title="How IQCredits Display works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="p-4 sm:p-6 bg-gradient-to-r from-primary/10 to-primary/5">
       <div className="flex flex-col sm:flex-row sm:items-center gap-4">
         <div className="flex items-center gap-3">
           <Brain className="h-8 w-8 text-primary flex-shrink-0" />
@@ -50,5 +58,6 @@ export const IQCreditsDisplay = () => {
         </div>
       </div>
     </Card>
-  );
+    </>
+    );
 };

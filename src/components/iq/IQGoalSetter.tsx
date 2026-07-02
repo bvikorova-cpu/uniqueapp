@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Target } from "lucide-react";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const KEY = "iq_goal_daily";
 
 export default function IQGoalSetter() {
@@ -16,7 +17,14 @@ export default function IQGoalSetter() {
     toast.success(`Goal: ${next} min/day`);
   };
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title="How IQGoal Setter works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card>
       <CardHeader><CardTitle className="flex items-center gap-2"><Target className="w-5 h-5" />Daily Goal</CardTitle></CardHeader>
       <CardContent className="flex items-center justify-between">
         <Button size="sm" variant="outline" onClick={() => update(-5)}>−5</Button>
@@ -24,5 +32,6 @@ export default function IQGoalSetter() {
         <Button size="sm" variant="outline" onClick={() => update(5)}>+5</Button>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

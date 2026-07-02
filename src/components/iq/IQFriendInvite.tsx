@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { UserPlus } from "lucide-react";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const KEY = "iq_friend_invites_sent";
 
 export default function IQFriendInvite() {
@@ -21,7 +22,14 @@ export default function IQFriendInvite() {
   };
 
   return (
-    <Card className="glass-card">
+    <>
+      <FloatingHowItWorks title="How IQFriend Invite works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="glass-card">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <UserPlus className="h-4 w-4 text-primary" /> Friend Invite
@@ -35,5 +43,6 @@ export default function IQFriendInvite() {
         <div className="text-xs text-muted-foreground">Total sent: <span className="text-primary font-semibold">{count}</span></div>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

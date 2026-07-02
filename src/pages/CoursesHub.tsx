@@ -33,6 +33,7 @@ import { CoursesList } from "@/components/course-creator/CoursesList";
 import { CreatorEarnings } from "@/components/course-creator/CreatorEarnings";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Course {
   id: string;
   title: string;
@@ -222,10 +223,18 @@ export default function CoursesHub() {
 
   if (authLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <>
+        <FloatingHowItWorks title="How Courses Hub works" steps={[
+          { title: 'Explore', desc: 'Browse the learning content or tool.' },
+          { title: 'Start / generate', desc: 'Take a course, quiz or AI action (2-5 credits where applicable).' },
+          { title: 'Track progress', desc: 'Your XP, badges and completion are saved.' },
+          { title: 'Level up', desc: 'Unlock next lessons, leaderboards and rewards.' },
+        ]} />
+        <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
-    );
+      </>
+      );
   }
 
   return (

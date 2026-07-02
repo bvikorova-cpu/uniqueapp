@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const streakRewards = [
   { day: 3, credits: 2, icon: Gift },
   { day: 7, credits: 5, icon: Star },
@@ -58,7 +59,14 @@ export default function IQBrainStreaks({ currentStreak }: IQBrainStreaksProps) {
   };
 
   return (
-    <div className="mb-8">
+    <>
+      <FloatingHowItWorks title="How IQBrain Streaks works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="mb-8">
       <h2 className="text-xl sm:text-2xl font-black mb-4">🔥 Brain Streaks</h2>
       <Card className="bg-gradient-to-r from-orange-500/10 to-red-500/10 border-orange-500/20">
         <CardContent className="p-4 sm:p-6">
@@ -111,5 +119,6 @@ export default function IQBrainStreaks({ currentStreak }: IQBrainStreaksProps) {
         </CardContent>
       </Card>
     </div>
-  );
+    </>
+    );
 }

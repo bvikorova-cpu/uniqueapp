@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Eye, Loader2, Trophy } from "lucide-react";
 import IQDuelChat from "./IQDuelChat";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface DuelRow {
   id: string;
   host_id: string;
@@ -92,7 +93,14 @@ export default function IQSpectatorView({
   const isFinished = duel?.status === "finished";
 
   return (
-    <Dialog open onOpenChange={(o) => !o && onClose()}>
+    <>
+      <FloatingHowItWorks title="How IQSpectator View works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -153,5 +161,6 @@ export default function IQSpectatorView({
         )}
       </DialogContent>
     </Dialog>
-  );
+    </>
+    );
 }

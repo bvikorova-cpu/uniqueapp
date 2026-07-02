@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Activity, Crown, Flame, Swords, Trophy, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type EventType = "duel_started" | "duel_won" | "tournament_won" | "tier_up" | "streak_milestone";
 
 interface FeedEvent {
@@ -135,7 +136,14 @@ export default function IQGlobalEventFeed() {
   }, []);
 
   return (
-    <Card className="bg-gradient-to-br from-purple-500/10 to-blue-500/5 border-purple-500/20">
+    <>
+      <FloatingHowItWorks title="How IQGlobal Event Feed works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="bg-gradient-to-br from-purple-500/10 to-blue-500/5 border-purple-500/20">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between text-base">
           <span className="flex items-center gap-2">
@@ -183,5 +191,6 @@ export default function IQGlobalEventFeed() {
         </div>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

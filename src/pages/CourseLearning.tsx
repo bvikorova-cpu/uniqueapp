@@ -11,6 +11,7 @@ import { CertificateCard } from "@/components/learning/CertificateCard";
 import { courseContent } from "@/data/courseContent";
 import { ArrowLeft, BookOpen, Award, Clock } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function CourseLearning() {
   const { certificationId } = useParams<{ certificationId: string }>();
   const navigate = useNavigate();
@@ -85,13 +86,21 @@ export default function CourseLearning() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <>
+        <FloatingHowItWorks title="How Course Learning works" steps={[
+          { title: 'Explore', desc: 'Browse the learning content or tool.' },
+          { title: 'Start / generate', desc: 'Take a course, quiz or AI action (2-5 credits where applicable).' },
+          { title: 'Track progress', desc: 'Your XP, badges and completion are saved.' },
+          { title: 'Level up', desc: 'Unlock next lessons, leaderboards and rewards.' },
+        ]} />
+        <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">Loading course content...</p>
         </div>
       </div>
-    );
+      </>
+      );
   }
 
   if (!isPurchased(certificationId || "", "certification")) {

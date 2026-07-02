@@ -5,6 +5,7 @@ import { Sparkles, Filter } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Category {
   id: string;
   name: string;
@@ -34,7 +35,14 @@ export const GlassmorphismCategories = ({ categories, onStartQuiz }: Glassmorphi
   );
 
   return (
-    <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
+    <>
+      <FloatingHowItWorks title="How Glassmorphism Categories works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="backdrop-blur-xl bg-card/80 border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-xl">
           <Sparkles className="h-5 w-5 text-primary" /> AI-Generated Quizzes
@@ -118,5 +126,6 @@ export const GlassmorphismCategories = ({ categories, onStartQuiz }: Glassmorphi
         )}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };

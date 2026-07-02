@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Award } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const BADGES = [
   { id: "speed", emoji: "⚡", name: "Speedster" },
   { id: "memory", emoji: "🧠", name: "Memory Master" },
@@ -29,7 +30,14 @@ export default function IQBadgeShowcase() {
   };
 
   return (
-    <Card className="glass-card">
+    <>
+      <FloatingHowItWorks title="How IQBadge Showcase works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="glass-card">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <Award className="h-4 w-4 text-primary" /> Badge Showcase
@@ -51,5 +59,6 @@ export default function IQBadgeShowcase() {
         </div>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import jsPDF from "jspdf";
 import { Award, Download, Share2, Check } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface CertificateGeneratorProps {
   courseTitle: string;
   studentName: string;
@@ -200,7 +201,14 @@ export function CertificateGenerator({
   };
 
   return (
-    <Card className="bg-gradient-to-br from-primary/5 via-purple-500/5 to-background border-2 border-primary/20">
+    <>
+      <FloatingHowItWorks title="How Certificate Generator works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="bg-gradient-to-br from-primary/5 via-purple-500/5 to-background border-2 border-primary/20">
       <CardContent className="text-center py-12">
         <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-primary/10 mb-6">
           <Award className="h-12 w-12 text-primary" />
@@ -264,5 +272,6 @@ export function CertificateGenerator({
         </div>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

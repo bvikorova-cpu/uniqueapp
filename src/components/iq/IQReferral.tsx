@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function IQReferral() {
   const { toast } = useToast();
   const qc = useQueryClient();
@@ -68,7 +69,14 @@ export default function IQReferral() {
   };
 
   return (
-    <div className="mb-8">
+    <>
+      <FloatingHowItWorks title="How IQReferral works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="mb-8">
       <h2 className="text-xl sm:text-2xl font-black mb-4 flex items-center gap-2">
         <Gift className="h-5 w-5 text-primary" /> Invite Friends, Earn Credits
       </h2>
@@ -134,5 +142,6 @@ export default function IQReferral() {
         </CardContent>
       </Card>
     </div>
-  );
+    </>
+    );
 }

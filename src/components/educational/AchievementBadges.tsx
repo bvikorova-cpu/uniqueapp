@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Award, Star, BookOpen, Brain, Flame, Trophy } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Achievement {
   id: string;
   icon: React.ReactNode;
@@ -77,7 +78,14 @@ export const AchievementBadges = ({ completedTopics, totalStars, streak, quizzes
   ];
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title="How Achievement Badges works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.15 }}
@@ -135,5 +143,6 @@ export const AchievementBadges = ({ completedTopics, totalStars, streak, quizzes
         ))}
       </div>
     </motion.div>
-  );
+    </>
+    );
 };

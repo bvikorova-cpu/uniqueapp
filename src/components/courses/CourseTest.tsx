@@ -9,6 +9,7 @@ import { CheckCircle, XCircle } from "lucide-react";
 import type { Topic } from "@/data/courseContent";
 import { generateCourseTest, type TestQuestion } from "@/utils/generateCourseTest";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface CourseTestProps {
   courseName: string;
   topics: Topic[];
@@ -66,7 +67,14 @@ export const CourseTest = ({ courseName, topics, onTestPass }: CourseTestProps) 
   };
 
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title="How Course Test works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card>
       <CardHeader>
         <CardTitle className="text-2xl">Final Test - {courseName}</CardTitle>
         <CardDescription>
@@ -150,5 +158,6 @@ export const CourseTest = ({ courseName, topics, onTestPass }: CourseTestProps) 
         )}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };

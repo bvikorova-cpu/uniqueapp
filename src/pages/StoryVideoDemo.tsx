@@ -13,6 +13,7 @@ import { StoryRemix } from '@/components/kids/story-video/StoryRemix';
 import { TheaterPlayer } from '@/components/kids/story-video/TheaterPlayer';
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const StoryVideoDemo = () => {
   const [loading, setLoading] = useState(false);
   const [storyData, setStoryData] = useState<{ scenes: string[]; images: string[]; audioFiles?: string[] } | null>(null);
@@ -100,7 +101,14 @@ const StoryVideoDemo = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 p-4 md:p-6">
+    <>
+      <FloatingHowItWorks title="How Story Video Demo works" steps={[
+          { title: 'Explore', desc: 'Browse the learning content or tool.' },
+          { title: 'Start / generate', desc: 'Take a course, quiz or AI action (2-5 credits where applicable).' },
+          { title: 'Track progress', desc: 'Your XP, badges and completion are saved.' },
+          { title: 'Level up', desc: 'Unlock next lessons, leaderboards and rewards.' },
+        ]} />
+      <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 p-4 md:p-6">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Nav */}
         <div className="flex items-center justify-between pt-2">
@@ -144,7 +152,8 @@ const StoryVideoDemo = () => {
         )}
       </div>
     </div>
-  );
+    </>
+    );
 };
 
 export default StoryVideoDemo;

@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useTutoringCredits } from "@/hooks/useTutoringCredits";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface QuizQ {
   question: string;
   options: string[];
@@ -114,7 +115,14 @@ const PdfQuizGenerator = () => {
     : 0;
 
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title="How Pdf Quiz Generator works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
           <FileText className="h-5 w-5 text-primary" /> PDF → Quiz
@@ -215,7 +223,8 @@ const PdfQuizGenerator = () => {
         )}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };
 
 export default PdfQuizGenerator;

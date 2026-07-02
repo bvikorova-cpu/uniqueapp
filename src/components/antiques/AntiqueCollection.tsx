@@ -4,6 +4,7 @@ import { Package } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export const AntiqueCollection = () => {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -23,14 +24,22 @@ export const AntiqueCollection = () => {
 
   if (items.length === 0) {
     return (
-      <Card className="bg-card/80 backdrop-blur-xl">
+      <>
+        <FloatingHowItWorks title="How Antique Collection works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+        <Card className="bg-card/80 backdrop-blur-xl">
         <CardContent className="text-center py-12">
           <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
           <p className="text-muted-foreground">Your analyzed antiques will appear here</p>
           <p className="text-sm text-muted-foreground mt-2">Upload and analyze your first antique to start your collection!</p>
         </CardContent>
       </Card>
-    );
+      </>
+      );
   }
 
   return (

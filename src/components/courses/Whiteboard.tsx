@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { Eraser, Pen, Circle, Square, Download, Trash2 } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface WhiteboardProps {
   lessonId: string;
   isInstructor: boolean;
@@ -185,7 +186,14 @@ export function Whiteboard({ lessonId, isInstructor }: WhiteboardProps) {
   const colors = ["#000000", "#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF"];
 
   return (
-    <Card className="p-4">
+    <>
+      <FloatingHowItWorks title="How Whiteboard works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="p-4">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold">Collaborative Whiteboard</h3>
         <div className="flex gap-2">
@@ -259,5 +267,6 @@ export function Whiteboard({ lessonId, isInstructor }: WhiteboardProps) {
         </p>
       )}
     </Card>
-  );
+    </>
+    );
 }

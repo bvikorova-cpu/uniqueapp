@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Rewind, Trophy, RotateCcw } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const KEY = "iq_reverse_span_best";
 
 const IQReverseSpan = () => {
@@ -49,7 +50,14 @@ const IQReverseSpan = () => {
   const reset = () => { if (tRef.current) window.clearInterval(tRef.current); setPhase("idle"); setLevel(3); setAnswer(""); };
 
   return (
-    <Card className="bg-card/50 backdrop-blur border-primary/20">
+    <>
+      <FloatingHowItWorks title="How IQReverse Span works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="bg-card/50 backdrop-blur border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Rewind className="w-5 h-5 text-primary" /> Reverse Number Span
@@ -82,7 +90,8 @@ const IQReverseSpan = () => {
         )}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };
 
 export default IQReverseSpan;

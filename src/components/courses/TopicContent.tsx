@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { CheckCircle, Clock } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Topic {
   title: string;
   content: string;
@@ -29,7 +30,14 @@ export const TopicContent = ({
   const progress = ((topicIndex + 1) / totalTopics) * 100;
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Topic Content works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="space-y-6">
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between mb-4">
@@ -96,5 +104,6 @@ export const TopicContent = ({
         </CardContent>
       </Card>
     </div>
-  );
+    </>
+    );
 };

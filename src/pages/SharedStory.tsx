@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { StoryVideoPlayer } from '@/components/kids/StoryVideoPlayer';
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Story {
   id: string;
   title: string;
@@ -63,13 +64,21 @@ export default function SharedStory() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 flex items-center justify-center">
+      <>
+        <FloatingHowItWorks title="How Shared Story works" steps={[
+          { title: 'Explore', desc: 'Browse the learning content or tool.' },
+          { title: 'Start / generate', desc: 'Take a course, quiz or AI action (2-5 credits where applicable).' },
+          { title: 'Track progress', desc: 'Your XP, badges and completion are saved.' },
+          { title: 'Level up', desc: 'Unlock next lessons, leaderboards and rewards.' },
+        ]} />
+        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 flex items-center justify-center">
         <div className="text-center space-y-4">
           <Loader2 className="w-16 h-16 text-purple-600 animate-spin mx-auto" />
           <p className="text-purple-600 text-lg">Loading shared story...</p>
         </div>
       </div>
-    );
+      </>
+      );
   }
 
   if (notFound || !story) {

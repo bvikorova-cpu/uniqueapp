@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { UserPen } from "lucide-react";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const KEY = "iq_nickname";
 
 export default function IQNicknameEditor() {
@@ -20,7 +21,14 @@ export default function IQNicknameEditor() {
     toast.success("Nickname saved");
   };
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title="How IQNickname Editor works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card>
       <CardHeader><CardTitle className="flex items-center gap-2"><UserPen className="w-5 h-5" />Nickname</CardTitle></CardHeader>
       <CardContent className="space-y-2">
         <p className="text-sm text-muted-foreground">Current: <strong>{current || "—"}</strong></p>
@@ -30,5 +38,6 @@ export default function IQNicknameEditor() {
         </div>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

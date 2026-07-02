@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Grid3x3, Trophy, Timer, RotateCcw } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const KEY = "iq_schulte_best_ms";
 const N = 25;
 
@@ -51,7 +52,14 @@ const IQSchulte = () => {
   const elapsed = phase === "play" ? Math.round((now - start) / 100) / 10 : 0;
 
   return (
-    <Card className="bg-card/50 backdrop-blur border-primary/20">
+    <>
+      <FloatingHowItWorks title="How IQSchulte works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="bg-card/50 backdrop-blur border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Grid3x3 className="w-5 h-5 text-primary" /> Schulte Table
@@ -90,7 +98,8 @@ const IQSchulte = () => {
         )}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };
 
 export default IQSchulte;

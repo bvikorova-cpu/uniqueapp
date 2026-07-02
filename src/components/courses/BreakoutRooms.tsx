@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Users, Plus, Shuffle, X } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface BreakoutRoomsProps {
   lessonId: string;
   participants: any[];
@@ -119,7 +120,14 @@ export function BreakoutRooms({ lessonId, participants }: BreakoutRoomsProps) {
   );
 
   return (
-    <Card className="p-6">
+    <>
+      <FloatingHowItWorks title="How Breakout Rooms works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="p-6">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-semibold">Breakout Rooms</h3>
         <div className="flex gap-2">
@@ -213,5 +221,6 @@ export function BreakoutRooms({ lessonId, participants }: BreakoutRoomsProps) {
         </>
       )}
     </Card>
-  );
+    </>
+    );
 }

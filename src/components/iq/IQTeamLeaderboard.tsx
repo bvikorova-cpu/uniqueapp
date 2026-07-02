@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trophy } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const TEAMS = [
   { name: "Alpha Squad", pts: 12450 },
   { name: "Beta Brains", pts: 11220 },
@@ -11,7 +12,14 @@ const TEAMS = [
 
 export default function IQTeamLeaderboard() {
   return (
-    <Card className="glass-card">
+    <>
+      <FloatingHowItWorks title="How IQTeam Leaderboard works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="glass-card">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <Trophy className="h-4 w-4 text-primary" /> Team Leaderboard
@@ -26,5 +34,6 @@ export default function IQTeamLeaderboard() {
         ))}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

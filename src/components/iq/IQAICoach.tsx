@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { useIQUserStats } from "@/hooks/useIQUserStats";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface CoachPlan {
   plan_title?: string;
   duration?: string;
@@ -73,7 +74,14 @@ export default function IQAICoach() {
   };
 
   return (
-    <Card className="bg-gradient-to-br from-primary/10 via-accent/5 to-primary/10 border-primary/20 overflow-hidden">
+    <>
+      <FloatingHowItWorks title="How IQAICoach works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="bg-gradient-to-br from-primary/10 via-accent/5 to-primary/10 border-primary/20 overflow-hidden">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between text-base">
           <span className="flex items-center gap-2">
@@ -154,5 +162,6 @@ export default function IQAICoach() {
         </AnimatePresence>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

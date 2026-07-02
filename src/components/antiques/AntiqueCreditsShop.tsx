@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { motion } from "framer-motion";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const packages = [
   { credits: 10, price: 5, label: null },
   { credits: 25, price: 10, label: "POPULAR" },
@@ -22,6 +23,13 @@ export const AntiqueCreditsShop = () => {
 
   return (
     <>
+      <FloatingHowItWorks title="How Antique Credits Shop works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <>
       <AlertDialog open={!!stripeUrl} onOpenChange={() => setStripeUrl(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -66,5 +74,6 @@ export const AntiqueCreditsShop = () => {
         </CardContent>
       </Card>
     </>
-  );
+    </>
+    );
 };

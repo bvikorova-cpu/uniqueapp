@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 import { Trophy, Star, Flame, Zap, Award, Target, Crown, Medal } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface XPData {
   xp_total: number;
   level: number;
@@ -53,7 +54,14 @@ export function GamificationXP() {
   const badges = xp?.badges || [];
 
   return (
-    <Card className="backdrop-blur-xl bg-card/80 border-primary/20 overflow-hidden">
+    <>
+      <FloatingHowItWorks title="How Gamification XP works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="backdrop-blur-xl bg-card/80 border-primary/20 overflow-hidden">
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center gap-2">
           <Trophy className="h-4 w-4 text-primary" /> Your Progress
@@ -130,5 +138,6 @@ export function GamificationXP() {
         </div>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

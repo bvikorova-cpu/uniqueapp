@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import IQDuelGame from "./IQDuelGame";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const modes = [
   { id: "quick", label: "Quick · 5Q" },
   { id: "standard", label: "Standard · 10Q" },
@@ -105,7 +106,14 @@ export default function IQFriendChallenge() {
   };
 
   return (
-    <div className="mb-8">
+    <>
+      <FloatingHowItWorks title="How IQFriend Challenge works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="mb-8">
       <h2 className="text-xl sm:text-2xl font-black mb-4">👥 Friend Challenge</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card className="border-pink-500/20 bg-gradient-to-br from-pink-500/5 to-purple-500/5">
@@ -169,5 +177,6 @@ export default function IQFriendChallenge() {
         <IQDuelGame duelId={activeDuelId} myUserId={userId} onClose={() => setActiveDuelId(null)} />
       )}
     </div>
-  );
+    </>
+    );
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Compass } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function IQGoalSummary() {
   const [data, setData] = useState({ goal: 0, milestones: 0, habits: 0, entries: 0 });
   useEffect(() => {
@@ -14,7 +15,14 @@ export default function IQGoalSummary() {
   }, []);
   const items = [["Daily Goal", `${data.goal} min`], ["Milestones", data.milestones], ["Habits", data.habits], ["Journal", data.entries]];
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title="How IQGoal Summary works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card>
       <CardHeader><CardTitle className="flex items-center gap-2"><Compass className="w-5 h-5" />Goals Overview</CardTitle></CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 gap-3">
@@ -27,5 +35,6 @@ export default function IQGoalSummary() {
         </div>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

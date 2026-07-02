@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Zap } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const KEY = "iq_duel_match_wins";
 
 export default function IQDuelMatch() {
@@ -26,7 +27,14 @@ export default function IQDuelMatch() {
   };
 
   return (
-    <Card className="glass-card">
+    <>
+      <FloatingHowItWorks title="How IQDuel Match works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="glass-card">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <Zap className="h-4 w-4 text-primary" /> Duel Match
@@ -43,5 +51,6 @@ export default function IQDuelMatch() {
         <div className="text-xs">Wins: <span className="text-primary font-semibold">{wins}</span></div>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

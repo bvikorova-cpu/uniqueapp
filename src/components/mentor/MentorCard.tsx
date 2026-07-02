@@ -5,6 +5,7 @@ import { Check, ArrowRight, Sparkles, Crown } from "lucide-react";
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface MentorArea {
   id: string;
   name: string;
@@ -26,7 +27,14 @@ export const MentorCard = ({ area, hasSubscription, isOnline, onSelect, index }:
   const Icon = area.icon;
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title="How Mentor Card works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 + index * 0.1 }}
@@ -117,5 +125,6 @@ export const MentorCard = ({ area, hasSubscription, isOnline, onSelect, index }:
         </CardContent>
       </Card>
     </motion.div>
-  );
+    </>
+    );
 };

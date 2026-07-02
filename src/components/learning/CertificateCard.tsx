@@ -6,6 +6,7 @@ import { useState } from "react";
 import { CertificateGenerator } from "./CertificateGenerator";
 import { supabase } from "@/integrations/supabase/client";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface CertificateCardProps {
   certificate: {
     id: string;
@@ -41,6 +42,13 @@ export const CertificateCard = ({ certificate }: CertificateCardProps) => {
 
   return (
     <>
+      <FloatingHowItWorks title="How Certificate Card works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <>
       <Card className="p-6 border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
@@ -105,5 +113,6 @@ export const CertificateCard = ({ certificate }: CertificateCardProps) => {
         </div>
       )}
     </>
-  );
+    </>
+    );
 };

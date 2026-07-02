@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Music2, Trophy, RotateCcw } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const KEY = "iq_simon_best";
 const COLORS = [
   { id: 0, on: "bg-emerald-400", off: "bg-emerald-700/50" },
@@ -60,7 +61,14 @@ const IQSimon = () => {
   const reset = () => { if (tRef.current) window.clearInterval(tRef.current); setPhase("idle"); setSeq([]); setStep(-1); setActive(null); };
 
   return (
-    <Card className="bg-card/50 backdrop-blur border-primary/20">
+    <>
+      <FloatingHowItWorks title="How IQSimon works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="bg-card/50 backdrop-blur border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Music2 className="w-5 h-5 text-primary" /> Simon Says
@@ -87,7 +95,8 @@ const IQSimon = () => {
         )}
       </CardContent>
     </Card>
-  );
+    </>
+    );
 };
 
 export default IQSimon;

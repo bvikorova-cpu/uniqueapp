@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { BookOpen, Brain, Star, Trophy, ArrowRight } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface TopicProgress {
   topicId: string;
   topicTitle: string;
@@ -24,7 +25,14 @@ export const ProgressDashboard = ({ topicProgressList }: ProgressDashboardProps)
   if (inProgress.length === 0 && completed.length === 0) return null;
 
   return (
-    <motion.div
+    <>
+      <FloatingHowItWorks title="How Progress Dashboard works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-amber-200 p-6 mb-8"
@@ -72,7 +80,8 @@ export const ProgressDashboard = ({ topicProgressList }: ProgressDashboardProps)
         </div>
       )}
     </motion.div>
-  );
+    </>
+    );
 };
 
 const PipelineStage = ({ icon, title, count, color, description }: {

@@ -6,6 +6,7 @@ import { Brain, Share2, Download, Twitter, Facebook, Loader2 } from "lucide-reac
 import { useToast } from "@/hooks/use-toast";
 import { useIQUserStats } from "@/hooks/useIQUserStats";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function IQShareableCard() {
   const { data: stats, isLoading } = useIQUserStats();
   const cardRef = useRef<HTMLDivElement>(null);
@@ -53,7 +54,14 @@ export default function IQShareableCard() {
   if (!stats || !stats.best_iq) return null;
 
   return (
-    <div className="mb-8">
+    <>
+      <FloatingHowItWorks title="How IQShareable Card works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="mb-8">
       <h2 className="text-xl sm:text-2xl font-black mb-4">📣 Share Your Score</h2>
       <Card>
         <CardHeader className="p-4">
@@ -100,5 +108,6 @@ export default function IQShareableCard() {
         </CardContent>
       </Card>
     </div>
-  );
+    </>
+    );
 }

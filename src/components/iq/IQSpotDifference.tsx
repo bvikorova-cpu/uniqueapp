@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Eye, Trophy, RotateCcw } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const KEY = "iq_spotdiff_best_streak";
 const ICONS = ["★", "♥", "♦", "♣", "♠", "●", "■", "▲"];
 const N = 5;
@@ -52,11 +53,19 @@ const IQSpotDifference = () => {
         const ok = side === "R" && found.includes(i);
         const bad = side === "R" && wrong === i;
         return (
-          <button key={i} onClick={() => side === "R" && tap(i)} disabled={side === "L"}
+          <>
+            <FloatingHowItWorks title="How IQSpot Difference works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+            <button key={i} onClick={() => side === "R" && tap(i)} disabled={side === "L"}
             className={`aspect-square text-sm flex items-center justify-center ${ok ? "bg-emerald-500/40" : bad ? "bg-rose-500/40" : "bg-background/60"}`}>
             {c}
           </button>
-        );
+          </>
+          );
       })}
     </div>
   );

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { User } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const AVATARS = ["🧠", "🦊", "🐺", "🦉", "🐉", "🦅", "🐸", "🦄", "🐲", "🤖", "👾", "🦾"];
 const KEY = "iq_avatar";
 
@@ -15,7 +16,14 @@ export default function IQAvatarPicker() {
   };
 
   return (
-    <Card className="glass-card">
+    <>
+      <FloatingHowItWorks title="How IQAvatar Picker works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card className="glass-card">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <User className="h-4 w-4 text-primary" /> Avatar Picker
@@ -35,5 +43,6 @@ export default function IQAvatarPicker() {
         </div>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }

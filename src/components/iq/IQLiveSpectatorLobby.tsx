@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Eye, Radio, Loader2 } from "lucide-react";
 import IQSpectatorView from "./IQSpectatorView";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface ActiveDuel {
   id: string;
   host_id: string;
@@ -75,7 +76,14 @@ export default function IQLiveSpectatorLobby() {
   }, []);
 
   return (
-    <div className="mb-8">
+    <>
+      <FloatingHowItWorks title="How IQLive Spectator Lobby works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <div className="mb-8">
       <h2 className="text-xl sm:text-2xl font-black mb-4 flex items-center gap-2">
         <Radio className="h-5 w-5 text-red-500 animate-pulse" /> Live Now — Spectate Duels
       </h2>
@@ -145,5 +153,6 @@ export default function IQLiveSpectatorLobby() {
         />
       )}
     </div>
-  );
+    </>
+    );
 }

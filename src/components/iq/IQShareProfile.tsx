@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Share2 } from "lucide-react";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 export default function IQShareProfile() {
   const share = async () => {
     const nick = localStorage.getItem("iq_nickname") || "IQ Player";
@@ -16,11 +17,19 @@ export default function IQShareProfile() {
     toast.success("Copied to clipboard");
   };
   return (
-    <Card>
+    <>
+      <FloatingHowItWorks title="How IQShare Profile works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Learn, quiz, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Progress and history are saved.' },
+          { title: 'Iterate', desc: 'Repeat or level up anytime.' },
+        ]} />
+      <Card>
       <CardHeader><CardTitle className="flex items-center gap-2"><Share2 className="w-5 h-5" />Share Profile</CardTitle></CardHeader>
       <CardContent>
         <Button onClick={share} className="w-full">Share My Score</Button>
       </CardContent>
     </Card>
-  );
+    </>
+    );
 }
