@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import { Plus, Calendar, Euro, Tag } from "lucide-react";
 import { BrandCampaignPayments } from "@/components/brand/BrandCampaignPayments";
 import { BrandApplicationsManager } from "@/components/brand/BrandApplicationsManager";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 type BrandCampaign = {
   id: string;
@@ -254,7 +255,18 @@ export default function BrandDashboard() {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return (data ?? []) as BrandCampaign[];
+      return (
+    <>
+      <FloatingHowItWorks title="Brand Campaigns" intro="Create paid campaigns, manage creator applications, and pay out winners." steps={[
+    { title: "Create a campaign", desc: "Click New Campaign, set budget in EUR, dates, tags and required deliverables." },
+    { title: "Review applications", desc: "Creators apply \u2014 accept, reject, or negotiate in the Applications tab." },
+    { title: "Fund escrow", desc: "Payments are held in Stripe escrow until you approve the delivered work." },
+    { title: "Release payouts", desc: "Approve completed work to release funds (80/20 or 85/15 split applies)." },
+    { title: "Track performance", desc: "Use the Payments tab for a full history and downloadable receipts." }
+  ]} />
+      data ?? []
+    </>
+  ) as BrandCampaign[];
     },
   });
 

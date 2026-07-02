@@ -16,6 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { brandArenaCall } from "@/hooks/useBrandArenaRouter";
 import { useBrandBattleCredits } from "@/hooks/useBrandBattleCredits";
 import { handleEdgeError } from "@/lib/handleEdgeError";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 type Feature = {
   id: string;
@@ -122,7 +123,15 @@ export default function BrandArenaHub() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <FloatingHowItWorks title="Arena Hub" intro="Central hub for all 20 Brand Arena features \u2014 sponsorship, campaigns, voting, and more." steps={[
+    { title: "Explore modules", desc: "Scroll the grid to see all 20 arena features grouped by purpose." },
+    { title: "Open a feature", desc: "Tap any card to jump into that tool (battles, tournaments, sponsors, appeals, analytics\u2026)." },
+    { title: "Track credits", desc: "Your Brand Battle credit balance is shown at the top; top up when it runs low." },
+    { title: "Follow the flow", desc: "Sponsors register \u2192 launch campaigns \u2192 users vote \u2192 winners get paid." },
+    { title: "Need help?", desc: "Every sub-page has its own 'How it works' with detailed steps." }
+  ]} />
+      <div className="min-h-screen bg-background">
       <main className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="flex items-center justify-between mb-6">
           <Button variant="ghost" onClick={() => navigate("/brand-battle")}>
@@ -330,5 +339,6 @@ export default function BrandArenaHub() {
         )}
       </main>
     </div>
+    </>
   );
 }

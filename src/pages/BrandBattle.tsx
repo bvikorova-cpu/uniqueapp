@@ -34,6 +34,7 @@ import { BoosterPacks } from "@/components/brand-battle/BoosterPacks";
 import { PremiumPasses } from "@/components/brand-battle/PremiumPasses";
 import { useBrandVotes } from "@/hooks/useBrandVotes";
 import { useVotingStreak } from "@/hooks/useVotingStreak";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface BrandSponsor {
   id: string;
@@ -103,7 +104,18 @@ export default function BrandBattle() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => setUser(session?.user ?? null)
     );
-    return () => subscription.unsubscribe();
+    return (
+    <>
+      <FloatingHowItWorks title="Brand Battle" intro="Vote for your favorite brands, join head-to-head duels, and earn rewards." steps={[
+    { title: "Pick a matchup", desc: "Browse head-to-head battles or tournaments and tap Vote for the brand you support." },
+    { title: "Build a streak", desc: "Vote daily to grow your voting streak and unlock bonus multipliers." },
+    { title: "Complete challenges", desc: "Finish daily challenges and comment on brand cards to earn extra XP." },
+    { title: "Earn rewards", desc: "Climb the leaderboard, collect badges, and redeem seasonal rewards." },
+    { title: "Support a brand", desc: "Tap a featured brand to visit its profile, coupons, and sponsor page." }
+  ]} />
+      
+    </>
+  ) => subscription.unsubscribe();
   }, []);
 
   useEffect(() => {

@@ -22,6 +22,7 @@ import {
   Download, Play, Pause, Volume2, VolumeX, Zap, Crown, Star,
   FileText, Globe, CheckCircle, ArrowLeft,
 } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 type ActiveView = "hub" | "create" | "history" | "name-generator" | "competitor-analyzer" | "social-kit" | "style-guide";
 
@@ -117,9 +118,18 @@ const BrandBuilder = () => {
 
   // ======== SUB-VIEWS ========
   if (activeView === "name-generator") return (
-    <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 sm:px-4 pt-16 sm:pt-24 pb-8 max-w-5xl">
+    <>
+      <FloatingHowItWorks title="Brand Builder" intro="AI-powered brand creation \u2014 names, logos, competitor analysis and social kits." steps={[
+    { title: "Generate a name", desc: "Describe your idea and let AI suggest available brand names (3 credits)." },
+    { title: "Analyze competitors", desc: "Enter competitor URLs to get positioning insights (4 credits)." },
+    { title: "Design a social kit", desc: "Auto-generate profile images, banners and post templates." },
+    { title: "Export a style guide", desc: "Download a complete brand PDF ready to share with designers." },
+    { title: "Save to a kit", desc: "Store everything in a Brand Kit so you can reuse it across the platform." }
+  ]} />
+      <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 sm:px-4 pt-16 sm:pt-24 pb-8 max-w-5xl">
       <BrandNameGenerator credits={creditsNum} onBack={() => setActiveView("hub")} onCreditsUsed={refreshCredits} />
     </div></div>
+    </>
   );
   if (activeView === "competitor-analyzer") return (
     <div className="min-h-screen bg-background"><Navbar /><div className="container mx-auto px-3 sm:px-4 pt-16 sm:pt-24 pb-8 max-w-5xl">

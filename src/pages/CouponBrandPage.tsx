@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Calendar, Shield, Star, Store, Ticket } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { SEO } from "@/components/SEO";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Listing {
   id: string; title: string; store_name: string;
@@ -71,7 +72,15 @@ const CouponBrandPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12">
+    <>
+      <FloatingHowItWorks title="Brand Coupons" intro="Public brand profile with active coupons, verified badge and rating." steps={[
+    { title: "Browse coupons", desc: "Scroll the list to see every active promo from this brand." },
+    { title: "Copy a code", desc: "Tap a coupon to reveal the code and copy it to your clipboard." },
+    { title: "Check validity", desc: "Each coupon shows its expiration date and any usage limits." },
+    { title: "Visit the store", desc: "Use the store button to jump to the brand's official site." },
+    { title: "Rate the brand", desc: "Leave a star rating so other shoppers can trust the brand faster." }
+  ]} />
+      <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-12">
       <SEO
         title={`${brandName} Coupons & Discount Codes – Save up to ${stats_summary.avgDisc || 50}%`}
         description={`Buy verified ${brandName} coupons, gift cards & discount codes from real sellers. Avg ${stats_summary.avgDisc}% off, 7-day Buyer Guarantee.`}
@@ -170,6 +179,7 @@ const CouponBrandPage = () => {
         )}
       </div>
     </div>
+    </>
   );
 };
 

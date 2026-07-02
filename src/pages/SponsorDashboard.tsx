@@ -36,6 +36,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface BrandSponsor {
   id: string;
@@ -350,10 +351,20 @@ export default function SponsorDashboard() {
 
   if (sponsorLoading) {
     return (
+    <>
+      <FloatingHowItWorks title="Sponsor Dashboard" intro="Run campaigns, track goals, manage branding and get insights on your sponsorship." steps={[
+    { title: "Set goals", desc: "Create measurable goals (votes, impressions, conversions) and monitor progress." },
+    { title: "Launch campaigns", desc: "Create Brand Battle campaigns, tournaments, or featured placements." },
+    { title: "Customize branding", desc: "Upload logo, colors, and cover art \u2014 changes apply to every user-facing card." },
+    { title: "Handle appeals", desc: "Reply to moderation appeals and disputes directly from the Appeals tab." },
+    { title: "Enterprise API", desc: "Enterprise tier unlocks API keys, webhooks, and account-manager chat." },
+    { title: "Read analytics", desc: "Check events, spend, and ROI on the analytics tab; export CSV anytime." }
+  ]} />
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
         <Loader2 className="h-12 w-12 text-white animate-spin" />
       </div>
-    );
+    </>
+  );
   }
 
   if (!sponsor) {
