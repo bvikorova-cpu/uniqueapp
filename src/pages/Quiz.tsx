@@ -100,7 +100,7 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
   ],
   literature: [
     { question: "Who wrote Romeo and Juliet?", options: ["Byron", "Shakespeare", "Dickens", "Wilde"], correct: 1 },
-    { question: "Which Slovak writer was Martin Kukučín?", options: ["Hviezdoslav", "Botto", "Kukučín", "Hollý"], correct: 2 },
+    { question: "Who wrote 'Pride and Prejudice'?", options: ["Brontë", "Austen", "Woolf", "Eliot"], correct: 1 },
     { question: "Who wrote The Little Prince?", options: ["Verne", "Saint-Exupéry", "Dumas", "Hugo"], correct: 1 },
     { question: "From which country is Fyodor Dostoevsky?", options: ["Poland", "Ukraine", "Russia", "Czechia"], correct: 2 },
     { question: "Who wrote 1984?", options: ["Huxley", "Bradbury", "Orwell", "Kafka"], correct: 2 },
