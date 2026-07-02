@@ -36,10 +36,10 @@ export default function AIContentCalendar({ onBack }: Props) {
       <FloatingHowItWorks
         title="How AI Content Calendar works"
         steps={[
-          { title: 'Pick niche & duration', description: 'Choose your niche and 7/14/30 days.' },
-          { title: 'Generate (5 credits)', description: 'AI drafts a full posting plan.' },
-          { title: 'Review the schedule', description: 'See daily posts, reels, hashtags.' },
-          { title: 'Export & schedule', description: 'Copy items into your publishing tool.' },
+          { title: 'Pick niche & duration', desc: 'Choose your niche and 7/14/30 days.' },
+          { title: 'Generate (5 credits)', desc: 'AI drafts a full posting plan.' },
+          { title: 'Review the schedule', desc: 'See daily posts, reels, hashtags.' },
+          { title: 'Export & schedule', desc: 'Copy items into your publishing tool.' },
         ]}
       />
     <div className="space-y-6">

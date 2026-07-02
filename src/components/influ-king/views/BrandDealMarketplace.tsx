@@ -36,10 +36,10 @@ export default function BrandDealMarketplace({ onBack }: Props) {
       <FloatingHowItWorks
         title="How Brand Deal Marketplace works"
         steps={[
-          { title: 'Enter niche & followers', description: 'Describe your audience.' },
-          { title: 'Find deals (5 credits)', description: 'AI matches sponsorship opportunities.' },
-          { title: 'Review match score', description: 'Compare payouts and requirements.' },
-          { title: 'Apply', description: 'Reach out to brands directly.' },
+          { title: 'Enter niche & followers', desc: 'Describe your audience.' },
+          { title: 'Find deals (5 credits)', desc: 'AI matches sponsorship opportunities.' },
+          { title: 'Review match score', desc: 'Compare payouts and requirements.' },
+          { title: 'Apply', desc: 'Reach out to brands directly.' },
         ]}
       />
     <div className="space-y-6">

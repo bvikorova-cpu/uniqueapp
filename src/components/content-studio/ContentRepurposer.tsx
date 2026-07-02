@@ -10,12 +10,12 @@ import { ArrowLeft, Loader2, Recycle, Copy, Twitter, Linkedin, Instagram, Mail, 
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const OUTPUT_FORMATS = [
-  { id: "twitter_thread", name: "Twitter Thread", icon: Twitter, description: "Break into engaging tweet-sized chunks" },
-  { id: "linkedin_post", name: "LinkedIn Post", icon: Linkedin, description: "Professional, thought-leadership style" },
-  { id: "instagram_caption", name: "Instagram Caption", icon: Instagram, description: "Visual-first with hashtags & emojis" },
-  { id: "email_newsletter", name: "Email Newsletter", icon: Mail, description: "Engaging email with subject line" },
-  { id: "blog_summary", name: "Blog Summary", icon: FileText, description: "Concise summary with key takeaways" },
-  { id: "sms_marketing", name: "SMS / Short Message", icon: MessageSquare, description: "Ultra-short promotional message" },
+  { id: "twitter_thread", name: "Twitter Thread", icon: Twitter, desc: "Break into engaging tweet-sized chunks" },
+  { id: "linkedin_post", name: "LinkedIn Post", icon: Linkedin, desc: "Professional, thought-leadership style" },
+  { id: "instagram_caption", name: "Instagram Caption", icon: Instagram, desc: "Visual-first with hashtags & emojis" },
+  { id: "email_newsletter", name: "Email Newsletter", icon: Mail, desc: "Engaging email with subject line" },
+  { id: "blog_summary", name: "Blog Summary", icon: FileText, desc: "Concise summary with key takeaways" },
+  { id: "sms_marketing", name: "SMS / Short Message", icon: MessageSquare, desc: "Ultra-short promotional message" },
 ];
 
 interface Props {
@@ -68,10 +68,10 @@ const ContentRepurposer = ({ onBack }: Props) => {
       <FloatingHowItWorks
         title="How Content Repurposer works"
         steps={[
-          { title: 'Paste source', description: 'Blog, transcript, or long-form post.' },
-          { title: 'Pick targets', description: 'Tweet thread, reel script, LinkedIn.' },
-          { title: 'Generate', description: 'AI reshapes for each channel.' },
-          { title: 'Publish', description: 'Copy each variant and post.' },
+          { title: 'Paste source', desc: 'Blog, transcript, or long-form post.' },
+          { title: 'Pick targets', desc: 'Tweet thread, reel script, LinkedIn.' },
+          { title: 'Generate', desc: 'AI reshapes for each channel.' },
+          { title: 'Publish', desc: 'Copy each variant and post.' },
         ]}
       />
     <div className="space-y-6">

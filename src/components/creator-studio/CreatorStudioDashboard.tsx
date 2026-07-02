@@ -42,10 +42,10 @@ export const CreatorStudioDashboard = ({ userId }: Props) => {
       <FloatingHowItWorks
         title="How Creator Studio works"
         steps={[
-          { title: 'Overview', description: 'See earnings, followers, and top posts at a glance.' },
-          { title: 'Create content', description: 'Jump into any AI studio (Content, Beauty, Fashion...).' },
-          { title: 'Monetize', description: 'Enable tips, subs, and PPV.' },
-          { title: 'Get support', description: 'Access docs and creator success team.' },
+          { title: 'Overview', desc: 'See earnings, followers, and top posts at a glance.' },
+          { title: 'Create content', desc: 'Jump into any AI studio (Content, Beauty, Fashion...).' },
+          { title: 'Monetize', desc: 'Enable tips, subs, and PPV.' },
+          { title: 'Get support', desc: 'Access docs and creator success team.' },
         ]}
       />
     <div className="space-y-6">

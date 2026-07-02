@@ -75,10 +75,10 @@ const BulkContentGenerator = ({ onBack }: Props) => {
       <FloatingHowItWorks
         title="How Bulk Generator works"
         steps={[
-          { title: 'Pick template', description: 'Choose caption, hook, or thread style.' },
-          { title: 'Set batch size', description: 'Generate 5–50 variants at once.' },
-          { title: 'Generate', description: 'AI writes them in your voice.' },
-          { title: 'Export', description: 'Copy or download for scheduling.' },
+          { title: 'Pick template', desc: 'Choose caption, hook, or thread style.' },
+          { title: 'Set batch size', desc: 'Generate 5–50 variants at once.' },
+          { title: 'Generate', desc: 'AI writes them in your voice.' },
+          { title: 'Export', desc: 'Copy or download for scheduling.' },
         ]}
       />
     <div className="space-y-6">

@@ -14,16 +14,16 @@ import {
 } from "lucide-react";
 
 const TEMPLATES = [
-  { id: "email_marketing", name: "Email Marketing", icon: Mail, credits: 3, description: "Compelling email campaigns with subject lines and CTA" },
-  { id: "facebook_ad", name: "Facebook Ad", icon: Megaphone, credits: 2, description: "High-converting ad copy with headlines and descriptions" },
-  { id: "linkedin_post", name: "LinkedIn Post", icon: Linkedin, credits: 2, description: "Professional thought leadership posts" },
-  { id: "twitter_thread", name: "Twitter/X Thread", icon: Twitter, credits: 3, description: "Viral thread with hooks and engagement" },
-  { id: "instagram_caption", name: "Instagram Caption", icon: Instagram, credits: 1, description: "Engaging captions with relevant hashtags" },
-  { id: "press_release", name: "Press Release", icon: Newspaper, credits: 5, description: "Professional press releases with quotes" },
-  { id: "product_description", name: "Product Description", icon: ShoppingBag, credits: 2, description: "Persuasive product copy that sells" },
-  { id: "pitch_deck", name: "Pitch Deck Script", icon: Presentation, credits: 5, description: "Investor pitch deck slide scripts" },
-  { id: "newsletter", name: "Newsletter", icon: FileText, credits: 3, description: "Engaging newsletter content with sections" },
-  { id: "chatbot_script", name: "Chatbot Script", icon: MessageSquare, credits: 3, description: "Customer service chatbot dialog flows" },
+  { id: "email_marketing", name: "Email Marketing", icon: Mail, credits: 3, desc: "Compelling email campaigns with subject lines and CTA" },
+  { id: "facebook_ad", name: "Facebook Ad", icon: Megaphone, credits: 2, desc: "High-converting ad copy with headlines and descriptions" },
+  { id: "linkedin_post", name: "LinkedIn Post", icon: Linkedin, credits: 2, desc: "Professional thought leadership posts" },
+  { id: "twitter_thread", name: "Twitter/X Thread", icon: Twitter, credits: 3, desc: "Viral thread with hooks and engagement" },
+  { id: "instagram_caption", name: "Instagram Caption", icon: Instagram, credits: 1, desc: "Engaging captions with relevant hashtags" },
+  { id: "press_release", name: "Press Release", icon: Newspaper, credits: 5, desc: "Professional press releases with quotes" },
+  { id: "product_description", name: "Product Description", icon: ShoppingBag, credits: 2, desc: "Persuasive product copy that sells" },
+  { id: "pitch_deck", name: "Pitch Deck Script", icon: Presentation, credits: 5, desc: "Investor pitch deck slide scripts" },
+  { id: "newsletter", name: "Newsletter", icon: FileText, credits: 3, desc: "Engaging newsletter content with sections" },
+  { id: "chatbot_script", name: "Chatbot Script", icon: MessageSquare, credits: 3, desc: "Customer service chatbot dialog flows" },
 ];
 
 interface Props {
@@ -68,10 +68,10 @@ const AIContentTemplates = ({ onBack }: Props) => {
       <FloatingHowItWorks
         title="How AI Content Templates works"
         steps={[
-          { title: 'Browse templates', description: 'Hooks, captions, scripts, threads.' },
-          { title: 'Fill the prompt', description: 'Add topic and context.' },
-          { title: 'Generate', description: 'AI writes based on the template.' },
-          { title: 'Save favorites', description: 'Reuse templates that convert.' },
+          { title: 'Browse templates', desc: 'Hooks, captions, scripts, threads.' },
+          { title: 'Fill the prompt', desc: 'Add topic and context.' },
+          { title: 'Generate', desc: 'AI writes based on the template.' },
+          { title: 'Save favorites', desc: 'Reuse templates that convert.' },
         ]}
       />
     <div className="space-y-6">

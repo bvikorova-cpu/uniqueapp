@@ -10,7 +10,7 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props {
   onBack: () => void;
   title: string;
-  description: string;
+  desc: string;
   icon: LucideIcon;
   action: string;
   credits: number;
@@ -44,10 +44,10 @@ export default function GenericInfluView({ onBack, title, description, icon: Ico
       <FloatingHowItWorks
         title="How AI Tool works"
         steps={[
-          { title: 'Describe what you need', description: 'Give the AI clear context.' },
-          { title: 'Generate', description: 'Costs a few credits per run.' },
-          { title: 'Review output', description: 'Copy, refine, or regenerate.' },
-          { title: 'Use it', description: 'Publish, share, or iterate.' },
+          { title: 'Describe what you need', desc: 'Give the AI clear context.' },
+          { title: 'Generate', desc: 'Costs a few credits per run.' },
+          { title: 'Review output', desc: 'Copy, refine, or regenerate.' },
+          { title: 'Use it', desc: 'Publish, share, or iterate.' },
         ]}
       />
     <div className="space-y-6">
