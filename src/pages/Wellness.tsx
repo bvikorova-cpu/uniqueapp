@@ -28,6 +28,7 @@ import { SleepStories } from "@/components/wellness/SleepStories";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const WELLNESS_PLANS = {
   basicMonthly: { name: "Basic Monthly", price: "€4.99", period: "/month", priceId: "price_1SQQ0zGaXSfGtYFtXRewT2s9", tier: "basic", isLifetime: false, icon: Wind, gradient: "from-sky-500/15 to-cyan-500/5", accentColor: "text-sky-400", features: ["Breathing Exercises", "5-4-3-2-1 Grounding", "Nature Sounds", "Body Scan Meditation", "Sleep Stories", "Daily Challenges"] },
   premiumMonthly: { name: "Premium Monthly", price: "€9.99", period: "/month", priceId: "price_1SQQ1zGaXSfGtYFt773EG7rN", tier: "premium", isLifetime: false, icon: Crown, gradient: "from-violet-500/15 to-purple-500/5", accentColor: "text-violet-400", popular: true, features: ["All Basic features", "AI Mindfulness Coach", "Gratitude Journal with AI", "Digital Mandala Drawing", "Progress Dashboard"] },
@@ -174,6 +175,7 @@ export default function Wellness() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen gap-3">
+      <FloatingHowItWorks title="Wellness — How it works" steps={[{title:"Open the tool",desc:"Launch Wellness from the menu to access its features."},{title:"Explore options",desc:"Browse available cards, filters and personalized recommendations."},{title:"Interact & track",desc:"Log entries, start sessions or run AI scans. Some AI actions cost 3–5 credits."},{title:"Review progress",desc:"Check your dashboard for streaks, achievements and history."}]} />
         <motion.div animate={{ rotate: 360 }} transition={{ duration: 2, repeat: Infinity, ease: "linear" }}>
           <Heart className="w-8 h-8 text-primary" />
         </motion.div>

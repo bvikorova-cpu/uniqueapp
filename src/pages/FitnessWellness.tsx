@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useLearningContent } from "@/hooks/useLearningContent";
 import { Dumbbell, Clock, Star, Users } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const FitnessWellness = () => {
   const { toast } = useToast();
@@ -111,6 +112,7 @@ const FitnessWellness = () => {
 
   return (
     <div className="min-h-screen bg-background p-6">
+      <FloatingHowItWorks title="FitnessWellness — How it works" steps={[{title:"Open the tool",desc:"Launch FitnessWellness from the menu to access its features."},{title:"Explore options",desc:"Browse available cards, filters and personalized recommendations."},{title:"Interact & track",desc:"Log entries, start sessions or run AI scans. Some AI actions cost 3–5 credits."},{title:"Review progress",desc:"Check your dashboard for streaks, achievements and history."}]} />
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12 mt-16">
           <h1 className="text-4xl md:text-5xl font-black mb-4 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">

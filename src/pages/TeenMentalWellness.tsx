@@ -1,4 +1,5 @@
 import { TeenModuleShell } from "@/components/teen/TeenModuleShell";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function TeenMentalWellness() {
   return (
@@ -16,3 +17,5 @@ export default function TeenMentalWellness() {
     />
   );
 }
+
+      <FloatingHowItWorks title="TeenMentalWellness — How it works" steps={[{title:"Open the tool",desc:"Launch TeenMentalWellness from the menu to access its features."},{title:"Explore options",desc:"Browse available cards, filters and personalized recommendations."},{title:"Interact & track",desc:"Log entries, start sessions or run AI scans. Some AI actions cost 3–5 credits."},{title:"Review progress",desc:"Check your dashboard for streaks, achievements and history."}]} />
