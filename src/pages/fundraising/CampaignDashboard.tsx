@@ -5,7 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { 
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   Loader2, 
   ArrowLeft, 
   DollarSign, 
@@ -33,6 +32,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface StripeConnectStatus {
   connected: boolean;
