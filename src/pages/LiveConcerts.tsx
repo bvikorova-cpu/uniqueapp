@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   Music, Calendar, Gift, Trophy, Users, Sparkles, Crown, MessageCircle,
   PlayCircle, BarChart3, Star, Bell, ShoppingBag, ListMusic, Loader2,
   Info, Ticket, Headphones
@@ -123,7 +124,14 @@ const LiveConcerts = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <FloatingHowItWorks title="How Live Concerts works" steps={[
+          { title: 'Explore the feature', desc: 'Browse the options and pick what interests you.' },
+          { title: 'Interact', desc: 'Tap actions, generate content, or make a selection. AI actions cost 2-5 credits.' },
+          { title: 'Review results', desc: 'Check the output, share, save or purchase where available.' },
+          { title: 'Come back', desc: 'Progress and history are saved to your account.' },
+        ]} />
+      <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 pt-20 pb-8">
         {activeView === "hub" ? (
           <>
@@ -184,7 +192,8 @@ const LiveConcerts = () => {
         )}
       </div>
     </div>
-  );
+    </>
+    );
 };
 
 export default LiveConcerts;

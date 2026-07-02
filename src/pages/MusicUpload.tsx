@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function MusicUpload() {
   const nav = useNavigate();
@@ -38,7 +39,14 @@ export default function MusicUpload() {
   };
 
   return (
-    <main className="container max-w-2xl py-8">
+    <>
+      <FloatingHowItWorks title="How Music Upload works" steps={[
+          { title: 'Explore the feature', desc: 'Browse the options and pick what interests you.' },
+          { title: 'Interact', desc: 'Tap actions, generate content, or make a selection. AI actions cost 2-5 credits.' },
+          { title: 'Review results', desc: 'Check the output, share, save or purchase where available.' },
+          { title: 'Come back', desc: 'Progress and history are saved to your account.' },
+        ]} />
+      <main className="container max-w-2xl py-8">
       <h1 className="text-3xl font-bold mb-6 flex items-center gap-2"><Upload className="w-7 h-7" /> Upload Track</h1>
       <Card>
         <CardHeader><CardTitle>New release</CardTitle></CardHeader>
@@ -51,5 +59,6 @@ export default function MusicUpload() {
         </CardContent>
       </Card>
     </main>
-  );
+    </>
+    );
 }

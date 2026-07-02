@@ -3,10 +3,18 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Gamepad2, PawPrint, Trophy } from "lucide-react";
 import SEO from "@/components/SEO";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function PetsHub() {
   return (
-    <div className="min-h-screen bg-background pt-20 pb-12 px-4">
+    <>
+      <FloatingHowItWorks title="How Pets Hub works" steps={[
+          { title: 'Explore the feature', desc: 'Browse the options and pick what interests you.' },
+          { title: 'Interact', desc: 'Tap actions, generate content, or make a selection. AI actions cost 2-5 credits.' },
+          { title: 'Review results', desc: 'Check the output, share, save or purchase where available.' },
+          { title: 'Come back', desc: 'Progress and history are saved to your account.' },
+        ]} />
+      <div className="min-h-screen bg-background pt-20 pb-12 px-4">
       <SEO
         title="Pets Hub – AI Translator & Virtual Pet | Unique"
         description="Choose your pet experience: decode your real pet's voice with AI, or raise a virtual companion."
@@ -55,5 +63,6 @@ export default function PetsHub() {
         </div>
       </div>
     </div>
-  );
+    </>
+    );
 }

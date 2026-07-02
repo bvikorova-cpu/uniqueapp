@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { ModuleSubscriptionHero } from "@/components/subscription/ModuleSubscriptionHero";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const TIERS = {
   amateur: {
@@ -105,7 +106,14 @@ export default function MasterChefSubscription() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <>
+      <FloatingHowItWorks title="How Master Chef Subscription works" steps={[
+          { title: 'Explore the feature', desc: 'Browse the options and pick what interests you.' },
+          { title: 'Interact', desc: 'Tap actions, generate content, or make a selection. AI actions cost 2-5 credits.' },
+          { title: 'Review results', desc: 'Check the output, share, save or purchase where available.' },
+          { title: 'Come back', desc: 'Progress and history are saved to your account.' },
+        ]} />
+      <div className="min-h-screen relative overflow-hidden">
       {/* Background with cooking theme */}
       <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-background to-red-500/10" />
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZjYzNDciIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDE0YzAtMS4xLS45LTItMi0yaC0yYy0xLjEgMC0yIC45LTIgMnYyYzAgMS4xLjkgMiAyIDJoMmMxLjEgMCAyLS45IDItMnYtMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-40" />
@@ -284,5 +292,6 @@ export default function MasterChefSubscription() {
         </div>
       </div>
     </div>
-  );
+    </>
+    );
 }

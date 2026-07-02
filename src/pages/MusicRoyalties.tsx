@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Euro, TrendingUp } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Row {
   id: string;
@@ -31,7 +32,14 @@ export default function MusicRoyalties() {
   const fmt = (c: number) => `€${(c / 100).toFixed(2)}`;
 
   return (
-    <div className="container max-w-3xl py-8 space-y-6">
+    <>
+      <FloatingHowItWorks title="How Music Royalties works" steps={[
+          { title: 'Explore the feature', desc: 'Browse the options and pick what interests you.' },
+          { title: 'Interact', desc: 'Tap actions, generate content, or make a selection. AI actions cost 2-5 credits.' },
+          { title: 'Review results', desc: 'Check the output, share, save or purchase where available.' },
+          { title: 'Come back', desc: 'Progress and history are saved to your account.' },
+        ]} />
+      <div className="container max-w-3xl py-8 space-y-6">
       <header className="flex items-center gap-3">
         <TrendingUp className="w-8 h-8 text-primary" />
         <div>
@@ -61,5 +69,6 @@ export default function MusicRoyalties() {
         ))}
       </div>
     </div>
-  );
+    </>
+    );
 }

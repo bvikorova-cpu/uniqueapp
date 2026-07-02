@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   Trophy, ChefHat, Timer, ScanLine, MessageCircle, 
   Video, Award, Apple, Globe, Bot, BookOpen,
   Crown, Sparkles, Check
@@ -74,7 +75,14 @@ export default function MasterChefHub() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <FloatingHowItWorks title="How Master Chef Hub works" steps={[
+          { title: 'Explore the feature', desc: 'Browse the options and pick what interests you.' },
+          { title: 'Interact', desc: 'Tap actions, generate content, or make a selection. AI actions cost 2-5 credits.' },
+          { title: 'Review results', desc: 'Check the output, share, save or purchase where available.' },
+          { title: 'Come back', desc: 'Progress and history are saved to your account.' },
+        ]} />
+      <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-2 md:px-6 pt-20 pb-12 space-y-10">
         
         {/* Cinematic Video Hero */}
@@ -202,5 +210,6 @@ export default function MasterChefHub() {
         </div>
       </div>
     </div>
-  );
+    </>
+    );
 }

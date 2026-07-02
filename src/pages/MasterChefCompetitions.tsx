@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useMasterChefSubscription } from "@/hooks/useMasterChefSubscription";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function MasterChefCompetitions() {
   const navigate = useNavigate();
@@ -81,13 +82,21 @@ export default function MasterChefCompetitions() {
 
   if (loading || subscriptionLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <>
+        <FloatingHowItWorks title="How Master Chef Competitions works" steps={[
+          { title: 'Explore the feature', desc: 'Browse the options and pick what interests you.' },
+          { title: 'Interact', desc: 'Tap actions, generate content, or make a selection. AI actions cost 2-5 credits.' },
+          { title: 'Review results', desc: 'Check the output, share, save or purchase where available.' },
+          { title: 'Come back', desc: 'Progress and history are saved to your account.' },
+        ]} />
+        <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <ChefHat className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
           <p className="text-muted-foreground">Loading competitions...</p>
         </div>
       </div>
-    );
+      </>
+      );
   }
 
   if (!subscribed) {

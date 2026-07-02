@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import {
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   ArrowLeft,
   Swords,
   Sparkles,
@@ -189,7 +190,14 @@ export default function HolographicHistory() {
 
   if (!authed) {
     return (
-      <div className="min-h-screen bg-background pb-16">
+      <>
+        <FloatingHowItWorks title="How Holographic History works" steps={[
+          { title: 'Explore the feature', desc: 'Browse the options and pick what interests you.' },
+          { title: 'Interact', desc: 'Tap actions, generate content, or make a selection. AI actions cost 2-5 credits.' },
+          { title: 'Review results', desc: 'Check the output, share, save or purchase where available.' },
+          { title: 'Come back', desc: 'Progress and history are saved to your account.' },
+        ]} />
+        <div className="min-h-screen bg-background pb-16">
         <div className="max-w-4xl mx-auto px-4 pt-6">
           <Card className="p-6 text-center">
             <p className="text-sm text-muted-foreground">Sign in to view your history.</p>
@@ -197,7 +205,8 @@ export default function HolographicHistory() {
           </Card>
         </div>
       </div>
-    );
+      </>
+      );
   }
 
   return (

@@ -10,6 +10,7 @@ import { ProgressTracker } from "@/components/learning/ProgressTracker";
 import { CertificateCard } from "@/components/learning/CertificateCard";
 import { courseContent } from "@/data/courseContent";
 import { ArrowLeft, BookOpen, Award, Clock, Video } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function MasterclassLearning() {
   const { masterclassId } = useParams<{ masterclassId: string }>();
@@ -90,13 +91,21 @@ export default function MasterclassLearning() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <>
+        <FloatingHowItWorks title="How Masterclass Learning works" steps={[
+          { title: 'Explore the feature', desc: 'Browse the options and pick what interests you.' },
+          { title: 'Interact', desc: 'Tap actions, generate content, or make a selection. AI actions cost 2-5 credits.' },
+          { title: 'Review results', desc: 'Check the output, share, save or purchase where available.' },
+          { title: 'Come back', desc: 'Progress and history are saved to your account.' },
+        ]} />
+        <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">Loading masterclass content...</p>
         </div>
       </div>
-    );
+      </>
+      );
   }
 
   if (!isPurchased(masterclassId || "", "masterclass")) {

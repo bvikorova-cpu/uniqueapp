@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   Gift, Inbox, Sparkles, Trophy, CreditCard, ArrowLeft, Award, Box, Star, 
   MessageCircle, Play, Pause, Volume2, VolumeX, Shuffle, Wand2, BarChart3,
   Target, Heart, Flame
@@ -61,7 +62,14 @@ const SecretSanta = () => {
   ];
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <>
+      <FloatingHowItWorks title="How Secret Santa works" steps={[
+          { title: 'Explore the feature', desc: 'Browse the options and pick what interests you.' },
+          { title: 'Interact', desc: 'Tap actions, generate content, or make a selection. AI actions cost 2-5 credits.' },
+          { title: 'Review results', desc: 'Check the output, share, save or purchase where available.' },
+          { title: 'Come back', desc: 'Progress and history are saved to your account.' },
+        ]} />
+      <div className="min-h-screen relative overflow-hidden">
       {/* Cinematic Video Hero */}
       <div className="relative w-full h-[50vh] min-h-[300px] overflow-hidden">
         <video
@@ -182,7 +190,8 @@ const SecretSanta = () => {
         </Tabs>
       </div>
     </div>
-  );
+    </>
+    );
 };
 
 export default SecretSanta;

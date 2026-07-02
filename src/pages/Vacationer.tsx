@@ -18,6 +18,7 @@ import { AILocalGuide } from "@/components/vacationer/AILocalGuide";
 import { AIBudgetCalculator } from "@/components/vacationer/AIBudgetCalculator";
 import { AICulturalGuide } from "@/components/vacationer/AICulturalGuide";
 import { AIFoodExplorer } from "@/components/vacationer/AIFoodExplorer";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 type ViewType = "hub" | "planner" | "packing" | "localguide" | "budget" | "cultural" | "food";
@@ -118,7 +119,14 @@ const Vacationer = () => {
   if (activeView === "food") return <div className="min-h-screen bg-background pt-20 pb-12"><div className="container mx-auto px-4 max-w-4xl"><AIFoodExplorer onBack={goBack} /></div></div>;
 
   return (
-    <div className="min-h-screen bg-background pt-20 pb-12">
+    <>
+      <FloatingHowItWorks title="How Vacationer works" steps={[
+          { title: 'Explore the feature', desc: 'Browse the options and pick what interests you.' },
+          { title: 'Interact', desc: 'Tap actions, generate content, or make a selection. AI actions cost 2-5 credits.' },
+          { title: 'Review results', desc: 'Check the output, share, save or purchase where available.' },
+          { title: 'Come back', desc: 'Progress and history are saved to your account.' },
+        ]} />
+      <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-4 max-w-7xl">
         <VacationerHero />
 
@@ -275,7 +283,8 @@ const Vacationer = () => {
         </Dialog>
       </div>
     </div>
-  );
+    </>
+    );
 };
 
 export default Vacationer;

@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface RecipePost {
   id: string;
@@ -92,7 +93,14 @@ export default function MasterChefRecipeFeed() {
   };
 
   return (
-    <div className="min-h-screen bg-background pt-20 pb-12 px-4">
+    <>
+      <FloatingHowItWorks title="How Master Chef Recipe Feed works" steps={[
+          { title: 'Explore the feature', desc: 'Browse the options and pick what interests you.' },
+          { title: 'Interact', desc: 'Tap actions, generate content, or make a selection. AI actions cost 2-5 credits.' },
+          { title: 'Review results', desc: 'Check the output, share, save or purchase where available.' },
+          { title: 'Come back', desc: 'Progress and history are saved to your account.' },
+        ]} />
+      <div className="min-h-screen bg-background pt-20 pb-12 px-4">
       <div className="max-w-3xl mx-auto space-y-6">
         <Button variant="ghost" onClick={() => navigate("/masterchef-subscription")}>← Back</Button>
         <div className="flex items-center justify-between">
@@ -157,5 +165,6 @@ export default function MasterChefRecipeFeed() {
         )}
       </div>
     </div>
-  );
+    </>
+    );
 }

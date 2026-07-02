@@ -10,6 +10,7 @@ import { Trophy, Sparkles, Gamepad2, History as HistoryIcon, ArrowLeft, PawPrint
 import { supabase } from "@/integrations/supabase/client";
 import SEO from "@/components/SEO";
 import { formatDistanceToNow } from "date-fns";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface UA {
   id: string;
@@ -63,7 +64,14 @@ export default function PetsAchievements() {
   const otherAch = achievements.filter(a => !isPet(a.achievements?.category));
 
   return (
-    <div className="min-h-screen bg-background pt-20 pb-12 px-4">
+    <>
+      <FloatingHowItWorks title="How Pets Achievements works" steps={[
+          { title: 'Explore the feature', desc: 'Browse the options and pick what interests you.' },
+          { title: 'Interact', desc: 'Tap actions, generate content, or make a selection. AI actions cost 2-5 credits.' },
+          { title: 'Review results', desc: 'Check the output, share, save or purchase where available.' },
+          { title: 'Come back', desc: 'Progress and history are saved to your account.' },
+        ]} />
+      <div className="min-h-screen bg-background pt-20 pb-12 px-4">
       <SEO
         title="My Pet Achievements & Activity | Unique"
         description="Your unlocked achievements and recent activity across the AI Pet Translator and Virtual Pet."
@@ -158,7 +166,8 @@ export default function PetsAchievements() {
         </Tabs>
       </div>
     </div>
-  );
+    </>
+    );
 }
 
 function FilterableAchievements({ items }: { items: UA[] }) {

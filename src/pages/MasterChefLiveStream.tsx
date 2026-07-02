@@ -5,6 +5,7 @@ import { Video, Radio, Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function MasterChefLiveStream() {
   const navigate = useNavigate();
@@ -19,7 +20,14 @@ export default function MasterChefLiveStream() {
   };
 
   return (
-    <div className="min-h-screen bg-background pt-20 pb-12 px-4">
+    <>
+      <FloatingHowItWorks title="How Master Chef Live Stream works" steps={[
+          { title: 'Explore the feature', desc: 'Browse the options and pick what interests you.' },
+          { title: 'Interact', desc: 'Tap actions, generate content, or make a selection. AI actions cost 2-5 credits.' },
+          { title: 'Review results', desc: 'Check the output, share, save or purchase where available.' },
+          { title: 'Come back', desc: 'Progress and history are saved to your account.' },
+        ]} />
+      <div className="min-h-screen bg-background pt-20 pb-12 px-4">
       <div className="max-w-4xl mx-auto space-y-6">
         <Button variant="ghost" onClick={() => navigate("/masterchef-subscription")}>← Back</Button>
 
@@ -84,5 +92,6 @@ export default function MasterChefLiveStream() {
         </Card>
       </div>
     </div>
-  );
+    </>
+    );
 }

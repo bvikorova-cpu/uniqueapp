@@ -11,6 +11,7 @@ import { useOneOffPaymentVerify } from "@/hooks/useOneOffPaymentVerify";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import {
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   Select,
   SelectContent,
   SelectItem,
@@ -181,7 +182,14 @@ export default function CrystalMarketplace() {
   );
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <>
+      <FloatingHowItWorks title="How Crystal Marketplace works" steps={[
+          { title: 'Explore the feature', desc: 'Browse the options and pick what interests you.' },
+          { title: 'Interact', desc: 'Tap actions, generate content, or make a selection. AI actions cost 2-5 credits.' },
+          { title: 'Review results', desc: 'Check the output, share, save or purchase where available.' },
+          { title: 'Come back', desc: 'Progress and history are saved to your account.' },
+        ]} />
+      <div className="min-h-screen relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-background to-pink-500/10" />
       
       <div className="relative z-10 max-w-7xl mx-auto px-4 pt-24 pb-12">
@@ -414,5 +422,6 @@ export default function CrystalMarketplace() {
         </div>
       </div>
     </div>
-  );
+    </>
+    );
 }
