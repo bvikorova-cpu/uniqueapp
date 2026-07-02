@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Briefcase, Sparkles, Check } from "lucide-react";
 import { useTeenCareerCredits, TEEN_CAREER_CREDIT_COST } from "@/hooks/useTeenCareerCredits";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const PACKS = [
   { credits: 10, label: "Starter",   highlight: false, perks: ["2 guidance sessions", "PDF export", "Career comparison"] },
