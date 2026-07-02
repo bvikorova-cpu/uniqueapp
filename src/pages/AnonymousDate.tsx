@@ -33,6 +33,7 @@ import { FloatingParticles } from "@/components/wellness/FloatingParticles";
 import { MatchCelebrationModal } from "@/components/dating/MatchCelebrationModal";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ViewType = "hub" | "matches" | "find" | "find-results" | "credits" | "profile";
 
 type MatchFilters = {
@@ -325,6 +326,16 @@ export default function AnonymousDate() {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
+      <FloatingHowItWorks
+        title={'Anonymous Date'}
+        intro={'Chat anonymously with matches — identities are only revealed after mutual reveal.'}
+        steps={[
+          { title: 'Get matched anonymously', desc: 'We pair you with someone compatible. Names and photos stay hidden.' },
+        { title: 'Chat and vibe', desc: 'Use themes, moods, and daily streaks to build a real connection first.' },
+        { title: 'Mutual reveal', desc: 'Both sides tap Reveal to unlock profiles and continue as a normal match.' },
+        { title: 'Stay safe', desc: 'Report or block anytime. Refunds available within 24h if the match violates rules.' }
+        ]}
+      />
       <FloatingParticles />
       <div className="container mx-auto px-4 py-6 sm:py-10 space-y-6 relative z-10">
         <AnimatePresence mode="wait">

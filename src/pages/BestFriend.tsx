@@ -48,6 +48,7 @@ import { FriendshipHUD } from "@/components/best-friend/FriendshipHUD";
 import ReactMarkdown from "react-markdown";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const CHAT_URL = `https://jufrdzeonywluwutvyxz.supabase.co/functions/v1/best-friend-chat`;
 
 type Message = { role: "user" | "assistant"; content: string };
@@ -301,6 +302,16 @@ const BestFriend = () => {
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-8">
+      <FloatingHowItWorks
+        title={'Best Friend'}
+        intro={'Find platonic friends nearby based on hobbies and vibes — no dating pressure.'}
+        steps={[
+          { title: 'Set your interests', desc: "Pick hobbies, availability, and what you're looking for." },
+        { title: 'Browse or get matched', desc: 'Swipe friend cards or accept smart suggestions.' },
+        { title: 'Chat and plan hangouts', desc: 'Use group chat, event invites, and shared activity lists.' },
+        { title: 'Build streaks', desc: 'Regular chats and meetups grow your friendship level.' }
+        ]}
+      />
       <div className="container mx-auto px-4">
         {activeView ? (
           <div>

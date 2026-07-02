@@ -19,6 +19,7 @@ import { AIMoodTherapist } from "@/components/emotion-economy/AIMoodTherapist";
 import { EmotionFutures } from "@/components/emotion-economy/EmotionFutures";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ViewType = "hub" | "feed" | "wallet" | "market" | "mining" | "insurance" | "drops" | "roulette" | "leaderboard" | "therapist" | "futures";
 
 const tools = [
@@ -71,6 +72,16 @@ export default function EmotionEconomy() {
 
   return (
     <div className="min-h-screen bg-background">
+      <FloatingHowItWorks
+        title={'Emotion Economy'}
+        intro={"Send emotions as micro-gifts — trade, collect, and earn from creators' reactions."}
+        steps={[
+          { title: 'Send an emotion', desc: 'Tap any post to send Joy, Love, Awe, etc. as a paid micro-gift.' },
+        { title: 'Creators earn', desc: 'Recipients receive a share of every emotion sent to their content.' },
+        { title: 'Trade the market', desc: 'Emotion values fluctuate — buy low, gift high, or hold rare drops.' },
+        { title: 'Withdraw earnings', desc: 'Creators cash out via Stripe Connect (80/20 split).' }
+        ]}
+      />
       <div className="container mx-auto px-4 pt-20 pb-8 space-y-8">
         {/* Cinematic Hero */}
         <EmotionEconomyHero />

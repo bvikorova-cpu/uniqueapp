@@ -15,6 +15,7 @@ import { MembershipParityPack } from "@/components/membership/MembershipParityPa
 import { MembershipRevenueSplit } from "@/components/membership/MembershipRevenueSplit";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Creator {
   id: string;
   user_id: string;
@@ -86,6 +87,16 @@ export default function MembershipCommunity() {
 
   return (
     <div className="min-h-screen bg-background">
+      <FloatingHowItWorks
+        title={'Membership Communities'}
+        intro={'Join or run paid/free communities with exclusive posts, chat, and events.'}
+        steps={[
+          { title: 'Discover communities', desc: 'Browse by topic. Free ones join instantly; paid ones use monthly Stripe subs (85/15 split).' },
+        { title: 'Post and interact', desc: 'Members post, comment, react, and join live events inside the community.' },
+        { title: 'Creator tools', desc: 'Owners set tiers, moderate, and see revenue in the dashboard.' },
+        { title: 'Cancel anytime', desc: 'Manage or cancel subscriptions from your billing page.' }
+        ]}
+      />
       <div className="container mx-auto px-4 pt-24 pb-8">
         {/* Hero */}
         <MembershipHero />
