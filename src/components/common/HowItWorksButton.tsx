@@ -82,7 +82,7 @@ export const HowItWorksButton = ({
             <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 border border-primary/20">
               <Info className="w-4 h-4 text-primary" />
             </span>
-            How {title} works
+            How {title.replace(/^\s*how\s+/i, "").replace(/\s+works\s*$/i, "").replace(/\s*-\s*how it works\s*$/i, "").trim()} works
           </SheetTitle>
           {intro ? (
             <SheetDescription className="text-sm">{intro}</SheetDescription>
