@@ -76,6 +76,12 @@ export default function TeenHub() {
 
   return (
     <div className="min-h-screen bg-background">
+      <FloatingHowItWorks title="Teen Hub" intro="AI tools for teens (13–17) — homework, essays, wellness, planning, careers." steps={[
+        { title: "Parental gate", desc: "A parent verifies once — teen use is then unlocked on this device." },
+        { title: "Top up credits", desc: "Buy credit packs in EUR; each tool lists its cost per session." },
+        { title: "Pick a tool", desc: "Homework Pro, Essay Coach, Wellness, Study Planner, Skill Builder, Social Coach or Career Counselor." },
+        { title: "Save your work", desc: "Results are stored in your Teen Hub history and can be exported to PDF." }
+      ]} />
       <Navbar />
       <main className="container mx-auto px-4 py-8 mt-16 max-w-6xl">
         {/* Hero */}
