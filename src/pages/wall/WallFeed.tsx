@@ -160,6 +160,15 @@ export default function WallFeed({
 
       <div className="max-w-4xl mx-auto px-4 py-6">
         <div className="space-y-6">
+          {/* Prominent How it works banner — always visible at top of Wall */}
+          <HowItWorksButton
+            title="Wall"
+            intro="The Wall is your social feed. Here's what every button and feature does — so nothing on this page is a mystery."
+            steps={WALL_HIW_STEPS}
+            variant="compact"
+            className="w-full h-11 justify-center gap-2 border-2 border-primary/40 bg-gradient-to-r from-primary/15 via-accent/10 to-primary/15 text-primary hover:bg-primary/20 shadow-sm"
+          />
+
           {/* Achievements Badge + Mute settings */}
           <div className="flex justify-end items-center gap-2 flex-wrap">
             <ProfileCustomizationDialog />
@@ -177,15 +186,6 @@ export default function WallFeed({
           <NotesBar />
 
           {/* Smart feed tabs are rendered by the Wall page (parent) — do not duplicate here */}
-
-          {/* Search Bar */}
-          <div className="flex justify-end">
-            <FloatingHowItWorks
-              title="Wall"
-              intro="The Wall is your social feed. Here's what every button and feature does — so nothing on this page is a mystery."
-              steps={WALL_HIW_STEPS}
-            />
-          </div>
 
           {/* Search Bar */}
           <SearchBar />
