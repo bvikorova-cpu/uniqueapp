@@ -159,7 +159,7 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
     { question: "What is the main ingredient in guacamole?", options: ["Tomato", "Avocado", "Pepper", "Cucumber"], correct: 1 },
     { question: "What is the main ingredient in hummus?", options: ["Beans", "Lentils", "Chickpeas", "Peas"], correct: 2 },
     { question: "What is tofu made from?", options: ["Milk", "Soybeans", "Rice", "Corn"], correct: 1 },
-    { question: "Which dish is typical for Slovakia?", options: ["Paella", "Bryndzové halušky", "Sushi", "Curry"], correct: 1 }
+    { question: "Which dish is typical for Italy?", options: ["Paella", "Risotto", "Sushi", "Curry"], correct: 1 }
   ],
   travel: [
     { question: "What is the capital of France?", options: ["Lyon", "Marseille", "Paris", "Nice"], correct: 2 },
