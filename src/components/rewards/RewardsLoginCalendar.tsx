@@ -162,6 +162,11 @@ export default function RewardsLoginCalendar() {
               <p className="text-xs opacity-80">{"claimed"}</p>
             </div>
           </div>
+          <div className="mt-4 rounded-lg bg-white/15 backdrop-blur-sm px-3 py-2 flex items-center justify-between">
+            <span className="text-xs opacity-90">{"Next reward unlocks in"}</span>
+            <span className="font-mono text-lg font-bold tabular-nums">{countdown}</span>
+          </div>
+          <p className="text-[10px] opacity-70 mt-1 text-right">{"Resets at midnight Europe/Bratislava (CET/CEST)"}</p>
         </div>
       </Card>
 
