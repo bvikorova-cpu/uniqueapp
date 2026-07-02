@@ -23,6 +23,7 @@ import DreamInterpretationBattles from "@/components/dream-journal/DreamInterpre
 import DreamMoodCorrelation from "@/components/dream-journal/DreamMoodCorrelation";
 import { motion } from "framer-motion";
 import heroVideo from "@/assets/dream-journal-hero-v2.mp4.asset.json";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 type ActiveView = "hub" | "dreams" | "journal" | "mood" | "trends" | "lucid-coach" | "pattern-timeline" | "sleep-analyzer" | "community" | "visualizer" | "soundscapes" | "dictionary" | "ritual-builder" | "interpretation-battles" | "mood-correlation";
 
@@ -69,7 +70,10 @@ const DreamJournal = () => {
   );
 
   if (activeView === "dreams") return (
-    <SubView>
+    
+    <>
+      <FloatingHowItWorks title="Dream Analyzer" steps={[{ title: "Log your dream", desc: "Write it down as soon as you wake up." }, { title: "Analyze with AI", desc: "Symbols, emotions, and archetypes are decoded." }, { title: "Track patterns", desc: "See recurring themes over weeks and months." }, { title: "Reflect", desc: "Use prompts to connect dreams to waking life." }]} />
+      <SubView>
       <Button variant="ghost" onClick={() => setActiveView("hub")} className="gap-2">← Back to Dashboard</Button>
       <Card className="p-4 sm:p-6 bg-card/80 backdrop-blur-xl border-primary/20">
         <h2 className="text-xl font-bold mb-4">Dream Analysis</h2>
@@ -77,6 +81,7 @@ const DreamJournal = () => {
       </Card>
       <DreamList key={refreshTrigger} />
     </SubView>
+    </>
   );
 
   if (activeView === "journal") return (

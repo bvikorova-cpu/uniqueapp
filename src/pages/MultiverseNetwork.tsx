@@ -33,6 +33,7 @@ import RealityClashArena from "@/components/multiverse/RealityClashArena";
 import QuantumDestinyForecast from "@/components/multiverse/QuantumDestinyForecast";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ViewType = "hub" | "create" | "my-universes" | "timeline-merger" | "best-self" | 
   "comparison" | "timeline-view" | "quantum-chat" | "reality-lottery" | "pricing" |
   "navigator" | "decision-tree" | "analytics" | "community" | "journal" |
@@ -139,7 +140,10 @@ const MultiverseNetwork = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black relative overflow-hidden">
+    
+    <>
+      <FloatingHowItWorks title="Multiverse Profile Network" steps={[{ title: "Create alternate selves", desc: "Different personas across parallel timelines." }, { title: "Switch profiles", desc: "Interact as any version of you." }, { title: "Match universes", desc: "Meet users on compatible timelines." }, { title: "Merge insights", desc: "Combine learnings from every self." }]} />
+      <div className="min-h-screen bg-black relative overflow-hidden">
       {/* Deep space cosmic background */}
       <div className="fixed inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-b from-violet-950/20 via-black to-black" />
@@ -256,6 +260,7 @@ const MultiverseNetwork = () => {
         )}
       </div>
     </div>
+    </>
   );
 };
 

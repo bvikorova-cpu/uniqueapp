@@ -30,6 +30,7 @@ import { ConfessionRooms } from "@/components/confessions/ConfessionRooms";
 import heroPoster from "@/assets/confessions-hero-poster.jpg";
 // @ts-ignore
 import heroVideoAsset from "/public/videos/confessions-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 type ToolView = "hub" | "wall" | "post" | "redemption" | "analytics" |
   "advisor" | "leaderboard" | "journal" | "ceremony" | "sin-patterns" |
@@ -149,6 +150,9 @@ const BlockchainConfessions = () => {
 
   if (verifyingPayment) {
     return (
+      
+    <>
+      <FloatingHowItWorks title="Blockchain Confessions" steps={[{ title: "Write a confession", desc: "Anonymous, immutable, time-stamped on-chain." }, { title: "Choose absolution", desc: "Community rituals or AI spiritual advisor respond." }, { title: "Watch redemption", desc: "Track your Redemption Dashboard score." }, { title: "Stay anonymous", desc: "No one sees your identity \u2014 only the confession." }]} />
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Card className="max-w-md p-12 text-center border-primary/30 bg-card/80 backdrop-blur-xl">
           <Scale className="h-16 w-16 mx-auto text-primary animate-pulse" />
@@ -157,7 +161,8 @@ const BlockchainConfessions = () => {
           <Loader2 className="h-8 w-8 mx-auto animate-spin text-primary mt-4" />
         </Card>
       </div>
-    );
+    </>
+  );
   }
 
   // Tool subpage view

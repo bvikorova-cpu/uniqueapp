@@ -19,6 +19,7 @@ import { CapsulePlans } from "@/components/time-capsule/CapsulePlans";
 import { TimeCapsuleHowItWorks } from "@/components/time-capsule/TimeCapsuleHowItWorks";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ViewType = "hub" | "creator" | "my-capsules" | "gallery" | "ai-predictor" | "vault" | "collaborative" | "timeline" | "plans" | "how-it-works";
 
 const tools = [
@@ -79,7 +80,10 @@ export default function TimeCapsule() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    
+    <>
+      <FloatingHowItWorks title="Time Capsule Network" steps={[{ title: "Create a capsule", desc: "Photos, letters, videos sealed for the future." }, { title: "Set unlock date", desc: "Choose when it opens \u2014 days or decades away." }, { title: "Invite recipients", desc: "Optional co-owners get notified on unlock." }, { title: "Watch it open", desc: "Notification and reveal ceremony on unlock day." }]} />
+      <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 pt-20 pb-8">
         {activeView === "hub" ? (
           <>
@@ -160,5 +164,6 @@ export default function TimeCapsule() {
         )}
       </div>
     </div>
+    </>
   );
 }

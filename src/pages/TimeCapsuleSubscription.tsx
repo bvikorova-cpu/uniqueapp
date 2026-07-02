@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { ModuleSubscriptionHero } from "@/components/subscription/ModuleSubscriptionHero";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const CAPSULE_PLANS = {
   oneYear: {
@@ -143,7 +144,10 @@ export default function TimeCapsuleSubscription() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    
+    <>
+      <FloatingHowItWorks title="Time Capsule Subscription" steps={[{ title: "Choose a plan", desc: "More capsules and longer storage." }, { title: "Checkout with Stripe", desc: "EUR pricing, secure payment." }, { title: "Create unlimited", desc: "No caps on capsule count or size." }, { title: "Cancel anytime", desc: "Billing portal in one click." }]} />
+      <div className="min-h-screen relative overflow-hidden">
       {/* Animated background */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-background to-cyan-500/10" />
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwZGIyZWEiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDE0YzAtMS4xLS45LTItMi0yaC0yYy0xLjEgMC0yIC45LTIgMnYyYzAgMS4xLjkgMiAyIDJoMmMxLjEgMCAyLS45IDItMnYtMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-40" />
@@ -293,5 +297,6 @@ export default function TimeCapsuleSubscription() {
         </div>
       </div>
     </div>
+    </>
   );
 }

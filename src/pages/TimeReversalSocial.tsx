@@ -17,6 +17,7 @@ import { TimeReversalProfile } from "@/components/time-reversal/TimeReversalProf
 import { TimeReversalHowItWorks } from "@/components/time-reversal/TimeReversalHowItWorks";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ViewType = "hub" | "battle" | "timelapse" | "feed" | "story" | "plans" | "profile" | "how-it-works" | "timeline" | "dashboard";
 
 const tools = [
@@ -83,7 +84,10 @@ export default function TimeReversalSocial() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    
+    <>
+      <FloatingHowItWorks title="Time Reversal Social" steps={[{ title: "Rewind a moment", desc: "Pick a post or decision to reimagine." }, { title: "Explore alt outcomes", desc: "AI generates the parallel version." }, { title: "Share the timeline", desc: "Others can vote which path was better." }, { title: "Learn forward", desc: "Apply insights to future choices." }]} />
+      <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 pt-20 pb-8">
         {activeView === "hub" ? (
           <>
@@ -164,5 +168,6 @@ export default function TimeReversalSocial() {
         )}
       </div>
     </div>
+    </>
   );
 }

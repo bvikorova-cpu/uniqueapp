@@ -25,6 +25,7 @@ import DnaParityPack from "@/components/dna/DnaParityPack";
 import dnaHeroPoster from "@/assets/dna-hero-poster.jpg";
 // @ts-ignore
 import dnaHeroVideoAsset from "/public/videos/dna-hero.mp4.asset.json";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 type ToolView = "hub" | "analysis" | "memories" | "dating" | "offspring" |
   "timeline" | "art" | "voice" | "health" | "family-tree" | "community";
@@ -95,6 +96,9 @@ const DNAMemoryNetwork = () => {
   if (activeView !== "hub") {
     const tool = tools.find(t => t.id === activeView);
     return (
+      
+    <>
+      <FloatingHowItWorks title="DNA Social Memory Network" steps={[{ title: "Add ancestral notes", desc: "Log family stories, places, and lineages." }, { title: "Find matches", desc: "AI links you with users of overlapping memory patterns." }, { title: "Explore shared roots", desc: "Discover ancestral parallels and messages." }, { title: "Preserve the archive", desc: "Your entries stay private unless you share." }]} />
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-6 max-w-5xl">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
@@ -111,7 +115,8 @@ const DNAMemoryNetwork = () => {
           </motion.div>
         </div>
       </div>
-    );
+    </>
+  );
   }
 
   return (

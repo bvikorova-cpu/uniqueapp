@@ -20,6 +20,7 @@ import { EvolutionLab } from "@/components/holographic/EvolutionLab";
 import { HolographicHowItWorks } from "@/components/holographic/HolographicHowItWorks";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 type ViewType = "hub" | "creator" | "customize" | "battle" | "breeding" |
   "emotion-sync" | "marketplace" | "gallery" | "evolution" | "how-it-works";
 
@@ -131,7 +132,10 @@ export default function HolographicAvatars() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    
+    <>
+      <FloatingHowItWorks title="Holographic Avatars" steps={[{ title: "Design an avatar", desc: "Choose look, aura, and voice." }, { title: "Project it", desc: "Use in chats, calls, and rituals." }, { title: "Customize energies", desc: "Attach crystals, mantras, and moods." }, { title: "Share with friends", desc: "Others can interact with your hologram." }]} />
+      <div className="min-h-screen bg-background">
       {/* Holographic scan lines - subtle global overlay */}
       <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.03]"
         style={{ background: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(168,85,247,0.15) 3px, rgba(168,85,247,0.15) 4px)' }}
@@ -217,5 +221,6 @@ export default function HolographicAvatars() {
         )}
       </div>
     </div>
+    </>
   );
 }
