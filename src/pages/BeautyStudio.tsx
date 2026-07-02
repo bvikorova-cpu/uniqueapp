@@ -15,6 +15,15 @@ import { BeautyGallery } from "@/components/beauty/BeautyGallery";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import heroVideo from "@/assets/beauty-studio-hero.mp4.asset.json";
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const BEAUTY_HOW_IT_WORKS = [
+  { title: "Pick a tool", desc: "Choose from AI Virtual Makeup, Hair Styler, Skin Analysis, Nail Art, Celebrity Match, Product Advisor, Tutorials or the community Gallery." },
+  { title: "Upload your photo", desc: "Most tools ask for a clear selfie or reference photo. Your images stay private to your account." },
+  { title: "Spend credits", desc: "Each tool costs 2–10 credits (shown on the tile). You get 10 free credits monthly; buy more anytime in the Credits Store." },
+  { title: "Save & share", desc: "Save transformations to your gallery, publish before/after to the community, and track your streaks and achievements." },
+  { title: "Learn as you go", desc: "Follow step-by-step Tutorials to master looks, then apply them with Virtual Makeup or Hair Styler." },
+];
 
 type ActiveView = "hub" | "makeup" | "hair" | "products" | "tutorials" | "skin-analysis" | "nail-art" | "celebrity-match" | "gallery";
 
@@ -82,6 +91,13 @@ const BeautyStudio = () => {
           className="absolute inset-0 w-full h-full object-cover brightness-[1.3] saturate-[1.2]"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+        <div className="absolute top-20 right-3 sm:right-6 z-10">
+          <HowItWorksButton
+            title="Beauty Studio"
+            intro="AI-powered beauty hub with makeup, skincare, hair, nails and celebrity matching."
+            steps={BEAUTY_HOW_IT_WORKS}
+          />
+        </div>
 
         <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-8">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, type: "spring" }}>
