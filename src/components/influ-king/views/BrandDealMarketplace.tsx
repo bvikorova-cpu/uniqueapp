@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props { onBack: () => void; }
 
 export default function BrandDealMarketplace({ onBack }: Props) {
@@ -31,6 +32,16 @@ export default function BrandDealMarketplace({ onBack }: Props) {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title="How Brand Deal Marketplace works"
+        steps={[
+          { title: 'Enter niche & followers', description: 'Describe your audience.' },
+          { title: 'Find deals (5 credits)', description: 'AI matches sponsorship opportunities.' },
+          { title: 'Review match score', description: 'Compare payouts and requirements.' },
+          { title: 'Apply', description: 'Reach out to brands directly.' },
+        ]}
+      />
     <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button>
       <div className="flex items-center gap-3 mb-4">
@@ -83,5 +94,6 @@ export default function BrandDealMarketplace({ onBack }: Props) {
         </div>
       )}
     </div>
+    </>
   );
 }

@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths, isToday } from "date-fns";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface CalendarEntry {
   id: string;
   title: string;
@@ -108,6 +109,16 @@ const ContentCalendar = ({ onBack }: Props) => {
   const selectedDayEntries = selectedDate ? entries.filter((e) => isSameDay(new Date(e.scheduled_date), selectedDate)) : [];
 
   return (
+    <>
+      <FloatingHowItWorks
+        title="How Content Calendar works"
+        steps={[
+          { title: 'Plan posts', description: 'Drag & drop items across days.' },
+          { title: 'Set platforms', description: 'Choose IG, TikTok, YouTube, etc.' },
+          { title: 'Get AI suggestions', description: 'Fill gaps with generated ideas.' },
+          { title: 'Publish or export', description: 'Push to schedulers or download CSV.' },
+        ]}
+      />
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="sm" onClick={onBack}>
@@ -256,6 +267,7 @@ const ContentCalendar = ({ onBack }: Props) => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

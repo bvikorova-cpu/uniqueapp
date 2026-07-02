@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { ArrowLeft, Loader2, Shield, ShieldCheck, ShieldAlert, Copy, RefreshCw } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface PlagiarismResult {
   originalityScore: number;
   analysis: string;
@@ -60,6 +61,16 @@ const PlagiarismChecker = ({ onBack }: Props) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title="How Plagiarism Checker works"
+        steps={[
+          { title: 'Paste content', description: 'Any text up to configured limit.' },
+          { title: 'Scan', description: 'AI checks against public web sources.' },
+          { title: 'Review matches', description: 'See highlighted overlaps and sources.' },
+          { title: 'Rewrite', description: 'Use suggestions to make it original.' },
+        ]}
+      />
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="sm" onClick={onBack}>
@@ -175,6 +186,7 @@ const PlagiarismChecker = ({ onBack }: Props) => {
         )}
       </div>
     </div>
+    </>
   );
 };
 

@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props { onBack: () => void; }
 
 export default function AIContentCalendar({ onBack }: Props) {
@@ -31,6 +32,16 @@ export default function AIContentCalendar({ onBack }: Props) {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title="How AI Content Calendar works"
+        steps={[
+          { title: 'Pick niche & duration', description: 'Choose your niche and 7/14/30 days.' },
+          { title: 'Generate (5 credits)', description: 'AI drafts a full posting plan.' },
+          { title: 'Review the schedule', description: 'See daily posts, reels, hashtags.' },
+          { title: 'Export & schedule', description: 'Copy items into your publishing tool.' },
+        ]}
+      />
     <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button>
       <div className="flex items-center gap-3 mb-4">
@@ -91,5 +102,6 @@ export default function AIContentCalendar({ onBack }: Props) {
         </div>
       )}
     </div>
+    </>
   );
 }

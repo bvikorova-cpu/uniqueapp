@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import {
   ArrowLeft, Loader2, Copy, Sparkles, Mail, Megaphone, Linkedin, Twitter,
   Instagram, FileText, Presentation, ShoppingBag, Newspaper, MessageSquare,
@@ -63,6 +64,16 @@ const AIContentTemplates = ({ onBack }: Props) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title="How AI Content Templates works"
+        steps={[
+          { title: 'Browse templates', description: 'Hooks, captions, scripts, threads.' },
+          { title: 'Fill the prompt', description: 'Add topic and context.' },
+          { title: 'Generate', description: 'AI writes based on the template.' },
+          { title: 'Save favorites', description: 'Reuse templates that convert.' },
+        ]}
+      />
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="sm" onClick={onBack}>
@@ -164,6 +175,7 @@ const AIContentTemplates = ({ onBack }: Props) => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

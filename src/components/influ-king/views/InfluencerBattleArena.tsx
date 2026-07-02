@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props { onBack: () => void; }
 
 export default function InfluencerBattleArena({ onBack }: Props) {
@@ -32,6 +33,16 @@ export default function InfluencerBattleArena({ onBack }: Props) {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title="How Battle Arena works"
+        steps={[
+          { title: 'Enter two influencers', description: 'Names or @handles.' },
+          { title: 'Start battle (5 credits)', description: 'AI judges across multiple rounds.' },
+          { title: 'See the winner', description: 'Detailed stats per round.' },
+          { title: 'Share result', description: 'Post the outcome to your feed.' },
+        ]}
+      />
     <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button>
       <div className="flex items-center gap-3 mb-4">
@@ -95,5 +106,6 @@ export default function InfluencerBattleArena({ onBack }: Props) {
         </div>
       )}
     </div>
+    </>
   );
 }

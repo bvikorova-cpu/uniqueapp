@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { ArrowLeft, Loader2, Layers, Copy, Download, CheckCircle } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Props {
   onBack: () => void;
 }
@@ -70,6 +71,16 @@ const BulkContentGenerator = ({ onBack }: Props) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title="How Bulk Generator works"
+        steps={[
+          { title: 'Pick template', description: 'Choose caption, hook, or thread style.' },
+          { title: 'Set batch size', description: 'Generate 5–50 variants at once.' },
+          { title: 'Generate', description: 'AI writes them in your voice.' },
+          { title: 'Export', description: 'Copy or download for scheduling.' },
+        ]}
+      />
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="sm" onClick={onBack}>
@@ -153,6 +164,7 @@ const BulkContentGenerator = ({ onBack }: Props) => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

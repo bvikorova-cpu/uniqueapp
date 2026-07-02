@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { ArrowLeft, Loader2, Recycle, Copy, Twitter, Linkedin, Instagram, Mail, FileText, MessageSquare } from "lucide-react";
 
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const OUTPUT_FORMATS = [
   { id: "twitter_thread", name: "Twitter Thread", icon: Twitter, description: "Break into engaging tweet-sized chunks" },
   { id: "linkedin_post", name: "LinkedIn Post", icon: Linkedin, description: "Professional, thought-leadership style" },
@@ -63,6 +64,16 @@ const ContentRepurposer = ({ onBack }: Props) => {
   };
 
   return (
+    <>
+      <FloatingHowItWorks
+        title="How Content Repurposer works"
+        steps={[
+          { title: 'Paste source', description: 'Blog, transcript, or long-form post.' },
+          { title: 'Pick targets', description: 'Tweet thread, reel script, LinkedIn.' },
+          { title: 'Generate', description: 'AI reshapes for each channel.' },
+          { title: 'Publish', description: 'Copy each variant and post.' },
+        ]}
+      />
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="sm" onClick={onBack}>
@@ -163,6 +174,7 @@ const ContentRepurposer = ({ onBack }: Props) => {
         </div>
       )}
     </div>
+    </>
   );
 };
 
