@@ -5,6 +5,7 @@ import { CheckCircle, Share2, Heart, Home, ArrowRight, Facebook, Twitter, Linked
 import { toast } from '@/hooks/use-toast';
 import confetti from 'canvas-confetti';
 import { useEffect } from 'react';
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function CampaignSuccess() {
   const navigate = useNavigate();
@@ -58,6 +59,17 @@ export default function CampaignSuccess() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-background to-primary/5 dark:from-green-950/20 flex items-center justify-center py-12 px-4">
+      <FloatingHowItWorks
+        title="Campaign Success"
+        intro="Confirmation after a successful donation."
+        steps={[
+          { title: "Payment confirmed", desc: "Stripe processed your donation in EUR." },
+          { title: "Receipt on the way", desc: "Check your email for the tax receipt." },
+          { title: "Share the campaign", desc: "Help the campaign reach its goal faster." },
+          { title: "Track progress", desc: "Follow updates on the campaign page." },
+          { title: "Donate again anytime", desc: "Set up recurring monthly donations if you wish." }
+        ]}
+      />
       <Card className="max-w-lg w-full border-green-500/30 shadow-xl">
         <CardHeader className="text-center space-y-4">
           <div className="mx-auto w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">

@@ -6,6 +6,7 @@ import { DreamStepsWizard } from '@/components/fundraising/dream/DreamStepsWizar
 import { DreamFilters } from '@/components/fundraising/dream/DreamFilters';
 import { DreamCampaignCard } from '@/components/fundraising/dream/DreamCampaignCard';
 import { DreamSuccessStories } from '@/components/fundraising/dream/DreamSuccessStories';
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface DreamCampaign {
@@ -86,6 +87,17 @@ export default function DreamMaker() {
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12 px-4">
+      <FloatingHowItWorks
+        title="Dream Maker"
+        intro="Fund someone's lifelong dream \u2014 travel, education, art."
+        steps={[
+          { title: "Explore dreams", desc: "Each dream lists the story, required amount and deadline." },
+          { title: "Support a dream", desc: "Donate in EUR via Stripe." },
+          { title: "Follow progress", desc: "Dreamers post updates and thank-you videos." },
+          { title: "Share to boost reach", desc: "Use the share button to spread the campaign." },
+          { title: "Publish your dream", desc: "Apply with a clear story, photos and goal." }
+        ]}
+      />
       <div className="max-w-7xl mx-auto">
         <DreamHero />
         <HeroRewardedAd sectionKey="page_dreammaker" />

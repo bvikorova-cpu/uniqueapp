@@ -11,6 +11,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowLeft, Star, Upload, Plus, X } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { AIStoryGenerator } from '@/components/fundraising/AIStoryGenerator';
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const talentTypes = [
   { value: 'music', label: '🎵 Music' },
@@ -227,6 +228,17 @@ export default function CreateTalentCampaign() {
 
   return (
     <div className="min-h-screen bg-background py-12 px-4">
+      <FloatingHowItWorks
+        title="Create Talent Campaign"
+        intro="Launch a new fundraising campaign in this category."
+        steps={[
+          { title: "Fill the story", desc: "Title, description, goal amount and deadline." },
+          { title: "Upload proof", desc: "Photos, documents and verification files." },
+          { title: "Set payout method", desc: "Connect Stripe to receive donations." },
+          { title: "Submit for review", desc: "Our team verifies within 24-72 hours." },
+          { title: "Go live & share", desc: "Once approved, share the link everywhere." }
+        ]}
+      />
       <div className="max-w-3xl mx-auto">
         <Button variant="outline" size="sm" onClick={() => navigate('/fundraising/talent')} className="mb-6">
           <ArrowLeft className="mr-2 h-4 w-4" />

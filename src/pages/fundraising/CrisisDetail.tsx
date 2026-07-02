@@ -21,6 +21,7 @@ import { CrisisUpdatesTimeline } from '@/components/fundraising/crisis/CrisisUpd
 import { CrisisPartnersList } from '@/components/fundraising/crisis/CrisisPartnersList';
 import { CampaignShareWidget } from '@/components/fundraising/CampaignShareWidget';
 import { CrisisDistributionMap } from '@/components/fundraising/crisis/CrisisDistributionMap';
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface CrisisCampaign {
   id: string;
@@ -161,6 +162,17 @@ export default function CrisisDetail() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
+        <FloatingHowItWorks
+          title="Crisis Campaign"
+          intro="Full campaign page \u2014 story, updates, donations and sharing."
+          steps={[
+            { title: "Read the story", desc: "Full description, photos, videos and verification badges." },
+          { title: "Check the goal", desc: "Progress bar shows raised vs. target amount in EUR." },
+          { title: "Donate securely", desc: "Stripe checkout \u2014 one-time or recurring monthly." },
+          { title: "Share the campaign", desc: "Copy link or share to social to boost reach." },
+          { title: "Follow updates", desc: "Get notified when the organizer posts news." }
+          ]}
+        />
         <p className="text-muted-foreground">Loading campaign...</p>
       </div>
     );

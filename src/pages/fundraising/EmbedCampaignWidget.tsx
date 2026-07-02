@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Heart, ExternalLink } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const tableByType: Record<string, string> = {
   medical: "medical_campaigns",
@@ -57,6 +58,17 @@ export default function EmbedCampaignWidget() {
   if (!campaign) {
     return (
       <div className="p-6 text-sm">
+        <FloatingHowItWorks
+          title="Embed Widget"
+          intro="Embed a campaign on your website or blog."
+          steps={[
+            { title: "Pick a campaign", desc: "Only campaigns you own or public campaigns." },
+          { title: "Choose style", desc: "Card, banner or compact button widget." },
+          { title: "Copy embed code", desc: "Paste the snippet into your site HTML." },
+          { title: "Track referrals", desc: "Donations from your widget are attributed to you." },
+          { title: "Update anytime", desc: "Widget auto-refreshes with the latest campaign data." }
+          ]}
+        />
         Campaign not found. <a className="underline" href={origin} target="_blank" rel="noreferrer">unique.app</a>
       </div>
     );

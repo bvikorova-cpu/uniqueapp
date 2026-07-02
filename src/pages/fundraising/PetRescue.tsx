@@ -7,6 +7,7 @@ import { PetFilters } from '@/components/fundraising/pet/PetFilters';
 import { PetCampaignCard } from '@/components/fundraising/pet/PetCampaignCard';
 import { VerifiedShelters } from '@/components/fundraising/pet/VerifiedShelters';
 import { PetSuccessStories } from '@/components/fundraising/pet/PetSuccessStories';
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface PetCampaign {
@@ -89,6 +90,17 @@ export default function PetRescue() {
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12 px-4">
+      <FloatingHowItWorks
+        title="Pet Rescue"
+        intro="Fund rescue, medical treatment and adoption of animals."
+        steps={[
+          { title: "Meet the animals", desc: "Each case shows photos, vet reports and rescue goal." },
+          { title: "Donate to a rescue", desc: "Payment goes to the verified rescue organization." },
+          { title: "Follow the recovery", desc: "Rescuers post updates until adoption." },
+          { title: "Adopt if you can", desc: "Some campaigns list adoption info." },
+          { title: "List a rescue", desc: "Rescuers and shelters can apply after verification." }
+        ]}
+      />
       <div className="max-w-7xl mx-auto">
         <PetHero />
         <HeroRewardedAd sectionKey="page_petrescue" />

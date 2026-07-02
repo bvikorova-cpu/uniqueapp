@@ -8,6 +8,7 @@ import { CrisisCampaignCard } from '@/components/fundraising/crisis/CrisisCampai
 import { CrisisImpactTicker } from '@/components/fundraising/crisis/CrisisImpactTicker';
 import { CrisisZoneOverview } from '@/components/fundraising/crisis/CrisisZoneOverview';
 import { ResolvedEmergencies } from '@/components/fundraising/crisis/ResolvedEmergencies';
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 interface CrisisCampaign {
@@ -88,6 +89,17 @@ export default function CrisisRelief() {
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12 px-4">
+      <FloatingHowItWorks
+        title="Crisis Relief"
+        intro="Emergency fundraising for disasters, war and urgent crises."
+        steps={[
+          { title: "See active crises", desc: "Verified emergencies with real-time need." },
+          { title: "Donate immediately", desc: "Funds are released fast to reach victims." },
+          { title: "Follow field updates", desc: "Organizers post photos and receipts from the ground." },
+          { title: "Share for urgency", desc: "Every share can save lives." },
+          { title: "Report a crisis", desc: "Verified NGOs and locals can open campaigns." }
+        ]}
+      />
       <div className="max-w-7xl mx-auto">
         <CrisisHero />
         <HeroRewardedAd sectionKey="page_crisisrelief" />
