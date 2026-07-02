@@ -130,7 +130,7 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
     { question: "Who is the singer of Bad Guy and Ocean Eyes?", options: ["Ariana Grande", "Billie Eilish", "Dua Lipa", "Taylor Swift"], correct: 1 },
     { question: "Who played Iron Man in Marvel movies?", options: ["Chris Evans", "Chris Hemsworth", "Robert Downey Jr.", "Mark Ruffalo"], correct: 2 },
     { question: "Who is the most followed person on Instagram?", options: ["Kylie Jenner", "Cristiano Ronaldo", "Selena Gomez", "Dwayne Johnson"], correct: 1 },
-    { question: "Which Slovak hockey player played in the NHL?", options: ["Zdeno Chára", "Marián Hossa", "Ján Lašák", "All of them"], correct: 3 },
+    { question: "Who played Wolverine in the X-Men movies?", options: ["Hugh Jackman", "Ryan Reynolds", "Chris Pratt", "Michael Fassbender"], correct: 0 },
     { question: "Who won Eurovision 2023?", options: ["Sweden", "Finland", "Ukraine", "Spain"], correct: 0 },
   ],
   sport: [
