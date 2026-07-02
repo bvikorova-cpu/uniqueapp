@@ -1,5 +1,3 @@
-import { createPortal } from "react-dom";
-import { useEffect, useState } from "react";
 import { HowItWorksButton, type HowItWorksStep } from "./HowItWorksButton";
 
 interface FloatingHowItWorksProps {
@@ -9,24 +7,17 @@ interface FloatingHowItWorksProps {
 }
 
 /**
- * Floating, portal-mounted "How it works" trigger. Renders fixed in the
- * top-right corner (below the navbar) so it can be dropped into any page
- * regardless of layout.
+ * Contextual "How it works" trigger. It renders in-place where the section
+ * asks for it instead of being portal-mounted globally over every screen.
  */
 export const FloatingHowItWorks = ({ title, intro, steps }: FloatingHowItWorksProps) => {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-  if (!mounted || typeof document === "undefined") return null;
-
-  return createPortal(
+  return (
     <div
       data-floating-hiw
-      className="fixed z-[60] top-[72px] right-3 sm:right-5 [body[data-scroll-locked]_&]:hidden"
-      style={{ pointerEvents: "auto" }}
+      className="col-span-full mb-3 flex justify-end [body[data-scroll-locked]_&]:hidden"
     >
       <HowItWorksButton title={title} intro={intro} steps={steps} variant="compact" />
-    </div>,
-    document.body,
+    </div>
   );
 };
 
