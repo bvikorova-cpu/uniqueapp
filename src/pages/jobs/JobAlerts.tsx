@@ -10,6 +10,14 @@ import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_JOBALERTS = [
+  { title: "Create an alert", desc: "Set keyword, location, remote-ok, salary range and frequency (instant / daily / weekly)." },
+  { title: "Receive notifications", desc: "You get an in-app + email alert whenever a job matches your criteria." },
+  { title: "Manage alerts", desc: "Pause, edit or delete alerts anytime from this page." },
+];
+
 export default function JobAlerts() {
   const [enabled, setEnabled] = useState(true);
   const [matches, setMatches] = useState<any[]>([]);
@@ -39,6 +47,9 @@ export default function JobAlerts() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 pt-6 pb-8 space-y-6">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Job Alerts" intro="Get notified when a matching role is posted." steps={HOW_STEPS_JOBALERTS} variant="compact" />
+      </div>
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
         className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500/15 via-primary/10 to-pink-500/5 border border-amber-500/20 p-6">
         <div className="flex items-center justify-between gap-4 flex-wrap">

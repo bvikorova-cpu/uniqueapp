@@ -9,6 +9,15 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_MOCKINTERVIEW = [
+  { title: "Choose role & difficulty", desc: "Pick target job (e.g. Frontend Engineer) and level (Junior / Senior)." },
+  { title: "Answer questions", desc: "AI asks 5-10 questions \u2014 reply by text or voice. Timer optional." },
+  { title: "Get scored feedback", desc: "You receive a score per question + tips on clarity, structure and technical depth." },
+  { title: "Retry weak areas", desc: "Bookmark questions you struggled with and re-run just those next time." },
+];
+
 type Msg = { role: "assistant" | "user"; content: string };
 
 export default function MockInterview() {
@@ -56,6 +65,9 @@ export default function MockInterview() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 pt-6 pb-8 space-y-4">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Mock Interview" intro="AI-driven interview practice with feedback." steps={HOW_STEPS_MOCKINTERVIEW} variant="compact" />
+      </div>
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl bg-gradient-to-br from-blue-500/15 via-primary/10 to-cyan-500/5 border border-blue-500/20 p-6 flex items-center gap-3">
         <div className="p-3 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 shadow-xl"><Mic className="h-6 w-6 text-white" /></div>

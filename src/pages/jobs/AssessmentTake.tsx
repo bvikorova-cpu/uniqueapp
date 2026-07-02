@@ -6,6 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_ASSESSMENTTAKE = [
+  { title: "Read instructions carefully", desc: "Note time limit, number of questions and passing score." },
+  { title: "Start the timer", desc: "Once you begin you cannot pause. Ensure a stable connection." },
+  { title: "Submit before time runs out", desc: "Auto-submit at 00:00. Results are sent to you and the employer." },
+];
+
 export default function AssessmentTake() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -39,6 +47,9 @@ export default function AssessmentTake() {
 
   if (submitted) return (
     <div className="max-w-xl mx-auto px-4 pt-10">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Take Assessment" intro="Complete a skill assessment sent by an employer." steps={HOW_STEPS_ASSESSMENTTAKE} variant="compact" />
+      </div>
       <Card><CardContent className="py-12 text-center space-y-3">
         <h2 className="text-3xl font-black">{submitted.passed ? "🎉 Passed!" : "Try again"}</h2>
         <p className="text-5xl font-black text-primary">{submitted.score}%</p>

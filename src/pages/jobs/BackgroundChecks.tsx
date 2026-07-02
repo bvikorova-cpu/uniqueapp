@@ -8,6 +8,14 @@ import { ShieldCheck, Send, Check } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_BACKGROUNDCHECKS = [
+  { title: "Choose check type", desc: "ID, criminal, education, employment or full package." },
+  { title: "Candidate consents", desc: "Candidate receives an email to consent and upload documents securely." },
+  { title: "Receive the report", desc: "Report arrives in-app once complete, typically within 24-72h." },
+];
+
 const CHECK_TYPES = [
   { id: "criminal", label: "Criminal record" },
   { id: "employment", label: "Employment history" },
@@ -55,6 +63,9 @@ export default function BackgroundChecks() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 pt-6 pb-8 space-y-4">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Background Checks" intro="Run compliant checks on final candidates." steps={HOW_STEPS_BACKGROUNDCHECKS} variant="compact" />
+      </div>
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl bg-gradient-to-br from-emerald-500/15 via-primary/10 to-teal-500/5 border border-emerald-500/20 p-6 flex items-center gap-3">
         <div className="p-3 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 shadow-xl"><ShieldCheck className="h-6 w-6 text-white" /></div>

@@ -10,6 +10,14 @@ import { Users, Plus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_REFERRALS = [
+  { title: "Pick a job", desc: "Open any job that supports referrals (badge on the card)." },
+  { title: "Share a unique link", desc: "Copy your referral link or send via email/socials directly from the page." },
+  { title: "Track referrals", desc: "See who clicked, applied and got hired \u2014 payouts settle after the hire is confirmed." },
+];
+
 export default function Referrals() {
   const [items, setItems] = useState<any[]>([]);
   const [jobs, setJobs] = useState<any[]>([]);
@@ -44,6 +52,9 @@ export default function Referrals() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 pt-6 pb-8 space-y-6">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Referrals" intro="Refer friends to jobs and earn rewards." steps={HOW_STEPS_REFERRALS} variant="compact" />
+      </div>
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl bg-gradient-to-br from-emerald-500/15 via-primary/10 to-cyan-500/5 border border-emerald-500/20 p-6 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">

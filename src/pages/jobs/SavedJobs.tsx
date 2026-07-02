@@ -6,6 +6,14 @@ import { Bookmark, MapPin, Building2, Loader2, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_SAVEDJOBS = [
+  { title: "Add jobs from the board", desc: "Tap the bookmark on any job card or detail page \u2014 it appears here instantly." },
+  { title: "Remove a save", desc: "Tap the bookmark again to unsave. Applied jobs stay in Application Tracker." },
+  { title: "Apply from the list", desc: "Open a saved job and hit Apply when you're ready." },
+];
+
 export default function SavedJobs() {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,6 +37,9 @@ export default function SavedJobs() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 pt-6 pb-8 space-y-6">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Saved Jobs" intro="Every job you bookmarked, in one list." steps={HOW_STEPS_SAVEDJOBS} variant="compact" />
+      </div>
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
         className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/15 via-primary/5 to-pink-500/10 border border-primary/20 p-6">
         <div className="flex items-center gap-4">

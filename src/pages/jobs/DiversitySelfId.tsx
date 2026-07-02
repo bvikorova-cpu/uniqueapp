@@ -7,6 +7,14 @@ import { Heart, Save } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_DIVERSITYSELFID = [
+  { title: "Read the intro", desc: "Filling this in is 100% optional and never affects your applications." },
+  { title: "Answer only what you want", desc: "Every question has a 'Prefer not to say' option." },
+  { title: "Data is anonymized", desc: "Employers see aggregate numbers only \u2014 never individual answers." },
+];
+
 const OPTS = {
   gender: ["Prefer not to say", "Female", "Male", "Non-binary", "Other"],
   ethnicity: ["Prefer not to say", "Asian", "Black/African", "Hispanic/Latino", "Middle Eastern", "White/European", "Mixed", "Other"],
@@ -39,6 +47,9 @@ export default function DiversitySelfId() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 pt-6 pb-8 space-y-4">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Self-ID" intro="Voluntary and anonymous demographic questionnaire." steps={HOW_STEPS_DIVERSITYSELFID} variant="compact" />
+      </div>
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl bg-gradient-to-br from-pink-500/15 via-primary/10 to-rose-500/5 border border-pink-500/20 p-6 flex items-center gap-3">
         <div className="p-3 rounded-xl bg-gradient-to-br from-pink-500 to-rose-500 shadow-xl"><Heart className="h-6 w-6 text-white" /></div>

@@ -9,6 +9,14 @@ import { motion } from "framer-motion";
 import { SEO } from "@/components/SEO";
 import { InterviewQuestionDialog } from "@/components/jobs/InterviewQuestionDialog";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_INTERVIEWQUESTIONS = [
+  { title: "Enter role & seniority", desc: "e.g. Senior Backend Engineer, Product Manager." },
+  { title: "Get a question set", desc: "Behavioural, technical and role-specific questions with model answers." },
+  { title: "Send to a candidate", desc: "Attach the set to an ATS stage \u2014 candidate answers in-app or on video." },
+];
+
 export default function InterviewQuestions() {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -28,6 +36,9 @@ export default function InterviewQuestions() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 pt-6 pb-8 space-y-6">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Interview Questions" intro="AI-generated interview questions by role." steps={HOW_STEPS_INTERVIEWQUESTIONS} variant="compact" />
+      </div>
       <SEO title="Interview Questions" description="Real interview questions reported by candidates, with tips." />
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
         className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/15 via-primary/5 to-pink-500/10 border border-primary/20 p-6">

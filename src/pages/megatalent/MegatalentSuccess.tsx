@@ -7,6 +7,14 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { safeInvoke } from "@/utils/safeInvoke";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_MEGATALENTSUCCESS = [
+  { title: "You are now Premium", desc: "Voting, commenting and uploading are unlocked immediately." },
+  { title: "Head to Megatalent", desc: "Return to the contest, pick a category and start engaging." },
+  { title: "Manage subscription", desc: "You can cancel or upgrade any time from Rewards \u2192 Subscriptions." },
+];
+
 type Status = "verifying" | "success" | "error";
 
 /**
@@ -70,6 +78,9 @@ export default function MegatalentSuccess() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background via-background to-primary/10">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Payment Success" intro="Your Megatalent Premium subscription is active." steps={HOW_STEPS_MEGATALENTSUCCESS} variant="compact" />
+      </div>
       <Card className="max-w-md w-full border-2 border-primary/40 shadow-2xl">
         {status === "verifying" && (
           <CardHeader className="text-center space-y-3">

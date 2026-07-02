@@ -10,6 +10,14 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_HEADHUNTERMARKETPLACE = [
+  { title: "Post a mandate", desc: "Describe the role, budget and success fee (% of first-year salary)." },
+  { title: "Recruiters submit candidates", desc: "Vetted headhunters apply to your mandate and start sourcing." },
+  { title: "Interview & hire", desc: "Communicate in-app. Fee is paid only when the candidate is hired and stays past the guarantee period." },
+];
+
 export default function HeadhunterMarketplace() {
   const navigate = useNavigate();
   const [list, setList] = useState<any[]>([]);
@@ -66,6 +74,9 @@ export default function HeadhunterMarketplace() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 pt-6 pb-8 space-y-6">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Headhunter Marketplace" intro="Hire independent recruiters on a success-fee basis." steps={HOW_STEPS_HEADHUNTERMARKETPLACE} variant="compact" />
+      </div>
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
         className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500/15 via-primary/10 to-rose-500/5 border border-amber-500/20 p-6">
         <div className="flex items-center gap-4">

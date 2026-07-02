@@ -9,6 +9,14 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_CANDIDATESEARCH = [
+  { title: "Filter", desc: "Skills, seniority, location, availability, salary expectation, remote-ok." },
+  { title: "Open a profile", desc: "See public profile, badges, video resume and past experience." },
+  { title: "Reach out", desc: "Message directly (uses employer credits) or invite them to apply to a role." },
+];
+
 export default function CandidateSearch() {
   const navigate = useNavigate();
   const [candidates, setCandidates] = useState<any[]>([]);
@@ -58,6 +66,9 @@ export default function CandidateSearch() {
   if (!loading && !verified) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center space-y-4">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Candidate Search" intro="Search Unique's talent pool as an employer." steps={HOW_STEPS_CANDIDATESEARCH} variant="compact" />
+      </div>
         <ShieldCheck className="h-16 w-16 mx-auto text-amber-500" />
         <h1 className="text-2xl font-black">Employer verification required</h1>
         <p className="text-muted-foreground">Only verified employers can search the candidate database.</p>

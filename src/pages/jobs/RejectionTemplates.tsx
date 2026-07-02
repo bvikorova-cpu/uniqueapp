@@ -9,6 +9,14 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_REJECTIONTEMPLATES = [
+  { title: "Pick a template", desc: "Choose Post-application, Post-interview or Final-round wording." },
+  { title: "Personalise", desc: "Merge fields auto-fill candidate name, role and interviewer." },
+  { title: "Send in bulk or single", desc: "Select many candidates in ATS and send the same template at once." },
+];
+
 const DEFAULT_TPL = `Dear {candidate},
 
 Thank you for your interest in the {job_title} position at {company}. After careful consideration, we have decided not to move forward with your application at this time.
@@ -56,6 +64,9 @@ export default function RejectionTemplates() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 pt-6 pb-8 space-y-6">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Rejection Templates" intro="Send respectful, on-brand rejection emails." steps={HOW_STEPS_REJECTIONTEMPLATES} variant="compact" />
+      </div>
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
         className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-rose-500/15 via-primary/10 to-orange-500/5 border border-rose-500/20 p-6">
         <div className="flex items-center gap-4">

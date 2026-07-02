@@ -7,6 +7,14 @@ import { Rocket, Loader2, Sparkles, TrendingUp, Crown } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_JOBBOOST = [
+  { title: "Pick the job", desc: "Select an active post to boost." },
+  { title: "Choose a boost tier", desc: "48h Highlight, 7-day Featured or 30-day Top-of-search." },
+  { title: "Pay & activate", desc: "Boost starts immediately after payment. Analytics show views/applies delta." },
+];
+
 const TIERS = [
   { tier: "basic", label: "Basic Boost", price: 19, days: 7, desc: "Pinned to top of category", icon: TrendingUp, color: "from-blue-500 to-cyan-500" },
   { tier: "premium", label: "Premium Boost", price: 49, days: 14, desc: "Featured + push notifications", icon: Sparkles, color: "from-purple-500 to-pink-500" },
@@ -43,6 +51,9 @@ export default function JobBoost() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 pt-6 pb-8 space-y-4">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Job Boost" intro="Increase visibility of a specific job posting." steps={HOW_STEPS_JOBBOOST} variant="compact" />
+      </div>
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl bg-gradient-to-br from-amber-500/15 via-primary/10 to-orange-500/5 border border-amber-500/20 p-6 flex items-center gap-3">
         <div className="p-3 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 shadow-xl"><Rocket className="h-6 w-6 text-white" /></div>

@@ -8,6 +8,15 @@ import { Map, Plus, Trash2, CheckCircle2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_CAREERPATH = [
+  { title: "Enter your current role", desc: "Pick title + years of experience." },
+  { title: "See next steps", desc: "AI suggests 2-4 realistic next roles with required skills and typical salary jump." },
+  { title: "Skill gaps", desc: "Missing skills are highlighted with links to courses and assessments to close the gap." },
+  { title: "Save a path", desc: "Bookmark a chosen path \u2014 the tracker reminds you of milestones." },
+];
+
 export default function CareerPath() {
   const [nodes, setNodes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,6 +57,9 @@ export default function CareerPath() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 pt-6 pb-8 space-y-6">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Career Path" intro="Visualise where your current role can lead." steps={HOW_STEPS_CAREERPATH} variant="compact" />
+      </div>
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl bg-gradient-to-br from-purple-500/15 via-primary/10 to-pink-500/5 border border-purple-500/20 p-6 flex items-center gap-3">
         <div className="p-3 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 shadow-xl"><Map className="h-6 w-6 text-white" /></div>

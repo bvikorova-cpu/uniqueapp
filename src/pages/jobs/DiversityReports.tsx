@@ -5,6 +5,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { BarChart3, Users } from "lucide-react";
 import { motion } from "framer-motion";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_DIVERSITYREPORTS = [
+  { title: "Pick a timeframe", desc: "Last 30 days, quarter, year or custom range." },
+  { title: "Read the breakdown", desc: "Charts show applicants, interviews and hires broken down by anonymous demographics." },
+  { title: "Export as CSV/PDF", desc: "Share the report with leadership or DEI teams." },
+];
+
 export default function DiversityReports() {
   const { jobId } = useParams();
   const [apps, setApps] = useState<any[]>([]);
@@ -39,6 +47,9 @@ export default function DiversityReports() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 pt-6 pb-8 space-y-4">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Diversity Reports" intro="Aggregated hiring diversity insights (employer view)." steps={HOW_STEPS_DIVERSITYREPORTS} variant="compact" />
+      </div>
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl bg-gradient-to-br from-violet-500/15 via-primary/10 to-purple-500/5 border border-violet-500/20 p-6 flex items-center gap-3">
         <div className="p-3 rounded-xl bg-gradient-to-br from-violet-500 to-purple-500 shadow-xl"><BarChart3 className="h-6 w-6 text-white" /></div>

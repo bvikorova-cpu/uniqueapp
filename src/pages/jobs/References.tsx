@@ -8,6 +8,14 @@ import { Users, Plus, CheckCircle2, Star } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_REFERENCES = [
+  { title: "Add a reference", desc: "Enter name, role and email of a previous manager/colleague." },
+  { title: "Request via email", desc: "System sends a short form for them to fill in. You never see the response until they submit." },
+  { title: "Attach to applications", desc: "Verified references get a badge and can be attached to any application." },
+];
+
 export default function References() {
   const [items, setItems] = useState<any[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
@@ -33,6 +41,9 @@ export default function References() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 pt-6 pb-8 space-y-4">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="References" intro="Collect and share professional references." steps={HOW_STEPS_REFERENCES} variant="compact" />
+      </div>
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl bg-gradient-to-br from-teal-500/15 via-primary/10 to-cyan-500/5 border border-teal-500/20 p-6 flex items-center gap-3">
         <div className="p-3 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-500 shadow-xl"><Users className="h-6 w-6 text-white" /></div>

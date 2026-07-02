@@ -9,6 +9,14 @@ import { ClipboardList, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_ONBOARDING = [
+  { title: "Assign a checklist", desc: "Pick or customise a template of tasks for the first day/week/month." },
+  { title: "Track progress", desc: "New hire ticks items off; HR sees completion in real time." },
+  { title: "Store documents", desc: "Contract, tax forms and ID uploads are stored securely in one place." },
+];
+
 interface Task { id: string; title: string; description?: string; due_days?: number; }
 
 export default function Onboarding() {
@@ -54,6 +62,9 @@ export default function Onboarding() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 pt-6 pb-8 space-y-4">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Onboarding" intro="New-hire onboarding checklist and paperwork." steps={HOW_STEPS_ONBOARDING} variant="compact" />
+      </div>
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl bg-gradient-to-br from-indigo-500/15 via-primary/10 to-blue-500/5 border border-indigo-500/20 p-6 flex items-center gap-3">
         <div className="p-3 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-500 shadow-xl"><ClipboardList className="h-6 w-6 text-white" /></div>

@@ -8,6 +8,14 @@ import { Sparkles, Loader2, RefreshCw, MapPin, Building2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_PERSONALIZEDFEED = [
+  { title: "Improve accuracy", desc: "Complete your profile skills, past roles and preferences \u2014 more info = better matches." },
+  { title: "Rate suggestions", desc: "Thumbs up / down teaches the algorithm and refines future recommendations." },
+  { title: "Apply in one tap", desc: "Cards let you save or apply without leaving the feed." },
+];
+
 export default function PersonalizedFeed() {
   const navigate = useNavigate();
   const [items, setItems] = useState<any[]>([]);
@@ -37,6 +45,9 @@ export default function PersonalizedFeed() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 pt-6 pb-8 space-y-6">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Personalized Feed" intro="AI-curated jobs based on your profile." steps={HOW_STEPS_PERSONALIZEDFEED} variant="compact" />
+      </div>
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
         className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-fuchsia-500/15 via-primary/10 to-pink-500/5 border border-fuchsia-500/20 p-6">
         <div className="flex items-center justify-between gap-4">

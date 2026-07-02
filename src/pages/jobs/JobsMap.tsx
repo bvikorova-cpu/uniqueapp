@@ -8,6 +8,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Map as MapIcon, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_JOBSMAP = [
+  { title: "Zoom & pan", desc: "Move around the map \u2014 job pins cluster; zoom in to split clusters into individual roles." },
+  { title: "Tap a pin", desc: "See a preview card with job title, company and salary. Tap it to open the full detail." },
+  { title: "Filter", desc: "Apply the same filters as the main Jobs board \u2014 role, seniority, remote-ok, salary." },
+];
+
 // Fix default marker icons (Vite breaks them)
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -38,6 +46,9 @@ export default function JobsMap() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 pt-6 pb-8 space-y-6">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Jobs Map" intro="Explore open jobs geographically." steps={HOW_STEPS_JOBSMAP} variant="compact" />
+      </div>
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
         className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-teal-500/15 via-primary/10 to-cyan-500/5 border border-teal-500/20 p-6">
         <div className="flex items-center gap-4">

@@ -8,6 +8,15 @@ import { motion } from "framer-motion";
 import { SEO } from "@/components/SEO";
 import { SalaryDialog } from "@/components/jobs/SalaryDialog";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_SALARYINSIGHTS = [
+  { title: "Pick a job title", desc: "Search or select from popular roles." },
+  { title: "Choose location + seniority", desc: "Filter by country/city and Junior/Mid/Senior/Lead." },
+  { title: "Read the range", desc: "You see min, median and max EUR salary based on Unique data + market sources." },
+  { title: "Compare roles", desc: "Add multiple titles to a comparison to help negotiate your next offer." },
+];
+
 export default function SalaryInsights() {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,6 +47,9 @@ export default function SalaryInsights() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 pt-6 pb-8 space-y-6">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Salary Insights" intro="Real salary ranges by role, location and seniority." steps={HOW_STEPS_SALARYINSIGHTS} variant="compact" />
+      </div>
       <SEO title="Salary Insights" description="Real salary data shared by employees across roles and companies." />
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
         className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/15 via-primary/5 to-pink-500/10 border border-primary/20 p-6">

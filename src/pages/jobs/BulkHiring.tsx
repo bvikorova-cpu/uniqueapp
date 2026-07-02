@@ -11,6 +11,14 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_BULKHIRING = [
+  { title: "Upload a CSV", desc: "Provide a spreadsheet of roles or use the template." },
+  { title: "Auto-create job posts", desc: "Each row becomes a live job with the same template branding." },
+  { title: "Manage in one dashboard", desc: "Applicants across all bulk roles are unified for easier screening." },
+];
+
 export default function BulkHiring() {
   const navigate = useNavigate();
   const [list, setList] = useState<any[]>([]);
@@ -53,6 +61,9 @@ export default function BulkHiring() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 pt-6 pb-8 space-y-6">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Bulk Hiring" intro="Post many roles or hire many people at once." steps={HOW_STEPS_BULKHIRING} variant="compact" />
+      </div>
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
         className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500/15 via-primary/10 to-cyan-500/5 border border-emerald-500/20 p-6">
         <div className="flex items-center gap-4">

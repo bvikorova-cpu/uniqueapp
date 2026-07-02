@@ -6,6 +6,14 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, BarChart3, Eye, MousePointerClick, Send, Bookmark, Share2, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 
+import { HowItWorksButton } from "@/components/common/HowItWorksButton";
+
+const HOW_STEPS_JOBANALYTICS = [
+  { title: "Pick a timeframe", desc: "Last 7/30/90 days or custom." },
+  { title: "Key metrics", desc: "Views, applies, view-to-apply rate, source split, time-to-hire." },
+  { title: "Drill into a job", desc: "Click any post to see per-job funnel and source of hire." },
+];
+
 const TYPES: { id: string; label: string; icon: any }[] = [
   { id: "view", label: "Views", icon: Eye },
   { id: "impression", label: "Impressions", icon: MousePointerClick },
@@ -39,6 +47,9 @@ export default function JobAnalytics() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 pt-6 pb-8 space-y-6">
+      <div className="flex justify-end mb-2 max-w-6xl mx-auto px-4">
+        <HowItWorksButton title="Job Analytics" intro="How your postings and pipeline perform." steps={HOW_STEPS_JOBANALYTICS} variant="compact" />
+      </div>
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }}
         className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-500/15 via-primary/10 to-violet-500/5 border border-indigo-500/20 p-6">
         <div className="flex items-center gap-4">
