@@ -87,9 +87,7 @@ export const AvatarTalkingHeadView = ({ onBack }: { onBack: () => void }) => {
             <div><Label>Target audience</Label><Input value={audience} onChange={e => setAudience(e.target.value)} /></div>
             <div><Label>Tone</Label><Input value={tone} onChange={e => setTone(e.target.value)} placeholder="professional, friendly, energetic..." /></div>
             <Button onClick={generatePlan} disabled={loading} className="w-full bg-gradient-to-r from-sky-500 to-indigo-600">
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : '1
-    </>
-  ) Generate plan (3 CR)'}
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : '1) Generate plan (3 CR)'}
             </Button>
             {plan && (
               <>
