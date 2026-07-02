@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, Gift } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props { concertId: string; }
 
@@ -41,7 +42,14 @@ export const ConcertGiftsPanel = ({ concertId }: Props) => {
   };
 
   return (
-    <div className="p-3 space-y-3">
+    <>
+      <FloatingHowItWorks title="How Concert Gifts Panel works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="p-3 space-y-3">
       <div className="flex items-center justify-between">
         <h3 className="font-bold flex items-center gap-2"><Gift className="h-4 w-4 text-pink-500" />Send a gift</h3>
         <Badge variant="outline" className="text-[10px]">85% to artist</Badge>
@@ -69,5 +77,6 @@ export const ConcertGiftsPanel = ({ concertId }: Props) => {
         Platform fee 15% · Artist receives 85% of every gift
       </p>
     </div>
-  );
+    </>
+    );
 };

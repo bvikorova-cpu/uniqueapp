@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { Loader2, ShoppingCart, ExternalLink, Sparkles, Euro, Tag, Heart } from "lucide-react";
 import { useAICredits } from "@/hooks/useAICredits";
 import { motion, AnimatePresence } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const CREDIT_COST = 6;
 
@@ -62,7 +63,14 @@ export default function AIShoppingLinks() {
   });
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How AIShopping Links works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       <Card className="p-6 bg-card/80 backdrop-blur-xl border-primary/20">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
@@ -175,5 +183,6 @@ export default function AIShoppingLinks() {
         )}
       </AnimatePresence>
     </div>
-  );
+    </>
+    );
 }

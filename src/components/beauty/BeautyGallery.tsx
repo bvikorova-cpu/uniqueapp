@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ImageIcon, ArrowLeft, Heart, Plus, X } from "lucide-react";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface BeautyGalleryProps {
   onBack: () => void;
@@ -98,7 +99,14 @@ export const BeautyGallery = ({ onBack }: BeautyGalleryProps) => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Beauty Gallery works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       <div className="flex items-center justify-between">
         <Button variant="ghost" onClick={onBack} className="gap-2">
           <ArrowLeft className="h-4 w-4" /> Back to Hub
@@ -198,5 +206,6 @@ export const BeautyGallery = ({ onBack }: BeautyGalleryProps) => {
         </div>
       )}
     </div>
-  );
+    </>
+    );
 };

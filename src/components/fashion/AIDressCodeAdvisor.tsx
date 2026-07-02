@@ -8,6 +8,7 @@ import { useAICredits } from "@/hooks/useAICredits";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function AIDressCodeAdvisor() {
   const [eventDesc, setEventDesc] = useState("");
@@ -27,7 +28,14 @@ export default function AIDressCodeAdvisor() {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How AIDress Code Advisor works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         <Card className="bg-card/80 backdrop-blur-xl border-blue-500/20">
           <CardHeader><CardTitle className="flex items-center gap-2"><BadgeCheck className="h-5 w-5 text-blue-500" /> AI Dress Code Advisor</CardTitle></CardHeader>
@@ -48,5 +56,6 @@ export default function AIDressCodeAdvisor() {
         </motion.div>
       )}
     </div>
-  );
+    </>
+    );
 }

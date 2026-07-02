@@ -6,6 +6,7 @@ import { Video, Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export function DesignConsultations() {
   const { toast } = useToast();
@@ -51,7 +52,14 @@ export function DesignConsultations() {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Design Consultations works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       <Card className="bg-gradient-subtle border-0">
         <CardHeader>
           <div className="flex items-center gap-3">
@@ -125,5 +133,6 @@ export function DesignConsultations() {
         </CardContent>
       </Card>
     </div>
-  );
+    </>
+    );
 }

@@ -8,6 +8,7 @@ import { useAICredits } from "@/hooks/useAICredits";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function AIOutfitCostCalculator() {
   const [description, setDescription] = useState("");
@@ -31,7 +32,14 @@ export default function AIOutfitCostCalculator() {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How AIOutfit Cost Calculator works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         <Card className="bg-card/80 backdrop-blur-xl border-emerald-500/20">
           <CardHeader>
@@ -57,5 +65,6 @@ export default function AIOutfitCostCalculator() {
         </motion.div>
       )}
     </div>
-  );
+    </>
+    );
 }

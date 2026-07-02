@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Loader2, ScanLine, Upload, Camera, Sparkles, Star, Tag, Palette } from "lucide-react";
 import { useAICredits } from "@/hooks/useAICredits";
 import { motion, AnimatePresence } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const CREDIT_COST = 8;
 
@@ -85,7 +86,14 @@ export default function AIStyleScanner() {
   });
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How AIStyle Scanner works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       <Card className="p-6 bg-card/80 backdrop-blur-xl border-primary/20">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
@@ -227,5 +235,6 @@ export default function AIStyleScanner() {
         )}
       </AnimatePresence>
     </div>
-  );
+    </>
+    );
 }

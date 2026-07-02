@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Palette, Check, X } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface PetCustomizationProps {
   selectedPetId: string | null;
@@ -57,14 +58,22 @@ export const PetCustomization = ({ selectedPetId }: PetCustomizationProps) => {
 
   if (!selectedPetId) {
     return (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
+      <>
+        <FloatingHowItWorks title="How Pet Customization works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
         <div className="w-16 h-16 mx-auto rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-4">
           <Palette className="h-8 w-8 text-primary" />
         </div>
         <h3 className="text-lg font-black mb-2">No Pet Selected</h3>
         <p className="text-sm text-muted-foreground">Select a pet from "My Pets" to customize it!</p>
       </motion.div>
-    );
+      </>
+      );
   }
 
   const equippedIds = ((selectedPet?.customization as any)?.equipped_accessories || []) as string[];

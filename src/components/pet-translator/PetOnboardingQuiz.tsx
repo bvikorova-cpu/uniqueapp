@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ArrowLeft, Sparkles } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const QUESTIONS = [
   { id: "name",        q: "What's your pet's name?",                 type: "text" },
@@ -44,12 +45,20 @@ export default function PetOnboardingQuiz({ onDone }: { onDone: () => void }) {
 
   if (intro) {
     return (
-      <Card className="p-6">
+      <>
+        <FloatingHowItWorks title="How Pet Onboarding Quiz works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+        <Card className="p-6">
         <h2 className="text-xl font-bold mb-3 flex items-center gap-2"><Sparkles className="w-5 h-5 text-primary" /> Welcome!</h2>
         <p className="whitespace-pre-wrap text-sm">{intro}</p>
         <Button onClick={onDone} className="mt-4 w-full">Start translating</Button>
       </Card>
-    );
+      </>
+      );
   }
 
   return (

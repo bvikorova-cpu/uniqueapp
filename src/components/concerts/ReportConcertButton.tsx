@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Flag } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const ReportConcertButton = ({ concertId }: { concertId: string }) => {
   const [open, setOpen] = useState(false);
@@ -42,7 +43,14 @@ export const ReportConcertButton = ({ concertId }: { concertId: string }) => {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+      <FloatingHowItWorks title="How Report Concert Button works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground hover:text-destructive">
           <Flag className="h-4 w-4" />Report
@@ -78,5 +86,6 @@ export const ReportConcertButton = ({ concertId }: { concertId: string }) => {
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+    </>
+    );
 };

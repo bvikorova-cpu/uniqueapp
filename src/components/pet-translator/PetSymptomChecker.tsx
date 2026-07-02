@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import { usePetProfiles } from "@/hooks/usePetProfiles";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const SYMPTOMS = [
   "Vomiting","Diarrhea","Loss of appetite","Lethargy","Coughing","Sneezing","Limping","Itching/scratching",
@@ -40,7 +41,14 @@ export default function PetSymptomChecker({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title="How Pet Symptom Checker works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-4">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <Card className="p-6">
         <h2 className="text-xl font-bold flex items-center gap-2 mb-2"><Stethoscope className="w-5 h-5 text-primary" /> Symptom Checker</h2>
@@ -65,5 +73,6 @@ export default function PetSymptomChecker({ onBack }: { onBack: () => void }) {
         </Card>
       )}
     </div>
-  );
+    </>
+    );
 }

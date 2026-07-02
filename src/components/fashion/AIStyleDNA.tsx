@@ -8,6 +8,7 @@ import { Brain, Loader2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAICredits } from "@/hooks/useAICredits";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function AIStyleDNA() {
   const { credits } = useAICredits();
@@ -37,7 +38,14 @@ export default function AIStyleDNA() {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How AIStyle DNA works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       <Card className="p-4 sm:p-6 bg-gradient-to-br from-fuchsia-500/10 to-pink-500/10 border-fuchsia-500/20">
         <div className="flex items-center gap-3 mb-4">
           <Brain className="h-7 w-7 text-fuchsia-400" />
@@ -97,5 +105,6 @@ export default function AIStyleDNA() {
         </div>
       )}
     </div>
-  );
+    </>
+    );
 }

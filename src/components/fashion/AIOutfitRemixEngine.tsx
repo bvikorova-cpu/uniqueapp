@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { Loader2, Repeat, Sparkles, ArrowRight, Star, Zap } from "lucide-react";
 import { useAICredits } from "@/hooks/useAICredits";
 import { motion, AnimatePresence } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const CREDIT_COST = 10;
 
@@ -59,7 +60,14 @@ export default function AIOutfitRemixEngine() {
   const difficultyColor = (d: string) => d === "Easy" ? "text-green-500" : d === "Medium" ? "text-amber-500" : "text-red-500";
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How AIOutfit Remix Engine works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       <Card className="p-6 bg-card/80 backdrop-blur-xl border-primary/20">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600">
@@ -153,5 +161,6 @@ export default function AIOutfitRemixEngine() {
         )}
       </AnimatePresence>
     </div>
-  );
+    </>
+    );
 }

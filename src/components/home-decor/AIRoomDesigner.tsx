@@ -10,6 +10,7 @@ import { Upload, Sparkles, Loader2, ShoppingBag, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 function ARPreviewButton({ designId }: { designId: string }) {
   const { toast } = useToast();
@@ -46,11 +47,19 @@ function ARPreviewButton({ designId }: { designId: string }) {
   };
 
   return (
-    <Button onClick={handleARPreview} disabled={loading} variant="outline" size="sm">
+    <>
+      <FloatingHowItWorks title="How AIRoom Designer works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <Button onClick={handleARPreview} disabled={loading} variant="outline" size="sm">
       <Eye className="mr-2 h-4 w-4" />
       {loading ? "Loading..." : "AR Preview €0.99"}
     </Button>
-  );
+    </>
+    );
 }
 
 interface AIRoomDesignerProps {

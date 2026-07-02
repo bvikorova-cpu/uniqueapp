@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Props {
   icon: LucideIcon;
@@ -28,7 +29,14 @@ export const ConcertToolCard = ({ icon: Icon, title, description, color, onClick
   const c = colorMap[color] || colorMap.violet;
 
   return (
-    <motion.button
+    <>
+      <FloatingHowItWorks title="How Concert Tool Card works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <motion.button
       initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.03 * index }}
       onClick={onClick}
@@ -43,5 +51,6 @@ export const ConcertToolCard = ({ icon: Icon, title, description, color, onClick
       <h3 className="font-bold text-sm text-foreground leading-tight mb-1">{title}</h3>
       <p className="text-[11px] text-muted-foreground leading-snug">{description}</p>
     </motion.button>
-  );
+    </>
+    );
 };

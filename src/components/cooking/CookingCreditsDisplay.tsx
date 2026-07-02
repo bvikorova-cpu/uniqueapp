@@ -2,6 +2,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useCookingCredits } from '@/hooks/useCookingCredits';
 import { Coins, Plus } from 'lucide-react';
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const CookingCreditsDisplay = () => {
   const { data: credits, isLoading, purchaseCredits } = useCookingCredits();
@@ -16,7 +17,14 @@ export const CookingCreditsDisplay = () => {
   if (isLoading) return null;
 
   return (
-    <Card className="p-4 md:p-6 bg-gradient-to-r from-primary/10 to-primary/5">
+    <>
+      <FloatingHowItWorks title="How Cooking Credits Display works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <Card className="p-4 md:p-6 bg-gradient-to-r from-primary/10 to-primary/5">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <Coins className="h-8 w-8 text-primary flex-shrink-0" />
@@ -57,5 +65,6 @@ export const CookingCreditsDisplay = () => {
         </div>
       </div>
     </Card>
-  );
+    </>
+    );
 };

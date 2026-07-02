@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { BookOpen } from "lucide-react";
 import { useAICredits } from "@/hooks/useAICredits";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const MakeupTutorials = () => {
   const [lookDescription, setLookDescription] = useState("");
@@ -46,7 +47,14 @@ export const MakeupTutorials = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Makeup Tutorials works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       <Card className="p-6">
         <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
           <BookOpen className="h-6 w-6 text-blue-500" />
@@ -135,5 +143,6 @@ export const MakeupTutorials = () => {
         </Card>
       )}
     </div>
-  );
+    </>
+    );
 };

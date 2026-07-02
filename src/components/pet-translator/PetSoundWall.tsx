@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, ThumbsUp, Volume2, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Post { id: string; pet_name: string; species: string; audio_url: string; caption: string; emotion: string | null; votes: number; created_at: string; user_id: string; }
 
@@ -22,7 +23,14 @@ export default function PetSoundWall({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <div className="space-y-4">
+    <>
+      <FloatingHowItWorks title="How Pet Sound Wall works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-4">
       <Button variant="ghost" onClick={onBack}><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
       <Card className="p-6">
         <h2 className="text-xl font-bold flex items-center gap-2 mb-1"><Users className="w-5 h-5 text-primary" /> Community Sound Wall</h2>
@@ -43,5 +51,6 @@ export default function PetSoundWall({ onBack }: { onBack: () => void }) {
             </div>}
       </Card>
     </div>
-  );
+    </>
+    );
 }

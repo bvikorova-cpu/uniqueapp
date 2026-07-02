@@ -8,6 +8,7 @@ import { useAICredits } from "@/hooks/useAICredits";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function AIVirtualStylistSession() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -45,7 +46,14 @@ export default function AIVirtualStylistSession() {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How AIVirtual Stylist Session works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         <Card className="bg-card/80 backdrop-blur-xl border-purple-500/20">
           <CardHeader><CardTitle className="flex items-center gap-2"><Wand2 className="h-5 w-5 text-purple-500" /> Virtual Stylist Session</CardTitle></CardHeader>
@@ -75,5 +83,6 @@ export default function AIVirtualStylistSession() {
         </motion.div>
       )}
     </div>
-  );
+    </>
+    );
 }

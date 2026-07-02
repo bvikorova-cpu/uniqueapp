@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Mic, MicOff, Loader2, Sparkles, ArrowLeft, Volume2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function PetAudioRecorder({ onBack }: { onBack: () => void }) {
   const [isRecording, setIsRecording] = useState(false);
@@ -79,7 +80,14 @@ export default function PetAudioRecorder({ onBack }: { onBack: () => void }) {
   const formatTime = (s: number) => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, "0")}`;
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+    <>
+      <FloatingHowItWorks title="How Pet Audio Recorder works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
       <Button variant="ghost" onClick={onBack} className="mb-4">
         <ArrowLeft className="h-4 w-4 mr-2" /> Back
       </Button>
@@ -134,5 +142,6 @@ export default function PetAudioRecorder({ onBack }: { onBack: () => void }) {
         </CardContent>
       </Card>
     </motion.div>
-  );
+    </>
+    );
 }

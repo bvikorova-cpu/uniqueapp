@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface Challenge {
   id: string;
@@ -64,7 +65,14 @@ export default function WeeklyCookingChallenge({ onBack }: Props) {
   const getDiffColor = (d: string) => d === 'Easy' ? 'text-green-400 bg-green-500/10' : d === 'Medium' ? 'text-yellow-400 bg-yellow-500/10' : 'text-red-400 bg-red-500/10';
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Weekly Cooking Challenge works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button>
       <div className="text-center space-y-2">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30">
@@ -145,5 +153,6 @@ export default function WeeklyCookingChallenge({ onBack }: Props) {
         </Card>
       </div>
     </div>
-  );
+    </>
+    );
 }

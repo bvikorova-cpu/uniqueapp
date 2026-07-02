@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { Loader2, Calendar, Sun, Cloud, Sparkles, Star } from "lucide-react";
 import { useAICredits } from "@/hooks/useAICredits";
 import { motion, AnimatePresence } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const CREDIT_COST = 12;
 
@@ -64,7 +65,14 @@ export default function AIFashionForecastCalendar() {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How AIFashion Forecast Calendar works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       <Card className="p-6 bg-card/80 backdrop-blur-xl border-primary/20">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600">
@@ -154,5 +162,6 @@ export default function AIFashionForecastCalendar() {
         )}
       </AnimatePresence>
     </div>
-  );
+    </>
+    );
 }

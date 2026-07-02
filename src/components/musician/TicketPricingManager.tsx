@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface TicketPricingManagerProps {
   concertId: string;
@@ -70,7 +71,14 @@ export const TicketPricingManager = ({ concertId, onSuccess }: TicketPricingMana
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <>
+      <FloatingHowItWorks title="How Ticket Pricing Manager works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <form onSubmit={handleSubmit} className="space-y-4">
       {ticketTypes.map((ticket, index) => (
         <Card key={index} className="p-4">
           <div className="space-y-3">
@@ -152,5 +160,6 @@ export const TicketPricingManager = ({ concertId, onSuccess }: TicketPricingMana
         {loading ? "Saving..." : "Save Ticket Prices"}
       </Button>
     </form>
-  );
+    </>
+    );
 };

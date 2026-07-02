@@ -8,6 +8,7 @@ import { Upload, Building, Loader2, Camera, TrendingUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface VirtualRoomStagingProps {
   subscription: any;
@@ -70,7 +71,14 @@ export function VirtualRoomStaging({ subscription, onBack }: VirtualRoomStagingP
   const plan = result?.staging_plan;
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Virtual Room Staging works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
       <div className="flex items-center gap-4 mb-4">
         <Button variant="ghost" onClick={onBack}>← Back</Button>
         <div>
@@ -215,5 +223,6 @@ export function VirtualRoomStaging({ subscription, onBack }: VirtualRoomStagingP
         </motion.div>
       )}
     </motion.div>
-  );
+    </>
+    );
 }

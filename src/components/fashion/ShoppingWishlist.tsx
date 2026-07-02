@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Plus, Trash2, CheckCircle } from "lucide-react";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const ShoppingWishlist = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -90,7 +91,14 @@ export const ShoppingWishlist = () => {
   });
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Shopping Wishlist works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Shopping Wishlist</h2>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -217,5 +225,6 @@ export const ShoppingWishlist = () => {
         </div>
       )}
     </div>
-  );
+    </>
+    );
 };

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import {
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
   Dialog,
   DialogContent,
   DialogDescription,
@@ -107,11 +108,19 @@ export const MusicianWithdrawalManagement = () => {
     const config = configs[status as keyof typeof configs] || configs.pending;
     const Icon = config.icon;
     return (
-      <Badge className={config.color}>
+      <>
+        <FloatingHowItWorks title="How Musician Withdrawal Management works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+        <Badge className={config.color}>
         <Icon className="h-3 w-3 mr-1" />
         {status}
       </Badge>
-    );
+      </>
+      );
   };
 
   const filterRequests = (status: string) => {

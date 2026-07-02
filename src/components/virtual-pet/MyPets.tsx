@@ -15,6 +15,7 @@ import { useAICredits } from "@/hooks/useAICredits";
 import { useNavigate } from "react-router-dom";
 import { petImages } from "@/data/petImages";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface MyPetsProps {
   onSelectPet: (petId: string) => void;
@@ -254,10 +255,18 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center py-16">
+      <>
+        <FloatingHowItWorks title="How My Pets works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+        <div className="flex justify-center items-center py-16">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
-    );
+      </>
+      );
   }
 
   return (

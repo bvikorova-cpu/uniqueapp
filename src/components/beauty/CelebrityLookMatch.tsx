@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { Crown, ArrowLeft, Upload, Image as ImageIcon, Star } from "lucide-react";
 import { useAICredits } from "@/hooks/useAICredits";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface CelebrityLookMatchProps {
   onBack: () => void;
@@ -76,7 +77,14 @@ export const CelebrityLookMatch = ({ onBack }: CelebrityLookMatchProps) => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Celebrity Look Match works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2">
         <ArrowLeft className="h-4 w-4" /> Back to Hub
       </Button>
@@ -220,5 +228,6 @@ export const CelebrityLookMatch = ({ onBack }: CelebrityLookMatchProps) => {
         </motion.div>
       )}
     </div>
-  );
+    </>
+    );
 };

@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Plus, Trash2, Check, PawPrint, Pencil, Upload, Loader2, Gamepad2 } from "lucide-react";
 import { usePetProfiles, type PetProfile } from "@/hooks/usePetProfiles";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const empty: Partial<PetProfile> = {
   name: "", species: "dog", breed: "", age_years: 0, gender: "unknown", personality: "", photo_url: "",
@@ -93,7 +94,14 @@ export default function PetProfileManager() {
   };
 
   return (
-    <Card className="p-6 border-primary/20 bg-card/80 backdrop-blur-sm">
+    <>
+      <FloatingHowItWorks title="How Pet Profile Manager works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <Card className="p-6 border-primary/20 bg-card/80 backdrop-blur-sm">
       <div className="flex items-center justify-between mb-4 gap-2 flex-wrap">
         <h2 className="text-xl font-bold flex items-center gap-2"><PawPrint className="w-5 h-5 text-primary" /> My Pets</h2>
         <div className="flex gap-2">
@@ -171,5 +179,6 @@ export default function PetProfileManager() {
         </div>
       )}
     </Card>
-  );
+    </>
+    );
 }

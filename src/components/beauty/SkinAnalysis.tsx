@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { Search, ArrowLeft, Droplets, Sun, Moon, Sparkles } from "lucide-react";
 import { useAICredits } from "@/hooks/useAICredits";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface SkinAnalysisProps {
   onBack: () => void;
@@ -50,7 +51,14 @@ export const SkinAnalysis = ({ onBack }: SkinAnalysisProps) => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Skin Analysis works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       <Button variant="ghost" onClick={onBack} className="gap-2">
         <ArrowLeft className="h-4 w-4" /> Back to Hub
       </Button>
@@ -182,5 +190,6 @@ export const SkinAnalysis = ({ onBack }: SkinAnalysisProps) => {
         </motion.div>
       )}
     </div>
-  );
+    </>
+    );
 };

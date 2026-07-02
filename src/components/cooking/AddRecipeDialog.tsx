@@ -11,6 +11,7 @@ import { Plus, X, Upload, Image, Video, Loader2, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface AddRecipeDialogProps {
   onRecipeAdded?: () => void;
@@ -262,7 +263,14 @@ export function AddRecipeDialog({ onRecipeAdded, categories }: AddRecipeDialogPr
   const filteredCategories = categories.filter((c) => c !== "All");
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+      <FloatingHowItWorks title="How Add Recipe Dialog works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600">
           <Plus className="w-4 h-4 mr-2" />
@@ -562,5 +570,6 @@ export function AddRecipeDialog({ onRecipeAdded, categories }: AddRecipeDialogPr
         </ScrollArea>
       </DialogContent>
     </Dialog>
-  );
+    </>
+    );
 }

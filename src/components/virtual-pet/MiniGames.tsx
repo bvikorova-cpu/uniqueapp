@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Gamepad2, Trophy, Zap, Star, Target, Clock, Heart } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 interface MiniGamesProps { selectedPetId: string | null; }
 type GameType = 'catch' | 'memory';
@@ -128,14 +129,22 @@ export const MiniGames = ({ selectedPetId }: MiniGamesProps) => {
 
   if (!selectedPetId) {
     return (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
+      <>
+        <FloatingHowItWorks title="How Mini Games works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
         <div className="w-16 h-16 mx-auto rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-4">
           <Gamepad2 className="h-8 w-8 text-cyan-500" />
         </div>
         <h3 className="text-lg font-black mb-2">No Pet Selected</h3>
         <p className="text-sm text-muted-foreground">Select a pet from "My Pets" to play games!</p>
       </motion.div>
-    );
+      </>
+      );
   }
 
   if (activeGame === 'memory') {

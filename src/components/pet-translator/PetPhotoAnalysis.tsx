@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Camera, Upload, Loader2, Sparkles, ArrowLeft } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export default function PetPhotoAnalysis({ onBack }: { onBack: () => void }) {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -47,7 +48,14 @@ export default function PetPhotoAnalysis({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+    <>
+      <FloatingHowItWorks title="How Pet Photo Analysis works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
       <Button variant="ghost" onClick={onBack} className="mb-4">
         <ArrowLeft className="h-4 w-4 mr-2" /> Back
       </Button>
@@ -95,5 +103,6 @@ export default function PetPhotoAnalysis({ onBack }: { onBack: () => void }) {
         </CardContent>
       </Card>
     </motion.div>
-  );
+    </>
+    );
 }

@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const PetShop = () => {
   const queryClient = useQueryClient();
@@ -92,7 +93,14 @@ export const PetShop = () => {
   const cosmeticItems = accessories?.filter(a => getBattlePower(a.effect) === 0) || [];
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Pet Shop works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
       <div>
         <h2 className="text-2xl font-black bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">Pet Shop</h2>
         <p className="text-xs text-muted-foreground">Buy accessories, battle gear & mystery boxes</p>
@@ -195,5 +203,6 @@ export const PetShop = () => {
         </TabsContent>
       </Tabs>
     </motion.div>
-  );
+    </>
+    );
 };

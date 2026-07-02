@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Package, Loader2 } from "lucide-react";
 import { useAICredits } from "@/hooks/useAICredits";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 export const CapsuleWardrobe = () => {
   const [lifestyle, setLifestyle] = useState("");
@@ -51,7 +52,14 @@ export const CapsuleWardrobe = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <FloatingHowItWorks title="How Capsule Wardrobe works" steps={[
+          { title: 'Open this section', desc: 'Review what it offers.' },
+          { title: 'Interact', desc: 'Tap buttons, generate or configure. AI actions cost credits.' },
+          { title: 'Review results', desc: 'Check output and save or share.' },
+          { title: 'Iterate', desc: 'Repeat or refine anytime — progress is saved.' },
+        ]} />
+      <div className="space-y-6">
       <Card className="p-6">
         <h2 className="text-2xl font-bold mb-4">Capsule Wardrobe Builder</h2>
         <p className="text-sm text-muted-foreground mb-6">
@@ -165,5 +173,6 @@ export const CapsuleWardrobe = () => {
         </div>
       )}
     </div>
-  );
+    </>
+    );
 };
