@@ -154,7 +154,7 @@ export default function RewardsLoginCalendar() {
                 <h2 className="text-xl font-bold">{"Daily Login Calendar"}</h2>
               </div>
               <p className="text-sm opacity-90">
-                {`${today.toLocaleString("en", { month: "long", year: "numeric" })} • Day ${todayDay}`}
+                {`${new Date(bratParts.year, bratParts.month - 1, bratParts.day).toLocaleString("en", { month: "long", year: "numeric" })} • Day ${todayDay}`}
               </p>
             </div>
             <div className="text-right">
