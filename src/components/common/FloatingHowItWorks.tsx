@@ -20,7 +20,8 @@ export const FloatingHowItWorks = ({ title, intro, steps }: FloatingHowItWorksPr
 
   return createPortal(
     <div
-      className="fixed z-[60] top-[72px] right-3 sm:right-5"
+      data-floating-hiw
+      className="fixed z-[60] top-[72px] right-3 sm:right-5 [body[data-scroll-locked]_&]:hidden"
       style={{ pointerEvents: "auto" }}
     >
       <HowItWorksButton title={title} intro={intro} steps={steps} variant="compact" />
