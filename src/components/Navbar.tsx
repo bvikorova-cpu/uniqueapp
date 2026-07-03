@@ -640,7 +640,7 @@ const Navbar = () => {
                   </Button>
                 </Link>
               );
-            })
+            })}
 
             {/* Learning Section */}
             <div className="pt-2 pb-1">
