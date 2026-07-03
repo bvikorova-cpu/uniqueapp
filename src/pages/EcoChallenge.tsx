@@ -14,6 +14,9 @@ import { SectionVideoPreview } from "@/components/SectionVideoPreview";
 import { sectionVideos } from "@/components/sectionVideos";
 import { Link } from "react-router-dom";
 import { EcoComments } from "@/components/eco/EcoComments";
+import { ChallengeProUpsell } from "@/components/challenges/ChallengeProUpsell";
+import { ChallengeProBadge } from "@/components/challenges/ChallengeProBadge";
+import { useChallengeProSet } from "@/hooks/useChallengePro";
 
 interface Challenge {
   id: string;
