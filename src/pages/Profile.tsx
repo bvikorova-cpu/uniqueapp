@@ -111,7 +111,7 @@ const Profile = () => {
   const [friends, setFriends] = useState<Profile[]>([]);
   const [followersModalOpen, setFollowersModalOpen] = useState(false);
   const [followersModalTab, setFollowersModalTab] = useState<"followers" | "following">("followers");
-  const { data: followCounts } = useFollowCounts(userId);
+  const { data: followCounts } = useFollowCounts(detailsReady ? userId : undefined);
   const [defaultTab, setDefaultTab] = useState("posts");
   const [detailsReady, setDetailsReady] = useState(false);
   const [stats, setStats] = useState({
@@ -184,39 +184,20 @@ const Profile = () => {
   }, [searchParams, currentUserId, userId]);
 
   useEffect(() => {
-    const fetchProfileAndPosts = async () => {
+    const fetchProfile = async () => {
       if (!userId) return;
 
       try {
-        // Fetch profile + posts first (critical path) in parallel and render ASAP.
-        const [profileRes, postsRes] = await Promise.all([
-          supabase
-            .from("public_profiles")
-            .select("id, full_name, avatar_url, bio, location, website, interests, occupation, company, headline, username, social_links, open_to_work, open_to_work_details, profile_music_url, profile_music_title")
-            .eq("id", userId)
-            .maybeSingle(),
-          supabase
-            .from("posts")
-            .select(`*, media (*)`)
-            .eq("user_id", userId)
-            .order("created_at", { ascending: false })
-            .limit(PROFILE_POSTS_PAGE_SIZE),
-        ]);
+        // Critical path: profile only. Posts/feed widgets are loaded after paint.
+        const profileRes = await supabase
+          .from("public_profiles")
+          .select("id, full_name, avatar_url, bio, location, website, interests, occupation, company, headline, username, social_links, open_to_work, open_to_work_details, profile_music_url, profile_music_title")
+          .eq("id", userId)
+          .maybeSingle();
 
         if (profileRes.error) throw profileRes.error;
         const profileData = profileRes.data;
         setProfile(profileData);
-
-        const postsData = postsRes.data;
-        const postsWithProfiles = (postsData || []).map((post) => ({
-          ...post,
-          profiles: {
-            id: profileData?.id,
-            full_name: profileData?.full_name,
-            avatar_url: profileData?.avatar_url,
-          },
-        }));
-        setPosts(postsWithProfiles);
         setLoading(false);
 
         // Fire-and-forget: all remaining queries in parallel (non-blocking).
@@ -246,7 +227,7 @@ const Profile = () => {
 
         const friendsData = friendsRes.data;
         setStats({
-          postsCount: postsCountRes.count ?? postsData?.length ?? 0,
+          postsCount: postsCountRes.count ?? 0,
           likesGiven: likesRes.count || 0,
           commentsGiven: commentsRes.count || 0,
           friendsCount: friendsData?.length || 0,
@@ -276,8 +257,37 @@ const Profile = () => {
       }
     };
 
-    fetchProfileAndPosts();
+    fetchProfile();
   }, [userId, toast]);
+
+  useEffect(() => {
+    if (!detailsReady || !userId || !profile) return;
+    let cancelled = false;
+
+    (async () => {
+      const { data: postsData } = await supabase
+        .from("posts")
+        .select(`*, media (*)`)
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
+        .limit(PROFILE_POSTS_PAGE_SIZE);
+
+      if (cancelled) return;
+      const postsWithProfiles = (postsData || []).map((post) => ({
+        ...post,
+        profiles: {
+          id: profile.id,
+          full_name: profile.full_name,
+          avatar_url: profile.avatar_url,
+        },
+      }));
+      setPosts(postsWithProfiles);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [detailsReady, userId, profile]);
 
   // Fetch friendship status separately so profile render doesn't wait on session.
   useEffect(() => {
@@ -448,7 +458,8 @@ const Profile = () => {
         media (*)
       `)
       .eq("user_id", userId)
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .limit(PROFILE_POSTS_PAGE_SIZE);
 
     const postsWithProfiles = (postsData || []).map(post => ({
       ...post,
