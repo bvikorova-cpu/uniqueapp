@@ -282,6 +282,25 @@ export default function EcoChallenge() {
 
   const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
 
+  const [countdown, setCountdown] = useState<string>(fmtCountdown(msUntilMonthEnd()));
+  useEffect(() => {
+    const t = setInterval(() => setCountdown(fmtCountdown(msUntilMonthEnd())), 60000);
+    return () => clearInterval(t);
+  }, []);
+
+  const shareSubmission = async (s: Submission) => {
+    const url = `${window.location.origin}/eco-challenge`;
+    const text = `🌱 Eco Challenge — ${s.description.slice(0, 80)}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: "Eco Challenge", text, url });
+      } else {
+        await navigator.clipboard.writeText(`${text} ${url}`);
+        toast({ title: "Link copied to clipboard" });
+      }
+    } catch { /* user cancelled */ }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 via-emerald-50 to-teal-50 dark:from-green-950/40 dark:via-emerald-950/40 dark:to-teal-950/40">
       <div className="container mx-auto px-4 py-6 max-w-5xl">
