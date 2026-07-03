@@ -314,7 +314,22 @@ const Profile = () => {
             "friend_profiles",
             () => supabase.from("public_profiles").select("id, full_name, avatar_url, username").in("id", friendIds),
           );
-          if (!cancelled) setFriends(friendProfiles || []);
+          if (!cancelled) {
+            setFriends(
+              (friendProfiles || []).map((friend) => ({
+                id: friend.id,
+                full_name: friend.full_name,
+                avatar_url: friend.avatar_url,
+                username: friend.username,
+                bio: null,
+                location: null,
+                website: null,
+                interests: null,
+                occupation: null,
+                company: null,
+              })),
+            );
+          }
         }
       } catch {
         // Keep the already-rendered profile usable even if secondary counters fail.
@@ -621,6 +636,7 @@ const Profile = () => {
                 )}
             </Suspense>
           }
+          deferExtras={extendedReady}
         />
 
         {/* XP breakdown — visible on every profile so the source of XP is clear */}
