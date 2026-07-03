@@ -636,7 +636,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           )}
 
           <input
-            id="image-upload"
+            ref={imageInputRef}
             type="file"
             accept="image/*"
             multiple
@@ -644,7 +644,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
             onChange={handleFileSelect}
           />
           <input
-            id="video-upload"
+            ref={videoInputRef}
             type="file"
             accept="video/*"
             multiple
