@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,9 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { sectionVideos } from "@/components/sectionVideos";
 import { Link } from "react-router-dom";
 import { HealthyComments } from "@/components/healthy/HealthyComments";
+import { ChallengeProUpsell } from "@/components/challenges/ChallengeProUpsell";
+import { ChallengeProBadge } from "@/components/challenges/ChallengeProBadge";
+import { useChallengeProSet } from "@/hooks/useChallengePro";
 
 interface Challenge {
   id: string;
