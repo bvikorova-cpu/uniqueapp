@@ -2794,6 +2794,13 @@ serve(async (req) => {
               tax_id_collection: { enabled: true },
               billing_address_collection: "required" as const,
               customer_update: customerId ? { address: "auto" as const, name: "auto" as const } : undefined,
+              subscription_data: {
+                metadata: {
+                  user_id: userId ?? "",
+                  type: productKey,
+                  product: productKey,
+                },
+              },
             }
           : {}),
         metadata: {
