@@ -188,11 +188,14 @@ const Profile = () => {
   useEffect(() => {
     const snap = profileFromStoredSnapshot(userId);
     if (snap) {
-      setProfile((current) => current ?? snap);
+      setProfile((current) => (current?.id === userId ? current : snap));
       setLoading(false);
       markMeFirstPaint();
+    } else {
+      setProfile((current) => (current?.id === userId ? current : null));
+      setLoading((currentLoading) => (profile?.id === userId ? currentLoading : true));
     }
-  }, [userId]);
+  }, [profile?.id, userId]);
 
   useEffect(() => {
     if (!loading && profile) markMeFirstPaint();
