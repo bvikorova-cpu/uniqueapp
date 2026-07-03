@@ -10,6 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { Leaf, Trophy, Heart, Upload, Sparkles, Calendar, Video, Image as ImageIcon } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { SectionVideoPreview } from "@/components/SectionVideoPreview";
+import { sectionVideos } from "@/components/sectionVideos";
 import { Link } from "react-router-dom";
 
 interface Challenge {
