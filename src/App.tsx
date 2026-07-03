@@ -101,6 +101,7 @@ const ComebackBonusModal = lazy(() => import("@/components/retention/ComebackBon
 // Install global runtime patches as early as possible
 installGlobalErrorHandlers();
 installImagePerformancePatch();
+prewarmHotRoutes();
 
 // Critical fallback only - keep heavy pages out of the initial JS boot path
 import NotFound from "./pages/NotFound";
