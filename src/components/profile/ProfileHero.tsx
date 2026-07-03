@@ -1,11 +1,18 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Edit, MapPin, Briefcase, Sparkles, TrendingUp, Users, Trophy, Zap } from "lucide-react";
-import { VerifiedFounderBadge } from "@/components/wall/VerifiedFounderBadge";
-import { FollowButton } from "@/components/profile/FollowButton";
-import { MessageButton } from "@/components/wall/MessageButton";
-import { ReactNode } from "react";
-import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { lazy, ReactNode, Suspense } from "react";
+
+const VerifiedFounderBadge = lazy(() =>
+  import("@/components/wall/VerifiedFounderBadge").then((m) => ({ default: m.VerifiedFounderBadge })),
+);
+const FollowButton = lazy(() =>
+  import("@/components/profile/FollowButton").then((m) => ({ default: m.FollowButton })),
+);
+const MessageButton = lazy(() =>
+  import("@/components/wall/MessageButton").then((m) => ({ default: m.MessageButton })),
+);
+const FloatingHowItWorks = lazy(() => import("../common/FloatingHowItWorks"));
 
 interface ProfileHeroProps {
   profile: {
@@ -30,6 +37,7 @@ interface ProfileHeroProps {
     rank?: number;
   };
   friendsAction?: ReactNode;
+  deferExtras?: boolean;
 }
 
 export const ProfileHero = ({
@@ -40,6 +48,7 @@ export const ProfileHero = ({
   onEdit,
   stats,
   friendsAction,
+  deferExtras = false,
 }: ProfileHeroProps) => {
   const initial = profile.full_name?.[0]?.toUpperCase() || profile.email?.[0]?.toUpperCase() || "U";
 
@@ -52,7 +61,11 @@ export const ProfileHero = ({
 
   return (
     <>
-      <FloatingHowItWorks title={"Profile Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Profile Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Profile Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      {deferExtras && (
+        <Suspense fallback={null}>
+          <FloatingHowItWorks title={"Profile Hero - How it works"} steps={[{ title: 'Open', desc: 'Access the Profile Hero section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Profile Hero.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+        </Suspense>
+      )}
       <div className="relative w-full overflow-hidden rounded-3xl border border-amber-500/20 mb-6 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.6)] bg-gradient-to-br from-violet-950 via-background to-amber-950">
       {/* Lightweight static background; avoids loading a profile video before content appears. */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-black/30 to-black/70" />
@@ -76,12 +89,16 @@ export const ProfileHero = ({
           {/* Name + meta */}
           <div className="flex-1 min-w-0 text-center sm:text-left">
             <div className="flex justify-center sm:justify-start mb-2">
-              <VerifiedFounderBadge
-                userName={profile.full_name || ""}
-                userEmail={profile.email || undefined}
-                userId={userId}
-                size="md"
-              />
+              {deferExtras && (
+                <Suspense fallback={null}>
+                  <VerifiedFounderBadge
+                    userName={profile.full_name || ""}
+                    userEmail={profile.email || undefined}
+                    userId={userId}
+                    size="md"
+                  />
+                </Suspense>
+              )}
             </div>
 
             <h1
@@ -122,17 +139,21 @@ export const ProfileHero = ({
               ) : (
                 <>
                   {friendsAction}
-                  <FollowButton
-                    userId={userId}
-                    currentUserId={currentUserId || undefined}
-                    variant="default"
-                  />
-                  {userId && (
-                    <MessageButton
-                      userId={userId}
-                      userName={profile.full_name || "User"}
-                      userAvatar={profile.avatar_url || undefined}
-                    />
+                  {deferExtras && (
+                    <Suspense fallback={null}>
+                      <FollowButton
+                        userId={userId}
+                        currentUserId={currentUserId || undefined}
+                        variant="default"
+                      />
+                      {userId && (
+                        <MessageButton
+                          userId={userId}
+                          userName={profile.full_name || "User"}
+                          userAvatar={profile.avatar_url || undefined}
+                        />
+                      )}
+                    </Suspense>
                   )}
                 </>
               )}

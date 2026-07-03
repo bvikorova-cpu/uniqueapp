@@ -1,9 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import { Home, Crown, Trophy, MessageSquare, User, LogIn } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 import { markMeClick } from "@/utils/perfMe";
+import { prefetchProfileRoute } from "@/utils/prewarmRoutes";
 
 const ITEMS_AUTH = [
   { path: "/", label: "Home", icon: Home },
@@ -26,6 +28,10 @@ export const MobileBottomNav = () => {
   const { pathname } = useLocation();
   const { user } = useAuth();
 
+  useEffect(() => {
+    if (user) prefetchProfileRoute();
+  }, [user]);
+
   // Hide on auth flow & checkout to avoid friction
   if (pathname.startsWith("/auth") || pathname.startsWith("/checkout") || pathname.startsWith("/messenger")) return null;
 
@@ -45,6 +51,12 @@ export const MobileBottomNav = () => {
             <li key={path}>
               <Link
                 to={target}
+                onPointerDown={() => {
+                  if (path === "/profile") prefetchProfileRoute();
+                }}
+                onTouchStart={() => {
+                  if (path === "/profile") prefetchProfileRoute();
+                }}
                 onClick={() => {
                   if (path === "/profile") markMeClick();
                 }}

@@ -13,19 +13,11 @@
  * Both are gated on `navigator.onLine`, `saveData`, and `2g`/`slow-2g`.
  */
 
-// Loaders for the most-visited routes across the platform. Order matters —
-// earlier entries fetch first while the browser is freshest.
+// Optional desktop-only route warmers. Keep this list intentionally tiny:
+// the previous broad auto-prewarm downloaded Wall/Messenger/profile widgets
+// while the user was trying to open Me, which can block mid-tier mobiles.
 const HOT_ROUTES: Array<() => Promise<unknown>> = [
-  () => import("@/pages/Wall"),
-  () => import("@/pages/Messenger"),
-  () => import("@/pages/Auth"),
-  () => import("@/pages/Notifications"),
-  () => import("@/pages/Friends"),
   () => import("@/pages/Profile"),
-  () => import("@/pages/Settings"),
-  () => import("@/pages/Games"),
-  () => import("@/pages/Rewards"),
-  () => import("@/pages/AICreditsStore"),
 ];
 
 // Path prefix -> dynamic import. Used by the hover-prefetch delegator.
@@ -50,7 +42,14 @@ const HOVER_PREFETCH: Array<[RegExp, () => Promise<unknown>]> = [
 ];
 
 let started = false;
+let hoverInstalled = false;
 const prefetched = new Set<string>();
+
+export const prefetchProfileRoute = () => {
+  if (prefetched.has("/profile")) return;
+  prefetched.add("/profile");
+  import("@/pages/Profile").catch(() => {});
+};
 
 function isSlowNetwork() {
   try {
@@ -85,6 +84,8 @@ function prefetchForHref(href: string) {
 }
 
 function installHoverPrefetch() {
+  if (hoverInstalled) return;
+  hoverInstalled = true;
   const handler = (e: Event) => {
     const target = e.target as HTMLElement | null;
     if (!target) return;
@@ -103,7 +104,12 @@ export function prewarmHotRoutes() {
   if (started || typeof window === "undefined") return;
   started = true;
 
+  installHoverPrefetch();
+
   if (isSlowNetwork()) return;
+
+  const isCoarsePointer = window.matchMedia?.("(pointer: coarse)").matches;
+  if (isCoarsePointer) return;
 
   const w = window as any;
   const schedule = w.requestIdleCallback
@@ -111,7 +117,6 @@ export function prewarmHotRoutes() {
     : (cb: () => void) => setTimeout(cb, 1500);
 
   schedule(() => {
-    installHoverPrefetch();
     // Fire imports in sequence with a small gap so we don't saturate the
     // network all at once on mid-tier mobiles.
     let i = 0;
