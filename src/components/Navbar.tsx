@@ -70,6 +70,11 @@ const Navbar = () => {
     { path: "/megatalent", label: "Megatalent", icon: Crown, premium: true },
   ];
 
+  const challengeServices = [
+    { path: "/eco-challenge", label: "Eco Challenge — Daily Good Deeds", icon: Leaf },
+    { path: "/healthy-challenge", label: "Healthy Challenge — Move · Eat · Train", icon: Activity },
+  ];
+
   const learningServices = [
     { path: "/education", label: "Education", icon: GraduationCap },
     { path: "/ai-mentor", label: "AI Personal Mentor", icon: UserCircle },
