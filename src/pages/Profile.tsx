@@ -536,6 +536,7 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-background py-8">
+      <MePerfOverlay />
       <div className="container mx-auto px-3 sm:px-4 max-w-3xl">
         <Button
           variant="ghost"
