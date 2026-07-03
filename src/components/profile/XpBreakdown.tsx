@@ -1,6 +1,8 @@
 import { Card } from "@/components/ui/card";
 import { Zap, Trophy, MessageCircle, Heart, Sparkles, Users } from "lucide-react";
-import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { lazy, Suspense } from "react";
+
+const FloatingHowItWorks = lazy(() => import("../common/FloatingHowItWorks"));
 
 interface XpBreakdownProps {
   xp: number;
@@ -21,7 +23,9 @@ export const XpBreakdown = ({ xp, level, posts, likes, comments, friends }: XpBr
 
   return (
     <>
-      <FloatingHowItWorks title={"Xp Breakdown - How it works"} steps={[{ title: 'Open', desc: 'Access the Xp Breakdown section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Xp Breakdown.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <Suspense fallback={null}>
+        <FloatingHowItWorks title={"Xp Breakdown - How it works"} steps={[{ title: 'Open', desc: 'Access the Xp Breakdown section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Xp Breakdown.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      </Suspense>
       <Card className="p-4 mb-4 bg-card/60 backdrop-blur-md border-amber-500/15">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
