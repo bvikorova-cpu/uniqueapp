@@ -1,15 +1,16 @@
 import { createRoot } from "react-dom/client";
-import { Component, lazy, ReactNode, Suspense } from "react";
+import { Component, lazy as reactLazy, ReactNode, Suspense } from "react";
+import { lazyWithRetry } from "./utils/lazyWithRetry";
 import "./index.css";
 
 // Keep dynamic imports inside React.lazy. Starting them at module top-level
 // delays execution of this whole file on slow mobile networks, leaving #root
 // empty/white before React can render the fallback.
-const App = lazy(() => import("./App"));
-const CookieConsentBanner = lazy(() =>
+const App = lazyWithRetry(() => import("./App"));
+const CookieConsentBanner = reactLazy(() =>
   import("./components/gdpr/CookieConsentBanner").then((module) => ({ default: module.CookieConsentBanner }))
 );
-const InstallPromptBanner = lazy(() =>
+const InstallPromptBanner = reactLazy(() =>
   import("./components/pwa/InstallPromptBanner").then((module) => ({ default: module.InstallPromptBanner }))
 );
 
