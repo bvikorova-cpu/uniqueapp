@@ -3,6 +3,7 @@ import { Home, Crown, Trophy, MessageSquare, User, LogIn } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { markMeClick } from "@/utils/perfMe";
 
 const ITEMS_AUTH = [
   { path: "/", label: "Home", icon: Home },
@@ -44,6 +45,9 @@ export const MobileBottomNav = () => {
             <li key={path}>
               <Link
                 to={target}
+                onClick={() => {
+                  if (path === "/profile") markMeClick();
+                }}
                 className={cn(
                   "flex flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-medium transition-colors",
                   isSignIn
