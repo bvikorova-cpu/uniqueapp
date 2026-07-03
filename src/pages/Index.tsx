@@ -242,7 +242,9 @@ const Index = () => {
       {/* ── Hero Section ─────────────────────────────── */}
       <div className="relative overflow-hidden min-h-[500px] sm:min-h-[640px] lg:min-h-[720px] xl:min-h-[820px]">
         {/* Crisp hero slideshow – replaces video for sharp quality on PC and mobile */}
-        <HeroSlideshow />
+        <Suspense fallback={null}>
+          <HeroSlideshow />
+        </Suspense>
         {/* Gradient fallback behind video */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary via-accent to-primary animate-gradient-shift -z-10" />
         {/* Cinematic overlays — vignette + bottom gradient for text legibility */}
