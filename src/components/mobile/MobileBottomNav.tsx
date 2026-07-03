@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import { Home, Crown, Trophy, MessageSquare, User, LogIn } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -26,6 +27,10 @@ const ITEMS_GUEST = [
 export const MobileBottomNav = () => {
   const { pathname } = useLocation();
   const { user } = useAuth();
+
+  useEffect(() => {
+    if (user) prefetchProfileRoute();
+  }, [user]);
 
   // Hide on auth flow & checkout to avoid friction
   if (pathname.startsWith("/auth") || pathname.startsWith("/checkout") || pathname.startsWith("/messenger")) return null;
