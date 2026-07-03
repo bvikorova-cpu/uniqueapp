@@ -390,6 +390,10 @@ export default function EcoChallenge() {
                 <Card>
                   <CardHeader><CardTitle>Submit your proof</CardTitle></CardHeader>
                   <CardContent className="space-y-3">
+                    <div className="flex items-start gap-2 rounded-lg border border-emerald-300/60 bg-emerald-100/60 dark:border-emerald-800 dark:bg-emerald-900/20 p-3 text-xs">
+                      <AlertCircle className="w-4 h-4 mt-0.5 text-emerald-700 shrink-0" />
+                      <p><b>Daily limit:</b> only <b>1 submission per user per day</b> is allowed. This is enforced by the database — extra attempts today will be automatically rejected. A new challenge unlocks tomorrow.</p>
+                    </div>
                     <Textarea placeholder="Describe your good deed — what, where, how..." value={description} onChange={(e) => setDescription(e.target.value)} rows={3} maxLength={500} />
                     <div className="flex flex-wrap gap-2">
                       <Button type="button" variant="outline" size="sm" onClick={() => fileRef.current?.click()}>
@@ -441,12 +445,18 @@ export default function EcoChallenge() {
                   )}
                   {s.video_url && <video src={s.video_url} controls className="w-full rounded-lg mb-3 max-h-96" />}
                   <div className="flex items-center justify-between">
-                    <Button size="sm" variant={s.hasVoted ? "default" : "outline"} onClick={() => toggleVote(s)} disabled={s.user_id === user?.id}>
-                      <Heart className={`w-4 h-4 mr-1 ${s.hasVoted ? "fill-current" : ""}`} />
-                      {s.votes_count}
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      <Button size="sm" variant={s.hasVoted ? "default" : "outline"} onClick={() => toggleVote(s)} disabled={s.user_id === user?.id}>
+                        <Heart className={`w-4 h-4 mr-1 ${s.hasVoted ? "fill-current" : ""}`} />
+                        {s.votes_count}
+                      </Button>
+                      <Button size="sm" variant="ghost" onClick={() => shareSubmission(s)} aria-label="Share">
+                        <Share2 className="w-4 h-4 mr-1" /> Share
+                      </Button>
+                    </div>
                     <span className="text-xs text-muted-foreground">{new Date(s.created_at).toLocaleTimeString()}</span>
                   </div>
+                  <EcoComments submissionId={s.id} />
                 </CardContent>
               </Card>
             ))}
