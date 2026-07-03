@@ -13,6 +13,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useFollowCounts } from "@/hooks/useFollow";
 import { ProfileHero } from "@/components/profile/ProfileHero";
 import { XpBreakdown } from "@/components/profile/XpBreakdown";
+import {
+  finishMeTrace,
+  markMeFirstPaint,
+  startMeTrace,
+  tracedQuery,
+} from "@/utils/perfMe";
+import MePerfOverlay from "@/components/debug/MePerfOverlay";
 
 const PostCard = lazy(() => import("@/components/feed/PostCard"));
 const FreeTierHistory = lazy(() => import("@/components/credits/FreeTierHistory").then((m) => ({ default: m.FreeTierHistory })));
