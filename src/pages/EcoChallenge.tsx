@@ -251,40 +251,35 @@ export default function EcoChallenge() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 via-emerald-50 to-teal-50 dark:from-green-950/40 dark:via-emerald-950/40 dark:to-teal-950/40">
       <div className="container mx-auto px-4 py-6 max-w-5xl">
-        {/* Cinematic Hero with video background */}
-        <div className="relative overflow-hidden rounded-3xl shadow-2xl mb-6 min-h-[260px] sm:min-h-[340px]">
-          <div className="absolute inset-0 z-0">
-            <video
-              src={sectionVideos.ecoChallenge}
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-cover"
-              style={{ filter: "brightness(0.85) saturate(1.15)" }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/85 via-emerald-950/40 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-r from-green-900/20 via-transparent to-teal-900/20" />
-          </div>
+        {/* Video banner */}
+        <div className="relative overflow-hidden rounded-3xl shadow-2xl mb-4 aspect-video">
+          <video
+            src={sectionVideos.ecoChallenge}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ filter: "brightness(0.9) saturate(1.15)" }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/40 via-transparent to-transparent" />
+        </div>
 
-          <div className="relative z-10 p-5 sm:p-7 lg:p-8 flex flex-col justify-end min-h-[260px] sm:min-h-[340px]">
-            <Badge className="bg-emerald-500/90 text-white border-emerald-300/50 shadow-lg w-fit mb-3">
-              🌍 Global Eco Challenge
-            </Badge>
-
-            <div className="border-2 border-emerald-300/30 bg-emerald-950/50 backdrop-blur-lg rounded-xl px-5 py-4 w-fit max-w-full">
-              <h1 className="text-2xl sm:text-3xl lg:text-5xl font-black text-white drop-shadow-lg">
-                🌱 ECO <span className="text-emerald-300">CHALLENGE</span>
-              </h1>
-              <p className="text-sm sm:text-base text-white/85 font-semibold mt-1 drop-shadow max-w-xl">
-                One good deed a day. Post proof. Get votes. Monthly champion wins <b className="text-emerald-300">100,000 XP</b>.
-              </p>
-              <div className="mt-3 flex flex-wrap gap-2 text-xs">
-                <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Trophy className="w-3.5 h-3.5" /> 100,000 XP</div>
-                <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Calendar className="w-3.5 h-3.5" /> Daily challenge</div>
-                <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Heart className="w-3.5 h-3.5" /> Community voted</div>
-              </div>
-            </div>
+        {/* Title card under video */}
+        <div className="relative overflow-hidden rounded-2xl border-2 border-emerald-300/30 bg-gradient-to-br from-emerald-950 via-green-900 to-teal-900 p-5 sm:p-6 shadow-xl mb-6">
+          <Badge className="bg-emerald-500/90 text-white border-emerald-300/50 shadow-lg w-fit mb-3">
+            🌍 Global Eco Challenge
+          </Badge>
+          <h1 className="text-2xl sm:text-3xl lg:text-5xl font-black text-white drop-shadow-lg">
+            🌱 ECO <span className="text-emerald-300">CHALLENGE</span>
+          </h1>
+          <p className="text-sm sm:text-base text-white/85 font-semibold mt-2 drop-shadow max-w-xl">
+            One good deed a day. Post proof. Get votes. Monthly champion wins <b className="text-emerald-300">100,000 XP</b>.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2 text-xs">
+            <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Trophy className="w-3.5 h-3.5" /> 100,000 XP</div>
+            <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Calendar className="w-3.5 h-3.5" /> Daily challenge</div>
+            <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Heart className="w-3.5 h-3.5" /> Community voted</div>
           </div>
         </div>
 
