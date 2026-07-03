@@ -13,7 +13,11 @@
          remain lazy-injected via src/utils/lazyFonts.ts. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lobster+Two:wght@400;700&display=swap" />
+    <!-- Non-blocking font load: `media=print` skips render-blocking, the
+         onload handler flips it back to `all` once the CSS arrives. Fallback
+         inside <noscript> for users without JS. -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lobster+Two:wght@400;700&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lobster+Two:wght@400;700&display=swap" /></noscript>
     <!-- AdSense fully removed — monetization runs through Monetag (src/lib/monetag.ts). -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     <meta http-equiv="content-language" content="en" />
