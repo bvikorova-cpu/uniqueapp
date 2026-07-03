@@ -572,6 +572,7 @@ const LegalCommunity = lazy(() => import("@/pages/legal/Community"));
 const EcoChallenge = lazy(() => import("@/pages/EcoChallenge"));
 const HealthyChallenge = lazy(() => import("@/pages/HealthyChallenge"));
 const HealthyChallengeHistory = lazy(() => import("@/pages/HealthyChallengeHistory"));
+const EcoChallengeHistory = lazy(() => import("@/pages/EcoChallengeHistory"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -657,6 +658,7 @@ const App = () => {
                         <Route path="/" element={<Index />} />
                         <Route path="/eco-challenge" element={<EcoChallenge />} />
                         <Route path="/eco" element={<EcoChallenge />} />
+                        <Route path="/eco-challenge/history" element={<EcoChallengeHistory />} />
                         <Route path="/healthy-challenge" element={<HealthyChallenge />} />
                         <Route path="/healthy" element={<HealthyChallenge />} />
                         <Route path="/healthy-challenge/history" element={<HealthyChallengeHistory />} />
