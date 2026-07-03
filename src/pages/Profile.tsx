@@ -1,53 +1,78 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { useParams, useNavigate, useSearchParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, ArrowLeft, Briefcase, Video, Bookmark, Trophy, GraduationCap, Brain, Package, Sparkles, ArrowRightLeft, Users, UserPlus, UserCheck, Gift } from "lucide-react";
+import { Loader2, ArrowLeft, Briefcase, Brain, Package, Sparkles, Users, UserPlus, UserCheck, Gift } from "lucide-react";
 // FreeTierBalanceWidget import removed — paid-only model
-import { FreeTierHistory } from "@/components/credits/FreeTierHistory";
-import { StreakMultiplierCard } from "@/components/gamification/StreakMultiplierCard";
-import { VictoryCardGenerator } from "@/components/social/VictoryCardGenerator";
-import { ProfileMilestones } from "@/components/profile/ProfileMilestones";
-import CreatorAnalyticsWidget from "@/components/analytics/CreatorAnalyticsWidget";
-import { InviteFriendPanel } from "@/components/referral/InviteFriendPanel";
-import { BrainDuelStats } from "@/components/profile/BrainDuelStats";
 import { useToast } from "@/hooks/use-toast";
-import PostCard from "@/components/feed/PostCard";
-import { CourseHistory } from "@/components/profile/CourseHistory";
-import { UserContests } from "@/components/profile/UserContests";
-import { FollowersModal } from "@/components/profile/FollowersModal";
+import { useAuth } from "@/contexts/AuthContext";
 import { useFollowCounts } from "@/hooks/useFollow";
-import { DailyXPVideoReward } from "@/components/gamification/DailyXPVideoReward";
-import { MyBazaarListings } from "@/components/profile/MyBazaarListings";
-import { MySkillsHub } from "@/components/profile/MySkillsHub";
-import { MyJobApplications } from "@/components/profile/MyJobApplications";
 import { ProfileHero } from "@/components/profile/ProfileHero";
-import { AchievementsWall } from "@/components/profile/AchievementsWall";
-import { ActivityHeatmap } from "@/components/profile/ActivityHeatmap";
-import { FounderStory } from "@/components/profile/FounderStory";
-import { StoryHighlights } from "@/components/profile/StoryHighlights";
-import { VoiceIntro } from "@/components/profile/VoiceIntro";
-import { Avatar3D } from "@/components/profile/Avatar3D";
-import { PublicGoals } from "@/components/profile/PublicGoals";
-import { ProfileJsonLd } from "@/components/profile/ProfileJsonLd";
-import { OpenToWorkBadge } from "@/components/profile/OpenToWork";
-import { ProfileMusicPlayer } from "@/components/profile/ProfileMusicPlayer";
-import { MutualConnections } from "@/components/profile/MutualConnections";
-import { VCardDownloadButton } from "@/components/profile/VCardDownloadButton";
-import { TipJar } from "@/components/profile/TipJar";
-import { TipHistory } from "@/components/profile/TipHistory";
-import { ProfileQRCode } from "@/components/profile/ProfileQRCode";
-import { ThemePicker } from "@/components/profile/ThemePicker";
-import { Endorsements } from "@/components/profile/Endorsements";
-import { ProfileViewsCounter } from "@/components/profile/ProfileViewsCounter";
-import { LifeEventsTimeline } from "@/components/profile/LifeEventsTimeline";
-import { FamilySection } from "@/components/profile/FamilySection";
 import { XpBreakdown } from "@/components/profile/XpBreakdown";
+
+const PostCard = lazy(() => import("@/components/feed/PostCard"));
+const FreeTierHistory = lazy(() => import("@/components/credits/FreeTierHistory").then((m) => ({ default: m.FreeTierHistory })));
+const StreakMultiplierCard = lazy(() => import("@/components/gamification/StreakMultiplierCard").then((m) => ({ default: m.StreakMultiplierCard })));
+const VictoryCardGenerator = lazy(() => import("@/components/social/VictoryCardGenerator").then((m) => ({ default: m.VictoryCardGenerator })));
+const ProfileMilestones = lazy(() => import("@/components/profile/ProfileMilestones").then((m) => ({ default: m.ProfileMilestones })));
+const CreatorAnalyticsWidget = lazy(() => import("@/components/analytics/CreatorAnalyticsWidget"));
+const InviteFriendPanel = lazy(() => import("@/components/referral/InviteFriendPanel").then((m) => ({ default: m.InviteFriendPanel })));
+const BrainDuelStats = lazy(() => import("@/components/profile/BrainDuelStats").then((m) => ({ default: m.BrainDuelStats })));
+const CourseHistory = lazy(() => import("@/components/profile/CourseHistory").then((m) => ({ default: m.CourseHistory })));
+const UserContests = lazy(() => import("@/components/profile/UserContests").then((m) => ({ default: m.UserContests })));
+const FollowersModal = lazy(() => import("@/components/profile/FollowersModal").then((m) => ({ default: m.FollowersModal })));
+const DailyXPVideoReward = lazy(() => import("@/components/gamification/DailyXPVideoReward").then((m) => ({ default: m.DailyXPVideoReward })));
+const MyBazaarListings = lazy(() => import("@/components/profile/MyBazaarListings").then((m) => ({ default: m.MyBazaarListings })));
+const MySkillsHub = lazy(() => import("@/components/profile/MySkillsHub").then((m) => ({ default: m.MySkillsHub })));
+const MyJobApplications = lazy(() => import("@/components/profile/MyJobApplications").then((m) => ({ default: m.MyJobApplications })));
+const AchievementsWall = lazy(() => import("@/components/profile/AchievementsWall").then((m) => ({ default: m.AchievementsWall })));
+const ActivityHeatmap = lazy(() => import("@/components/profile/ActivityHeatmap").then((m) => ({ default: m.ActivityHeatmap })));
+const FounderStory = lazy(() => import("@/components/profile/FounderStory").then((m) => ({ default: m.FounderStory })));
+const StoryHighlights = lazy(() => import("@/components/profile/StoryHighlights").then((m) => ({ default: m.StoryHighlights })));
+const VoiceIntro = lazy(() => import("@/components/profile/VoiceIntro").then((m) => ({ default: m.VoiceIntro })));
+const Avatar3D = lazy(() => import("@/components/profile/Avatar3D").then((m) => ({ default: m.Avatar3D })));
+const PublicGoals = lazy(() => import("@/components/profile/PublicGoals").then((m) => ({ default: m.PublicGoals })));
+const ProfileJsonLd = lazy(() => import("@/components/profile/ProfileJsonLd").then((m) => ({ default: m.ProfileJsonLd })));
+const OpenToWorkBadge = lazy(() => import("@/components/profile/OpenToWork").then((m) => ({ default: m.OpenToWorkBadge })));
+const ProfileMusicPlayer = lazy(() => import("@/components/profile/ProfileMusicPlayer").then((m) => ({ default: m.ProfileMusicPlayer })));
+const MutualConnections = lazy(() => import("@/components/profile/MutualConnections").then((m) => ({ default: m.MutualConnections })));
+const VCardDownloadButton = lazy(() => import("@/components/profile/VCardDownloadButton").then((m) => ({ default: m.VCardDownloadButton })));
+const TipJar = lazy(() => import("@/components/profile/TipJar").then((m) => ({ default: m.TipJar })));
+const TipHistory = lazy(() => import("@/components/profile/TipHistory").then((m) => ({ default: m.TipHistory })));
+const ProfileQRCode = lazy(() => import("@/components/profile/ProfileQRCode").then((m) => ({ default: m.ProfileQRCode })));
+const ThemePicker = lazy(() => import("@/components/profile/ThemePicker").then((m) => ({ default: m.ThemePicker })));
+const Endorsements = lazy(() => import("@/components/profile/Endorsements").then((m) => ({ default: m.Endorsements })));
+const ProfileViewsCounter = lazy(() => import("@/components/profile/ProfileViewsCounter").then((m) => ({ default: m.ProfileViewsCounter })));
+const LifeEventsTimeline = lazy(() => import("@/components/profile/LifeEventsTimeline").then((m) => ({ default: m.LifeEventsTimeline })));
+const FamilySection = lazy(() => import("@/components/profile/FamilySection").then((m) => ({ default: m.FamilySection })));
+
+const PROFILE_POSTS_PAGE_SIZE = 10;
+const LazyProfileSectionFallback = () => <div className="h-24 rounded-xl bg-muted/30 animate-pulse" />;
+
+const createOwnProfileSnapshot = (user: NonNullable<ReturnType<typeof useAuth>["user"]>): Profile => ({
+  id: user.id,
+  full_name: (user.user_metadata?.full_name as string | undefined) || (user.email?.split("@")[0] ?? "Unique user"),
+  avatar_url: (user.user_metadata?.avatar_url as string | undefined) || null,
+  email: user.email ?? null,
+  bio: null,
+  location: null,
+  website: null,
+  interests: null,
+  occupation: null,
+  company: null,
+  headline: null,
+  username: null,
+  social_links: null,
+  open_to_work: null,
+  open_to_work_details: null,
+  profile_music_url: null,
+  profile_music_title: null,
+  bio_translations: null,
+});
 
 interface Profile {
   id: string;
@@ -98,6 +123,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { toast } = useToast();
+  const { user, loading: authLoading } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
@@ -106,8 +132,9 @@ const Profile = () => {
   const [friends, setFriends] = useState<Profile[]>([]);
   const [followersModalOpen, setFollowersModalOpen] = useState(false);
   const [followersModalTab, setFollowersModalTab] = useState<"followers" | "following">("followers");
-  const { data: followCounts } = useFollowCounts(userId);
   const [defaultTab, setDefaultTab] = useState("posts");
+  const [detailsReady, setDetailsReady] = useState(false);
+  const { data: followCounts } = useFollowCounts(detailsReady ? userId : undefined);
   const [stats, setStats] = useState({
     postsCount: 0,
     likesGiven: 0,
@@ -120,10 +147,25 @@ const Profile = () => {
   });
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setCurrentUserId(session?.user?.id || null);
-    });
-  }, []);
+    if (authLoading) return;
+    setCurrentUserId(user?.id || null);
+  }, [authLoading, user?.id]);
+
+  useEffect(() => {
+    if (!authLoading && user && userId === user.id && loading) {
+      setProfile(createOwnProfileSnapshot(user));
+      setLoading(false);
+    }
+  }, [authLoading, loading, user, userId]);
+
+  useEffect(() => {
+    const schedule = (window as any).requestIdleCallback
+      ? (cb: () => void) => (window as any).requestIdleCallback(cb, { timeout: 1200 })
+      : (cb: () => void) => window.setTimeout(cb, 500);
+    const cancel = (window as any).cancelIdleCallback ?? window.clearTimeout;
+    const id = schedule(() => setDetailsReady(true));
+    return () => cancel(id);
+  }, [userId]);
 
   // Verify Stripe Checkout tip session on return
   useEffect(() => {
@@ -170,38 +212,20 @@ const Profile = () => {
   }, [searchParams, currentUserId, userId]);
 
   useEffect(() => {
-    const fetchProfileAndPosts = async () => {
+    const fetchProfile = async () => {
       if (!userId) return;
 
       try {
-        // Fetch profile + posts first (critical path) in parallel and render ASAP.
-        const [profileRes, postsRes] = await Promise.all([
-          supabase
-            .from("public_profiles")
-            .select("*")
-            .eq("id", userId)
-            .maybeSingle(),
-          supabase
-            .from("posts")
-            .select(`*, media (*)`)
-            .eq("user_id", userId)
-            .order("created_at", { ascending: false }),
-        ]);
+        // Critical path: profile only. Posts/feed widgets are loaded after paint.
+        const profileRes = await supabase
+          .from("public_profiles")
+          .select("id, full_name, avatar_url, bio, location, website, interests, occupation, company, headline, username, social_links, open_to_work, open_to_work_details, profile_music_url, profile_music_title")
+          .eq("id", userId)
+          .maybeSingle();
 
         if (profileRes.error) throw profileRes.error;
-        const profileData = profileRes.data;
+        const profileData = profileRes.data ?? (user && userId === user.id ? createOwnProfileSnapshot(user) : null);
         setProfile(profileData);
-
-        const postsData = postsRes.data;
-        const postsWithProfiles = (postsData || []).map((post) => ({
-          ...post,
-          profiles: {
-            id: profileData?.id,
-            full_name: profileData?.full_name,
-            avatar_url: profileData?.avatar_url,
-          },
-        }));
-        setPosts(postsWithProfiles);
         setLoading(false);
 
         // Fire-and-forget: all remaining queries in parallel (non-blocking).
@@ -218,6 +242,7 @@ const Profile = () => {
           coursesRes,
           pointsRes,
           friendsRes,
+          postsCountRes,
         ] = await Promise.all([
           supabase.from("post_likes").select("*", { count: "exact", head: true }).eq("user_id", userId),
           supabase.from("post_comments").select("*", { count: "exact", head: true }).eq("user_id", userId),
@@ -225,11 +250,12 @@ const Profile = () => {
           supabase.from("completed_courses").select("*", { count: "exact", head: true }).eq("user_id", userId),
           supabase.from("user_points").select("total_points, level").eq("user_id", userId).maybeSingle(),
           friendsPromise,
+          supabase.from("posts").select("id", { count: "exact", head: true }).eq("user_id", userId),
         ]);
 
         const friendsData = friendsRes.data;
         setStats({
-          postsCount: postsData?.length || 0,
+          postsCount: postsCountRes.count ?? 0,
           likesGiven: likesRes.count || 0,
           commentsGiven: commentsRes.count || 0,
           friendsCount: friendsData?.length || 0,
@@ -259,8 +285,37 @@ const Profile = () => {
       }
     };
 
-    fetchProfileAndPosts();
-  }, [userId, toast]);
+    fetchProfile();
+  }, [user, userId, toast]);
+
+  useEffect(() => {
+    if (!detailsReady || !userId || !profile) return;
+    let cancelled = false;
+
+    (async () => {
+      const { data: postsData } = await supabase
+        .from("posts")
+        .select(`*, media (*)`)
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
+        .limit(PROFILE_POSTS_PAGE_SIZE);
+
+      if (cancelled) return;
+      const postsWithProfiles = (postsData || []).map((post) => ({
+        ...post,
+        profiles: {
+          id: profile.id,
+          full_name: profile.full_name,
+          avatar_url: profile.avatar_url,
+        },
+      }));
+      setPosts(postsWithProfiles);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [detailsReady, userId, profile]);
 
   // Fetch friendship status separately so profile render doesn't wait on session.
   useEffect(() => {
@@ -431,7 +486,8 @@ const Profile = () => {
         media (*)
       `)
       .eq("user_id", userId)
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .limit(PROFILE_POSTS_PAGE_SIZE);
 
     const postsWithProfiles = (postsData || []).map(post => ({
       ...post,
@@ -493,36 +549,36 @@ const Profile = () => {
             level: stats.level,
           }}
           friendsAction={
-            <>
+            <Suspense fallback={null}>
               {friendshipStatus === 'none' && (
-                <Button onClick={handleAddFriend} className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white border-0 shadow-lg shadow-violet-500/30">
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  Add Friend
-                </Button>
-              )}
-              {friendshipStatus === 'pending_sent' && (
-                <Button disabled className="bg-gradient-to-r from-violet-600/60 to-purple-600/60 text-white border-0">
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Sent
-                </Button>
-              )}
-              {friendshipStatus === 'pending_received' && (
-                <Button onClick={handleAcceptFriend} className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white border-0 shadow-lg shadow-violet-500/30">
-                  <UserCheck className="h-4 w-4 mr-2" />
-                  Accept Friend
-                </Button>
-              )}
-              {friendshipStatus === 'accepted' && (
-                <Button onClick={handleRemoveFriend} className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white border-0 shadow-lg shadow-violet-500/30">
-                  <Users className="h-4 w-4 mr-2" />
-                  Friends
-                </Button>
-              )}
-              {currentUserId === userId && <ThemePicker userId={userId!} />}
-              {currentUserId !== userId && profile.full_name && (
-                <TipJar recipientId={userId!} recipientName={profile.full_name} currentUserId={currentUserId} />
-              )}
-            </>
+                  <Button onClick={handleAddFriend} className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white border-0 shadow-lg shadow-violet-500/30">
+                    <UserPlus className="h-4 w-4 mr-2" />
+                    Add Friend
+                  </Button>
+                )}
+                {friendshipStatus === 'pending_sent' && (
+                  <Button disabled className="bg-gradient-to-r from-violet-600/60 to-purple-600/60 text-white border-0">
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Sent
+                  </Button>
+                )}
+                {friendshipStatus === 'pending_received' && (
+                  <Button onClick={handleAcceptFriend} className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white border-0 shadow-lg shadow-violet-500/30">
+                    <UserCheck className="h-4 w-4 mr-2" />
+                    Accept Friend
+                  </Button>
+                )}
+                {friendshipStatus === 'accepted' && (
+                  <Button onClick={handleRemoveFriend} className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white border-0 shadow-lg shadow-violet-500/30">
+                    <Users className="h-4 w-4 mr-2" />
+                    Friends
+                  </Button>
+                )}
+                {currentUserId === userId && <ThemePicker userId={userId!} />}
+                {currentUserId !== userId && profile.full_name && (
+                  <TipJar recipientId={userId!} recipientName={profile.full_name} currentUserId={currentUserId} />
+                )}
+            </Suspense>
           }
         />
 
@@ -536,6 +592,8 @@ const Profile = () => {
           friends={stats.friendsCount}
         />
 
+        {detailsReady && (
+        <Suspense fallback={<LazyProfileSectionFallback />}>
         {/* Free Tier Credits — visible on own profile */}
         {userId && (
           <div className="mb-4 grid md:grid-cols-2 gap-4">
@@ -779,6 +837,8 @@ const Profile = () => {
           onClose={() => setFollowersModalOpen(false)}
           defaultTab={followersModalTab}
         />
+        </Suspense>
+        )}
       </div>
     </div>
   );
