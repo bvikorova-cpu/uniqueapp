@@ -438,10 +438,15 @@ export default function HealthyChallenge() {
                   )}
                   {s.video_url && <video src={s.video_url} controls className="w-full rounded-lg mb-3 max-h-96" />}
                   <div className="flex items-center justify-between">
-                    <Button size="sm" variant={s.hasVoted ? "default" : "outline"} onClick={() => toggleVote(s)} disabled={s.user_id === user?.id}>
-                      <Heart className={`w-4 h-4 mr-1 ${s.hasVoted ? "fill-current" : ""}`} />
-                      {s.votes_count}
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      <Button size="sm" variant={s.hasVoted ? "default" : "outline"} onClick={() => toggleVote(s)} disabled={s.user_id === user?.id}>
+                        <Heart className={`w-4 h-4 mr-1 ${s.hasVoted ? "fill-current" : ""}`} />
+                        {s.votes_count}
+                      </Button>
+                      <Button size="sm" variant="ghost" onClick={() => shareSubmission(s)} aria-label="Share">
+                        <Share2 className="w-4 h-4 mr-1" /> Share
+                      </Button>
+                    </div>
                     <span className="text-xs text-muted-foreground">{new Date(s.created_at).toLocaleTimeString()}</span>
                   </div>
                   <HealthyComments submissionId={s.id} />
