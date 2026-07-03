@@ -7,10 +7,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { Dumbbell, Trophy, Heart, Upload, Sparkles, Calendar, Video, Image as ImageIcon, Activity } from "lucide-react";
+import { Dumbbell, Trophy, Heart, Upload, Sparkles, Calendar, Video, Image as ImageIcon, Activity, AlertCircle, History } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { sectionVideos } from "@/components/sectionVideos";
 import { Link } from "react-router-dom";
+import { HealthyComments } from "@/components/healthy/HealthyComments";
 
 interface Challenge {
   id: string;
@@ -53,12 +54,14 @@ const currentMonthKey = () => new Date().toISOString().slice(0, 7);
 const HIW_STEPS = [
   { title: "1. See today's challenge", desc: "A new healthy lifestyle task appears every day — run, workout, healthy meal, hydration, sleep, stretching." },
   { title: "2. Do it in real life", desc: "Complete the action. Snap a photo of your smartwatch showing km, your healthy plate, your workout setup, or a short clip." },
-  { title: "3. Submit your proof", desc: "Add a short description, upload up to 4 photos or 1 video (≤50 MB). One submission per day." },
-  { title: "4. Vote for others", desc: "Only registered users can vote. You can't vote for your own post. One vote per submission." },
-  { title: "5. Climb the leaderboard", desc: "Ranking = most days completed this month, ties broken by total votes received." },
-  { title: "6. Win 100,000 XP", desc: "On the 1st of each month the top healthy hero automatically receives 100,000 XP and a champion badge." },
-  { title: "7. Boost your submission", desc: "Optional: spend 5 credits to pin your submission for 24 hours at the top of the feed." },
-  { title: "8. Sponsors welcome", desc: "Fitness brands, gyms and nutrition companies can sponsor a daily challenge — logo on card + feed." },
+  { title: "3. Submit your proof", desc: "Add a short description (min 10 chars), upload up to 4 photos or 1 video (≤50 MB). Strict limit: 1 submission per user per day (enforced by the database)." },
+  { title: "4. Earn XP for each valid day", desc: "Every accepted submission credits +XP shown on today's card (default +50 XP). A day only counts once — extra tries the same day are blocked." },
+  { title: "5. Vote & comment", desc: "Only registered users can vote and comment. You can't vote for yourself. One vote per submission. Comments follow the same registered-only rule as votes and can be deleted by their author." },
+  { title: "6. Climb the leaderboard", desc: "Monthly ranking = number of days completed this calendar month (UTC). Ties are broken by total votes received on your submissions that month." },
+  { title: "7. Win 100,000 XP each month", desc: "On the 1st of the next month, the top healthy hero of the previous month automatically receives 100,000 XP + a champion badge. Only one winner per month. Winners are archived in Monthly History." },
+  { title: "8. Boost your submission", desc: "Optional: spend 5 credits to pin your submission for 24 hours at the top of the feed. Boost does not add votes — only visibility." },
+  { title: "9. Fair play & moderation", desc: "Duplicate accounts, fake proof, offensive content or spam get hidden by admins and disqualified from the monthly prize." },
+  { title: "10. Sponsors welcome", desc: "Fitness brands, gyms and nutrition companies can sponsor a daily challenge — logo appears on the daily card and in the feed." },
 ];
 
 export default function HealthyChallenge() {
@@ -189,7 +192,14 @@ export default function HealthyChallenge() {
     if (!user) { toast({ title: "Sign in required", variant: "destructive" }); return; }
     if (!challenge || challenge.id === "fallback") { toast({ title: "No active challenge yet", description: "Admin has not created today's challenge.", variant: "destructive" }); return; }
     if (description.trim().length < 10) { toast({ title: "Describe your effort (min 10 chars)", variant: "destructive" }); return; }
-    if (mySubmissionToday) { toast({ title: "Already submitted today", variant: "destructive" }); return; }
+    if (mySubmissionToday) {
+      toast({
+        title: "⚠️ Daily limit reached",
+        description: "You have already submitted your proof for today. Only 1 submission per day is allowed. Come back tomorrow for a new challenge!",
+        variant: "destructive",
+      });
+      return;
+    }
     setUploading(true);
     try {
       const { images, video } = await uploadMedia();
@@ -201,7 +211,19 @@ export default function HealthyChallenge() {
         image_urls: images,
         video_url: video,
       });
-      if (error) throw error;
+      if (error) {
+        // Postgres unique_violation (user already submitted today, race-safe)
+        if ((error as any).code === "23505") {
+          toast({
+            title: "⚠️ Daily limit reached",
+            description: "You have already submitted your proof for today. Only 1 submission per day is allowed.",
+            variant: "destructive",
+          });
+          await loadAll();
+          return;
+        }
+        throw error;
+      }
       toast({ title: "💪 Submitted!", description: `Day ${myMonthDays + 1} of this month completed.` });
       setDescription(""); setFiles([]); setVideoFile(null);
       await loadAll();
@@ -327,6 +349,12 @@ export default function HealthyChallenge() {
                 <Card>
                   <CardHeader><CardTitle>Submit your proof</CardTitle></CardHeader>
                   <CardContent className="space-y-3">
+                    <div className="flex items-start gap-2 rounded-lg border border-orange-300/60 bg-orange-100/60 dark:border-orange-800 dark:bg-orange-900/20 p-3 text-xs">
+                      <AlertCircle className="w-4 h-4 mt-0.5 text-orange-600 shrink-0" />
+                      <p>
+                        <b>Daily limit:</b> only <b>1 submission per user per day</b> is allowed. This is enforced by the database — extra attempts today will be automatically rejected. A new challenge unlocks tomorrow.
+                      </p>
+                    </div>
                     <Textarea placeholder="Describe your healthy action — activity, km, meal, duration..." value={description} onChange={(e) => setDescription(e.target.value)} rows={3} maxLength={500} />
                     <div className="flex flex-wrap gap-2">
                       <Button type="button" variant="outline" size="sm" onClick={() => fileRef.current?.click()}>
@@ -383,6 +411,7 @@ export default function HealthyChallenge() {
                     </Button>
                     <span className="text-xs text-muted-foreground">{new Date(s.created_at).toLocaleTimeString()}</span>
                   </div>
+                  <HealthyComments submissionId={s.id} />
                 </CardContent>
               </Card>
             ))}
@@ -413,18 +442,23 @@ export default function HealthyChallenge() {
 
           <TabsContent value="winners">
             <Card>
-              <CardHeader><CardTitle>Past Healthy Champions</CardTitle></CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                <CardTitle>Past Healthy Champions</CardTitle>
+                <Link to="/healthy-challenge/history">
+                  <Button size="sm" variant="outline"><History className="w-4 h-4 mr-1" /> Full history</Button>
+                </Link>
+              </CardHeader>
               <CardContent>
                 {winners.length === 0 ? <p className="text-muted-foreground">No champions crowned yet — could be you next month!</p> : (
                   <div className="space-y-2">
                     {winners.map((w) => (
-                      <div key={w.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                      <Link key={w.id} to="/healthy-challenge/history" className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition">
                         <Trophy className="w-6 h-6 text-yellow-500" />
                         <div className="flex-1">
                           <p className="font-semibold">{w.month_key}</p>
                           <p className="text-xs text-muted-foreground">{w.days_completed} days · {w.total_votes} votes · +{w.xp_awarded.toLocaleString()} XP</p>
                         </div>
-                      </div>
+                      </Link>
                     ))}
                   </div>
                 )}

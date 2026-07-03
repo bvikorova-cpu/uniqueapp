@@ -27538,6 +27538,44 @@ export type Database = {
         }
         Relationships: []
       }
+      healthy_comments: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          is_deleted: boolean
+          submission_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          is_deleted?: boolean
+          submission_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          is_deleted?: boolean
+          submission_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "healthy_comments_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "healthy_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       healthy_monthly_winners: {
         Row: {
           created_at: string
