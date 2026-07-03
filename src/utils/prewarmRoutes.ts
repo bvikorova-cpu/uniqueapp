@@ -1,50 +1,117 @@
 /**
- * Route pre-warming.
+ * Route pre-warming + link hover prefetch.
  *
- * When the user has been idle on the current page for a moment, we speculatively
- * fetch the JS chunks for the most likely next destinations. This turns
- * subsequent navigations into a paint-in-the-next-frame experience instead of
- * a spinner + waterfall.
+ * Two mechanisms working together:
  *
- * Rules:
- *  - Only run once per session.
- *  - Only run on `navigator.onLine` and when the connection isn't Save-Data
- *    or a documented `2g`/`slow-2g` — mobile users on tight networks pay for
- *    every byte.
- *  - Use `requestIdleCallback` with a generous timeout so we never compete
- *    with the current page's own critical work.
+ * 1. On idle after boot, speculatively import the JS chunks for the most
+ *    common destinations across the app. This makes the FIRST navigation
+ *    from wherever the user landed feel instant.
+ * 2. A global pointer/touch delegation listener also prefetches whichever
+ *    internal link the user is about to click, so even routes NOT in the
+ *    hot list warm up the moment they intend to navigate.
+ *
+ * Both are gated on `navigator.onLine`, `saveData`, and `2g`/`slow-2g`.
  */
 
+// Loaders for the most-visited routes across the platform. Order matters —
+// earlier entries fetch first while the browser is freshest.
 const HOT_ROUTES: Array<() => Promise<unknown>> = [
   () => import("@/pages/Wall"),
   () => import("@/pages/Messenger"),
   () => import("@/pages/Auth"),
   () => import("@/pages/Notifications"),
   () => import("@/pages/Friends"),
+  () => import("@/pages/Profile"),
+  () => import("@/pages/Settings"),
+  () => import("@/pages/Games"),
+  () => import("@/pages/Rewards"),
+  () => import("@/pages/AICreditsStore"),
+];
+
+// Path prefix -> dynamic import. Used by the hover-prefetch delegator.
+// Only include lightweight, high-traffic routes; heavy routes (3D, PDF,
+// admin) intentionally stay cold.
+const HOVER_PREFETCH: Array<[RegExp, () => Promise<unknown>]> = [
+  [/^\/wall/, () => import("@/pages/Wall")],
+  [/^\/messenger/, () => import("@/pages/Messenger")],
+  [/^\/auth/, () => import("@/pages/Auth")],
+  [/^\/notifications/, () => import("@/pages/Notifications")],
+  [/^\/friends/, () => import("@/pages/Friends")],
+  [/^\/profile/, () => import("@/pages/Profile")],
+  [/^\/settings/, () => import("@/pages/Settings")],
+  [/^\/games/, () => import("@/pages/Games")],
+  [/^\/rewards/, () => import("@/pages/Rewards")],
+  [/^\/ai-credits/, () => import("@/pages/AICreditsStore")],
+  [/^\/dating/, () => import("@/pages/Dating")],
+  [/^\/jobs/, () => import("@/pages/Jobs")],
+  [/^\/marketplace/, () => import("@/pages/Marketplace")],
+  [/^\/bazaar/, () => import("@/pages/Bazaar")],
+  [/^\/education/, () => import("@/pages/education/EducationHub")],
 ];
 
 let started = false;
+const prefetched = new Set<string>();
+
+function isSlowNetwork() {
+  try {
+    const nav = navigator as any;
+    if (nav?.connection?.saveData) return true;
+    const et = nav?.connection?.effectiveType as string | undefined;
+    if (et === "2g" || et === "slow-2g") return true;
+    if (navigator.onLine === false) return true;
+  } catch {
+    /* noop */
+  }
+  return false;
+}
+
+function prefetchForHref(href: string) {
+  if (!href || prefetched.has(href)) return;
+  let path = href;
+  try {
+    const url = new URL(href, window.location.origin);
+    if (url.origin !== window.location.origin) return;
+    path = url.pathname;
+  } catch {
+    return;
+  }
+  for (const [pattern, loader] of HOVER_PREFETCH) {
+    if (pattern.test(path)) {
+      prefetched.add(href);
+      loader().catch(() => {});
+      return;
+    }
+  }
+}
+
+function installHoverPrefetch() {
+  const handler = (e: Event) => {
+    const target = e.target as HTMLElement | null;
+    if (!target) return;
+    const anchor = target.closest?.("a[href]") as HTMLAnchorElement | null;
+    if (!anchor) return;
+    const href = anchor.getAttribute("href");
+    if (!href || href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) return;
+    prefetchForHref(href);
+  };
+  // pointerover covers mouse + pen; touchstart covers mobile taps before nav.
+  document.addEventListener("pointerover", handler, { passive: true, capture: true });
+  document.addEventListener("touchstart", handler, { passive: true, capture: true });
+}
 
 export function prewarmHotRoutes() {
   if (started || typeof window === "undefined") return;
   started = true;
 
-  try {
-    const nav = navigator as any;
-    if (nav?.connection?.saveData) return;
-    const et = nav?.connection?.effectiveType as string | undefined;
-    if (et === "2g" || et === "slow-2g") return;
-    if (navigator.onLine === false) return;
-  } catch {
-    /* noop */
-  }
+  if (isSlowNetwork()) return;
 
   const w = window as any;
   const schedule = w.requestIdleCallback
-    ? (cb: () => void) => w.requestIdleCallback(cb, { timeout: 4000 })
-    : (cb: () => void) => setTimeout(cb, 2500);
+    ? (cb: () => void) => w.requestIdleCallback(cb, { timeout: 3000 })
+    : (cb: () => void) => setTimeout(cb, 1500);
 
   schedule(() => {
+    installHoverPrefetch();
     // Fire imports in sequence with a small gap so we don't saturate the
     // network all at once on mid-tier mobiles.
     let i = 0;
@@ -52,7 +119,7 @@ export function prewarmHotRoutes() {
       const loader = HOT_ROUTES[i++];
       if (!loader) return;
       loader().catch(() => {}).finally(() => {
-        setTimeout(next, 350);
+        setTimeout(next, 200);
       });
     };
     next();
