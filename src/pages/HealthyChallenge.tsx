@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { Dumbbell, Trophy, Heart, Upload, Sparkles, Calendar, Video, Image as ImageIcon, Activity, AlertCircle, History } from "lucide-react";
+import { Dumbbell, Trophy, Heart, Upload, Sparkles, Calendar, Video, Image as ImageIcon, Activity, AlertCircle, History, Share2, Timer } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { sectionVideos } from "@/components/sectionVideos";
 import { Link } from "react-router-dom";
@@ -63,6 +63,19 @@ const HIW_STEPS = [
   { title: "9. Fair play & moderation", desc: "Duplicate accounts, fake proof, offensive content or spam get hidden by admins and disqualified from the monthly prize." },
   { title: "10. Sponsors welcome", desc: "Fitness brands, gyms and nutrition companies can sponsor a daily challenge — logo appears on the daily card and in the feed." },
 ];
+
+const msUntilMonthEnd = () => {
+  const now = new Date();
+  const end = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1, 0, 0, 0));
+  return end.getTime() - now.getTime();
+};
+const fmtCountdown = (ms: number) => {
+  if (ms <= 0) return "0d 0h 0m";
+  const d = Math.floor(ms / 86400000);
+  const h = Math.floor((ms % 86400000) / 3600000);
+  const m = Math.floor((ms % 3600000) / 60000);
+  return `${d}d ${h}h ${m}m`;
+};
 
 export default function HealthyChallenge() {
   const { user } = useAuth();
