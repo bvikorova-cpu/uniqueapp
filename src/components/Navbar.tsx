@@ -617,7 +617,12 @@ const Navbar = () => {
               })}
             </div>
 
+            <div className="border-t border-border/50 my-2" />
+
             {/* Main Navigation Items */}
+            <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground">
+              Discover
+            </div>
             {mainNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
