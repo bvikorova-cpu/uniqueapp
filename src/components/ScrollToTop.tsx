@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 /**
@@ -9,7 +9,7 @@ import { useLocation } from "react-router-dom";
 const ScrollToTop = () => {
   const { pathname, search, hash } = useLocation();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if ("scrollRestoration" in window.history) {
       window.history.scrollRestoration = "manual";
     }
@@ -38,11 +38,12 @@ const ScrollToTop = () => {
 
     scrollToTop();
     raf = window.requestAnimationFrame(scrollToTop);
-    timeout = window.setTimeout(scrollToTop, 120);
+    const timeouts = [60, 180, 450, 900].map((delay) => window.setTimeout(scrollToTop, delay));
 
     return () => {
       window.cancelAnimationFrame(raf);
       window.clearTimeout(timeout);
+      timeouts.forEach(window.clearTimeout);
     };
   }, [pathname, search, hash]);
 
@@ -55,9 +56,9 @@ const ScrollToTop = () => {
       const nextUrl = new URL(link.href, window.location.href);
       if (nextUrl.origin !== window.location.origin) return;
 
-      const sameRoute = nextUrl.pathname === window.location.pathname && nextUrl.search === window.location.search && !nextUrl.hash;
-      if (sameRoute) {
-        window.setTimeout(() => window.scrollTo({ top: 0, left: 0, behavior: "smooth" }), 0);
+      if (!nextUrl.hash) {
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+        window.setTimeout(() => window.scrollTo({ top: 0, left: 0, behavior: "auto" }), 0);
         return;
       }
     };
