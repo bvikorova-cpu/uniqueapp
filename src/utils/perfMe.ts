@@ -15,6 +15,7 @@
 
 const CLICK_KEY = "perf:me:clickAt";
 const ENABLE_KEY = "perf:me";
+const SNAPSHOT_KEY = "perf:me:profileSnapshot";
 
 type Sample = {
   label: string;
@@ -48,6 +49,53 @@ export const markMeClick = () => {
     window.sessionStorage.setItem(CLICK_KEY, String(now()));
   } catch {
     /* ignore */
+  }
+};
+
+type SessionUserLike = {
+  id: string;
+  email?: string | null;
+  user_metadata?: Record<string, unknown> | null;
+};
+
+export type MeProfileSnapshot = {
+  id: string;
+  full_name: string | null;
+  avatar_url: string | null;
+  email: string | null;
+  savedAt: number;
+};
+
+export const storeMeProfileSnapshot = (user: SessionUserLike | null | undefined) => {
+  if (typeof window === "undefined" || !user?.id) return;
+  try {
+    const fullName =
+      (user.user_metadata?.full_name as string | undefined) ||
+      (user.email?.split("@")[0] ?? "Unique user");
+    const snapshot: MeProfileSnapshot = {
+      id: user.id,
+      full_name: fullName,
+      avatar_url: (user.user_metadata?.avatar_url as string | undefined) || null,
+      email: user.email ?? null,
+      savedAt: Date.now(),
+    };
+    window.sessionStorage.setItem(SNAPSHOT_KEY, JSON.stringify(snapshot));
+  } catch {
+    /* ignore */
+  }
+};
+
+export const readMeProfileSnapshot = (userId: string | undefined): MeProfileSnapshot | null => {
+  if (typeof window === "undefined" || !userId) return null;
+  try {
+    const raw = window.sessionStorage.getItem(SNAPSHOT_KEY);
+    if (!raw) return null;
+    const snapshot = JSON.parse(raw) as MeProfileSnapshot;
+    if (snapshot.id !== userId) return null;
+    if (Date.now() - snapshot.savedAt > 15 * 60 * 1000) return null;
+    return snapshot;
+  } catch {
+    return null;
   }
 };
 
