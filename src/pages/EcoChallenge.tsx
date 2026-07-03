@@ -14,6 +14,9 @@ import { SectionVideoPreview } from "@/components/SectionVideoPreview";
 import { sectionVideos } from "@/components/sectionVideos";
 import { Link } from "react-router-dom";
 import { EcoComments } from "@/components/eco/EcoComments";
+import { ChallengeProUpsell } from "@/components/challenges/ChallengeProUpsell";
+import { ChallengeProBadge } from "@/components/challenges/ChallengeProBadge";
+import { useChallengeProSet } from "@/hooks/useChallengePro";
 
 interface Challenge {
   id: string;
@@ -282,6 +285,12 @@ export default function EcoChallenge() {
 
   const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
 
+  const proUserIds = useMemo(
+    () => [...submissions.map((s) => s.user_id), ...leaderboard.map((r) => r.user_id)],
+    [submissions, leaderboard],
+  );
+  const proSet = useChallengeProSet(proUserIds);
+
   const [countdown, setCountdown] = useState<string>(fmtCountdown(msUntilMonthEnd()));
   useEffect(() => {
     const t = setInterval(() => setCountdown(fmtCountdown(msUntilMonthEnd())), 60000);
@@ -327,15 +336,17 @@ export default function EcoChallenge() {
             🌱 ECO <span className="text-emerald-300">CHALLENGE</span>
           </h1>
           <p className="text-sm sm:text-base text-white/85 font-semibold mt-2 drop-shadow max-w-xl">
-            One good deed a day. Post proof. Get votes. Monthly champion wins <b className="text-emerald-300">100,000 XP</b>.
+            One good deed a day. Post proof. Get votes. Monthly champion wins <b className="text-emerald-300">100,000 XP</b> — or <b className="text-yellow-300">200,000 XP</b> with PRO.
           </p>
           <div className="mt-3 flex flex-wrap gap-2 text-xs">
-            <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Trophy className="w-3.5 h-3.5" /> 100,000 XP</div>
+            <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Trophy className="w-3.5 h-3.5" /> 100k XP · PRO 200k</div>
             <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Calendar className="w-3.5 h-3.5" /> Daily challenge</div>
             <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Heart className="w-3.5 h-3.5" /> Community voted</div>
             <div className="flex items-center gap-1.5 bg-yellow-500/20 border border-yellow-300/40 rounded-full px-2.5 py-1 text-yellow-100" title="Time left until this month's champion is auto-crowned"><Timer className="w-3.5 h-3.5" /> Month ends in {countdown}</div>
           </div>
         </div>
+
+        <ChallengeProUpsell accent="emerald" />
 
         <FloatingHowItWorks title="How Eco Challenge works" intro="Turn small daily actions into a global movement." steps={HIW_STEPS} />
 
@@ -435,6 +446,7 @@ export default function EcoChallenge() {
                   <div className="flex items-center gap-2 mb-2">
                     {s.profile?.avatar_url && <img src={s.profile.avatar_url} className="w-8 h-8 rounded-full" alt="" />}
                     <span className="font-semibold">{s.profile?.full_name || s.profile?.username || "Anonymous"}</span>
+                    {proSet.has(s.user_id) && <ChallengeProBadge />}
                     {s.boosted_until && new Date(s.boosted_until) > new Date() && <Badge variant="secondary">🚀 Boosted</Badge>}
                   </div>
                   <p className="mb-3">{s.description}</p>
@@ -473,11 +485,14 @@ export default function EcoChallenge() {
                       <li key={r.user_id} className={`flex items-center gap-3 p-3 rounded-lg ${r.rank <= 3 ? "bg-gradient-to-r from-yellow-100 to-transparent dark:from-yellow-900/30" : "bg-muted/50"}`}>
                         <span className="text-2xl w-8 text-center">{r.rank === 1 ? "🥇" : r.rank === 2 ? "🥈" : r.rank === 3 ? "🥉" : `#${r.rank}`}</span>
                         {r.profile?.avatar_url && <img src={r.profile.avatar_url} className="w-10 h-10 rounded-full" alt="" />}
-                        <div className="flex-1">
-                          <p className="font-semibold">{r.profile?.full_name || "User"}</p>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <p className="font-semibold truncate">{r.profile?.full_name || "User"}</p>
+                            {proSet.has(r.user_id) && <ChallengeProBadge compact />}
+                          </div>
                           <p className="text-xs text-muted-foreground">{r.days_completed} days · {r.total_votes} votes</p>
                         </div>
-                        {r.rank === 1 && <Badge className="bg-yellow-500">100k XP</Badge>}
+                        {r.rank === 1 && <Badge className="bg-yellow-500">{proSet.has(r.user_id) ? "200k XP" : "100k XP"}</Badge>}
                       </li>
                     ))}
                   </ol>

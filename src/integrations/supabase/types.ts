@@ -9529,6 +9529,33 @@ export type Database = {
           },
         ]
       }
+      challenge_pro_subscribers: {
+        Row: {
+          active_until: string
+          created_at: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active_until: string
+          created_at?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active_until?: string
+          created_at?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       challenges: {
         Row: {
           action_type: string
@@ -65915,6 +65942,7 @@ export type Database = {
         Args: { _campaign_id: string; _campaign_type: string; _user_id: string }
         Returns: boolean
       }
+      is_challenge_pro: { Args: { _user_id: string }; Returns: boolean }
       is_community_moderator: {
         Args: { _community_id: string; _user_id: string }
         Returns: boolean

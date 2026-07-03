@@ -275,6 +275,7 @@ const DEFAULT_PATHS: Record<string, { success: string; cancel: string }> = {
   quantum_profiles: { success: "/quantum-social?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/quantum-social?payment=canceled" },
   observer_mode: { success: "/quantum-social?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/quantum-social?payment=canceled" },
   quantum_entanglement: { success: "/quantum-social?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/quantum-social?payment=canceled" },
+  challenge_pro: { success: "/eco-challenge?payment=success&challenge_pro=1&session_id={CHECKOUT_SESSION_ID}", cancel: "/eco-challenge?payment=canceled" },
 };
 
 const CLONE_PRODUCTS: Record<string, { amount: number; mode: "payment" | "subscription"; name: string; metadata: Record<string, string> }> = {
@@ -2739,6 +2740,7 @@ serve(async (req) => {
         coupon_marketplace:      { amount: 999,  mode: "subscription", name: "Coupon Marketplace Access" },
         dating_monthly:          { amount: 200,  mode: "subscription", name: "Dating Premium (Monthly)" },
         dating_yearly:           { amount: 2000, mode: "subscription", name: "Dating Premium (Yearly)" },
+        challenge_pro:           { amount: 300,  mode: "subscription", name: "Challenge PRO (Eco + Healthy)" },
       };
 
       const def = PRODUCT_DEFAULTS[productKey];
@@ -2792,6 +2794,13 @@ serve(async (req) => {
               tax_id_collection: { enabled: true },
               billing_address_collection: "required" as const,
               customer_update: customerId ? { address: "auto" as const, name: "auto" as const } : undefined,
+              subscription_data: {
+                metadata: {
+                  user_id: userId ?? "",
+                  type: productKey,
+                  product: productKey,
+                },
+              },
             }
           : {}),
         metadata: {
