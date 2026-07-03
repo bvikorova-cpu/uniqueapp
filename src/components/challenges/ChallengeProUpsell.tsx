@@ -47,30 +47,30 @@ export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" 
   if (isPro) {
     return (
       <Card className={`bg-gradient-to-br ${grad} ring-2 ${ring} border-0 text-white mb-4`}>
-        <CardContent className="pt-5 pb-5 flex items-center gap-3">
-          <div className="p-2 rounded-full bg-yellow-400/20 ring-1 ring-yellow-300/50">
-            <Leaf className="w-6 h-6 text-yellow-300" fill="currentColor" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <p className="font-bold">You are Challenge PRO</p>
-              <ChallengeProBadge />
+        <CardContent className="p-5 space-y-3">
+          <div className="flex items-start gap-3">
+            <div className="p-2 rounded-full bg-yellow-400/20 ring-1 ring-yellow-300/50 shrink-0">
+              <Leaf className="w-5 h-5 text-yellow-300" fill="currentColor" />
             </div>
-            <p className="text-xs text-white/80 mt-0.5">
-              2× monthly prize (200,000 XP) · Gold badge next to your name
-              {activeUntil && <> · Renews {new Date(activeUntil).toLocaleDateString()}</>}
-            </p>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={openPortal}
-              disabled={openingPortal}
-              className="mt-2 bg-white/10 hover:bg-white/20 border-white/30 text-white gap-1.5"
-            >
-              {openingPortal ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Settings className="w-3.5 h-3.5" />}
-              Manage or cancel
-            </Button>
+            <div className="flex-1 min-w-0">
+              <p className="font-bold leading-tight">You are Challenge PRO</p>
+              <p className="text-xs text-white/80 mt-1">
+                2× monthly prize (200,000 XP) · Gold badge next to your name
+                {activeUntil && <> · Renews {new Date(activeUntil).toLocaleDateString()}</>}
+              </p>
+            </div>
+            <ChallengeProBadge />
           </div>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={openPortal}
+            disabled={openingPortal}
+            className="w-full bg-white/10 hover:bg-white/20 border-white/30 text-white gap-1.5"
+          >
+            {openingPortal ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Settings className="w-3.5 h-3.5" />}
+            Manage or cancel
+          </Button>
         </CardContent>
       </Card>
     );
