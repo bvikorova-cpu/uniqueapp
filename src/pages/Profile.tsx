@@ -152,6 +152,13 @@ const Profile = () => {
   }, [authLoading, user?.id]);
 
   useEffect(() => {
+    if (!authLoading && user && userId === user.id && loading) {
+      setProfile(createOwnProfileSnapshot(user));
+      setLoading(false);
+    }
+  }, [authLoading, loading, user, userId]);
+
+  useEffect(() => {
     const schedule = (window as any).requestIdleCallback
       ? (cb: () => void) => (window as any).requestIdleCallback(cb, { timeout: 1200 })
       : (cb: () => void) => window.setTimeout(cb, 500);
@@ -217,7 +224,7 @@ const Profile = () => {
           .maybeSingle();
 
         if (profileRes.error) throw profileRes.error;
-        const profileData = profileRes.data;
+        const profileData = profileRes.data ?? (user && userId === user.id ? createOwnProfileSnapshot(user) : null);
         setProfile(profileData);
         setLoading(false);
 
@@ -279,7 +286,7 @@ const Profile = () => {
     };
 
     fetchProfile();
-  }, [userId, toast]);
+  }, [user, userId, toast]);
 
   useEffect(() => {
     if (!detailsReady || !userId || !profile) return;
