@@ -489,18 +489,23 @@ export default function EcoChallenge() {
           {/* ========== WINNERS ========== */}
           <TabsContent value="winners">
             <Card>
-              <CardHeader><CardTitle>Past Eco Champions</CardTitle></CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                <CardTitle>Past Eco Champions</CardTitle>
+                <Link to="/eco-challenge/history">
+                  <Button size="sm" variant="outline"><History className="w-4 h-4 mr-1" /> Full history</Button>
+                </Link>
+              </CardHeader>
               <CardContent>
                 {winners.length === 0 ? <p className="text-muted-foreground">No champions crowned yet — could be you next month!</p> : (
                   <div className="space-y-2">
                     {winners.map((w) => (
-                      <div key={w.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                      <Link key={w.id} to="/eco-challenge/history" className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition">
                         <Trophy className="w-6 h-6 text-yellow-500" />
                         <div className="flex-1">
                           <p className="font-semibold">{w.month_key}</p>
                           <p className="text-xs text-muted-foreground">{w.days_completed} days · {w.total_votes} votes · +{w.xp_awarded.toLocaleString()} XP</p>
                         </div>
-                      </div>
+                      </Link>
                     ))}
                   </div>
                 )}
