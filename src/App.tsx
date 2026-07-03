@@ -569,6 +569,7 @@ const LegalPrivacy = lazy(() => import("@/pages/legal/Privacy"));
 const LegalRefund = lazy(() => import("@/pages/legal/Refund"));
 const LegalCreator = lazy(() => import("@/pages/legal/Creator"));
 const LegalCommunity = lazy(() => import("@/pages/legal/Community"));
+const EcoChallenge = lazy(() => import("@/pages/EcoChallenge"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -652,6 +653,8 @@ const App = () => {
                         {/* All routes render inside this Suspense boundary */}
                         <Routes>
                         <Route path="/" element={<Index />} />
+                        <Route path="/eco-challenge" element={<EcoChallenge />} />
+                        <Route path="/eco" element={<EcoChallenge />} />
                         <Route path="/education/hub" element={<EducationHub />} />
                         <Route path="/education/flashcards" element={<ProtectedRoute><FlashcardDecks /></ProtectedRoute>} />
                         <Route path="/education/flashcards/:deckId" element={<ProtectedRoute><FlashcardDeckDetail /></ProtectedRoute>} />
