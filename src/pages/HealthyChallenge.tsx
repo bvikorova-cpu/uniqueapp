@@ -278,6 +278,12 @@ export default function HealthyChallenge() {
 
   const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
 
+  const proUserIds = useMemo(
+    () => [...submissions.map((s) => s.user_id), ...leaderboard.map((r) => r.user_id)],
+    [submissions, leaderboard],
+  );
+  const proSet = useChallengeProSet(proUserIds);
+
   const [countdown, setCountdown] = useState<string>(fmtCountdown(msUntilMonthEnd()));
   useEffect(() => {
     const t = setInterval(() => setCountdown(fmtCountdown(msUntilMonthEnd())), 60000);
