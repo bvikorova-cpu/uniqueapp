@@ -251,28 +251,42 @@ export default function EcoChallenge() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 via-emerald-50 to-teal-50 dark:from-green-950/40 dark:via-emerald-950/40 dark:to-teal-950/40">
       <div className="container mx-auto px-4 py-6 max-w-5xl">
-        {/* Hero */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500 p-8 text-white shadow-2xl mb-6">
-          <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
-          <div className="relative">
-            <Badge className="bg-white/20 text-white border-white/30 mb-3">🌍 Global Eco Challenge</Badge>
-            <h1 className="text-4xl md:text-5xl font-black mb-2">Do good. Every day.</h1>
-            <p className="text-lg opacity-90 max-w-2xl">One eco good deed a day. Post proof. Get votes. The monthly champion wins <b>100,000 XP</b>.</p>
-            <div className="mt-4 flex flex-wrap gap-3 text-sm">
-              <div className="flex items-center gap-2 bg-white/15 rounded-full px-3 py-1"><Trophy className="w-4 h-4" /> Monthly prize: 100,000 XP</div>
-              <div className="flex items-center gap-2 bg-white/15 rounded-full px-3 py-1"><Calendar className="w-4 h-4" /> New challenge daily</div>
-              <div className="flex items-center gap-2 bg-white/15 rounded-full px-3 py-1"><Heart className="w-4 h-4" /> Community voted</div>
+        {/* Cinematic Hero with video background */}
+        <div className="relative overflow-hidden rounded-3xl shadow-2xl mb-6 min-h-[260px] sm:min-h-[340px]">
+          <div className="absolute inset-0 z-0">
+            <video
+              src={sectionVideos.ecoChallenge}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover"
+              style={{ filter: "brightness(0.85) saturate(1.15)" }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/85 via-emerald-950/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-green-900/20 via-transparent to-teal-900/20" />
+          </div>
+
+          <div className="relative z-10 p-5 sm:p-7 lg:p-8 flex flex-col justify-end min-h-[260px] sm:min-h-[340px]">
+            <Badge className="bg-emerald-500/90 text-white border-emerald-300/50 shadow-lg w-fit mb-3">
+              🌍 Global Eco Challenge
+            </Badge>
+
+            <div className="border-2 border-emerald-300/30 bg-emerald-950/50 backdrop-blur-lg rounded-xl px-5 py-4 w-fit max-w-full">
+              <h1 className="text-2xl sm:text-3xl lg:text-5xl font-black text-white drop-shadow-lg">
+                🌱 ECO <span className="text-emerald-300">CHALLENGE</span>
+              </h1>
+              <p className="text-sm sm:text-base text-white/85 font-semibold mt-1 drop-shadow max-w-xl">
+                One good deed a day. Post proof. Get votes. Monthly champion wins <b className="text-emerald-300">100,000 XP</b>.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Trophy className="w-3.5 h-3.5" /> 100,000 XP</div>
+                <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Calendar className="w-3.5 h-3.5" /> Daily challenge</div>
+                <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Heart className="w-3.5 h-3.5" /> Community voted</div>
+              </div>
             </div>
           </div>
         </div>
-
-        <SectionVideoPreview
-          src={sectionVideos.ecoChallenge}
-          label="Eco Challenge preview"
-          caption="Small daily actions. Global impact."
-          aspectRatio="16 / 9"
-          className="!my-4"
-        />
 
         <FloatingHowItWorks title="How Eco Challenge works" intro="Turn small daily actions into a global movement." steps={HIW_STEPS} />
 
