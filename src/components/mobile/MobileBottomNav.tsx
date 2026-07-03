@@ -4,7 +4,7 @@ import { Home, Crown, Trophy, MessageSquare, User, LogIn } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
-import { markMeClick } from "@/utils/perfMe";
+import { markMeClick, storeMeProfileSnapshot } from "@/utils/perfMe";
 import { prefetchProfileRoute } from "@/utils/prewarmRoutes";
 
 const ITEMS_AUTH = [
@@ -29,7 +29,10 @@ export const MobileBottomNav = () => {
   const { user } = useAuth();
 
   useEffect(() => {
-    if (user) prefetchProfileRoute();
+    if (user) {
+      storeMeProfileSnapshot(user);
+      prefetchProfileRoute();
+    }
   }, [user]);
 
   // Hide on auth flow & checkout to avoid friction
@@ -58,7 +61,10 @@ export const MobileBottomNav = () => {
                   if (path === "/profile") prefetchProfileRoute();
                 }}
                 onClick={() => {
-                  if (path === "/profile") markMeClick();
+                  if (path === "/profile") {
+                    storeMeProfileSnapshot(user);
+                    markMeClick();
+                  }
                 }}
                 className={cn(
                   "flex flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-medium transition-colors",
