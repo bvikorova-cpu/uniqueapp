@@ -137,6 +137,8 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
       const selectedFiles = Array.from(e.target.files);
       setFiles((prev) => [...prev, ...selectedFiles]);
     }
+    // reset so selecting the same file again re-triggers onChange
+    e.target.value = "";
   };
 
   const removeFile = (index: number) => {
