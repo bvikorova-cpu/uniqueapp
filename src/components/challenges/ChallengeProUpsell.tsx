@@ -47,30 +47,30 @@ export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" 
   if (isPro) {
     return (
       <Card className={`bg-gradient-to-br ${grad} ring-2 ${ring} border-0 text-white mb-4`}>
-        <CardContent className="pt-5 pb-5 flex items-center gap-3">
-          <div className="p-2 rounded-full bg-yellow-400/20 ring-1 ring-yellow-300/50">
-            <Leaf className="w-6 h-6 text-yellow-300" fill="currentColor" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <p className="font-bold">You are Challenge PRO</p>
-              <ChallengeProBadge />
+        <CardContent className="p-5 space-y-3">
+          <div className="flex items-start gap-3">
+            <div className="p-2 rounded-full bg-yellow-400/20 ring-1 ring-yellow-300/50 shrink-0">
+              <Leaf className="w-5 h-5 text-yellow-300" fill="currentColor" />
             </div>
-            <p className="text-xs text-white/80 mt-0.5">
-              2× monthly prize (200,000 XP) · Gold badge next to your name
-              {activeUntil && <> · Renews {new Date(activeUntil).toLocaleDateString()}</>}
-            </p>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={openPortal}
-              disabled={openingPortal}
-              className="mt-2 bg-white/10 hover:bg-white/20 border-white/30 text-white gap-1.5"
-            >
-              {openingPortal ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Settings className="w-3.5 h-3.5" />}
-              Manage or cancel
-            </Button>
+            <div className="flex-1 min-w-0">
+              <p className="font-bold leading-tight">You are Challenge PRO</p>
+              <p className="text-xs text-white/80 mt-1">
+                2× monthly prize (200,000 XP) · Gold badge next to your name
+                {activeUntil && <> · Renews {new Date(activeUntil).toLocaleDateString()}</>}
+              </p>
+            </div>
+            <ChallengeProBadge />
           </div>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={openPortal}
+            disabled={openingPortal}
+            className="w-full bg-white/10 hover:bg-white/20 border-white/30 text-white gap-1.5"
+          >
+            {openingPortal ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Settings className="w-3.5 h-3.5" />}
+            Manage or cancel
+          </Button>
         </CardContent>
       </Card>
     );
@@ -78,39 +78,42 @@ export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" 
 
   return (
     <Card className={`bg-gradient-to-br ${grad} ring-2 ${ring} border-0 text-white mb-4 overflow-hidden`}>
-      <CardContent className="pt-5 pb-5">
+      <CardContent className="p-5 space-y-4">
         <div className="flex items-start gap-3">
           <div className="p-2 rounded-full bg-yellow-400/20 ring-1 ring-yellow-300/50 shrink-0">
-            <Sparkles className="w-6 h-6 text-yellow-300" />
+            <Sparkles className="w-5 h-5 text-yellow-300" />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <p className="font-bold text-lg">Go Challenge PRO — €3/month</p>
-              <ChallengeProBadge />
-            </div>
-            <ul className="mt-2 space-y-1 text-sm text-white/90">
-              <li className="flex items-center gap-2">
-                <Trophy className={`w-4 h-4 ${highlight}`} />
-                Win <b>200,000 XP</b> instead of 100,000 XP when you're monthly champion
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className={`w-4 h-4 ${highlight}`} />
-                Gold-leaf <b>Eco-Champion PRO</b> badge next to your name everywhere
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className={`w-4 h-4 ${highlight}`} />
-                Applies to <b>both</b> Eco &amp; Healthy Challenges · Cancel anytime
-              </li>
-            </ul>
-            <Button
-              onClick={subscribe}
-              disabled={checkingOut}
-              className="mt-3 bg-yellow-400 hover:bg-yellow-500 text-amber-950 font-bold"
-            >
-              {checkingOut ? "Opening checkout…" : "Upgrade to PRO — €3/mo"}
-            </Button>
+            <p className="font-bold text-base sm:text-lg leading-tight">
+              Go Challenge PRO
+            </p>
+            <p className="text-sm text-white/80 mt-0.5">€3 / month · Cancel anytime</p>
           </div>
+          <ChallengeProBadge />
         </div>
+
+        <ul className="space-y-2.5 text-sm text-white/90">
+          <li className="flex items-start gap-2.5">
+            <Trophy className={`w-4 h-4 mt-0.5 shrink-0 ${highlight}`} />
+            <span>Win <b>200,000 XP</b> instead of 100,000 XP as monthly champion</span>
+          </li>
+          <li className="flex items-start gap-2.5">
+            <Check className={`w-4 h-4 mt-0.5 shrink-0 ${highlight}`} />
+            <span>Gold-leaf <b>Eco-Champion PRO</b> badge next to your name</span>
+          </li>
+          <li className="flex items-start gap-2.5">
+            <Check className={`w-4 h-4 mt-0.5 shrink-0 ${highlight}`} />
+            <span>Works on <b>both</b> Eco &amp; Healthy Challenges</span>
+          </li>
+        </ul>
+
+        <Button
+          onClick={subscribe}
+          disabled={checkingOut}
+          className="w-full bg-yellow-400 hover:bg-yellow-500 text-amber-950 font-bold"
+        >
+          {checkingOut ? "Opening checkout…" : "Upgrade to PRO — €3/mo"}
+        </Button>
       </CardContent>
     </Card>
   );
