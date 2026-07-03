@@ -16,6 +16,7 @@ import { XpBreakdown } from "@/components/profile/XpBreakdown";
 import {
   finishMeTrace,
   markMeFirstPaint,
+  readMeProfileSnapshot,
   startMeTrace,
   tracedQuery,
 } from "@/utils/perfMe";
@@ -125,15 +126,41 @@ interface Post {
   };
 }
 
+const profileFromStoredSnapshot = (userId: string | undefined): Profile | null => {
+  const snap = readMeProfileSnapshot(userId);
+  if (!snap) return null;
+  return {
+    id: snap.id,
+    full_name: snap.full_name,
+    avatar_url: snap.avatar_url,
+    email: snap.email,
+    bio: null,
+    location: null,
+    website: null,
+    interests: null,
+    occupation: null,
+    company: null,
+    headline: null,
+    username: null,
+    social_links: null,
+    open_to_work: null,
+    open_to_work_details: null,
+    profile_music_url: null,
+    profile_music_title: null,
+    bio_translations: null,
+  };
+};
+
 const Profile = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { toast } = useToast();
   const { user, loading: authLoading } = useAuth();
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const cachedProfile = profileFromStoredSnapshot(userId);
+  const [profile, setProfile] = useState<Profile | null>(() => cachedProfile);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => !cachedProfile);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [friendshipStatus, setFriendshipStatus] = useState<'none' | 'pending_sent' | 'pending_received' | 'accepted'>('none');
   const [friends, setFriends] = useState<Profile[]>([]);
@@ -157,6 +184,19 @@ const Profile = () => {
   useEffect(() => {
     startMeTrace();
   }, [userId]);
+
+  useEffect(() => {
+    const snap = profileFromStoredSnapshot(userId);
+    if (snap) {
+      setProfile((current) => current ?? snap);
+      setLoading(false);
+      markMeFirstPaint();
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    if (!loading && profile) markMeFirstPaint();
+  }, [loading, profile]);
 
   useEffect(() => {
     if (authLoading) return;
