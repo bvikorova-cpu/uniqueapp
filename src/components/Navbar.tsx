@@ -162,6 +162,13 @@ const Navbar = () => {
       ],
     },
     {
+      category: "Challenges",
+      items: [
+        { path: "/eco-challenge", label: "Eco Challenge — Daily Good Deeds", icon: Leaf },
+        { path: "/healthy-challenge", label: "Healthy Challenge — Move · Eat · Train", icon: Activity },
+      ],
+    },
+    {
       category: "Health & Wellness",
       items: [
         { path: "/wellness", label: "Wellness & Relaxation", icon: Heart },
@@ -172,7 +179,6 @@ const Navbar = () => {
         { path: "/phobia-trading", label: "Phobia Trading Network", icon: Brain },
         { path: "/safety-prevention", label: "Safety & Bullying Prevention", icon: Shield },
         { path: "/lie-detector", label: "Lie Detector Chat", icon: Shield },
-        { path: "/eco-challenge", label: "Eco Challenge — Daily Good Deeds", icon: Leaf },
       ],
     },
     {

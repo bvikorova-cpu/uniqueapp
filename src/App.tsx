@@ -570,6 +570,7 @@ const LegalRefund = lazy(() => import("@/pages/legal/Refund"));
 const LegalCreator = lazy(() => import("@/pages/legal/Creator"));
 const LegalCommunity = lazy(() => import("@/pages/legal/Community"));
 const EcoChallenge = lazy(() => import("@/pages/EcoChallenge"));
+const HealthyChallenge = lazy(() => import("@/pages/HealthyChallenge"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -655,6 +656,9 @@ const App = () => {
                         <Route path="/" element={<Index />} />
                         <Route path="/eco-challenge" element={<EcoChallenge />} />
                         <Route path="/eco" element={<EcoChallenge />} />
+                        <Route path="/healthy-challenge" element={<HealthyChallenge />} />
+                        <Route path="/healthy" element={<HealthyChallenge />} />
+                        <Route path="/challenges" element={<EcoChallenge />} />
                         <Route path="/education/hub" element={<EducationHub />} />
                         <Route path="/education/flashcards" element={<ProtectedRoute><FlashcardDecks /></ProtectedRoute>} />
                         <Route path="/education/flashcards/:deckId" element={<ProtectedRoute><FlashcardDeckDetail /></ProtectedRoute>} />
