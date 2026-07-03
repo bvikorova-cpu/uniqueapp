@@ -141,7 +141,8 @@ const Profile = () => {
   const [followersModalTab, setFollowersModalTab] = useState<"followers" | "following">("followers");
   const [defaultTab, setDefaultTab] = useState("posts");
   const [detailsReady, setDetailsReady] = useState(false);
-  const { data: followCounts } = useFollowCounts(detailsReady ? userId : undefined);
+  const [extendedReady, setExtendedReady] = useState(false);
+  const { data: followCounts } = useFollowCounts(extendedReady ? userId : undefined);
   const [stats, setStats] = useState({
     postsCount: 0,
     likesGiven: 0,
@@ -171,12 +172,21 @@ const Profile = () => {
   }, [authLoading, loading, user, userId]);
 
   useEffect(() => {
-    const schedule = (window as any).requestIdleCallback
-      ? (cb: () => void) => (window as any).requestIdleCallback(cb, { timeout: 1200 })
-      : (cb: () => void) => window.setTimeout(cb, 500);
-    const cancel = (window as any).cancelIdleCallback ?? window.clearTimeout;
-    const id = schedule(() => setDetailsReady(true));
-    return () => cancel(id);
+    setDetailsReady(false);
+    setExtendedReady(false);
+
+    const detailsTimer = window.setTimeout(() => setDetailsReady(true), 900);
+    const extendedTimer = window.setTimeout(() => {
+      const schedule = (window as any).requestIdleCallback
+        ? (cb: () => void) => (window as any).requestIdleCallback(cb, { timeout: 4500 })
+        : (cb: () => void) => window.setTimeout(cb, 2500);
+      schedule(() => setExtendedReady(true));
+    }, 4500);
+
+    return () => {
+      window.clearTimeout(detailsTimer);
+      window.clearTimeout(extendedTimer);
+    };
   }, [userId]);
 
   // Verify Stripe Checkout tip session on return
@@ -243,47 +253,6 @@ const Profile = () => {
         setLoading(false);
         markMeFirstPaint();
 
-        // Fire-and-forget: all remaining queries in parallel (non-blocking).
-        const [
-          likesRes,
-          commentsRes,
-          submissionsRes,
-          coursesRes,
-          pointsRes,
-          friendsRes,
-          postsCountRes,
-        ] = await Promise.all([
-          tracedQuery("post_likes.count", () => supabase.from("post_likes").select("*", { count: "exact", head: true }).eq("user_id", userId)),
-          tracedQuery("post_comments.count", () => supabase.from("post_comments").select("*", { count: "exact", head: true }).eq("user_id", userId)),
-          tracedQuery("talent_submissions.count", () => supabase.from("talent_submissions").select("*", { count: "exact", head: true }).eq("user_id", userId)),
-          tracedQuery("completed_courses.count", () => supabase.from("completed_courses").select("*", { count: "exact", head: true }).eq("user_id", userId)),
-          tracedQuery("user_points", () => supabase.from("user_points").select("total_points, level").eq("user_id", userId).maybeSingle()),
-          tracedQuery("friendships", () => supabase.from("friendships").select("user_id, friend_id").eq("status", "accepted").or(`user_id.eq.${userId},friend_id.eq.${userId}`)),
-          tracedQuery("posts.count", () => supabase.from("posts").select("id", { count: "exact", head: true }).eq("user_id", userId)),
-        ]);
-
-        const friendsData = friendsRes.data;
-        setStats({
-          postsCount: postsCountRes.count ?? 0,
-          likesGiven: likesRes.count || 0,
-          commentsGiven: commentsRes.count || 0,
-          friendsCount: friendsData?.length || 0,
-          submissionsCount: submissionsRes.count || 0,
-          completedCoursesCount: coursesRes.count || 0,
-          xp: pointsRes.data?.total_points ?? 0,
-          level: pointsRes.data?.level ?? 1,
-        });
-
-        if (friendsData && friendsData.length > 0) {
-          const friendIds = friendsData.map((f) =>
-            f.user_id === userId ? f.friend_id : f.user_id
-          );
-          const { data: friendProfiles } = await tracedQuery(
-            "friend_profiles",
-            () => supabase.from("public_profiles").select("*").in("id", friendIds),
-          );
-          setFriends(friendProfiles || []);
-        }
         finishMeTrace();
       } catch (error: any) {
         toast({
@@ -305,12 +274,71 @@ const Profile = () => {
     let cancelled = false;
 
     (async () => {
-      const { data: postsData } = await supabase
-        .from("posts")
-        .select(`*, media (*)`)
-        .eq("user_id", userId)
-        .order("created_at", { ascending: false })
-        .limit(PROFILE_POSTS_PAGE_SIZE);
+      try {
+        const [
+          likesRes,
+          commentsRes,
+          submissionsRes,
+          coursesRes,
+          pointsRes,
+          friendsRes,
+          postsCountRes,
+        ] = await Promise.all([
+          tracedQuery("post_likes.count", () => supabase.from("post_likes").select("*", { count: "exact", head: true }).eq("user_id", userId)),
+          tracedQuery("post_comments.count", () => supabase.from("post_comments").select("*", { count: "exact", head: true }).eq("user_id", userId)),
+          tracedQuery("talent_submissions.count", () => supabase.from("talent_submissions").select("*", { count: "exact", head: true }).eq("user_id", userId)),
+          tracedQuery("completed_courses.count", () => supabase.from("completed_courses").select("*", { count: "exact", head: true }).eq("user_id", userId)),
+          tracedQuery("user_points", () => supabase.from("user_points").select("total_points, level").eq("user_id", userId).maybeSingle()),
+          tracedQuery("friendships", () => supabase.from("friendships").select("user_id, friend_id").eq("status", "accepted").or(`user_id.eq.${userId},friend_id.eq.${userId}`)),
+          tracedQuery("posts.count", () => supabase.from("posts").select("id", { count: "exact", head: true }).eq("user_id", userId)),
+        ]);
+
+        if (cancelled) return;
+        const friendsData = friendsRes.data;
+        setStats({
+          postsCount: postsCountRes.count ?? 0,
+          likesGiven: likesRes.count || 0,
+          commentsGiven: commentsRes.count || 0,
+          friendsCount: friendsData?.length || 0,
+          submissionsCount: submissionsRes.count || 0,
+          completedCoursesCount: coursesRes.count || 0,
+          xp: pointsRes.data?.total_points ?? 0,
+          level: pointsRes.data?.level ?? 1,
+        });
+
+        if (friendsData && friendsData.length > 0) {
+          const friendIds = friendsData.map((f) =>
+            f.user_id === userId ? f.friend_id : f.user_id
+          );
+          const { data: friendProfiles } = await tracedQuery(
+            "friend_profiles",
+            () => supabase.from("public_profiles").select("id, full_name, avatar_url, username").in("id", friendIds),
+          );
+          if (!cancelled) setFriends(friendProfiles || []);
+        }
+      } catch {
+        // Keep the already-rendered profile usable even if secondary counters fail.
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [detailsReady, userId, profile]);
+
+  useEffect(() => {
+    if (!detailsReady || !userId || !profile) return;
+    let cancelled = false;
+
+    (async () => {
+      const { data: postsData } = await tracedQuery("posts.initial", () =>
+        supabase
+          .from("posts")
+          .select(`*, media (*)`)
+          .eq("user_id", userId)
+          .order("created_at", { ascending: false })
+          .limit(PROFILE_POSTS_PAGE_SIZE),
+      );
 
       if (cancelled) return;
       const postsWithProfiles = (postsData || []).map((post) => ({
