@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, lazy, Suspense } from "react";
 
 import { useNavigate, Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,7 +9,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRecentServices } from "@/hooks/useRecentServices";
 import RewardedAdCard from "@/components/ads/RewardedAdCard";
 import { AD_PLACEMENTS } from "@/components/ads/AdPlacements";
-import { HeroSlideshow } from "@/components/home/HeroSlideshow";
+// Lazy: keeps 8 bundled hero images out of the Index shell chunk so the
+// page skeleton (text + CTAs) can paint before the imagery is fetched.
+const HeroSlideshow = lazy(() => import("@/components/home/HeroSlideshow"));
 import { SEO } from "@/components/SEO";
 import { Age16Badge } from "@/components/Age16Badge";
 import { HowItWorksTrust } from "@/components/trust/HowItWorksTrust";
@@ -240,7 +242,9 @@ const Index = () => {
       {/* ── Hero Section ─────────────────────────────── */}
       <div className="relative overflow-hidden min-h-[500px] sm:min-h-[640px] lg:min-h-[720px] xl:min-h-[820px]">
         {/* Crisp hero slideshow – replaces video for sharp quality on PC and mobile */}
-        <HeroSlideshow />
+        <Suspense fallback={null}>
+          <HeroSlideshow />
+        </Suspense>
         {/* Gradient fallback behind video */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary via-accent to-primary animate-gradient-shift -z-10" />
         {/* Cinematic overlays — vignette + bottom gradient for text legibility */}
