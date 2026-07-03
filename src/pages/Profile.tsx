@@ -53,6 +53,27 @@ const FamilySection = lazy(() => import("@/components/profile/FamilySection").th
 const PROFILE_POSTS_PAGE_SIZE = 10;
 const LazyProfileSectionFallback = () => <div className="h-24 rounded-xl bg-muted/30 animate-pulse" />;
 
+const createOwnProfileSnapshot = (user: NonNullable<ReturnType<typeof useAuth>["user"]>): Profile => ({
+  id: user.id,
+  full_name: (user.user_metadata?.full_name as string | undefined) || (user.email?.split("@")[0] ?? "Unique user"),
+  avatar_url: (user.user_metadata?.avatar_url as string | undefined) || null,
+  email: user.email ?? null,
+  bio: null,
+  location: null,
+  website: null,
+  interests: null,
+  occupation: null,
+  company: null,
+  headline: null,
+  username: null,
+  social_links: null,
+  open_to_work: null,
+  open_to_work_details: null,
+  profile_music_url: null,
+  profile_music_title: null,
+  bio_translations: null,
+});
+
 interface Profile {
   id: string;
   full_name: string | null;
