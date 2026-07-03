@@ -59,6 +59,7 @@ export const sectionVideos = {
   photoRestoration: photoRestoration.url,
   virtualPet: virtualPet.url,
   influKing: influKing.url,
+  ecoChallenge: ecoChallenge.url,
 } as const;
 
 export type SectionVideoKey = keyof typeof sectionVideos;
