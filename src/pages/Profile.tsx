@@ -229,24 +229,21 @@ const Profile = () => {
 
       try {
         // Critical path: profile only. Posts/feed widgets are loaded after paint.
-        const profileRes = await supabase
-          .from("public_profiles")
-          .select("id, full_name, avatar_url, bio, location, website, interests, occupation, company, headline, username, social_links, open_to_work, open_to_work_details, profile_music_url, profile_music_title")
-          .eq("id", userId)
-          .maybeSingle();
+        const profileRes = await tracedQuery("public_profiles", () =>
+          supabase
+            .from("public_profiles")
+            .select("id, full_name, avatar_url, bio, location, website, interests, occupation, company, headline, username, social_links, open_to_work, open_to_work_details, profile_music_url, profile_music_title")
+            .eq("id", userId)
+            .maybeSingle(),
+        );
 
         if (profileRes.error) throw profileRes.error;
         const profileData = profileRes.data ?? (user && userId === user.id ? createOwnProfileSnapshot(user) : null);
         setProfile(profileData);
         setLoading(false);
+        markMeFirstPaint();
 
         // Fire-and-forget: all remaining queries in parallel (non-blocking).
-        const friendsPromise = supabase
-          .from("friendships")
-          .select("user_id, friend_id")
-          .eq("status", "accepted")
-          .or(`user_id.eq.${userId},friend_id.eq.${userId}`);
-
         const [
           likesRes,
           commentsRes,
@@ -256,13 +253,13 @@ const Profile = () => {
           friendsRes,
           postsCountRes,
         ] = await Promise.all([
-          supabase.from("post_likes").select("*", { count: "exact", head: true }).eq("user_id", userId),
-          supabase.from("post_comments").select("*", { count: "exact", head: true }).eq("user_id", userId),
-          supabase.from("talent_submissions").select("*", { count: "exact", head: true }).eq("user_id", userId),
-          supabase.from("completed_courses").select("*", { count: "exact", head: true }).eq("user_id", userId),
-          supabase.from("user_points").select("total_points, level").eq("user_id", userId).maybeSingle(),
-          friendsPromise,
-          supabase.from("posts").select("id", { count: "exact", head: true }).eq("user_id", userId),
+          tracedQuery("post_likes.count", () => supabase.from("post_likes").select("*", { count: "exact", head: true }).eq("user_id", userId)),
+          tracedQuery("post_comments.count", () => supabase.from("post_comments").select("*", { count: "exact", head: true }).eq("user_id", userId)),
+          tracedQuery("talent_submissions.count", () => supabase.from("talent_submissions").select("*", { count: "exact", head: true }).eq("user_id", userId)),
+          tracedQuery("completed_courses.count", () => supabase.from("completed_courses").select("*", { count: "exact", head: true }).eq("user_id", userId)),
+          tracedQuery("user_points", () => supabase.from("user_points").select("total_points, level").eq("user_id", userId).maybeSingle()),
+          tracedQuery("friendships", () => supabase.from("friendships").select("user_id, friend_id").eq("status", "accepted").or(`user_id.eq.${userId},friend_id.eq.${userId}`)),
+          tracedQuery("posts.count", () => supabase.from("posts").select("id", { count: "exact", head: true }).eq("user_id", userId)),
         ]);
 
         const friendsData = friendsRes.data;
@@ -281,12 +278,13 @@ const Profile = () => {
           const friendIds = friendsData.map((f) =>
             f.user_id === userId ? f.friend_id : f.user_id
           );
-          const { data: friendProfiles } = await supabase
-            .from("public_profiles")
-            .select("*")
-            .in("id", friendIds);
+          const { data: friendProfiles } = await tracedQuery(
+            "friend_profiles",
+            () => supabase.from("public_profiles").select("*").in("id", friendIds),
+          );
           setFriends(friendProfiles || []);
         }
+        finishMeTrace();
       } catch (error: any) {
         toast({
           title: "Error loading profile",
@@ -294,8 +292,10 @@ const Profile = () => {
           variant: "destructive",
         });
         setLoading(false);
+        finishMeTrace();
       }
     };
+
 
     fetchProfile();
   }, [user, userId, toast]);
