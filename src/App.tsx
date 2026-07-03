@@ -610,6 +610,7 @@ const App = () => {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} storageKey="unique-theme-v2" forcedTheme={undefined} disableTransitionOnChange>
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+          <ScrollToTop />
           <AuthProvider>
             
             
