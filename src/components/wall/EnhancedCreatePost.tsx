@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { AudienceSelector } from "@/components/wall/AudienceSelector";
 import { supabase } from "@/integrations/supabase/client";
 import { trackChallengeAction } from "@/lib/trackChallenge";
@@ -117,11 +117,20 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
   const [isSensitive, setIsSensitive] = useState(false);
   const [sensitiveReason, setSensitiveReason] = useState("");
   const [backgroundStyle, setBackgroundStyle] = useState<string | null>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const { createHashtagsForPost } = useHashtags();
   const { createPoll } = usePolls();
   const activeBackground = getPostBackground(backgroundStyle);
   const useBackground = !!activeBackground && files.length === 0;
+
+  // Revoke object URLs when files change/unmount to avoid memory leaks
+  const previewUrls = files.map((f) => URL.createObjectURL(f));
+  useEffect(() => {
+    return () => { previewUrls.forEach((u) => URL.revokeObjectURL(u)); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [files]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -340,13 +349,23 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
         {files.length > 0 && (
           <div className="grid grid-cols-2 gap-2">
             {files.map((file, index) => (
-              <div key={index} className="relative">
+              <div key={`${file.name}-${index}`} className="relative">
                 <div className="aspect-video bg-secondary rounded-lg overflow-hidden flex items-center justify-center">
                   {file.type.startsWith("image/") ? (
-                    <img src={URL.createObjectURL(file)} alt={file.name} className="w-full h-full object-cover" />
+                    <img src={previewUrls[index]} alt={file.name} className="w-full h-full object-cover" />
+                  ) : file.type.startsWith("video/") ? (
+                    <video
+                      src={previewUrls[index]}
+                      controls
+                      playsInline
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
                     <Video className="h-12 w-12 text-muted-foreground" />
                   )}
+                </div>
+                <div className="absolute bottom-1 left-1 right-8 truncate text-[10px] px-1.5 py-0.5 rounded bg-black/60 text-white pointer-events-none">
+                  {file.name}
                 </div>
                 <Button
                   type="button"
@@ -403,7 +422,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                     variant="ghost"
                     size="sm"
                     className="flex-shrink-0 flex-col h-auto py-1 px-1 hover:bg-green-500/10 rounded-lg transition-all group"
-                    onClick={() => document.getElementById("image-upload")?.click()}
+                    onClick={() => imageInputRef.current?.click()}
                   >
                     <div className="p-1 rounded-full bg-green-500/10 group-hover:bg-green-500/20 transition-all">
                       <Image className="h-3.5 w-3.5 text-green-600" />
@@ -420,7 +439,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                     variant="ghost"
                     size="sm"
                     className="flex-shrink-0 flex-col h-auto py-1 px-1 hover:bg-red-500/10 rounded-lg transition-all group"
-                    onClick={() => document.getElementById("video-upload")?.click()}
+                    onClick={() => videoInputRef.current?.click()}
                   >
                     <div className="p-1 rounded-full bg-red-500/10 group-hover:bg-red-500/20 transition-all">
                       <Video className="h-3.5 w-3.5 text-red-600" />
