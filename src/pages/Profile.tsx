@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, ArrowLeft, Briefcase, Brain, Package, Sparkles, Users, UserPlus, UserCheck, Gift } from "lucide-react";
 // FreeTierBalanceWidget import removed — paid-only model
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 import { useFollowCounts } from "@/hooks/useFollow";
 import { ProfileHero } from "@/components/profile/ProfileHero";
 import { XpBreakdown } from "@/components/profile/XpBreakdown";
@@ -48,6 +49,9 @@ const Endorsements = lazy(() => import("@/components/profile/Endorsements").then
 const ProfileViewsCounter = lazy(() => import("@/components/profile/ProfileViewsCounter").then((m) => ({ default: m.ProfileViewsCounter })));
 const LifeEventsTimeline = lazy(() => import("@/components/profile/LifeEventsTimeline").then((m) => ({ default: m.LifeEventsTimeline })));
 const FamilySection = lazy(() => import("@/components/profile/FamilySection").then((m) => ({ default: m.FamilySection })));
+
+const PROFILE_POSTS_PAGE_SIZE = 10;
+const LazyProfileSectionFallback = () => <div className="h-24 rounded-xl bg-muted/30 animate-pulse" />;
 
 interface Profile {
   id: string;
@@ -98,6 +102,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { toast } = useToast();
+  const { user, loading: authLoading } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
@@ -120,10 +125,9 @@ const Profile = () => {
   });
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setCurrentUserId(session?.user?.id || null);
-    });
-  }, []);
+    if (authLoading) return;
+    setCurrentUserId(user?.id || null);
+  }, [authLoading, user?.id]);
 
   // Verify Stripe Checkout tip session on return
   useEffect(() => {
@@ -178,14 +182,15 @@ const Profile = () => {
         const [profileRes, postsRes] = await Promise.all([
           supabase
             .from("public_profiles")
-            .select("*")
+            .select("id, full_name, avatar_url, bio, location, website, interests, occupation, company, headline, username, social_links, open_to_work, open_to_work_details, profile_music_url, profile_music_title")
             .eq("id", userId)
             .maybeSingle(),
           supabase
             .from("posts")
             .select(`*, media (*)`)
             .eq("user_id", userId)
-            .order("created_at", { ascending: false }),
+            .order("created_at", { ascending: false })
+            .limit(PROFILE_POSTS_PAGE_SIZE),
         ]);
 
         if (profileRes.error) throw profileRes.error;
@@ -218,6 +223,7 @@ const Profile = () => {
           coursesRes,
           pointsRes,
           friendsRes,
+          postsCountRes,
         ] = await Promise.all([
           supabase.from("post_likes").select("*", { count: "exact", head: true }).eq("user_id", userId),
           supabase.from("post_comments").select("*", { count: "exact", head: true }).eq("user_id", userId),
@@ -225,11 +231,12 @@ const Profile = () => {
           supabase.from("completed_courses").select("*", { count: "exact", head: true }).eq("user_id", userId),
           supabase.from("user_points").select("total_points, level").eq("user_id", userId).maybeSingle(),
           friendsPromise,
+          supabase.from("posts").select("id", { count: "exact", head: true }).eq("user_id", userId),
         ]);
 
         const friendsData = friendsRes.data;
         setStats({
-          postsCount: postsData?.length || 0,
+          postsCount: postsCountRes.count ?? postsData?.length ?? 0,
           likesGiven: likesRes.count || 0,
           commentsGiven: commentsRes.count || 0,
           friendsCount: friendsData?.length || 0,
