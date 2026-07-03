@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+import { savePendingAction } from '@/lib/pendingAction';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -15,16 +16,19 @@ export const ProtectedRoute = ({ children, requireAdmin = false }: ProtectedRout
   const [hasAccess, setHasAccess] = useState(isSmokeTest);
   const { toast } = useToast();
   const { user, loading } = useAuth();
+  const location = useLocation();
 
   useEffect(() => {
     if (isSmokeTest) return;
     if (loading) return;
     checkAccess();
-  }, [loading, user?.id, requireAdmin]);
+  }, [loading, user?.id, requireAdmin, location.pathname, location.search, location.hash]);
 
   const checkAccess = async () => {
     try {
       if (!user) {
+        const returnTo = `${location.pathname}${location.search}${location.hash}`;
+        savePendingAction({ key: "auth:return", returnTo });
         setHasAccess(false);
         setIsChecking(false);
         toast({
@@ -76,6 +80,9 @@ export const ProtectedRoute = ({ children, requireAdmin = false }: ProtectedRout
   }
 
   if (!hasAccess) {
+    if (!user) {
+      return <Navigate to="/auth" replace />;
+    }
     return <Navigate to="/" replace />;
   }
 

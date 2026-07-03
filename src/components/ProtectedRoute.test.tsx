@@ -4,6 +4,7 @@ import { MemoryRouter, Routes, Route } from "react-router-dom";
 
 const useAuthMock = vi.fn();
 const fromMock = vi.fn();
+const savePendingActionMock = vi.fn();
 
 vi.mock("@/contexts/AuthContext", () => ({
   useAuth: () => useAuthMock(),
@@ -13,6 +14,9 @@ vi.mock("@/hooks/use-toast", () => ({
 }));
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: { from: (t: string) => fromMock(t) },
+}));
+vi.mock("@/lib/pendingAction", () => ({
+  savePendingAction: (...args: unknown[]) => savePendingActionMock(...args),
 }));
 
 import { ProtectedRoute } from "./ProtectedRoute";
@@ -35,6 +39,7 @@ function renderApp(node: React.ReactNode) {
     <MemoryRouter initialEntries={["/secret"]}>
       <Routes>
         <Route path="/" element={<div>HOME</div>} />
+        <Route path="/auth" element={<div>AUTH</div>} />
         <Route path="/secret" element={node} />
       </Routes>
     </MemoryRouter>
@@ -45,12 +50,14 @@ describe("ProtectedRoute", () => {
   beforeEach(() => {
     useAuthMock.mockReset();
     fromMock.mockReset();
+    savePendingActionMock.mockReset();
   });
 
-  it("redirects to / when not authenticated", async () => {
+  it("redirects to /auth and saves return path when not authenticated", async () => {
     useAuthMock.mockReturnValue({ user: null, loading: false });
     renderApp(<ProtectedRoute><div>SECRET</div></ProtectedRoute>);
-    await waitFor(() => expect(screen.getByText("HOME")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText("AUTH")).toBeInTheDocument());
+    expect(savePendingActionMock).toHaveBeenCalledWith({ key: "auth:return", returnTo: "/secret" });
   });
 
   it("renders children when authenticated (no admin required)", async () => {

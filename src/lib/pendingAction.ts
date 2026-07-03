@@ -65,9 +65,5 @@ export function clearPendingAction() {
 }
 
 export function getPendingReturnTo(): string | null {
-  try {
-    return localStorage.getItem(STORAGE_KEY + ":returnTo");
-  } catch {
-    return null;
-  }
+  return peekPendingAction()?.returnTo ?? null;
 }
