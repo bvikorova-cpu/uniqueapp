@@ -485,11 +485,14 @@ export default function EcoChallenge() {
                       <li key={r.user_id} className={`flex items-center gap-3 p-3 rounded-lg ${r.rank <= 3 ? "bg-gradient-to-r from-yellow-100 to-transparent dark:from-yellow-900/30" : "bg-muted/50"}`}>
                         <span className="text-2xl w-8 text-center">{r.rank === 1 ? "🥇" : r.rank === 2 ? "🥈" : r.rank === 3 ? "🥉" : `#${r.rank}`}</span>
                         {r.profile?.avatar_url && <img src={r.profile.avatar_url} className="w-10 h-10 rounded-full" alt="" />}
-                        <div className="flex-1">
-                          <p className="font-semibold">{r.profile?.full_name || "User"}</p>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <p className="font-semibold truncate">{r.profile?.full_name || "User"}</p>
+                            {proSet.has(r.user_id) && <ChallengeProBadge compact />}
+                          </div>
                           <p className="text-xs text-muted-foreground">{r.days_completed} days · {r.total_votes} votes</p>
                         </div>
-                        {r.rank === 1 && <Badge className="bg-yellow-500">100k XP</Badge>}
+                        {r.rank === 1 && <Badge className="bg-yellow-500">{proSet.has(r.user_id) ? "200k XP" : "100k XP"}</Badge>}
                       </li>
                     ))}
                   </ol>
