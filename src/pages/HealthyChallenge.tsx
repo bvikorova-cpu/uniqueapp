@@ -192,7 +192,14 @@ export default function HealthyChallenge() {
     if (!user) { toast({ title: "Sign in required", variant: "destructive" }); return; }
     if (!challenge || challenge.id === "fallback") { toast({ title: "No active challenge yet", description: "Admin has not created today's challenge.", variant: "destructive" }); return; }
     if (description.trim().length < 10) { toast({ title: "Describe your effort (min 10 chars)", variant: "destructive" }); return; }
-    if (mySubmissionToday) { toast({ title: "Already submitted today", variant: "destructive" }); return; }
+    if (mySubmissionToday) {
+      toast({
+        title: "⚠️ Daily limit reached",
+        description: "You have already submitted your proof for today. Only 1 submission per day is allowed. Come back tomorrow for a new challenge!",
+        variant: "destructive",
+      });
+      return;
+    }
     setUploading(true);
     try {
       const { images, video } = await uploadMedia();
@@ -204,7 +211,19 @@ export default function HealthyChallenge() {
         image_urls: images,
         video_url: video,
       });
-      if (error) throw error;
+      if (error) {
+        // Postgres unique_violation (user already submitted today, race-safe)
+        if ((error as any).code === "23505") {
+          toast({
+            title: "⚠️ Daily limit reached",
+            description: "You have already submitted your proof for today. Only 1 submission per day is allowed.",
+            variant: "destructive",
+          });
+          await loadAll();
+          return;
+        }
+        throw error;
+      }
       toast({ title: "💪 Submitted!", description: `Day ${myMonthDays + 1} of this month completed.` });
       setDescription(""); setFiles([]); setVideoFile(null);
       await loadAll();
