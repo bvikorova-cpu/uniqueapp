@@ -154,6 +154,10 @@ const Profile = () => {
   });
 
   useEffect(() => {
+    startMeTrace();
+  }, [userId]);
+
+  useEffect(() => {
     if (authLoading) return;
     setCurrentUserId(user?.id || null);
   }, [authLoading, user?.id]);
@@ -162,6 +166,7 @@ const Profile = () => {
     if (!authLoading && user && userId === user.id && loading) {
       setProfile(createOwnProfileSnapshot(user));
       setLoading(false);
+      markMeFirstPaint();
     }
   }, [authLoading, loading, user, userId]);
 
