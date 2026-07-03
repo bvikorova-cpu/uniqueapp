@@ -349,6 +349,12 @@ export default function HealthyChallenge() {
                 <Card>
                   <CardHeader><CardTitle>Submit your proof</CardTitle></CardHeader>
                   <CardContent className="space-y-3">
+                    <div className="flex items-start gap-2 rounded-lg border border-orange-300/60 bg-orange-100/60 dark:border-orange-800 dark:bg-orange-900/20 p-3 text-xs">
+                      <AlertCircle className="w-4 h-4 mt-0.5 text-orange-600 shrink-0" />
+                      <p>
+                        <b>Daily limit:</b> only <b>1 submission per user per day</b> is allowed. This is enforced by the database — extra attempts today will be automatically rejected. A new challenge unlocks tomorrow.
+                      </p>
+                    </div>
                     <Textarea placeholder="Describe your healthy action — activity, km, meal, duration..." value={description} onChange={(e) => setDescription(e.target.value)} rows={3} maxLength={500} />
                     <div className="flex flex-wrap gap-2">
                       <Button type="button" variant="outline" size="sm" onClick={() => fileRef.current?.click()}>
@@ -405,6 +411,7 @@ export default function HealthyChallenge() {
                     </Button>
                     <span className="text-xs text-muted-foreground">{new Date(s.created_at).toLocaleTimeString()}</span>
                   </div>
+                  <HealthyComments submissionId={s.id} />
                 </CardContent>
               </Card>
             ))}
@@ -435,18 +442,23 @@ export default function HealthyChallenge() {
 
           <TabsContent value="winners">
             <Card>
-              <CardHeader><CardTitle>Past Healthy Champions</CardTitle></CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                <CardTitle>Past Healthy Champions</CardTitle>
+                <Link to="/healthy-challenge/history">
+                  <Button size="sm" variant="outline"><History className="w-4 h-4 mr-1" /> Full history</Button>
+                </Link>
+              </CardHeader>
               <CardContent>
                 {winners.length === 0 ? <p className="text-muted-foreground">No champions crowned yet — could be you next month!</p> : (
                   <div className="space-y-2">
                     {winners.map((w) => (
-                      <div key={w.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                      <Link key={w.id} to="/healthy-challenge/history" className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition">
                         <Trophy className="w-6 h-6 text-yellow-500" />
                         <div className="flex-1">
                           <p className="font-semibold">{w.month_key}</p>
                           <p className="text-xs text-muted-foreground">{w.days_completed} days · {w.total_votes} votes · +{w.xp_awarded.toLocaleString()} XP</p>
                         </div>
-                      </div>
+                      </Link>
                     ))}
                   </div>
                 )}
