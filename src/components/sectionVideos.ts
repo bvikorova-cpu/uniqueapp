@@ -29,6 +29,7 @@ import emotion from "@/assets/section-videos/emotion.mp4.asset.json";
 import photoRestoration from "@/assets/section-videos/photo-restoration.mp4.asset.json";
 import virtualPet from "@/assets/section-videos/virtual-pet.mp4.asset.json";
 import influKing from "@/assets/section-videos/influ-king.mp4.asset.json";
+import ecoChallenge from "@/assets/section-videos/eco-challenge.mp4.asset.json";
 
 export const sectionVideos = {
   hero: hero.url,
