@@ -2671,7 +2671,7 @@ serve(async (req) => {
         brain_duel:              { amount: 199,  mode: "payment",      name: "Brain Duel Entry" },
         campaign_donation:       { amount: 500,  mode: "payment",      name: "Campaign Donation" },
         character_credits:       { amount: 999,  mode: "payment",      name: "Character Credits" },
-        companions:              { amount: 1499, mode: "subscription", name: "Companions Premium" },
+        companions:              { amount: 500,  mode: "subscription", name: "Companions Premium" },
         confession:              { amount: 299,  mode: "payment",      name: "Confession Boost" },
         consultation:            { amount: 4999, mode: "payment",      name: "Consultation" },
         coupon:                  { amount: 199,  mode: "payment",      name: "Coupon Purchase" },
