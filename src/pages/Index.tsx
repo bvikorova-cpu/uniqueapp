@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, lazy, Suspense } from "react";
 
 import { useNavigate, Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,7 +9,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRecentServices } from "@/hooks/useRecentServices";
 import RewardedAdCard from "@/components/ads/RewardedAdCard";
 import { AD_PLACEMENTS } from "@/components/ads/AdPlacements";
-import { HeroSlideshow } from "@/components/home/HeroSlideshow";
+// Lazy: keeps 8 bundled hero images out of the Index shell chunk so the
+// page skeleton (text + CTAs) can paint before the imagery is fetched.
+const HeroSlideshow = lazy(() => import("@/components/home/HeroSlideshow"));
 import { SEO } from "@/components/SEO";
 import { Age16Badge } from "@/components/Age16Badge";
 import { HowItWorksTrust } from "@/components/trust/HowItWorksTrust";
