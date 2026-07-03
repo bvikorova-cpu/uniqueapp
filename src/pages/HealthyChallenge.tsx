@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { Dumbbell, Trophy, Heart, Upload, Sparkles, Calendar, Video, Image as ImageIcon, Activity, AlertCircle, History } from "lucide-react";
+import { Dumbbell, Trophy, Heart, Upload, Sparkles, Calendar, Video, Image as ImageIcon, Activity, AlertCircle, History, Share2, Timer } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { sectionVideos } from "@/components/sectionVideos";
 import { Link } from "react-router-dom";
@@ -63,6 +63,19 @@ const HIW_STEPS = [
   { title: "9. Fair play & moderation", desc: "Duplicate accounts, fake proof, offensive content or spam get hidden by admins and disqualified from the monthly prize." },
   { title: "10. Sponsors welcome", desc: "Fitness brands, gyms and nutrition companies can sponsor a daily challenge — logo appears on the daily card and in the feed." },
 ];
+
+const msUntilMonthEnd = () => {
+  const now = new Date();
+  const end = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1, 0, 0, 0));
+  return end.getTime() - now.getTime();
+};
+const fmtCountdown = (ms: number) => {
+  if (ms <= 0) return "0d 0h 0m";
+  const d = Math.floor(ms / 86400000);
+  const h = Math.floor((ms % 86400000) / 3600000);
+  const m = Math.floor((ms % 3600000) / 60000);
+  return `${d}d ${h}h ${m}m`;
+};
 
 export default function HealthyChallenge() {
   const { user } = useAuth();
@@ -262,6 +275,25 @@ export default function HealthyChallenge() {
 
   const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
 
+  const [countdown, setCountdown] = useState<string>(fmtCountdown(msUntilMonthEnd()));
+  useEffect(() => {
+    const t = setInterval(() => setCountdown(fmtCountdown(msUntilMonthEnd())), 60000);
+    return () => clearInterval(t);
+  }, []);
+
+  const shareSubmission = async (s: Submission) => {
+    const url = `${window.location.origin}/healthy-challenge`;
+    const text = `💪 Healthy Challenge — ${s.description.slice(0, 80)}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: "Healthy Challenge", text, url });
+      } else {
+        await navigator.clipboard.writeText(`${text} ${url}`);
+        toast({ title: "Link copied to clipboard" });
+      }
+    } catch { /* user cancelled */ }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 via-rose-50 to-sky-50 dark:from-orange-950/40 dark:via-rose-950/40 dark:to-sky-950/40">
       <div className="container mx-auto px-4 py-6 max-w-5xl">
@@ -294,6 +326,7 @@ export default function HealthyChallenge() {
             <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Trophy className="w-3.5 h-3.5" /> 100,000 XP</div>
             <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Calendar className="w-3.5 h-3.5" /> Daily challenge</div>
             <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Activity className="w-3.5 h-3.5" /> Run · Eat · Train</div>
+            <div className="flex items-center gap-1.5 bg-yellow-500/20 border border-yellow-300/40 rounded-full px-2.5 py-1 text-yellow-100" title="Time left until this month's champion is auto-crowned"><Timer className="w-3.5 h-3.5" /> Month ends in {countdown}</div>
           </div>
         </div>
 
@@ -405,10 +438,15 @@ export default function HealthyChallenge() {
                   )}
                   {s.video_url && <video src={s.video_url} controls className="w-full rounded-lg mb-3 max-h-96" />}
                   <div className="flex items-center justify-between">
-                    <Button size="sm" variant={s.hasVoted ? "default" : "outline"} onClick={() => toggleVote(s)} disabled={s.user_id === user?.id}>
-                      <Heart className={`w-4 h-4 mr-1 ${s.hasVoted ? "fill-current" : ""}`} />
-                      {s.votes_count}
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      <Button size="sm" variant={s.hasVoted ? "default" : "outline"} onClick={() => toggleVote(s)} disabled={s.user_id === user?.id}>
+                        <Heart className={`w-4 h-4 mr-1 ${s.hasVoted ? "fill-current" : ""}`} />
+                        {s.votes_count}
+                      </Button>
+                      <Button size="sm" variant="ghost" onClick={() => shareSubmission(s)} aria-label="Share">
+                        <Share2 className="w-4 h-4 mr-1" /> Share
+                      </Button>
+                    </div>
                     <span className="text-xs text-muted-foreground">{new Date(s.created_at).toLocaleTimeString()}</span>
                   </div>
                   <HealthyComments submissionId={s.id} />

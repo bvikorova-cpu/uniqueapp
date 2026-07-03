@@ -8,11 +8,12 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { Leaf, Trophy, Heart, Upload, Sparkles, Calendar, Video, Image as ImageIcon } from "lucide-react";
+import { Leaf, Trophy, Heart, Upload, Sparkles, Calendar, Video, Image as ImageIcon, AlertCircle, History, Share2, Timer } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { SectionVideoPreview } from "@/components/SectionVideoPreview";
 import { sectionVideos } from "@/components/sectionVideos";
 import { Link } from "react-router-dom";
+import { EcoComments } from "@/components/eco/EcoComments";
 
 interface Challenge {
   id: string;
@@ -53,15 +54,30 @@ const todayISO = () => new Date().toISOString().slice(0, 10);
 const currentMonthKey = () => new Date().toISOString().slice(0, 7);
 
 const HIW_STEPS = [
-  { title: "1. See today's challenge", desc: "Every day a new eco good deed appears — plant, clean, recycle, save water, etc." },
-  { title: "2. Do the deed in real life", desc: "Complete the action offline. Take photos or a short video as proof." },
-  { title: "3. Submit your proof", desc: "Add a description, upload up to 4 photos or 1 video. One submission per day." },
-  { title: "4. Vote for others", desc: "Only registered users can vote. You can't vote for your own post. One vote per submission." },
-  { title: "5. Climb the leaderboard", desc: "Ranking = most days completed this month, ties broken by total votes received." },
-  { title: "6. Win 100,000 XP", desc: "On the 1st of each month the top eco hero automatically receives 100,000 XP and a champion notification." },
-  { title: "7. Boost your submission", desc: "Optional: spend 5 credits to pin your submission for 24 hours at the top of the feed." },
-  { title: "8. Sponsors welcome", desc: "Eco brands can sponsor a daily challenge — logo shown on the challenge card and in the feed." },
+  { title: "1. See today's challenge", desc: "Every day a new eco good deed appears — plant, clean, recycle, save water, reduce waste." },
+  { title: "2. Do the deed in real life", desc: "Complete the action offline. Take photos or a short clip as proof." },
+  { title: "3. Submit your proof", desc: "Add a description (min 10 chars), upload up to 4 photos or 1 video (≤50 MB). Strict limit: 1 submission per user per day (enforced by the database)." },
+  { title: "4. Earn XP for each valid day", desc: "Every accepted submission credits +XP shown on today's card (default +50 XP). A day only counts once — extra attempts the same day are blocked." },
+  { title: "5. Vote & comment", desc: "Only registered users can vote and comment. You can't vote for yourself. One vote per submission. Comments follow the same registered-only rule and can be deleted by their author." },
+  { title: "6. Climb the leaderboard", desc: "Monthly ranking = number of days completed this calendar month (UTC). Ties are broken by total votes received on your submissions that month." },
+  { title: "7. Win 100,000 XP each month", desc: "On the 1st of the next month, the top eco hero of the previous month automatically receives 100,000 XP + a champion badge (pg_cron job). Only one winner per month. Winners are archived in Monthly History." },
+  { title: "8. Boost your submission", desc: "Optional: spend 5 credits to pin your submission for 24 hours at the top of the feed. Boost does not add votes — only visibility." },
+  { title: "9. Fair play & moderation", desc: "Duplicate accounts, fake proof, offensive content or spam get hidden by admins and disqualified from the monthly prize." },
+  { title: "10. Sponsors welcome", desc: "Eco brands can sponsor a daily challenge — logo appears on the daily card and in the feed." },
 ];
+
+const msUntilMonthEnd = () => {
+  const now = new Date();
+  const end = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1, 0, 0, 0));
+  return end.getTime() - now.getTime();
+};
+const fmtCountdown = (ms: number) => {
+  if (ms <= 0) return "0d 0h 0m";
+  const d = Math.floor(ms / 86400000);
+  const h = Math.floor((ms % 86400000) / 3600000);
+  const m = Math.floor((ms % 3600000) / 60000);
+  return `${d}d ${h}h ${m}m`;
+};
 
 export default function EcoChallenge() {
   const { user } = useAuth();
@@ -196,7 +212,14 @@ export default function EcoChallenge() {
     if (!user) { toast({ title: "Sign in required", variant: "destructive" }); return; }
     if (!challenge || challenge.id === "fallback") { toast({ title: "No active challenge yet", description: "Admin has not created today's challenge.", variant: "destructive" }); return; }
     if (description.trim().length < 10) { toast({ title: "Describe your good deed (min 10 chars)", variant: "destructive" }); return; }
-    if (mySubmissionToday) { toast({ title: "Already submitted today", variant: "destructive" }); return; }
+    if (mySubmissionToday) {
+      toast({
+        title: "⚠️ Daily limit reached",
+        description: "You have already submitted your proof for today. Only 1 submission per day is allowed. Come back tomorrow for a new challenge!",
+        variant: "destructive",
+      });
+      return;
+    }
     setUploading(true);
     try {
       const { images, video } = await uploadMedia();
@@ -208,7 +231,18 @@ export default function EcoChallenge() {
         image_urls: images,
         video_url: video,
       });
-      if (error) throw error;
+      if (error) {
+        if ((error as any).code === "23505") {
+          toast({
+            title: "⚠️ Daily limit reached",
+            description: "You have already submitted your proof for today. Only 1 submission per day is allowed.",
+            variant: "destructive",
+          });
+          await loadAll();
+          return;
+        }
+        throw error;
+      }
       toast({ title: "🌱 Submitted!", description: `Day ${myMonthDays + 1} of this month completed.` });
       setDescription(""); setFiles([]); setVideoFile(null);
       await loadAll();
@@ -248,6 +282,25 @@ export default function EcoChallenge() {
 
   const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
 
+  const [countdown, setCountdown] = useState<string>(fmtCountdown(msUntilMonthEnd()));
+  useEffect(() => {
+    const t = setInterval(() => setCountdown(fmtCountdown(msUntilMonthEnd())), 60000);
+    return () => clearInterval(t);
+  }, []);
+
+  const shareSubmission = async (s: Submission) => {
+    const url = `${window.location.origin}/eco-challenge`;
+    const text = `🌱 Eco Challenge — ${s.description.slice(0, 80)}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: "Eco Challenge", text, url });
+      } else {
+        await navigator.clipboard.writeText(`${text} ${url}`);
+        toast({ title: "Link copied to clipboard" });
+      }
+    } catch { /* user cancelled */ }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 via-emerald-50 to-teal-50 dark:from-green-950/40 dark:via-emerald-950/40 dark:to-teal-950/40">
       <div className="container mx-auto px-4 py-6 max-w-5xl">
@@ -280,6 +333,7 @@ export default function EcoChallenge() {
             <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Trophy className="w-3.5 h-3.5" /> 100,000 XP</div>
             <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Calendar className="w-3.5 h-3.5" /> Daily challenge</div>
             <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Heart className="w-3.5 h-3.5" /> Community voted</div>
+            <div className="flex items-center gap-1.5 bg-yellow-500/20 border border-yellow-300/40 rounded-full px-2.5 py-1 text-yellow-100" title="Time left until this month's champion is auto-crowned"><Timer className="w-3.5 h-3.5" /> Month ends in {countdown}</div>
           </div>
         </div>
 
@@ -336,6 +390,10 @@ export default function EcoChallenge() {
                 <Card>
                   <CardHeader><CardTitle>Submit your proof</CardTitle></CardHeader>
                   <CardContent className="space-y-3">
+                    <div className="flex items-start gap-2 rounded-lg border border-emerald-300/60 bg-emerald-100/60 dark:border-emerald-800 dark:bg-emerald-900/20 p-3 text-xs">
+                      <AlertCircle className="w-4 h-4 mt-0.5 text-emerald-700 shrink-0" />
+                      <p><b>Daily limit:</b> only <b>1 submission per user per day</b> is allowed. This is enforced by the database — extra attempts today will be automatically rejected. A new challenge unlocks tomorrow.</p>
+                    </div>
                     <Textarea placeholder="Describe your good deed — what, where, how..." value={description} onChange={(e) => setDescription(e.target.value)} rows={3} maxLength={500} />
                     <div className="flex flex-wrap gap-2">
                       <Button type="button" variant="outline" size="sm" onClick={() => fileRef.current?.click()}>
@@ -387,12 +445,18 @@ export default function EcoChallenge() {
                   )}
                   {s.video_url && <video src={s.video_url} controls className="w-full rounded-lg mb-3 max-h-96" />}
                   <div className="flex items-center justify-between">
-                    <Button size="sm" variant={s.hasVoted ? "default" : "outline"} onClick={() => toggleVote(s)} disabled={s.user_id === user?.id}>
-                      <Heart className={`w-4 h-4 mr-1 ${s.hasVoted ? "fill-current" : ""}`} />
-                      {s.votes_count}
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      <Button size="sm" variant={s.hasVoted ? "default" : "outline"} onClick={() => toggleVote(s)} disabled={s.user_id === user?.id}>
+                        <Heart className={`w-4 h-4 mr-1 ${s.hasVoted ? "fill-current" : ""}`} />
+                        {s.votes_count}
+                      </Button>
+                      <Button size="sm" variant="ghost" onClick={() => shareSubmission(s)} aria-label="Share">
+                        <Share2 className="w-4 h-4 mr-1" /> Share
+                      </Button>
+                    </div>
                     <span className="text-xs text-muted-foreground">{new Date(s.created_at).toLocaleTimeString()}</span>
                   </div>
+                  <EcoComments submissionId={s.id} />
                 </CardContent>
               </Card>
             ))}
@@ -425,18 +489,23 @@ export default function EcoChallenge() {
           {/* ========== WINNERS ========== */}
           <TabsContent value="winners">
             <Card>
-              <CardHeader><CardTitle>Past Eco Champions</CardTitle></CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                <CardTitle>Past Eco Champions</CardTitle>
+                <Link to="/eco-challenge/history">
+                  <Button size="sm" variant="outline"><History className="w-4 h-4 mr-1" /> Full history</Button>
+                </Link>
+              </CardHeader>
               <CardContent>
                 {winners.length === 0 ? <p className="text-muted-foreground">No champions crowned yet — could be you next month!</p> : (
                   <div className="space-y-2">
                     {winners.map((w) => (
-                      <div key={w.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                      <Link key={w.id} to="/eco-challenge/history" className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition">
                         <Trophy className="w-6 h-6 text-yellow-500" />
                         <div className="flex-1">
                           <p className="font-semibold">{w.month_key}</p>
                           <p className="text-xs text-muted-foreground">{w.days_completed} days · {w.total_votes} votes · +{w.xp_awarded.toLocaleString()} XP</p>
                         </div>
-                      </div>
+                      </Link>
                     ))}
                   </div>
                 )}
