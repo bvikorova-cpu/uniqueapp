@@ -63,6 +63,7 @@ import { PageLoader } from "@/components/ui/PageLoader";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { installGlobalErrorHandlers } from "@/utils/logger";
 import { installImagePerformancePatch } from "@/utils/imagePerformance";
+import { prewarmHotRoutes } from "@/utils/prewarmRoutes";
 import { HelmetProvider } from "react-helmet-async";
 import GoogleTranslateWidget from "@/components/GoogleTranslateWidget";
 import { GlobalPaymentCleanup } from "@/components/payment/GlobalPaymentCleanup";
