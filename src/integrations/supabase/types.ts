@@ -20476,6 +20476,160 @@ export type Database = {
           },
         ]
       }
+      eco_challenges: {
+        Row: {
+          category: string
+          challenge_date: string
+          created_at: string
+          description: string
+          icon: string | null
+          id: string
+          sponsor_logo_url: string | null
+          sponsor_name: string | null
+          sponsor_url: string | null
+          title: string
+          xp_reward: number
+        }
+        Insert: {
+          category?: string
+          challenge_date: string
+          created_at?: string
+          description: string
+          icon?: string | null
+          id?: string
+          sponsor_logo_url?: string | null
+          sponsor_name?: string | null
+          sponsor_url?: string | null
+          title: string
+          xp_reward?: number
+        }
+        Update: {
+          category?: string
+          challenge_date?: string
+          created_at?: string
+          description?: string
+          icon?: string | null
+          id?: string
+          sponsor_logo_url?: string | null
+          sponsor_name?: string | null
+          sponsor_url?: string | null
+          title?: string
+          xp_reward?: number
+        }
+        Relationships: []
+      }
+      eco_monthly_winners: {
+        Row: {
+          created_at: string
+          days_completed: number
+          id: string
+          month_key: string
+          total_votes: number
+          user_id: string
+          xp_awarded: number
+        }
+        Insert: {
+          created_at?: string
+          days_completed: number
+          id?: string
+          month_key: string
+          total_votes: number
+          user_id: string
+          xp_awarded?: number
+        }
+        Update: {
+          created_at?: string
+          days_completed?: number
+          id?: string
+          month_key?: string
+          total_votes?: number
+          user_id?: string
+          xp_awarded?: number
+        }
+        Relationships: []
+      }
+      eco_submissions: {
+        Row: {
+          boosted_until: string | null
+          challenge_date: string
+          challenge_id: string | null
+          created_at: string
+          description: string
+          id: string
+          image_urls: string[]
+          is_hidden: boolean
+          updated_at: string
+          user_id: string
+          video_url: string | null
+          votes_count: number
+        }
+        Insert: {
+          boosted_until?: string | null
+          challenge_date: string
+          challenge_id?: string | null
+          created_at?: string
+          description: string
+          id?: string
+          image_urls?: string[]
+          is_hidden?: boolean
+          updated_at?: string
+          user_id: string
+          video_url?: string | null
+          votes_count?: number
+        }
+        Update: {
+          boosted_until?: string | null
+          challenge_date?: string
+          challenge_id?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          image_urls?: string[]
+          is_hidden?: boolean
+          updated_at?: string
+          user_id?: string
+          video_url?: string | null
+          votes_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eco_submissions_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "eco_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      eco_votes: {
+        Row: {
+          created_at: string
+          id: string
+          submission_id: string
+          voter_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          submission_id: string
+          voter_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          submission_id?: string
+          voter_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eco_votes_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "eco_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       edge_cache: {
         Row: {
           created_at: string | null
@@ -64363,6 +64517,7 @@ export type Database = {
       }
       auto_release_coupon_escrow: { Args: never; Returns: number }
       auto_release_stale_brand_escrows: { Args: never; Returns: number }
+      award_eco_monthly_winner: { Args: never; Returns: Json }
       award_hub_xp: {
         Args: { _amount: number; _hub: string }
         Returns: {
@@ -64831,6 +64986,15 @@ export type Database = {
           active_users: number
           day: string
           new_users: number
+        }[]
+      }
+      get_eco_leaderboard: {
+        Args: { _limit?: number; _month_key?: string }
+        Returns: {
+          days_completed: number
+          rank: number
+          total_votes: number
+          user_id: string
         }[]
       }
       get_engagement_metrics: { Args: { p_days?: number }; Returns: Json }
