@@ -142,7 +142,7 @@ export const ProfileHero = ({
 
         {/* Live Stats Strip */}
         <div className="grid grid-cols-4 gap-2 sm:gap-3 mt-6">
-          {liveStats.map((stat, i) => (
+          {liveStats.map((stat) => (
             <div
               key={stat.label}
               className="bg-black/45 backdrop-blur-xl border border-amber-400/25 rounded-xl px-2 sm:px-3 py-2.5 text-center hover:border-amber-400/60 transition-all hover:shadow-[0_0_20px_rgba(251,191,36,0.2)]"
