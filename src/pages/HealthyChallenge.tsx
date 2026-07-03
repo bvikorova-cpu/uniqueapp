@@ -275,6 +275,25 @@ export default function HealthyChallenge() {
 
   const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
 
+  const [countdown, setCountdown] = useState<string>(fmtCountdown(msUntilMonthEnd()));
+  useEffect(() => {
+    const t = setInterval(() => setCountdown(fmtCountdown(msUntilMonthEnd())), 60000);
+    return () => clearInterval(t);
+  }, []);
+
+  const shareSubmission = async (s: Submission) => {
+    const url = `${window.location.origin}/healthy-challenge`;
+    const text = `💪 Healthy Challenge — ${s.description.slice(0, 80)}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: "Healthy Challenge", text, url });
+      } else {
+        await navigator.clipboard.writeText(`${text} ${url}`);
+        toast({ title: "Link copied to clipboard" });
+      }
+    } catch { /* user cancelled */ }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 via-rose-50 to-sky-50 dark:from-orange-950/40 dark:via-rose-950/40 dark:to-sky-950/40">
       <div className="container mx-auto px-4 py-6 max-w-5xl">
@@ -307,6 +326,7 @@ export default function HealthyChallenge() {
             <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Trophy className="w-3.5 h-3.5" /> 100,000 XP</div>
             <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Calendar className="w-3.5 h-3.5" /> Daily challenge</div>
             <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Activity className="w-3.5 h-3.5" /> Run · Eat · Train</div>
+            <div className="flex items-center gap-1.5 bg-yellow-500/20 border border-yellow-300/40 rounded-full px-2.5 py-1 text-yellow-100" title="Time left until this month's champion is auto-crowned"><Timer className="w-3.5 h-3.5" /> Month ends in {countdown}</div>
           </div>
         </div>
 
