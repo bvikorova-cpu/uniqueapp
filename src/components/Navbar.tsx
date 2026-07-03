@@ -167,13 +167,6 @@ const Navbar = () => {
       ],
     },
     {
-      category: "Challenges",
-      items: [
-        { path: "/eco-challenge", label: "Eco Challenge — Daily Good Deeds", icon: Leaf },
-        { path: "/healthy-challenge", label: "Healthy Challenge — Move · Eat · Train", icon: Activity },
-      ],
-    },
-    {
       category: "Health & Wellness",
       items: [
         { path: "/wellness", label: "Wellness & Relaxation", icon: Heart },
@@ -258,7 +251,8 @@ const Navbar = () => {
   const isBrandArenaActive = brandArenaServices.some(item => location.pathname === item.path) || location.pathname.startsWith('/brand-battle');
   const isKidsAcademyServiceActive = kidsAcademyServices.some(item => location.pathname === item.path) || location.pathname.startsWith('/kids');
   const isFundraisingServiceActive = fundraisingServices.some(item => location.pathname === item.path) || location.pathname.startsWith('/fundraising');
-  const isOtherServiceActive = otherServices.some(item => location.pathname === item.path);
+    const isChallengeServiceActive = challengeServices.some(item => location.pathname === item.path);
+    const isOtherServiceActive = otherServices.some(item => location.pathname === item.path);
 
   return (
     <nav className="fixed top-0 w-full bg-white dark:bg-background backdrop-blur-xl border-b border-border/50 z-50 shadow-[0_1px_20px_rgba(0,0,0,0.06)]">
