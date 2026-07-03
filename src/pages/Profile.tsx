@@ -649,7 +649,7 @@ const Profile = () => {
           friends={stats.friendsCount}
         />
 
-        {detailsReady && (
+        {extendedReady ? (
         <Suspense fallback={<LazyProfileSectionFallback />}>
         {/* Free Tier Credits — visible on own profile */}
         {userId && (
@@ -895,6 +895,8 @@ const Profile = () => {
           defaultTab={followersModalTab}
         />
         </Suspense>
+        ) : (
+          <LazyProfileSectionFallback />
         )}
       </div>
     </div>
