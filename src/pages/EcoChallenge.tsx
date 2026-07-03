@@ -10,6 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { Leaf, Trophy, Heart, Upload, Sparkles, Calendar, Video, Image as ImageIcon } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { SectionVideoPreview } from "@/components/SectionVideoPreview";
+import { sectionVideos } from "@/components/sectionVideos";
 import { Link } from "react-router-dom";
 
 interface Challenge {
@@ -263,6 +265,14 @@ export default function EcoChallenge() {
             </div>
           </div>
         </div>
+
+        <SectionVideoPreview
+          src={sectionVideos.ecoChallenge}
+          label="Eco Challenge preview"
+          caption="Small daily actions. Global impact."
+          aspectRatio="16 / 9"
+          className="!my-4"
+        />
 
         <FloatingHowItWorks title="How Eco Challenge works" intro="Turn small daily actions into a global movement." steps={HIW_STEPS} />
 
