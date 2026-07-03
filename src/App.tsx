@@ -653,6 +653,8 @@ const App = () => {
                         {/* All routes render inside this Suspense boundary */}
                         <Routes>
                         <Route path="/" element={<Index />} />
+                        <Route path="/eco-challenge" element={<EcoChallenge />} />
+                        <Route path="/eco" element={<EcoChallenge />} />
                         <Route path="/education/hub" element={<EducationHub />} />
                         <Route path="/education/flashcards" element={<ProtectedRoute><FlashcardDecks /></ProtectedRoute>} />
                         <Route path="/education/flashcards/:deckId" element={<ProtectedRoute><FlashcardDeckDetail /></ProtectedRoute>} />
