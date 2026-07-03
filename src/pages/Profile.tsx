@@ -500,36 +500,36 @@ const Profile = () => {
             level: stats.level,
           }}
           friendsAction={
-            <>
+            <Suspense fallback={null}>
               {friendshipStatus === 'none' && (
-                <Button onClick={handleAddFriend} className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white border-0 shadow-lg shadow-violet-500/30">
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  Add Friend
-                </Button>
-              )}
-              {friendshipStatus === 'pending_sent' && (
-                <Button disabled className="bg-gradient-to-r from-violet-600/60 to-purple-600/60 text-white border-0">
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Sent
-                </Button>
-              )}
-              {friendshipStatus === 'pending_received' && (
-                <Button onClick={handleAcceptFriend} className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white border-0 shadow-lg shadow-violet-500/30">
-                  <UserCheck className="h-4 w-4 mr-2" />
-                  Accept Friend
-                </Button>
-              )}
-              {friendshipStatus === 'accepted' && (
-                <Button onClick={handleRemoveFriend} className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white border-0 shadow-lg shadow-violet-500/30">
-                  <Users className="h-4 w-4 mr-2" />
-                  Friends
-                </Button>
-              )}
-              {currentUserId === userId && <ThemePicker userId={userId!} />}
-              {currentUserId !== userId && profile.full_name && (
-                <TipJar recipientId={userId!} recipientName={profile.full_name} currentUserId={currentUserId} />
-              )}
-            </>
+                  <Button onClick={handleAddFriend} className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white border-0 shadow-lg shadow-violet-500/30">
+                    <UserPlus className="h-4 w-4 mr-2" />
+                    Add Friend
+                  </Button>
+                )}
+                {friendshipStatus === 'pending_sent' && (
+                  <Button disabled className="bg-gradient-to-r from-violet-600/60 to-purple-600/60 text-white border-0">
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Sent
+                  </Button>
+                )}
+                {friendshipStatus === 'pending_received' && (
+                  <Button onClick={handleAcceptFriend} className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white border-0 shadow-lg shadow-violet-500/30">
+                    <UserCheck className="h-4 w-4 mr-2" />
+                    Accept Friend
+                  </Button>
+                )}
+                {friendshipStatus === 'accepted' && (
+                  <Button onClick={handleRemoveFriend} className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white border-0 shadow-lg shadow-violet-500/30">
+                    <Users className="h-4 w-4 mr-2" />
+                    Friends
+                  </Button>
+                )}
+                {currentUserId === userId && <ThemePicker userId={userId!} />}
+                {currentUserId !== userId && profile.full_name && (
+                  <TipJar recipientId={userId!} recipientName={profile.full_name} currentUserId={currentUserId} />
+                )}
+            </Suspense>
           }
         />
 
@@ -543,6 +543,7 @@ const Profile = () => {
           friends={stats.friendsCount}
         />
 
+        <Suspense fallback={<LazyProfileSectionFallback />}>
         {/* Free Tier Credits — visible on own profile */}
         {userId && (
           <div className="mb-4 grid md:grid-cols-2 gap-4">
@@ -786,6 +787,7 @@ const Profile = () => {
           onClose={() => setFollowersModalOpen(false)}
           defaultTab={followersModalTab}
         />
+        </Suspense>
       </div>
     </div>
   );
