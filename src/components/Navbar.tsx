@@ -322,22 +322,6 @@ const Navbar = () => {
               );
             })}
             
-            <DropdownMenu>
-              <DropdownMenuContent align="end" className="w-56 max-h-96 overflow-y-auto bg-popover/95 backdrop-blur-xl border-border/50 shadow-[0_8px_40px_hsl(var(--primary)/0.08)]">
-                {challengeServices.map((item) => {
-                  const Icon = item.icon;
-                  const isActive = location.pathname === item.path;
-                  return (
-                    <DropdownMenuItem key={item.path} asChild>
-                      <Link to={item.path} className="w-full cursor-pointer">
-                        <Icon className="h-4 w-4 mr-2" />
-                        {item.label}
-                      </Link>
-                    </DropdownMenuItem>
-                  );
-                })}
-              </DropdownMenuContent>
-            </DropdownMenu>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
