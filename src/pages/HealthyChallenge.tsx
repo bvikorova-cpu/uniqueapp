@@ -439,6 +439,7 @@ export default function HealthyChallenge() {
                   <div className="flex items-center gap-2 mb-2">
                     {s.profile?.avatar_url && <img src={s.profile.avatar_url} className="w-8 h-8 rounded-full" alt="" />}
                     <span className="font-semibold">{s.profile?.full_name || s.profile?.username || "Anonymous"}</span>
+                    {proSet.has(s.user_id) && <ChallengeProBadge />}
                     {s.boosted_until && new Date(s.boosted_until) > new Date() && <Badge variant="secondary">🚀 Boosted</Badge>}
                   </div>
                   <p className="mb-3">{s.description}</p>
