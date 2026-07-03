@@ -7,10 +7,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { Dumbbell, Trophy, Heart, Upload, Sparkles, Calendar, Video, Image as ImageIcon, Activity } from "lucide-react";
+import { Dumbbell, Trophy, Heart, Upload, Sparkles, Calendar, Video, Image as ImageIcon, Activity, AlertCircle, History } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { sectionVideos } from "@/components/sectionVideos";
 import { Link } from "react-router-dom";
+import { HealthyComments } from "@/components/healthy/HealthyComments";
 
 interface Challenge {
   id: string;
@@ -53,12 +54,14 @@ const currentMonthKey = () => new Date().toISOString().slice(0, 7);
 const HIW_STEPS = [
   { title: "1. See today's challenge", desc: "A new healthy lifestyle task appears every day — run, workout, healthy meal, hydration, sleep, stretching." },
   { title: "2. Do it in real life", desc: "Complete the action. Snap a photo of your smartwatch showing km, your healthy plate, your workout setup, or a short clip." },
-  { title: "3. Submit your proof", desc: "Add a short description, upload up to 4 photos or 1 video (≤50 MB). One submission per day." },
-  { title: "4. Vote for others", desc: "Only registered users can vote. You can't vote for your own post. One vote per submission." },
-  { title: "5. Climb the leaderboard", desc: "Ranking = most days completed this month, ties broken by total votes received." },
-  { title: "6. Win 100,000 XP", desc: "On the 1st of each month the top healthy hero automatically receives 100,000 XP and a champion badge." },
-  { title: "7. Boost your submission", desc: "Optional: spend 5 credits to pin your submission for 24 hours at the top of the feed." },
-  { title: "8. Sponsors welcome", desc: "Fitness brands, gyms and nutrition companies can sponsor a daily challenge — logo on card + feed." },
+  { title: "3. Submit your proof", desc: "Add a short description (min 10 chars), upload up to 4 photos or 1 video (≤50 MB). Strict limit: 1 submission per user per day (enforced by the database)." },
+  { title: "4. Earn XP for each valid day", desc: "Every accepted submission credits +XP shown on today's card (default +50 XP). A day only counts once — extra tries the same day are blocked." },
+  { title: "5. Vote & comment", desc: "Only registered users can vote and comment. You can't vote for yourself. One vote per submission. Comments follow the same registered-only rule as votes and can be deleted by their author." },
+  { title: "6. Climb the leaderboard", desc: "Monthly ranking = number of days completed this calendar month (UTC). Ties are broken by total votes received on your submissions that month." },
+  { title: "7. Win 100,000 XP each month", desc: "On the 1st of the next month, the top healthy hero of the previous month automatically receives 100,000 XP + a champion badge. Only one winner per month. Winners are archived in Monthly History." },
+  { title: "8. Boost your submission", desc: "Optional: spend 5 credits to pin your submission for 24 hours at the top of the feed. Boost does not add votes — only visibility." },
+  { title: "9. Fair play & moderation", desc: "Duplicate accounts, fake proof, offensive content or spam get hidden by admins and disqualified from the monthly prize." },
+  { title: "10. Sponsors welcome", desc: "Fitness brands, gyms and nutrition companies can sponsor a daily challenge — logo appears on the daily card and in the feed." },
 ];
 
 export default function HealthyChallenge() {
