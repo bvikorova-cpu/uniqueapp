@@ -266,6 +266,14 @@ export default function EcoChallenge() {
           </div>
         </div>
 
+        <SectionVideoPreview
+          src={sectionVideos.ecoChallenge}
+          label="Eco Challenge preview"
+          caption="Small daily actions. Global impact."
+          aspectRatio="16 / 9"
+          className="!my-4"
+        />
+
         <FloatingHowItWorks title="How Eco Challenge works" intro="Turn small daily actions into a global movement." steps={HIW_STEPS} />
 
         <Tabs defaultValue="today" className="w-full">
