@@ -336,15 +336,17 @@ export default function EcoChallenge() {
             🌱 ECO <span className="text-emerald-300">CHALLENGE</span>
           </h1>
           <p className="text-sm sm:text-base text-white/85 font-semibold mt-2 drop-shadow max-w-xl">
-            One good deed a day. Post proof. Get votes. Monthly champion wins <b className="text-emerald-300">100,000 XP</b>.
+            One good deed a day. Post proof. Get votes. Monthly champion wins <b className="text-emerald-300">100,000 XP</b> — or <b className="text-yellow-300">200,000 XP</b> with PRO.
           </p>
           <div className="mt-3 flex flex-wrap gap-2 text-xs">
-            <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Trophy className="w-3.5 h-3.5" /> 100,000 XP</div>
+            <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Trophy className="w-3.5 h-3.5" /> 100k XP · PRO 200k</div>
             <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Calendar className="w-3.5 h-3.5" /> Daily challenge</div>
             <div className="flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full px-2.5 py-1 text-white/90"><Heart className="w-3.5 h-3.5" /> Community voted</div>
             <div className="flex items-center gap-1.5 bg-yellow-500/20 border border-yellow-300/40 rounded-full px-2.5 py-1 text-yellow-100" title="Time left until this month's champion is auto-crowned"><Timer className="w-3.5 h-3.5" /> Month ends in {countdown}</div>
           </div>
         </div>
+
+        <ChallengeProUpsell accent="emerald" />
 
         <FloatingHowItWorks title="How Eco Challenge works" intro="Turn small daily actions into a global movement." steps={HIW_STEPS} />
 
