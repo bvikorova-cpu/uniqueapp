@@ -70,6 +70,11 @@ const Navbar = () => {
     { path: "/megatalent", label: "Megatalent", icon: Crown, premium: true },
   ];
 
+  const challengeServices = [
+    { path: "/eco-challenge", label: "Eco Challenge — Daily Good Deeds", icon: Leaf },
+    { path: "/healthy-challenge", label: "Healthy Challenge — Move · Eat · Train", icon: Activity },
+  ];
+
   const learningServices = [
     { path: "/education", label: "Education", icon: GraduationCap },
     { path: "/ai-mentor", label: "AI Personal Mentor", icon: UserCircle },
@@ -162,13 +167,6 @@ const Navbar = () => {
       ],
     },
     {
-      category: "Challenges",
-      items: [
-        { path: "/eco-challenge", label: "Eco Challenge — Daily Good Deeds", icon: Leaf },
-        { path: "/healthy-challenge", label: "Healthy Challenge — Move · Eat · Train", icon: Activity },
-      ],
-    },
-    {
       category: "Health & Wellness",
       items: [
         { path: "/wellness", label: "Wellness & Relaxation", icon: Heart },
@@ -253,7 +251,8 @@ const Navbar = () => {
   const isBrandArenaActive = brandArenaServices.some(item => location.pathname === item.path) || location.pathname.startsWith('/brand-battle');
   const isKidsAcademyServiceActive = kidsAcademyServices.some(item => location.pathname === item.path) || location.pathname.startsWith('/kids');
   const isFundraisingServiceActive = fundraisingServices.some(item => location.pathname === item.path) || location.pathname.startsWith('/fundraising');
-  const isOtherServiceActive = otherServices.some(item => location.pathname === item.path);
+    const isChallengeServiceActive = challengeServices.some(item => location.pathname === item.path);
+    const isOtherServiceActive = otherServices.some(item => location.pathname === item.path);
 
   return (
     <nav className="fixed top-0 w-full bg-white dark:bg-background backdrop-blur-xl border-b border-border/50 z-50 shadow-[0_1px_20px_rgba(0,0,0,0.06)]">
@@ -278,6 +277,29 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-baseline space-x-1 -mt-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant={isChallengeServiceActive ? "premium" : "ghost"}>
+                  <Zap className="h-4 w-4" />
+                  Challenges
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 max-h-96 overflow-y-auto bg-popover/95 backdrop-blur-xl border-border/50 shadow-[0_8px_40px_hsl(var(--primary)/0.08)]">
+                {challengeServices.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = location.pathname === item.path;
+                  return (
+                    <DropdownMenuItem key={item.path} asChild>
+                      <Link to={item.path} className="w-full cursor-pointer">
+                        <Icon className="h-4 w-4 mr-2" />
+                        {item.label}
+                      </Link>
+                    </DropdownMenuItem>
+                  );
+                })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             {mainNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
@@ -300,6 +322,7 @@ const Navbar = () => {
               );
             })}
             
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant={isLearningServiceActive ? "premium" : "ghost"}>
@@ -571,8 +594,30 @@ const Navbar = () => {
         {isMenuOpen && (
           <div className="lg:hidden py-3 space-y-1 max-h-[calc(100vh-5rem)] overflow-y-auto">
             <MobileCreditsPill />
-            {/* Main Navigation Items */}
+            {/* Challenges Section */}
+            <div className="pt-2 pb-1">
+              <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground">
+                Challenges
+              </div>
+              {challengeServices.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.path;
+                return (
+                  <Link key={item.path} to={item.path} onClick={() => setIsMenuOpen(false)}>
+                    <Button
+                      variant={isActive ? "premium" : "ghost"}
+                      className="w-full justify-start text-sm py-2"
+                      size="sm"
+                    >
+                      <Icon className="h-4 w-4" />
+                      {item.label}
+                    </Button>
+                  </Link>
+                );
+              })}
+            </div>
 
+            {/* Main Navigation Items */}
             {mainNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
@@ -596,7 +641,7 @@ const Navbar = () => {
                 </Link>
               );
             })}
-            
+
             {/* Learning Section */}
             <div className="pt-2 pb-1">
               <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground">
