@@ -17,7 +17,6 @@ const ScrollToTop = () => {
 
   useEffect(() => {
     let raf = 0;
-    let timeout = 0;
 
     const scrollToTop = () => window.scrollTo({ top: 0, left: 0, behavior: "auto" });
 
@@ -42,7 +41,6 @@ const ScrollToTop = () => {
 
     return () => {
       window.cancelAnimationFrame(raf);
-      window.clearTimeout(timeout);
       timeouts.forEach(window.clearTimeout);
     };
   }, [pathname, search, hash]);
