@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
 import { Component, lazy as reactLazy, ReactNode, Suspense } from "react";
 import { lazyWithRetry } from "./utils/lazyWithRetry";
+import { installNavigationScrollReset } from "./utils/installNavigationScrollReset";
 import "./index.css";
 
 // Keep dynamic imports inside React.lazy. Starting them at module top-level
@@ -17,6 +18,8 @@ const InstallPromptBanner = reactLazy(() =>
 // Warm up heavy shared chunks in the background so first navigation inside
 // the app feels instant. These are fire-and-forget; failures are harmless.
 if (typeof window !== "undefined") {
+  installNavigationScrollReset();
+
   const warmup = () => {
     import("react-router-dom").catch(() => {});
     import("@tanstack/react-query").catch(() => {});
