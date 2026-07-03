@@ -15,6 +15,26 @@ import { toast } from "sonner";
  */
 export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" | "orange" }) {
   const { isPro, activeUntil, loading, subscribe, checkingOut } = useChallengePro();
+  const [openingPortal, setOpeningPortal] = useState(false);
+
+  const openPortal = async () => {
+    setOpeningPortal(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("customer-portal");
+      if (error) throw error;
+      const url = (data as any)?.url;
+      if (url) {
+        const w = window.open(url, "_blank", "noopener,noreferrer");
+        if (!w) window.location.href = url;
+      } else {
+        throw new Error("No portal URL returned");
+      }
+    } catch (e: any) {
+      toast.error(e?.message || "Couldn't open billing portal");
+    } finally {
+      setOpeningPortal(false);
+    }
+  };
 
   const ring = accent === "orange" ? "ring-orange-300/60" : "ring-emerald-300/60";
   const grad = accent === "orange"
