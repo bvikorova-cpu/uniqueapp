@@ -8,11 +8,12 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { Leaf, Trophy, Heart, Upload, Sparkles, Calendar, Video, Image as ImageIcon } from "lucide-react";
+import { Leaf, Trophy, Heart, Upload, Sparkles, Calendar, Video, Image as ImageIcon, AlertCircle, History, Share2, Timer } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { SectionVideoPreview } from "@/components/SectionVideoPreview";
 import { sectionVideos } from "@/components/sectionVideos";
 import { Link } from "react-router-dom";
+import { EcoComments } from "@/components/eco/EcoComments";
 
 interface Challenge {
   id: string;
@@ -53,15 +54,30 @@ const todayISO = () => new Date().toISOString().slice(0, 10);
 const currentMonthKey = () => new Date().toISOString().slice(0, 7);
 
 const HIW_STEPS = [
-  { title: "1. See today's challenge", desc: "Every day a new eco good deed appears — plant, clean, recycle, save water, etc." },
-  { title: "2. Do the deed in real life", desc: "Complete the action offline. Take photos or a short video as proof." },
-  { title: "3. Submit your proof", desc: "Add a description, upload up to 4 photos or 1 video. One submission per day." },
-  { title: "4. Vote for others", desc: "Only registered users can vote. You can't vote for your own post. One vote per submission." },
-  { title: "5. Climb the leaderboard", desc: "Ranking = most days completed this month, ties broken by total votes received." },
-  { title: "6. Win 100,000 XP", desc: "On the 1st of each month the top eco hero automatically receives 100,000 XP and a champion notification." },
-  { title: "7. Boost your submission", desc: "Optional: spend 5 credits to pin your submission for 24 hours at the top of the feed." },
-  { title: "8. Sponsors welcome", desc: "Eco brands can sponsor a daily challenge — logo shown on the challenge card and in the feed." },
+  { title: "1. See today's challenge", desc: "Every day a new eco good deed appears — plant, clean, recycle, save water, reduce waste." },
+  { title: "2. Do the deed in real life", desc: "Complete the action offline. Take photos or a short clip as proof." },
+  { title: "3. Submit your proof", desc: "Add a description (min 10 chars), upload up to 4 photos or 1 video (≤50 MB). Strict limit: 1 submission per user per day (enforced by the database)." },
+  { title: "4. Earn XP for each valid day", desc: "Every accepted submission credits +XP shown on today's card (default +50 XP). A day only counts once — extra attempts the same day are blocked." },
+  { title: "5. Vote & comment", desc: "Only registered users can vote and comment. You can't vote for yourself. One vote per submission. Comments follow the same registered-only rule and can be deleted by their author." },
+  { title: "6. Climb the leaderboard", desc: "Monthly ranking = number of days completed this calendar month (UTC). Ties are broken by total votes received on your submissions that month." },
+  { title: "7. Win 100,000 XP each month", desc: "On the 1st of the next month, the top eco hero of the previous month automatically receives 100,000 XP + a champion badge (pg_cron job). Only one winner per month. Winners are archived in Monthly History." },
+  { title: "8. Boost your submission", desc: "Optional: spend 5 credits to pin your submission for 24 hours at the top of the feed. Boost does not add votes — only visibility." },
+  { title: "9. Fair play & moderation", desc: "Duplicate accounts, fake proof, offensive content or spam get hidden by admins and disqualified from the monthly prize." },
+  { title: "10. Sponsors welcome", desc: "Eco brands can sponsor a daily challenge — logo appears on the daily card and in the feed." },
 ];
+
+const msUntilMonthEnd = () => {
+  const now = new Date();
+  const end = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1, 0, 0, 0));
+  return end.getTime() - now.getTime();
+};
+const fmtCountdown = (ms: number) => {
+  if (ms <= 0) return "0d 0h 0m";
+  const d = Math.floor(ms / 86400000);
+  const h = Math.floor((ms % 86400000) / 3600000);
+  const m = Math.floor((ms % 3600000) / 60000);
+  return `${d}d ${h}h ${m}m`;
+};
 
 export default function EcoChallenge() {
   const { user } = useAuth();
