@@ -24,7 +24,9 @@ export function useCompanionsSubscription() {
         return;
       }
 
-      const { data, error } = await supabase.functions.invoke('check-companions-subscription');
+      const { data, error } = await supabase.functions.invoke('check-subscription', {
+        body: { tier: 'companions' },
+      });
 
       if (error) throw error;
 
@@ -42,7 +44,9 @@ export function useCompanionsSubscription() {
 
   const createCheckout = async () => {
     try {
-      const { data, error } = await supabase.functions.invoke('create-companions-checkout');
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { product: 'companions' },
+      });
 
       if (error) throw error;
       if (data?.url) {
@@ -56,7 +60,7 @@ export function useCompanionsSubscription() {
 
   const manageSubscription = async () => {
     try {
-      const { data, error } = await supabase.functions.invoke('companions-customer-portal');
+      const { data, error } = await supabase.functions.invoke('customer-portal');
 
       if (error) throw error;
       if (data?.url) {
