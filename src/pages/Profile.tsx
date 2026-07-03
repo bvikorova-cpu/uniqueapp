@@ -174,132 +174,112 @@ const Profile = () => {
       if (!userId) return;
 
       try {
-        // Fetch profile
-        const { data: profileData, error: profileError } = await supabase
-          .from("public_profiles")
-          .select("*")
-          .eq("id", userId)
-          .maybeSingle();
+        // Fetch profile + posts first (critical path) in parallel and render ASAP.
+        const [profileRes, postsRes] = await Promise.all([
+          supabase
+            .from("public_profiles")
+            .select("*")
+            .eq("id", userId)
+            .maybeSingle(),
+          supabase
+            .from("posts")
+            .select(`*, media (*)`)
+            .eq("user_id", userId)
+            .order("created_at", { ascending: false }),
+        ]);
 
-        if (profileError) throw profileError;
+        if (profileRes.error) throw profileRes.error;
+        const profileData = profileRes.data;
         setProfile(profileData);
 
-        // Fetch user's posts
-        const { data: postsData, error: postsError } = await supabase
-          .from("posts")
-          .select(`
-            *,
-            media (*)
-          `)
-          .eq("user_id", userId)
-          .order("created_at", { ascending: false });
-
-        if (postsError) throw postsError;
-        
-        // Add profiles data to posts
-        const postsWithProfiles = (postsData || []).map(post => ({
+        const postsData = postsRes.data;
+        const postsWithProfiles = (postsData || []).map((post) => ({
           ...post,
           profiles: {
-            id: profileData.id,
-            full_name: profileData.full_name,
-            avatar_url: profileData.avatar_url
-          }
+            id: profileData?.id,
+            full_name: profileData?.full_name,
+            avatar_url: profileData?.avatar_url,
+          },
         }));
-        
         setPosts(postsWithProfiles);
+        setLoading(false);
 
-        // Fetch friendship status if viewing someone else's profile
-        if (currentUserId && currentUserId !== userId) {
-          const { data: friendshipData } = await supabase
-            .from("friendships")
-            .select("*")
-            .or(`and(user_id.eq.${currentUserId},friend_id.eq.${userId}),and(user_id.eq.${userId},friend_id.eq.${currentUserId})`)
-            .maybeSingle();
-
-          if (friendshipData) {
-            if (friendshipData.status === 'accepted') {
-              setFriendshipStatus('accepted');
-            } else if (friendshipData.user_id === currentUserId) {
-              setFriendshipStatus('pending_sent');
-            } else {
-              setFriendshipStatus('pending_received');
-            }
-          }
-        }
-
-        // Fetch friends list
-        const { data: friendsData } = await supabase
+        // Fire-and-forget: all remaining queries in parallel (non-blocking).
+        const friendsPromise = supabase
           .from("friendships")
           .select("user_id, friend_id")
           .eq("status", "accepted")
           .or(`user_id.eq.${userId},friend_id.eq.${userId}`);
 
+        const [
+          likesRes,
+          commentsRes,
+          submissionsRes,
+          coursesRes,
+          pointsRes,
+          friendsRes,
+        ] = await Promise.all([
+          supabase.from("post_likes").select("*", { count: "exact", head: true }).eq("user_id", userId),
+          supabase.from("post_comments").select("*", { count: "exact", head: true }).eq("user_id", userId),
+          supabase.from("talent_submissions").select("*", { count: "exact", head: true }).eq("user_id", userId),
+          supabase.from("completed_courses").select("*", { count: "exact", head: true }).eq("user_id", userId),
+          supabase.from("user_points").select("total_points, level").eq("user_id", userId).maybeSingle(),
+          friendsPromise,
+        ]);
+
+        const friendsData = friendsRes.data;
+        setStats({
+          postsCount: postsData?.length || 0,
+          likesGiven: likesRes.count || 0,
+          commentsGiven: commentsRes.count || 0,
+          friendsCount: friendsData?.length || 0,
+          submissionsCount: submissionsRes.count || 0,
+          completedCoursesCount: coursesRes.count || 0,
+          xp: pointsRes.data?.total_points ?? 0,
+          level: pointsRes.data?.level ?? 1,
+        });
+
         if (friendsData && friendsData.length > 0) {
-          const friendIds = friendsData.map(f => 
+          const friendIds = friendsData.map((f) =>
             f.user_id === userId ? f.friend_id : f.user_id
           );
-
           const { data: friendProfiles } = await supabase
             .from("public_profiles")
             .select("*")
             .in("id", friendIds);
-
-
           setFriends(friendProfiles || []);
         }
-
-        // Fetch activity statistics
-        const { count: likesCount } = await supabase
-          .from("post_likes")
-          .select("*", { count: 'exact', head: true })
-          .eq("user_id", userId);
-
-        const { count: commentsCount } = await supabase
-          .from("post_comments")
-          .select("*", { count: 'exact', head: true })
-          .eq("user_id", userId);
-
-        const { count: submissionsCount } = await supabase
-          .from("talent_submissions")
-          .select("*", { count: 'exact', head: true })
-          .eq("user_id", userId);
-
-        const { count: completedCoursesCount } = await supabase
-          .from("completed_courses")
-          .select("*", { count: 'exact', head: true })
-          .eq("user_id", userId);
-
-        // Real XP & level from user_points (publicly readable)
-        const { data: pointsData } = await supabase
-          .from("user_points")
-          .select("total_points, level")
-          .eq("user_id", userId)
-          .maybeSingle();
-
-        setStats({
-          postsCount: postsData?.length || 0,
-          likesGiven: likesCount || 0,
-          commentsGiven: commentsCount || 0,
-          friendsCount: friendsData?.length || 0,
-          submissionsCount: submissionsCount || 0,
-          completedCoursesCount: completedCoursesCount || 0,
-          xp: pointsData?.total_points ?? 0,
-          level: pointsData?.level ?? 1,
-        });
-
       } catch (error: any) {
         toast({
           title: "Error loading profile",
           description: error.message,
           variant: "destructive",
         });
-      } finally {
         setLoading(false);
       }
     };
 
     fetchProfileAndPosts();
-  }, [userId, currentUserId, toast]);
+  }, [userId, toast]);
+
+  // Fetch friendship status separately so profile render doesn't wait on session.
+  useEffect(() => {
+    if (!currentUserId || !userId || currentUserId === userId) return;
+    (async () => {
+      const { data: friendshipData } = await supabase
+        .from("friendships")
+        .select("*")
+        .or(`and(user_id.eq.${currentUserId},friend_id.eq.${userId}),and(user_id.eq.${userId},friend_id.eq.${currentUserId})`)
+        .maybeSingle();
+
+      if (friendshipData) {
+        if (friendshipData.status === "accepted") setFriendshipStatus("accepted");
+        else if (friendshipData.user_id === currentUserId) setFriendshipStatus("pending_sent");
+        else setFriendshipStatus("pending_received");
+      }
+    })();
+  }, [currentUserId, userId]);
+
 
   const handleAddFriend = async () => {
     if (!currentUserId || !userId) return;
