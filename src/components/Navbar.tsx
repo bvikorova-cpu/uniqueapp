@@ -610,32 +610,6 @@ const Navbar = () => {
         {isMenuOpen && (
           <div className="lg:hidden py-3 space-y-1 max-h-[calc(100vh-5rem)] overflow-y-auto">
             <MobileCreditsPill />
-            {/* Main Navigation Items */}
-
-            {mainNavItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = location.pathname === item.path;
-              const isPremium = 'premium' in item && item.premium;
-              
-              return (
-                <Link key={item.path} to={item.path} onClick={() => setIsMenuOpen(false)}>
-                  <Button
-                    variant={isActive ? "premium" : "ghost"}
-                    className="w-full justify-start relative text-sm py-2"
-                    size="sm"
-                  >
-                    <Icon className="h-4 w-4" />
-                    {item.label}
-                    {isPremium && (
-                      <Badge variant="secondary" className="ml-auto bg-gold text-gold-foreground text-[10px]">
-                        Premium
-                      </Badge>
-                    )}
-                  </Button>
-                </Link>
-              );
-            })}
-            
             {/* Challenges Section */}
             <div className="pt-2 pb-1">
               <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground">
@@ -658,6 +632,31 @@ const Navbar = () => {
                 );
               })}
             </div>
+
+            {/* Main Navigation Items */}
+            {mainNavItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = location.pathname === item.path;
+              const isPremium = 'premium' in item && item.premium;
+              
+              return (
+                <Link key={item.path} to={item.path} onClick={() => setIsMenuOpen(false)}>
+                  <Button
+                    variant={isActive ? "premium" : "ghost"}
+                    className="w-full justify-start relative text-sm py-2"
+                    size="sm"
+                  >
+                    <Icon className="h-4 w-4" />
+                    {item.label}
+                    {isPremium && (
+                      <Badge variant="secondary" className="ml-auto bg-gold text-gold-foreground text-[10px]">
+                        Premium
+                      </Badge>
+                    )}
+                  </Button>
+                </Link>
+              );
+            })
 
             {/* Learning Section */}
             <div className="pt-2 pb-1">
