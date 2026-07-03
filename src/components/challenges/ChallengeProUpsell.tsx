@@ -1,8 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Leaf, Trophy, Sparkles, Check } from "lucide-react";
+import { Leaf, Trophy, Sparkles, Check, Settings, Loader2 } from "lucide-react";
 import { useChallengePro } from "@/hooks/useChallengePro";
 import { ChallengeProBadge } from "./ChallengeProBadge";
+import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 /**
  * Upsell card for the €3/month Challenge PRO subscription.
