@@ -2739,6 +2739,7 @@ serve(async (req) => {
         coupon_marketplace:      { amount: 999,  mode: "subscription", name: "Coupon Marketplace Access" },
         dating_monthly:          { amount: 200,  mode: "subscription", name: "Dating Premium (Monthly)" },
         dating_yearly:           { amount: 2000, mode: "subscription", name: "Dating Premium (Yearly)" },
+        challenge_pro:           { amount: 300,  mode: "subscription", name: "Challenge PRO (Eco + Healthy)" },
       };
 
       const def = PRODUCT_DEFAULTS[productKey];
