@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation, useParams } from "react-router-dom";
 import { lazyWithRetry as lazy } from "@/utils/lazyWithRetry";
 import RouteSEO from "@/components/RouteSEO";
+import ScrollToTop from "@/components/ScrollToTop";
 const CouponSeasonalHub = lazy(() => import("@/pages/CouponSeasonalHub"));
 const LiveChatWidget = lazy(() => import("@/components/contact/LiveChatWidget").then(m => ({ default: m.LiveChatWidget })));
 const BazaarCreate = lazy(() => import("@/pages/BazaarCreate"));
