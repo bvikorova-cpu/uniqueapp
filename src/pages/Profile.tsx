@@ -113,6 +113,7 @@ const Profile = () => {
   const [followersModalTab, setFollowersModalTab] = useState<"followers" | "following">("followers");
   const { data: followCounts } = useFollowCounts(userId);
   const [defaultTab, setDefaultTab] = useState("posts");
+  const [detailsReady, setDetailsReady] = useState(false);
   const [stats, setStats] = useState({
     postsCount: 0,
     likesGiven: 0,
@@ -128,6 +129,15 @@ const Profile = () => {
     if (authLoading) return;
     setCurrentUserId(user?.id || null);
   }, [authLoading, user?.id]);
+
+  useEffect(() => {
+    const schedule = (window as any).requestIdleCallback
+      ? (cb: () => void) => (window as any).requestIdleCallback(cb, { timeout: 1200 })
+      : (cb: () => void) => window.setTimeout(cb, 500);
+    const cancel = (window as any).cancelIdleCallback ?? window.clearTimeout;
+    const id = schedule(() => setDetailsReady(true));
+    return () => cancel(id);
+  }, [userId]);
 
   // Verify Stripe Checkout tip session on return
   useEffect(() => {
@@ -543,6 +553,7 @@ const Profile = () => {
           friends={stats.friendsCount}
         />
 
+        {detailsReady && (
         <Suspense fallback={<LazyProfileSectionFallback />}>
         {/* Free Tier Credits — visible on own profile */}
         {userId && (
@@ -788,6 +799,7 @@ const Profile = () => {
           defaultTab={followersModalTab}
         />
         </Suspense>
+        )}
       </div>
     </div>
   );
