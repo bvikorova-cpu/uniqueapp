@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 /**
@@ -9,7 +9,7 @@ import { useLocation } from "react-router-dom";
 const ScrollToTop = () => {
   const { pathname, search, hash } = useLocation();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if ("scrollRestoration" in window.history) {
       window.history.scrollRestoration = "manual";
     }
@@ -44,41 +44,6 @@ const ScrollToTop = () => {
       timeouts.forEach(window.clearTimeout);
     };
   }, [pathname, search, hash]);
-
-  useEffect(() => {
-    const scrollToTopNow = () => {
-      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    };
-
-    const handleNavigationIntent = (event: MouseEvent | PointerEvent | TouchEvent) => {
-      if ("button" in event && event.button !== 0) return;
-      if ("metaKey" in event && (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)) return;
-
-      const target = event.target as Element | null;
-      const link = target?.closest("a[href]") as HTMLAnchorElement | null;
-      if (!link || link.target || link.hasAttribute("download")) return;
-
-      const nextUrl = new URL(link.href, window.location.href);
-      if (nextUrl.origin !== window.location.origin) return;
-
-      if (!nextUrl.hash) {
-        scrollToTopNow();
-        window.setTimeout(scrollToTopNow, 0);
-        return;
-      }
-    };
-
-    document.addEventListener("pointerdown", handleNavigationIntent, true);
-    document.addEventListener("touchstart", handleNavigationIntent, true);
-    document.addEventListener("click", handleNavigationIntent, true);
-    return () => {
-      document.removeEventListener("pointerdown", handleNavigationIntent, true);
-      document.removeEventListener("touchstart", handleNavigationIntent, true);
-      document.removeEventListener("click", handleNavigationIntent, true);
-    };
-  }, []);
 
   return null;
 };
