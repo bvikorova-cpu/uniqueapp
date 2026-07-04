@@ -61,6 +61,7 @@ const PremiumStore = () => {
   const [userLevel, setUserLevel] = useState(1);
   const [confettiTrigger, setConfettiTrigger] = useState(0);
   const [giftItem, setGiftItem] = useState<{ type: string; id: string; name: string; emoji?: string; cost: number } | null>(null);
+  const [activeTab, setActiveTab] = useState<string>("visibility");
 
   useEffect(() => {
     const fetchLevel = async () => {
@@ -219,8 +220,10 @@ const PremiumStore = () => {
                 remaining={remaining}
                 endsAt={endsAt}
                 onView={() => {
-                  const el = document.querySelector('[value="avatars"]') as HTMLElement | null;
-                  el?.click();
+                  setActiveTab("avatars");
+                  setTimeout(() => {
+                    document.getElementById('store-tabs')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }, 50);
                 }}
               />
             </div>
@@ -297,7 +300,7 @@ const PremiumStore = () => {
         </div>
 
         {/* Tabs */}
-        <Tabs defaultValue="visibility" className="space-y-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6" id="store-tabs">
           <TabsList className="grid w-full grid-cols-5 h-auto backdrop-blur-xl bg-card/60 border border-border/50">
             <TabsTrigger value="visibility" className="gap-1 sm:gap-2 text-xs sm:text-sm py-2.5">
               <Eye className="h-3 w-3 sm:h-4 sm:w-4" /> Visibility
