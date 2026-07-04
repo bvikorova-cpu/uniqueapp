@@ -45,9 +45,14 @@ export const useOnlineStatus = (userId: string | null) => {
         (payload) => {
           if (payload.new) {
             const newStatus = payload.new as { user_id: string; is_online: boolean; last_seen?: string };
+            const activeNow = Boolean(
+              newStatus.is_online &&
+              newStatus.last_seen &&
+              Date.now() - new Date(newStatus.last_seen).getTime() < 2 * 60_000
+            );
             setOnlineUsers(prev => {
               const updated = new Set(prev);
-              if (newStatus.is_online) {
+              if (activeNow) {
                 updated.add(newStatus.user_id);
               } else {
                 updated.delete(newStatus.user_id);
@@ -55,7 +60,11 @@ export const useOnlineStatus = (userId: string | null) => {
               return updated;
             });
             if (newStatus.last_seen) {
-              setLastSeenMap(prev => ({ ...prev, [newStatus.user_id]: newStatus.last_seen! }));
+              setLastSeenMap(prev => {
+                const current = prev[newStatus.user_id];
+                if (current && new Date(current).getTime() > new Date(newStatus.last_seen!).getTime()) return prev;
+                return { ...prev, [newStatus.user_id]: newStatus.last_seen! };
+              });
             }
           }
         }
