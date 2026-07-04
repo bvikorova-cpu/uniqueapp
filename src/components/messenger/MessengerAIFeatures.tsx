@@ -501,7 +501,7 @@ export const MessengerAIFeatures = ({
             <DialogTitle>Smart Reply Suggestions</DialogTitle>
           </DialogHeader>
           <div className="space-y-2">
-            {smartReplies.map((reply, i) => (
+            {(smartReplies ?? []).map((reply, i) => (
               <Button
                 key={i}
                 variant="outline"
@@ -514,6 +514,9 @@ export const MessengerAIFeatures = ({
                 {reply}
               </Button>
             ))}
+            {(!smartReplies || smartReplies.length === 0) && (
+              <p className="text-sm text-muted-foreground">No suggestions available.</p>
+            )}
           </div>
         </DialogContent>
       </Dialog>
