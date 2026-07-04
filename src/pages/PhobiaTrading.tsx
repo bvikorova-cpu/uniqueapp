@@ -102,9 +102,9 @@ const PhobiaTrading = () => {
   const renderToolView = () => {
     switch (activeView) {
       case "detect": return <PhobiaDetector onPhobiaDetected={() => showToast({ title: "Phobia Detected", description: "Saved to your profile" })} />;
-      case "my-phobias": return <MyPhobias onPhobiaListed={() => showToast({ title: "Phobia Listed", description: "Check the Marketplace" })} />;
-      case "marketplace": return <PhobiaMarketplace />;
-      case "cure": return <PhobiaCureDashboard />;
+      case "my-phobias": return <MyPhobias onPhobiaListed={() => showToast({ title: "Phobia Listed", description: "Check the Marketplace" })} onOpenPricing={() => setActiveView("pricing")} />;
+      case "marketplace": return <PhobiaMarketplace onOpenPricing={() => setActiveView("pricing")} />;
+      case "cure": return <PhobiaCureDashboard onOpenPricing={() => setActiveView("pricing")} />;
       case "journal": return <FearJournal />;
       case "analytics": return <FearAnalytics />;
       case "therapist": return <AITherapistChat />;

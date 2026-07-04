@@ -13,7 +13,11 @@ import {
 } from "@/components/ui/select";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
-const PhobiaCureDashboard = () => {
+interface PhobiaCureDashboardProps {
+  onOpenPricing?: () => void;
+}
+
+const PhobiaCureDashboard = ({ onOpenPricing }: PhobiaCureDashboardProps) => {
   const [phobias, setPhobias] = useState<any[]>([]);
   const [treatments, setTreatments] = useState<any[]>([]);
   const [selectedPhobia, setSelectedPhobia] = useState<string>("");
@@ -142,7 +146,7 @@ const PhobiaCureDashboard = () => {
             You need to purchase "Phobia Cure Premium" to generate AI-powered treatment plans.
           </p>
           <Button 
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            onClick={onOpenPricing}
             className="bg-gradient-to-r from-cyan-500 to-blue-500"
           >
             View Pricing Plans
