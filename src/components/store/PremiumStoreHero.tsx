@@ -16,7 +16,7 @@ interface PremiumStoreHeroProps {
  */
 export const PremiumStoreHero = ({ credits, level, onBuyCredits }: PremiumStoreHeroProps) => {
   return (
-    <div className="relative w-full min-h-[520px] sm:min-h-[460px] rounded-3xl overflow-hidden mb-8">
+    <div className="relative w-full min-h-[600px] sm:min-h-[460px] rounded-3xl overflow-hidden mb-8">
       <video
         autoPlay
         muted
@@ -29,7 +29,8 @@ export const PremiumStoreHero = ({ credits, level, onBuyCredits }: PremiumStoreH
       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/20" />
       <div className="absolute inset-0 bg-gradient-to-r from-amber-500/15 via-transparent to-purple-500/25" />
 
-      <div className="relative z-10 min-h-[520px] sm:min-h-[460px] flex flex-col justify-end p-5 sm:p-12">
+      <div className="relative z-10 min-h-[600px] sm:min-h-[460px] flex flex-col justify-end p-5 sm:p-12">
+
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -50,30 +51,32 @@ export const PremiumStoreHero = ({ credits, level, onBuyCredits }: PremiumStoreH
             Spend credits, climb the leaderboard, gift items to friends.
           </p>
 
-          <div className="flex flex-wrap gap-2 sm:gap-3 mt-4 sm:mt-6">
-            <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-2 sm:py-3 rounded-xl bg-black/70 border-2 border-amber-400/60 backdrop-blur-xl shadow-xl shadow-black/40">
-              <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-amber-300" />
-              <div>
-                <p className="text-lg sm:text-2xl font-black text-white leading-none">{credits.toLocaleString()}</p>
-                <p className="text-[9px] sm:text-[10px] uppercase tracking-wider font-bold text-amber-100">Credits</p>
+          <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-3 mt-4 sm:mt-6">
+            <div className="flex gap-2 sm:gap-3">
+              <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-2 sm:py-3 rounded-xl bg-black/70 border-2 border-amber-400/60 backdrop-blur-xl shadow-xl shadow-black/40">
+                <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-amber-300" />
+                <div>
+                  <p className="text-lg sm:text-2xl font-black text-white leading-none">{credits.toLocaleString()}</p>
+                  <p className="text-[9px] sm:text-[10px] uppercase tracking-wider font-bold text-amber-100">Credits</p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-2 sm:py-3 rounded-xl bg-black/70 border-2 border-purple-400/60 backdrop-blur-xl shadow-xl shadow-black/40">
-              <Star className="h-4 w-4 sm:h-5 sm:w-5 text-purple-200" />
-              <div>
-                <p className="text-lg sm:text-2xl font-black text-white leading-none">Lvl {level}</p>
-                <p className="text-[9px] sm:text-[10px] uppercase tracking-wider font-bold text-purple-100">XP unlocks rights</p>
+              <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-2 sm:py-3 rounded-xl bg-black/70 border-2 border-purple-400/60 backdrop-blur-xl shadow-xl shadow-black/40">
+                <Star className="h-4 w-4 sm:h-5 sm:w-5 text-purple-200" />
+                <div>
+                  <p className="text-lg sm:text-2xl font-black text-white leading-none">Lvl {level}</p>
+                  <p className="text-[9px] sm:text-[10px] uppercase tracking-wider font-bold text-purple-100">XP unlocks rights</p>
+                </div>
               </div>
             </div>
             <Button
               onClick={onBuyCredits}
               size="lg"
-              className="basis-full sm:basis-auto bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-500/90 hover:to-yellow-500/90 text-black font-bold shadow-lg shadow-amber-500/40"
+              className="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-500/90 hover:to-yellow-500/90 text-black font-bold shadow-lg shadow-amber-500/40"
             >
               <Sparkles className="mr-2 h-4 w-4" /> Buy More Credits
             </Button>
-
           </div>
+
         </motion.div>
       </div>
     </div>

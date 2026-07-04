@@ -186,21 +186,47 @@ const PremiumStore = () => {
         {/* Live activity ticker */}
         <LiveActivityTicker />
 
-        {/* Limited Edition banner */}
-        <div className="mb-6">
-          <LimitedEditionBanner
-            title="Spring 2026 Mythic Drop"
-            subtitle="Hand-crafted animated avatars & legendary frames. Once they're gone, they're gone."
-            emoji="🐉"
-            totalSupply={500}
-            remaining={183}
-            endsAt="May 31"
-            onView={() => {
-              const el = document.querySelector('[value="avatars"]') as HTMLElement | null;
-              el?.click();
-            }}
-          />
-        </div>
+        {/* Limited Edition banner - auto-refreshing seasonal drop */}
+        {(() => {
+          const now = new Date();
+          const year = now.getFullYear();
+          const month = now.getMonth(); // 0-11
+          const seasons = [
+            { name: 'Winter', emoji: '❄️', endMonth: 1, endDay: 28 }, // Dec-Feb
+            { name: 'Spring', emoji: '🌸', endMonth: 4, endDay: 31 }, // Mar-May
+            { name: 'Summer', emoji: '🔥', endMonth: 7, endDay: 31 }, // Jun-Aug
+            { name: 'Autumn', emoji: '🍂', endMonth: 10, endDay: 30 }, // Sep-Nov
+          ];
+          const seasonIdx = month <= 1 ? 0 : month <= 4 ? 1 : month <= 7 ? 2 : month <= 10 ? 3 : 0;
+          const season = seasons[seasonIdx];
+          const endYear = seasonIdx === 0 && month === 11 ? year + 1 : year;
+          const endDate = new Date(endYear, season.endMonth, season.endDay);
+          const endsAt = endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+          // Simulate scarcity that decreases as season progresses
+          const totalSupply = 500;
+          const seasonStart = new Date(endYear, season.endMonth - 2, 1);
+          const seasonMs = endDate.getTime() - seasonStart.getTime();
+          const elapsed = Math.max(0, Math.min(seasonMs, now.getTime() - seasonStart.getTime()));
+          const sold = Math.round((elapsed / seasonMs) * (totalSupply - 40)) + 40;
+          const remaining = Math.max(12, totalSupply - sold);
+          return (
+            <div className="mb-6">
+              <LimitedEditionBanner
+                title={`${season.name} ${year} Mythic Drop`}
+                subtitle="Hand-crafted animated avatars & legendary frames. Once they're gone, they're gone."
+                emoji={season.emoji}
+                totalSupply={totalSupply}
+                remaining={remaining}
+                endsAt={endsAt}
+                onView={() => {
+                  const el = document.querySelector('[value="avatars"]') as HTMLElement | null;
+                  el?.click();
+                }}
+              />
+            </div>
+          );
+        })()}
+
 
         {/* Daily Flash Sale + Bundles row */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-8">
