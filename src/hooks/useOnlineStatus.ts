@@ -5,23 +5,32 @@ export const useOnlineStatus = (userId: string | null) => {
   const [onlineUsers, setOnlineUsers] = useState<Set<string>>(new Set());
   const [lastSeenMap, setLastSeenMap] = useState<Record<string, string>>({});
 
-  const updateMyStatus = useCallback(async (isOnline: boolean) => {
+  const fetchPresence = useCallback(async () => {
     if (!userId) return;
 
-    await supabase
-      .from("user_online_status")
-      .upsert({
-        user_id: userId,
-        is_online: isOnline,
-        last_seen: new Date().toISOString(),
-      }, { onConflict: 'user_id' });
+    const { data } = await supabase.rpc("get_my_conversation_presence_v1" as any, {
+      _user_ids: null,
+    });
+
+    if (!Array.isArray(data)) return;
+
+    const online = new Set<string>();
+    const seen: Record<string, string> = {};
+
+    data.forEach((row: any) => {
+      if (!row?.user_id) return;
+      if (row.is_online) online.add(row.user_id);
+      if (row.last_seen) seen[row.user_id] = row.last_seen;
+    });
+
+    setOnlineUsers(online);
+    setLastSeenMap(seen);
   }, [userId]);
 
   useEffect(() => {
     if (!userId) return;
 
-    // Set online when component mounts
-    updateMyStatus(true);
+    fetchPresence();
 
     // Subscribe to online status changes
     const channel = supabase
@@ -53,43 +62,15 @@ export const useOnlineStatus = (userId: string | null) => {
       )
       .subscribe();
 
-    // Fetch initial online statuses + last_seen for everyone
-    const fetchOnlineStatuses = async () => {
-      const { data } = await supabase
-        .from("user_online_status")
-        .select("user_id, is_online, last_seen");
-
-      if (data) {
-        setOnlineUsers(new Set(data.filter(d => d.is_online).map(d => d.user_id)));
-        const map: Record<string, string> = {};
-        data.forEach(d => {
-          if (d.last_seen) map[d.user_id] = d.last_seen as string;
-        });
-        setLastSeenMap(map);
-      }
-    };
-
-    fetchOnlineStatuses();
-
-    // Set offline on page unload
-    const handleBeforeUnload = () => {
-      updateMyStatus(false);
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
-    // Heartbeat to maintain online status
-    const heartbeat = setInterval(() => {
-      updateMyStatus(true);
-    }, 30000);
+    // Refresh periodically because real account activity (sign-in/profile updates)
+    // is not emitted through the online-status realtime table.
+    const refresh = setInterval(fetchPresence, 60_000);
 
     return () => {
-      updateMyStatus(false);
       supabase.removeChannel(channel);
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-      clearInterval(heartbeat);
+      clearInterval(refresh);
     };
-  }, [userId, updateMyStatus]);
+  }, [userId, fetchPresence]);
 
   const isUserOnline = useCallback((targetUserId: string) => {
     return onlineUsers.has(targetUserId);
