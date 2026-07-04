@@ -8,7 +8,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { Smile, X } from "lucide-react";
 import { ReactionsDialog } from "@/components/wall/ReactionsDialog";
-import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+
 
 interface CommentReactionPickerProps {
   commentId: string;
