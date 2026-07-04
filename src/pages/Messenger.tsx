@@ -253,9 +253,29 @@ const Messenger = () => {
   useEffect(() => {
     if (user) {
       fetchConversations();
-      fetchAllUsers();
       fetchGroupChats();
+      // Defer heavy 500-profile prefetch — only needed for group creation UI.
+      const t = setTimeout(() => fetchAllUsers(), 1500);
+      return () => clearTimeout(t);
     }
+  }, [user]);
+
+  // Hydrate conversations instantly from localStorage cache so the list paints
+  // in <100ms while the fresh network fetch runs in the background.
+  useEffect(() => {
+    if (!user) return;
+    try {
+      const raw = localStorage.getItem(`messenger_convos_v1_${user.id}`);
+      if (raw) {
+        const cached = JSON.parse(raw);
+        if (Array.isArray(cached) && cached.length > 0) {
+          setConversations(cached);
+          primeProfileCache(
+            cached.map((c: any) => c.otherUser).filter(Boolean)
+          );
+        }
+      }
+    } catch { /* ignore */ }
   }, [user]);
 
   useEffect(() => {
