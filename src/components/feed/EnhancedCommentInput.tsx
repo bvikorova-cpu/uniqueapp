@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/popover";
 import { PostTemplatesDialog } from "@/components/wall/PostTemplatesDialog";
 import { TagFriendsDialog } from "@/components/wall/TagFriendsDialog";
-import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+
 
 interface EnhancedCommentInputProps {
   postId: string;
