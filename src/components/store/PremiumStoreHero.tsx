@@ -66,13 +66,16 @@ export const PremiumStoreHero = ({ credits, level, onBuyCredits }: PremiumStoreH
                 <p className="text-[9px] sm:text-[10px] uppercase tracking-wider font-bold text-purple-100">XP unlocks rights</p>
               </div>
             </div>
-            <Button
-              onClick={onBuyCredits}
-              size="lg"
-              className="basis-full sm:basis-auto bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-500/90 hover:to-yellow-500/90 text-black font-bold shadow-lg shadow-amber-500/40"
-            >
-              <Sparkles className="mr-2 h-4 w-4" /> Buy More Credits
-            </Button>
+            <div className="w-full sm:w-auto">
+              <Button
+                onClick={onBuyCredits}
+                size="lg"
+                className="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-500/90 hover:to-yellow-500/90 text-black font-bold shadow-lg shadow-amber-500/40"
+              >
+                <Sparkles className="mr-2 h-4 w-4" /> Buy More Credits
+              </Button>
+            </div>
+
 
           </div>
         </motion.div>
