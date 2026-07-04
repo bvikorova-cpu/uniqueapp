@@ -357,16 +357,17 @@ export const MessengerAIFeatures = ({
 
   const handleBuyCredits = async (credits: number) => {
     try {
-      const { data, error } = await supabase.functions.invoke("create-messenger-ai-credits-payment", {
-        body: { credits },
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { product: "messenger_ai", packKey: String(credits) },
       });
 
       if (error) throw error;
-      if (data.url) {
-        { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) { const __w = window.open(data.url, "_blank", "noopener,noreferrer"); if (!__w) window.location.href = data.url; } }
+      if (data?.url) {
+        const __w = window.open(data.url, "_blank", "noopener,noreferrer");
+        if (!__w) window.location.href = data.url;
       }
     } catch (error: any) {
-      toast({ title: "Payment failed", description: error.message, variant: "destructive" });
+      toast({ title: "Payment failed", description: error?.message || "Please try again.", variant: "destructive" });
     }
   };
 
