@@ -18,6 +18,21 @@ const samePathAndSearch = (before: string, after: string) => {
   }
 };
 
+const hasHash = (href: string) => {
+  try {
+    return !!new URL(href, window.location.origin).hash;
+  } catch {
+    return false;
+  }
+};
+
+/**
+ * Boot-level scroll reset for real route changes only.
+ * Intentionally NOT listening for clicks/pointerdown — that caused the page
+ * to jump to the top while the user was trying to tap buttons that aren't
+ * navigation links. React Router's <ScrollToTop /> handles in-app route
+ * changes; this only patches history APIs for completeness.
+ */
 export function installNavigationScrollReset() {
   if (typeof window === "undefined") return;
   if ((window as any).__UNIQUE_SCROLL_RESET_INSTALLED__) return;
@@ -27,17 +42,18 @@ export function installNavigationScrollReset() {
     window.history.scrollRestoration = "manual";
   }
 
-  const resetSoon = () => {
+  const maybeReset = (before: string) => {
+    const after = window.location.href;
+    if (samePathAndSearch(before, after)) return;
+    if (hasHash(after)) return;
     scrollTop();
-    window.requestAnimationFrame(scrollTop);
-    [0, 80, 220, 600].forEach((delay) => window.setTimeout(scrollTop, delay));
   };
 
   const originalPushState = window.history.pushState.bind(window.history);
   window.history.pushState = (...args: Parameters<History["pushState"]>) => {
     const before = window.location.href;
     const result = originalPushState(...args);
-    if (!samePathAndSearch(before, window.location.href)) resetSoon();
+    maybeReset(before);
     return result;
   };
 
@@ -45,26 +61,12 @@ export function installNavigationScrollReset() {
   window.history.replaceState = (...args: Parameters<History["replaceState"]>) => {
     const before = window.location.href;
     const result = originalReplaceState(...args);
-    if (!samePathAndSearch(before, window.location.href)) resetSoon();
+    maybeReset(before);
     return result;
   };
 
-  window.addEventListener("popstate", resetSoon);
-
-  const handleIntent = (event: MouseEvent | PointerEvent | TouchEvent) => {
-    if ("button" in event && event.button !== 0) return;
-    if ("metaKey" in event && (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)) return;
-
-    const target = event.target as Element | null;
-    const link = target?.closest("a[href]") as HTMLAnchorElement | null;
-    if (!link || link.target || link.hasAttribute("download")) return;
-
-    const next = new URL(link.href, window.location.href);
-    if (next.origin !== window.location.origin || next.hash) return;
-    resetSoon();
-  };
-
-  document.addEventListener("pointerdown", handleIntent, true);
-  document.addEventListener("touchstart", handleIntent, true);
-  document.addEventListener("click", handleIntent, true);
+  window.addEventListener("popstate", () => {
+    if (hasHash(window.location.href)) return;
+    scrollTop();
+  });
 }
