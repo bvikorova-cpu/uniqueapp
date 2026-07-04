@@ -7,7 +7,7 @@ import { VoiceCommentPlayer } from "@/components/wall/VoiceCommentPlayer";
 import { MapPin, MessageCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
-import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+
 
 interface CommentItemProps {
   comment: any;
@@ -34,7 +34,7 @@ export const CommentItem = ({
 
   return (
     <>
-      <FloatingHowItWorks title={"Comment Item - How it works"} steps={[{ title: 'Open', desc: 'Access the Comment Item section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Comment Item.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
       <div className={`${depth > 0 ? "ml-6 border-l-2 border-border/30 pl-2" : ""}`}>
       <div className="flex gap-2 p-2 rounded-lg hover:bg-accent/5 transition-colors">
         <Avatar className="h-7 w-7 flex-shrink-0">
