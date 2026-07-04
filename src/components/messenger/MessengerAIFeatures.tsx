@@ -372,7 +372,8 @@ export const MessengerAIFeatures = ({
   };
 
   return (
-    <div className="flex items-center gap-1 flex-wrap">
+    <div className="inline-flex items-center gap-1 shrink-0 flex-nowrap">
+
 
 
 
