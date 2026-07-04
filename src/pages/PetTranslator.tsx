@@ -51,6 +51,12 @@ const PetTranslator = () => {
     trackPetActivity('translator');
   }, []);
 
+  useEffect(() => {
+    if (activeView) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [activeView]);
+
   if (subLoading) {
     return (
       <div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-[60vh]">
