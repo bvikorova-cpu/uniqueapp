@@ -20,6 +20,7 @@ import { FlashSaleCard } from "@/components/store/FlashSaleCard";
 import { BundlePack } from "@/components/store/BundlePack";
 import { StoreLeaderboard } from "@/components/store/StoreLeaderboard";
 import { LimitedEditionBanner } from "@/components/store/LimitedEditionBanner";
+import { LimitedEditionSeasonalBanner } from "@/components/store/LimitedEditionSeasonalBanner";
 import { WishlistButton } from "@/components/store/WishlistButton";
 import { GiftDialog } from "@/components/store/GiftDialog";
 import { ConfettiBurst } from "@/components/store/ConfettiBurst";
