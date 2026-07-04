@@ -70,11 +70,23 @@ const Feed = () => {
   const [user, setUser] = useState<User | null>(null);
   const { newCount: newRealtimeCount, reset: resetRealtimeCount } = useWallRealtime(user?.id);
   const wallStats = useWallStats(user?.id);
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [reposts, setReposts] = useState<Repost[]>([]);
-  const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
+  // Hydrate first page instantly from localStorage cache (stale-while-revalidate)
+  const CACHE_KEY = "wall_feed_cache_v1";
+  const cached = (() => {
+    try {
+      const raw = typeof window !== "undefined" ? localStorage.getItem(CACHE_KEY) : null;
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (Date.now() - (parsed.t || 0) > 1000 * 60 * 60 * 24) return null; // 24h TTL
+      return parsed;
+    } catch { return null; }
+  })();
+  const [posts, setPosts] = useState<Post[]>(cached?.posts || []);
+  const [reposts, setReposts] = useState<Repost[]>(cached?.reposts || []);
+  const [feedItems, setFeedItems] = useState<FeedItem[]>(cached?.feedItems || []);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!(cached?.feedItems?.length));
+
   const [loadingMore, setLoadingMore] = useState(false);
   const [feedError, setFeedError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
@@ -217,6 +229,19 @@ const Feed = () => {
       if (newItems.length > 0) {
         lastCursor.current = newItems[newItems.length - 1].data.created_at;
       }
+
+      // Persist first page for instant paint on next mount.
+      if (!loadMore) {
+        try {
+          localStorage.setItem(CACHE_KEY, JSON.stringify({
+            t: Date.now(),
+            posts: postsWithProfiles.slice(0, POSTS_PER_PAGE),
+            reposts: repostsWithData.slice(0, POSTS_PER_PAGE),
+            feedItems: newItems.slice(0, POSTS_PER_PAGE),
+          }));
+        } catch { /* quota exceeded — ignore */ }
+      }
+
     } catch (error: any) {
       setFeedError(error?.message || "Failed to load posts");
       toast({
@@ -317,22 +342,26 @@ const Feed = () => {
 
     fetchPosts();
 
-    // Debounced realtime — coalesce bursts so 10 inserts/sec don't trigger 10 refetches
+    // Realtime: only INSERT events, only refresh when scrolled at top to avoid
+    // yanking the feed under the user. Heavy debounce keeps things quiet under load.
     let timer: ReturnType<typeof setTimeout> | null = null;
     const debouncedRefetch = () => {
       if (timer) clearTimeout(timer);
-      timer = setTimeout(() => fetchPosts(false), 1500);
+      timer = setTimeout(() => {
+        if (window.scrollY < 300) fetchPosts(false);
+      }, 4000);
     };
 
     const postsChannel = supabase
       .channel("posts-changes")
-      .on("postgres_changes", { event: "*", schema: "public", table: "posts" }, debouncedRefetch)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "posts" }, debouncedRefetch)
       .subscribe();
 
     const repostsChannel = supabase
       .channel("reposts-changes")
-      .on("postgres_changes", { event: "*", schema: "public", table: "reposts" }, debouncedRefetch)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "reposts" }, debouncedRefetch)
       .subscribe();
+
 
     return () => {
       if (timer) clearTimeout(timer);
