@@ -1133,7 +1133,7 @@ const App = () => {
                           </SubscriptionGuard>
                         } />
                         <Route path="/gp-subscription" element={<GPSubscription />} />
-                        <Route path="/f1-fantasy-team" element={
+                        <Route path="/gp-fantasy-team" element={
                           <SubscriptionGuard 
                             checkFunction="check-f1-subscription" 
                             redirectTo="/gp-subscription"
@@ -1142,7 +1142,7 @@ const App = () => {
                             <GPFantasyTeam />
                           </SubscriptionGuard>
                         } />
-                        <Route path="/f1-leaderboard" element={
+                        <Route path="/gp-leaderboard" element={
                           <SubscriptionGuard 
                             checkFunction="check-f1-subscription" 
                             redirectTo="/gp-subscription"

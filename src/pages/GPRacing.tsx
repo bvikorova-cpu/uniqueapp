@@ -461,7 +461,7 @@ const GPRacing = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <Button
-                onClick={() => navigate('/f1-fantasy-team')}
+                onClick={() => navigate('/gp-fantasy-team')}
                 className="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white py-6 text-lg"
               >
                 <Users className="w-5 h-5 mr-2" />
@@ -469,7 +469,7 @@ const GPRacing = () => {
               </Button>
 
               <Button
-                onClick={() => navigate('/f1-leaderboard')}
+                onClick={() => navigate('/gp-leaderboard')}
                 className="w-full bg-gradient-to-r from-yellow-600 to-amber-600 hover:from-yellow-700 hover:to-amber-700 text-white py-6 text-lg"
               >
                 <Trophy className="w-5 h-5 mr-2" />
