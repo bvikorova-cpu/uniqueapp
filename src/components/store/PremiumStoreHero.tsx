@@ -68,10 +68,11 @@ export const PremiumStoreHero = ({ credits, level, onBuyCredits }: PremiumStoreH
             <Button
               onClick={onBuyCredits}
               size="lg"
-              className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-500/90 hover:to-yellow-500/90 text-black font-bold shadow-lg shadow-amber-500/40 w-full sm:w-auto"
+              className="basis-full sm:basis-auto bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-500/90 hover:to-yellow-500/90 text-black font-bold shadow-lg shadow-amber-500/40"
             >
               <Sparkles className="mr-2 h-4 w-4" /> Buy More Credits
             </Button>
+
           </div>
         </motion.div>
       </div>
