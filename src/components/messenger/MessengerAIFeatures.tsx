@@ -382,7 +382,7 @@ export const MessengerAIFeatures = ({
   };
 
   return (
-    <div className="inline-flex items-center gap-1 shrink-0 flex-nowrap">
+    <div className="flex items-center gap-1 overflow-x-auto flex-nowrap scrollbar-none py-1 -mx-1 px-1">
 
 
 
