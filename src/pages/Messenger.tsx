@@ -1419,39 +1419,40 @@ const Messenger = () => {
           <Card className={`col-span-1 md:col-span-2 p-4 flex flex-col ${selectedConversation ? "flex" : "hidden md:flex"}`}>
             {selectedConversation ? (
               <>
-                <div className="flex items-center justify-between gap-3 pb-4 border-b">
-                  <div className="flex items-center gap-3">
+                <div className="flex items-center justify-between gap-2 pb-4 border-b">
+                  <div className="flex items-center gap-2 min-w-0 flex-1">
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="md:hidden -ml-2"
+                      className="md:hidden -ml-2 shrink-0"
                       onClick={() => setSelectedConversation(null)}
                       aria-label="Back to chats"
                     >
                       <ArrowLeft className="h-5 w-5" />
                     </Button>
-                    <Avatar>
+                    <Avatar className="shrink-0 h-9 w-9">
                       <AvatarImage src={otherUser?.avatar_url || undefined} />
                       <AvatarFallback>{otherUser?.full_name?.[0] || "U"}</AvatarFallback>
                     </Avatar>
 
-                    <div>
-                      <h3 className="text-xl font-semibold">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-base md:text-xl font-semibold truncate">
                         {otherUser?.full_name || "User"}
                       </h3>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 min-w-0">
                         {otherUser && <OnlineIndicator isOnline={isUserOnline(otherUser.id)} showLabel />}
                         {otherUserTyping && (
-                          <span className="text-sm text-muted-foreground animate-pulse">typing...</span>
+                          <span className="text-xs text-muted-foreground animate-pulse truncate">typing...</span>
                         )}
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-0.5 shrink-0">
                     {otherUser && (
                       <Button
                         variant="ghost"
                         size="icon"
+                        className="h-9 w-9"
                         aria-label={isDmMuted(otherUser.id) ? "Unmute conversation" : "Mute conversation"}
                         title={isDmMuted(otherUser.id) ? "Unmute conversation" : "Mute conversation"}
                         onClick={() => toggleDmMute(otherUser.id)}
@@ -1473,6 +1474,7 @@ const Messenger = () => {
                     )}
                   </div>
                 </div>
+
 
                 {!isOnline && (
                   <div className="px-3 py-2 text-xs text-center bg-destructive/15 text-destructive border-y border-destructive/30">
