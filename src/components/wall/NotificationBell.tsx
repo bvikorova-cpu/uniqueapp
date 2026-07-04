@@ -1,4 +1,5 @@
-import { Bell } from "lucide-react";
+import { Bell, BellOff, Volume2, VolumeX } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -7,20 +8,43 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import { useNotifications } from "@/hooks/useNotifications";
+import {
+  useNotifications,
+  isNotificationSoundEnabled,
+  setNotificationSoundEnabled,
+} from "@/hooks/useNotifications";
 import { formatDistanceToNow } from "date-fns";
 
 export const NotificationBell = () => {
-  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
+  const { notifications, unreadCount, isRinging, markAsRead, markAllAsRead } =
+    useNotifications();
+  const [soundOn, setSoundOn] = useState<boolean>(true);
+
+  useEffect(() => {
+    setSoundOn(isNotificationSoundEnabled());
+    const sync = () => setSoundOn(isNotificationSoundEnabled());
+    window.addEventListener("unique:notification-sound-changed", sync);
+    return () =>
+      window.removeEventListener("unique:notification-sound-changed", sync);
+  }, []);
 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative">
-          <Bell className="h-5 w-5" />
+        <Button
+          variant="ghost"
+          size="icon"
+          className={`relative ${isRinging ? "animate-bell-ring text-primary" : ""}`}
+          aria-label="Notifications"
+        >
+          {soundOn ? (
+            <Bell className={`h-5 w-5 ${isRinging ? "drop-shadow-[0_0_8px_hsl(var(--primary))]" : ""}`} />
+          ) : (
+            <BellOff className="h-5 w-5" />
+          )}
           {unreadCount > 0 && (
-            <Badge 
-              className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+            <Badge
+              className={`absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs ${isRinging ? "animate-pulse" : ""}`}
               variant="destructive"
             >
               {unreadCount > 9 ? "9+" : unreadCount}
@@ -29,17 +53,24 @@ export const NotificationBell = () => {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-96" align="end">
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex justify-between items-center mb-4 gap-2">
           <h3 className="font-semibold text-lg">Notifications</h3>
-          {unreadCount > 0 && (
+          <div className="flex items-center gap-1">
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => markAllAsRead()}
+              onClick={() => setNotificationSoundEnabled(!soundOn)}
+              aria-label={soundOn ? "Mute notification sound" : "Unmute notification sound"}
+              title={soundOn ? "Sound on" : "Sound off"}
             >
-              Mark all read
+              {soundOn ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
             </Button>
-          )}
+            {unreadCount > 0 && (
+              <Button variant="ghost" size="sm" onClick={() => markAllAsRead()}>
+                Mark all read
+              </Button>
+            )}
+          </div>
         </div>
         <ScrollArea className="h-96">
           {notifications.length === 0 ? (
