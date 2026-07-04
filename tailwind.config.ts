@@ -189,6 +189,14 @@ export default {
           "0%": { transform: "scale(1.05) translate3d(0,0,0)" },
           "100%": { transform: "scale(1.18) translate3d(-1.5%, -1%, 0)" },
         },
+        "bell-ring": {
+          "0%, 100%": { transform: "rotate(0deg)" },
+          "10%, 30%, 50%": { transform: "rotate(-14deg)" },
+          "20%, 40%, 60%": { transform: "rotate(14deg)" },
+          "70%": { transform: "rotate(-6deg)" },
+          "80%": { transform: "rotate(6deg)" },
+          "90%": { transform: "rotate(-2deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -209,6 +217,7 @@ export default {
         "pulse-slow": "pulse-slow 4s ease-in-out infinite",
         "blink": "blink 1s step-start infinite",
         "hero-kenburns": "hero-kenburns 6s ease-out forwards",
+        "bell-ring": "bell-ring 1s ease-in-out 2",
       },
     },
   },

@@ -1,7 +1,22 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { playNotificationChime } from "@/lib/notificationChime";
+
+const SOUND_PREF_KEY = "unique_notification_sound_v1";
+
+export function isNotificationSoundEnabled(): boolean {
+  if (typeof window === "undefined") return true;
+  const v = window.localStorage.getItem(SOUND_PREF_KEY);
+  return v === null ? true : v === "1";
+}
+
+export function setNotificationSoundEnabled(enabled: boolean) {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(SOUND_PREF_KEY, enabled ? "1" : "0");
+  window.dispatchEvent(new Event("unique:notification-sound-changed"));
+}
 
 export interface Notification {
   id: string;
@@ -17,6 +32,7 @@ export interface Notification {
 export const useNotifications = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [isRinging, setIsRinging] = useState(false);
 
   const { data: notifications, isLoading } = useQuery({
     queryKey: ["notifications"],
@@ -40,6 +56,7 @@ export const useNotifications = () => {
   useEffect(() => {
     let cancelled = false;
     let channel: ReturnType<typeof supabase.channel> | null = null;
+    let ringTimer: ReturnType<typeof setTimeout> | null = null;
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user || cancelled) return;
@@ -48,12 +65,23 @@ export const useNotifications = () => {
         .on(
           "postgres_changes",
           { event: "*", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` },
-          () => queryClient.invalidateQueries({ queryKey: ["notifications"] }),
+          (payload) => {
+            queryClient.invalidateQueries({ queryKey: ["notifications"] });
+            if (payload.eventType === "INSERT") {
+              if (isNotificationSoundEnabled()) {
+                try { playNotificationChime(); } catch { /* noop */ }
+              }
+              setIsRinging(true);
+              if (ringTimer) clearTimeout(ringTimer);
+              ringTimer = setTimeout(() => setIsRinging(false), 3000);
+            }
+          },
         )
         .subscribe();
     })();
     return () => {
       cancelled = true;
+      if (ringTimer) clearTimeout(ringTimer);
       if (channel) supabase.removeChannel(channel);
     };
   }, [queryClient]);
@@ -111,6 +139,7 @@ export const useNotifications = () => {
     notifications: notifications || [],
     unreadCount,
     isLoading,
+    isRinging,
     markAsRead: markAsRead.mutate,
     markAllAsRead: markAllAsRead.mutate,
     deleteNotification: deleteNotification.mutate,
