@@ -342,22 +342,26 @@ const Feed = () => {
 
     fetchPosts();
 
-    // Debounced realtime — coalesce bursts so 10 inserts/sec don't trigger 10 refetches
+    // Realtime: only INSERT events, only refresh when scrolled at top to avoid
+    // yanking the feed under the user. Heavy debounce keeps things quiet under load.
     let timer: ReturnType<typeof setTimeout> | null = null;
     const debouncedRefetch = () => {
       if (timer) clearTimeout(timer);
-      timer = setTimeout(() => fetchPosts(false), 1500);
+      timer = setTimeout(() => {
+        if (window.scrollY < 300) fetchPosts(false);
+      }, 4000);
     };
 
     const postsChannel = supabase
       .channel("posts-changes")
-      .on("postgres_changes", { event: "*", schema: "public", table: "posts" }, debouncedRefetch)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "posts" }, debouncedRefetch)
       .subscribe();
 
     const repostsChannel = supabase
       .channel("reposts-changes")
-      .on("postgres_changes", { event: "*", schema: "public", table: "reposts" }, debouncedRefetch)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "reposts" }, debouncedRefetch)
       .subscribe();
+
 
     return () => {
       if (timer) clearTimeout(timer);
