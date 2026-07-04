@@ -10,8 +10,6 @@ import {
   Maximize2, Minimize2, Users, MessageCircle, Shield,
   Lock, Volume2, Settings
 } from 'lucide-react';
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-
 interface VideoCallUIProps {
   participant?: {
     name: string;
@@ -54,17 +52,6 @@ export const VideoCallUI = ({
 
   return (
     <Card className="overflow-hidden bg-gray-900 text-white">
-      <FloatingHowItWorks
-        title={"Video Call U I"}
-        intro={"Here's how to use this feature."}
-        steps={[
-          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
-          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
-          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
-          { title: "Review history", desc: "Come back anytime to continue where you left off." },
-        ]}
-      />
-
       <CardContent className="p-0 relative aspect-video min-h-[300px]">
         {/* Main Video Area */}
         <div className="absolute inset-0 bg-gradient-to-b from-gray-800 to-gray-900 flex items-center justify-center">

@@ -3,8 +3,6 @@ import { motion } from "framer-motion";
 import { MessageCircle, Volume2, VolumeX, Play, Pause, Send, Zap, Users, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import messengerVideo from "@/assets/messenger-hero.mp4.asset.json";
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-
 interface MessengerHeroProps {
   onOpenChat: () => void;
   stats: { totalMessages: number; activeChats: number; friendsOnline: number; aiCredits: number };
@@ -27,17 +25,6 @@ export const MessengerHero = ({ onOpenChat, stats }: MessengerHeroProps) => {
 
   return (
     <div className="relative rounded-2xl overflow-hidden mb-8">
-      <FloatingHowItWorks
-        title={"Messenger Hero"}
-        intro={"Here's how to use this feature."}
-        steps={[
-          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
-          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
-          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
-          { title: "Review history", desc: "Come back anytime to continue where you left off." },
-        ]}
-      />
-
       {/* Video Background */}
       <video
         ref={videoRef}

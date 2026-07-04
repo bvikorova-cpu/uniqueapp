@@ -4,8 +4,6 @@ import { Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
-
 /**
  * Header envelope icon that shows unread Messenger messages and links to /messenger.
  */

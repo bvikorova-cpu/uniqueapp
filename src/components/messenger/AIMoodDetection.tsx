@@ -5,8 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Brain, Smile, Frown, Meh, Heart, Flame, Snowflake, TrendingUp, Sparkles, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-
 interface AIMoodDetectionProps {
   onBack: () => void;
   userId: string;
@@ -137,17 +135,6 @@ export const AIMoodDetection = ({ onBack, userId }: AIMoodDetectionProps) => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-      <FloatingHowItWorks
-        title={"A I Mood Detection"}
-        intro={"Here's how to use this feature."}
-        steps={[
-          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
-          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
-          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
-          { title: "Review history", desc: "Come back anytime to continue where you left off." },
-        ]}
-      />
-
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-3 text-primary" />
           <p className="font-bold">Analyzing your message moods...</p>

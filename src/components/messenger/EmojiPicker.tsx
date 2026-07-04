@@ -1,7 +1,5 @@
 import { useState, useMemo } from "react";
 import { Input } from "@/components/ui/input";
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
-
 const EMOJI_CATEGORIES: Record<string, string[]> = {
   "Smileys": "😀 😃 😄 😁 😆 😅 🤣 😂 🙂 🙃 🫠 😉 😊 😇 🥰 😍 🤩 😘 😗 😚 😙 🥲 😋 😛 😜 🤪 😝 🤑 🤗 🤭 🫢 🫣 🤫 🤔 🫡 🤐 🤨 😐 😑 😶 🫥 😶‍🌫️ 😏 😒 🙄 😬 😮‍💨 🤥 😌 😔 😪 🤤 😴 😷 🤒 🤕 🤢 🤮 🤧 🥵 🥶 🥴 😵 😵‍💫 🤯 🤠 🥳 🥸 😎 🤓 🧐 😕 🫤 😟 🙁 ☹️ 😮 😯 😲 😳 🥺 🥹 😦 😧 😨 😰 😥 😢 😭 😱 😖 😣 😞 😓 😩 😫 🥱 😤 😡 😠 🤬 😈 👿 💀 ☠️ 💩 🤡 👹 👺 👻 👽 👾 🤖 😺 😸 😹 😻 😼 😽 🙀 😿 😾".split(" "),
   "Gestures": "👍 👎 👌 🤌 🤏 ✌️ 🤞 🫰 🤟 🤘 🤙 🫵 🫱 🫲 🫳 🫴 👈 👉 👆 🖕 👇 ☝️ 👋 🤚 🖐️ ✋ 🖖 👏 🙌 🫶 👐 🤲 🤝 🙏 ✍️ 💅 🤳 💪 🦾 🦵 🦿 🦶 👂 🦻 👃 🧠 🫀 🫁 🦷 🦴 👀 👁️ 👅 👄 🫦".split(" "),
@@ -27,17 +25,6 @@ export const EmojiPicker = ({ onSelect }: { onSelect: (emoji: string) => void })
 
   return (
     <div className="w-full">
-      <FloatingHowItWorks
-        title={"Emoji Picker"}
-        intro={"Here's how to use this feature."}
-        steps={[
-          { title: "Open the tool", desc: "Access it from its parent module in the menu." },
-          { title: "Set your preferences", desc: "Pick options, filters, or inputs relevant to you." },
-          { title: "Interact & save", desc: "Use the actions provided; results save to your account." },
-          { title: "Review history", desc: "Come back anytime to continue where you left off." },
-        ]}
-      />
-
       <Input
         placeholder="Search emoji..."
         value={query}
