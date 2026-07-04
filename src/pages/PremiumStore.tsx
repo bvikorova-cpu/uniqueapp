@@ -300,7 +300,7 @@ const PremiumStore = () => {
         </div>
 
         {/* Tabs */}
-        <Tabs defaultValue="visibility" className="space-y-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6" id="store-tabs">
           <TabsList className="grid w-full grid-cols-5 h-auto backdrop-blur-xl bg-card/60 border border-border/50">
             <TabsTrigger value="visibility" className="gap-1 sm:gap-2 text-xs sm:text-sm py-2.5">
               <Eye className="h-3 w-3 sm:h-4 sm:w-4" /> Visibility
