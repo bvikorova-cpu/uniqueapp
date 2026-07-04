@@ -212,10 +212,20 @@ export const MessengerAIFeatures = ({
 
       if (handleAIError(error, data)) return;
 
-      setSmartReplies(data.suggestions);
+      const suggestions: string[] = Array.isArray(data?.suggestions)
+        ? data.suggestions
+        : Array.isArray(data?.replies)
+          ? data.replies
+          : [];
+      if (suggestions.length === 0) {
+        toast({ title: "No suggestions returned", description: "Try again in a moment", variant: "destructive" });
+        return;
+      }
+      setSmartReplies(suggestions);
       setShowSmartReplies(true);
       await fetchCredits();
-      toast({ title: "Suggestions ready!", description: `${data.creditsUsed} credit used` });
+      const used = data?.creditsUsed ?? data?.credits_used ?? 1;
+      toast({ title: "Suggestions ready!", description: `${used} credit used` });
     } catch (error: any) {
       toast({ title: "Smart reply failed", description: error.message, variant: "destructive" });
     } finally {
@@ -372,7 +382,7 @@ export const MessengerAIFeatures = ({
   };
 
   return (
-    <div className="inline-flex items-center gap-1 shrink-0 flex-nowrap">
+    <div className="flex items-center gap-1 overflow-x-auto flex-nowrap scrollbar-none py-1 -mx-1 px-1">
 
 
 
@@ -491,7 +501,7 @@ export const MessengerAIFeatures = ({
             <DialogTitle>Smart Reply Suggestions</DialogTitle>
           </DialogHeader>
           <div className="space-y-2">
-            {smartReplies.map((reply, i) => (
+            {(smartReplies ?? []).map((reply, i) => (
               <Button
                 key={i}
                 variant="outline"
@@ -504,6 +514,9 @@ export const MessengerAIFeatures = ({
                 {reply}
               </Button>
             ))}
+            {(!smartReplies || smartReplies.length === 0) && (
+              <p className="text-sm text-muted-foreground">No suggestions available.</p>
+            )}
           </div>
         </DialogContent>
       </Dialog>
