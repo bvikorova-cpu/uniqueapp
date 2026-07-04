@@ -51,7 +51,9 @@ export const PremiumStoreHero = ({ credits, level, onBuyCredits }: PremiumStoreH
             Spend credits, climb the leaderboard, gift items to friends.
           </p>
 
-          <div className="flex flex-wrap gap-2 sm:gap-3 mt-4 sm:mt-6">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-3 mt-4 sm:mt-6">
+            <div className="flex gap-2 sm:gap-3">
+
             <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-2 sm:py-3 rounded-xl bg-black/70 border-2 border-amber-400/60 backdrop-blur-xl shadow-xl shadow-black/40">
               <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-amber-300" />
               <div>
