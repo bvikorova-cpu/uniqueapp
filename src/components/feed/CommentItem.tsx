@@ -7,7 +7,7 @@ import { VoiceCommentPlayer } from "@/components/wall/VoiceCommentPlayer";
 import { MapPin, MessageCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
-import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+
 
 interface CommentItemProps {
   comment: any;
