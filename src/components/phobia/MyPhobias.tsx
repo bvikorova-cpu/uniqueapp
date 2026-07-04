@@ -18,9 +18,10 @@ import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
 interface MyPhobiasProps {
   onPhobiaListed?: () => void;
+  onOpenPricing?: () => void;
 }
 
-const MyPhobias = ({ onPhobiaListed }: MyPhobiasProps) => {
+const MyPhobias = ({ onPhobiaListed, onOpenPricing }: MyPhobiasProps) => {
   const [phobias, setPhobias] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [listingPhobia, setListingPhobia] = useState<string | null>(null);
@@ -157,7 +158,7 @@ const MyPhobias = ({ onPhobiaListed }: MyPhobiasProps) => {
             You need to purchase "Fear Marketplace" to manage and trade your phobias.
           </p>
           <Button 
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            onClick={onOpenPricing}
             className="bg-gradient-to-r from-cyan-500 to-blue-500"
           >
             View Pricing Plans

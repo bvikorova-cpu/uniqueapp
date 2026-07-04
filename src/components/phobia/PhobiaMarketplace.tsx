@@ -6,7 +6,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { ShoppingCart, TrendingUp, Loader2 } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
-const PhobiaMarketplace = () => {
+interface PhobiaMarketplaceProps {
+  onOpenPricing?: () => void;
+}
+
+const PhobiaMarketplace = ({ onOpenPricing }: PhobiaMarketplaceProps) => {
   const [trades, setTrades] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasAccess, setHasAccess] = useState(false);
@@ -120,7 +124,7 @@ const PhobiaMarketplace = () => {
             You need to purchase "Fear Marketplace" to buy and sell phobias.
           </p>
           <Button 
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            onClick={onOpenPricing}
             className="bg-gradient-to-r from-cyan-500 to-blue-500"
           >
             View Pricing Plans
