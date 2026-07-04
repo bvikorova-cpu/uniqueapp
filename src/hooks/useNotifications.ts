@@ -1,7 +1,22 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { playNotificationChime } from "@/lib/notificationChime";
+
+const SOUND_PREF_KEY = "unique_notification_sound_v1";
+
+export function isNotificationSoundEnabled(): boolean {
+  if (typeof window === "undefined") return true;
+  const v = window.localStorage.getItem(SOUND_PREF_KEY);
+  return v === null ? true : v === "1";
+}
+
+export function setNotificationSoundEnabled(enabled: boolean) {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(SOUND_PREF_KEY, enabled ? "1" : "0");
+  window.dispatchEvent(new Event("unique:notification-sound-changed"));
+}
 
 export interface Notification {
   id: string;
