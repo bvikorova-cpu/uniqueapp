@@ -216,7 +216,7 @@ const Messenger = () => {
 
 
   // Online status hook
-  const { isUserOnline } = useOnlineStatus(user?.id || null);
+  const { isUserOnline, getLastSeen } = useOnlineStatus(user?.id || null);
   const { isMuted: isDmMuted, toggle: toggleDmMute } = useDmMutes();
 
   // Real "friends online" = unique conversation partners currently online
@@ -1442,7 +1442,7 @@ const Messenger = () => {
                         {otherUser?.full_name || "User"}
                       </h3>
                       <div className="flex items-center gap-2 min-w-0">
-                        {otherUser && <OnlineIndicator isOnline={isUserOnline(otherUser.id)} showLabel />}
+                        {otherUser && <OnlineIndicator isOnline={isUserOnline(otherUser.id)} lastSeen={getLastSeen(otherUser.id)} showLabel />}
                         {otherUserTyping && (
                           <span className="text-xs text-muted-foreground animate-pulse truncate">typing...</span>
                         )}
