@@ -50,7 +50,7 @@ const SEARCHABLE_PAGES: SearchResult[] = [
   { id: "15", title: "Character Arena", category: "Games", path: "/character-arena" },
   { id: "16", title: "Virtual Escape Room", category: "Games", path: "/virtual-escape-room" },
   { id: "17", title: "Horse Racing", category: "Games", path: "/horse-racing" },
-  { id: "18", title: "F1 Racing", category: "Games", path: "/f1-racing" },
+  { id: "18", title: "GP Racing", category: "Games", path: "/gp-racing" },
   { id: "19", title: "Shadow Arena", category: "Games", path: "/shadow-arena" },
   { id: "20", title: "Comedy Club", category: "Entertainment", path: "/comedy-club" },
   { id: "21", title: "Live Concerts", category: "Entertainment", path: "/live-concerts" },

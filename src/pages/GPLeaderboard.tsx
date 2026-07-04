@@ -14,7 +14,7 @@ interface LeaderboardEntry {
   tier: string;
 }
 
-const F1Leaderboard = () => {
+const GPLeaderboard = () => {
   const navigate = useNavigate();
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -69,7 +69,7 @@ const F1Leaderboard = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-red-900 via-black to-gray-900 flex items-center justify-center">
-        <div className="text-white text-2xl">Loading the F1 Global Leaderboard — please wait...</div>
+        <div className="text-white text-2xl">Loading the GP Racing Global Leaderboard — please wait...</div>
       </div>
     );
   }
@@ -79,7 +79,7 @@ const F1Leaderboard = () => {
       <div className="max-w-6xl mx-auto">
         <Button
           variant="ghost"
-          onClick={() => navigate('/f1-racing')}
+          onClick={() => navigate('/gp-racing')}
           className="mb-6 text-white hover:bg-white/10"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
@@ -211,4 +211,4 @@ const F1Leaderboard = () => {
   );
 };
 
-export default F1Leaderboard;
+export default GPLeaderboard;

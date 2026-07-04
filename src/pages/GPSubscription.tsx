@@ -64,7 +64,7 @@ const tiers = {
   }
 };
 
-const F1Subscription = () => {
+const GPSubscription = () => {
   const navigate = useNavigate();
   const [currentTier, setCurrentTier] = useState<string | null>(null);
   const [isSubscribed, setIsSubscribed] = useState(false);
@@ -149,7 +149,7 @@ const F1Subscription = () => {
       <div className="max-w-7xl mx-auto">
         <Button
           variant="ghost"
-          onClick={() => navigate('/f1-racing')}
+          onClick={() => navigate('/gp-racing')}
           className="mb-4 sm:mb-6 text-white hover:bg-white/10"
           size="sm"
         >
@@ -158,7 +158,7 @@ const F1Subscription = () => {
         </Button>
 
         <ModuleSubscriptionHero
-          module="F1 Fantasy Racing"
+          module="GP Fantasy Racing"
           icon={Trophy}
           badge="Premium GP"
           title="🏎️ Choose your plan"
@@ -287,4 +287,4 @@ const F1Subscription = () => {
   );
 };
 
-export default F1Subscription;
+export default GPSubscription;

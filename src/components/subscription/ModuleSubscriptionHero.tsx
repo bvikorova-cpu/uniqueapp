@@ -20,7 +20,7 @@ interface ModuleSubscriptionHeroProps {
 
 /**
  * Shared cinematic video hero used by every module-specific subscription page
- * (Nutrition, KitchenStars, F1, Kids, Time Capsule, etc.) so they all match
+ * (Nutrition, KitchenStars, GP Racing, Kids, Time Capsule, etc.) so they all match
  * the main /subscription premium look.
  */
 export const ModuleSubscriptionHero = ({

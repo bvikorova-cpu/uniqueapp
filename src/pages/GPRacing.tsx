@@ -9,10 +9,10 @@ import { ArrowLeft, Trophy, Zap, Users, Star, Loader2, Flame, Gauge } from "luci
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import f1Background from "@/assets/f1-racing-background.jpg";
+import f1Background from "@/assets/gp-racing-background.jpg";
 
 // 3D F1 Car Component
-function F1Car({ position, color }: { position: [number, number, number]; color: string }) {
+function GPCar({ position, color }: { position: [number, number, number]; color: string }) {
   return (
     <group position={position}>
       {/* Car Body */}
@@ -112,7 +112,7 @@ function RaceScene({ cars, playerZ, isRacing }: { cars: Array<{ x: number; z: nu
 
       <Track />
       {cars.map((car, i) => (
-        <F1Car key={i} position={[car.x, 0, car.z]} color={car.color} />
+        <GPCar key={i} position={[car.x, 0, car.z]} color={car.color} />
       ))}
 
       <Environment preset="sunset" />
@@ -120,7 +120,7 @@ function RaceScene({ cars, playerZ, isRacing }: { cars: Array<{ x: number; z: nu
   );
 }
 
-const F1Racing = () => {
+const GPRacing = () => {
   const navigate = useNavigate();
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [tier, setTier] = useState<string | null>(null);
@@ -318,7 +318,7 @@ const F1Racing = () => {
           <CardContent className="text-center space-y-6">
             <p className="text-xl">Subscribe to access the GP Fantasy Racing platform!</p>
             <Button
-              onClick={() => navigate('/f1-subscription')}
+              onClick={() => navigate('/gp-subscription')}
               className="bg-red-600 hover:bg-red-700 text-white px-8 py-6 text-xl"
             >
               View Subscription Plans
@@ -477,7 +477,7 @@ const F1Racing = () => {
               </Button>
 
               <Button
-                onClick={() => navigate('/f1-subscription')}
+                onClick={() => navigate('/gp-subscription')}
                 className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-6 text-lg"
               >
                 <Star className="w-5 h-5 mr-2" />
@@ -502,4 +502,4 @@ const F1Racing = () => {
   );
 };
 
-export default F1Racing;
+export default GPRacing;

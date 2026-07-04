@@ -239,11 +239,11 @@ export const MyPurchasedTips = lazy(() => import("@/pages/MyPurchasedTips"));
 export const TipsterDashboard = lazy(() => import("@/pages/TipsterDashboard"));
 export const LotteryAI = lazy(() => import("@/pages/LotteryAI"));
 export const LotteryHistory = lazy(() => import("@/pages/LotteryHistory"));
-export const F1Racing = lazy(() => import("@/pages/F1Racing"));
-export const F1Subscription = lazy(() => import("@/pages/F1Subscription"));
-export const F1FantasyTeam = lazy(() => import("@/pages/F1FantasyTeam"));
-export const F1RacingArena = lazy(() => import("@/pages/F1RacingArena"));
-export const F1Leaderboard = lazy(() => import("@/pages/F1Leaderboard"));
+export const GPRacing = lazy(() => import("@/pages/GPRacing"));
+export const GPSubscription = lazy(() => import("@/pages/GPSubscription"));
+export const GPFantasyTeam = lazy(() => import("@/pages/GPFantasyTeam"));
+export const GPRacingArena = lazy(() => import("@/pages/GPRacingArena"));
+export const GPLeaderboard = lazy(() => import("@/pages/GPLeaderboard"));
 
 // Influencer & Creator
 export const InfluKing = lazy(() => import("@/pages/InfluKing"));

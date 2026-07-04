@@ -279,11 +279,11 @@ import {
   AmericanFootballArena,
   GlamourWorld,
   E2EAnonymousDateMatches,
-  F1Racing,
-  F1Subscription,
-  F1FantasyTeam,
-  F1RacingArena,
-  F1Leaderboard,
+  GPRacing,
+  GPSubscription,
+  GPFantasyTeam,
+  GPRacingArena,
+  GPLeaderboard,
   ComedyClub,
   ComedianDashboard,
   ComedyLiveShow,
@@ -1118,37 +1118,37 @@ const App = () => {
                         <Route path="/kids-channel/disney-castles/:castleId" element={<DisneyCastleRedirect />} />
                         <Route path="/kids-channel/disney-admin" element={<Navigate to="/kids-channel/fairy-admin" replace />} />
                         <Route path="/kids-channel/certificate-gallery" element={<CertificateGallery />} />
-                        <Route path="/f1-racing" element={<F1RacingArena />} />
+                        <Route path="/gp-racing" element={<GPRacingArena />} />
                         <Route path="/numerology" element={<Numerology />} />
                         <Route path="/parallel-universe" element={<ParallelUniverse />} />
                         <Route path="/memory-auctions" element={<MemoryAuctions />} />
                         <Route path="/brand-kits" element={<BrandKits />} />
-                        <Route path="/f1-racing-old" element={
+                        <Route path="/gp-racing-old" element={
                           <SubscriptionGuard 
                             checkFunction="check-f1-subscription" 
-                            redirectTo="/f1-subscription"
+                            redirectTo="/gp-subscription"
                             serviceName="GP Racing"
                           >
-                            <F1Racing />
+                            <GPRacing />
                           </SubscriptionGuard>
                         } />
-                        <Route path="/f1-subscription" element={<F1Subscription />} />
+                        <Route path="/gp-subscription" element={<GPSubscription />} />
                         <Route path="/f1-fantasy-team" element={
                           <SubscriptionGuard 
                             checkFunction="check-f1-subscription" 
-                            redirectTo="/f1-subscription"
+                            redirectTo="/gp-subscription"
                             serviceName="GP Racing"
                           >
-                            <F1FantasyTeam />
+                            <GPFantasyTeam />
                           </SubscriptionGuard>
                         } />
                         <Route path="/f1-leaderboard" element={
                           <SubscriptionGuard 
                             checkFunction="check-f1-subscription" 
-                            redirectTo="/f1-subscription"
+                            redirectTo="/gp-subscription"
                             serviceName="GP Racing"
                           >
-                            <F1Leaderboard />
+                            <GPLeaderboard />
                           </SubscriptionGuard>
                         } />
                         <Route path="/masterchef-subscription" element={<MasterChefHub />} />
