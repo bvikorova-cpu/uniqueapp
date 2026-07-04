@@ -7,8 +7,6 @@ import { Label } from "@/components/ui/label";
 import { Gift, Sparkles, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface GiftDialogProps {
   open: boolean;
   onOpenChange: (v: boolean) => void;
@@ -100,13 +98,7 @@ export const GiftDialog = ({
 
   return (
     <>
-      <FloatingHowItWorks title="How Gift Dialog works" steps={[
-          { title: 'Open this section', desc: 'Review what it offers.' },
-          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
-          { title: 'Review results', desc: 'Track progress, orders or messages.' },
-          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
-        ]} />
-      <Dialog open={open} onOpenChange={onOpenChange}>
+<Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
