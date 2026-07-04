@@ -152,18 +152,27 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
     const refreshCounts = () => {
       if (timer) clearTimeout(timer);
       timer = setTimeout(async () => {
-        const { data } = await supabase
-          .from("posts")
-          .select("likes_count, comments_count, reposts_count")
-          .eq("id", post.id)
-          .maybeSingle();
-        if (data) {
-          setLikesCount(data.likes_count ?? 0);
-          setCommentsCount(data.comments_count ?? 0);
-          setRepostsCount(data.reposts_count ?? 0);
+        const [{ data: p }, { count: cCount }] = await Promise.all([
+          supabase
+            .from("posts")
+            .select("likes_count, reposts_count")
+            .eq("id", post.id)
+            .maybeSingle(),
+          supabase
+            .from("post_comments")
+            .select("id", { count: "exact", head: true })
+            .eq("post_id", post.id),
+        ]);
+        if (p) {
+          setLikesCount(p.likes_count ?? 0);
+          setRepostsCount(p.reposts_count ?? 0);
         }
+        setCommentsCount(cCount ?? 0);
       }, 400);
     };
+
+    // Initial accurate count (denormalized posts.comments_count can drift).
+    refreshCounts();
 
     const channel = supabase
       .channel(`post-counts-${post.id}`)
@@ -177,6 +186,7 @@ const PostCard = ({ post, onDelete, defaultShowComments = false }: PostCardProps
       supabase.removeChannel(channel);
     };
   }, [post.id]);
+
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
