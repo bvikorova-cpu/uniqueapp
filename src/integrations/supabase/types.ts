@@ -65511,6 +65511,14 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      get_my_conversation_presence_v1: {
+        Args: { _user_ids?: string[] }
+        Returns: {
+          is_online: boolean
+          last_seen: string
+          user_id: string
+        }[]
+      }
       get_my_conversations_v1: { Args: { _limit?: number }; Returns: Json }
       get_my_hub_xp: {
         Args: never
