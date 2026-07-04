@@ -49,7 +49,7 @@ import {
   primeProfileCache,
 } from "@/lib/profileCache";
 import { sanitizeMessageContent, checkRateLimit, MAX_MESSAGE_LEN } from "@/lib/messageSafety";
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
 import {
   Popover,
   PopoverContent,
@@ -343,11 +343,25 @@ const Messenger = () => {
 
   useEffect(() => {
     if (selectedConversation) {
-      // Clear previous conversation messages immediately so the new
-      // conversation always starts fresh and history is reloaded.
-      setMessages([]);
-      setLoadingMessages(true);
-      setMessagesError(false);
+      // Hydrate instantly from localStorage cache so the chat paints < 100ms.
+      let hadCache = false;
+      try {
+        const raw = localStorage.getItem(`msgs_v1_${selectedConversation}`);
+        if (raw) {
+          const cached = JSON.parse(raw);
+          if (Array.isArray(cached) && cached.length > 0) {
+            setMessages(cached);
+            setLoadingMessages(false);
+            setMessagesError(false);
+            hadCache = true;
+          }
+        }
+      } catch {}
+      if (!hadCache) {
+        setMessages([]);
+        setLoadingMessages(true);
+        setMessagesError(false);
+      }
       fetchMessages();
       const unsubscribeMessages = subscribeToMessages();
       const unsubscribeTyping = subscribeToTyping();
@@ -363,6 +377,7 @@ const Messenger = () => {
       setMessagesError(false);
     }
   }, [selectedConversation]);
+
 
   // Smooth-scroll only when a NEW message arrives.
   // On conversation switch we jump instantly (no animation).
@@ -510,14 +525,15 @@ const Messenger = () => {
     if (!selectedConversation) return;
 
     const convId = selectedConversation;
-    setLoadingMessages(true);
-    setMessagesError(false);
-    const { data, error } = await supabase
+    // Fetch newest 100 messages (fast path) — order DESC + reverse for render.
+    const msgsPromise = supabase
       .from("messages")
       .select("id, content, sender_id, created_at, story_id, reply_to_id, is_read, read_at, attachment_url, attachment_type, voice_duration, expires_at")
       .eq("conversation_id", convId)
-      .order("created_at", { ascending: true })
-      .limit(500);
+      .order("created_at", { ascending: false })
+      .limit(100);
+
+    const { data, error } = await msgsPromise;
 
     if (error) {
       console.error("Error fetching messages:", error);
@@ -528,24 +544,22 @@ const Messenger = () => {
       return;
     }
 
-    const rows = data || [];
+    const rows = (data || []).slice().reverse();
 
-    // Fetch reactions only if there are messages.
-    let reactionsData: any[] = [];
-    if (rows.length > 0) {
-      const { data: rd } = await supabase
-        .from("message_reactions")
-        .select("*")
-        .in("message_id", rows.map((m) => m.id));
-      reactionsData = rd || [];
-    }
-
-    // Batch-fetch all sender profiles using the shared module cache
-    // (hits network only for missing ids).
+    // Parallelize reactions + profile fetches — biggest latency win.
     const senderIds = Array.from(new Set(rows.map((m) => m.sender_id)));
-    const profilesMap = senderIds.length > 0
-      ? await fetchProfilesCachedBatch(senderIds)
-      : new Map<string, any>();
+    const [reactionsRes, profilesMap] = await Promise.all([
+      rows.length > 0
+        ? supabase
+            .from("message_reactions")
+            .select("*")
+            .in("message_id", rows.map((m) => m.id))
+        : Promise.resolve({ data: [] as any[] }),
+      senderIds.length > 0
+        ? fetchProfilesCachedBatch(senderIds)
+        : Promise.resolve(new Map<string, any>()),
+    ]);
+    const reactionsData: any[] = (reactionsRes as any).data || [];
 
     const messagesWithProfiles = rows.map((msg) => {
       const profile = profilesMap.get(msg.sender_id) || {
@@ -584,7 +598,14 @@ const Messenger = () => {
     setMessages(messagesWithProfiles);
     setLoadingMessages(false);
     setMessagesError(false);
+
+    // Persist to localStorage for instant next-open paint (keep last 50).
+    try {
+      const toCache = messagesWithProfiles.slice(-50);
+      localStorage.setItem(`msgs_v1_${convId}`, JSON.stringify(toCache));
+    } catch {}
   };
+
 
   const markMessagesAsRead = async () => {
     if (!selectedConversation || !user) return;
@@ -1293,16 +1314,6 @@ const Messenger = () => {
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
-      <FloatingHowItWorks
-        title={'Messenger'}
-        intro={'Real-time DMs and group chats with reactions, media, and voice notes.'}
-        steps={[
-          { title: 'Start a chat', desc: 'Search a user or open a match/friend to DM them.' },
-        { title: 'Send anything', desc: 'Text, images, voice notes, shared posts, and reactions all supported.' },
-        { title: 'Create groups', desc: 'Add members, name the group, and share media in real time.' },
-        { title: 'Mute or block', desc: 'Mute noisy chats, or block/report abusive users — enforced instantly.' }
-        ]}
-      />
       <div className="container mx-auto px-4">
         <Button variant="ghost" onClick={goToHub} className="mb-3 gap-2 text-muted-foreground hover:text-foreground">
           <ArrowLeft className="h-4 w-4" /> Back to Hub
@@ -1429,39 +1440,40 @@ const Messenger = () => {
           <Card className={`col-span-1 md:col-span-2 p-4 flex flex-col ${selectedConversation ? "flex" : "hidden md:flex"}`}>
             {selectedConversation ? (
               <>
-                <div className="flex items-center justify-between gap-3 pb-4 border-b">
-                  <div className="flex items-center gap-3">
+                <div className="flex items-center justify-between gap-2 pb-4 border-b">
+                  <div className="flex items-center gap-2 min-w-0 flex-1">
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="md:hidden -ml-2"
+                      className="md:hidden -ml-2 shrink-0"
                       onClick={() => setSelectedConversation(null)}
                       aria-label="Back to chats"
                     >
                       <ArrowLeft className="h-5 w-5" />
                     </Button>
-                    <Avatar>
+                    <Avatar className="shrink-0 h-9 w-9">
                       <AvatarImage src={otherUser?.avatar_url || undefined} />
                       <AvatarFallback>{otherUser?.full_name?.[0] || "U"}</AvatarFallback>
                     </Avatar>
 
-                    <div>
-                      <h3 className="text-xl font-semibold">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-base md:text-xl font-semibold truncate">
                         {otherUser?.full_name || "User"}
                       </h3>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 min-w-0">
                         {otherUser && <OnlineIndicator isOnline={isUserOnline(otherUser.id)} showLabel />}
                         {otherUserTyping && (
-                          <span className="text-sm text-muted-foreground animate-pulse">typing...</span>
+                          <span className="text-xs text-muted-foreground animate-pulse truncate">typing...</span>
                         )}
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-0.5 shrink-0">
                     {otherUser && (
                       <Button
                         variant="ghost"
                         size="icon"
+                        className="h-9 w-9"
                         aria-label={isDmMuted(otherUser.id) ? "Unmute conversation" : "Mute conversation"}
                         title={isDmMuted(otherUser.id) ? "Unmute conversation" : "Mute conversation"}
                         onClick={() => toggleDmMute(otherUser.id)}
@@ -1483,6 +1495,7 @@ const Messenger = () => {
                     )}
                   </div>
                 </div>
+
 
                 {!isOnline && (
                   <div className="px-3 py-2 text-xs text-center bg-destructive/15 text-destructive border-y border-destructive/30">
