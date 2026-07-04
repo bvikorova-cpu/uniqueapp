@@ -186,7 +186,7 @@ export function EnhancedCommentInput({ postId, onCommentAdded, parentCommentId, 
 
   return (
     <>
-      <FloatingHowItWorks title={"Enhanced Comment Input - How it works"} steps={[{ title: 'Open', desc: 'Access the Enhanced Comment Input section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in Enhanced Comment Input.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      
       <div className={compact ? "space-y-1" : "space-y-2"}>
       <Textarea
         placeholder={parentCommentId ? "Write a reply..." : "Write a comment..."}
