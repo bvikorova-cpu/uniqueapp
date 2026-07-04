@@ -1293,16 +1293,6 @@ const Messenger = () => {
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
-      <FloatingHowItWorks
-        title={'Messenger'}
-        intro={'Real-time DMs and group chats with reactions, media, and voice notes.'}
-        steps={[
-          { title: 'Start a chat', desc: 'Search a user or open a match/friend to DM them.' },
-        { title: 'Send anything', desc: 'Text, images, voice notes, shared posts, and reactions all supported.' },
-        { title: 'Create groups', desc: 'Add members, name the group, and share media in real time.' },
-        { title: 'Mute or block', desc: 'Mute noisy chats, or block/report abusive users — enforced instantly.' }
-        ]}
-      />
       <div className="container mx-auto px-4">
         <Button variant="ghost" onClick={goToHub} className="mb-3 gap-2 text-muted-foreground hover:text-foreground">
           <ArrowLeft className="h-4 w-4" /> Back to Hub
