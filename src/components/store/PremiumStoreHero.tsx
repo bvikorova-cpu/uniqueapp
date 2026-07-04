@@ -16,7 +16,7 @@ interface PremiumStoreHeroProps {
  */
 export const PremiumStoreHero = ({ credits, level, onBuyCredits }: PremiumStoreHeroProps) => {
   return (
-    <div className="relative w-full min-h-[520px] sm:min-h-[460px] rounded-3xl overflow-hidden mb-8">
+    <div className="relative w-full min-h-[600px] sm:min-h-[460px] rounded-3xl overflow-hidden mb-8">
       <video
         autoPlay
         muted
@@ -29,7 +29,8 @@ export const PremiumStoreHero = ({ credits, level, onBuyCredits }: PremiumStoreH
       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/20" />
       <div className="absolute inset-0 bg-gradient-to-r from-amber-500/15 via-transparent to-purple-500/25" />
 
-      <div className="relative z-10 min-h-[520px] sm:min-h-[460px] flex flex-col justify-end p-5 sm:p-12">
+      <div className="relative z-10 min-h-[600px] sm:min-h-[460px] flex flex-col justify-end p-5 sm:p-12">
+
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
