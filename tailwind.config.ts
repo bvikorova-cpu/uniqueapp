@@ -217,6 +217,7 @@ export default {
         "pulse-slow": "pulse-slow 4s ease-in-out infinite",
         "blink": "blink 1s step-start infinite",
         "hero-kenburns": "hero-kenburns 6s ease-out forwards",
+        "bell-ring": "bell-ring 1s ease-in-out 2",
       },
     },
   },
