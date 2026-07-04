@@ -98,7 +98,7 @@ export function InstallPromptBanner() {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 60 }}
         transition={{ type: "spring", damping: 22, stiffness: 280 }}
-        className="fixed inset-x-3 bottom-3 md:inset-x-auto md:right-6 md:bottom-6 z-[60] md:max-w-sm"
+        className="fixed inset-x-3 bottom-[calc(env(safe-area-inset-bottom)+5rem)] md:inset-x-auto md:right-6 md:bottom-6 z-[60] md:max-w-sm"
         role="dialog"
         aria-label={showOpenMode ? "Open app" : "Install app"}
       >
