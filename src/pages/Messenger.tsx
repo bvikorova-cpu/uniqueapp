@@ -49,7 +49,7 @@ import {
   primeProfileCache,
 } from "@/lib/profileCache";
 import { sanitizeMessageContent, checkRateLimit, MAX_MESSAGE_LEN } from "@/lib/messageSafety";
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
 import {
   Popover,
   PopoverContent,
