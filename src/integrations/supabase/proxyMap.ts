@@ -317,7 +317,7 @@ export function resolveProxy(
     "companions-customer-portal": "/companions",
     "customer-portal-creator": "/creator-dashboard",
     "employer-customer-portal": "/employer",
-    "f1-customer-portal": "/f1-racing",
+    "f1-customer-portal": "/gp-racing",
     "healthcare-customer-portal": "/healthcare",
     "kids-drawing-customer-portal": "/kids-drawing",
     "kids-story-customer-portal": "/kids-story",

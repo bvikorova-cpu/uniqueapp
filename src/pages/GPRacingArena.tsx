@@ -8,8 +8,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { F1CurrencyDisplay } from "@/components/f1-racing/F1CurrencyDisplay";
-import { F1Leaderboard } from "@/components/f1-racing/F1Leaderboard";
+import { GPCurrencyDisplay } from "@/components/gp-racing/GPCurrencyDisplay";
+import { GPLeaderboard } from "@/components/gp-racing/GPLeaderboardWidget";
 import { GPRacingHero } from "@/components/gp-racing/GPRacingHero";
 import { GPRacingLiveTicker } from "@/components/gp-racing/GPRacingLiveTicker";
 import { RaceReplayViewer } from "@/components/gp-racing/RaceReplayViewer";
@@ -22,7 +22,7 @@ import { Telemetry } from "@/components/gp-racing/Telemetry";
 import { BettingSystem } from "@/components/gp-racing/BettingSystem";
 import { AchievementSystem } from "@/components/gp-racing/AchievementSystem";
 import { TrackEditor } from "@/components/gp-racing/TrackEditor";
-import { useUserCars, useF1Races, useJoinF1Race, useUpgradeCar, usePurchaseCarColor, useF1Currency } from "@/hooks/useF1Racing";
+import { useUserCars, useGPRaces, useJoinGPRace, useUpgradeCar, usePurchaseCarColor, useGPCurrency } from "@/hooks/useGPRacing";
 import { Trophy, Wrench, Sparkles, Zap, TrendingUp, Car, LogIn, Info, Gauge, Wind, CircleDot, Compass, ShoppingCart, Box, Rocket, Shield, Target, Cpu, Flame, Play, Palette, Cloud, Timer as TimerIcon, Users, Award, Coins, Map, Activity, Crown } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -34,7 +34,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { HeroRewardedAd } from "@/components/ads/HeroRewardedAd";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 // 3D F1 Car Component
-function F1Car3D({ position, color }: { position: [number, number, number]; color: string }) {
+function GPCar3D({ position, color }: { position: [number, number, number]; color: string }) {
   return (
 <group position={position}>
       <mesh position={[0, 0.3, 0]}>
@@ -89,7 +89,7 @@ function RaceTrack3D({ participants, isRacing }: { participants: any[]; isRacing
           </mesh>
         ))}
         {participants.map((p, i) => (
-          <F1Car3D 
+          <GPCar3D 
             key={p.id} 
             position={[-4 + i * 2.5, 0, isRacing ? -20 + Math.random() * 40 : 0]} 
             color={p.f1_cars?.color || "#00e5ff"} 
@@ -127,14 +127,14 @@ const statIcons: Record<string, React.ReactNode> = {
   handling: <Compass className="h-4 w-4" />,
 };
 
-export default function F1RacingArena() {
+export default function GPRacingArena() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const { currency } = useF1Currency();
+  const { currency } = useGPCurrency();
   const { cars: userCars, createCar } = useUserCars();
-  const { races: userRaces } = useF1Races();
-  const joinRace = useJoinF1Race();
+  const { races: userRaces } = useGPRaces();
+  const joinRace = useJoinGPRace();
   const upgradeCar = useUpgradeCar();
   const purchaseColor = usePurchaseCarColor();
   
@@ -160,10 +160,10 @@ export default function F1RacingArena() {
     if (paymentStatus === "success") {
       toast.success("Purchase successful! Your resources will be added shortly.");
       setTimeout(() => { queryClient.invalidateQueries({ queryKey: ["f1-currency"] }); }, 2000);
-      window.history.replaceState({}, "", "/f1-racing");
+      window.history.replaceState({}, "", "/gp-racing");
     } else if (paymentStatus === "cancelled") {
       toast.info("Payment was cancelled");
-      window.history.replaceState({}, "", "/f1-racing");
+      window.history.replaceState({}, "", "/gp-racing");
     }
   }, [queryClient]);
 
@@ -275,7 +275,7 @@ export default function F1RacingArena() {
 
   return (
     <div className="min-h-screen bg-slate-950 relative overflow-hidden">
-      <FloatingHowItWorks title="F1RacingArena — How it works" steps={[{title:"Open this section",desc:"Access F1RacingArena from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
+      <FloatingHowItWorks title="GPRacingArena — How it works" steps={[{title:"Open this section",desc:"Access GPRacingArena from the menu."},{title:"Explore features",desc:"Browse cards, filters, matches, tools and options."},{title:"Play & interact",desc:"Start matches, buy items, join tournaments (some actions cost credits or EUR)."},{title:"Track progress",desc:"Check leaderboards, trophies and stats over time."}]} />
       {/* Animated background particles */}
       <div className="fixed inset-0 z-0">
         <div className="absolute inset-0 bg-slate-950" />
@@ -316,7 +316,7 @@ export default function F1RacingArena() {
         </div>
 
         {/* Currency Display */}
-        <F1CurrencyDisplay />
+        <GPCurrencyDisplay />
 
         {/* Main Tabs */}
         <Tabs defaultValue="garage" className="w-full">
@@ -646,7 +646,7 @@ export default function F1RacingArena() {
           <TabsContent value="leaderboard" className="space-y-4 mt-4">
             <Card className="relative overflow-hidden bg-slate-900/60 border-cyan-500/20 backdrop-blur-sm p-4 sm:p-6">
               <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
-              <F1Leaderboard />
+              <GPLeaderboard />
             </Card>
           </TabsContent>
         </Tabs>

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Coins, Gem, ShoppingCart, Zap } from "lucide-react";
-import { useF1Currency } from "@/hooks/useF1Racing";
+import { useGPCurrency } from "@/hooks/useGPRacing";
 import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,10 +19,10 @@ const packages = [
   { id: "bundle_starter", name: "Starter Bundle", coins: 500, gems: 100, price: 15.99, popular: true },
 ];
 
-export function F1CurrencyDisplay() {
+export function GPCurrencyDisplay() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { currency, isLoading } = useF1Currency();
+  const { currency, isLoading } = useGPCurrency();
   const [purchasing, setPurchasing] = useState(false);
 
   const handlePurchase = async (packageId: string) => {
@@ -68,7 +68,7 @@ export function F1CurrencyDisplay() {
 
   return (
     <>
-      <FloatingHowItWorks title={"F1 Currency Display - How it works"} steps={[{ title: 'Open', desc: 'Access the F1 Currency Display section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in F1 Currency Display.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <FloatingHowItWorks title={"GP Currency Display - How it works"} steps={[{ title: 'Open', desc: 'Access the GP Currency Display section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in GP Currency Display.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <motion.div 
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}

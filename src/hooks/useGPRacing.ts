@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-export const useF1Currency = () => {
+export const useGPCurrency = () => {
   const queryClient = useQueryClient();
 
   const { data: currency, isLoading } = useQuery({
@@ -132,7 +132,7 @@ export const useUserCars = () => {
   return { cars, isLoading, createCar };
 };
 
-export const useF1Races = () => {
+export const useGPRaces = () => {
   const { data: races, isLoading } = useQuery({
     queryKey: ["active-f1-races"],
     queryFn: async () => {
@@ -161,7 +161,7 @@ export const useF1Races = () => {
   return { races, isLoading };
 };
 
-export const useJoinF1Race = () => {
+export const useJoinGPRace = () => {
   const queryClient = useQueryClient();
 
   return useMutation({

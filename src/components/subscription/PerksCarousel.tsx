@@ -11,7 +11,7 @@ const PERKS = [
   { icon: Sparkles, title: "Featured Listings", desc: "Top of every search result", color: "from-yellow-500 to-orange-500" },
   { icon: Zap, title: "Priority Speed", desc: "Faster AI responses, no queues", color: "from-violet-500 to-fuchsia-500" },
   { icon: Heart, title: "Anonymous Dating Pro", desc: "Unlimited matches & reveals", color: "from-rose-500 to-red-500" },
-  { icon: Globe2, title: "All Hubs Unlocked", desc: "F1, KitchenStars, Kids, Time Capsule…", color: "from-sky-500 to-indigo-500" },
+  { icon: Globe2, title: "All Hubs Unlocked", desc: "GP Racing, KitchenStars, Kids, Time Capsule…", color: "from-sky-500 to-indigo-500" },
   { icon: Palette, title: "Custom Branding", desc: "Make Unique truly yours", color: "from-pink-500 to-purple-500" },
 ];
 

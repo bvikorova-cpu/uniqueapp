@@ -41,7 +41,7 @@ const constructors: Constructor[] = [
   { id: "MCL", name: "McLaren", emoji: "🟠", points: 720 }
 ];
 
-const F1FantasyTeam = () => {
+const GPFantasyTeam = () => {
   const navigate = useNavigate();
   const [teamName, setTeamName] = useState("");
   const [selectedDriver1, setSelectedDriver1] = useState<string | null>(null);
@@ -159,7 +159,7 @@ const F1FantasyTeam = () => {
       <div className="max-w-6xl mx-auto">
         <Button
           variant="ghost"
-          onClick={() => navigate('/f1-racing')}
+          onClick={() => navigate('/gp-racing')}
           className="mb-6 text-white hover:bg-white/10"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
@@ -344,4 +344,4 @@ const F1FantasyTeam = () => {
   );
 };
 
-export default F1FantasyTeam;
+export default GPFantasyTeam;

@@ -4,7 +4,7 @@ import { Trophy, Shield, Star } from "lucide-react";
 import { motion } from "framer-motion";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
 
-export function F1Leaderboard() {
+export function GPLeaderboard() {
   const { data: cars, isLoading } = useQuery({
     queryKey: ["f1-leaderboard"],
     queryFn: async () => {
@@ -30,7 +30,7 @@ export function F1Leaderboard() {
   if (isLoading) {
     return (
     <>
-      <FloatingHowItWorks title={"F1 Leaderboard - How it works"} steps={[{ title: 'Open', desc: 'Access the F1 Leaderboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in F1 Leaderboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
+      <FloatingHowItWorks title={"GP Racing Leaderboard - How it works"} steps={[{ title: 'Open', desc: 'Access the GP Racing Leaderboard section from its module.' }, { title: 'Explore', desc: 'Review the controls and content available in GP Racing Leaderboard.' }, { title: 'Interact', desc: 'Use the available actions - browse, select, or submit as needed.' }, { title: 'Review', desc: 'Check the results, updates, or feedback shown after your action.' }]} />
       <div className="p-8 text-center">
         <div className="inline-flex items-center gap-2 text-cyan-400/60 font-mono text-sm uppercase tracking-wider">
           <div className="h-2 w-2 bg-cyan-400 rounded-full animate-pulse" />
