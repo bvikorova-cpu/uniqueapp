@@ -32,6 +32,7 @@ export interface Notification {
 export const useNotifications = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [isRinging, setIsRinging] = useState(false);
 
   const { data: notifications, isLoading } = useQuery({
     queryKey: ["notifications"],
@@ -52,6 +53,38 @@ export const useNotifications = () => {
   });
 
   // P1 — realtime subscription so unread badge updates without polling.
+  useEffect(() => {
+    let cancelled = false;
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    let ringTimer: ReturnType<typeof setTimeout> | null = null;
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || cancelled) return;
+      channel = supabase
+        .channel(`notifications:${user.id}`)
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` },
+          (payload) => {
+            queryClient.invalidateQueries({ queryKey: ["notifications"] });
+            if (payload.eventType === "INSERT") {
+              if (isNotificationSoundEnabled()) {
+                try { playNotificationChime(); } catch { /* noop */ }
+              }
+              setIsRinging(true);
+              if (ringTimer) clearTimeout(ringTimer);
+              ringTimer = setTimeout(() => setIsRinging(false), 3000);
+            }
+          },
+        )
+        .subscribe();
+    })();
+    return () => {
+      cancelled = true;
+      if (ringTimer) clearTimeout(ringTimer);
+      if (channel) supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
   useEffect(() => {
     let cancelled = false;
     let channel: ReturnType<typeof supabase.channel> | null = null;
