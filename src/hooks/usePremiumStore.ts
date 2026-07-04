@@ -138,17 +138,20 @@ export const usePremiumStore = () => {
         if (!success) return false;
       }
 
-      // Record purchase
-      const { error } = await supabase
-        .from('user_premium_purchases')
-        .insert({
-          user_id: user.id,
-          feature_id: featureId,
-          feature_name: featureName,
-          credits_spent: cost,
-        });
-
-      if (error) throw error;
+      // Record purchase — only when featureId is a real UUID (skip synthetic
+      // bundle/flash ids like "bundle_starter", "flash_mega" which have no FK row).
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(featureId);
+      if (isUuid) {
+        const { error } = await supabase
+          .from('user_premium_purchases')
+          .insert({
+            user_id: user.id,
+            feature_id: featureId,
+            feature_name: featureName,
+            credits_spent: cost,
+          });
+        if (error) throw error;
+      }
 
       await refreshCredits();
       return true;
