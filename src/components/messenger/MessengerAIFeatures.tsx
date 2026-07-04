@@ -52,6 +52,57 @@ const CREDIT_PACKAGES = [
   { credits: 150, price: 25 },
 ];
 
+const AI_TOOL_BUTTON_CLASS = "h-10 w-10 min-h-10 min-w-10 shrink-0 touch-manipulation rounded-full";
+
+const cleanSmartReplyLine = (line: string) =>
+  line
+    .replace(/^\s*[-*•]\s*/, "")
+    .replace(/^\s*\d+[.)]\s*/, "")
+    .replace(/^\s*["']|["']\s*$/g, "")
+    .trim();
+
+const parseSmartReplies = (data: any): string[] => {
+  const direct = Array.isArray(data?.suggestions)
+    ? data.suggestions
+    : Array.isArray(data?.replies)
+      ? data.replies
+      : [];
+
+  if (direct.length > 0) {
+    return direct.map((reply) => String(reply).trim()).filter(Boolean).slice(0, 3);
+  }
+
+  const result = typeof data?.result === "string" ? data.result : "";
+  if (!result) return [];
+
+  try {
+    const parsed = JSON.parse(result);
+    const parsedReplies = Array.isArray(parsed?.suggestions)
+      ? parsed.suggestions
+      : Array.isArray(parsed?.replies)
+        ? parsed.replies
+        : [];
+    if (parsedReplies.length > 0) {
+      return parsedReplies.map((reply) => String(reply).trim()).filter(Boolean).slice(0, 3);
+    }
+  } catch {
+    // Plain text is the normal edge-function format.
+  }
+
+  return result
+    .split(/\n+/)
+    .map(cleanSmartReplyLine)
+    .filter((line) => line.length > 0 && !/provide|context|conversation/i.test(line))
+    .slice(0, 3);
+};
+
+const fallbackSmartReplies = (lastIncoming?: string): string[] => {
+  if (lastIncoming?.includes("?")) {
+    return ["Yes 😊", "Tell me more", "Let me think about it"];
+  }
+  return ["That made me smile 😊", "How are you?", "I’m glad to hear from you"];
+};
+
 const WEATHER_ICONS: Record<string, string> = {
   sunny: "☀️",
   cloudy: "☁️",
@@ -194,34 +245,32 @@ export const MessengerAIFeatures = ({
   };
 
   const handleSmartReply = async () => {
-    if (messages.length < 1) {
+    const recentMessages = messages.filter((m) => m.content?.trim()).slice(-8);
+    if (recentMessages.length < 1) {
       toast({ title: "Need messages for smart replies", variant: "destructive" });
       return;
     }
 
     setIsLoading(true);
     try {
-      const lastMessages = messages.slice(-5).map(m => ({
+      const context = recentMessages
+        .map((m) => `${m.sender_id === userId ? "Me" : (m.sender_name || recipientName || "Them")}: ${m.content.trim()}`)
+        .join("\n");
+      const lastMessages = recentMessages.slice(-5).map(m => ({
         isMe: m.sender_id === userId,
         content: m.content,
       }));
 
       const { data, error } = await supabase.functions.invoke("messenger-ai", {
-        body: { action: "smart-reply", lastMessages },
+        body: { action: "smart-reply", context, conversationText: context, lastMessages },
       });
 
       if (handleAIError(error, data)) return;
 
-      const suggestions: string[] = Array.isArray(data?.suggestions)
-        ? data.suggestions
-        : Array.isArray(data?.replies)
-          ? data.replies
-          : [];
-      if (suggestions.length === 0) {
-        toast({ title: "No suggestions returned", description: "Try again in a moment", variant: "destructive" });
-        return;
-      }
-      setSmartReplies(suggestions);
+      const lastIncoming = [...recentMessages].reverse().find((m) => m.sender_id !== userId)?.content;
+      const suggestions = parseSmartReplies(data);
+      const usableSuggestions = suggestions.length > 0 ? suggestions : fallbackSmartReplies(lastIncoming);
+      setSmartReplies(usableSuggestions);
       setShowSmartReplies(true);
       await fetchCredits();
       const used = data?.creditsUsed ?? data?.credits_used ?? 1;
@@ -382,7 +431,7 @@ export const MessengerAIFeatures = ({
   };
 
   return (
-    <div className="flex items-center gap-1 overflow-x-auto flex-nowrap scrollbar-none py-1 -mx-1 px-1">
+    <div className="flex shrink-0 items-center gap-1.5 flex-nowrap py-1">
 
 
 
@@ -393,7 +442,9 @@ export const MessengerAIFeatures = ({
           <Button
             variant={credits === 0 ? "destructive" : credits < 5 ? "outline" : "ghost"}
             size="sm"
-            className="gap-1 text-xs"
+            type="button"
+            className="h-10 shrink-0 touch-manipulation rounded-full px-2.5 gap-1 text-xs"
+            aria-label={credits === 0 ? "Buy AI credits" : `${credits} AI credits`}
             title={credits === 0 ? "No AI credits — click to buy" : `${credits} AI credits`}
           >
             <Coins className="h-3 w-3" />
@@ -452,7 +503,7 @@ export const MessengerAIFeatures = ({
       {/* Translate */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" disabled={isLoading} title="Translate (2 credits)">
+          <Button type="button" variant="ghost" size="icon" className={AI_TOOL_BUTTON_CLASS} disabled={isLoading} aria-label="Translate" title="Translate (2 credits)">
             <Languages className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
@@ -469,10 +520,13 @@ export const MessengerAIFeatures = ({
       {/* Summarize */}
       <Dialog open={showSummary} onOpenChange={setShowSummary}>
         <Button
+          type="button"
           variant="ghost"
           size="icon"
+          className={AI_TOOL_BUTTON_CLASS}
           onClick={handleSummarize}
           disabled={isLoading}
+          aria-label="Summarize conversation"
           title="Summarize (5 credits)"
         >
           {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileText className="h-4 w-4" />}
@@ -488,10 +542,13 @@ export const MessengerAIFeatures = ({
       {/* Smart Reply */}
       <Dialog open={showSmartReplies} onOpenChange={setShowSmartReplies}>
         <Button
+          type="button"
           variant="ghost"
           size="icon"
+          className={AI_TOOL_BUTTON_CLASS}
           onClick={handleSmartReply}
           disabled={isLoading}
+          aria-label="Smart reply"
           title="Smart Reply (1 credit)"
         >
           <Sparkles className="h-4 w-4" />
@@ -524,7 +581,7 @@ export const MessengerAIFeatures = ({
       {/* Time Capsule */}
       <Dialog open={showTimeCapsule} onOpenChange={setShowTimeCapsule}>
         <DialogTrigger asChild>
-          <Button variant="ghost" size="icon" title="Time Capsule (5 credits)">
+          <Button type="button" variant="ghost" size="icon" className={AI_TOOL_BUTTON_CLASS} aria-label="Time capsule" title="Time Capsule (5 credits)">
             <Clock className="h-4 w-4" />
           </Button>
         </DialogTrigger>
@@ -565,10 +622,13 @@ export const MessengerAIFeatures = ({
       {/* Emotional Weather */}
       <Dialog open={showEmotionalWeather} onOpenChange={setShowEmotionalWeather}>
         <Button
+          type="button"
           variant="ghost"
           size="icon"
+          className={AI_TOOL_BUTTON_CLASS}
           onClick={handleEmotionalWeather}
           disabled={isLoading}
+          aria-label="Emotional weather"
           title="Emotional Weather (3 credits)"
         >
           <Cloud className="h-4 w-4" />
@@ -620,7 +680,7 @@ export const MessengerAIFeatures = ({
       {/* Quantum Message */}
       <Dialog open={showQuantumMessage} onOpenChange={setShowQuantumMessage}>
         <DialogTrigger asChild>
-          <Button variant="ghost" size="icon" title="Quantum Message (10 credits)">
+          <Button type="button" variant="ghost" size="icon" className={AI_TOOL_BUTTON_CLASS} aria-label="Quantum message" title="Quantum Message (10 credits)">
             <Zap className="h-4 w-4" />
           </Button>
         </DialogTrigger>
@@ -688,7 +748,7 @@ export const MessengerAIFeatures = ({
       {/* Anonymous Compliment */}
       <Dialog open={showCompliment} onOpenChange={setShowCompliment}>
         <DialogTrigger asChild>
-          <Button variant="ghost" size="icon" title="Anonymous Compliment (2 credits)">
+          <Button type="button" variant="ghost" size="icon" className={AI_TOOL_BUTTON_CLASS} aria-label="Anonymous compliment" title="Anonymous Compliment (2 credits)">
             <Heart className="h-4 w-4" />
           </Button>
         </DialogTrigger>
@@ -749,7 +809,7 @@ export const MessengerAIFeatures = ({
       {/* What If Story */}
       <Dialog open={showWhatIf} onOpenChange={setShowWhatIf}>
         <DialogTrigger asChild>
-          <Button variant="ghost" size="icon" title="What If Story (15 credits)">
+          <Button type="button" variant="ghost" size="icon" className={AI_TOOL_BUTTON_CLASS} aria-label="What if story" title="What If Story (15 credits)">
             <Wand2 className="h-4 w-4" />
           </Button>
         </DialogTrigger>

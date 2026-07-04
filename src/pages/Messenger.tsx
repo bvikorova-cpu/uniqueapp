@@ -1760,14 +1760,15 @@ const Messenger = () => {
                     onChange={handleAttachmentUpload}
                   />
 
-                  {/* Tool row — scrolls horizontally on narrow screens */}
-                  <div className="flex items-center gap-1 overflow-x-auto pb-2 -mx-1 px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                  {/* Tool row — fixed tap targets, horizontal scroll only on very narrow screens */}
+                  <div className="flex items-center gap-1.5 overflow-x-auto overscroll-x-contain pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
+                          type="button"
                           variant="ghost"
                           size="icon"
-                          className="shrink-0"
+                          className="h-10 w-10 min-h-10 min-w-10 shrink-0 touch-manipulation rounded-full"
                           disabled={attachmentInputsDisabled}
                           aria-label="Add attachment"
                         >
@@ -1788,7 +1789,14 @@ const Messenger = () => {
 
                     <Popover open={showEmojiPicker} onOpenChange={setShowEmojiPicker}>
                       <PopoverTrigger asChild>
-                        <Button variant="ghost" size="icon" className="shrink-0" disabled={isRecording}>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="h-10 w-10 min-h-10 min-w-10 shrink-0 touch-manipulation rounded-full"
+                          disabled={isRecording}
+                          aria-label="Emoji picker"
+                        >
                           <Smile className="h-4 w-4" />
                         </Button>
                       </PopoverTrigger>
