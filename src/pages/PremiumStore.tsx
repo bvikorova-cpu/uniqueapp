@@ -220,8 +220,10 @@ const PremiumStore = () => {
                 remaining={remaining}
                 endsAt={endsAt}
                 onView={() => {
-                  const el = document.querySelector('[value="avatars"]') as HTMLElement | null;
-                  el?.click();
+                  setActiveTab("avatars");
+                  setTimeout(() => {
+                    document.getElementById('store-tabs')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }, 50);
                 }}
               />
             </div>
