@@ -30,7 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
 
 interface MessengerAIFeaturesProps {
   userId: string;
