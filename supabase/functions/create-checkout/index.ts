@@ -369,7 +369,7 @@ serve(async (req) => {
         "price_1TgR40GaXSfGtYFt82FwbNXt", // Pet Parent €4.99/mo (prod_Ufmdb3lcGFyQ58)
         "price_1SQDNuGaXSfGtYFt9o91SK2J", // Multi-Pet €8.99/mo
         "price_1SQDOFGaXSfGtYFtDQsh6HlL", // Pet Psychologist €24.99/mo
-        "price_1SQDRRGaXSfGtYFts87Q1N9y", // Single translation €2
+        "price_1TpIITGaXSfGtYFtldmVP3Iv", // Single translation €2 (prod_UowA3EYrl5a8eu)
         "price_1TWBEFGaXSfGtYFtKH2ut18T", // Premium voice €14.99
       ]);
       const priceId = String(body.priceId);

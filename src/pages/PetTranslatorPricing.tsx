@@ -166,7 +166,7 @@ const PetTranslatorPricing = () => {
             <h3 className="text-lg font-bold mb-1">🎤 Single Translation</h3>
             <p className="text-xs text-muted-foreground mb-2">Try once without subscription</p>
             <p className="text-2xl font-black mb-3">€2</p>
-            <Button variant="outline" className="w-full" onClick={() => createCheckout('price_1SQDRRGaXSfGtYFts87Q1N9y')}>
+            <Button variant="outline" className="w-full" onClick={() => createCheckout('price_1TpIITGaXSfGtYFtldmVP3Iv')}>
               Get 1 Translation
             </Button>
           </Card>
