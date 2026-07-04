@@ -1151,6 +1151,13 @@ const App = () => {
                             <GPLeaderboard />
                           </SubscriptionGuard>
                         } />
+                        {/* Legacy /f1-* redirects → /gp-* */}
+                        <Route path="/f1-racing" element={<Navigate to="/gp-racing" replace />} />
+                        <Route path="/f1-racing-old" element={<Navigate to="/gp-racing-old" replace />} />
+                        <Route path="/f1-subscription" element={<Navigate to="/gp-subscription" replace />} />
+                        <Route path="/f1-fantasy-team" element={<Navigate to="/gp-fantasy-team" replace />} />
+                        <Route path="/f1-leaderboard" element={<Navigate to="/gp-leaderboard" replace />} />
+
                         <Route path="/masterchef-subscription" element={<MasterChefHub />} />
                         <Route path="/masterchef/competitions-public" element={<MasterChefCompetitionsGallery />} />
                         <Route path="/masterchef/gallery" element={<MasterChefCompetitionsGallery />} />
