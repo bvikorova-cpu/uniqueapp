@@ -229,6 +229,19 @@ const Feed = () => {
       if (newItems.length > 0) {
         lastCursor.current = newItems[newItems.length - 1].data.created_at;
       }
+
+      // Persist first page for instant paint on next mount.
+      if (!loadMore) {
+        try {
+          localStorage.setItem(CACHE_KEY, JSON.stringify({
+            t: Date.now(),
+            posts: postsWithProfiles.slice(0, POSTS_PER_PAGE),
+            reposts: repostsWithData.slice(0, POSTS_PER_PAGE),
+            feedItems: newItems.slice(0, POSTS_PER_PAGE),
+          }));
+        } catch { /* quota exceeded — ignore */ }
+      }
+
     } catch (error: any) {
       setFeedError(error?.message || "Failed to load posts");
       toast({
