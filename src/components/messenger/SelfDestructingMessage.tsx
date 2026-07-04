@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+
 
 interface SelfDestructingMessageProps {
   onSelectDuration: (seconds: number) => void;
