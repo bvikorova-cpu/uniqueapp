@@ -3,8 +3,6 @@ import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-
-import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface WishlistButtonProps {
   itemType: string;
   itemId: string;
@@ -79,13 +77,7 @@ export const WishlistButton = ({
 
   return (
     <>
-      <FloatingHowItWorks title="How Wishlist Button works" steps={[
-          { title: 'Open this section', desc: 'Review what it offers.' },
-          { title: 'Interact', desc: 'Filter, list, buy, sell or manage.' },
-          { title: 'Review results', desc: 'Track progress, orders or messages.' },
-          { title: 'Iterate', desc: 'Come back anytime — data is saved.' },
-        ]} />
-      <Button
+<Button
       onClick={toggle}
       disabled={loading}
       size={size}
