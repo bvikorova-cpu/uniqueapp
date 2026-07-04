@@ -139,6 +139,7 @@ export const useNotifications = () => {
     notifications: notifications || [],
     unreadCount,
     isLoading,
+    isRinging,
     markAsRead: markAsRead.mutate,
     markAllAsRead: markAllAsRead.mutate,
     deleteNotification: deleteNotification.mutate,
