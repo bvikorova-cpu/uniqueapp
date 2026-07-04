@@ -35,7 +35,7 @@ const ecosystemModules = [
   { title: "Time Capsule 2.0", description: "Send messages to the future (1-20 years)", icon: Clock, path: "/time-capsule", badge: "Future", gradient: "from-blue-600 to-cyan-600", category: "social" },
   { title: "Time Reversal Social", description: "Live your life backwards with AI transformation", icon: Timer, path: "/time-reversal", badge: "Social", gradient: "from-violet-600 to-purple-600", category: "social" },
   { title: "KitchenStars Platform", description: "Online cooking competitions with prizes", icon: ChefHat, path: "/masterchef-subscription", badge: "Competition", gradient: "from-orange-600 to-red-600", category: "entertainment" },
-  { title: "GP Fantasy Racing", description: "3D racing with team management & leaderboards", icon: Car, path: "/f1-racing", badge: "3D Racing", gradient: "from-red-600 to-orange-600", featured: true, category: "racing" },
+  { title: "GP Fantasy Racing", description: "3D racing with team management & leaderboards", icon: Car, path: "/gp-racing", badge: "3D Racing", gradient: "from-red-600 to-orange-600", featured: true, category: "racing" },
   { title: "Messenger", description: "Real-time chat with reactions & voice messages", icon: MessageCircle, path: "/messenger", badge: "Chat", gradient: "from-cyan-600 to-blue-600", category: "social" },
   { title: "Influ-King", description: "Creator profiles with 12 categories & virtual gifts", icon: Star, path: "/influ-king", badge: "Creators", gradient: "from-yellow-600 to-amber-600", category: "social" },
   { title: "Megaforum", description: "Open community forum with 9 categories (FREE)", icon: MessageSquare, path: "/megaforum", badge: "Free", gradient: "from-emerald-600 to-green-600", category: "social" },
@@ -57,7 +57,7 @@ const coreModules = [
 ];
 
 const services = [
-  { title: "GP Fantasy Racing", icon: Car, path: "/f1-subscription", badge: "Premium", gradient: "from-red-600 to-orange-600", featured: true, category: "racing" },
+  { title: "GP Fantasy Racing", icon: Car, path: "/gp-subscription", badge: "Premium", gradient: "from-red-600 to-orange-600", featured: true, category: "racing" },
   { title: "Kids Channel", icon: Baby, path: "/kids-channel", badge: "Family", gradient: "from-blue-500 to-cyan-500", category: "entertainment" },
   { title: "Education & AI Tutor", icon: GraduationCap, path: "/education", badge: "Learning", gradient: "from-green-500 to-emerald-500", category: "learning" },
   { title: "Jobs & Career", icon: Briefcase, path: "/jobs", badge: "Career", gradient: "from-purple-500 to-indigo-500", category: "career" },

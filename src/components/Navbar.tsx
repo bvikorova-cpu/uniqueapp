@@ -189,7 +189,7 @@ const Navbar = () => {
         { path: "/hockey-arena", label: "Hockey Arena", icon: Trophy },
         { path: "/tennis-arena", label: "Tennis Arena", icon: Trophy },
         { path: "/american-football-arena", label: "American Football", icon: Trophy },
-        { path: "/f1-racing", label: "GP Fantasy Racing", icon: Car },
+        { path: "/gp-racing", label: "GP Fantasy Racing", icon: Car },
       ],
     },
     {
