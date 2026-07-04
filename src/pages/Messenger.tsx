@@ -525,14 +525,15 @@ const Messenger = () => {
     if (!selectedConversation) return;
 
     const convId = selectedConversation;
-    setLoadingMessages(true);
-    setMessagesError(false);
-    const { data, error } = await supabase
+    // Fetch newest 100 messages (fast path) — order DESC + reverse for render.
+    const msgsPromise = supabase
       .from("messages")
       .select("id, content, sender_id, created_at, story_id, reply_to_id, is_read, read_at, attachment_url, attachment_type, voice_duration, expires_at")
       .eq("conversation_id", convId)
-      .order("created_at", { ascending: true })
-      .limit(500);
+      .order("created_at", { ascending: false })
+      .limit(100);
+
+    const { data, error } = await msgsPromise;
 
     if (error) {
       console.error("Error fetching messages:", error);
@@ -543,24 +544,22 @@ const Messenger = () => {
       return;
     }
 
-    const rows = data || [];
+    const rows = (data || []).slice().reverse();
 
-    // Fetch reactions only if there are messages.
-    let reactionsData: any[] = [];
-    if (rows.length > 0) {
-      const { data: rd } = await supabase
-        .from("message_reactions")
-        .select("*")
-        .in("message_id", rows.map((m) => m.id));
-      reactionsData = rd || [];
-    }
-
-    // Batch-fetch all sender profiles using the shared module cache
-    // (hits network only for missing ids).
+    // Parallelize reactions + profile fetches — biggest latency win.
     const senderIds = Array.from(new Set(rows.map((m) => m.sender_id)));
-    const profilesMap = senderIds.length > 0
-      ? await fetchProfilesCachedBatch(senderIds)
-      : new Map<string, any>();
+    const [reactionsRes, profilesMap] = await Promise.all([
+      rows.length > 0
+        ? supabase
+            .from("message_reactions")
+            .select("*")
+            .in("message_id", rows.map((m) => m.id))
+        : Promise.resolve({ data: [] as any[] }),
+      senderIds.length > 0
+        ? fetchProfilesCachedBatch(senderIds)
+        : Promise.resolve(new Map<string, any>()),
+    ]);
+    const reactionsData: any[] = (reactionsRes as any).data || [];
 
     const messagesWithProfiles = rows.map((msg) => {
       const profile = profilesMap.get(msg.sender_id) || {
@@ -599,7 +598,14 @@ const Messenger = () => {
     setMessages(messagesWithProfiles);
     setLoadingMessages(false);
     setMessagesError(false);
+
+    // Persist to localStorage for instant next-open paint (keep last 50).
+    try {
+      const toCache = messagesWithProfiles.slice(-50);
+      localStorage.setItem(`msgs_v1_${convId}`, JSON.stringify(toCache));
+    } catch {}
   };
+
 
   const markMessagesAsRead = async () => {
     if (!selectedConversation || !user) return;
