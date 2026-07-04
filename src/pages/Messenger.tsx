@@ -343,11 +343,25 @@ const Messenger = () => {
 
   useEffect(() => {
     if (selectedConversation) {
-      // Clear previous conversation messages immediately so the new
-      // conversation always starts fresh and history is reloaded.
-      setMessages([]);
-      setLoadingMessages(true);
-      setMessagesError(false);
+      // Hydrate instantly from localStorage cache so the chat paints < 100ms.
+      let hadCache = false;
+      try {
+        const raw = localStorage.getItem(`msgs_v1_${selectedConversation}`);
+        if (raw) {
+          const cached = JSON.parse(raw);
+          if (Array.isArray(cached) && cached.length > 0) {
+            setMessages(cached);
+            setLoadingMessages(false);
+            setMessagesError(false);
+            hadCache = true;
+          }
+        }
+      } catch {}
+      if (!hadCache) {
+        setMessages([]);
+        setLoadingMessages(true);
+        setMessagesError(false);
+      }
       fetchMessages();
       const unsubscribeMessages = subscribeToMessages();
       const unsubscribeTyping = subscribeToTyping();
@@ -363,6 +377,7 @@ const Messenger = () => {
       setMessagesError(false);
     }
   }, [selectedConversation]);
+
 
   // Smooth-scroll only when a NEW message arrives.
   // On conversation switch we jump instantly (no animation).
