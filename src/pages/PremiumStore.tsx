@@ -61,6 +61,7 @@ const PremiumStore = () => {
   const [userLevel, setUserLevel] = useState(1);
   const [confettiTrigger, setConfettiTrigger] = useState(0);
   const [giftItem, setGiftItem] = useState<{ type: string; id: string; name: string; emoji?: string; cost: number } | null>(null);
+  const [activeTab, setActiveTab] = useState<string>("visibility");
 
   useEffect(() => {
     const fetchLevel = async () => {
