@@ -212,10 +212,20 @@ export const MessengerAIFeatures = ({
 
       if (handleAIError(error, data)) return;
 
-      setSmartReplies(data.suggestions);
+      const suggestions: string[] = Array.isArray(data?.suggestions)
+        ? data.suggestions
+        : Array.isArray(data?.replies)
+          ? data.replies
+          : [];
+      if (suggestions.length === 0) {
+        toast({ title: "No suggestions returned", description: "Try again in a moment", variant: "destructive" });
+        return;
+      }
+      setSmartReplies(suggestions);
       setShowSmartReplies(true);
       await fetchCredits();
-      toast({ title: "Suggestions ready!", description: `${data.creditsUsed} credit used` });
+      const used = data?.creditsUsed ?? data?.credits_used ?? 1;
+      toast({ title: "Suggestions ready!", description: `${used} credit used` });
     } catch (error: any) {
       toast({ title: "Smart reply failed", description: error.message, variant: "destructive" });
     } finally {
