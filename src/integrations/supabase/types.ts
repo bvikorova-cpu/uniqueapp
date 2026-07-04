@@ -65511,6 +65511,7 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      get_my_conversations_v1: { Args: { _limit?: number }; Returns: Json }
       get_my_hub_xp: {
         Args: never
         Returns: {
