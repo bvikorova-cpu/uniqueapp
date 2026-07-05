@@ -276,6 +276,7 @@ const DEFAULT_PATHS: Record<string, { success: string; cancel: string }> = {
   observer_mode: { success: "/quantum-social?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/quantum-social?payment=canceled" },
   quantum_entanglement: { success: "/quantum-social?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/quantum-social?payment=canceled" },
   challenge_pro: { success: "/eco-challenge?payment=success&challenge_pro=1&session_id={CHECKOUT_SESSION_ID}", cancel: "/eco-challenge?payment=canceled" },
+  challenge_top: { success: "/eco-challenge?payment=success&challenge_pro=1&session_id={CHECKOUT_SESSION_ID}", cancel: "/eco-challenge?payment=canceled" },
 };
 
 const CLONE_PRODUCTS: Record<string, { amount: number; mode: "payment" | "subscription"; name: string; metadata: Record<string, string> }> = {
