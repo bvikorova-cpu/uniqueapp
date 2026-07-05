@@ -64861,6 +64861,7 @@ export type Database = {
         Returns: boolean
       }
       challenge_period_key: { Args: { _type: string }; Returns: string }
+      challenge_tier: { Args: { _user_id: string }; Returns: string }
       check_and_award_badges: {
         Args: { p_user_id: string }
         Returns: undefined
