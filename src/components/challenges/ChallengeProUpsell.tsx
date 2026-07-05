@@ -189,12 +189,8 @@ export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" 
                 <span>Everything in PRO</span>
               </li>
               <li className="flex items-start gap-2">
-                <Trophy className="w-4 h-4 mt-0.5 shrink-0 text-pink-200" />
-                <span><b>Win prize:</b> 500,000 XP <i>if you win</i> the monthly challenge</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <Sparkles className="w-4 h-4 mt-0.5 shrink-0 text-pink-200" />
-                <span><b>Win prize:</b> 1,000,000 AI credits (non-cashable) <i>if you win</i></span>
+                <Zap className="w-4 h-4 mt-0.5 shrink-0 text-pink-200" />
+                <span><b>500,000 XP guaranteed</b> every month — auto-granted</span>
               </li>
               <li className="flex items-start gap-2">
                 <Crown className="w-4 h-4 mt-0.5 shrink-0 text-pink-200" />
@@ -204,7 +200,10 @@ export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" 
                 <Pin className="w-4 h-4 mt-0.5 shrink-0 text-pink-200" />
                 <span>Your submission <b>pinned</b> at the top of the feed</span>
               </li>
-
+              <li className="flex items-start gap-2">
+                <Trophy className="w-4 h-4 mt-0.5 shrink-0 text-pink-200" />
+                <span>If you <b>win</b>: 1M AI credits + 5% of subscription pool (see banner above)</span>
+              </li>
             </ul>
             <Button
               onClick={() => handleSubscribe("top")}
