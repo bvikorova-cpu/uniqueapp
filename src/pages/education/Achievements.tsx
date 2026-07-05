@@ -31,12 +31,13 @@ export default function Achievements() {
           </Button>
         </div>
 
+        <FloatingHowItWorks title={__HIW_ACHIEVEMENTS.title} intro={__HIW_ACHIEVEMENTS.intro} steps={__HIW_ACHIEVEMENTS.steps} />
+
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
           {achievements.map((a: any, i: number) => {
             const Icon = (LucideIcons as any)[a.icon] ?? LucideIcons.Trophy;
             return (
               <motion.div key={a.id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.03 }}>
-      <FloatingHowItWorks title={__HIW_ACHIEVEMENTS.title} intro={__HIW_ACHIEVEMENTS.intro} steps={__HIW_ACHIEVEMENTS.steps} />
                 <Card className={`backdrop-blur-xl ${a.unlocked ? "bg-primary/10 border-primary/40" : "bg-card/60 opacity-60 grayscale"}`}>
                   <CardContent className="p-4 text-center">
                     <Icon className={`w-10 h-10 mx-auto mb-2 ${a.unlocked ? "text-primary" : "text-muted-foreground"}`} />
