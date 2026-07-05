@@ -1302,7 +1302,7 @@ const App = () => {
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </Suspense>
-                    </ErrorBoundary>
+                    </RouteResetErrorBoundary>
                   </main>
 
                   <Suspense fallback={null}>
