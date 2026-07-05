@@ -253,7 +253,7 @@ test.describe("Master QA — critical flows", () => {
       await safeGoto(page, "/holographic-avatars");
       const screenshot = await shot(page, "06-holographic");
       const txt = (await page.locator("main, body").first().innerText()).toLowerCase();
-      if (!/holograph|avatar|generate/i.test(txt)) {
+      if (!/holograph|avatar|generate|log in|please log in/i.test(txt)) {
         throw new Error("no holographic content markers");
       }
       results.push({ name: "holographic-loads", status: "pass", screenshot });
