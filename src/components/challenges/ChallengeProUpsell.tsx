@@ -9,10 +9,11 @@ import { toast } from "sonner";
 
 /**
  * Upsell card for the Challenge subscriptions.
- *  - PRO tier: €3/month · 2× monthly prize (200,000 XP) + gold badge.
- *  - TOP tier: €5/month · everything in PRO + TOP badge + pinned submissions.
- *    Winning the monthly challenge as TOP grants 500,000 XP + 1,000,000 AI credits
- *    (non-cashable). No auto monthly grant — the mega prize is a WIN reward.
+ *  - PRO tier: €3/month · 2× monthly winner XP (200,000) + gold badge.
+ *  - TOP tier: €5/month · everything in PRO + **500,000 XP guaranteed every month**
+ *    (auto-granted), TOP badge, and submissions pinned to top of feed.
+ *  - Monthly winner (any tier): 1,000,000 AI credits + 5% of the total monthly
+ *    subscription revenue pool (paid out as a cash prize).
  */
 
 export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" | "orange" }) {
