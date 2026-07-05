@@ -126,6 +126,18 @@ export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" 
           </div>
         </div>
 
+        {/* Winner prize banner — visible to everyone */}
+        <div className="rounded-lg bg-gradient-to-r from-yellow-500/25 via-amber-500/25 to-orange-500/25 border border-yellow-300/50 p-3 flex items-start gap-2">
+          <Trophy className="w-5 h-5 text-yellow-300 shrink-0 mt-0.5" fill="currentColor" />
+          <div className="text-xs sm:text-sm text-white leading-snug">
+            <b className="text-yellow-200">Monthly winner prize (any tier):</b>{" "}
+            <b>1,000,000 AI credits</b> usable across the whole platform{" "}
+            <span className="text-white/70">(non-cashable)</span> +{" "}
+            <b>5% of the total monthly subscription pool</b> paid out in cash. The more people subscribe, the bigger the cash prize.
+          </div>
+        </div>
+
+
         <div className="grid gap-3 sm:grid-cols-2">
           {/* PRO card */}
           <div className="rounded-lg bg-black/20 border border-white/10 p-4 space-y-3 flex flex-col">
