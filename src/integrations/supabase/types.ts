@@ -20591,7 +20591,9 @@ export type Database = {
       }
       eco_monthly_winners: {
         Row: {
+          cash_prize_cents: number
           created_at: string
+          credits_awarded: number
           days_completed: number
           id: string
           month_key: string
@@ -20600,7 +20602,9 @@ export type Database = {
           xp_awarded: number
         }
         Insert: {
+          cash_prize_cents?: number
           created_at?: string
+          credits_awarded?: number
           days_completed: number
           id?: string
           month_key: string
@@ -20609,7 +20613,9 @@ export type Database = {
           xp_awarded?: number
         }
         Update: {
+          cash_prize_cents?: number
           created_at?: string
+          credits_awarded?: number
           days_completed?: number
           id?: string
           month_key?: string
@@ -27649,7 +27655,9 @@ export type Database = {
       }
       healthy_monthly_winners: {
         Row: {
+          cash_prize_cents: number
           created_at: string
+          credits_awarded: number
           days_completed: number
           id: string
           month_key: string
@@ -27658,7 +27666,9 @@ export type Database = {
           xp_awarded: number
         }
         Insert: {
+          cash_prize_cents?: number
           created_at?: string
+          credits_awarded?: number
           days_completed: number
           id?: string
           month_key: string
@@ -27667,7 +27677,9 @@ export type Database = {
           xp_awarded?: number
         }
         Update: {
+          cash_prize_cents?: number
           created_at?: string
+          credits_awarded?: number
           days_completed?: number
           id?: string
           month_key?: string
@@ -64860,6 +64872,7 @@ export type Database = {
         Args: { _concert_id: string; _user_id: string }
         Returns: boolean
       }
+      challenge_monthly_prize_pool_cents: { Args: never; Returns: number }
       challenge_period_key: { Args: { _type: string }; Returns: string }
       challenge_tier: { Args: { _user_id: string }; Returns: string }
       check_and_award_badges: {
