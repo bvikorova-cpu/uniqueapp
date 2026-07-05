@@ -23,7 +23,9 @@
 import { test, expect, Page, ConsoleMessage, Request, Response } from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const APP_TSX = path.resolve(__dirname, "../src/App.tsx");
 const ARTIFACTS = path.resolve(__dirname, "master-qa-artifacts");
 const SCREENS = path.join(ARTIFACTS, "screens");
