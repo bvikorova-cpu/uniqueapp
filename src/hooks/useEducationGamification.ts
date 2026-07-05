@@ -14,7 +14,7 @@ export const useSubmitDaily = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ challengeId, score }: { challengeId: string; score: number }) =>
-      eduCall<{ ok: boolean; xp_awarded: number }>("daily.submit", { challenge_id: challengeId, score }),
+      eduCall<{ ok: boolean; xp_awarded: number; streak: number }>("daily.submit", { challenge_id: challengeId, score }),
     onSuccess: (data) => {
       qc.invalidateQueries({ queryKey: ["daily-challenge"] });
       qc.invalidateQueries({ queryKey: ["education-stats"] });

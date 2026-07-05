@@ -11,9 +11,9 @@ export interface EducationStats {
 /**
  * Pulls live education stats for the current user:
  *  - currentXP from `user_points.total_points`
- *  - login_streak as the daily streak proxy
- *  - todayCompleted = quiz_attempts row created today
- *  - bestStreak = max login_streak ever recorded for this user
+ *  - login_streak as the daily challenge streak proxy
+ *  - todayCompleted = education daily completion for today
+ *  - bestStreak = `user_points.longest_streak`
  */
 export const useEducationStats = () => {
   return useQuery({
@@ -24,27 +24,30 @@ export const useEducationStats = () => {
         return { currentXP: 0, currentStreak: 0, bestStreak: 0, todayCompleted: false };
       }
 
-      const [{ data: points }, { data: todayAttempts }] = await Promise.all([
+      const today = new Date().toISOString().slice(0, 10);
+
+      const [{ data: points }, { data: todayCompletions }] = await Promise.all([
         supabase
           .from("user_points")
-          .select("total_points, login_streak")
+          .select("total_points, login_streak, longest_streak")
           .eq("user_id", user.id)
           .maybeSingle(),
         supabase
-          .from("quiz_attempts")
+          .from("education_daily_completions")
           .select("id")
           .eq("user_id", user.id)
-          .gte("created_at", new Date(new Date().setHours(0, 0, 0, 0)).toISOString())
+          .eq("education_daily_challenges.challenge_date", today)
+          .select("id, education_daily_challenges!inner(challenge_date)")
           .limit(1),
       ]);
 
-      const currentStreak = points?.login_streak ?? 0;
+      const todayCompleted = (todayCompletions?.length ?? 0) > 0;
+      const currentStreak = Math.max(points?.login_streak ?? 0, todayCompleted ? 1 : 0);
       return {
         currentXP: points?.total_points ?? 0,
         currentStreak,
-        // We don't store best_streak separately; surface current as a sensible floor.
-        bestStreak: currentStreak,
-        todayCompleted: (todayAttempts?.length ?? 0) > 0,
+        bestStreak: Math.max(points?.longest_streak ?? 0, currentStreak),
+        todayCompleted,
       };
     },
     staleTime: 60_000,
