@@ -1,0 +1,11 @@
+{
+  "generatedAt": "2026-07-05T21:38:07.541Z",
+  "baseURL": "http://localhost:8080",
+  "results": [
+    {
+      "name": "console-errors-authed",
+      "status": "pass"
+    }
+  ],
+  "criticalConsoleErrors": []
+}
