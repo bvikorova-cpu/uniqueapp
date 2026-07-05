@@ -9,9 +9,12 @@ import { toast } from "sonner";
 
 /**
  * Upsell card for the Challenge subscriptions.
- *  - PRO tier: €3/month · 2× monthly prize + gold badge.
- *  - TOP tier: €5/month · everything in PRO + 500k XP + 1M ai_credits (non-cashable) + TOP badge + pinned submissions.
+ *  - PRO tier: €3/month · 2× monthly prize (200,000 XP) + gold badge.
+ *  - TOP tier: €5/month · everything in PRO + TOP badge + pinned submissions.
+ *    Winning the monthly challenge as TOP grants 500,000 XP + 1,000,000 AI credits
+ *    (non-cashable). No auto monthly grant — the mega prize is a WIN reward.
  */
+
 export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" | "orange" }) {
   const { tier, isPro, isTop, activeUntil, loading, subscribe, checkingOut } = useChallengePro();
   const [openingPortal, setOpeningPortal] = useState(false);
@@ -68,10 +71,11 @@ export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" 
               </p>
               <p className="text-xs text-white/80 mt-1">
                 {isTop
-                  ? "2× prize · 500k XP & 1M credits monthly · TOP badge · Pinned in feed"
+                  ? "TOP badge · Pinned in feed · WIN prize: 500k XP + 1M AI credits"
                   : "2× monthly prize (200,000 XP) · Gold badge next to your name"}
                 {activeUntil && <> · Renews {new Date(activeUntil).toLocaleDateString()}</>}
               </p>
+
             </div>
             <ChallengeProBadge tier={isTop ? "top" : "pro"} />
           </div>
@@ -171,12 +175,12 @@ export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" 
                 <span>Everything in PRO</span>
               </li>
               <li className="flex items-start gap-2">
-                <Zap className="w-4 h-4 mt-0.5 shrink-0 text-pink-200" />
-                <span><b>+500,000 XP</b> every month</span>
+                <Trophy className="w-4 h-4 mt-0.5 shrink-0 text-pink-200" />
+                <span><b>Win prize:</b> 500,000 XP <i>if you win</i> the monthly challenge</span>
               </li>
               <li className="flex items-start gap-2">
                 <Sparkles className="w-4 h-4 mt-0.5 shrink-0 text-pink-200" />
-                <span><b>1,000,000 credits</b> monthly · use anywhere on the platform (non-cashable)</span>
+                <span><b>Win prize:</b> 1,000,000 AI credits (non-cashable) <i>if you win</i></span>
               </li>
               <li className="flex items-start gap-2">
                 <Crown className="w-4 h-4 mt-0.5 shrink-0 text-pink-200" />
@@ -186,6 +190,7 @@ export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" 
                 <Pin className="w-4 h-4 mt-0.5 shrink-0 text-pink-200" />
                 <span>Your submission <b>pinned</b> at the top of the feed</span>
               </li>
+
             </ul>
             <Button
               onClick={() => handleSubscribe("top")}
