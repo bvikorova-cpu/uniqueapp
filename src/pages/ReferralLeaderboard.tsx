@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Trophy, Medal, Crown, Gift, Users } from "lucide-react";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { ReferralCard } from "@/components/subscription/ReferralCard";
+
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 type Row = {
@@ -159,7 +159,7 @@ export default function ReferralLeaderboard() {
         </TabsContent>
       </Tabs>
 
-      <ReferralCard userId={user?.id} />
+      
     </div>
   );
 }

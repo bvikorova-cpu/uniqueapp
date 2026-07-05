@@ -40,7 +40,7 @@ import { UrgencyTimer } from "@/components/subscription/UrgencyTimer";
 import { EnterpriseTier } from "@/components/subscription/EnterpriseTier";
 import { WinBackDialog } from "@/components/subscription/WinBackDialog";
 import { PerksCarousel } from "@/components/subscription/PerksCarousel";
-import { ReferralCard } from "@/components/subscription/ReferralCard";
+
 
 import { RoiDashboard } from "@/components/subscription/RoiDashboard";
 import { GiftSubscriptionDialog } from "@/components/subscription/GiftSubscriptionDialog";
@@ -507,8 +507,6 @@ const Subscription = () => {
         {/* Testimonials */}
         <SubscriptionTestimonials />
 
-        {/* (8) Referral program */}
-        <ReferralCard userId={user?.id} />
 
         {/* FAQ */}
         <SubscriptionFAQ />
