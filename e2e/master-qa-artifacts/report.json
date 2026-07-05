@@ -1,0 +1,27 @@
+{
+  "generatedAt": "2026-07-05T21:24:34.283Z",
+  "baseURL": "http://localhost:8080",
+  "results": [
+    {
+      "name": "home-cta",
+      "status": "pass",
+      "screenshot": "screens/01-home.png"
+    },
+    {
+      "name": "auth-form",
+      "status": "pass",
+      "screenshot": "screens/02-auth.png"
+    },
+    {
+      "name": "megatalent-loads",
+      "status": "pass",
+      "screenshot": "screens/03-megatalent.png"
+    },
+    {
+      "name": "live-concerts-loads",
+      "status": "fail",
+      "detail": "no concert content markers"
+    }
+  ],
+  "criticalConsoleErrors": []
+}
