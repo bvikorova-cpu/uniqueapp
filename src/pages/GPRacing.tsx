@@ -9,7 +9,7 @@ import { ArrowLeft, Trophy, Zap, Users, Star, Loader2, Flame, Gauge } from "luci
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import f1Background from "@/assets/gp-racing-background.jpg";
+import f1Background from "@/assets/f1-racing-background.jpg";
 
 // 3D F1 Car Component
 function GPCar({ position, color }: { position: [number, number, number]; color: string }) {
