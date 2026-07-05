@@ -9562,6 +9562,48 @@ export type Database = {
         }
         Relationships: []
       }
+      challenge_xp_grant_log: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          id: string
+          period_key: string | null
+          reason: string | null
+          result: string
+          sub_id: string | null
+          tier: string
+          upsert_ok: boolean | null
+          user_id: string
+          xp_amount: number
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          period_key?: string | null
+          reason?: string | null
+          result: string
+          sub_id?: string | null
+          tier: string
+          upsert_ok?: boolean | null
+          user_id: string
+          xp_amount?: number
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          period_key?: string | null
+          reason?: string | null
+          result?: string
+          sub_id?: string | null
+          tier?: string
+          upsert_ok?: boolean | null
+          user_id?: string
+          xp_amount?: number
+        }
+        Relationships: []
+      }
       challenges: {
         Row: {
           action_type: string

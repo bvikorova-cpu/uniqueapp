@@ -103,7 +103,7 @@ export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" 
             className="w-full bg-white/10 hover:bg-white/20 border-white/30 text-white gap-1.5"
           >
             {openingPortal ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Settings className="w-3.5 h-3.5" />}
-            Manage or cancel
+            Manage billing
           </Button>
         </CardContent>
       </Card>
@@ -122,7 +122,7 @@ export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" 
             <p className="font-bold text-base sm:text-lg leading-tight">
               Boost your Challenge
             </p>
-            <p className="text-sm text-white/80 mt-0.5">Two tiers · Cancel anytime</p>
+            <p className="text-sm text-white/80 mt-0.5">Two tiers · Non-refundable</p>
           </div>
         </div>
 
