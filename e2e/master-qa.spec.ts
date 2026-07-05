@@ -98,7 +98,7 @@ async function safeGoto(page: Page, url: string) {
     .catch(() => {});
 }
 
-test.describe.configure({ mode: "serial" });
+test.describe.configure({ mode: "parallel" });
 
 test.describe("Master QA — critical flows", () => {
   test.afterAll(async () => {
