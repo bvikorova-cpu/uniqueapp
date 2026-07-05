@@ -1566,8 +1566,11 @@ serve(async (req) => {
             break;
           }
 
-          // Flat referral reward: €5 per paid invoice (no tier multipliers)
-          const rewardEur = 5;
+          // Tiered referral reward: €10 for top_premium, €5 for premium/other
+          const invoiceTier = (inv as any).lines?.data
+            ?.map((ln: any) => MEGATALENT_PRICE_TO_TIER[ln.price?.id])
+            .find(Boolean);
+          const rewardEur = invoiceTier === "top_premium" ? 10 : 5;
 
           const periodStart = new Date().toISOString();
           const periodEnd = new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString();
