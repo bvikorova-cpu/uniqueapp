@@ -1,10 +1,9 @@
 // Sync the current user's Challenge PRO / TOP subscription status from Stripe
 // into public.challenge_pro_subscribers. Returns { active, activeUntil, tier }.
-// NOTE: TOP tier (€5/mo) rewards (500,000 XP + 1,000,000 ai_credits) are granted
-// ONLY when the subscriber WINS the monthly Eco or Healthy Challenge. Those are
-// applied inside the SQL functions public.award_eco_monthly_winner() and
-// public.award_healthy_monthly_winner(). This sync function only mirrors tier
-// state — it does not grant XP or credits on its own.
+// TOP tier (€5/mo): grants **500,000 XP guaranteed** once per Stripe billing
+// period (tracked via top_last_grant_period). AI credits (1,000,000) + 5%
+// cash prize pool remain WIN-ONLY (see award_eco_monthly_winner /
+// award_healthy_monthly_winner SQL functions).
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
