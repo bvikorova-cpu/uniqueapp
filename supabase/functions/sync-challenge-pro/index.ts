@@ -80,8 +80,8 @@ serve(async (req) => {
       .eq("user_id", user.id)
       .maybeSingle();
 
-    const shouldGrantTopXp =
-      tier === "top" && (existing as any)?.top_last_grant_period !== periodKey;
+    const alreadyGranted = (existing as any)?.top_last_grant_period === periodKey;
+    const shouldGrantTopXp = tier === "top" && !alreadyGranted;
 
     const upsertRow: Record<string, unknown> = {
       user_id: user.id,
@@ -93,13 +93,16 @@ serve(async (req) => {
     };
     if (shouldGrantTopXp) upsertRow.top_last_grant_period = periodKey;
 
-    await admin
+    const { error: upsertErr } = await admin
       .from("challenge_pro_subscribers")
       .upsert(upsertRow, { onConflict: "user_id" });
 
     // Grant guaranteed 500,000 XP for TOP subscribers, once per billing period
     let grantedXp = 0;
-    if (shouldGrantTopXp) {
+    let xpUpsertOk: boolean | null = null;
+    let xpErrorMsg: string | null = null;
+
+    if (shouldGrantTopXp && !upsertErr) {
       grantedXp = 500000;
       const { data: xpRow } = await admin
         .from("user_xp")
@@ -107,21 +110,57 @@ serve(async (req) => {
         .eq("user_id", user.id)
         .maybeSingle();
       const current = (xpRow as any)?.total_xp ?? 0;
-      await admin
+      const { error: xpErr } = await admin
         .from("user_xp")
         .upsert({ user_id: user.id, total_xp: current + grantedXp }, { onConflict: "user_id" });
+      xpUpsertOk = !xpErr;
+      if (xpErr) xpErrorMsg = xpErr.message;
 
-      await admin.from("notifications").insert({
-        user_id: user.id,
-        type: "challenge_top_monthly",
-        title: "👑 TOP monthly bonus",
-        message: "You received your guaranteed 500,000 XP for being a Challenge TOP subscriber this month!",
-        data: { xp: grantedXp, period: periodKey },
-      });
+      if (!xpErr) {
+        await admin.from("notifications").insert({
+          user_id: user.id,
+          type: "challenge_top_monthly",
+          title: "👑 TOP monthly bonus",
+          message: "You received your guaranteed 500,000 XP for being a Challenge TOP subscriber this month!",
+          data: { xp: grantedXp, period: periodKey },
+        });
+      }
     }
 
-    log("synced", { user: user.id, tier, activeUntil, grantedXp });
-    return json({ active: true, tier, activeUntil, grantedXp }, 200);
+    // Audit log — always record the outcome for every sync where a tier is active
+    const auditResult: "granted" | "skipped_already_granted" | "skipped_wrong_tier" | "error" =
+      xpErrorMsg
+        ? "error"
+        : shouldGrantTopXp
+          ? "granted"
+          : tier !== "top"
+            ? "skipped_wrong_tier"
+            : "skipped_already_granted";
+
+    const auditReason =
+      auditResult === "granted"
+        ? "TOP tier + new billing period"
+        : auditResult === "skipped_already_granted"
+          ? "top_last_grant_period already matches periodKey"
+          : auditResult === "skipped_wrong_tier"
+            ? `tier=${tier} (only 'top' triggers guaranteed XP)`
+            : "xp upsert failed";
+
+    await admin.from("challenge_xp_grant_log").insert({
+      user_id: user.id,
+      tier,
+      sub_id: match.subId,
+      period_key: periodKey,
+      xp_amount: grantedXp,
+      result: auditResult,
+      reason: auditReason,
+      upsert_ok: xpUpsertOk,
+      error_message: xpErrorMsg,
+    });
+
+    log("synced", { user: user.id, tier, activeUntil, grantedXp, result: auditResult });
+    return json({ active: true, tier, activeUntil, grantedXp, auditResult }, 200);
+
 
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
