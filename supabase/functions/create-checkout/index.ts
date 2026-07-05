@@ -276,6 +276,7 @@ const DEFAULT_PATHS: Record<string, { success: string; cancel: string }> = {
   observer_mode: { success: "/quantum-social?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/quantum-social?payment=canceled" },
   quantum_entanglement: { success: "/quantum-social?payment=success&session_id={CHECKOUT_SESSION_ID}", cancel: "/quantum-social?payment=canceled" },
   challenge_pro: { success: "/eco-challenge?payment=success&challenge_pro=1&session_id={CHECKOUT_SESSION_ID}", cancel: "/eco-challenge?payment=canceled" },
+  challenge_top: { success: "/eco-challenge?payment=success&challenge_pro=1&session_id={CHECKOUT_SESSION_ID}", cancel: "/eco-challenge?payment=canceled" },
 };
 
 const CLONE_PRODUCTS: Record<string, { amount: number; mode: "payment" | "subscription"; name: string; metadata: Record<string, string> }> = {
@@ -2741,6 +2742,7 @@ serve(async (req) => {
         dating_monthly:          { amount: 200,  mode: "subscription", name: "Dating Premium (Monthly)" },
         dating_yearly:           { amount: 2000, mode: "subscription", name: "Dating Premium (Yearly)" },
         challenge_pro:           { amount: 300,  mode: "subscription", name: "Challenge PRO (Eco + Healthy)" },
+        challenge_top:           { amount: 500,  mode: "subscription", name: "Challenge TOP (Eco + Healthy)" },
       };
 
       const def = PRODUCT_DEFAULTS[productKey];

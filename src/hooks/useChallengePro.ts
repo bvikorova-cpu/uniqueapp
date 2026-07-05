@@ -2,30 +2,33 @@ import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
+export type ChallengeTier = "pro" | "top" | null;
+
 /**
- * Challenge PRO subscription (€3/month) — grants 2× monthly prize
- * (200,000 XP instead of 100,000 XP) and a gold-leaf badge next to
- * the user's name on Eco and Healthy Challenge feeds & leaderboards.
+ * Challenge PRO (€3/mo) & TOP (€5/mo) subscription state.
+ * - PRO: 2× monthly prize (200,000 XP) + gold badge.
+ * - TOP: everything in PRO + 500,000 XP monthly + 1,000,000 ai_credits monthly
+ *        (non-cashable) + TOP badge + submissions auto-pinned to top of feed.
  */
 export function useChallengePro() {
   const { user } = useAuth();
-  const [isPro, setIsPro] = useState(false);
+  const [tier, setTier] = useState<ChallengeTier>(null);
   const [activeUntil, setActiveUntil] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [checkingOut, setCheckingOut] = useState(false);
 
   const refresh = useCallback(async () => {
-    if (!user) { setIsPro(false); setActiveUntil(null); setLoading(false); return; }
+    if (!user) { setTier(null); setActiveUntil(null); setLoading(false); return; }
     setLoading(true);
-    // Fast path: read local table (kept in sync by edge function).
     const { data } = await supabase
       .from("challenge_pro_subscribers" as any)
-      .select("active_until")
+      .select("active_until, tier")
       .eq("user_id", user.id)
       .maybeSingle();
     const until = (data as any)?.active_until as string | null | undefined;
+    const rawTier = ((data as any)?.tier as string | null | undefined) ?? "pro";
     const active = !!until && new Date(until).getTime() > Date.now();
-    setIsPro(active);
+    setTier(active ? ((rawTier === "top" ? "top" : "pro") as ChallengeTier) : null);
     setActiveUntil(until ?? null);
     setLoading(false);
   }, [user?.id]);
@@ -41,11 +44,11 @@ export function useChallengePro() {
     await refresh();
   }, [user?.id, refresh]);
 
-  const subscribe = useCallback(async () => {
+  const subscribe = useCallback(async (target: "pro" | "top" = "pro") => {
     setCheckingOut(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { product: "challenge_pro" },
+        body: { product: target === "top" ? "challenge_top" : "challenge_pro" },
       });
       if (error) throw error;
       const url = (data as any)?.url;
@@ -57,7 +60,6 @@ export function useChallengePro() {
 
   useEffect(() => { refresh(); }, [refresh]);
 
-  // Auto-sync after Stripe redirect
   useEffect(() => {
     if (!user) return;
     const params = new URLSearchParams(window.location.search);
@@ -66,36 +68,58 @@ export function useChallengePro() {
     }
   }, [user?.id, syncFromStripe]);
 
-  return { isPro, activeUntil, loading, subscribe, checkingOut, refresh, syncFromStripe };
+  return {
+    tier,
+    isPro: tier === "pro" || tier === "top",
+    isTop: tier === "top",
+    activeUntil,
+    loading,
+    subscribe,
+    checkingOut,
+    refresh,
+    syncFromStripe,
+  };
 }
 
 /**
- * Fetch the set of user IDs (from a given list) that currently have active PRO,
- * so we can render the gold badge next to their names in feeds & leaderboards.
+ * Fetch tier map for a list of user IDs, so feeds & leaderboards can render
+ * the correct PRO / TOP badge next to each name.
  */
 export function useChallengeProSet(userIds: string[]) {
-  const [proSet, setProSet] = useState<Set<string>>(new Set());
+  const [tierMap, setTierMap] = useState<Map<string, "pro" | "top">>(new Map());
 
   useEffect(() => {
     let cancelled = false;
     const ids = Array.from(new Set(userIds.filter(Boolean)));
-    if (ids.length === 0) { setProSet(new Set()); return; }
+    if (ids.length === 0) { setTierMap(new Map()); return; }
     (async () => {
       const { data } = await supabase
         .from("challenge_pro_subscribers" as any)
-        .select("user_id, active_until")
+        .select("user_id, active_until, tier")
         .in("user_id", ids);
       if (cancelled) return;
       const now = Date.now();
-      const next = new Set(
-        (data || [])
-          .filter((r: any) => r.active_until && new Date(r.active_until).getTime() > now)
-          .map((r: any) => r.user_id as string),
-      );
-      setProSet(next);
+      const next = new Map<string, "pro" | "top">();
+      for (const r of (data || []) as any[]) {
+        if (r.active_until && new Date(r.active_until).getTime() > now) {
+          next.set(r.user_id, r.tier === "top" ? "top" : "pro");
+        }
+      }
+      setTierMap(next);
     })();
     return () => { cancelled = true; };
   }, [userIds.join(",")]);
 
-  return proSet;
+  // Back-compat: existing callers use `.has(id)` — return a Set-like proxy
+  const proSet = {
+    has: (id: string) => tierMap.has(id),
+    get: (id: string) => tierMap.get(id),
+    tierOf: (id: string): "pro" | "top" | null => tierMap.get(id) ?? null,
+    size: tierMap.size,
+    map: tierMap,
+  };
+  return proSet as unknown as Set<string> & {
+    tierOf: (id: string) => "pro" | "top" | null;
+    map: Map<string, "pro" | "top">;
+  };
 }

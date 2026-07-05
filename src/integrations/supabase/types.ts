@@ -9535,6 +9535,8 @@ export type Database = {
           created_at: string
           stripe_customer_id: string | null
           stripe_subscription_id: string | null
+          tier: string
+          top_last_grant_period: string | null
           updated_at: string
           user_id: string
         }
@@ -9543,6 +9545,8 @@ export type Database = {
           created_at?: string
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
+          tier?: string
+          top_last_grant_period?: string | null
           updated_at?: string
           user_id: string
         }
@@ -9551,6 +9555,8 @@ export type Database = {
           created_at?: string
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
+          tier?: string
+          top_last_grant_period?: string | null
           updated_at?: string
           user_id?: string
         }

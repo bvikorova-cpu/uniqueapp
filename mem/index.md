@@ -31,3 +31,4 @@
 - [Social & Dating audit fixes](mem://features/social-dating-audit-batch) — 24h refund, DM mute, confession sanitize, coffee no-show strikes.
 - [DM Consolidation](mem://features/dm-consolidation) — Direct messages unified onto conversations schema via RPC; legacy `direct_messages` deprecated.
 - [Scale-readiness primitives](mem://features/scale-readiness) — Rate-limit RPC, FTS search, feed cache fan-out, spam score, moderate-text/image edge fns.
+- [Challenge TOP tier](mem://features/challenge-top-tier) — €5/mo Challenge tier: PRO benefits + 500k XP + 1M ai_credits monthly + TOP badge + pinned feed submission.
