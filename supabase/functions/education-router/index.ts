@@ -206,20 +206,41 @@ Deno.serve(async (req) => {
           .upsert({ user_id: user.id, challenge_id: challengeId, score }, { onConflict: "user_id,challenge_id" });
         if (error) throw error;
 
-        // Award XP via user_points
+        // Award XP + update daily streak
         const { data: pts } = await admin
           .from("user_points")
-          .select("total_points, login_streak")
+          .select("total_points, login_streak, longest_streak, last_login_date")
           .eq("user_id", user.id)
           .maybeSingle();
         const xpAdd = Math.round((score / 100) * 50);
+
+        // Streak logic: same day → keep; +1 day → increment; else reset to 1.
+        const today = new Date().toISOString().slice(0, 10);
+        const prevDate: string | null = pts?.last_login_date ?? null;
+        const prevStreak = pts?.login_streak ?? 0;
+        let newStreak = prevStreak;
+        if (prevDate !== today) {
+          if (prevDate) {
+            const diffDays = Math.round(
+              (Date.parse(today) - Date.parse(prevDate)) / 86400000
+            );
+            newStreak = diffDays === 1 ? prevStreak + 1 : 1;
+          } else {
+            newStreak = 1;
+          }
+        }
+        if (newStreak < 1) newStreak = 1;
+        const longest = Math.max(pts?.longest_streak ?? 0, newStreak);
+
         await admin
           .from("user_points")
           .upsert(
             {
               user_id: user.id,
               total_points: (pts?.total_points ?? 0) + xpAdd,
-              login_streak: pts?.login_streak ?? 1,
+              login_streak: newStreak,
+              longest_streak: longest,
+              last_login_date: today,
             },
             { onConflict: "user_id" }
           );
@@ -242,7 +263,7 @@ Deno.serve(async (req) => {
           { onConflict: "week_start,user_id" }
         );
 
-        return json({ ok: true, xp_awarded: xpAdd });
+        return json({ ok: true, xp_awarded: xpAdd, streak: newStreak });
       }
 
       case "league.top": {
