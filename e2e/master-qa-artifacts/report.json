@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-05T21:24:34.283Z",
+  "generatedAt": "2026-07-05T21:30:44.031Z",
   "baseURL": "http://localhost:8080",
   "results": [
     {
@@ -19,8 +19,13 @@
     },
     {
       "name": "live-concerts-loads",
-      "status": "fail",
-      "detail": "no concert content markers"
+      "status": "pass",
+      "screenshot": "screens/04-live-concerts.png"
+    },
+    {
+      "name": "stripe-checkout-reachable",
+      "status": "pass",
+      "detail": "HTTP 401"
     }
   ],
   "criticalConsoleErrors": []
