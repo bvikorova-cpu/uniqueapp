@@ -62,6 +62,16 @@ import SkipLink from "./components/SkipLink";
 import { KidsParentalGateGuard } from "@/components/kids/KidsParentalGateGuard";
 import { PageLoader } from "@/components/ui/PageLoader";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+
+/**
+ * Wraps children in an ErrorBoundary keyed by the current pathname, so that
+ * navigating to a new route resets the boundary and the user isn't stuck on
+ * "Something went wrong" after one page throws.
+ */
+function RouteResetErrorBoundary({ children }: { children: React.ReactNode }) {
+  const { pathname } = useLocation();
+  return <ErrorBoundary key={pathname}>{children}</ErrorBoundary>;
+}
 import { installGlobalErrorHandlers } from "@/utils/logger";
 import { installImagePerformancePatch } from "@/utils/imagePerformance";
 import { prewarmHotRoutes } from "@/utils/prewarmRoutes";
