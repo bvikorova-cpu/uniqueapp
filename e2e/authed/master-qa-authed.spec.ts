@@ -185,7 +185,7 @@ test.describe("Master QA (authed) — content behind login", () => {
             apikey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1ZnJkemVvbnl3bHV3dXR2eXh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMzU0MTgsImV4cCI6MjA3NDcxMTQxOH0.UOe-_WQoTeBGFmnezRHRcjFJaJd71a7rYlurDkI6h4Q",
             authorization: `Bearer ${token}`,
           },
-          data: { creditType: "ai_credits", credits: 30 },
+          data: { creditType: "iq", credits: 10 },
           timeout: 15_000,
         }
       );
