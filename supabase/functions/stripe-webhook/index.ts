@@ -1566,19 +1566,17 @@ serve(async (req) => {
             break;
           }
 
-          // Tiered referral reward:
-          //   Premium     → €5 referrer, €5 referred (self)
-          //   Top Premium → €5 referrer, €10 referred (self)
+          // Tiered referral reward — referrer only:
+          //   Premium     → €5
+          //   Top Premium → €10
           const invoiceTier = (inv as any).lines?.data
             ?.map((ln: any) => MEGATALENT_PRICE_TO_TIER[ln.price?.id])
             .find(Boolean);
-          const referrerRewardEur = 5;
-          const selfRewardEur = invoiceTier === "top_premium" ? 10 : 5;
+          const referrerRewardEur = invoiceTier === "top_premium" ? 10 : 5;
 
           const periodStart = new Date().toISOString();
           const periodEnd = new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString();
 
-          // 1) Referrer reward
           const { error: earnErr } = await supabase
             .from("megatalent_referral_earnings")
             .insert({
@@ -1601,25 +1599,6 @@ serve(async (req) => {
               log("referral earning insert failed", { error: earnErr.message });
             }
             break;
-          }
-
-          // 2) Self reward for the referred (buyer) — separate row, distinct invoice key
-          const { error: selfErr } = await supabase
-            .from("megatalent_referral_earnings")
-            .insert({
-              referrer_id: buyerProfile.id,
-              referred_user_id: buyerProfile.id,
-              amount: selfRewardEur,
-              paid: false,
-              period_start: periodStart,
-              period_end: periodEnd,
-              source_subscription_id: subId,
-              source_invoice_id: `${inv.id}:self`,
-              source_kind: "subscription_self",
-              auto_credited: true,
-            });
-          if (selfErr && !selfErr.message?.toLowerCase().includes("duplicate")) {
-            log("self referral earning insert failed", { error: selfErr.message });
           }
 
           // Mark first-payment timestamp on the attribution (one-shot)
@@ -1645,27 +1624,17 @@ serve(async (req) => {
               invoice_id: inv.id,
               tier: invoiceTier ?? "premium",
               referrer_amount_eur: referrerRewardEur,
-              self_amount_eur: selfRewardEur,
             },
           });
-          // Notifications: referrer + referred
+          // Notification: referrer only
           try {
-            await supabase.from("notifications").insert([
-              {
-                user_id: attr.referrer_id,
-                type: "referral_bonus",
-                title: `+${referrerRewardEur} € referral bonus`,
-                message: `Your invited user paid for a subscription — we credited you a €${referrerRewardEur} bonus.`,
-                is_read: false,
-              },
-              {
-                user_id: buyerProfile.id,
-                type: "referral_bonus",
-                title: `+${selfRewardEur} € referral bonus`,
-                message: `Thanks for subscribing via a referral — we credited you a €${selfRewardEur} bonus.`,
-                is_read: false,
-              },
-            ]);
+            await supabase.from("notifications").insert({
+              user_id: attr.referrer_id,
+              type: "referral_bonus",
+              title: `+${referrerRewardEur} € referral bonus`,
+              message: `Your invited user paid for a subscription — we credited you a €${referrerRewardEur} bonus.`,
+              is_read: false,
+            });
           } catch (notifErr) {
             log("notification insert failed", { err: (notifErr as Error).message });
           }
@@ -1675,7 +1644,6 @@ serve(async (req) => {
             referred: buyerProfile.id,
             invoice: inv.id,
             referrer_amount: referrerRewardEur,
-            self_amount: selfRewardEur,
           });
         } catch (refErr) {
           log("recurring referral handler error", {
