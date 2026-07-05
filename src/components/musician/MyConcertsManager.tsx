@@ -119,12 +119,12 @@ export const MyConcertsManager = ({ musicianId }: Props) => {
               <p className="font-bold">€{(earnings.tickets + earnings.gifts).toFixed(2)}</p>
             </div>
             <div>
-              <p className="text-[10px] uppercase text-muted-foreground">Platform fee (15%)</p>
-              <p className="font-bold text-destructive">−€{((earnings.tickets + earnings.gifts) * 0.15).toFixed(2)}</p>
+              <p className="text-[10px] uppercase text-muted-foreground">Platform fee (20%)</p>
+              <p className="font-bold text-destructive">−€{((earnings.tickets + earnings.gifts) * 0.20).toFixed(2)}</p>
             </div>
             <div>
-              <p className="text-[10px] uppercase text-muted-foreground">Your earnings (85%)</p>
-              <p className="font-bold text-emerald-500">€{(earnings.ticketsNet + earnings.gifts * 0.85).toFixed(2)}</p>
+              <p className="text-[10px] uppercase text-muted-foreground">Your earnings (80%)</p>
+              <p className="font-bold text-emerald-500">€{(earnings.ticketsNet + earnings.gifts * 0.80).toFixed(2)}</p>
             </div>
           </div>
         )}

@@ -52,7 +52,7 @@ export const ConcertGiftsPanel = ({ concertId }: Props) => {
       <div className="p-3 space-y-3">
       <div className="flex items-center justify-between">
         <h3 className="font-bold flex items-center gap-2"><Gift className="h-4 w-4 text-pink-500" />Send a gift</h3>
-        <Badge variant="outline" className="text-[10px]">85% to artist</Badge>
+        <Badge variant="outline" className="text-[10px]">80% to artist</Badge>
       </div>
       {isLoading ? (
         <div className="flex justify-center py-8"><Loader2 className="h-5 w-5 animate-spin" /></div>
@@ -74,7 +74,7 @@ export const ConcertGiftsPanel = ({ concertId }: Props) => {
         </div>
       )}
       <p className="text-[10px] text-muted-foreground text-center">
-        Platform fee 15% · Artist receives 85% of every gift
+        Platform fee 20% · Artist receives 80% of every gift
       </p>
     </div>
     </>
