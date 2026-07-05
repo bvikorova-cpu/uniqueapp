@@ -263,7 +263,7 @@ Deno.serve(async (req) => {
           { onConflict: "week_start,user_id" }
         );
 
-        return json({ ok: true, xp_awarded: xpAdd });
+        return json({ ok: true, xp_awarded: xpAdd, streak: newStreak });
       }
 
       case "league.top": {
