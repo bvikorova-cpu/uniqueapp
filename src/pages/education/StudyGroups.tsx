@@ -82,11 +82,11 @@ export default function StudyGroups() {
       <FloatingHowItWorks title={__HIW_STUDYGROUPS.title} intro={__HIW_STUDYGROUPS.intro} steps={__HIW_STUDYGROUPS.steps} />
       <Helmet><title>Study Groups · Education</title></Helmet>
       <div className="container mx-auto px-4 pt-20 pb-12 max-w-5xl">
-        <div className="flex items-center justify-between mb-6 flex-wrap gap-2">
-          <h1 className="text-3xl font-black flex items-center gap-2"><Users className="w-7 h-7 text-primary" /> Study Groups</h1>
-          <div className="flex gap-2">
+        <div className="flex items-center justify-between mb-6 gap-2 flex-wrap sm:flex-nowrap">
+          <h1 className="text-xl sm:text-3xl font-black flex items-center gap-2 min-w-0 shrink"><Users className="w-6 h-6 sm:w-7 sm:h-7 text-primary shrink-0" /> <span className="truncate">Study Groups</span></h1>
+          <div className="flex gap-2 shrink-0">
             <Dialog open={openJoin} onOpenChange={setOpenJoin}>
-              <DialogTrigger asChild><Button variant="outline"><KeyRound className="w-4 h-4 mr-1" /> Join</Button></DialogTrigger>
+              <DialogTrigger asChild><Button variant="outline" size="sm"><KeyRound className="w-4 h-4 mr-1" /> Join</Button></DialogTrigger>
               <DialogContent>
                 <DialogHeader><DialogTitle>Join group with code</DialogTitle></DialogHeader>
                 <Input placeholder="Invite code" value={code} onChange={(e) => setCode(e.target.value)} />
@@ -94,7 +94,7 @@ export default function StudyGroups() {
               </DialogContent>
             </Dialog>
             <Dialog open={openCreate} onOpenChange={setOpenCreate}>
-              <DialogTrigger asChild><Button><Plus className="w-4 h-4 mr-1" /> New group</Button></DialogTrigger>
+              <DialogTrigger asChild><Button size="sm"><Plus className="w-4 h-4 mr-1" /> New</Button></DialogTrigger>
               <DialogContent>
                 <DialogHeader><DialogTitle>Create study group</DialogTitle></DialogHeader>
                 <div className="space-y-3">
