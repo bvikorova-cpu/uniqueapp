@@ -68,7 +68,7 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
  * navigating to a new route resets the boundary and the user isn't stuck on
  * "Something went wrong" after one page throws.
  */
-function RouteResetErrorBoundary({ children }: { children: React.ReactNode }) {
+function RouteResetErrorBoundary({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
   return <ErrorBoundary key={pathname}>{children}</ErrorBoundary>;
 }
