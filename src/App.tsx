@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, type ReactNode } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -62,6 +62,16 @@ import SkipLink from "./components/SkipLink";
 import { KidsParentalGateGuard } from "@/components/kids/KidsParentalGateGuard";
 import { PageLoader } from "@/components/ui/PageLoader";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+
+/**
+ * Wraps children in an ErrorBoundary keyed by the current pathname, so that
+ * navigating to a new route resets the boundary and the user isn't stuck on
+ * "Something went wrong" after one page throws.
+ */
+function RouteResetErrorBoundary({ children }: { children: ReactNode }) {
+  const { pathname } = useLocation();
+  return <ErrorBoundary key={pathname}>{children}</ErrorBoundary>;
+}
 import { installGlobalErrorHandlers } from "@/utils/logger";
 import { installImagePerformancePatch } from "@/utils/imagePerformance";
 import { prewarmHotRoutes } from "@/utils/prewarmRoutes";
@@ -653,7 +663,7 @@ const App = () => {
                     <GameAdGateHost />
 
 
-                    <ErrorBoundary>
+                    <RouteResetErrorBoundary>
                       <Suspense fallback={<PageLoader />}>
                         {/* Router-level SEO injection for AI Tools & Studios category */}
                         <RouteSEO />
@@ -1302,7 +1312,7 @@ const App = () => {
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </Suspense>
-                    </ErrorBoundary>
+                    </RouteResetErrorBoundary>
                   </main>
 
                   <Suspense fallback={null}>
