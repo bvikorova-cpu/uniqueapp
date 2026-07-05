@@ -220,7 +220,7 @@ Deno.serve(async (req) => {
           .select("total_points, login_streak, longest_streak, last_login_date")
           .eq("user_id", user.id)
           .maybeSingle();
-        const xpAdd = Math.round((score / 100) * 50);
+        const xpAdd = alreadyDone ? 0 : Math.round((score / 100) * 50);
 
         const today = new Date().toISOString().slice(0, 10);
         const prevStreak = pts?.login_streak ?? 0;
