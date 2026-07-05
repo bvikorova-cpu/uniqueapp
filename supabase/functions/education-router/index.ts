@@ -201,12 +201,20 @@ Deno.serve(async (req) => {
         const score = Math.max(0, Math.min(100, body.score ?? 0));
         if (!challengeId) return json({ error: "challenge_id required" }, 400);
 
+        // Was today's daily already completed before this submission?
+        const { data: alreadyDone } = await admin
+          .from("education_daily_completions")
+          .select("id")
+          .eq("user_id", user.id)
+          .eq("challenge_id", challengeId)
+          .maybeSingle();
+
         const { error } = await admin
           .from("education_daily_completions")
           .upsert({ user_id: user.id, challenge_id: challengeId, score }, { onConflict: "user_id,challenge_id" });
         if (error) throw error;
 
-        // Award XP + update daily streak
+        // Award XP + update daily streak based on daily-challenge completions
         const { data: pts } = await admin
           .from("user_points")
           .select("total_points, login_streak, longest_streak, last_login_date")
@@ -214,17 +222,31 @@ Deno.serve(async (req) => {
           .maybeSingle();
         const xpAdd = Math.round((score / 100) * 50);
 
-        // Streak logic: same day → keep; +1 day → increment; else reset to 1.
         const today = new Date().toISOString().slice(0, 10);
-        const prevDate: string | null = pts?.last_login_date ?? null;
         const prevStreak = pts?.login_streak ?? 0;
         let newStreak = prevStreak;
-        if (prevDate !== today) {
+
+        if (alreadyDone) {
+          // Already counted today — keep current streak.
+          newStreak = prevStreak > 0 ? prevStreak : 1;
+        } else {
+          // Find the most recent previously-completed daily (excluding today's).
+          const { data: prev } = await admin
+            .from("education_daily_completions")
+            .select("challenge_id, education_daily_challenges!inner(challenge_date)")
+            .eq("user_id", user.id)
+            .neq("challenge_id", challengeId)
+            .order("created_at", { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          const prevDate: string | null =
+            (prev as any)?.education_daily_challenges?.challenge_date ?? null;
+
           if (prevDate) {
             const diffDays = Math.round(
               (Date.parse(today) - Date.parse(prevDate)) / 86400000
             );
-            newStreak = diffDays === 1 ? prevStreak + 1 : 1;
+            newStreak = diffDays === 1 ? prevStreak + 1 : diffDays === 0 ? Math.max(prevStreak, 1) : 1;
           } else {
             newStreak = 1;
           }
@@ -244,6 +266,7 @@ Deno.serve(async (req) => {
             },
             { onConflict: "user_id" }
           );
+
 
         // Bump weekly league
         const ws = weekStart();
