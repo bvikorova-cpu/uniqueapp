@@ -1566,13 +1566,15 @@ serve(async (req) => {
             break;
           }
 
-          // Tiered referral reward — referrer only:
-          //   Premium     → €5
-          //   Top Premium → €10
+          // Referral reward — referrer always gets €5.
+          // Remainder stays with the platform:
+          //   Premium     → €5 referrer + €5 platform
+          //   Top Premium → €5 referrer + €10 platform
           const invoiceTier = (inv as any).lines?.data
             ?.map((ln: any) => MEGATALENT_PRICE_TO_TIER[ln.price?.id])
             .find(Boolean);
-          const referrerRewardEur = invoiceTier === "top_premium" ? 10 : 5;
+          const referrerRewardEur = 5;
+          const platformShareEur = invoiceTier === "top_premium" ? 10 : 5;
 
           const periodStart = new Date().toISOString();
           const periodEnd = new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString();
@@ -1624,6 +1626,7 @@ serve(async (req) => {
               invoice_id: inv.id,
               tier: invoiceTier ?? "premium",
               referrer_amount_eur: referrerRewardEur,
+              platform_amount_eur: platformShareEur,
             },
           });
           // Notification: referrer only
