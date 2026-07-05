@@ -1,41 +1,52 @@
 ---
-name: Challenge TOP tier (€5/mo)
-description: Second challenge subscription tier. €5/mo → everything in PRO + TOP badge + auto-pinned feed submission. Mega prize (500k XP + 1M AI credits) is a WIN-ONLY reward, granted by the monthly award functions when a TOP subscriber wins.
+name: Challenge TOP tier (€5/mo) + monthly winner prize
+description: Second challenge subscription tier. TOP = €5/mo, everything in PRO + 500,000 XP GUARANTEED every month (auto) + TOP badge + auto-pinned feed. Monthly winners of Eco/Healthy Challenge (ANY tier) get 1,000,000 AI credits + 5% of the total monthly subscription pool (cash).
 type: feature
 ---
 
-# Challenge TOP (€5/mo)
+# Challenge TOP (€5/mo) + Monthly Winner Prize
 
-Second tier on top of Challenge PRO (€3/mo). Both live in the same `public.challenge_pro_subscribers` table, differentiated by `tier` column (`'pro'` | `'top'`).
+Two tiers on the same `public.challenge_pro_subscribers` table (column `tier`: `'pro'` | `'top'`).
 
 ## Stripe wiring
-- Product key: `challenge_top` in `create-checkout` (`PRODUCT_DEFAULTS`, amount `500`, mode `subscription`).
-- Subscription metadata: `type = 'challenge_top'` — used by `sync-challenge-pro` to classify.
-- TOP outranks PRO if a user somehow has both active subs.
+- Product key in `create-checkout`: `challenge_top`, amount `500`, mode `subscription`.
+- Subscription metadata: `type = 'challenge_top'`. TOP outranks PRO.
 
-## Prizes — WIN-ONLY (no auto monthly grant)
-The mega prize is granted ONLY when the TOP subscriber WINS the monthly Eco or Healthy Challenge. `sync-challenge-pro` no longer grants XP or credits; it only mirrors tier state.
+## TOP tier — GUARANTEED monthly grant
+- **500,000 XP** automatically credited to TOP subscribers once per Stripe billing period.
+- Applied by `sync-challenge-pro` edge function using `top_last_grant_period = "${subId}:${current_period_start}"` to prevent double-grants.
+- Notification `type = 'challenge_top_monthly'` sent on grant.
 
-Winner XP ladder (per monthly award function):
-- Non-subscriber winner → 100,000 XP
-- PRO winner            → 200,000 XP
-- TOP winner            → 500,000 XP + 1,000,000 ai_credits (non-cashable)
+## Monthly winner prize — ALL tiers
+Applied inside `public.award_eco_monthly_winner()` and `public.award_healthy_monthly_winner(_month_key)`:
 
-Implemented in:
-- `public.award_eco_monthly_winner()`
-- `public.award_healthy_monthly_winner(_month_key)`
+Winner XP ladder:
+- Non-subscriber → 100,000 XP
+- PRO            → 200,000 XP
+- TOP            → 500,000 XP  (in addition to their guaranteed monthly 500k)
 
-Both use `public.challenge_tier(user_id)` helper (returns `'top' | 'pro' | null`) and set `app.credit_reason = 'challenge_top_win_prize'` + `app.credit_source = 'award_*_monthly_winner'` before the `ai_credits` UPSERT so the ledger trigger records the source correctly.
+Winner extras (every tier, even free):
+- **1,000,000 ai_credits** (non-cashable, usable across whole platform)
+- **5% cash prize pool** = 5 % of the current active-subscription monthly revenue.
+  Computed by `public.challenge_monthly_prize_pool_cents()`:
+  `FLOOR(SUM(CASE tier WHEN 'top' THEN 500 WHEN 'pro' THEN 300 END) * 0.05)`.
+  Stored on the winners row as `cash_prize_cents` (BIGINT). Payout is a manual/admin Stripe Connect transfer — the value is authoritative in the winners table.
+
+Winners tables gained columns: `credits_awarded BIGINT`, `cash_prize_cents BIGINT` on both `eco_monthly_winners` and `healthy_monthly_winners`.
+
+Credit-ledger reason set before `ai_credits` UPSERT: `app.credit_reason = 'challenge_monthly_winner_prize'`.
 
 ## Feed pinning
-- Eco & Healthy submit handlers detect an active TOP tier and set `boosted_until` on the submission to end-of-day UTC.
-- Existing feed queries already order by `boosted_until DESC`, so TOP submissions naturally rise to the top.
+- Eco & Healthy submit handlers set `boosted_until` = end-of-day UTC for TOP subscribers.
 
 ## AI Credits Policy
-This is an APPROVED ai_credits grant source, but ONLY via the win path in the two SQL award functions above. Any change that re-introduces an automatic (subscription-time) grant requires explicit user approval — see `mem/features/ai-credits-policy.md`.
+Approved automatic grants:
+1. TOP monthly guaranteed 500,000 XP (no credits) — via `sync-challenge-pro`.
+2. Monthly winner 1,000,000 ai_credits — via the two SQL award functions.
+
+Any change that broadens ai_credits grants requires explicit user approval — see `mem/features/ai-credits-policy.md`.
 
 ## Frontend
-- `useChallengePro()` returns `{ tier, isPro, isTop, activeUntil, subscribe }`. `subscribe(target)` where `target` = `'pro'` | `'top'`.
-- `useChallengeProSet(userIds)` returns a Set-like object with `.tierOf(id)` for badge rendering.
+- `useChallengePro()` returns `{ tier, isPro, isTop, activeUntil, subscribe }`.
 - `ChallengeProBadge` supports `tier="pro"` (gold leaf) and `tier="top"` (pink/purple crown).
-- `ChallengeProUpsell` shows a two-column PRO vs TOP card. TOP benefits list clearly states 500k XP & 1M credits are **win prizes** (contingent on winning the monthly challenge), not a monthly automatic grant.
+- `ChallengeProUpsell` shows a **prominent yellow winner-prize banner** ("1,000,000 AI credits + 5% of monthly subscription pool") above the PRO / TOP comparison. TOP column advertises the guaranteed 500k XP.

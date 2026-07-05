@@ -9,10 +9,11 @@ import { toast } from "sonner";
 
 /**
  * Upsell card for the Challenge subscriptions.
- *  - PRO tier: €3/month · 2× monthly prize (200,000 XP) + gold badge.
- *  - TOP tier: €5/month · everything in PRO + TOP badge + pinned submissions.
- *    Winning the monthly challenge as TOP grants 500,000 XP + 1,000,000 AI credits
- *    (non-cashable). No auto monthly grant — the mega prize is a WIN reward.
+ *  - PRO tier: €3/month · 2× monthly winner XP (200,000) + gold badge.
+ *  - TOP tier: €5/month · everything in PRO + **500,000 XP guaranteed every month**
+ *    (auto-granted), TOP badge, and submissions pinned to top of feed.
+ *  - Monthly winner (any tier): 1,000,000 AI credits + 5% of the total monthly
+ *    subscription revenue pool (paid out as a cash prize).
  */
 
 export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" | "orange" }) {
@@ -71,10 +72,11 @@ export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" 
               </p>
               <p className="text-xs text-white/80 mt-1">
                 {isTop
-                  ? "TOP badge · Pinned in feed · WIN prize: 500k XP + 1M AI credits"
+                  ? "TOP badge · Pinned in feed · 500,000 XP guaranteed / month"
                   : "2× monthly prize (200,000 XP) · Gold badge next to your name"}
                 {activeUntil && <> · Renews {new Date(activeUntil).toLocaleDateString()}</>}
               </p>
+
 
             </div>
             <ChallengeProBadge tier={isTop ? "top" : "pro"} />
@@ -123,6 +125,18 @@ export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" 
             <p className="text-sm text-white/80 mt-0.5">Two tiers · Cancel anytime</p>
           </div>
         </div>
+
+        {/* Winner prize banner — visible to everyone */}
+        <div className="rounded-lg bg-gradient-to-r from-yellow-500/25 via-amber-500/25 to-orange-500/25 border border-yellow-300/50 p-3 flex items-start gap-2">
+          <Trophy className="w-5 h-5 text-yellow-300 shrink-0 mt-0.5" fill="currentColor" />
+          <div className="text-xs sm:text-sm text-white leading-snug">
+            <b className="text-yellow-200">Monthly winner prize (any tier):</b>{" "}
+            <b>1,000,000 AI credits</b> usable across the whole platform{" "}
+            <span className="text-white/70">(non-cashable)</span> +{" "}
+            <b>5% of the total monthly subscription pool</b> paid out in cash. The more people subscribe, the bigger the cash prize.
+          </div>
+        </div>
+
 
         <div className="grid gap-3 sm:grid-cols-2">
           {/* PRO card */}
@@ -175,12 +189,8 @@ export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" 
                 <span>Everything in PRO</span>
               </li>
               <li className="flex items-start gap-2">
-                <Trophy className="w-4 h-4 mt-0.5 shrink-0 text-pink-200" />
-                <span><b>Win prize:</b> 500,000 XP <i>if you win</i> the monthly challenge</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <Sparkles className="w-4 h-4 mt-0.5 shrink-0 text-pink-200" />
-                <span><b>Win prize:</b> 1,000,000 AI credits (non-cashable) <i>if you win</i></span>
+                <Zap className="w-4 h-4 mt-0.5 shrink-0 text-pink-200" />
+                <span><b>500,000 XP guaranteed</b> every month — auto-granted</span>
               </li>
               <li className="flex items-start gap-2">
                 <Crown className="w-4 h-4 mt-0.5 shrink-0 text-pink-200" />
@@ -190,7 +200,10 @@ export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" 
                 <Pin className="w-4 h-4 mt-0.5 shrink-0 text-pink-200" />
                 <span>Your submission <b>pinned</b> at the top of the feed</span>
               </li>
-
+              <li className="flex items-start gap-2">
+                <Trophy className="w-4 h-4 mt-0.5 shrink-0 text-pink-200" />
+                <span>If you <b>win</b>: 1M AI credits + 5% of subscription pool (see banner above)</span>
+              </li>
             </ul>
             <Button
               onClick={() => handleSubscribe("top")}
