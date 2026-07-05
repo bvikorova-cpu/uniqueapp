@@ -46,11 +46,16 @@ export const useCheckAchievements = () => {
   return useMutation({
     mutationFn: async () => eduCall<{ newly_unlocked: any[] }>("achievement.check"),
     onSuccess: (data) => {
-      if (data.newly_unlocked?.length) {
+      const count = data?.newly_unlocked?.length ?? 0;
+      if (count > 0) {
         data.newly_unlocked.forEach((a) => toast.success(`🏆 Unlocked: ${a.title}`));
         qc.invalidateQueries({ queryKey: ["achievements"] });
+        qc.invalidateQueries({ queryKey: ["education-stats"] });
+      } else {
+        toast.info("No new achievements yet — keep learning!");
       }
     },
+    onError: (e: any) => toast.error(e?.message ?? "Failed to check achievements"),
   });
 };
 
