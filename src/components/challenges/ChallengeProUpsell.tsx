@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Leaf, Trophy, Sparkles, Check, Settings, Loader2 } from "lucide-react";
+import { Leaf, Trophy, Sparkles, Check, Settings, Loader2, Crown, Zap, Pin } from "lucide-react";
 import { useChallengePro } from "@/hooks/useChallengePro";
 import { ChallengeProBadge } from "./ChallengeProBadge";
 import { useState } from "react";
@@ -8,14 +8,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 /**
- * Upsell card for the €3/month Challenge PRO subscription.
- * Shown at the top of Eco Challenge & Healthy Challenge pages.
- *  - Non-subscribers see a "Go PRO" CTA.
- *  - Active subscribers see a confirmation with badge + expiry.
+ * Upsell card for the Challenge subscriptions.
+ *  - PRO tier: €3/month · 2× monthly prize + gold badge.
+ *  - TOP tier: €5/month · everything in PRO + 500k XP + 1M ai_credits (non-cashable) + TOP badge + pinned submissions.
  */
 export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" | "orange" }) {
-  const { isPro, activeUntil, loading, subscribe, checkingOut } = useChallengePro();
+  const { tier, isPro, isTop, activeUntil, loading, subscribe, checkingOut } = useChallengePro();
   const [openingPortal, setOpeningPortal] = useState(false);
+  const [selectedTarget, setSelectedTarget] = useState<"pro" | "top" | null>(null);
 
   const openPortal = async () => {
     setOpeningPortal(true);
@@ -36,6 +36,11 @@ export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" 
     }
   };
 
+  const handleSubscribe = (target: "pro" | "top") => {
+    setSelectedTarget(target);
+    subscribe(target).finally(() => setSelectedTarget(null));
+  };
+
   const ring = accent === "orange" ? "ring-orange-300/60" : "ring-emerald-300/60";
   const grad = accent === "orange"
     ? "from-amber-950 via-orange-900 to-rose-900"
@@ -44,23 +49,46 @@ export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" 
 
   if (loading) return null;
 
+  // Active subscriber view
   if (isPro) {
     return (
       <Card className={`bg-gradient-to-br ${grad} ring-2 ${ring} border-0 text-white mb-4`}>
         <CardContent className="p-5 space-y-3">
           <div className="flex items-start gap-3">
             <div className="p-2 rounded-full bg-yellow-400/20 ring-1 ring-yellow-300/50 shrink-0">
-              <Leaf className="w-5 h-5 text-yellow-300" fill="currentColor" />
+              {isTop ? (
+                <Crown className="w-5 h-5 text-pink-300" fill="currentColor" />
+              ) : (
+                <Leaf className="w-5 h-5 text-yellow-300" fill="currentColor" />
+              )}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-bold leading-tight">You are Challenge PRO</p>
+              <p className="font-bold leading-tight">
+                You are Challenge {isTop ? "TOP" : "PRO"}
+              </p>
               <p className="text-xs text-white/80 mt-1">
-                2× monthly prize (200,000 XP) · Gold badge next to your name
+                {isTop
+                  ? "2× prize · 500k XP & 1M credits monthly · TOP badge · Pinned in feed"
+                  : "2× monthly prize (200,000 XP) · Gold badge next to your name"}
                 {activeUntil && <> · Renews {new Date(activeUntil).toLocaleDateString()}</>}
               </p>
             </div>
-            <ChallengeProBadge />
+            <ChallengeProBadge tier={isTop ? "top" : "pro"} />
           </div>
+
+          {/* PRO users can upgrade to TOP */}
+          {!isTop && (
+            <Button
+              size="sm"
+              onClick={() => handleSubscribe("top")}
+              disabled={checkingOut}
+              className="w-full bg-gradient-to-r from-pink-500 via-fuchsia-500 to-purple-500 hover:opacity-90 text-white font-bold gap-1.5"
+            >
+              <Crown className="w-3.5 h-3.5" />
+              {checkingOut && selectedTarget === "top" ? "Opening…" : "Upgrade to TOP — €5/mo"}
+            </Button>
+          )}
+
           <Button
             size="sm"
             variant="outline"
@@ -76,6 +104,7 @@ export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" 
     );
   }
 
+  // Non-subscriber: show both tiers side-by-side
   return (
     <Card className={`bg-gradient-to-br ${grad} ring-2 ${ring} border-0 text-white mb-4 overflow-hidden`}>
       <CardContent className="p-5 space-y-4">
@@ -85,35 +114,88 @@ export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" 
           </div>
           <div className="flex-1 min-w-0">
             <p className="font-bold text-base sm:text-lg leading-tight">
-              Go Challenge PRO
+              Boost your Challenge
             </p>
-            <p className="text-sm text-white/80 mt-0.5">€3 / month · Cancel anytime</p>
+            <p className="text-sm text-white/80 mt-0.5">Two tiers · Cancel anytime</p>
           </div>
-          <ChallengeProBadge />
         </div>
 
-        <ul className="space-y-2.5 text-sm text-white/90">
-          <li className="flex items-start gap-2.5">
-            <Trophy className={`w-4 h-4 mt-0.5 shrink-0 ${highlight}`} />
-            <span>Win <b>200,000 XP</b> instead of 100,000 XP as monthly champion</span>
-          </li>
-          <li className="flex items-start gap-2.5">
-            <Check className={`w-4 h-4 mt-0.5 shrink-0 ${highlight}`} />
-            <span>Gold-leaf <b>Eco-Champion PRO</b> badge next to your name</span>
-          </li>
-          <li className="flex items-start gap-2.5">
-            <Check className={`w-4 h-4 mt-0.5 shrink-0 ${highlight}`} />
-            <span>Works on <b>both</b> Eco &amp; Healthy Challenges</span>
-          </li>
-        </ul>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {/* PRO card */}
+          <div className="rounded-lg bg-black/20 border border-white/10 p-4 space-y-3 flex flex-col">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-bold">PRO</p>
+                <p className="text-xs text-white/70">€3 / month</p>
+              </div>
+              <ChallengeProBadge tier="pro" />
+            </div>
+            <ul className="space-y-2 text-sm text-white/90 flex-1">
+              <li className="flex items-start gap-2">
+                <Trophy className={`w-4 h-4 mt-0.5 shrink-0 ${highlight}`} />
+                <span><b>200,000 XP</b> monthly prize (2×)</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Check className={`w-4 h-4 mt-0.5 shrink-0 ${highlight}`} />
+                <span>Gold PRO badge</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Check className={`w-4 h-4 mt-0.5 shrink-0 ${highlight}`} />
+                <span>Eco &amp; Healthy Challenges</span>
+              </li>
+            </ul>
+            <Button
+              onClick={() => handleSubscribe("pro")}
+              disabled={checkingOut}
+              className="w-full bg-yellow-400 hover:bg-yellow-500 text-amber-950 font-bold"
+            >
+              {checkingOut && selectedTarget === "pro" ? "Opening…" : "Go PRO — €3/mo"}
+            </Button>
+          </div>
 
-        <Button
-          onClick={subscribe}
-          disabled={checkingOut}
-          className="w-full bg-yellow-400 hover:bg-yellow-500 text-amber-950 font-bold"
-        >
-          {checkingOut ? "Opening checkout…" : "Upgrade to PRO — €3/mo"}
-        </Button>
+          {/* TOP card */}
+          <div className="rounded-lg bg-gradient-to-br from-pink-500/20 via-fuchsia-500/20 to-purple-500/20 border border-pink-300/40 p-4 space-y-3 flex flex-col relative">
+            <span className="absolute -top-2 right-3 text-[10px] font-black tracking-wider bg-gradient-to-r from-pink-500 to-fuchsia-500 text-white px-2 py-0.5 rounded-full shadow">
+              BEST
+            </span>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-bold">TOP</p>
+                <p className="text-xs text-white/70">€5 / month</p>
+              </div>
+              <ChallengeProBadge tier="top" />
+            </div>
+            <ul className="space-y-2 text-sm text-white/90 flex-1">
+              <li className="flex items-start gap-2">
+                <Check className="w-4 h-4 mt-0.5 shrink-0 text-pink-200" />
+                <span>Everything in PRO</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Zap className="w-4 h-4 mt-0.5 shrink-0 text-pink-200" />
+                <span><b>+500,000 XP</b> every month</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Sparkles className="w-4 h-4 mt-0.5 shrink-0 text-pink-200" />
+                <span><b>1,000,000 credits</b> monthly · use anywhere on the platform (non-cashable)</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Crown className="w-4 h-4 mt-0.5 shrink-0 text-pink-200" />
+                <span><b>TOP</b> badge next to your name</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Pin className="w-4 h-4 mt-0.5 shrink-0 text-pink-200" />
+                <span>Your submission <b>pinned</b> at the top of the feed</span>
+              </li>
+            </ul>
+            <Button
+              onClick={() => handleSubscribe("top")}
+              disabled={checkingOut}
+              className="w-full bg-gradient-to-r from-pink-500 via-fuchsia-500 to-purple-500 hover:opacity-90 text-white font-bold"
+            >
+              {checkingOut && selectedTarget === "top" ? "Opening…" : "Go TOP — €5/mo"}
+            </Button>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
