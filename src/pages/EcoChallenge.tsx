@@ -246,6 +246,27 @@ export default function EcoChallenge() {
         }
         throw error;
       }
+      // TOP subscribers get their submission auto-pinned at the top of the feed
+      // for the rest of the day (leverages existing boosted_until ordering).
+      try {
+        const { data: sub } = await supabase
+          .from("challenge_pro_subscribers" as any)
+          .select("tier, active_until")
+          .eq("user_id", user.id)
+          .maybeSingle();
+        const active = (sub as any)?.active_until && new Date((sub as any).active_until).getTime() > Date.now();
+        if (active && (sub as any)?.tier === "top") {
+          const endOfDay = new Date();
+          endOfDay.setUTCHours(23, 59, 59, 999);
+          await supabase
+            .from("eco_submissions")
+            .update({ boosted_until: endOfDay.toISOString() })
+            .eq("user_id", user.id)
+            .eq("challenge_date", challenge.challenge_date);
+        }
+      } catch (pinErr) {
+        console.warn("TOP auto-pin failed", pinErr);
+      }
       toast({ title: "🌱 Submitted!", description: `Day ${myMonthDays + 1} of this month completed.` });
       setDescription(""); setFiles([]); setVideoFile(null);
       await loadAll();
