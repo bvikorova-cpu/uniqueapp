@@ -653,7 +653,7 @@ const App = () => {
                     <GameAdGateHost />
 
 
-                    <ErrorBoundary>
+                    <RouteResetErrorBoundary>
                       <Suspense fallback={<PageLoader />}>
                         {/* Router-level SEO injection for AI Tools & Studios category */}
                         <RouteSEO />
