@@ -34,10 +34,9 @@ export const useEducationStats = () => {
           .maybeSingle(),
         supabase
           .from("education_daily_completions")
-          .select("id")
+          .select("id, education_daily_challenges!inner(challenge_date)")
           .eq("user_id", user.id)
           .eq("education_daily_challenges.challenge_date", today)
-          .select("id, education_daily_challenges!inner(challenge_date)")
           .limit(1),
       ]);
 
