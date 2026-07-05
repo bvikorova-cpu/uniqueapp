@@ -74,7 +74,7 @@ export const ConcertGiftsPanel = ({ concertId }: Props) => {
         </div>
       )}
       <p className="text-[10px] text-muted-foreground text-center">
-        Platform fee 15% · Artist receives 85% of every gift
+        Platform fee 20% · Artist receives 80% of every gift
       </p>
     </div>
     </>
