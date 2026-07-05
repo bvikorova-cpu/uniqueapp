@@ -1,0 +1,23 @@
+{
+  "generatedAt": "2026-07-05T21:38:37.651Z",
+  "baseURL": "http://localhost:8080",
+  "results": [
+    {
+      "name": "live-concerts-authed",
+      "status": "pass",
+      "screenshot": "screens/01-live-concerts.png",
+      "detail": "4 markers"
+    },
+    {
+      "name": "holographic-authed",
+      "status": "pass",
+      "screenshot": "screens/02-holographic.png"
+    },
+    {
+      "name": "megatalent-authed",
+      "status": "pass",
+      "screenshot": "screens/03-megatalent.png"
+    }
+  ],
+  "criticalConsoleErrors": []
+}
