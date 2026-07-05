@@ -72,10 +72,11 @@ export function ChallengeProUpsell({ accent = "emerald" }: { accent?: "emerald" 
               </p>
               <p className="text-xs text-white/80 mt-1">
                 {isTop
-                  ? "TOP badge · Pinned in feed · WIN prize: 500k XP + 1M AI credits"
+                  ? "TOP badge · Pinned in feed · 500,000 XP guaranteed / month"
                   : "2× monthly prize (200,000 XP) · Gold badge next to your name"}
                 {activeUntil && <> · Renews {new Date(activeUntil).toLocaleDateString()}</>}
               </p>
+
 
             </div>
             <ChallengeProBadge tier={isTop ? "top" : "pro"} />
