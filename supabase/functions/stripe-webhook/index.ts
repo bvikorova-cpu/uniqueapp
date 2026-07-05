@@ -1626,6 +1626,7 @@ serve(async (req) => {
               invoice_id: inv.id,
               tier: invoiceTier ?? "premium",
               referrer_amount_eur: referrerRewardEur,
+              platform_amount_eur: platformShareEur,
             },
           });
           // Notification: referrer only
