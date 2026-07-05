@@ -236,7 +236,7 @@ Deno.serve(async (req) => {
             .select("challenge_id, education_daily_challenges!inner(challenge_date)")
             .eq("user_id", user.id)
             .neq("challenge_id", challengeId)
-            .order("created_at", { ascending: false })
+            .order("completed_at", { ascending: false })
             .limit(1)
             .maybeSingle();
           const prevDate: string | null =
@@ -254,7 +254,7 @@ Deno.serve(async (req) => {
         if (newStreak < 1) newStreak = 1;
         const longest = Math.max(pts?.longest_streak ?? 0, newStreak);
 
-        await admin
+        const { error: pointsError } = await admin
           .from("user_points")
           .upsert(
             {
@@ -266,6 +266,7 @@ Deno.serve(async (req) => {
             },
             { onConflict: "user_id" }
           );
+        if (pointsError) throw pointsError;
 
 
         // Bump weekly league
