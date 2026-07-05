@@ -1,0 +1,56 @@
+name: Master QA
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  master-qa:
+    name: Playwright Master QA
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: bunx playwright install --with-deps chromium
+
+      - name: Run Master QA
+        env:
+          PLAYWRIGHT_BASE_URL: ${{ vars.PLAYWRIGHT_BASE_URL || 'https://www.uniqueapp.fun' }}
+          CI: "true"
+        run: bunx playwright test e2e/master-qa.spec.ts --project=chromium --reporter=list,html
+
+      - name: Upload Master QA report (JSON)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: master-qa-report
+          path: e2e/master-qa-artifacts/report.json
+          retention-days: 30
+
+      - name: Upload Master QA screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: master-qa-screenshots
+          path: e2e/master-qa-artifacts/screens/
+          retention-days: 14
+
+      - name: Upload Playwright HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: master-qa-playwright-report
+          path: playwright-report/
+          retention-days: 14
