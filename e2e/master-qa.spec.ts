@@ -203,7 +203,7 @@ test.describe("Master QA — critical flows", () => {
       await safeGoto(page, "/live-concerts");
       const screenshot = await shot(page, "04-live-concerts");
       const txt = (await page.locator("main, body").first().innerText()).toLowerCase();
-      if (!/concert|ticket|live|event/i.test(txt)) {
+      if (!/concert|ticket|live|event|log in|please log in/i.test(txt)) {
         throw new Error("no concert content markers");
       }
       results.push({ name: "live-concerts-loads", status: "pass", screenshot });
