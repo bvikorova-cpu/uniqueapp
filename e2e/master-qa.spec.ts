@@ -82,21 +82,33 @@ async function shot(page: Page, name: string): Promise<string> {
 
 async function safeGoto(page: Page, url: string) {
   await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30_000 });
-  // Wait for hydration signal.
+  // Dismiss cookie banner so it doesn't dominate the visible text.
+  await page
+    .getByRole("button", { name: /only necessary|accept all/i })
+    .first()
+    .click({ timeout: 3_000 })
+    .catch(() => {});
+  // Wait for real page content: <main> exists with >200 chars, OR a heading is present.
   await page
     .waitForFunction(
       () => {
-        const body = document.body;
-        if (!body) return false;
-        const txt = (body.innerText || "").toLowerCase();
-        if (txt.includes("loading unique")) return false;
-        return (body.innerText || "").length > 60;
+        if (document.body?.innerText?.toLowerCase().includes("loading unique")) return false;
+        const main = document.querySelector("main");
+        const mainTxt = (main?.innerText || "").trim();
+        if (mainTxt.length > 200) return true;
+        const h = document.querySelector("h1, h2");
+        if (h && (h.textContent || "").trim().length > 3) return true;
+        return false;
       },
       undefined,
-      { timeout: 15_000 }
+      { timeout: 20_000 }
     )
     .catch(() => {});
+  // Small settle for any post-hydration async renders.
+  await page.waitForTimeout(500);
 }
+
+
 
 test.describe.configure({ mode: "parallel" });
 
