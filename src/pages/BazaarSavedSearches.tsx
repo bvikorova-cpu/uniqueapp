@@ -11,8 +11,7 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface SavedSearch {
   id: string;
   name: string;
-  query: string | null;
-  filters: Record<string, unknown>;
+  search_term: string | null;
   notify: boolean;
   created_at: string;
 }
