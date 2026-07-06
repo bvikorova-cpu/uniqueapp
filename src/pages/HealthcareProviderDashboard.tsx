@@ -381,6 +381,10 @@ export default function HealthcareProviderDashboard() {
             <Card><CardContent className="p-6"><AppointmentsPanel /></CardContent></Card>
           </TabsContent>
 
+          <TabsContent value="booking">
+            <ManageBookingPanel />
+          </TabsContent>
+
           <TabsContent value="referrals">
             <Card><CardContent className="p-6"><ReferralsPanel /></CardContent></Card>
           </TabsContent>
