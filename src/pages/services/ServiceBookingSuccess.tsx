@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, CheckCircle2, XCircle, Mail, Copy } from "lucide-react";
+import { Loader2, CheckCircle2, XCircle, Mail, Copy, CalendarPlus } from "lucide-react";
 import { toast } from "sonner";
 
 interface VerifyResult {
@@ -13,7 +13,29 @@ interface VerifyResult {
   provider_email?: string | null;
   provider_name?: string | null;
   provider_category?: string | null;
-  booking?: { scheduled_at?: string } | null;
+  booking?: { scheduled_at?: string; duration_minutes?: number; offering_name?: string | null } | null;
+}
+
+function pad(n: number) { return n < 10 ? `0${n}` : String(n); }
+function toIcsDate(d: Date) {
+  return `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}00Z`;
+}
+function buildIcs(opts: { title: string; description: string; start: Date; end: Date; location?: string }) {
+  const uid = `${crypto.randomUUID()}@uniqueapp.fun`;
+  return [
+    "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Unique//Booking//EN",
+    "BEGIN:VEVENT",
+    `UID:${uid}`,
+    `DTSTAMP:${toIcsDate(new Date())}`,
+    `DTSTART:${toIcsDate(opts.start)}`,
+    `DTEND:${toIcsDate(opts.end)}`,
+    `SUMMARY:${opts.title.replace(/\n/g, " ")}`,
+    `DESCRIPTION:${opts.description.replace(/\n/g, "\\n")}`,
+    opts.location ? `LOCATION:${opts.location}` : "",
+    "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:Reminder", "TRIGGER:-PT24H", "END:VALARM",
+    "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:Reminder", "TRIGGER:-PT1H", "END:VALARM",
+    "END:VEVENT", "END:VCALENDAR",
+  ].filter(Boolean).join("\r\n");
 }
 
 export default function ServiceBookingSuccess() {
