@@ -12,6 +12,8 @@ import { Crown, Upload, Loader2, Megaphone } from "lucide-react";
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
 
+const PROMO_CATEGORIES = ["business", "event", "restaurant", "beauty", "fitness", "shop", "service", "real_estate", "job", "other"];
+
 export default function PromotionsCreate() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -19,6 +21,8 @@ export default function PromotionsCreate() {
   const [description, setDescription] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
   const [tier, setTier] = useState<"standard" | "top">("standard");
+  const [category, setCategory] = useState("business");
+  const [city, setCity] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
