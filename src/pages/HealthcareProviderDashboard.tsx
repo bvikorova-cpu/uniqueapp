@@ -225,6 +225,7 @@ export default function HealthcareProviderDashboard() {
           <TabsList className="mb-4">
             <TabsTrigger value="collections"><Folder className="w-4 h-4 mr-2" />Collections</TabsTrigger>
             <TabsTrigger value="appointments"><CalendarClock className="w-4 h-4 mr-2" />Appointments</TabsTrigger>
+            <TabsTrigger value="booking"><CalendarPlus className="w-4 h-4 mr-2" />Booking</TabsTrigger>
             <TabsTrigger value="referrals"><Share2 className="w-4 h-4 mr-2" />Referrals</TabsTrigger>
           </TabsList>
 
