@@ -42,7 +42,7 @@ export default function Roadmap() {
   const load = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     setUserId(user?.id ?? null);
-    const { data } = await supabase.from("roadmap_votes" as any).select("item_id,user_id");
+    const { data } = await supabase.from("roadmap_votes").select("item_id,user_id");
     const counts: Record<string, number> = {};
     const mine = new Set<string>();
     (data || []).forEach((r: any) => {
@@ -64,7 +64,7 @@ export default function Roadmap() {
       toast.info("You've already voted for this");
       return;
     }
-    const { error } = await supabase.from("roadmap_votes" as any).insert({ user_id: userId, item_id: id } as any);
+    const { error } = await supabase.from("roadmap_votes").insert({ user_id: userId, item_id: id } as any);
     if (error) {
       toast.error("Could not record your vote");
       return;

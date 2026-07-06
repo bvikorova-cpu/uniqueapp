@@ -38,7 +38,7 @@ const CouponBrandPage = () => {
       const ids = Array.from(new Set(filtered.map((c) => c.user_id)));
       if (ids.length) {
         const { data: s } = await supabase
-          .from("coupon_seller_stats" as any)
+          .from("coupon_seller_stats")
           .select("*")
           .in("seller_id", ids);
         const m: Record<string, SellerStat> = {};

@@ -196,7 +196,7 @@ const CouponMarketplace = () => {
       const sellerIds = Array.from(new Set(list.map((c) => c.user_id)));
       if (sellerIds.length) {
         const { data: stats } = await supabase
-          .from("coupon_seller_stats" as any)
+          .from("coupon_seller_stats")
           .select("*")
           .in("seller_id", sellerIds);
         if (stats) {
@@ -205,7 +205,7 @@ const CouponMarketplace = () => {
           setSellerStats(map);
         }
         // Verified sellers (≥10 orders, <2% disputes, ≥4.5★)
-        const { data: analytics } = await supabase.from("coupon_seller_analytics" as any).select("*").in("seller_id", sellerIds);
+        const { data: analytics } = await supabase.from("coupon_seller_analytics").select("*").in("seller_id", sellerIds);
         const verified = new Set<string>();
         ((analytics as any[]) || []).forEach((s) => {
           if ((s.orders_completed ?? 0) >= 10 && (s.dispute_rate_pct ?? 0) < 2 && (s.avg_rating ?? 0) >= 4.5) verified.add(s.seller_id);

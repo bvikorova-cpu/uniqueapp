@@ -62,7 +62,7 @@ export default function SkillsMarketplace() {
       const sellerIds = [...new Set(list.map((o) => o.user_id))];
       if (sellerIds.length) {
         const { data: reviews } = await supabase
-          .from("seller_reviews" as any)
+          .from("seller_reviews")
           .select("seller_id, rating")
           .in("seller_id", sellerIds)
           .eq("is_hidden", false);

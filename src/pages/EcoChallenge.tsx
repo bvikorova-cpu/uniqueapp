@@ -250,7 +250,7 @@ export default function EcoChallenge() {
       // for the rest of the day (leverages existing boosted_until ordering).
       try {
         const { data: sub } = await supabase
-          .from("challenge_pro_subscribers" as any)
+          .from("challenge_pro_subscribers")
           .select("tier, active_until")
           .eq("user_id", user.id)
           .maybeSingle();

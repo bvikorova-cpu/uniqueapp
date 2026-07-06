@@ -38,7 +38,7 @@ export default function SkillsMarketplaceProvider() {
           .eq("user_id", userId)
           .eq("is_active", true)
           .order("created_at", { ascending: false }),
-        supabase.from("seller_reviews" as any).select("rating").eq("seller_id", userId).eq("is_hidden", false),
+        supabase.from("seller_reviews").select("rating").eq("seller_id", userId).eq("is_hidden", false),
       ]);
       setProfile(p as Profile | null);
       setOfferings((o as Offering[]) || []);

@@ -21,7 +21,7 @@ export function useChallengePro() {
     if (!user) { setTier(null); setActiveUntil(null); setLoading(false); return; }
     setLoading(true);
     const { data } = await supabase
-      .from("challenge_pro_subscribers" as any)
+      .from("challenge_pro_subscribers")
       .select("active_until, tier")
       .eq("user_id", user.id)
       .maybeSingle();
@@ -94,7 +94,7 @@ export function useChallengeProSet(userIds: string[]) {
     if (ids.length === 0) { setTierMap(new Map()); return; }
     (async () => {
       const { data } = await supabase
-        .from("challenge_pro_subscribers" as any)
+        .from("challenge_pro_subscribers")
         .select("user_id, active_until, tier")
         .in("user_id", ids);
       if (cancelled) return;

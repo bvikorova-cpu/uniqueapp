@@ -29,7 +29,7 @@ export default function AdminSkillsReviewModeration() {
   const load = async () => {
     setLoading(true);
     const { data: rep } = await supabase
-      .from("review_reports" as any)
+      .from("review_reports")
       .select("*")
       .order("created_at", { ascending: false })
       .limit(100);
@@ -37,7 +37,7 @@ export default function AdminSkillsReviewModeration() {
     setReports(list);
     const ids = [...new Set(list.map((r) => r.review_id))];
     if (ids.length) {
-      const { data: rev } = await supabase.from("seller_reviews" as any).select("*").in("id", ids);
+      const { data: rev } = await supabase.from("seller_reviews").select("*").in("id", ids);
       const map: Record<string, Review> = {};
       (((rev as unknown) as Review[]) || []).forEach((r) => (map[r.id] = r));
       setReviews(map);
@@ -53,7 +53,7 @@ export default function AdminSkillsReviewModeration() {
   const toggleHide = async (review: Review, hide: boolean) => {
     const { data: { user } } = await supabase.auth.getUser();
     const { error } = await supabase
-      .from("seller_reviews" as any)
+      .from("seller_reviews")
       .update({
         is_hidden: hide,
         hidden_at: hide ? new Date().toISOString() : null,
@@ -67,7 +67,7 @@ export default function AdminSkillsReviewModeration() {
 
   const deleteReview = async (id: string) => {
     if (!confirm("Delete this review permanently?")) return;
-    const { error } = await supabase.from("seller_reviews" as any).delete().eq("id", id);
+    const { error } = await supabase.from("seller_reviews").delete().eq("id", id);
     if (error) { toast({ title: "Failed", description: error.message, variant: "destructive" }); return; }
     toast({ title: "Review deleted" });
     load();
@@ -76,7 +76,7 @@ export default function AdminSkillsReviewModeration() {
   const resolveReport = async (id: string, status: string) => {
     const { data: { user } } = await supabase.auth.getUser();
     const { error } = await supabase
-      .from("review_reports" as any)
+      .from("review_reports")
       .update({ status, resolved_by: user?.id, resolved_at: new Date().toISOString() } as any)
       .eq("id", id);
     if (error) { toast({ title: "Failed", description: error.message, variant: "destructive" }); return; }
