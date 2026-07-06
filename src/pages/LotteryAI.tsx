@@ -310,6 +310,13 @@ export default function LotteryAI() {
       toast({ title: "Nothing to Save", description: "Generate numbers first, then save them as favorite.", variant: "destructive" });
       return;
     }
+    const { chargeLotteryAction } = await import("@/lib/moduleCreditActions");
+    const charge = await chargeLotteryAction("save-pick", {
+      game_type: selectedLottery?.name || "unknown",
+      numbers: generatedNumbers,
+      bonus_numbers: bonusNumbers?.length ? bonusNumbers : undefined,
+    });
+    if (!charge.ok) return;
     try {
       const { data: existing, error: fetchErr } = await supabase
         .from("lottery_generations")
