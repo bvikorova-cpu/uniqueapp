@@ -447,6 +447,9 @@ export const Numerology = lazy(() => import("@/pages/Numerology"));
 export const ParallelUniverse = lazy(() => import("@/pages/ParallelUniverse"));
 export const MemoryAuctions = lazy(() => import("@/pages/MemoryAuctions"));
 export const BrandKits = lazy(() => import("@/pages/BrandKits"));
+export const DoctorsList = lazy(() => import("@/pages/doctors/DoctorsList"));
+export const DoctorProfile = lazy(() => import("@/pages/doctors/DoctorProfile"));
+export const DoctorBookingSuccess = lazy(() => import("@/pages/doctors/DoctorBookingSuccess"));
 
 // Components that need lazy loading
 export const QuizCreator = lazy(() => import("@/components/education/QuizCreator"));
