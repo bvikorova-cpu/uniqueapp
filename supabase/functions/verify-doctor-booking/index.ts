@@ -51,13 +51,13 @@ serve(async (req) => {
         admin.auth.admin.getUserById(appt.provider_id),
         admin
           .from("healthcare_profiles")
-          .select("provider_name, contact_email")
+          .select("provider_name")
           .eq("user_id", appt.provider_id)
           .maybeSingle(),
       ]);
       return {
         patient_email: patient?.user?.email ?? null,
-        doctor_email: (dprof as any)?.contact_email ?? doctor?.user?.email ?? null,
+        doctor_email: doctor?.user?.email ?? null,
         doctor_name: (dprof as any)?.provider_name ?? "Doctor",
       };
     };
