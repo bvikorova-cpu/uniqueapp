@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowUp, CheckCircle2, Rocket, Wrench } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface RoadmapItem {
   id: string;
@@ -21,7 +22,7 @@ const ITEMS: RoadmapItem[] = [
   { id: "comeback-bonus", title: "Comeback bonus", description: "Auto +5 credits when returning after 7 days.", status: "shipped", shippedAt: "2026-05-18" },
   { id: "creator-analytics", title: "Creator analytics", description: "Mini dashboard with views/likes/comments.", status: "in_progress" },
   { id: "mobile-bottom-nav", title: "Mobile bottom tab bar", description: "Persistent 5-tab navigation on mobile.", status: "shipped", shippedAt: "2026-05-18" },
-  { id: "direct-messages", title: "Direct messages between users", description: "1:1 DM threads with read receipts.", status: "planned" },
+  { id: "direct-messages", title: "Direct messages between users", description: "1:1 DM threads with read receipts.", status: "shipped", shippedAt: "2026-06-01" },
   { id: "scheduled-posts", title: "Scheduled posts", description: "Queue posts for future publishing.", status: "planned" },
   { id: "pwa-offline", title: "Full PWA offline shell", description: "Install + offline cached pages.", status: "planned" },
   { id: "blue-verification", title: "Public verification badge", description: "Verified creators get blue checkmark.", status: "planned" },
@@ -33,29 +34,43 @@ const STATUS_META = {
   planned: { label: "Planned", icon: Rocket, color: "bg-primary/15 text-primary border-primary/30" },
 };
 
-const VOTES_KEY = "unique_roadmap_votes";
-
 export default function Roadmap() {
   const [votes, setVotes] = useState<Record<string, number>>({});
   const [voted, setVoted] = useState<Set<string>>(new Set());
+  const [userId, setUserId] = useState<string | null>(null);
 
-  useEffect(() => {
-    try {
-      const v = JSON.parse(localStorage.getItem(VOTES_KEY) || "{}");
-      setVotes(v.counts || {});
-      setVoted(new Set(v.voted || []));
-    } catch { /* noop */ }
-  }, []);
+  const load = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    setUserId(user?.id ?? null);
+    const { data } = await supabase.from("roadmap_votes" as any).select("item_id,user_id");
+    const counts: Record<string, number> = {};
+    const mine = new Set<string>();
+    (data || []).forEach((r: any) => {
+      counts[r.item_id] = (counts[r.item_id] ?? 0) + 1;
+      if (user && r.user_id === user.id) mine.add(r.item_id);
+    });
+    setVotes(counts);
+    setVoted(mine);
+  };
 
-  const vote = (id: string) => {
+  useEffect(() => { load(); }, []);
+
+  const vote = async (id: string) => {
+    if (!userId) {
+      toast.error("Sign in to vote");
+      return;
+    }
     if (voted.has(id)) {
       toast.info("You've already voted for this");
       return;
     }
-    const nextCounts = { ...votes, [id]: (votes[id] ?? 0) + 1 };
-    const nextVoted = new Set(voted); nextVoted.add(id);
-    setVotes(nextCounts); setVoted(nextVoted);
-    localStorage.setItem(VOTES_KEY, JSON.stringify({ counts: nextCounts, voted: [...nextVoted] }));
+    const { error } = await supabase.from("roadmap_votes" as any).insert({ user_id: userId, item_id: id } as any);
+    if (error) {
+      toast.error("Could not record your vote");
+      return;
+    }
+    setVotes((v) => ({ ...v, [id]: (v[id] ?? 0) + 1 }));
+    setVoted((s) => new Set(s).add(id));
     toast.success("Vote recorded — thanks for shaping the roadmap!");
   };
 
