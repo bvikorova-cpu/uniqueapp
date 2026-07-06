@@ -66,6 +66,7 @@ const Navbar = () => {
     { path: "/wall", label: "Wall", icon: MessageSquare },
     { path: "/games-hub", label: "Games", icon: Gamepad2 },
     { path: "/jobs", label: "Work", icon: Briefcase },
+    { path: "/promotions", label: "Promotions", icon: Megaphone },
     { path: "/rewards", label: "Rewards", icon: Trophy },
     { path: "/megatalent", label: "Megatalent", icon: Crown, premium: true },
   ];
