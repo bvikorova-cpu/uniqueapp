@@ -24,7 +24,7 @@ import {
 interface Appointment {
   id: string;
   scheduled_at: string;
-  duration_min: number | null;
+  duration_minutes: number | null;
   price_cents: number | null;
   status: string;
   provider_id: string;
