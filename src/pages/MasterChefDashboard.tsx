@@ -267,15 +267,10 @@ export default function MasterChefDashboard() {
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-medium">Today 6:00 PM</p>
-                  <Button size="sm" className="mt-2" onClick={() => {
-                    const signed = JSON.parse(localStorage.getItem("masterchef_signups") || "[]");
-                    if (signed.includes("quickfire")) { toast({ description: "You are already signed up" }); return; }
-                    signed.push("quickfire");
-                    localStorage.setItem("masterchef_signups", JSON.stringify(signed));
-                    toast({ description: "Signed up for Quick Fire Challenge!" });
-                  }}>
+                  <Button size="sm" className="mt-2" onClick={() => navigate("/masterchef/competitions?join=quickfire")}>
                     Sign Up
                   </Button>
+
                 </div>
               </div>
 
@@ -286,9 +281,10 @@ export default function MasterChefDashboard() {
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-medium">Tomorrow 8:00 PM</p>
-                  <Button size="sm" variant="outline" className="mt-2" onClick={() => toast({ description: "Dessert Masters: 48h asynchronous baking challenge — upload your creation in 48 hours. Prize: featured chef spotlight." })}>
+                  <Button size="sm" variant="outline" className="mt-2" onClick={() => navigate("/masterchef/competitions?view=dessert-masters")}>
                     Details
                   </Button>
+
                 </div>
               </div>
             </div>

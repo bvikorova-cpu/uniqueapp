@@ -316,7 +316,7 @@ export default function CreatorDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <Button onClick={() => toast({ title: "Create exclusive content for your subscribers!" })}>
+                  <Button onClick={() => navigate("/creator-studio")}>
                     <Plus className="mr-2 h-4 w-4" />
                     Create New Post
                   </Button>
@@ -333,7 +333,7 @@ export default function CreatorDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <Button onClick={() => toast({ title: "Create membership tiers to offer different subscription levels!" })}>
+                  <Button onClick={() => navigate("/creator-studio?tab=tiers")}>
                     <Plus className="mr-2 h-4 w-4" />
                     Create New Tier
                   </Button>
