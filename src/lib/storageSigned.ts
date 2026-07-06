@@ -17,6 +17,7 @@ const PRIVATE_BUCKETS = new Set<string>([
   "old-photos",
   "future-face-photos",
   "ancestor-twin-photos",
+  "promotions",
 ]);
 
 /** True if a bucket has been flipped to private. */
