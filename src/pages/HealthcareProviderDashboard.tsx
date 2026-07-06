@@ -13,9 +13,10 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useHealthcareSubscription } from "@/hooks/useHealthcareSubscription";
 import { toast } from "sonner";
-import { Heart, Plus, Download, Users, BarChart, Folder, FileText, Settings, Lock, Library, CalendarClock, Share2 } from "lucide-react";
+import { Heart, Plus, Download, Users, BarChart, Folder, FileText, Settings, Lock, Library, CalendarClock, Share2, CalendarPlus } from "lucide-react";
 import { AppointmentsPanel } from "@/components/healthcare/AppointmentsPanel";
 import { ReferralsPanel } from "@/components/healthcare/ReferralsPanel";
+import { ManageBookingPanel } from "@/components/healthcare/ManageBookingPanel";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Collection {
@@ -224,6 +225,7 @@ export default function HealthcareProviderDashboard() {
           <TabsList className="mb-4">
             <TabsTrigger value="collections"><Folder className="w-4 h-4 mr-2" />Collections</TabsTrigger>
             <TabsTrigger value="appointments"><CalendarClock className="w-4 h-4 mr-2" />Appointments</TabsTrigger>
+            <TabsTrigger value="booking"><CalendarPlus className="w-4 h-4 mr-2" />Booking</TabsTrigger>
             <TabsTrigger value="referrals"><Share2 className="w-4 h-4 mr-2" />Referrals</TabsTrigger>
           </TabsList>
 
@@ -377,6 +379,10 @@ export default function HealthcareProviderDashboard() {
 
           <TabsContent value="appointments">
             <Card><CardContent className="p-6"><AppointmentsPanel /></CardContent></Card>
+          </TabsContent>
+
+          <TabsContent value="booking">
+            <ManageBookingPanel />
           </TabsContent>
 
           <TabsContent value="referrals">
