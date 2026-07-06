@@ -166,6 +166,17 @@ export default function ServiceBookingSuccess() {
                 </div>
               </>
             )}
+                  <div className="pt-2">
+                    <Button onClick={downloadIcs} variant="premium" className="w-full">
+                      <CalendarPlus className="w-4 h-4 mr-1" /> Add to calendar (24 h reminder)
+                    </Button>
+                    <p className="text-xs text-muted-foreground mt-1 text-center">
+                      Instead of SMS/email pings, your phone's calendar sends a reliable 24 h and 1 h reminder.
+                    </p>
+                  </div>
+                </div>
+              </>
+            )}
             {state === "pending" && (
               <p className="text-muted-foreground">Refresh in a moment; we're waiting for Stripe to confirm the payment.</p>
             )}
