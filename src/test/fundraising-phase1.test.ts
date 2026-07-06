@@ -65,3 +65,4 @@ describe("Fundraising Phase 1 — data wiring", () => {
     expect(src).toMatch(/provider_name/);
     expect(src).toMatch(/<iframe/);
   });
+});
