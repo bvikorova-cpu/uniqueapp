@@ -1013,6 +1013,7 @@ const App = () => {
                         <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
                         <Route path="/healthcare-dashboard" element={<HealthcareProviderDashboard />} />
                         <Route path="/healthcare-library" element={<HealthcareContentLibrary />} />
+                        <Route path="/booking" element={<BookingLanding />} />
                         <Route path="/doctors" element={<DoctorsList />} />
                         <Route path="/doctors/booking/:appointmentId" element={<ProtectedRoute><DoctorBookingSuccess /></ProtectedRoute>} />
                         <Route path="/doctors/:id" element={<DoctorProfile />} />
