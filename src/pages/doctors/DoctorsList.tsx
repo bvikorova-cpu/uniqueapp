@@ -68,13 +68,18 @@ export default function DoctorsList() {
       <div className="min-h-screen bg-background">
         <Navbar />
         <div className="container mx-auto px-4 py-24 mt-16">
-          <div className="mb-8">
-            <h1 className="text-4xl font-black mb-2 flex items-center gap-3">
-              <Stethoscope className="w-8 h-8 text-primary" /> Find a Doctor
-            </h1>
-            <p className="text-muted-foreground">
-              Book a paid video/consultation with a verified doctor.
-            </p>
+          <div className="mb-8 flex items-start justify-between gap-4 flex-wrap">
+            <div>
+              <h1 className="text-4xl font-black mb-2 flex items-center gap-3">
+                <Stethoscope className="w-8 h-8 text-primary" /> Find a Doctor
+              </h1>
+              <p className="text-muted-foreground">
+                Book a paid video/consultation with a verified doctor.
+              </p>
+            </div>
+            <Button asChild variant="outline">
+              <Link to="/my-bookings/doctors">My bookings</Link>
+            </Button>
           </div>
 
           <div className="relative max-w-md mb-6">
