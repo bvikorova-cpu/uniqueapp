@@ -46841,6 +46841,8 @@ export type Database = {
       promo_listings: {
         Row: {
           active_until: string | null
+          category: string | null
+          city: string | null
           created_at: string
           description: string | null
           id: string
@@ -46857,6 +46859,8 @@ export type Database = {
         }
         Insert: {
           active_until?: string | null
+          category?: string | null
+          city?: string | null
           created_at?: string
           description?: string | null
           id?: string
@@ -46873,6 +46877,8 @@ export type Database = {
         }
         Update: {
           active_until?: string | null
+          category?: string | null
+          city?: string | null
           created_at?: string
           description?: string | null
           id?: string
@@ -52497,6 +52503,8 @@ export type Database = {
           customer_notes: string | null
           duration_minutes: number
           id: string
+          offering_id: string | null
+          offering_name: string | null
           price_cents: number
           provider_id: string
           provider_notes: string | null
@@ -52520,6 +52528,8 @@ export type Database = {
           customer_notes?: string | null
           duration_minutes?: number
           id?: string
+          offering_id?: string | null
+          offering_name?: string | null
           price_cents: number
           provider_id: string
           provider_notes?: string | null
@@ -52543,6 +52553,8 @@ export type Database = {
           customer_notes?: string | null
           duration_minutes?: number
           id?: string
+          offering_id?: string | null
+          offering_name?: string | null
           price_cents?: number
           provider_id?: string
           provider_notes?: string | null
@@ -52553,6 +52565,45 @@ export type Database = {
           stripe_charge_id?: string | null
           stripe_checkout_session_id?: string | null
           stripe_payment_intent_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      service_offerings: {
+        Row: {
+          created_at: string
+          description: string | null
+          duration_min: number
+          id: string
+          is_active: boolean
+          name: string
+          price_cents: number
+          provider_id: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          duration_min: number
+          id?: string
+          is_active?: boolean
+          name: string
+          price_cents: number
+          provider_id: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          duration_min?: number
+          id?: string
+          is_active?: boolean
+          name?: string
+          price_cents?: number
+          provider_id?: string
+          sort_order?: number
           updated_at?: string
         }
         Relationships: []

@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Crown, Plus, ExternalLink, Megaphone } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Crown, Plus, ExternalLink, Megaphone, Filter, Search } from "lucide-react";
 import { useResolvedStorageUrl } from "@/lib/storageSigned";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import SEO from "@/components/SEO";
@@ -19,7 +21,11 @@ interface PromoListing {
   link_url: string | null;
   tier: "standard" | "top";
   active_until: string | null;
+  category: string | null;
+  city: string | null;
 }
+
+const PROMO_CATEGORIES = ["all", "business", "event", "restaurant", "beauty", "fitness", "shop", "service", "real_estate", "job", "other"];
 
 function PromoMedia({ url, type, alt }: { url: string; type: string; alt: string }) {
   const resolved = useResolvedStorageUrl(url);
@@ -83,12 +89,15 @@ function PromoCard({ listing }: { listing: PromoListing }) {
 export default function PromotionsBoard() {
   const [listings, setListings] = useState<PromoListing[]>([]);
   const [loading, setLoading] = useState(true);
+  const [q, setQ] = useState("");
+  const [cat, setCat] = useState("all");
+  const [cityFilter, setCityFilter] = useState("all");
 
   useEffect(() => {
     (async () => {
       const { data } = await supabase
         .from("promo_listings")
-        .select("id,title,description,media_url,media_type,link_url,tier,active_until")
+        .select("id,title,description,media_url,media_type,link_url,tier,active_until,category,city")
         .eq("status", "active")
         .gt("active_until", new Date().toISOString())
         .order("tier", { ascending: true }) // 'top' < 'standard' alphabetically
@@ -99,8 +108,22 @@ export default function PromotionsBoard() {
     })();
   }, []);
 
-  const topListings = listings.filter((l) => l.tier === "top");
-  const standardListings = listings.filter((l) => l.tier === "standard");
+  const cities = useMemo(() => {
+    const s = new Set<string>();
+    listings.forEach((l) => { if (l.city) s.add(l.city); });
+    return ["all", ...Array.from(s).sort()];
+  }, [listings]);
+
+  const filtered = listings.filter((l) => {
+    if (cat !== "all" && (l.category ?? "other") !== cat) return false;
+    if (cityFilter !== "all" && (l.city ?? "").toLowerCase() !== cityFilter.toLowerCase()) return false;
+    if (!q) return true;
+    const hay = `${l.title} ${l.description ?? ""} ${l.city ?? ""} ${l.category ?? ""}`.toLowerCase();
+    return hay.includes(q.toLowerCase());
+  });
+
+  const topListings = filtered.filter((l) => l.tier === "top");
+  const standardListings = filtered.filter((l) => l.tier === "standard");
 
   return (
     <div className="min-h-screen bg-background">
@@ -160,9 +183,40 @@ export default function PromotionsBoard() {
           />
         </div>
 
+        <div className="rounded-xl border bg-card p-4 mb-6 space-y-3">
+          <div className="flex items-center gap-2 text-sm font-semibold"><Filter className="w-4 h-4" /> Filter promotions</div>
+          <div className="grid md:grid-cols-3 gap-3">
+            <div>
+              <label className="text-xs text-muted-foreground">Category</label>
+              <Select value={cat} onValueChange={setCat}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {PROMO_CATEGORIES.map((c) => <SelectItem key={c} value={c} className="capitalize">{c.replace("_", " ")}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="text-xs text-muted-foreground">City / area</label>
+              <Select value={cityFilter} onValueChange={setCityFilter}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {cities.map((c) => <SelectItem key={c} value={c}>{c === "all" ? "All cities" : c}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="text-xs text-muted-foreground">Search</label>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input placeholder="Title, city, description…" value={q} onChange={(e) => setQ(e.target.value)} className="pl-9" />
+              </div>
+            </div>
+          </div>
+        </div>
+
         {loading ? (
           <div className="text-center text-muted-foreground py-16">Loading promotions…</div>
-        ) : listings.length === 0 ? (
+        ) : filtered.length === 0 ? (
           <div className="text-center py-16">
             <Megaphone className="h-16 w-16 mx-auto text-muted-foreground/50 mb-4" />
             <h2 className="text-xl font-semibold mb-2">No active promotions yet</h2>

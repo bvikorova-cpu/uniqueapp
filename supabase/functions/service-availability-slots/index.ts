@@ -1,4 +1,5 @@
-// Public endpoint: available time slots for a service provider.
+// Public endpoint: available time slots for a service provider,
+// optionally for a specific offering (uses its duration).
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
@@ -12,7 +13,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { provider_id, from, to } = await req.json();
+    const { provider_id, from, to, offering_id } = await req.json();
     if (!provider_id || !from || !to) {
       return new Response(JSON.stringify({ error: "provider_id, from, to required" }), {
         status: 400,
@@ -39,12 +40,19 @@ serve(async (req) => {
       { auth: { persistSession: false } },
     );
 
-    const [profileRes, rulesRes, blocksRes, bookingsRes] = await Promise.all([
+    const [profileRes, offeringRes, rulesRes, blocksRes, bookingsRes] = await Promise.all([
       supabase
         .from("service_providers")
         .select("owner_id, duration_min, price_cents, is_accepting_bookings")
         .eq("owner_id", provider_id)
         .maybeSingle(),
+      offering_id
+        ? supabase
+            .from("service_offerings")
+            .select("id, provider_id, duration_min, price_cents, is_active")
+            .eq("id", offering_id)
+            .maybeSingle()
+        : Promise.resolve({ data: null }),
       supabase
         .from("service_availability_rules")
         .select("weekday, start_time, end_time, is_active")
@@ -72,7 +80,15 @@ serve(async (req) => {
       });
     }
 
-    const slotMin = profile.duration_min || 60;
+    const offering: any = (offeringRes as any).data;
+    if (offering_id && (!offering || offering.provider_id !== provider_id || !offering.is_active)) {
+      return new Response(JSON.stringify({ slots: [], reason: "offering_unavailable" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const slotMin = offering?.duration_min || profile.duration_min || 60;
+    const priceCents = offering?.price_cents ?? profile.price_cents;
     const rules = rulesRes.data ?? [];
     const blocks = (blocksRes.data ?? []).map((b: any) => ({
       start: new Date(b.starts_at).getTime(),
@@ -109,7 +125,7 @@ serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ slots, duration_min: slotMin, price_cents: profile.price_cents }),
+      JSON.stringify({ slots, duration_min: slotMin, price_cents: priceCents }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (error: any) {

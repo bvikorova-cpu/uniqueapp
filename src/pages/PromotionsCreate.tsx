@@ -12,6 +12,8 @@ import { Crown, Upload, Loader2, Megaphone } from "lucide-react";
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
 
+const PROMO_CATEGORIES = ["business", "event", "restaurant", "beauty", "fitness", "shop", "service", "real_estate", "job", "other"];
+
 export default function PromotionsCreate() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -19,6 +21,8 @@ export default function PromotionsCreate() {
   const [description, setDescription] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
   const [tier, setTier] = useState<"standard" | "top">("standard");
+  const [category, setCategory] = useState("business");
+  const [city, setCity] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
@@ -75,6 +79,8 @@ export default function PromotionsCreate() {
           media_type: mediaType,
           link_url: linkUrl.trim() || null,
           tier,
+          category,
+          city: city.trim() || null,
           status: "pending",
         })
         .select()
@@ -120,6 +126,19 @@ export default function PromotionsCreate() {
               <div>
                 <Label htmlFor="desc">Short description</Label>
                 <Textarea id="desc" value={description} onChange={(e) => setDescription(e.target.value)} maxLength={500} rows={4} />
+              </div>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Category</Label>
+                  <select value={category} onChange={(e) => setCategory(e.target.value)}
+                    className="mt-1 w-full h-10 border border-input rounded-md bg-background px-3 text-sm capitalize">
+                    {PROMO_CATEGORIES.map((c) => <option key={c} value={c}>{c.replace("_", " ")}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <Label htmlFor="promo-city">City / area</Label>
+                  <Input id="promo-city" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Bratislava" />
+                </div>
               </div>
               <div>
                 <Label htmlFor="link">External link (optional)</Label>

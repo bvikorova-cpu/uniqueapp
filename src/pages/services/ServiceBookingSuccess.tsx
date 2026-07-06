@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, CheckCircle2, XCircle, Mail, Copy } from "lucide-react";
+import { Loader2, CheckCircle2, XCircle, Mail, Copy, CalendarPlus } from "lucide-react";
 import { toast } from "sonner";
 
 interface VerifyResult {
@@ -13,7 +13,29 @@ interface VerifyResult {
   provider_email?: string | null;
   provider_name?: string | null;
   provider_category?: string | null;
-  booking?: { scheduled_at?: string } | null;
+  booking?: { scheduled_at?: string; duration_minutes?: number; offering_name?: string | null } | null;
+}
+
+function pad(n: number) { return n < 10 ? `0${n}` : String(n); }
+function toIcsDate(d: Date) {
+  return `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}00Z`;
+}
+function buildIcs(opts: { title: string; description: string; start: Date; end: Date; location?: string }) {
+  const uid = `${crypto.randomUUID()}@uniqueapp.fun`;
+  return [
+    "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Unique//Booking//EN",
+    "BEGIN:VEVENT",
+    `UID:${uid}`,
+    `DTSTAMP:${toIcsDate(new Date())}`,
+    `DTSTART:${toIcsDate(opts.start)}`,
+    `DTEND:${toIcsDate(opts.end)}`,
+    `SUMMARY:${opts.title.replace(/\n/g, " ")}`,
+    `DESCRIPTION:${opts.description.replace(/\n/g, "\\n")}`,
+    opts.location ? `LOCATION:${opts.location}` : "",
+    "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:Reminder", "TRIGGER:-PT24H", "END:VALARM",
+    "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:Reminder", "TRIGGER:-PT1H", "END:VALARM",
+    "END:VEVENT", "END:VCALENDAR",
+  ].filter(Boolean).join("\r\n");
 }
 
 export default function ServiceBookingSuccess() {
@@ -61,6 +83,23 @@ export default function ServiceBookingSuccess() {
     if (!text) return;
     await navigator.clipboard.writeText(text);
     toast.success(`${label} copied`);
+  };
+
+  const downloadIcs = () => {
+    if (!result?.booking?.scheduled_at) return;
+    const start = new Date(result.booking.scheduled_at);
+    const duration = result.booking.duration_minutes ?? 60;
+    const end = new Date(start.getTime() + duration * 60000);
+    const title = `${result.booking.offering_name ? result.booking.offering_name + " · " : ""}${result.provider_name ?? "Booking"}`;
+    const desc = `Booking via Unique.\nProvider: ${result.provider_name ?? ""} (${result.provider_email ?? ""}).\nYour email: ${result.customer_email ?? ""}.`;
+    const ics = buildIcs({ title, description: desc, start, end });
+    const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `booking-${start.toISOString().slice(0, 10)}.ics`;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    toast.success("Calendar file downloaded — it includes 24h & 1h reminders");
   };
 
   return (
@@ -123,6 +162,15 @@ export default function ServiceBookingSuccess() {
                         <a href={mailtoCustomer}><Mail className="w-4 h-4 mr-1" /> Email me a copy</a>
                       </Button>
                     )}
+                  </div>
+
+                  <div className="pt-2">
+                    <Button onClick={downloadIcs} variant="premium" className="w-full">
+                      <CalendarPlus className="w-4 h-4 mr-1" /> Add to calendar (24 h reminder)
+                    </Button>
+                    <p className="text-xs text-muted-foreground mt-1 text-center">
+                      Instead of SMS/email pings, your phone's calendar sends a reliable 24 h and 1 h reminder.
+                    </p>
                   </div>
                 </div>
               </>
