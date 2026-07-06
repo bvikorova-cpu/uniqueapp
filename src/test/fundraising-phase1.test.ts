@@ -39,7 +39,9 @@ describe("Fundraising Phase 1 — data wiring", () => {
       const p = resolve(process.cwd(), rel);
       expect(existsSync(p), `file exists: ${rel}`).toBe(true);
       const src = readFileSync(p, "utf-8");
-      expect(src).toMatch(/supabase\.(rpc|from|functions|auth|channel)\(/);
+      // Allow chained calls with newlines (e.g. `supabase\n  .from(`)
+      expect(src).toMatch(/from ["']@\/integrations\/supabase\/client["']/);
+      expect(src).toMatch(/\.(rpc|from|functions|channel|auth)\(/);
     });
   }
 
