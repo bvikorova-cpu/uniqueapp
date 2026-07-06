@@ -442,12 +442,13 @@ export function resolveProxy(
 
   // Batch 17 — check-connect-status merged into check-router.
   // Preserve caller's own action (status/live_status/connect_login/customer_portal/...).
-  if (functionName === "check-router") {
+  if (functionName === "check-router" || functionName === "check-connect-status") {
     return {
       target: "check-router",
       body: { ...b, action: (b as any).action ?? "connect_status" },
     };
   }
+
 
   // ─── B18f Phase 1 — credit-pack legacy functions merged into create-checkout ───
   if (functionName === "create-iq-payment") {

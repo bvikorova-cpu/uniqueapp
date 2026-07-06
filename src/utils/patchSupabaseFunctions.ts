@@ -30,6 +30,8 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   // STRIPE CONNECT & CUSTOMER PORTALS → check-connect-status
   // ─────────────────────────────────────────────────────────────────────
   "create-connect-login-link":          { target: "check-router", action: "connect_login" },
+  "check-connect-status":               { target: "check-router", action: "connect_status" },
+
   "best-friend-customer-portal":        { target: "check-router", action: "customer_portal" },
   "companions-customer-portal":         { target: "check-router", action: "customer_portal" },
   "employer-customer-portal":           { target: "check-router", action: "customer_portal" },
