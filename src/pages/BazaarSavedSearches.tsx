@@ -41,7 +41,7 @@ export default function BazaarSavedSearches() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return toast.error("Prihlás sa");
     const { error } = await supabase.from("bazaar_saved_searches").insert({
-      user_id: user.id, name, query, filters: {}, notify: true,
+      user_id: user.id, name, search_term: query, notify: true,
     });
     if (error) return toast.error(error.message);
     setName(""); setQuery("");
