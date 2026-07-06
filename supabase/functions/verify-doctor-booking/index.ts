@@ -44,9 +44,28 @@ serve(async (req) => {
     if (error || !appt) throw new Error("Appointment not found");
     if (appt.patient_id !== user.id) throw new Error("Not authorized");
 
+    // Helper: fetch emails for patient + doctor (used so the client can build mailto links)
+    const fetchEmails = async () => {
+      const [{ data: patient }, { data: doctor }, { data: dprof }] = await Promise.all([
+        admin.auth.admin.getUserById(appt.patient_id),
+        admin.auth.admin.getUserById(appt.provider_id),
+        admin
+          .from("healthcare_profiles")
+          .select("provider_name, contact_email")
+          .eq("user_id", appt.provider_id)
+          .maybeSingle(),
+      ]);
+      return {
+        patient_email: patient?.user?.email ?? null,
+        doctor_email: (dprof as any)?.contact_email ?? doctor?.user?.email ?? null,
+        doctor_name: (dprof as any)?.provider_name ?? "Doctor",
+      };
+    };
+
     // Already confirmed?
     if (appt.status === "confirmed") {
-      return new Response(JSON.stringify({ status: "confirmed", appointment: appt }), {
+      const emails = await fetchEmails();
+      return new Response(JSON.stringify({ status: "confirmed", appointment: appt, ...emails }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
