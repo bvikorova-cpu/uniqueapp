@@ -60,7 +60,7 @@ export default function MyDoctorBookings() {
     const { data } = await supabase
       .from("healthcare_appointments")
       .select(
-        "id, scheduled_at, duration_min, price_cents, status, provider_id, patient_notes, refund_amount_cents",
+        "id, scheduled_at, duration_minutes, price_cents, status, provider_id, patient_notes, refund_amount_cents",
       )
       .eq("patient_id", user.id)
       .order("scheduled_at", { ascending: false });
@@ -174,7 +174,7 @@ export default function MyDoctorBookings() {
                           <strong>When:</strong> {scheduled.toLocaleString()}
                         </div>
                         <div>
-                          <strong>Duration:</strong> {appt.duration_min ?? 30} min
+                          <strong>Duration:</strong> {appt.duration_minutes ?? 30} min
                         </div>
                         <div>
                           <strong>Price:</strong> €{((appt.price_cents ?? 0) / 100).toFixed(2)}
