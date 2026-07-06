@@ -11,8 +11,7 @@ import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface SavedSearch {
   id: string;
   name: string;
-  query: string | null;
-  filters: Record<string, unknown>;
+  search_term: string | null;
   notify: boolean;
   created_at: string;
 }
@@ -41,7 +40,7 @@ export default function BazaarSavedSearches() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return toast.error("Prihlás sa");
     const { error } = await supabase.from("bazaar_saved_searches").insert({
-      user_id: user.id, name, query, filters: {}, notify: true,
+      user_id: user.id, name, search_term: query, notify: true,
     });
     if (error) return toast.error(error.message);
     setName(""); setQuery("");
@@ -93,13 +92,13 @@ export default function BazaarSavedSearches() {
               <Search className="w-5 h-5 text-muted-foreground" />
               <div className="flex-1 min-w-0">
                 <div className="font-semibold truncate">{s.name}</div>
-                {s.query && <div className="text-sm text-muted-foreground truncate">"{s.query}"</div>}
+                {s.search_term && <div className="text-sm text-muted-foreground truncate">"{s.search_term}"</div>}
               </div>
               <Button variant="ghost" size="icon" onClick={() => toggleNotify(s)} title="Notifikácie">
                 {s.notify ? <Bell className="w-4 h-4" /> : <BellOff className="w-4 h-4 text-muted-foreground" />}
               </Button>
               <Button variant="ghost" size="icon" asChild>
-                <Link to={`/bazaar?q=${encodeURIComponent(s.query ?? "")}`}><Search className="w-4 h-4" /></Link>
+                <Link to={`/bazaar?q=${encodeURIComponent(s.search_term ?? "")}`}><Search className="w-4 h-4" /></Link>
               </Button>
               <Button variant="ghost" size="icon" onClick={() => remove(s.id)}>
                 <Trash2 className="w-4 h-4 text-destructive" />
