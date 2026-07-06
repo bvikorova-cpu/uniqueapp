@@ -68,6 +68,7 @@ const Navbar = () => {
     { path: "/jobs", label: "Work", icon: Briefcase },
     { path: "/promotions", label: "Promotions", icon: Megaphone },
     { path: "/booking", label: "Booking", icon: Calendar },
+    { path: "/services-hub", label: "Services", icon: Scissors },
     { path: "/rewards", label: "Rewards", icon: Trophy },
     { path: "/megatalent", label: "Megatalent", icon: Crown, premium: true },
   ];
