@@ -103,8 +103,17 @@ test.describe("Concert ticket — real Stripe test card checkout + verify", () =
     const page = await context.newPage();
     await page.goto(checkoutUrl, { waitUntil: "domcontentloaded" });
 
-    // Stripe Checkout renders inputs progressively; be tolerant.
-    // Card number: input#cardNumber
+    // Stripe Checkout may offer multiple payment methods (Card / Bancontact / EPS /
+    // Link). Select "Card" if the radio is present so the card fields render.
+    await page.waitForLoadState("networkidle", { timeout: 20_000 }).catch(() => {});
+    const cardRadio = page
+      .getByRole("radio", { name: /card/i })
+      .or(page.locator('input[type="radio"][value="card"]'))
+      .first();
+    if (await cardRadio.count()) {
+      await cardRadio.click({ force: true }).catch(() => {});
+    }
+
     const cardInput = page.locator("#cardNumber");
     await expect(cardInput).toBeVisible({ timeout: 30_000 });
     await cardInput.fill("4242 4242 4242 4242");
