@@ -13,9 +13,10 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useHealthcareSubscription } from "@/hooks/useHealthcareSubscription";
 import { toast } from "sonner";
-import { Heart, Plus, Download, Users, BarChart, Folder, FileText, Settings, Lock, Library, CalendarClock, Share2 } from "lucide-react";
+import { Heart, Plus, Download, Users, BarChart, Folder, FileText, Settings, Lock, Library, CalendarClock, Share2, CalendarPlus } from "lucide-react";
 import { AppointmentsPanel } from "@/components/healthcare/AppointmentsPanel";
 import { ReferralsPanel } from "@/components/healthcare/ReferralsPanel";
+import { ManageBookingPanel } from "@/components/healthcare/ManageBookingPanel";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Collection {
