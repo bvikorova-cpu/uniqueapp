@@ -25924,6 +25924,36 @@ export type Database = {
         }
         Relationships: []
       }
+      gp_race_entries: {
+        Row: {
+          action_type: string
+          created_at: string
+          credits_spent: number
+          id: string
+          item_name: string | null
+          metadata: Json
+          user_id: string
+        }
+        Insert: {
+          action_type: string
+          created_at?: string
+          credits_spent?: number
+          id?: string
+          item_name?: string | null
+          metadata?: Json
+          user_id: string
+        }
+        Update: {
+          action_type?: string
+          created_at?: string
+          credits_spent?: number
+          id?: string
+          item_name?: string | null
+          metadata?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
       group_chat_members: {
         Row: {
           group_id: string
@@ -29158,6 +29188,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      horse_race_entries: {
+        Row: {
+          action_type: string
+          created_at: string
+          credits_spent: number
+          horse_name: string | null
+          id: string
+          metadata: Json
+          user_id: string
+        }
+        Insert: {
+          action_type: string
+          created_at?: string
+          credits_spent?: number
+          horse_name?: string | null
+          id?: string
+          metadata?: Json
+          user_id: string
+        }
+        Update: {
+          action_type?: string
+          created_at?: string
+          credits_spent?: number
+          horse_name?: string | null
+          id?: string
+          metadata?: Json
+          user_id?: string
+        }
+        Relationships: []
       }
       horse_shop_purchases: {
         Row: {
@@ -36848,6 +36908,39 @@ export type Database = {
         }
         Relationships: []
       }
+      lottery_saved_picks: {
+        Row: {
+          bonus_numbers: number[] | null
+          created_at: string
+          game_type: string
+          id: string
+          label: string | null
+          numbers: number[]
+          submitted: boolean
+          user_id: string
+        }
+        Insert: {
+          bonus_numbers?: number[] | null
+          created_at?: string
+          game_type: string
+          id?: string
+          label?: string | null
+          numbers: number[]
+          submitted?: boolean
+          user_id: string
+        }
+        Update: {
+          bonus_numbers?: number[] | null
+          created_at?: string
+          game_type?: string
+          id?: string
+          label?: string | null
+          numbers?: number[]
+          submitted?: boolean
+          user_id?: string
+        }
+        Relationships: []
+      }
       lottery_syndicate_members: {
         Row: {
           id: string
@@ -43903,6 +43996,45 @@ export type Database = {
           stripe_subscription_id?: string | null
           subscription_status?: string | null
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      phobia_trade_actions: {
+        Row: {
+          action_type: string
+          amount: number | null
+          created_at: string
+          credits_spent: number
+          direction: string | null
+          id: string
+          journal_entry: string | null
+          metadata: Json
+          phobia_symbol: string | null
+          user_id: string
+        }
+        Insert: {
+          action_type: string
+          amount?: number | null
+          created_at?: string
+          credits_spent?: number
+          direction?: string | null
+          id?: string
+          journal_entry?: string | null
+          metadata?: Json
+          phobia_symbol?: string | null
+          user_id: string
+        }
+        Update: {
+          action_type?: string
+          amount?: number | null
+          created_at?: string
+          credits_spent?: number
+          direction?: string | null
+          id?: string
+          journal_entry?: string | null
+          metadata?: Json
+          phobia_symbol?: string | null
           user_id?: string
         }
         Relationships: []
