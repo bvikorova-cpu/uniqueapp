@@ -183,9 +183,40 @@ export default function PromotionsBoard() {
           />
         </div>
 
+        <div className="rounded-xl border bg-card p-4 mb-6 space-y-3">
+          <div className="flex items-center gap-2 text-sm font-semibold"><Filter className="w-4 h-4" /> Filter promotions</div>
+          <div className="grid md:grid-cols-3 gap-3">
+            <div>
+              <label className="text-xs text-muted-foreground">Category</label>
+              <Select value={cat} onValueChange={setCat}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {PROMO_CATEGORIES.map((c) => <SelectItem key={c} value={c} className="capitalize">{c.replace("_", " ")}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="text-xs text-muted-foreground">City / area</label>
+              <Select value={cityFilter} onValueChange={setCityFilter}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {cities.map((c) => <SelectItem key={c} value={c}>{c === "all" ? "All cities" : c}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="text-xs text-muted-foreground">Search</label>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input placeholder="Title, city, description…" value={q} onChange={(e) => setQ(e.target.value)} className="pl-9" />
+              </div>
+            </div>
+          </div>
+        </div>
+
         {loading ? (
           <div className="text-center text-muted-foreground py-16">Loading promotions…</div>
-        ) : listings.length === 0 ? (
+        ) : filtered.length === 0 ? (
           <div className="text-center py-16">
             <Megaphone className="h-16 w-16 mx-auto text-muted-foreground/50 mb-4" />
             <h2 className="text-xl font-semibold mb-2">No active promotions yet</h2>
