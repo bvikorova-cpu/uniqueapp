@@ -89,12 +89,15 @@ function PromoCard({ listing }: { listing: PromoListing }) {
 export default function PromotionsBoard() {
   const [listings, setListings] = useState<PromoListing[]>([]);
   const [loading, setLoading] = useState(true);
+  const [q, setQ] = useState("");
+  const [cat, setCat] = useState("all");
+  const [cityFilter, setCityFilter] = useState("all");
 
   useEffect(() => {
     (async () => {
       const { data } = await supabase
         .from("promo_listings")
-        .select("id,title,description,media_url,media_type,link_url,tier,active_until")
+        .select("id,title,description,media_url,media_type,link_url,tier,active_until,category,city")
         .eq("status", "active")
         .gt("active_until", new Date().toISOString())
         .order("tier", { ascending: true }) // 'top' < 'standard' alphabetically
@@ -105,8 +108,22 @@ export default function PromotionsBoard() {
     })();
   }, []);
 
-  const topListings = listings.filter((l) => l.tier === "top");
-  const standardListings = listings.filter((l) => l.tier === "standard");
+  const cities = useMemo(() => {
+    const s = new Set<string>();
+    listings.forEach((l) => { if (l.city) s.add(l.city); });
+    return ["all", ...Array.from(s).sort()];
+  }, [listings]);
+
+  const filtered = listings.filter((l) => {
+    if (cat !== "all" && (l.category ?? "other") !== cat) return false;
+    if (cityFilter !== "all" && (l.city ?? "").toLowerCase() !== cityFilter.toLowerCase()) return false;
+    if (!q) return true;
+    const hay = `${l.title} ${l.description ?? ""} ${l.city ?? ""} ${l.category ?? ""}`.toLowerCase();
+    return hay.includes(q.toLowerCase());
+  });
+
+  const topListings = filtered.filter((l) => l.tier === "top");
+  const standardListings = filtered.filter((l) => l.tier === "standard");
 
   return (
     <div className="min-h-screen bg-background">
