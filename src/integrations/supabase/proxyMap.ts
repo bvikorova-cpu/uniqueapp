@@ -186,14 +186,15 @@ export const CHECKOUT_PROXY_MAP: Record<string, { product: string; module: strin
 
 export const VERIFY_PROXY_MAP: Record<string, string> = {
   // "verify-bazaar-order-payment": REAL edge function — do not proxy
-  "verify-brain-duel-payment": "brain-duel",
+  // Product types use snake_case to align with verify-payment applyPurchase table map.
+  "verify-brain-duel-payment": "brain_duel",
   "verify-coupon-payment": "coupon",
   "verify-donation": "donation",
-  "verify-emotion-credits-payment": "emotion-credits",
-  "verify-lead-boost-payment": "lead-boost",
+  "verify-emotion-credits-payment": "emotion_credits",
+  "verify-lead-boost-payment": "lead_boost",
   "verify-learning-payment": "learning",
   "verify-multiverse-payment": "multiverse",
-  "verify-shadow-battle-payment": "shadow-battle",
+  "verify-shadow-battle-payment": "shadow_battle",
   "verify-tip-purchase": "tip",
   // Batch 15 — final verify consolidation
   "verify-bazaar-payment": "bazaar",
