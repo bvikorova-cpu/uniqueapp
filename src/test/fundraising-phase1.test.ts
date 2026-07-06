@@ -49,4 +49,20 @@ describe("Fundraising Phase 1 — data wiring", () => {
     const app = readFileSync(resolve(process.cwd(), "src/App.tsx"), "utf-8");
     expect(app).toMatch(/\/embed\/campaign\/:campaignType\/:campaignId/);
   });
+
+  it("embed builder route is registered in App.tsx", () => {
+    const app = readFileSync(resolve(process.cwd(), "src/App.tsx"), "utf-8");
+    expect(app).toMatch(/\/fundraising\/embed/);
+    expect(app).toMatch(/EmbedBuilder/);
+  });
+
+  it("oEmbed edge function exists and returns oEmbed JSON shape", () => {
+    const p = resolve(process.cwd(), "supabase/functions/oembed/index.ts");
+    expect(existsSync(p)).toBe(true);
+    const src = readFileSync(p, "utf-8");
+    expect(src).toMatch(/version.*1\.0/);
+    expect(src).toMatch(/type.*rich/);
+    expect(src).toMatch(/provider_name/);
+    expect(src).toMatch(/<iframe/);
+  });
 });
