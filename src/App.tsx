@@ -28,6 +28,7 @@ const PromotionsBoard = lazy(() => import("@/pages/PromotionsBoard"));
 const PromotionsCreate = lazy(() => import("@/pages/PromotionsCreate"));
 const PromotionsSuccess = lazy(() => import("@/pages/PromotionsSuccess"));
 const MyPromotions = lazy(() => import("@/pages/MyPromotions"));
+const BookingLanding = lazy(() => import("@/pages/BookingLanding"));
 
 // Redirect /kitchenstars/<sub-path> -> /masterchef/<sub-path> for brand aliases
 const KitchenStarsRedirect = () => {
@@ -1012,6 +1013,7 @@ const App = () => {
                         <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
                         <Route path="/healthcare-dashboard" element={<HealthcareProviderDashboard />} />
                         <Route path="/healthcare-library" element={<HealthcareContentLibrary />} />
+                        <Route path="/booking" element={<BookingLanding />} />
                         <Route path="/doctors" element={<DoctorsList />} />
                         <Route path="/doctors/booking/:appointmentId" element={<ProtectedRoute><DoctorBookingSuccess /></ProtectedRoute>} />
                         <Route path="/doctors/:id" element={<DoctorProfile />} />
