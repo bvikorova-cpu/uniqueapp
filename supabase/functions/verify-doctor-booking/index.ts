@@ -131,9 +131,15 @@ serve(async (req) => {
       },
     ]);
 
-    return new Response(JSON.stringify({ status: "confirmed" }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    const emails = await fetchEmails();
+    return new Response(
+      JSON.stringify({
+        status: "confirmed",
+        appointment: { ...appt, status: "confirmed", scheduled_at: appt.scheduled_at },
+        ...emails,
+      }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+    );
   } catch (error: any) {
     console.error("verify-doctor-booking error", error);
     return new Response(JSON.stringify({ error: error.message }), {
