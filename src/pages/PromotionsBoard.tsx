@@ -8,7 +8,7 @@ import { Crown, Plus, ExternalLink, Megaphone } from "lucide-react";
 import { useResolvedStorageUrl } from "@/lib/storageSigned";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import SEO from "@/components/SEO";
-import promoVideo from "@/assets/section-videos/marketplace.mp4.asset.json";
+import promoVideo from "@/assets/section-videos/promotions-board.mp4.asset.json";
 
 interface PromoListing {
   id: string;
