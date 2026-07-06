@@ -29,16 +29,16 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   // ─────────────────────────────────────────────────────────────────────
   // STRIPE CONNECT & CUSTOMER PORTALS → check-connect-status
   // ─────────────────────────────────────────────────────────────────────
-  "create-connect-login-link":          { target: "check-connect-status", action: "connect_login" },
-  "best-friend-customer-portal":        { target: "check-connect-status", action: "customer_portal" },
-  "companions-customer-portal":         { target: "check-connect-status", action: "customer_portal" },
-  "employer-customer-portal":           { target: "check-connect-status", action: "customer_portal" },
-  "f1-customer-portal":                 { target: "check-connect-status", action: "customer_portal" },
-  "healthcare-customer-portal":         { target: "check-connect-status", action: "customer_portal" },
-  "kids-customer-portal":               { target: "check-connect-status", action: "customer_portal" },
-  "kids-story-customer-portal":         { target: "check-connect-status", action: "customer_portal" },
-  "psychology-customer-portal":         { target: "check-connect-status", action: "customer_portal" },
-  "customer-portal-creator":            { target: "check-connect-status", action: "customer_portal" },
+  "create-connect-login-link":          { target: "check-router", action: "connect_login" },
+  "best-friend-customer-portal":        { target: "check-router", action: "customer_portal" },
+  "companions-customer-portal":         { target: "check-router", action: "customer_portal" },
+  "employer-customer-portal":           { target: "check-router", action: "customer_portal" },
+  "f1-customer-portal":                 { target: "check-router", action: "customer_portal" },
+  "healthcare-customer-portal":         { target: "check-router", action: "customer_portal" },
+  "kids-customer-portal":               { target: "check-router", action: "customer_portal" },
+  "kids-story-customer-portal":         { target: "check-router", action: "customer_portal" },
+  "psychology-customer-portal":         { target: "check-router", action: "customer_portal" },
+  "customer-portal-creator":            { target: "check-router", action: "customer_portal" },
 
   // ─────────────────────────────────────────────────────────────────────
   // SUBSCRIPTION CHECKS → check-subscription (with tier param)
@@ -276,14 +276,14 @@ const FUNCTION_ALIASES: Record<string, AliasEntry> = {
   // ─────────────────────────────────────────────────────────────────────
   // STREAMING & WITHDRAWALS → check-connect-status (Stripe Connect ops)
   // ─────────────────────────────────────────────────────────────────────
-  "start-stream":                       { target: "check-connect-status", action: "start_stream" },
-  "stop-stream":                        { target: "check-connect-status", action: "stop_stream" },
-  "process-auction-withdrawal":         { target: "check-connect-status", action: "auction_withdrawal" },
-  "process-sale-transaction":           { target: "check-connect-status", action: "sale_transaction" },
-  "process-withdrawal-request":         { target: "check-connect-status", action: "withdrawal_request" },
-  "request-instructor-withdrawal":      { target: "check-connect-status", action: "instructor_withdrawal" },
-  "notify-admin-auction-withdrawal":    { target: "check-connect-status", action: "notify_auction_withdrawal" },
-  "activate-job-listing":               { target: "check-connect-status", action: "activate_job" },
+  "start-stream":                       { target: "check-router", action: "start_stream" },
+  "stop-stream":                        { target: "check-router", action: "stop_stream" },
+  "process-auction-withdrawal":         { target: "check-router", action: "auction_withdrawal" },
+  "process-sale-transaction":           { target: "check-router", action: "sale_transaction" },
+  "process-withdrawal-request":         { target: "check-router", action: "withdrawal_request" },
+  "request-instructor-withdrawal":      { target: "check-router", action: "instructor_withdrawal" },
+  "notify-admin-auction-withdrawal":    { target: "check-router", action: "notify_auction_withdrawal" },
+  "activate-job-listing":               { target: "check-router", action: "activate_job" },
   "add-teen-career-generation":         { target: "check-subscription", bodyExtras: { tier: "teen_career", action: "increment" } },
 
   // ─────────────────────────────────────────────────────────────────────
