@@ -267,7 +267,7 @@ export function resolveProxy(
     return { target: "check-subscription", body: { ...b, tier: "kids" } };
   }
   if (functionName === "kids-customer-portal") {
-    return { target: "check-connect-status", body: { ...b, action: "customer_portal" } };
+    return { target: "check-router", body: { ...b, action: "customer_portal" } };
   }
 
   // Batch 9 consolidation — additional check-*-subscription tiers routed to
@@ -328,7 +328,7 @@ export function resolveProxy(
   if (portalPath) {
     const origin = typeof window !== "undefined" ? window.location.origin : "";
     return {
-      target: "check-connect-status",
+      target: "check-router",
       body: {
         ...b,
         action: "customer_portal",
@@ -340,15 +340,15 @@ export function resolveProxy(
   // return_url=/account; module aliases inject return_url to preserve the
   // original landing page (e.g. /megatalent).
   if (functionName === "decor-customer-portal") {
-    return { target: "check-connect-status", body: { ...b, action: "customer_portal" } };
+    return { target: "check-router", body: { ...b, action: "customer_portal" } };
   }
   if (functionName === "customer-portal") {
-    return { target: "check-connect-status", body: { ...b, action: "customer_portal" } };
+    return { target: "check-router", body: { ...b, action: "customer_portal" } };
   }
   if (functionName === "megatalent-customer-portal") {
     const origin = typeof window !== "undefined" ? window.location.origin : "";
     return {
-      target: "check-connect-status",
+      target: "check-router",
       body: {
         ...b,
         action: "customer_portal",
@@ -359,7 +359,7 @@ export function resolveProxy(
   if (functionName === "customer-portal-anonymous-date") {
     const origin = typeof window !== "undefined" ? window.location.origin : "";
     return {
-      target: "check-connect-status",
+      target: "check-router",
       body: {
         ...b,
         action: "customer_portal",
@@ -442,7 +442,7 @@ export function resolveProxy(
 
   // Batch 17 — check-connect-status merged into check-router.
   // Preserve caller's own action (status/live_status/connect_login/customer_portal/...).
-  if (functionName === "check-connect-status") {
+  if (functionName === "check-router") {
     return {
       target: "check-router",
       body: { ...b, action: (b as any).action ?? "connect_status" },
