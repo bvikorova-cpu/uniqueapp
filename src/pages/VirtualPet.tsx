@@ -112,9 +112,10 @@ const VirtualPet = () => {
               {/* Engagement Row */}
               <div className="grid grid-cols-3 gap-3 mb-8">
                 {[
-                  { icon: Flame, label: "Care Streak", value: "7 Days", color: "text-orange-500" },
+                  { icon: Flame, label: "Care Streak", value: "7 Days", color: "text-orange-500", action: () => setActiveView('care') },
                   { icon: Coins, label: "Credits", value: `${credits.credits_remaining}`, color: "text-amber-500", action: () => navigate('/ai-credits-store') },
-                  { icon: Trophy, label: "Pet Master", value: "Level 12", color: "text-amber-500" },
+                  { icon: Trophy, label: "Pet Master", value: "Level 12", color: "text-amber-500", action: () => setActiveView('battle') },
+
                 ].map((item, i) => (
                   <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 * i }}>
                     <Card className="border-border/40 bg-card/80 backdrop-blur-sm hover:border-primary/30 transition-all cursor-pointer active:scale-[0.97]"
