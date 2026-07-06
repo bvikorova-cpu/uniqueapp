@@ -24,6 +24,10 @@ const SkillsMarketplaceEdit = lazy(() => import("@/pages/SkillsMarketplaceEdit")
 const SkillsMarketplaceProvider = lazy(() => import("@/pages/SkillsMarketplaceProvider"));
 const SkillsMarketplaceOrderDetail = lazy(() => import("@/pages/SkillsMarketplaceOrderDetail"));
 const AdminSkillsReviewModeration = lazy(() => import("@/pages/AdminSkillsReviewModeration"));
+const PromotionsBoard = lazy(() => import("@/pages/PromotionsBoard"));
+const PromotionsCreate = lazy(() => import("@/pages/PromotionsCreate"));
+const PromotionsSuccess = lazy(() => import("@/pages/PromotionsSuccess"));
+const MyPromotions = lazy(() => import("@/pages/MyPromotions"));
 
 // Redirect /kitchenstars/<sub-path> -> /masterchef/<sub-path> for brand aliases
 const KitchenStarsRedirect = () => {
@@ -925,6 +929,10 @@ const App = () => {
                         <Route path="/kitchenstars/recipes" element={<Navigate to="/masterchef/recipe-feed" replace />} />
                         <Route path="/kitchenstars/my-cookbook" element={<Navigate to="/masterchef" replace />} />
                         <Route path="/bazaar/create" element={<BazaarCreate />} />
+                        <Route path="/promotions" element={<PromotionsBoard />} />
+                        <Route path="/promotions/new" element={<PromotionsCreate />} />
+                        <Route path="/promotions/success" element={<PromotionsSuccess />} />
+                        <Route path="/promotions/mine" element={<MyPromotions />} />
                         <Route path="/bazaar/saved-searches" element={<BazaarSavedSearches />} />
                         <Route path="/music/upload" element={<MusicUpload />} />
                         <Route path="/music/royalties" element={<MusicRoyalties />} />
