@@ -79,6 +79,8 @@ export default function PromotionsCreate() {
           media_type: mediaType,
           link_url: linkUrl.trim() || null,
           tier,
+          category,
+          city: city.trim() || null,
           status: "pending",
         })
         .select()
