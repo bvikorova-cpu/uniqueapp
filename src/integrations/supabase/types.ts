@@ -50116,6 +50116,27 @@ export type Database = {
           },
         ]
       }
+      roadmap_votes: {
+        Row: {
+          created_at: string
+          id: string
+          item_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          item_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          item_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       routine_entries: {
         Row: {
           created_at: string | null
