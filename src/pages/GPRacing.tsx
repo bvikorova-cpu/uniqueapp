@@ -189,11 +189,15 @@ const GPRacing = () => {
     setBoostCharges(c => c - 1);
   };
 
-  const startRace = () => {
+  const startRace = async () => {
     if (credits < 10) {
       toast.error("Not enough credits! You need 10 credits to race.");
       return;
     }
+    const { chargeGPAction } = await import("@/lib/moduleCreditActions");
+    const charge = await chargeGPAction("join-race");
+    if (!charge.ok) return;
+
 
     setCars(initialCars);
     setIsRacing(true);
