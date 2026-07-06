@@ -243,7 +243,7 @@ export default function HealthyChallenge() {
       // TOP subscribers → auto-pin submission at top of feed for the rest of the day
       try {
         const { data: sub } = await supabase
-          .from("challenge_pro_subscribers" as any)
+          .from("challenge_pro_subscribers")
           .select("tier, active_until")
           .eq("user_id", user.id)
           .maybeSingle();

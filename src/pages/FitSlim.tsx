@@ -142,7 +142,7 @@ const FitSlim = () => {
   const loadMyPlans = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
-    const { data } = await supabase.from("fitness_plans" as any).select("*").eq("user_id", user.id).order("created_at", { ascending: false });
+    const { data } = await supabase.from("fitness_plans").select("*").eq("user_id", user.id).order("created_at", { ascending: false });
     if (data) setMyPlans(data as any[]);
   };
 

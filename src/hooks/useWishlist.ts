@@ -12,7 +12,7 @@ export const useWishlist = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return [];
       const { data } = await supabase
-        .from("product_wishlists" as any)
+        .from("product_wishlists")
         .select("*")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
@@ -24,7 +24,7 @@ export const useWishlist = () => {
     mutationFn: async ({ productId, note }: { productId: string; note?: string }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
-      const { error } = await supabase.from("product_wishlists" as any).insert({
+      const { error } = await supabase.from("product_wishlists").insert({
         user_id: user.id,
         product_id: productId,
         note,
@@ -42,7 +42,7 @@ export const useWishlist = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
       const { error } = await supabase
-        .from("product_wishlists" as any)
+        .from("product_wishlists")
         .delete()
         .eq("user_id", user.id)
         .eq("product_id", productId);

@@ -26,7 +26,7 @@ export default function BazaarSavedSearches() {
   const load = async () => {
     setLoading(true);
     const { data, error } = await supabase
-      .from("bazaar_saved_searches" as any)
+      .from("bazaar_saved_searches")
       .select("*")
       .order("created_at", { ascending: false });
     if (error) toast.error(error.message);
@@ -40,7 +40,7 @@ export default function BazaarSavedSearches() {
     if (!name.trim()) return toast.error("Zadaj názov");
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return toast.error("Prihlás sa");
-    const { error } = await supabase.from("bazaar_saved_searches" as any).insert({
+    const { error } = await supabase.from("bazaar_saved_searches").insert({
       user_id: user.id, name, query, filters: {}, notify: true,
     });
     if (error) return toast.error(error.message);
@@ -51,7 +51,7 @@ export default function BazaarSavedSearches() {
 
   const toggleNotify = async (s: SavedSearch) => {
     const { error } = await supabase
-      .from("bazaar_saved_searches" as any)
+      .from("bazaar_saved_searches")
       .update({ notify: !s.notify })
       .eq("id", s.id);
     if (error) return toast.error(error.message);
@@ -59,7 +59,7 @@ export default function BazaarSavedSearches() {
   };
 
   const remove = async (id: string) => {
-    const { error } = await supabase.from("bazaar_saved_searches" as any).delete().eq("id", id);
+    const { error } = await supabase.from("bazaar_saved_searches").delete().eq("id", id);
     if (error) return toast.error(error.message);
     void load();
   };

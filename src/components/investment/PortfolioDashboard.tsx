@@ -25,7 +25,7 @@ export function PortfolioDashboard() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { setLoading(false); return; }
       const { data } = await supabase
-        .from("investment_holdings" as any)
+        .from("investment_holdings")
         .select("*")
         .eq("user_id", user.id);
       setHoldings((data as any) || []);

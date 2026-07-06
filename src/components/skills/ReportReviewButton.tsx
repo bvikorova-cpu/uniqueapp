@@ -36,7 +36,7 @@ export default function ReportReviewButton({ reviewId }: { reviewId: string }) {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Sign in required");
-      const { error } = await supabase.from("review_reports" as any).insert({
+      const { error } = await supabase.from("review_reports").insert({
         review_id: reviewId,
         reporter_id: user.id,
         reason,

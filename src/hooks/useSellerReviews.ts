@@ -21,7 +21,7 @@ export const useSellerReviews = (sellerId?: string) => {
     enabled: !!sellerId,
     queryFn: async () => {
       const { data } = await supabase
-        .from("seller_reviews" as any)
+        .from("seller_reviews")
         .select("*")
         .eq("seller_id", sellerId)
         .order("created_at", { ascending: false });
@@ -36,7 +36,7 @@ export const useSellerReviews = (sellerId?: string) => {
     mutationFn: async ({ rating, comment }: { rating: number; comment?: string }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user || !sellerId) throw new Error("Missing context");
-      const { error } = await supabase.from("seller_reviews" as any).upsert(
+      const { error } = await supabase.from("seller_reviews").upsert(
         {
           seller_id: sellerId,
           buyer_id: user.id,
@@ -56,7 +56,7 @@ export const useSellerReviews = (sellerId?: string) => {
 
   const deleteReview = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("seller_reviews" as any).delete().eq("id", id);
+      const { error } = await supabase.from("seller_reviews").delete().eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["seller-reviews", sellerId] }),
