@@ -163,9 +163,7 @@ export default function ServiceBookingSuccess() {
                       </Button>
                     )}
                   </div>
-                </div>
-              </>
-            )}
+
                   <div className="pt-2">
                     <Button onClick={downloadIcs} variant="premium" className="w-full">
                       <CalendarPlus className="w-4 h-4 mr-1" /> Add to calendar (24 h reminder)
