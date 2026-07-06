@@ -220,6 +220,14 @@ export default function HealthcareProviderDashboard() {
         </div>
 
         {/* Main Content */}
+        <Tabs defaultValue="collections" className="w-full">
+          <TabsList className="mb-4">
+            <TabsTrigger value="collections"><Folder className="w-4 h-4 mr-2" />Collections</TabsTrigger>
+            <TabsTrigger value="appointments"><CalendarClock className="w-4 h-4 mr-2" />Appointments</TabsTrigger>
+            <TabsTrigger value="referrals"><Share2 className="w-4 h-4 mr-2" />Referrals</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="collections">
         <Card>
           <CardHeader>
             <div className="flex justify-between items-center">
@@ -365,6 +373,17 @@ export default function HealthcareProviderDashboard() {
             )}
           </CardContent>
         </Card>
+          </TabsContent>
+
+          <TabsContent value="appointments">
+            <Card><CardContent className="p-6"><AppointmentsPanel /></CardContent></Card>
+          </TabsContent>
+
+          <TabsContent value="referrals">
+            <Card><CardContent className="p-6"><ReferralsPanel /></CardContent></Card>
+          </TabsContent>
+        </Tabs>
+
       </div>
 
     </div>
