@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Crown, Plus, ExternalLink, Megaphone } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Crown, Plus, ExternalLink, Megaphone, Filter, Search } from "lucide-react";
 import { useResolvedStorageUrl } from "@/lib/storageSigned";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import SEO from "@/components/SEO";
@@ -19,7 +21,11 @@ interface PromoListing {
   link_url: string | null;
   tier: "standard" | "top";
   active_until: string | null;
+  category: string | null;
+  city: string | null;
 }
+
+const PROMO_CATEGORIES = ["all", "business", "event", "restaurant", "beauty", "fitness", "shop", "service", "real_estate", "job", "other"];
 
 function PromoMedia({ url, type, alt }: { url: string; type: string; alt: string }) {
   const resolved = useResolvedStorageUrl(url);
