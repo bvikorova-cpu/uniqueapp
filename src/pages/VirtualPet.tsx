@@ -112,7 +112,7 @@ const VirtualPet = () => {
               {/* Engagement Row */}
               <div className="grid grid-cols-3 gap-3 mb-8">
                 {[
-                  { icon: Flame, label: "Care Streak", value: "7 Days", color: "text-orange-500", action: () => setActiveView('care') },
+                  { icon: Flame, label: "Care Streak", value: "7 Days", color: "text-orange-500", action: () => setActiveView('pets') },
                   { icon: Coins, label: "Credits", value: `${credits.credits_remaining}`, color: "text-amber-500", action: () => navigate('/ai-credits-store') },
                   { icon: Trophy, label: "Pet Master", value: "Level 12", color: "text-amber-500", action: () => setActiveView('battle') },
 
