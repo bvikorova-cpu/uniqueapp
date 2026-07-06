@@ -26,7 +26,7 @@ async function callAI(prompt: string, system?: string) {
   if (!key) throw new Error("OPENAI_API_KEY missing");
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "Lovable-API-Key": key },
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
     body: JSON.stringify({
       model: "gpt-4o-mini",
       messages: [
