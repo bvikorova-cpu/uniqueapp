@@ -17,6 +17,7 @@ import { Heart, Plus, Download, Users, BarChart, Folder, FileText, Settings, Loc
 import { AppointmentsPanel } from "@/components/healthcare/AppointmentsPanel";
 import { ReferralsPanel } from "@/components/healthcare/ReferralsPanel";
 import { ManageBookingPanel } from "@/components/healthcare/ManageBookingPanel";
+import { DoctorEarningsCard } from "@/components/healthcare/DoctorEarningsCard";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 interface Collection {
