@@ -121,8 +121,10 @@ export default function PromotionsBoard() {
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-background" />
-        <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-4">
-          <Megaphone className="h-14 w-14 text-white mb-3 drop-shadow-lg" />
+        <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-4 pt-20">
+          <div className="mb-3 inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-gradient-to-br from-primary to-accent shadow-xl shadow-primary/40 ring-2 ring-white/30">
+            <Megaphone className="h-9 w-9 text-white" />
+          </div>
           <h1
             className="text-4xl md:text-6xl font-black text-white mb-4"
             style={{ textShadow: "0 4px 30px rgba(139,92,246,0.55)" }}
