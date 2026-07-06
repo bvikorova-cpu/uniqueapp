@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Crown, Plus, ExternalLink, Megaphone, Filter, Search } from "lucide-react";
+import { Crown, Plus, ExternalLink, Megaphone, Filter, Search, MapPin } from "lucide-react";
 import { useResolvedStorageUrl } from "@/lib/storageSigned";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import SEO from "@/components/SEO";
@@ -197,12 +197,24 @@ export default function PromotionsBoard() {
             </div>
             <div>
               <label className="text-xs text-muted-foreground">City / area</label>
-              <Select value={cityFilter} onValueChange={setCityFilter}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {cities.map((c) => <SelectItem key={c} value={c}>{c === "all" ? "All cities" : c}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  placeholder="Type a city…"
+                  value={cityFilter === "all" ? "" : cityFilter}
+                  onChange={(e) => {
+                    const val = e.target.value.trim();
+                    setCityFilter(val ? val : "all");
+                  }}
+                  className="pl-9"
+                  list="promo-city-suggestions"
+                />
+                <datalist id="promo-city-suggestions">
+                  {cities.filter((c) => c !== "all").map((c) => (
+                    <option key={c} value={c} />
+                  ))}
+                </datalist>
+              </div>
             </div>
             <div>
               <label className="text-xs text-muted-foreground">Search</label>
