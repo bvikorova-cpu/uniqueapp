@@ -29,6 +29,12 @@ const PromotionsCreate = lazy(() => import("@/pages/PromotionsCreate"));
 const PromotionsSuccess = lazy(() => import("@/pages/PromotionsSuccess"));
 const MyPromotions = lazy(() => import("@/pages/MyPromotions"));
 const BookingLanding = lazy(() => import("@/pages/BookingLanding"));
+const ServicesLanding = lazy(() => import("@/pages/services/ServicesLanding"));
+const ServicesList = lazy(() => import("@/pages/services/ServicesList"));
+const ServiceProfile = lazy(() => import("@/pages/services/ServiceProfile"));
+const ServiceBookingSuccess = lazy(() => import("@/pages/services/ServiceBookingSuccess"));
+const MyServiceBookings = lazy(() => import("@/pages/services/MyServiceBookings"));
+const ProviderSetup = lazy(() => import("@/pages/services/ProviderSetup"));
 
 // Redirect /kitchenstars/<sub-path> -> /masterchef/<sub-path> for brand aliases
 const KitchenStarsRedirect = () => {
