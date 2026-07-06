@@ -406,6 +406,7 @@ import {
   DoctorsList,
   DoctorProfile,
   DoctorBookingSuccess,
+  MyDoctorBookings,
   UniversalAnalyzer,
   AnalyzerResult,
   AnalyzerPricing,
