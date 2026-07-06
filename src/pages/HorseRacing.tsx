@@ -81,8 +81,11 @@ export default function HorseRacing() {
     action();
   };
 
-  const handleBuyHorse = () => {
+  const handleBuyHorse = async () => {
     if (!horseName) { toast.error("Enter horse name"); return; }
+    const { chargeHorseAction } = await import("@/lib/moduleCreditActions");
+    const charge = await chargeHorseAction("buy-horse", { horse_name: horseName, metadata: { breed: horseBreed, color: horseColor } });
+    if (!charge.ok) return;
     createHorse.mutate({ name: horseName, breed: horseBreed, color: horseColor, costCoins: 50 }, {
       onSuccess: () => { setShowBuyHorse(false); setHorseName(""); },
       onError: (e: Error) => toast.error(e.message),

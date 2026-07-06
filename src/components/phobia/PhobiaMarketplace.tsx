@@ -81,6 +81,10 @@ const PhobiaMarketplace = ({ onOpenPricing }: PhobiaMarketplaceProps) => {
         return;
       }
 
+      const { chargePhobiaAction } = await import("@/lib/moduleCreditActions");
+      const charge = await chargePhobiaAction("place-trade", { metadata: { tradeId, side: "buy" } });
+      if (!charge.ok) return;
+
       const { error } = await supabase.functions.invoke('trade-phobia', {
         body: { action: 'buy', tradeId }
       });
