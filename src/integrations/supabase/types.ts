@@ -27393,6 +27393,45 @@ export type Database = {
         }
         Relationships: []
       }
+      healthcare_appointments: {
+        Row: {
+          created_at: string
+          duration_minutes: number
+          id: string
+          notes: string | null
+          patient_id: string
+          provider_id: string
+          reason: string | null
+          scheduled_at: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          notes?: string | null
+          patient_id: string
+          provider_id: string
+          reason?: string | null
+          scheduled_at: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          notes?: string | null
+          patient_id?: string
+          provider_id?: string
+          reason?: string | null
+          scheduled_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       healthcare_collections: {
         Row: {
           age_group: string | null
@@ -27571,6 +27610,42 @@ export type Database = {
           subscription_tier?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      healthcare_referrals: {
+        Row: {
+          created_at: string
+          from_provider_id: string
+          id: string
+          notes: string | null
+          patient_id: string
+          reason: string
+          status: string
+          to_provider_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          from_provider_id: string
+          id?: string
+          notes?: string | null
+          patient_id: string
+          reason: string
+          status?: string
+          to_provider_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          from_provider_id?: string
+          id?: string
+          notes?: string | null
+          patient_id?: string
+          reason?: string
+          status?: string
+          to_provider_id?: string
+          updated_at?: string
         }
         Relationships: []
       }
