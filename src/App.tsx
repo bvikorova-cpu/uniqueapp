@@ -406,6 +406,7 @@ import {
   DoctorsList,
   DoctorProfile,
   DoctorBookingSuccess,
+  MyDoctorBookings,
   UniversalAnalyzer,
   AnalyzerResult,
   AnalyzerPricing,
@@ -1006,6 +1007,7 @@ const App = () => {
                         <Route path="/doctors" element={<DoctorsList />} />
                         <Route path="/doctors/booking/:appointmentId" element={<ProtectedRoute><DoctorBookingSuccess /></ProtectedRoute>} />
                         <Route path="/doctors/:id" element={<DoctorProfile />} />
+                        <Route path="/my-bookings/doctors" element={<ProtectedRoute><MyDoctorBookings /></ProtectedRoute>} />
                         <Route path="/brand-battle" element={<BrandBattle />} />
                         <Route path="/brand-battle/hub" element={<BrandArenaHub />} />
                         <Route path="/sponsor-registration" element={<SponsorRegistration />} />
