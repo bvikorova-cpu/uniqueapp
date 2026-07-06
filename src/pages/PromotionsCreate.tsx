@@ -127,6 +127,19 @@ export default function PromotionsCreate() {
                 <Label htmlFor="desc">Short description</Label>
                 <Textarea id="desc" value={description} onChange={(e) => setDescription(e.target.value)} maxLength={500} rows={4} />
               </div>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Category</Label>
+                  <select value={category} onChange={(e) => setCategory(e.target.value)}
+                    className="mt-1 w-full h-10 border border-input rounded-md bg-background px-3 text-sm capitalize">
+                    {PROMO_CATEGORIES.map((c) => <option key={c} value={c}>{c.replace("_", " ")}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <Label htmlFor="promo-city">City / area</Label>
+                  <Input id="promo-city" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Bratislava" />
+                </div>
+              </div>
               <div>
                 <Label htmlFor="link">External link (optional)</Label>
                 <Input id="link" type="url" placeholder="https://…" value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} />
