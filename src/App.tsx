@@ -446,6 +446,7 @@ import {
   DonorDashboard,
   RecurringDonationsHub,
   EmbedCampaignWidget,
+  EmbedBuilder,
   CampaignDashboard,
   EditCampaign,
   DreamMaker,
