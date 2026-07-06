@@ -65381,8 +65381,10 @@ export type Database = {
         }[]
       }
       get_engagement_metrics: { Args: { p_days?: number }; Returns: Json }
+      get_featured_campaign: { Args: never; Returns: Json }
       get_follower_count: { Args: { user_id: string }; Returns: number }
       get_following_count: { Args: { user_id: string }; Returns: number }
+      get_fundraising_stats: { Args: never; Returns: Json }
       get_healthy_leaderboard: {
         Args: { _limit?: number; _month_key: string }
         Returns: {
@@ -65820,6 +65822,15 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      get_recent_donations: {
+        Args: { _limit?: number }
+        Returns: {
+          amount: number
+          campaign_type: string
+          created_at: string
+          donor_name: string
+        }[]
+      }
       get_referral_funnel: { Args: { _period?: string }; Returns: Json }
       get_referral_leaderboard: {
         Args: { period?: string }
@@ -65852,6 +65863,14 @@ export type Database = {
           question: string
           reward_credits: number
           was_correct: boolean
+        }[]
+      }
+      get_top_donors: {
+        Args: { _limit?: number }
+        Returns: {
+          donation_count: number
+          donor_name: string
+          total_amount: number
         }[]
       }
       get_unified_xp_leaderboard: {
