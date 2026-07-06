@@ -28,12 +28,12 @@ Deno.serve(async (req) => {
     const audioBuf = await audioResp.arrayBuffer();
     const b64 = btoa(String.fromCharCode(...new Uint8Array(audioBuf)));
 
-    // Use Lovable AI Gateway with Gemini for transcription via prompt
+    // Direct OpenAI chat completions (multimodal audio input).
     const aiResp = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Lovable-API-Key': OPENAI_API_KEY,
+        Authorization: `Bearer ${OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
         model: 'gpt-4o-mini',
