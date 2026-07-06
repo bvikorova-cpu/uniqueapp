@@ -1,102 +1,56 @@
-# Plán oživenia mock stránok (~68)
+# Fáza 3 — Čiastočne wired stránky (odhad 10–15 h)
 
-## Kontext a úprimné čísla
+Cieľ: doplniť chýbajúce read/write cesty pre 8 modulov, ktoré už majú UI + subscription/auth check, ale kľúčové akcie zatiaľ neukladajú stav ani nezobrazujú reálne dáta.
 
-Screenshoty ukazujú **3 skupiny** dead/mock stránok:
-- **A) 100% mock** — cca 55 hub stránok bez backend volaní (hardcoded content)
-- **B) Čiastočne wired** — cca 10 stránok, čítanie hej, kľúčové akcie mŕtve
-- **C) Mŕtve CTA** — 3 konkrétne miesta (CreatorDashboard:319/336, MasterChefDashboard:289, VirtualPet:121)
+## Overený stav (po rýchlom audite)
 
-Realistický odhad **~1–3 hodiny na modul** (DB tabuľky + RLS + edge fn + wire UI + testy). Total: **cca 80–150 hodín práce**, nie jedna iterácia.
+| Modul | Aktuálne | Chýba |
+|---|---|---|
+| ComedyClub | UI hub bez query | tabuľka `comedy_shows` + list |
+| HorseRacing | subscription OK, `handleBuyHorse` calluje `mutate` | edge fn `horse-racing-action` (buy/race/train) |
+| LotteryAI | číta `lottery_generations`, subscription OK | edge fn `lottery-ai-action` (save-pick, submit-ticket) |
+| PhobiaTrading | číta stats, subscription OK | edge fn `phobia-trading-action` (place-trade, journal) |
+| GPRacingArena | subscription OK, dialogy hotové | edge fn `gp-racing-action` (buy-car, join-race, shop) |
+| HealthcareProviderDashboard | `healthcare_collections` list + create už OK | tabuľky `healthcare_appointments`, `healthcare_referrals` + query |
+| education/SkillTree | `education_skill_tree_nodes` read OK | edge fn `education-skill-unlock` (write progress + XP) |
+| education/StudyGroups | create/join priamo cez client insert (RLS-závislé) | edge fn `education-study-group-action` na atomické create/join + validáciu invite kódu |
 
-Zvolený prístup: **fázy so schvaľovaním po každej vlne**, začíname Fundraisingom (7 str., podľa tvojej priority).
+## Deliverables
 
----
+### 1. DB migrácia (jedna)
+- `comedy_shows(id, host_id, title, description, venue, starts_at, price_cents, status)` + GRANTs (anon SELECT ak `status='published'`) + RLS + indexy
+- `healthcare_appointments(id, provider_id, patient_id, scheduled_at, status, notes)` + RLS (provider aj patient vidia svoje)
+- `healthcare_referrals(id, from_provider_id, to_provider_id, patient_id, reason, status)` + RLS
+- Ak už existujú súvisiace tabuľky pre horse/gp/lottery/phobia game state, iba pridám chýbajúce polia; ak nie, vytvorím minimálne: `horse_race_entries`, `gp_race_entries`, `lottery_saved_picks`, `phobia_trades` (id, user_id, kľúčové polia, created_at) + RLS `auth.uid() = user_id`
+- Trigger `update_updated_at_column` kde treba
+- Zapnem realtime len na `comedy_shows` (verejné) — ostatné netreba
 
-## Fáza 1 — Fundraising (7 str., odhad 8–12 h)
+### 2. Edge functions (6 nových)
+Všetky s CORS, JWT validáciou cez `SUPABASE_SERVICE_ROLE_KEY`, Zod validáciou, credit check kde relevantné:
+- `horse-racing-action` — akcie `buy-horse | enter-race | train`
+- `gp-racing-action` — akcie `buy-car | join-race | shop-purchase`
+- `lottery-ai-action` — akcie `save-pick | submit-ticket`
+- `phobia-trading-action` — akcie `place-trade | write-journal`
+- `education-skill-unlock` — validuje prerequisites, zapíše `education_user_skill_progress`, pripočíta XP
+- `education-study-group-action` — atomické `create | join-by-code | leave`, kontrola limitu členov
 
-**Aktuálny stav (overený):** väčšina Fundraisingu už má edge functions (`request-campaign-payout`, `verify-campaign-payment`, `manage-donation-subscription`, `get-donation-receipt`, `admin-moderate-campaign`, `fundraising-dunning-cron`) aj komponenty. Reálne diery, ktoré fixujem:
+### 3. UI wiring
+- ComedyClub: query `comedy_shows` (upcoming + past), grid card layout, empty state
+- HealthcareProviderDashboard: nové taby "Appointments" + "Referrals" so zoznamom + status badges
+- HorseRacing / GPRacing / LotteryAI / PhobiaTrading: nahradiť priame client inserts / mock handlers volaním nových edge fn cez `useMutation`
+- SkillTree: "Unlock" button → volá `education-skill-unlock`, optimistic update
+- StudyGroups: create/join tlačidlá → volajú `education-study-group-action` (existujúce client inserts nahradím)
 
-| # | Stránka | Problém | Riešenie |
-|---|---------|---------|----------|
-| 1 | `FundraisingHub.tsx` | Hardcoded kategórie / počty kampaní | RPC `get_fundraising_stats()` — počty aktívnych kampaní per kategória, top 3 features, realtime |
-| 2 | `DreamMaker.tsx` | Hero + featured lists mock | Query `campaigns` WHERE `category='dream' AND status='active'` s pagáciou |
-| 3 | `CrisisRelief.tsx` | Filter urgency/geo mock | Query `campaigns` WHERE `category='crisis'`, filter `urgency_level`, `location` |
-| 4 | `TalentSponsorship.tsx` | Talent list + apply CTA mock | Query talents + edge fn `apply-talent-sponsorship` (creates `talent_applications` row) |
-| 5 | `RecurringDonationsHub.tsx` | List donor's active subs mock | Query `donation_subscriptions` per user + cancel action → `manage-donation-subscription` |
-| 6 | `EmbedCampaignWidget.tsx` | Iframe generátor mock | Ozajstný `/embed/:id` route + copy-to-clipboard iframe snippet + preview |
-| 7 | `CommunityHero.tsx` | Community stats + CTA mock | RPC `community_hero_stats()` + wire "Start Campaign" → `/fundraising/create/:type` |
+### 4. Testy
+- `src/test/phase3-wire.test.ts` — verifikuje, že každý z 8 modulov importuje aspoň jeden Supabase call (buď `.from(` alebo `functions.invoke(`)
+- Rozšíriť `src/test/module-edge-functions-group8.test.ts` (alebo pridať group9) o novú šesticu edge fn
 
-**DB migrácie potrebné (1 migration):**
-- `talent_applications(id, talent_id, sponsor_id, campaign_id, message, status, created_at)` + RLS + GRANTs
-- RPC `get_fundraising_stats() → jsonb` (public, cached 60s)
-- RPC `community_hero_stats() → jsonb` (public)
-- INDEX `campaigns(category, status, urgency_level)` pre filtre
+## Postup
+1. Migrácia (samostatný krok, čaká na tvoj OK)
+2. Po schválení: paralelne edge functions + UI wiring + testy
+3. Report + Playwright smoke na public routách (ComedyClub, verejné časti)
 
-**Edge functions (1 nová):**
-- `apply-talent-sponsorship` — POST { talent_id, message } → insert application + notify talent
-
-**Nové UI súbory:**
-- `src/pages/EmbedRoute.tsx` — verejný `/embed/campaign/:id` iframe endpoint
-
-**Testy (vitest):**
-- `src/test/fundraising-wire.test.ts` — verifikuje že každá zo 7 stránok volá aspoň jeden Supabase endpoint pri mounte (žiadny hardcoded fallback)
-
----
-
-## Fáza 2 — Mŕtve CTA (C, 3 fixy, odhad 1 h)
-
-| Súbor:riadok | Aktuálne | Oprava |
-|--------------|----------|--------|
-| `CreatorDashboard.tsx:319` "Exclusive Content" | toast | modál na tvorbu `creator_exclusive_posts` (tabuľka už existuje) alebo redirect na `/creator/posts/new` |
-| `CreatorDashboard.tsx:336` "Membership Tiers" | toast | wire na existujúcu `/creator/subscriptions` (tabuľka `creator_subscription_tiers` už je) |
-| `MasterChefDashboard.tsx:289` "Join Challenge" | toast | RPC `join_masterchef_challenge(challenge_id)` |
-| `VirtualPet.tsx:121` `item.action` | undefined | mapa akcií → animácia + XP zmena + insert do `pet_activities` |
-
----
-
-## Fáza 3 — Čiastočne wired (B, ~10 str., odhad 10–15 h)
-
-- **ComedyClub** — listing shows: query `comedy_shows` tabuľku (vytvoriť ak chýba)
-- **HorseRacing / LotteryAI / PhobiaTrading / GPRacingArena** — subscription check už OK, chýba write path pre game state → per-modul edge fn `<module>-action` (place-bet, spin, submit)
-- **HealthcareProviderDashboard** — appointments/referrals static → query `healthcare_appointments`, `healthcare_referrals`
-- **education/SkillTree** — write path (unlock skill node) → edge fn `education-skill-unlock`
-- **education/StudyGroups** — create/join → edge fn `education-study-group-action`
-
----
-
-## Fáza 4 — Prvá vlna mock hubov (A, top 10, odhad 25–35 h)
-
-Poradie podľa komerčnej dôležitosti (potvrdíš pred štartom):
-1. NutritionHub 2. FitnessWellness 3. AIGeneration 4. GraphicDesign 5. Photography
-6. DigitalMarketing 7. MusicProduction 8. PublicSpeaking 9. Astrology 10. DreamJournal
-
-Každá dostane:
-- 1 hlavnú tabuľku (napr. `nutrition_meal_plans`, `fitness_workout_logs`)
-- Edge fn na AI/paid akciu (routované cez existujúce `nutrition-router` / `generate-gift-message` kde už je proxy)
-- CTA wire (odstránenie toast placeholderov)
-- Ak neexistuje credit table → init v credits systéme
-
----
-
-## Fáza 5 — Druhá vlna mock hubov (A, zvyšných ~45, odhad 40–60 h)
-
-CrystalEnergyNetwork, MemoryAuctions, QuantumSocial, EmotionEconomy, ParallelUniverse, HolographicAvatars, MultiverseNetwork, DNAMemoryNetwork, BlockchainConfessions, ReincarnationSocial, TimeCapsule, VirtualEscapeRoom, Games, GamesHub, GPRacing, VirtualPet, WinePairing, FoodScanner, PlantCare, AITutor, FlashcardDecks, FlashcardDeckDetail, MathSolver, Notes, Certificates, Achievements, CertificateVerify, DailyChallenge, EducationHub, League, MentorHub, MentorFeature, MentorPremium, Mentor360Public, MockInterview, DiversityReports, PersonalizedFeed, Onboarding, Referrals, DiversitySelfId, FinancialInvestment.
-
-Rozdelené do 4–5 podvĺn po ~10 moduloch, každá s vlastným schvaľovaním.
-
----
-
-## Postup po tvojom OK
-
-1. Schválim tento plán → spustím **Fázu 1** (Fundraising 7 str.)
-2. Po dokončení Fázy 1 → screenshot + test report + tvoje manuálne overenie
-3. Až potom → Fáza 2 (mŕtve CTA), atď.
-
-**Nič nebudem tvrdiť ako "hotové" bez konkrétneho testu/dôkazu.** Runtime audit ako pri edge-functions skupinách bude aj tu.
-
-## Otvorené otázky pred štartom Fázy 1
-
-- Chceš pri Fundraisingu aj **verejný embed widget** (iframe + oEmbed) ako plnohodnotnú funkciu, alebo len copy-snippet UI?
-- Talent sponsorship: **jednorazové darcovstvo alebo mesačný sub**? (Ovplyvní Stripe price setup.)
-- Pre RecurringDonationsHub — chceš aj **pause/resume**, alebo len cancel?
+## Otvorené otázky
+- **Credit cost** pre horse/gp/lottery/phobia akcie: navrhujem 2 kredity za akciu (place-bet, train, save-pick, place-trade). OK?
+- **Comedy shows** — kto môže vytvárať? Iba používatelia s `has_role('comedian')` alebo hocikto? (default: iba komedianti s existujúcim profilom)
+- **Healthcare appointments** — chceš aj booking flow z pacientovej strany, alebo len read pre providera v tomto kroku? (default: len read pre providera, booking flow ide do Fázy 4/5)
