@@ -45,13 +45,13 @@ export const chargeHorseAction = (
 ) => callFn("horse-racing-action", { action, ...extra });
 
 export const chargeGPAction = (
-  action: "start-race" | "boost" | "join-fantasy",
-  extra: { metadata?: Record<string, unknown> } = {},
+  action: "buy-car" | "join-race" | "shop-purchase",
+  extra: { item_name?: string; metadata?: Record<string, unknown> } = {},
 ) => callFn("gp-racing-action", { action, ...extra });
 
 export const chargeLotteryAction = (
-  action: "generate" | "save-pick" | "analyze",
-  extra: { lottery_type?: string; numbers?: number[]; metadata?: Record<string, unknown> } = {},
+  action: "save-pick" | "submit-ticket",
+  extra: { game_type: string; numbers: number[]; bonus_numbers?: number[]; label?: string },
 ) => callFn("lottery-ai-action", { action, ...extra });
 
 export const chargePhobiaAction = (
