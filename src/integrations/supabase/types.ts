@@ -20038,6 +20038,119 @@ export type Database = {
         }
         Relationships: []
       }
+      doctor_availability_blocks: {
+        Row: {
+          created_at: string
+          doctor_id: string
+          ends_at: string
+          id: string
+          reason: string | null
+          starts_at: string
+        }
+        Insert: {
+          created_at?: string
+          doctor_id: string
+          ends_at: string
+          id?: string
+          reason?: string | null
+          starts_at: string
+        }
+        Update: {
+          created_at?: string
+          doctor_id?: string
+          ends_at?: string
+          id?: string
+          reason?: string | null
+          starts_at?: string
+        }
+        Relationships: []
+      }
+      doctor_availability_rules: {
+        Row: {
+          created_at: string
+          doctor_id: string
+          end_time: string
+          id: string
+          is_active: boolean
+          start_time: string
+          timezone: string
+          updated_at: string
+          weekday: number
+        }
+        Insert: {
+          created_at?: string
+          doctor_id: string
+          end_time: string
+          id?: string
+          is_active?: boolean
+          start_time: string
+          timezone?: string
+          updated_at?: string
+          weekday: number
+        }
+        Update: {
+          created_at?: string
+          doctor_id?: string
+          end_time?: string
+          id?: string
+          is_active?: boolean
+          start_time?: string
+          timezone?: string
+          updated_at?: string
+          weekday?: number
+        }
+        Relationships: []
+      }
+      doctor_payouts: {
+        Row: {
+          amount_cents: number
+          appointment_id: string
+          created_at: string
+          currency: string
+          doctor_id: string
+          id: string
+          paid_at: string | null
+          platform_fee_cents: number
+          status: string
+          stripe_transfer_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount_cents: number
+          appointment_id: string
+          created_at?: string
+          currency?: string
+          doctor_id: string
+          id?: string
+          paid_at?: string | null
+          platform_fee_cents: number
+          status?: string
+          stripe_transfer_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number
+          appointment_id?: string
+          created_at?: string
+          currency?: string
+          doctor_id?: string
+          id?: string
+          paid_at?: string | null
+          platform_fee_cents?: number
+          status?: string
+          stripe_transfer_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "doctor_payouts_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: true
+            referencedRelation: "healthcare_appointments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       donation_matches: {
         Row: {
           active: boolean
@@ -27425,39 +27538,81 @@ export type Database = {
       }
       healthcare_appointments: {
         Row: {
+          cancellation_reason: string | null
+          cancelled_at: string | null
+          cancelled_by: string | null
+          completed_at: string | null
+          confirmed_at: string | null
           created_at: string
+          currency: string
+          doctor_notes: string | null
           duration_minutes: number
           id: string
           notes: string | null
           patient_id: string
+          patient_notes: string | null
+          price_cents: number | null
           provider_id: string
           reason: string | null
+          refund_amount_cents: number | null
+          refunded_at: string | null
           scheduled_at: string
           status: string
+          stripe_charge_id: string | null
+          stripe_checkout_session_id: string | null
+          stripe_payment_intent_id: string | null
           updated_at: string
         }
         Insert: {
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          completed_at?: string | null
+          confirmed_at?: string | null
           created_at?: string
+          currency?: string
+          doctor_notes?: string | null
           duration_minutes?: number
           id?: string
           notes?: string | null
           patient_id: string
+          patient_notes?: string | null
+          price_cents?: number | null
           provider_id: string
           reason?: string | null
+          refund_amount_cents?: number | null
+          refunded_at?: string | null
           scheduled_at: string
           status?: string
+          stripe_charge_id?: string | null
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
           updated_at?: string
         }
         Update: {
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          completed_at?: string | null
+          confirmed_at?: string | null
           created_at?: string
+          currency?: string
+          doctor_notes?: string | null
           duration_minutes?: number
           id?: string
           notes?: string | null
           patient_id?: string
+          patient_notes?: string | null
+          price_cents?: number | null
           provider_id?: string
           reason?: string | null
+          refund_amount_cents?: number | null
+          refunded_at?: string | null
           scheduled_at?: string
           status?: string
+          stripe_charge_id?: string | null
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -27609,35 +27764,59 @@ export type Database = {
       }
       healthcare_profiles: {
         Row: {
+          bio: string | null
+          consultation_duration_min: number
+          consultation_price_cents: number | null
           created_at: string
           id: string
+          is_accepting_bookings: boolean
+          languages: string[] | null
           provider_logo_url: string | null
           provider_name: string | null
+          specialty: string | null
+          stripe_account_id: string | null
           subscription_expires_at: string | null
           subscription_status: string | null
           subscription_tier: string | null
+          timezone: string
           updated_at: string
           user_id: string
         }
         Insert: {
+          bio?: string | null
+          consultation_duration_min?: number
+          consultation_price_cents?: number | null
           created_at?: string
           id?: string
+          is_accepting_bookings?: boolean
+          languages?: string[] | null
           provider_logo_url?: string | null
           provider_name?: string | null
+          specialty?: string | null
+          stripe_account_id?: string | null
           subscription_expires_at?: string | null
           subscription_status?: string | null
           subscription_tier?: string | null
+          timezone?: string
           updated_at?: string
           user_id: string
         }
         Update: {
+          bio?: string | null
+          consultation_duration_min?: number
+          consultation_price_cents?: number | null
           created_at?: string
           id?: string
+          is_accepting_bookings?: boolean
+          languages?: string[] | null
           provider_logo_url?: string | null
           provider_name?: string | null
+          specialty?: string | null
+          stripe_account_id?: string | null
           subscription_expires_at?: string | null
           subscription_status?: string | null
           subscription_tier?: string | null
+          timezone?: string
           updated_at?: string
           user_id?: string
         }
