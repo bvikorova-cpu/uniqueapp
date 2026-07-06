@@ -46838,6 +46838,57 @@ export type Database = {
         }
         Relationships: []
       }
+      promo_listings: {
+        Row: {
+          active_until: string | null
+          created_at: string
+          description: string | null
+          id: string
+          link_url: string | null
+          media_type: string
+          media_url: string
+          status: string
+          stripe_session_id: string | null
+          stripe_subscription_id: string | null
+          tier: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active_until?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          link_url?: string | null
+          media_type?: string
+          media_url: string
+          status?: string
+          stripe_session_id?: string | null
+          stripe_subscription_id?: string | null
+          tier?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active_until?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          link_url?: string | null
+          media_type?: string
+          media_url?: string
+          status?: string
+          stripe_session_id?: string | null
+          stripe_subscription_id?: string | null
+          tier?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       properties: {
         Row: {
           address: string
