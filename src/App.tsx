@@ -29,6 +29,12 @@ const PromotionsCreate = lazy(() => import("@/pages/PromotionsCreate"));
 const PromotionsSuccess = lazy(() => import("@/pages/PromotionsSuccess"));
 const MyPromotions = lazy(() => import("@/pages/MyPromotions"));
 const BookingLanding = lazy(() => import("@/pages/BookingLanding"));
+const ServicesLanding = lazy(() => import("@/pages/services/ServicesLanding"));
+const ServicesList = lazy(() => import("@/pages/services/ServicesList"));
+const ServiceProfile = lazy(() => import("@/pages/services/ServiceProfile"));
+const ServiceBookingSuccess = lazy(() => import("@/pages/services/ServiceBookingSuccess"));
+const MyServiceBookings = lazy(() => import("@/pages/services/MyServiceBookings"));
+const ProviderSetup = lazy(() => import("@/pages/services/ProviderSetup"));
 
 // Redirect /kitchenstars/<sub-path> -> /masterchef/<sub-path> for brand aliases
 const KitchenStarsRedirect = () => {
@@ -1018,6 +1024,12 @@ const App = () => {
                         <Route path="/doctors/booking/:appointmentId" element={<ProtectedRoute><DoctorBookingSuccess /></ProtectedRoute>} />
                         <Route path="/doctors/:id" element={<DoctorProfile />} />
                         <Route path="/my-bookings/doctors" element={<ProtectedRoute><MyDoctorBookings /></ProtectedRoute>} />
+                        <Route path="/services-hub" element={<ServicesLanding />} />
+                        <Route path="/services" element={<ServicesList />} />
+                        <Route path="/services/provider/setup" element={<ProtectedRoute><ProviderSetup /></ProtectedRoute>} />
+                        <Route path="/services/booking/:bookingId" element={<ProtectedRoute><ServiceBookingSuccess /></ProtectedRoute>} />
+                        <Route path="/services/:id" element={<ServiceProfile />} />
+                        <Route path="/my-bookings/services" element={<ProtectedRoute><MyServiceBookings /></ProtectedRoute>} />
                         <Route path="/brand-battle" element={<BrandBattle />} />
                         <Route path="/brand-battle/hub" element={<BrandArenaHub />} />
                         <Route path="/sponsor-registration" element={<SponsorRegistration />} />

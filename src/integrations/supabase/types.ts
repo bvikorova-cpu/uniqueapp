@@ -52425,6 +52425,138 @@ export type Database = {
           },
         ]
       }
+      service_availability_blocks: {
+        Row: {
+          created_at: string
+          ends_at: string
+          id: string
+          provider_id: string
+          reason: string | null
+          starts_at: string
+        }
+        Insert: {
+          created_at?: string
+          ends_at: string
+          id?: string
+          provider_id: string
+          reason?: string | null
+          starts_at: string
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string
+          id?: string
+          provider_id?: string
+          reason?: string | null
+          starts_at?: string
+        }
+        Relationships: []
+      }
+      service_availability_rules: {
+        Row: {
+          created_at: string
+          end_time: string
+          id: string
+          is_active: boolean
+          provider_id: string
+          start_time: string
+          updated_at: string
+          weekday: number
+        }
+        Insert: {
+          created_at?: string
+          end_time: string
+          id?: string
+          is_active?: boolean
+          provider_id: string
+          start_time: string
+          updated_at?: string
+          weekday: number
+        }
+        Update: {
+          created_at?: string
+          end_time?: string
+          id?: string
+          is_active?: boolean
+          provider_id?: string
+          start_time?: string
+          updated_at?: string
+          weekday?: number
+        }
+        Relationships: []
+      }
+      service_bookings: {
+        Row: {
+          cancellation_reason: string | null
+          cancelled_at: string | null
+          cancelled_by: string | null
+          confirmed_at: string | null
+          created_at: string
+          currency: string
+          customer_id: string
+          customer_notes: string | null
+          duration_minutes: number
+          id: string
+          price_cents: number
+          provider_id: string
+          provider_notes: string | null
+          refund_amount_cents: number | null
+          refunded_at: string | null
+          scheduled_at: string
+          status: string
+          stripe_charge_id: string | null
+          stripe_checkout_session_id: string | null
+          stripe_payment_intent_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          confirmed_at?: string | null
+          created_at?: string
+          currency?: string
+          customer_id: string
+          customer_notes?: string | null
+          duration_minutes?: number
+          id?: string
+          price_cents: number
+          provider_id: string
+          provider_notes?: string | null
+          refund_amount_cents?: number | null
+          refunded_at?: string | null
+          scheduled_at: string
+          status?: string
+          stripe_charge_id?: string | null
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          confirmed_at?: string | null
+          created_at?: string
+          currency?: string
+          customer_id?: string
+          customer_notes?: string | null
+          duration_minutes?: number
+          id?: string
+          price_cents?: number
+          provider_id?: string
+          provider_notes?: string | null
+          refund_amount_cents?: number | null
+          refunded_at?: string | null
+          scheduled_at?: string
+          status?: string
+          stripe_charge_id?: string | null
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       service_order_messages: {
         Row: {
           attachment_url: string | null
@@ -52536,6 +52668,104 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      service_payouts: {
+        Row: {
+          amount_cents: number
+          booking_id: string
+          created_at: string
+          currency: string
+          id: string
+          paid_at: string | null
+          platform_fee_cents: number
+          provider_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount_cents: number
+          booking_id: string
+          created_at?: string
+          currency?: string
+          id?: string
+          paid_at?: string | null
+          platform_fee_cents: number
+          provider_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number
+          booking_id?: string
+          created_at?: string
+          currency?: string
+          id?: string
+          paid_at?: string | null
+          platform_fee_cents?: number
+          provider_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_payouts_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: true
+            referencedRelation: "service_bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_providers: {
+        Row: {
+          avatar_url: string | null
+          business_name: string
+          category: string
+          city: string | null
+          created_at: string
+          description: string | null
+          duration_min: number
+          id: string
+          is_accepting_bookings: boolean
+          languages: string[] | null
+          owner_id: string
+          price_cents: number | null
+          timezone: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          business_name: string
+          category?: string
+          city?: string | null
+          created_at?: string
+          description?: string | null
+          duration_min?: number
+          id?: string
+          is_accepting_bookings?: boolean
+          languages?: string[] | null
+          owner_id: string
+          price_cents?: number | null
+          timezone?: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          business_name?: string
+          category?: string
+          city?: string | null
+          created_at?: string
+          description?: string | null
+          duration_min?: number
+          id?: string
+          is_accepting_bookings?: boolean
+          languages?: string[] | null
+          owner_id?: string
+          price_cents?: number | null
+          timezone?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       session_players: {
         Row: {
