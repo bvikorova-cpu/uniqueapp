@@ -28,6 +28,7 @@ const PromotionsBoard = lazy(() => import("@/pages/PromotionsBoard"));
 const PromotionsCreate = lazy(() => import("@/pages/PromotionsCreate"));
 const PromotionsSuccess = lazy(() => import("@/pages/PromotionsSuccess"));
 const MyPromotions = lazy(() => import("@/pages/MyPromotions"));
+const BookingLanding = lazy(() => import("@/pages/BookingLanding"));
 
 // Redirect /kitchenstars/<sub-path> -> /masterchef/<sub-path> for brand aliases
 const KitchenStarsRedirect = () => {
