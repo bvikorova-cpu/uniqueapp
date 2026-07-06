@@ -16,12 +16,18 @@ const VerifyReport = () => {
   useEffect(() => {
     if (!token) { setState("invalid"); return; }
     (async () => {
-      const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/lie-detector-verify-report?token=${encodeURIComponent(token)}`;
-      const r = await fetch(url, { headers: { Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` } });
-      if (!r.ok) { setState("invalid"); return; }
-      const d = await r.json();
-      if (!d.valid) { setState("invalid"); return; }
-      setData(d); setState("valid");
+      const { data: d, error } = await supabase.functions.invoke("lie-detector-ai", {
+        body: { action: "verify-report", report_id: token },
+      });
+      if (error || !d?.valid) { setState("invalid"); return; }
+      setData({
+        ...d,
+        token: d.report_id,
+        summary: d.watermark,
+        generated_at: d.issued_at,
+        view_count: 0,
+      });
+      setState("valid");
     })();
   }, [token]);
 

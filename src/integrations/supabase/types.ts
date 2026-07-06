@@ -30264,6 +30264,39 @@ export type Database = {
         }
         Relationships: []
       }
+      investment_holdings: {
+        Row: {
+          avg_cost_eur: number
+          created_at: string
+          current_price_eur: number
+          id: string
+          quantity: number
+          symbol: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avg_cost_eur?: number
+          created_at?: string
+          current_price_eur?: number
+          id?: string
+          quantity?: number
+          symbol: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avg_cost_eur?: number
+          created_at?: string
+          current_price_eur?: number
+          id?: string
+          quantity?: number
+          symbol?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       iq_analyses: {
         Row: {
           analysis_type: string
