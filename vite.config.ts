@@ -53,6 +53,13 @@ export default defineConfig(() => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  esbuild: {
+    // Strip noisy console calls from production bundles (keep warn/error for
+    // real diagnostics; uncaught errors are already routed to logger.ts via
+    // installGlobalErrorHandlers). Debugger statements are always dropped.
+    pure: process.env.NODE_ENV === "production" ? ["console.log", "console.debug", "console.info", "console.trace"] : [],
+    drop: process.env.NODE_ENV === "production" ? ["debugger"] : [],
+  },
   build: {
     target: "es2020",
     cssCodeSplit: true,
