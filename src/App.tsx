@@ -1271,6 +1271,7 @@ const App = () => {
                         <Route path="/fundraising/my-donations" element={<ProtectedRoute><DonorDashboard /></ProtectedRoute>} />
                         <Route path="/fundraising/recurring" element={<ProtectedRoute><RecurringDonationsHub /></ProtectedRoute>} />
                         <Route path="/embed/campaign/:campaignType/:campaignId" element={<EmbedCampaignWidget />} />
+                        <Route path="/fundraising/embed" element={<EmbedBuilder />} />
                         <Route path="/fundraising/:campaignType/:campaignId/dashboard" element={<ProtectedRoute><CampaignDashboard /></ProtectedRoute>} />
                         <Route path="/fundraising/:campaignType/:campaignId/edit" element={<ProtectedRoute><EditCampaign /></ProtectedRoute>} />
                         <Route path="/fundraising/medical" element={<MedicalFundraising />} />
