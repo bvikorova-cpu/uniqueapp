@@ -85,6 +85,23 @@ export default function ServiceBookingSuccess() {
     toast.success(`${label} copied`);
   };
 
+  const downloadIcs = () => {
+    if (!result?.booking?.scheduled_at) return;
+    const start = new Date(result.booking.scheduled_at);
+    const duration = result.booking.duration_minutes ?? 60;
+    const end = new Date(start.getTime() + duration * 60000);
+    const title = `${result.booking.offering_name ? result.booking.offering_name + " · " : ""}${result.provider_name ?? "Booking"}`;
+    const desc = `Booking via Unique.\nProvider: ${result.provider_name ?? ""} (${result.provider_email ?? ""}).\nYour email: ${result.customer_email ?? ""}.`;
+    const ics = buildIcs({ title, description: desc, start, end });
+    const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `booking-${start.toISOString().slice(0, 10)}.ics`;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    toast.success("Calendar file downloaded — it includes 24h & 1h reminders");
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
