@@ -1,5 +1,5 @@
 // Create a pending service booking + Stripe Checkout session.
-// Body: { provider_id: uuid, scheduled_at: ISO, customer_notes?: string }
+// Body: { provider_id: uuid, scheduled_at: ISO, offering_id?: uuid, customer_notes?: string }
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
@@ -28,7 +28,7 @@ serve(async (req) => {
     const user = userData.user;
     if (!user?.email) throw new Error("User not authenticated");
 
-    const { provider_id, scheduled_at, customer_notes } = await req.json();
+    const { provider_id, scheduled_at, customer_notes, offering_id } = await req.json();
     if (!provider_id || !scheduled_at) throw new Error("provider_id and scheduled_at required");
     if (provider_id === user.id) throw new Error("Cannot book yourself");
 
@@ -52,10 +52,25 @@ serve(async (req) => {
       .eq("owner_id", provider_id)
       .maybeSingle();
     if (!profile || !profile.is_accepting_bookings) throw new Error("Provider is not accepting bookings");
-    if (!profile.price_cents || profile.price_cents < 100) throw new Error("Provider pricing not configured");
 
-    const duration = profile.duration_min || 60;
-    const priceCents = profile.price_cents;
+    let offering: any = null;
+    if (offering_id) {
+      const { data } = await admin
+        .from("service_offerings")
+        .select("id, provider_id, name, duration_min, price_cents, is_active")
+        .eq("id", offering_id)
+        .maybeSingle();
+      if (!data || data.provider_id !== provider_id || !data.is_active) {
+        throw new Error("Selected service is not available");
+      }
+      offering = data;
+    }
+
+    const duration = offering?.duration_min ?? profile.duration_min ?? 60;
+    const priceCents = offering?.price_cents ?? profile.price_cents;
+    if (!priceCents || priceCents < 100) throw new Error("Provider pricing not configured");
+    const offeringName = offering?.name ?? null;
+
     const slotStart = scheduledDate.getTime();
     const slotEnd = slotStart + duration * 60000;
 
@@ -64,8 +79,8 @@ serve(async (req) => {
       .select("id, scheduled_at, duration_minutes, status")
       .eq("provider_id", provider_id)
       .in("status", ["pending_payment", "confirmed"])
-      .gte("scheduled_at", new Date(slotStart - 4 * 3600 * 1000).toISOString())
-      .lte("scheduled_at", new Date(slotEnd + 4 * 3600 * 1000).toISOString());
+      .gte("scheduled_at", new Date(slotStart - 8 * 3600 * 1000).toISOString())
+      .lte("scheduled_at", new Date(slotEnd + 8 * 3600 * 1000).toISOString());
 
     if (conflicts?.some((c: any) => {
       const cStart = new Date(c.scheduled_at).getTime();
@@ -86,6 +101,8 @@ serve(async (req) => {
         price_cents: priceCents,
         currency: "EUR",
         customer_notes: customer_notes ?? null,
+        offering_id: offering?.id ?? null,
+        offering_name: offeringName,
       })
       .select("id")
       .single();
@@ -108,7 +125,7 @@ serve(async (req) => {
             currency: "eur",
             unit_amount: priceCents,
             product_data: {
-              name: `${profile.business_name} · ${profile.category}`,
+              name: `${profile.business_name} · ${offeringName ?? profile.category}`,
               description: `${duration} min · ${scheduledDate.toUTCString()}`,
             },
           },

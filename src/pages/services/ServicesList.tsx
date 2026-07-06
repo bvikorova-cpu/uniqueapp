@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, Clock, Euro, Store, MapPin } from "lucide-react";
+import { Search, Clock, Euro, Store, MapPin, Filter } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { Helmet } from "react-helmet-async";
 
@@ -29,6 +30,8 @@ export default function ServicesList() {
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
   const [cat, setCat] = useState("all");
+  const [cityFilter, setCityFilter] = useState<string>("all");
+  const [priceMax, setPriceMax] = useState<string>("");
 
   useEffect(() => {
     (async () => {
@@ -43,8 +46,19 @@ export default function ServicesList() {
     })();
   }, []);
 
+  const cities = useMemo(() => {
+    const s = new Set<string>();
+    providers.forEach((p) => { if (p.city) s.add(p.city); });
+    return ["all", ...Array.from(s).sort()];
+  }, [providers]);
+
   const filtered = providers.filter((p) => {
     if (cat !== "all" && p.category !== cat) return false;
+    if (cityFilter !== "all" && (p.city ?? "").toLowerCase() !== cityFilter.toLowerCase()) return false;
+    if (priceMax) {
+      const max = parseFloat(priceMax);
+      if (!isNaN(max) && (p.price_cents ?? 0) > max * 100) return false;
+    }
     if (!q) return true;
     const hay = `${p.business_name} ${p.category} ${p.city ?? ""} ${p.description ?? ""}`.toLowerCase();
     return hay.includes(q.toLowerCase());
@@ -59,10 +73,11 @@ export default function ServicesList() {
       <FloatingHowItWorks
         title="How service booking works"
         steps={[
-          { title: "Filter", description: "Pick a category or search by name / city." },
-          { title: "Pick a slot", description: "Open a provider's calendar and choose a free time." },
+          { title: "Filter", description: "Pick a category, city, price range or search by name." },
+          { title: "Pick a service", description: "Providers may list several services (Cut, Highlights…) with their own price & duration." },
+          { title: "Pick a slot", description: "Slot length auto-adjusts to the service you chose." },
           { title: "Pay in EUR", description: "Secure Stripe checkout at the fixed price." },
-          { title: "Get confirmed", description: "Provider is emailed; cancel >24h ahead for full refund." },
+          { title: "Get reminded", description: "Add the booking to your calendar for a 24 h reminder. Cancel > 24 h in advance for a refund." },
         ]}
       />
       <div className="min-h-screen bg-background">
@@ -81,17 +96,39 @@ export default function ServicesList() {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2 mb-4">
-            {CATEGORIES.map((c) => (
-              <Button key={c} size="sm" variant={cat === c ? "default" : "outline"} onClick={() => setCat(c)}>
-                {c[0].toUpperCase() + c.slice(1)}
-              </Button>
-            ))}
-          </div>
-
-          <div className="relative max-w-md mb-6">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input placeholder="Search by name, city or description…" value={q} onChange={(e) => setQ(e.target.value)} className="pl-9" />
+          <div className="rounded-xl border bg-card p-4 mb-6 space-y-3">
+            <div className="flex items-center gap-2 text-sm font-semibold"><Filter className="w-4 h-4" /> Filters</div>
+            <div className="grid md:grid-cols-4 gap-3">
+              <div>
+                <label className="text-xs text-muted-foreground">Category</label>
+                <Select value={cat} onValueChange={setCat}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {CATEGORIES.map((c) => <SelectItem key={c} value={c} className="capitalize">{c}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground">City / area</label>
+                <Select value={cityFilter} onValueChange={setCityFilter}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {cities.map((c) => <SelectItem key={c} value={c}>{c === "all" ? "All cities" : c}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground">Max price (EUR)</label>
+                <Input type="number" min="1" step="1" value={priceMax} onChange={(e) => setPriceMax(e.target.value)} placeholder="e.g. 50" />
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground">Search</label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input placeholder="Name, city, description…" value={q} onChange={(e) => setQ(e.target.value)} className="pl-9" />
+                </div>
+              </div>
+            </div>
           </div>
 
           {loading ? (
@@ -100,7 +137,7 @@ export default function ServicesList() {
             <Card>
               <CardContent className="p-12 text-center">
                 <Store className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                <p className="text-muted-foreground mb-3">No providers found for this filter.</p>
+                <p className="text-muted-foreground mb-3">No providers found for these filters.</p>
                 <Button asChild><Link to="/services/provider/setup">Be the first to offer your services</Link></Button>
               </CardContent>
             </Card>
@@ -125,8 +162,8 @@ export default function ServicesList() {
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-muted-foreground line-clamp-3 mb-4">{p.description ?? "No description provided."}</p>
-                    <div className="flex items-center gap-3 text-sm mb-4">
-                      <span className="flex items-center gap-1"><Euro className="w-4 h-4" />{((p.price_cents ?? 0) / 100).toFixed(2)}</span>
+                    <div className="flex items-center gap-3 text-sm mb-4 flex-wrap">
+                      <span className="flex items-center gap-1"><Euro className="w-4 h-4" />from {((p.price_cents ?? 0) / 100).toFixed(2)}</span>
                       <span className="flex items-center gap-1"><Clock className="w-4 h-4" />{p.duration_min ?? 60} min</span>
                       {p.city && <span className="flex items-center gap-1 text-muted-foreground"><MapPin className="w-3 h-3" />{p.city}</span>}
                       {p.languages?.slice(0, 2).map((l) => (
