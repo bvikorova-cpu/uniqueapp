@@ -1000,6 +1000,9 @@ const App = () => {
                         <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
                         <Route path="/healthcare-dashboard" element={<HealthcareProviderDashboard />} />
                         <Route path="/healthcare-library" element={<HealthcareContentLibrary />} />
+                        <Route path="/doctors" element={<DoctorsList />} />
+                        <Route path="/doctors/booking/:appointmentId" element={<ProtectedRoute><DoctorBookingSuccess /></ProtectedRoute>} />
+                        <Route path="/doctors/:id" element={<DoctorProfile />} />
                         <Route path="/brand-battle" element={<BrandBattle />} />
                         <Route path="/brand-battle/hub" element={<BrandArenaHub />} />
                         <Route path="/sponsor-registration" element={<SponsorRegistration />} />
