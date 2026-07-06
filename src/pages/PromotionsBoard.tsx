@@ -116,7 +116,7 @@ export default function PromotionsBoard() {
 
   const filtered = listings.filter((l) => {
     if (cat !== "all" && (l.category ?? "other") !== cat) return false;
-    if (cityFilter !== "all" && (l.city ?? "").toLowerCase() !== cityFilter.toLowerCase()) return false;
+    if (cityFilter !== "all" && !(l.city ?? "").toLowerCase().includes(cityFilter.toLowerCase())) return false;
     if (!q) return true;
     const hay = `${l.title} ${l.description ?? ""} ${l.city ?? ""} ${l.category ?? ""}`.toLowerCase();
     return hay.includes(q.toLowerCase());

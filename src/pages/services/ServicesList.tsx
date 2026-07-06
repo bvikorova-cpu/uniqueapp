@@ -54,7 +54,7 @@ export default function ServicesList() {
 
   const filtered = providers.filter((p) => {
     if (cat !== "all" && p.category !== cat) return false;
-    if (cityFilter !== "all" && (p.city ?? "").toLowerCase() !== cityFilter.toLowerCase()) return false;
+    if (cityFilter !== "all" && !(p.city ?? "").toLowerCase().includes(cityFilter.toLowerCase())) return false;
     if (priceMax) {
       const max = parseFloat(priceMax);
       if (!isNaN(max) && (p.price_cents ?? 0) > max * 100) return false;
