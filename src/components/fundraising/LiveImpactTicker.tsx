@@ -1,26 +1,79 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Zap } from "lucide-react";
+import { Heart } from "lucide-react";
 import { useState, useEffect } from "react";
-import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { supabase } from "@/integrations/supabase/client";
 
-const TICKER_MESSAGES = [
-  "A generous donor just contributed to a medical campaign 💊",
-  "Someone supported an education campaign 🎓",
-  "A new campaign just reached 50% of its goal! 🎉",
-  "A donor helped fund an animal rescue project 🐾",
-  "A community member started a new campaign 🌟",
-  "Someone just made their first donation! ❤️",
+interface RecentDonation {
+  donor_name: string;
+  amount: number;
+  campaign_type: string;
+  created_at: string;
+}
+
+const CATEGORY_EMOJI: Record<string, string> = {
+  medical: "💊", dream: "✨", hero: "🦸", crisis: "🆘",
+  pet: "🐾", student: "🎓", talent: "🎭",
+};
+
+function formatMsg(d: RecentDonation): string {
+  const emoji = CATEGORY_EMOJI[d.campaign_type] || "❤️";
+  return `${d.donor_name} donated €${Number(d.amount).toFixed(0)} to a ${d.campaign_type} campaign ${emoji}`;
+}
+
+const FALLBACK = [
+  "Be the first to donate — every gift shows up here in real time ❤️",
+  "Start a campaign and watch it grow ✨",
+  "Live donation feed powered by real transactions 🔴",
 ];
 
 export function LiveImpactTicker() {
+  const [messages, setMessages] = useState<string[]>(FALLBACK);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase.rpc("get_recent_donations" as any, { _limit: 20 });
+      if (cancelled) return;
+      const items = (data as RecentDonation[]) || [];
+      if (items.length > 0) setMessages(items.map(formatMsg));
+    })();
+
+    // Realtime updates as new donations come in
+    const channel = supabase
+      .channel("live-impact-ticker")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "campaign_donations" },
+        (payload) => {
+          const row = payload.new as any;
+          if (!row || !["succeeded", "completed", "paid"].includes(row.status)) return;
+          const msg = formatMsg({
+            donor_name: row.is_anonymous ? "Anonymous" : (row.donor_name || "Someone"),
+            amount: row.amount,
+            campaign_type: row.campaign_type || "campaign",
+            created_at: row.created_at,
+          });
+          setMessages((prev) => [msg, ...prev].slice(0, 30));
+        }
+      )
+      .subscribe();
+
+    return () => {
+      cancelled = true;
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (messages.length <= 1) return;
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % TICKER_MESSAGES.length);
+      setCurrentIndex((prev) => (prev + 1) % messages.length);
     }, 4000);
     return () => clearInterval(interval);
-  }, []);
+  }, [messages.length]);
+
+  const current = messages[currentIndex % messages.length];
 
   return (
     <div className="relative overflow-hidden bg-primary/5 border-y border-border/30 py-3 px-4">
@@ -42,10 +95,10 @@ export function LiveImpactTicker() {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -20, opacity: 0 }}
               transition={{ duration: 0.4 }}
-              className="text-sm text-foreground/80 flex items-center gap-1.5"
+              className="text-sm text-foreground/80 flex items-center gap-1.5 truncate"
             >
               <Heart className="w-3 h-3 text-primary shrink-0" />
-              {TICKER_MESSAGES[currentIndex]}
+              <span className="truncate">{current}</span>
             </motion.div>
           </AnimatePresence>
         </div>
