@@ -451,6 +451,11 @@ export const DoctorsList = lazy(() => import("@/pages/doctors/DoctorsList"));
 export const DoctorProfile = lazy(() => import("@/pages/doctors/DoctorProfile"));
 export const DoctorBookingSuccess = lazy(() => import("@/pages/doctors/DoctorBookingSuccess"));
 export const MyDoctorBookings = lazy(() => import("@/pages/doctors/MyDoctorBookings"));
+export const VideoConsultationRoom = lazy(() => import("@/pages/doctors/VideoConsultationRoom"));
+export const PrescriptionsList = lazy(() => import("@/pages/health/PrescriptionsList"));
+export const MedicalRecords = lazy(() => import("@/pages/health/MedicalRecords"));
+export const InsuranceClaims = lazy(() => import("@/pages/health/InsuranceClaims"));
+export const AdminClaimsInbox = lazy(() => import("@/pages/health/AdminClaimsInbox"));
 
 // Components that need lazy loading
 export const QuizCreator = lazy(() => import("@/components/education/QuizCreator"));
