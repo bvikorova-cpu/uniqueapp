@@ -419,6 +419,8 @@ import {
   DoctorBookingSuccess,
   MyDoctorBookings,
   VideoConsultationRoom,
+  BecomeDoctor,
+  DoctorDashboard,
   PrescriptionsList,
   MedicalRecords,
   InsuranceClaims,
@@ -1030,6 +1032,8 @@ const App = () => {
                         <Route path="/doctors/:id" element={<DoctorProfile />} />
                         <Route path="/my-bookings/doctors" element={<ProtectedRoute><MyDoctorBookings /></ProtectedRoute>} />
                         <Route path="/doctors/call/:appointmentId" element={<ProtectedRoute><VideoConsultationRoom /></ProtectedRoute>} />
+                        <Route path="/doctors/apply" element={<ProtectedRoute><BecomeDoctor /></ProtectedRoute>} />
+                        <Route path="/doctor-dashboard" element={<ProtectedRoute><DoctorDashboard /></ProtectedRoute>} />
                         <Route path="/my-health/prescriptions" element={<ProtectedRoute><PrescriptionsList /></ProtectedRoute>} />
                         <Route path="/my-health/records" element={<ProtectedRoute><MedicalRecords /></ProtectedRoute>} />
                         <Route path="/my-health/insurance" element={<ProtectedRoute><InsuranceClaims /></ProtectedRoute>} />

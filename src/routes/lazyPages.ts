@@ -452,6 +452,8 @@ export const DoctorProfile = lazy(() => import("@/pages/doctors/DoctorProfile"))
 export const DoctorBookingSuccess = lazy(() => import("@/pages/doctors/DoctorBookingSuccess"));
 export const MyDoctorBookings = lazy(() => import("@/pages/doctors/MyDoctorBookings"));
 export const VideoConsultationRoom = lazy(() => import("@/pages/doctors/VideoConsultationRoom"));
+export const BecomeDoctor = lazy(() => import("@/pages/doctors/BecomeDoctor"));
+export const DoctorDashboard = lazy(() => import("@/pages/doctors/DoctorDashboard"));
 export const PrescriptionsList = lazy(() => import("@/pages/health/PrescriptionsList"));
 export const MedicalRecords = lazy(() => import("@/pages/health/MedicalRecords"));
 export const InsuranceClaims = lazy(() => import("@/pages/health/InsuranceClaims"));
