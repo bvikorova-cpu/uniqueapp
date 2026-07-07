@@ -33,6 +33,12 @@ export function BulkSliderCalculator() {
   const buy = async () => {
     setLoading(true);
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({ title: "Sign in required", description: "Please sign in to purchase credits.", variant: "destructive" });
+        window.location.href = `/auth?redirect=${encodeURIComponent(window.location.pathname)}`;
+        return;
+      }
       const { data, error } = await supabase.functions.invoke("create-checkout", {
         body: {
           product: "ai_credits",
