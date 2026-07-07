@@ -458,6 +458,7 @@ export const PrescriptionsList = lazy(() => import("@/pages/health/Prescriptions
 export const MedicalRecords = lazy(() => import("@/pages/health/MedicalRecords"));
 export const InsuranceClaims = lazy(() => import("@/pages/health/InsuranceClaims"));
 export const AdminClaimsInbox = lazy(() => import("@/pages/health/AdminClaimsInbox"));
+export const AdminDoctorVerifications = lazy(() => import("@/pages/admin/AdminDoctorVerifications"));
 
 // Components that need lazy loading
 export const QuizCreator = lazy(() => import("@/components/education/QuizCreator"));

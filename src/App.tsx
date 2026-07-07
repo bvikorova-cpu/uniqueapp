@@ -425,6 +425,7 @@ import {
   MedicalRecords,
   InsuranceClaims,
   AdminClaimsInbox,
+  AdminDoctorVerifications,
   UniversalAnalyzer,
   AnalyzerResult,
   AnalyzerPricing,
@@ -1034,6 +1035,7 @@ const App = () => {
                         <Route path="/doctors/call/:appointmentId" element={<ProtectedRoute><VideoConsultationRoom /></ProtectedRoute>} />
                         <Route path="/doctors/apply" element={<ProtectedRoute><BecomeDoctor /></ProtectedRoute>} />
                         <Route path="/doctor-dashboard" element={<ProtectedRoute><DoctorDashboard /></ProtectedRoute>} />
+                        <Route path="/admin/doctor-verifications" element={<ProtectedRoute requireAdmin={true}><AdminDoctorVerifications /></ProtectedRoute>} />
                         <Route path="/my-health/prescriptions" element={<ProtectedRoute><PrescriptionsList /></ProtectedRoute>} />
                         <Route path="/my-health/records" element={<ProtectedRoute><MedicalRecords /></ProtectedRoute>} />
                         <Route path="/my-health/insurance" element={<ProtectedRoute><InsuranceClaims /></ProtectedRoute>} />

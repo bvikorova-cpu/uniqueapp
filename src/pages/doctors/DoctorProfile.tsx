@@ -150,9 +150,15 @@ export default function DoctorProfile() {
                   </div>
                 )}
                 <div className="flex-1">
-                  <CardTitle className="text-2xl">{doctor.provider_name ?? "Doctor"}</CardTitle>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <CardTitle className="text-2xl">{doctor.provider_name ?? "Doctor"}</CardTitle>
+                    <Badge className="bg-emerald-500/15 text-emerald-600 hover:bg-emerald-500/15">
+                      <span className="mr-1 h-2 w-2 rounded-full bg-emerald-500 inline-block" />
+                      Accepting bookings
+                    </Badge>
+                  </div>
                   <CardDescription>{doctor.specialty ?? "General"}</CardDescription>
-                  <div className="flex items-center gap-4 mt-3 text-sm">
+                  <div className="flex items-center gap-4 mt-3 text-sm flex-wrap">
                     <span className="flex items-center gap-1 font-semibold">
                       <Euro className="w-4 h-4" /> {priceEur}
                     </span>
