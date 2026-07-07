@@ -30,3 +30,4 @@
 - [System Tipov](mem://features/system-tipov) — P2P Tip Jar with 10% platform fee.
 - [Creator Subscriptions](mem://features/creator-subscriptions) — 85/15 split for Creators section subscriptions.
 - [Social Graph & Feed](mem://features/logika-feedu-a-socialny-graf) — Trending algorithm and follower/friend distinctions.
+- [Doctor Booking (Phase 4)](mem://features/doctor-booking) — Healthcare 85/15 split, 24h refund window, availability slot generation rules.
