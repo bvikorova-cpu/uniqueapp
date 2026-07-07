@@ -27771,8 +27771,13 @@ export type Database = {
           id: string
           is_accepting_bookings: boolean
           languages: string[] | null
+          license_country: string | null
+          license_document_url: string | null
+          license_number: string | null
+          license_submitted_at: string | null
           provider_logo_url: string | null
           provider_name: string | null
+          rejection_reason: string | null
           specialty: string | null
           stripe_account_id: string | null
           subscription_expires_at: string | null
@@ -27781,6 +27786,9 @@ export type Database = {
           timezone: string
           updated_at: string
           user_id: string
+          verification_status: string
+          verified_at: string | null
+          verified_by: string | null
         }
         Insert: {
           bio?: string | null
@@ -27790,8 +27798,13 @@ export type Database = {
           id?: string
           is_accepting_bookings?: boolean
           languages?: string[] | null
+          license_country?: string | null
+          license_document_url?: string | null
+          license_number?: string | null
+          license_submitted_at?: string | null
           provider_logo_url?: string | null
           provider_name?: string | null
+          rejection_reason?: string | null
           specialty?: string | null
           stripe_account_id?: string | null
           subscription_expires_at?: string | null
@@ -27800,6 +27813,9 @@ export type Database = {
           timezone?: string
           updated_at?: string
           user_id: string
+          verification_status?: string
+          verified_at?: string | null
+          verified_by?: string | null
         }
         Update: {
           bio?: string | null
@@ -27809,8 +27825,13 @@ export type Database = {
           id?: string
           is_accepting_bookings?: boolean
           languages?: string[] | null
+          license_country?: string | null
+          license_document_url?: string | null
+          license_number?: string | null
+          license_submitted_at?: string | null
           provider_logo_url?: string | null
           provider_name?: string | null
+          rejection_reason?: string | null
           specialty?: string | null
           stripe_account_id?: string | null
           subscription_expires_at?: string | null
@@ -27819,6 +27840,9 @@ export type Database = {
           timezone?: string
           updated_at?: string
           user_id?: string
+          verification_status?: string
+          verified_at?: string | null
+          verified_by?: string | null
         }
         Relationships: []
       }
