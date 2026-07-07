@@ -418,6 +418,11 @@ import {
   DoctorProfile,
   DoctorBookingSuccess,
   MyDoctorBookings,
+  VideoConsultationRoom,
+  PrescriptionsList,
+  MedicalRecords,
+  InsuranceClaims,
+  AdminClaimsInbox,
   UniversalAnalyzer,
   AnalyzerResult,
   AnalyzerPricing,
@@ -1024,6 +1029,11 @@ const App = () => {
                         <Route path="/doctors/booking/:appointmentId" element={<ProtectedRoute><DoctorBookingSuccess /></ProtectedRoute>} />
                         <Route path="/doctors/:id" element={<DoctorProfile />} />
                         <Route path="/my-bookings/doctors" element={<ProtectedRoute><MyDoctorBookings /></ProtectedRoute>} />
+                        <Route path="/doctors/call/:appointmentId" element={<ProtectedRoute><VideoConsultationRoom /></ProtectedRoute>} />
+                        <Route path="/my-health/prescriptions" element={<ProtectedRoute><PrescriptionsList /></ProtectedRoute>} />
+                        <Route path="/my-health/records" element={<ProtectedRoute><MedicalRecords /></ProtectedRoute>} />
+                        <Route path="/my-health/insurance" element={<ProtectedRoute><InsuranceClaims /></ProtectedRoute>} />
+                        <Route path="/admin/insurance-claims" element={<ProtectedRoute><AdminClaimsInbox /></ProtectedRoute>} />
                         <Route path="/services-hub" element={<ServicesLanding />} />
                         <Route path="/services" element={<ServicesList />} />
                         <Route path="/services/provider/setup" element={<ProtectedRoute><ProviderSetup /></ProtectedRoute>} />
