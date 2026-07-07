@@ -20202,56 +20202,6 @@ export type Database = {
         }
         Relationships: []
       }
-      donations: {
-        Row: {
-          amount_cents: number
-          campaign_id: string
-          created_at: string
-          currency: string
-          donor_id: string | null
-          id: string
-          is_anonymous: boolean
-          is_recurring: boolean
-          message: string | null
-          stripe_session_id: string | null
-          stripe_subscription_id: string | null
-        }
-        Insert: {
-          amount_cents: number
-          campaign_id: string
-          created_at?: string
-          currency?: string
-          donor_id?: string | null
-          id?: string
-          is_anonymous?: boolean
-          is_recurring?: boolean
-          message?: string | null
-          stripe_session_id?: string | null
-          stripe_subscription_id?: string | null
-        }
-        Update: {
-          amount_cents?: number
-          campaign_id?: string
-          created_at?: string
-          currency?: string
-          donor_id?: string | null
-          id?: string
-          is_anonymous?: boolean
-          is_recurring?: boolean
-          message?: string | null
-          stripe_session_id?: string | null
-          stripe_subscription_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "donations_campaign_id_fkey"
-            columns: ["campaign_id"]
-            isOneToOne: false
-            referencedRelation: "fundraising_campaigns"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       donor_stats: {
         Row: {
           badge_tier: string
@@ -25565,117 +25515,6 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
-      }
-      fundraising_campaigns: {
-        Row: {
-          allow_recurring: boolean
-          category: string
-          cover_url: string | null
-          created_at: string
-          currency: string
-          deadline_at: string | null
-          goal_cents: number
-          id: string
-          owner_id: string
-          slug: string
-          status: Database["public"]["Enums"]["campaign_status"]
-          story_md: string
-          title: string
-          updated_at: string
-          urgency: Database["public"]["Enums"]["campaign_urgency"]
-        }
-        Insert: {
-          allow_recurring?: boolean
-          category?: string
-          cover_url?: string | null
-          created_at?: string
-          currency?: string
-          deadline_at?: string | null
-          goal_cents: number
-          id?: string
-          owner_id: string
-          slug: string
-          status?: Database["public"]["Enums"]["campaign_status"]
-          story_md?: string
-          title: string
-          updated_at?: string
-          urgency?: Database["public"]["Enums"]["campaign_urgency"]
-        }
-        Update: {
-          allow_recurring?: boolean
-          category?: string
-          cover_url?: string | null
-          created_at?: string
-          currency?: string
-          deadline_at?: string | null
-          goal_cents?: number
-          id?: string
-          owner_id?: string
-          slug?: string
-          status?: Database["public"]["Enums"]["campaign_status"]
-          story_md?: string
-          title?: string
-          updated_at?: string
-          urgency?: Database["public"]["Enums"]["campaign_urgency"]
-        }
-        Relationships: []
-      }
-      fundraising_payouts: {
-        Row: {
-          campaign_owner_id: string
-          created_at: string
-          donation_id: string
-          fee_cents: number
-          gross_cents: number
-          id: string
-          net_cents: number
-          paid_at: string | null
-          status: Database["public"]["Enums"]["fundraising_payout_status"]
-          stripe_transfer_id: string | null
-          updated_at: string
-        }
-        Insert: {
-          campaign_owner_id: string
-          created_at?: string
-          donation_id: string
-          fee_cents: number
-          gross_cents: number
-          id?: string
-          net_cents: number
-          paid_at?: string | null
-          status?: Database["public"]["Enums"]["fundraising_payout_status"]
-          stripe_transfer_id?: string | null
-          updated_at?: string
-        }
-        Update: {
-          campaign_owner_id?: string
-          created_at?: string
-          donation_id?: string
-          fee_cents?: number
-          gross_cents?: number
-          id?: string
-          net_cents?: number
-          paid_at?: string | null
-          status?: Database["public"]["Enums"]["fundraising_payout_status"]
-          stripe_transfer_id?: string | null
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "fundraising_payouts_donation_id_fkey"
-            columns: ["donation_id"]
-            isOneToOne: false
-            referencedRelation: "donations"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "fundraising_payouts_donation_id_fkey"
-            columns: ["donation_id"]
-            isOneToOne: false
-            referencedRelation: "donor_wall"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       future_face_images: {
         Row: {
@@ -49933,50 +49772,6 @@ export type Database = {
         }
         Relationships: []
       }
-      recurring_donations: {
-        Row: {
-          amount_cents: number
-          campaign_id: string
-          cancelled_at: string | null
-          created_at: string
-          donor_id: string
-          id: string
-          status: Database["public"]["Enums"]["recurring_donation_status"]
-          stripe_subscription_id: string
-          updated_at: string
-        }
-        Insert: {
-          amount_cents: number
-          campaign_id: string
-          cancelled_at?: string | null
-          created_at?: string
-          donor_id: string
-          id?: string
-          status?: Database["public"]["Enums"]["recurring_donation_status"]
-          stripe_subscription_id: string
-          updated_at?: string
-        }
-        Update: {
-          amount_cents?: number
-          campaign_id?: string
-          cancelled_at?: string | null
-          created_at?: string
-          donor_id?: string
-          id?: string
-          status?: Database["public"]["Enums"]["recurring_donation_status"]
-          stripe_subscription_id?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "recurring_donations_campaign_id_fkey"
-            columns: ["campaign_id"]
-            isOneToOne: false
-            referencedRelation: "fundraising_campaigns"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       redemption_progress: {
         Row: {
           certificate_earned: boolean | null
@@ -58799,42 +58594,6 @@ export type Database = {
         }
         Relationships: []
       }
-      talent_sponsorships: {
-        Row: {
-          amount_cents: number
-          created_at: string
-          currency: string
-          id: string
-          is_anonymous: boolean
-          message: string | null
-          sponsor_id: string | null
-          stripe_session_id: string | null
-          talent_id: string
-        }
-        Insert: {
-          amount_cents: number
-          created_at?: string
-          currency?: string
-          id?: string
-          is_anonymous?: boolean
-          message?: string | null
-          sponsor_id?: string | null
-          stripe_session_id?: string | null
-          talent_id: string
-        }
-        Update: {
-          amount_cents?: number
-          created_at?: string
-          currency?: string
-          id?: string
-          is_anonymous?: boolean
-          message?: string | null
-          sponsor_id?: string | null
-          stripe_session_id?: string | null
-          talent_id?: string
-        }
-        Relationships: []
-      }
       talent_submissions: {
         Row: {
           category: Database["public"]["Enums"]["talent_category"]
@@ -65002,28 +64761,6 @@ export type Database = {
         }
         Relationships: []
       }
-      donor_wall: {
-        Row: {
-          amount_cents: number | null
-          avatar_url: string | null
-          campaign_id: string | null
-          created_at: string | null
-          currency: string | null
-          display_name: string | null
-          donor_id: string | null
-          id: string | null
-          message: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "donations_campaign_id_fkey"
-            columns: ["campaign_id"]
-            isOneToOne: false
-            referencedRelation: "fundraising_campaigns"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       escape_room_puzzles_public: {
         Row: {
           created_at: string | null
@@ -67874,8 +67611,6 @@ export type Database = {
         | "founder"
       br_match_status: "pending" | "open" | "closed"
       br_status: "signup" | "active" | "completed"
-      campaign_status: "draft" | "active" | "paused" | "closed"
-      campaign_urgency: "normal" | "urgent" | "critical"
       clothing_category:
         | "tops"
         | "bottoms"
@@ -67910,7 +67645,6 @@ export type Database = {
         | "cousin"
         | "in_law"
         | "other"
-      fundraising_payout_status: "pending" | "paid" | "cancelled"
       insurance_claim_status: "pending" | "approved" | "rejected" | "paid"
       item_rarity: "common" | "rare" | "epic" | "legendary"
       job_category:
@@ -68014,7 +67748,6 @@ export type Database = {
         | "love"
         | "career"
         | "general"
-      recurring_donation_status: "active" | "cancelled"
       season_type: "spring" | "summer" | "fall" | "winter" | "all_season"
       skill_category:
         | "construction"
@@ -68240,8 +67973,6 @@ export const Constants = {
       app_role: ["admin", "moderator", "user", "employer", "judge", "founder"],
       br_match_status: ["pending", "open", "closed"],
       br_status: ["signup", "active", "completed"],
-      campaign_status: ["draft", "active", "paused", "closed"],
-      campaign_urgency: ["normal", "urgent", "critical"],
       clothing_category: [
         "tops",
         "bottoms",
@@ -68280,7 +68011,6 @@ export const Constants = {
         "in_law",
         "other",
       ],
-      fundraising_payout_status: ["pending", "paid", "cancelled"],
       insurance_claim_status: ["pending", "approved", "rejected", "paid"],
       item_rarity: ["common", "rare", "epic", "legendary"],
       job_category: [
@@ -68392,7 +68122,6 @@ export const Constants = {
         "career",
         "general",
       ],
-      recurring_donation_status: ["active", "cancelled"],
       season_type: ["spring", "summer", "fall", "winter", "all_season"],
       skill_category: [
         "construction",
