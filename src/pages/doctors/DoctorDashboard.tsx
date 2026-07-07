@@ -10,9 +10,9 @@ import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { Helmet } from "react-helmet-async";
 import { Stethoscope, Loader2, Settings, CalendarClock, Euro, Share2, ClipboardList } from "lucide-react";
-import AppointmentsPanel from "@/components/healthcare/AppointmentsPanel";
-import DoctorEarningsCard from "@/components/healthcare/DoctorEarningsCard";
-import ReferralsPanel from "@/components/healthcare/ReferralsPanel";
+import { AppointmentsPanel } from "@/components/healthcare/AppointmentsPanel";
+import { DoctorEarningsCard } from "@/components/healthcare/DoctorEarningsCard";
+import { ReferralsPanel } from "@/components/healthcare/ReferralsPanel";
 import DoctorAvailabilityEditor from "@/components/healthcare/DoctorAvailabilityEditor";
 
 /**
