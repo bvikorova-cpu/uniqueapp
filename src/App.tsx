@@ -419,6 +419,8 @@ import {
   DoctorBookingSuccess,
   MyDoctorBookings,
   VideoConsultationRoom,
+  BecomeDoctor,
+  DoctorDashboard,
   PrescriptionsList,
   MedicalRecords,
   InsuranceClaims,
