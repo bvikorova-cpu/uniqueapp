@@ -33,3 +33,4 @@
 - [Scale-readiness primitives](mem://features/scale-readiness) — Rate-limit RPC, FTS search, feed cache fan-out, spam score, moderate-text/image edge fns.
 - [Challenge TOP tier](mem://features/challenge-top-tier) — €5/mo Challenge tier: PRO benefits + 500k XP + 1M ai_credits monthly + TOP badge + pinned feed submission.
 - [Doctor Booking (Phase 4)](mem://features/doctor-booking) — Healthcare 85/15 split, 24h refund window, availability slot generation rules.
+- [Healthcare Advanced (Phase 5)](mem://features/health-advanced) — Video calls, e-prescriptions, medical records with time-boxed doctor access, insurance claims.

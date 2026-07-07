@@ -31,3 +31,4 @@
 - [Creator Subscriptions](mem://features/creator-subscriptions) — 85/15 split for Creators section subscriptions.
 - [Social Graph & Feed](mem://features/logika-feedu-a-socialny-graf) — Trending algorithm and follower/friend distinctions.
 - [Doctor Booking (Phase 4)](mem://features/doctor-booking) — Healthcare 85/15 split, 24h refund window, availability slot generation rules.
+- [Healthcare Advanced (Phase 5)](mem://features/health-advanced) — Video calls, e-prescriptions, medical records with time-boxed doctor access, insurance claims.
