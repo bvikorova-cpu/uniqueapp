@@ -30477,6 +30477,105 @@ export type Database = {
           },
         ]
       }
+      insurance_cards: {
+        Row: {
+          card_back_url: string | null
+          card_front_url: string | null
+          created_at: string
+          id: string
+          patient_id: string
+          policy_number_encrypted: string
+          provider_name: string
+          updated_at: string
+          valid_until: string | null
+        }
+        Insert: {
+          card_back_url?: string | null
+          card_front_url?: string | null
+          created_at?: string
+          id?: string
+          patient_id: string
+          policy_number_encrypted: string
+          provider_name: string
+          updated_at?: string
+          valid_until?: string | null
+        }
+        Update: {
+          card_back_url?: string | null
+          card_front_url?: string | null
+          created_at?: string
+          id?: string
+          patient_id?: string
+          policy_number_encrypted?: string
+          provider_name?: string
+          updated_at?: string
+          valid_until?: string | null
+        }
+        Relationships: []
+      }
+      insurance_claims: {
+        Row: {
+          admin_note: string | null
+          amount_cents: number
+          appointment_id: string | null
+          created_at: string
+          currency: string
+          decided_at: string | null
+          decided_by: string | null
+          id: string
+          insurance_card_id: string | null
+          patient_id: string
+          receipt_url: string | null
+          status: Database["public"]["Enums"]["insurance_claim_status"]
+          updated_at: string
+        }
+        Insert: {
+          admin_note?: string | null
+          amount_cents: number
+          appointment_id?: string | null
+          created_at?: string
+          currency?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          id?: string
+          insurance_card_id?: string | null
+          patient_id: string
+          receipt_url?: string | null
+          status?: Database["public"]["Enums"]["insurance_claim_status"]
+          updated_at?: string
+        }
+        Update: {
+          admin_note?: string | null
+          amount_cents?: number
+          appointment_id?: string | null
+          created_at?: string
+          currency?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          id?: string
+          insurance_card_id?: string | null
+          patient_id?: string
+          receipt_url?: string | null
+          status?: Database["public"]["Enums"]["insurance_claim_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurance_claims_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "healthcare_appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "insurance_claims_insurance_card_id_fkey"
+            columns: ["insurance_card_id"]
+            isOneToOne: false
+            referencedRelation: "insurance_cards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       interview_questions: {
         Row: {
           answer_tips: string | null
@@ -37998,6 +38097,86 @@ export type Database = {
           verified_at?: string | null
           verified_by?: string | null
           video_url?: string | null
+        }
+        Relationships: []
+      }
+      medical_record_access_grants: {
+        Row: {
+          appointment_id: string
+          created_at: string
+          doctor_id: string
+          expires_at: string
+          granted_at: string
+          id: string
+          patient_id: string
+          revoked_at: string | null
+        }
+        Insert: {
+          appointment_id: string
+          created_at?: string
+          doctor_id: string
+          expires_at: string
+          granted_at?: string
+          id?: string
+          patient_id: string
+          revoked_at?: string | null
+        }
+        Update: {
+          appointment_id?: string
+          created_at?: string
+          doctor_id?: string
+          expires_at?: string
+          granted_at?: string
+          id?: string
+          patient_id?: string
+          revoked_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "medical_record_access_grants_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "healthcare_appointments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      medical_records: {
+        Row: {
+          created_at: string
+          data: Json | null
+          description: string | null
+          file_url: string | null
+          id: string
+          patient_id: string
+          record_type: Database["public"]["Enums"]["medical_record_type"]
+          recorded_at: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          data?: Json | null
+          description?: string | null
+          file_url?: string | null
+          id?: string
+          patient_id: string
+          record_type: Database["public"]["Enums"]["medical_record_type"]
+          recorded_at?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json | null
+          description?: string | null
+          file_url?: string | null
+          id?: string
+          patient_id?: string
+          record_type?: Database["public"]["Enums"]["medical_record_type"]
+          recorded_at?: string
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -46255,6 +46434,59 @@ export type Database = {
           total_supply?: number | null
         }
         Relationships: []
+      }
+      prescriptions: {
+        Row: {
+          appointment_id: string
+          created_at: string
+          doctor_id: string
+          dosage_instructions: string | null
+          expires_at: string
+          id: string
+          issued_at: string
+          medications: Json
+          patient_id: string
+          pdf_url: string | null
+          qr_token: string
+          updated_at: string
+        }
+        Insert: {
+          appointment_id: string
+          created_at?: string
+          doctor_id: string
+          dosage_instructions?: string | null
+          expires_at?: string
+          id?: string
+          issued_at?: string
+          medications: Json
+          patient_id: string
+          pdf_url?: string | null
+          qr_token?: string
+          updated_at?: string
+        }
+        Update: {
+          appointment_id?: string
+          created_at?: string
+          doctor_id?: string
+          dosage_instructions?: string | null
+          expires_at?: string
+          id?: string
+          issued_at?: string
+          medications?: Json
+          patient_id?: string
+          pdf_url?: string | null
+          qr_token?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prescriptions_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "healthcare_appointments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       privacy_settings: {
         Row: {
@@ -61998,6 +62230,53 @@ export type Database = {
         }
         Relationships: []
       }
+      video_call_sessions: {
+        Row: {
+          appointment_id: string
+          created_at: string
+          doctor_joined_at: string | null
+          duration_sec: number | null
+          ended_at: string | null
+          ice_config: Json | null
+          id: string
+          patient_joined_at: string | null
+          room_id: string
+          updated_at: string
+        }
+        Insert: {
+          appointment_id: string
+          created_at?: string
+          doctor_joined_at?: string | null
+          duration_sec?: number | null
+          ended_at?: string | null
+          ice_config?: Json | null
+          id?: string
+          patient_joined_at?: string | null
+          room_id: string
+          updated_at?: string
+        }
+        Update: {
+          appointment_id?: string
+          created_at?: string
+          doctor_joined_at?: string | null
+          duration_sec?: number | null
+          ended_at?: string | null
+          ice_config?: Json | null
+          id?: string
+          patient_joined_at?: string | null
+          room_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "video_call_sessions_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "healthcare_appointments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       video_comments: {
         Row: {
           content: string
@@ -67366,6 +67645,7 @@ export type Database = {
         | "cousin"
         | "in_law"
         | "other"
+      insurance_claim_status: "pending" | "approved" | "rejected" | "paid"
       item_rarity: "common" | "rare" | "epic" | "legendary"
       job_category:
         | "it_software"
@@ -67397,6 +67677,7 @@ export type Database = {
         | "travel"
         | "milestone"
         | "other"
+      medical_record_type: "diagnosis" | "allergy" | "medication" | "attachment"
       megatalent_tier: "premium" | "top_premium"
       mentor_area: "career" | "fitness" | "mindset" | "relationships"
       moderation_action:
@@ -67730,6 +68011,7 @@ export const Constants = {
         "in_law",
         "other",
       ],
+      insurance_claim_status: ["pending", "approved", "rejected", "paid"],
       item_rarity: ["common", "rare", "epic", "legendary"],
       job_category: [
         "it_software",
@@ -67763,6 +68045,7 @@ export const Constants = {
         "milestone",
         "other",
       ],
+      medical_record_type: ["diagnosis", "allergy", "medication", "attachment"],
       megatalent_tier: ["premium", "top_premium"],
       mentor_area: ["career", "fitness", "mindset", "relationships"],
       moderation_action: [
