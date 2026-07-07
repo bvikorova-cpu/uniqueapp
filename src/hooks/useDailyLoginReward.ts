@@ -36,7 +36,13 @@ export function useDailyLoginReward() {
     fetchStreak();
   }, [fetchStreak]);
 
-  const today = new Date().toISOString().slice(0, 10);
+  // Use Europe/Bratislava date so the day flips at local midnight, matching the RPC.
+  const today = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Bratislava",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
   const canClaim = !streak || streak.last_claim_date !== today;
 
   const claim = async () => {
@@ -46,7 +52,14 @@ export function useDailyLoginReward() {
       const { data, error } = await (supabase as any).rpc("claim_daily_login_reward");
       if (error) throw error;
       await fetchStreak();
-      return data as { claimed: boolean; streak: number; bonus?: number; reason?: string };
+      return data as {
+        claimed: boolean;
+        streak: number;
+        bonus?: number;
+        reason?: string;
+        was_reset?: boolean;
+        missed_days?: number;
+      };
     } finally {
       setClaiming(false);
     }
