@@ -77,9 +77,16 @@ export default function DoctorsList() {
                 Book a paid video/consultation with a verified doctor.
               </p>
             </div>
-            <Button asChild variant="outline">
-              <Link to="/my-bookings/doctors">My bookings</Link>
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              <Button asChild variant="outline">
+                <Link to="/my-bookings/doctors">My bookings</Link>
+              </Button>
+              <Button asChild variant="secondary">
+                <Link to="/doctor-dashboard">
+                  <Stethoscope className="mr-1 h-4 w-4" /> I'm a doctor
+                </Link>
+              </Button>
+            </div>
           </div>
 
           <div className="relative max-w-md mb-6">
