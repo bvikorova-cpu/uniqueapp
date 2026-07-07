@@ -37,9 +37,19 @@ export function StreakMultiplierCard() {
   const onClaim = async () => {
     const res = await claim();
     if (res?.claimed) {
-      toast.success(`+${res.bonus} credit${(res.bonus ?? 1) === 1 ? "" : "s"}`, {
-        description: `Streak: ${res.streak} days 🔥`,
-      });
+      if (res.was_reset) {
+        const missed = res.missed_days ?? 0;
+        toast.warning("Streak reset 🔄", {
+          description:
+            missed > 0
+              ? `You missed ${missed} day${missed === 1 ? "" : "s"}. Fresh start: 1 day 🔥 (+${res.bonus} credit${(res.bonus ?? 1) === 1 ? "" : "s"})`
+              : `Fresh start: 1 day 🔥 (+${res.bonus} credit${(res.bonus ?? 1) === 1 ? "" : "s"})`,
+        });
+      } else {
+        toast.success(`+${res.bonus} credit${(res.bonus ?? 1) === 1 ? "" : "s"}`, {
+          description: `Streak: ${res.streak} days 🔥`,
+        });
+      }
     }
   };
 
