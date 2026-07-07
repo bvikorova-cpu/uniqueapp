@@ -425,6 +425,7 @@ import {
   MedicalRecords,
   InsuranceClaims,
   AdminClaimsInbox,
+  AdminDoctorVerifications,
   UniversalAnalyzer,
   AnalyzerResult,
   AnalyzerPricing,
