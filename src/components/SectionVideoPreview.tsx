@@ -39,7 +39,7 @@ export function SectionVideoPreview({
           io.disconnect();
         }
       },
-      { rootMargin: "800px 0px", threshold: 0.01 }
+      { rootMargin: "200px 0px", threshold: 0.01 }
     );
     io.observe(el);
     return () => io.disconnect();
