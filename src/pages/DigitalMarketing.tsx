@@ -8,6 +8,7 @@ import { useLearningContent } from "@/hooks/useLearningContent";
 import { TrendingUp, Clock, Star, Users } from "lucide-react";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { CourseAcademicActions } from "@/components/courses/CourseAcademicActions";
 const DigitalMarketing = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -206,6 +207,20 @@ const DigitalMarketing = () => {
                       : "Enroll Now"}
                   </Button>
                 </div>
+                <CourseAcademicActions
+                  meta={{
+                    module_key: "digital-marketing",
+                    module_label: "Digital Marketing",
+                    course_slug: course.id,
+                    course_title: course.title,
+                    description: course.description,
+                    level: course.level,
+                    duration: course.duration,
+                    price: course.price,
+                    skills: course.skills,
+                  }}
+                  unlocked={isPurchased(course.id, "marketing-course")}
+                />
               </div>
             </Card>
           ))}

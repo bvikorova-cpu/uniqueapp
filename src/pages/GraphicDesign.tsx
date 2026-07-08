@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLearningContent } from "@/hooks/useLearningContent";
 import { Palette, Clock, Star, Users } from "lucide-react";
 import { GraphicDesignAI } from "@/components/graphic-design/GraphicDesignAI";
+import { CourseAcademicActions } from "@/components/courses/CourseAcademicActions";
 
 const GraphicDesign = () => {
   const { toast } = useToast();
@@ -206,6 +207,20 @@ const GraphicDesign = () => {
                       : "Enroll Now"}
                   </Button>
                 </div>
+                <CourseAcademicActions
+                  meta={{
+                    module_key: "graphic-design",
+                    module_label: "Graphic Design",
+                    course_slug: training.id,
+                    course_title: training.title,
+                    description: training.description,
+                    level: training.level,
+                    duration: training.duration,
+                    price: training.price,
+                    skills: training.skills,
+                  }}
+                  unlocked={isPurchased(training.id, "design-training")}
+                />
               </div>
             </Card>
           ))}
