@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLearningContent } from "@/hooks/useLearningContent";
 import { Music, Clock, Star, Users } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { MusicStudioAI } from "@/components/music-production/MusicStudioAI";
 
 const MusicProduction = () => {
   const { toast } = useToast();
@@ -127,6 +128,10 @@ const MusicProduction = () => {
           <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
             Learn music production from industry professionals
           </p>
+        </div>
+
+        <div className="mb-8 sm:mb-12">
+          <MusicStudioAI />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">

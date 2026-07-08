@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useLearningContent } from "@/hooks/useLearningContent";
 import { Palette, Clock, Star, Users } from "lucide-react";
+import { GraphicDesignAI } from "@/components/graphic-design/GraphicDesignAI";
 
 const GraphicDesign = () => {
   const { toast } = useToast();
@@ -119,6 +120,10 @@ const GraphicDesign = () => {
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Master design with industry-leading courses and tools
           </p>
+        </div>
+
+        <div className="mb-8 sm:mb-12">
+          <GraphicDesignAI />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
