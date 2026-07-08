@@ -29,7 +29,12 @@ const PACKAGES = [
   { credits: 150, price: 40, label: "Ultimate · 150 credits · €40" },
 ];
 
+// Auto-recharge backend (`ai-auto-recharge` edge function) is not deployed yet.
+// Hide the card entirely until the backend ships to avoid CORS / 404 errors.
+const AUTO_RECHARGE_ENABLED = false;
+
 export const AutoRechargeCard = ({ currentBalance }: { currentBalance: number }) => {
+  if (!AUTO_RECHARGE_ENABLED) return null;
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [settings, setSettings] = useState<Settings>({
