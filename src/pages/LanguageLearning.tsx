@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useLearningContent } from "@/hooks/useLearningContent";
 import { Globe, Clock, Star, Users, CheckCircle } from "lucide-react";
+import { CourseAcademicActions } from "@/components/courses/CourseAcademicActions";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const LanguageLearning = () => {
