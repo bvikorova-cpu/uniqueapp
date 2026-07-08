@@ -26,11 +26,13 @@ export function HeroSlideshow() {
 
     // Defer mount until after first paint so LCP measures the gradient,
     // not the 11 MB video download.
+    // Defer mount past the LCP window (~2.5s target) so the video download
+    // never competes with critical resources on mobile.
     const w = window as any;
     const schedule = w.requestIdleCallback
-      ? (cb: () => void) => w.requestIdleCallback(cb, { timeout: 1200 })
-      : (cb: () => void) => setTimeout(cb, 400);
-    const id = schedule(() => setMount(true));
+      ? (cb: () => void) => w.requestIdleCallback(cb, { timeout: 3000 })
+      : (cb: () => void) => setTimeout(cb, 2500);
+    const id = schedule(() => setTimeout(() => setMount(true), 1500));
     return () => {
       if (w.cancelIdleCallback && typeof id === "number") w.cancelIdleCallback(id);
       else clearTimeout(id as any);

@@ -39,7 +39,7 @@ export function SectionVideoPreview({
           io.disconnect();
         }
       },
-      { rootMargin: "800px 0px", threshold: 0.01 }
+      { rootMargin: "200px 0px", threshold: 0.01 }
     );
     io.observe(el);
     return () => io.disconnect();
@@ -87,7 +87,7 @@ export function SectionVideoPreview({
             loop
             playsInline
             autoPlay
-            preload="auto"
+            preload="metadata"
             aria-label={label}
             onCanPlay={() => setIsReady(true)}
             className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
