@@ -226,6 +226,93 @@ async function generatePdf(opts: {
   return bytes;
 }
 
+async function generateWorkbookPdf(meta: any, curriculum: any): Promise<Uint8Array> {
+  const pdf = await PDFDocument.create();
+  const font = await pdf.embedFont(StandardFonts.Helvetica);
+  const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
+  const italic = await pdf.embedFont(StandardFonts.HelveticaOblique);
+  const purple = rgb(0.396, 0.169, 0.827);
+  const dark = rgb(0.09, 0.09, 0.15);
+  const grey = rgb(0.42, 0.42, 0.46);
+
+  const PW = 595, PH = 842, M = 48;
+  const wrap = (txt: string, f: any, size: number, maxW: number): string[] => {
+    const words = String(txt || "").split(/\s+/);
+    const lines: string[] = []; let cur = "";
+    for (const w of words) {
+      const test = cur ? `${cur} ${w}` : w;
+      if (f.widthOfTextAtSize(test, size) > maxW) { if (cur) lines.push(cur); cur = w; } else cur = test;
+    }
+    if (cur) lines.push(cur);
+    return lines;
+  };
+
+  let page = pdf.addPage([PW, PH]);
+  let y = PH - M;
+  const newPage = () => { page = pdf.addPage([PW, PH]); y = PH - M; };
+  const ensure = (h: number) => { if (y - h < M) newPage(); };
+  const drawH = (t: string, size: number, color = dark, f = bold) => {
+    const lines = wrap(t, f, size, PW - 2 * M);
+    for (const ln of lines) { ensure(size + 6); page.drawText(ln, { x: M, y: y - size, size, font: f, color }); y -= size + 6; }
+  };
+  const drawP = (t: string, size = 10, color = dark, f = font) => {
+    for (const para of String(t || "").split(/\n+/)) {
+      const lines = wrap(para, f, size, PW - 2 * M);
+      for (const ln of lines) { ensure(size + 4); page.drawText(ln, { x: M, y: y - size, size, font: f, color }); y -= size + 3; }
+      y -= 4;
+    }
+  };
+
+  // Cover
+  page.drawRectangle({ x: 0, y: PH - 120, width: PW, height: 120, color: purple });
+  page.drawText("UNIQUE LEARNING", { x: M, y: PH - 60, size: 14, font: bold, color: rgb(1, 1, 1) });
+  page.drawText("Course Workbook", { x: M, y: PH - 90, size: 22, font: bold, color: rgb(1, 1, 1) });
+  y = PH - 170;
+  drawH(meta.course_title, 22, purple);
+  drawP(meta.module_label || meta.module_key, 12, grey, italic);
+  drawP(meta.description || "", 11);
+  drawP(`Level: ${meta.level || "All levels"}   |   Duration: ${meta.duration || "—"}`, 10, grey, italic);
+  y -= 10;
+
+  if (curriculum?.overview) { drawH("Course Overview", 14, purple); drawP(curriculum.overview); }
+
+  if (Array.isArray(curriculum?.learning_outcomes) && curriculum.learning_outcomes.length) {
+    drawH("What you will learn", 14, purple);
+    for (const o of curriculum.learning_outcomes) drawP(`• ${o}`, 10);
+  }
+
+  (curriculum?.modules || []).forEach((m: any, mi: number) => {
+    newPage();
+    drawH(`Module ${mi + 1}: ${m.title}`, 16, purple);
+    if (m.summary) drawP(m.summary, 10, grey, italic);
+    (m.lessons || []).forEach((l: any, li: number) => {
+      ensure(60);
+      drawH(`Lesson ${mi + 1}.${li + 1}: ${l.title}`, 12, dark);
+      if (l.content) drawP(l.content, 10);
+      if (Array.isArray(l.key_points) && l.key_points.length) {
+        drawP("Key points:", 10, purple, bold);
+        for (const k of l.key_points) drawP(`  • ${k}`, 10);
+      }
+      if (l.exercise) { drawP("Exercise:", 10, purple, bold); drawP(l.exercise, 10); }
+      y -= 6;
+    });
+  });
+
+  if (curriculum?.final_project) {
+    newPage();
+    drawH("Final Capstone Project", 18, purple);
+    drawP(curriculum.final_project);
+  }
+
+  if (Array.isArray(curriculum?.resources) && curriculum.resources.length) {
+    ensure(60);
+    drawH("Resources", 14, purple);
+    for (const r of curriculum.resources) drawP(`• ${r.label}${r.hint ? " — " + r.hint : ""}`, 10);
+  }
+
+  return await pdf.save();
+}
+
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -243,14 +330,92 @@ Deno.serve(async (req) => {
     const meta = body.meta as any;
 
     if (!action) return json({ error: "action required" }, 400);
-    if (!["curriculum", "exam", "submit"].includes(action)) return json({ error: "unknown action" }, 400);
+    if (!["curriculum", "exam", "submit", "videos", "workbook", "feedback", "progress_get", "progress_set"].includes(action)) return json({ error: "unknown action" }, 400);
     if (!meta || !meta.module_key || !meta.course_slug || !meta.course_title) {
       return json({ error: "meta.module_key / course_slug / course_title required" }, 400);
     }
+    const course_key = `${meta.module_key}:${meta.course_slug}`;
 
     if (action === "curriculum") {
       const cached = await loadOrCreateCache(meta);
       return json({ content: cached.content });
+    }
+
+    if (action === "videos") {
+      // Returns 2 YouTube search-embed URLs per lesson_key (deterministic, cached inside curriculum content)
+      const lessonKey = String(body.lesson_key || "").trim();
+      const lessonTitle = String(body.lesson_title || "").trim();
+      if (!lessonKey || !lessonTitle) return json({ error: "lesson_key & lesson_title required" }, 400);
+      const q1 = encodeURIComponent(`${lessonTitle} ${meta.course_title} tutorial`);
+      const q2 = encodeURIComponent(`${lessonTitle} explained masterclass`);
+      return json({
+        videos: [
+          { title: `Tutorial: ${lessonTitle}`, embed_url: `https://www.youtube.com/embed?listType=search&list=${q1}` },
+          { title: `Masterclass: ${lessonTitle}`, embed_url: `https://www.youtube.com/embed?listType=search&list=${q2}` },
+        ],
+      });
+    }
+
+    if (action === "progress_get") {
+      if (!user) return json({ error: "auth required" }, 401);
+      const { data: rows } = await admin
+        .from("education_lesson_progress")
+        .select("lesson_key, completed_at")
+        .eq("user_id", user.id)
+        .eq("course_key", course_key);
+      return json({ completed: (rows || []).map((r: any) => r.lesson_key) });
+    }
+
+    if (action === "progress_set") {
+      if (!user) return json({ error: "auth required" }, 401);
+      const lessonKey = String(body.lesson_key || "").trim();
+      const completed = body.completed !== false;
+      if (!lessonKey) return json({ error: "lesson_key required" }, 400);
+      if (completed) {
+        await admin.from("education_lesson_progress").upsert(
+          { user_id: user.id, course_key, lesson_key: lessonKey },
+          { onConflict: "user_id,course_key,lesson_key" },
+        );
+      } else {
+        await admin.from("education_lesson_progress").delete()
+          .eq("user_id", user.id).eq("course_key", course_key).eq("lesson_key", lessonKey);
+      }
+      return json({ ok: true });
+    }
+
+    if (action === "workbook") {
+      if (!user) return json({ error: "auth required" }, 401);
+      const rl = rateLimit(`workbook:${user.id}`, 5, 60 * 60 * 1000);
+      if (!rl.ok) return json({ error: "rate_limited", retry_in_ms: rl.resetIn }, 429);
+      const cached = await loadOrCreateCache(meta);
+      const pdfBytes = await generateWorkbookPdf(meta, cached.content);
+      const objectPath = `${user.id}/workbook-${meta.module_key}-${meta.course_slug}.pdf`;
+      const { error: upErr } = await admin.storage
+        .from("certificates")
+        .upload(objectPath, pdfBytes, { contentType: "application/pdf", upsert: true });
+      if (upErr) throw upErr;
+      const { data: pub } = admin.storage.from("certificates").getPublicUrl(objectPath);
+      return json({ pdf_url: pub.publicUrl });
+    }
+
+    if (action === "feedback") {
+      if (!user) return json({ error: "auth required" }, 401);
+      const rl = rateLimit(`feedback:${user.id}`, 30, 60 * 60 * 1000);
+      if (!rl.ok) return json({ error: "rate_limited", retry_in_ms: rl.resetIn }, 429);
+      const lessonKey = String(body.lesson_key || "").trim();
+      const lessonTitle = String(body.lesson_title || "").trim();
+      const exercise = String(body.exercise || "").trim();
+      const submission = String(body.submission || "").trim().slice(0, 8000);
+      if (!lessonKey || !submission) return json({ error: "lesson_key & submission required" }, 400);
+      const sys = "You are an expert tutor. Return STRICT JSON: {\"score\":0-100,\"strengths\":[\"...\"],\"improvements\":[\"...\"],\"next_step\":\"one concrete action\",\"summary\":\"2-3 sentences\"}. Be encouraging, specific, and reference concrete parts of the submission.";
+      const usr = `Course: ${meta.course_title}\nLesson: ${lessonTitle}\nExercise brief: ${exercise}\n\nLearner submission:\n${submission}`;
+      const fb = await aiJson(sys, usr);
+      const score = Math.max(0, Math.min(100, Number(fb?.score ?? 0)));
+      await admin.from("education_exercise_submissions").upsert(
+        { user_id: user.id, course_key, lesson_key: lessonKey, submission_text: submission, ai_feedback: fb, score },
+        { onConflict: "user_id,course_key,lesson_key" },
+      );
+      return json({ feedback: fb, score });
     }
 
     if (action === "exam") {

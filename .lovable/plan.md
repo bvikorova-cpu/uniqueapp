@@ -1,139 +1,76 @@
+## Fáza 5b — plán (4 body + oprava platenia)
 
-# Fáza 1 — Fundraising (7 stránok)
+### 🔧 A) Oprava platenia (hneď, malý fix)
 
-Prvá vlna z tvojho master plánu. Cieľom je nahradiť "mŕtve" CTA placeholdery reálnym paid workflow a spustiť verejné darovacie kampane s embed widgetom.
+**Root cause (2 problémy):**
+1. `useLearningContent.purchaseContent` posiela `{ contentId, contentType, title, price }`, ale `create-checkout` číta `body.amount` (v centoch) — takže Stripe by účtoval default **€19.99** namiesto skutočnej ceny (napr. €199).
+2. Toast "Failed to send request" = FunctionsFetchError. Najpravdepodobnejšie: session expirovala počas kliknutia (JWT rejected na gateway), alebo network fail. Client wrapper aj proxy fungujú (overené `curl`om — endpoint živý).
 
-## Rozsah (7 stránok)
+**Fix:**
+- `useLearningContent.ts`: pridať `amount: Math.round(price * 100)`, `productName: title`, a pred invoke znova volať `supabase.auth.getSession()` s auto-refresh (`getUser()`).
+- Ak session neplatný → jasný toast "Prihlás sa znova" + presmerovanie na `/auth`.
+- Zachytávať `FunctionsFetchError` zvlášť a ukázať "Skontroluj internet / prihlásenie".
 
-1. **FundraisingHub** `/fundraising` — objav kampaní, filter podľa kategórie/urgency.
-2. **CampaignDetail** `/fundraising/:slug` — príbeh, progress bar, donor wall, share.
-3. **CreateCampaign** `/fundraising/new` — kreátor kampane (autor = user).
-4. **CampaignDashboard** `/fundraising/dashboard/:id` — pre autora: donácie, payouts, updates.
-5. **RecurringDonationsHub** `/my-donations` — donor vidí svoje aktívne recurring donácie (cancel only).
-6. **TalentSponsorship** `/fundraising/talents` — one-off darcovstvo pre talenty (Megatalent kandidátov).
-7. **EmbedWidget** `/embed/campaign/:slug` — verejný iframe + oEmbed endpoint.
+---
 
-## Rozhodnutia (potvrdené používateľom)
+### 📚 B) 4 hlavné body (Phase 5b) pre 40 kurzov
 
-- Embed: **plnohodnotný iframe + oEmbed discovery** (`/oembed?url=...`).
-- Talent sponsorship: **jednorazové** darcovstvo (Stripe `mode=payment`).
-- Recurring donations: **iba cancel** (žiadny pause/resume).
+#### 1. **Video knižnica per lekcia** (najväčšia hodnota)
+- Nová akcia `videos` v `module-course-exam` edge function: pre danú lekciu AI (Gemini) vygeneruje 2× kurátorské YouTube search-query stringy (napr. `"cinematic lighting portrait tutorial site:youtube.com"`).
+- Cachne do novej tabuľky `module_course_lesson_videos` (lesson_key → [{title, query, embed_url}]).
+- Alternatíva bez YouTube API: použijeme YouTube search-embed URL `https://www.youtube.com/embed?listType=search&list={query}` (bez API kľúča, funguje priamo v iframe).
+- `CourseCurriculumDialog` dostane pod každou lekciou 1–2 rozbaľovacie video panely.
 
-## Peniaze & splits
+#### 2. **Progress tracking per lekcia**
+- Nová tabuľka `education_lesson_progress` (user_id, course_key, lesson_key, completed_at) + RLS + GRANT.
+- Checkbox "Mark lesson complete" v `CourseCurriculumDialog`.
+- Progress bar hore v dialógu (X/18 lekcií hotových).
+- **Exam zamknutý, kým nie je hotových ≥ 80 % lekcií** (namiesto len "purchased").
 
-- Platform fee = **15 %** (`FUNDRAISING_FEE_BPS = 1500`), autor kampane dostane 85 %.
-- EUR only (v súlade s core memory).
-- One-off donácie: Stripe Checkout `mode=payment` → `verify-fundraising-donation` zapíše `donations` + `fundraising_payouts` (85/15).
-- Recurring: Stripe subscription (mesačný interval), split rovnaký, autopayout mesačne cez existujúci `auto-payout-cron`.
+#### 3. **Downloadable workbook PDF**
+- Nová akcia `workbook` v edge function: vygeneruje celý sylabus (18 lekcií, key points, cvičenia, final project) ako A4 PDF cez `pdf-lib`, uloží do bucketu `certificates` (existuje), vráti URL.
+- Tlačidlo "Download Workbook PDF" v curriculum dialógu (unlocked po zaplatení).
 
-## Databázová schéma
+#### 4. **Practical exercise submission + AI feedback**
+- Nová tabuľka `education_exercise_submissions` (user_id, course_key, lesson_key, submission_text, ai_feedback, score).
+- Textarea "Submit your exercise" pod každou lekciou (unlocked po zaplatení).
+- Nová akcia `feedback` v edge function: AI (Gemini) posúdi text vs. cvičenie a vráti štruktúrovaný feedback (silné stránky, návrhy, skóre 0–100). **0 kreditov** (kurz už zaplatený).
+- Feedback sa uloží a zobrazí, môže sa upravovať a resubmittnúť.
 
-```text
-fundraising_campaigns (NEW)
-  owner_id, slug (unique), title, story_md, cover_url, category,
-  goal_cents, currency='EUR', deadline_at, status enum: draft|active|paused|closed,
-  urgency enum: normal|urgent|critical, allow_recurring bool
+---
 
-donations (NEW)
-  campaign_id, donor_id nullable (guest), amount_cents, currency='EUR',
-  is_recurring bool, stripe_session_id, stripe_subscription_id nullable,
-  message text nullable, is_anonymous bool, created_at
+### 🗂️ Technický rozpis súborov
 
-fundraising_payouts (NEW)
-  donation_id, campaign_owner_id, gross_cents, fee_cents, net_cents,
-  status enum: pending|paid|cancelled, stripe_transfer_id, paid_at
+**DB migrácie (1 migrácia, 2 tabuľky):**
+- `education_lesson_progress` + RLS + GRANT
+- `education_exercise_submissions` + RLS + GRANT
+- (`module_course_lesson_videos` cache — voliteľné, môže zdieľať `module_course_content_cache`)
 
-campaign_updates (NEW)
-  campaign_id, author_id, body_md, created_at
+**Edge function** `supabase/functions/module-course-exam/index.ts`:
+- Pridať akcie: `videos`, `workbook`, `feedback`, `progress_get`, `progress_set`
 
-recurring_donations (NEW)
-  donor_id, campaign_id, stripe_subscription_id (unique),
-  amount_cents, status enum: active|cancelled, cancelled_at
+**Frontend:**
+- `src/lib/moduleCourseApi.ts` — pridať `videos()`, `workbook()`, `feedback()`, `progress()`, `markLessonComplete()`
+- `src/components/courses/CourseCurriculumDialog.tsx` — pridať progress bar, checkboxy, video paneli, exercise textarea, workbook download
+- `src/components/courses/CourseAcademicActions.tsx` — `unlocked` zmeniť na 2-fázové: `purchased` (curriculum+videos+workbook+exercises) vs `readyForExam` (>=80 % lekcií hotových)
+- `src/hooks/useLearningContent.ts` — oprava platenia (amount, session refresh, error handling)
 
-talent_sponsorships (NEW)
-  talent_id (FK profiles), sponsor_id nullable, amount_cents,
-  stripe_session_id, message text, created_at
-```
+---
 
-**RLS:**
-- `fundraising_campaigns`: public SELECT ak `status='active'`; owner full.
-- `donations`: donor vidí svoje; owner kampane vidí donácie na svoju kampaň; anon donation viditeľná ako "Anonymous" cez sanitizovaný view.
-- `fundraising_payouts`: owner iba na svoje; service_role full.
-- `recurring_donations`: donor iba svoje.
-- `talent_sponsorships`: talent vidí prijaté, sponsor vidí odoslané.
+### ⚠️ Poctivé upozornenia
+- **Video kvalita**: YouTube search-embed hrá reálne videá, ale konkrétne video volí YouTube algoritmus (nie my). AI dodá dobré vyhľadávacie frázy → relevantné výsledky, no nie sme kurátori každého jedného videa. Na 100 % kurátorstvo by sme potrebovali YouTube Data API kľúč a manuálnu validáciu.
+- **Rozsah**: 40 kurzov × 18 lekcií = **720 lekcií**. AI vygeneruje sylabus/videá on-demand pri prvom otvorení a cachne — nie všetko naraz. Prvý user daného kurzu čaká ~30 s, ďalší okamžite.
+- **Kredity**: cvičenia s AI feedbackom sú **zdarma** pre zaplatených userov (rovnako ako curriculum a exam). Náklady znášame my z LOVABLE_API_KEY.
 
-Každý CREATE TABLE dostane povinný GRANT blok (authenticated + service_role, anon len pre public read na campaigns + sanitizovaný donor wall).
+---
 
-## Edge functions
+### 🎯 Poradie realizácie (v 1 dávke)
+1. Migrácia DB (2 tabuľky + RLS + GRANT)
+2. Rozšírenie `module-course-exam/index.ts` (videos, workbook, feedback, progress)
+3. `moduleCourseApi.ts` — nové metódy
+4. `CourseCurriculumDialog.tsx` — kompletný redesign s tabmi (Curriculum | Videos | Exercises | Workbook)
+5. `CourseAcademicActions.tsx` — logika `readyForExam`
+6. `useLearningContent.ts` — payment fix
+7. Verifikácia: `tsgo`, curl na jednu akciu, screenshot curriculum dialógu
 
-1. `create-fundraising-donation` — one-off Checkout session, `mode=payment`, guest checkout povolený.
-2. `create-recurring-donation` — Stripe subscription, len authenticated, `mode=subscription`.
-3. `verify-fundraising-donation` — post-Checkout: zapíše `donations` + `fundraising_payouts` (15% fee), pošle notif ownerovi.
-4. `cancel-recurring-donation` — donor cancel; volá `stripe.subscriptions.cancel`, prepne `recurring_donations.status='cancelled'`.
-5. `create-talent-sponsorship` — one-off Checkout pre `/fundraising/talents`.
-6. `verify-talent-sponsorship` — potvrdí platbu, zapíše `talent_sponsorships` + payout záznam.
-7. `fundraising-oembed` — public GET `?url=https://uniqueapp.fun/fundraising/:slug` → JSON oEmbed 1.0 rich s iframe HTML.
-8. Webhook rozšírenie `stripe-webhook`: recurring `invoice.paid` → nový `donations` riadok + payout split.
-
-## Frontend
-
-```text
-src/pages/fundraising/
-  FundraisingHub.tsx
-  CampaignDetail.tsx
-  CreateCampaign.tsx
-  CampaignDashboard.tsx
-  TalentSponsorship.tsx
-  EmbedCampaign.tsx           /embed/campaign/:slug (bez Navbaru, minimal chrome)
-
-src/pages/donations/
-  RecurringDonationsHub.tsx   /my-donations
-
-src/components/fundraising/
-  CampaignCard.tsx
-  DonationDrawer.tsx           — amount picker, one-off vs recurring toggle
-  ProgressGoal.tsx
-  DonorWall.tsx                — sanitized, honors is_anonymous
-  ShareRow.tsx                 — copy link + "Copy embed code" (iframe snippet)
-  OEmbedLinkTag.tsx            — <link rel="alternate" type="application/json+oembed"> injection cez react-helmet-async
-  CampaignUpdateComposer.tsx
-  HowItWorksFundraising.tsx    — povinný EN explainer (per how-it-works-coverage memory)
-```
-
-Wire "mŕtvych" CTA (aktuálne `toast("Coming soon")`):
-- `NutritionHub`, `FitnessWellness`, `AIGeneration`, `GraphicDesign`, `Photography` — CTA "Support creator" → otvorí `DonationDrawer` s pre-filled campaign owner = creator (ak má aktívnu kampaň).
-
-## Testy
-
-- `src/test/fundraising-phase1.test.ts` — 85/15 split math, EUR-only enforcement, guest donation flow.
-- `src/test/fundraising-phase3.test.ts` — oEmbed JSON schema (type, version, html iframe with correct src).
-- `e2e/authed/fundraising-nathalie.spec.ts` (už existuje) — rozšíriť o recurring cancel flow.
-
-## SEO & metadata
-
-- CampaignDetail: dynamic `<title>{campaign.title} — Fundraising | Unique</title>`, meta description z `story_md` (prvých 155 char), JSON-LD `DonateAction`.
-- Sitemap: doplniť aktívne kampane do `sitemap-index.xml` generátora.
-
-## Bezpečnosť
-
-- Rate limit `create-fundraising-donation`: 10/min/IP (existujúci `utils/rateLimit.ts`).
-- Sanitizácia `story_md` a `body_md` cez existujúci sanitize-html util (test už pokrýva).
-- QR/donor wall: nikdy nevystaviť donor email/full_name ak `is_anonymous=true`.
-
-## Postup implementácie
-
-1. Migration (všetky tabuľky + GRANTs + RLS + trigger `updated_at`).
-2. Edge functions (8 ks) + secrets check (`STRIPE_SECRET_KEY` je už set).
-3. Frontend routes v `App.tsx` + lazy import v `routes/lazyPages.ts`.
-4. Komponenty + `HowItWorksFundraising`.
-5. CTA wire pre 5 hubov z Fázy 4.
-6. Testy (3 nové unit + rozšírenie e2e).
-7. Memory update: `mem/features/fundraising.md` + index.
-
-Odhad: **7 str, ~25–30 h implementácie + verifikácia**.
-
-## Otvorené na potvrdenie
-
-- **Slug pre embed route**: `/embed/campaign/:slug` OK, alebo radšej `/e/:slug` (kratšie, lepšie pre social share)?
-
-Po tvojom "OK" spustím migráciou. Nič nebudem tvrdiť ako hotové bez testu/dôkazu.
+**Odhad**: veľká zmena, ~6-8 súborov, jedna migrácia. Idem na to naraz. Potvrď "áno" a začnem.

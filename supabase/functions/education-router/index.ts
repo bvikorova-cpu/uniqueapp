@@ -1,8 +1,10 @@
 // Universal Education edge function - one slot handles all education actions
-// Actions: srs.review, srs.due, daily.today, daily.submit, achievement.check,
-//          league.update, league.top, cert.issue, math.solve, notes.generate,
-//          tutor.chat, deck.ai_generate
+// Actions: srs.*, daily.*, achievement.*, league.*, cert.*, math.*, notes.*,
+//          tutor.*, deck.*, course.* (curriculum/exam/submit/videos/workbook/
+//          progress_get/progress_set/feedback)
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { PDFDocument, StandardFonts, rgb } from "npm:pdf-lib@1.17.1";
+import QRCode from "npm:qrcode@1.5.4";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -11,8 +13,36 @@ const corsHeaders = {
 };
 
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+
+// ---- per-isolate rate limiter ----
+const rlBuckets = new Map<string, { count: number; resetAt: number }>();
+function rateLimit(key: string, max: number, windowMs: number) {
+  const now = Date.now();
+  const b = rlBuckets.get(key);
+  if (!b || now > b.resetAt) { rlBuckets.set(key, { count: 1, resetAt: now + windowMs }); return { ok: true, resetIn: windowMs }; }
+  if (b.count >= max) return { ok: false, resetIn: b.resetAt - now };
+  b.count++; return { ok: true, resetIn: b.resetAt - now };
+}
+
+async function aiJsonLovable(system: string, user: string): Promise<any> {
+  const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "google/gemini-2.5-flash",
+      messages: [{ role: "system", content: system }, { role: "user", content: user }],
+      response_format: { type: "json_object" },
+    }),
+  });
+  if (res.status === 402) throw new Error("ai_credits_exhausted");
+  if (!res.ok) throw new Error(`ai_error_${res.status}`);
+  const data = await res.json();
+  const raw = data?.choices?.[0]?.message?.content ?? "{}";
+  try { return JSON.parse(raw); } catch { const m = raw.match(/\{[\s\S]*\}/); return m ? JSON.parse(m[0]) : {}; }
+}
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -467,6 +497,26 @@ Deno.serve(async (req) => {
         return json({ cards });
       }
 
+      // ============================================================
+      // Module courses: curriculum + exam + certificate + workbook + progress
+      // ============================================================
+      case "course.curriculum":
+      case "course.exam":
+      case "course.submit":
+      case "course.videos":
+      case "course.workbook":
+      case "course.progress_get":
+      case "course.progress_set":
+      case "course.feedback": {
+        const meta = body.meta as any;
+        if (!meta || !meta.module_key || !meta.course_slug || !meta.course_title) {
+          return json({ error: "meta.module_key / course_slug / course_title required" }, 400);
+        }
+        const course_key = `${meta.module_key}:${meta.course_slug}`;
+        const sub = action.slice("course.".length);
+        return await handleCourse(sub, meta, course_key, body, user, admin, req);
+      }
+
       default:
         return json({ error: `unknown action: ${action}` }, 400);
     }
@@ -475,3 +525,279 @@ Deno.serve(async (req) => {
     return json({ error: e?.message ?? "internal_error" }, 500);
   }
 });
+
+// ============================================================
+// Course helpers (curriculum, exam, cert, workbook, progress, feedback)
+// ============================================================
+
+async function generateCurriculum(meta: any) {
+  const sys =
+    "You are a senior curriculum designer. Return STRICT JSON with schema: " +
+    '{"overview":"string (2-3 rich paragraphs)","learning_outcomes":["..."],"modules":[{"title":"Module title","summary":"1 paragraph","lessons":[{"title":"Lesson title","content":"3-5 detailed paragraphs, concrete examples, numbers, tools, exercises","key_points":["...","..."],"exercise":"a practical exercise for the learner"}]}],"final_project":"detailed final capstone project brief","resources":[{"label":"...","hint":"..."}]}. ' +
+    "Write 6 modules with 3 lessons each (18 lessons total). Content must be rich, practical, worth the course price, in English.";
+  const usr =
+    `Course: ${meta.course_title}\nDescription: ${meta.description}\n` +
+    `Level: ${meta.level}\nDuration: ${meta.duration}\nSkills: ${(meta.skills || []).join(", ")}\nPrice paid: €${meta.price}\n\n` +
+    "Design an in-depth curriculum that fully justifies the price paid.";
+  return await aiJsonLovable(sys, usr);
+}
+
+async function generateQuizPool(meta: any, curriculum: any) {
+  const sys =
+    "You are an assessment designer. Return STRICT JSON: " +
+    '{"questions":[{"q":"question text","options":["A","B","C","D"],"answer_index":0,"explanation":"brief"}]}. ' +
+    "Produce EXACTLY 20 rigorous multiple-choice questions covering the full curriculum. " +
+    "Each question has 4 options and exactly one correct answer. Vary difficulty. No trick questions. Use English.";
+  const usr = `Course: ${meta.course_title}\nCurriculum:\n` +
+    (curriculum?.modules || []).map((m: any, i: number) =>
+      `Module ${i + 1}: ${m.title}\n` +
+      (m.lessons || []).map((l: any) => ` - ${l.title}: ${(l.key_points || []).slice(0, 3).join("; ")}`).join("\n")
+    ).join("\n");
+  const out = await aiJsonLovable(sys, usr);
+  const arr = Array.isArray(out?.questions) ? out.questions : [];
+  return arr.filter((q: any) => q && typeof q.q === "string" && Array.isArray(q.options) && q.options.length === 4 && Number.isInteger(q.answer_index));
+}
+
+async function loadOrCreateCache(admin: any, meta: any) {
+  const course_key = `${meta.module_key}:${meta.course_slug}`;
+  const { data: cached } = await admin.from("module_course_content_cache").select("*").eq("course_key", course_key).maybeSingle();
+  if (cached && cached.content && Array.isArray(cached.quiz_pool) && cached.quiz_pool.length >= 10) return cached;
+  const content = cached?.content ?? await generateCurriculum(meta);
+  const quiz_pool = (cached?.quiz_pool && Array.isArray(cached.quiz_pool) && cached.quiz_pool.length >= 10)
+    ? cached.quiz_pool : await generateQuizPool(meta, content);
+  const row = { course_key, module_key: meta.module_key, course_slug: meta.course_slug, course_title: meta.course_title, content, quiz_pool, updated_at: new Date().toISOString() };
+  await admin.from("module_course_content_cache").upsert(row);
+  return row;
+}
+
+function pickExamQuestions(pool: any[]) { return [...pool].sort(() => Math.random() - 0.5).slice(0, 10); }
+function makeCertNumber() {
+  const rand = crypto.getRandomValues(new Uint8Array(4));
+  const hex = Array.from(rand).map((b) => b.toString(16).padStart(2, "0")).join("").toUpperCase();
+  return `UNIQ-${new Date().getFullYear()}-${hex}`;
+}
+function pickAnswerKey(pool: any[], picked: any[]): number[] {
+  return picked.map((q: any) => { const f = pool.find((p: any) => p.q === q.q); return f ? Number(f.answer_index) : 0; });
+}
+const SIGNING_SECRET = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "unique-fallback-secret";
+async function signKey(key: number[]) {
+  const payload = JSON.stringify({ k: key, t: Date.now() });
+  const enc = new TextEncoder();
+  const ck = await crypto.subtle.importKey("raw", enc.encode(SIGNING_SECRET), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const sig = await crypto.subtle.sign("HMAC", ck, enc.encode(payload));
+  return btoa(payload) + "." + btoa(String.fromCharCode(...new Uint8Array(sig)));
+}
+async function verifyKey(token: string): Promise<number[] | null> {
+  try {
+    const [p, s] = token.split("."); if (!p || !s) return null;
+    const payload = atob(p); const enc = new TextEncoder();
+    const ck = await crypto.subtle.importKey("raw", enc.encode(SIGNING_SECRET), { name: "HMAC", hash: "SHA-256" }, false, ["verify"]);
+    const sig = Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+    if (!(await crypto.subtle.verify("HMAC", ck, sig, enc.encode(payload)))) return null;
+    const parsed = JSON.parse(payload);
+    if (!Array.isArray(parsed.k)) return null;
+    if (typeof parsed.t === "number" && Date.now() - parsed.t > 2 * 60 * 60 * 1000) return null;
+    return parsed.k.map((n: any) => Number(n));
+  } catch { return null; }
+}
+
+async function generateCertPdf(opts: { recipient: string; course: string; module: string; score: number; certNumber: string; verifyUrl: string }) {
+  const pdf = await PDFDocument.create();
+  const page = pdf.addPage([842, 595]);
+  const font = await pdf.embedFont(StandardFonts.HelveticaBold);
+  const fontLight = await pdf.embedFont(StandardFonts.Helvetica);
+  const fontItalic = await pdf.embedFont(StandardFonts.HelveticaOblique);
+  const purple = rgb(0.396, 0.169, 0.827); const pink = rgb(1, 0.078, 0.576);
+  const dark = rgb(0.09, 0.09, 0.15); const grey = rgb(0.42, 0.42, 0.46);
+  const M = 24;
+  page.drawRectangle({ x: M, y: M, width: 842 - 2 * M, height: 595 - 2 * M, borderColor: purple, borderWidth: 2 });
+  page.drawRectangle({ x: M + 8, y: M + 8, width: 842 - 2 * (M + 8), height: 595 - 2 * (M + 8), borderColor: pink, borderWidth: 1 });
+  page.drawRectangle({ x: M + 16, y: 595 - M - 60, width: 842 - 2 * (M + 16), height: 46, color: purple });
+  page.drawText("UNIQUE", { x: M + 32, y: 595 - M - 46, size: 22, font, color: rgb(1, 1, 1) });
+  page.drawText("CERTIFICATE OF COMPLETION", { x: M + 130, y: 595 - M - 42, size: 14, font: fontLight, color: rgb(1, 1, 1) });
+  page.drawText("uniqueapp.fun", { x: 842 - M - 120, y: 595 - M - 42, size: 11, font: fontLight, color: rgb(1, 1, 1) });
+  page.drawText("This is to certify that", { x: 421 - 90, y: 420, size: 14, font: fontItalic, color: grey });
+  const nameW = font.widthOfTextAtSize(opts.recipient, 34);
+  page.drawText(opts.recipient, { x: 421 - nameW / 2, y: 370, size: 34, font, color: dark });
+  page.drawLine({ start: { x: 421 - nameW / 2 - 20, y: 362 }, end: { x: 421 + nameW / 2 + 20, y: 362 }, thickness: 1.5, color: purple });
+  page.drawText("has successfully completed the course", { x: 421 - 130, y: 330, size: 13, font: fontLight, color: grey });
+  const cW = font.widthOfTextAtSize(opts.course, 22);
+  page.drawText(opts.course, { x: 421 - cW / 2, y: 290, size: 22, font, color: purple });
+  const modText = `in the ${opts.module} track`;
+  const mW = fontItalic.widthOfTextAtSize(modText, 12);
+  page.drawText(modText, { x: 421 - mW / 2, y: 268, size: 12, font: fontItalic, color: grey });
+  page.drawCircle({ x: 421, y: 200, size: 38, color: pink });
+  const sT = `${Math.round(opts.score)}%`; const sW = font.widthOfTextAtSize(sT, 22);
+  page.drawText(sT, { x: 421 - sW / 2, y: 192, size: 22, font, color: rgb(1, 1, 1) });
+  page.drawText("Final Exam Score", { x: 421 - 45, y: 155, size: 10, font: fontLight, color: grey });
+  try {
+    const qr = await QRCode.toDataURL(opts.verifyUrl, { errorCorrectionLevel: "M", margin: 0, width: 220, color: { dark: "#1a1a26", light: "#ffffff" } });
+    const bin = Uint8Array.from(atob(qr.split(",")[1]), (c) => c.charCodeAt(0));
+    const img = await pdf.embedPng(bin);
+    page.drawImage(img, { x: 842 - M - 40 - 90, y: 130, width: 90, height: 90 });
+    page.drawText("Scan to verify", { x: 842 - M - 40 - 90 + 8, y: 118, size: 9, font: fontLight, color: grey });
+  } catch {}
+  const dateStr = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" });
+  page.drawText(`Issued: ${dateStr}`, { x: M + 40, y: 90, size: 11, font: fontLight, color: dark });
+  page.drawText(`Certificate No: ${opts.certNumber}`, { x: M + 40, y: 72, size: 11, font, color: dark });
+  page.drawText(`Verify: ${opts.verifyUrl}`, { x: M + 40, y: 54, size: 10, font: fontLight, color: purple });
+  page.drawText("Unique Learning", { x: M + 300, y: 90, size: 12, font, color: dark });
+  page.drawText("Authorised Signatory", { x: M + 300, y: 76, size: 9, font: fontLight, color: grey });
+  page.drawLine({ start: { x: M + 300, y: 100 }, end: { x: M + 440, y: 100 }, thickness: 0.8, color: dark });
+  return await pdf.save();
+}
+
+async function generateWorkbookPdf(meta: any, curriculum: any): Promise<Uint8Array> {
+  const pdf = await PDFDocument.create();
+  const font = await pdf.embedFont(StandardFonts.Helvetica);
+  const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
+  const italic = await pdf.embedFont(StandardFonts.HelveticaOblique);
+  const purple = rgb(0.396, 0.169, 0.827); const dark = rgb(0.09, 0.09, 0.15); const grey = rgb(0.42, 0.42, 0.46);
+  const PW = 595, PH = 842, M = 48;
+  const wrap = (t: string, f: any, s: number, w: number): string[] => {
+    const words = String(t || "").split(/\s+/); const lines: string[] = []; let cur = "";
+    for (const wd of words) { const tt = cur ? `${cur} ${wd}` : wd; if (f.widthOfTextAtSize(tt, s) > w) { if (cur) lines.push(cur); cur = wd; } else cur = tt; }
+    if (cur) lines.push(cur); return lines;
+  };
+  let page = pdf.addPage([PW, PH]); let y = PH - M;
+  const newPage = () => { page = pdf.addPage([PW, PH]); y = PH - M; };
+  const ensure = (h: number) => { if (y - h < M) newPage(); };
+  const drawH = (t: string, size: number, color = dark, f = bold) => {
+    for (const ln of wrap(t, f, size, PW - 2 * M)) { ensure(size + 6); page.drawText(ln, { x: M, y: y - size, size, font: f, color }); y -= size + 6; }
+  };
+  const drawP = (t: string, size = 10, color = dark, f = font) => {
+    for (const p of String(t || "").split(/\n+/)) {
+      for (const ln of wrap(p, f, size, PW - 2 * M)) { ensure(size + 4); page.drawText(ln, { x: M, y: y - size, size, font: f, color }); y -= size + 3; }
+      y -= 4;
+    }
+  };
+  page.drawRectangle({ x: 0, y: PH - 120, width: PW, height: 120, color: purple });
+  page.drawText("UNIQUE LEARNING", { x: M, y: PH - 60, size: 14, font: bold, color: rgb(1, 1, 1) });
+  page.drawText("Course Workbook", { x: M, y: PH - 90, size: 22, font: bold, color: rgb(1, 1, 1) });
+  y = PH - 170;
+  drawH(meta.course_title, 22, purple);
+  drawP(meta.module_label || meta.module_key, 12, grey, italic);
+  drawP(meta.description || "", 11);
+  drawP(`Level: ${meta.level || "All levels"}   |   Duration: ${meta.duration || "—"}`, 10, grey, italic); y -= 10;
+  if (curriculum?.overview) { drawH("Course Overview", 14, purple); drawP(curriculum.overview); }
+  if (Array.isArray(curriculum?.learning_outcomes) && curriculum.learning_outcomes.length) {
+    drawH("What you will learn", 14, purple);
+    for (const o of curriculum.learning_outcomes) drawP(`• ${o}`, 10);
+  }
+  (curriculum?.modules || []).forEach((m: any, mi: number) => {
+    newPage(); drawH(`Module ${mi + 1}: ${m.title}`, 16, purple);
+    if (m.summary) drawP(m.summary, 10, grey, italic);
+    (m.lessons || []).forEach((l: any, li: number) => {
+      ensure(60);
+      drawH(`Lesson ${mi + 1}.${li + 1}: ${l.title}`, 12, dark);
+      if (l.content) drawP(l.content, 10);
+      if (Array.isArray(l.key_points) && l.key_points.length) {
+        drawP("Key points:", 10, purple, bold);
+        for (const k of l.key_points) drawP(`  • ${k}`, 10);
+      }
+      if (l.exercise) { drawP("Exercise:", 10, purple, bold); drawP(l.exercise, 10); }
+      y -= 6;
+    });
+  });
+  if (curriculum?.final_project) { newPage(); drawH("Final Capstone Project", 18, purple); drawP(curriculum.final_project); }
+  if (Array.isArray(curriculum?.resources) && curriculum.resources.length) {
+    ensure(60); drawH("Resources", 14, purple);
+    for (const r of curriculum.resources) drawP(`• ${r.label}${r.hint ? " — " + r.hint : ""}`, 10);
+  }
+  return await pdf.save();
+}
+
+async function handleCourse(sub: string, meta: any, course_key: string, body: any, user: any, admin: any, req: Request) {
+  if (sub === "curriculum") {
+    const cached = await loadOrCreateCache(admin, meta);
+    return json({ content: cached.content });
+  }
+  if (sub === "videos") {
+    const lk = String(body.lesson_key || "").trim();
+    const lt = String(body.lesson_title || "").trim();
+    if (!lk || !lt) return json({ error: "lesson_key & lesson_title required" }, 400);
+    const q1 = encodeURIComponent(`${lt} ${meta.course_title} tutorial`);
+    const q2 = encodeURIComponent(`${lt} explained masterclass`);
+    return json({
+      videos: [
+        { title: `Tutorial: ${lt}`, embed_url: `https://www.youtube.com/embed?listType=search&list=${q1}` },
+        { title: `Masterclass: ${lt}`, embed_url: `https://www.youtube.com/embed?listType=search&list=${q2}` },
+      ],
+    });
+  }
+  if (sub === "progress_get") {
+    const { data } = await admin.from("education_lesson_progress").select("lesson_key").eq("user_id", user.id).eq("course_key", course_key);
+    return json({ completed: (data || []).map((r: any) => r.lesson_key) });
+  }
+  if (sub === "progress_set") {
+    const lk = String(body.lesson_key || "").trim(); const done = body.completed !== false;
+    if (!lk) return json({ error: "lesson_key required" }, 400);
+    if (done) await admin.from("education_lesson_progress").upsert({ user_id: user.id, course_key, lesson_key: lk }, { onConflict: "user_id,course_key,lesson_key" });
+    else await admin.from("education_lesson_progress").delete().eq("user_id", user.id).eq("course_key", course_key).eq("lesson_key", lk);
+    return json({ ok: true });
+  }
+  if (sub === "workbook") {
+    const rl = rateLimit(`wb:${user.id}`, 5, 3600000); if (!rl.ok) return json({ error: "rate_limited", retry_in_ms: rl.resetIn }, 429);
+    const cached = await loadOrCreateCache(admin, meta);
+    const bytes = await generateWorkbookPdf(meta, cached.content);
+    const path = `${user.id}/workbook-${meta.module_key}-${meta.course_slug}.pdf`;
+    const { error } = await admin.storage.from("certificates").upload(path, bytes, { contentType: "application/pdf", upsert: true });
+    if (error) throw error;
+    const { data } = admin.storage.from("certificates").getPublicUrl(path);
+    return json({ pdf_url: data.publicUrl });
+  }
+  if (sub === "feedback") {
+    const rl = rateLimit(`fb:${user.id}`, 30, 3600000); if (!rl.ok) return json({ error: "rate_limited", retry_in_ms: rl.resetIn }, 429);
+    const lk = String(body.lesson_key || "").trim();
+    const lt = String(body.lesson_title || "").trim();
+    const ex = String(body.exercise || "").trim();
+    const sm = String(body.submission || "").trim().slice(0, 8000);
+    if (!lk || !sm) return json({ error: "lesson_key & submission required" }, 400);
+    const sys = 'You are an expert tutor. Return STRICT JSON: {"score":0-100,"strengths":["..."],"improvements":["..."],"next_step":"one concrete action","summary":"2-3 sentences"}. Be encouraging, specific.';
+    const usr = `Course: ${meta.course_title}\nLesson: ${lt}\nExercise: ${ex}\n\nSubmission:\n${sm}`;
+    const fb = await aiJsonLovable(sys, usr);
+    const score = Math.max(0, Math.min(100, Number(fb?.score ?? 0)));
+    await admin.from("education_exercise_submissions").upsert({ user_id: user.id, course_key, lesson_key: lk, submission_text: sm, ai_feedback: fb, score }, { onConflict: "user_id,course_key,lesson_key" });
+    return json({ feedback: fb, score });
+  }
+  if (sub === "exam") {
+    const rl = rateLimit(`ex:${user.id}`, 10, 3600000); if (!rl.ok) return json({ error: "rate_limited", retry_in_ms: rl.resetIn }, 429);
+    const cached = await loadOrCreateCache(admin, meta);
+    const picked = pickExamQuestions(cached.quiz_pool as any[]).map((q: any, i: number) => ({ id: i, q: q.q, options: q.options }));
+    const answerKey = pickAnswerKey(cached.quiz_pool, picked);
+    const sig = await signKey(answerKey);
+    return json({ questions: picked, exam_token: sig });
+  }
+  if (sub === "submit") {
+    const rl = rateLimit(`sb:${user.id}`, 20, 3600000); if (!rl.ok) return json({ error: "rate_limited", retry_in_ms: rl.resetIn }, 429);
+    const answers = body.answers as number[];
+    const token = body.exam_token as string;
+    const recipient = String(body.recipient_name ?? "").trim().slice(0, 80) || "Learner";
+    if (!Array.isArray(answers) || !token) return json({ error: "answers & exam_token required" }, 400);
+    const key = await verifyKey(token);
+    if (!key) return json({ error: "invalid exam_token" }, 400);
+    if (answers.length !== key.length) return json({ error: "answer count mismatch" }, 400);
+    let correct = 0;
+    for (let i = 0; i < key.length; i++) if (Number(answers[i]) === Number(key[i])) correct++;
+    const score = Math.round((correct / key.length) * 100);
+    const passed = score >= 70;
+    if (!passed) return json({ passed: false, score, correct, total: key.length });
+    const certNumber = makeCertNumber();
+    const originHdr = req.headers.get("origin") || "https://uniqueapp.fun";
+    const verifyUrl = `${originHdr.replace(/\/$/, "")}/cert/${certNumber}`;
+    const bytes = await generateCertPdf({ recipient, course: meta.course_title, module: meta.module_label ?? meta.module_key, score, certNumber, verifyUrl });
+    const path = `${user.id}/${certNumber}.pdf`;
+    const { error: upErr } = await admin.storage.from("certificates").upload(path, bytes, { contentType: "application/pdf", upsert: true });
+    if (upErr) throw upErr;
+    const { data: pub } = admin.storage.from("certificates").getPublicUrl(path);
+    const { data: certRow, error: insErr } = await admin.from("education_certificates").insert({
+      user_id: user.id,
+      course_title: `${meta.module_label ?? meta.module_key} · ${meta.course_title}`,
+      score, recipient_name: recipient, certificate_code: certNumber, pdf_url: pub.publicUrl,
+    }).select().single();
+    if (insErr) throw insErr;
+    return json({ passed: true, score, correct, total: key.length, certificate: certRow, verify_url: verifyUrl });
+  }
+  return json({ error: `unknown course sub-action: ${sub}` }, 400);
+}
+
