@@ -236,6 +236,8 @@ const Navbar = () => {
       items: [
         { path: "/tutorial-platform", label: "Tutorial & Course Platform", icon: GraduationCap },
         { path: "/iq-platform", label: "IQ Platform", icon: Brain },
+        { path: "/digital-marketing", label: "Digital Marketing", icon: TrendingUp },
+        { path: "/public-speaking", label: "Public Speaking", icon: Mic },
       ],
     },
     {
