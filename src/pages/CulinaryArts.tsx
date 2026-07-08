@@ -202,6 +202,20 @@ const CulinaryArts = () => {
                       : "Enroll Now"}
                   </Button>
                 </div>
+                <CourseAcademicActions
+                  meta={{
+                    module_key: "culinary-arts",
+                    module_label: "Culinary Arts",
+                    course_slug: program.id,
+                    course_title: program.title,
+                    description: program.description,
+                    level: program.level,
+                    duration: program.duration,
+                    price: program.price,
+                    skills: program.skills,
+                  }}
+                  unlocked={isPurchased(program.id, "culinary-program")}
+                />
               </div>
             </Card>
           ))}
