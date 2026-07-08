@@ -33,8 +33,7 @@ const PACKAGES = [
 // Hide the card entirely until the backend ships to avoid CORS / 404 errors.
 const AUTO_RECHARGE_ENABLED = false;
 
-export const AutoRechargeCard = ({ currentBalance }: { currentBalance: number }) => {
-  if (!AUTO_RECHARGE_ENABLED) return null;
+const AutoRechargeCardImpl = ({ currentBalance }: { currentBalance: number }) => {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [settings, setSettings] = useState<Settings>({
