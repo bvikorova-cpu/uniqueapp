@@ -216,6 +216,7 @@ const Navbar = () => {
         { path: "/cooking", label: "Cooking", icon: ChefHat },
         { path: "/coffee", label: "Coffee Community", icon: Coffee },
         { path: "/virtual-pet", label: "Virtual Pet", icon: PawPrint },
+        { path: "/culinary-arts", label: "Culinary Arts Academy", icon: ChefHat },
       ],
     },
     {
