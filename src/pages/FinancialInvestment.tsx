@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLearningContent } from "@/hooks/useLearningContent";
 import { TrendingUp, Clock, Star, Users } from "lucide-react";
 import { CourseAcademicActions } from "@/components/courses/CourseAcademicActions";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const FinancialInvestment = () => {
   const { toast } = useToast();
