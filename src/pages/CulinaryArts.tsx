@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useLearningContent } from "@/hooks/useLearningContent";
 import { ChefHat, Clock, Star, Users } from "lucide-react";
+import { CourseAcademicActions } from "@/components/courses/CourseAcademicActions";
 
 const CulinaryArts = () => {
   const { toast } = useToast();
