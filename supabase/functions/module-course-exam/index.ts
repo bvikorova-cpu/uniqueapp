@@ -160,39 +160,22 @@ async function generatePdf(opts: {
   const fontLight = await pdf.embedFont(StandardFonts.Helvetica);
   const fontItalic = await pdf.embedFont(StandardFonts.HelveticaOblique);
 
-  recipient: string;
-  course: string;
-  module: string;
-  score: number;
-  certNumber: string;
-  verifyUrl: string;
-}) {
-  const pdf = await PDFDocument.create();
-  const page = pdf.addPage([842, 595]); // A4 landscape
-  const font = await pdf.embedFont(StandardFonts.HelveticaBold);
-  const fontLight = await pdf.embedFont(StandardFonts.Helvetica);
-  const fontItalic = await pdf.embedFont(StandardFonts.HelveticaOblique);
-
-  const purple = rgb(0.396, 0.169, 0.827); // hsl(270 91% 50%) approx
-  const pink = rgb(1.0, 0.078, 0.576); // hsl(330 100% 50%) approx
+  const purple = rgb(0.396, 0.169, 0.827);
+  const pink = rgb(1.0, 0.078, 0.576);
   const dark = rgb(0.09, 0.09, 0.15);
   const grey = rgb(0.42, 0.42, 0.46);
 
-  // Border
   const M = 24;
   page.drawRectangle({ x: M, y: M, width: 842 - 2 * M, height: 595 - 2 * M, borderColor: purple, borderWidth: 2 });
   page.drawRectangle({ x: M + 8, y: M + 8, width: 842 - 2 * (M + 8), height: 595 - 2 * (M + 8), borderColor: pink, borderWidth: 1 });
 
-  // Header bar
   page.drawRectangle({ x: M + 16, y: 595 - M - 60, width: 842 - 2 * (M + 16), height: 46, color: purple });
   page.drawText("UNIQUE", { x: M + 32, y: 595 - M - 46, size: 22, font, color: rgb(1, 1, 1) });
   page.drawText("CERTIFICATE OF COMPLETION", { x: M + 130, y: 595 - M - 42, size: 14, font: fontLight, color: rgb(1, 1, 1) });
   page.drawText("uniqueapp.fun", { x: 842 - M - 120, y: 595 - M - 42, size: 11, font: fontLight, color: rgb(1, 1, 1) });
 
-  // Title
   page.drawText("This is to certify that", { x: 421 - 90, y: 420, size: 14, font: fontItalic, color: grey });
 
-  // Recipient
   const nameSize = 34;
   const nameWidth = font.widthOfTextAtSize(opts.recipient, nameSize);
   page.drawText(opts.recipient, { x: 421 - nameWidth / 2, y: 370, size: nameSize, font, color: dark });
@@ -208,26 +191,41 @@ async function generatePdf(opts: {
   const modWidth = fontItalic.widthOfTextAtSize(modText, 12);
   page.drawText(modText, { x: 421 - modWidth / 2, y: 268, size: 12, font: fontItalic, color: grey });
 
-  // Score badge
   page.drawCircle({ x: 421, y: 200, size: 38, color: pink });
   const scoreText = `${Math.round(opts.score)}%`;
   const scoreW = font.widthOfTextAtSize(scoreText, 22);
   page.drawText(scoreText, { x: 421 - scoreW / 2, y: 192, size: 22, font, color: rgb(1, 1, 1) });
   page.drawText("Final Exam Score", { x: 421 - 45, y: 155, size: 10, font: fontLight, color: grey });
 
-  // Footer info
+  // QR code (verify URL)
+  try {
+    const qrDataUrl: string = await QRCode.toDataURL(opts.verifyUrl, {
+      errorCorrectionLevel: "M",
+      margin: 0,
+      width: 220,
+      color: { dark: "#1a1a26", light: "#ffffff" },
+    });
+    const b64 = qrDataUrl.split(",")[1];
+    const bin = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+    const qrImg = await pdf.embedPng(bin);
+    const qrSize = 90;
+    page.drawImage(qrImg, { x: 842 - M - 40 - qrSize, y: 130, width: qrSize, height: qrSize });
+    page.drawText("Scan to verify", { x: 842 - M - 40 - qrSize + 8, y: 118, size: 9, font: fontLight, color: grey });
+  } catch (_e) { /* skip QR on failure */ }
+
   const dateStr = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" });
   page.drawText(`Issued: ${dateStr}`, { x: M + 40, y: 90, size: 11, font: fontLight, color: dark });
   page.drawText(`Certificate No: ${opts.certNumber}`, { x: M + 40, y: 72, size: 11, font, color: dark });
   page.drawText(`Verify: ${opts.verifyUrl}`, { x: M + 40, y: 54, size: 10, font: fontLight, color: purple });
 
-  page.drawText("Unique Learning", { x: 842 - M - 180, y: 90, size: 12, font, color: dark });
-  page.drawText("Authorised Signatory", { x: 842 - M - 180, y: 76, size: 9, font: fontLight, color: grey });
-  page.drawLine({ start: { x: 842 - M - 180, y: 100 }, end: { x: 842 - M - 40, y: 100 }, thickness: 0.8, color: dark });
+  page.drawText("Unique Learning", { x: M + 300, y: 90, size: 12, font, color: dark });
+  page.drawText("Authorised Signatory", { x: M + 300, y: 76, size: 9, font: fontLight, color: grey });
+  page.drawLine({ start: { x: M + 300, y: 100 }, end: { x: M + 440, y: 100 }, thickness: 0.8, color: dark });
 
   const bytes = await pdf.save();
   return bytes;
 }
+
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
