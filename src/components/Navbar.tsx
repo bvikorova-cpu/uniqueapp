@@ -135,6 +135,9 @@ const Navbar = () => {
         { path: "/home-designer", label: "Home Designer", icon: Home },
         { path: "/beauty-studio", label: "Beauty Studio", icon: Sparkles },
         { path: "/fashion-studio", label: "Fashion Studio", icon: Palette },
+        { path: "/graphic-design", label: "Graphic Design", icon: Palette },
+        { path: "/photography", label: "Photography", icon: Image },
+        { path: "/music-production", label: "Music Production", icon: Music },
       ],
     },
     {
