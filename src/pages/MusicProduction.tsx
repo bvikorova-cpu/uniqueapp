@@ -8,6 +8,7 @@ import { useLearningContent } from "@/hooks/useLearningContent";
 import { Music, Clock, Star, Users } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 import { MusicStudioAI } from "@/components/music-production/MusicStudioAI";
+import { CourseAcademicActions } from "@/components/courses/CourseAcademicActions";
 
 const MusicProduction = () => {
   const { toast } = useToast();
@@ -215,6 +216,20 @@ const MusicProduction = () => {
                       : "Enroll Now"}
                   </Button>
                 </div>
+                <CourseAcademicActions
+                  meta={{
+                    module_key: "music-production",
+                    module_label: "Music Production",
+                    course_slug: course.id,
+                    course_title: course.title,
+                    description: course.description,
+                    level: course.level,
+                    duration: course.duration,
+                    price: course.price,
+                    skills: course.skills,
+                  }}
+                  unlocked={isPurchased(course.id, "music-course")}
+                />
               </div>
             </Card>
           ))}

@@ -8,6 +8,7 @@ import { useLearningContent } from "@/hooks/useLearningContent";
 import { Camera, Clock, Star, Users } from "lucide-react";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { CourseAcademicActions } from "@/components/courses/CourseAcademicActions";
 const Photography = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -220,6 +221,20 @@ const Photography = () => {
                       : "Enroll Now"}
                   </Button>
                 </div>
+                <CourseAcademicActions
+                  meta={{
+                    module_key: "photography",
+                    module_label: "Photography",
+                    course_slug: masterclass.id,
+                    course_title: masterclass.title,
+                    description: masterclass.description,
+                    level: masterclass.level,
+                    duration: masterclass.duration,
+                    price: masterclass.price,
+                    skills: masterclass.skills,
+                  }}
+                  unlocked={isPurchased(masterclass.id, "photography-masterclass")}
+                />
               </div>
             </Card>
           ))}

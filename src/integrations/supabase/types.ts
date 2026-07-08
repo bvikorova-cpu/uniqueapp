@@ -40669,6 +40669,36 @@ export type Database = {
           },
         ]
       }
+      module_course_content_cache: {
+        Row: {
+          content: Json
+          course_key: string
+          course_slug: string
+          course_title: string
+          module_key: string
+          quiz_pool: Json | null
+          updated_at: string
+        }
+        Insert: {
+          content: Json
+          course_key: string
+          course_slug: string
+          course_title: string
+          module_key: string
+          quiz_pool?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          content?: Json
+          course_key?: string
+          course_slug?: string
+          course_title?: string
+          module_key?: string
+          quiz_pool?: Json | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       monetag_ad_events: {
         Row: {
           country: string | null

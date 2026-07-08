@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useLearningContent } from "@/hooks/useLearningContent";
 import { Mic, Clock, Star, Users } from "lucide-react";
+import { CourseAcademicActions } from "@/components/courses/CourseAcademicActions";
 
 const PublicSpeaking = () => {
   const { toast } = useToast();
@@ -201,6 +202,20 @@ const PublicSpeaking = () => {
                       : "Enroll Now"}
                   </Button>
                 </div>
+                <CourseAcademicActions
+                  meta={{
+                    module_key: "public-speaking",
+                    module_label: "Public Speaking",
+                    course_slug: academy.id,
+                    course_title: academy.title,
+                    description: academy.description,
+                    level: academy.level,
+                    duration: academy.duration,
+                    price: academy.price,
+                    skills: academy.skills,
+                  }}
+                  unlocked={isPurchased(academy.id, "speaking-academy")}
+                />
               </div>
             </Card>
           ))}

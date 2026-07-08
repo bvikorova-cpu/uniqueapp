@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLearningContent } from "@/hooks/useLearningContent";
 import { Dumbbell, Clock, Star, Users } from "lucide-react";
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
+import { CourseAcademicActions } from "@/components/courses/CourseAcademicActions";
 
 const FitnessWellness = () => {
   const { toast } = useToast();
@@ -203,6 +204,20 @@ const FitnessWellness = () => {
                       : "Enroll Now"}
                   </Button>
                 </div>
+                <CourseAcademicActions
+                  meta={{
+                    module_key: "fitness-wellness",
+                    module_label: "Fitness & Wellness",
+                    course_slug: program.id,
+                    course_title: program.title,
+                    description: program.description,
+                    level: program.level,
+                    duration: program.duration,
+                    price: program.price,
+                    skills: program.skills,
+                  }}
+                  unlocked={isPurchased(program.id, "fitness-program")}
+                />
               </div>
             </Card>
           ))}
