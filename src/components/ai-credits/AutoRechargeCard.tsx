@@ -29,7 +29,11 @@ const PACKAGES = [
   { credits: 150, price: 40, label: "Ultimate · 150 credits · €40" },
 ];
 
-export const AutoRechargeCard = ({ currentBalance }: { currentBalance: number }) => {
+// Auto-recharge backend (`ai-auto-recharge` edge function) is not deployed yet.
+// Hide the card entirely until the backend ships to avoid CORS / 404 errors.
+const AUTO_RECHARGE_ENABLED = false;
+
+const AutoRechargeCardImpl = ({ currentBalance }: { currentBalance: number }) => {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [settings, setSettings] = useState<Settings>({
@@ -242,6 +246,11 @@ export const AutoRechargeCard = ({ currentBalance }: { currentBalance: number })
     </Card>
     </>
   );
+};
+
+export const AutoRechargeCard = (props: { currentBalance: number }) => {
+  if (!AUTO_RECHARGE_ENABLED) return null;
+  return <AutoRechargeCardImpl {...props} />;
 };
 
 export default AutoRechargeCard;

@@ -1356,6 +1356,11 @@ const App = () => {
                         <Route path="/__e2e/anonymous-date-matches" element={<E2EAnonymousDateMatches />} />
                         <Route path="/roadmap" element={<Roadmap />} />
                         <Route path="/__preview/ad" element={<AdPreview />} />
+                        {/* Alias redirects for legacy / commonly-typed paths */}
+                        <Route path="/teens" element={<Navigate to="/teen-hub" replace />} />
+                        <Route path="/skills" element={<Navigate to="/skills-marketplace" replace />} />
+                        <Route path="/brand-arena" element={<Navigate to="/brand-battle/hub" replace />} />
+                        <Route path="/messages" element={<Navigate to="/wall/messages" replace />} />
                         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                         <Route path="*" element={<NotFound />} />
                       </Routes>
