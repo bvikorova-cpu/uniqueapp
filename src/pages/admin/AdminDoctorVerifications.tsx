@@ -26,9 +26,6 @@ interface DoctorRow {
 }
 
 export default function AdminDoctorVerifications() {
-  const [rows, setRows] = useState<DoctorRow[]>([]);
-  const [loading, setLoading] = useState(true);
-export default function AdminDoctorVerifications() {
   const { user, loading: authLoading } = useAuth();
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [rows, setRows] = useState<DoctorRow[]>([]);
