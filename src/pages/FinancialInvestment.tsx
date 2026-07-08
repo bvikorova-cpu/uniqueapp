@@ -122,6 +122,17 @@ const FinancialInvestment = () => {
             Build wealth with expert investment strategies and education
           </p>
         </div>
+        <FloatingHowItWorks
+          title="How Financial Investment Education works"
+          intro="Structured investing courses with certification."
+          steps={[
+            { title: 'Pick a course', desc: 'Stocks, crypto, real estate or retirement.' },
+            { title: 'Enroll', desc: 'One-time payment unlocks lessons, tools and certificate.' },
+            { title: 'Learn & apply', desc: 'Complete lessons and use included simulators.' },
+            { title: 'Earn certificate', desc: 'Pass the final exam to get a shareable certificate.' },
+          ]}
+        />
+
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {educations.map((education) => (
