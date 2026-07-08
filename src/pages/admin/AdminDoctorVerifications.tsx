@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
+import { Link, Navigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { Helmet } from "react-helmet-async";
 import { Stethoscope, Loader2, CheckCircle2, XCircle, FileText, ExternalLink } from "lucide-react";
