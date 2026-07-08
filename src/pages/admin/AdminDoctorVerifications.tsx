@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
+import { Link, Navigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { Helmet } from "react-helmet-async";
 import { Stethoscope, Loader2, CheckCircle2, XCircle, FileText, ExternalLink } from "lucide-react";
@@ -23,12 +26,28 @@ interface DoctorRow {
 }
 
 export default function AdminDoctorVerifications() {
+  const { user, loading: authLoading } = useAuth();
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [rows, setRows] = useState<DoctorRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"pending" | "all">("pending");
   const [reasonByDoctor, setReasonByDoctor] = useState<Record<string, string>>({});
   const [signedUrls, setSignedUrls] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!user) {
+      setIsAdmin(null);
+      return;
+    }
+    (async () => {
+      const { data, error } = await supabase.rpc("has_role", {
+        _user_id: user.id,
+        _role: "admin",
+      });
+      setIsAdmin(!error && data === true);
+    })();
+  }, [user]);
 
   async function load() {
     setLoading(true);
@@ -46,9 +65,9 @@ export default function AdminDoctorVerifications() {
   }
 
   useEffect(() => {
-    load();
+    if (isAdmin) load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter]);
+  }, [filter, isAdmin]);
 
   async function viewDocument(doctor: DoctorRow) {
     if (!doctor.license_document_url) return;
@@ -86,6 +105,39 @@ export default function AdminDoctorVerifications() {
       setBusy(null);
     }
   }
+
+  if (authLoading || (user && isAdmin === null)) {
+    return (
+      <>
+        <Navbar />
+        <main className="container mx-auto max-w-2xl px-4 py-8 pt-24">
+          <p className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Loader2 className="h-4 w-4 animate-spin" /> Checking access…
+          </p>
+        </main>
+      </>
+    );
+  }
+
+  if (!user) {
+    return (
+      <>
+        <Navbar />
+        <main className="container mx-auto max-w-2xl px-4 py-8 pt-24">
+          <Alert>
+            <AlertTitle>Sign in required</AlertTitle>
+            <AlertDescription>
+              <Button asChild size="sm" className="mt-2">
+                <Link to="/auth?next=/admin/doctor-verifications">Sign in</Link>
+              </Button>
+            </AlertDescription>
+          </Alert>
+        </main>
+      </>
+    );
+  }
+
+  if (!isAdmin) return <Navigate to="/" replace />;
 
   return (
     <>
