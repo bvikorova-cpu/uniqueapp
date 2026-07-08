@@ -29,6 +29,7 @@ import { PhotoVerificationCard } from "@/components/dating/PhotoVerificationCard
 import { PhotoLikeButton } from "@/components/dating/PhotoLikeButton";
 import { ProfileExtrasDisplay } from "@/components/dating/ProfileExtrasDisplay";
 import { SafetyCenter } from "@/components/dating/SafetyCenter";
+import { DemoProfilesWall } from "@/components/dating/DemoProfilesWall";
 import { SafetyTipsBanner } from "@/components/dating/SafetyTipsBanner";
 import { MessageActions } from "@/components/dating/MessageActions";
 import { EmojiPicker } from "@/components/dating/EmojiPicker";
@@ -715,6 +716,9 @@ const Dating = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Public Demo Wall */}
+          <DemoProfilesWall />
 
           {/* AI Tools Preview */}
           <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
