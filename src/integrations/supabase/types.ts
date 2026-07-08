@@ -67420,6 +67420,10 @@ export type Database = {
         }
         Returns: string
       }
+      place_memory_auction_bid: {
+        Args: { p_amount: number; p_auction_id: string }
+        Returns: Json
+      }
       place_xp_bet: {
         Args: {
           _amount: number
