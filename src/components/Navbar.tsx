@@ -216,6 +216,7 @@ const Navbar = () => {
         { path: "/cooking", label: "Cooking", icon: ChefHat },
         { path: "/coffee", label: "Coffee Community", icon: Coffee },
         { path: "/virtual-pet", label: "Virtual Pet", icon: PawPrint },
+        { path: "/culinary-arts", label: "Culinary Arts Academy", icon: ChefHat },
       ],
     },
     {
@@ -238,6 +239,9 @@ const Navbar = () => {
         { path: "/iq-platform", label: "IQ Platform", icon: Brain },
         { path: "/digital-marketing", label: "Digital Marketing", icon: TrendingUp },
         { path: "/public-speaking", label: "Public Speaking", icon: Mic2 },
+        { path: "/creative-writing", label: "Creative Writing", icon: PenTool },
+        { path: "/language-learning", label: "Language Learning", icon: Globe },
+        { path: "/financial-investment", label: "Financial Investment", icon: TrendingUp },
       ],
     },
     {
