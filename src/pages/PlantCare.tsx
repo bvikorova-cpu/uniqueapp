@@ -23,6 +23,18 @@ const PlantCare = () => {
           </p>
         </div>
 
+        <FloatingHowItWorks
+          title="How AI Garden & Plant Care works"
+          intro="Identify, schedule and diagnose your plants with AI."
+          steps={[
+            { title: 'Identify', desc: 'Upload a photo to detect the species instantly.' },
+            { title: 'Calendar', desc: 'Get a personalized watering and care schedule.' },
+            { title: 'Diagnose', desc: 'Spot diseases and pests from leaf photos.' },
+            { title: 'My Plants', desc: 'Track your collection and log care activity.' },
+          ]}
+        />
+
+
         <Tabs defaultValue="identify" className="w-full">
           <TabsList className="grid w-full grid-cols-4 mb-8">
             <TabsTrigger value="identify" className="flex items-center gap-2">
