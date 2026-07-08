@@ -255,18 +255,24 @@ Deno.serve(async (req) => {
 
     if (action === "exam") {
       if (!user) return json({ error: "auth required" }, 401);
+      const rl = rateLimit(`exam:${user.id}`, 10, 60 * 60 * 1000); // 10 exam starts/hour
+      if (!rl.ok) return json({ error: "rate_limited", retry_in_ms: rl.resetIn }, 429);
       const cached = await loadOrCreateCache(meta);
       const questions = pickExamQuestions(cached.quiz_pool as any[]).map((q: any, i: number) => ({
         id: i,
         q: q.q,
         options: q.options,
       }));
-      // Return sanitized questions (no answer_index) + a signed answer key
-      // We simply store the correct order in memory server-side via a signed token.
       const answerKey = pickAnswerKey(cached.quiz_pool, questions);
       const sig = await signKey(answerKey);
       return json({ questions, exam_token: sig });
     }
+
+    if (action === "submit") {
+      if (!user) return json({ error: "auth required" }, 401);
+      const rl = rateLimit(`submit:${user.id}`, 20, 60 * 60 * 1000);
+      if (!rl.ok) return json({ error: "rate_limited", retry_in_ms: rl.resetIn }, 429);
+
 
     if (action === "submit") {
       if (!user) return json({ error: "auth required" }, 401);
