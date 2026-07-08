@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAICredits } from "@/hooks/useAICredits";
+import { useNutritionStats } from "@/hooks/useNutritionStats";
 import { NutritionHero } from "@/components/nutrition/NutritionHero";
 import {
   Utensils, Camera, Trophy, Store, Dumbbell, Target,
@@ -57,6 +58,7 @@ const tools = [
 export default function NutritionHub() {
   const navigate = useNavigate();
   const { credits, loading: creditsLoading } = useAICredits();
+  const { dailyStreak, achievements, loading: statsLoading } = useNutritionStats();
   const [activeView, setActiveView] = useState<ActiveView>("dashboard");
 
   const viewsWithBackButton = ["hydration", "supplements", "grocery", "body-predictor", "allergy-scanner", "meal-challenges", "nutrition-coach", "barcode-scanner", "weekly-progress"];
@@ -119,7 +121,7 @@ export default function NutritionHub() {
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground font-medium">Daily Streak</p>
-                  <p className="text-2xl font-black bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">0 Days</p>
+                  <p className="text-2xl font-black bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">{statsLoading ? "…" : `${dailyStreak} Day${dailyStreak === 1 ? "" : "s"}`}</p>
                 </div>
               </div>
             </Card>
@@ -154,7 +156,7 @@ export default function NutritionHub() {
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground font-medium">Achievements</p>
-                  <p className="text-2xl font-black bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">0</p>
+                  <p className="text-2xl font-black bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">{statsLoading ? "…" : achievements}</p>
                 </div>
               </div>
             </Card>
