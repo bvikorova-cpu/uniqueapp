@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useLearningContent } from "@/hooks/useLearningContent";
 import { ChefHat, Clock, Star, Users } from "lucide-react";
+import { CourseAcademicActions } from "@/components/courses/CourseAcademicActions";
 
 const CulinaryArts = () => {
   const { toast } = useToast();
@@ -201,6 +202,20 @@ const CulinaryArts = () => {
                       : "Enroll Now"}
                   </Button>
                 </div>
+                <CourseAcademicActions
+                  meta={{
+                    module_key: "culinary-arts",
+                    module_label: "Culinary Arts",
+                    course_slug: program.id,
+                    course_title: program.title,
+                    description: program.description,
+                    level: program.level,
+                    duration: program.duration,
+                    price: program.price,
+                    skills: program.skills,
+                  }}
+                  unlocked={isPurchased(program.id, "culinary-program")}
+                />
               </div>
             </Card>
           ))}

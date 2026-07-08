@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useLearningContent } from "@/hooks/useLearningContent";
 import { PenTool, Clock, Star, Users } from "lucide-react";
+import { CourseAcademicActions } from "@/components/courses/CourseAcademicActions";
 
 import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 const CreativeWriting = () => {
@@ -213,6 +214,20 @@ const CreativeWriting = () => {
                       : "Enroll Now"}
                   </Button>
                 </div>
+                <CourseAcademicActions
+                  meta={{
+                    module_key: "creative-writing",
+                    module_label: "Creative Writing",
+                    course_slug: workshop.id,
+                    course_title: workshop.title,
+                    description: workshop.description,
+                    level: workshop.level,
+                    duration: workshop.duration,
+                    price: workshop.price,
+                    skills: workshop.skills,
+                  }}
+                  unlocked={isPurchased(workshop.id, "writing-workshop")}
+                />
               </div>
             </Card>
           ))}
