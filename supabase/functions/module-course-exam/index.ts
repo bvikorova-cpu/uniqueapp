@@ -274,8 +274,6 @@ Deno.serve(async (req) => {
       if (!rl.ok) return json({ error: "rate_limited", retry_in_ms: rl.resetIn }, 429);
 
 
-    if (action === "submit") {
-      if (!user) return json({ error: "auth required" }, 401);
       const answers = body.answers as number[];
       const exam_token = body.exam_token as string;
       const recipient = String(body.recipient_name ?? "").trim().slice(0, 80) || "Learner";
