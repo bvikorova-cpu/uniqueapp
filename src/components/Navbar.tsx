@@ -135,6 +135,9 @@ const Navbar = () => {
         { path: "/home-designer", label: "Home Designer", icon: Home },
         { path: "/beauty-studio", label: "Beauty Studio", icon: Sparkles },
         { path: "/fashion-studio", label: "Fashion Studio", icon: Palette },
+        { path: "/graphic-design", label: "Graphic Design", icon: Palette },
+        { path: "/photography", label: "Photography", icon: Image },
+        { path: "/music-production", label: "Music Production", icon: Music },
       ],
     },
     {
@@ -180,6 +183,7 @@ const Navbar = () => {
         { path: "/phobia-trading", label: "Phobia Trading Network", icon: Brain },
         { path: "/safety-prevention", label: "Safety & Bullying Prevention", icon: Shield },
         { path: "/lie-detector", label: "Lie Detector Chat", icon: Shield },
+        { path: "/fitness-wellness", label: "Fitness & Wellness", icon: Heart },
       ],
     },
     {
@@ -232,6 +236,8 @@ const Navbar = () => {
       items: [
         { path: "/tutorial-platform", label: "Tutorial & Course Platform", icon: GraduationCap },
         { path: "/iq-platform", label: "IQ Platform", icon: Brain },
+        { path: "/digital-marketing", label: "Digital Marketing", icon: TrendingUp },
+        { path: "/public-speaking", label: "Public Speaking", icon: Mic2 },
       ],
     },
     {
