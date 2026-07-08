@@ -37,6 +37,19 @@ export interface CourseMetaLite {
   skills?: string[];
 }
 
+export interface LessonVideo {
+  title: string;
+  embed_url: string;
+}
+
+export interface ExerciseFeedback {
+  score: number;
+  strengths?: string[];
+  improvements?: string[];
+  next_step?: string;
+  summary?: string;
+}
+
 async function invoke(action: string, meta: CourseMetaLite, extra: Record<string, any> = {}) {
   const { data, error } = await supabase.functions.invoke("module-course-exam", {
     body: { action, meta, ...extra },
@@ -46,8 +59,18 @@ async function invoke(action: string, meta: CourseMetaLite, extra: Record<string
   return data as any;
 }
 
+export const lessonKey = (moduleIdx: number, lessonIdx: number) => `m${moduleIdx}_l${lessonIdx}`;
+
 export const moduleCourseApi = {
   curriculum: (meta: CourseMetaLite) => invoke("curriculum", meta).then((d) => d.content as Curriculum),
+  videos: (meta: CourseMetaLite, lesson_key: string, lesson_title: string) =>
+    invoke("videos", meta, { lesson_key, lesson_title }).then((d) => d.videos as LessonVideo[]),
+  workbook: (meta: CourseMetaLite) => invoke("workbook", meta).then((d) => d.pdf_url as string),
+  progressGet: (meta: CourseMetaLite) => invoke("progress_get", meta).then((d) => d.completed as string[]),
+  progressSet: (meta: CourseMetaLite, lesson_key: string, completed: boolean) =>
+    invoke("progress_set", meta, { lesson_key, completed }),
+  feedback: (meta: CourseMetaLite, opts: { lesson_key: string; lesson_title: string; exercise: string; submission: string }) =>
+    invoke("feedback", meta, opts) as Promise<{ feedback: ExerciseFeedback; score: number }>,
   startExam: (meta: CourseMetaLite) =>
     invoke("exam", meta) as Promise<{ questions: ExamQuestion[]; exam_token: string }>,
   submitExam: (

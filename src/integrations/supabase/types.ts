@@ -21017,6 +21017,42 @@ export type Database = {
           },
         ]
       }
+      education_exercise_submissions: {
+        Row: {
+          ai_feedback: Json | null
+          course_key: string
+          created_at: string
+          id: string
+          lesson_key: string
+          score: number | null
+          submission_text: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_feedback?: Json | null
+          course_key: string
+          created_at?: string
+          id?: string
+          lesson_key: string
+          score?: number | null
+          submission_text: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_feedback?: Json | null
+          course_key?: string
+          created_at?: string
+          id?: string
+          lesson_key?: string
+          score?: number | null
+          submission_text?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       education_flashcard_decks: {
         Row: {
           card_count: number
@@ -21096,6 +21132,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      education_lesson_progress: {
+        Row: {
+          completed_at: string
+          course_key: string
+          id: string
+          lesson_key: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string
+          course_key: string
+          id?: string
+          lesson_key: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string
+          course_key?: string
+          id?: string
+          lesson_key?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       education_math_solves: {
         Row: {

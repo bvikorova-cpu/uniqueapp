@@ -13,22 +13,32 @@ interface Props {
 export const CourseAcademicActions = ({ meta, unlocked }: Props) => {
   const [showCurr, setShowCurr] = useState(false);
   const [showExam, setShowExam] = useState(false);
+  const [ready, setReady] = useState(false);
+
+  const canExam = unlocked && ready;
 
   return (
     <>
       <div className="flex flex-wrap gap-2 pt-2">
         <Button size="sm" variant="outline" onClick={() => setShowCurr(true)} className="flex-1 min-w-[140px]">
-          <BookOpen className="w-4 h-4 mr-1" /> View Curriculum
+          <BookOpen className="w-4 h-4 mr-1" /> {unlocked ? "Curriculum & Lessons" : "View Curriculum"}
         </Button>
         <Button
           size="sm"
-          variant={unlocked ? "default" : "secondary"}
-          disabled={!unlocked}
+          variant={canExam ? "default" : "secondary"}
+          disabled={!canExam}
           onClick={() => setShowExam(true)}
           className="flex-1 min-w-[140px]"
-          title={unlocked ? "Take final exam" : "Enroll to unlock the final exam"}
+          title={
+            !unlocked
+              ? "Enroll to access lessons"
+              : !ready
+              ? "Complete 80% of lessons to unlock the final exam"
+              : "Take final exam"
+          }
         >
-          <GraduationCap className="w-4 h-4 mr-1" /> {unlocked ? "Final Exam" : "Exam locked"}
+          <GraduationCap className="w-4 h-4 mr-1" />
+          {!unlocked ? "Exam locked" : !ready ? "Complete lessons first" : "Final Exam"}
         </Button>
       </div>
 
@@ -36,7 +46,9 @@ export const CourseAcademicActions = ({ meta, unlocked }: Props) => {
         open={showCurr}
         onOpenChange={setShowCurr}
         meta={meta}
-        onTakeExam={unlocked ? () => setShowExam(true) : undefined}
+        purchased={unlocked}
+        onTakeExam={canExam ? () => setShowExam(true) : undefined}
+        onReadyChange={setReady}
       />
       <FinalExamDialog open={showExam} onOpenChange={setShowExam} meta={meta} />
     </>

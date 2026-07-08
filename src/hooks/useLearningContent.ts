@@ -116,33 +116,56 @@ export const useLearningContent = () => {
     price: number
   ) => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
+      // Re-validate session against Auth server (getUser), not just local storage
+      const { data: userRes, error: userErr } = await supabase.auth.getUser();
+      if (userErr || !userRes?.user) {
         toast({
-          title: "Authentication Required",
-          description: "Please log in to purchase content",
+          title: "Please log in",
+          description: "Your session expired. Sign in to complete the purchase.",
           variant: "destructive",
         });
         return null;
       }
 
+      const amount = Math.max(50, Math.round(Number(price) * 100)); // EUR cents, min €0.50
       const { data, error } = await supabase.functions.invoke('create-learning-payment', {
-        body: { contentId, contentType, title, price },
+        body: {
+          contentId,
+          contentType,
+          title,
+          price,
+          amount,
+          productName: title,
+          product: 'learning',
+          successUrl: `${window.location.origin}${window.location.pathname}?purchase=success`,
+          cancelUrl: `${window.location.origin}${window.location.pathname}?purchase=cancelled`,
+        },
       });
 
       if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
 
-      if (data.url) {
-        window.open(data.url, '_blank');
-        return data.url;
+      const url = (data as any)?.url;
+      if (url) {
+        window.open(url, '_blank');
+        return url;
       }
 
+      toast({
+        title: "Checkout error",
+        description: "The payment provider did not return a checkout URL. Please try again.",
+        variant: "destructive",
+      });
       return null;
     } catch (error) {
       console.error('Purchase error:', error);
+      const msg = error instanceof Error ? error.message : String(error);
+      const friendly = /Failed to send|network|fetch/i.test(msg)
+        ? "Could not reach the payment service. Check your connection and that you are logged in, then try again."
+        : msg || "Unknown error";
       toast({
         title: "Purchase Failed",
-        description: error instanceof Error ? error.message : "Unknown error",
+        description: friendly,
         variant: "destructive",
       });
       return null;
