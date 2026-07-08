@@ -757,7 +757,7 @@ export default function AboutPlatform() {
                   const hasMore = !!(section.details || section.pricing || (section.capabilities && section.capabilities.length));
                   return (
                   <motion.div
-                    key={section.path}
+                    key={`${cat.id}-${section.path}`}
                     initial={{ opacity: 0, y: 12 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-50px" }}
