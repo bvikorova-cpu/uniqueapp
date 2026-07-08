@@ -717,6 +717,9 @@ const Dating = () => {
             </CardContent>
           </Card>
 
+          {/* Public Demo Wall */}
+          <DemoProfilesWall />
+
           {/* AI Tools Preview */}
           <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
             <Brain className="h-5 w-5 text-primary" />
