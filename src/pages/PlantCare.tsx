@@ -6,6 +6,7 @@ import { PlantIdentifier } from "@/components/plant-care/PlantIdentifier";
 import { CareCalendar } from "@/components/plant-care/CareCalendar";
 import { PlantDiagnosis } from "@/components/plant-care/PlantDiagnosis";
 import { MyPlants } from "@/components/plant-care/MyPlants";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const PlantCare = () => {
   return (
