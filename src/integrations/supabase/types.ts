@@ -30660,6 +30660,101 @@ export type Database = {
           },
         ]
       }
+      interactive_workshop_enrollments: {
+        Row: {
+          created_at: string
+          id: string
+          status: string
+          user_id: string
+          workshop_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          status?: string
+          user_id: string
+          workshop_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          status?: string
+          user_id?: string
+          workshop_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "interactive_workshop_enrollments_workshop_id_fkey"
+            columns: ["workshop_id"]
+            isOneToOne: false
+            referencedRelation: "interactive_workshops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      interactive_workshops: {
+        Row: {
+          created_at: string
+          description: string
+          duration: string
+          id: string
+          image_url: string | null
+          includes: string[]
+          instructor: string
+          is_published: boolean
+          level: string
+          max_participants: number
+          price_cents: number
+          schedule: string
+          skills: string[]
+          slug: string
+          sort_order: number
+          start_date: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          duration: string
+          id?: string
+          image_url?: string | null
+          includes?: string[]
+          instructor: string
+          is_published?: boolean
+          level?: string
+          max_participants?: number
+          price_cents?: number
+          schedule: string
+          skills?: string[]
+          slug: string
+          sort_order?: number
+          start_date?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          duration?: string
+          id?: string
+          image_url?: string | null
+          includes?: string[]
+          instructor?: string
+          is_published?: boolean
+          level?: string
+          max_participants?: number
+          price_cents?: number
+          schedule?: string
+          skills?: string[]
+          slug?: string
+          sort_order?: number
+          start_date?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       interview_questions: {
         Row: {
           answer_tips: string | null
@@ -37699,6 +37794,36 @@ export type Database = {
           status?: string
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      masterchef_cooking_sessions: {
+        Row: {
+          completed: boolean
+          created_at: string
+          dish_name: string
+          duration_seconds: number
+          id: string
+          notes: string | null
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          created_at?: string
+          dish_name: string
+          duration_seconds: number
+          id?: string
+          notes?: string | null
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          created_at?: string
+          dish_name?: string
+          duration_seconds?: number
+          id?: string
+          notes?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -64349,6 +64474,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      workshop_topic_suggestions: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          kind: string
+          user_id: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          kind: string
+          user_id?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          user_id?: string | null
+        }
+        Relationships: []
       }
       xp_bets: {
         Row: {
