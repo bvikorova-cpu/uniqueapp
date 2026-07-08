@@ -66631,6 +66631,19 @@ export type Database = {
           new_users: number
         }[]
       }
+      get_demo_dating_profiles: {
+        Args: { _limit?: number }
+        Returns: {
+          age: number
+          bio: string
+          display_name: string
+          gender: string
+          id: string
+          interests: string[]
+          location: string
+          profile_photo_url: string
+        }[]
+      }
       get_eco_leaderboard: {
         Args: { _limit?: number; _month_key?: string }
         Returns: {
