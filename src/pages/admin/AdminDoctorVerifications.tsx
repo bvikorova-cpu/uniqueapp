@@ -106,6 +106,39 @@ export default function AdminDoctorVerifications() {
     }
   }
 
+  if (authLoading || (user && isAdmin === null)) {
+    return (
+      <>
+        <Navbar />
+        <main className="container mx-auto max-w-2xl px-4 py-8 pt-24">
+          <p className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Loader2 className="h-4 w-4 animate-spin" /> Checking access…
+          </p>
+        </main>
+      </>
+    );
+  }
+
+  if (!user) {
+    return (
+      <>
+        <Navbar />
+        <main className="container mx-auto max-w-2xl px-4 py-8 pt-24">
+          <Alert>
+            <AlertTitle>Sign in required</AlertTitle>
+            <AlertDescription>
+              <Button asChild size="sm" className="mt-2">
+                <Link to="/auth?next=/admin/doctor-verifications">Sign in</Link>
+              </Button>
+            </AlertDescription>
+          </Alert>
+        </main>
+      </>
+    );
+  }
+
+  if (!isAdmin) return <Navigate to="/" replace />;
+
   return (
     <>
       <Helmet>
