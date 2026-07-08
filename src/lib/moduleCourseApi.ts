@@ -51,8 +51,8 @@ export interface ExerciseFeedback {
 }
 
 async function invoke(action: string, meta: CourseMetaLite, extra: Record<string, any> = {}) {
-  const { data, error } = await supabase.functions.invoke("module-course-exam", {
-    body: { action, meta, ...extra },
+  const { data, error } = await supabase.functions.invoke("education-router", {
+    body: { action: `course.${action}`, meta, ...extra },
   });
   if (error) throw error;
   if ((data as any)?.error) throw new Error((data as any).error);
