@@ -51,6 +51,16 @@ export default function CertificateVerify() {
                 <p className="text-sm text-muted-foreground mt-2">Score: {Number(cert.score).toFixed(0)}%</p>
                 <p className="text-xs text-muted-foreground mt-1">Issued {new Date(cert.issued_at).toLocaleDateString()}</p>
                 <p className="text-xs text-muted-foreground mt-4 font-mono">Code: {cert.certificate_code}</p>
+                {cert.pdf_url && (
+                  <a
+                    href={cert.pdf_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-block mt-4 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90"
+                  >
+                    Download PDF Certificate
+                  </a>
+                )}
               </>
             ) : (
               <>
