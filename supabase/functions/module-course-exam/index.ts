@@ -10,6 +10,22 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { PDFDocument, StandardFonts, rgb } from "npm:pdf-lib@1.17.1";
+import QRCode from "npm:qrcode@1.5.4";
+
+// ---- simple in-memory rate limiter (per isolate) ----
+const rlBuckets = new Map<string, { count: number; resetAt: number }>();
+function rateLimit(key: string, max: number, windowMs: number) {
+  const now = Date.now();
+  const b = rlBuckets.get(key);
+  if (!b || now > b.resetAt) {
+    rlBuckets.set(key, { count: 1, resetAt: now + windowMs });
+    return { ok: true, remaining: max - 1, resetIn: windowMs };
+  }
+  if (b.count >= max) return { ok: false, remaining: 0, resetIn: b.resetAt - now };
+  b.count++;
+  return { ok: true, remaining: max - b.count, resetIn: b.resetAt - now };
+}
+
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
