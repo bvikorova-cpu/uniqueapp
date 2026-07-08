@@ -28,10 +28,29 @@ interface DoctorRow {
 export default function AdminDoctorVerifications() {
   const [rows, setRows] = useState<DoctorRow[]>([]);
   const [loading, setLoading] = useState(true);
+export default function AdminDoctorVerifications() {
+  const { user, loading: authLoading } = useAuth();
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const [rows, setRows] = useState<DoctorRow[]>([]);
+  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"pending" | "all">("pending");
   const [reasonByDoctor, setReasonByDoctor] = useState<Record<string, string>>({});
   const [signedUrls, setSignedUrls] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!user) {
+      setIsAdmin(null);
+      return;
+    }
+    (async () => {
+      const { data, error } = await supabase.rpc("has_role", {
+        _user_id: user.id,
+        _role: "admin",
+      });
+      setIsAdmin(!error && data === true);
+    })();
+  }, [user]);
 
   async function load() {
     setLoading(true);
@@ -49,9 +68,9 @@ export default function AdminDoctorVerifications() {
   }
 
   useEffect(() => {
-    load();
+    if (isAdmin) load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter]);
+  }, [filter, isAdmin]);
 
   async function viewDocument(doctor: DoctorRow) {
     if (!doctor.license_document_url) return;
