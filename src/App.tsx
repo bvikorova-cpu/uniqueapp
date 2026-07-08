@@ -1361,6 +1361,9 @@ const App = () => {
                         <Route path="/skills" element={<Navigate to="/skills-marketplace" replace />} />
                         <Route path="/brand-arena" element={<Navigate to="/brand-battle/hub" replace />} />
                         <Route path="/messages" element={<Navigate to="/wall/messages" replace />} />
+                        <Route path="/community" element={<Navigate to="/wall" replace />} />
+                        <Route path="/health" element={<Navigate to="/wellness" replace />} />
+                        <Route path="/legal" element={<Navigate to="/terms" replace />} />
                         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                         <Route path="*" element={<NotFound />} />
                       </Routes>
