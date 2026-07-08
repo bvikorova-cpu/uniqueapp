@@ -248,4 +248,9 @@ const AutoRechargeCardImpl = ({ currentBalance }: { currentBalance: number }) =>
   );
 };
 
+export const AutoRechargeCard = (props: { currentBalance: number }) => {
+  if (!AUTO_RECHARGE_ENABLED) return null;
+  return <AutoRechargeCardImpl {...props} />;
+};
+
 export default AutoRechargeCard;
