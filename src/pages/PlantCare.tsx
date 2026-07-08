@@ -6,6 +6,7 @@ import { PlantIdentifier } from "@/components/plant-care/PlantIdentifier";
 import { CareCalendar } from "@/components/plant-care/CareCalendar";
 import { PlantDiagnosis } from "@/components/plant-care/PlantDiagnosis";
 import { MyPlants } from "@/components/plant-care/MyPlants";
+import { FloatingHowItWorks } from "@/components/common/FloatingHowItWorks";
 
 const PlantCare = () => {
   return (
@@ -21,6 +22,18 @@ const PlantCare = () => {
             Identify plants from photos, get personalized care schedules, and diagnose plant diseases with AI
           </p>
         </div>
+
+        <FloatingHowItWorks
+          title="How AI Garden & Plant Care works"
+          intro="Identify, schedule and diagnose your plants with AI."
+          steps={[
+            { title: 'Identify', desc: 'Upload a photo to detect the species instantly.' },
+            { title: 'Calendar', desc: 'Get a personalized watering and care schedule.' },
+            { title: 'Diagnose', desc: 'Spot diseases and pests from leaf photos.' },
+            { title: 'My Plants', desc: 'Track your collection and log care activity.' },
+          ]}
+        />
+
 
         <Tabs defaultValue="identify" className="w-full">
           <TabsList className="grid w-full grid-cols-4 mb-8">
