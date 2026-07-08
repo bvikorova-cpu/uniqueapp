@@ -160,6 +160,19 @@ async function generatePdf(opts: {
   const fontLight = await pdf.embedFont(StandardFonts.Helvetica);
   const fontItalic = await pdf.embedFont(StandardFonts.HelveticaOblique);
 
+  recipient: string;
+  course: string;
+  module: string;
+  score: number;
+  certNumber: string;
+  verifyUrl: string;
+}) {
+  const pdf = await PDFDocument.create();
+  const page = pdf.addPage([842, 595]); // A4 landscape
+  const font = await pdf.embedFont(StandardFonts.HelveticaBold);
+  const fontLight = await pdf.embedFont(StandardFonts.Helvetica);
+  const fontItalic = await pdf.embedFont(StandardFonts.HelveticaOblique);
+
   const purple = rgb(0.396, 0.169, 0.827); // hsl(270 91% 50%) approx
   const pink = rgb(1.0, 0.078, 0.576); // hsl(330 100% 50%) approx
   const dark = rgb(0.09, 0.09, 0.15);
