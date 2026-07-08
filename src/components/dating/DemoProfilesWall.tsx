@@ -22,7 +22,7 @@ export const DemoProfilesWall = () => {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const { data, error } = await supabase.rpc("get_demo_dating_profiles", { _limit: 8 });
+      const { data, error } = await (supabase as any).rpc("get_demo_dating_profiles", { _limit: 8 });
       if (cancelled) return;
       if (!error && data) setProfiles(data as DemoProfile[]);
       setLoading(false);
