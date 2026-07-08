@@ -202,6 +202,20 @@ const FinancialInvestment = () => {
                       : "Enroll Now"}
                   </Button>
                 </div>
+                <CourseAcademicActions
+                  meta={{
+                    module_key: "financial-investment",
+                    module_label: "Financial Investment",
+                    course_slug: education.id,
+                    course_title: education.title,
+                    description: education.description,
+                    level: education.level,
+                    duration: education.duration,
+                    price: education.price,
+                    skills: education.skills,
+                  }}
+                  unlocked={isPurchased(education.id, "investment-education")}
+                />
               </div>
             </Card>
           ))}
