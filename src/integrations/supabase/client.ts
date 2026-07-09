@@ -30,10 +30,40 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
 // call across the codebase working without changes.
 // ---------------------------------------------------------------------------
 const _originalInvoke = supabase.functions.invoke.bind(supabase.functions);
+
+// Sampling for successful calls to keep write volume bounded — errors always logged.
+const METRIC_SAMPLE_RATE = 0.1;
+
+async function recordMetric(fn: string, startedAt: number, ok: boolean, statusCode: number | null, errorMessage: string | null) {
+  try {
+    if (ok && Math.random() > METRIC_SAMPLE_RATE) return;
+    const duration_ms = Math.min(Math.max(Math.round(performance.now() - startedAt), 0), 599999);
+    await (supabase.from("edge_function_metrics") as any).insert({
+      function_name: fn.slice(0, 199),
+      duration_ms,
+      ok,
+      status_code: statusCode,
+      error_message: errorMessage ? errorMessage.slice(0, 999) : null,
+    });
+  } catch {
+    /* swallow — telemetry must never break the app */
+  }
+}
+
 (supabase.functions as any).invoke = async (functionName: string, options?: any) => {
   const resolved = resolveProxy(functionName, options?.body);
-  if (resolved) {
-    return _originalInvoke(resolved.target, { ...(options ?? {}), body: resolved.body });
+  const target = resolved ? resolved.target : functionName;
+  const body = resolved ? resolved.body : options?.body;
+  const startedAt = performance.now();
+  try {
+    const res = await _originalInvoke(target, { ...(options ?? {}), body });
+    const errObj = (res as any)?.error;
+    const ctx = errObj?.context;
+    const status = typeof ctx?.status === "number" ? ctx.status : errObj ? 500 : 200;
+    void recordMetric(target, startedAt, !errObj, status, errObj?.message ?? null);
+    return res;
+  } catch (e: any) {
+    void recordMetric(target, startedAt, false, null, e?.message ?? "invoke_threw");
+    throw e;
   }
-  return _originalInvoke(functionName, options);
 };
