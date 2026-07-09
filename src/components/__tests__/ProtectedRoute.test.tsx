@@ -60,6 +60,7 @@ function renderGuard(opts: { admin?: boolean } = {}) {
           }
         />
         <Route path="/" element={<div>HOME</div>} />
+        <Route path="/auth" element={<div>HOME</div>} />
       </Routes>
     </MemoryRouter>,
   );

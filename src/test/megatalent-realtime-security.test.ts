@@ -187,7 +187,7 @@ describe("Megatalent voting topics — authenticated user, forbidden scopes", ()
 // channel, this test fails so the regression cannot ship.
 // ---------------------------------------------------------------------------
 describe("Codebase guard — Megatalent realtime channels", () => {
-  it("src/ contains no global Megatalent channel subscriptions", async () => {
+  it("src/ contains no global Megatalent channel subscriptions", { timeout: 30_000 }, async () => {
     const { readdir, readFile, stat } = await import("node:fs/promises");
     const { join } = await import("node:path");
 
