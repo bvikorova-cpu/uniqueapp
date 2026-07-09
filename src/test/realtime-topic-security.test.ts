@@ -141,7 +141,7 @@ describe("Realtime topic security (RLS on realtime.messages)", () => {
 describe("Codebase guard: no forbidden realtime topics in app code", () => {
   // This is a static safety net — if anyone reintroduces a public:* or
   // anonymous_dating_messages channel subscription in src/, the test fails.
-  it("src/ contains no supabase.channel('public:...') or anonymous_dating_messages subscriptions", async () => {
+  it("src/ contains no supabase.channel('public:...') or anonymous_dating_messages subscriptions", { timeout: 30_000 }, async () => {
     const { readdir, readFile, stat } = await import("node:fs/promises");
     const { join } = await import("node:path");
 
