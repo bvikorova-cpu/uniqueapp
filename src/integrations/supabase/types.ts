@@ -66242,7 +66242,12 @@ export type Database = {
       }
       check_rate_limit:
         | {
-            Args: { _bucket: string; _max: number; _window_seconds: number }
+            Args: {
+              _bucket: string
+              _max: number
+              _user_id?: string
+              _window_seconds: number
+            }
             Returns: boolean
           }
         | {
@@ -66264,9 +66269,7 @@ export type Database = {
       }
       claim_daily_login_reward: { Args: never; Returns: Json }
       claim_daily_quest_secure: { Args: { _quest_id: string }; Returns: Json }
-      claim_daily_reward_atomic:
-        | { Args: never; Returns: Json }
-        | { Args: { _user_id?: string }; Returns: Json }
+      claim_daily_reward_atomic: { Args: { _user_id?: string }; Returns: Json }
       claim_founding_member: {
         Args: never
         Returns: {

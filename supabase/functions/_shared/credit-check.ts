@@ -78,6 +78,7 @@ export async function requireAiCredits(
         _bucket: `${bucket}:${user.id}`,
         _max: max,
         _window_seconds: windowSec,
+        _user_id: user.id,
       });
       if (!rlErr && allowed === false) {
         return {
