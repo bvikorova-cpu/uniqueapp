@@ -1123,6 +1123,7 @@ const App = () => {
                         <Route path="/admin/engagement" element={<ProtectedRoute requireAdmin={true}><AdminEngagement /></ProtectedRoute>} />
                         <Route path="/admin/monetag-stats" element={<ProtectedRoute requireAdmin={true}><AdminMonetagStats /></ProtectedRoute>} />
                         <Route path="/admin/vitals" element={<ProtectedRoute requireAdmin={true}><AdminVitals /></ProtectedRoute>} />
+                        <Route path="/admin/edge-monitoring" element={<ProtectedRoute requireAdmin={true}><AdminEdgeMonitoring /></ProtectedRoute>} />
                         <Route path="/admin/pwa-stats" element={<ProtectedRoute requireAdmin={true}><AdminPwaStats /></ProtectedRoute>} />
                         <Route path="/admin/dunning" element={<ProtectedRoute requireAdmin={true}><AdminDunning /></ProtectedRoute>} />
                         <Route path="/admin/winback" element={<ProtectedRoute requireAdmin={true}><AdminWinBack /></ProtectedRoute>} />
