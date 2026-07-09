@@ -29,6 +29,7 @@ export async function enforceRateLimit(
     _bucket: `${opts.bucket}:${userId}`,
     _max: opts.max,
     _window_seconds: opts.windowSec,
+    _user_id: userId,
   });
   if (error) {
     // Fail open — log but do not block on infra issue.
