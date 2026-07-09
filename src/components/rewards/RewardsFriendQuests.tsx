@@ -48,11 +48,29 @@ export default function RewardsFriendQuests() {
 
   const sendInvite = async () => {
     if (!user || !friendId.trim() || sending) return;
+    const target = friendId.trim();
+    if (target === user.id) {
+      toast.error("You can't invite yourself");
+      return;
+    }
     setSending(true);
     try {
+      // Prevent duplicate pending invite for same friend + quest type
+      const { data: existing } = await supabase
+        .from("friend_quest_invites")
+        .select("id")
+        .eq("from_user", user.id)
+        .eq("to_user", target)
+        .eq("quest_type", QUEST_TYPES[questIdx].id)
+        .eq("status", "pending")
+        .maybeSingle();
+      if (existing) {
+        toast.error("You already have a pending invite for this friend & quest");
+        return;
+      }
       const { error } = await supabase.from("friend_quest_invites").insert({
         from_user: user.id,
-        to_user: friendId.trim(),
+        to_user: target,
         quest_type: QUEST_TYPES[questIdx].id,
       });
       if (error) return toast.error("Failed: " + error.message);
@@ -62,6 +80,7 @@ export default function RewardsFriendQuests() {
       setSending(false);
     }
   };
+
 
   const accept = async (inv: any) => {
     if (!user || busyInviteId) return;
