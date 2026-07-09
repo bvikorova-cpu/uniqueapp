@@ -12,12 +12,13 @@ serve(async (req) => {
   }
 
   try {
-    const { supabase: supabaseClient } = await authenticateUser(req);
+    const { supabase: supabaseClient, user } = await authenticateUser(req);
 
     // Atomic single-call claim — handles streak, double-claim guard and
     // user_points update inside one transaction. Eliminates the previous
     // TOCTOU race that allowed double-XP under concurrent requests.
-    const { data, error } = await (supabaseClient as any).rpc("claim_daily_reward_atomic");
+    // Pass user id explicitly since service-role client has no auth.uid().
+    const { data, error } = await (supabaseClient as any).rpc("claim_daily_reward_atomic", { _user_id: user.id });
     if (error) throw error;
 
     const payload = data as { ok: boolean; error?: string; pointsEarned?: number; streak?: number };
