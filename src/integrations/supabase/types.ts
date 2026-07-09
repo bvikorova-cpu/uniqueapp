@@ -20886,6 +20886,39 @@ export type Database = {
         }
         Relationships: []
       }
+      edge_function_metrics: {
+        Row: {
+          created_at: string
+          duration_ms: number
+          error_message: string | null
+          function_name: string
+          id: number
+          ok: boolean
+          status_code: number | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          duration_ms: number
+          error_message?: string | null
+          function_name: string
+          id?: number
+          ok: boolean
+          status_code?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          duration_ms?: number
+          error_message?: string | null
+          function_name?: string
+          id?: number
+          ok?: boolean
+          status_code?: number | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       education_achievements: {
         Row: {
           category: string
@@ -66656,6 +66689,22 @@ export type Database = {
           rank: number
           total_votes: number
           user_id: string
+        }[]
+      }
+      get_edge_function_stats_7d: {
+        Args: never
+        Returns: {
+          avg_ms: number
+          error_count: number
+          error_rate: number
+          function_name: string
+          last_call: string
+          last_error: string
+          max_ms: number
+          p50_ms: number
+          p95_ms: number
+          p99_ms: number
+          total_calls: number
         }[]
       }
       get_engagement_metrics: { Args: { p_days?: number }; Returns: Json }
