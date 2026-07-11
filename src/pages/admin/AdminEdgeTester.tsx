@@ -6,11 +6,10 @@ import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Zap, Play, Loader2, CheckCircle2, XCircle, AlertTriangle, Filter } from "lucide-react";
+import { Zap, Play, Loader2, CheckCircle2, XCircle, Filter } from "lucide-react";
 import { EDGE_FUNCTIONS } from "@/data/edgeFunctionsList";
-import { resolveProxy } from "@/integrations/supabase/proxyMap";
 
-type Status = "idle" | "running" | "ok" | "warn" | "error";
+type Status = "idle" | "running" | "ok" | "error";
 interface Result {
   status: Status;
   code?: number;
@@ -18,28 +17,19 @@ interface Result {
   message?: string;
 }
 
-// Probe uses an unauthenticated GET. Supabase's gateway answers BEFORE the
-// function body runs: 401 = function is deployed but requires auth (alive),
-// 404 = function is not deployed, 5xx = gateway/worker error. This never
-// executes the handler, so no validation/rate-limit/business errors leak.
-const SUPABASE_FUNCTIONS_URL = "https://jufrdzeonywluwutvyxz.supabase.co/functions/v1";
-
-// All per-function probes run SERVER-SIDE via the `edge-fn-probe` function.
-// The browser only makes ONE fetch, so Lovable's runtime-error interceptor
-// (which watches `/functions/v1/*` responses in the browser) never sees the
-// per-function 401/404/500 results and the error log stays clean.
+// Server-side probe calls each function with POST { __probe: true } using
+// service-role credentials and returns a real "works / doesn't work" verdict.
 async function probeAllRemote(names: string[]): Promise<Record<string, Result>> {
   const { data, error } = await supabase.functions.invoke('edge-fn-probe', {
     body: { names },
   });
   if (error) throw error;
   const out: Record<string, Result> = {};
-  const results = (data as { results?: Array<{ name: string; code: number; ms: number; status: Status }> })?.results ?? [];
+  const results = (data as {
+    results?: Array<{ name: string; code: number; ms: number; status: "ok" | "error"; detail: string }>;
+  })?.results ?? [];
   for (const r of results) {
-    let message = 'deployed';
-    if (r.status === 'warn') message = r.code === 404 ? 'not deployed / proxied name' : `alive (${r.code})`;
-    else if (r.status === 'error') message = r.code >= 500 ? 'gateway/worker error' : 'network error';
-    out[r.name] = { status: r.status, code: r.code, ms: r.ms, message };
+    out[r.name] = { status: r.status, code: r.code, ms: r.ms, message: r.detail };
   }
   return out;
 }
@@ -48,7 +38,7 @@ async function probeAllRemote(names: string[]): Promise<Record<string, Result>> 
 
 
 const badgeVariant = (s: Status) =>
-  s === "ok" ? "default" : s === "warn" ? "secondary" : s === "error" ? "destructive" : "outline";
+  s === "ok" ? "default" : s === "error" ? "destructive" : "outline";
 
 const Inner = () => {
   const [results, setResults] = useState<Record<string, Result>>({});

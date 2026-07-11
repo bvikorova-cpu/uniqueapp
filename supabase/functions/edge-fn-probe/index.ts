@@ -1,56 +1,86 @@
-// Server-side probe. Fetches each named edge function's gateway URL from Deno
-// and returns a status map. This keeps all per-function probe requests OFF the
-// browser, so Lovable's runtime-error interceptor never sees non-2xx responses
-// from probed functions and the error log stays clean.
+// Server-side probe. Calls each edge function with an authenticated POST
+// carrying { __probe: true } and classifies the response.
+//
+// Classification: "does the function actually work?"
+//   - 2xx                     → works (handler ran and returned OK)
+//   - 400 / 401 / 403 / 405
+//     / 409 / 422 / 429       → works (handler/gateway executed; the response
+//                                is a normal reject, not a crash)
+//   - 404                     → broken (function not deployed under this name)
+//   - 5xx                     → broken (worker crashed / boot error)
+//   - network / 0             → broken (unreachable)
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
 
 const PROJECT_URL = Deno.env.get('SUPABASE_URL') ?? 'https://jufrdzeonywluwutvyxz.supabase.co'
 const ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+const SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
 
 interface ProbeResult {
   name: string
   code: number
   ms: number
-  status: 'ok' | 'warn' | 'error'
+  status: 'ok' | 'error'   // ok = funguje, error = nefunguje
+  detail: string           // human readable reason
 }
 
-function classify(code: number): ProbeResult['status'] {
-  if (code === 401 || (code >= 200 && code < 400)) return 'ok'
-  if (code === 404 || code === 403 || code === 429 || code === 405 || code === 400) return 'warn'
-  if (code >= 500) return 'error'
-  return 'warn'
+const ALIVE_CODES = new Set([200, 201, 202, 204, 400, 401, 403, 405, 409, 422, 429])
+
+function classify(code: number): { status: 'ok' | 'error'; detail: string } {
+  if (code >= 200 && code < 300) return { status: 'ok', detail: 'handler OK' }
+  if (ALIVE_CODES.has(code)) {
+    if (code === 401 || code === 403) return { status: 'ok', detail: `alive, gated (${code})` }
+    if (code === 429) return { status: 'ok', detail: 'alive, rate-limited' }
+    if (code === 405) return { status: 'ok', detail: 'alive, method guard' }
+    return { status: 'ok', detail: `alive, validation rejected (${code})` }
+  }
+  if (code === 404) return { status: 'error', detail: 'NOT DEPLOYED (404)' }
+  if (code >= 500) return { status: 'error', detail: `CRASH (${code})` }
+  if (code === 0) return { status: 'error', detail: 'network unreachable' }
+  return { status: 'error', detail: `unexpected ${code}` }
 }
 
 async function probeOne(name: string): Promise<ProbeResult> {
   const t0 = performance.now()
   try {
-    const res = await fetch(`${PROJECT_URL}/functions/v1/${name}?__probe=1`, {
-      method: 'GET',
-      headers: ANON_KEY ? { apikey: ANON_KEY } : {},
+    const key = SERVICE_KEY || ANON_KEY
+    const res = await fetch(`${PROJECT_URL}/functions/v1/${name}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: key,
+        Authorization: `Bearer ${key}`,
+      },
+      body: JSON.stringify({ __probe: true }),
+      signal: AbortSignal.timeout(8000),
     })
-    try { await res.text() } catch {}
-    const code = res.status
-    return { name, code, ms: Math.round(performance.now() - t0), status: classify(code) }
-  } catch (_e) {
-    return { name, code: 0, ms: Math.round(performance.now() - t0), status: 'error' }
+    try { await res.text() } catch { /* ignore */ }
+    const { status, detail } = classify(res.status)
+    return { name, code: res.status, ms: Math.round(performance.now() - t0), status, detail }
+  } catch (e) {
+    const msg = (e as Error).message || 'network error'
+    return { name, code: 0, ms: Math.round(performance.now() - t0), status: 'error', detail: `network: ${msg}` }
   }
 }
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
-
   try {
     const body = req.method === 'POST' ? await req.json().catch(() => ({})) : {}
-    const names: string[] = Array.isArray(body?.names) ? body.names.filter((n: unknown) => typeof n === 'string') : []
+    if (body?.__probe) {
+      return new Response(JSON.stringify({ probe: true }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+    const names: string[] = Array.isArray(body?.names)
+      ? body.names.filter((n: unknown) => typeof n === 'string')
+      : []
     if (names.length === 0) {
       return new Response(JSON.stringify({ results: [] }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
     }
-
-    // Cap and run with bounded concurrency
     const capped = names.slice(0, 600)
-    const CONCURRENCY = 16
+    const CONCURRENCY = 12
     const results: ProbeResult[] = new Array(capped.length)
     let cursor = 0
     async function worker() {
@@ -61,7 +91,6 @@ Deno.serve(async (req) => {
       }
     }
     await Promise.all(Array.from({ length: CONCURRENCY }, worker))
-
     return new Response(JSON.stringify({ results }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
