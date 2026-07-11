@@ -6,11 +6,10 @@ import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Zap, Play, Loader2, CheckCircle2, XCircle, AlertTriangle, Filter } from "lucide-react";
+import { Zap, Play, Loader2, CheckCircle2, XCircle, Filter } from "lucide-react";
 import { EDGE_FUNCTIONS } from "@/data/edgeFunctionsList";
-import { resolveProxy } from "@/integrations/supabase/proxyMap";
 
-type Status = "idle" | "running" | "ok" | "warn" | "error";
+type Status = "idle" | "running" | "ok" | "error";
 interface Result {
   status: Status;
   code?: number;
@@ -18,28 +17,19 @@ interface Result {
   message?: string;
 }
 
-// Probe uses an unauthenticated GET. Supabase's gateway answers BEFORE the
-// function body runs: 401 = function is deployed but requires auth (alive),
-// 404 = function is not deployed, 5xx = gateway/worker error. This never
-// executes the handler, so no validation/rate-limit/business errors leak.
-const SUPABASE_FUNCTIONS_URL = "https://jufrdzeonywluwutvyxz.supabase.co/functions/v1";
-
-// All per-function probes run SERVER-SIDE via the `edge-fn-probe` function.
-// The browser only makes ONE fetch, so Lovable's runtime-error interceptor
-// (which watches `/functions/v1/*` responses in the browser) never sees the
-// per-function 401/404/500 results and the error log stays clean.
+// Server-side probe calls each function with POST { __probe: true } using
+// service-role credentials and returns a real "works / doesn't work" verdict.
 async function probeAllRemote(names: string[]): Promise<Record<string, Result>> {
   const { data, error } = await supabase.functions.invoke('edge-fn-probe', {
     body: { names },
   });
   if (error) throw error;
   const out: Record<string, Result> = {};
-  const results = (data as { results?: Array<{ name: string; code: number; ms: number; status: Status }> })?.results ?? [];
+  const results = (data as {
+    results?: Array<{ name: string; code: number; ms: number; status: "ok" | "error"; detail: string }>;
+  })?.results ?? [];
   for (const r of results) {
-    let message = 'deployed';
-    if (r.status === 'warn') message = r.code === 404 ? 'not deployed / proxied name' : `alive (${r.code})`;
-    else if (r.status === 'error') message = r.code >= 500 ? 'gateway/worker error' : 'network error';
-    out[r.name] = { status: r.status, code: r.code, ms: r.ms, message };
+    out[r.name] = { status: r.status, code: r.code, ms: r.ms, message: r.detail };
   }
   return out;
 }
@@ -48,7 +38,7 @@ async function probeAllRemote(names: string[]): Promise<Record<string, Result>> 
 
 
 const badgeVariant = (s: Status) =>
-  s === "ok" ? "default" : s === "warn" ? "secondary" : s === "error" ? "destructive" : "outline";
+  s === "ok" ? "default" : s === "error" ? "destructive" : "outline";
 
 const Inner = () => {
   const [results, setResults] = useState<Record<string, Result>>({});
@@ -128,7 +118,7 @@ const Inner = () => {
             className="max-w-xs"
           />
           <div className="flex gap-1">
-            {(["all", "ok", "warn", "error", "idle"] as const).map((f) => (
+            {(["all", "ok", "error", "idle"] as const).map((f) => (
               <Button
                 key={f}
                 size="sm"
@@ -136,15 +126,14 @@ const Inner = () => {
                 onClick={() => setFilter(f)}
               >
                 <Filter className="w-3 h-3 mr-1" />
-                {f}
+                {f === "ok" ? "Funguje" : f === "error" ? "Nefunguje" : f === "idle" ? "Netestované" : "Všetko"}
               </Button>
             ))}
           </div>
           <div className="ml-auto flex gap-2">
-            <Badge variant="default">OK {counts.ok}</Badge>
-            <Badge variant="secondary">Warn {counts.warn}</Badge>
-            <Badge variant="destructive">Error {counts.error}</Badge>
-            <Badge variant="outline">Idle {counts.idle}</Badge>
+            <Badge variant="default">Funguje {counts.ok}</Badge>
+            <Badge variant="destructive">Nefunguje {counts.error}</Badge>
+            <Badge variant="outline">Netestované {counts.idle}</Badge>
           </div>
         </div>
 
@@ -176,7 +165,6 @@ const Inner = () => {
                 className="flex items-center gap-2 rounded-md border p-2 text-sm bg-background/40"
               >
                 {s === "ok" && <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />}
-                {s === "warn" && <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" />}
                 {s === "error" && <XCircle className="w-4 h-4 text-red-500 shrink-0" />}
                 {s === "running" && <Loader2 className="w-4 h-4 animate-spin shrink-0" />}
                 {s === "idle" && <div className="w-4 h-4 shrink-0" />}
@@ -185,7 +173,12 @@ const Inner = () => {
                   {fn}
                 </code>
 
-                {r?.code !== undefined && (
+                {r?.message && (
+                  <span className="text-[10px] text-muted-foreground truncate max-w-[140px]" title={r.message}>
+                    {r.message}
+                  </span>
+                )}
+                {r?.code !== undefined && r.code > 0 && (
                   <Badge variant={badgeVariant(s)} className="text-[10px]">
                     {r.code}
                   </Badge>
@@ -207,77 +200,35 @@ const Inner = () => {
           )}
         </div>
 
-        <div className="text-xs text-muted-foreground space-y-1 pt-2 border-t">
-          <p>
-            <strong>Probe method:</strong> HTTP <code>OPTIONS</code> (CORS preflight). This reaches
-            the deployed worker without invoking its handler, so no validation, auth, or
-            rate-limit responses are triggered — and nothing pollutes the runtime error log.
-          </p>
-          <p>
-            <strong>Green</strong> = function is deployed and its CORS layer answered. <strong>Red</strong> = 404 (missing) or 5xx (boot crash) — real bugs.
-          </p>
-        </div>
-
         <div className="rounded-md border bg-muted/30 p-4 space-y-3 text-sm">
-          <h3 className="font-semibold">Legend</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <h3 className="font-semibold">Ako to funguje</h3>
+          <p className="text-xs text-muted-foreground">
+            Server-side probe zavolá každú funkciu autentifikovaným <code>POST</code> s telom{" "}
+            <code>{`{ __probe: true }`}</code>. Klasifikuje sa reálna odpoveď workera:
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="flex items-start gap-2">
               <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
               <div>
-                <p className="font-medium">Green — OK</p>
+                <p className="font-medium">Funguje</p>
                 <p className="text-xs text-muted-foreground">
-                  The function is deployed and its CORS layer answered (2xx/3xx). The worker is alive
-                  and reachable.
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-2">
-              <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-              <div>
-                <p className="font-medium">Amber — Warn</p>
-                <p className="text-xs text-muted-foreground">
-                  404: the exact name is not a standalone worker; it is usually handled by a router
-                  or client-side proxy. 401/403: the worker is alive but gated.
+                  Handler sa spustil a odpovedal. Zahŕňa 2xx (OK), 400/422 (validácia zamietla probe),
+                  401/403 (auth guard funguje), 405 (metóda zamietnutá), 429 (rate-limit funguje).
+                  Vo všetkých prípadoch kód funkcie reálne beží.
                 </p>
               </div>
             </div>
             <div className="flex items-start gap-2">
               <XCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
               <div>
-                <p className="font-medium">Red — Error</p>
+                <p className="font-medium">Nefunguje</p>
                 <p className="text-xs text-muted-foreground">
-                  5xx: the worker crashed on boot or has a runtime error. Also used for network
-                  failures that prevented any response.
+                  <strong>404</strong> = funkcia nie je nasadená pod týmto názvom. <strong>5xx</strong>{" "}
+                  = worker spadol (boot error, chýbajúci import, unhandled exception).{" "}
+                  <strong>Network</strong> = gateway nedostupný. Toto sú reálne bugy na opravu.
                 </p>
               </div>
             </div>
-          </div>
-          <div className="text-xs text-muted-foreground space-y-1">
-            <p>
-              <strong>Expected OPTIONS states:</strong>
-            </p>
-            <ul className="list-disc pl-4 space-y-0.5">
-              <li>
-                <code>200</code> / <code>204</code> / <code>2xx</code> — best case: CORS preflight
-                returned successfully.
-              </li>
-              <li>
-                <code>401</code> / <code>403</code> — still OK; the worker is deployed but rejects
-                unauthenticated preflight requests.
-              </li>
-              <li>
-                <code>404</code> — amber: the name is not a standalone function, likely served by a
-                router or proxy rewrite.
-              </li>
-              <li>
-                <code>5xx</code> — red: the function crashed during deployment or is missing a
-                required environment/dependency.
-              </li>
-              <li>
-                <code>Network Error</code> — red: the function name does not exist, is not deployed,
-                or the domain is unreachable.
-              </li>
-            </ul>
           </div>
         </div>
       </AdminGlassCard>
