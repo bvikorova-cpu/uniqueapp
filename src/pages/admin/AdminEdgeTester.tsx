@@ -202,13 +202,12 @@ const Inner = () => {
 
         <div className="text-xs text-muted-foreground space-y-1 pt-2 border-t">
           <p>
-            <strong>Probe body:</strong> <code>{`{ __probe: true }`}</code> — most functions will reject this
-            (missing action / unauthorized / validation) with a 4xx. That means the function is deployed and
-            running — shown as <strong>amber "warn"</strong>, not red.
+            <strong>Probe method:</strong> HTTP <code>OPTIONS</code> (CORS preflight). This reaches
+            the deployed worker without invoking its handler, so no validation, auth, or
+            rate-limit responses are triggered — and nothing pollutes the runtime error log.
           </p>
           <p>
-            <strong>Red "error"</strong> = 5xx crash, dead worker, or thrown JS exception. Those are real bugs to
-            fix. Hover a row to see the error message.
+            <strong>Green</strong> = function is deployed and its CORS layer answered. <strong>Red</strong> = 404 (missing) or 5xx (boot crash) — real bugs.
           </p>
         </div>
       </AdminGlassCard>
