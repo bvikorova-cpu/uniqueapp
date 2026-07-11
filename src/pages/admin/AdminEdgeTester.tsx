@@ -43,9 +43,10 @@ async function probe(fn: string): Promise<Result> {
     // Consume body to avoid resource leaks
     try { await res.text(); } catch {}
     if (code >= 200 && code < 400) return { status: "ok", code, ms, message: "reachable" };
-    if (code === 404) return { status: "error", code, ms, message: "not deployed" };
     if (code >= 500) return { status: "error", code, ms, message: "worker error" };
-    return { status: "warn", code, ms, message: "alive (non-2xx preflight)" };
+    // 404 = legacy/proxied name whose target isn't a standalone function
+    // (handled by a router or client-side rewrite). 401/403 = alive but gated.
+    return { status: "warn", code, ms, message: code === 404 ? "proxied / router-backed" : "alive" };
   } catch (e: any) {
     return { status: "error", ms: Math.round(performance.now() - t0), message: e?.message ?? "network error" };
   }
