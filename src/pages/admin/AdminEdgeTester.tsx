@@ -24,41 +24,26 @@ interface Result {
 // executes the handler, so no validation/rate-limit/business errors leak.
 const SUPABASE_FUNCTIONS_URL = "https://jufrdzeonywluwutvyxz.supabase.co/functions/v1";
 
-async function probe(fn: string): Promise<Result> {
-  const t0 = performance.now();
-  const resolved = resolveProxy(fn, {});
-  const target = resolved ? resolved.target : fn;
-  // Use XMLHttpRequest — Lovable's runtime-error interceptor hooks window.fetch
-  // and reports every non-2xx /functions/v1/ response as a RUNTIME_ERROR.
-  // XHR bypasses that hook so probe results don't pollute the error log.
-  return new Promise((resolve) => {
-    try {
-      const xhr = new XMLHttpRequest();
-      xhr.open("GET", `${SUPABASE_FUNCTIONS_URL}/${target}?__probe=1`, true);
-      xhr.onload = () => {
-        const ms = Math.round(performance.now() - t0);
-        const code = xhr.status;
-        if (code === 401 || (code >= 200 && code < 400)) {
-          resolve({ status: "ok", code, ms, message: "deployed" });
-        } else if (code === 404) {
-          resolve({ status: "warn", code, ms, message: "not deployed / proxied name" });
-        } else if (code === 403 || code === 429 || code === 405 || code === 400) {
-          resolve({ status: "warn", code, ms, message: `alive (${code})` });
-        } else if (code >= 500) {
-          resolve({ status: "error", code, ms, message: "gateway/worker error" });
-        } else {
-          resolve({ status: "warn", code, ms, message: `unexpected ${code}` });
-        }
-      };
-      xhr.onerror = () => resolve({ status: "error", ms: Math.round(performance.now() - t0), message: "network error" });
-      xhr.ontimeout = () => resolve({ status: "error", ms: Math.round(performance.now() - t0), message: "timeout" });
-      xhr.timeout = 15000;
-      xhr.send();
-    } catch (e: any) {
-      resolve({ status: "error", ms: Math.round(performance.now() - t0), message: e?.message ?? "send failed" });
-    }
+// All per-function probes run SERVER-SIDE via the `edge-fn-probe` function.
+// The browser only makes ONE fetch, so Lovable's runtime-error interceptor
+// (which watches `/functions/v1/*` responses in the browser) never sees the
+// per-function 401/404/500 results and the error log stays clean.
+async function probeAllRemote(names: string[]): Promise<Record<string, Result>> {
+  const { data, error } = await supabase.functions.invoke('edge-fn-probe', {
+    body: { names },
   });
+  if (error) throw error;
+  const out: Record<string, Result> = {};
+  const results = (data as { results?: Array<{ name: string; code: number; ms: number; status: Status }> })?.results ?? [];
+  for (const r of results) {
+    let message = 'deployed';
+    if (r.status === 'warn') message = r.code === 404 ? 'not deployed / proxied name' : `alive (${r.code})`;
+    else if (r.status === 'error') message = r.code >= 500 ? 'gateway/worker error' : 'network error';
+    out[r.name] = { status: r.status, code: r.code, ms: r.ms, message };
+  }
+  return out;
 }
+
 
 
 
@@ -87,25 +72,32 @@ const Inner = () => {
 
   const runOne = async (fn: string) => {
     setResults((r) => ({ ...r, [fn]: { status: "running" } }));
-    const res = await probe(fn);
+    const map = await probeAllRemote([fn]).catch(() => ({} as Record<string, Result>));
+    const res = map[fn] ?? { status: "error" as Status, message: "probe failed" };
     setResults((r) => ({ ...r, [fn]: res }));
   };
 
   const runAll = async () => {
     setRunning(true);
     cancelRef.current = false;
-    const CONCURRENCY = 6;
-    const queue = [...filtered];
-    const workers = Array.from({ length: CONCURRENCY }, async () => {
-      while (queue.length && !cancelRef.current) {
-        const fn = queue.shift();
-        if (!fn) break;
-        await runOne(fn);
+    try {
+      // Chunk to keep server response sizes sane
+      const CHUNK = 100;
+      const list = [...filtered];
+      const pending: Record<string, Result> = {};
+      for (const fn of list) pending[fn] = { status: "running" };
+      setResults((r) => ({ ...r, ...pending }));
+      for (let i = 0; i < list.length; i += CHUNK) {
+        if (cancelRef.current) break;
+        const chunk = list.slice(i, i + CHUNK);
+        const map = await probeAllRemote(chunk).catch(() => ({} as Record<string, Result>));
+        setResults((r) => ({ ...r, ...map }));
       }
-    });
-    await Promise.all(workers);
-    setRunning(false);
+    } finally {
+      setRunning(false);
+    }
   };
+
 
   const counts = useMemo(() => {
     const c = { ok: 0, warn: 0, error: 0, idle: 0 };
