@@ -18,39 +18,44 @@ interface Result {
   message?: string;
 }
 
-// Probe uses OPTIONS (CORS preflight) — reaches the deployed function without
-// triggering its business logic, so no validation/auth/rate-limit errors leak
-// into the global runtime-error stream. Any 2xx/3xx = alive. 404 = not
-// deployed. 5xx = worker crashed on boot.
+// Probe uses an unauthenticated GET. Supabase's gateway answers BEFORE the
+// function body runs: 401 = function is deployed but requires auth (alive),
+// 404 = function is not deployed, 5xx = gateway/worker error. This never
+// executes the handler, so no validation/rate-limit/business errors leak.
 const SUPABASE_FUNCTIONS_URL = "https://jufrdzeonywluwutvyxz.supabase.co/functions/v1";
 
 async function probe(fn: string): Promise<Result> {
   const t0 = performance.now();
-  // Legacy names route through client-side proxy map to a real deployed target.
   const resolved = resolveProxy(fn, {});
   const target = resolved ? resolved.target : fn;
   try {
-    const res = await fetch(`${SUPABASE_FUNCTIONS_URL}/${target}`, {
-      method: "OPTIONS",
-      headers: {
-        "Access-Control-Request-Method": "POST",
-        "Access-Control-Request-Headers": "authorization,content-type",
-        Origin: window.location.origin,
-      },
+    const res = await fetch(`${SUPABASE_FUNCTIONS_URL}/${target}?__probe=1`, {
+      method: "GET",
+      cache: "no-store",
+      // No apikey / Authorization on purpose — we want the gateway's 401
+      // "alive" signal without ever executing the handler.
     });
     const ms = Math.round(performance.now() - t0);
     const code = res.status;
-    // Consume body to avoid resource leaks
     try { await res.text(); } catch {}
-    if (code >= 200 && code < 400) return { status: "ok", code, ms, message: "reachable" };
-    if (code >= 500) return { status: "error", code, ms, message: "worker error" };
-    // 404 = legacy/proxied name whose target isn't a standalone function
-    // (handled by a router or client-side rewrite). 401/403 = alive but gated.
-    return { status: "warn", code, ms, message: code === 404 ? "proxied / router-backed" : "alive" };
+    // 401 = deployed & gated by gateway (expected, healthy).
+    // 200/2xx = deployed & publicly reachable (also healthy).
+    if (code === 401 || (code >= 200 && code < 400)) {
+      return { status: "ok", code, ms, message: "deployed" };
+    }
+    if (code === 404) {
+      return { status: "warn", code, ms, message: "not deployed / proxied name" };
+    }
+    if (code === 403 || code === 429) {
+      return { status: "warn", code, ms, message: code === 429 ? "rate-limited" : "forbidden" };
+    }
+    if (code >= 500) return { status: "error", code, ms, message: "gateway/worker error" };
+    return { status: "warn", code, ms, message: `unexpected ${code}` };
   } catch (e: any) {
     return { status: "error", ms: Math.round(performance.now() - t0), message: e?.message ?? "network error" };
   }
 }
+
 
 const badgeVariant = (s: Status) =>
   s === "ok" ? "default" : s === "warn" ? "secondary" : s === "error" ? "destructive" : "outline";
@@ -111,7 +116,7 @@ const Inner = () => {
     <AdminPageShell>
       <AdminPageHeader
         title="Edge Function Tester"
-        subtitle="Sends a CORS preflight (OPTIONS) to each function — no business logic runs, no validation errors leak. Green = alive, Red = 404 not deployed / 5xx boot crash."
+        subtitle="Sends an unauthenticated GET — Supabase gateway answers with 401 for deployed functions and 404 for missing ones. The function handler never runs, so no errors leak."
         icon={Zap}
         badge="Admin"
         breadcrumbs={[{ label: "Edge Tester" }]}
