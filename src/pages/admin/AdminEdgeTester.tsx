@@ -116,7 +116,7 @@ const Inner = () => {
     <AdminPageShell>
       <AdminPageHeader
         title="Edge Function Tester"
-        subtitle="Sends a CORS preflight (OPTIONS) to each function — no business logic runs, no validation errors leak. Green = alive, Red = 404 not deployed / 5xx boot crash."
+        subtitle="Sends an unauthenticated GET — Supabase gateway answers with 401 for deployed functions and 404 for missing ones. The function handler never runs, so no errors leak."
         icon={Zap}
         badge="Admin"
         breadcrumbs={[{ label: "Edge Tester" }]}
