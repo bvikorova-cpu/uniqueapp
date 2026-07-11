@@ -35,7 +35,7 @@
 </head>
 <body>
 <h1>Edge Function Tester</h1>
-<div class="sub">Probes every deployed edge function with <code>{ __probe: true }</code> using your signed-in session.</div>
+<div class="sub">Probes each deployed edge function with an HTTP <code>OPTIONS</code> preflight — no business logic runs, no validation/auth/rate-limit errors are triggered.</div>
 <div id="authwarn" class="warn-banner" style="display:none">
   ⚠️ Not signed in. Open <a href="/auth">/auth</a> in another tab, log in, then refresh this page. Auth-gated functions will show "warn (401)" instead of real results.
 </div>
@@ -93,20 +93,24 @@ const BENIGN_MSG = /unauthor|forbidden|missing|required|invalid|not.?found|metho
 async function probe(fn) {
   const t0 = performance.now();
   try {
-    const { data, error } = await supabase.functions.invoke(fn, { body: { __probe: true } });
+    // OPTIONS (CORS preflight) — reaches worker without running its handler,
+    // so validation/auth/rate-limit responses never fire.
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/${fn}`, {
+      method: 'OPTIONS',
+      headers: {
+        'Access-Control-Request-Method': 'POST',
+        'Access-Control-Request-Headers': 'authorization,content-type',
+      },
+    });
     const ms = Math.round(performance.now() - t0);
-    if (error) {
-      let code, msg = error.message || 'error';
-      const ctx = error.context;
-      if (ctx && typeof ctx.status === 'number') code = ctx.status;
-      try { if (ctx?.json) { const b = await ctx.json(); if (b?.error) msg = String(b.error); } } catch {}
-      const benign = (code && BENIGN.has(code)) || BENIGN_MSG.test(msg);
-      return { status: benign ? 'warn' : 'err', code, ms, msg };
-    }
-    if (data && typeof data === 'object' && data.error) return { status:'warn', code:200, ms, msg:String(data.error) };
-    return { status:'ok', code:200, ms, msg:'ok' };
+    try { await res.text(); } catch {}
+    const code = res.status;
+    if (code >= 200 && code < 400) return { status:'ok', code, ms, msg:'reachable' };
+    if (code === 404) return { status:'err', code, ms, msg:'not deployed' };
+    if (code >= 500) return { status:'err', code, ms, msg:'worker error' };
+    return { status:'warn', code, ms, msg:'alive' };
   } catch (e) {
-    return { status:'err', ms:Math.round(performance.now()-t0), msg: e?.message || 'threw' };
+    return { status:'err', ms:Math.round(performance.now()-t0), msg: e?.message || 'network' };
   }
 }
 

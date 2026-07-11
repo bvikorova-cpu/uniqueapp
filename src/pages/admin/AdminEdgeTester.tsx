@@ -17,34 +17,33 @@ interface Result {
   message?: string;
 }
 
-// Codes that mean "function is alive, just refused this probe" — NOT bugs.
-const BENIGN_CODES = new Set([400, 401, 403, 404, 405, 409, 422]);
-const BENIGN_MSG = /unauthor|forbidden|missing|required|invalid|not.?found|method|validation|bad request|zod|schema/i;
+// Probe uses OPTIONS (CORS preflight) — reaches the deployed function without
+// triggering its business logic, so no validation/auth/rate-limit errors leak
+// into the global runtime-error stream. Any 2xx/3xx = alive. 404 = not
+// deployed. 5xx = worker crashed on boot.
+const SUPABASE_FUNCTIONS_URL = "https://jufrdzeonywluwutvyxz.supabase.co/functions/v1";
 
 async function probe(fn: string): Promise<Result> {
   const t0 = performance.now();
   try {
-    const { data, error } = await supabase.functions.invoke(fn, { body: { __probe: true } });
+    const res = await fetch(`${SUPABASE_FUNCTIONS_URL}/${fn}`, {
+      method: "OPTIONS",
+      headers: {
+        "Access-Control-Request-Method": "POST",
+        "Access-Control-Request-Headers": "authorization,content-type",
+        Origin: window.location.origin,
+      },
+    });
     const ms = Math.round(performance.now() - t0);
-    if (error) {
-      const ctx: any = (error as any).context;
-      let code: number | undefined = typeof ctx?.status === "number" ? ctx.status : undefined;
-      let message = (error as any)?.message || "error";
-      try {
-        if (ctx && typeof ctx.json === "function") {
-          const body = await ctx.json();
-          if (body?.error) message = String(body.error);
-        }
-      } catch {}
-      const benign = (code && BENIGN_CODES.has(code)) || BENIGN_MSG.test(message);
-      return { status: benign ? "warn" : "error", code, ms, message };
-    }
-    if (data && typeof data === "object" && (data as any).error) {
-      return { status: "warn", ms, code: 200, message: String((data as any).error) };
-    }
-    return { status: "ok", ms, code: 200, message: "ok" };
+    const code = res.status;
+    // Consume body to avoid resource leaks
+    try { await res.text(); } catch {}
+    if (code >= 200 && code < 400) return { status: "ok", code, ms, message: "reachable" };
+    if (code === 404) return { status: "error", code, ms, message: "not deployed" };
+    if (code >= 500) return { status: "error", code, ms, message: "worker error" };
+    return { status: "warn", code, ms, message: "alive (non-2xx preflight)" };
   } catch (e: any) {
-    return { status: "error", ms: Math.round(performance.now() - t0), message: e?.message ?? "threw" };
+    return { status: "error", ms: Math.round(performance.now() - t0), message: e?.message ?? "network error" };
   }
 }
 
@@ -107,7 +106,7 @@ const Inner = () => {
     <AdminPageShell>
       <AdminPageHeader
         title="Edge Function Tester"
-        subtitle="Probe every deployed edge function. Green = OK, Amber = alive but rejected probe (auth/validation), Red = real failure."
+        subtitle="Sends a CORS preflight (OPTIONS) to each function — no business logic runs, no validation errors leak. Green = alive, Red = 404 not deployed / 5xx boot crash."
         icon={Zap}
         badge="Admin"
         breadcrumbs={[{ label: "Edge Tester" }]}
@@ -203,13 +202,12 @@ const Inner = () => {
 
         <div className="text-xs text-muted-foreground space-y-1 pt-2 border-t">
           <p>
-            <strong>Probe body:</strong> <code>{`{ __probe: true }`}</code> — most functions will reject this
-            (missing action / unauthorized / validation) with a 4xx. That means the function is deployed and
-            running — shown as <strong>amber "warn"</strong>, not red.
+            <strong>Probe method:</strong> HTTP <code>OPTIONS</code> (CORS preflight). This reaches
+            the deployed worker without invoking its handler, so no validation, auth, or
+            rate-limit responses are triggered — and nothing pollutes the runtime error log.
           </p>
           <p>
-            <strong>Red "error"</strong> = 5xx crash, dead worker, or thrown JS exception. Those are real bugs to
-            fix. Hover a row to see the error message.
+            <strong>Green</strong> = function is deployed and its CORS layer answered. <strong>Red</strong> = 404 (missing) or 5xx (boot crash) — real bugs.
           </p>
         </div>
       </AdminGlassCard>
