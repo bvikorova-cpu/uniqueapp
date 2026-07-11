@@ -153,7 +153,7 @@ export const EDGE_FUNCTIONS: string[] = [
   "dating-moderate-message",
   "dating-weekly-insights",
   "delete-user-account",
-  "deno.json",
+  
   "dispatch-webhook",
   "dna-parity",
   "doctor-appointment-action",
