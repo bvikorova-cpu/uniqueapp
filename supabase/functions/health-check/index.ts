@@ -1,19 +1,22 @@
-// Public health check for consolidated routers + proxyMap coverage.
-// GET /functions/v1/health-check
-// Returns: { ok, checks: [{ name, ok, actions, error }], timestamp }
+// Public health check + edge-function probe.
 //
-// Each router exposes a `ping` action that bypasses auth/credits and
-// returns its own action list. We aggregate them so a single curl shows
-// which router is broken without scraping logs.
+// GET  /functions/v1/health-check
+//   -> aggregated router ping (legacy behavior)
+// POST /functions/v1/health-check { names: string[] }
+//   -> server-side probe of each named edge function using service-role auth.
+//      Returns { results: [{ name, code, ms, status, detail }] }
+//
+// Piggybacked onto health-check to avoid burning a second edge-function slot
+// (project is at SUPABASE_MAX_FUNCTIONS_REACHED).
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
 };
 
 const ROUTERS = ["nutrition-router", "horse-router", "video-ad-tools", "job-redirect"];
 
-// Expected proxyMap coverage — kept in sync with src/integrations/supabase/proxyMap.ts.
 const EXPECTED = {
   "nutrition-router": [
     "coach_chat", "allergy_scanner", "barcode_scanner", "body_predictor",
@@ -27,32 +30,80 @@ const EXPECTED = {
   "video-ad-tools": ["scenes", "sfx", "tts", "voice_clone"],
 };
 
-Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+const BASE = Deno.env.get("SUPABASE_URL") ?? "";
+const ANON = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
+const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 
-  const base = Deno.env.get("SUPABASE_URL") ?? "";
-  const anon = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
+// ---------------- probe ----------------
+const ALIVE = new Set([200, 201, 202, 204, 400, 401, 403, 405, 409, 422, 429]);
+function classify(code: number): { status: "ok" | "error"; detail: string } {
+  if (code >= 200 && code < 300) return { status: "ok", detail: "handler OK" };
+  if (ALIVE.has(code)) {
+    if (code === 401 || code === 403) return { status: "ok", detail: `alive, gated (${code})` };
+    if (code === 429) return { status: "ok", detail: "alive, rate-limited" };
+    if (code === 405) return { status: "ok", detail: "alive, method guard" };
+    return { status: "ok", detail: `alive, validation rejected (${code})` };
+  }
+  if (code === 404) return { status: "error", detail: "NOT DEPLOYED (404)" };
+  if (code >= 500) return { status: "error", detail: `CRASH (${code})` };
+  if (code === 0) return { status: "error", detail: "network unreachable" };
+  return { status: "error", detail: `unexpected ${code}` };
+}
+
+async function probeOne(name: string) {
+  const t0 = performance.now();
+  const key = SERVICE || ANON;
+  try {
+    const res = await fetch(`${BASE}/functions/v1/${name}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: key,
+        Authorization: `Bearer ${key}`,
+      },
+      body: JSON.stringify({ __probe: true }),
+      signal: AbortSignal.timeout(8000),
+    });
+    try { await res.text(); } catch { /* ignore */ }
+    const { status, detail } = classify(res.status);
+    return { name, code: res.status, ms: Math.round(performance.now() - t0), status, detail };
+  } catch (e) {
+    return { name, code: 0, ms: Math.round(performance.now() - t0), status: "error" as const, detail: `network: ${(e as Error).message}` };
+  }
+}
+
+async function probeMany(names: string[]) {
+  const capped = names.slice(0, 600);
+  const CONCURRENCY = 12;
+  const results = new Array(capped.length);
+  let cursor = 0;
+  async function worker() {
+    while (true) {
+      const i = cursor++;
+      if (i >= capped.length) return;
+      results[i] = await probeOne(capped[i]);
+    }
+  }
+  await Promise.all(Array.from({ length: CONCURRENCY }, worker));
+  return results;
+}
+
+// ---------------- legacy health check ----------------
+async function runHealth() {
   const checks: any[] = [];
-
   for (const name of ROUTERS) {
     try {
       if (name === "job-redirect") {
-        // job-redirect: validate it 400s on missing id (proves function is live).
-        const r = await fetch(`${base}/functions/v1/job-redirect`, {
-          headers: { apikey: anon, Authorization: `Bearer ${anon}` },
+        const r = await fetch(`${BASE}/functions/v1/job-redirect`, {
+          headers: { apikey: ANON, Authorization: `Bearer ${ANON}` },
           redirect: "manual",
         });
         checks.push({ name, ok: r.status === 400, status: r.status });
         continue;
       }
-
-      const r = await fetch(`${base}/functions/v1/${name}`, {
+      const r = await fetch(`${BASE}/functions/v1/${name}`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          apikey: anon,
-          Authorization: `Bearer ${anon}`,
-        },
+        headers: { "Content-Type": "application/json", apikey: ANON, Authorization: `Bearer ${ANON}` },
         body: JSON.stringify({ action: "ping" }),
       });
       const data = await r.json().catch(() => ({}));
@@ -70,13 +121,33 @@ Deno.serve(async (req) => {
       checks.push({ name, ok: false, error: e?.message ?? "fetch failed" });
     }
   }
-
   const ok = checks.every((c) => c.ok);
-  return new Response(
-    JSON.stringify({ ok, checks, timestamp: new Date().toISOString() }, null, 2),
-    {
-      status: ok ? 200 : 503,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    },
-  );
+  return { ok, checks, timestamp: new Date().toISOString() };
+}
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+
+  // POST with { names } -> probe mode
+  if (req.method === "POST") {
+    const body = await req.json().catch(() => ({}));
+    if (body?.__probe) {
+      return new Response(JSON.stringify({ probe: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (Array.isArray(body?.names)) {
+      const results = await probeMany(body.names.filter((n: unknown) => typeof n === "string"));
+      return new Response(JSON.stringify({ results }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+  }
+
+  // Default: legacy health aggregation
+  const res = await runHealth();
+  return new Response(JSON.stringify(res, null, 2), {
+    status: res.ok ? 200 : 503,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
 });
