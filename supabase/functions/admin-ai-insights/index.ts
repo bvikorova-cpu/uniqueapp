@@ -55,6 +55,14 @@ Deno.serve(async (req) => {
 
     const isRecord = (value: unknown): value is Record<string, unknown> =>
       typeof value === "object" && value !== null && !Array.isArray(value);
+
+    if (isRecord(body) && body["__probe"] === true) {
+      return new Response(JSON.stringify({ ok: true, function: "admin-ai-insights" }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const statsPayload = isRecord(body) && isRecord(body.stats) ? body.stats : {};
     const num = (value: unknown) => {
       const parsed = typeof value === "number" ? value : typeof value === "string" ? Number(value) : 0;
