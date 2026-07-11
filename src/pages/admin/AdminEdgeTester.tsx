@@ -106,7 +106,7 @@ const Inner = () => {
     <AdminPageShell>
       <AdminPageHeader
         title="Edge Function Tester"
-        subtitle="Probe every deployed edge function. Green = OK, Amber = alive but rejected probe (auth/validation), Red = real failure."
+        subtitle="Sends a CORS preflight (OPTIONS) to each function — no business logic runs, no validation errors leak. Green = alive, Red = 404 not deployed / 5xx boot crash."
         icon={Zap}
         badge="Admin"
         breadcrumbs={[{ label: "Edge Tester" }]}
