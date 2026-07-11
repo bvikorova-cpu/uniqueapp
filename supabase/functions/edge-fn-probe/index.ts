@@ -9,7 +9,11 @@
 //   - 404                     → broken (function not deployed under this name)
 //   - 5xx                     → broken (worker crashed / boot error)
 //   - network / 0             → broken (unreachable)
-import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
+const corsHeaders: Record<string, string> = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+}
 
 const PROJECT_URL = Deno.env.get('SUPABASE_URL') ?? 'https://jufrdzeonywluwutvyxz.supabase.co'
 const ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY') ?? ''
