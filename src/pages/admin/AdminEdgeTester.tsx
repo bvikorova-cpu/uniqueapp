@@ -17,34 +17,33 @@ interface Result {
   message?: string;
 }
 
-// Codes that mean "function is alive, just refused this probe" — NOT bugs.
-const BENIGN_CODES = new Set([400, 401, 403, 404, 405, 409, 422]);
-const BENIGN_MSG = /unauthor|forbidden|missing|required|invalid|not.?found|method|validation|bad request|zod|schema/i;
+// Probe uses OPTIONS (CORS preflight) — reaches the deployed function without
+// triggering its business logic, so no validation/auth/rate-limit errors leak
+// into the global runtime-error stream. Any 2xx/3xx = alive. 404 = not
+// deployed. 5xx = worker crashed on boot.
+const SUPABASE_FUNCTIONS_URL = "https://jufrdzeonywluwutvyxz.supabase.co/functions/v1";
 
 async function probe(fn: string): Promise<Result> {
   const t0 = performance.now();
   try {
-    const { data, error } = await supabase.functions.invoke(fn, { body: { __probe: true } });
+    const res = await fetch(`${SUPABASE_FUNCTIONS_URL}/${fn}`, {
+      method: "OPTIONS",
+      headers: {
+        "Access-Control-Request-Method": "POST",
+        "Access-Control-Request-Headers": "authorization,content-type",
+        Origin: window.location.origin,
+      },
+    });
     const ms = Math.round(performance.now() - t0);
-    if (error) {
-      const ctx: any = (error as any).context;
-      let code: number | undefined = typeof ctx?.status === "number" ? ctx.status : undefined;
-      let message = (error as any)?.message || "error";
-      try {
-        if (ctx && typeof ctx.json === "function") {
-          const body = await ctx.json();
-          if (body?.error) message = String(body.error);
-        }
-      } catch {}
-      const benign = (code && BENIGN_CODES.has(code)) || BENIGN_MSG.test(message);
-      return { status: benign ? "warn" : "error", code, ms, message };
-    }
-    if (data && typeof data === "object" && (data as any).error) {
-      return { status: "warn", ms, code: 200, message: String((data as any).error) };
-    }
-    return { status: "ok", ms, code: 200, message: "ok" };
+    const code = res.status;
+    // Consume body to avoid resource leaks
+    try { await res.text(); } catch {}
+    if (code >= 200 && code < 400) return { status: "ok", code, ms, message: "reachable" };
+    if (code === 404) return { status: "error", code, ms, message: "not deployed" };
+    if (code >= 500) return { status: "error", code, ms, message: "worker error" };
+    return { status: "warn", code, ms, message: "alive (non-2xx preflight)" };
   } catch (e: any) {
-    return { status: "error", ms: Math.round(performance.now() - t0), message: e?.message ?? "threw" };
+    return { status: "error", ms: Math.round(performance.now() - t0), message: e?.message ?? "network error" };
   }
 }
 
