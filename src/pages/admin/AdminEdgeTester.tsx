@@ -20,7 +20,7 @@ interface Result {
 // Server-side probe calls each function with POST { __probe: true } using
 // service-role credentials and returns a real "works / doesn't work" verdict.
 async function probeAllRemote(names: string[]): Promise<Record<string, Result>> {
-  const { data, error } = await supabase.functions.invoke('edge-fn-probe', {
+  const { data, error } = await supabase.functions.invoke('health-check', {
     body: { names },
   });
   if (error) throw error;
