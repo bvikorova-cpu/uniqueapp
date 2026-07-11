@@ -48,7 +48,7 @@ Deno.serve(async (req) => {
 
     let body: any = {};
     try { body = await req.json(); } catch { body = {}; }
-    const stats = body?.stats ?? {};
+    const stats = (body && typeof body === "object" && body.stats && typeof body.stats === "object") ? body.stats : {};
     const num = (v: any) => (typeof v === "number" && isFinite(v) ? v : 0);
     const totalUsers = num(stats.totalUsers);
     const premiumUsers = num(stats.premiumUsers);
