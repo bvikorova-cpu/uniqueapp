@@ -35,7 +35,7 @@
 </head>
 <body>
 <h1>Edge Function Tester</h1>
-<div class="sub">Probes every deployed edge function with <code>{ __probe: true }</code> using your signed-in session.</div>
+<div class="sub">Probes each deployed edge function with an HTTP <code>OPTIONS</code> preflight — no business logic runs, no validation/auth/rate-limit errors are triggered.</div>
 <div id="authwarn" class="warn-banner" style="display:none">
   ⚠️ Not signed in. Open <a href="/auth">/auth</a> in another tab, log in, then refresh this page. Auth-gated functions will show "warn (401)" instead of real results.
 </div>
