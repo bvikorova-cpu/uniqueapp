@@ -46,7 +46,15 @@ Deno.serve(async (req) => {
       });
     }
 
-    const { stats } = await req.json();
+    let body: any = {};
+    try { body = await req.json(); } catch { body = {}; }
+    const stats = body?.stats ?? {};
+    const num = (v: any) => (typeof v === "number" && isFinite(v) ? v : 0);
+    const totalUsers = num(stats.totalUsers);
+    const premiumUsers = num(stats.premiumUsers);
+    const totalRevenue = num(stats.totalRevenue);
+    const monthlyRevenue = num(stats.monthlyRevenue);
+    const masterchefEarnings = num(stats.masterchefEarnings);
 
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
     if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not set");
@@ -54,11 +62,11 @@ Deno.serve(async (req) => {
     const prompt = `Analyze this platform data and produce 4 sharp, actionable executive insights. Be specific, mention numbers, suggest concrete actions.
 
 Data:
-- Total users: ${stats.totalUsers}
-- Premium users: ${stats.premiumUsers} (${((stats.premiumUsers / Math.max(stats.totalUsers, 1)) * 100).toFixed(1)}% conversion)
-- Total revenue: €${stats.totalRevenue?.toFixed(2)}
-- Monthly revenue: €${stats.monthlyRevenue?.toFixed(2)}
-- MasterChef earnings: €${stats.masterchefEarnings?.toFixed(2)}
+- Total users: ${totalUsers}
+- Premium users: ${premiumUsers} (${((premiumUsers / Math.max(totalUsers, 1)) * 100).toFixed(1)}% conversion)
+- Total revenue: €${totalRevenue.toFixed(2)}
+- Monthly revenue: €${monthlyRevenue.toFixed(2)}
+- MasterChef earnings: €${masterchefEarnings.toFixed(2)}
 
 Return JSON only.`;
 
