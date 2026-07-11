@@ -26,8 +26,11 @@ const SUPABASE_FUNCTIONS_URL = "https://jufrdzeonywluwutvyxz.supabase.co/functio
 
 async function probe(fn: string): Promise<Result> {
   const t0 = performance.now();
+  // Legacy names route through client-side proxy map to a real deployed target.
+  const resolved = resolveProxy(fn, {});
+  const target = resolved ? resolved.target : fn;
   try {
-    const res = await fetch(`${SUPABASE_FUNCTIONS_URL}/${fn}`, {
+    const res = await fetch(`${SUPABASE_FUNCTIONS_URL}/${target}`, {
       method: "OPTIONS",
       headers: {
         "Access-Control-Request-Method": "POST",
