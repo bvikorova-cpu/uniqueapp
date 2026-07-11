@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Zap, Play, Loader2, CheckCircle2, XCircle, AlertTriangle, Filter } from "lucide-react";
 import { EDGE_FUNCTIONS } from "@/data/edgeFunctionsList";
+import { resolveProxy } from "@/integrations/supabase/proxyMap";
 
 type Status = "idle" | "running" | "ok" | "warn" | "error";
 interface Result {
