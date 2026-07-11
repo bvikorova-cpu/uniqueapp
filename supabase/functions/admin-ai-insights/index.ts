@@ -46,15 +46,26 @@ Deno.serve(async (req) => {
       });
     }
 
-    let body: any = {};
-    try { body = await req.json(); } catch { body = {}; }
-    const stats = (body && typeof body === "object" && body.stats && typeof body.stats === "object") ? body.stats : {};
-    const num = (v: any) => (typeof v === "number" && isFinite(v) ? v : 0);
-    const totalUsers = num(stats.totalUsers);
-    const premiumUsers = num(stats.premiumUsers);
-    const totalRevenue = num(stats.totalRevenue);
-    const monthlyRevenue = num(stats.monthlyRevenue);
-    const masterchefEarnings = num(stats.masterchefEarnings);
+    let body: unknown = {};
+    try {
+      body = await req.json();
+    } catch {
+      body = {};
+    }
+
+    const isRecord = (value: unknown): value is Record<string, unknown> =>
+      typeof value === "object" && value !== null && !Array.isArray(value);
+    const statsPayload = isRecord(body) && isRecord(body.stats) ? body.stats : {};
+    const num = (value: unknown) => {
+      const parsed = typeof value === "number" ? value : typeof value === "string" ? Number(value) : 0;
+      return Number.isFinite(parsed) ? parsed : 0;
+    };
+
+    const totalUsers = num(statsPayload["totalUsers"]);
+    const premiumUsers = num(statsPayload["premiumUsers"]);
+    const totalRevenue = num(statsPayload["totalRevenue"]);
+    const monthlyRevenue = num(statsPayload["monthlyRevenue"]);
+    const masterchefEarnings = num(statsPayload["masterchefEarnings"]);
 
     const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
     if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not set");
