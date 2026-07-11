@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>Edge Function Tester</title>
+<style>
+  :root { color-scheme: light dark; --ok:#16a34a; --warn:#d97706; --err:#dc2626; --bg:#0f172a; --fg:#f1f5f9; --muted:#94a3b8; --card:#1e293b; --border:#334155; }
+  @media (prefers-color-scheme: light) { :root { --bg:#f8fafc; --fg:#0f172a; --muted:#475569; --card:#ffffff; --border:#e2e8f0; } }
+  * { box-sizing: border-box; }
+  body { margin:0; font: 14px/1.4 system-ui, sans-serif; background:var(--bg); color:var(--fg); padding:16px; }
+  h1 { margin:0 0 4px; font-size:20px; }
+  .sub { color:var(--muted); font-size:13px; margin-bottom:12px; }
+  .bar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:12px; padding:12px; background:var(--card); border:1px solid var(--border); border-radius:8px; }
+  input, select, button { padding:6px 10px; border-radius:6px; border:1px solid var(--border); background:var(--card); color:var(--fg); font: inherit; }
+  button { cursor:pointer; }
+  button.primary { background:#2563eb; color:white; border-color:#2563eb; }
+  button:disabled { opacity:.5; cursor:not-allowed; }
+  .counts span { padding:2px 8px; border-radius:99px; font-size:12px; margin-left:6px; }
+  .c-ok { background:#dcfce7; color:#166534; } .c-warn { background:#fef3c7; color:#92400e; } .c-err { background:#fee2e2; color:#991b1b; } .c-idle { background:#e2e8f0; color:#334155; }
+  .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:6px; }
+  .row { display:flex; align-items:center; gap:8px; padding:6px 10px; background:var(--card); border:1px solid var(--border); border-radius:6px; font-size:13px; }
+  .dot { width:10px; height:10px; border-radius:99px; background:#94a3b8; flex-shrink:0; }
+  .dot.ok { background:var(--ok); } .dot.warn { background:var(--warn); } .dot.err { background:var(--err); }
+  .dot.running { background:#3b82f6; animation:pulse 1s infinite; }
+  @keyframes pulse { 50% { opacity:.3; } }
+  code { font: 12px ui-monospace, monospace; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .meta { font-size:11px; color:var(--muted); }
+  .code { font: 11px monospace; padding:1px 5px; border-radius:4px; background:var(--border); }
+  .btn-sm { padding:2px 8px; font-size:12px; }
+  details { margin-top:12px; padding:12px; background:var(--card); border:1px solid var(--border); border-radius:8px; font-size:12px; }
+  .warn-banner { background:#fef3c7; color:#92400e; padding:10px; border-radius:6px; margin-bottom:12px; font-size:13px; }
+</style>
+</head>
+<body>
+<h1>Edge Function Tester</h1>
+<div class="sub">Probes every deployed edge function with <code>{ __probe: true }</code> using your signed-in session.</div>
+<div id="authwarn" class="warn-banner" style="display:none">
+  ⚠️ Not signed in. Open <a href="/auth">/auth</a> in another tab, log in, then refresh this page. Auth-gated functions will show "warn (401)" instead of real results.
+</div>
+
+<div class="bar">
+  <input id="q" placeholder="Filter by name…" style="flex:1; min-width:180px" />
+  <select id="filter">
+    <option value="all">All</option>
+    <option value="ok">OK</option>
+    <option value="warn">Warn</option>
+    <option value="err">Error</option>
+    <option value="idle">Idle</option>
+  </select>
+  <button class="primary" id="runAll">▶ Test all</button>
+  <button id="stop" disabled>Stop</button>
+  <button id="reset">Reset</button>
+  <div class="counts" style="margin-left:auto">
+    <span class="c-ok">OK <b id="cOk">0</b></span>
+    <span class="c-warn">Warn <b id="cWarn">0</b></span>
+    <span class="c-err">Error <b id="cErr">0</b></span>
+    <span class="c-idle">Idle <b id="cIdle">0</b></span>
+  </div>
+</div>
+
+<div id="grid" class="grid"></div>
+
+<details>
+  <summary>Legend & notes</summary>
+  <p><b>OK (green)</b>: function returned 2xx.</p>
+  <p><b>Warn (amber)</b>: function is deployed & running, but rejected the empty probe (401 unauthorized, 400 validation, 404 missing action). This is normal — real UI calls will succeed.</p>
+  <p><b>Error (red)</b>: 5xx crash, dead worker, or thrown exception. These are real bugs.</p>
+  <p>Concurrency = 6. Total functions: <b id="total">0</b>.</p>
+</details>
+
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const SUPABASE_URL = "https://jufrdzeonywluwutvyxz.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1ZnJkemVvbnl3bHV3dXR2eXh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMzU0MTgsImV4cCI6MjA3NDcxMTQxOH0.UOe-_WQoTeBGFmnezRHRcjFJaJd71a7rYlurDkI6h4Q";
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: { storage: localStorage, persistSession: true, autoRefreshToken: true }
+});
+
+const FNS = ["admin-affiliate-tiers", "admin-ai-insights", "admin-anomaly-detector", "admin-approve-campaign-payout", "admin-bulk-user-action", "admin-cohort-retention", "admin-decide-insurance-claim", "admin-dunning", "admin-engagement", "admin-kyc", "admin-moderate-campaign", "admin-pause-overview", "admin-payout-withdrawal", "admin-reconcile-payments", "admin-refund-payment", "admin-sca", "admin-seed-content", "admin-submit-dispute-evidence", "admin-subscription-analytics", "admin-sync-refunds-disputes", "admin-sync-stripe-transfers", "admin-verify-doctor", "admin-vitals", "admin-winback", "ai-chat", "ai-image-generation", "ai-image-tools", "ai-job-description", "ai-mood-therapist", "ai-rank-candidates", "ai-text-generator", "analyze-dream", "analyze-handwriting", "analyze-journal", "analyze-past-life", "analyze-restaurant-menu", "analyzer-ai", "analyzer-barcode", "analyzer-reverse-image", "animated-avatar", "anonymous-date-ai", "apply-retention-discount", "approve-campaign-application", "astrology-chat", "astrology-reading", "auction-ai", "auth-email-hook", "auto-payout-pending-withdrawals", "battle-characters", "battle-pets", "battle-royale", "bazaar-ai", "best-friend-ai", "best-friend-avatar", "best-friend-extract-memories", "best-friend-photo-react", "best-friend-year-report", "brain-duel-ai-commentary", "brain-duel-ai-recap", "brain-duel-daily-challenge", "brain-duel-finish-match", "brain-duel-get-questions", "brain-duel-match-analysis", "brain-duel-matchmaking", "brain-duel-router", "brain-duel-submit-answer", "brain-duel-use-referral", "brand-ai", "brand-ai-analyzer", "brand-arena-router", "brand-battle-predictor", "brand-release-escrow", "brand-sponsor-api", "brand-stock-tick", "calculate-f1-race-results", "calculate-karmic-debt", "calculate-music-royalties", "calculate-race-results", "cancel-service-booking", "cancel-subscription", "cancel-subscription-by-id", "character-chat", "chat-with-offspring", "check-creator-subscription", "check-dunning", "check-expired-listings", "check-f1-subscription", "check-healthcare-subscription", "check-holographic-access", "check-lottery-subscription", "check-refund-eligibility", "check-router", "check-sca", "check-subscription", "check-time-capsule-access", "check-wellness-subscription", "claim-daily-reward", "claim-megatalent-challenge", "claim-referral", "claim-rewarded-ad-xp", "clone-battle", "clone-chat", "clone-quiz-analyze", "clone-voice-transform", "coffee-checkout", "collectible-ai", "coloring-ai-tools", "coloring-router", "comedy-ai-judge", "comedy-battle-vote", "companion-ai", "compute-job-match", "concert-end-stream", "concert-go-live", "contact-ai-triage", "content-studio-ai", "coupon-ai", "coupon-buyer-action", "coupon-digest-cron", "coupon-price-alerts-cron", "coupon-public-api", "create-checkout", "create-concert-ticket-checkout", "create-connect-account", "create-digital-offspring", "create-doctor-booking", "create-f1-checkout", "create-healthcare-subscription", "create-lottery-subscription", "create-masterchef-checkout", "create-one-off-payment", "create-past-life-credits-payment", "create-prescription", "create-promo-subscription", "create-reincarnation-plan", "create-rewards-checkout", "create-school-subscription", "create-service-booking", "create-shadow-battle", "create-spa-deposit", "create-time-reversal-checkout", "create-wellness-checkout", "creative-room-ai", "creative-style-transfer", "creative-voice-to-script", "creator-tax-export", "crystal-ai-tool", "crystal-parity", "customer-portal", "dating-ai-coach", "dating-moderate-message", "dating-weekly-insights", "delete-user-account", "deno.json", "dispatch-webhook", "dna-parity", "doctor-appointment-action", "doctor-appointments-cron", "doctor-availability-slots", "dream-ai", "dream-battle-vote", "dungeon-raid", "e2e-ensure-test-user", "e2e-seed-job", "edge-warmup", "education-ai", "education-router", "education-skill-unlock", "emotion-futures-bet", "emotion-mine", "emotion-roulette-spin", "enhance-shadow-story", "escrow-release", "experience-ai", "f1-customer-portal", "fashion-ai", "fashion-battle-vote", "find-anonymous-match", "find-best-self", "find-genetic-matches", "find-soul-matches", "forge-ai-tools", "fundraising-dunning-cron", "fuse-characters", "future-face-ai", "future-face-image", "generate-avatar", "generate-bio", "generate-brand-kit", "generate-campaign-story", "generate-character-image", "generate-character-story", "generate-coloring-page", "generate-content", "generate-content-image", "generate-course-certificate", "generate-cover-letter", "generate-creative-content", "generate-decision-tree", "generate-fitness-plan", "generate-gift-message", "generate-lottery-numbers", "generate-meal-plan", "generate-monetization-ideas", "generate-past-life-regression", "generate-redemption-plan", "generate-room-design", "generate-sports-prediction", "generate-voice-intro", "generate-workout-plan", "get-confessions", "get-donation-receipt", "get-pause-status", "get-payment-analytics", "get-payment-invoice-url", "get-payment-statistics", "get-referrer-info", "get-user-universes", "gift-subscription", "glamour-ai-generate", "gp-racing-action", "graphic-design-ai", "handwriting-ai", "health-check", "health-monitor", "healthcare-customer-portal", "holographic-battle-simulate", "holographic-breeding-simulate", "horse-racing-action", "horse-router", "influ-king-ai", "iq-check-subscription", "iq-create-subscription", "iq-duel-finalize", "iq-duel-matchmaking", "iq-platform-ai", "job-ai-matcher", "job-redirect", "jobs-ai", "join-iq-competition", "join-shadow-battle", "kids-academy-router", "kids-drawing-enhance", "kids-homework-helper", "kids-reading-companion", "kids-router", "kids-science-helper", "kids-story-generate", "kids-story-illustrate", "kids-story-tts", "kitchen-battle-vote", "kyc-check", "kyc-start", "lie-detector-ai", "list-user-subscriptions", "lottery-ai-action", "lottery-parity", "lottery-tuning-ai", "manage-donation-subscription", "marketplace-ai", "masterchef-ai", "megaforum-ai", "megatalent-ai", "megatalent-customer-portal", "membership-parity", "mentor-ai-tools", "mentor-router", "merge-timelines", "messenger-ai", "mock-interview-ai", "moderate-image", "moderate-text", "module-course-exam", "monetag-postback", "monthly-credits-grant", "mood-trends", "mt-router", "multiverse-ai-tool", "music-studio-ai", "neighborhood-analysis", "nightly-route-audit", "notify-admin-referral-withdrawal", "nutrition-router", "oembed", "open-dispute", "parse-resume", "past-life-parity", "patient-cancel-booking", "pause-subscription", "pay-anonymous-date-access", "personality-test", "pet-purchase-item", "pet-translator-ai", "pet-translator-stats", "phobia-trading-action", "post-confession", "priority-support-sla-check", "process-dna-analysis", "process-referral-withdrawal", "process-scheduled-payouts", "property-parity", "psychology-ai", "psychology-session", "purchase-course", "purchase-phobia-credits", "purchase-shadow-gift", "quantum-chat", "quantum-generate-versions", "rank-feed", "reality-jump", "reality-lottery", "recommend-plan", "refresh-personalized-feed", "refund-membership", "refund-profile-tip", "reincarnation-parity", "remove-background", "remove-text-from-image", "request-battle-royale-payout", "request-campaign-payout", "request-donation-refund", "request-influencer-withdrawal", "resume-subscription", "rewards-ai", "safety-prevention-chat", "save-time-capsule", "sca-confirm-url", "scan-food", "security-scan-edge-functions", "security-scan-frontend-deps", "send-comedy-tip", "send-concert-gift", "send-gift-payment", "send-influencer-gift", "send-masterchef-gift", "send-push", "send-stream-gift", "service-availability-slots", "shadow-arena-router", "skill-swap-ai", "skill-swap-parity", "spend-sport-coins", "stock-ai-tags", "stock-content-ai", "stock-similar-search", "stripe-connect-dashboard", "stripe-connect-onboarding", "stripe-connect-payout", "stripe-connect-status", "stripe-webhook", "submit-insurance-claim", "subscribe-to-creator", "sync-challenge-pro", "tattoo-ai-tools", "teen-career-counselor", "teen-router", "text-to-speech", "time-reversal-timelapse", "tip-stream", "transcribe-space", "triage-report", "tutoring-add-credits", "tutoring-chat", "tutoring-purchase-credits", "universal-vision-analyzer", "update-payment-method", "upload-comedy-video", "verify-bazaar-order-payment", "verify-brand-votes-payment", "verify-campaign-payment", "verify-comedy-payment", "verify-concert-gift", "verify-concert-ticket-payment", "verify-confession-payment", "verify-cosmetic-purchase", "verify-creative-forge-payment", "verify-credits-payment", "verify-crystal-payment", "verify-crystal-purchase", "verify-doctor-booking", "verify-emotion-insurance", "verify-fitslim-payment", "verify-job-listing-payment", "verify-megatalent-boost", "verify-megatalent-tip", "verify-payment", "verify-phobia-payment", "verify-prescription-qr", "verify-profile-tip", "verify-promo-subscription", "verify-reincarnation-payment", "verify-rewards-payment", "verify-service-booking", "verify-shadow-battle-payment", "verify-skill-service-order", "video-ad-tools", "video-call-token", "vitals-ingest", "voice-to-text", "vote-absolution", "vote-for-brand", "vote-megatalent-bracket", "wall-ai", "wall-ai-assistant", "wellness-ai", "winback-claim", "winback-get-offer"];
+document.getElementById('total').textContent = FNS.length;
+
+const { data: { session } } = await supabase.auth.getSession();
+if (!session) document.getElementById('authwarn').style.display = 'block';
+
+const results = {}; // fn -> {status, code, ms, msg}
+const BENIGN = new Set([400,401,403,404,405,409,422]);
+const BENIGN_MSG = /unauthor|forbidden|missing|required|invalid|not.?found|method|validation|bad request|zod|schema/i;
+
+async function probe(fn) {
+  const t0 = performance.now();
+  try {
+    const { data, error } = await supabase.functions.invoke(fn, { body: { __probe: true } });
+    const ms = Math.round(performance.now() - t0);
+    if (error) {
+      let code, msg = error.message || 'error';
+      const ctx = error.context;
+      if (ctx && typeof ctx.status === 'number') code = ctx.status;
+      try { if (ctx?.json) { const b = await ctx.json(); if (b?.error) msg = String(b.error); } } catch {}
+      const benign = (code && BENIGN.has(code)) || BENIGN_MSG.test(msg);
+      return { status: benign ? 'warn' : 'err', code, ms, msg };
+    }
+    if (data && typeof data === 'object' && data.error) return { status:'warn', code:200, ms, msg:String(data.error) };
+    return { status:'ok', code:200, ms, msg:'ok' };
+  } catch (e) {
+    return { status:'err', ms:Math.round(performance.now()-t0), msg: e?.message || 'threw' };
+  }
+}
+
+const grid = document.getElementById('grid');
+const nodes = {};
+
+function render() {
+  const q = document.getElementById('q').value.trim().toLowerCase();
+  const flt = document.getElementById('filter').value;
+  grid.innerHTML = '';
+  for (const fn of FNS) {
+    if (q && !fn.toLowerCase().includes(q)) continue;
+    const r = results[fn];
+    const s = r?.status ?? 'idle';
+    if (flt !== 'all' && s !== flt) continue;
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.innerHTML = `
+      <div class="dot ${s === 'idle' ? '' : s}"></div>
+      <code title="${fn}${r?.msg ? ' — ' + r.msg.replace(/"/g,'&quot;') : ''}">${fn}</code>
+      ${r?.code !== undefined ? '<span class="code">'+r.code+'</span>' : ''}
+      ${r?.ms !== undefined ? '<span class="meta">'+r.ms+'ms</span>' : ''}
+      <button class="btn-sm" data-fn="${fn}">Test</button>`;
+    grid.appendChild(row);
+    nodes[fn] = row;
+  }
+  updateCounts();
+}
+
+function updateCounts() {
+  let ok=0, warn=0, err=0, idle=0;
+  for (const fn of FNS) {
+    const s = results[fn]?.status;
+    if (s === 'ok') ok++;
+    else if (s === 'warn') warn++;
+    else if (s === 'err') err++;
+    else idle++;
+  }
+  cOk.textContent = ok; cWarn.textContent = warn; cErr.textContent = err; cIdle.textContent = idle;
+}
+
+async function runOne(fn) {
+  results[fn] = { status: 'running' };
+  render();
+  const r = await probe(fn);
+  results[fn] = r;
+  render();
+}
+
+let cancel = false;
+async function runAll() {
+  cancel = false;
+  document.getElementById('runAll').disabled = true;
+  document.getElementById('stop').disabled = false;
+  const q = document.getElementById('q').value.trim().toLowerCase();
+  const flt = document.getElementById('filter').value;
+  const queue = FNS.filter(f => (!q || f.toLowerCase().includes(q)) && (flt==='all' || (results[f]?.status ?? 'idle') === flt));
+  const CONC = 6;
+  const workers = Array.from({length:CONC}, async () => {
+    while (queue.length && !cancel) {
+      const fn = queue.shift();
+      await runOne(fn);
+    }
+  });
+  await Promise.all(workers);
+  document.getElementById('runAll').disabled = false;
+  document.getElementById('stop').disabled = true;
+}
+
+grid.addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-fn]');
+  if (b) runOne(b.dataset.fn);
+});
+document.getElementById('runAll').onclick = runAll;
+document.getElementById('stop').onclick = () => { cancel = true; };
+document.getElementById('reset').onclick = () => { for (const k of Object.keys(results)) delete results[k]; render(); };
+document.getElementById('q').oninput = render;
+document.getElementById('filter').onchange = render;
+
+render();
+</script>
+</body>
+</html>
