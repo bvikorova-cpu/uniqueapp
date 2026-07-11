@@ -560,6 +560,7 @@ const AdminMonetagStats = lazy(() => import("@/pages/admin/AdminMonetagStats"));
 const GlobalRewardedAd = lazy(() => import("@/components/ads/GlobalRewardedAd"));
 const AdminVitals = lazy(() => import("@/pages/admin/AdminVitals"));
 const AdminEdgeMonitoring = lazy(() => import("@/pages/admin/AdminEdgeMonitoring"));
+const AdminEdgeTester = lazy(() => import("@/pages/admin/AdminEdgeTester"));
 const AdminDunning = lazy(() => import("@/pages/admin/AdminDunning"));
 const AdminWinBack = lazy(() => import("@/pages/admin/AdminWinBack"));
 const AdminSCA = lazy(() => import("@/pages/admin/AdminSCA"));
