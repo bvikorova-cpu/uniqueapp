@@ -215,6 +215,69 @@ const Inner = () => {
             <strong>Green</strong> = function is deployed and its CORS layer answered. <strong>Red</strong> = 404 (missing) or 5xx (boot crash) — real bugs.
           </p>
         </div>
+
+        <div className="rounded-md border bg-muted/30 p-4 space-y-3 text-sm">
+          <h3 className="font-semibold">Legend</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="flex items-start gap-2">
+              <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-medium">Green — OK</p>
+                <p className="text-xs text-muted-foreground">
+                  The function is deployed and its CORS layer answered (2xx/3xx). The worker is alive
+                  and reachable.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-2">
+              <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-medium">Amber — Warn</p>
+                <p className="text-xs text-muted-foreground">
+                  404: the exact name is not a standalone worker; it is usually handled by a router
+                  or client-side proxy. 401/403: the worker is alive but gated.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-2">
+              <XCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-medium">Red — Error</p>
+                <p className="text-xs text-muted-foreground">
+                  5xx: the worker crashed on boot or has a runtime error. Also used for network
+                  failures that prevented any response.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="text-xs text-muted-foreground space-y-1">
+            <p>
+              <strong>Expected OPTIONS states:</strong>
+            </p>
+            <ul className="list-disc pl-4 space-y-0.5">
+              <li>
+                <code>200</code> / <code>204</code> / <code>2xx</code> — best case: CORS preflight
+                returned successfully.
+              </li>
+              <li>
+                <code>401</code> / <code>403</code> — still OK; the worker is deployed but rejects
+                unauthenticated preflight requests.
+              </li>
+              <li>
+                <code>404</code> — amber: the name is not a standalone function, likely served by a
+                router or proxy rewrite.
+              </li>
+              <li>
+                <code>5xx</code> — red: the function crashed during deployment or is missing a
+                required environment/dependency.
+              </li>
+              <li>
+                <code>Network Error</code> — red: the function name does not exist, is not deployed,
+                or the domain is unreachable.
+              </li>
+            </ul>
+          </div>
+        </div>
       </AdminGlassCard>
     </AdminPageShell>
   );
