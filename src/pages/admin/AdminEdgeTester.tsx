@@ -72,25 +72,32 @@ const Inner = () => {
 
   const runOne = async (fn: string) => {
     setResults((r) => ({ ...r, [fn]: { status: "running" } }));
-    const res = await probe(fn);
+    const map = await probeAllRemote([fn]).catch(() => ({} as Record<string, Result>));
+    const res = map[fn] ?? { status: "error" as Status, message: "probe failed" };
     setResults((r) => ({ ...r, [fn]: res }));
   };
 
   const runAll = async () => {
     setRunning(true);
     cancelRef.current = false;
-    const CONCURRENCY = 6;
-    const queue = [...filtered];
-    const workers = Array.from({ length: CONCURRENCY }, async () => {
-      while (queue.length && !cancelRef.current) {
-        const fn = queue.shift();
-        if (!fn) break;
-        await runOne(fn);
+    try {
+      // Chunk to keep server response sizes sane
+      const CHUNK = 100;
+      const list = [...filtered];
+      const pending: Record<string, Result> = {};
+      for (const fn of list) pending[fn] = { status: "running" };
+      setResults((r) => ({ ...r, ...pending }));
+      for (let i = 0; i < list.length; i += CHUNK) {
+        if (cancelRef.current) break;
+        const chunk = list.slice(i, i + CHUNK);
+        const map = await probeAllRemote(chunk).catch(() => ({} as Record<string, Result>));
+        setResults((r) => ({ ...r, ...map }));
       }
-    });
-    await Promise.all(workers);
-    setRunning(false);
+    } finally {
+      setRunning(false);
+    }
   };
+
 
   const counts = useMemo(() => {
     const c = { ok: 0, warn: 0, error: 0, idle: 0 };
