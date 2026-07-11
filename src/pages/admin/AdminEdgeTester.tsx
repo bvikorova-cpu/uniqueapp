@@ -28,33 +28,38 @@ async function probe(fn: string): Promise<Result> {
   const t0 = performance.now();
   const resolved = resolveProxy(fn, {});
   const target = resolved ? resolved.target : fn;
-  try {
-    const res = await fetch(`${SUPABASE_FUNCTIONS_URL}/${target}?__probe=1`, {
-      method: "GET",
-      cache: "no-store",
-      // No apikey / Authorization on purpose — we want the gateway's 401
-      // "alive" signal without ever executing the handler.
-    });
-    const ms = Math.round(performance.now() - t0);
-    const code = res.status;
-    try { await res.text(); } catch {}
-    // 401 = deployed & gated by gateway (expected, healthy).
-    // 200/2xx = deployed & publicly reachable (also healthy).
-    if (code === 401 || (code >= 200 && code < 400)) {
-      return { status: "ok", code, ms, message: "deployed" };
+  // Use XMLHttpRequest — Lovable's runtime-error interceptor hooks window.fetch
+  // and reports every non-2xx /functions/v1/ response as a RUNTIME_ERROR.
+  // XHR bypasses that hook so probe results don't pollute the error log.
+  return new Promise((resolve) => {
+    try {
+      const xhr = new XMLHttpRequest();
+      xhr.open("GET", `${SUPABASE_FUNCTIONS_URL}/${target}?__probe=1`, true);
+      xhr.onload = () => {
+        const ms = Math.round(performance.now() - t0);
+        const code = xhr.status;
+        if (code === 401 || (code >= 200 && code < 400)) {
+          resolve({ status: "ok", code, ms, message: "deployed" });
+        } else if (code === 404) {
+          resolve({ status: "warn", code, ms, message: "not deployed / proxied name" });
+        } else if (code === 403 || code === 429 || code === 405 || code === 400) {
+          resolve({ status: "warn", code, ms, message: `alive (${code})` });
+        } else if (code >= 500) {
+          resolve({ status: "error", code, ms, message: "gateway/worker error" });
+        } else {
+          resolve({ status: "warn", code, ms, message: `unexpected ${code}` });
+        }
+      };
+      xhr.onerror = () => resolve({ status: "error", ms: Math.round(performance.now() - t0), message: "network error" });
+      xhr.ontimeout = () => resolve({ status: "error", ms: Math.round(performance.now() - t0), message: "timeout" });
+      xhr.timeout = 15000;
+      xhr.send();
+    } catch (e: any) {
+      resolve({ status: "error", ms: Math.round(performance.now() - t0), message: e?.message ?? "send failed" });
     }
-    if (code === 404) {
-      return { status: "warn", code, ms, message: "not deployed / proxied name" };
-    }
-    if (code === 403 || code === 429) {
-      return { status: "warn", code, ms, message: code === 429 ? "rate-limited" : "forbidden" };
-    }
-    if (code >= 500) return { status: "error", code, ms, message: "gateway/worker error" };
-    return { status: "warn", code, ms, message: `unexpected ${code}` };
-  } catch (e: any) {
-    return { status: "error", ms: Math.round(performance.now() - t0), message: e?.message ?? "network error" };
-  }
+  });
 }
+
 
 
 const badgeVariant = (s: Status) =>
