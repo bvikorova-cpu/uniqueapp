@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Zap, Play, Loader2, CheckCircle2, XCircle, AlertTriangle, Filter } from "lucide-react";
 import { EDGE_FUNCTIONS } from "@/data/edgeFunctionsList";
+import { resolveProxy } from "@/integrations/supabase/proxyMap";
 
 type Status = "idle" | "running" | "ok" | "warn" | "error";
 interface Result {
@@ -25,8 +26,11 @@ const SUPABASE_FUNCTIONS_URL = "https://jufrdzeonywluwutvyxz.supabase.co/functio
 
 async function probe(fn: string): Promise<Result> {
   const t0 = performance.now();
+  // Legacy names route through client-side proxy map to a real deployed target.
+  const resolved = resolveProxy(fn, {});
+  const target = resolved ? resolved.target : fn;
   try {
-    const res = await fetch(`${SUPABASE_FUNCTIONS_URL}/${fn}`, {
+    const res = await fetch(`${SUPABASE_FUNCTIONS_URL}/${target}`, {
       method: "OPTIONS",
       headers: {
         "Access-Control-Request-Method": "POST",
@@ -39,9 +43,10 @@ async function probe(fn: string): Promise<Result> {
     // Consume body to avoid resource leaks
     try { await res.text(); } catch {}
     if (code >= 200 && code < 400) return { status: "ok", code, ms, message: "reachable" };
-    if (code === 404) return { status: "error", code, ms, message: "not deployed" };
     if (code >= 500) return { status: "error", code, ms, message: "worker error" };
-    return { status: "warn", code, ms, message: "alive (non-2xx preflight)" };
+    // 404 = legacy/proxied name whose target isn't a standalone function
+    // (handled by a router or client-side rewrite). 401/403 = alive but gated.
+    return { status: "warn", code, ms, message: code === 404 ? "proxied / router-backed" : "alive" };
   } catch (e: any) {
     return { status: "error", ms: Math.round(performance.now() - t0), message: e?.message ?? "network error" };
   }
