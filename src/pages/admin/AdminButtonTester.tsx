@@ -649,10 +649,10 @@ export default function AdminButtonTester() {
         </div>
         <div className="flex gap-2 flex-wrap">
           <Button onClick={() => runAll(filtered)} disabled={running} size="sm">
-            <Play className="h-4 w-4 mr-1" /> Test all ({filtered.length})
+            <Play className="h-4 w-4 mr-1" /> Start batch ({Math.min(batchSize, filtered.length)}/{filtered.length})
           </Button>
           <Button onClick={() => runAll(filtered, true)} disabled={running} size="sm" variant="outline">
-            <Play className="h-4 w-4 mr-1" /> Resume
+            <Play className="h-4 w-4 mr-1" /> Resume next batch
           </Button>
           <Button
             onClick={() => {
@@ -691,11 +691,11 @@ export default function AdminButtonTester() {
             Klikať tlačidlá (nie len počítať)
           </label>
           <label className="flex items-center gap-2 text-sm">
-            Batch
+            Routes per batch
             <Input
               type="number"
-              min={10}
-              max={150}
+              min={5}
+              max={MAX_BATCH_SIZE}
               value={batchSize}
               onChange={(e) => setBatchSize(Number(e.target.value) || DEFAULT_BATCH_SIZE)}
               disabled={running}
@@ -732,7 +732,7 @@ export default function AdminButtonTester() {
         </div>
         {checkpointLabel && (
           <p className="text-xs text-muted-foreground">
-            Checkpoint: {checkpointLabel}. Report vieš stiahnuť aj z čiastočných výsledkov.
+            Checkpoint: {checkpointLabel}. Tester zámerne dokončí vždy len jeden malý batch, aby nezložil mobilný preview tab.
           </p>
         )}
         {running && (
@@ -749,7 +749,8 @@ export default function AdminButtonTester() {
             <li>✅ <b>Pass</b> — route sa načíta, nájdené tlačidlá, žiadny crash ani runtime error po kliknutiach.</li>
             <li>⚠️ <b>Warn</b> — route sa načíta, ale nenašli sa žiadne tlačidlá (skontroluj či nie je gated / prázdna).</li>
             <li>❌ <b>Fail</b> — 404 stránka, iframe timeout, crash overlay, alebo runtime error po kliknutí.</li>
-            <li>🧠 Tester beží v batchoch, každých pár routes recykluje iframe a priebežne ukladá checkpoint, aby mobilný preview tab nespadol.</li>
+            <li>🧠 Tester nikdy nebeží ako jeden nekonečný run: dokončí malý batch, uloží checkpoint a ďalší batch spustíš cez Resume next batch.</li>
+            <li>🔎 Report obsahuje dôkaz ku route: načítanú URL, čas, textový odtlačok stránky, sample text a počet otvorených overlay prvkov.</li>
           </ul>
         </details>
       </Card>
