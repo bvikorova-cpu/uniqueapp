@@ -235,14 +235,7 @@ export default function AdminButtonTester() {
         return !(r.width === 0 && r.height === 0);
       }).length;
 
-      // Attach error listener in iframe (post-open)
-      const iframeErrs: string[] = [];
-      win.addEventListener("error", (e: any) => {
-        if (!/ResizeObserver/.test(e.message || "")) iframeErrs.push(String(e.message || e));
-      });
-      win.addEventListener("unhandledrejection", (e: any) => {
-        iframeErrs.push(String(e.reason?.message || e.reason || "unhandledrejection"));
-      });
+      // (error listeners already attached above)
 
       // 3) safe click sample (visible, non-destructive, non-navigating)
       let clickable = 0;
