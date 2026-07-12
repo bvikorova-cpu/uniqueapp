@@ -520,9 +520,8 @@ export default function AdminButtonTester() {
     setResults(nextResults);
 
     const safeBatchSize = Math.max(5, Math.min(MAX_BATCH_SIZE, Number(batchSize) || DEFAULT_BATCH_SIZE));
-    const startIndex = resumeFromCheckpoint
-      ? Math.max(0, list.findIndex((route) => !nextResults[route]))
-      : 0;
+    const pendingIndex = resumeFromCheckpoint ? list.findIndex((route) => !nextResults[route]) : 0;
+    const startIndex = resumeFromCheckpoint && pendingIndex === -1 ? list.length : Math.max(0, pendingIndex);
     const endIndex = Math.min(list.length, startIndex + safeBatchSize);
 
     if (startIndex < 0 || startIndex >= list.length) {
@@ -612,7 +611,12 @@ export default function AdminButtonTester() {
       for (const r of arr) {
         lines.push(`\n[${r.route}]`);
         lines.push(`  total=${r.total} clicked=${r.clickable} skipped=${r.skipped} crashed=${r.crashed} navigated=${r.navigated}`);
+        lines.push(`  testedAt=${r.testedAt || "n/a"} durationMs=${r.durationMs ?? "n/a"} loadedUrl=${r.loadedUrl || "n/a"}`);
         if (r.reason) lines.push(`  reason: ${r.reason}`);
+        if (r.evidence) {
+          lines.push(`  evidence: hash=${r.evidence.bodyHash} readyMs=${r.evidence.readyMs} overlays=${r.evidence.openedOverlays}/${r.evidence.overlayTriggers} source=${r.evidence.source}`);
+          if (r.evidence.textSample) lines.push(`  sample: ${r.evidence.textSample}`);
+        }
         if (r.errors.length) {
           for (const e of r.errors.slice(0, 5)) lines.push(`  ! ${e}`);
         }
