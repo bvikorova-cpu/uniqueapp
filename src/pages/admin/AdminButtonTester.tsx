@@ -228,8 +228,8 @@ export default function AdminButtonTester() {
         } catch {}
       }
 
-      const total = labels.length ? Math.max(labels.length, 0) : 0;
-      // We used labels.push cap of 60; use the WeakSet growth via a counter recomputed from selector:
+      // Recount all visible interactive elements after overlays were opened
+
       const finalCount = Array.from(doc.querySelectorAll<HTMLElement>(INTERACTIVE_SELECTOR)).filter((el) => {
         const r = el.getBoundingClientRect();
         return !(r.width === 0 && r.height === 0);
