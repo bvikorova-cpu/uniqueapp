@@ -6,7 +6,7 @@ import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Zap, Play, Loader2, CheckCircle2, XCircle, Filter } from "lucide-react";
+import { Zap, Play, Loader2, CheckCircle2, XCircle, Filter, Download } from "lucide-react";
 import { EDGE_FUNCTIONS } from "@/data/edgeFunctionsList";
 
 type Status = "idle" | "running" | "ok" | "error";
