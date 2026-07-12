@@ -10,6 +10,9 @@ interface LogPayload {
 }
 
 const isDev = import.meta.env.DEV;
+const isButtonTesterFrame =
+  typeof window !== "undefined" &&
+  new URLSearchParams(window.location.search).has("__button_tester");
 
 // Throttle: avoid spamming the DB if the same error fires repeatedly
 const recentErrors = new Map<string, number>();
@@ -31,6 +34,8 @@ function shouldThrottle(key: string): boolean {
 
 async function persistLog(severity: Severity, payload: LogPayload): Promise<void> {
   try {
+    if (isButtonTesterFrame) return;
+
     const key = `${severity}:${payload.message}`;
     if (shouldThrottle(key)) return;
 
@@ -85,6 +90,7 @@ export const logger = {
  */
 export function installGlobalErrorHandlers(): void {
   if (typeof window === "undefined") return;
+  if (isButtonTesterFrame) return;
 
   window.addEventListener("error", (event) => {
     logger.error(event.error ?? event.message, {

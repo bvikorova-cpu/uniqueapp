@@ -87,6 +87,17 @@ function classify(r: BtnResult) {
   return "pass";
 }
 
+function withTesterQuery(route: string) {
+  try {
+    const url = new URL(route, window.location.origin);
+    url.searchParams.set("__button_tester", "1");
+    return `${url.pathname}${url.search}${url.hash}`;
+  } catch {
+    const joiner = route.includes("?") ? "&" : "?";
+    return `${route}${joiner}__button_tester=1`;
+  }
+}
+
 export default function AdminButtonTester() {
   const [routes, setRoutes] = useState<string[]>(ROUTES as string[]);
   const [filter, setFilter] = useState("");
@@ -218,7 +229,7 @@ export default function AdminButtonTester() {
           iframe.src = "about:blank";
           setTimeout(() => {
             try {
-              iframe.src = route;
+              iframe.src = withTesterQuery(route);
             } catch {
               finish(false);
             }
@@ -347,7 +358,7 @@ export default function AdminButtonTester() {
             }
             if (win.location.pathname !== startUrl) {
               navigated++;
-              iframe.src = route;
+              iframe.src = withTesterQuery(route);
               await new Promise<void>((r) => {
                 const t = setTimeout(() => r(), 3000);
                 iframe.onload = () => { clearTimeout(t); r(); };
