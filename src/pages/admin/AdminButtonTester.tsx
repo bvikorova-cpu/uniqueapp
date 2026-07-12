@@ -244,8 +244,25 @@ export default function AdminButtonTester() {
       }
 
 
-      // Give React a moment to render, but keep the delay short for 2500+ route runs.
-      await new Promise((r) => setTimeout(r, 650));
+      // Wait until the app actually renders (not stuck on "Loading Unique…" suspense fallback).
+      // Poll for interactive elements or meaningful body text; hard-cap at 6s to keep the run moving.
+      const READY_TIMEOUT = 6000;
+      const readyStart = Date.now();
+      let readyReason = "";
+      while (Date.now() - readyStart < READY_TIMEOUT) {
+        const d = iframe.contentDocument;
+        if (!d || !d.body) { await new Promise((r) => setTimeout(r, 120)); continue; }
+        const txt = (d.body.innerText || "").trim();
+        const stillLoading = /^loading unique/i.test(txt) || txt.length < 3;
+        const hasInteractive = d.querySelector(INTERACTIVE_SELECTOR);
+        const hasCrash = d.querySelector("[data-unique-crash-overlay]");
+        if (hasCrash) { readyReason = "crash"; break; }
+        if (!stillLoading && (hasInteractive || txt.length > 30)) { readyReason = "ready"; break; }
+        await new Promise((r) => setTimeout(r, 150));
+      }
+      if (readyReason !== "ready" && readyReason !== "crash") {
+        return { route, total: 0, clickable: 0, skipped: 0, crashed: 0, errors: [], navigated: 0, ok: false, reason: "stuck on loading" };
+      }
 
       const doc = iframe.contentDocument;
       const win = iframe.contentWindow;
