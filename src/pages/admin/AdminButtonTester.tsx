@@ -18,6 +18,17 @@ type BtnResult = {
   ok: boolean;
   reason?: string;
   labels?: string[];
+  testedAt?: string;
+  durationMs?: number;
+  loadedUrl?: string;
+  evidence?: {
+    bodyHash: string;
+    textSample: string;
+    overlayTriggers: number;
+    openedOverlays: number;
+    readyMs: number;
+    source: string;
+  };
 };
 
 const SKIP_PATTERNS = [
@@ -30,10 +41,12 @@ const SKIP_PATTERNS = [
   /test\s*all|run\s*all|smoke|probe|audit|scan|tester|spusti|otest/i,
 ];
 
-const IFRAME_TIMEOUT = 15000;
-const MAX_CLICKS_PER_ROUTE = 60;
-const DEFAULT_BATCH_SIZE = 50;
-const IFRAME_RECYCLE_EVERY = 25;
+const IFRAME_TIMEOUT = 7000;
+const READY_TIMEOUT = 5000;
+const MAX_CLICKS_PER_ROUTE = 25;
+const DEFAULT_BATCH_SIZE = 20;
+const MAX_BATCH_SIZE = 40;
+const IFRAME_RECYCLE_EVERY = 5;
 const CHECKPOINT_KEY = "unique-button-tester-checkpoint-v3";
 const SELF_TESTER_ROUTES = new Set(["/admin/button-tester"]);
 
@@ -85,6 +98,19 @@ function classify(r: BtnResult) {
   if (r.crashed > 0 || r.errors.length > 0) return "fail";
   if (r.total === 0) return "warn";
   return "pass";
+}
+
+function compactText(value: string, max = 180) {
+  return value.replace(/\s+/g, " ").trim().slice(0, max);
+}
+
+function hashText(value: string) {
+  let hash = 2166136261;
+  for (let i = 0; i < value.length; i++) {
+    hash ^= value.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return (hash >>> 0).toString(16).padStart(8, "0");
 }
 
 function withTesterQuery(route: string) {
@@ -194,13 +220,28 @@ export default function AdminButtonTester() {
   }
 
   async function probeRoute(route: string): Promise<BtnResult> {
+    const startedAt = performance.now();
+    const finish = (partial: Partial<BtnResult>): BtnResult => ({
+      route,
+      total: 0,
+      clickable: 0,
+      skipped: 0,
+      crashed: 0,
+      errors: [],
+      navigated: 0,
+      ok: false,
+      testedAt: new Date().toISOString(),
+      durationMs: Math.round(performance.now() - startedAt),
+      ...partial,
+    });
+
     if (SELF_TESTER_ROUTES.has(route)) {
-      return { route, total: 0, clickable: 0, skipped: 0, crashed: 0, errors: [], navigated: 0, ok: true, reason: "self-tester route skipped" };
+      return finish({ ok: true, reason: "self-tester route skipped" });
     }
 
     const iframe = iframeRef.current;
     if (!iframe) {
-      return { route, total: 0, clickable: 0, skipped: 0, crashed: 0, errors: ["no iframe"], navigated: 0, ok: false, reason: "no iframe" };
+      return finish({ errors: ["no iframe"], reason: "no iframe" });
     }
 
     const errors: string[] = [];
@@ -240,13 +281,12 @@ export default function AdminButtonTester() {
       });
 
       if (!loaded) {
-        return { route, total: 0, clickable: 0, skipped: 0, crashed: 0, errors: [], navigated: 0, ok: false, reason: "iframe load timeout" };
+        return finish({ reason: "iframe load timeout" });
       }
 
 
       // Wait until the app actually renders (not stuck on "Loading Unique…" suspense fallback).
       // Poll for interactive elements or meaningful body text; hard-cap at 6s to keep the run moving.
-      const READY_TIMEOUT = 6000;
       const readyStart = Date.now();
       let readyReason = "";
       while (Date.now() - readyStart < READY_TIMEOUT) {
@@ -261,24 +301,60 @@ export default function AdminButtonTester() {
         await new Promise((r) => setTimeout(r, 150));
       }
       if (readyReason !== "ready" && readyReason !== "crash") {
-        return { route, total: 0, clickable: 0, skipped: 0, crashed: 0, errors: [], navigated: 0, ok: false, reason: "stuck on loading" };
+        const textSample = compactText(iframe.contentDocument?.body?.innerText || "");
+        return finish({
+          reason: "stuck on loading",
+          loadedUrl: iframe.contentWindow?.location?.pathname,
+          evidence: {
+            bodyHash: hashText(textSample),
+            textSample,
+            overlayTriggers: 0,
+            openedOverlays: 0,
+            readyMs: Date.now() - readyStart,
+            source: "iframe-dom",
+          },
+        });
       }
 
       const doc = iframe.contentDocument;
       const win = iframe.contentWindow;
       if (!doc || !win) {
-        return { route, total: 0, clickable: 0, skipped: 0, crashed: 0, errors: [], navigated: 0, ok: false, reason: "no document" };
+        return finish({ reason: "no document" });
       }
 
       // Not found detection
       const bodyText = (doc.body.innerText || "").slice(0, 4000);
       if (/404|not found|nen[aá]jden/i.test(bodyText.slice(0, 400))) {
-        return { route, total: 0, clickable: 0, skipped: 0, crashed: 0, errors: [], navigated: 0, ok: false, reason: "404 page" };
+        return finish({
+          reason: "404 page",
+          loadedUrl: win.location.pathname,
+          evidence: {
+            bodyHash: hashText(bodyText),
+            textSample: compactText(bodyText),
+            overlayTriggers: 0,
+            openedOverlays: 0,
+            readyMs: Date.now() - readyStart,
+            source: "iframe-dom",
+          },
+        });
       }
 
       // Crash overlay?
       if (doc.querySelector("[data-unique-crash-overlay]")) {
-        return { route, total: 0, clickable: 0, skipped: 0, crashed: 1, errors: ["crash overlay"], navigated: 0, ok: false, reason: "crash on load" };
+        return finish({
+          crashed: 1,
+          errors: ["crash overlay"],
+          reason: "crash on load",
+          loadedUrl: win.location.pathname,
+          evidence: {
+            bodyHash: hashText(bodyText),
+            textSample: compactText(bodyText),
+            overlayTriggers: 0,
+            openedOverlays: 0,
+            readyMs: Date.now() - readyStart,
+            source: "iframe-dom",
+          },
+        });
       }
 
       // Attach error listener in iframe
@@ -326,7 +402,21 @@ export default function AdminButtonTester() {
           overlaysOpened++;
           await new Promise((r) => setTimeout(r, 180));
           if (doc.querySelector("[data-unique-crash-overlay]")) {
-            return { route, total: 0, clickable: 0, skipped: 0, crashed: 1, errors: [`crash opening "${label}"`], navigated: 0, ok: false, reason: "crash opening overlay", labels };
+            return finish({
+              crashed: 1,
+              errors: [`crash opening "${label}"`],
+              reason: "crash opening overlay",
+              labels,
+              loadedUrl: win.location.pathname,
+              evidence: {
+                bodyHash: hashText(doc.body.innerText || ""),
+                textSample: compactText(doc.body.innerText || ""),
+                overlayTriggers: triggers.length,
+                openedOverlays: overlaysOpened,
+                readyMs: Date.now() - readyStart,
+                source: "iframe-dom",
+              },
+            });
           }
           countNodes(); // count new nested items now visible
           // close via Escape
@@ -394,8 +484,7 @@ export default function AdminButtonTester() {
       }
 
       const ok = crashed === 0 && iframeErrs.length === 0;
-      return {
-        route,
+      return finish({
         total: finalCount,
         clickable,
         skipped,
@@ -405,9 +494,18 @@ export default function AdminButtonTester() {
         ok,
         reason: ok ? (finalCount === 0 ? "no interactive elements" : `${overlaysOpened} overlays opened`) : (iframeErrs[0] || "crashed"),
         labels: labels.slice(0, 25),
-      };
+        loadedUrl: win.location.pathname,
+        evidence: {
+          bodyHash: hashText(doc.body.innerText || ""),
+          textSample: compactText(doc.body.innerText || ""),
+          overlayTriggers: triggers.length,
+          openedOverlays: overlaysOpened,
+          readyMs: Date.now() - readyStart,
+          source: "iframe-dom",
+        },
+      });
     } catch (e: any) {
-      return { route, total: 0, clickable: 0, skipped: 0, crashed: 0, errors: [String(e?.message || e)], navigated: 0, ok: false, reason: e?.message };
+      return finish({ errors: [String(e?.message || e)], reason: e?.message });
     } finally {
       window.removeEventListener("error", errHandler);
     }
@@ -421,14 +519,21 @@ export default function AdminButtonTester() {
     const nextResults: Record<string, BtnResult> = { ...restored };
     setResults(nextResults);
 
-    const safeBatchSize = Math.max(10, Math.min(150, Number(batchSize) || DEFAULT_BATCH_SIZE));
-    const startIndex = resumeFromCheckpoint
-      ? Math.max(0, list.findIndex((route) => !nextResults[route]))
-      : 0;
+    const safeBatchSize = Math.max(5, Math.min(MAX_BATCH_SIZE, Number(batchSize) || DEFAULT_BATCH_SIZE));
+    const pendingIndex = resumeFromCheckpoint ? list.findIndex((route) => !nextResults[route]) : 0;
+    const startIndex = resumeFromCheckpoint && pendingIndex === -1 ? list.length : Math.max(0, pendingIndex);
+    const endIndex = Math.min(list.length, startIndex + safeBatchSize);
+
+    if (startIndex < 0 || startIndex >= list.length) {
+      saveCheckpoint(nextResults, list.length);
+      setRunning(false);
+      setCurrent("Všetky routes sú už v checkpointe.");
+      return;
+    }
 
     await recycleIframe(true);
 
-    for (let i = startIndex; i < list.length; i++) {
+    for (let i = startIndex; i < endIndex; i++) {
       if (abortRef.current) break;
       const r = list[i];
       setCurrent(r);
@@ -450,19 +555,12 @@ export default function AdminButtonTester() {
         setCurrent(`Čistím iframe pamäť… ${i + 1}/${list.length}`);
         await recycleIframe(true);
       }
-
-      if (testedInThisRun % safeBatchSize === 0) {
-        setResults({ ...nextResults });
-        saveCheckpoint(nextResults, list.length);
-        setCurrent(`Krátka pauza kvôli pamäti… ${i + 1}/${list.length}`);
-        await new Promise((resolve) => setTimeout(resolve, 1200));
-      }
     }
     setResults({ ...nextResults });
     saveCheckpoint(nextResults, list.length);
     await recycleIframe(true);
     setRunning(false);
-    setCurrent("");
+    setCurrent(`Batch dokončený: ${endIndex}/${list.length}. Pokračuj cez Resume next batch.`);
   }
 
   async function runOne(route: string) {
@@ -513,7 +611,12 @@ export default function AdminButtonTester() {
       for (const r of arr) {
         lines.push(`\n[${r.route}]`);
         lines.push(`  total=${r.total} clicked=${r.clickable} skipped=${r.skipped} crashed=${r.crashed} navigated=${r.navigated}`);
+        lines.push(`  testedAt=${r.testedAt || "n/a"} durationMs=${r.durationMs ?? "n/a"} loadedUrl=${r.loadedUrl || "n/a"}`);
         if (r.reason) lines.push(`  reason: ${r.reason}`);
+        if (r.evidence) {
+          lines.push(`  evidence: hash=${r.evidence.bodyHash} readyMs=${r.evidence.readyMs} overlays=${r.evidence.openedOverlays}/${r.evidence.overlayTriggers} source=${r.evidence.source}`);
+          if (r.evidence.textSample) lines.push(`  sample: ${r.evidence.textSample}`);
+        }
         if (r.errors.length) {
           for (const e of r.errors.slice(0, 5)) lines.push(`  ! ${e}`);
         }
@@ -546,10 +649,10 @@ export default function AdminButtonTester() {
         </div>
         <div className="flex gap-2 flex-wrap">
           <Button onClick={() => runAll(filtered)} disabled={running} size="sm">
-            <Play className="h-4 w-4 mr-1" /> Test all ({filtered.length})
+            <Play className="h-4 w-4 mr-1" /> Start batch ({Math.min(batchSize, filtered.length)}/{filtered.length})
           </Button>
           <Button onClick={() => runAll(filtered, true)} disabled={running} size="sm" variant="outline">
-            <Play className="h-4 w-4 mr-1" /> Resume
+            <Play className="h-4 w-4 mr-1" /> Resume next batch
           </Button>
           <Button
             onClick={() => {
@@ -588,11 +691,11 @@ export default function AdminButtonTester() {
             Klikať tlačidlá (nie len počítať)
           </label>
           <label className="flex items-center gap-2 text-sm">
-            Batch
+            Routes per batch
             <Input
               type="number"
-              min={10}
-              max={150}
+              min={5}
+              max={MAX_BATCH_SIZE}
               value={batchSize}
               onChange={(e) => setBatchSize(Number(e.target.value) || DEFAULT_BATCH_SIZE)}
               disabled={running}
@@ -629,7 +732,7 @@ export default function AdminButtonTester() {
         </div>
         {checkpointLabel && (
           <p className="text-xs text-muted-foreground">
-            Checkpoint: {checkpointLabel}. Report vieš stiahnuť aj z čiastočných výsledkov.
+            Checkpoint: {checkpointLabel}. Tester zámerne dokončí vždy len jeden malý batch, aby nezložil mobilný preview tab.
           </p>
         )}
         {running && (
@@ -640,13 +743,19 @@ export default function AdminButtonTester() {
             </p>
           </div>
         )}
+        {!running && current && (
+          <p className="text-xs text-muted-foreground">
+            {current}
+          </p>
+        )}
         <details className="text-xs">
           <summary className="cursor-pointer">Legenda</summary>
           <ul className="mt-2 space-y-1 text-muted-foreground">
             <li>✅ <b>Pass</b> — route sa načíta, nájdené tlačidlá, žiadny crash ani runtime error po kliknutiach.</li>
             <li>⚠️ <b>Warn</b> — route sa načíta, ale nenašli sa žiadne tlačidlá (skontroluj či nie je gated / prázdna).</li>
             <li>❌ <b>Fail</b> — 404 stránka, iframe timeout, crash overlay, alebo runtime error po kliknutí.</li>
-            <li>🧠 Tester beží v batchoch, každých pár routes recykluje iframe a priebežne ukladá checkpoint, aby mobilný preview tab nespadol.</li>
+            <li>🧠 Tester nikdy nebeží ako jeden nekonečný run: dokončí malý batch, uloží checkpoint a ďalší batch spustíš cez Resume next batch.</li>
+            <li>🔎 Report obsahuje dôkaz ku route: načítanú URL, čas, textový odtlačok stránky, sample text a počet otvorených overlay prvkov.</li>
           </ul>
         </details>
       </Card>
