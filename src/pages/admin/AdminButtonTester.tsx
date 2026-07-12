@@ -100,6 +100,19 @@ function classify(r: BtnResult) {
   return "pass";
 }
 
+function compactText(value: string, max = 180) {
+  return value.replace(/\s+/g, " ").trim().slice(0, max);
+}
+
+function hashText(value: string) {
+  let hash = 2166136261;
+  for (let i = 0; i < value.length; i++) {
+    hash ^= value.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return (hash >>> 0).toString(16).padStart(8, "0");
+}
+
 function withTesterQuery(route: string) {
   try {
     const url = new URL(route, window.location.origin);
@@ -207,13 +220,28 @@ export default function AdminButtonTester() {
   }
 
   async function probeRoute(route: string): Promise<BtnResult> {
+    const startedAt = performance.now();
+    const finish = (partial: Partial<BtnResult>): BtnResult => ({
+      route,
+      total: 0,
+      clickable: 0,
+      skipped: 0,
+      crashed: 0,
+      errors: [],
+      navigated: 0,
+      ok: false,
+      testedAt: new Date().toISOString(),
+      durationMs: Math.round(performance.now() - startedAt),
+      ...partial,
+    });
+
     if (SELF_TESTER_ROUTES.has(route)) {
-      return { route, total: 0, clickable: 0, skipped: 0, crashed: 0, errors: [], navigated: 0, ok: true, reason: "self-tester route skipped" };
+      return finish({ ok: true, reason: "self-tester route skipped" });
     }
 
     const iframe = iframeRef.current;
     if (!iframe) {
-      return { route, total: 0, clickable: 0, skipped: 0, crashed: 0, errors: ["no iframe"], navigated: 0, ok: false, reason: "no iframe" };
+      return finish({ errors: ["no iframe"], reason: "no iframe" });
     }
 
     const errors: string[] = [];
@@ -253,13 +281,12 @@ export default function AdminButtonTester() {
       });
 
       if (!loaded) {
-        return { route, total: 0, clickable: 0, skipped: 0, crashed: 0, errors: [], navigated: 0, ok: false, reason: "iframe load timeout" };
+        return finish({ reason: "iframe load timeout" });
       }
 
 
       // Wait until the app actually renders (not stuck on "Loading Unique…" suspense fallback).
       // Poll for interactive elements or meaningful body text; hard-cap at 6s to keep the run moving.
-      const READY_TIMEOUT = 6000;
       const readyStart = Date.now();
       let readyReason = "";
       while (Date.now() - readyStart < READY_TIMEOUT) {
@@ -274,24 +301,60 @@ export default function AdminButtonTester() {
         await new Promise((r) => setTimeout(r, 150));
       }
       if (readyReason !== "ready" && readyReason !== "crash") {
-        return { route, total: 0, clickable: 0, skipped: 0, crashed: 0, errors: [], navigated: 0, ok: false, reason: "stuck on loading" };
+        const textSample = compactText(iframe.contentDocument?.body?.innerText || "");
+        return finish({
+          reason: "stuck on loading",
+          loadedUrl: iframe.contentWindow?.location?.pathname,
+          evidence: {
+            bodyHash: hashText(textSample),
+            textSample,
+            overlayTriggers: 0,
+            openedOverlays: 0,
+            readyMs: Date.now() - readyStart,
+            source: "iframe-dom",
+          },
+        });
       }
 
       const doc = iframe.contentDocument;
       const win = iframe.contentWindow;
       if (!doc || !win) {
-        return { route, total: 0, clickable: 0, skipped: 0, crashed: 0, errors: [], navigated: 0, ok: false, reason: "no document" };
+        return finish({ reason: "no document" });
       }
 
       // Not found detection
       const bodyText = (doc.body.innerText || "").slice(0, 4000);
       if (/404|not found|nen[aá]jden/i.test(bodyText.slice(0, 400))) {
-        return { route, total: 0, clickable: 0, skipped: 0, crashed: 0, errors: [], navigated: 0, ok: false, reason: "404 page" };
+        return finish({
+          reason: "404 page",
+          loadedUrl: win.location.pathname,
+          evidence: {
+            bodyHash: hashText(bodyText),
+            textSample: compactText(bodyText),
+            overlayTriggers: 0,
+            openedOverlays: 0,
+            readyMs: Date.now() - readyStart,
+            source: "iframe-dom",
+          },
+        });
       }
 
       // Crash overlay?
       if (doc.querySelector("[data-unique-crash-overlay]")) {
-        return { route, total: 0, clickable: 0, skipped: 0, crashed: 1, errors: ["crash overlay"], navigated: 0, ok: false, reason: "crash on load" };
+        return finish({
+          crashed: 1,
+          errors: ["crash overlay"],
+          reason: "crash on load",
+          loadedUrl: win.location.pathname,
+          evidence: {
+            bodyHash: hashText(bodyText),
+            textSample: compactText(bodyText),
+            overlayTriggers: 0,
+            openedOverlays: 0,
+            readyMs: Date.now() - readyStart,
+            source: "iframe-dom",
+          },
+        });
       }
 
       // Attach error listener in iframe
@@ -339,7 +402,21 @@ export default function AdminButtonTester() {
           overlaysOpened++;
           await new Promise((r) => setTimeout(r, 180));
           if (doc.querySelector("[data-unique-crash-overlay]")) {
-            return { route, total: 0, clickable: 0, skipped: 0, crashed: 1, errors: [`crash opening "${label}"`], navigated: 0, ok: false, reason: "crash opening overlay", labels };
+            return finish({
+              crashed: 1,
+              errors: [`crash opening "${label}"`],
+              reason: "crash opening overlay",
+              labels,
+              loadedUrl: win.location.pathname,
+              evidence: {
+                bodyHash: hashText(doc.body.innerText || ""),
+                textSample: compactText(doc.body.innerText || ""),
+                overlayTriggers: triggers.length,
+                openedOverlays: overlaysOpened,
+                readyMs: Date.now() - readyStart,
+                source: "iframe-dom",
+              },
+            });
           }
           countNodes(); // count new nested items now visible
           // close via Escape
@@ -407,8 +484,7 @@ export default function AdminButtonTester() {
       }
 
       const ok = crashed === 0 && iframeErrs.length === 0;
-      return {
-        route,
+      return finish({
         total: finalCount,
         clickable,
         skipped,
@@ -418,9 +494,18 @@ export default function AdminButtonTester() {
         ok,
         reason: ok ? (finalCount === 0 ? "no interactive elements" : `${overlaysOpened} overlays opened`) : (iframeErrs[0] || "crashed"),
         labels: labels.slice(0, 25),
-      };
+        loadedUrl: win.location.pathname,
+        evidence: {
+          bodyHash: hashText(doc.body.innerText || ""),
+          textSample: compactText(doc.body.innerText || ""),
+          overlayTriggers: triggers.length,
+          openedOverlays: overlaysOpened,
+          readyMs: Date.now() - readyStart,
+          source: "iframe-dom",
+        },
+      });
     } catch (e: any) {
-      return { route, total: 0, clickable: 0, skipped: 0, crashed: 0, errors: [String(e?.message || e)], navigated: 0, ok: false, reason: e?.message };
+      return finish({ errors: [String(e?.message || e)], reason: e?.message });
     } finally {
       window.removeEventListener("error", errHandler);
     }
