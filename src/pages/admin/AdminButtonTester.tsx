@@ -673,17 +673,18 @@ export default function AdminButtonTester() {
           </table>
         </Card>
 
-        <Card className={showLivePreview ? "p-2" : "sr-only"}>
-          <div className="text-xs text-muted-foreground mb-1 px-2">Live preview (iframe)</div>
-          <iframe
-            key={iframeKey}
-            ref={iframeRef}
-            title="button-tester-frame"
-            className={showLivePreview ? "w-full h-[70vh] border rounded bg-white" : "fixed -left-[9999px] top-0 h-[760px] w-[390px] opacity-0 pointer-events-none"}
-            sandbox="allow-scripts allow-same-origin allow-forms"
-          />
-        </Card>
-        {!showLivePreview && (
+        {showLivePreview ? (
+          <Card className="p-2">
+            <div className="text-xs text-muted-foreground mb-1 px-2">Live preview (iframe)</div>
+            <iframe
+              key={iframeKey}
+              ref={iframeRef}
+              title="button-tester-frame"
+              className="w-full h-[70vh] border rounded bg-white"
+              sandbox="allow-scripts allow-same-origin allow-forms"
+            />
+          </Card>
+        ) : (
           <iframe
             key={iframeKey}
             ref={iframeRef}
