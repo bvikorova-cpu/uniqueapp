@@ -519,14 +519,22 @@ export default function AdminButtonTester() {
     const nextResults: Record<string, BtnResult> = { ...restored };
     setResults(nextResults);
 
-    const safeBatchSize = Math.max(10, Math.min(150, Number(batchSize) || DEFAULT_BATCH_SIZE));
+    const safeBatchSize = Math.max(5, Math.min(MAX_BATCH_SIZE, Number(batchSize) || DEFAULT_BATCH_SIZE));
     const startIndex = resumeFromCheckpoint
       ? Math.max(0, list.findIndex((route) => !nextResults[route]))
       : 0;
+    const endIndex = Math.min(list.length, startIndex + safeBatchSize);
+
+    if (startIndex < 0 || startIndex >= list.length) {
+      saveCheckpoint(nextResults, list.length);
+      setRunning(false);
+      setCurrent("Všetky routes sú už v checkpointe.");
+      return;
+    }
 
     await recycleIframe(true);
 
-    for (let i = startIndex; i < list.length; i++) {
+    for (let i = startIndex; i < endIndex; i++) {
       if (abortRef.current) break;
       const r = list[i];
       setCurrent(r);
@@ -548,19 +556,12 @@ export default function AdminButtonTester() {
         setCurrent(`Čistím iframe pamäť… ${i + 1}/${list.length}`);
         await recycleIframe(true);
       }
-
-      if (testedInThisRun % safeBatchSize === 0) {
-        setResults({ ...nextResults });
-        saveCheckpoint(nextResults, list.length);
-        setCurrent(`Krátka pauza kvôli pamäti… ${i + 1}/${list.length}`);
-        await new Promise((resolve) => setTimeout(resolve, 1200));
-      }
     }
     setResults({ ...nextResults });
     saveCheckpoint(nextResults, list.length);
     await recycleIframe(true);
     setRunning(false);
-    setCurrent("");
+    setCurrent(`Batch dokončený: ${endIndex}/${list.length}. Pokračuj cez Resume next batch.`);
   }
 
   async function runOne(route: string) {
