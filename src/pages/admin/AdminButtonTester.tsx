@@ -743,6 +743,11 @@ export default function AdminButtonTester() {
             </p>
           </div>
         )}
+        {!running && current && (
+          <p className="text-xs text-muted-foreground">
+            {current}
+          </p>
+        )}
         <details className="text-xs">
           <summary className="cursor-pointer">Legenda</summary>
           <ul className="mt-2 space-y-1 text-muted-foreground">
