@@ -29,8 +29,9 @@ const SKIP_PATTERNS = [
   /publish|deploy|nasad/i,
 ];
 
-const IFRAME_TIMEOUT = 8000;
+const IFRAME_TIMEOUT = 12000;
 const MAX_CLICKS_PER_ROUTE = 40;
+
 
 function classify(r: BtnResult) {
   if (!r.ok) return "fail";
