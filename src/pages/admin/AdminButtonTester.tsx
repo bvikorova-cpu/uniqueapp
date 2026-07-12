@@ -18,6 +18,17 @@ type BtnResult = {
   ok: boolean;
   reason?: string;
   labels?: string[];
+  testedAt?: string;
+  durationMs?: number;
+  loadedUrl?: string;
+  evidence?: {
+    bodyHash: string;
+    textSample: string;
+    overlayTriggers: number;
+    openedOverlays: number;
+    readyMs: number;
+    source: string;
+  };
 };
 
 const SKIP_PATTERNS = [
@@ -30,10 +41,12 @@ const SKIP_PATTERNS = [
   /test\s*all|run\s*all|smoke|probe|audit|scan|tester|spusti|otest/i,
 ];
 
-const IFRAME_TIMEOUT = 15000;
-const MAX_CLICKS_PER_ROUTE = 60;
-const DEFAULT_BATCH_SIZE = 50;
-const IFRAME_RECYCLE_EVERY = 25;
+const IFRAME_TIMEOUT = 7000;
+const READY_TIMEOUT = 5000;
+const MAX_CLICKS_PER_ROUTE = 25;
+const DEFAULT_BATCH_SIZE = 20;
+const MAX_BATCH_SIZE = 40;
+const IFRAME_RECYCLE_EVERY = 5;
 const CHECKPOINT_KEY = "unique-button-tester-checkpoint-v3";
 const SELF_TESTER_ROUTES = new Set(["/admin/button-tester"]);
 
