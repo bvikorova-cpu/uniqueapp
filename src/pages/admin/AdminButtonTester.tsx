@@ -29,8 +29,9 @@ const SKIP_PATTERNS = [
   /publish|deploy|nasad/i,
 ];
 
-const IFRAME_TIMEOUT = 8000;
+const IFRAME_TIMEOUT = 12000;
 const MAX_CLICKS_PER_ROUTE = 40;
+
 
 function classify(r: BtnResult) {
   if (!r.ok) return "fail";
@@ -80,23 +81,38 @@ export default function AdminButtonTester() {
     window.addEventListener("error", errHandler);
 
     try {
-      // Load the route inside the iframe
+      // Load the route inside the iframe (use about:blank between loads so onload always fires)
       const loaded = await new Promise<boolean>((resolve) => {
-        const t = setTimeout(() => resolve(false), IFRAME_TIMEOUT);
+        let done = false;
+        const finish = (ok: boolean) => {
+          if (done) return;
+          done = true;
+          resolve(ok);
+        };
+        const t = setTimeout(() => finish(false), IFRAME_TIMEOUT);
         iframe.onload = () => {
           clearTimeout(t);
-          resolve(true);
+          finish(true);
         };
         try {
-          iframe.src = route;
+          // Force a reload even if the src is the same as previous
+          iframe.src = "about:blank";
+          setTimeout(() => {
+            try {
+              iframe.src = route;
+            } catch {
+              finish(false);
+            }
+          }, 30);
         } catch {
-          resolve(false);
+          finish(false);
         }
       });
 
       if (!loaded) {
         return { route, total: 0, clickable: 0, skipped: 0, crashed: 0, errors: [], navigated: 0, ok: false, reason: "iframe load timeout" };
       }
+
 
       // Give React a moment to render
       await new Promise((r) => setTimeout(r, 900));
@@ -406,21 +422,17 @@ export default function AdminButtonTester() {
           </table>
         </Card>
 
-        <Card className="p-2 hidden lg:block">
+        <Card className="p-2">
           <div className="text-xs text-muted-foreground mb-1 px-2">Live preview (iframe)</div>
           <iframe
             ref={iframeRef}
             title="button-tester-frame"
-            className="w-full h-[70vh] border rounded"
+            className="w-full h-[70vh] border rounded bg-white"
             sandbox="allow-scripts allow-same-origin allow-forms"
           />
         </Card>
       </div>
-
-      {/* Hidden iframe fallback if the visible one isn't mounted (mobile) */}
-      {typeof window !== "undefined" && !iframeRef.current && (
-        <iframe ref={iframeRef} title="hidden-tester-frame" className="hidden" />
-      )}
     </div>
   );
 }
+
