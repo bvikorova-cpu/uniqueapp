@@ -99,7 +99,7 @@ function withTesterQuery(route: string) {
 }
 
 export default function AdminButtonTester() {
-  const [routes, setRoutes] = useState<string[]>(ROUTES as string[]);
+  const [routes] = useState<string[]>(ROUTES as string[]);
   const [filter, setFilter] = useState("");
   const [results, setResults] = useState<Record<string, BtnResult>>({});
   const [running, setRunning] = useState(false);
