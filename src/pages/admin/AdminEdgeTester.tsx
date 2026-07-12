@@ -6,7 +6,7 @@ import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Zap, Play, Loader2, CheckCircle2, XCircle, Filter } from "lucide-react";
+import { Zap, Play, Loader2, CheckCircle2, XCircle, Filter, Download } from "lucide-react";
 import { EDGE_FUNCTIONS } from "@/data/edgeFunctionsList";
 
 type Status = "idle" | "running" | "ok" | "error";
@@ -150,9 +150,57 @@ const Inner = () => {
           <Button variant="outline" onClick={() => setResults({})} disabled={running}>
             Reset
           </Button>
+          <Button
+            variant="outline"
+            onClick={() => {
+              const rows = EDGE_FUNCTIONS.map((fn) => {
+                const r = results[fn];
+                return {
+                  name: fn,
+                  status: r?.status ?? "idle",
+                  code: r?.code ?? "",
+                  ms: r?.ms ?? "",
+                  message: r?.message ?? "",
+                };
+              });
+              const okList = rows.filter((r) => r.status === "ok").map((r) => r.name);
+              const errList = rows.filter((r) => r.status === "error");
+              const idleList = rows.filter((r) => r.status === "idle").map((r) => r.name);
+
+              const txt = [
+                `Edge Function Tester Report`,
+                `Generated: ${new Date().toISOString()}`,
+                `Total: ${EDGE_FUNCTIONS.length} | Funguje: ${okList.length} | Nefunguje: ${errList.length} | Netestované: ${idleList.length}`,
+                ``,
+                `=== NEFUNGUJE (${errList.length}) ===`,
+                ...errList.map((r) => `${r.name}  [${r.code}]  ${r.message}`),
+                ``,
+                `=== FUNGUJE (${okList.length}) ===`,
+                ...okList,
+                ``,
+                `=== NETESTOVANÉ (${idleList.length}) ===`,
+                ...idleList,
+              ].join("\n");
+
+              const blob = new Blob([txt], { type: "text/plain;charset=utf-8" });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = `edge-tester-report-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.txt`;
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+              URL.revokeObjectURL(url);
+            }}
+            disabled={running}
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Stiahnuť report
+          </Button>
           <div className="ml-auto text-xs text-muted-foreground self-center">
             Total {EDGE_FUNCTIONS.length} functions
           </div>
+
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-[70vh] overflow-auto pr-2">
