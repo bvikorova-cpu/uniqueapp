@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -27,10 +27,21 @@ const SKIP_PATTERNS = [
   /report|nahl[aá]s|block|zabloko/i,
   /confirm|potvr/i,
   /publish|deploy|nasad/i,
+  /test\s*all|run\s*all|smoke|probe|audit|scan|tester|spusti|otest/i,
 ];
 
 const IFRAME_TIMEOUT = 15000;
 const MAX_CLICKS_PER_ROUTE = 60;
+const DEFAULT_BATCH_SIZE = 50;
+const IFRAME_RECYCLE_EVERY = 25;
+const CHECKPOINT_KEY = "unique-button-tester-checkpoint-v3";
+const SELF_TESTER_ROUTES = new Set(["/admin/button-tester"]);
+
+type Checkpoint = {
+  updatedAt: string;
+  results: Record<string, BtnResult>;
+  routesTotal: number;
+};
 
 // Extended selector — counts every interactive element, not just <button>
 const INTERACTIVE_SELECTOR = [
@@ -76,16 +87,36 @@ function classify(r: BtnResult) {
   return "pass";
 }
 
+function withTesterQuery(route: string) {
+  try {
+    const url = new URL(route, window.location.origin);
+    url.searchParams.set("__button_tester", "1");
+    return `${url.pathname}${url.search}${url.hash}`;
+  } catch {
+    const joiner = route.includes("?") ? "&" : "?";
+    return `${route}${joiner}__button_tester=1`;
+  }
+}
+
 export default function AdminButtonTester() {
-  const [routes, setRoutes] = useState<string[]>(ROUTES as string[]);
+  const [routes] = useState<string[]>(ROUTES as string[]);
   const [filter, setFilter] = useState("");
   const [results, setResults] = useState<Record<string, BtnResult>>({});
   const [running, setRunning] = useState(false);
   const [progress, setProgress] = useState(0);
   const [current, setCurrent] = useState<string>("");
   const [clickButtons, setClickButtons] = useState(true);
+  const [batchSize, setBatchSize] = useState(DEFAULT_BATCH_SIZE);
+  const [showLivePreview, setShowLivePreview] = useState(false);
+  const [iframeKey, setIframeKey] = useState(0);
+  const [checkpointLabel, setCheckpointLabel] = useState<string | null>(null);
   const abortRef = useRef(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  useEffect(() => {
+    const checkpoint = loadCheckpoint();
+    if (checkpoint) setCheckpointLabel(formatCheckpointLabel(checkpoint));
+  }, []);
 
   const filtered = useMemo(
     () => routes.filter((r) => r.toLowerCase().includes(filter.toLowerCase())),
@@ -104,7 +135,69 @@ export default function AdminButtonTester() {
     };
   }, [results]);
 
+  const visibleTableRoutes = useMemo(() => {
+    if (filter) return filtered.slice(0, 500);
+    const tested = filtered.filter((route) => results[route]);
+    const recentTested = tested.slice(-320);
+    const nextPending = filtered.filter((route) => !results[route]).slice(0, 120);
+    return Array.from(new Set([...recentTested, current, ...nextPending].filter(Boolean)));
+  }, [current, filter, filtered, results]);
+
+  function loadCheckpoint(): Checkpoint | null {
+    try {
+      const raw = localStorage.getItem(CHECKPOINT_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw) as Checkpoint;
+      if (!parsed?.results || typeof parsed.results !== "object") return null;
+      return parsed;
+    } catch {
+      return null;
+    }
+  }
+
+  function formatCheckpointLabel(checkpoint: Checkpoint) {
+    const tested = Object.keys(checkpoint.results).length;
+    return `${tested}/${checkpoint.routesTotal} uložené — ${new Date(checkpoint.updatedAt).toLocaleString()}`;
+  }
+
+  function saveCheckpoint(nextResults: Record<string, BtnResult>, routesTotal: number) {
+    try {
+      const checkpoint: Checkpoint = {
+        updatedAt: new Date().toISOString(),
+        results: nextResults,
+        routesTotal,
+      };
+      localStorage.setItem(CHECKPOINT_KEY, JSON.stringify(checkpoint));
+      setCheckpointLabel(formatCheckpointLabel(checkpoint));
+    } catch {
+      // The tester must keep running even if localStorage quota is full.
+    }
+  }
+
+  async function recycleIframe(hard = false) {
+    try {
+      const iframe = iframeRef.current;
+      if (iframe) {
+        iframe.onload = null;
+        iframe.src = "about:blank";
+      }
+    } catch {
+      // noop
+    }
+
+    if (hard) {
+      setIframeKey((key) => key + 1);
+      await new Promise((resolve) => setTimeout(resolve, 350));
+    } else {
+      await new Promise((resolve) => setTimeout(resolve, 80));
+    }
+  }
+
   async function probeRoute(route: string): Promise<BtnResult> {
+    if (SELF_TESTER_ROUTES.has(route)) {
+      return { route, total: 0, clickable: 0, skipped: 0, crashed: 0, errors: [], navigated: 0, ok: true, reason: "self-tester route skipped" };
+    }
+
     const iframe = iframeRef.current;
     if (!iframe) {
       return { route, total: 0, clickable: 0, skipped: 0, crashed: 0, errors: ["no iframe"], navigated: 0, ok: false, reason: "no iframe" };
@@ -127,6 +220,7 @@ export default function AdminButtonTester() {
         };
         const t = setTimeout(() => finish(false), IFRAME_TIMEOUT);
         iframe.onload = () => {
+          if (iframe.contentWindow?.location.href === "about:blank") return;
           clearTimeout(t);
           finish(true);
         };
@@ -135,7 +229,7 @@ export default function AdminButtonTester() {
           iframe.src = "about:blank";
           setTimeout(() => {
             try {
-              iframe.src = route;
+              iframe.src = withTesterQuery(route);
             } catch {
               finish(false);
             }
@@ -150,8 +244,8 @@ export default function AdminButtonTester() {
       }
 
 
-      // Give React a moment to render
-      await new Promise((r) => setTimeout(r, 900));
+      // Give React a moment to render, but keep the delay short for 2500+ route runs.
+      await new Promise((r) => setTimeout(r, 650));
 
       const doc = iframe.contentDocument;
       const win = iframe.contentWindow;
@@ -204,7 +298,7 @@ export default function AdminButtonTester() {
       // 2) open every overlay trigger (dialog, menu, popover, tabs, accordion), count nested, close
       const triggers = Array.from(doc.querySelectorAll<HTMLElement>(OVERLAY_TRIGGER_SELECTOR));
       let overlaysOpened = 0;
-      for (const trg of triggers.slice(0, 30)) {
+      for (const trg of triggers.slice(0, 20)) {
         if (abortRef.current) break;
         try {
           const label = (trg.innerText || trg.getAttribute("aria-label") || "").trim();
@@ -264,7 +358,7 @@ export default function AdminButtonTester() {
             }
             if (win.location.pathname !== startUrl) {
               navigated++;
-              iframe.src = route;
+              iframe.src = withTesterQuery(route);
               await new Promise<void>((r) => {
                 const t = setTimeout(() => r(), 3000);
                 iframe.onload = () => { clearTimeout(t); r(); };
@@ -302,19 +396,54 @@ export default function AdminButtonTester() {
     }
   }
 
-  async function runAll(list: string[]) {
+  async function runAll(list: string[], resumeFromCheckpoint = false) {
     setRunning(true);
     abortRef.current = false;
     setProgress(0);
-    setResults({});
-    for (let i = 0; i < list.length; i++) {
+    const restored = resumeFromCheckpoint ? loadCheckpoint()?.results ?? {} : {};
+    const nextResults: Record<string, BtnResult> = { ...restored };
+    setResults(nextResults);
+
+    const safeBatchSize = Math.max(10, Math.min(150, Number(batchSize) || DEFAULT_BATCH_SIZE));
+    const startIndex = resumeFromCheckpoint
+      ? Math.max(0, list.findIndex((route) => !nextResults[route]))
+      : 0;
+
+    await recycleIframe(true);
+
+    for (let i = startIndex; i < list.length; i++) {
       if (abortRef.current) break;
       const r = list[i];
       setCurrent(r);
       const res = await probeRoute(r);
-      setResults((prev) => ({ ...prev, [r]: res }));
+      nextResults[r] = res;
+
+      if (i % 5 === 0 || !res.ok) {
+        setResults({ ...nextResults });
+      }
+
+      if (i % 10 === 0) {
+        saveCheckpoint(nextResults, list.length);
+      }
+
       setProgress(Math.round(((i + 1) / list.length) * 100));
+
+      const testedInThisRun = i - startIndex + 1;
+      if (testedInThisRun % IFRAME_RECYCLE_EVERY === 0) {
+        setCurrent(`Čistím iframe pamäť… ${i + 1}/${list.length}`);
+        await recycleIframe(true);
+      }
+
+      if (testedInThisRun % safeBatchSize === 0) {
+        setResults({ ...nextResults });
+        saveCheckpoint(nextResults, list.length);
+        setCurrent(`Krátka pauza kvôli pamäti… ${i + 1}/${list.length}`);
+        await new Promise((resolve) => setTimeout(resolve, 1200));
+      }
     }
+    setResults({ ...nextResults });
+    saveCheckpoint(nextResults, list.length);
+    await recycleIframe(true);
     setRunning(false);
     setCurrent("");
   }
@@ -322,10 +451,32 @@ export default function AdminButtonTester() {
   async function runOne(route: string) {
     setRunning(true);
     setCurrent(route);
+    await recycleIframe(true);
     const res = await probeRoute(route);
     setResults((prev) => ({ ...prev, [route]: res }));
+    await recycleIframe(!showLivePreview);
     setRunning(false);
     setCurrent("");
+  }
+
+  function restoreCheckpoint() {
+    const checkpoint = loadCheckpoint();
+    if (!checkpoint) return;
+    setResults(checkpoint.results);
+    setCheckpointLabel(formatCheckpointLabel(checkpoint));
+    const tested = Object.keys(checkpoint.results).length;
+    setProgress(Math.round((tested / Math.max(1, filtered.length)) * 100));
+  }
+
+  function clearCheckpoint() {
+    try {
+      localStorage.removeItem(CHECKPOINT_KEY);
+    } catch {
+      // noop
+    }
+    setCheckpointLabel(null);
+    setResults({});
+    setProgress(0);
   }
 
   function downloadReport() {
@@ -380,6 +531,9 @@ export default function AdminButtonTester() {
           <Button onClick={() => runAll(filtered)} disabled={running} size="sm">
             <Play className="h-4 w-4 mr-1" /> Test all ({filtered.length})
           </Button>
+          <Button onClick={() => runAll(filtered, true)} disabled={running} size="sm" variant="outline">
+            <Play className="h-4 w-4 mr-1" /> Resume
+          </Button>
           <Button
             onClick={() => {
               abortRef.current = true;
@@ -390,7 +544,7 @@ export default function AdminButtonTester() {
           >
             <Square className="h-4 w-4 mr-1" /> Stop
           </Button>
-          <Button onClick={() => setResults({})} disabled={running} size="sm" variant="outline">
+          <Button onClick={clearCheckpoint} disabled={running} size="sm" variant="outline">
             <RotateCcw className="h-4 w-4 mr-1" /> Reset
           </Button>
           <Button onClick={downloadReport} disabled={Object.keys(results).length === 0} size="sm" variant="outline">
@@ -416,6 +570,32 @@ export default function AdminButtonTester() {
             />
             Klikať tlačidlá (nie len počítať)
           </label>
+          <label className="flex items-center gap-2 text-sm">
+            Batch
+            <Input
+              type="number"
+              min={10}
+              max={150}
+              value={batchSize}
+              onChange={(e) => setBatchSize(Number(e.target.value) || DEFAULT_BATCH_SIZE)}
+              disabled={running}
+              className="h-8 w-20"
+            />
+          </label>
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={showLivePreview}
+              onChange={(e) => setShowLivePreview(e.target.checked)}
+              disabled={running}
+            />
+            Live preview
+          </label>
+          {checkpointLabel && (
+            <Button onClick={restoreCheckpoint} disabled={running} size="sm" variant="ghost">
+              Obnoviť checkpoint
+            </Button>
+          )}
           <div className="flex gap-2 text-xs ml-auto">
             <Badge variant="outline" className="bg-green-50 dark:bg-green-950">
               <CheckCircle2 className="h-3 w-3 mr-1 text-green-600" /> Pass {stats.pass}
@@ -430,6 +610,11 @@ export default function AdminButtonTester() {
             <Badge variant="secondary">Clicked {stats.clicks}</Badge>
           </div>
         </div>
+        {checkpointLabel && (
+          <p className="text-xs text-muted-foreground">
+            Checkpoint: {checkpointLabel}. Report vieš stiahnuť aj z čiastočných výsledkov.
+          </p>
+        )}
         {running && (
           <div className="space-y-1">
             <Progress value={progress} />
@@ -444,12 +629,18 @@ export default function AdminButtonTester() {
             <li>✅ <b>Pass</b> — route sa načíta, nájdené tlačidlá, žiadny crash ani runtime error po kliknutiach.</li>
             <li>⚠️ <b>Warn</b> — route sa načíta, ale nenašli sa žiadne tlačidlá (skontroluj či nie je gated / prázdna).</li>
             <li>❌ <b>Fail</b> — 404 stránka, iframe timeout, crash overlay, alebo runtime error po kliknutí.</li>
+            <li>🧠 Tester beží v batchoch, každých pár routes recykluje iframe a priebežne ukladá checkpoint, aby mobilný preview tab nespadol.</li>
           </ul>
         </details>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_600px] gap-4">
+      <div className={showLivePreview ? "grid grid-cols-1 lg:grid-cols-[1fr_600px] gap-4" : "grid grid-cols-1 gap-4"}>
         <Card className="p-2 max-h-[75vh] overflow-auto">
+          {!filter && filtered.length > visibleTableRoutes.length && (
+            <div className="px-2 py-1 text-xs text-muted-foreground border-b">
+              Kvôli výkonu zobrazujem posledné/ďalšie riadky ({visibleTableRoutes.length}/{filtered.length}); report obsahuje všetky výsledky.
+            </div>
+          )}
           <table className="w-full text-xs">
             <thead className="sticky top-0 bg-background">
               <tr className="text-left border-b">
@@ -463,7 +654,7 @@ export default function AdminButtonTester() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((route) => {
+              {visibleTableRoutes.map((route) => {
                 const r = results[route];
                 const cls = r ? classify(r) : null;
                 return (
@@ -493,15 +684,26 @@ export default function AdminButtonTester() {
           </table>
         </Card>
 
-        <Card className="p-2">
-          <div className="text-xs text-muted-foreground mb-1 px-2">Live preview (iframe)</div>
+        {showLivePreview ? (
+          <Card className="p-2">
+            <div className="text-xs text-muted-foreground mb-1 px-2">Live preview (iframe)</div>
+            <iframe
+              key={iframeKey}
+              ref={iframeRef}
+              title="button-tester-frame"
+              className="w-full h-[70vh] border rounded bg-white"
+              sandbox="allow-scripts allow-same-origin allow-forms"
+            />
+          </Card>
+        ) : (
           <iframe
+            key={iframeKey}
             ref={iframeRef}
-            title="button-tester-frame"
-            className="w-full h-[70vh] border rounded bg-white"
+            title="button-tester-frame-hidden"
+            className="fixed -left-[9999px] top-0 h-[760px] w-[390px] opacity-0 pointer-events-none"
             sandbox="allow-scripts allow-same-origin allow-forms"
           />
-        </Card>
+        )}
       </div>
     </div>
   );

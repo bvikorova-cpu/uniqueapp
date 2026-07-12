@@ -102,6 +102,7 @@ function installHoverPrefetch() {
 
 export function prewarmHotRoutes() {
   if (started || typeof window === "undefined") return;
+  if (new URLSearchParams(window.location.search).has("__button_tester")) return;
   started = true;
 
   installHoverPrefetch();
