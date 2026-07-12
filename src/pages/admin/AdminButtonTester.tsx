@@ -29,8 +29,44 @@ const SKIP_PATTERNS = [
   /publish|deploy|nasad/i,
 ];
 
-const IFRAME_TIMEOUT = 12000;
-const MAX_CLICKS_PER_ROUTE = 40;
+const IFRAME_TIMEOUT = 15000;
+const MAX_CLICKS_PER_ROUTE = 60;
+
+// Extended selector — counts every interactive element, not just <button>
+const INTERACTIVE_SELECTOR = [
+  'button',
+  'a[role="button"]',
+  'a[href]',
+  '[role="button"]',
+  '[role="menuitem"]',
+  '[role="tab"]',
+  '[role="option"]',
+  '[role="switch"]',
+  '[role="checkbox"]',
+  '[role="radio"]',
+  '[role="link"]',
+  'input[type="button"]',
+  'input[type="submit"]',
+  'input[type="checkbox"]',
+  'input[type="radio"]',
+  'label[for]',
+  'summary',
+  '[data-radix-collection-item]',
+  '[aria-haspopup]',
+  '[tabindex]:not([tabindex="-1"])',
+].join(', ');
+
+// Elements that open overlays with nested buttons — we open, count, close
+const OVERLAY_TRIGGER_SELECTOR = [
+  '[aria-haspopup="menu"]',
+  '[aria-haspopup="dialog"]',
+  '[aria-haspopup="listbox"]',
+  '[aria-haspopup="true"]',
+  '[data-state="closed"][aria-expanded]',
+  '[role="tab"]',
+  '[data-radix-accordion-trigger]',
+  'summary',
+].join(', ');
 
 
 function classify(r: BtnResult) {
@@ -143,86 +179,121 @@ export default function AdminButtonTester() {
         iframeErrs.push(String(e.reason?.message || e.reason || "unhandledrejection"));
       });
 
-      const nodeList = doc.querySelectorAll<HTMLElement>(
-        'button, a[role="button"], [role="button"], input[type="button"], input[type="submit"]'
-      );
-      const nodes = Array.from(nodeList);
-
+      // ---- DEEP SCAN ----
+      // 1) baseline enumeration
+      const seen = new WeakSet<Element>();
       const labels: string[] = [];
+      const countNodes = () => {
+        const list = Array.from(doc.querySelectorAll<HTMLElement>(INTERACTIVE_SELECTOR));
+        let added = 0;
+        for (const el of list) {
+          if (seen.has(el)) continue;
+          const rect = el.getBoundingClientRect();
+          // skip zero-size hidden elements
+          if (rect.width === 0 && rect.height === 0) continue;
+          seen.add(el);
+          added++;
+          const t = (el.innerText || el.getAttribute("aria-label") || el.getAttribute("title") || el.getAttribute("name") || "").trim().replace(/\s+/g, " ").slice(0, 60);
+          if (t && labels.length < 60) labels.push(t);
+        }
+        return added;
+      };
+
+      countNodes();
+
+      // 2) open every overlay trigger (dialog, menu, popover, tabs, accordion), count nested, close
+      const triggers = Array.from(doc.querySelectorAll<HTMLElement>(OVERLAY_TRIGGER_SELECTOR));
+      let overlaysOpened = 0;
+      for (const trg of triggers.slice(0, 30)) {
+        if (abortRef.current) break;
+        try {
+          const label = (trg.innerText || trg.getAttribute("aria-label") || "").trim();
+          if (SKIP_PATTERNS.some((p) => p.test(label))) continue;
+          const rect = trg.getBoundingClientRect();
+          if (rect.width === 0 || rect.height === 0) continue;
+          trg.click();
+          overlaysOpened++;
+          await new Promise((r) => setTimeout(r, 180));
+          if (doc.querySelector("[data-unique-crash-overlay]")) {
+            return { route, total: 0, clickable: 0, skipped: 0, crashed: 1, errors: [`crash opening "${label}"`], navigated: 0, ok: false, reason: "crash opening overlay", labels };
+          }
+          countNodes(); // count new nested items now visible
+          // close via Escape
+          try {
+            const ev = new (win as any).KeyboardEvent("keydown", { key: "Escape", bubbles: true });
+            doc.dispatchEvent(ev);
+            doc.activeElement && (doc.activeElement as HTMLElement).blur?.();
+          } catch {}
+          await new Promise((r) => setTimeout(r, 80));
+        } catch {}
+      }
+
+      // Recount all visible interactive elements after overlays were opened
+
+      const finalCount = Array.from(doc.querySelectorAll<HTMLElement>(INTERACTIVE_SELECTOR)).filter((el) => {
+        const r = el.getBoundingClientRect();
+        return !(r.width === 0 && r.height === 0);
+      }).length;
+
+      // (error listeners already attached above)
+
+      // 3) safe click sample (visible, non-destructive, non-navigating)
       let clickable = 0;
       let skipped = 0;
       let crashed = 0;
       let navigated = 0;
       const startUrl = win.location.pathname;
 
-      const nodesToClick = clickButtons ? nodes.slice(0, MAX_CLICKS_PER_ROUTE) : [];
-
-      for (const el of nodes) {
-        const t = (el.innerText || el.getAttribute("aria-label") || el.getAttribute("title") || "").trim().replace(/\s+/g, " ").slice(0, 60);
-        if (t) labels.push(t);
-      }
-
-      for (const el of nodesToClick) {
-        if (abortRef.current) break;
-        const label = (el.innerText || el.getAttribute("aria-label") || "").trim();
-        if (!label) {
-          skipped++;
-          continue;
-        }
-        if (SKIP_PATTERNS.some((p) => p.test(label))) {
-          skipped++;
-          continue;
-        }
-        const rect = el.getBoundingClientRect();
-        if (rect.width === 0 || rect.height === 0) {
-          skipped++;
-          continue;
-        }
-        try {
-          el.click();
-          clickable++;
-          await new Promise((r) => setTimeout(r, 120));
-          if (doc.querySelector("[data-unique-crash-overlay]")) {
-            crashed++;
-            iframeErrs.push(`crash after "${label}"`);
-            break;
-          }
-          if (win.location.pathname !== startUrl) {
-            navigated++;
-            // return to route
-            iframe.src = route;
-            await new Promise<void>((r) => {
-              const t = setTimeout(() => r(), 3000);
-              iframe.onload = () => {
-                clearTimeout(t);
-                r();
-              };
-            });
-            await new Promise((r) => setTimeout(r, 400));
-            break;
-          }
-          // Close modals
+      if (clickButtons) {
+        const clickables = Array.from(doc.querySelectorAll<HTMLElement>('button, [role="button"], a[role="button"]'));
+        for (const el of clickables.slice(0, MAX_CLICKS_PER_ROUTE)) {
+          if (abortRef.current) break;
+          const label = (el.innerText || el.getAttribute("aria-label") || "").trim();
+          if (!label) { skipped++; continue; }
+          if (SKIP_PATTERNS.some((p) => p.test(label))) { skipped++; continue; }
+          const rect = el.getBoundingClientRect();
+          if (rect.width === 0 || rect.height === 0) { skipped++; continue; }
           try {
-            const ev = new (win as any).KeyboardEvent("keydown", { key: "Escape", bubbles: true });
-            doc.dispatchEvent(ev);
-          } catch {}
-        } catch (err: any) {
-          iframeErrs.push(`click "${label}": ${err?.message || err}`);
+            el.click();
+            clickable++;
+            await new Promise((r) => setTimeout(r, 90));
+            if (doc.querySelector("[data-unique-crash-overlay]")) {
+              crashed++;
+              iframeErrs.push(`crash after "${label}"`);
+              break;
+            }
+            if (win.location.pathname !== startUrl) {
+              navigated++;
+              iframe.src = route;
+              await new Promise<void>((r) => {
+                const t = setTimeout(() => r(), 3000);
+                iframe.onload = () => { clearTimeout(t); r(); };
+              });
+              await new Promise((r) => setTimeout(r, 400));
+              break;
+            }
+            try {
+              const ev = new (win as any).KeyboardEvent("keydown", { key: "Escape", bubbles: true });
+              doc.dispatchEvent(ev);
+            } catch {}
+          } catch (err: any) {
+            iframeErrs.push(`click "${label}": ${err?.message || err}`);
+          }
         }
       }
 
       const ok = crashed === 0 && iframeErrs.length === 0;
       return {
         route,
-        total: nodes.length,
+        total: finalCount,
         clickable,
         skipped,
         crashed,
         errors: iframeErrs,
         navigated,
         ok,
-        reason: ok ? undefined : (iframeErrs[0] || "crashed"),
-        labels: labels.slice(0, 20),
+        reason: ok ? (finalCount === 0 ? "no interactive elements" : `${overlaysOpened} overlays opened`) : (iframeErrs[0] || "crashed"),
+        labels: labels.slice(0, 25),
       };
     } catch (e: any) {
       return { route, total: 0, clickable: 0, skipped: 0, crashed: 0, errors: [String(e?.message || e)], navigated: 0, ok: false, reason: e?.message };
