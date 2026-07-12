@@ -511,17 +511,18 @@ export default function AdminButtonTester() {
     }
   }
 
-  async function runAll(list: string[], resumeFromCheckpoint = false) {
+  async function runAll(list: string[], resumeFromCheckpoint = true) {
     setRunning(true);
     abortRef.current = false;
     setProgress(0);
-    const restored = resumeFromCheckpoint ? loadCheckpoint()?.results ?? {} : {};
-    const nextResults: Record<string, BtnResult> = { ...restored };
+    const checkpointResults = loadCheckpoint()?.results ?? {};
+    const baseResults = resumeFromCheckpoint ? { ...checkpointResults, ...results } : {};
+    const nextResults: Record<string, BtnResult> = { ...baseResults };
     setResults(nextResults);
 
     const safeBatchSize = Math.max(5, Math.min(MAX_BATCH_SIZE, Number(batchSize) || DEFAULT_BATCH_SIZE));
-    const pendingIndex = resumeFromCheckpoint ? list.findIndex((route) => !nextResults[route]) : 0;
-    const startIndex = resumeFromCheckpoint && pendingIndex === -1 ? list.length : Math.max(0, pendingIndex);
+    const pendingIndex = list.findIndex((route) => !nextResults[route]);
+    const startIndex = pendingIndex === -1 ? list.length : Math.max(0, pendingIndex);
     const endIndex = Math.min(list.length, startIndex + safeBatchSize);
 
     if (startIndex < 0 || startIndex >= list.length) {
@@ -560,7 +561,12 @@ export default function AdminButtonTester() {
     saveCheckpoint(nextResults, list.length);
     await recycleIframe(true);
     setRunning(false);
-    setCurrent(`Batch dokončený: ${endIndex}/${list.length}. Pokračuj cez Resume next batch.`);
+    const remaining = list.length - Object.keys(nextResults).filter((route) => list.includes(route)).length;
+    setCurrent(
+      remaining > 0
+        ? `Batch dokončený: ${endIndex}/${list.length}. Ďalšie spustenie bude pokračovať od route ${endIndex + 1}.`
+        : `Hotovo: otestované všetky routes (${list.length}/${list.length}).`
+    );
   }
 
   async function runOne(route: string) {
@@ -648,8 +654,8 @@ export default function AdminButtonTester() {
           </p>
         </div>
         <div className="flex gap-2 flex-wrap">
-          <Button onClick={() => runAll(filtered)} disabled={running} size="sm">
-            <Play className="h-4 w-4 mr-1" /> Start batch ({Math.min(batchSize, filtered.length)}/{filtered.length})
+          <Button onClick={() => runAll(filtered, true)} disabled={running} size="sm">
+            <Play className="h-4 w-4 mr-1" /> Start / continue batch ({Math.min(batchSize, filtered.length)}/{filtered.length})
           </Button>
           <Button onClick={() => runAll(filtered, true)} disabled={running} size="sm" variant="outline">
             <Play className="h-4 w-4 mr-1" /> Resume next batch
@@ -732,7 +738,7 @@ export default function AdminButtonTester() {
         </div>
         {checkpointLabel && (
           <p className="text-xs text-muted-foreground">
-            Checkpoint: {checkpointLabel}. Tester zámerne dokončí vždy len jeden malý batch, aby nezložil mobilný preview tab.
+            Checkpoint: {checkpointLabel}. Ďalší batch automaticky preskočí už otestované routes a pokračuje ďalej.
           </p>
         )}
         {running && (
@@ -754,7 +760,7 @@ export default function AdminButtonTester() {
             <li>✅ <b>Pass</b> — route sa načíta, nájdené tlačidlá, žiadny crash ani runtime error po kliknutiach.</li>
             <li>⚠️ <b>Warn</b> — route sa načíta, ale nenašli sa žiadne tlačidlá (skontroluj či nie je gated / prázdna).</li>
             <li>❌ <b>Fail</b> — 404 stránka, iframe timeout, crash overlay, alebo runtime error po kliknutí.</li>
-            <li>🧠 Tester nikdy nebeží ako jeden nekonečný run: dokončí malý batch, uloží checkpoint a ďalší batch spustíš cez Resume next batch.</li>
+            <li>🧠 Tester dokončí malý batch, uloží checkpoint a ďalšie spustenie automaticky pokračuje od prvej neotestovanej route.</li>
             <li>🔎 Report obsahuje dôkaz ku route: načítanú URL, čas, textový odtlačok stránky, sample text a počet otvorených overlay prvkov.</li>
           </ul>
         </details>
