@@ -38,7 +38,7 @@ const S = {
 };
 
 // content-heavy dynamic content ids reuse a shared bucket
-const CONTENT_IDS = ["demo","1","2","3","test","preview","hero","featured","new","top","latest","sample","alpha","beta","gamma","delta"];
+const CONTENT_IDS = ["demo","1","2","3","4","5","test","preview","hero","featured","new","top","latest","sample","alpha","beta","gamma","delta","epsilon","zeta","eta","theta","iota","kappa","lambda"];
 
 // Map :param name -> sample bucket. Multi-token names get scored by suffix.
 function samplesFor(paramName, pathHint) {
