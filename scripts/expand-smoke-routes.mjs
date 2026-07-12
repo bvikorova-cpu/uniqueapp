@@ -126,7 +126,7 @@ function expandOne(pattern, samplesBySeg) {
     const paramName = seg.replace(/[?:]/g, "");
     const optional = seg.endsWith("?");
     const bucket = samplesFor(paramName, pattern);
-    const values = bucket.slice(0, optional ? 5 : 20);
+    const values = bucket.slice(0, optional ? 6 : 25);
     const next = [];
     for (const p of out) {
       for (const v of values) next.push(p + "/" + encodeURIComponent(v));
