@@ -29,8 +29,44 @@ const SKIP_PATTERNS = [
   /publish|deploy|nasad/i,
 ];
 
-const IFRAME_TIMEOUT = 12000;
-const MAX_CLICKS_PER_ROUTE = 40;
+const IFRAME_TIMEOUT = 15000;
+const MAX_CLICKS_PER_ROUTE = 60;
+
+// Extended selector — counts every interactive element, not just <button>
+const INTERACTIVE_SELECTOR = [
+  'button',
+  'a[role="button"]',
+  'a[href]',
+  '[role="button"]',
+  '[role="menuitem"]',
+  '[role="tab"]',
+  '[role="option"]',
+  '[role="switch"]',
+  '[role="checkbox"]',
+  '[role="radio"]',
+  '[role="link"]',
+  'input[type="button"]',
+  'input[type="submit"]',
+  'input[type="checkbox"]',
+  'input[type="radio"]',
+  'label[for]',
+  'summary',
+  '[data-radix-collection-item]',
+  '[aria-haspopup]',
+  '[tabindex]:not([tabindex="-1"])',
+].join(', ');
+
+// Elements that open overlays with nested buttons — we open, count, close
+const OVERLAY_TRIGGER_SELECTOR = [
+  '[aria-haspopup="menu"]',
+  '[aria-haspopup="dialog"]',
+  '[aria-haspopup="listbox"]',
+  '[aria-haspopup="true"]',
+  '[data-state="closed"][aria-expanded]',
+  '[role="tab"]',
+  '[data-radix-accordion-trigger]',
+  'summary',
+].join(', ');
 
 
 function classify(r: BtnResult) {
