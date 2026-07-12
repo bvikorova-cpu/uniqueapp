@@ -422,21 +422,17 @@ export default function AdminButtonTester() {
           </table>
         </Card>
 
-        <Card className="p-2 hidden lg:block">
+        <Card className="p-2">
           <div className="text-xs text-muted-foreground mb-1 px-2">Live preview (iframe)</div>
           <iframe
             ref={iframeRef}
             title="button-tester-frame"
-            className="w-full h-[70vh] border rounded"
+            className="w-full h-[70vh] border rounded bg-white"
             sandbox="allow-scripts allow-same-origin allow-forms"
           />
         </Card>
       </div>
-
-      {/* Hidden iframe fallback if the visible one isn't mounted (mobile) */}
-      {typeof window !== "undefined" && !iframeRef.current && (
-        <iframe ref={iframeRef} title="hidden-tester-frame" className="hidden" />
-      )}
     </div>
   );
 }
+
