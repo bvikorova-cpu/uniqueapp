@@ -40,16 +40,25 @@ export const ProtectedRoute = ({ children, requireAdmin = false }: ProtectedRout
       }
 
       if (requireAdmin) {
-        const { data: roleData, error } = await supabase
+        const rolePromise = supabase
           .from('user_roles')
           .select('role')
           .eq('user_id', user.id)
           .eq('role', 'admin')
           .maybeSingle();
+        const timeout = new Promise<{ data: null; error: Error }>((resolve) =>
+          setTimeout(() => resolve({ data: null, error: new Error('Role check timeout') }), 8000)
+        );
+        const { data: roleData, error } = await Promise.race([rolePromise, timeout]) as any;
 
         if (error) {
           console.error('Error checking admin role:', error);
           setHasAccess(false);
+          toast({
+            title: "Access check failed",
+            description: (error as Error)?.message || "Try again or check your connection.",
+            variant: "destructive",
+          });
         } else {
           setHasAccess(!!roleData);
           if (!roleData) {
@@ -62,6 +71,8 @@ export const ProtectedRoute = ({ children, requireAdmin = false }: ProtectedRout
         }
       } else {
         setHasAccess(true);
+      }
+
       }
     } catch (error) {
       console.error('Access check error:', error);
