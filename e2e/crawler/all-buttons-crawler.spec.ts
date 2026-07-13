@@ -122,7 +122,14 @@ test.describe.configure({ mode: "serial" });
 test("crawl every route and click every safe button", async ({ page, browserName }, testInfo) => {
   test.setTimeout(0); // full crawl controls its own timing
 
-  const all = (routes as string[]).slice(START_INDEX, ROUTE_LIMIT ? START_INDEX + ROUTE_LIMIT : undefined);
+  const base = (routes as string[]).slice(START_INDEX, ROUTE_LIMIT ? START_INDEX + ROUTE_LIMIT : undefined);
+  const all =
+    SHARD_TOTAL > 1 && SHARD_INDEX >= 1
+      ? base.filter((_, idx) => idx % SHARD_TOTAL === (SHARD_INDEX - 1) % SHARD_TOTAL)
+      : base;
+  console.log(
+    `[crawler] shard ${SHARD_INDEX || 1}/${SHARD_TOTAL || 1} — ${all.length} routes (base ${base.length})`,
+  );
   const results = loadReport();
   const alreadyDone = new Set(results.map((r) => r.route));
 
