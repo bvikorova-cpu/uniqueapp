@@ -34,6 +34,11 @@ export default function AdminCrawler() {
   const [dispatching, setDispatching] = useState(false);
   const [routeLimit, setRouteLimit] = useState("0");
   const [expanded, setExpanded] = useState<number | null>(null);
+  const [liveRunId, setLiveRunId] = useState<number | null>(null);
+  const [liveRunStatus, setLiveRunStatus] = useState<string | null>(null);
+  const [autoRefresh, setAutoRefresh] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   async function call(action: string, extra: Record<string, unknown> = {}) {
     // Consolidated into admin-vitals (op: "crawler") to respect Supabase edge-function quota.
@@ -45,15 +50,26 @@ export default function AdminCrawler() {
     return data;
   }
 
-  async function loadRuns() {
-    setLoading(true);
+  async function loadRuns(silent = false) {
+    if (!silent) setLoading(true);
     try {
       const d = await call("list");
       setRuns(d.runs);
+      setLastUpdated(new Date());
+      const active = d.runs.find((r: Run) =>
+        r.status === "in_progress" || r.status === "queued" || r.status === "waiting" || r.status === "pending"
+      );
+      if (active) {
+        setLiveRunId(active.id);
+        setLiveRunStatus(active.status);
+      } else {
+        setLiveRunId(null);
+        setLiveRunStatus(null);
+      }
     } catch (e) {
       toast.error(`Načítanie zlyhalo: ${(e as Error).message}`);
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }
 
@@ -62,7 +78,7 @@ export default function AdminCrawler() {
     try {
       await call("dispatch", { route_limit: routeLimit });
       toast.success("Crawler spustený. Beh sa objaví o ~10s.");
-      setTimeout(loadRuns, 8000);
+      setTimeout(() => loadRuns(true), 8000);
     } catch (e) {
       toast.error(`Spustenie zlyhalo: ${(e as Error).message}`);
     } finally {
@@ -95,7 +111,22 @@ export default function AdminCrawler() {
     }
   }
 
-  useEffect(() => { loadRuns(); }, []);
+  useEffect(() => {
+    loadRuns();
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    if (autoRefresh && liveRunId) {
+      intervalRef.current = setInterval(() => loadRuns(true), 15000);
+    }
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [autoRefresh, liveRunId]);
 
   return (
     <div className="container mx-auto p-6 space-y-6 max-w-5xl">
