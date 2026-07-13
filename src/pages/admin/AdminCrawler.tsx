@@ -146,7 +146,7 @@ export default function AdminCrawler() {
             {dispatching ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Play className="w-4 h-4 mr-2" />}
             Spustiť crawler
           </Button>
-          <Button variant="outline" onClick={loadRuns} disabled={loading}>
+          <Button variant="outline" onClick={() => loadRuns()} disabled={loading}>
             {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-2" />}
             Obnoviť
           </Button>
