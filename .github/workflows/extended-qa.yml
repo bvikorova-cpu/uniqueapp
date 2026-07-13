@@ -2,6 +2,15 @@ name: Extended QA (mobile + visual + i18n + load)
 
 on:
   workflow_dispatch:
+    inputs:
+      run_load_test:
+        description: "Run production load test"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
 
 jobs:
   mobile-crawler:
