@@ -40,6 +40,10 @@ const ROUTE_LIMIT = Number(process.env.CRAWLER_ROUTE_LIMIT || 0);
 const CLICKS_PER_ROUTE = Number(process.env.CRAWLER_CLICKS_PER_ROUTE || 40);
 const ROUTE_TIMEOUT = Number(process.env.CRAWLER_ROUTE_TIMEOUT || 25_000);
 const START_INDEX = Number(process.env.CRAWLER_START_INDEX || 0);
+// Shard support: split routes across parallel jobs.
+// CRAWLER_SHARD_INDEX is 1-based (1..CRAWLER_SHARD_TOTAL). Set both to enable.
+const SHARD_INDEX = Number(process.env.CRAWLER_SHARD_INDEX || 0);
+const SHARD_TOTAL = Number(process.env.CRAWLER_SHARD_TOTAL || 0);
 
 const SKIP_LABEL = [
   /delete|zmaz|remove|odstrán/i,
