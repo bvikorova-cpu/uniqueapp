@@ -33,6 +33,7 @@ export default function AdminCrawler() {
   const [loading, setLoading] = useState(false);
   const [dispatching, setDispatching] = useState(false);
   const [routeLimit, setRouteLimit] = useState("0");
+  const [suite, setSuite] = useState<"crawler" | "authed">("crawler");
   const [expanded, setExpanded] = useState<number | null>(null);
   const [liveRunId, setLiveRunId] = useState<number | null>(null);
   const [liveRunStatus, setLiveRunStatus] = useState<string | null>(null);
