@@ -204,7 +204,7 @@ export default function AdminCrawler() {
             <Button
               variant="outline"
               onClick={() => {
-                const cmd = "bunx playwright test e2e/crawler/all-buttons-crawler.spec.ts --project=chromium-authed --reporter=list && node e2e/crawler/generate-report.mjs";
+              const cmd = "bunx playwright test e2e/crawler/all-buttons-crawler.spec.ts --project=crawler --reporter=list && node e2e/crawler/generate-report.mjs";
                 navigator.clipboard.writeText(cmd);
                 toast.success("Príkaz skopírovaný — spusti v termináli repa.");
               }}

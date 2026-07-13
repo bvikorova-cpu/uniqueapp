@@ -30,7 +30,7 @@ jobs:
           CRAWLER_ROUTE_LIMIT: ${{ github.event.inputs.route_limit }}
         run: |
           bunx playwright test e2e/crawler/all-buttons-crawler.spec.ts \
-            --project=chromium-authed --reporter=list
+            --project=crawler --reporter=list
 
       - name: Build HTML + markdown report
         if: always()
