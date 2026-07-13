@@ -76,6 +76,8 @@ function samplesFor(paramName, pathHint) {
   if (p === "id" && h.includes("/live/")) return [...S.megatalent_ls, ...CONTENT_IDS];
   if (p === "id" && (h.includes("/dream") || h.includes("/hero") || h.includes("/medical") || h.includes("/crisis") || h.includes("/pet") || h.includes("/student") || h.includes("/talent"))) return CONTENT_IDS;
   if (p === "category") return ["singing","dancing","comedy","talent","music","art","sports","tech"];
+  if (p === "feature" && h.includes("/ai-mentor/tools")) return ["memory","skills","personality","roleplay","cbt","coach","feedback","goals","habits","nudges","reflections","summaries","voice-journal"];
+  if (p === "area" && h.includes("/ai-mentor")) return ["career","fitness","mindset","relationships"];
   if (p === "area" || p === "feature" || p === "subject") return CONTENT_IDS;
   if (p === "code" || p === "token" || p === "sharecode") return CONTENT_IDS;
   if (p === "campaigntype") return ["dream","medical","hero","crisis","pet","student","talent"];
