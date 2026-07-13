@@ -240,51 +240,68 @@ const Auth = () => {
     const email = ((formData.get("email") as string) || "").trim().toLowerCase();
     const password = (formData.get("password") as string) || "";
 
-    // Hard timeout so the button never sticks on "Logging in..." when the
-    // network / Supabase is unreachable (mobile adblock, DNS, upstream 5xx).
-    const signInPromise = supabase.auth.signInWithPassword({ email, password });
-    const timeoutPromise = new Promise<{ error: any }>((resolve) =>
-      setTimeout(
-        () => resolve({ error: { message: "Failed to fetch", status: 0 } as any }),
-        15000,
-      ),
-    );
-    const { error } = (await Promise.race([signInPromise, timeoutPromise])) as { error: any };
+    let error: any = null;
 
-    setLoading(false);
+    try {
+      // Hard timeout so the button never sticks on "Logging in..." when the
+      // network / Supabase is unreachable (mobile adblock, DNS, upstream 5xx).
+      const signInPromise = supabase.auth.signInWithPassword({ email, password });
+      const timeoutPromise = new Promise<{ error: any }>((resolve) =>
+        setTimeout(
+          () => resolve({ error: { message: "Failed to fetch", status: 0 } as any }),
+          15000,
+        ),
+      );
+      const result = (await Promise.race([signInPromise, timeoutPromise])) as { error: any };
+      error = result.error;
+    } catch (err: any) {
+      // Supabase auth can throw TypeError("Failed to fetch") instead of returning
+      // { error } when the Preview fetch proxy, mobile browser, DNS, or adblocker
+      // blocks the auth request. Always convert it to a normal UI error.
+      error = err ?? { message: "Failed to fetch", status: 0 };
+    } finally {
+      setLoading(false);
+    }
 
-    if (error) {
-      // Detect transient backend outages (Supabase auth/DB timeouts, 5xx, network).
-      const msg = (error.message || "").toLowerCase();
-      const status = (error as any).status as number | undefined;
-      const isUnavailable =
-        status === 0 ||
-        status === 408 ||
-        status === 502 ||
-        status === 503 ||
-        status === 504 ||
-        msg.includes("timeout") ||
-        msg.includes("failed to fetch") ||
-        msg.includes("network") ||
-        msg.includes("unavailable") ||
-        msg.includes("upstream");
-
-      const isUnconfirmed = msg.includes("not confirmed") || msg.includes("email not confirmed");
-      if (isUnconfirmed) setUnconfirmedEmail(email);
-
-      toast({
-        variant: "destructive",
-        title: isUnavailable ? "Service temporarily unavailable" : "Login error",
-        description: isUnavailable
-          ? "Please try again in a moment."
-          : error.message,
-      });
-    } else {
+    if (!error) {
       toast({
         title: "Login successful!",
       });
       navigate(safeRedirect, { replace: true });
+      return;
     }
+
+    // Detect transient backend outages (Supabase auth/DB timeouts, 5xx, network).
+    const msg = (error.message || String(error) || "").toLowerCase();
+    const status = (error as any).status as number | undefined;
+    const isUnavailable =
+      status === 0 ||
+      status === 408 ||
+      status === 502 ||
+      status === 503 ||
+      status === 504 ||
+      msg.includes("timeout") ||
+      msg.includes("failed to fetch") ||
+      msg.includes("network") ||
+      msg.includes("unavailable") ||
+      msg.includes("upstream");
+
+    const isLovablePreview =
+      window.location.hostname.includes("lovableproject.com") ||
+      window.location.hostname.includes("lovable.app") ||
+      window.parent !== window;
+    const isUnconfirmed = msg.includes("not confirmed") || msg.includes("email not confirmed");
+    if (isUnconfirmed) setUnconfirmedEmail(email);
+
+    toast({
+      variant: "destructive",
+      title: isUnavailable ? "Login connection failed" : "Login error",
+      description: isUnavailable && isLovablePreview
+        ? "Preview can block Supabase login. Open the published app at uniqueapp.fun and log in there."
+        : isUnavailable
+          ? "Please try again in a moment."
+          : error.message,
+    });
   };
 
   const handleForgotPassword = async (e: React.FormEvent<HTMLFormElement>) => {
