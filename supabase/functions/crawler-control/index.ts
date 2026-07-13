@@ -6,13 +6,18 @@ type Json = any;
 
 const WORKFLOW_FILE = "crawler.yml";
 
-async function gh(path: string, init: RequestInit = {}) {
-  const token = Deno.env.get("GITHUB_TOKEN");
+function ghEnv() {
+  const token = Deno.env.get("GITHUB_PERSONAL_ACCESS_TOKEN") || Deno.env.get("GITHUB_TOKEN");
   const owner = Deno.env.get("GITHUB_OWNER");
   const repo = Deno.env.get("GITHUB_REPO");
   if (!token || !owner || !repo) {
-    throw new Error("Missing GITHUB_TOKEN / GITHUB_OWNER / GITHUB_REPO secrets");
+    throw new Error("Missing GITHUB_PERSONAL_ACCESS_TOKEN / GITHUB_OWNER / GITHUB_REPO secrets");
   }
+  return { token, owner, repo };
+}
+
+async function gh(path: string, init: RequestInit = {}) {
+  const { token, owner, repo } = ghEnv();
   const url = `https://api.github.com/repos/${owner}/${repo}${path}`;
   const res = await fetch(url, {
     ...init,
@@ -95,9 +100,7 @@ Deno.serve(async (req) => {
       // Returns a short-lived download URL for artifact zip
       const artifactId = body?.artifact_id;
       if (!artifactId) throw new Error("artifact_id required");
-      const token = Deno.env.get("GITHUB_TOKEN")!;
-      const owner = Deno.env.get("GITHUB_OWNER")!;
-      const repo = Deno.env.get("GITHUB_REPO")!;
+      const { token, owner, repo } = ghEnv();
       const res = await fetch(
         `https://api.github.com/repos/${owner}/${repo}/actions/artifacts/${artifactId}/zip`,
         { headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" }, redirect: "manual" },
