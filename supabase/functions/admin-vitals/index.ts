@@ -75,17 +75,18 @@ async function requireAdmin(auth: string) {
     Deno.env.get("SUPABASE_ANON_KEY")!,
     { global: { headers: { Authorization: auth } } },
   );
-  const { data: userRes } = await anon.auth.getUser();
+  const { data: userRes } = await withTimeout(anon.auth.getUser(), 8000, "auth.getUser");
   const user = userRes?.user;
   if (!user) throw new Error("Unauthorized");
   const admin = createClient(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
   );
-  const { data: roles } = await admin
-    .from("user_roles")
-    .select("role")
-    .eq("user_id", user.id);
+  const { data: roles } = await withTimeout(
+    admin.from("user_roles").select("role").eq("user_id", user.id),
+    8000,
+    "user_roles fetch",
+  );
   if (!roles?.some((r: { role: string }) => r.role === "admin")) {
     throw new Error("Forbidden: admin only");
   }
