@@ -240,10 +240,16 @@ const Auth = () => {
     const email = ((formData.get("email") as string) || "").trim().toLowerCase();
     const password = (formData.get("password") as string) || "";
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    // Hard timeout so the button never sticks on "Logging in..." when the
+    // network / Supabase is unreachable (mobile adblock, DNS, upstream 5xx).
+    const signInPromise = supabase.auth.signInWithPassword({ email, password });
+    const timeoutPromise = new Promise<{ error: any }>((resolve) =>
+      setTimeout(
+        () => resolve({ error: { message: "Failed to fetch", status: 0 } as any }),
+        15000,
+      ),
+    );
+    const { error } = (await Promise.race([signInPromise, timeoutPromise])) as { error: any };
 
     setLoading(false);
 
