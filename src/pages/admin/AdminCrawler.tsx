@@ -3,7 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Loader2, Play, RefreshCw, Download, ExternalLink } from "lucide-react";
+import { Loader2, Play, RefreshCw, Download, ExternalLink, MonitorPlay, Copy } from "lucide-react";
+import { Link } from "react-router-dom";
 import { toast } from "sonner";
 
 type Run = {
