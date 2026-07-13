@@ -33,8 +33,12 @@ import { mkdirSync, writeFileSync, existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 
 const REPORT_DIR = "e2e/crawler-report";
-const REPORT_FILE = join(REPORT_DIR, "report.json");
-const SCREENSHOT_DIR = join(REPORT_DIR, "screenshots");
+const SHARD_SUFFIX =
+  Number(process.env.CRAWLER_SHARD_TOTAL || 0) > 1
+    ? `.shard-${process.env.CRAWLER_SHARD_INDEX}-of-${process.env.CRAWLER_SHARD_TOTAL}`
+    : "";
+const REPORT_FILE = join(REPORT_DIR, `report${SHARD_SUFFIX}.json`);
+const SCREENSHOT_DIR = join(REPORT_DIR, `screenshots${SHARD_SUFFIX}`);
 
 const ROUTE_LIMIT = Number(process.env.CRAWLER_ROUTE_LIMIT || 0);
 const CLICKS_PER_ROUTE = Number(process.env.CRAWLER_CLICKS_PER_ROUTE || 40);
