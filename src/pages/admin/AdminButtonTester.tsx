@@ -702,6 +702,9 @@ export default function AdminButtonTester() {
           <Button onClick={downloadReport} disabled={Object.keys(results).length === 0} size="sm" variant="outline">
             <Download className="h-4 w-4 mr-1" /> Stiahnuť report
           </Button>
+          <Button onClick={copyReport} disabled={Object.keys(results).length === 0} size="sm" variant="outline">
+            <Copy className="h-4 w-4 mr-1" /> Kopírovať report
+          </Button>
         </div>
       </div>
 
