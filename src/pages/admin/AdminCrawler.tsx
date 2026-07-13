@@ -143,9 +143,26 @@ export default function AdminCrawler() {
         <CardHeader><CardTitle>Spustiť nový beh</CardTitle></CardHeader>
         <CardContent className="flex flex-wrap gap-3 items-end">
           <div className="space-y-1">
-            <label className="text-sm">Route limit (0 = všetky)</label>
-            <Input type="number" min={0} value={routeLimit} onChange={(e) => setRouteLimit(e.target.value)} className="w-40" />
+            <label className="text-sm">Suite</label>
+            <div className="flex rounded-md border overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setSuite("crawler")}
+                className={`px-3 py-2 text-sm ${suite === "crawler" ? "bg-primary text-primary-foreground" : "bg-background"}`}
+              >Full crawler</button>
+              <button
+                type="button"
+                onClick={() => setSuite("authed")}
+                className={`px-3 py-2 text-sm border-l ${suite === "authed" ? "bg-primary text-primary-foreground" : "bg-background"}`}
+              >Authed E2E</button>
+            </div>
           </div>
+          {suite === "crawler" && (
+            <div className="space-y-1">
+              <label className="text-sm">Route limit (0 = všetky)</label>
+              <Input type="number" min={0} value={routeLimit} onChange={(e) => setRouteLimit(e.target.value)} className="w-40" />
+            </div>
+          )}
           <Button onClick={dispatch} disabled={dispatching}>
             {dispatching ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Play className="w-4 h-4 mr-2" />}
             Spustiť crawler
