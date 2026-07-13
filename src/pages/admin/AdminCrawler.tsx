@@ -77,8 +77,8 @@ export default function AdminCrawler() {
   async function dispatch() {
     setDispatching(true);
     try {
-      await call("dispatch", { route_limit: routeLimit });
-      toast.success("Crawler spustený. Beh sa objaví o ~10s.");
+      await call("dispatch", { route_limit: routeLimit, suite });
+      toast.success(`${suite === "authed" ? "Authed E2E" : "Crawler"} spustený. Beh sa objaví o ~10s.`);
       setTimeout(() => loadRuns(true), 8000);
     } catch (e) {
       toast.error(`Spustenie zlyhalo: ${(e as Error).message}`);
