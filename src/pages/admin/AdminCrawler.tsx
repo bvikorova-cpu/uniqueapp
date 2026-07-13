@@ -119,6 +119,9 @@ export default function AdminCrawler() {
     };
   }, []);
 
+  useEffect(() => { loadRuns(); }, [suite]);
+
+
   useEffect(() => {
     if (intervalRef.current) clearInterval(intervalRef.current);
     if (autoRefresh && liveRunId) {
