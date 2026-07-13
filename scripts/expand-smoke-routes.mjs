@@ -76,6 +76,8 @@ function samplesFor(paramName, pathHint) {
   if (p === "id" && h.includes("/live/")) return [...S.megatalent_ls, ...CONTENT_IDS];
   if (p === "id" && (h.includes("/dream") || h.includes("/hero") || h.includes("/medical") || h.includes("/crisis") || h.includes("/pet") || h.includes("/student") || h.includes("/talent"))) return CONTENT_IDS;
   if (p === "category") return ["singing","dancing","comedy","talent","music","art","sports","tech"];
+  if (p === "feature" && h.includes("/ai-mentor/tools")) return ["memory","skills","personality","roleplay","cbt","coach","feedback","goals","habits","nudges","reflections","summaries","voice-journal"];
+  if (p === "area" && h.includes("/ai-mentor")) return ["career","fitness","mindset","relationships"];
   if (p === "area" || p === "feature" || p === "subject") return CONTENT_IDS;
   if (p === "code" || p === "token" || p === "sharecode") return CONTENT_IDS;
   if (p === "campaigntype") return ["dream","medical","hero","crisis","pet","student","talent"];
@@ -147,11 +149,10 @@ function main() {
   for (const pat of dynamic) {
     for (const url of expandOne(pat, {})) all.add(url);
   }
-  // Preserve any hand-added routes already in the JSON.
-  try {
-    const existing = JSON.parse(fs.readFileSync(OUT, "utf8"));
-    for (const r of existing) all.add(r);
-  } catch {}
+  // Note: previously we merged existing JSON back in to preserve hand-added
+  // routes, but that kept stale dummy slugs (alpha/beta/gamma…). Regenerate
+  // clean each run; add hand routes to STATIC_EXTRAS below if ever needed.
+
 
   const sorted = [...all].sort();
   fs.writeFileSync(OUT, JSON.stringify(sorted, null, 2) + "\n");
