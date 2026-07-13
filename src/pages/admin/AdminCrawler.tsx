@@ -34,8 +34,9 @@ export default function AdminCrawler() {
   const [expanded, setExpanded] = useState<number | null>(null);
 
   async function call(action: string, extra: Record<string, unknown> = {}) {
-    const { data, error } = await supabase.functions.invoke("crawler-control", {
-      body: { action, ...extra },
+    // Consolidated into admin-vitals (op: "crawler") to respect Supabase edge-function quota.
+    const { data, error } = await supabase.functions.invoke("admin-vitals", {
+      body: { op: "crawler", action, ...extra },
     });
     if (error) throw error;
     if (!data?.ok) throw new Error(data?.error || "Unknown error");
