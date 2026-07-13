@@ -7,8 +7,6 @@ on:
         description: "Max routes to crawl per shard (0 = all)"
         required: false
         default: "0"
-  schedule:
-    - cron: "0 3 * * 0" # Sundays 03:00 UTC
 
 jobs:
   crawl:
