@@ -30,24 +30,43 @@ function ghEnv() {
   return { token, owner, repo };
 }
 
-async function gh(path: string, init: RequestInit = {}) {
+async function gh(path: string, init: RequestInit = {}, timeoutMs = 15000) {
   const { token, owner, repo } = ghEnv();
   const url = `https://api.github.com/repos/${owner}/${repo}${path}`;
-  const res = await fetch(url, {
-    ...init,
-    headers: {
-      Accept: "application/vnd.github+json",
-      Authorization: `Bearer ${token}`,
-      "X-GitHub-Api-Version": "2022-11-28",
-      "Content-Type": "application/json",
-      ...(init.headers || {}),
-    },
-  });
-  const text = await res.text();
-  let data: Json = null;
-  try { data = text ? JSON.parse(text) : null; } catch { data = text; }
-  if (!res.ok) throw new Error(`GitHub ${res.status}: ${typeof data === "string" ? data : JSON.stringify(data)}`);
-  return data;
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    const res = await fetch(url, {
+      ...init,
+      signal: ctrl.signal,
+      headers: {
+        Accept: "application/vnd.github+json",
+        Authorization: `Bearer ${token}`,
+        "X-GitHub-Api-Version": "2022-11-28",
+        "Content-Type": "application/json",
+        ...(init.headers || {}),
+      },
+    });
+    const text = await res.text();
+    let data: Json = null;
+    try { data = text ? JSON.parse(text) : null; } catch { data = text; }
+    if (!res.ok) throw new Error(`GitHub ${res.status}: ${typeof data === "string" ? data : JSON.stringify(data)}`);
+    return data;
+  } catch (e) {
+    if ((e as Error)?.name === "AbortError") {
+      throw new Error(`GitHub API timeout after ${timeoutMs}ms`);
+    }
+    throw e;
+  } finally {
+    clearTimeout(t);
+  }
+}
+
+async function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
+  return await Promise.race([
+    p,
+    new Promise<T>((_, reject) => setTimeout(() => reject(new Error(`${label} timeout after ${ms}ms`)), ms)),
+  ]);
 }
 
 async function requireAdmin(auth: string) {
@@ -56,17 +75,18 @@ async function requireAdmin(auth: string) {
     Deno.env.get("SUPABASE_ANON_KEY")!,
     { global: { headers: { Authorization: auth } } },
   );
-  const { data: userRes } = await anon.auth.getUser();
+  const { data: userRes } = await withTimeout(anon.auth.getUser(), 8000, "auth.getUser");
   const user = userRes?.user;
   if (!user) throw new Error("Unauthorized");
   const admin = createClient(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
   );
-  const { data: roles } = await admin
-    .from("user_roles")
-    .select("role")
-    .eq("user_id", user.id);
+  const { data: roles } = await withTimeout(
+    admin.from("user_roles").select("role").eq("user_id", user.id),
+    8000,
+    "user_roles fetch",
+  );
   if (!roles?.some((r: { role: string }) => r.role === "admin")) {
     throw new Error("Forbidden: admin only");
   }
