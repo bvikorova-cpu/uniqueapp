@@ -36,32 +36,6 @@ const ANON = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
 const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 
 const RECOVERY_CONFIRMATION = "pause-cron-jobs-for-auth-recovery";
-const CRON_JOBS_TO_PAUSE = [
-  "weekly-xp-snapshot",
-  "daily-security-scan-edge",
-  "daily-security-scan-deps",
-  "daily-stripe-reconciliation",
-  "rotate-seasonal-missions-daily",
-  "evaluate-xp-bets-hourly",
-  "rotate-mystery-events-monthly",
-  "coupon-price-alerts-hourly",
-  "best-friend-daily-checkin",
-  "auto-payout-weekly",
-  "weekly-iq-tournament",
-  "finalize-iq-tournaments",
-  "fundraising-dunning-daily",
-  "deactivate-expired-job-listings",
-  "expire-job-listings-daily",
-  "health-monitor-5min",
-  "monthly-credits-grant",
-  "mt-escrow-auto-release",
-  "mt-stories-cleanup",
-  "brand-escrow-auto-release",
-  "cleanup-log-tables-daily",
-  "grant-monthly-free-credits",
-  "award-eco-monthly-winner",
-  "award-healthy-monthly-winner",
-];
 
 function json(data: unknown, status = 200) {
   return new Response(JSON.stringify(data, null, 2), {
@@ -81,18 +55,32 @@ async function pauseCronJobsForAuthRecovery() {
     prepare: false,
   });
 
-  const results: Array<{ job: string; ok: boolean; error?: string }> = [];
+  const results: Array<{ jobid: number; jobname: string | null; schedule: string; ok: boolean; error?: string }> = [];
   try {
     await sql`set statement_timeout = '8s'`;
-    for (const job of CRON_JOBS_TO_PAUSE) {
+    const before = await sql`
+      select jobid::int, jobname::text, schedule::text, active, command::text
+      from cron.job
+      where active = true
+      order by jobid
+    `;
+
+    for (const job of before) {
       try {
-        await sql`select cron.unschedule(${job})`;
-        results.push({ job, ok: true });
+        await sql`select cron.unschedule(${job.jobid})`;
+        results.push({ jobid: job.jobid, jobname: job.jobname, schedule: job.schedule, ok: true });
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
-        results.push({ job, ok: false, error: message.slice(0, 240) });
+        results.push({ jobid: job.jobid, jobname: job.jobname, schedule: job.schedule, ok: false, error: message.slice(0, 240) });
       }
     }
+
+    const after = await sql`
+      select jobid::int, jobname::text, schedule::text, active, command::text
+      from cron.job
+      where active = true
+      order by jobid
+    `;
 
     const activity = await sql`
       select usename, application_name, state, count(*)::int as count
@@ -101,7 +89,7 @@ async function pauseCronJobsForAuthRecovery() {
       order by count desc
       limit 20
     `;
-    return { ok: true, results, activity };
+    return { ok: true, paused_count: results.filter((r) => r.ok).length, before, after, results, activity };
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     return { ok: false, error: message };
