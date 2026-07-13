@@ -1,0 +1,45 @@
+name: Pre-launch full crawler
+
+on:
+  workflow_dispatch:
+    inputs:
+      route_limit:
+        description: "Max routes to crawl (0 = all)"
+        required: false
+        default: "0"
+  schedule:
+    - cron: "0 3 * * 0" # Sundays 03:00 UTC
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - run: bunx playwright install --with-deps chromium
+
+      - name: Run all-buttons crawler
+        env:
+          PLAYWRIGHT_BASE_URL: https://uniqueapp.lovable.app
+          E2E_TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
+          E2E_TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+          CRAWLER_ROUTE_LIMIT: ${{ github.event.inputs.route_limit }}
+        run: |
+          bunx playwright test e2e/crawler/all-buttons-crawler.spec.ts \
+            --project=chromium-authed --reporter=list
+
+      - name: Build HTML + markdown report
+        if: always()
+        run: node e2e/crawler/generate-report.mjs
+
+      - name: Upload crawler report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: crawler-report
+          path: e2e/crawler-report/
+          retention-days: 30
