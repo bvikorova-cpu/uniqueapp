@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Download, Play, Square, RotateCcw, AlertTriangle, CheckCircle2, XCircle } from "lucide-react";
+import { Download, Play, Square, RotateCcw, AlertTriangle, CheckCircle2, XCircle, Copy } from "lucide-react";
 import ROUTES from "@/utils/smokeTestRoutes.json";
 
 type BtnResult = {
