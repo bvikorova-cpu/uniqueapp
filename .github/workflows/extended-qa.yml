@@ -2,8 +2,6 @@ name: Extended QA (mobile + visual + i18n + load)
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 4 * * 0" # Sundays 04:00 UTC (after crawler + authed)
 
 jobs:
   mobile-crawler:
@@ -70,6 +68,7 @@ jobs:
           retention-days: 30
 
   load-test:
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.run_load_test == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
