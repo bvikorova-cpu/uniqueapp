@@ -35,6 +35,15 @@ export default defineConfig({
       },
     },
     {
+      name: "crawler",
+      testDir: "./e2e/crawler",
+      dependencies: ["setup"],
+      use: {
+        browserName: "chromium",
+        storageState: "e2e/.auth/authed-state.json",
+      },
+    },
+    {
       name: "chromium",
       testIgnore: [/auth\.setup\.ts/, /authed\//],
       use: { browserName: "chromium" },
