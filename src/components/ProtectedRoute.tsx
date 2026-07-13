@@ -73,7 +73,6 @@ export const ProtectedRoute = ({ children, requireAdmin = false }: ProtectedRout
         setHasAccess(true);
       }
 
-      }
     } catch (error) {
       console.error('Access check error:', error);
       setHasAccess(false);
