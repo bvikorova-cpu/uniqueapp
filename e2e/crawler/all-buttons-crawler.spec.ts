@@ -154,14 +154,14 @@ test("crawl every route and click every safe button", async ({ page, browserName
     };
     const onResponse = (res: import("@playwright/test").Response) => {
       const s = res.status();
+      // Only real server errors count. 4xx from analytics/telemetry are ignored.
       if (s >= 500) failedResponses.push({ url: res.url().slice(0, 250), status: s });
     };
-    const onRequestFailed = (req: import("@playwright/test").Request) => {
-      failedResponses.push({ url: req.url().slice(0, 250), status: 0 });
-    };
+    // Do NOT record `requestfailed` — those are network aborts (status 0) that
+    // fire when the browser cancels in-flight requests on navigation. They are
+    // not real failures and only add noise to the report.
     page.on("pageerror", onPageError);
     page.on("response", onResponse);
-    page.on("requestfailed", onRequestFailed);
 
     const clicks: ClickResult[] = [];
     let elementsFound = 0;
