@@ -14,6 +14,11 @@ const corsHeaders = {
 type Json = any;
 
 const WORKFLOW_FILE = "crawler.yml";
+const AUTHED_WORKFLOW_FILE = "authed-e2e.yml";
+
+function resolveWorkflow(suite?: string) {
+  return suite === "authed" ? AUTHED_WORKFLOW_FILE : WORKFLOW_FILE;
+}
 
 function ghEnv() {
   const token = Deno.env.get("GITHUB_PERSONAL_ACCESS_TOKEN") || Deno.env.get("GITHUB_TOKEN");
