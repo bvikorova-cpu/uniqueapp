@@ -88,9 +88,13 @@ const Auth = () => {
   // Check existing session AND listen for cross-tab logins.
   useEffect(() => {
     let cancelled = false;
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!cancelled && session) navigate(safeRedirect, { replace: true });
-    });
+    supabase.auth.getSession()
+      .then(({ data: { session } }) => {
+        if (!cancelled && session) navigate(safeRedirect, { replace: true });
+      })
+      .catch((err) => {
+        console.warn("[Auth page] getSession failed, staying on login:", err?.message);
+      });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session && (event === "SIGNED_IN" || event === "TOKEN_REFRESHED")) {
         navigate(safeRedirect, { replace: true });
