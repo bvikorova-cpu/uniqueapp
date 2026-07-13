@@ -33,6 +33,7 @@ export default function AdminCrawler() {
   const [loading, setLoading] = useState(false);
   const [dispatching, setDispatching] = useState(false);
   const [routeLimit, setRouteLimit] = useState("0");
+  const [suite, setSuite] = useState<"crawler" | "authed">("crawler");
   const [expanded, setExpanded] = useState<number | null>(null);
   const [liveRunId, setLiveRunId] = useState<number | null>(null);
   const [liveRunStatus, setLiveRunStatus] = useState<string | null>(null);
@@ -53,7 +54,7 @@ export default function AdminCrawler() {
   async function loadRuns(silent = false) {
     if (!silent) setLoading(true);
     try {
-      const d = await call("list");
+      const d = await call("list", { suite });
       setRuns(d.runs);
       setLastUpdated(new Date());
       const active = d.runs.find((r: Run) =>
@@ -76,8 +77,8 @@ export default function AdminCrawler() {
   async function dispatch() {
     setDispatching(true);
     try {
-      await call("dispatch", { route_limit: routeLimit });
-      toast.success("Crawler spustený. Beh sa objaví o ~10s.");
+      await call("dispatch", { route_limit: routeLimit, suite });
+      toast.success(`${suite === "authed" ? "Authed E2E" : "Crawler"} spustený. Beh sa objaví o ~10s.`);
       setTimeout(() => loadRuns(true), 8000);
     } catch (e) {
       toast.error(`Spustenie zlyhalo: ${(e as Error).message}`);
@@ -118,6 +119,9 @@ export default function AdminCrawler() {
     };
   }, []);
 
+  useEffect(() => { loadRuns(); }, [suite]);
+
+
   useEffect(() => {
     if (intervalRef.current) clearInterval(intervalRef.current);
     if (autoRefresh && liveRunId) {
@@ -139,9 +143,26 @@ export default function AdminCrawler() {
         <CardHeader><CardTitle>Spustiť nový beh</CardTitle></CardHeader>
         <CardContent className="flex flex-wrap gap-3 items-end">
           <div className="space-y-1">
-            <label className="text-sm">Route limit (0 = všetky)</label>
-            <Input type="number" min={0} value={routeLimit} onChange={(e) => setRouteLimit(e.target.value)} className="w-40" />
+            <label className="text-sm">Suite</label>
+            <div className="flex rounded-md border overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setSuite("crawler")}
+                className={`px-3 py-2 text-sm ${suite === "crawler" ? "bg-primary text-primary-foreground" : "bg-background"}`}
+              >Full crawler</button>
+              <button
+                type="button"
+                onClick={() => setSuite("authed")}
+                className={`px-3 py-2 text-sm border-l ${suite === "authed" ? "bg-primary text-primary-foreground" : "bg-background"}`}
+              >Authed E2E</button>
+            </div>
           </div>
+          {suite === "crawler" && (
+            <div className="space-y-1">
+              <label className="text-sm">Route limit (0 = všetky)</label>
+              <Input type="number" min={0} value={routeLimit} onChange={(e) => setRouteLimit(e.target.value)} className="w-40" />
+            </div>
+          )}
           <Button onClick={dispatch} disabled={dispatching}>
             {dispatching ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Play className="w-4 h-4 mr-2" />}
             Spustiť crawler

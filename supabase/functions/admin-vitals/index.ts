@@ -14,6 +14,11 @@ const corsHeaders = {
 type Json = any;
 
 const WORKFLOW_FILE = "crawler.yml";
+const AUTHED_WORKFLOW_FILE = "authed-e2e.yml";
+
+function resolveWorkflow(suite?: string) {
+  return suite === "authed" ? AUTHED_WORKFLOW_FILE : WORKFLOW_FILE;
+}
 
 function ghEnv() {
   const token = Deno.env.get("GITHUB_PERSONAL_ACCESS_TOKEN") || Deno.env.get("GITHUB_TOKEN");
@@ -88,14 +93,16 @@ Deno.serve(async (req) => {
 
       if (action === "dispatch") {
         const routeLimit = String(body?.route_limit ?? "0");
-        await gh(`/actions/workflows/${WORKFLOW_FILE}/dispatches`, {
+        const wf = resolveWorkflow(body?.suite);
+        await gh(`/actions/workflows/${wf}/dispatches`, {
           method: "POST",
-          body: JSON.stringify({ ref: body?.ref || "main", inputs: { route_limit: routeLimit } }),
+          body: JSON.stringify({ ref: body?.ref || "main", inputs: wf === WORKFLOW_FILE ? { route_limit: routeLimit } : {} }),
         });
-        return new Response(JSON.stringify({ ok: true, dispatched: true }), { headers: jsonHeaders });
+        return new Response(JSON.stringify({ ok: true, dispatched: true, workflow: wf }), { headers: jsonHeaders });
       }
       if (action === "list") {
-        const runs = await gh(`/actions/workflows/${WORKFLOW_FILE}/runs?per_page=15`);
+        const wf = resolveWorkflow(body?.suite);
+        const runs = await gh(`/actions/workflows/${wf}/runs?per_page=15`);
         return new Response(JSON.stringify({ ok: true, runs: runs?.workflow_runs ?? [] }), { headers: jsonHeaders });
       }
       if (action === "artifacts") {
