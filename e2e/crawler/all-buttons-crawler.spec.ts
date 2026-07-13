@@ -248,7 +248,6 @@ test("crawl every route and click every safe button", async ({ page, browserName
 
     page.off("pageerror", onPageError);
     page.off("response", onResponse);
-    page.off("requestfailed", onRequestFailed);
 
     const failedClicks = clicks.filter((c) => !c.ok);
     const ok = pageErrors.length === 0 && failedResponses.length === 0 && failedClicks.length === 0;
