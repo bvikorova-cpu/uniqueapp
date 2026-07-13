@@ -9,7 +9,11 @@ export default defineConfig({
   timeout: 60_000,
   retries: 1,
   workers: 2,
-  reporter: [["list"], ["html", { open: "never" }]],
+  reporter: [
+    ["list"],
+    ["html", { open: "never" }],
+    ["json", { outputFile: "e2e/crawler-report/authed-results.json" }],
+  ],
   use: {
     baseURL,
     headless: true,
