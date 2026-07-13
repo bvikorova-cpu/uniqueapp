@@ -4,8 +4,9 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Download, Play, Square, RotateCcw, AlertTriangle, CheckCircle2, XCircle } from "lucide-react";
+import { Download, Play, Square, RotateCcw, AlertTriangle, CheckCircle2, XCircle, Copy } from "lucide-react";
 import ROUTES from "@/utils/smokeTestRoutes.json";
+import { toast } from "sonner";
 
 type BtnResult = {
   route: string;
@@ -600,7 +601,7 @@ export default function AdminButtonTester() {
     setProgress(0);
   }
 
-  function downloadReport() {
+  function buildReportText(): string {
     const list = Object.values(results);
     const fails = list.filter((r) => classify(r) === "fail");
     const warns = list.filter((r) => classify(r) === "warn");
@@ -634,14 +635,39 @@ export default function AdminButtonTester() {
     dump("FAIL", fails);
     dump("WARN (no buttons found)", warns);
     dump("PASS", passes);
+    return lines.join("\n");
+  }
 
-    const blob = new Blob([lines.join("\n")], { type: "text/plain" });
+  function downloadReport() {
+    const text = buildReportText();
+    const blob = new Blob([text], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
     a.download = `button-tester-report-${Date.now()}.txt`;
     a.click();
     URL.revokeObjectURL(url);
+  }
+
+  async function copyReport() {
+    const text = buildReportText();
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success("Report skopírovaný do schránky");
+    } catch {
+      // Fallback
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand("copy");
+        toast.success("Report skopírovaný do schránky");
+      } catch {
+        toast.error("Kopírovanie zlyhalo");
+      }
+      document.body.removeChild(ta);
+    }
   }
 
   return (
@@ -675,6 +701,9 @@ export default function AdminButtonTester() {
           </Button>
           <Button onClick={downloadReport} disabled={Object.keys(results).length === 0} size="sm" variant="outline">
             <Download className="h-4 w-4 mr-1" /> Stiahnuť report
+          </Button>
+          <Button onClick={copyReport} disabled={Object.keys(results).length === 0} size="sm" variant="outline">
+            <Copy className="h-4 w-4 mr-1" /> Kopírovať report
           </Button>
         </div>
       </div>
