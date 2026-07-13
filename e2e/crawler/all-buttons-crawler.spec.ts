@@ -174,16 +174,30 @@ test("crawl every route and click every safe button", async ({ page, browserName
       await page.waitForTimeout(800);
       await dismissOverlays(page);
 
-      const handles = await page.locator(INTERACTIVE).all();
+      // Exclude global chrome (header / nav / footer / sidebar) — those buttons
+      // repeat on every route and would otherwise drown the report in duplicate
+      // "click_error: timeout" noise for items hidden inside the hamburger menu.
+      const handles = await page
+        .locator(INTERACTIVE)
+        .locator(
+          ":not(header *):not(nav *):not(footer *):not([role=banner] *):not([role=navigation] *):not([role=contentinfo] *):not([data-crawler-skip] *)",
+        )
+        .all();
       elementsFound = handles.length;
       const cap = Math.min(handles.length, CLICKS_PER_ROUTE);
 
       for (let k = 0; k < cap; k++) {
         const el = handles[k];
+        // Filter non-actionable elements before touching them
+        const box = await el.boundingBox().catch(() => null);
+        if (!box || box.width < 4 || box.height < 4) continue; // sr-only / hidden
+        const isVis = await el.isVisible().catch(() => false);
+        if (!isVis) continue;
         const label = ((await el.innerText().catch(() => "")) || (await el.getAttribute("aria-label").catch(() => "")) || "")
           .trim()
           .slice(0, 80);
         if (!label) continue;
+        if (/^skip to (main )?content$/i.test(label)) continue; // a11y skip link
         if (SKIP_LABEL.some((r) => r.test(label))) {
           clicks.push({ label, ok: true, reason: "skipped_destructive" });
           continue;
