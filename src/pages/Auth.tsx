@@ -64,6 +64,7 @@ const Auth = () => {
   const [resendCooldown, setResendCooldown] = useState(0);
   const [signupPassword, setSignupPassword] = useState("");
   const [signupPhone, setSignupPhone] = useState("");
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   // E.164-ish: + optional, 8-15 digits
   const phoneError = (p: string): string | null => {
@@ -239,6 +240,7 @@ const Auth = () => {
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+    setLoginError(null);
 
     const formData = new FormData(e.currentTarget);
     const email = ((formData.get("email") as string) || "").trim().toLowerCase();
@@ -253,7 +255,7 @@ const Auth = () => {
       const timeoutPromise = new Promise<{ error: any }>((resolve) =>
         setTimeout(
           () => resolve({ error: { message: "Failed to fetch", status: 0 } as any }),
-          15000,
+          8000,
         ),
       );
       const result = (await Promise.race([signInPromise, timeoutPromise])) as { error: any };
@@ -268,6 +270,7 @@ const Auth = () => {
     }
 
     if (!error) {
+      setLoginError(null);
       toast({
         title: "Login successful!",
       });
@@ -297,14 +300,17 @@ const Auth = () => {
     const isUnconfirmed = msg.includes("not confirmed") || msg.includes("email not confirmed");
     if (isUnconfirmed) setUnconfirmedEmail(email);
 
+    const description = isUnavailable && isLovablePreview
+      ? "Login is blocked in Lovable Preview. Open the published app at uniqueapp.fun and log in there."
+      : isUnavailable
+        ? "Please try again in a moment."
+        : error.message;
+    setLoginError(description);
+
     toast({
       variant: "destructive",
       title: isUnavailable ? "Login connection failed" : "Login error",
-      description: isUnavailable && isLovablePreview
-        ? "Preview can block Supabase login. Open the published app at uniqueapp.fun and log in there."
-        : isUnavailable
-          ? "Please try again in a moment."
-          : error.message,
+      description,
     });
   };
 
@@ -466,6 +472,11 @@ const Auth = () => {
 
               <TabsContent value="login">
                 <form onSubmit={handleSignIn} className="space-y-4">
+                  {loginError && (
+                    <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive" role="alert">
+                      {loginError}
+                    </div>
+                  )}
                   <div className="space-y-2">
                     <Label htmlFor="login-email">{"Email"}</Label>
                     <Input
