@@ -33,13 +33,21 @@ import { mkdirSync, writeFileSync, existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 
 const REPORT_DIR = "e2e/crawler-report";
-const REPORT_FILE = join(REPORT_DIR, "report.json");
-const SCREENSHOT_DIR = join(REPORT_DIR, "screenshots");
+const SHARD_SUFFIX =
+  Number(process.env.CRAWLER_SHARD_TOTAL || 0) > 1
+    ? `.shard-${process.env.CRAWLER_SHARD_INDEX}-of-${process.env.CRAWLER_SHARD_TOTAL}`
+    : "";
+const REPORT_FILE = join(REPORT_DIR, `report${SHARD_SUFFIX}.json`);
+const SCREENSHOT_DIR = join(REPORT_DIR, `screenshots${SHARD_SUFFIX}`);
 
 const ROUTE_LIMIT = Number(process.env.CRAWLER_ROUTE_LIMIT || 0);
 const CLICKS_PER_ROUTE = Number(process.env.CRAWLER_CLICKS_PER_ROUTE || 40);
 const ROUTE_TIMEOUT = Number(process.env.CRAWLER_ROUTE_TIMEOUT || 25_000);
 const START_INDEX = Number(process.env.CRAWLER_START_INDEX || 0);
+// Shard support: split routes across parallel jobs.
+// CRAWLER_SHARD_INDEX is 1-based (1..CRAWLER_SHARD_TOTAL). Set both to enable.
+const SHARD_INDEX = Number(process.env.CRAWLER_SHARD_INDEX || 0);
+const SHARD_TOTAL = Number(process.env.CRAWLER_SHARD_TOTAL || 0);
 
 const SKIP_LABEL = [
   /delete|zmaz|remove|odstrán/i,
@@ -118,7 +126,14 @@ test.describe.configure({ mode: "serial" });
 test("crawl every route and click every safe button", async ({ page, browserName }, testInfo) => {
   test.setTimeout(0); // full crawl controls its own timing
 
-  const all = (routes as string[]).slice(START_INDEX, ROUTE_LIMIT ? START_INDEX + ROUTE_LIMIT : undefined);
+  const base = (routes as string[]).slice(START_INDEX, ROUTE_LIMIT ? START_INDEX + ROUTE_LIMIT : undefined);
+  const all =
+    SHARD_TOTAL > 1 && SHARD_INDEX >= 1
+      ? base.filter((_, idx) => idx % SHARD_TOTAL === (SHARD_INDEX - 1) % SHARD_TOTAL)
+      : base;
+  console.log(
+    `[crawler] shard ${SHARD_INDEX || 1}/${SHARD_TOTAL || 1} — ${all.length} routes (base ${base.length})`,
+  );
   const results = loadReport();
   const alreadyDone = new Set(results.map((r) => r.route));
 
