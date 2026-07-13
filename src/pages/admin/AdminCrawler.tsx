@@ -54,7 +54,7 @@ export default function AdminCrawler() {
   async function loadRuns(silent = false) {
     if (!silent) setLoading(true);
     try {
-      const d = await call("list");
+      const d = await call("list", { suite });
       setRuns(d.runs);
       setLastUpdated(new Date());
       const active = d.runs.find((r: Run) =>
