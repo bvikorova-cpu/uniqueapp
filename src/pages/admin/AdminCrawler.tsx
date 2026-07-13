@@ -153,6 +153,39 @@ export default function AdminCrawler() {
         </CardContent>
       </Card>
 
+      {liveRunId && (
+        <Card className="border-blue-500/40 bg-blue-500/5">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Radio className="w-4 h-4 text-blue-600 animate-pulse" />
+              Live beh #{runs.find((r) => r.id === liveRunId)?.run_number}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="flex items-center justify-between text-sm">
+              <StatusBadge status={liveRunStatus ?? "in_progress"} conclusion={null} />
+              <span className="text-muted-foreground text-xs">
+                {lastUpdated ? `Aktualizované: ${lastUpdated.toLocaleTimeString()}` : ""}
+              </span>
+            </div>
+            <Progress value={100} className="h-2 animate-pulse" />
+            <p className="text-xs text-muted-foreground">
+              Beh sa automaticky obnovuje každých 15 s. Po dokončení tu pribudne tlačidlo na stiahnutie reportu.
+            </p>
+            <div className="flex items-center gap-2">
+              <input
+                id="auto-refresh"
+                type="checkbox"
+                checked={autoRefresh}
+                onChange={(e) => setAutoRefresh(e.target.checked)}
+                className="rounded border-muted"
+              />
+              <label htmlFor="auto-refresh" className="text-sm">Auto-obnovovanie</label>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <Card className="border-primary/40">
         <CardHeader>
           <CardTitle>Lokálne (bez GitHub Actions)</CardTitle>
