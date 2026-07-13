@@ -600,7 +600,7 @@ export default function AdminButtonTester() {
     setProgress(0);
   }
 
-  function downloadReport() {
+  function buildReportText(): string {
     const list = Object.values(results);
     const fails = list.filter((r) => classify(r) === "fail");
     const warns = list.filter((r) => classify(r) === "warn");
@@ -634,14 +634,39 @@ export default function AdminButtonTester() {
     dump("FAIL", fails);
     dump("WARN (no buttons found)", warns);
     dump("PASS", passes);
+    return lines.join("\n");
+  }
 
-    const blob = new Blob([lines.join("\n")], { type: "text/plain" });
+  function downloadReport() {
+    const text = buildReportText();
+    const blob = new Blob([text], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
     a.download = `button-tester-report-${Date.now()}.txt`;
     a.click();
     URL.revokeObjectURL(url);
+  }
+
+  async function copyReport() {
+    const text = buildReportText();
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success("Report skopírovaný do schránky");
+    } catch {
+      // Fallback
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand("copy");
+        toast.success("Report skopírovaný do schránky");
+      } catch {
+        toast.error("Kopírovanie zlyhalo");
+      }
+      document.body.removeChild(ta);
+    }
   }
 
   return (
