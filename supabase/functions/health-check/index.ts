@@ -6,10 +6,6 @@
 //   -> server-side probe of each named edge function using service-role auth.
 //      Returns { results: [{ name, code, ms, status, detail }] }
 //
-// Piggybacked onto health-check to avoid burning a second edge-function slot
-// (project is at SUPABASE_MAX_FUNCTIONS_REACHED).
-import postgres from "npm:postgres@3.4.5";
-
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -34,69 +30,6 @@ const EXPECTED = {
 const BASE = Deno.env.get("SUPABASE_URL") ?? "";
 const ANON = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
 const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
-
-const RECOVERY_CONFIRMATION = "pause-cron-jobs-for-auth-recovery";
-
-function json(data: unknown, status = 200) {
-  return new Response(JSON.stringify(data, null, 2), {
-    status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
-}
-
-async function pauseCronJobsForAuthRecovery() {
-  const dbUrl = Deno.env.get("SUPABASE_DB_URL");
-  if (!dbUrl) return { ok: false, error: "SUPABASE_DB_URL is not configured" };
-
-  const sql = postgres(dbUrl, {
-    max: 1,
-    connect_timeout: 8,
-    idle_timeout: 1,
-    prepare: false,
-  });
-
-  const results: Array<{ jobid: number; jobname: string | null; schedule: string; ok: boolean; error?: string }> = [];
-  try {
-    await sql`set statement_timeout = '8s'`;
-    const before = await sql`
-      select jobid::int, jobname::text, schedule::text, active, command::text
-      from cron.job
-      where active = true
-      order by jobid
-    `;
-
-    for (const job of before) {
-      try {
-        await sql`select cron.unschedule(${job.jobid})`;
-        results.push({ jobid: job.jobid, jobname: job.jobname, schedule: job.schedule, ok: true });
-      } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        results.push({ jobid: job.jobid, jobname: job.jobname, schedule: job.schedule, ok: false, error: message.slice(0, 240) });
-      }
-    }
-
-    const after = await sql`
-      select jobid::int, jobname::text, schedule::text, active, command::text
-      from cron.job
-      where active = true
-      order by jobid
-    `;
-
-    const activity = await sql`
-      select usename, application_name, state, count(*)::int as count
-      from pg_stat_activity
-      group by usename, application_name, state
-      order by count desc
-      limit 20
-    `;
-    return { ok: true, paused_count: results.filter((r) => r.ok).length, before, after, results, activity };
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    return { ok: false, error: message };
-  } finally {
-    await sql.end({ timeout: 1 }).catch(() => undefined);
-  }
-}
 
 // ---------------- probe ----------------
 const ALIVE = new Set([200, 201, 202, 204, 400, 401, 403, 405, 409, 422, 429]);
@@ -214,10 +147,6 @@ Deno.serve(async (req) => {
   // POST with { names } -> probe mode
   if (req.method === "POST") {
     const body = await req.json().catch(() => ({}));
-    if (body?.confirm === RECOVERY_CONFIRMATION) {
-      const result = await pauseCronJobsForAuthRecovery();
-      return json(result, result.ok ? 200 : 500);
-    }
     if (body?.__probe) {
       return new Response(JSON.stringify({ probe: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
