@@ -158,8 +158,16 @@ Deno.serve(async (req) => {
     const safeMetric = ["LCP", "CLS", "INP", "FCP", "TTFB"].includes(metric) ? metric : "LCP";
 
     const [{ data: summary, error: e1 }, { data: daily, error: e2 }] = await Promise.all([
-      supabase.rpc("get_vitals_summary", { p_days: safeDays, p_route: route }),
-      supabase.rpc("get_vitals_daily",   { p_days: safeDays, p_metric: safeMetric }),
+      withTimeout(
+        supabase.rpc("get_vitals_summary", { p_days: safeDays, p_route: route }) as unknown as Promise<{ data: Json; error: Json }>,
+        20000,
+        "get_vitals_summary",
+      ),
+      withTimeout(
+        supabase.rpc("get_vitals_daily", { p_days: safeDays, p_metric: safeMetric }) as unknown as Promise<{ data: Json; error: Json }>,
+        20000,
+        "get_vitals_daily",
+      ),
     ]);
     if (e1) throw e1;
     if (e2) throw e2;
