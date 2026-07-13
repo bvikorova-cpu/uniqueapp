@@ -100,9 +100,7 @@ Deno.serve(async (req) => {
       // Returns a short-lived download URL for artifact zip
       const artifactId = body?.artifact_id;
       if (!artifactId) throw new Error("artifact_id required");
-      const token = Deno.env.get("GITHUB_TOKEN")!;
-      const owner = Deno.env.get("GITHUB_OWNER")!;
-      const repo = Deno.env.get("GITHUB_REPO")!;
+      const { token, owner, repo } = ghEnv();
       const res = await fetch(
         `https://api.github.com/repos/${owner}/${repo}/actions/artifacts/${artifactId}/zip`,
         { headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" }, redirect: "manual" },
