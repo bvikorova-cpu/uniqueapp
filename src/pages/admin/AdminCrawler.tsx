@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Loader2, Play, RefreshCw, Download, ExternalLink, MonitorPlay, Copy } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Loader2, Play, RefreshCw, Download, ExternalLink, MonitorPlay, Copy, Radio } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -33,6 +34,11 @@ export default function AdminCrawler() {
   const [dispatching, setDispatching] = useState(false);
   const [routeLimit, setRouteLimit] = useState("0");
   const [expanded, setExpanded] = useState<number | null>(null);
+  const [liveRunId, setLiveRunId] = useState<number | null>(null);
+  const [liveRunStatus, setLiveRunStatus] = useState<string | null>(null);
+  const [autoRefresh, setAutoRefresh] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   async function call(action: string, extra: Record<string, unknown> = {}) {
     // Consolidated into admin-vitals (op: "crawler") to respect Supabase edge-function quota.
@@ -44,15 +50,26 @@ export default function AdminCrawler() {
     return data;
   }
 
-  async function loadRuns() {
-    setLoading(true);
+  async function loadRuns(silent = false) {
+    if (!silent) setLoading(true);
     try {
       const d = await call("list");
       setRuns(d.runs);
+      setLastUpdated(new Date());
+      const active = d.runs.find((r: Run) =>
+        r.status === "in_progress" || r.status === "queued" || r.status === "waiting" || r.status === "pending"
+      );
+      if (active) {
+        setLiveRunId(active.id);
+        setLiveRunStatus(active.status);
+      } else {
+        setLiveRunId(null);
+        setLiveRunStatus(null);
+      }
     } catch (e) {
       toast.error(`Načítanie zlyhalo: ${(e as Error).message}`);
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }
 
@@ -61,7 +78,7 @@ export default function AdminCrawler() {
     try {
       await call("dispatch", { route_limit: routeLimit });
       toast.success("Crawler spustený. Beh sa objaví o ~10s.");
-      setTimeout(loadRuns, 8000);
+      setTimeout(() => loadRuns(true), 8000);
     } catch (e) {
       toast.error(`Spustenie zlyhalo: ${(e as Error).message}`);
     } finally {
@@ -94,7 +111,22 @@ export default function AdminCrawler() {
     }
   }
 
-  useEffect(() => { loadRuns(); }, []);
+  useEffect(() => {
+    loadRuns();
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    if (autoRefresh && liveRunId) {
+      intervalRef.current = setInterval(() => loadRuns(true), 15000);
+    }
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [autoRefresh, liveRunId]);
 
   return (
     <div className="container mx-auto p-6 space-y-6 max-w-5xl">
@@ -114,12 +146,45 @@ export default function AdminCrawler() {
             {dispatching ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Play className="w-4 h-4 mr-2" />}
             Spustiť crawler
           </Button>
-          <Button variant="outline" onClick={loadRuns} disabled={loading}>
+          <Button variant="outline" onClick={() => loadRuns()} disabled={loading}>
             {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-2" />}
             Obnoviť
           </Button>
         </CardContent>
       </Card>
+
+      {liveRunId && (
+        <Card className="border-blue-500/40 bg-blue-500/5">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Radio className="w-4 h-4 text-blue-600 animate-pulse" />
+              Live beh #{runs.find((r) => r.id === liveRunId)?.run_number}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="flex items-center justify-between text-sm">
+              <StatusBadge status={liveRunStatus ?? "in_progress"} conclusion={null} />
+              <span className="text-muted-foreground text-xs">
+                {lastUpdated ? `Aktualizované: ${lastUpdated.toLocaleTimeString()}` : ""}
+              </span>
+            </div>
+            <Progress value={100} className="h-2 animate-pulse" />
+            <p className="text-xs text-muted-foreground">
+              Beh sa automaticky obnovuje každých 15 s. Po dokončení tu pribudne tlačidlo na stiahnutie reportu.
+            </p>
+            <div className="flex items-center gap-2">
+              <input
+                id="auto-refresh"
+                type="checkbox"
+                checked={autoRefresh}
+                onChange={(e) => setAutoRefresh(e.target.checked)}
+                className="rounded border-muted"
+              />
+              <label htmlFor="auto-refresh" className="text-sm">Auto-obnovovanie</label>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <Card className="border-primary/40">
         <CardHeader>
@@ -139,7 +204,7 @@ export default function AdminCrawler() {
             <Button
               variant="outline"
               onClick={() => {
-                const cmd = "bunx playwright test e2e/crawler/all-buttons-crawler.spec.ts --project=chromium-authed --reporter=list && node e2e/crawler/generate-report.mjs";
+                const cmd = "bunx playwright test e2e/crawler/all-buttons-crawler.spec.ts --project=crawler --reporter=list && node e2e/crawler/generate-report.mjs";
                 navigator.clipboard.writeText(cmd);
                 toast.success("Príkaz skopírovaný — spusti v termináli repa.");
               }}
