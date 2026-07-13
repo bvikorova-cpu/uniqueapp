@@ -4,18 +4,16 @@ on:
   workflow_dispatch:
     inputs:
       route_limit:
-        description: "Max routes to crawl per shard (0 = all)"
+        description: "Max routes to crawl (0 = all)"
         required: false
         default: "0"
+  schedule:
+    - cron: "0 3 * * 0" # Sundays 03:00 UTC
 
 jobs:
   crawl:
     runs-on: ubuntu-latest
-    timeout-minutes: 240
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [1, 2, 3, 4]
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
@@ -24,55 +22,22 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: bunx playwright install --with-deps chromium
 
-      - name: Run all-buttons crawler (shard ${{ matrix.shard }}/4)
+      - name: Run all-buttons crawler
         env:
           PLAYWRIGHT_BASE_URL: https://uniqueapp.lovable.app
           E2E_TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
           E2E_TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
           CRAWLER_ROUTE_LIMIT: ${{ github.event.inputs.route_limit }}
-          CRAWLER_SHARD_INDEX: ${{ matrix.shard }}
-          CRAWLER_SHARD_TOTAL: "4"
         run: |
           bunx playwright test e2e/crawler/all-buttons-crawler.spec.ts \
             --project=crawler --reporter=list
 
-      - name: Upload shard report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: crawler-report-shard-${{ matrix.shard }}
-          path: e2e/crawler-report/
-          retention-days: 7
-
-  merge:
-    needs: crawl
-    if: always()
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-      - run: bun install --frozen-lockfile
-
-      - name: Download all shard reports
-        uses: actions/download-artifact@v4
-        with:
-          pattern: crawler-report-shard-*
-          path: shards/
-          merge-multiple: true
-
-      - name: Consolidate shard outputs
-        run: |
-          mkdir -p e2e/crawler-report
-          cp -r shards/* e2e/crawler-report/ 2>/dev/null || true
-          ls -la e2e/crawler-report/
-
       - name: Build HTML + markdown report
+        if: always()
         run: node e2e/crawler/generate-report.mjs
 
-      - name: Upload merged crawler report
+      - name: Upload crawler report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: crawler-report

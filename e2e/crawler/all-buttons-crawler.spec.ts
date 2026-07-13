@@ -33,21 +33,13 @@ import { mkdirSync, writeFileSync, existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 
 const REPORT_DIR = "e2e/crawler-report";
-const SHARD_SUFFIX =
-  Number(process.env.CRAWLER_SHARD_TOTAL || 0) > 1
-    ? `.shard-${process.env.CRAWLER_SHARD_INDEX}-of-${process.env.CRAWLER_SHARD_TOTAL}`
-    : "";
-const REPORT_FILE = join(REPORT_DIR, `report${SHARD_SUFFIX}.json`);
-const SCREENSHOT_DIR = join(REPORT_DIR, `screenshots${SHARD_SUFFIX}`);
+const REPORT_FILE = join(REPORT_DIR, "report.json");
+const SCREENSHOT_DIR = join(REPORT_DIR, "screenshots");
 
 const ROUTE_LIMIT = Number(process.env.CRAWLER_ROUTE_LIMIT || 0);
 const CLICKS_PER_ROUTE = Number(process.env.CRAWLER_CLICKS_PER_ROUTE || 40);
 const ROUTE_TIMEOUT = Number(process.env.CRAWLER_ROUTE_TIMEOUT || 25_000);
 const START_INDEX = Number(process.env.CRAWLER_START_INDEX || 0);
-// Shard support: split routes across parallel jobs.
-// CRAWLER_SHARD_INDEX is 1-based (1..CRAWLER_SHARD_TOTAL). Set both to enable.
-const SHARD_INDEX = Number(process.env.CRAWLER_SHARD_INDEX || 0);
-const SHARD_TOTAL = Number(process.env.CRAWLER_SHARD_TOTAL || 0);
 
 const SKIP_LABEL = [
   /delete|zmaz|remove|odstrán/i,
@@ -56,12 +48,6 @@ const SKIP_LABEL = [
   /report|nahlás|block|zabloko|ban/i,
   /confirm|potvrd/i,
   /unsubscribe|cancel subscription|zruš.*(predpl|členstv)/i,
-  // Global top-nav chrome labels — not inside <header>/<nav> semantic elements
-  // on every page, so the semantic-selector filter misses them. They belong to
-  // navigation, not to per-route interactive content; clicking them just
-  // navigates away and pollutes the report with 1000+ timeouts.
-  /^(unique|wall|games|work|promotions|booking|16\+)$/i,
-  /^skip to (main )?content$/i,
 ];
 
 const INTERACTIVE = [
@@ -132,14 +118,7 @@ test.describe.configure({ mode: "serial" });
 test("crawl every route and click every safe button", async ({ page, browserName }, testInfo) => {
   test.setTimeout(0); // full crawl controls its own timing
 
-  const base = (routes as string[]).slice(START_INDEX, ROUTE_LIMIT ? START_INDEX + ROUTE_LIMIT : undefined);
-  const all =
-    SHARD_TOTAL > 1 && SHARD_INDEX >= 1
-      ? base.filter((_, idx) => idx % SHARD_TOTAL === (SHARD_INDEX - 1) % SHARD_TOTAL)
-      : base;
-  console.log(
-    `[crawler] shard ${SHARD_INDEX || 1}/${SHARD_TOTAL || 1} — ${all.length} routes (base ${base.length})`,
-  );
+  const all = (routes as string[]).slice(START_INDEX, ROUTE_LIMIT ? START_INDEX + ROUTE_LIMIT : undefined);
   const results = loadReport();
   const alreadyDone = new Set(results.map((r) => r.route));
 
@@ -160,14 +139,14 @@ test("crawl every route and click every safe button", async ({ page, browserName
     };
     const onResponse = (res: import("@playwright/test").Response) => {
       const s = res.status();
-      // Only real server errors count. 4xx from analytics/telemetry are ignored.
       if (s >= 500) failedResponses.push({ url: res.url().slice(0, 250), status: s });
     };
-    // Do NOT record `requestfailed` — those are network aborts (status 0) that
-    // fire when the browser cancels in-flight requests on navigation. They are
-    // not real failures and only add noise to the report.
+    const onRequestFailed = (req: import("@playwright/test").Request) => {
+      failedResponses.push({ url: req.url().slice(0, 250), status: 0 });
+    };
     page.on("pageerror", onPageError);
     page.on("response", onResponse);
+    page.on("requestfailed", onRequestFailed);
 
     const clicks: ClickResult[] = [];
     let elementsFound = 0;
@@ -180,30 +159,16 @@ test("crawl every route and click every safe button", async ({ page, browserName
       await page.waitForTimeout(800);
       await dismissOverlays(page);
 
-      // Exclude global chrome (header / nav / footer / sidebar) — those buttons
-      // repeat on every route and would otherwise drown the report in duplicate
-      // "click_error: timeout" noise for items hidden inside the hamburger menu.
-      const handles = await page
-        .locator(INTERACTIVE)
-        .locator(
-          ":not(header *):not(nav *):not(footer *):not([role=banner] *):not([role=navigation] *):not([role=contentinfo] *):not([data-crawler-skip] *)",
-        )
-        .all();
+      const handles = await page.locator(INTERACTIVE).all();
       elementsFound = handles.length;
       const cap = Math.min(handles.length, CLICKS_PER_ROUTE);
 
       for (let k = 0; k < cap; k++) {
         const el = handles[k];
-        // Filter non-actionable elements before touching them
-        const box = await el.boundingBox().catch(() => null);
-        if (!box || box.width < 4 || box.height < 4) continue; // sr-only / hidden
-        const isVis = await el.isVisible().catch(() => false);
-        if (!isVis) continue;
         const label = ((await el.innerText().catch(() => "")) || (await el.getAttribute("aria-label").catch(() => "")) || "")
           .trim()
           .slice(0, 80);
         if (!label) continue;
-        if (/^skip to (main )?content$/i.test(label)) continue; // a11y skip link
         if (SKIP_LABEL.some((r) => r.test(label))) {
           clicks.push({ label, ok: true, reason: "skipped_destructive" });
           continue;
@@ -254,6 +219,7 @@ test("crawl every route and click every safe button", async ({ page, browserName
 
     page.off("pageerror", onPageError);
     page.off("response", onResponse);
+    page.off("requestfailed", onRequestFailed);
 
     const failedClicks = clicks.filter((c) => !c.ok);
     const ok = pageErrors.length === 0 && failedResponses.length === 0 && failedClicks.length === 0;

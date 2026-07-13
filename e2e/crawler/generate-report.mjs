@@ -6,36 +6,11 @@
  * Run after the crawler spec finishes:
  *   node e2e/crawler/generate-report.mjs
  */
-import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
 const DIR = "e2e/crawler-report";
 const RAW = join(DIR, "report.json");
-
-// Merge shard reports (report.shard-1-of-4.json …) into report.json if present.
-const shardFiles = existsSync(DIR)
-  ? readdirSync(DIR).filter((f) => /^report\.shard-\d+-of-\d+\.json$/.test(f))
-  : [];
-if (shardFiles.length > 0) {
-  const merged = [];
-  const seen = new Set();
-  for (const f of shardFiles) {
-    try {
-      const rows = JSON.parse(readFileSync(join(DIR, f), "utf8"));
-      for (const row of rows) {
-        if (seen.has(row.route)) continue;
-        seen.add(row.route);
-        merged.push(row);
-      }
-    } catch (e) {
-      console.warn(`Skipping malformed shard file ${f}: ${e.message}`);
-    }
-  }
-  merged.sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
-  writeFileSync(RAW, JSON.stringify(merged, null, 2));
-  console.log(`Merged ${shardFiles.length} shard reports → ${RAW} (${merged.length} routes)`);
-}
-
 if (!existsSync(RAW)) {
   console.error("No crawler report found at", RAW);
   process.exit(1);

@@ -7,16 +7,6 @@ import { usePresenceHeartbeat } from '@/hooks/usePresenceHeartbeat';
 import { getPendingReturnTo } from '@/lib/pendingAction';
 // WelcomeCreditsDialog removed — paid-only model (no free tier)
 
-const AUTH_REQUEST_TIMEOUT_MS = 8000;
-
-function withAuthTimeout<T>(promise: Promise<T>, label: string): Promise<T> {
-  return Promise.race([
-    promise,
-    new Promise<T>((_, reject) => {
-      window.setTimeout(() => reject(new Error(`${label} timeout`)), AUTH_REQUEST_TIMEOUT_MS);
-    }),
-  ]);
-}
 
 interface AuthContextType {
   user: User | null;
@@ -45,52 +35,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     );
 
-    // THEN check for existing session (with fallback if fetch fails/hangs)
-    const failsafe = setTimeout(() => setLoading(false), 5000);
-    withAuthTimeout(supabase.auth.getSession(), 'Session check')
-      .then(({ data: { session } }) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-      })
-      .catch((err) => {
-        console.warn("[Auth] getSession failed, continuing unauthenticated:", err?.message);
-      })
-      .finally(() => {
-        clearTimeout(failsafe);
-        setLoading(false);
-      });
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
 
-    return () => {
-      clearTimeout(failsafe);
-      subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, []);
 
   const signUp = async (email: string, password: string, fullName: string) => {
     const redirectUrl = `${window.location.origin}/`;
 
-    let data: any = null;
-    let error: any = null;
-
-    try {
-      const result = await withAuthTimeout(
-        supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: redirectUrl,
-            data: {
-              full_name: fullName,
-            }
-          }
-        }),
-        'Registration'
-      );
-      data = result.data;
-      error = result.error;
-    } catch (err: any) {
-      error = err ?? new Error('Registration failed');
-    }
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: redirectUrl,
+        data: {
+          full_name: fullName,
+        }
+      }
+    });
 
     // Only navigate when a session is established (email confirmation NOT required).
     // Otherwise the caller should show a "check your email" message and stay on /auth.
@@ -102,22 +69,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signIn = async (email: string, password: string) => {
-    let data: any = null;
-    let error: any = null;
-
-    try {
-      const result = await withAuthTimeout(
-        supabase.auth.signInWithPassword({
-          email,
-          password,
-        }),
-        'Login'
-      );
-      data = result.data;
-      error = result.error;
-    } catch (err: any) {
-      error = err ?? new Error('Login failed');
-    }
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
     if (!error && data?.session) {
       navigate(getPendingReturnTo() || '/');
@@ -127,7 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signOut = async () => {
-    await withAuthTimeout(supabase.auth.signOut(), 'Logout').catch(() => undefined);
+    await supabase.auth.signOut();
     navigate('/auth');
   };
 

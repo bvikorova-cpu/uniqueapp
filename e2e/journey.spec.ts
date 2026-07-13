@@ -36,31 +36,23 @@ async function dismissOverlays(page: Page) {
   }
 }
 
-/**
- * Attempts login. Returns true on success, false on any failure (invalid
- * creds, rate limit, missing form, timeout). Never throws — the caller
- * decides whether to skip or fail.
- */
-async function tryLogin(page: Page): Promise<boolean> {
-  try {
-    await page.goto(`${BASE}/auth`, { waitUntil: "domcontentloaded" });
-    await page.waitForTimeout(1500);
-    await dismissOverlays(page);
-    const loginTab = page.getByRole("tab", { name: /^login$/i }).first();
-    if (await loginTab.isVisible().catch(() => false)) {
-      await loginTab.click().catch(() => {});
-    }
-    const emailInput = page.locator("#login-email").first();
-    if (!(await emailInput.isVisible().catch(() => false))) return false;
-    await emailInput.fill(EMAIL);
-    await page.locator("#login-password").first().fill(PASSWORD);
-    await dismissOverlays(page);
-    await page.getByRole("button", { name: /^log in$|^sign in$|prihlás/i }).first().click();
-    await page.waitForURL((u) => !u.pathname.startsWith("/auth"), { timeout: 20_000 });
-    return true;
-  } catch {
-    return false;
+async function doLogin(page: Page) {
+  await page.goto(`${BASE}/auth`, { waitUntil: "domcontentloaded" });
+  await page.waitForTimeout(1500);
+  await dismissOverlays(page);
+  const loginTab = page.getByRole("tab", { name: /^login$/i }).first();
+  if (await loginTab.isVisible().catch(() => false)) {
+    await loginTab.click().catch(() => {});
   }
+  await page.locator("#login-email").first().fill(EMAIL).catch(async () => {
+    await page.getByLabel(/email/i).first().fill(EMAIL);
+  });
+  await page.locator("#login-password").first().fill(PASSWORD).catch(async () => {
+    await page.getByLabel(/password|heslo/i).first().fill(PASSWORD);
+  });
+  await dismissOverlays(page);
+  await page.getByRole("button", { name: /sign in|log in|prihlás/i }).first().click();
+  await page.waitForURL((u) => !u.pathname.startsWith("/auth"), { timeout: 30_000 });
 }
 
 test.describe("Critical user journey", () => {
@@ -73,14 +65,11 @@ test.describe("Critical user journey", () => {
   });
 
   test("login flow works", async ({ page }) => {
-    const ok = await tryLogin(page);
-    test.skip(!ok, "Login unavailable in this CI env (invalid creds, rate limit, or auth outage) — skipped, not failed.");
-    expect(ok).toBe(true);
+    await doLogin(page);
   });
 
   test("credits page loads when logged in", async ({ page }) => {
-    const ok = await tryLogin(page);
-    test.skip(!ok, "Login prerequisite skipped — see 'login flow works'.");
+    await doLogin(page);
     await page.goto(`${BASE}/credits`);
     await dismissOverlays(page);
     await expect(page.locator("[data-unique-crash-overlay]")).toHaveCount(0);

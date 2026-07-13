@@ -6,6 +6,9 @@
 //   -> server-side probe of each named edge function using service-role auth.
 //      Returns { results: [{ name, code, ms, status, detail }] }
 //
+// Piggybacked onto health-check to avoid burning a second edge-function slot
+// (project is at SUPABASE_MAX_FUNCTIONS_REACHED).
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",

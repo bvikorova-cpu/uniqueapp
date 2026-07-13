@@ -64,7 +64,6 @@ const Auth = () => {
   const [resendCooldown, setResendCooldown] = useState(0);
   const [signupPassword, setSignupPassword] = useState("");
   const [signupPhone, setSignupPhone] = useState("");
-  const [loginError, setLoginError] = useState<string | null>(null);
 
   // E.164-ish: + optional, 8-15 digits
   const phoneError = (p: string): string | null => {
@@ -89,13 +88,9 @@ const Auth = () => {
   // Check existing session AND listen for cross-tab logins.
   useEffect(() => {
     let cancelled = false;
-    supabase.auth.getSession()
-      .then(({ data: { session } }) => {
-        if (!cancelled && session) navigate(safeRedirect, { replace: true });
-      })
-      .catch((err) => {
-        console.warn("[Auth page] getSession failed, staying on login:", err?.message);
-      });
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!cancelled && session) navigate(safeRedirect, { replace: true });
+    });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session && (event === "SIGNED_IN" || event === "TOKEN_REFRESHED")) {
         navigate(safeRedirect, { replace: true });
@@ -240,78 +235,50 @@ const Auth = () => {
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    setLoginError(null);
 
     const formData = new FormData(e.currentTarget);
     const email = ((formData.get("email") as string) || "").trim().toLowerCase();
     const password = (formData.get("password") as string) || "";
 
-    let error: any = null;
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-    try {
-      // Hard timeout so the button never sticks on "Logging in..." when the
-      // network / Supabase is unreachable (mobile adblock, DNS, upstream 5xx).
-      const signInPromise = supabase.auth.signInWithPassword({ email, password });
-      const timeoutPromise = new Promise<{ error: any }>((resolve) =>
-        setTimeout(
-          () => resolve({ error: { message: "Failed to fetch", status: 0 } as any }),
-          8000,
-        ),
-      );
-      const result = (await Promise.race([signInPromise, timeoutPromise])) as { error: any };
-      error = result.error;
-    } catch (err: any) {
-      // Supabase auth can throw TypeError("Failed to fetch") instead of returning
-      // { error } when the Preview fetch proxy, mobile browser, DNS, or adblocker
-      // blocks the auth request. Always convert it to a normal UI error.
-      error = err ?? { message: "Failed to fetch", status: 0 };
-    } finally {
-      setLoading(false);
-    }
+    setLoading(false);
 
-    if (!error) {
-      setLoginError(null);
+    if (error) {
+      // Detect transient backend outages (Supabase auth/DB timeouts, 5xx, network).
+      const msg = (error.message || "").toLowerCase();
+      const status = (error as any).status as number | undefined;
+      const isUnavailable =
+        status === 0 ||
+        status === 408 ||
+        status === 502 ||
+        status === 503 ||
+        status === 504 ||
+        msg.includes("timeout") ||
+        msg.includes("failed to fetch") ||
+        msg.includes("network") ||
+        msg.includes("unavailable") ||
+        msg.includes("upstream");
+
+      const isUnconfirmed = msg.includes("not confirmed") || msg.includes("email not confirmed");
+      if (isUnconfirmed) setUnconfirmedEmail(email);
+
+      toast({
+        variant: "destructive",
+        title: isUnavailable ? "Service temporarily unavailable" : "Login error",
+        description: isUnavailable
+          ? "Please try again in a moment."
+          : error.message,
+      });
+    } else {
       toast({
         title: "Login successful!",
       });
       navigate(safeRedirect, { replace: true });
-      return;
     }
-
-    // Detect transient backend outages (Supabase auth/DB timeouts, 5xx, network).
-    const msg = (error.message || String(error) || "").toLowerCase();
-    const status = (error as any).status as number | undefined;
-    const isUnavailable =
-      status === 0 ||
-      status === 408 ||
-      status === 502 ||
-      status === 503 ||
-      status === 504 ||
-      msg.includes("timeout") ||
-      msg.includes("failed to fetch") ||
-      msg.includes("network") ||
-      msg.includes("unavailable") ||
-      msg.includes("upstream");
-
-    const isLovablePreview =
-      window.location.hostname.includes("lovableproject.com") ||
-      window.location.hostname.includes("lovable.app") ||
-      window.parent !== window;
-    const isUnconfirmed = msg.includes("not confirmed") || msg.includes("email not confirmed");
-    if (isUnconfirmed) setUnconfirmedEmail(email);
-
-    const description = isUnavailable && isLovablePreview
-      ? "Login is blocked in Lovable Preview. Open the published app at uniqueapp.fun and log in there."
-      : isUnavailable
-        ? "Please try again in a moment."
-        : error.message;
-    setLoginError(description);
-
-    toast({
-      variant: "destructive",
-      title: isUnavailable ? "Login connection failed" : "Login error",
-      description,
-    });
   };
 
   const handleForgotPassword = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -472,11 +439,6 @@ const Auth = () => {
 
               <TabsContent value="login">
                 <form onSubmit={handleSignIn} className="space-y-4">
-                  {loginError && (
-                    <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive" role="alert">
-                      {loginError}
-                    </div>
-                  )}
                   <div className="space-y-2">
                     <Label htmlFor="login-email">{"Email"}</Label>
                     <Input

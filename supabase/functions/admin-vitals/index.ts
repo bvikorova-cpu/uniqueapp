@@ -14,11 +14,6 @@ const corsHeaders = {
 type Json = any;
 
 const WORKFLOW_FILE = "crawler.yml";
-const AUTHED_WORKFLOW_FILE = "authed-e2e.yml";
-
-function resolveWorkflow(suite?: string) {
-  return suite === "authed" ? AUTHED_WORKFLOW_FILE : WORKFLOW_FILE;
-}
 
 function ghEnv() {
   const token = Deno.env.get("GITHUB_PERSONAL_ACCESS_TOKEN") || Deno.env.get("GITHUB_TOKEN");
@@ -30,43 +25,24 @@ function ghEnv() {
   return { token, owner, repo };
 }
 
-async function gh(path: string, init: RequestInit = {}, timeoutMs = 15000) {
+async function gh(path: string, init: RequestInit = {}) {
   const { token, owner, repo } = ghEnv();
   const url = `https://api.github.com/repos/${owner}/${repo}${path}`;
-  const ctrl = new AbortController();
-  const t = setTimeout(() => ctrl.abort(), timeoutMs);
-  try {
-    const res = await fetch(url, {
-      ...init,
-      signal: ctrl.signal,
-      headers: {
-        Accept: "application/vnd.github+json",
-        Authorization: `Bearer ${token}`,
-        "X-GitHub-Api-Version": "2022-11-28",
-        "Content-Type": "application/json",
-        ...(init.headers || {}),
-      },
-    });
-    const text = await res.text();
-    let data: Json = null;
-    try { data = text ? JSON.parse(text) : null; } catch { data = text; }
-    if (!res.ok) throw new Error(`GitHub ${res.status}: ${typeof data === "string" ? data : JSON.stringify(data)}`);
-    return data;
-  } catch (e) {
-    if ((e as Error)?.name === "AbortError") {
-      throw new Error(`GitHub API timeout after ${timeoutMs}ms`);
-    }
-    throw e;
-  } finally {
-    clearTimeout(t);
-  }
-}
-
-async function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
-  return await Promise.race([
-    p,
-    new Promise<T>((_, reject) => setTimeout(() => reject(new Error(`${label} timeout after ${ms}ms`)), ms)),
-  ]);
+  const res = await fetch(url, {
+    ...init,
+    headers: {
+      Accept: "application/vnd.github+json",
+      Authorization: `Bearer ${token}`,
+      "X-GitHub-Api-Version": "2022-11-28",
+      "Content-Type": "application/json",
+      ...(init.headers || {}),
+    },
+  });
+  const text = await res.text();
+  let data: Json = null;
+  try { data = text ? JSON.parse(text) : null; } catch { data = text; }
+  if (!res.ok) throw new Error(`GitHub ${res.status}: ${typeof data === "string" ? data : JSON.stringify(data)}`);
+  return data;
 }
 
 async function requireAdmin(auth: string) {
@@ -75,18 +51,17 @@ async function requireAdmin(auth: string) {
     Deno.env.get("SUPABASE_ANON_KEY")!,
     { global: { headers: { Authorization: auth } } },
   );
-  const { data: userRes } = await withTimeout(anon.auth.getUser(), 8000, "auth.getUser");
+  const { data: userRes } = await anon.auth.getUser();
   const user = userRes?.user;
   if (!user) throw new Error("Unauthorized");
   const admin = createClient(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
   );
-  const { data: roles } = await withTimeout(
-    admin.from("user_roles").select("role").eq("user_id", user.id),
-    8000,
-    "user_roles fetch",
-  );
+  const { data: roles } = await admin
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", user.id);
   if (!roles?.some((r: { role: string }) => r.role === "admin")) {
     throw new Error("Forbidden: admin only");
   }
@@ -113,16 +88,14 @@ Deno.serve(async (req) => {
 
       if (action === "dispatch") {
         const routeLimit = String(body?.route_limit ?? "0");
-        const wf = resolveWorkflow(body?.suite);
-        await gh(`/actions/workflows/${wf}/dispatches`, {
+        await gh(`/actions/workflows/${WORKFLOW_FILE}/dispatches`, {
           method: "POST",
-          body: JSON.stringify({ ref: body?.ref || "main", inputs: wf === WORKFLOW_FILE ? { route_limit: routeLimit } : {} }),
+          body: JSON.stringify({ ref: body?.ref || "main", inputs: { route_limit: routeLimit } }),
         });
-        return new Response(JSON.stringify({ ok: true, dispatched: true, workflow: wf }), { headers: jsonHeaders });
+        return new Response(JSON.stringify({ ok: true, dispatched: true }), { headers: jsonHeaders });
       }
       if (action === "list") {
-        const wf = resolveWorkflow(body?.suite);
-        const runs = await gh(`/actions/workflows/${wf}/runs?per_page=15`);
+        const runs = await gh(`/actions/workflows/${WORKFLOW_FILE}/runs?per_page=15`);
         return new Response(JSON.stringify({ ok: true, runs: runs?.workflow_runs ?? [] }), { headers: jsonHeaders });
       }
       if (action === "artifacts") {
@@ -158,16 +131,8 @@ Deno.serve(async (req) => {
     const safeMetric = ["LCP", "CLS", "INP", "FCP", "TTFB"].includes(metric) ? metric : "LCP";
 
     const [{ data: summary, error: e1 }, { data: daily, error: e2 }] = await Promise.all([
-      withTimeout(
-        supabase.rpc("get_vitals_summary", { p_days: safeDays, p_route: route }) as unknown as Promise<{ data: Json; error: Json }>,
-        20000,
-        "get_vitals_summary",
-      ),
-      withTimeout(
-        supabase.rpc("get_vitals_daily", { p_days: safeDays, p_metric: safeMetric }) as unknown as Promise<{ data: Json; error: Json }>,
-        20000,
-        "get_vitals_daily",
-      ),
+      supabase.rpc("get_vitals_summary", { p_days: safeDays, p_route: route }),
+      supabase.rpc("get_vitals_daily",   { p_days: safeDays, p_metric: safeMetric }),
     ]);
     if (e1) throw e1;
     if (e2) throw e2;
