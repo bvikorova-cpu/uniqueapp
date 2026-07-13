@@ -1,0 +1,180 @@
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Loader2, Play, RefreshCw, Download, ExternalLink } from "lucide-react";
+import { toast } from "sonner";
+
+type Run = {
+  id: number;
+  name: string;
+  status: string;
+  conclusion: string | null;
+  created_at: string;
+  html_url: string;
+  head_branch: string;
+  run_number: number;
+};
+
+type Artifact = {
+  id: number;
+  name: string;
+  size_in_bytes: number;
+  expired: boolean;
+  created_at: string;
+};
+
+export default function AdminCrawler() {
+  const [runs, setRuns] = useState<Run[]>([]);
+  const [artifacts, setArtifacts] = useState<Record<number, Artifact[]>>({});
+  const [loading, setLoading] = useState(false);
+  const [dispatching, setDispatching] = useState(false);
+  const [routeLimit, setRouteLimit] = useState("0");
+  const [expanded, setExpanded] = useState<number | null>(null);
+
+  async function call(action: string, extra: Record<string, unknown> = {}) {
+    const { data, error } = await supabase.functions.invoke("crawler-control", {
+      body: { action, ...extra },
+    });
+    if (error) throw error;
+    if (!data?.ok) throw new Error(data?.error || "Unknown error");
+    return data;
+  }
+
+  async function loadRuns() {
+    setLoading(true);
+    try {
+      const d = await call("list");
+      setRuns(d.runs);
+    } catch (e) {
+      toast.error(`Načítanie zlyhalo: ${(e as Error).message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function dispatch() {
+    setDispatching(true);
+    try {
+      await call("dispatch", { route_limit: routeLimit });
+      toast.success("Crawler spustený. Beh sa objaví o ~10s.");
+      setTimeout(loadRuns, 8000);
+    } catch (e) {
+      toast.error(`Spustenie zlyhalo: ${(e as Error).message}`);
+    } finally {
+      setDispatching(false);
+    }
+  }
+
+  async function loadArtifacts(runId: number) {
+    try {
+      const d = await call("artifacts", { run_id: runId });
+      setArtifacts((s) => ({ ...s, [runId]: d.artifacts }));
+      setExpanded(runId);
+    } catch (e) {
+      toast.error(`Artefakty: ${(e as Error).message}`);
+    }
+  }
+
+  async function download(artifactId: number, name: string) {
+    try {
+      const d = await call("download", { artifact_id: artifactId });
+      const a = document.createElement("a");
+      a.href = d.url;
+      a.download = `${name}.zip`;
+      a.rel = "noopener";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (e) {
+      toast.error(`Stiahnutie: ${(e as Error).message}`);
+    }
+  }
+
+  useEffect(() => { loadRuns(); }, []);
+
+  return (
+    <div className="container mx-auto p-6 space-y-6 max-w-5xl">
+      <div>
+        <h1 className="text-3xl font-bold">Pre-launch Crawler</h1>
+        <p className="text-muted-foreground">Spustí Playwright audit všetkých routes cez GitHub Actions a zobrazí report.</p>
+      </div>
+
+      <Card>
+        <CardHeader><CardTitle>Spustiť nový beh</CardTitle></CardHeader>
+        <CardContent className="flex flex-wrap gap-3 items-end">
+          <div className="space-y-1">
+            <label className="text-sm">Route limit (0 = všetky)</label>
+            <Input type="number" min={0} value={routeLimit} onChange={(e) => setRouteLimit(e.target.value)} className="w-40" />
+          </div>
+          <Button onClick={dispatch} disabled={dispatching}>
+            {dispatching ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Play className="w-4 h-4 mr-2" />}
+            Spustiť crawler
+          </Button>
+          <Button variant="outline" onClick={loadRuns} disabled={loading}>
+            {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-2" />}
+            Obnoviť
+          </Button>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader><CardTitle>Posledné behy</CardTitle></CardHeader>
+        <CardContent className="space-y-2">
+          {runs.length === 0 && !loading && <p className="text-sm text-muted-foreground">Žiadne behy zatiaľ.</p>}
+          {runs.map((r) => (
+            <div key={r.id} className="border rounded-lg p-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <div className="font-medium">#{r.run_number} · {r.head_branch}</div>
+                  <div className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleString()}</div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <StatusBadge status={r.status} conclusion={r.conclusion} />
+                  <Button size="sm" variant="outline" onClick={() => loadArtifacts(r.id)}>
+                    Report
+                  </Button>
+                  <a href={r.html_url} target="_blank" rel="noopener noreferrer">
+                    <Button size="sm" variant="ghost"><ExternalLink className="w-4 h-4" /></Button>
+                  </a>
+                </div>
+              </div>
+              {expanded === r.id && (
+                <div className="mt-3 border-t pt-3 space-y-2">
+                  {(artifacts[r.id] ?? []).length === 0 && (
+                    <p className="text-sm text-muted-foreground">
+                      {r.status === "completed" ? "Bez artefaktov." : "Beh ešte prebieha — artefakty budú po dokončení."}
+                    </p>
+                  )}
+                  {(artifacts[r.id] ?? []).map((a) => (
+                    <div key={a.id} className="flex items-center justify-between text-sm">
+                      <span>{a.name} · {(a.size_in_bytes / 1024 / 1024).toFixed(1)} MB {a.expired && "(expired)"}</span>
+                      <Button size="sm" onClick={() => download(a.id, a.name)} disabled={a.expired}>
+                        <Download className="w-4 h-4 mr-1" /> Stiahnuť
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      <p className="text-xs text-muted-foreground">
+        Report ZIP obsahuje <code>report.html</code> so screenshotmi. Rozbaľ a otvor lokálne v prehliadači.
+      </p>
+    </div>
+  );
+}
+
+function StatusBadge({ status, conclusion }: { status: string; conclusion: string | null }) {
+  const label = conclusion || status;
+  const color =
+    conclusion === "success" ? "bg-green-500/15 text-green-600"
+    : conclusion === "failure" ? "bg-red-500/15 text-red-600"
+    : status === "in_progress" || status === "queued" ? "bg-blue-500/15 text-blue-600"
+    : "bg-muted text-muted-foreground";
+  return <span className={`text-xs px-2 py-1 rounded ${color}`}>{label}</span>;
+}
