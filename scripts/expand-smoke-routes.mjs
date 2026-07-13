@@ -149,11 +149,10 @@ function main() {
   for (const pat of dynamic) {
     for (const url of expandOne(pat, {})) all.add(url);
   }
-  // Preserve any hand-added routes already in the JSON.
-  try {
-    const existing = JSON.parse(fs.readFileSync(OUT, "utf8"));
-    for (const r of existing) all.add(r);
-  } catch {}
+  // Note: previously we merged existing JSON back in to preserve hand-added
+  // routes, but that kept stale dummy slugs (alpha/beta/gamma…). Regenerate
+  // clean each run; add hand routes to STATIC_EXTRAS below if ever needed.
+
 
   const sorted = [...all].sort();
   fs.writeFileSync(OUT, JSON.stringify(sorted, null, 2) + "\n");
