@@ -56,6 +56,12 @@ const SKIP_LABEL = [
   /report|nahlás|block|zabloko|ban/i,
   /confirm|potvrd/i,
   /unsubscribe|cancel subscription|zruš.*(predpl|členstv)/i,
+  // Global top-nav chrome labels — not inside <header>/<nav> semantic elements
+  // on every page, so the semantic-selector filter misses them. They belong to
+  // navigation, not to per-route interactive content; clicking them just
+  // navigates away and pollutes the report with 1000+ timeouts.
+  /^(unique|wall|games|work|promotions|booking|16\+)$/i,
+  /^skip to (main )?content$/i,
 ];
 
 const INTERACTIVE = [
