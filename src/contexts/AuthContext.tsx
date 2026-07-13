@@ -35,14 +35,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     );
 
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
+    // THEN check for existing session (with fallback if fetch fails/hangs)
+    const failsafe = setTimeout(() => setLoading(false), 5000);
+    supabase.auth.getSession()
+      .then(({ data: { session } }) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+      })
+      .catch((err) => {
+        console.warn("[Auth] getSession failed, continuing unauthenticated:", err?.message);
+      })
+      .finally(() => {
+        clearTimeout(failsafe);
+        setLoading(false);
+      });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      clearTimeout(failsafe);
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signUp = async (email: string, password: string, fullName: string) => {
