@@ -93,14 +93,16 @@ Deno.serve(async (req) => {
 
       if (action === "dispatch") {
         const routeLimit = String(body?.route_limit ?? "0");
-        await gh(`/actions/workflows/${WORKFLOW_FILE}/dispatches`, {
+        const wf = resolveWorkflow(body?.suite);
+        await gh(`/actions/workflows/${wf}/dispatches`, {
           method: "POST",
-          body: JSON.stringify({ ref: body?.ref || "main", inputs: { route_limit: routeLimit } }),
+          body: JSON.stringify({ ref: body?.ref || "main", inputs: wf === WORKFLOW_FILE ? { route_limit: routeLimit } : {} }),
         });
-        return new Response(JSON.stringify({ ok: true, dispatched: true }), { headers: jsonHeaders });
+        return new Response(JSON.stringify({ ok: true, dispatched: true, workflow: wf }), { headers: jsonHeaders });
       }
       if (action === "list") {
-        const runs = await gh(`/actions/workflows/${WORKFLOW_FILE}/runs?per_page=15`);
+        const wf = resolveWorkflow(body?.suite);
+        const runs = await gh(`/actions/workflows/${wf}/runs?per_page=15`);
         return new Response(JSON.stringify({ ok: true, runs: runs?.workflow_runs ?? [] }), { headers: jsonHeaders });
       }
       if (action === "artifacts") {
