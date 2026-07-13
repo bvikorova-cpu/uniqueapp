@@ -121,6 +121,39 @@ export default function AdminCrawler() {
         </CardContent>
       </Card>
 
+      <Card className="border-primary/40">
+        <CardHeader>
+          <CardTitle>Lokálne (bez GitHub Actions)</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-sm text-muted-foreground">
+            Spusti in-browser crawler priamo v tomto prehliadači — beží cez iframe, nepotrebuje CI ani billing.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <Link to="/admin/button-tester" target="_blank" rel="noopener noreferrer">
+              <Button>
+                <MonitorPlay className="w-4 h-4 mr-2" />
+                Spustiť v prehliadači
+              </Button>
+            </Link>
+            <Button
+              variant="outline"
+              onClick={() => {
+                const cmd = "bunx playwright test e2e/crawler/all-buttons-crawler.spec.ts --project=chromium-authed --reporter=list && node e2e/crawler/generate-report.mjs";
+                navigator.clipboard.writeText(cmd);
+                toast.success("Príkaz skopírovaný — spusti v termináli repa.");
+              }}
+            >
+              <Copy className="w-4 h-4 mr-2" />
+              Kopírovať Playwright príkaz
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            In-browser variant obsiahne ~2800 routes a bezpečné kliky. Playwright variant beží headless Chromium a produkuje <code>e2e/crawler-report/</code> so screenshotmi.
+          </p>
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader><CardTitle>Posledné behy</CardTitle></CardHeader>
         <CardContent className="space-y-2">
