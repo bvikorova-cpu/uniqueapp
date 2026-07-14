@@ -1133,6 +1133,9 @@ const App = () => {
                         <Route path="/admin/button-tester" element={<ProtectedRoute requireAdmin={true}><AdminButtonTester /></ProtectedRoute>} />
                         <Route path="/admin/crawler" element={<ProtectedRoute requireAdmin={true}><AdminCrawler /></ProtectedRoute>} />
 
+                        <Route path="/admin/bug-reports" element={<ProtectedRoute requireAdmin={true}><BugReportsManager /></ProtectedRoute>} />
+                        <Route path="/report-bug" element={<ReportBug />} />
+
                         <Route path="/admin/pwa-stats" element={<ProtectedRoute requireAdmin={true}><AdminPwaStats /></ProtectedRoute>} />
                         <Route path="/admin/dunning" element={<ProtectedRoute requireAdmin={true}><AdminDunning /></ProtectedRoute>} />
                         <Route path="/admin/winback" element={<ProtectedRoute requireAdmin={true}><AdminWinBack /></ProtectedRoute>} />
