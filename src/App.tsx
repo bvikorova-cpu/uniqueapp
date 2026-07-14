@@ -563,6 +563,8 @@ const AdminEdgeMonitoring = lazy(() => import("@/pages/admin/AdminEdgeMonitoring
 const AdminEdgeTester = lazy(() => import("@/pages/admin/AdminEdgeTester"));
 const AdminButtonTester = lazy(() => import("@/pages/admin/AdminButtonTester"));
 const AdminCrawler = lazy(() => import("@/pages/admin/AdminCrawler"));
+const BugReportsManager = lazy(() => import("@/pages/admin/BugReportsManager"));
+const ReportBug = lazy(() => import("@/pages/ReportBug"));
 const AdminDunning = lazy(() => import("@/pages/admin/AdminDunning"));
 const AdminWinBack = lazy(() => import("@/pages/admin/AdminWinBack"));
 const AdminSCA = lazy(() => import("@/pages/admin/AdminSCA"));
