@@ -22,7 +22,7 @@ export function BetaTesterNotice({ onClose }: BetaTesterNoticeProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[101] flex items-center justify-center bg-background/85 backdrop-blur-md p-4"
+        className="fixed inset-0 z-[101] flex items-start justify-center overflow-y-auto bg-background/85 backdrop-blur-md p-4 pt-12 sm:items-center sm:pt-4"
         role="dialog"
         aria-modal="true"
         aria-labelledby="beta-title"
@@ -34,7 +34,7 @@ export function BetaTesterNotice({ onClose }: BetaTesterNoticeProps) {
           transition={{ type: "spring", damping: 24, stiffness: 280 }}
           className="w-full max-w-md"
         >
-          <Card className="relative overflow-hidden border-primary/30 bg-gradient-to-br from-background via-background to-primary/5 p-6 shadow-2xl">
+          <Card className="relative max-h-[calc(100vh-5rem)] overflow-y-auto border-primary/30 bg-gradient-to-br from-background via-background to-primary/5 p-6 shadow-2xl sm:max-h-[85vh]">
             {/* Decorative background orbs */}
             <div className="pointer-events-none absolute -top-16 -right-16 h-48 w-48 rounded-full bg-primary/10 blur-3xl" />
             <div className="pointer-events-none absolute -bottom-16 -left-16 h-40 w-40 rounded-full bg-accent/10 blur-3xl" />
