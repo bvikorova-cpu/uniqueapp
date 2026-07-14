@@ -1289,5 +1289,19 @@
       "title": "AI Numerology — your numbers, decoded",
       "description": "AI-generated numerology reports based on your name and birth date. Instant, shareable."
     }
+  },
+  "beta": {
+    "badge": "Beta",
+    "title": "Sme v beta testovaní",
+    "message_1": "Unique každý deň rastie. Momentálne sme v otvorenej beta fáze, čo znamená, že občas môžeš naraziť na malú chybu alebo funkciu, ktorú ešte doladzujeme.",
+    "no_loss": "Nikto o nič nepríde. Ak platená funkcia nesplní to, čo sľubuje, vždy ti vrátime peniaze alebo ju obnovíme.",
+    "message_2": "Budeme ti nesmierne vďační, ak nahlásiš akýkoľvek problém, preklep alebo zvláštne správanie. Tvoja spätná väzba nám pomáha vytvoriť platformu dokonalú.",
+    "reward_title": "Odmena za potvrdené chyby",
+    "reward_minor": "Malá chyba — +5 AI kreditov",
+    "reward_major": "Vážna chyba — +25 AI kreditov",
+    "reward_critical": "Kritická/bezpečnostná chyba — +50 AI kreditov",
+    "report_bug": "Nahlásiť chybu",
+    "start_exploring": "Začať objavovať",
+    "thanks": "Ďakujeme za tvoju trpezlivosť a že si súčasťou Unique. 💜"
   }
 }
