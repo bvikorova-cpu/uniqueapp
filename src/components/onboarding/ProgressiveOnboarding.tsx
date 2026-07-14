@@ -81,6 +81,7 @@ export const ProgressiveOnboarding = ({ onComplete }: ProgressiveOnboardingProps
   const [isVisible, setIsVisible] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [hasSeenOnboarding, setHasSeenOnboarding] = useState(false);
+  const [showBetaNotice, setShowBetaNotice] = useState(false);
   const isLovablePreview = typeof window !== "undefined" &&
     (window.location.hostname.includes("lovableproject.com") || window.location.hostname.includes("lovable.app"));
 
