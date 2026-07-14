@@ -800,6 +800,18 @@ const Navbar = () => {
               ))}
             </div>
             <div className="pt-3 space-y-1.5">
+              <Button
+                variant="outline"
+                className="w-full justify-start text-sm gap-2 border-primary/30 text-primary hover:bg-primary/10"
+                size="sm"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  setShowBetaNotice(true);
+                }}
+              >
+                <Sparkles className="h-4 w-4" />
+                {"Beta testing"}
+              </Button>
               {user ? (
                 <>
                   <Link to={`/profile/${user.id}`} onClick={() => setIsMenuOpen(false)}>
