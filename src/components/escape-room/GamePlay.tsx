@@ -162,12 +162,15 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
     }
   };
 
-  const useHint = () => {
+  const useHint = async () => {
     setHintsUsed(hintsUsed + 1);
-    toast({
-      title: "Hint",
-      description: puzzles[currentPuzzleIndex]?.hint_text || "Try looking more carefully at the clues..."
-    });
+    const puzzleId = puzzles[currentPuzzleIndex]?.id;
+    let hint = "Try looking more carefully at the clues...";
+    if (puzzleId) {
+      const { data } = await (supabase as any).rpc("get_escape_room_hint", { _puzzle_id: puzzleId });
+      if (typeof data === "string" && data) hint = data;
+    }
+    toast({ title: "Hint", description: hint });
   };
 
   // State for panorama rooms with AI-generated URLs
