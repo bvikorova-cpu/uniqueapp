@@ -293,7 +293,7 @@ const Navbar = () => {
               variant="ghost"
               size="sm"
               onClick={() => setShowBetaNotice(true)}
-              className="ml-2 gap-1 text-primary hover:bg-primary/10 px-2 h-8 hidden sm:inline-flex"
+              className="ml-2 gap-1 text-primary hover:bg-primary/10 px-2 h-8 inline-flex"
             >
               <Sparkles className="h-4 w-4" />
               <span className="font-semibold">Beta</span>
