@@ -33,6 +33,7 @@ import { BetaTesterNotice } from "@/components/onboarding/BetaTesterNotice";
 const Navbar = () => {
   const { theme, setTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showBetaNotice, setShowBetaNotice] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
