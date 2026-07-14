@@ -120,7 +120,17 @@ test.describe.configure({ mode: "serial" });
 test("crawl every route and click every safe button", async ({ page, browserName }, testInfo) => {
   test.setTimeout(0); // full crawl controls its own timing
 
-  const all = (routes as string[]).slice(START_INDEX, ROUTE_LIMIT ? START_INDEX + ROUTE_LIMIT : undefined);
+  let startIndex = START_INDEX;
+  let routeLimit = ROUTE_LIMIT;
+  if (SHARDS > 0) {
+    const total = (routes as string[]).length;
+    const shardSize = Math.ceil(total / SHARDS);
+    startIndex = Math.min(SHARD_INDEX * shardSize, total);
+    routeLimit = Math.min(shardSize, total - startIndex);
+    console.log(`[crawler shard ${SHARD_INDEX}/${SHARDS}] start=${startIndex} limit=${routeLimit} total=${total}`);
+  }
+
+  const all = (routes as string[]).slice(startIndex, routeLimit ? startIndex + routeLimit : undefined);
   const results = loadReport();
   const alreadyDone = new Set(results.map((r) => r.route));
 
