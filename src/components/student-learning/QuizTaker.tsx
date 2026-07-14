@@ -20,7 +20,6 @@ interface Question {
   id: string;
   question: string;
   options: any;
-  correct_answer: string;
   order_index: number;
 }
 
@@ -37,6 +36,7 @@ export function QuizTaker({ isOpen, onClose, quiz, userId, onComplete }: QuizTak
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [gradedResults, setGradedResults] = useState<Record<string, { is_correct: boolean; explanation?: string }>>({});
   const [showResults, setShowResults] = useState(false);
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -49,14 +49,14 @@ export function QuizTaker({ isOpen, onClose, quiz, userId, onComplete }: QuizTak
 
   const loadQuestions = async () => {
     try {
-      const { data, error } = await supabase
-        .from("quiz_questions")
+      const { data, error } = await (supabase as any)
+        .from("quiz_questions_public")
         .select("*")
         .eq("quiz_id", quiz.id)
         .order("order_index", { ascending: true });
 
       if (error) throw error;
-      setQuestions(data || []);
+      setQuestions((data as Question[]) || []);
     } catch (error: any) {
       toast({
         title: "Error",
@@ -88,15 +88,21 @@ export function QuizTaker({ isOpen, onClose, quiz, userId, onComplete }: QuizTak
   };
 
   const handleSubmit = async () => {
-    // Calculate score
+    // Grade each question server-side
+    const results: Record<string, { is_correct: boolean; explanation?: string }> = {};
     let correctAnswers = 0;
-    questions.forEach((question) => {
-      if (answers[question.id] === question.correct_answer) {
-        correctAnswers++;
-      }
-    });
+    for (const q of questions) {
+      const { data } = await (supabase as any).rpc("grade_quiz_answer", {
+        _question_id: q.id,
+        _submitted_answer: answers[q.id] ?? "",
+      });
+      const res = (data as any) || {};
+      results[q.id] = { is_correct: !!res.is_correct, explanation: res.explanation };
+      if (res.is_correct) correctAnswers++;
+    }
+    setGradedResults(results);
 
-    const scorePercentage = Math.round((correctAnswers / questions.length) * 100);
+    const scorePercentage = Math.round((correctAnswers / Math.max(1, questions.length)) * 100);
     setScore(scorePercentage);
     setShowResults(true);
 
@@ -223,7 +229,8 @@ export function QuizTaker({ isOpen, onClose, quiz, userId, onComplete }: QuizTak
               <h4 className="font-semibold">Review Your Answers</h4>
               {questions.map((question, index) => {
                 const userAnswer = answers[question.id];
-                const isCorrect = userAnswer === question.correct_answer;
+                const graded = gradedResults[question.id];
+                const isCorrect = !!graded?.is_correct;
 
                 return (
                   <Card key={question.id} className={isCorrect ? "border-primary/50" : "border-destructive/50"}>
@@ -244,11 +251,11 @@ export function QuizTaker({ isOpen, onClose, quiz, userId, onComplete }: QuizTak
                               {userAnswer || "Not answered"}
                             </span>
                           </p>
-                          {!isCorrect && (
+                          {!isCorrect && graded?.explanation && (
                             <p className="text-sm mt-1">
-                              <span className="text-muted-foreground">Correct answer: </span>
+                              <span className="text-muted-foreground">Explanation: </span>
                               <span className="text-primary font-medium">
-                                {question.correct_answer}
+                                {graded.explanation}
                               </span>
                             </p>
                           )}

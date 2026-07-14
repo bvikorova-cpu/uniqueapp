@@ -27758,6 +27758,13 @@ export type Database = {
             foreignKeyName: "healthcare_collections_healthcare_profile_id_fkey"
             columns: ["healthcare_profile_id"]
             isOneToOne: false
+            referencedRelation: "doctors_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "healthcare_collections_healthcare_profile_id_fkey"
+            columns: ["healthcare_profile_id"]
+            isOneToOne: false
             referencedRelation: "healthcare_profiles"
             referencedColumns: ["id"]
           },
@@ -28001,6 +28008,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "healthcare_team_members_healthcare_profile_id_fkey"
+            columns: ["healthcare_profile_id"]
+            isOneToOne: false
+            referencedRelation: "doctors_public"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "healthcare_team_members_healthcare_profile_id_fkey"
             columns: ["healthcare_profile_id"]
@@ -65057,42 +65071,148 @@ export type Database = {
         }
         Relationships: []
       }
+      dating_profiles_public: {
+        Row: {
+          additional_photos: string[] | null
+          age: number | null
+          bio: string | null
+          compatibility_quiz: Json | null
+          created_at: string | null
+          display_name: string | null
+          gender: string | null
+          id: string | null
+          instagram_url: string | null
+          interests: string[] | null
+          is_active: boolean | null
+          location: string | null
+          looking_for: string | null
+          opening_move: string | null
+          passport_location: string | null
+          photo_verified: boolean | null
+          profile_photo_url: string | null
+          prompts: Json | null
+          spotify_url: string | null
+          updated_at: string | null
+          user_id: string | null
+          video_prompts: Json | null
+          voice_intro_duration: number | null
+          voice_intro_url: string | null
+        }
+        Insert: {
+          additional_photos?: string[] | null
+          age?: number | null
+          bio?: string | null
+          compatibility_quiz?: Json | null
+          created_at?: string | null
+          display_name?: string | null
+          gender?: string | null
+          id?: string | null
+          instagram_url?: string | null
+          interests?: string[] | null
+          is_active?: boolean | null
+          location?: string | null
+          looking_for?: string | null
+          opening_move?: string | null
+          passport_location?: string | null
+          photo_verified?: boolean | null
+          profile_photo_url?: string | null
+          prompts?: Json | null
+          spotify_url?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          video_prompts?: Json | null
+          voice_intro_duration?: number | null
+          voice_intro_url?: string | null
+        }
+        Update: {
+          additional_photos?: string[] | null
+          age?: number | null
+          bio?: string | null
+          compatibility_quiz?: Json | null
+          created_at?: string | null
+          display_name?: string | null
+          gender?: string | null
+          id?: string | null
+          instagram_url?: string | null
+          interests?: string[] | null
+          is_active?: boolean | null
+          location?: string | null
+          looking_for?: string | null
+          opening_move?: string | null
+          passport_location?: string | null
+          photo_verified?: boolean | null
+          profile_photo_url?: string | null
+          prompts?: Json | null
+          spotify_url?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          video_prompts?: Json | null
+          voice_intro_duration?: number | null
+          voice_intro_url?: string | null
+        }
+        Relationships: []
+      }
+      doctors_public: {
+        Row: {
+          bio: string | null
+          consultation_duration_min: number | null
+          consultation_price_cents: number | null
+          created_at: string | null
+          id: string | null
+          is_accepting_bookings: boolean | null
+          languages: string[] | null
+          provider_logo_url: string | null
+          provider_name: string | null
+          specialty: string | null
+          timezone: string | null
+          updated_at: string | null
+          user_id: string | null
+          verification_status: string | null
+        }
+        Insert: {
+          bio?: string | null
+          consultation_duration_min?: number | null
+          consultation_price_cents?: number | null
+          created_at?: string | null
+          id?: string | null
+          is_accepting_bookings?: boolean | null
+          languages?: string[] | null
+          provider_logo_url?: string | null
+          provider_name?: string | null
+          specialty?: string | null
+          timezone?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          verification_status?: string | null
+        }
+        Update: {
+          bio?: string | null
+          consultation_duration_min?: number | null
+          consultation_price_cents?: number | null
+          created_at?: string | null
+          id?: string | null
+          is_accepting_bookings?: boolean | null
+          languages?: string[] | null
+          provider_logo_url?: string | null
+          provider_name?: string | null
+          specialty?: string | null
+          timezone?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          verification_status?: string | null
+        }
+        Relationships: []
+      }
       escape_room_puzzles_public: {
         Row: {
           created_at: string | null
           description: string | null
           hint_cost: number | null
-          hint_text: string | null
           id: string | null
-          puzzle_data: Json | null
           puzzle_order: number | null
           puzzle_type: string | null
           room_id: string | null
           title: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          description?: string | null
-          hint_cost?: number | null
-          hint_text?: string | null
-          id?: string | null
-          puzzle_data?: Json | null
-          puzzle_order?: number | null
-          puzzle_type?: string | null
-          room_id?: string | null
-          title?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          description?: string | null
-          hint_cost?: number | null
-          hint_text?: string | null
-          id?: string | null
-          puzzle_data?: Json | null
-          puzzle_order?: number | null
-          puzzle_type?: string | null
-          room_id?: string | null
-          title?: string | null
         }
         Relationships: [
           {
@@ -65855,6 +65975,38 @@ export type Database = {
         }
         Relationships: []
       }
+      quiz_questions_public: {
+        Row: {
+          id: string | null
+          options: Json | null
+          order_index: number | null
+          question: string | null
+          quiz_id: string | null
+        }
+        Insert: {
+          id?: string | null
+          options?: Json | null
+          order_index?: number | null
+          question?: string | null
+          quiz_id?: string | null
+        }
+        Update: {
+          id?: string | null
+          options?: Json | null
+          order_index?: number | null
+          question?: string | null
+          quiz_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_questions_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "course_quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       safety_roleplay_leaderboard: {
         Row: {
           handle: string | null
@@ -66271,6 +66423,10 @@ export type Database = {
       check_and_award_iq_badges: { Args: never; Returns: string[] }
       check_anon_dating_rate_limit: {
         Args: { p_action: string; p_max_per_minute?: number; p_user_id: string }
+        Returns: boolean
+      }
+      check_escape_room_solution: {
+        Args: { _puzzle_id: string; _submitted_answer: string }
         Returns: boolean
       }
       check_rate_limit:
@@ -66708,6 +66864,7 @@ export type Database = {
         }[]
       }
       get_engagement_metrics: { Args: { p_days?: number }; Returns: Json }
+      get_escape_room_hint: { Args: { _puzzle_id: string }; Returns: string }
       get_featured_campaign: { Args: never; Returns: Json }
       get_follower_count: { Args: { user_id: string }; Returns: number }
       get_following_count: { Args: { user_id: string }; Returns: number }
@@ -67314,6 +67471,10 @@ export type Database = {
         Returns: undefined
       }
       give_starter_balance: { Args: { p_user_id: string }; Returns: undefined }
+      grade_quiz_answer: {
+        Args: { _question_id: string; _submitted_answer: string }
+        Returns: Json
+      }
       grant_anonymous_dating_credits: {
         Args: { p_amount: number; p_user_id: string }
         Returns: number

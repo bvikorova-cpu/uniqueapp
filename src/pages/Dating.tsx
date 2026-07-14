@@ -641,7 +641,7 @@ const Dating = () => {
 
   const viewLikesYou = async () => {
     if (!user) return;
-    const { data } = await supabase.from("dating_likes_you").select(`*, liker:liker_id ( id, dating_profiles (*) )`).eq("liked_id", user.id).eq("seen", false);
+    const { data } = await supabase.from("dating_likes_you").select("*").eq("liked_id", user.id).eq("seen", false);
     if (data && data.length > 0) {
       await supabase.from("dating_likes_you").update({ seen: true }).eq("liked_id", user.id);
       toast({ title: `${data.length} people liked you!` }); setLikesYouCount(0);

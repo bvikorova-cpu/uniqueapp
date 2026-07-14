@@ -46,11 +46,10 @@ export default function DoctorProfile() {
   useEffect(() => {
     if (!id) return;
     (async () => {
-      const { data: profile } = await supabase
-        .from("healthcare_profiles")
+      const { data: profile } = await (supabase as any)
+        .from("doctors_public")
         .select("user_id, provider_name, provider_logo_url, specialty, bio, consultation_price_cents, consultation_duration_min, languages")
         .eq("user_id", id)
-        .eq("is_accepting_bookings", true)
         .maybeSingle();
       setDoctor((profile as Doctor) ?? null);
 
