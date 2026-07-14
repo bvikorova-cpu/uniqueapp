@@ -22,7 +22,7 @@ export function BetaTesterNotice({ onClose }: BetaTesterNoticeProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[101] flex items-center justify-center bg-background/85 backdrop-blur-md p-4"
+        className="fixed inset-0 z-[101] flex items-start justify-center overflow-y-auto bg-background/85 backdrop-blur-md p-4 pt-12 sm:items-center sm:pt-4"
         role="dialog"
         aria-modal="true"
         aria-labelledby="beta-title"
