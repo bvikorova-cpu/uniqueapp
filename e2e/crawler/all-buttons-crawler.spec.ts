@@ -19,7 +19,7 @@
  *
  * Run:
  *   bunx playwright test e2e/crawler/all-buttons-crawler.spec.ts \
- *     --project=chromium-authed --reporter=list
+ *     --project=crawler --reporter=list
  *
  * Tunables via env:
  *   CRAWLER_ROUTE_LIMIT    max routes to visit (default: all)
