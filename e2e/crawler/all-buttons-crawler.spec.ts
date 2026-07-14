@@ -37,9 +37,11 @@ const REPORT_FILE = join(REPORT_DIR, "report.json");
 const SCREENSHOT_DIR = join(REPORT_DIR, "screenshots");
 
 const ROUTE_LIMIT = Number(process.env.CRAWLER_ROUTE_LIMIT || 0);
-const CLICKS_PER_ROUTE = Number(process.env.CRAWLER_CLICKS_PER_ROUTE || 40);
-const ROUTE_TIMEOUT = Number(process.env.CRAWLER_ROUTE_TIMEOUT || 25_000);
+const CLICKS_PER_ROUTE = Number(process.env.CRAWLER_CLICKS_PER_ROUTE || 30);
+const ROUTE_TIMEOUT = Number(process.env.CRAWLER_ROUTE_TIMEOUT || 20_000);
 const START_INDEX = Number(process.env.CRAWLER_START_INDEX || 0);
+const SHARDS = Number(process.env.CRAWLER_SHARDS || 0);
+const SHARD_INDEX = Number(process.env.CRAWLER_SHARD_INDEX || 0);
 
 const SKIP_LABEL = [
   /delete|zmaz|remove|odstrán/i,
