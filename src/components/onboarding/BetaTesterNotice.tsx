@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -6,27 +5,16 @@ import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "react-i18next";
 import { Sparkles, Bug, Gift, ArrowRight, Heart } from "lucide-react";
 
-const STORAGE_KEY = "unique_beta_notice_seen";
+interface BetaTesterNoticeProps {
+  onClose?: () => void;
+}
 
-export function BetaTesterNotice() {
+export function BetaTesterNotice({ onClose }: BetaTesterNoticeProps) {
   const { t } = useTranslation();
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const seen = localStorage.getItem(STORAGE_KEY);
-    if (!seen) {
-      // Show after the ProgressiveOnboarding tutorial has had time to appear or be dismissed.
-      const timer = setTimeout(() => setIsVisible(true), 3500);
-      return () => clearTimeout(timer);
-    }
-  }, []);
 
   const handleClose = () => {
-    localStorage.setItem(STORAGE_KEY, "true");
-    setIsVisible(false);
+    onClose?.();
   };
-
-  if (!isVisible) return null;
 
   return (
     <AnimatePresence>
