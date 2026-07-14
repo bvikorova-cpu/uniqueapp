@@ -28,10 +28,12 @@ import { Age16Badge } from "@/components/Age16Badge";
 import GlobalSearch from "@/components/GlobalSearch";
 import { MobileCreditsPill } from "@/components/wall/MobileCreditsPill";
 import { useAuth } from "@/contexts/AuthContext";
+import { BetaTesterNotice } from "@/components/onboarding/BetaTesterNotice";
 
 const Navbar = () => {
   const { theme, setTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showBetaNotice, setShowBetaNotice] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -286,6 +288,16 @@ const Navbar = () => {
             </span>
 
             <Age16Badge size="xs" withLabel={false} className="ml-2 self-center" />
+
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowBetaNotice(true)}
+              className="ml-2 gap-1 text-primary hover:bg-primary/10 px-2 h-8 hidden sm:inline-flex"
+            >
+              <Sparkles className="h-4 w-4" />
+              <span className="font-semibold">Beta</span>
+            </Button>
           </Link>
 
           {/* Desktop Navigation */}
@@ -787,6 +799,18 @@ const Navbar = () => {
               ))}
             </div>
             <div className="pt-3 space-y-1.5">
+              <Button
+                variant="outline"
+                className="w-full justify-start text-sm gap-2 border-primary/30 text-primary hover:bg-primary/10"
+                size="sm"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  setShowBetaNotice(true);
+                }}
+              >
+                <Sparkles className="h-4 w-4" />
+                {"Beta testing"}
+              </Button>
               {user ? (
                 <>
                   <Link to={`/profile/${user.id}`} onClick={() => setIsMenuOpen(false)}>
@@ -851,6 +875,10 @@ const Navbar = () => {
           </div>
         )}
       </div>
+
+      {showBetaNotice && (
+        <BetaTesterNotice onClose={() => setShowBetaNotice(false)} />
+      )}
     </nav>
   );
 };
