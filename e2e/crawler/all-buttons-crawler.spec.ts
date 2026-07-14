@@ -23,9 +23,11 @@
  *
  * Tunables via env:
  *   CRAWLER_ROUTE_LIMIT    max routes to visit (default: all)
- *   CRAWLER_CLICKS_PER_ROUTE  max clicks per route (default 40)
- *   CRAWLER_ROUTE_TIMEOUT  ms per route (default 25000)
+ *   CRAWLER_CLICKS_PER_ROUTE  max clicks per route (default 30)
+ *   CRAWLER_ROUTE_TIMEOUT  ms per route (default 20000)
  *   CRAWLER_START_INDEX    resume from index (default 0)
+ *   CRAWLER_SHARDS        split routes into N shards (used by CI matrix)
+ *   CRAWLER_SHARD_INDEX   which shard this job runs (0..N-1)
  */
 import { test, expect, Page, Route } from "@playwright/test";
 import routes from "../../src/utils/smokeTestRoutes.json" assert { type: "json" };
