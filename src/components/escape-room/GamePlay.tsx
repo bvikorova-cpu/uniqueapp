@@ -60,8 +60,8 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
       if (roomsError) throw roomsError;
       setRooms(roomsData || []);
 
-      const { data: puzzleData, error: puzzleError } = await supabase
-        .from("escape_room_puzzles")
+      const { data: puzzleData, error: puzzleError } = await (supabase as any)
+        .from("escape_room_puzzles_public")
         .select("*")
         .eq("room_id", roomId)
         .order("puzzle_order");

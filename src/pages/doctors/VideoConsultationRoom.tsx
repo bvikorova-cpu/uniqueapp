@@ -55,8 +55,8 @@ export default function VideoConsultationRoom() {
         .select("full_name")
         .eq("id", otherId)
         .maybeSingle();
-      const { data: healthcare } = await supabase
-        .from("healthcare_profiles")
+      const { data: healthcare } = await (supabase as any)
+        .from("doctors_public")
         .select("provider_name")
         .eq("user_id", appt.provider_id)
         .maybeSingle();

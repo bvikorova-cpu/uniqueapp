@@ -28,12 +28,11 @@ export default function DoctorsList() {
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase
-        .from("healthcare_profiles")
+      const { data } = await (supabase as any)
+        .from("doctors_public")
         .select(
           "user_id, provider_name, provider_logo_url, specialty, bio, consultation_price_cents, consultation_duration_min, languages",
         )
-        .eq("is_accepting_bookings", true)
         .not("consultation_price_cents", "is", null)
         .order("created_at", { ascending: false });
       setDoctors((data as Doctor[]) ?? []);
