@@ -475,6 +475,17 @@ const Navbar = () => {
 
           <div className="hidden lg:flex items-center space-x-2">
 
+            {/* Beta badge — opens beta notice */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowBetaNotice(true)}
+              className="gap-1.5 text-primary hover:bg-primary/10 px-2"
+            >
+              <Sparkles className="h-4 w-4" />
+              <span className="font-semibold">Beta</span>
+            </Button>
+
             {/* Theme Toggle — visible for all users */}
             <ThemeToggle />
 
