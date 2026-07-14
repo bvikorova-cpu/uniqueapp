@@ -15,6 +15,7 @@ import {
   Sparkles
 } from "lucide-react";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { BetaTesterNotice } from "./BetaTesterNotice";
 
 interface OnboardingStep {
   id: string;
