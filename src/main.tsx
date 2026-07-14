@@ -277,6 +277,7 @@ function boot() {
           <Suspense fallback={null}>
             <CookieConsentBanner />
             <InstallPromptBanner />
+            <SentryTestButton />
           </Suspense>
         </Suspense>
       </BootErrorBoundary>
