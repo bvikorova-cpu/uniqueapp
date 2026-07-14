@@ -8169,6 +8169,63 @@ export type Database = {
           },
         ]
       }
+      bug_reports: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          description: string
+          email: string | null
+          id: string
+          page_url: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          reward_amount: number
+          rewarded: boolean
+          severity: Database["public"]["Enums"]["bug_severity"]
+          status: Database["public"]["Enums"]["bug_status"]
+          steps: string | null
+          title: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          description: string
+          email?: string | null
+          id?: string
+          page_url?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reward_amount?: number
+          rewarded?: boolean
+          severity?: Database["public"]["Enums"]["bug_severity"]
+          status?: Database["public"]["Enums"]["bug_status"]
+          steps?: string | null
+          title: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          description?: string
+          email?: string | null
+          id?: string
+          page_url?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reward_amount?: number
+          rewarded?: boolean
+          severity?: Database["public"]["Enums"]["bug_severity"]
+          status?: Database["public"]["Enums"]["bug_status"]
+          steps?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       bulk_hiring_campaigns: {
         Row: {
           created_at: string
@@ -68106,6 +68163,14 @@ export type Database = {
         | "founder"
       br_match_status: "pending" | "open" | "closed"
       br_status: "signup" | "active" | "completed"
+      bug_severity: "minor" | "major" | "critical"
+      bug_status:
+        | "new"
+        | "triage"
+        | "confirmed"
+        | "rejected"
+        | "duplicate"
+        | "fixed"
       clothing_category:
         | "tops"
         | "bottoms"
@@ -68468,6 +68533,15 @@ export const Constants = {
       app_role: ["admin", "moderator", "user", "employer", "judge", "founder"],
       br_match_status: ["pending", "open", "closed"],
       br_status: ["signup", "active", "completed"],
+      bug_severity: ["minor", "major", "critical"],
+      bug_status: [
+        "new",
+        "triage",
+        "confirmed",
+        "rejected",
+        "duplicate",
+        "fixed",
+      ],
       clothing_category: [
         "tops",
         "bottoms",
