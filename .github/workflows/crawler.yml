@@ -3,8 +3,12 @@ name: Pre-launch full crawler
 on:
   workflow_dispatch:
     inputs:
+      shards:
+        description: "Number of parallel shards (default 12)"
+        required: false
+        default: "12"
       route_limit:
-        description: "Max routes to crawl (0 = all)"
+        description: "Max routes per shard (0 = auto)"
         required: false
         default: "0"
   schedule:
@@ -12,40 +16,83 @@ on:
 
 jobs:
   crawl:
+    name: Crawl shard ${{ matrix.shard }}
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
     steps:
       - uses: actions/checkout@v4
+
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-      - run: bun install --frozen-lockfile
-      - run: bunx playwright install --with-deps chromium
 
-      - name: Run full crawler + all E2E (authed + public)
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Install Playwright Chromium
+        run: bunx playwright install --with-deps chromium
+
+      - name: Auth setup
         env:
           PLAYWRIGHT_BASE_URL: https://uniqueapp.lovable.app
           E2E_TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
           E2E_TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
-          CRAWLER_ROUTE_LIMIT: ${{ github.event.inputs.route_limit }}
+        run: bunx playwright test e2e/auth.setup.ts --project=setup
+
+      - name: Run crawler shard
+        env:
+          PLAYWRIGHT_BASE_URL: https://uniqueapp.lovable.app
+          E2E_TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
+          E2E_TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+          CRAWLER_SHARDS: ${{ github.event.inputs.shards || 12 }}
+          CRAWLER_SHARD_INDEX: ${{ matrix.shard }}
+          CRAWLER_ROUTE_LIMIT: ${{ github.event.inputs.route_limit || 0 }}
+          CRAWLER_CLICKS_PER_ROUTE: 30
+          CRAWLER_ROUTE_TIMEOUT: 20_000
         run: |
           bunx playwright test \
+            e2e/crawler/all-buttons-crawler.spec.ts \
             --project=crawler \
-            --project=chromium-authed \
-            --project=chromium \
             --reporter=list || true
 
-      - name: Build HTML + markdown report
+      - name: Upload shard report
         if: always()
-        run: node e2e/crawler/generate-report.mjs
+        uses: actions/upload-artifact@v4
+        with:
+          name: crawler-shard-${{ matrix.shard }}
+          path: e2e/crawler-report/
+          retention-days: 30
+          if-no-files-found: ignore
 
-      - name: Upload full report (crawler + playwright HTML)
+  merge:
+    name: Merge reports and generate summary
+    needs: crawl
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Download all shard reports
+        uses: actions/download-artifact@v4
+        with:
+          path: shards/
+          pattern: crawler-shard-*
+
+      - name: Merge reports and build HTML + markdown
+        run: node e2e/crawler/merge-reports.mjs
+
+      - name: Upload merged crawler report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: crawler-report
           path: |
             e2e/crawler-report/
-            playwright-report/
-            test-results/
           retention-days: 30
