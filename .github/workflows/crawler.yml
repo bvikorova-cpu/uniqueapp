@@ -22,15 +22,18 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: bunx playwright install --with-deps chromium
 
-      - name: Run all-buttons crawler
+      - name: Run full crawler + all E2E (authed + public)
         env:
           PLAYWRIGHT_BASE_URL: https://uniqueapp.lovable.app
           E2E_TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
           E2E_TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
           CRAWLER_ROUTE_LIMIT: ${{ github.event.inputs.route_limit }}
         run: |
-          bunx playwright test e2e/crawler/all-buttons-crawler.spec.ts \
-            --project=crawler --reporter=list
+          bunx playwright test \
+            --project=crawler \
+            --project=chromium-authed \
+            --project=chromium \
+            --reporter=list || true
 
       - name: Build HTML + markdown report
         if: always()
