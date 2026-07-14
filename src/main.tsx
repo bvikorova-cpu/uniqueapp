@@ -2,7 +2,11 @@ import { createRoot } from "react-dom/client";
 import { Component, lazy as reactLazy, ReactNode, Suspense } from "react";
 import { lazyWithRetry } from "./utils/lazyWithRetry";
 import { installNavigationScrollReset } from "./utils/installNavigationScrollReset";
+import { initSentry } from "./lib/sentry";
 import "./index.css";
+
+// Init Sentry as early as possible so it captures boot-time errors.
+initSentry();
 
 // Keep dynamic imports inside React.lazy. Starting them at module top-level
 // delays execution of this whole file on slow mobile networks, leaving #root
