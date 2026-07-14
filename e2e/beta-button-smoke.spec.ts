@@ -4,14 +4,21 @@ test('beta button in navbar opens beta notice', async ({ page }) => {
   await page.goto('http://localhost:8080/', { waitUntil: 'networkidle' });
   await page.waitForTimeout(800);
   
-  // Dismiss onboarding modal if present
+  // Dismiss onboarding if present
   const skipTutorial = page.getByText('Skip tutorial', { exact: false });
   if (await skipTutorial.isVisible().catch(() => false)) {
     await skipTutorial.click();
     await page.waitForTimeout(300);
   }
   
-  // Look for beta button in navbar
+  // Close auto-opened beta notice if present
+  const startExploring = page.getByRole('button', { name: 'Start exploring' });
+  if (await startExploring.isVisible().catch(() => false)) {
+    await startExploring.click();
+    await page.waitForTimeout(300);
+  }
+  
+  // Click beta button in navbar
   const betaButton = page.locator('nav').getByRole('button', { name: 'Beta' }).first();
   await expect(betaButton).toBeVisible();
   await betaButton.click();
