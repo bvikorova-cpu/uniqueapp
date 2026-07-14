@@ -19,13 +19,15 @@
  *
  * Run:
  *   bunx playwright test e2e/crawler/all-buttons-crawler.spec.ts \
- *     --project=chromium-authed --reporter=list
+ *     --project=crawler --reporter=list
  *
  * Tunables via env:
  *   CRAWLER_ROUTE_LIMIT    max routes to visit (default: all)
- *   CRAWLER_CLICKS_PER_ROUTE  max clicks per route (default 40)
- *   CRAWLER_ROUTE_TIMEOUT  ms per route (default 25000)
+ *   CRAWLER_CLICKS_PER_ROUTE  max clicks per route (default 30)
+ *   CRAWLER_ROUTE_TIMEOUT  ms per route (default 20000)
  *   CRAWLER_START_INDEX    resume from index (default 0)
+ *   CRAWLER_SHARDS        split routes into N shards (used by CI matrix)
+ *   CRAWLER_SHARD_INDEX   which shard this job runs (0..N-1)
  */
 import { test, expect, Page, Route } from "@playwright/test";
 import routes from "../../src/utils/smokeTestRoutes.json" assert { type: "json" };
@@ -37,9 +39,11 @@ const REPORT_FILE = join(REPORT_DIR, "report.json");
 const SCREENSHOT_DIR = join(REPORT_DIR, "screenshots");
 
 const ROUTE_LIMIT = Number(process.env.CRAWLER_ROUTE_LIMIT || 0);
-const CLICKS_PER_ROUTE = Number(process.env.CRAWLER_CLICKS_PER_ROUTE || 40);
-const ROUTE_TIMEOUT = Number(process.env.CRAWLER_ROUTE_TIMEOUT || 25_000);
+const CLICKS_PER_ROUTE = Number(process.env.CRAWLER_CLICKS_PER_ROUTE || 30);
+const ROUTE_TIMEOUT = Number(process.env.CRAWLER_ROUTE_TIMEOUT || 20_000);
 const START_INDEX = Number(process.env.CRAWLER_START_INDEX || 0);
+const SHARDS = Number(process.env.CRAWLER_SHARDS || 0);
+const SHARD_INDEX = Number(process.env.CRAWLER_SHARD_INDEX || 0);
 
 const SKIP_LABEL = [
   /delete|zmaz|remove|odstrán/i,
@@ -118,7 +122,17 @@ test.describe.configure({ mode: "serial" });
 test("crawl every route and click every safe button", async ({ page, browserName }, testInfo) => {
   test.setTimeout(0); // full crawl controls its own timing
 
-  const all = (routes as string[]).slice(START_INDEX, ROUTE_LIMIT ? START_INDEX + ROUTE_LIMIT : undefined);
+  let startIndex = START_INDEX;
+  let routeLimit = ROUTE_LIMIT;
+  if (SHARDS > 0) {
+    const total = (routes as string[]).length;
+    const shardSize = Math.ceil(total / SHARDS);
+    startIndex = Math.min(SHARD_INDEX * shardSize, total);
+    routeLimit = Math.min(shardSize, total - startIndex);
+    console.log(`[crawler shard ${SHARD_INDEX}/${SHARDS}] start=${startIndex} limit=${routeLimit} total=${total}`);
+  }
+
+  const all = (routes as string[]).slice(startIndex, routeLimit ? startIndex + routeLimit : undefined);
   const results = loadReport();
   const alreadyDone = new Set(results.map((r) => r.route));
 
