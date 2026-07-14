@@ -876,6 +876,10 @@ const Navbar = () => {
           </div>
         )}
       </div>
+
+      {showBetaNotice && (
+        <BetaTesterNotice onClose={() => setShowBetaNotice(false)} />
+      )}
     </nav>
   );
 };
