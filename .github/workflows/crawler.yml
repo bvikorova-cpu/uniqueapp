@@ -39,10 +39,13 @@ jobs:
         if: always()
         run: node e2e/crawler/generate-report.mjs
 
-      - name: Upload crawler report
+      - name: Upload full report (crawler + playwright HTML)
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: crawler-report
-          path: e2e/crawler-report/
+          path: |
+            e2e/crawler-report/
+            playwright-report/
+            test-results/
           retention-days: 30
