@@ -229,7 +229,8 @@ export function QuizTaker({ isOpen, onClose, quiz, userId, onComplete }: QuizTak
               <h4 className="font-semibold">Review Your Answers</h4>
               {questions.map((question, index) => {
                 const userAnswer = answers[question.id];
-                const isCorrect = userAnswer === question.correct_answer;
+                const graded = gradedResults[question.id];
+                const isCorrect = !!graded?.is_correct;
 
                 return (
                   <Card key={question.id} className={isCorrect ? "border-primary/50" : "border-destructive/50"}>
@@ -250,11 +251,11 @@ export function QuizTaker({ isOpen, onClose, quiz, userId, onComplete }: QuizTak
                               {userAnswer || "Not answered"}
                             </span>
                           </p>
-                          {!isCorrect && (
+                          {!isCorrect && graded?.explanation && (
                             <p className="text-sm mt-1">
-                              <span className="text-muted-foreground">Correct answer: </span>
+                              <span className="text-muted-foreground">Explanation: </span>
                               <span className="text-primary font-medium">
-                                {question.correct_answer}
+                                {graded.explanation}
                               </span>
                             </p>
                           )}
