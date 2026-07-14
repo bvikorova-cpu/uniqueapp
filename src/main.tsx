@@ -18,6 +18,9 @@ const CookieConsentBanner = reactLazy(() =>
 const InstallPromptBanner = reactLazy(() =>
   import("./components/pwa/InstallPromptBanner").then((module) => ({ default: module.InstallPromptBanner }))
 );
+const SentryTestButton = reactLazy(() =>
+  import("./components/dev/SentryTestButton").then((module) => ({ default: module.SentryTestButton }))
+);
 
 // Warm up heavy shared chunks in the background so first navigation inside
 // the app feels instant. These are fire-and-forget; failures are harmless.
@@ -274,6 +277,7 @@ function boot() {
           <Suspense fallback={null}>
             <CookieConsentBanner />
             <InstallPromptBanner />
+            <SentryTestButton />
           </Suspense>
         </Suspense>
       </BootErrorBoundary>
