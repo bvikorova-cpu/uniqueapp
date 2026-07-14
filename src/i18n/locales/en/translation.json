@@ -1289,5 +1289,19 @@
       "title": "AI Numerology — your numbers, decoded",
       "description": "AI-generated numerology reports based on your name and birth date. Instant, shareable."
     }
+  },
+  "beta": {
+    "badge": "Beta",
+    "title": "We are in beta testing",
+    "message_1": "Unique is growing every day. We are currently in an open beta period, which means you may occasionally encounter a small bug or a feature that is still being polished.",
+    "no_loss": "No one will lose anything. If a paid feature does not work as promised, we will always refund or restore it.",
+    "message_2": "We would be incredibly grateful if you report any issue, typo, or weird behavior. Your feedback helps us make the platform perfect.",
+    "reward_title": "Thank-you reward for confirmed bugs",
+    "reward_minor": "Minor issue — +5 AI credits",
+    "reward_major": "Major bug — +25 AI credits",
+    "reward_critical": "Critical/security issue — +50 AI credits",
+    "report_bug": "Report a bug",
+    "start_exploring": "Start exploring",
+    "thanks": "Thank you for your patience and for being part of Unique. 💜"
   }
 }
