@@ -20,7 +20,6 @@ interface Question {
   id: string;
   question: string;
   options: any;
-  correct_answer: string;
   order_index: number;
 }
 
