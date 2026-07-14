@@ -115,7 +115,7 @@ export function BetaTesterNotice({ onClose }: BetaTesterNoticeProps) {
                   className="w-full gap-2"
                   onClick={() => {
                     handleClose();
-                    window.location.href = "/contact";
+                    window.location.href = "/report-bug";
                   }}
                 >
                   <Bug className="h-4 w-4" />
