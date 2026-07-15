@@ -260,12 +260,21 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
 
   const uniButton = (
     <button
-      aria-label="Open Uni voice assistant"
+      aria-label="Open Uni — voice AI assistant (like Siri)"
+      title="Uni · Voice AI assistant (like Siri) — tap or say “Hey Uni”"
       onClick={() => setOpen(true)}
       className="relative h-14 w-14 rounded-full bg-gradient-to-br from-primary to-accent shadow-xl shadow-primary/40 flex items-center justify-center hover:scale-110 transition-transform"
     >
-      <Sparkles className="h-6 w-6 text-white" />
-      <span className="absolute -top-1 -right-1 bg-background text-[9px] font-black px-1.5 py-0.5 rounded-full border border-primary/40 text-primary">Uni</span>
+      {/* Siri-like pulsing halo so users recognize this as a voice AI */}
+      <span className="absolute inset-0 rounded-full bg-primary/40 animate-ping" aria-hidden="true" />
+      <span className="absolute -inset-1 rounded-full border border-primary/40" aria-hidden="true" />
+      <Mic className="h-6 w-6 text-white relative" />
+      <span className="absolute -top-1 -right-1 bg-background text-[9px] font-black px-1.5 py-0.5 rounded-full border border-primary/40 text-primary flex items-center gap-0.5">
+        <Sparkles className="h-2.5 w-2.5" /> Uni
+      </span>
+      <span className="absolute -bottom-6 right-0 whitespace-nowrap text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-primary/90 text-primary-foreground shadow">
+        Voice AI · like Siri
+      </span>
     </button>
   );
 
@@ -316,8 +325,13 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
                   <Sparkles className="h-4 w-4 text-white" />
                 </div>
                 <div>
-                  <p className="font-black text-sm">Uni</p>
-                  <p className="text-[10px] text-muted-foreground">5 credits per command</p>
+                  <p className="font-black text-sm flex items-center gap-1.5">
+                    Uni
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/30">
+                      Voice AI · like Siri
+                    </span>
+                  </p>
+                  <p className="text-[10px] text-muted-foreground">Speak naturally · 5 credits per command</p>
                 </div>
               </div>
               <div className="flex items-center gap-1">
