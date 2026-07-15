@@ -31,6 +31,10 @@ const WallFeed = ({
   onLoadMore,
   onDelete,
 }: WallFeedProps) => {
+  useEffect(() => {
+    if (items.length > 0) markWallFirstPaint();
+  }, [items.length]);
+
   if (loading) {
     return (
       <Card className="p-6 sm:p-8 flex items-center justify-center">
