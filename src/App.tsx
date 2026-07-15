@@ -675,6 +675,9 @@ const App = () => {
                 <Suspense fallback={null}>
                   <ProgressiveOnboarding />
                 </Suspense>
+                <Suspense fallback={null}>
+                  <UniAssistant />
+                </Suspense>
                 <Toaster />
                 <Sonner />
                 <GoogleTranslateWidget />
