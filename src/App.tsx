@@ -88,6 +88,7 @@ import { installImagePerformancePatch } from "@/utils/imagePerformance";
 import { prewarmHotRoutes } from "@/utils/prewarmRoutes";
 import { HelmetProvider } from "react-helmet-async";
 import GoogleTranslateWidget from "@/components/GoogleTranslateWidget";
+import { FloatingAssistantDock } from "@/components/FloatingAssistantDock";
 import { GlobalPaymentCleanup } from "@/components/payment/GlobalPaymentCleanup";
 import { GameAdGateHost } from "@/components/games/GameAdGateHost";
 
@@ -675,12 +676,15 @@ const App = () => {
                 <Suspense fallback={null}>
                   <ProgressiveOnboarding />
                 </Suspense>
-                <Suspense fallback={null}>
-                  <UniAssistant />
-                </Suspense>
                 <Toaster />
                 <Sonner />
-                <GoogleTranslateWidget />
+                <Suspense fallback={null}>
+                  <FloatingAssistantDock>
+                    <GoogleTranslateWidget docked />
+                    <UniAssistant docked />
+                    <LiveChatWidget docked />
+                  </FloatingAssistantDock>
+                </Suspense>
 
                 <div className="flex flex-col min-h-screen">
                   <ErrorBoundary>
@@ -1391,9 +1395,6 @@ const App = () => {
 
                   <Suspense fallback={null}>
                     <Footer />
-                  </Suspense>
-                  <Suspense fallback={null}>
-                    <LiveChatWidget />
                   </Suspense>
                   <Suspense fallback={null}>
                     <MobileBottomNav />

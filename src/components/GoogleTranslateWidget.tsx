@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Languages, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 declare global {
   interface Window {
@@ -8,12 +9,18 @@ declare global {
   }
 }
 
+interface GoogleTranslateWidgetProps {
+  /** When true, the widget button is rendered inline (no fixed positioning)
+   *  so it can be placed inside a shared dock such as FloatingAssistantDock. */
+  docked?: boolean;
+}
+
 /**
  * Floating Google Translate widget — collapsed by default into a small
  * glassmorphism icon button. Expands to reveal the language picker.
  * Hidden visually on mobile until tapped, so it never blocks the feed.
  */
-export default function GoogleTranslateWidget() {
+export default function GoogleTranslateWidget({ docked = false }: GoogleTranslateWidgetProps) {
   const [open, setOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
@@ -162,25 +169,55 @@ export default function GoogleTranslateWidget() {
     };
   }, [loaded]);
 
+  const button = (
+    <button
+      type="button"
+      onClick={() => setOpen((v) => !v)}
+      aria-label={open ? "Hide translator" : "Translate page"}
+      className={cn(
+        "h-14 w-14 rounded-full flex items-center justify-center transition-all active:scale-95",
+        open
+          ? "bg-primary text-primary-foreground shadow-primary/40"
+          : "bg-background/80 hover:bg-background text-foreground/80 hover:text-primary backdrop-blur-xl border border-border/50 shadow-lg shadow-primary/20"
+      )}
+    >
+      {open ? <X className="h-5 w-5" /> : <Languages className="h-5 w-5" />}
+    </button>
+  );
+
+  const picker = (
+    <div
+      id="google_translate_element"
+      aria-label="Translate page"
+      className={cn(
+        "transition-all duration-300",
+        open
+          ? "opacity-100 translate-x-0 pointer-events-auto"
+          : "opacity-0 translate-x-4 pointer-events-none w-0 overflow-hidden"
+      )}
+    />
+  );
+
+  if (docked) {
+    return (
+      <div className="relative flex flex-col items-end gap-2">
+        <div
+          className={cn(
+            "absolute bottom-full right-0 mb-2 transition-all duration-300",
+            open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          )}
+        >
+          {picker}
+        </div>
+        {button}
+      </div>
+    );
+  }
+
   return (
     <div className="fixed bottom-[calc(9rem+env(safe-area-inset-bottom))] right-3 md:bottom-24 md:right-6 z-[9999] flex items-center gap-2">
-      <div
-        id="google_translate_element"
-        aria-label="Translate page"
-        className={`transition-all duration-300 ${
-          open
-            ? "opacity-100 translate-x-0 pointer-events-auto"
-            : "opacity-0 translate-x-4 pointer-events-none w-0 overflow-hidden"
-        }`}
-      />
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-label={open ? "Hide translator" : "Translate page"}
-        className="h-10 w-10 rounded-full flex items-center justify-center bg-background/60 hover:bg-background/80 backdrop-blur-xl border border-border/50 shadow-lg shadow-primary/20 text-foreground/80 hover:text-primary transition-all active:scale-95"
-      >
-        {open ? <X className="h-4 w-4" /> : <Languages className="h-4 w-4" />}
-      </button>
+      {picker}
+      {button}
     </div>
   );
 }

@@ -11,13 +11,20 @@ import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import { CSATWidget } from "./CSATWidget";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { cn } from "@/lib/utils";
 
 interface Msg { role: "user" | "assistant"; content: string }
 
 const STORAGE_KEY = "unique:contact-livechat";
 const HIDDEN_KEY = "unique:contact-livechat:hidden";
 
-export const LiveChatWidget = () => {
+interface LiveChatWidgetProps {
+  /** When true, the floating trigger is rendered inline (no fixed positioning)
+   *  so it can be placed inside a shared dock such as FloatingAssistantDock. */
+  docked?: boolean;
+}
+
+export const LiveChatWidget = ({ docked = false }: LiveChatWidgetProps) => {
   const { pathname } = useLocation();
   const [hidden, setHidden] = useState<boolean>(() => {
     try { return localStorage.getItem(HIDDEN_KEY) === "1"; } catch { return false; }
@@ -97,26 +104,44 @@ export const LiveChatWidget = () => {
   );
   }
 
+  const triggerButton = (
+    <Button
+      onClick={() => setOpen(true)}
+      className="h-14 w-14 rounded-full bg-gradient-to-br from-primary to-accent shadow-2xl shadow-primary/40 hover:scale-105 transition"
+      aria-label="Open live chat"
+    >
+      <MessageCircle className="h-6 w-6" />
+    </Button>
+  );
+
   return (
     <>
       {!open && (
-        <div className="fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] right-3 md:bottom-6 md:right-6 z-50 flex flex-col items-end gap-1">
-          <button
-            onClick={hide}
-            className="opacity-60 hover:opacity-100 bg-background/80 backdrop-blur border border-border rounded-full p-1 transition"
-            aria-label="Hide assistant"
-            title="Hide on all pages"
-          >
-            <X className="h-3 w-3" />
-          </button>
-          <Button
-            onClick={() => setOpen(true)}
-            className="h-14 w-14 rounded-full bg-gradient-to-br from-primary to-accent shadow-2xl shadow-primary/40 hover:scale-105 transition"
-            aria-label="Open live chat"
-          >
-            <MessageCircle className="h-6 w-6" />
-          </Button>
-        </div>
+        docked ? (
+          <div className="relative flex flex-col items-end gap-1">
+            <button
+              onClick={hide}
+              className="opacity-60 hover:opacity-100 bg-background/80 backdrop-blur border border-border rounded-full p-1 transition"
+              aria-label="Hide assistant"
+              title="Hide on all pages"
+            >
+              <X className="h-3 w-3" />
+            </button>
+            {triggerButton}
+          </div>
+        ) : (
+          <div className="fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] right-3 md:bottom-6 md:right-6 z-50 flex flex-col items-end gap-1">
+            <button
+              onClick={hide}
+              className="opacity-60 hover:opacity-100 bg-background/80 backdrop-blur border border-border rounded-full p-1 transition"
+              aria-label="Hide assistant"
+              title="Hide on all pages"
+            >
+              <X className="h-3 w-3" />
+            </button>
+            {triggerButton}
+          </div>
+        )
       )}
 
       {open && (

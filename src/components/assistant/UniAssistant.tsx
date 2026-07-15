@@ -6,10 +6,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 type Turn = { role: "user" | "assistant"; content: string };
 
-export function UniAssistant() {
+interface UniAssistantProps {
+  /** When true, the floating trigger is rendered inline (no fixed positioning)
+   *  so it can be placed inside a shared dock such as FloatingAssistantDock. */
+  docked?: boolean;
+}
+
+export function UniAssistant({ docked = false }: UniAssistantProps) {
   const [open, setOpen] = useState(false);
   const [listening, setListening] = useState(false);
   const [thinking, setThinking] = useState(false);
@@ -251,9 +258,23 @@ export function UniAssistant() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listening, wakeEnabled]);
 
+  const uniButton = (
+    <button
+      aria-label="Open Uni voice assistant"
+      onClick={() => setOpen(true)}
+      className="relative h-14 w-14 rounded-full bg-gradient-to-br from-primary to-accent shadow-xl shadow-primary/40 flex items-center justify-center hover:scale-110 transition-transform"
+    >
+      <Sparkles className="h-6 w-6 text-white" />
+      <span className="absolute -top-1 -right-1 bg-background text-[9px] font-black px-1.5 py-0.5 rounded-full border border-primary/40 text-primary">Uni</span>
+    </button>
+  );
+
   const fab = (
-    <div className="fixed bottom-24 right-4 md:right-6 z-[9998] flex flex-col items-end gap-2">
-      {supported && (
+    <div className={cn(
+      "flex flex-col items-end gap-2",
+      !docked && "fixed bottom-24 right-4 md:right-6 z-[9998]"
+    )}>
+      {supported && !docked && (
         <button
           onClick={toggleWakeWord}
           aria-label={wakeEnabled ? "Disable 'Hey Uni' wake word" : "Enable 'Hey Uni' wake word"}
@@ -268,14 +289,7 @@ export function UniAssistant() {
           Hey Uni
         </button>
       )}
-      <button
-        aria-label="Open Uni voice assistant"
-        onClick={() => setOpen(true)}
-        className="relative h-14 w-14 rounded-full bg-gradient-to-br from-primary to-accent shadow-xl shadow-primary/40 flex items-center justify-center hover:scale-110 transition-transform"
-      >
-        <Sparkles className="h-6 w-6 text-white" />
-        <span className="absolute -top-1 -right-1 bg-background text-[9px] font-black px-1.5 py-0.5 rounded-full border border-primary/40 text-primary">Uni</span>
-      </button>
+      {uniButton}
     </div>
   );
 
@@ -306,9 +320,25 @@ export function UniAssistant() {
                   <p className="text-[10px] text-muted-foreground">5 credits per command</p>
                 </div>
               </div>
-              <button onClick={() => setOpen(false)} className="p-1 hover:bg-muted rounded">
-                <X className="h-4 w-4" />
-              </button>
+              <div className="flex items-center gap-1">
+                {docked && supported && (
+                  <button
+                    onClick={toggleWakeWord}
+                    aria-label={wakeEnabled ? "Disable 'Hey Uni' wake word" : "Enable 'Hey Uni' wake word"}
+                    title={wakeEnabled ? "Wake word ON — say “Hey Uni”" : "Enable “Hey Uni” wake word"}
+                    className={`p-1.5 rounded-full transition-all ${
+                      wakeEnabled
+                        ? "bg-primary text-primary-foreground animate-pulse"
+                        : "hover:bg-muted text-muted-foreground"
+                    }`}
+                  >
+                    {wakeEnabled ? <Ear className="h-4 w-4" /> : <EarOff className="h-4 w-4" />}
+                  </button>
+                )}
+                <button onClick={() => setOpen(false)} className="p-1 hover:bg-muted rounded">
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
             </div>
 
             <div className="flex-1 overflow-y-auto space-y-2 min-h-[120px]">
@@ -392,7 +422,7 @@ export function UniAssistant() {
   if (typeof document === "undefined") return null;
   return (
     <>
-      {createPortal(fab, document.body)}
+      {docked ? fab : createPortal(fab, document.body)}
       {createPortal(captionBar, document.body)}
       {createPortal(modal, document.body)}
     </>
