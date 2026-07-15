@@ -24,6 +24,10 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
   const [transcript, setTranscript] = useState("");
   const [turns, setTurns] = useState<Turn[]>([]);
   const [caption, setCaption] = useState<{ role: "user" | "assistant"; text: string } | null>(null);
+  const [showOnboarding, setShowOnboarding] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    return localStorage.getItem("uni-onboarding-seen") !== "1";
+  });
   const captionTimerRef = useRef<number | null>(null);
 
   const showCaption = (role: "user" | "assistant", text: string, autoHideMs?: number) => {
@@ -174,6 +178,16 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
   const stopListening = () => {
     try { recognitionRef.current?.stop?.(); } catch {}
     setListening(false);
+  };
+
+  const dismissOnboarding = () => {
+    setShowOnboarding(false);
+    try { localStorage.setItem("uni-onboarding-seen", "1"); } catch {}
+  };
+
+  const tryOnboarding = () => {
+    dismissOnboarding();
+    startListening();
   };
 
   const stopWakeWord = () => {
@@ -356,7 +370,31 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
             </div>
 
             <div className="flex-1 overflow-y-auto space-y-2 min-h-[120px]">
-              {turns.length === 0 && (
+              {showOnboarding && (
+                <div className="relative overflow-hidden rounded-xl border border-primary/30 bg-gradient-to-r from-primary/10 to-accent/10 p-3">
+                  <button
+                    onClick={dismissOnboarding}
+                    aria-label="Dismiss onboarding"
+                    className="absolute top-1.5 right-1.5 p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-background/80"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                  <div className="flex items-start gap-3 pr-6">
+                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shrink-0 shadow-lg">
+                      <Mic className="h-4 w-4 text-white" />
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-sm font-semibold leading-snug">
+                        Uni is your voice assistant — just like Siri. Tap the mic and ask anything.
+                      </p>
+                      <Button onClick={tryOnboarding} size="sm" className="gap-1.5 bg-gradient-to-r from-primary to-accent font-bold">
+                        <Sparkles className="h-3.5 w-3.5" /> Skús
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {turns.length === 0 && !showOnboarding && (
                 <div className="text-xs text-muted-foreground p-3 rounded-lg bg-muted/50">
                   <p className="font-semibold mb-1">Try saying:</p>
                   <ul className="space-y-0.5">
