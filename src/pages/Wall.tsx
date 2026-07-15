@@ -5,6 +5,11 @@ import { Sparkles } from "lucide-react";
 // preview-sync: 2026-01-05a (touch file to ensure consistent preview refresh)
 import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  startWallTrace,
+  markWallInteractive,
+  tracedRpc,
+} from "@/utils/wallPerf";
 import { User } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
 import UserSearch from "@/components/feed/UserSearch";
