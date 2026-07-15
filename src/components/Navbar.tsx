@@ -296,7 +296,7 @@ const Navbar = () => {
               className="ml-2 gap-1 text-primary hover:bg-primary/10 px-2 h-8 inline-flex"
             >
               <Sparkles className="h-4 w-4" />
-              <span className="font-semibold">Beta</span>
+              <span className="font-semibold hidden sm:inline">Beta</span>
             </Button>
           </Link>
 
@@ -593,7 +593,7 @@ const Navbar = () => {
           {/* Mobile: Notification bell */}
           {user && (
             <div className="lg:hidden mr-1 flex items-center gap-1">
-              <MessagesBell />
+              <div className="hidden sm:block"><MessagesBell /></div>
               <NotificationBell />
             </div>
           )}
