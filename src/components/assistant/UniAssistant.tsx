@@ -16,6 +16,16 @@ export function UniAssistant() {
   const [speaking, setSpeaking] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [turns, setTurns] = useState<Turn[]>([]);
+  const [caption, setCaption] = useState<{ role: "user" | "assistant"; text: string } | null>(null);
+  const captionTimerRef = useRef<number | null>(null);
+
+  const showCaption = (role: "user" | "assistant", text: string, autoHideMs?: number) => {
+    if (captionTimerRef.current) window.clearTimeout(captionTimerRef.current);
+    setCaption({ role, text });
+    if (autoHideMs) {
+      captionTimerRef.current = window.setTimeout(() => setCaption(null), autoHideMs);
+    }
+  };
   const recognitionRef = useRef<any>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const navigate = useNavigate();
