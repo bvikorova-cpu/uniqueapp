@@ -219,8 +219,8 @@ export default function WallFeed({
                 endReached={() => {
                   if (hasMore && !loadingMore) fetchPosts(true);
                 }}
-                overscan={800}
-                increaseViewportBy={{ top: 400, bottom: 800 }}
+                overscan={200}
+                increaseViewportBy={{ top: 200, bottom: 400 }}
                 itemContent={(index, item) => (
                   <div className="pb-5">
                     {item.type === 'post' ? (

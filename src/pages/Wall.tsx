@@ -72,6 +72,7 @@ const Feed = () => {
   const wallStats = useWallStats(user?.id);
   // Hydrate first page instantly from localStorage cache (stale-while-revalidate)
   const CACHE_KEY = "wall_feed_cache_v1";
+  const CACHE_FRESH_MS = 60 * 1000; // skip network refetch if cache is <60s old
   const cached = (() => {
     try {
       const raw = typeof window !== "undefined" ? localStorage.getItem(CACHE_KEY) : null;
@@ -81,6 +82,8 @@ const Feed = () => {
       return parsed;
     } catch { return null; }
   })();
+  const cacheAgeMs = cached?.t ? Date.now() - cached.t : Infinity;
+  const cacheIsFresh = cacheAgeMs < CACHE_FRESH_MS && (cached?.feedItems?.length ?? 0) > 0;
   const [posts, setPosts] = useState<Post[]>(cached?.posts || []);
   const [reposts, setReposts] = useState<Repost[]>(cached?.reposts || []);
   const [feedItems, setFeedItems] = useState<FeedItem[]>(cached?.feedItems || []);
@@ -218,12 +221,22 @@ const Feed = () => {
       setFeedItems((prev) => {
         const merged = loadMore ? [...prev, ...newItems] : newItems;
         const seen = new Set<string>();
-        return merged.filter((it) => {
+        const deduped = merged.filter((it) => {
           const k = `${it.type}-${it.data.id}`;
           if (seen.has(k)) return false;
           seen.add(k);
           return true;
         });
+        // Skip state update on background refresh if the first page is unchanged
+        // — avoids Virtuoso re-render / flicker when nothing new arrived.
+        if (!loadMore && prev.length === deduped.length) {
+          let same = true;
+          for (let i = 0; i < deduped.length; i++) {
+            if (prev[i]?.data?.id !== deduped[i]?.data?.id) { same = false; break; }
+          }
+          if (same) return prev;
+        }
+        return deduped;
       });
 
       if (newItems.length > 0) {
@@ -340,7 +353,14 @@ const Feed = () => {
       }
     );
 
-    fetchPosts();
+    // If we already have a fresh cached first page, defer the network refresh
+    // so the initial paint isn't blocked by an RPC round-trip.
+    let deferredFetch: ReturnType<typeof setTimeout> | null = null;
+    if (cacheIsFresh) {
+      deferredFetch = setTimeout(() => fetchPosts(), 4000);
+    } else {
+      fetchPosts();
+    }
 
     // Realtime: only INSERT events, only refresh when scrolled at top to avoid
     // yanking the feed under the user. Heavy debounce keeps things quiet under load.
@@ -365,6 +385,7 @@ const Feed = () => {
 
     return () => {
       if (timer) clearTimeout(timer);
+      if (deferredFetch) clearTimeout(deferredFetch);
       supabase.removeChannel(postsChannel);
       supabase.removeChannel(repostsChannel);
       subscription.unsubscribe();
