@@ -25,7 +25,7 @@ export default function SalaryInsights() {
 
   const load = async () => {
     setLoading(true);
-    let query = supabase.from("salary_reports").select("*").order("created_at", { ascending: false }).limit(200);
+    let query = supabase.from("salary_reports_public" as any).select("*").order("created_at", { ascending: false }).limit(200);
     if (q.trim()) query = query.ilike("job_title", `%${q.trim()}%`);
     const { data } = await query;
     setItems(data || []);

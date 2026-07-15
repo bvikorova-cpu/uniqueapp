@@ -64941,6 +64941,80 @@ export type Database = {
         }
         Relationships: []
       }
+      company_reviews_public: {
+        Row: {
+          advice: string | null
+          company_id: string | null
+          cons: string | null
+          created_at: string | null
+          employment_status: string | null
+          helpful_count: number | null
+          id: string | null
+          is_anonymous: boolean | null
+          job_title: string | null
+          pros: string | null
+          rating: number | null
+          rating_career: number | null
+          rating_culture: number | null
+          rating_management: number | null
+          rating_salary: number | null
+          rating_work_life: number | null
+          title: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          advice?: string | null
+          company_id?: string | null
+          cons?: string | null
+          created_at?: string | null
+          employment_status?: string | null
+          helpful_count?: number | null
+          id?: string | null
+          is_anonymous?: boolean | null
+          job_title?: string | null
+          pros?: string | null
+          rating?: number | null
+          rating_career?: number | null
+          rating_culture?: number | null
+          rating_management?: number | null
+          rating_salary?: number | null
+          rating_work_life?: number | null
+          title?: string | null
+          updated_at?: string | null
+          user_id?: never
+        }
+        Update: {
+          advice?: string | null
+          company_id?: string | null
+          cons?: string | null
+          created_at?: string | null
+          employment_status?: string | null
+          helpful_count?: number | null
+          id?: string | null
+          is_anonymous?: boolean | null
+          job_title?: string | null
+          pros?: string | null
+          rating?: number | null
+          rating_career?: number | null
+          rating_culture?: number | null
+          rating_management?: number | null
+          rating_salary?: number | null
+          rating_work_life?: number | null
+          title?: string | null
+          updated_at?: string | null
+          user_id?: never
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_reviews_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "company_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       confessions_feed: {
         Row: {
           confession_text: string | null
@@ -65287,6 +65361,62 @@ export type Database = {
           talent_user_id: string | null
         }
         Relationships: []
+      }
+      interview_questions_public: {
+        Row: {
+          answer_tips: string | null
+          category: string | null
+          company_id: string | null
+          company_name: string | null
+          created_at: string | null
+          difficulty: string | null
+          id: string | null
+          is_anonymous: boolean | null
+          job_title: string | null
+          question: string | null
+          upvotes: number | null
+          user_id: string | null
+          was_asked: boolean | null
+        }
+        Insert: {
+          answer_tips?: string | null
+          category?: string | null
+          company_id?: string | null
+          company_name?: string | null
+          created_at?: string | null
+          difficulty?: string | null
+          id?: string | null
+          is_anonymous?: boolean | null
+          job_title?: string | null
+          question?: string | null
+          upvotes?: number | null
+          user_id?: never
+          was_asked?: boolean | null
+        }
+        Update: {
+          answer_tips?: string | null
+          category?: string | null
+          company_id?: string | null
+          company_name?: string | null
+          created_at?: string | null
+          difficulty?: string | null
+          id?: string | null
+          is_anonymous?: boolean | null
+          job_title?: string | null
+          question?: string | null
+          upvotes?: number | null
+          user_id?: never
+          was_asked?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "interview_questions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "company_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       iq_questions_public: {
         Row: {
@@ -66073,6 +66203,68 @@ export type Database = {
           user_id: string | null
         }
         Relationships: []
+      }
+      salary_reports_public: {
+        Row: {
+          base_salary: number | null
+          bonus: number | null
+          company_id: string | null
+          company_name: string | null
+          country: string | null
+          created_at: string | null
+          currency: string | null
+          employment_type: string | null
+          equity: number | null
+          id: string | null
+          is_anonymous: boolean | null
+          job_title: string | null
+          location: string | null
+          user_id: string | null
+          years_experience: number | null
+        }
+        Insert: {
+          base_salary?: number | null
+          bonus?: number | null
+          company_id?: string | null
+          company_name?: string | null
+          country?: string | null
+          created_at?: string | null
+          currency?: string | null
+          employment_type?: string | null
+          equity?: number | null
+          id?: string | null
+          is_anonymous?: boolean | null
+          job_title?: string | null
+          location?: string | null
+          user_id?: never
+          years_experience?: number | null
+        }
+        Update: {
+          base_salary?: number | null
+          bonus?: number | null
+          company_id?: string | null
+          company_name?: string | null
+          country?: string | null
+          created_at?: string | null
+          currency?: string | null
+          employment_type?: string | null
+          equity?: number | null
+          id?: string | null
+          is_anonymous?: boolean | null
+          job_title?: string | null
+          location?: string | null
+          user_id?: never
+          years_experience?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "salary_reports_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "company_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       sports_predictions_public: {
         Row: {

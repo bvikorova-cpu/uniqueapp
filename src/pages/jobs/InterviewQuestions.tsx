@@ -25,7 +25,7 @@ export default function InterviewQuestions() {
 
   const load = async () => {
     setLoading(true);
-    let query = supabase.from("interview_questions").select("*").order("created_at", { ascending: false }).limit(200);
+    let query = supabase.from("interview_questions_public" as any).select("*").order("created_at", { ascending: false }).limit(200);
     if (q.trim()) query = query.or(`question.ilike.%${q.trim()}%,job_title.ilike.%${q.trim()}%,company_name.ilike.%${q.trim()}%`);
     const { data } = await query;
     setItems(data || []);

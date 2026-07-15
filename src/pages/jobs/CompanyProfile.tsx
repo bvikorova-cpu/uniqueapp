@@ -41,9 +41,9 @@ export default function CompanyProfile() {
     if (!c) { setLoading(false); return; }
     setCompany(c);
     const [r, s, q, j] = await Promise.all([
-      supabase.from("company_reviews").select("*").eq("company_id", c.id).order("created_at", { ascending: false }),
-      supabase.from("salary_reports").select("*").eq("company_id", c.id).order("created_at", { ascending: false }),
-      supabase.from("interview_questions").select("*").eq("company_id", c.id).order("created_at", { ascending: false }),
+      supabase.from("company_reviews_public" as any).select("*").eq("company_id", c.id).order("created_at", { ascending: false }),
+      supabase.from("salary_reports_public" as any).select("*").eq("company_id", c.id).order("created_at", { ascending: false }),
+      supabase.from("interview_questions_public" as any).select("*").eq("company_id", c.id).order("created_at", { ascending: false }),
       supabase.from("job_listings").select("id,title,location,salary_min,salary_max").eq("company_name", c.name).eq("is_active", true).limit(10),
     ]);
     setReviews(r.data || []); setSalaries(s.data || []); setQuestions(q.data || []); setJobs(j.data || []);
