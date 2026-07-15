@@ -325,8 +325,13 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
                   <Sparkles className="h-4 w-4 text-white" />
                 </div>
                 <div>
-                  <p className="font-black text-sm">Uni</p>
-                  <p className="text-[10px] text-muted-foreground">5 credits per command</p>
+                  <p className="font-black text-sm flex items-center gap-1.5">
+                    Uni
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/30">
+                      Voice AI · like Siri
+                    </span>
+                  </p>
+                  <p className="text-[10px] text-muted-foreground">Speak naturally · 5 credits per command</p>
                 </div>
               </div>
               <div className="flex items-center gap-1">
