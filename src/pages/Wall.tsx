@@ -288,15 +288,17 @@ const Feed = () => {
     if (feedEnhancementsReady) return;
     if (loading && feedItems.length === 0) return;
 
-    const schedule = (callback: () => void) => {
-      if ("requestIdleCallback" in window) {
-        return window.requestIdleCallback(callback, { timeout: 1800 });
-      }
+    const schedule = (callback: () => void): number => {
+      const requestIdle = (window as any).requestIdleCallback as
+        | ((cb: () => void, opts?: { timeout?: number }) => number)
+        | undefined;
+      if (typeof requestIdle === "function") return requestIdle(callback, { timeout: 1800 });
       return window.setTimeout(callback, 900);
     };
 
     const cancel = (id: number) => {
-      if ("cancelIdleCallback" in window) window.cancelIdleCallback(id);
+      const cancelIdle = (window as any).cancelIdleCallback as ((handle: number) => void) | undefined;
+      if (typeof cancelIdle === "function") cancelIdle(id);
       else window.clearTimeout(id);
     };
 
