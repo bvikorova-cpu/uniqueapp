@@ -24,6 +24,10 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
   const [transcript, setTranscript] = useState("");
   const [turns, setTurns] = useState<Turn[]>([]);
   const [caption, setCaption] = useState<{ role: "user" | "assistant"; text: string } | null>(null);
+  const [showOnboarding, setShowOnboarding] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    return localStorage.getItem("uni-onboarding-seen") !== "1";
+  });
   const captionTimerRef = useRef<number | null>(null);
 
   const showCaption = (role: "user" | "assistant", text: string, autoHideMs?: number) => {
