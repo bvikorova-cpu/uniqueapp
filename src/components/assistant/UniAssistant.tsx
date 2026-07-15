@@ -224,7 +224,7 @@ export function UniAssistant() {
                   <Loader2 className="h-6 w-6 animate-spin" />
                 </Button>
               ) : speaking ? (
-                <Button onClick={() => { window.speechSynthesis.cancel(); setSpeaking(false); }} size="lg" className="rounded-full h-14 w-14 p-0" variant="secondary">
+                <Button onClick={stopSpeaking} size="lg" className="rounded-full h-14 w-14 p-0" variant="secondary">
                   <Volume2 className="h-6 w-6" />
                 </Button>
               ) : (
