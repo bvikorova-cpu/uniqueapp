@@ -17,8 +17,11 @@ export function BetaTesterNotice({ onClose }: BetaTesterNoticeProps) {
     onClose?.();
   };
 
-  return (
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
     <AnimatePresence>
+
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
