@@ -353,7 +353,16 @@ const Feed = () => {
       }
     );
 
-    fetchPosts();
+    if (cacheIsFresh) {
+      // Cache is <60s old — defer refresh so first paint stays instant.
+      const t = setTimeout(() => fetchPosts(), 4000);
+      // ensure cleanup below still runs
+      const origCleanup = () => clearTimeout(t);
+      // attach via closure
+      (window as any).__wallDeferredFetch = origCleanup;
+    } else {
+      fetchPosts();
+    }
 
     // Realtime: only INSERT events, only refresh when scrolled at top to avoid
     // yanking the feed under the user. Heavy debounce keeps things quiet under load.
