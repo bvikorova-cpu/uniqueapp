@@ -1397,9 +1397,6 @@ const App = () => {
                     <Footer />
                   </Suspense>
                   <Suspense fallback={null}>
-                    <LiveChatWidget />
-                  </Suspense>
-                  <Suspense fallback={null}>
                     <MobileBottomNav />
                   </Suspense>
                 </div>
