@@ -676,12 +676,15 @@ const App = () => {
                 <Suspense fallback={null}>
                   <ProgressiveOnboarding />
                 </Suspense>
-                <Suspense fallback={null}>
-                  <UniAssistant />
-                </Suspense>
                 <Toaster />
                 <Sonner />
-                <GoogleTranslateWidget />
+                <Suspense fallback={null}>
+                  <FloatingAssistantDock>
+                    <GoogleTranslateWidget docked />
+                    <UniAssistant docked />
+                    <LiveChatWidget docked />
+                  </FloatingAssistantDock>
+                </Suspense>
 
                 <div className="flex flex-col min-h-screen">
                   <ErrorBoundary>
