@@ -144,7 +144,8 @@ export function BetaTesterNotice({ onClose }: BetaTesterNoticeProps) {
           </Card>
         </motion.div>
       </motion.div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
 
