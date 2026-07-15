@@ -2,6 +2,7 @@ import { Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 const STORAGE_KEY = "unique-theme-v2";
 
@@ -24,7 +25,7 @@ function readStoredTheme(): Theme {
   return "light";
 }
 
-export const ThemeToggle = () => {
+export const ThemeToggle = ({ className }: { className?: string }) => {
   const { setTheme: setNextTheme } = useTheme();
   const [theme, setThemeState] = useState<Theme>(() => readStoredTheme());
 
@@ -55,6 +56,7 @@ export const ThemeToggle = () => {
       onClick={toggle}
       aria-label="Toggle theme"
       title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+      className={cn("relative", className)}
     >
       <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
       <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
