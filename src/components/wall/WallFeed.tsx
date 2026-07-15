@@ -69,12 +69,14 @@ const WallFeed = ({
     <Virtuoso
       useWindowScroll
       data={items}
+      initialItemCount={Math.min(items.length, 6)}
+      defaultItemHeight={360}
       computeItemKey={(_, item) => `${item.type}-${item.data.id}`}
       endReached={() => {
         if (hasMore && !loadingMore) onLoadMore();
       }}
-      overscan={800}
-      increaseViewportBy={{ top: 400, bottom: 800 }}
+      overscan={160}
+      increaseViewportBy={{ top: 120, bottom: 480 }}
       itemContent={(index, item) => (
         <WallPost item={item} index={index} onDelete={onDelete} />
       )}
