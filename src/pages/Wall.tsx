@@ -72,6 +72,7 @@ const Feed = () => {
   const wallStats = useWallStats(user?.id);
   // Hydrate first page instantly from localStorage cache (stale-while-revalidate)
   const CACHE_KEY = "wall_feed_cache_v1";
+  const CACHE_FRESH_MS = 60 * 1000; // skip network refetch if cache is <60s old
   const cached = (() => {
     try {
       const raw = typeof window !== "undefined" ? localStorage.getItem(CACHE_KEY) : null;
@@ -81,6 +82,8 @@ const Feed = () => {
       return parsed;
     } catch { return null; }
   })();
+  const cacheAgeMs = cached?.t ? Date.now() - cached.t : Infinity;
+  const cacheIsFresh = cacheAgeMs < CACHE_FRESH_MS && (cached?.feedItems?.length ?? 0) > 0;
   const [posts, setPosts] = useState<Post[]>(cached?.posts || []);
   const [reposts, setReposts] = useState<Repost[]>(cached?.reposts || []);
   const [feedItems, setFeedItems] = useState<FeedItem[]>(cached?.feedItems || []);
