@@ -383,14 +383,9 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
                     <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shrink-0 shadow-lg">
                       <Mic className="h-4 w-4 text-white" />
                     </div>
-                    <div className="space-y-2">
-                      <p className="text-sm font-semibold leading-snug">
-                        Uni is your voice assistant — just like Siri. Tap the mic and ask anything.
-                      </p>
-                      <Button onClick={tryOnboarding} size="sm" className="gap-1.5 bg-gradient-to-r from-primary to-accent font-bold">
-                        <Sparkles className="h-3.5 w-3.5" /> Skús
-                      </Button>
-                    </div>
+                    <p className="text-sm font-semibold leading-snug self-center">
+                      Uni is your voice assistant — just like Siri. Tap the mic and ask anything.
+                    </p>
                   </div>
                 </div>
               )}
