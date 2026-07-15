@@ -73,12 +73,14 @@ type FeedItem = WallFeedItem;
 const Feed = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
-  const { newCount: newRealtimeCount, reset: resetRealtimeCount } = useWallRealtime(user?.id);
-  const wallStats = useWallStats(user?.id);
+  const [feedEnhancementsReady, setFeedEnhancementsReady] = useState(false);
+  const { newCount: newRealtimeCount, reset: resetRealtimeCount } = useWallRealtime(
+    feedEnhancementsReady ? user?.id : null,
+  );
   // Hydrate first page instantly from localStorage cache (stale-while-revalidate)
   const CACHE_KEY = "wall_feed_cache_v1";
   const CACHE_FRESH_MS = 60 * 1000; // skip network refetch if cache is <60s old
-  const cached = (() => {
+  const cached = useMemo(() => {
     try {
       const raw = typeof window !== "undefined" ? localStorage.getItem(CACHE_KEY) : null;
       if (!raw) return null;
@@ -86,7 +88,7 @@ const Feed = () => {
       if (Date.now() - (parsed.t || 0) > 1000 * 60 * 60 * 24) return null; // 24h TTL
       return parsed;
     } catch { return null; }
-  })();
+  }, []);
   const cacheAgeMs = cached?.t ? Date.now() - cached.t : Infinity;
   const cacheIsFresh = cacheAgeMs < CACHE_FRESH_MS && (cached?.feedItems?.length ?? 0) > 0;
   const [posts, setPosts] = useState<Post[]>(cached?.posts || []);
@@ -94,6 +96,7 @@ const Feed = () => {
   const [feedItems, setFeedItems] = useState<FeedItem[]>(cached?.feedItems || []);
 
   const [loading, setLoading] = useState(!(cached?.feedItems?.length));
+  const wallStats = useWallStats(user?.id, feedEnhancementsReady);
 
   const [loadingMore, setLoadingMore] = useState(false);
   const [feedError, setFeedError] = useState<string | null>(null);
@@ -136,12 +139,17 @@ const Feed = () => {
         .single();
       return data;
     },
-    enabled: !!user,
+    enabled: !!user && feedEnhancementsReady,
   });
 
   // Race-condition lock + cursor for keyset pagination (avoids range duplicates)
   const fetchInFlight = useRef(false);
   const lastCursor = useRef<string | null>(null);
+  const feedItemsCountRef = useRef(feedItems.length);
+
+  useEffect(() => {
+    feedItemsCountRef.current = feedItems.length;
+  }, [feedItems.length]);
 
   const fetchPosts = useCallback(async (loadMore = false) => {
     if (fetchInFlight.current) return;
@@ -150,7 +158,7 @@ const Feed = () => {
       if (loadMore) {
         setLoadingMore(true);
       } else {
-        setLoading(true);
+        if (feedItemsCountRef.current === 0) setLoading(true);
         setFeedError(null);
         lastCursor.current = null;
         setHasMore(true);
@@ -278,6 +286,28 @@ const Feed = () => {
     }
   }, [toast]);
 
+  useEffect(() => {
+    if (feedEnhancementsReady) return;
+    if (loading && feedItems.length === 0) return;
+
+    const schedule = (callback: () => void): number => {
+      const requestIdle = (window as any).requestIdleCallback as
+        | ((cb: () => void, opts?: { timeout?: number }) => number)
+        | undefined;
+      if (typeof requestIdle === "function") return requestIdle(callback, { timeout: 1800 });
+      return window.setTimeout(callback, 900);
+    };
+
+    const cancel = (id: number) => {
+      const cancelIdle = (window as any).cancelIdleCallback as ((handle: number) => void) | undefined;
+      if (typeof cancelIdle === "function") cancelIdle(id);
+      else window.clearTimeout(id);
+    };
+
+    const id = schedule(() => setFeedEnhancementsReady(true));
+    return () => cancel(id);
+  }, [feedEnhancementsReady, feedItems.length, loading]);
+
   const fetchSavedPosts = async () => {
     if (!user) return;
     
@@ -400,7 +430,7 @@ const Feed = () => {
       supabase.removeChannel(repostsChannel);
       subscription.unsubscribe();
     };
-  }, [navigate, fetchPosts]);
+  }, [navigate, fetchPosts, cacheIsFresh]);
 
   // Pull-to-refresh — keep all transient state in refs so we don't re-attach listeners on every frame
   const pullStateRef = useRef({ startY: 0, isPulling: false, canRefresh: false });
@@ -486,7 +516,7 @@ const Feed = () => {
   // Friends list for the "Friends" feed tab
   const { data: friendIds = [] } = useQuery({
     queryKey: ["friend-ids", user?.id],
-    enabled: !!user?.id,
+    enabled: !!user?.id && (feedEnhancementsReady || feedTab === "friends"),
     queryFn: async (): Promise<string[]> => {
       const { data, error } = await supabase
         .from("friendships")
@@ -503,7 +533,7 @@ const Feed = () => {
   // Followed user IDs for the "Following" feed tab
   const { data: followingIds = [] } = useQuery({
     queryKey: ["following-ids", user?.id],
-    enabled: !!user?.id,
+    enabled: !!user?.id && (feedEnhancementsReady || feedTab === "following"),
     queryFn: async (): Promise<string[]> => {
       const { data, error } = await supabase
         .from("user_follows")
@@ -633,9 +663,6 @@ const Feed = () => {
             )}
 
             <div className="max-w-3xl mx-auto px-2 sm:px-4 py-3 sm:py-4 space-y-3 sm:space-y-4">
-              {/* Cinematic Hero */}
-              <WallCinematicHero totalPosts={wallStats.postsToday} totalUsers={wallStats.activeUsers} totalLikes={wallStats.interactionsToday} streak={wallStats.streak} />
-
               {/* Prominent How it works — always visible at the top of the Wall */}
               <HowItWorksButton
                 title="Wall"
@@ -644,11 +671,6 @@ const Feed = () => {
                 variant="compact"
                 className="w-full h-11 justify-center gap-2 border-2 border-primary/50 bg-gradient-to-r from-primary/20 via-accent/15 to-primary/20 text-primary hover:bg-primary/25 shadow-md"
               />
-
-              <HeroRewardedAd sectionKey="page_wall" />
-
-
-
 
               {/* Hub Tabs */}
               <div className="relative">
@@ -674,51 +696,7 @@ const Feed = () => {
 
               {activeView === "feed" && (
                 <>
-                  {/* Find people search */}
-                  <UserSearch />
-                  {/* Quick tools toolbar — primary actions + collapsed "More tools" on mobile */}
-                  <div className="glass-card rounded-2xl p-2 backdrop-blur-xl border border-white/10 flex flex-wrap gap-2">
-                    <SpacesDialog />
-                    <GroupChatDialog />
-                    <CommunitiesDialog />
-                    <CloseFriendsDialog />
-                    <details className="group inline-block">
-                      <summary className="list-none cursor-pointer inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors">
-                        More tools
-                      </summary>
-                      <div className="mt-2 flex flex-wrap gap-2 p-2 rounded-lg bg-background/50 border border-white/10">
-                        <MutedUsersDialog />
-                        <MutedKeywordsDialog />
-                        <SavedSearchesDialog />
-                        <FollowedTopicsDialog />
-                        <ModerationQueueDialog />
-                        <CreatorSubscriptionDialog />
-                        <CreatorFundDialog />
-                        <DailyLoginRewardDialog />
-                        <CreatorWebhooksDialog />
-                        <AccessibilityFieldsDialog />
-                        <OfflineStatusIndicator />
-                      </div>
-                    </details>
-                  </div>
-
-
-                  {/* Notes / Status Bar (24h ephemeral) */}
-                  <NotesBar />
-
-                  {/* Stories Bar */}
-                  <div className="glass-card rounded-2xl p-3 backdrop-blur-xl border border-white/10">
-                    <StoriesBar />
-                  </div>
-
                   <SmartFeedTabs activeTab={feedTab} onTabChange={setFeedTab} />
-
-                  <div className="flex justify-end">
-                    <AchievementsBadge />
-                  </div>
-
-                  <SearchBar />
-                  <SmartSuggestionsCard />
 
                   <div className="space-y-3 sm:space-y-4">
                     {/* Realtime "new posts" banner */}
@@ -751,6 +729,52 @@ const Feed = () => {
                     />
 
                   </div>
+
+                  {feedEnhancementsReady && (
+                    <div className="space-y-3 sm:space-y-4">
+                      <UserSearch />
+
+                      <div className="glass-card rounded-2xl p-2 backdrop-blur-xl border border-white/10 flex flex-wrap gap-2">
+                        <SpacesDialog />
+                        <GroupChatDialog />
+                        <CommunitiesDialog />
+                        <CloseFriendsDialog />
+                        <details className="group inline-block">
+                          <summary className="list-none cursor-pointer inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors">
+                            More tools
+                          </summary>
+                          <div className="mt-2 flex flex-wrap gap-2 p-2 rounded-lg bg-background/50 border border-white/10">
+                            <MutedUsersDialog />
+                            <MutedKeywordsDialog />
+                            <SavedSearchesDialog />
+                            <FollowedTopicsDialog />
+                            <ModerationQueueDialog />
+                            <CreatorSubscriptionDialog />
+                            <CreatorFundDialog />
+                            <DailyLoginRewardDialog />
+                            <CreatorWebhooksDialog />
+                            <AccessibilityFieldsDialog />
+                            <OfflineStatusIndicator />
+                          </div>
+                        </details>
+                      </div>
+
+                      <NotesBar />
+
+                      <div className="glass-card rounded-2xl p-3 backdrop-blur-xl border border-white/10">
+                        <StoriesBar />
+                      </div>
+
+                      <div className="flex justify-end">
+                        <AchievementsBadge />
+                      </div>
+
+                      <SearchBar />
+                      <SmartSuggestionsCard />
+                      <HeroRewardedAd sectionKey="page_wall" />
+                      <WallCinematicHero totalPosts={wallStats.postsToday} totalUsers={wallStats.activeUsers} totalLikes={wallStats.interactionsToday} streak={wallStats.streak} />
+                    </div>
+                  )}
                 </>
               )}
 
@@ -785,8 +809,8 @@ const Feed = () => {
         {/* Main Layout Container - starts below fixed nav */}
         <div className="flex flex-col lg:flex-row pt-[112px]">
           {/* Left Sidebar - Hidden on mobile, sticky within container */}
-          <div className="hidden lg:block">
-            <WallSidebar onPostCreated={fetchPosts} />
+          <div className="hidden lg:block lg:w-64 xl:w-80 shrink-0">
+            {feedEnhancementsReady && <WallSidebar onPostCreated={fetchPosts} />}
           </div>
 
           {/* Main Content Area - scrollable with enhanced contrast */}
@@ -799,8 +823,8 @@ const Feed = () => {
           </div>
 
           {/* Right Sidebar - visible on md+ as sticky column */}
-          <div className="hidden md:block">
-            <WallRightbar />
+          <div className="hidden md:block md:w-64 xl:w-80 shrink-0">
+            {feedEnhancementsReady && <WallRightbar />}
           </div>
         </div>
 

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import PostCard from "@/components/feed/PostCard";
 import RepostCard from "@/components/feed/RepostCard";
 import MonetagInFeedAd from "@/components/ads/MonetagInFeedAd";
@@ -57,5 +58,11 @@ const WallPost = ({ item, index, onDelete }: WallPostProps) => {
   );
 };
 
-export default WallPost;
+export default memo(
+  WallPost,
+  (prev, next) =>
+    prev.item === next.item &&
+    prev.index === next.index &&
+    prev.onDelete === next.onDelete,
+);
 export type { Post, Repost };

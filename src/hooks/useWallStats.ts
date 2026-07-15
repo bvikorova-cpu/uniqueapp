@@ -8,7 +8,7 @@ export interface WallStats {
   streak: number;
 }
 
-export function useWallStats(userId?: string | null) {
+export function useWallStats(userId?: string | null, enabled = true) {
   const [stats, setStats] = useState<WallStats>({
     postsToday: 0,
     activeUsers: 0,
@@ -17,6 +17,8 @@ export function useWallStats(userId?: string | null) {
   });
 
   useEffect(() => {
+    if (!enabled) return;
+
     let cancelled = false;
 
     const load = async () => {
@@ -54,7 +56,7 @@ export function useWallStats(userId?: string | null) {
       cancelled = true;
       clearInterval(t);
     };
-  }, [userId]);
+  }, [userId, enabled]);
 
   return stats;
 }
