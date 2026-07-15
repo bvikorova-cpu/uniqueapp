@@ -98,6 +98,7 @@ const ProtectedRoute = lazy(() => import("@/components/ProtectedRoute").then((mo
 const SubscriptionGuard = lazy(() => import("@/components/SubscriptionGuard").then((module) => ({ default: module.SubscriptionGuard })));
 const MegatalentGuard = lazy(() => import("@/components/megatalent/MegatalentGuard").then((module) => ({ default: module.MegatalentGuard })));
 const ProgressiveOnboarding = lazy(() => import("./components/onboarding/ProgressiveOnboarding"));
+const UniAssistant = lazy(() => import("./components/assistant/UniAssistant"));
 const GlobalAnnouncementBanner = lazy(() => import("./components/GlobalAnnouncementBanner").then((module) => ({ default: module.GlobalAnnouncementBanner })));
 const ReferralCaptureMount = lazy(() => import("@/components/referral/ReferralCaptureMount").then((module) => ({ default: module.ReferralCaptureMount })));
 const IQReferralCaptureMount = lazy(() => import("@/components/iq/IQReferralCaptureMount"));
@@ -673,6 +674,9 @@ const App = () => {
                 <SkipLink />
                 <Suspense fallback={null}>
                   <ProgressiveOnboarding />
+                </Suspense>
+                <Suspense fallback={null}>
+                  <UniAssistant />
                 </Suspense>
                 <Toaster />
                 <Sonner />
