@@ -406,7 +406,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
   if (typeof document === "undefined") return null;
   return (
     <>
-      {createPortal(fab, document.body)}
+      {docked ? fab : createPortal(fab, document.body)}
       {createPortal(captionBar, document.body)}
       {createPortal(modal, document.body)}
     </>
