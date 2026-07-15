@@ -73,7 +73,10 @@ type FeedItem = WallFeedItem;
 const Feed = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
-  const { newCount: newRealtimeCount, reset: resetRealtimeCount } = useWallRealtime(user?.id);
+  const [feedEnhancementsReady, setFeedEnhancementsReady] = useState(false);
+  const { newCount: newRealtimeCount, reset: resetRealtimeCount } = useWallRealtime(
+    feedEnhancementsReady ? user?.id : null,
+  );
   // Hydrate first page instantly from localStorage cache (stale-while-revalidate)
   const CACHE_KEY = "wall_feed_cache_v1";
   const CACHE_FRESH_MS = 60 * 1000; // skip network refetch if cache is <60s old
@@ -93,7 +96,6 @@ const Feed = () => {
   const [feedItems, setFeedItems] = useState<FeedItem[]>(cached?.feedItems || []);
 
   const [loading, setLoading] = useState(!(cached?.feedItems?.length));
-  const [feedEnhancementsReady, setFeedEnhancementsReady] = useState(false);
   const wallStats = useWallStats(user?.id, feedEnhancementsReady);
 
   const [loadingMore, setLoadingMore] = useState(false);
@@ -137,7 +139,7 @@ const Feed = () => {
         .single();
       return data;
     },
-    enabled: !!user,
+    enabled: !!user && feedEnhancementsReady,
   });
 
   // Race-condition lock + cursor for keyset pagination (avoids range duplicates)
@@ -514,7 +516,7 @@ const Feed = () => {
   // Friends list for the "Friends" feed tab
   const { data: friendIds = [] } = useQuery({
     queryKey: ["friend-ids", user?.id],
-    enabled: !!user?.id,
+    enabled: !!user?.id && (feedEnhancementsReady || feedTab === "friends"),
     queryFn: async (): Promise<string[]> => {
       const { data, error } = await supabase
         .from("friendships")
@@ -531,7 +533,7 @@ const Feed = () => {
   // Followed user IDs for the "Following" feed tab
   const { data: followingIds = [] } = useQuery({
     queryKey: ["following-ids", user?.id],
-    enabled: !!user?.id,
+    enabled: !!user?.id && (feedEnhancementsReady || feedTab === "following"),
     queryFn: async (): Promise<string[]> => {
       const { data, error } = await supabase
         .from("user_follows")
@@ -807,7 +809,7 @@ const Feed = () => {
         {/* Main Layout Container - starts below fixed nav */}
         <div className="flex flex-col lg:flex-row pt-[112px]">
           {/* Left Sidebar - Hidden on mobile, sticky within container */}
-          <div className="hidden lg:block">
+          <div className="hidden lg:block lg:w-64 xl:w-80 shrink-0">
             {feedEnhancementsReady && <WallSidebar onPostCreated={fetchPosts} />}
           </div>
 
@@ -821,7 +823,7 @@ const Feed = () => {
           </div>
 
           {/* Right Sidebar - visible on md+ as sticky column */}
-          <div className="hidden md:block">
+          <div className="hidden md:block md:w-64 xl:w-80 shrink-0">
             {feedEnhancementsReady && <WallRightbar />}
           </div>
         </div>
