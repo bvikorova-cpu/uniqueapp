@@ -593,7 +593,7 @@ const Navbar = () => {
           {/* Mobile: Notification bell */}
           {user && (
             <div className="lg:hidden mr-1 flex items-center gap-1">
-              <MessagesBell />
+              <div className="hidden sm:block"><MessagesBell /></div>
               <NotificationBell />
             </div>
           )}
