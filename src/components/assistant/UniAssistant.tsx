@@ -17,6 +17,7 @@ export function UniAssistant() {
   const [transcript, setTranscript] = useState("");
   const [turns, setTurns] = useState<Turn[]>([]);
   const recognitionRef = useRef<any>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
@@ -28,10 +29,23 @@ export function UniAssistant() {
     return () => {
       try { recognitionRef.current?.stop?.(); } catch {}
       try { window.speechSynthesis?.cancel?.(); } catch {}
+      try { audioRef.current?.pause(); } catch {}
     };
   }, []);
 
-  const speak = (text: string) => {
+  const stopSpeaking = () => {
+    try { window.speechSynthesis?.cancel?.(); } catch {}
+    try {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = "";
+        audioRef.current = null;
+      }
+    } catch {}
+    setSpeaking(false);
+  };
+
+  const speakBrowser = (text: string) => {
     try {
       window.speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
@@ -41,6 +55,31 @@ export function UniAssistant() {
       setSpeaking(true);
       window.speechSynthesis.speak(u);
     } catch {}
+  };
+
+  const speak = async (text: string) => {
+    stopSpeaking();
+    setSpeaking(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("uni-tts", {
+        body: { text, voice: "alloy" },
+      });
+      if (error) throw error;
+      // invoke returns a Blob for non-JSON responses
+      const blob = data instanceof Blob
+        ? data
+        : new Blob([data as ArrayBuffer], { type: "audio/mpeg" });
+      if (!blob || blob.size === 0) throw new Error("empty_audio");
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audioRef.current = audio;
+      audio.onended = () => { setSpeaking(false); URL.revokeObjectURL(url); };
+      audio.onerror = () => { setSpeaking(false); URL.revokeObjectURL(url); speakBrowser(text); };
+      await audio.play();
+    } catch {
+      // Fallback to native Web Speech synthesis
+      speakBrowser(text);
+    }
   };
 
   const send = async (text: string) => {
@@ -185,7 +224,7 @@ export function UniAssistant() {
                   <Loader2 className="h-6 w-6 animate-spin" />
                 </Button>
               ) : speaking ? (
-                <Button onClick={() => { window.speechSynthesis.cancel(); setSpeaking(false); }} size="lg" className="rounded-full h-14 w-14 p-0" variant="secondary">
+                <Button onClick={stopSpeaking} size="lg" className="rounded-full h-14 w-14 p-0" variant="secondary">
                   <Volume2 className="h-6 w-6" />
                 </Button>
               ) : (
