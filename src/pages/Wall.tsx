@@ -160,7 +160,10 @@ const Feed = () => {
 
       // Single-RPC fetch: posts + reposts + profiles + media + original_posts in 1 round-trip.
       // P2 — 1 auto-retry on transient network/RPC error so a single fail doesn't kill the feed.
-      const fetchFeed = async () => supabase.rpc("get_wall_feed", { _cursor: cursor, _limit: POSTS_PER_PAGE });
+      const fetchFeed = async () =>
+        tracedRpc("get_wall_feed", () =>
+          supabase.rpc("get_wall_feed", { _cursor: cursor, _limit: POSTS_PER_PAGE }),
+        );
       let { data: feedData, error: feedErr } = await fetchFeed();
       if (feedErr) {
         await new Promise(r => setTimeout(r, 400));
