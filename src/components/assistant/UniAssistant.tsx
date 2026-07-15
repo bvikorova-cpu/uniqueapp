@@ -143,7 +143,9 @@ export function UniAssistant() {
         if (r.isFinal) final += r[0].transcript;
         else interim += r[0].transcript;
       }
-      setTranscript(final || interim);
+      const live = final || interim;
+      setTranscript(live);
+      if (live) showCaption("user", live);
       if (final) send(final);
     };
     rec.onerror = () => setListening(false);
