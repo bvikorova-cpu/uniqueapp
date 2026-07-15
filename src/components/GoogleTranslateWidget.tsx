@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Languages, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 declare global {
   interface Window {
@@ -8,12 +9,18 @@ declare global {
   }
 }
 
+interface GoogleTranslateWidgetProps {
+  /** When true, the widget button is rendered inline (no fixed positioning)
+   *  so it can be placed inside a shared dock such as FloatingAssistantDock. */
+  docked?: boolean;
+}
+
 /**
  * Floating Google Translate widget — collapsed by default into a small
  * glassmorphism icon button. Expands to reveal the language picker.
  * Hidden visually on mobile until tapped, so it never blocks the feed.
  */
-export default function GoogleTranslateWidget() {
+export default function GoogleTranslateWidget({ docked = false }: GoogleTranslateWidgetProps) {
   const [open, setOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
