@@ -587,32 +587,24 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile login moved to bottom navigation for better reachability */}
-          {!user && <div className="lg:hidden ml-auto" />}
-
-          {/* Mobile: Notification bell */}
-          {user && (
-            <div className="lg:hidden mr-1 flex items-center gap-1">
-              <div className="hidden sm:block"><MessagesBell /></div>
-              <NotificationBell />
-            </div>
-          )}
-
-          {/* Mobile: Theme Toggle */}
-          <div className="lg:hidden">
-            <ThemeToggle />
+          {/* Mobile action icons — grouped and compact so they never overlap */}
+          <div className="flex items-center gap-0.5 lg:hidden shrink-0">
+            {user && (
+              <>
+                <MessagesBell className="h-8 w-8 mr-1" />
+                <NotificationBell className="h-8 w-8 mr-1" />
+              </>
+            )}
+            <ThemeToggle className="h-8 w-8" />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </Button>
           </div>
-
-
-          {/* Mobile Menu Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="lg:hidden"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </Button>
         </div>
 
         {/* Mobile Navigation */}
