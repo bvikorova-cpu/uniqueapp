@@ -95,6 +95,7 @@ export function UniAssistant() {
   const send = async (text: string) => {
     if (!text.trim()) return;
     setTurns((t) => [...t, { role: "user", content: text }]);
+    showCaption("user", text);
     setThinking(true);
     try {
       const { data, error } = await supabase.functions.invoke("uni-assistant", {
@@ -103,12 +104,15 @@ export function UniAssistant() {
       if (error) throw error;
       if (data?.error === "INSUFFICIENT_CREDITS") {
         toast({ title: "Not enough credits", description: "Uni costs 5 credits per command.", variant: "destructive" });
-        setTurns((t) => [...t, { role: "assistant", content: "You need 5 credits to use me. Top up in Wallet." }]);
+        const msg = "You need 5 credits to use me. Top up in Wallet.";
+        setTurns((t) => [...t, { role: "assistant", content: msg }]);
+        showCaption("assistant", msg, 6000);
         return;
       }
       if (data?.error) throw new Error(data.error);
       const reply = data?.reply ?? "Okay.";
       setTurns((t) => [...t, { role: "assistant", content: reply }]);
+      showCaption("assistant", reply);
       speak(reply);
       if (data?.action?.type === "navigate" && data.action.path) {
         setTimeout(() => navigate(data.action.path), 400);
