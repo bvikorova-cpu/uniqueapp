@@ -278,9 +278,6 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
       <span className="absolute inset-0 rounded-full bg-primary/40 animate-ping" aria-hidden="true" />
       <span className="absolute -inset-1 rounded-full border border-primary/40" aria-hidden="true" />
       <Mic className="h-6 w-6 text-white relative" />
-      <span className="absolute -top-1 -right-1 bg-background text-[9px] font-black px-1.5 py-0.5 rounded-full border border-primary/40 text-primary flex items-center gap-0.5">
-        <Sparkles className="h-2.5 w-2.5" /> Uni
-      </span>
     </button>
   );
 
