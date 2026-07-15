@@ -274,6 +274,7 @@ const Feed = () => {
       fetchInFlight.current = false;
       setLoading(false);
       setLoadingMore(false);
+      if (!loadMore) markWallInteractive();
     }
   }, [toast]);
 
