@@ -257,8 +257,22 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listening, wakeEnabled]);
 
+  const uniButton = (
+    <button
+      aria-label="Open Uni voice assistant"
+      onClick={() => setOpen(true)}
+      className="relative h-14 w-14 rounded-full bg-gradient-to-br from-primary to-accent shadow-xl shadow-primary/40 flex items-center justify-center hover:scale-110 transition-transform"
+    >
+      <Sparkles className="h-6 w-6 text-white" />
+      <span className="absolute -top-1 -right-1 bg-background text-[9px] font-black px-1.5 py-0.5 rounded-full border border-primary/40 text-primary">Uni</span>
+    </button>
+  );
+
   const fab = (
-    <div className="fixed bottom-24 right-4 md:right-6 z-[9998] flex flex-col items-end gap-2">
+    <div className={cn(
+      "flex flex-col items-end gap-2",
+      !docked && "fixed bottom-24 right-4 md:right-6 z-[9998]"
+    )}>
       {supported && (
         <button
           onClick={toggleWakeWord}
@@ -274,14 +288,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
           Hey Uni
         </button>
       )}
-      <button
-        aria-label="Open Uni voice assistant"
-        onClick={() => setOpen(true)}
-        className="relative h-14 w-14 rounded-full bg-gradient-to-br from-primary to-accent shadow-xl shadow-primary/40 flex items-center justify-center hover:scale-110 transition-transform"
-      >
-        <Sparkles className="h-6 w-6 text-white" />
-        <span className="absolute -top-1 -right-1 bg-background text-[9px] font-black px-1.5 py-0.5 rounded-full border border-primary/40 text-primary">Uni</span>
-      </button>
+      {uniButton}
     </div>
   );
 
