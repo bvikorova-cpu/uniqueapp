@@ -9,7 +9,13 @@ import { Button } from "@/components/ui/button";
 
 type Turn = { role: "user" | "assistant"; content: string };
 
-export function UniAssistant() {
+interface UniAssistantProps {
+  /** When true, the floating trigger is rendered inline (no fixed positioning)
+   *  so it can be placed inside a shared dock such as FloatingAssistantDock. */
+  docked?: boolean;
+}
+
+export function UniAssistant({ docked = false }: UniAssistantProps) {
   const [open, setOpen] = useState(false);
   const [listening, setListening] = useState(false);
   const [thinking, setThinking] = useState(false);
