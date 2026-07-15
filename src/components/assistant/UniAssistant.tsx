@@ -252,14 +252,31 @@ export function UniAssistant() {
   }, [listening, wakeEnabled]);
 
   const fab = (
-    <button
-      aria-label="Open Uni voice assistant"
-      onClick={() => setOpen(true)}
-      className="fixed bottom-24 right-4 md:right-6 z-[9998] h-14 w-14 rounded-full bg-gradient-to-br from-primary to-accent shadow-xl shadow-primary/40 flex items-center justify-center hover:scale-110 transition-transform"
-    >
-      <Sparkles className="h-6 w-6 text-white" />
-      <span className="absolute -top-1 -right-1 bg-background text-[9px] font-black px-1.5 py-0.5 rounded-full border border-primary/40 text-primary">Uni</span>
-    </button>
+    <div className="fixed bottom-24 right-4 md:right-6 z-[9998] flex flex-col items-end gap-2">
+      {supported && (
+        <button
+          onClick={toggleWakeWord}
+          aria-label={wakeEnabled ? "Disable 'Hey Uni' wake word" : "Enable 'Hey Uni' wake word"}
+          title={wakeEnabled ? "Wake word ON — say “Hey Uni”" : "Enable “Hey Uni” wake word"}
+          className={`h-9 px-2.5 rounded-full shadow-lg backdrop-blur-md border flex items-center gap-1.5 text-[10px] font-bold transition-all ${
+            wakeEnabled
+              ? "bg-primary text-primary-foreground border-primary animate-pulse"
+              : "bg-background/90 text-muted-foreground border-border hover:text-foreground"
+          }`}
+        >
+          {wakeEnabled ? <Ear className="h-3.5 w-3.5" /> : <EarOff className="h-3.5 w-3.5" />}
+          Hey Uni
+        </button>
+      )}
+      <button
+        aria-label="Open Uni voice assistant"
+        onClick={() => setOpen(true)}
+        className="relative h-14 w-14 rounded-full bg-gradient-to-br from-primary to-accent shadow-xl shadow-primary/40 flex items-center justify-center hover:scale-110 transition-transform"
+      >
+        <Sparkles className="h-6 w-6 text-white" />
+        <span className="absolute -top-1 -right-1 bg-background text-[9px] font-black px-1.5 py-0.5 rounded-full border border-primary/40 text-primary">Uni</span>
+      </button>
+    </div>
   );
 
   const modal = (
