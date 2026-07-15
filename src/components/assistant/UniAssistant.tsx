@@ -274,7 +274,7 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
       "flex flex-col items-end gap-2",
       !docked && "fixed bottom-24 right-4 md:right-6 z-[9998]"
     )}>
-      {supported && (
+      {supported && !docked && (
         <button
           onClick={toggleWakeWord}
           aria-label={wakeEnabled ? "Disable 'Hey Uni' wake word" : "Enable 'Hey Uni' wake word"}
