@@ -353,13 +353,11 @@ const Feed = () => {
       }
     );
 
+    // If we already have a fresh cached first page, defer the network refresh
+    // so the initial paint isn't blocked by an RPC round-trip.
+    let deferredFetch: ReturnType<typeof setTimeout> | null = null;
     if (cacheIsFresh) {
-      // Cache is <60s old — defer refresh so first paint stays instant.
-      const t = setTimeout(() => fetchPosts(), 4000);
-      // ensure cleanup below still runs
-      const origCleanup = () => clearTimeout(t);
-      // attach via closure
-      (window as any).__wallDeferredFetch = origCleanup;
+      deferredFetch = setTimeout(() => fetchPosts(), 4000);
     } else {
       fetchPosts();
     }
@@ -387,6 +385,7 @@ const Feed = () => {
 
     return () => {
       if (timer) clearTimeout(timer);
+      if (deferredFetch) clearTimeout(deferredFetch);
       supabase.removeChannel(postsChannel);
       supabase.removeChannel(repostsChannel);
       subscription.unsubscribe();
