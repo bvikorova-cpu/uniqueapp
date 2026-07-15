@@ -272,11 +272,11 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 w-full bg-white dark:bg-background backdrop-blur-xl border-b border-border/50 z-50 shadow-[0_1px_20px_rgba(0,0,0,0.06)]">
       <div className="container mx-auto px-4">
-        <div className="flex items-baseline justify-between h-16 pt-4">
-          <Link to="/" className="flex items-baseline group lg:mr-8 xl:mr-12">
+        <div className="flex items-center justify-between h-16 lg:items-baseline lg:pt-4">
+          <Link to="/" className="flex items-center gap-1 group lg:items-baseline lg:gap-2 lg:mr-8 xl:mr-12 min-w-0">
             {/* Brand wordmark — fully text-based so U matches nique */}
             <span
-              className="text-3xl font-extrabold bg-clip-text text-transparent transition-all duration-500 group-hover:scale-110 notranslate"
+              className="text-2xl sm:text-3xl font-extrabold bg-clip-text text-transparent transition-all duration-500 group-hover:scale-110 notranslate shrink-0"
               translate="no"
               style={{
                 backgroundImage:
@@ -287,13 +287,13 @@ const Navbar = () => {
               Unique
             </span>
 
-            <Age16Badge size="xs" withLabel={false} className="ml-2 self-center" />
+            <Age16Badge size="xs" withLabel={false} className="self-center shrink-0" />
 
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setShowBetaNotice(true)}
-              className="ml-2 gap-1 text-primary hover:bg-primary/10 px-2 h-8 inline-flex"
+              className="gap-1 text-primary hover:bg-primary/10 px-0 h-8 w-8 sm:px-2 sm:w-auto inline-flex shrink-0"
             >
               <Sparkles className="h-4 w-4" />
               <span className="font-semibold hidden sm:inline">Beta</span>
@@ -587,32 +587,24 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile login moved to bottom navigation for better reachability */}
-          {!user && <div className="lg:hidden ml-auto" />}
-
-          {/* Mobile: Notification bell */}
-          {user && (
-            <div className="lg:hidden mr-1 flex items-center gap-1">
-              <div className="hidden sm:block"><MessagesBell /></div>
-              <NotificationBell />
-            </div>
-          )}
-
-          {/* Mobile: Theme Toggle */}
-          <div className="lg:hidden">
-            <ThemeToggle />
+          {/* Mobile action icons — grouped and compact so they never overlap */}
+          <div className="flex items-center gap-0.5 lg:hidden shrink-0">
+            {user && (
+              <>
+                <MessagesBell className="h-8 w-8 mr-1" />
+                <NotificationBell className="h-8 w-8 mr-1" />
+              </>
+            )}
+            <ThemeToggle className="h-8 w-8" />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </Button>
           </div>
-
-
-          {/* Mobile Menu Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="lg:hidden"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </Button>
         </div>
 
         {/* Mobile Navigation */}

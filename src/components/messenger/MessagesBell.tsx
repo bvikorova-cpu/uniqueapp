@@ -4,10 +4,11 @@ import { Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { cn } from "@/lib/utils";
 /**
  * Header envelope icon that shows unread Messenger messages and links to /messenger.
  */
-const MessagesBell = () => {
+const MessagesBell = ({ className }: { className?: string }) => {
   const { user } = useAuth();
   const [unread, setUnread] = useState(0);
   const convIdsRef = useRef<Set<string>>(new Set());
@@ -90,7 +91,7 @@ const MessagesBell = () => {
   if (!user) return null;
 
   return (
-    <Button asChild variant="ghost" size="icon" className="relative" aria-label="Messages">
+    <Button asChild variant="ghost" size="icon" className={cn("relative", className)} aria-label="Messages">
 
       <Link to="/messenger">
         <Mail className="h-5 w-5" />

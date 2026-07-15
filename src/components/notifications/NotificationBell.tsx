@@ -16,6 +16,7 @@ import { enUS } from "date-fns/locale";
 import { useAuth } from "@/contexts/AuthContext";
 import { getNotificationRoute } from "@/utils/notificationRoutes";
 import { FloatingHowItWorks } from "../common/FloatingHowItWorks";
+import { cn } from "@/lib/utils";
 
 interface Notification {
   id: string;
@@ -41,7 +42,7 @@ interface Notification {
 const displayNameOf = (actor?: Notification["actor"] | null) =>
   actor?.full_name?.trim() || actor?.username?.trim() || "";
 
-const NotificationBell = () => {
+const NotificationBell = ({ className }: { className?: string }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useAuth();
@@ -313,7 +314,7 @@ const NotificationBell = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative">
+        <Button variant="ghost" size="icon" className={cn("relative", className)}>
           <Bell className="h-5 w-5" />
           {unreadCount > 0 && (
             <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center font-bold">
