@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Mic, Sparkles, X, Loader2, Volume2 } from "lucide-react";
+import { Mic, Sparkles, X, Loader2, Volume2, Ear, EarOff } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -27,6 +27,12 @@ export function UniAssistant() {
     }
   };
   const recognitionRef = useRef<any>(null);
+  const wakeRef = useRef<any>(null);
+  const wakeActiveRef = useRef(false);
+  const [wakeEnabled, setWakeEnabled] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("uni-wake-word") === "1";
+  });
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,6 +44,8 @@ export function UniAssistant() {
   useEffect(() => {
     return () => {
       try { recognitionRef.current?.stop?.(); } catch {}
+      try { wakeRef.current?.stop?.(); } catch {}
+      wakeActiveRef.current = false;
       try { window.speechSynthesis?.cancel?.(); } catch {}
       try { audioRef.current?.pause(); } catch {}
     };
@@ -161,15 +169,114 @@ export function UniAssistant() {
     setListening(false);
   };
 
+  const stopWakeWord = () => {
+    wakeActiveRef.current = false;
+    try { wakeRef.current?.stop?.(); } catch {}
+    wakeRef.current = null;
+  };
+
+  const startWakeWord = () => {
+    if (!supported || wakeRef.current) return;
+    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const rec = new SR();
+    rec.continuous = true;
+    rec.interimResults = true;
+    rec.lang = navigator.language || "en-US";
+    wakeActiveRef.current = true;
+    rec.onresult = (e: any) => {
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const text = (e.results[i][0]?.transcript || "").toLowerCase().trim();
+        if (!text) continue;
+        // Match "hey uni", "hej uni", "hi uni", "ok uni"
+        if (/\b(hey|hej|hi|ok|okay)\s+u+ni+\b/.test(text) || /\buni\b.*(wake|start|listen)/.test(text)) {
+          stopWakeWord();
+          setOpen(true);
+          // small delay so wake recognizer fully releases mic
+          setTimeout(() => { startListening(); }, 250);
+          return;
+        }
+      }
+    };
+    rec.onerror = (ev: any) => {
+      // On permission denial, disable persistently
+      if (ev?.error === "not-allowed" || ev?.error === "service-not-allowed") {
+        wakeActiveRef.current = false;
+        setWakeEnabled(false);
+        localStorage.setItem("uni-wake-word", "0");
+        toast({ title: "Mic permission needed", description: "Allow microphone to use 'Hey Uni'.", variant: "destructive" });
+      }
+    };
+    rec.onend = () => {
+      // Auto-restart if still enabled and not currently in active listen
+      if (wakeActiveRef.current && !listening) {
+        try { rec.start(); } catch {
+          setTimeout(() => { try { rec.start(); } catch {} }, 500);
+        }
+      }
+    };
+    wakeRef.current = rec;
+    try { rec.start(); } catch {}
+  };
+
+  const toggleWakeWord = () => {
+    const next = !wakeEnabled;
+    setWakeEnabled(next);
+    localStorage.setItem("uni-wake-word", next ? "1" : "0");
+    if (next) {
+      startWakeWord();
+      toast({ title: "Wake word on", description: "Say “Hey Uni” anytime." });
+    } else {
+      stopWakeWord();
+    }
+  };
+
+  // Auto-start wake word if user previously enabled it
+  useEffect(() => {
+    if (wakeEnabled && supported && !wakeRef.current && !listening) {
+      startWakeWord();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wakeEnabled, supported]);
+
+  // Pause wake recognizer while actively listening; resume after
+  useEffect(() => {
+    if (listening && wakeRef.current) {
+      try { wakeRef.current.stop(); } catch {}
+      wakeRef.current = null;
+    } else if (!listening && wakeEnabled && !wakeRef.current) {
+      // brief delay so the previous SR fully releases the mic
+      const t = setTimeout(() => startWakeWord(), 400);
+      return () => clearTimeout(t);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listening, wakeEnabled]);
+
   const fab = (
-    <button
-      aria-label="Open Uni voice assistant"
-      onClick={() => setOpen(true)}
-      className="fixed bottom-24 right-4 md:right-6 z-[9998] h-14 w-14 rounded-full bg-gradient-to-br from-primary to-accent shadow-xl shadow-primary/40 flex items-center justify-center hover:scale-110 transition-transform"
-    >
-      <Sparkles className="h-6 w-6 text-white" />
-      <span className="absolute -top-1 -right-1 bg-background text-[9px] font-black px-1.5 py-0.5 rounded-full border border-primary/40 text-primary">Uni</span>
-    </button>
+    <div className="fixed bottom-24 right-4 md:right-6 z-[9998] flex flex-col items-end gap-2">
+      {supported && (
+        <button
+          onClick={toggleWakeWord}
+          aria-label={wakeEnabled ? "Disable 'Hey Uni' wake word" : "Enable 'Hey Uni' wake word"}
+          title={wakeEnabled ? "Wake word ON — say “Hey Uni”" : "Enable “Hey Uni” wake word"}
+          className={`h-9 px-2.5 rounded-full shadow-lg backdrop-blur-md border flex items-center gap-1.5 text-[10px] font-bold transition-all ${
+            wakeEnabled
+              ? "bg-primary text-primary-foreground border-primary animate-pulse"
+              : "bg-background/90 text-muted-foreground border-border hover:text-foreground"
+          }`}
+        >
+          {wakeEnabled ? <Ear className="h-3.5 w-3.5" /> : <EarOff className="h-3.5 w-3.5" />}
+          Hey Uni
+        </button>
+      )}
+      <button
+        aria-label="Open Uni voice assistant"
+        onClick={() => setOpen(true)}
+        className="relative h-14 w-14 rounded-full bg-gradient-to-br from-primary to-accent shadow-xl shadow-primary/40 flex items-center justify-center hover:scale-110 transition-transform"
+      >
+        <Sparkles className="h-6 w-6 text-white" />
+        <span className="absolute -top-1 -right-1 bg-background text-[9px] font-black px-1.5 py-0.5 rounded-full border border-primary/40 text-primary">Uni</span>
+      </button>
+    </div>
   );
 
   const modal = (
