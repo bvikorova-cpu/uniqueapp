@@ -44,6 +44,8 @@ export function UniAssistant() {
   useEffect(() => {
     return () => {
       try { recognitionRef.current?.stop?.(); } catch {}
+      try { wakeRef.current?.stop?.(); } catch {}
+      wakeActiveRef.current = false;
       try { window.speechSynthesis?.cancel?.(); } catch {}
       try { audioRef.current?.pause(); } catch {}
     };
