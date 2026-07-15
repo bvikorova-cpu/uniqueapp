@@ -16,6 +16,16 @@ export function UniAssistant() {
   const [speaking, setSpeaking] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [turns, setTurns] = useState<Turn[]>([]);
+  const [caption, setCaption] = useState<{ role: "user" | "assistant"; text: string } | null>(null);
+  const captionTimerRef = useRef<number | null>(null);
+
+  const showCaption = (role: "user" | "assistant", text: string, autoHideMs?: number) => {
+    if (captionTimerRef.current) window.clearTimeout(captionTimerRef.current);
+    setCaption({ role, text });
+    if (autoHideMs) {
+      captionTimerRef.current = window.setTimeout(() => setCaption(null), autoHideMs);
+    }
+  };
   const recognitionRef = useRef<any>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const navigate = useNavigate();
@@ -85,6 +95,7 @@ export function UniAssistant() {
   const send = async (text: string) => {
     if (!text.trim()) return;
     setTurns((t) => [...t, { role: "user", content: text }]);
+    showCaption("user", text);
     setThinking(true);
     try {
       const { data, error } = await supabase.functions.invoke("uni-assistant", {
@@ -93,12 +104,15 @@ export function UniAssistant() {
       if (error) throw error;
       if (data?.error === "INSUFFICIENT_CREDITS") {
         toast({ title: "Not enough credits", description: "Uni costs 5 credits per command.", variant: "destructive" });
-        setTurns((t) => [...t, { role: "assistant", content: "You need 5 credits to use me. Top up in Wallet." }]);
+        const msg = "You need 5 credits to use me. Top up in Wallet.";
+        setTurns((t) => [...t, { role: "assistant", content: msg }]);
+        showCaption("assistant", msg, 6000);
         return;
       }
       if (data?.error) throw new Error(data.error);
       const reply = data?.reply ?? "Okay.";
       setTurns((t) => [...t, { role: "assistant", content: reply }]);
+      showCaption("assistant", reply);
       speak(reply);
       if (data?.action?.type === "navigate" && data.action.path) {
         setTimeout(() => navigate(data.action.path), 400);
@@ -129,7 +143,9 @@ export function UniAssistant() {
         if (r.isFinal) final += r[0].transcript;
         else interim += r[0].transcript;
       }
-      setTranscript(final || interim);
+      const live = final || interim;
+      setTranscript(live);
+      if (live) showCaption("user", live);
       if (final) send(final);
     };
     rec.onerror = () => setListening(false);
@@ -242,10 +258,35 @@ export function UniAssistant() {
     </AnimatePresence>
   );
 
+  const captionBar = (
+    <AnimatePresence>
+      {caption && (listening || speaking || thinking || open) && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          className="fixed left-1/2 -translate-x-1/2 bottom-40 md:bottom-28 z-[9997] max-w-[92vw] md:max-w-lg pointer-events-none"
+        >
+          <div className={`px-4 py-2.5 rounded-2xl shadow-2xl backdrop-blur-md border text-sm leading-snug text-center ${
+            caption.role === "user"
+              ? "bg-primary/90 text-primary-foreground border-primary/40"
+              : "bg-background/95 text-foreground border-primary/30"
+          }`}>
+            <div className="text-[10px] font-bold uppercase tracking-wider opacity-70 mb-0.5">
+              {caption.role === "user" ? "You" : "Uni"}
+            </div>
+            {caption.text}
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+
   if (typeof document === "undefined") return null;
   return (
     <>
       {createPortal(fab, document.body)}
+      {createPortal(captionBar, document.body)}
       {createPortal(modal, document.body)}
     </>
   );
