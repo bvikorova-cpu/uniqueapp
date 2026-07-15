@@ -27,6 +27,12 @@ export function UniAssistant() {
     }
   };
   const recognitionRef = useRef<any>(null);
+  const wakeRef = useRef<any>(null);
+  const wakeActiveRef = useRef(false);
+  const [wakeEnabled, setWakeEnabled] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("uni-wake-word") === "1";
+  });
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
