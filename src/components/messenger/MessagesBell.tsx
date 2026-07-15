@@ -91,7 +91,7 @@ const MessagesBell = ({ className }: { className?: string }) => {
   if (!user) return null;
 
   return (
-    <Button asChild variant="ghost" size="icon" className="relative" aria-label="Messages">
+    <Button asChild variant="ghost" size="icon" className={cn("relative", className)} aria-label="Messages">
 
       <Link to="/messenger">
         <Mail className="h-5 w-5" />
