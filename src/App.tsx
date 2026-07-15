@@ -682,7 +682,7 @@ const App = () => {
                   <FloatingAssistantDock>
                     <GoogleTranslateWidget docked />
                     <UniAssistant docked />
-                    <LiveChatWidget docked />
+                    {/* LiveChatWidget removed — Uni voice+text AI assistant replaces it */}
                   </FloatingAssistantDock>
                 </Suspense>
 
