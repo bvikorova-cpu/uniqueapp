@@ -8,7 +8,7 @@ import { lazyWithRetry as lazy } from "@/utils/lazyWithRetry";
 import RouteSEO from "@/components/RouteSEO";
 import ScrollToTop from "@/components/ScrollToTop";
 const CouponSeasonalHub = lazy(() => import("@/pages/CouponSeasonalHub"));
-const LiveChatWidget = lazy(() => import("@/components/contact/LiveChatWidget").then(m => ({ default: m.LiveChatWidget })));
+// LiveChatWidget removed from dock — Uni voice+text assistant replaces it
 const BazaarCreate = lazy(() => import("@/pages/BazaarCreate"));
 const BazaarSavedSearches = lazy(() => import("@/pages/BazaarSavedSearches"));
 const MusicUpload = lazy(() => import("@/pages/MusicUpload"));
@@ -682,7 +682,7 @@ const App = () => {
                   <FloatingAssistantDock>
                     <GoogleTranslateWidget docked />
                     <UniAssistant docked />
-                    <LiveChatWidget docked />
+                    {/* LiveChatWidget removed — Uni voice+text AI assistant replaces it */}
                   </FloatingAssistantDock>
                 </Suspense>
 
