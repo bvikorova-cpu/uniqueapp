@@ -180,6 +180,16 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     setListening(false);
   };
 
+  const dismissOnboarding = () => {
+    setShowOnboarding(false);
+    try { localStorage.setItem("uni-onboarding-seen", "1"); } catch {}
+  };
+
+  const tryOnboarding = () => {
+    dismissOnboarding();
+    startListening();
+  };
+
   const stopWakeWord = () => {
     wakeActiveRef.current = false;
     try { wakeRef.current?.stop?.(); } catch {}
