@@ -343,6 +343,7 @@ const Feed = () => {
   };
 
   useEffect(() => {
+    startWallTrace({ cacheHit: cacheIsFresh });
     // Check authentication
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) {
