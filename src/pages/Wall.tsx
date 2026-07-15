@@ -5,6 +5,11 @@ import { Sparkles } from "lucide-react";
 // preview-sync: 2026-01-05a (touch file to ensure consistent preview refresh)
 import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  startWallTrace,
+  markWallInteractive,
+  tracedRpc,
+} from "@/utils/wallPerf";
 import { User } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
 import UserSearch from "@/components/feed/UserSearch";
@@ -155,7 +160,10 @@ const Feed = () => {
 
       // Single-RPC fetch: posts + reposts + profiles + media + original_posts in 1 round-trip.
       // P2 — 1 auto-retry on transient network/RPC error so a single fail doesn't kill the feed.
-      const fetchFeed = async () => supabase.rpc("get_wall_feed", { _cursor: cursor, _limit: POSTS_PER_PAGE });
+      const fetchFeed = async () =>
+        tracedRpc("get_wall_feed", () =>
+          supabase.rpc("get_wall_feed", { _cursor: cursor, _limit: POSTS_PER_PAGE }),
+        );
       let { data: feedData, error: feedErr } = await fetchFeed();
       if (feedErr) {
         await new Promise(r => setTimeout(r, 400));
@@ -266,6 +274,7 @@ const Feed = () => {
       fetchInFlight.current = false;
       setLoading(false);
       setLoadingMore(false);
+      if (!loadMore) markWallInteractive();
     }
   }, [toast]);
 
@@ -334,6 +343,7 @@ const Feed = () => {
   };
 
   useEffect(() => {
+    startWallTrace({ cacheHit: cacheIsFresh });
     // Check authentication
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) {

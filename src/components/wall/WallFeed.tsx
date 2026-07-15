@@ -1,8 +1,10 @@
+import { useEffect } from "react";
 import { Virtuoso } from "react-virtuoso";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import WallPost, { type FeedItem } from "./WallPost";
+import { markWallFirstPaint } from "@/utils/wallPerf";
 
 interface WallFeedProps {
   items: FeedItem[];
@@ -29,6 +31,10 @@ const WallFeed = ({
   onLoadMore,
   onDelete,
 }: WallFeedProps) => {
+  useEffect(() => {
+    if (items.length > 0) markWallFirstPaint();
+  }, [items.length]);
+
   if (loading) {
     return (
       <Card className="p-6 sm:p-8 flex items-center justify-center">
