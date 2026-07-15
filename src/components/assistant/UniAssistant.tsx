@@ -185,11 +185,6 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
     try { localStorage.setItem("uni-onboarding-seen", "1"); } catch {}
   };
 
-  const tryOnboarding = () => {
-    dismissOnboarding();
-    startListening();
-  };
-
   const stopWakeWord = () => {
     wakeActiveRef.current = false;
     try { wakeRef.current?.stop?.(); } catch {}
@@ -286,9 +281,6 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
       <span className="absolute -top-1 -right-1 bg-background text-[9px] font-black px-1.5 py-0.5 rounded-full border border-primary/40 text-primary flex items-center gap-0.5">
         <Sparkles className="h-2.5 w-2.5" /> Uni
       </span>
-      <span className="absolute -bottom-6 right-0 whitespace-nowrap text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-primary/90 text-primary-foreground shadow">
-        Voice AI · like Siri
-      </span>
     </button>
   );
 
@@ -383,14 +375,9 @@ export function UniAssistant({ docked = false }: UniAssistantProps) {
                     <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shrink-0 shadow-lg">
                       <Mic className="h-4 w-4 text-white" />
                     </div>
-                    <div className="space-y-2">
-                      <p className="text-sm font-semibold leading-snug">
-                        Uni is your voice assistant — just like Siri. Tap the mic and ask anything.
-                      </p>
-                      <Button onClick={tryOnboarding} size="sm" className="gap-1.5 bg-gradient-to-r from-primary to-accent font-bold">
-                        <Sparkles className="h-3.5 w-3.5" /> Skús
-                      </Button>
-                    </div>
+                    <p className="text-sm font-semibold leading-snug self-center">
+                      Uni is your voice assistant — just like Siri. Tap the mic and ask anything.
+                    </p>
                   </div>
                 </div>
               )}
