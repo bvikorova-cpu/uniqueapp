@@ -1,8 +1,10 @@
+import { useEffect } from "react";
 import { Virtuoso } from "react-virtuoso";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import WallPost, { type FeedItem } from "./WallPost";
+import { markWallFirstPaint } from "@/utils/wallPerf";
 
 interface WallFeedProps {
   items: FeedItem[];
