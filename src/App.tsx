@@ -88,6 +88,7 @@ import { installImagePerformancePatch } from "@/utils/imagePerformance";
 import { prewarmHotRoutes } from "@/utils/prewarmRoutes";
 import { HelmetProvider } from "react-helmet-async";
 import GoogleTranslateWidget from "@/components/GoogleTranslateWidget";
+import { FloatingAssistantDock } from "@/components/FloatingAssistantDock";
 import { GlobalPaymentCleanup } from "@/components/payment/GlobalPaymentCleanup";
 import { GameAdGateHost } from "@/components/games/GameAdGateHost";
 
